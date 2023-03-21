@@ -265,7 +265,17 @@ public class MassEntryServiceImpl implements MassEntryService {
         try {
           moveListElement.setReference(null);
 
-          idMoveList.add(this.generateMassEntryMove(moveListElement));
+          Move generatedMove = this.generateMassEntryMove(moveListElement);
+          idMoveList.add(generatedMove.getId());
+
+          for (MoveLineMassEntry moveLineMassEntry : move.getMoveLineMassEntryList()) {
+            if (Objects.equals(
+                Integer.parseInt(moveTemporaryMoveNumber),
+                moveLineMassEntry.getTemporaryMoveNumber())) {
+              moveLineMassEntry.setMoveStatusSelect(generatedMove.getStatusSelect());
+              moveLineMassEntry.setTemporaryMoveNumber(Math.toIntExact(generatedMove.getId()));
+            }
+          }
 
         } catch (Exception e) {
           TraceBackService.trace(e);
@@ -279,6 +289,8 @@ public class MassEntryServiceImpl implements MassEntryService {
           }
         }
       }
+      move.setMassEntryStatusSelect(MoveRepository.MASS_ENTRY_STATUS_CLOSED);
+      // TODO maybe save(move) if we want to have as historic at the end of validation
     }
     resultMap.put(idMoveList, errors);
 
@@ -286,7 +298,7 @@ public class MassEntryServiceImpl implements MassEntryService {
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  public Long generateMassEntryMove(Move move) throws AxelorException {
+  public Move generateMassEntryMove(Move move) throws AxelorException {
     Move newMove = new Move();
     User user = AuthUtils.getUser();
 
@@ -372,7 +384,7 @@ public class MassEntryServiceImpl implements MassEntryService {
       }
     }
 
-    return newMove.getId();
+    return newMove;
   }
 
   @Transactional(rollbackOn = {Exception.class})

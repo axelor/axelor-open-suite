@@ -38,7 +38,7 @@ public interface MassEntryService {
 
   Map<List<Long>, String> validateMassEntryMove(Move move);
 
-  Long generateMassEntryMove(Move move) throws AxelorException;
+  Move generateMassEntryMove(Move move) throws AxelorException;
 
   void addGeneratedMovesIntoMassEntryMove(Move move, List<Long> idMoveList);
 }

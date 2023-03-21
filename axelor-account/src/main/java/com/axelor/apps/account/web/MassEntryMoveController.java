@@ -19,7 +19,6 @@ package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLineMassEntry;
-import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.massentry.MassEntryService;
@@ -141,13 +140,10 @@ public class MassEntryMoveController {
         if (error.length() > 0) {
           response.setFlash(
               String.format(I18n.get(AccountExceptionMessage.MOVE_ACCOUNTING_NOT_OK), error));
-          response.setAttr("validateMassEntryMoves", "hidden", true);
           response.setAttr("showMassEntryMoves", "hidden", false);
         } else {
-          // TODO if OK then remove all lines add add them to moLineList, save.
           Beans.get(MassEntryService.class).addGeneratedMovesIntoMassEntryMove(move, idMoveList);
-          // TODO return move in setValues
-          response.setValue("massEntryStatusSelect", MoveRepository.MASS_ENTRY_STATUS_CLOSED);
+          response.setValues(move);
           response.setFlash(I18n.get(AccountExceptionMessage.MOVE_ACCOUNTING_OK));
           if (!CollectionUtils.isEmpty(idMoveList)) {
             response.setView(
