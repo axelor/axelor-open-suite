@@ -67,7 +67,7 @@
       <panel name="financialDiscountAmountPanel"
         showIf="applyFinancialDiscount &amp;&amp; !$isMultiCurrency" readonlyIf="statusSelect > 0"
         colSpan="12">
-        <field name="financialDiscount" onChange="action-invoice-payment-method-update-discount"/>
+        <field name="financialDiscount" onChange="action-invoice-payment-method-update-financial-discount"/>
         <field name="financialDiscountDeadlineDate"/>
         <field name="financialDiscountAmount" showIf="financialDiscountTaxAmount > 0"/>
         <field name="financialDiscountTaxAmount" showIf="financialDiscountTaxAmount > 0"/>
