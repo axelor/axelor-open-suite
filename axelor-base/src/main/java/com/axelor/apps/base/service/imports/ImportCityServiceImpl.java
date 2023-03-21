@@ -566,7 +566,7 @@ public class ImportCityServiceImpl implements ImportCityService {
           if (extension.equals("zip")) {
             dataFile = this.extractCityZip(dataFile);
           }
-          importHistoryList.add(this.importCity(typeSelect + "-dump", dataFile));
+          importHistoryList.add(this.importCity(typeSelect + "-zip", dataFile));
         } else {
           printWriter.append(I18n.get(IExceptionMessage.INVALID_DATA_FILE_EXTENSION) + "\n");
         }
