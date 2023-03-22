@@ -73,11 +73,13 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
   }
 
   public void checkAndReplaceOriginDateInMoveLineMassEntry(
-      MoveLineMassEntry moveLineMassEntry, LocalDate newDate) {
+      MoveLineMassEntry moveLineMassEntry, LocalDate newDate, boolean manageCutOff) {
     if (newDate != null && !newDate.equals(moveLineMassEntry.getOriginDate())) {
       moveLineMassEntry.setOriginDate(newDate);
-      moveLineMassEntry.setCutOffStartDate(newDate);
-      moveLineMassEntry.setCutOffEndDate(null);
+      if (manageCutOff) {
+        moveLineMassEntry.setCutOffStartDate(newDate);
+        moveLineMassEntry.setCutOffEndDate(newDate);
+      }
     }
   }
 

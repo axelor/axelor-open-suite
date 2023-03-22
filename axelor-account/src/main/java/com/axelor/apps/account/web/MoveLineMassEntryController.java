@@ -59,6 +59,9 @@ public class MoveLineMassEntryController {
           && parentContext != null
           && Move.class.equals(parentContext.getContextClass())) {
         Move move = parentContext.asType(Move.class);
+        boolean manageCutOff =
+            parentContext.get("manageCutOffDummy") != null
+                && (boolean) parentContext.get("manageCutOffDummy");
 
         if (move != null) {
           moveLineMassEntry.setInputAction(1);
@@ -76,7 +79,7 @@ public class MoveLineMassEntryController {
           response.setValues(
               Beans.get(MassEntryService.class)
                   .getFirstMoveLineMassEntryInformations(
-                      move.getMoveLineMassEntryList(), moveLineMassEntry));
+                      move.getMoveLineMassEntryList(), moveLineMassEntry, manageCutOff));
           if (move.getMoveLineMassEntryList() != null
               && move.getMoveLineMassEntryList().size() != 0) {
             response.setAttr("inputAction", "readonly", false);
@@ -101,13 +104,17 @@ public class MoveLineMassEntryController {
           && moveLineMassEntry != null
           && moveLineMassEntry.getInputAction() != null) {
         Move move = parentContext.asType(Move.class);
+        boolean manageCutOff =
+            parentContext.get("manageCutOffDummy") != null
+                && (boolean) parentContext.get("manageCutOffDummy");
 
         switch (moveLineMassEntry.getInputAction()) {
           case 2:
             isCounterpartLine = true;
             break;
           case 3:
-            Beans.get(MassEntryService.class).resetMoveLineMassEntry(moveLineMassEntry);
+            Beans.get(MassEntryService.class)
+                .resetMoveLineMassEntry(moveLineMassEntry, manageCutOff);
             moveLineMassEntry.setInputAction(1);
             moveLineMassEntry.setTemporaryMoveNumber(
                 Beans.get(MassEntryToolService.class)

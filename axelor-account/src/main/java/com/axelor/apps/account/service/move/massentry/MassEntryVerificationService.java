@@ -13,7 +13,7 @@ public interface MassEntryVerificationService {
       MoveLineMassEntry moveLineMassEntry, LocalDate newDate, Move move) throws AxelorException;
 
   void checkAndReplaceOriginDateInMoveLineMassEntry(
-      MoveLineMassEntry moveLineMassEntry, LocalDate newDate);
+      MoveLineMassEntry moveLineMassEntry, LocalDate newDate, boolean manageCutOff);
 
   void checkAndReplaceOriginInMoveLineMassEntry(
       MoveLineMassEntry moveLineMassEntry, String newOrigin);

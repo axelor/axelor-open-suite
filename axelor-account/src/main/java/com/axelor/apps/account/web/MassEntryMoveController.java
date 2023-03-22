@@ -60,10 +60,13 @@ public class MassEntryMoveController {
       ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
+      boolean manageCutOff =
+          request.getContext().get("manageCutOffDummy") != null
+              && (boolean) request.getContext().get("manageCutOffDummy");
       MassEntryService massEntryService = Beans.get(MassEntryService.class);
 
       if (move != null && ObjectUtils.notEmpty(move.getMoveLineMassEntryList())) {
-        massEntryService.verifyFieldsChangeOnMoveLineMassEntry(move);
+        massEntryService.verifyFieldsChangeOnMoveLineMassEntry(move, manageCutOff);
 
         MoveLineMassEntry lastMoveLineMassEntry =
             move.getMoveLineMassEntryList().get(move.getMoveLineMassEntryList().size() - 1);
@@ -137,13 +140,14 @@ public class MassEntryMoveController {
         idMoveList = entryMap.getKey();
         error = entryMap.getValue();
 
+        response.setValues(move);
         if (error.length() > 0) {
           response.setFlash(
               String.format(I18n.get(AccountExceptionMessage.MOVE_ACCOUNTING_NOT_OK), error));
-          response.setAttr("showMassEntryMoves", "hidden", false);
+          response.setAttr("controlMassEntryMoves", "hidden", false);
+          response.setAttr("validateMassEntryMoves", "hidden", true);
         } else {
           Beans.get(MassEntryService.class).addGeneratedMovesIntoMassEntryMove(move, idMoveList);
-          response.setValues(move);
           response.setFlash(I18n.get(AccountExceptionMessage.MOVE_ACCOUNTING_OK));
           if (!CollectionUtils.isEmpty(idMoveList)) {
             response.setView(

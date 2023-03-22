@@ -117,7 +117,9 @@ public class MassEntryServiceImpl implements MassEntryService {
   }
 
   public MoveLineMassEntry getFirstMoveLineMassEntryInformations(
-      List<MoveLineMassEntry> moveLineMassEntryList, MoveLineMassEntry moveLineMassEntry) {
+      List<MoveLineMassEntry> moveLineMassEntryList,
+      MoveLineMassEntry moveLineMassEntry,
+      boolean manageCutOff) {
     if (ObjectUtils.notEmpty(moveLineMassEntryList)) {
       for (MoveLineMassEntry moveLine : moveLineMassEntryList) {
         if (moveLine.getTemporaryMoveNumber().equals(moveLineMassEntry.getTemporaryMoveNumber())) {
@@ -138,22 +140,26 @@ public class MassEntryServiceImpl implements MassEntryService {
           moveLineMassEntry.setMovePaymentMode(moveLine.getMovePaymentMode());
           moveLineMassEntry.setMovePartnerBankDetails(moveLine.getMovePartnerBankDetails());
           moveLineMassEntry.setCutOffStartDate(moveLine.getCutOffStartDate());
-          moveLineMassEntry.setCutOffStartDate(moveLine.getCutOffEndDate());
+          moveLineMassEntry.setCutOffEndDate(moveLine.getCutOffEndDate());
           break;
         }
       }
     } else {
       moveLineMassEntry.setDate(LocalDate.now());
       moveLineMassEntry.setOriginDate(LocalDate.now());
-      moveLineMassEntry.setCutOffStartDate(LocalDate.now());
+      if (manageCutOff) {
+        moveLineMassEntry.setCutOffStartDate(LocalDate.now());
+        moveLineMassEntry.setCutOffEndDate(LocalDate.now());
+      }
       moveLineMassEntry.setDeliveryDate(LocalDate.now());
     }
     return moveLineMassEntry;
   }
 
-  public void resetMoveLineMassEntry(MoveLineMassEntry moveLineMassEntry) {
+  public void resetMoveLineMassEntry(MoveLineMassEntry moveLineMassEntry, boolean manageCutOff) {
+    moveLineMassEntry.setDate(LocalDate.now());
     moveLineMassEntry.setOrigin(null);
-    moveLineMassEntry.setOriginDate(null);
+    moveLineMassEntry.setOriginDate(LocalDate.now());
     moveLineMassEntry.setPartner(null);
     moveLineMassEntry.setPartnerId(null);
     moveLineMassEntry.setPartnerSeq(null);
@@ -171,13 +177,19 @@ public class MassEntryServiceImpl implements MassEntryService {
     moveLineMassEntry.setCurrencyAmount(BigDecimal.ZERO);
     moveLineMassEntry.setMoveStatusSelect(null);
     moveLineMassEntry.setVatSystemSelect(0);
-    moveLineMassEntry.setCutOffStartDate(null);
-    moveLineMassEntry.setCutOffEndDate(null);
     moveLineMassEntry.setPfpValidatorUser(null);
-    moveLineMassEntry.setDeliveryDate(null);
+    moveLineMassEntry.setDeliveryDate(LocalDate.now());
+    moveLineMassEntry.setCutOffStartDate(LocalDate.now());
+    moveLineMassEntry.setCutOffEndDate(LocalDate.now());
+
+    if (!manageCutOff) {
+      moveLineMassEntry.setCutOffStartDate(null);
+      moveLineMassEntry.setCutOffEndDate(null);
+    }
   }
 
-  public void verifyFieldsChangeOnMoveLineMassEntry(Move move) throws AxelorException {
+  public void verifyFieldsChangeOnMoveLineMassEntry(Move move, boolean manageCutOff)
+      throws AxelorException {
     List<MoveLineMassEntry> moveLineMassEntryList =
         massEntryToolService.getEditedMoveLineMassEntry(move.getMoveLineMassEntryList());
 
@@ -190,7 +202,7 @@ public class MassEntryServiceImpl implements MassEntryService {
             massEntryVerificationService.checkAndReplaceDateInMoveLineMassEntry(
                 moveLine, moveLineEdited.getDate(), move);
             massEntryVerificationService.checkAndReplaceOriginDateInMoveLineMassEntry(
-                moveLine, moveLineEdited.getOriginDate());
+                moveLine, moveLineEdited.getOriginDate(), manageCutOff);
             massEntryVerificationService.checkAndReplaceOriginInMoveLineMassEntry(
                 moveLine, moveLineEdited.getOrigin() != null ? moveLineEdited.getOrigin() : "");
             massEntryVerificationService.checkAndReplaceMoveDescriptionInMoveLineMassEntry(
@@ -207,7 +219,9 @@ public class MassEntryServiceImpl implements MassEntryService {
             massEntryVerificationService.checkAndReplaceCurrencyRateInMoveLineMassEntry(
                 moveLine, moveLineEdited.getCurrencyRate());
 
-            // TODO add other verification method
+            // TODO add verification for cutOff when we manageCutOff in mass entry move
+
+            // TODO add others verification methods
 
             moveLine.setIsEdited(false);
           }
@@ -262,6 +276,7 @@ public class MassEntryServiceImpl implements MassEntryService {
     String errors = "";
     List<Move> moveList;
     List<Long> idMoveList = new ArrayList<>();
+    List<Integer> temporaryMoveInError = new ArrayList<>();
     int i = 0;
 
     if (massEntryToolService.verifyJournalAuthorizeNewMove(
@@ -292,15 +307,26 @@ public class MassEntryServiceImpl implements MassEntryService {
             errors = errors.concat(", ");
           }
           errors = errors.concat(moveTemporaryMoveNumber);
+          temporaryMoveInError.add(Integer.parseInt(moveTemporaryMoveNumber));
         } finally {
           if (++i % jpaLimit == 0) {
             JPA.clear();
           }
         }
       }
-      move.setMassEntryStatusSelect(MoveRepository.MASS_ENTRY_STATUS_CLOSED);
-      // TODO maybe save(move) if we want to have as historic at the end of validation
+
+      for (int tempMoveNumber : temporaryMoveInError) {
+        for (MoveLineMassEntry moveLineMassEntry : move.getMoveLineMassEntryList()) {
+          if (Objects.equals(tempMoveNumber, moveLineMassEntry.getTemporaryMoveNumber())) {
+            moveLineMassEntry.setMoveStatusSelect(MoveRepository.STATUS_NEW);
+          }
+        }
+      }
+      if (errors.length() == 0) {
+        move.setMassEntryStatusSelect(MoveRepository.MASS_ENTRY_STATUS_CLOSED);
+      }
     }
+
     resultMap.put(idMoveList, errors);
 
     return resultMap;

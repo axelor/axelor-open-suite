@@ -28,11 +28,14 @@ public interface MassEntryService {
   Move fillMoveLineListWithMoveLineMassEntryList(Move move, Integer temporaryMoveNumber);
 
   MoveLineMassEntry getFirstMoveLineMassEntryInformations(
-      List<MoveLineMassEntry> moveLineMassEntryList, MoveLineMassEntry moveLineMassEntry);
+      List<MoveLineMassEntry> moveLineMassEntryList,
+      MoveLineMassEntry moveLineMassEntry,
+      boolean manageCutOff);
 
-  void resetMoveLineMassEntry(MoveLineMassEntry moveLineMassEntry);
+  void resetMoveLineMassEntry(MoveLineMassEntry moveLineMassEntry, boolean manageCutOff);
 
-  void verifyFieldsChangeOnMoveLineMassEntry(Move move) throws AxelorException;
+  void verifyFieldsChangeOnMoveLineMassEntry(Move move, boolean manageCutOff)
+      throws AxelorException;
 
   void checkMassEntryMoveGeneration(Move move) throws AxelorException;
 

@@ -117,7 +117,8 @@
   </action-attrs>
 
   <action-attrs name="action-move-line-mass-entry-attrs-set-cut-off-dates">
-    <attribute for="cutOffStartDate" name="value" expr="eval: originDate"/>
+    <attribute for="cutOffStartDate" name="value" expr="eval: originDate"
+      if="manageCutOffDummy"/>
   </action-attrs>
 
   <!-- Action method -->
