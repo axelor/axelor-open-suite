@@ -1,0 +1,3 @@
+---
+title : "SUPPLYCHAINBATCH : Add 2 fields for upper and lower amount limits to limit the generated accounting moves"
+type : feature

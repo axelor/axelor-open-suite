@@ -79,6 +79,13 @@
         <field name="recoveredTax"/>
         <field name="ati" showIf="!recoveredTax"/>
         <field name="includeNotStockManagedProduct"/>
+        <help colSpan="12">
+        <![CDATA[
+        	The limits can be used to avoid retrieving undesired records et fonctionnent en inclus-inclus. If the field is empty or displays 0.00, the limit(s) will not apply.
+        ]]>
+        </help>
+        <field name="lowerAmountLimit" validIf="lowerAmountLimit >= 0"/>
+        <field name="upperAmountLimit" validIf="upperAmountLimit >= lowerAmountLimit"/>
       </panel>
       <panel name="updateStockHistoryConfigPanel" title="Update stock history configuration"
         showIf="actionSelect == 4" colSpan="12">
