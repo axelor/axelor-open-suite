@@ -234,6 +234,7 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
   }
 
   @Override
+  @Transactional
   public TempBomTree generateTree(BillOfMaterial billOfMaterial, boolean useProductDefaultBom) {
 
     processedBom = new ArrayList<>();
@@ -335,7 +336,7 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void setBillOfMaterialAsDefault(BillOfMaterial billOfMaterial) throws AxelorException {
     Company company = billOfMaterial.getCompany();
     Product product = billOfMaterial.getProduct();
@@ -359,7 +360,7 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void addRawMaterials(
       long billOfMaterialId, ArrayList<LinkedHashMap<String, Object>> rawMaterials)
       throws AxelorException {
@@ -386,7 +387,7 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
     }
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   protected BillOfMaterial createBomFromRawMaterial(long productId, int priority)
       throws AxelorException {
     BillOfMaterial newBom = new BillOfMaterial();

@@ -1,7 +1,0 @@
----
-title: "Invoice: remove the possibility to cancel a ventilated invoice."
-type: fix
-description: |
-  Cancelling a ventilated invoice is not possible anymore. 
-  Reversing a move linked to an invoice doesn't cancel this invoice anymore.
-  Remove the config allowing to cancel ventilated invoice.

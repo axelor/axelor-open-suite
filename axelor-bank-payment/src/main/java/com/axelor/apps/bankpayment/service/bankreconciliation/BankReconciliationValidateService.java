@@ -188,7 +188,7 @@ public class BankReconciliationValidateService {
     bankReconciliationLineService.updateBankReconciledAmounts(bankReconciliationLine);
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public void validateMultipleBankReconciles(
       BankReconciliation bankReconciliation,
       BankReconciliationLine bankReconciliationLine,
@@ -256,6 +256,7 @@ public class BankReconciliationValidateService {
         }
         if (isUnderCorrection) {
           bankReconciliationLine.setIsPosted(true);
+          bankReconciliationLineService.checkAmount(bankReconciliationLine);
           bankReconciliationLineService.updateBankReconciledAmounts(bankReconciliationLine);
         }
         bankStatementAmountRemaining = bankStatementAmountRemaining.subtract(debit.add(credit));

@@ -26,7 +26,6 @@ import com.axelor.apps.account.db.repo.TaxLineRepository;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.common.StringUtils;
-import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -50,8 +49,8 @@ public class ImportMoveLine {
     this.partnerRepository = partnerRepository;
   }
 
-  @Transactional(rollbackOn = Exception.class)
-  public Object importMoveLine(Object bean, Map<String, Object> values) throws AxelorException {
+  @Transactional
+  public Object importMoveLine(Object bean, Map<String, Object> values) {
     assert bean instanceof MoveLine;
     MoveLine moveLine = (MoveLine) bean;
 

@@ -114,13 +114,13 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public List<ManufOrder> plan(List<ManufOrder> manufOrderList) throws AxelorException {
     return plan(manufOrderList, true);
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public List<ManufOrder> plan(List<ManufOrder> manufOrderList, boolean quickSolve)
       throws AxelorException {
     ManufOrderService manufOrderService = Beans.get(ManufOrderService.class);
@@ -664,7 +664,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void createPurchaseOrder(ManufOrder manufOrder) throws AxelorException {
 
     PurchaseOrder purchaseOrder =

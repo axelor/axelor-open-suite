@@ -557,10 +557,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   public List<InvoiceTerm> getUnpaidInvoiceTerms(Invoice invoice) throws AxelorException {
     String queryStr =
         "self.invoice = :invoice AND (self.isPaid IS NOT TRUE OR self.amountRemaining > 0)";
-    boolean pfpCondition =
-        appAccountService.getAppAccount().getActivatePassedForPayment()
-            && invoiceVisibilityService.getManagePfpCondition(invoice)
-            && invoiceVisibilityService.getOperationTypePurchaseCondition(invoice);
+    boolean pfpCondition = invoiceVisibilityService.getPfpCondition(invoice);
 
     if (pfpCondition) {
       queryStr =
@@ -1260,7 +1257,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public void roundPercentages(List<InvoiceTerm> invoiceTermList, BigDecimal total) {
     boolean isSubtract = true;
 
@@ -1477,5 +1474,24 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   @Override
   public boolean isMultiCurrency(InvoiceTerm invoiceTerm) {
     return !Objects.equals(this.getCurrency(invoiceTerm), this.getCompanyCurrency(invoiceTerm));
+  }
+
+  @Override
+  public List<InvoiceTerm> recomputeInvoiceTermsPercentage(
+      List<InvoiceTerm> invoiceTermList, BigDecimal total) {
+    InvoiceTerm lastInvoiceTerm = invoiceTermList.remove(invoiceTermList.size() - 1);
+    BigDecimal percentageTotal = BigDecimal.ZERO;
+
+    for (InvoiceTerm invoiceTerm : invoiceTermList) {
+      BigDecimal percentage = this.computeCustomizedPercentage(invoiceTerm.getAmount(), total);
+
+      invoiceTerm.setPercentage(percentage);
+      percentageTotal = percentageTotal.add(percentage);
+    }
+
+    lastInvoiceTerm.setPercentage(BigDecimal.valueOf(100).subtract(percentageTotal));
+    invoiceTermList.add(lastInvoiceTerm);
+
+    return invoiceTermList;
   }
 }
