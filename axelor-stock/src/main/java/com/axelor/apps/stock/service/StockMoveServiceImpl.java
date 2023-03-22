@@ -306,8 +306,17 @@ public class StockMoveServiceImpl implements StockMoveService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
   public void plan(StockMove stockMove) throws AxelorException {
+    planStockMove(stockMove);
+    if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
+        && stockMove.getPlannedStockMoveAutomaticMail() != null
+        && stockMove.getPlannedStockMoveAutomaticMail()) {
+      sendMailForStockMove(stockMove, stockMove.getPlannedStockMoveMessageTemplate());
+    }
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  private void planStockMove(StockMove stockMove) throws AxelorException {
     if (stockMove.getStatusSelect() == null
         || stockMove.getStatusSelect() != StockMoveRepository.STATUS_DRAFT) {
       throw new AxelorException(
@@ -373,11 +382,6 @@ public class StockMoveServiceImpl implements StockMoveService {
     stockMove.setCancelReason(null);
 
     stockMoveRepo.save(stockMove);
-    if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
-        && stockMove.getPlannedStockMoveAutomaticMail() != null
-        && stockMove.getPlannedStockMoveAutomaticMail()) {
-      sendMailForStockMove(stockMove, stockMove.getPlannedStockMoveMessageTemplate());
-    }
   }
 
   /**
@@ -438,8 +442,24 @@ public class StockMoveServiceImpl implements StockMoveService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
   public String realize(StockMove stockMove, boolean checkOngoingInventoryFlag)
+      throws AxelorException {
+    String newStockSeq = realizeStockMove(stockMove, checkOngoingInventoryFlag);
+
+    if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING
+        && !stockMove.getIsReversion()) {
+      partnerProductQualityRatingService.calculate(stockMove);
+    } else if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
+        && stockMove.getRealStockMoveAutomaticMail() != null
+        && stockMove.getRealStockMoveAutomaticMail()) {
+      sendMailForStockMove(stockMove, stockMove.getRealStockMoveMessageTemplate());
+    }
+
+    return newStockSeq;
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected String realizeStockMove(StockMove stockMove, boolean checkOngoingInventoryFlag)
       throws AxelorException {
     if (stockMove.getStatusSelect() == null
         || stockMove.getStatusSelect() != StockMoveRepository.STATUS_PLANNED) {
@@ -509,16 +529,6 @@ public class StockMoveServiceImpl implements StockMoveService {
     }
     computeMasses(stockMove);
     stockMoveRepo.save(stockMove);
-
-    if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING
-        && !stockMove.getIsReversion()) {
-      partnerProductQualityRatingService.calculate(stockMove);
-    } else if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
-        && stockMove.getRealStockMoveAutomaticMail() != null
-        && stockMove.getRealStockMoveAutomaticMail()) {
-      sendMailForStockMove(stockMove, stockMove.getRealStockMoveMessageTemplate());
-    }
-
     return newStockSeq;
   }
 

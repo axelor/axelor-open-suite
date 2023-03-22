@@ -82,7 +82,6 @@ public class StockRulesServiceSupplychainImpl extends StockRulesServiceImpl {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
   public void generatePurchaseOrder(
       Product product, BigDecimal qty, StockLocationLine stockLocationLine, int type)
       throws AxelorException {
@@ -122,43 +121,54 @@ public class StockRulesServiceSupplychainImpl extends StockRulesServiceImpl {
         Partner supplierPartner = product.getDefaultSupplierPartner();
 
         if (supplierPartner != null) {
-
-          Company company = stockLocation.getCompany();
-          LocalDate today = Beans.get(AppBaseService.class).getTodayDate(company);
-
-          PurchaseOrderSupplychainService purchaseOrderSupplychainService =
-              Beans.get(PurchaseOrderSupplychainService.class);
-
-          PurchaseOrder purchaseOrder =
-              purchaseOrderRepo.save(
-                  purchaseOrderSupplychainService.createPurchaseOrder(
-                      AuthUtils.getUser(),
-                      company,
-                      null,
-                      supplierPartner.getCurrency(),
-                      today.plusDays(supplierPartner.getDeliveryDelay()),
-                      stockRules.getName(),
-                      null,
-                      stockLocation,
-                      today,
-                      Beans.get(PartnerPriceListService.class)
-                          .getDefaultPriceList(supplierPartner, PriceListRepository.TYPE_PURCHASE),
-                      supplierPartner,
-                      null));
-
-          purchaseOrder.addPurchaseOrderLineListItem(
-              purchaseOrderLineService.createPurchaseOrderLine(
-                  purchaseOrder, product, null, null, qtyToOrder, product.getUnit()));
-
-          Beans.get(PurchaseOrderService.class).computePurchaseOrder(purchaseOrder);
-
-          purchaseOrderRepo.save(purchaseOrder);
+          supplychainGeneratePurchaseOrder(
+              product, stockLocation, stockRules, qtyToOrder, supplierPartner);
           if (stockRules.getAlert()) {
             this.generateAndSendMessage(stockRules);
           }
         }
       }
     }
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected void supplychainGeneratePurchaseOrder(
+      Product product,
+      StockLocation stockLocation,
+      StockRules stockRules,
+      BigDecimal qtyToOrder,
+      Partner supplierPartner)
+      throws AxelorException {
+    Company company = stockLocation.getCompany();
+    LocalDate today = Beans.get(AppBaseService.class).getTodayDate(company);
+
+    PurchaseOrderSupplychainService purchaseOrderSupplychainService =
+        Beans.get(PurchaseOrderSupplychainService.class);
+
+    PurchaseOrder purchaseOrder =
+        purchaseOrderRepo.save(
+            purchaseOrderSupplychainService.createPurchaseOrder(
+                AuthUtils.getUser(),
+                company,
+                null,
+                supplierPartner.getCurrency(),
+                today.plusDays(supplierPartner.getDeliveryDelay()),
+                stockRules.getName(),
+                null,
+                stockLocation,
+                today,
+                Beans.get(PartnerPriceListService.class)
+                    .getDefaultPriceList(supplierPartner, PriceListRepository.TYPE_PURCHASE),
+                supplierPartner,
+                null));
+
+    purchaseOrder.addPurchaseOrderLineListItem(
+        purchaseOrderLineService.createPurchaseOrderLine(
+            purchaseOrder, product, null, null, qtyToOrder, product.getUnit()));
+
+    Beans.get(PurchaseOrderService.class).computePurchaseOrder(purchaseOrder);
+
+    purchaseOrderRepo.save(purchaseOrder);
   }
 
   public void generateAndSendMessage(StockRules stockRules) throws AxelorException {
