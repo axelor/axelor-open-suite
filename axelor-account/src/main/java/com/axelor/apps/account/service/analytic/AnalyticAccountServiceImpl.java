@@ -141,13 +141,9 @@ public class AnalyticAccountServiceImpl implements AnalyticAccountService {
       if (account != null) {
         List<AnalyticAccount> analyticAccountList =
             accountAnalyticRulesRepository.findAnalyticAccountByAccounts(account);
-        if (CollectionUtils.isNotEmpty(analyticAccountList)) {
-          domain += " AND self.id in (";
-          String idList = StringTool.getIdListString(analyticAccountList);
-          domain += idList + ")";
-        } else {
-          domain += " AND self.id in (0)";
-        }
+        domain += " AND self.id in (";
+        String idList = StringTool.getIdListString(analyticAccountList);
+        domain += idList + ")";
       }
     }
 
