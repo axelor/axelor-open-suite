@@ -383,6 +383,7 @@
     <panel name="mainPanel" colSpan="12">
       <panel name="moveDetailsPanel" colSpan="12">
         <field name="reference" colSpan="8" hideIf="id == null"/>
+        <field name="massEntryStatusSelect" readonly="true"/>
         <panel name="moveContentPanel" colSpan="12">
           <field name="company" canEdit="false" widget="SuggestBox"
             readonlyIf="$validatePeriod || moveLineMassEntryList.length &gt; 0 || statusSelect == 3"
@@ -404,7 +405,10 @@
             if="createdBy != null"/>
           <field name="updatedBy" title="Updated by" readonly="true" colSpan="3"
             if="updatedBy != null"/>
-          <field name="massEntryStatusSelect" readonly="true"/>
+          <field name="manageCutOffDummy" colSpan="3" title="Manage Cut off period"
+            readonlyIf="$validatePeriod || moveLineMassEntryList.length &gt; 0 || statusSelect == 3"
+            widget="boolean-switch" onChange="action-move-attrs-set-hidden-and-required-fields"
+            if="__config__.app.getApp('account').manageCutOffPeriod"/>
         </panel>
       </panel>
 
@@ -1022,6 +1026,14 @@
       expr="eval: company.currency == currency"/>
     <attribute name="hidden" for="moveLineMassEntryList.currencyAmount"
       expr="eval: company.currency == currency"/>
+    <attribute name="hidden" for="moveLineMassEntryList.pfpValidatorUser"
+      expr="eval: journal?.journalType?.technicalTypeSelect != 1"/>
+    <attribute name="hidden" for="moveLineMassEntryList.cutOffStartDate"
+      expr="eval: !manageCutOffDummy"/>
+    <attribute name="hidden" for="moveLineMassEntryList.cutOffEndDate"
+      expr="eval: !manageCutOffDummy"/>
+    <attribute name="hidden" for="moveLineMassEntryList.deliveryDate"
+      expr="eval: ![1,2,3].contains(journal?.journalType?.technicalTypeSelect)"/>
   </action-attrs>
 
   <!-- ACTION METHOD -->

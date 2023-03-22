@@ -23,7 +23,9 @@
       ref="com.axelor.apps.base.db.BankDetails"/>
     <boolean name="isEdited" default="false"/>
     <string name="fieldsErrorList"/>
-
+    <many-to-one name="pfpValidatorUser" ref="com.axelor.auth.db.User"
+      title="PFP Validator"/>
+    <date name="deliveryDate" title="Delivery date"/>
   </entity>
 
 </domain-models>

@@ -76,6 +76,8 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
       MoveLineMassEntry moveLineMassEntry, LocalDate newDate) {
     if (newDate != null && !newDate.equals(moveLineMassEntry.getOriginDate())) {
       moveLineMassEntry.setOriginDate(newDate);
+      moveLineMassEntry.setCutOffStartDate(newDate);
+      moveLineMassEntry.setCutOffEndDate(null);
     }
   }
 
@@ -270,5 +272,9 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
 
     moveLineMassEntry.setFieldsErrorList(message);
     differentElements.add(moveLineMassEntry);
+  }
+
+  public void setPfpValidatorOnInTaxLines(Move move) {
+    // TODO set pfp validator inTax lines using partner.pfpValidatorUser
   }
 }

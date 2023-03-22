@@ -137,12 +137,16 @@ public class MassEntryServiceImpl implements MassEntryService {
           moveLineMassEntry.setMovePaymentCondition(moveLine.getMovePaymentCondition());
           moveLineMassEntry.setMovePaymentMode(moveLine.getMovePaymentMode());
           moveLineMassEntry.setMovePartnerBankDetails(moveLine.getMovePartnerBankDetails());
+          moveLineMassEntry.setCutOffStartDate(moveLine.getCutOffStartDate());
+          moveLineMassEntry.setCutOffStartDate(moveLine.getCutOffEndDate());
           break;
         }
       }
     } else {
       moveLineMassEntry.setDate(LocalDate.now());
       moveLineMassEntry.setOriginDate(LocalDate.now());
+      moveLineMassEntry.setCutOffStartDate(LocalDate.now());
+      moveLineMassEntry.setDeliveryDate(LocalDate.now());
     }
     return moveLineMassEntry;
   }
@@ -167,6 +171,10 @@ public class MassEntryServiceImpl implements MassEntryService {
     moveLineMassEntry.setCurrencyAmount(BigDecimal.ZERO);
     moveLineMassEntry.setMoveStatusSelect(null);
     moveLineMassEntry.setVatSystemSelect(0);
+    moveLineMassEntry.setCutOffStartDate(null);
+    moveLineMassEntry.setCutOffEndDate(null);
+    moveLineMassEntry.setPfpValidatorUser(null);
+    moveLineMassEntry.setDeliveryDate(null);
   }
 
   public void verifyFieldsChangeOnMoveLineMassEntry(Move move) throws AxelorException {
@@ -206,6 +214,7 @@ public class MassEntryServiceImpl implements MassEntryService {
         }
       }
     }
+    massEntryVerificationService.setPfpValidatorOnInTaxLines(move);
   }
 
   public void checkMassEntryMoveGeneration(Move move) {
