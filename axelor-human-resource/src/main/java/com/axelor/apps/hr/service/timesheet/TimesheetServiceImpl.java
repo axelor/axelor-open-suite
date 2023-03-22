@@ -74,7 +74,6 @@ import com.axelor.message.db.Template;
 import com.axelor.message.service.TemplateMessageService;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
-import com.axelor.studio.db.AppTimesheet;
 import com.axelor.studio.db.repo.AppBaseRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -525,7 +524,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
     DateFormat ddmmFormat = new SimpleDateFormat("dd/MM");
     HashMap<String, Object[]> timeSheetInformationsMap = new HashMap<>();
     // Check if a consolidation by product and user must be done
-    boolean consolidate = appHumanResourceService.getAppTimesheet().getConsolidateTSLine();
+    boolean consolidate = appHumanResourceService.getAppHumanResource().getConsolidateTSLine();
 
     for (TimesheetLine timesheetLine : timesheetLineList) {
       Object[] tabInformations = new Object[5];
@@ -1113,7 +1112,6 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
     PublicHolidayService holidayService = Beans.get(PublicHolidayService.class);
     LeaveService leaveService = Beans.get(LeaveService.class);
     WeeklyPlanningService weeklyPlanningService = Beans.get(WeeklyPlanningService.class);
-    AppTimesheet appTimesheet = appHumanResourceService.getAppTimesheet();
 
     LocalDate fromDate = timesheet.getFromDate();
     LocalDate toDate = timesheet.getToDate();
@@ -1132,7 +1130,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
           weeklyPlanningService.getWorkingDayValueInHours(
               weeklyPlanning, date, LocalTime.MIN, LocalTime.MAX);
 
-      if (appTimesheet.getCreateLinesForHolidays()
+      if (appHumanResourceService.getAppHumanResource().getCreateLinesForHolidays()
           && holidayService.checkPublicHolidayDay(date, holidayPlanning)) {
         timesheetLineService.createTimesheetLine(
             employee,
@@ -1141,7 +1139,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
             dayValueInHours,
             I18n.get(HumanResourceExceptionMessage.TIMESHEET_HOLIDAY));
 
-      } else if (appTimesheet.getCreateLinesForLeaves()) {
+      } else if (appHumanResourceService.getAppHumanResource().getCreateLinesForLeaves()) {
         List<LeaveRequest> leaveList = leaveService.getLeaves(employee, date);
         BigDecimal totalLeaveHours = BigDecimal.ZERO;
         if (ObjectUtils.notEmpty(leaveList)) {

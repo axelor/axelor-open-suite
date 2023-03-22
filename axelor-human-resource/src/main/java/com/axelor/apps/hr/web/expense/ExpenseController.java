@@ -646,7 +646,7 @@ public class ExpenseController {
     try {
 
       if (!Beans.get(AppHumanResourceService.class)
-          .getAppExpense()
+          .getAppHumanResource()
           .getComputeDistanceWithWebService()) {
         return;
       }

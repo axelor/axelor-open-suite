@@ -8,7 +8,7 @@
     <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
     <field name="projectTask" form-view="project-task-form" grid-view="project-task-grid"/>
     <field name="date"/>
-    <field name="product" if="__config__.app.getApp('timesheet')?.enableActivity"
+    <field name="product" if="__config__.app.getApp('human-resource')?.enableActivity"
       form-view="product-activity-form" grid-view="product-activity-grid"/>
     <field name="hoursDuration" width="62%" min="0.01" aggregate="sum"/>
     <field name="durationForCustomer" if-module="axelor-business-project"
@@ -36,7 +36,7 @@
       <field name="projectTask" form-view="project-task-form" grid-view="project-task-grid"
         readonly="true"/>
       <field name="date" onChange="action-timesheet-line-method-set-timesheet"/>
-      <field name="product" if="__config__.app.getApp('timesheet')?.enableActivity"
+      <field name="product" if="__config__.app.getApp('human-resource')?.enableActivity"
         requiredIf="toInvoice" canEdit="false"
         onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox"
         form-view="product-activity-form" grid-view="product-activity-grid"/>
@@ -55,7 +55,8 @@
         if="__config__.app.isApp('business-project')"/>
       <field name="timesheet" form-view="timesheet-form" readonly="false"
         onSelect="action-timesheet-line-method-set-timesheet-domain"/>
-      <field name="enableEditor" if="__config__.app.getApp('timesheet')?.getTimesheetEditor()"/>
+      <field name="enableEditor"
+        if="__config__.app.getApp('human-resource')?.getTimesheetEditor()"/>
       <field name="comments"/>
       <field name="hoursDuration" hidden="true"/>
     </panel>

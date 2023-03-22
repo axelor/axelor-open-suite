@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202071616</property>
+<report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.24" id="1">
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202203150031</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -830,15 +830,15 @@ Product.name as product_name,
 TimesheetLine.hours_duration,
 Task.full_name as project,
 TimesheetLine.comments,
-appTimesheet.display_task_column_in_printing,
-appTimesheet.display_activity_column_in_printing
+appHumanResource.display_task_column_in_printing,
+appHumanResource.display_activity_column_in_printing
 from hr_timesheet as Timesheet
 inner join hr_timesheet_line as TimesheetLine on (TimesheetLine.timesheet = Timesheet.id)
 left join project_project_task as projectTask on (TimesheetLine.project_task = projectTask.id)
 left join project_project as Task on (TimesheetLine.project = Task.id)
 left join project_project as Project on (Task.parent_project = Project.id)
 left join base_product as Product on (TimesheetLine.product = Product.id),
-studio_app_timesheet as appTimesheet
+studio_app_human_resource as appHumanResource
 where Timesheet.id = ?]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">

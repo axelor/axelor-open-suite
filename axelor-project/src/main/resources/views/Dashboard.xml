@@ -70,8 +70,8 @@
         </field>
       </panel>
       <panel name="spentTimePanel" title="Spent time" icon="fa-clock-o"
-        if="__config__.app.isApp('timesheet')" if-module="axelor-human-resource"
-        hideIf="$spentTime == 0" showIf="$isShowTimeSpent">
+        if="__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getTimesheetManagement()"
+        if-module="axelor-human-resource" hideIf="$spentTime == 0" showIf="$isShowTimeSpent">
         <field name="$spentTime" showTitle="false" colSpan="12">
           <viewer>
 						<![CDATA[

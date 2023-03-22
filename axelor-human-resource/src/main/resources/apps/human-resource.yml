@@ -1,13 +1,14 @@
 ---
-name: Employees Management
-code: employee
+name: Human Resource Management
+code: human-resource
 typeSelect: standard
 installOrder: 2120
 description: |
-   Employees Management
-image: app-employee.png
+   Human Resource Management
+image: app-human-resource.png
 modules: 
    axelor-human-resource
 dependsOn:
    - account
+   - project
 sequence: 17

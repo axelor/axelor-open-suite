@@ -560,7 +560,9 @@ public class TimesheetController {
         if (company != null && company.getHrConfig() != null) {
           showActivity =
               !company.getHrConfig().getUseUniqueProductForTimesheet()
-                  && Beans.get(AppHumanResourceService.class).getAppTimesheet().getEnableActivity();
+                  && Beans.get(AppHumanResourceService.class)
+                      .getAppHumanResource()
+                      .getEnableActivity();
         }
       }
     }

@@ -100,7 +100,7 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl
     DateTimeFormatter ddmmFormat = DateTimeFormatter.ofPattern("dd/MM");
     HashMap<String, Object[]> timeSheetInformationsMap = new HashMap<String, Object[]>();
     // Check if a consolidation by product and user must be done
-    boolean consolidate = appHumanResourceService.getAppTimesheet().getConsolidateTSLine();
+    boolean consolidate = appHumanResourceService.getAppHumanResource().getConsolidateTSLine();
 
     for (TimesheetLine timesheetLine : timesheetLineList) {
       Object[] tabInformations = new Object[6];

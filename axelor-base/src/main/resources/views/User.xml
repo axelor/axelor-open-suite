@@ -114,12 +114,13 @@
       <panel name="stepMainPanel" showIf="stepStatusSelect == 3" colSpan="12">
         <field name="employee" if-module="axelor-human-resource" form-view="employee-form"
           grid-view="employee-grid" domain="self.user = null" canNew="false" canEdit="false"
-          canView="false" if="__config__.app.isApp('employee')"
+          canView="false"
+          if="__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getEmployeeManagement()"
           readonlyIf="employee.contactPartner.id == partner.id"/>
         <button name="createEmployeeBtn" onClick="save,action-user-group-employee"
           title="Create employee" if-module="axelor-human-resource"
           showIf="employee == null &amp;&amp; id != null &amp;&amp; id>0"
-          if="__config__.app.isApp('employee')"/>
+          if="__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getEmployeeManagement()"/>
         <field name="employee.contactPartner" hidden="true"/>
       </panel>
       <panel name="stepActivationPanel" showIf="stepStatusSelect == 4" colSpan="12">
@@ -142,12 +143,13 @@
         if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production')?.getManageWorkshop()"/>
       <field name="employee" if-module="axelor-human-resource" form-view="employee-form"
         grid-view="employee-grid" domain="self.user = null" canNew="false" canEdit="false"
-        canView="false" if="__config__.app.isApp('employee')"
+        canView="false"
+        if="__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getEmployeeManagement()"
         readonlyIf="employee.contactPartner.id == partner.id"/>
       <button name="createEmployeeBtn" onClick="save,action-user-group-employee"
         title="Create employee" if-module="axelor-human-resource"
         showIf="employee == null &amp;&amp; id != null &amp;&amp; id>0"
-        if="__config__.app.isApp('employee')"/>
+        if="__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getEmployeeManagement()"/>
     </panel>
     <panel name="testingPanel" title="Testing" sidebar="true" hidden="true"
       showIf="stepStatusSelect == 5"
@@ -415,7 +417,7 @@
 
   <action-attrs name="action-attrs-select-in-step-status-select">
     <attribute name="selection-in" for="stepStatusSelect"
-      expr="eval: __config__.app.isApp('employee') ? [0,1,2,3,4,5] : [0,1,2,4,5]"/>
+      expr="eval: __config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getEmployeeManagement() ? [0,1,2,3,4,5] : [0,1,2,4,5]"/>
   </action-attrs>
 
   <action-method name="action-user-default-method" model="com.axelor.auth.db.User">
@@ -426,18 +428,18 @@
   <action-record name="action-user-record-step-status-next"
     model="com.axelor.auth.db.User">
     <field name="stepStatusSelect" expr="eval: stepStatusSelect + 2"
-      if="stepStatusSelect == 2 &amp;&amp; ((partner?.isCustomer || partner?.isEmployee || partner?.isSupplier) || !__config__.app.isApp('employee'))"/>
+      if="stepStatusSelect == 2 &amp;&amp; ((partner?.isCustomer || partner?.isEmployee || partner?.isSupplier) || !(__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getEmployeeManagement()))"/>
     <field name="stepStatusSelect" expr="eval: stepStatusSelect + 1"
-      if="stepStatusSelect != 2 || (stepStatusSelect == 2 &amp;&amp; (!partner?.isCustomer &amp;&amp; !partner?.isEmployee &amp;&amp; !partner?.isSupplier) &amp;&amp; __config__.app.isApp('employee'))"/>
+      if="stepStatusSelect != 2 || (stepStatusSelect == 2 &amp;&amp; (!partner?.isCustomer &amp;&amp; !partner?.isEmployee &amp;&amp; !partner?.isSupplier) &amp;&amp; __config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getEmployeeManagement())"/>
     <field name="blocked" expr="false" if="stepStatusSelect == 4"/>
   </action-record>
 
   <action-record name="action-user-record-step-status-previous"
     model="com.axelor.auth.db.User">
     <field name="stepStatusSelect" expr="eval: stepStatusSelect - 2"
-      if="stepStatusSelect == 4 &amp;&amp; ((partner?.isCustomer || partner?.isEmployee || partner?.isSupplier) || !__config__.app.isApp('employee'))"/>
+      if="stepStatusSelect == 4 &amp;&amp; ((partner?.isCustomer || partner?.isEmployee || partner?.isSupplier) || !(__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getEmployeeManagement()))"/>
     <field name="stepStatusSelect" expr="eval: stepStatusSelect - 1"
-      if="stepStatusSelect != 4 || (stepStatusSelect == 4 &amp;&amp; (!partner?.isCustomer &amp;&amp; !partner?.isEmployee &amp;&amp; !partner?.isSupplier) &amp;&amp; __config__.app.isApp('employee'))"/>
+      if="stepStatusSelect != 4 || (stepStatusSelect == 4 &amp;&amp; (!partner?.isCustomer &amp;&amp; !partner?.isEmployee &amp;&amp; !partner?.isSupplier) &amp;&amp; __config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getEmployeeManagement())"/>
   </action-record>
 
   <action-validate name="action-user-check-company">
@@ -563,7 +565,8 @@
       if="!(__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getActivatePassedForPayment())"/>
     <field name="substitutePfpValidatorList" hidden="true"
       if="!(__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getActivatePassedForPayment())"/>
-    <field name="employee" hidden="true" if="!__config__.app.isApp('employee')"/>
+    <field name="employee" hidden="true"
+      if="!(__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getEmployeeManagement())"/>
     <field name="appPermissions" hidden="true" if="!__config__.app.isApp('mobile')"/>
     <field name="projectSet" hidden="true" if="!__config__.app.isApp('project')"/>
     <field name="electronicSignature" hidden="true"

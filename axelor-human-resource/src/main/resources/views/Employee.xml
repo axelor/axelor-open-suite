@@ -181,14 +181,16 @@
     <!-- END OF Employment contract -->
 
     <!-- Leaves and timesheets -->
-    <panel name="leaveListSBSPanel" title="Leave List" if="__config__.app.isApp('leave')"
+    <panel name="leaveListSBSPanel" title="Leave List"
+      if="__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getLeaveManagement()"
       showIf="stepByStepSelect == 3">
       <field name="leaveLineList" colSpan="12" form-view="leave-line-form"
         grid-view="leave-line-grid"/>
       <field name="negativeValueLeave" widget="InlineCheckbox"/>
     </panel>
 
-    <panel name="timesheetsSBSPanel" title="Timesheets" if="__config__.app.isApp('timesheet')"
+    <panel name="timesheetsSBSPanel" title="Timesheets"
+      if="__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getTimesheetManagement()"
       showIf="stepByStepSelect == 3">
       <field name="timeLoggingPreferenceSelect" colSpan="3"/>
       <field name="product" canEdit="false" colSpan="3"
@@ -381,13 +383,15 @@
           grid-view="employment-contract-employee-grid"/>
       </panel>
 
-      <panel name="leaveListPanel" title="Leave List" if="__config__.app.isApp('leave')">
+      <panel name="leaveListPanel" title="Leave List"
+        if="__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getLeaveManagement()">
         <field name="leaveLineList" colSpan="12" form-view="leave-line-form"
           grid-view="leave-line-grid"/>
         <field name="negativeValueLeave" widget="InlineCheckbox"/>
       </panel>
 
-      <panel name="timesheetsPanel" title="Timesheets" if="__config__.app.isApp('timesheet')">
+      <panel name="timesheetsPanel" title="Timesheets"
+        if="__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getTimesheetManagement()">
         <field name="timeLoggingPreferenceSelect" colSpan="3"/>
         <field name="product" canEdit="false" colSpan="3"
           domain="self.isActivity = true AND self.dtype = 'Product'" form-view="product-form"
@@ -402,7 +406,7 @@
       </panel>
 
       <panel name="lunchVoucherPanel" title="Lunch vouchers"
-        if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee')?.getLunchVoucher()">
+        if="__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getEmployeeManagement() &amp;&amp; __config__.app.getApp('human-resource')?.getLunchVoucher()">
         <field name="lunchVoucherFormatSelect" colSpan="3"/>
 
         <panel-dashlet name="lunchVouchersDashletPanel" title="Lunch vouchers"
@@ -423,14 +427,17 @@
         <panel-related name="employeeAdvanceListPanel" title="Employee advances"
           field="employeeAdvanceList" colSpan="12" form-view="employee-advance-employee-form"
           grid-view="employee-advance-employee-grid"
-          if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee')?.getAdvanceManagement()"
+          if="__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getEmployeeManagement() &amp;&amp; __config__.app.getApp('human-resource')?.getAdvanceManagement()"
           readonly="false"/>
       </panel>
 
-      <panel name="vehiclePanel" title="Vehicle" if="__config__.app.isApp('expense')">
+      <panel name="vehiclePanel" title="Vehicle"
+        if="__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getExpenseManagement()">
         <panel-related name="kilometricLogListPanel" title="Kilometric log"
           field="kilometricLogList" colSpan="12" form-view="kilometric-log-form"
-          grid-view="kilometric-log-grid" if="__config__.app.isApp('timesheet')" readonly="true"/>
+          grid-view="kilometric-log-grid"
+          if="__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getTimesheetManagement()"
+          readonly="true"/>
 
         <panel name="vehicleListPanel" title="Vehicles" colSpan="12">
           <field name="employeeVehicleList" colSpan="12" showTitle="false">
@@ -451,7 +458,7 @@
 
       <panel-dashlet name="employeeBonusDashletPanel" title="Bonuses"
         action="employee.dashlet.employee.bonus" colSpan="12"
-        if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee')?.getEmployeeBonus()"
+        if="__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getEmployeeManagement() &amp;&amp; __config__.app.getApp('human-resource')?.getEmployeeBonus()"
         readonly="true"/>
 
       <panel-include if-module="axelor-talent" view="talent-employee-form"/>
@@ -636,8 +643,8 @@
     <field name="dailyWorkHours"
       expr="eval:__config__.app.getApp('base')?.getDailyWorkHours()"/>
     <field name="negativeValueLeave"
-      expr="eval:__config__.app.getApp('leave')?.getAllowNegativeLeaveEmployees()"
-      if="__config__.app.isApp('leave')"/>
+      expr="eval: __config__.app.getApp('human-resource')?.getAllowNegativeLeaveEmployees()"
+      if="__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getLeaveManagement()"/>
     <field name="publicHolidayEventsPlanning"
       expr="eval: __user__.activeCompany?.hrConfig?.publicHolidayEventsPlanning"/>
   </action-record>
@@ -731,19 +738,25 @@
     <field name="timesheetImputationSelect" hidden="true"
       if="!(__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production')?.getEnableTimesheetOnManufOrder())"/>
     <field name="lunchVoucherFormatSelect" hidden="true"
-      if="!(__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee')?.getLunchVoucher())"/>
+      if="!(__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getEmployeeManagement() &amp;&amp; __config__.app.getApp('human-resource')?.getLunchVoucher())"/>
     <field name="lunchVoucherAdvanceList" hidden="true"
-      if="!(__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee')?.getLunchVoucher())"/>
+      if="!(__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getEmployeeManagement() &amp;&amp; __config__.app.getApp('human-resource')?.getLunchVoucher())"/>
     <field name="employeeAdvanceList" hidden="true"
-      if="!(__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee')?.getAdvanceManagement())"/>
-    <field name="leaveLineList" hidden="true" if="!__config__.app.isApp('leave')"/>
-    <field name="negativeValueLeave" hidden="true" if="!__config__.app.isApp('leave')"/>
+      if="!(__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getEmployeeManagement() &amp;&amp; __config__.app.getApp('human-resource')?.getAdvanceManagement())"/>
+    <field name="leaveLineList" hidden="true"
+      if="!(__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getLeaveManagement())"/>
+    <field name="negativeValueLeave" hidden="true"
+      if="!(__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getLeaveManagement())"/>
     <field name="timeLoggingPreferenceSelect" hidden="true"
-      if="!__config__.app.isApp('timesheet')"/>
-    <field name="product" hidden="true" if="!__config__.app.isApp('timesheet')"/>
-    <field name="timesheetReminder" hidden="true" if="!__config__.app.isApp('timesheet')"/>
-    <field name="kilometricLogList" hidden="true" if="!__config__.app.isApp('timesheet')"/>
-    <field name="employeeVehicleList" hidden="true" if="!__config__.app.isApp('expense')"/>
+      if="!(__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getTimesheetManagement())"/>
+    <field name="product" hidden="true"
+      if="!(__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getTimesheetManagement())"/>
+    <field name="timesheetReminder" hidden="true"
+      if="!(__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getTimesheetManagement())"/>
+    <field name="kilometricLogList" hidden="true"
+      if="!(__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getTimesheetManagement())"/>
+    <field name="employeeVehicleList" hidden="true"
+      if="!(__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getExpenseManagement())"/>
     <field name="mainEmploymentContract.payCompany"
       title="Pay company main employment contract"/>
     <field name="mainEmploymentContract.executiveStatusSelect"

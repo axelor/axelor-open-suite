@@ -22,7 +22,8 @@
       <field name="healthServiceAddress"/>
     </panel>
     <panel-tabs name="mainPanelTab">
-      <panel name="timesheetPanel" title="Timesheet" if="__config__.app.isApp('timesheet')">
+      <panel name="timesheetPanel" title="Timesheet"
+        if="__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getTimesheetManagement()">
         <field name="useUniqueProductForTimesheet"/>
         <field name="uniqueTimesheetProduct" requiredIf="useUniqueProductForTimesheet"
           showIf="useUniqueProductForTimesheet" canNew="true" form-view="product-activity-grid"
@@ -43,7 +44,8 @@
             domain="self.metaModel.name = 'Timesheet'"/>
         </panel>
       </panel>
-      <panel name="extraHoursPanel" title="Extra Hours" if="__config__.app.isApp('exthrs')">
+      <panel name="extraHoursPanel" title="Extra Hours"
+        if="__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getExtraHoursManagement()">
         <panel name="extraHoursTemplatesPanel" title="Extra Hours Templates" colSpan="12">
           <field name="extraHoursMailNotification" colSpan="12"/>
           <field name="sentExtraHoursTemplate" canNew="true" form-view="template-form"
@@ -60,7 +62,8 @@
             domain="self.metaModel.name = 'ExtraHours'"/>
         </panel>
       </panel>
-      <panel name="expensePanel" title="Expense" if="__config__.app.isApp('expense')">
+      <panel name="expensePanel" title="Expense"
+        if="__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getExpenseManagement()">
         <panel name="expenseTemplatesPanel" title="Expense Templates" colSpan="12">
           <field name="expenseMailNotification" colSpan="12"/>
           <field name="sentExpenseTemplate" canNew="true" form-view="template-form"
@@ -86,7 +89,8 @@
           field="kilometricAllowanceRateList" colSpan="12"
           form-view="kilometric-allowance-rate-form" grid-view="kilometric-allowance-rate-grid"/>
       </panel>
-      <panel name="leavesPanel" title="Leaves" if="__config__.app.isApp('leave')">
+      <panel name="leavesPanel" title="Leaves"
+        if="__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getLeaveManagement()">
         <panel name="leavesTemplatesPanel" title="Leaves Templates" colSpan="12">
           <field name="leaveMailNotification" colSpan="12"/>
           <field name="sentLeaveTemplate" canNew="true" form-view="template-form"
@@ -117,7 +121,7 @@
         <field name="totalWorkingDaysVariableName"/>
       </panel>
       <panel name="lunchVoucherPanel" title="Lunch vouchers"
-        if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee')?.getLunchVoucher()">
+        if="__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getEmployeeManagement() &amp;&amp; __config__.app.getApp('human-resource')?.getLunchVoucher()">
         <field name="lunchVoucherWageShare"/>
         <field name="lunchVoucherEmployersShare"/>
         <field name="minStockLunchVoucher"/>

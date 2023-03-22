@@ -17,19 +17,31 @@
  */
 package com.axelor.apps.hr.web;
 
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Singleton;
+import com.axelor.studio.db.AppHumanResource;
 
-@Singleton
 public class AppHumanResourceController {
 
   public void generateHrConfigurations(ActionRequest request, ActionResponse response) {
+    try {
+      Beans.get(AppHumanResourceService.class).generateHrConfigurations();
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 
-    Beans.get(AppHumanResourceService.class).generateHrConfigurations();
-
-    response.setReload(true);
+  public void switchTimesheetEditors(ActionRequest request, ActionResponse response) {
+    try {
+      AppHumanResource appHumanResource = request.getContext().asType(AppHumanResource.class);
+      Beans.get(AppHumanResourceService.class)
+          .switchTimesheetEditors(appHumanResource.getTimesheetEditor());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

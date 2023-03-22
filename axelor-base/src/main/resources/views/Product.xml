@@ -164,7 +164,8 @@
             hideIf="productTypeSelect != 'storable' || productSubTypeSelect || _fromProduction || _fromStock || _fromSale || _fromPurchase"/>
           <field name="isActivity"
             showIf="productTypeSelect == 'service' &amp;&amp; !isShippingCostsProduct"
-            if-module="axelor-human-resource" if="__config__.app.isApp('employee')"/>
+            if-module="axelor-human-resource"
+            if="__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getEmployeeManagement()"/>
           <field name="procurementMethodSelect" colSpan="6"
             onChange="action-product-record-tick-checkbox-purchasable"
             hideIf="isShippingCostsProduct" readonlyIf="productSubTypeSelect == 3"/>
@@ -732,7 +733,8 @@
 
   <action-group name="action-product-group-default-new">
     <action name="action-product-record-default-new"/>
-    <action name="hr-action-product-record-default-new" if="__config__.app.getApp('expense')"/>
+    <action name="hr-action-product-record-default-new"
+      if="__config__.app.getApp('human-resource')?.getExpenseManagement()"/>
   </action-group>
 
   <action-record name="action-product-record-default-new"
@@ -896,7 +898,8 @@
     <field name="taskTemplateSet" hidden="true"
       if="!(__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').enableTaskTemplatesByProduct)"/>
     <field name="productSubTypeSelect" hidden="true" if="!__config__.app.isApp('production')"/>
-    <field name="isActivity" hidden="true" if="!__config__.app.isApp('employee')"/>
+    <field name="isActivity" hidden="true"
+      if="!(__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getEmployeeManagement())"/>
     <field name="standardDelay" hidden="true" if="!__config__.app.isApp('supplychain')"/>
     <field name="productSynchronizedInPrestashop" hidden="true"
       if="!__config__.app.isApp('prestashop')"/>

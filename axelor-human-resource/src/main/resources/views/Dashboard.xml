@@ -7,17 +7,19 @@
   <!-- Dashboard Manager -->
   <dashboard title="Reportings" name="hr.manager.dashboard.sample">
     <dashlet action="timesheet.validate" height="450" canSearch="true"
-      if="__config__.app.isApp('timesheet')"/>
+      if="__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getTimesheetManagement()"/>
     <dashlet action="extra.hours.validate" height="450" canSearch="true"
-      if="__config__.app.isApp('exthrs')"/>
+      if="__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getExtraHoursManagement()"/>
     <dashlet action="expense.validate" height="450" canSearch="true"
-      if="__config__.app.isApp('expense')"/>
+      if="__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getExpenseManagement()"/>
     <dashlet action="leave.validate" height="450" canSearch="true"
-      if="__config__.app.isApp('leave')"/>
+      if="__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getLeaveManagement()"/>
     <dashlet action="hr.dashboard.leave.per.employee" colSpan="12" height="450"
-      canSearch="true" if="__config__.app.isApp('leave')"/>
+      canSearch="true"
+      if="__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getLeaveManagement()"/>
     <dashlet action="hr.dashboard.show.employee.expenses" colSpan="12" height="450"
-      canSearch="true" if="__config__.app.isApp('expense')"/>
+      canSearch="true"
+      if="__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getExpenseManagement()"/>
   </dashboard>
 
   <action-view name="hr.dashboard.leave.per.employee" title="Leave Per Employee">
@@ -32,13 +34,13 @@
   <!-- Dashboard User -->
   <dashboard title="Reportings" name="hr.user.dashboard.sample">
     <dashlet action="hr.dashboard.my.timesheets" height="350" canSearch="true"
-      if="__config__.app.isApp('timesheet')"/>
+      if="__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getTimesheetManagement()"/>
     <dashlet action="hr.dashboard.my.extrahours" height="350" canSearch="true"
-      if="__config__.app.isApp('exthrs')"/>
+      if="__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getExtraHoursManagement()"/>
     <dashlet action="hr.dashboard.my.expenses" height="350" canSearch="true"
-      if="__config__.app.isApp('expense')"/>
+      if="__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getExpenseManagement()"/>
     <dashlet action="hr.dashboard.my.leave.requests" height="350" canSearch="true"
-      if="__config__.app.isApp('leave')"/>
+      if="__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getLeaveManagement()"/>
   </dashboard>
 
   <action-view name="hr.dashboard.my.extrahours" title="My extra hours"

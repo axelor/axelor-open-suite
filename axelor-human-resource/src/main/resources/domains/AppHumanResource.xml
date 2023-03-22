@@ -5,10 +5,20 @@
 
   <module name="studio" package="com.axelor.studio.db"/>
 
-  <entity name="AppTimesheet" cacheable="true">
+  <entity name="AppHumanResource" cacheable="true">
 
     <one-to-one ref="com.axelor.studio.db.App" name="app"/>
 
+    <!-- Employee configuration -->
+    <boolean name="employeeManagement" title="Employee management"/>
+    <decimal name="dailyWorkHours" title="Daily work hours"/>
+    <boolean name="advanceManagement" default="true"/>
+    <boolean name="payrollPreparation" title="Payroll preparation"/>
+    <boolean name="lunchVoucher" title="Lunch Voucher"/>
+    <boolean name="employeeBonus" title="Employee bonus"/>
+
+    <!-- Timesheet configuration -->
+    <boolean name="timesheetManagement" title="Timesheet management"/>
     <integer name="invoicingTypeLogTimesSelect" title="Invoicing Type for Log Times"
       selection="hrs.timesheet.line.invoicing.type.select" default="1"/>
     <boolean name="consolidateTSLine" title="Consolidate timesheet line on invoice"/>
@@ -38,19 +48,42 @@
     <boolean name="enableActivity" title="Enable activity"
       help="Allow to associate a product to the timesheet line (pre-requisite: only for product type that are services and Activity field is TRUE). Additional configuration can also be found in Application config --> Users/companies --> Companies --> Human resources config."/>
 
+    <!-- Expense configuration -->
+    <boolean name="expenseManagement" title="Expense management"/>
+    <boolean name="computeDistanceWithWebService"/>
+
+    <!-- Leave configuration -->
+    <boolean name="leaveManagement" title="Leave management"/>
+    <boolean name="allowNegativeLeaveEmployees"
+      title="Allow negative values for employee leaves"/>
+
+    <!-- Extra hours configuration -->
+    <boolean name="extraHoursManagement" title="Extra hours management"/>
+
+    <extra-code>
+   		<![CDATA[
+   			public static final Integer INVOICING_LOG_TIMES_LINE_ACTIVITY = 1;
+   			public static final Integer INVOICING_LOG_TIMES_EMPLOYEE_ACTIVITY = 2;
+   		]]>
+    </extra-code>
+
     <track>
+      <field name="dailyWorkHours" on="UPDATE"/>
+      <field name="advanceManagement" on="UPDATE"/>
+      <field name="payrollPreparation" on="UPDATE"/>
+      <field name="lunchVoucher" on="UPDATE"/>
+      <field name="employeeBonus" on="UPDATE"/>
       <field name="invoicingTypeLogTimesSelect" on="UPDATE"/>
       <field name="consolidateTSLine" on="UPDATE"/>
       <field name="defaultEndFormat" on="UPDATE"/>
-
       <field name="enableTimer" on="UPDATE"/>
       <field name="editModeTSTimer" on="UPDATE"/>
       <field name="keepProject" on="UPDATE"/>
-
       <field name="createLinesForLeaves" on="UPDATE"/>
       <field name="createLinesForHolidays" on="UPDATE"/>
-
       <field name="timesheetEditor" on="UPDATE"/>
+      <field name="computeDistanceWithWebService" on="UPDATE"/>
+      <field name="allowNegativeLeaveEmployees" on="UPDATE"/>
     </track>
   </entity>
 

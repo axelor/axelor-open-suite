@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <form name="app-human-resource-config-form" title="Human resources management"
+    model="com.axelor.studio.db.AppHumanResource" canDelete="false" canNew="false" width="large"
+    onSave="action-app-hr-method-switch-timesheet-editors">
+    <panel name="mainPanel">
+      <field name="employeeManagement"/>
+      <field name="timesheetManagement"/>
+      <field name="expenseManagement"/>
+      <field name="leaveManagement"/>
+      <field name="extraHoursManagement"/>
+    </panel>
+
+    <panel-tabs name="mainPanelTab">
+      <panel name="configPanel" title="Configuration">
+        <button name="generateHrConfigurationsBtn" colSpan="4"
+          title="Generate human resource configurations"
+          onClick="save,com.axelor.apps.hr.web.AppHumanResourceController:generateHrConfigurations"/>
+        <panel-dashlet name="confHrConfigPanel" action="admin.root.conf.hr.config"
+          colSpan="12"/>
+      </panel>
+
+      <panel name="employeeManagementPanel" title="Employee management"
+        showIf="employeeManagement">
+        <field name="advanceManagement" colSpan="3" widget="boolean-switch"/>
+        <field name="payrollPreparation" colSpan="3" widget="boolean-switch"/>
+        <field name="lunchVoucher" colSpan="3" widget="boolean-switch"/>
+        <field name="employeeBonus" colSpan="3" widget="boolean-switch"/>
+        <field name="dailyWorkHours" colSpan="3"/>
+      </panel>
+
+      <panel name="timesheetManagementPanel" title="Timesheet management"
+        showIf="timesheetManagement">
+        <field name="invoicingTypeLogTimesSelect"/>
+        <field name="needValidation" widget="boolean-switch"/>
+        <field name="enableActivity" widget="boolean-switch"/>
+        <field name="consolidateTSLine" widget="boolean-switch"/>
+        <field name="enableTimer" widget="boolean-switch"/>
+        <field name="editModeTSTimer" widget="boolean-switch" showIf="enableTimer"/>
+        <field name="keepProject" widget="boolean-switch" showIf="enableTimer"/>
+        <field name="defaultEndFormat"/>
+        <field name="createLinesForLeaves" widget="boolean-switch"/>
+        <field name="createLinesForHolidays" widget="boolean-switch"/>
+        <field name="timesheetEditor" widget="boolean-switch"/>
+        <field name="displayTimesheetLineNumber" widget="boolean-switch"/>
+        <field name="timesheetReminderTemplate"
+          domain="self.metaModel.name = 'TimesheetReminder'"/>
+        <field name="isAlertManufOrderFinish" widget="boolean-switch"/>
+        <field name="displayTaskColumnInPrinting" widget="boolean-switch"/>
+        <field name="displayActivityColumnInPrinting" widget="boolean-switch"/>
+      </panel>
+
+      <panel name="expenseManagementPanel" title="Expense management"
+        showIf="expenseManagement">
+        <field name="computeDistanceWithWebService"/>
+      </panel>
+
+      <panel name="leaveManagementPanel" title="Leave management" showIf="leaveManagement">
+        <field name="allowNegativeLeaveEmployees" widget="boolean-switch"/>
+      </panel>
+    </panel-tabs>
+
+    <panel-mail name="mailPanel">
+      <mail-messages limit="4"/>
+      <mail-followers/>
+    </panel-mail>
+  </form>
+
+  <action-method name="action-app-hr-method-switch-timesheet-editors">
+    <call class="com.axelor.apps.hr.web.AppHumanResourceController"
+      method="switchTimesheetEditors"/>
+  </action-method>
+
+  <action-view name="admin.root.conf.hr.config" title="Human resource configurations"
+    model="com.axelor.apps.hr.db.HRConfig">
+    <view type="grid" name="hr-config-grid"/>
+    <view type="form" name="hr-config-form"/>
+  </action-view>
+
+
+</object-views>
