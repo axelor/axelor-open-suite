@@ -17,6 +17,17 @@
  */
 package com.axelor.apps.account.web;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.apache.commons.collections.CollectionUtils;
+
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AnalyticAxis;
@@ -42,6 +53,8 @@ import com.axelor.apps.account.service.move.MoveSimulateService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.move.MoveViewHelperService;
+import com.axelor.apps.account.service.move.record.MoveDefaultRecordService;
+import com.axelor.apps.account.service.move.record.MoveRecordService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
@@ -71,15 +84,6 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
 public class MoveController {
@@ -906,4 +910,56 @@ public class MoveController {
             .getDefaultCompanyBankDetails(company, paymentMode, partner, null);
     response.setValue("companyBankDetails", defaultBankDetails);
   }
+  
+  public void setDefaultMove(ActionRequest request, ActionResponse response) {
+	    try {
+	      Move move = request.getContext().asType(Move.class);
+	      move = Beans.get(MoveDefaultRecordService.class).setDefaultMoveValues(move);
+	       
+	      response.setValue("company", move.getCompany());
+	      response.setValue("getInfoFromFirstMoveLineOk", move.getGetInfoFromFirstMoveLineOk());
+	      response.setValue("date", move.getDate());
+	      response.setValue("technicalOriginSelect", move.getTechnicalOriginSelect());
+	      response.setValue("tradingName", move.getTradingName());
+	    } catch (Exception e) {
+	      TraceBackService.trace(response, e);
+	    }
+	  }
+  
+  public void setDefaultCurrency(ActionRequest request, ActionResponse response) {
+	    try {
+	      Move move = request.getContext().asType(Move.class);
+	      move = Beans.get(MoveDefaultRecordService.class).setDefaultCurrency(move);
+	      
+	      response.setValue("companyCurrency", move.getCompanyCurrency());
+	      response.setValue("currency", move.getCurrency());
+	      response.setValue("currencyCode", move.getCurrencyCode());
+	      response.setValue("$companyCurrencyCodeIso", move.getCurrencyCode());
+	    } catch (Exception e) {
+	      TraceBackService.trace(response, e);
+	    }
+	  }
+  
+  public void setPaymentMode(ActionRequest request, ActionResponse response) {
+	    try {
+	      Move move = request.getContext().asType(Move.class);
+	      move = Beans.get(MoveRecordService.class).setPaymentMode(move);
+	      
+	      response.setValue("paymentMode", move.getPaymentMode());
+	    } catch (Exception e) {
+	      TraceBackService.trace(response, e);
+	    }
+	  }
+  
+  public void setPaymentCondition(ActionRequest request, ActionResponse response) {
+	    try {
+	      Move move = request.getContext().asType(Move.class);
+	      move = Beans.get(MoveRecordService.class).setPaymentCondition(move);
+	      
+	      response.setValue("paymentCondition", move.getPaymentCondition());
+	    } catch (Exception e) {
+	      TraceBackService.trace(response, e);
+	    }
+	  }
+  
 }

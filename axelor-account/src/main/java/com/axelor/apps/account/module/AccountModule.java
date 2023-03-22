@@ -279,6 +279,10 @@ import com.axelor.apps.account.service.move.PaymentMoveLineDistributionService;
 import com.axelor.apps.account.service.move.PaymentMoveLineDistributionServiceImpl;
 import com.axelor.apps.account.service.move.SimulatedMoveService;
 import com.axelor.apps.account.service.move.SimulatedMoveServiceImpl;
+import com.axelor.apps.account.service.move.record.MoveDefaultRecordService;
+import com.axelor.apps.account.service.move.record.MoveDefaultRecordServiceImpl;
+import com.axelor.apps.account.service.move.record.MoveRecordService;
+import com.axelor.apps.account.service.move.record.MoveRecordServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineConsolidateService;
@@ -668,5 +672,9 @@ public class AccountModule extends AxelorModule {
     bind(AccountCustomerService.class).to(AccountCustomerServiceImpl.class);
 
     bind(InvoiceProductStatementService.class).to(InvoiceProductStatementServiceImpl.class);
+     
+    bind(MoveDefaultRecordService.class).to(MoveDefaultRecordServiceImpl.class);
+    
+    bind(MoveRecordService.class).to(MoveRecordServiceImpl.class);
   }
 }

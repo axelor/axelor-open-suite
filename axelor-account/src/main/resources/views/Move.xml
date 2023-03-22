@@ -559,11 +559,15 @@
     <field name="dateOfReversion" expr="eval: __config__.date.plusDays(1)"
       if="dateOfReversionSelect == 3"/>
   </action-record>
+  
+  <action-method name="action-move-method-set-date-of-revision">
+  	<call class="com.axelor.apps.account.web.MoveController" method="setDateOfRevision"/>
+  </action-method>
 
   <!-- ACTION GROUPs -->
   <action-group name="action-account-move-onnew-group">
-    <action name="default-move-record"/>
-    <action name="default-move-record-currency"/>
+    <action name="action-move-method-default-move"/>
+    <action name="action-move-method-set-default-move-currency"/>
     <action name="action-move-record-journal"/>
     <action name="action-move-account-record-set-journal-technical-type-select"/>
     <action name="action-move-method-get-period"/>
@@ -662,7 +666,7 @@
     <action name="action-move-attrs-validate-button-title"/>
     <action name="action-move-method-fill-company-bank-details"/>
     <action name="action-method-hide-axis-analytic-account-move-line"/>
-    <action name="default-move-record-currency"/>
+    <action name="action-move-method-set-default-move-currency"/>
   </action-group>
 
   <action-group name="action-group-move-date-onchange">
@@ -681,15 +685,15 @@
     <action name="action-move-attrs-set-functional-origin-select"/>
     <action name="action-move-attrs-validate-button-title"/>
     <action name="action-move-method-journal-on-change"/>
-    <action name="action-move-record-set-payment-mode"/>
-    <action name="action-move-record-set-payment-condition"/>
+    <action name="action-move-method-set-payment-mode"/>
+    <action name="action-move-method-set-payment-condition"/>
     <action name="action-move-record-set-bank-details"/>
   </action-group>
 
   <action-group name="action-move-group-partner-onchange">
     <action name="action-account-move-record-set-currency"/>
-    <action name="action-move-record-set-payment-mode"/>
-    <action name="action-move-record-set-payment-condition"/>
+    <action name="action-move-method-set-payment-mode"/>
+    <action name="action-move-method-set-payment-condition"/>
     <action name="action-move-record-set-bank-details"/>
     <action name="action-move-method-display-and-compute-due-date"/>
     <action name="action-move-attrs-hide-move-line-partner"/>
@@ -768,6 +772,10 @@
     <field name="technicalOriginSelect" expr="1"/>
     <field name="tradingName" expr="eval: __user__?.tradingName"/>
   </action-record>
+  
+  <action-method name="action-move-method-default-move">
+  	<call class="com.axelor.apps.account.web.MoveController" method="setDefaultMove"/>
+  </action-method>
 
   <action-record name="default-move-record-currency"
     model="com.axelor.apps.account.db.Move">
@@ -777,10 +785,19 @@
     <field name="currencyCode" expr="eval: company?.currency.codeISO"/>
   </action-record>
 
+  <action-method name="action-move-method-set-default-move-currency">
+  	<call class="com.axelor.apps.account.web.MoveController" method="setDefaultCurrency"/>
+  </action-method>
+  
+  	
   <action-record name="action-move-record-set-currency-code"
     model="com.axelor.apps.account.db.Move">
     <field name="currencyCode" expr="eval: currency?.codeISO"/>
   </action-record>
+  
+  <action-method name="action-move-method-set-currency-code">
+  	<call class="com.axelor.apps.account.web.MoveController" method="setCurrencyCode"/>
+  </action-method>
 
   <action-record name="action-move-record-journal"
     model="com.axelor.apps.account.db.Move">
@@ -793,6 +810,10 @@
     <field name="currencyCode" expr="eval: partner?.currency?.codeISO"/>
     <field name="fiscalPosition" expr="eval: partner?.fiscalPosition"/>
   </action-record>
+  
+  <action-method name="action-move-method-set-currency">
+  	<call class="com.axelor.apps.account.web.MoveController" method="setCurrency"/>
+  </action-method>
 
   <action-record name="action-move-account-record-set-journal-technical-type-select"
     model="com.axelor.apps.account.db.Move">
@@ -808,6 +829,10 @@
     <field name="paymentMode" expr="eval: partner?.inPaymentMode"
       if="partner &amp;&amp; journal?.journalType?.technicalTypeSelect == 2"/>
   </action-record>
+  
+  <action-method name="action-move-method-set-payment-mode">
+  	<call class="com.axelor.apps.account.web.MoveController" method="setPaymentMode"/>
+  </action-method>
 
   <action-record name="action-move-record-set-payment-condition"
     model="com.axelor.apps.account.db.Move">
@@ -815,6 +840,10 @@
     <field name="paymentCondition" expr="eval: partner?.paymentCondition"
       if="partner &amp;&amp; journal?.journalType?.technicalTypeSelect != 4"/>
   </action-record>
+  
+  <action-method name="action-move-method-set-payment-condition">
+  	<call class="com.axelor.apps.account.web.MoveController" method="setPaymentCondition"/>
+  </action-method>
 
   <action-record name="action-move-record-set-bank-details"
     model="com.axelor.apps.account.db.Move">
@@ -822,6 +851,10 @@
     <field name="partnerBankDetails" if="partner"
       expr="eval: partner?.bankDetailsList.find{ it -> it.isDefault &amp;&amp; it.active }"/>
   </action-record>
+  
+  <action-method name="action-move-method-set-bank-details">
+  	<call class="com.axelor.apps.account.web.MoveController" method="setBankDetails"/>
+  </action-method>
 
   <!-- ACTION ATTRS -->
   <action-attrs name="action-move-attrs-set-domain-payment-mode">
