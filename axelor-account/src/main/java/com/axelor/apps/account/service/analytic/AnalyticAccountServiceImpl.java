@@ -27,11 +27,10 @@ import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.tool.StringTool;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
-import com.google.common.base.Joiner;
 import com.google.inject.persist.Transactional;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
@@ -114,7 +113,6 @@ public class AnalyticAccountServiceImpl implements AnalyticAccountService {
       Account account)
       throws AxelorException {
     String domain = "null";
-    List<Long> analyticAccountIdList = new ArrayList<>();
 
     if (analyticDistributionTemplate != null && analyticDistributionTemplate.getCompany() != null) {
       domain =
@@ -131,11 +129,10 @@ public class AnalyticAccountServiceImpl implements AnalyticAccountService {
                 .getAnalyticAxisByCompanyList();
         if (ObjectUtils.notEmpty(analyticAxisByCompanyList)) {
           analyticAxisIdList =
-              Joiner.on(",")
-                  .join(
-                      analyticAxisByCompanyList.stream()
-                          .map(it -> it.getAnalyticAxis().getId().toString())
-                          .collect(Collectors.toList()));
+              StringTool.getIdListString(
+                  analyticAxisByCompanyList.stream()
+                      .map(it -> it.getAnalyticAxis())
+                      .collect(Collectors.toList()));
         }
 
         domain += "in (" + analyticAxisIdList + ")";
@@ -145,12 +142,8 @@ public class AnalyticAccountServiceImpl implements AnalyticAccountService {
         List<AnalyticAccount> analyticAccountList =
             accountAnalyticRulesRepository.findAnalyticAccountByAccounts(account);
         if (CollectionUtils.isNotEmpty(analyticAccountList)) {
-          for (AnalyticAccount analyticAccount : analyticAccountList) {
-            analyticAccountIdList.add(analyticAccount.getId());
-          }
-
           domain += " AND self.id in (";
-          String idList = Joiner.on(",").join(analyticAccountIdList);
+          String idList = StringTool.getIdListString(analyticAccountList);
           domain += idList + ")";
         } else {
           domain += " AND self.id in (0)";
