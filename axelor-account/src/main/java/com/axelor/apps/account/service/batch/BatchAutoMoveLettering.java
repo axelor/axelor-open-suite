@@ -169,8 +169,7 @@ public class BatchAutoMoveLettering extends BatchStrategy {
           boolean reconcileByBalancedAccount =
               reconcileMethodSelect
                       == AccountingBatchRepository.AUTO_MOVE_LETTERING_RECONCILE_BY_BALANCED_ACCOUNT
-                  && hasBalancedAccount(creditMoveLine)
-                  && hasBalancedAccount(debitMoveLine);
+                  && isBalanced;
           boolean reconcileByExternalIdentifier =
               reconcileMethodSelect
                       == AccountingBatchRepository
@@ -450,27 +449,6 @@ public class BatchAutoMoveLettering extends BatchStrategy {
                         || CollectionUtils.isEmpty(accountingBatch.getPartnerSet())
                         || CollectionUtils.containsAny(
                             accountingBatch1.getPartnerSet(), accountingBatch.getPartnerSet())));
-  }
-
-  protected boolean hasBalancedAccount(MoveLine moveLine) {
-
-    String queryString =
-        "SELECT SUM(self.amountRemaining) FROM MoveLine self WHERE "
-            + "self.amountRemaining > 0 AND self.move.statusSelect IN (:moveDaybookStatus, :moveAccountedStatus) AND self.account = :account AND :partner is null OR self.partner = :partner";
-    javax.persistence.Query debitQuery = JPA.em().createQuery(queryString + " AND self.debit > 0");
-    debitQuery.setParameter("account", moveLine.getAccount());
-    debitQuery.setParameter("partner", moveLine.getPartner());
-    debitQuery.setParameter("moveDaybookStatus", MoveRepository.STATUS_DAYBOOK);
-    debitQuery.setParameter("moveAccountedStatus", MoveRepository.STATUS_ACCOUNTED);
-
-    javax.persistence.Query creditQuery =
-        JPA.em().createQuery(queryString + " AND self.credit > 0");
-    creditQuery.setParameter("account", moveLine.getAccount());
-    creditQuery.setParameter("partner", moveLine.getPartner());
-    creditQuery.setParameter("moveDaybookStatus", MoveRepository.STATUS_DAYBOOK);
-    creditQuery.setParameter("moveAccountedStatus", MoveRepository.STATUS_ACCOUNTED);
-
-    return debitQuery.getResultList().get(0).equals(creditQuery.getResultList().get(0));
   }
 
   /**
