@@ -1,3 +1,16 @@
+## [5.4.38] (2023-03-23)
+
+#### Fixed
+
+* Production: fixed an issue in some processes where an error would create inconsistencies.
+* Bank payment: fixed an issue in some processes where an error would create inconsistencies.
+* Account: fixed an issue in some processes where an error would create inconsistencies.
+* HR: fixed an issue in some processes where an error would create inconsistencies.
+* Stock move: fixed an error occurring when opening a stock move line in a different tab.
+* Stock move: supplier arrivals now correctly computes the WAP when the unit is different in stock move and stock location.
+* Stock move: fixed an issue where "to address" was not correctly filled on a generated reversion stock move.
+* Mail message: fixed an issue preventing follower selection after a recipient has already been selected.
+
 ## [5.4.37] (2023-03-09)
 
 #### Fixed
@@ -869,6 +882,7 @@ password only if user type is signatory and ebics partner mode is ebics TS,
 - Bank reconciliation: add management of case of several account management for account domain, journal domain, auto change of journal and cash account fields and now account and journal from bank details are prioritized.
 - Invoice: Fix NullPointerException when the product is not filled in invoice line.
 
+[5.4.38]: https://github.com/axelor/axelor-open-suite/compare/v5.4.37...v5.4.38
 [5.4.37]: https://github.com/axelor/axelor-open-suite/compare/v5.4.36...v5.4.37
 [5.4.36]: https://github.com/axelor/axelor-open-suite/compare/v5.4.35...v5.4.36
 [5.4.35]: https://github.com/axelor/axelor-open-suite/compare/v5.4.34...v5.4.35
