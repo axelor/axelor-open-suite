@@ -24,6 +24,8 @@ import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountingReportValueRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.DateService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.StringUtils;
 import com.google.inject.Inject;
@@ -43,8 +45,9 @@ public class AccountingReportValuePercentageServiceImpl extends AccountingReport
   public AccountingReportValuePercentageServiceImpl(
       AccountRepository accountRepo,
       AccountingReportValueRepository accountingReportValueRepo,
-      AnalyticAccountRepository analyticAccountRepo) {
-    super(accountRepo, accountingReportValueRepo, analyticAccountRepo);
+      AnalyticAccountRepository analyticAccountRepo,
+      DateService dateService) {
+    super(accountRepo, accountingReportValueRepo, analyticAccountRepo, dateService);
   }
 
   @Override
@@ -59,7 +62,8 @@ public class AccountingReportValuePercentageServiceImpl extends AccountingReport
       LocalDate startDate,
       LocalDate endDate,
       String parentTitle,
-      int analyticCounter) {
+      int analyticCounter)
+      throws AxelorException {
     Map<String, AccountingReportValue> valuesMap =
         valuesMapByColumn.get(
             this.getColumnCode(
@@ -103,7 +107,8 @@ public class AccountingReportValuePercentageServiceImpl extends AccountingReport
       LocalDate startDate,
       LocalDate endDate,
       String parentTitle,
-      int analyticCounter) {
+      int analyticCounter)
+      throws AxelorException {
     AccountingReportValue totalValue = null;
     List<String> linesCodeList = Collections.singletonList(line.getCode());
     BigDecimal result = BigDecimal.valueOf(100);
@@ -166,7 +171,8 @@ public class AccountingReportValuePercentageServiceImpl extends AccountingReport
       String parentTitle,
       String lineCode,
       BigDecimal result,
-      int analyticCounter) {
+      int analyticCounter)
+      throws AxelorException {
     if (baseValue == null) {
       this.addNullValue(
           column,

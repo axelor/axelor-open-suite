@@ -34,6 +34,7 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.DateService;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
@@ -70,8 +71,9 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
       AccountRepository accountRepository,
       AccountingReportValueRepository accountingReportValueRepo,
       AnalyticAccountRepository analyticAccountRepo,
-      MoveLineRepository moveLineRepo) {
-    super(accountRepository, accountingReportValueRepo, analyticAccountRepo);
+      MoveLineRepository moveLineRepo,
+      DateService dateService) {
+    super(accountRepository, accountingReportValueRepo, analyticAccountRepo, dateService);
     this.moveLineRepo = moveLineRepo;
   }
 
@@ -388,7 +390,8 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
       String parentTitle,
       String lineTitle,
       String lineCode,
-      int analyticCounter) {
+      int analyticCounter)
+      throws AxelorException {
     Set<AnalyticAccount> resultAnalyticAccountSet =
         this.mergeSets(
             analyticAccountSet,
