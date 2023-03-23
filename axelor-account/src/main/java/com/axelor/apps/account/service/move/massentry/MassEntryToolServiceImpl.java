@@ -129,11 +129,11 @@ public class MassEntryToolServiceImpl implements MassEntryToolService {
     int numberOfDifferentMovesToCheck = 0;
     List<Move> moveList = new ArrayList<>();
     Move moveToCheck;
-    boolean firstMove = true;
 
     numberOfDifferentMovesToCheck = this.getMaxTemporaryMoveNumber(move.getMoveLineMassEntryList());
 
     for (int i = 1; i <= numberOfDifferentMovesToCheck; i++) {
+      boolean firstMove = true;
       moveToCheck = new Move();
       moveToCheck.setJournal(move.getJournal());
       moveToCheck.setCompany(move.getCompany());
@@ -143,7 +143,7 @@ public class MassEntryToolServiceImpl implements MassEntryToolService {
       for (MoveLineMassEntry moveLineMassEntry : move.getMoveLineMassEntryList()) {
         if (moveLineMassEntry.getTemporaryMoveNumber() == i) {
           if (firstMove) {
-            if (moveLineMassEntry.getDate() != null && move.getCompany() != null) {
+            if (moveLineMassEntry.getDate() != null && moveToCheck.getCompany() != null) {
               moveToCheck.setPeriod(
                   periodService.getPeriod(
                       moveLineMassEntry.getDate(), move.getCompany(), YearRepository.TYPE_FISCAL));
