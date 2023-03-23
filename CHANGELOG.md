@@ -1,3 +1,27 @@
+## [6.2.22] (2023-03-23)
+
+#### Changes
+
+* Webapp: update AOP version to 5.4.19
+
+#### Fixed
+
+* Tracking number configuration : 'Auto select sale tracking Nbr.' is now correctly taken into account when creating a stock move from a sale order.
+* Production: fixed an issue in some processes where an error would create inconsistencies.
+* Bank payment: fixed an issue in some processes where an error would create inconsistencies.
+* Account: fixed an issue in some processes where an error would create inconsistencies.
+* HR: fixed an issue in some processes where an error would create inconsistencies.
+* Template: fix html widget for SMS templates.
+* Template: fix "Emailing" french translation.
+* Stock move: fixed an error occurring when opening a stock move line in a different tab.
+* Stock move: fixed an issue where "to address" was not correctly filled on a generated reversion stock move.
+* Stock move: supplier arrivals now correctly computes the WAP when the unit is different in stock move and stock location.
+* HR: fixed typo "Managment" => "Managment".
+* MRP: generating proposals now correctly generates every purchase order lines.
+* Move line: fixed an issue where duplicated analytic lines were generated.
+* Financial discount: fixed french help translation.
+* Mail message: fixed an issue preventing follower selection after a recipient has already been selected.
+
 ## [6.2.21] (2023-03-09)
 
 #### Fixed
@@ -933,6 +957,7 @@ will be equal to the reason for manual forecasts.
 * Territory: Remove object
 
 
+[6.2.22]: https://github.com/axelor/axelor-open-suite/compare/v6.2.21...v6.2.22
 [6.2.21]: https://github.com/axelor/axelor-open-suite/compare/v6.2.20...v6.2.21
 [6.2.20]: https://github.com/axelor/axelor-open-suite/compare/v6.2.19...v6.2.20
 [6.2.19]: https://github.com/axelor/axelor-open-suite/compare/v6.2.18...v6.2.19
