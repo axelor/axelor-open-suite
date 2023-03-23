@@ -101,7 +101,7 @@
             onChange="action-move-group-partner-onchange"/>
           <field name="currency"
             readonlyIf="$validatePeriod || moveLineList.length &gt; 0 || statusSelect == 3"
-            colSpan="3" onChange="action-move-record-set-currency-code" required="true"/>
+            colSpan="3" onChange="action-move-method-set-currency-code" required="true"/>
           <field name="companyBankDetails" canEdit="false" colSpan="3"
             onSelect="com.axelor.apps.base.web.CompanyBankDetailsController:fillCompanyBankDetailsDomain"
             form-view="bank-details-form" grid-view="bank-details-grid"/>
@@ -210,7 +210,13 @@
           showIf="statusSelect == 1 &amp;&amp; journal.authorizeSimulatedMove"/>
         <button name="accountingBtn" title="Accounting.toAccount"
           readonlyIf="$validatePeriod" onClick="action-account-move-group-accounting-click"
-          colSpan="12" hideIf="statusSelect == 3 || statusSelect == 4"/>
+          colSpan="12"
+          showIf="(statusSelect != 3 &amp;&amp; statusSelect != 4)
+           &amp;&amp; (!journal.allowAccountingDaybook || !company.accountConfig.accountingDaybook)"/>
+        <button name="accountingBtn" title="DayBook.button" readonlyIf="$validatePeriod"
+          onClick="action-account-move-group-accounting-click" colSpan="12"
+          showIf="(statusSelect != 3 &amp;&amp; statusSelect != 4)
+           &amp;&amp; !(!journal.allowAccountingDaybook || !company.accountConfig.accountingDaybook)"/>
         <button name="autoTaxLineGenerateBtn" title="Generate tax lines"
           readonlyIf="$validatePeriod" onClick="action-account-move-group-generate-tax-lines"
           colSpan="12" showIf="statusSelect == 1 || statusSelect == 5"/>
@@ -321,7 +327,7 @@
       <panel name="currencyPanel" title="Currencies" readonlyIf="$validatePeriod">
         <field name="currency"
           readonlyIf="moveLineList != null &amp;&amp; moveLineList.length != 0" required="true"
-          onChange="action-move-record-set-currency-code"/>
+          onChange="action-move-method-set-currency-code"/>
         <field name="companyCurrency" readonly="true"/>
         <field name="currencyCode" hidden="true"/>
         <field name="$companyCurrencyCodeIso" hidden="true"/>
@@ -559,52 +565,38 @@
     <field name="dateOfReversion" expr="eval: __config__.date.plusDays(1)"
       if="dateOfReversionSelect == 3"/>
   </action-record>
-  
-  <action-method name="action-move-method-set-date-of-revision">
-  	<call class="com.axelor.apps.account.web.MoveController" method="setDateOfRevision"/>
-  </action-method>
 
   <!-- ACTION GROUPs -->
   <action-group name="action-account-move-onnew-group">
     <action name="action-move-method-default-move"/>
     <action name="action-move-method-set-default-move-currency"/>
-    <action name="action-move-record-journal"/>
-    <action name="action-move-account-record-set-journal-technical-type-select"/>
+    <action name="action-move-method-set-journal"/>
+    <action name="action-move-method-set-journal-technical-type-select"/>
     <action name="action-move-method-get-period"/>
-    <action name="action-move-attrs-adjusting-move"/>
-    <action name="action-move-attrs-hide-move-line-name-in-draft-status"/>
-    <action name="action-move-attrs-validate-button-title"/>
+    <action name="action-move-method-hide-move-line-fields-in-draft-status"/>
     <action name="action-move-is-hidden-move-line-list-viewer-attrs-method"/>
-    <action name="action-attrs-move-hide-trading-name"/>
-    <action name="action-move-attrs-hide-move-line-reconcile-group-in-draft-cancel-status"/>
     <action name="action-method-initialize-permission-validation-move"/>
-    <action name="action-move-attrs-check-period-and-status"/>
-    <action name="action-move-attrs-set-functional-origin-select-domain"/>
-    <action name="action-move-attrs-set-functional-origin-select"/>
-    <action name="action-move-attrs-manage-bank-details"/>
+    <action name="action-move-method-check-period-and-status"/>
+    <action name="action-move-method-set-functional-origin-select-domain"/>
+    <action name="action-move-method-set-functional-origin-select"/>
+    <action name="action-move-method-manage-bank-details"/>
     <action name="action-move-method-check-period-permissions"/>
     <action name="action-method-hide-axis-analytic-account-move-line"/>
   </action-group>
 
   <action-group name="action-account-move-group-onload">
-    <action name="action-move-attrs-set-company-currency-code-iso"/>
-    <action name="action-move-attrs-adjusting-move"/>
-    <action name="action-move-attrs-hide-move-line-name-in-draft-status"/>
-    <action name="action-move-attrs-validate-button-title"/>
+    <action name="action-move-method-set-company-currency-code-iso"/>
+    <action name="action-move-method-hide-move-line-fields-in-draft-status"/>
     <action name="action-account-move-method-compute-totals"/>
     <action name="action-move-is-hidden-move-line-list-viewer-attrs-method"/>
-    <action name="action-attrs-move-hide-trading-name"/>
-    <action name="action-move-attrs-hide-move-line-reconcile-group-in-draft-cancel-status"/>
-    <action name="action-move-account-record-set-journal-technical-type-select"/>
+    <action name="action-move-method-set-journal-technical-type-select"/>
     <action name="action-method-initialize-permission-validation-move"/>
-    <action name="action-move-attrs-check-related-cut-off-moves"
+    <action name="action-move-method-check-related-cut-off-moves"
       if="__config__.app.getApp('account').manageCutOffPeriod"/>
-    <action name="action-move-account-record-set-journal-technical-type-select"/>
-    <action name="action-move-attrs-check-period-and-status"/>
-    <action name="action-move-attrs-set-functional-origin-select-domain"/>
+    <action name="action-move-method-check-period-and-status"/>
+    <action name="action-move-method-set-functional-origin-select-domain"/>
     <action name="action-move-method-display-and-compute-due-date"/>
-    <action name="action-move-attrs-hide-move-line-partner"/>
-    <action name="action-move-attrs-manage-bank-details"/>
+    <action name="action-move-method-manage-bank-details"/>
     <action name="action-method-hide-axis-analytic-account-move-line"/>
   </action-group>
 
@@ -661,9 +653,8 @@
   </action-group>
 
   <action-group name="action-group-move-company-onchange">
-    <action name="action-move-record-journal"/>
+    <action name="action-move-method-set-journal"/>
     <action name="action-group-move-date-onchange"/>
-    <action name="action-move-attrs-validate-button-title"/>
     <action name="action-move-method-fill-company-bank-details"/>
     <action name="action-method-hide-axis-analytic-account-move-line"/>
     <action name="action-move-method-set-default-move-currency"/>
@@ -680,23 +671,22 @@
   </action-group>
 
   <action-group name="action-move-group-journal-on-change">
-    <action name="action-move-account-record-set-journal-technical-type-select"/>
-    <action name="action-move-attrs-set-functional-origin-select-domain"/>
-    <action name="action-move-attrs-set-functional-origin-select"/>
-    <action name="action-move-attrs-validate-button-title"/>
+    <action name="action-move-method-set-journal-technical-type-select"/>
+    <action name="action-move-method-set-functional-origin-select-domain"/>
+    <action name="action-move-method-set-functional-origin-select"/>
     <action name="action-move-method-journal-on-change"/>
     <action name="action-move-method-set-payment-mode"/>
     <action name="action-move-method-set-payment-condition"/>
-    <action name="action-move-record-set-bank-details"/>
+    <action name="action-move-method-set-partner-bank-details"/>
   </action-group>
 
   <action-group name="action-move-group-partner-onchange">
-    <action name="action-account-move-record-set-currency"/>
+    <action name="action-move-method-set-currency-by-partner"/>
     <action name="action-move-method-set-payment-mode"/>
     <action name="action-move-method-set-payment-condition"/>
-    <action name="action-move-record-set-bank-details"/>
+    <action name="action-move-method-set-partner-bank-details"/>
     <action name="action-move-method-display-and-compute-due-date"/>
-    <action name="action-move-attrs-hide-move-line-partner"/>
+    <action name="action-move-method-hide-move-line-fields-in-draft-status"/>
     <action name="action-move-method-fill-company-bank-details"/>
   </action-group>
 
@@ -772,9 +762,9 @@
     <field name="technicalOriginSelect" expr="1"/>
     <field name="tradingName" expr="eval: __user__?.tradingName"/>
   </action-record>
-  
+
   <action-method name="action-move-method-default-move">
-  	<call class="com.axelor.apps.account.web.MoveController" method="setDefaultMove"/>
+    <call class="com.axelor.apps.account.web.MoveController" method="setDefaultMove"/>
   </action-method>
 
   <action-record name="default-move-record-currency"
@@ -786,17 +776,17 @@
   </action-record>
 
   <action-method name="action-move-method-set-default-move-currency">
-  	<call class="com.axelor.apps.account.web.MoveController" method="setDefaultCurrency"/>
+    <call class="com.axelor.apps.account.web.MoveController" method="setDefaultCurrency"/>
   </action-method>
-  
-  	
+
+
   <action-record name="action-move-record-set-currency-code"
     model="com.axelor.apps.account.db.Move">
     <field name="currencyCode" expr="eval: currency?.codeISO"/>
   </action-record>
-  
+
   <action-method name="action-move-method-set-currency-code">
-  	<call class="com.axelor.apps.account.web.MoveController" method="setCurrencyCode"/>
+    <call class="com.axelor.apps.account.web.MoveController" method="setCurrencyCode"/>
   </action-method>
 
   <action-record name="action-move-record-journal"
@@ -804,15 +794,19 @@
     <field name="journal" expr="eval: company?.accountConfig?.manualMiscOpeJournal"/>
   </action-record>
 
+  <action-method name="action-move-method-set-journal">
+    <call class="com.axelor.apps.account.web.MoveController" method="setJournal"/>
+  </action-method>
+
   <action-record name="action-account-move-record-set-currency"
     model="com.axelor.apps.account.db.Move">
     <field name="currency" expr="eval: partner?.currency"/>
     <field name="currencyCode" expr="eval: partner?.currency?.codeISO"/>
     <field name="fiscalPosition" expr="eval: partner?.fiscalPosition"/>
   </action-record>
-  
-  <action-method name="action-move-method-set-currency">
-  	<call class="com.axelor.apps.account.web.MoveController" method="setCurrency"/>
+
+  <action-method name="action-move-method-set-currency-by-partner">
+    <call class="com.axelor.apps.account.web.MoveController" method="setCurrencyByPartner"/>
   </action-method>
 
   <action-record name="action-move-account-record-set-journal-technical-type-select"
@@ -820,6 +814,11 @@
     <field name="$journalTechnicalTypeSelect"
       expr="eval: journal?.journalType.technicalTypeSelect"/>
   </action-record>
+
+  <action-method name="action-move-method-set-journal-technical-type-select">
+    <call class="com.axelor.apps.account.web.MoveController"
+      method="setJournalTechnicalTypeSelect"/>
+  </action-method>
 
   <action-record name="action-move-record-set-payment-mode"
     model="com.axelor.apps.account.db.Move">
@@ -829,9 +828,9 @@
     <field name="paymentMode" expr="eval: partner?.inPaymentMode"
       if="partner &amp;&amp; journal?.journalType?.technicalTypeSelect == 2"/>
   </action-record>
-  
+
   <action-method name="action-move-method-set-payment-mode">
-  	<call class="com.axelor.apps.account.web.MoveController" method="setPaymentMode"/>
+    <call class="com.axelor.apps.account.web.MoveController" method="setPaymentMode"/>
   </action-method>
 
   <action-record name="action-move-record-set-payment-condition"
@@ -840,9 +839,9 @@
     <field name="paymentCondition" expr="eval: partner?.paymentCondition"
       if="partner &amp;&amp; journal?.journalType?.technicalTypeSelect != 4"/>
   </action-record>
-  
+
   <action-method name="action-move-method-set-payment-condition">
-  	<call class="com.axelor.apps.account.web.MoveController" method="setPaymentCondition"/>
+    <call class="com.axelor.apps.account.web.MoveController" method="setPaymentCondition"/>
   </action-method>
 
   <action-record name="action-move-record-set-bank-details"
@@ -851,9 +850,9 @@
     <field name="partnerBankDetails" if="partner"
       expr="eval: partner?.bankDetailsList.find{ it -> it.isDefault &amp;&amp; it.active }"/>
   </action-record>
-  
-  <action-method name="action-move-method-set-bank-details">
-  	<call class="com.axelor.apps.account.web.MoveController" method="setBankDetails"/>
+
+  <action-method name="action-move-method-set-partner-bank-details">
+    <call class="com.axelor.apps.account.web.MoveController" method="setPartnerBankDetails"/>
   </action-method>
 
   <!-- ACTION ATTRS -->
@@ -876,14 +875,9 @@
       expr="eval: statusSelect == null || statusSelect == 1 || statusSelect == 4 || statusSelect == 5"/>
   </action-attrs>
 
-  <action-attrs name="action-move-attrs-validate-button-title">
-    <attribute name="title" for="accountingBtn"
-      expr="eval: com.axelor.i18n.I18n.get('Accounting.toAccount')"
-      if="eval: (!company?.accountConfig?.accountingDaybook || !journal?.allowAccountingDaybook) || (statusSelect == MoveRepository.STATUS_NEW || statusSelect == MoveRepository.STATUS_SIMULATED || statusSelect == MoveRepository.STATUS_DAYBOOK)"/>
-    <attribute name="title" for="accountingBtn"
-      expr="eval: com.axelor.i18n.I18n.get('DayBook.button')"
-      if="eval: company?.accountConfig?.accountingDaybook &amp;&amp; journal?.allowAccountingDaybook &amp;&amp; (statusSelect == MoveRepository.STATUS_NEW || statusSelect == MoveRepository.STATUS_SIMULATED)"/>
-  </action-attrs>
+  <action-method name="action-move-method-hide-move-line-fields-in-draft-status">
+    <call class="com.axelor.apps.account.web.MoveController" method="hideMoveLineFields"/>
+  </action-method>
 
   <action-attrs
     name="action-move-attrs-hide-move-line-reconcile-group-in-draft-cancel-status">
@@ -905,10 +899,18 @@
       expr="eval: company?.currency.codeISO"/>
   </action-attrs>
 
+  <action-method name="action-move-method-set-company-currency-code-iso">
+    <call class="com.axelor.apps.account.web.MoveController" method="setCompanyCurrencyCodeIso"/>
+  </action-method>
+
   <action-attrs name="action-move-attrs-check-related-cut-off-moves">
     <attribute name="value" for="$isThereRelatedCutOffMoves"
       expr="eval: __repo__(Move).all().filter('self.cutOffOriginMove = ?', id).count() > 0"/>
   </action-attrs>
+
+  <action-method name="action-move-method-check-related-cut-off-moves">
+    <call class="com.axelor.apps.account.web.MoveController" method="checkRelatedCutOffMoves"/>
+  </action-method>
 
   <action-attrs name="action-move-attrs-bank-details-from-partner-domain">
     <attribute name="domain" for="partnerBankDetails"
@@ -923,10 +925,19 @@
       expr="eval: journal ? (journal.authorizedFunctionalOriginSelect ? journal.authorizedFunctionalOriginSelect : '0') : null "/>
   </action-attrs>
 
+  <action-method name="action-move-method-set-functional-origin-select-domain">
+    <call class="com.axelor.apps.account.web.MoveController"
+      method="setFunctionalOriginSelectDomain"/>
+  </action-method>
+
   <action-attrs name="action-move-attrs-set-functional-origin-select">
     <attribute name="value" for="functionalOriginSelect"
       expr="eval: (journal?.authorizedFunctionalOriginSelect?.split(',')?.length == 1) ? (journal?.authorizedFunctionalOriginSelect) : null"/>
   </action-attrs>
+
+  <action-method name="action-move-method-set-functional-origin-select">
+    <call class="com.axelor.apps.account.web.MoveController" method="setFunctionalOriginSelect"/>
+  </action-method>
 
   <!-- ACTION METHOD -->
   <action-method name="action-move-method-accounting">
@@ -1057,6 +1068,10 @@
       expr="call: com.axelor.apps.base.service.PeriodService:isClosedPeriod(period)"/>
   </action-attrs>
 
+  <action-method name="action-move-method-check-period-and-status">
+    <call class="com.axelor.apps.account.web.MoveController" method="checkPeriodAndStatus"/>
+  </action-method>
+
   <action-method name="action-method-initialize-permission-validation-move">
     <call class="com.axelor.apps.account.web.MoveController" method="isAuthorizedOnPeriod"/>
   </action-method>
@@ -1111,12 +1126,6 @@
       expr="eval: &quot;self.id IN (${(company?.tradingNameSet?.collect{it.id}+[0]).join(',')})&quot;"/>
   </action-attrs>
 
-  <action-attrs name="action-attrs-move-hide-trading-name"
-    model="com.axelor.apps.account.db.Move">
-    <attribute name="hidden" for="tradingName"
-      expr="eval: !__config__.app.getApp('base')?.getEnableTradingNamesManagement()"/>
-  </action-attrs>
-
   <action-attrs name="action-move-attrs-header-change">
     <attribute name="value" for="$headerChange" expr="eval: true"/>
   </action-attrs>
@@ -1136,6 +1145,10 @@
     <attribute for="companyBankDetails" name="required"
       expr="eval: __config__.app.getApp('base')?.getManageMultiBanks() &amp;&amp; [1,2].contains(journal?.journalType?.technicalTypeSelect)"/>
   </action-attrs>
+
+  <action-method name="action-move-method-manage-bank-details">
+    <call class="com.axelor.apps.account.web.MoveController" method="manageBankDetails"/>
+  </action-method>
 
   <search-filters name="move-filters" model="com.axelor.apps.account.db.Move"
     title="Move filters">

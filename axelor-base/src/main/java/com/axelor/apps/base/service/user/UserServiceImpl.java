@@ -17,24 +17,6 @@
  */
 package com.axelor.apps.base.service.user;
 
-import java.io.IOException;
-import java.lang.invoke.MethodHandles;
-import java.security.SecureRandom;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.regex.Pattern;
-
-import javax.mail.MessagingException;
-import javax.validation.ValidationException;
-
-import org.apache.commons.lang3.tuple.Pair;
-import org.apache.commons.math3.exception.TooManyIterationsException;
-import org.apache.shiro.session.Session;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.app.AppSettings;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.AppBase;
@@ -63,7 +45,21 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-
+import java.io.IOException;
+import java.lang.invoke.MethodHandles;
+import java.security.SecureRandom;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.regex.Pattern;
+import javax.mail.MessagingException;
+import javax.validation.ValidationException;
+import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.math3.exception.TooManyIterationsException;
+import org.apache.shiro.session.Session;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import wslite.json.JSONException;
 
 /** UserService is a class that implement all methods for user information */
@@ -440,8 +436,8 @@ public class UserServiceImpl implements UserService {
     return partner;
   }
 
-@Override
-public TradingName getTradingName() {
+  @Override
+  public TradingName getTradingName() {
     final User user = getUser();
 
     if (user == null) {
@@ -449,5 +445,5 @@ public TradingName getTradingName() {
     }
 
     return user.getTradingName();
-}
+  }
 }

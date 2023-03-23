@@ -17,21 +17,12 @@
  */
 package com.axelor.apps.account.web;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import org.apache.commons.collections.CollectionUtils;
-
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticAxisByCompany;
+import com.axelor.apps.account.db.Journal;
+import com.axelor.apps.account.db.JournalType;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
@@ -53,6 +44,8 @@ import com.axelor.apps.account.service.move.MoveSimulateService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.move.MoveViewHelperService;
+import com.axelor.apps.account.service.move.attributes.MoveAttributeViewService;
+import com.axelor.apps.account.service.move.control.MoveCheckService;
 import com.axelor.apps.account.service.move.record.MoveDefaultRecordService;
 import com.axelor.apps.account.service.move.record.MoveRecordService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
@@ -84,6 +77,15 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
 public class MoveController {
@@ -910,56 +912,202 @@ public class MoveController {
             .getDefaultCompanyBankDetails(company, paymentMode, partner, null);
     response.setValue("companyBankDetails", defaultBankDetails);
   }
-  
+
   public void setDefaultMove(ActionRequest request, ActionResponse response) {
-	    try {
-	      Move move = request.getContext().asType(Move.class);
-	      move = Beans.get(MoveDefaultRecordService.class).setDefaultMoveValues(move);
-	       
-	      response.setValue("company", move.getCompany());
-	      response.setValue("getInfoFromFirstMoveLineOk", move.getGetInfoFromFirstMoveLineOk());
-	      response.setValue("date", move.getDate());
-	      response.setValue("technicalOriginSelect", move.getTechnicalOriginSelect());
-	      response.setValue("tradingName", move.getTradingName());
-	    } catch (Exception e) {
-	      TraceBackService.trace(response, e);
-	    }
-	  }
-  
+    try {
+      Move move = request.getContext().asType(Move.class);
+      move = Beans.get(MoveDefaultRecordService.class).setDefaultMoveValues(move);
+
+      response.setValue("company", move.getCompany());
+      response.setValue("getInfoFromFirstMoveLineOk", move.getGetInfoFromFirstMoveLineOk());
+      response.setValue("date", move.getDate());
+      response.setValue("technicalOriginSelect", move.getTechnicalOriginSelect());
+      response.setValue("tradingName", move.getTradingName());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   public void setDefaultCurrency(ActionRequest request, ActionResponse response) {
-	    try {
-	      Move move = request.getContext().asType(Move.class);
-	      move = Beans.get(MoveDefaultRecordService.class).setDefaultCurrency(move);
-	      
-	      response.setValue("companyCurrency", move.getCompanyCurrency());
-	      response.setValue("currency", move.getCurrency());
-	      response.setValue("currencyCode", move.getCurrencyCode());
-	      response.setValue("$companyCurrencyCodeIso", move.getCurrencyCode());
-	    } catch (Exception e) {
-	      TraceBackService.trace(response, e);
-	    }
-	  }
-  
+    try {
+      Move move = request.getContext().asType(Move.class);
+      move = Beans.get(MoveDefaultRecordService.class).setDefaultCurrency(move);
+
+      response.setValue("companyCurrency", move.getCompanyCurrency());
+      response.setValue("currency", move.getCurrency());
+      response.setValue("currencyCode", move.getCurrencyCode());
+      response.setValue("companyCurrencyCode", move.getCompanyCurrencyCode());
+      response.setValue("$companyCurrencyCodeIso", move.getCompanyCurrencyCode());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   public void setPaymentMode(ActionRequest request, ActionResponse response) {
-	    try {
-	      Move move = request.getContext().asType(Move.class);
-	      move = Beans.get(MoveRecordService.class).setPaymentMode(move);
-	      
-	      response.setValue("paymentMode", move.getPaymentMode());
-	    } catch (Exception e) {
-	      TraceBackService.trace(response, e);
-	    }
-	  }
-  
+    try {
+      Move move = request.getContext().asType(Move.class);
+      move = Beans.get(MoveRecordService.class).setPaymentMode(move);
+
+      response.setValue("paymentMode", move.getPaymentMode());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   public void setPaymentCondition(ActionRequest request, ActionResponse response) {
-	    try {
-	      Move move = request.getContext().asType(Move.class);
-	      move = Beans.get(MoveRecordService.class).setPaymentCondition(move);
-	      
-	      response.setValue("paymentCondition", move.getPaymentCondition());
-	    } catch (Exception e) {
-	      TraceBackService.trace(response, e);
-	    }
-	  }
-  
+    try {
+      Move move = request.getContext().asType(Move.class);
+      move = Beans.get(MoveRecordService.class).setPaymentCondition(move);
+
+      response.setValue("paymentCondition", move.getPaymentCondition());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setPartnerBankDetails(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      move = Beans.get(MoveRecordService.class).setPartnerBankDetails(move);
+
+      response.setValue("partnerBankDetails", move.getPartnerBankDetails());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setCurrencyByPartner(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      move = Beans.get(MoveRecordService.class).setCurrencyByPartner(move);
+
+      response.setValue("currency", move.getCurrency());
+      response.setValue("currencyCode", move.getCurrencyCode());
+      response.setValue("fiscalPosition", move.getFiscalPosition());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setCurrencyCode(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      move = Beans.get(MoveRecordService.class).setCurrencyCode(move);
+
+      response.setValue("currencyCode", move.getCurrencyCode());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setJournal(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      move = Beans.get(MoveRecordService.class).setJournal(move);
+
+      response.setValue("journal", move.getJournal());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setCompanyCurrencyCodeIso(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+
+      response.setValue("$companyCurrencyCodeIso", move.getCompanyCurrencyCode());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setJournalTechnicalTypeSelect(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+
+      response.setValue(
+          "$journalTechnicalTypeSelect",
+          Optional.ofNullable(move.getJournal())
+              .map(Journal::getJournalType)
+              .map(JournalType::getTechnicalTypeSelect)
+              .orElse(null));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void checkRelatedCutOffMoves(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+
+      response.setValue(
+          "$isThereRelatedCutOffMoves",
+          Beans.get(MoveCheckService.class).checkRelatedCutoffMoves(move));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void checkPeriodAndStatus(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+
+      Map<String, Object> mapResult = Beans.get(MoveCheckService.class).checkPeriodAndStatus(move);
+
+      response.setValues(mapResult);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void hideMoveLineFields(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+
+      Map<String, Map<String, Object>> mapValues =
+          Beans.get(MoveAttributeViewService.class).getHiddenAttributeValues(move);
+
+      response.setAttrs(mapValues);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setFunctionalOriginSelectDomain(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+
+      Map<String, Map<String, Object>> mapValues =
+          Beans.get(MoveAttributeViewService.class).getFunctionalOriginSelectDomain(move);
+
+      response.setAttrs(mapValues);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setFunctionalOriginSelect(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+
+      move = Beans.get(MoveRecordService.class).setFunctionalOriginSelect(move);
+
+      response.setValue("functionalOriginSelect", move.getFunctionalOriginSelect());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void manageBankDetails(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+
+      Map<String, Map<String, Object>> mapValues =
+          Beans.get(MoveAttributeViewService.class).getBankDetailsAttributes(move);
+
+      response.setAttrs(mapValues);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

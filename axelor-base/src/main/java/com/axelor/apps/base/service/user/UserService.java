@@ -17,13 +17,6 @@
  */
 package com.axelor.apps.base.service.user;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-import javax.mail.MessagingException;
-
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -34,7 +27,11 @@ import com.axelor.meta.CallMethod;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.team.db.Team;
 import com.google.inject.persist.Transactional;
-
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import javax.mail.MessagingException;
 import wslite.json.JSONException;
 
 /** UserService is a class that implement all methods for user information */
@@ -61,7 +58,7 @@ public interface UserService {
    */
   @CallMethod
   public Company getUserActiveCompany();
-  
+
   /**
    * Method that return the Trading name of the current connected user
    *
