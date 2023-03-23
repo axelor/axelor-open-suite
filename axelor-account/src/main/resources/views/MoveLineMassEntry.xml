@@ -78,7 +78,7 @@
     <field name="pfpValidatorUser" title="PFP Validator"
       if="__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <field name="deliveryDate" title="Delivery date"/>
-    <field name="vatSystemSelect"/>
+    <field name="vatSystemSelect" onChange="action-move-line-mass-entry-record-set-is-edited"/>
     <field name="moveStatusSelect"/>
     <field name="isOtherCurrency" hidden="true"/>
     <field name="fieldsErrorList" hidden="true"/>

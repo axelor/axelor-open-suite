@@ -30,5 +30,5 @@ public interface MoveLineMassEntryService {
       LocalDate originDate)
       throws AxelorException;
 
-  void setPartnerAndBankDetails(Move move, MoveLineMassEntry moveLine) throws AxelorException;
+  void setPartnerAndRelatedFields(Move move, MoveLineMassEntry moveLine) throws AxelorException;
 }

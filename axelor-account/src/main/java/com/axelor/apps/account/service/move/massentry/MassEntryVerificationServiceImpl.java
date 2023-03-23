@@ -127,6 +127,12 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
       moveLine.setMovePaymentCondition(newPaymentCondition);
     }
 
+    // Check move line mass entry VatSystemSelect
+    int newVatSystemSelect = newMoveLine.getVatSystemSelect();
+    if (!moveLine.getVatSystemSelect().equals(newVatSystemSelect)) {
+      moveLine.setVatSystemSelect(newVatSystemSelect);
+    }
+
     // TODO add verification for cutOff when we manageCutOff in mass entry move
   }
 

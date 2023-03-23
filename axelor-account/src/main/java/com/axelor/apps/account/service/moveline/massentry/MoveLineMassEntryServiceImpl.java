@@ -1,11 +1,13 @@
 package com.axelor.apps.account.service.moveline.massentry;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLineMassEntry;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.move.MoveCounterPartService;
 import com.axelor.apps.account.service.move.MoveLoadDefaultConfigService;
 import com.axelor.apps.account.service.move.massentry.MassEntryToolService;
@@ -35,6 +37,7 @@ public class MoveLineMassEntryServiceImpl implements MoveLineMassEntryService {
   protected MoveLoadDefaultConfigService moveLoadDefaultConfigService;
   protected CurrencyService currencyService;
   protected MoveLineMassEntryToolService moveLineMassEntryToolService;
+  protected AccountingSituationService accountingSituationService;
 
   @Inject
   public MoveLineMassEntryServiceImpl(
@@ -43,13 +46,15 @@ public class MoveLineMassEntryServiceImpl implements MoveLineMassEntryService {
       MassEntryToolService massEntryToolService,
       MoveLoadDefaultConfigService moveLoadDefaultConfigService,
       CurrencyService currencyService,
-      MoveLineMassEntryToolService moveLineMassEntryToolService) {
+      MoveLineMassEntryToolService moveLineMassEntryToolService,
+      AccountingSituationService accountingSituationService) {
     this.moveLineTaxService = moveLineTaxService;
     this.moveCounterPartService = moveCounterPartService;
     this.massEntryToolService = massEntryToolService;
     this.moveLoadDefaultConfigService = moveLoadDefaultConfigService;
     this.currencyService = currencyService;
     this.moveLineMassEntryToolService = moveLineMassEntryToolService;
+    this.accountingSituationService = accountingSituationService;
   }
 
   @Override
@@ -157,7 +162,7 @@ public class MoveLineMassEntryServiceImpl implements MoveLineMassEntryService {
   }
 
   @Override
-  public void setPartnerAndBankDetails(Move move, MoveLineMassEntry moveLine)
+  public void setPartnerAndRelatedFields(Move move, MoveLineMassEntry moveLine)
       throws AxelorException {
     if (move != null && move.getJournal() != null) {
       moveLineMassEntryToolService.setPaymentModeOnMoveLineMassEntry(
@@ -173,6 +178,14 @@ public class MoveLineMassEntryServiceImpl implements MoveLineMassEntryService {
       }
 
       this.loadAccountInformation(move, moveLine);
+
+      AccountingSituation accountingSituation =
+          accountingSituationService.getAccountingSituation(
+              moveLine.getPartner(), move.getCompany());
+      moveLine.setVatSystemSelect(null);
+      if (accountingSituation != null) {
+        moveLine.setVatSystemSelect(accountingSituation.getVatSystemSelect());
+      }
     }
 
     moveLine.setMovePartnerBankDetails(

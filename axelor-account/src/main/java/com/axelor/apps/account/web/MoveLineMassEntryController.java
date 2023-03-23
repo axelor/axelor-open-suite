@@ -135,10 +135,10 @@ public class MoveLineMassEntryController {
           line.setPartnerSeq(null);
           line.setPartnerFullName(null);
           line.setMovePartnerBankDetails(null);
-
+          line.setVatSystemSelect(null);
         } else {
           Move move = parentContext.asType(Move.class);
-          Beans.get(MoveLineMassEntryService.class).setPartnerAndBankDetails(move, line);
+          Beans.get(MoveLineMassEntryService.class).setPartnerAndRelatedFields(move, line);
         }
       }
       response.setValues(line);
