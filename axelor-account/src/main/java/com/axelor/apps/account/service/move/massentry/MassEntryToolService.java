@@ -21,7 +21,9 @@ public interface MassEntryToolService {
 
   List<MoveLineMassEntry> getEditedMoveLineMassEntry(List<MoveLineMassEntry> moveLineMassEntryList);
 
-  List<Move> createMoveListFromMassEntryList(Move move);
+  List<Move> createMoveListFromMassEntryList(Move parentMove);
+
+  Move createMoveFromMassEntryList(Move parentMove, int temporaryMoveNumber);
 
   Integer getMaxTemporaryMoveNumber(List<MoveLineMassEntry> moveLineMassEntryList);
 

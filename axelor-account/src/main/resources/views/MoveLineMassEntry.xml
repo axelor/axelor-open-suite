@@ -32,7 +32,7 @@
       <hilite if="$contains(fieldsErrorList,'partner:'+partner.name)" background="danger"/>
     </field>
     <field name="movePaymentCondition" form-view="payment-condition-form"
-      grid-view="payment-condition-grid"/>
+      grid-view="payment-condition-grid" onChange="action-move-line-mass-entry-record-set-is-edited"/>
     <field name="movePaymentMode" readonly="false" form-view="payment-mode-form"
       grid-view="payment-mode-grid" onChange="action-move-line-mass-entry-record-set-is-edited"/>
     <field name="account" form-view="account-form" grid-view="account-grid"

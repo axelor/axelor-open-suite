@@ -25,8 +25,6 @@ import java.util.Map;
 
 public interface MassEntryService {
 
-  Move fillMoveLineListWithMoveLineMassEntryList(Move move, Integer temporaryMoveNumber);
-
   MoveLineMassEntry getFirstMoveLineMassEntryInformations(
       List<MoveLineMassEntry> moveLineMassEntryList,
       MoveLineMassEntry moveLineMassEntry,

@@ -73,8 +73,9 @@ public class MassEntryMoveController {
         if (lastMoveLineMassEntry.getInputAction() != null
             && lastMoveLineMassEntry.getInputAction() == 2) {
           Move moveToGenerateTaxLineAndCounterpart =
-              massEntryService.fillMoveLineListWithMoveLineMassEntryList(
-                  move, lastMoveLineMassEntry.getTemporaryMoveNumber());
+              Beans.get(MassEntryToolService.class)
+                  .createMoveFromMassEntryList(
+                      move, lastMoveLineMassEntry.getTemporaryMoveNumber());
           response.setValues(move);
 
           Beans.get(MoveToolService.class)

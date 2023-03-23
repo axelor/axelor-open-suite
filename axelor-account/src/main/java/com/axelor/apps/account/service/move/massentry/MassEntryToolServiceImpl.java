@@ -125,51 +125,58 @@ public class MassEntryToolServiceImpl implements MassEntryToolService {
   }
 
   @Override
-  public List<Move> createMoveListFromMassEntryList(Move move) {
-    int numberOfDifferentMovesToCheck = 0;
+  public List<Move> createMoveListFromMassEntryList(Move parentMove) {
     List<Move> moveList = new ArrayList<>();
-    Move moveToCheck;
+    Move moveToAdd;
 
-    numberOfDifferentMovesToCheck = this.getMaxTemporaryMoveNumber(move.getMoveLineMassEntryList());
-
-    for (int i = 1; i <= numberOfDifferentMovesToCheck; i++) {
-      boolean firstMove = true;
-      moveToCheck = new Move();
-      moveToCheck.setJournal(move.getJournal());
-      moveToCheck.setCompany(move.getCompany());
-      moveToCheck.setCurrency(move.getCurrency());
-      moveToCheck.setCompanyBankDetails(move.getCompanyBankDetails());
-
-      for (MoveLineMassEntry moveLineMassEntry : move.getMoveLineMassEntryList()) {
-        if (moveLineMassEntry.getTemporaryMoveNumber() == i) {
-          if (firstMove) {
-            if (moveLineMassEntry.getDate() != null && moveToCheck.getCompany() != null) {
-              moveToCheck.setPeriod(
-                  periodService.getPeriod(
-                      moveLineMassEntry.getDate(), move.getCompany(), YearRepository.TYPE_FISCAL));
-            }
-            moveToCheck.setReference(moveLineMassEntry.getTemporaryMoveNumber().toString());
-            moveToCheck.setDate(moveLineMassEntry.getDate());
-            moveToCheck.setPartner(moveLineMassEntry.getPartner());
-            moveToCheck.setOrigin(moveLineMassEntry.getOrigin());
-            moveToCheck.setStatusSelect(moveLineMassEntry.getMoveStatusSelect());
-            moveToCheck.setOriginDate(moveLineMassEntry.getOriginDate());
-            moveToCheck.setDescription(moveLineMassEntry.getMoveDescription());
-            moveToCheck.setPaymentMode(moveLineMassEntry.getMovePaymentMode());
-            moveToCheck.setPaymentCondition(moveLineMassEntry.getMovePaymentCondition());
-            moveToCheck.setPartnerBankDetails(moveLineMassEntry.getMovePartnerBankDetails());
-            firstMove = false;
-          }
-          moveLineMassEntry.setMove(moveToCheck);
-          moveLineMassEntry.setFieldsErrorList(null);
-          moveToCheck.addMoveLineListItem(moveLineMassEntry);
-          moveToCheck.addMoveLineMassEntryListItem(moveLineMassEntry);
-        }
-      }
-      moveList.add(moveToCheck);
+    for (int i = 1;
+        i <= this.getMaxTemporaryMoveNumber(parentMove.getMoveLineMassEntryList());
+        i++) {
+      moveToAdd = this.createMoveFromMassEntryList(parentMove, i);
+      moveList.add(moveToAdd);
     }
 
     return moveList;
+  }
+
+  public Move createMoveFromMassEntryList(Move parentMove, int temporaryMoveNumber) {
+    Move moveResult = new Move();
+    boolean firstMoveLine = true;
+
+    moveResult.setJournal(parentMove.getJournal());
+    moveResult.setCompany(parentMove.getCompany());
+    moveResult.setCurrency(parentMove.getCurrency());
+    moveResult.setCompanyBankDetails(parentMove.getCompanyBankDetails());
+
+    for (MoveLineMassEntry massEntryLine : parentMove.getMoveLineMassEntryList()) {
+      if (massEntryLine.getTemporaryMoveNumber() == temporaryMoveNumber
+          && massEntryLine.getInputAction() == 1) {
+        if (firstMoveLine) {
+          if (massEntryLine.getDate() != null && moveResult.getCompany() != null) {
+            moveResult.setPeriod(
+                periodService.getPeriod(
+                    massEntryLine.getDate(), moveResult.getCompany(), YearRepository.TYPE_FISCAL));
+          }
+          moveResult.setReference(massEntryLine.getTemporaryMoveNumber().toString());
+          moveResult.setDate(massEntryLine.getDate());
+          moveResult.setPartner(massEntryLine.getPartner());
+          moveResult.setOrigin(massEntryLine.getOrigin());
+          moveResult.setStatusSelect(massEntryLine.getMoveStatusSelect());
+          moveResult.setOriginDate(massEntryLine.getOriginDate());
+          moveResult.setDescription(massEntryLine.getMoveDescription());
+          moveResult.setPaymentMode(massEntryLine.getMovePaymentMode());
+          moveResult.setPaymentCondition(massEntryLine.getMovePaymentCondition());
+          moveResult.setPartnerBankDetails(massEntryLine.getMovePartnerBankDetails());
+          firstMoveLine = false;
+        }
+        massEntryLine.setMove(moveResult);
+        massEntryLine.setFieldsErrorList(null);
+        moveResult.addMoveLineListItem(massEntryLine);
+        moveResult.addMoveLineMassEntryListItem(massEntryLine);
+      }
+    }
+
+    return moveResult;
   }
 
   @Override

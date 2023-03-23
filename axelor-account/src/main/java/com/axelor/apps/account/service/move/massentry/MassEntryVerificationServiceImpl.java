@@ -2,6 +2,7 @@ package com.axelor.apps.account.service.move.massentry;
 
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLineMassEntry;
+import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.service.move.MoveLineControlService;
@@ -55,73 +56,80 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
     this.moveValidateService = moveValidateService;
   }
 
-  public void checkAndReplaceDateInMoveLineMassEntry(
-      MoveLineMassEntry moveLineMassEntry, LocalDate newDate, Move move) throws AxelorException {
+  public void checkAndReplaceFieldsInMoveLineMassEntry(
+      MoveLineMassEntry moveLineMassEntry,
+      Move move,
+      MoveLineMassEntry newMoveLineMassEntry,
+      boolean manageCutOff)
+      throws AxelorException {
+
+    // Check move line mass entry date
+    LocalDate newDate = newMoveLineMassEntry.getDate();
     if (!moveLineMassEntry.getDate().equals(newDate)) {
       moveLineMassEntry.setDate(newDate);
 
-      if (moveLineComputeAnalyticService.checkManageAnalytic(move.getCompany())) {
-        moveLineMassEntry.setAnalyticMoveLineList(
-            moveLineComputeAnalyticService
-                .computeAnalyticDistribution(moveLineMassEntry)
-                .getAnalyticMoveLineList());
-        Period period = null;
-        if (move.getDate() != null && move.getCompany() != null) {
-          period =
-              periodService.getActivePeriod(
-                  move.getDate(), move.getCompany(), YearRepository.TYPE_FISCAL);
-          move.setPeriod(period);
-        }
-        moveLineToolService.checkDateInPeriod(move, moveLineMassEntry);
+      Period period = null;
+      if (newDate != null && move.getCompany() != null) {
+        period =
+            periodService.getActivePeriod(newDate, move.getCompany(), YearRepository.TYPE_FISCAL);
+        move.setPeriod(period);
       }
+      moveLineToolService.checkDateInPeriod(move, moveLineMassEntry);
     }
-  }
 
-  public void checkAndReplaceOriginDateInMoveLineMassEntry(
-      MoveLineMassEntry moveLineMassEntry, LocalDate newDate, boolean manageCutOff) {
-    if (newDate != null && !newDate.equals(moveLineMassEntry.getOriginDate())) {
-      moveLineMassEntry.setOriginDate(newDate);
+    // Check move line mass entry originDate
+    LocalDate newOriginDate = newMoveLineMassEntry.getOriginDate();
+    if (move != null
+        && !newMoveLineMassEntry.getOriginDate().equals(moveLineMassEntry.getOriginDate())) {
+      moveLineMassEntry.setOriginDate(newOriginDate);
       if (manageCutOff) {
-        moveLineMassEntry.setCutOffStartDate(newDate);
-        moveLineMassEntry.setCutOffEndDate(newDate);
+        moveLineMassEntry.setCutOffStartDate(newOriginDate);
+        moveLineMassEntry.setCutOffEndDate(newOriginDate);
       }
     }
-  }
 
-  public void checkAndReplaceOriginInMoveLineMassEntry(
-      MoveLineMassEntry moveLineMassEntry, String newOrigin) {
+    // Check move line mass entry origin
+    String newOrigin =
+        newMoveLineMassEntry.getOrigin() != null ? newMoveLineMassEntry.getOrigin() : "";
     if (!newOrigin.equals(moveLineMassEntry.getOrigin())) {
       moveLineMassEntry.setOrigin(newOrigin);
     }
-  }
 
-  public void checkAndReplaceMoveDescriptionInMoveLineMassEntry(
-      MoveLineMassEntry moveLineMassEntry, String newMoveDescription) {
+    // Check move line mass entry move description
+    String newMoveDescription =
+        newMoveLineMassEntry.getMoveDescription() != null
+            ? newMoveLineMassEntry.getMoveDescription()
+            : "";
     if (!newMoveDescription.equals(moveLineMassEntry.getMoveDescription())) {
-      this.checkAndReplaceDescriptionInMoveLineMassEntry(moveLineMassEntry, newMoveDescription);
+      if (moveLineMassEntry.getMoveDescription().equals(moveLineMassEntry.getDescription())) {
+        moveLineMassEntry.setDescription(newMoveDescription);
+      }
       moveLineMassEntry.setMoveDescription(newMoveDescription);
     }
-  }
 
-  public void checkAndReplaceDescriptionInMoveLineMassEntry(
-      MoveLineMassEntry moveLineMassEntry, String newDescription) {
-    if (moveLineMassEntry.getMoveDescription().equals(moveLineMassEntry.getDescription())) {
-      moveLineMassEntry.setDescription(newDescription);
+    // Check move line mass entry payment mode
+    if (newMoveLineMassEntry.getAccount() != null
+        && !newMoveLineMassEntry.getAccount().getHasInvoiceTerm()
+        && newMoveLineMassEntry.getMovePaymentMode() != null) {
+      PaymentMode newMovePaymentMode = newMoveLineMassEntry.getMovePaymentMode();
+      if (!newMovePaymentMode.equals(moveLineMassEntry.getMovePaymentMode())) {
+        moveLineMassEntry.setMovePaymentMode(newMovePaymentMode);
+      }
     }
-  }
 
-  public void checkAndReplaceMovePaymentModeInMoveLineMassEntry(
-      MoveLineMassEntry moveLineMassEntry, PaymentMode newMovePaymentMode) {
-    if (!newMovePaymentMode.equals(moveLineMassEntry.getMovePaymentMode())) {
-      moveLineMassEntry.setMovePaymentMode(newMovePaymentMode);
-    }
-  }
-
-  public void checkAndReplaceCurrencyRateInMoveLineMassEntry(
-      MoveLineMassEntry moveLineMassEntry, BigDecimal newCurrencyRate) {
+    // Check move line mass entry currency rate
+    BigDecimal newCurrencyRate = newMoveLineMassEntry.getCurrencyRate();
     if (!newCurrencyRate.equals(moveLineMassEntry.getCurrencyRate())) {
       moveLineMassEntry.setCurrencyRate(newCurrencyRate);
     }
+
+    // Check move line mass entry payment condition
+    PaymentCondition newPaymentCondition = newMoveLineMassEntry.getMovePaymentCondition();
+    if (!moveLineMassEntry.getMovePaymentCondition().equals(newPaymentCondition)) {
+      moveLineMassEntry.setMovePaymentCondition(newPaymentCondition);
+    }
+
+    // TODO add verification for cutOff when we manageCutOff in mass entry move
   }
 
   public void checkDateInAllMoveLineMassEntry(Move move) {

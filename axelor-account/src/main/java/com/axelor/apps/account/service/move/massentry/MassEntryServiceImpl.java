@@ -82,41 +82,6 @@ public class MassEntryServiceImpl implements MassEntryService {
     this.moveValidateService = moveValidateService;
   }
 
-  public Move fillMoveLineListWithMoveLineMassEntryList(Move move, Integer temporaryMoveNumber) {
-    // TODO remove and use createMoveListFromMassEntryList
-    List<MoveLine> moveLineList = new ArrayList<>();
-    boolean firstLine = true;
-    Move moveToFill = new Move();
-
-    for (MoveLineMassEntry moveLineMassEntry : move.getMoveLineMassEntryList()) {
-      if (Objects.equals(moveLineMassEntry.getTemporaryMoveNumber(), temporaryMoveNumber)
-          && moveLineMassEntry.getInputAction() == 1) {
-        if (firstLine) {
-          moveToFill.setCompany(move.getCompany());
-          moveToFill.setJournal(move.getJournal());
-          moveToFill.setPeriod(move.getPeriod());
-          moveToFill.setCurrency(move.getCurrency());
-
-          moveToFill.setPaymentMode(moveLineMassEntry.getMovePaymentMode());
-          moveToFill.setPaymentCondition(moveLineMassEntry.getMovePaymentCondition());
-          moveToFill.setDate(moveLineMassEntry.getDate());
-          moveToFill.setDescription(moveLineMassEntry.getMoveDescription());
-          moveToFill.setPartnerBankDetails(moveLineMassEntry.getMovePartnerBankDetails());
-          moveToFill.setOrigin(moveLineMassEntry.getOrigin());
-          moveToFill.setOriginDate(moveLineMassEntry.getOriginDate());
-
-          // TODO Need to be seen, to enable multiPartners in a Move and remove this line
-          moveToFill.setPartner(moveLineMassEntry.getPartner());
-          firstLine = false;
-        }
-        moveLineMassEntry.setMove(moveToFill);
-        moveLineList.add(moveLineMassEntry);
-      }
-    }
-    moveToFill.setMoveLineList(moveLineList);
-    return moveToFill;
-  }
-
   public MoveLineMassEntry getFirstMoveLineMassEntryInformations(
       List<MoveLineMassEntry> moveLineMassEntryList,
       MoveLineMassEntry moveLineMassEntry,
@@ -200,30 +165,8 @@ public class MassEntryServiceImpl implements MassEntryService {
           if (Objects.equals(
               moveLine.getTemporaryMoveNumber(), moveLineEdited.getTemporaryMoveNumber())) {
             move.setDate(moveLineEdited.getDate());
-            massEntryVerificationService.checkAndReplaceDateInMoveLineMassEntry(
-                moveLine, moveLineEdited.getDate(), move);
-            massEntryVerificationService.checkAndReplaceOriginDateInMoveLineMassEntry(
-                moveLine, moveLineEdited.getOriginDate(), manageCutOff);
-            massEntryVerificationService.checkAndReplaceOriginInMoveLineMassEntry(
-                moveLine, moveLineEdited.getOrigin() != null ? moveLineEdited.getOrigin() : "");
-            massEntryVerificationService.checkAndReplaceMoveDescriptionInMoveLineMassEntry(
-                moveLine,
-                moveLineEdited.getMoveDescription() != null
-                    ? moveLineEdited.getMoveDescription()
-                    : "");
-            if (moveLineEdited.getAccount() != null
-                && !moveLineEdited.getAccount().getHasInvoiceTerm()
-                && moveLineEdited.getMovePaymentMode() != null) {
-              massEntryVerificationService.checkAndReplaceMovePaymentModeInMoveLineMassEntry(
-                  moveLine, moveLineEdited.getMovePaymentMode());
-            }
-            massEntryVerificationService.checkAndReplaceCurrencyRateInMoveLineMassEntry(
-                moveLine, moveLineEdited.getCurrencyRate());
-
-            // TODO add verification for cutOff when we manageCutOff in mass entry move
-
-            // TODO add others verification methods
-
+            massEntryVerificationService.checkAndReplaceFieldsInMoveLineMassEntry(
+                moveLine, move, moveLineEdited, manageCutOff);
             moveLine.setIsEdited(false);
           }
         }
