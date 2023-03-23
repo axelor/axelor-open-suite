@@ -320,7 +320,8 @@ public class PayrollPreparationService {
     }
 
     payrollPreparation.setExported(true);
-    payrollPreparation.setExportDate(appBaseService.getTodayDate(payrollPreparation.getCompany()));
+    payrollPreparation.setExportDateTime(
+        appBaseService.getTodayDateTime(payrollPreparation.getCompany()).toLocalDateTime());
     payrollPreparationRepo.save(payrollPreparation);
 
     return file.getPath();
