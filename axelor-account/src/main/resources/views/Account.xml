@@ -99,7 +99,8 @@
           domain="self.company = :company" form-view="account-form" grid-view="account-grid"
           readonlyIf="accountType.technicalTypeSelect == 'view' &amp;&amp; isRegulatoryAccount"/>
         <field name="useForPartnerBalance" widget="boolean-switch" colSpan="3"
-          hideIf="accountType.technicalTypeSelect == 'view'" readonlyIf="isRegulatoryAccount"/>
+          hideIf="accountType.technicalTypeSelect == 'view'" readonlyIf="isRegulatoryAccount"
+          onChange="action-attrs-account-set-is-retrieved-on-payment-session"/>
         <field name="reconcileOk" widget="boolean-switch" colSpan="3"
           hideIf="accountType.technicalTypeSelect == 'view'" readonlyIf="isRegulatoryAccount"
           onChange="action-account-group-reconcile-onChange"/>
@@ -327,7 +328,6 @@
 
   <action-group name="action-account-group-reconcile-onChange">
     <action name="action-account-validate-check-reconcile"/>
-    <action name="action-attrs-account-set-is-retrieved-on-payment-session"/>
     <action name="save"/>
     <action name="action-account-view-reconcile-wizard-form" if="reconcileOk"/>
   </action-group>
