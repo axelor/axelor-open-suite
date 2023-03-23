@@ -1,3 +1,24 @@
+## [6.1.34] (2023-03-23)
+
+#### Changes
+
+* Webapp: update AOP version to 5.4.19
+
+#### Fixed
+
+* Production: fixed an issue in some processes where an error would create inconsistencies.
+* Bank payment: fixed an issue in some processes where an error would create inconsistencies.
+* Account: fixed an issue in some processes where an error would create inconsistencies.
+* HR: fixed an issue in some processes where an error would create inconsistencies.
+* Template: fix html widget for SMS templates.
+* Template: fix "Emailing" french translation.
+* FEC import: fixed error occurring when dates were empty in the import file.
+* Stock move: fixed an issue where "to address" was not correctly filled on a generated reversion stock move.
+* Stock move: fixed an error occurring when opening a stock move line in a different tab.
+* Stock move: supplier arrivals now correctly computes the WAP when the unit is different in stock move and stock location.
+* HR: fixed typo "Managment" => "Managment".
+* Mail message: fixed an issue preventing follower selection after a recipient has already been selected.
+
 ## [6.1.33] (2023-03-09)
 
 #### Fixed
@@ -1014,6 +1035,7 @@ In price list, we fix the display to exclude list that are defined on an exclusi
 * Moved axelor docusign module from Axelor Open Suite to Axelor Addons repository.
 
 
+[6.1.34]: https://github.com/axelor/axelor-open-suite/compare/v6.1.33...v6.1.34
 [6.1.33]: https://github.com/axelor/axelor-open-suite/compare/v6.1.32...v6.1.33
 [6.1.32]: https://github.com/axelor/axelor-open-suite/compare/v6.1.31...v6.1.32
 [6.1.31]: https://github.com/axelor/axelor-open-suite/compare/v6.1.30...v6.1.31
