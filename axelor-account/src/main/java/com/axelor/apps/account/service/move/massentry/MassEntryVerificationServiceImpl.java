@@ -135,17 +135,17 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
       if (move.getPeriod() == null) {
         hasDateError = true;
         // TODO Set an error message
-        this.setMassEntryErrorMessage(move, "Period does not exist in move : ", true);
+        this.setMassEntryErrorMessage(move, "Period does not exist", true);
       } else {
         if (move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_CLOSED) {
           hasDateError = true;
           // TODO Set an error message
-          this.setMassEntryErrorMessage(move, "Period closed in move : ", true);
+          this.setMassEntryErrorMessage(move, "Period closed", true);
         } else if (move.getPeriod().getStatusSelect()
             == PeriodRepository.STATUS_CLOSURE_IN_PROGRESS) {
           hasDateError = true;
           // TODO Set an error message
-          this.setMassEntryErrorMessage(move, "Period in closure progress in move : ", true);
+          this.setMassEntryErrorMessage(move, "Period in closure progress", true);
         }
       }
 
@@ -153,7 +153,7 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
         hasDateError = true;
         // TODO Set an error message
         this.setMassEntryErrorMessage(
-            move, "Different dates in move : ", ObjectUtils.notEmpty(differentElements));
+            move, "Different dates", ObjectUtils.notEmpty(differentElements));
       }
 
       if (hasDateError) {
@@ -177,7 +177,7 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
     }
     // TODO Set an error message
     this.setMassEntryErrorMessage(
-        move, "Currency Rate is 0.00 in move : ", ObjectUtils.notEmpty(differentElements));
+        move, "Currency Rate is 0.00", ObjectUtils.notEmpty(differentElements));
   }
 
   public void checkOriginDateInAllMoveLineMassEntry(Move move) {
@@ -191,7 +191,7 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
     }
     // TODO Set an error message
     this.setMassEntryErrorMessage(
-        move, "Different origin dates in move : ", ObjectUtils.notEmpty(differentElements));
+        move, "Different origin dates", ObjectUtils.notEmpty(differentElements));
   }
 
   public void checkOriginInAllMoveLineMassEntry(Move move) {
@@ -209,7 +209,7 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
     }
     // TODO Set an error message
     this.setMassEntryErrorMessage(
-        move, "This origin already exist for the move : ", ObjectUtils.notEmpty(differentElements));
+        move, "This origin already exist", ObjectUtils.notEmpty(differentElements));
   }
 
   public void checkPartnerInAllMoveLineMassEntry(Move move) {
@@ -233,17 +233,20 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
       }
       // TODO Set an error message
       this.setMassEntryErrorMessage(
-          move, "Multiple partners for the move : ", ObjectUtils.notEmpty(differentElements));
+          move, "Multiple partners", ObjectUtils.notEmpty(differentElements));
     }
   }
 
   private void setMassEntryErrorMessage(Move move, String message, boolean toSet) {
     if (toSet) {
-      move.setMassEntryErrors(
-          move.getMassEntryErrors()
-              + message
-              + move.getMoveLineMassEntryList().get(0).getTemporaryMoveNumber()
-              + '\n');
+      if (ObjectUtils.isEmpty(move.getMassEntryErrors())) {
+        move.setMassEntryErrors(
+            "There is the following errors in move : "
+                + move.getMoveLineMassEntryList().get(0).getTemporaryMoveNumber()
+                + '\n');
+      }
+
+      move.setMassEntryErrors(move.getMassEntryErrors() + message + '\n');
     }
   }
 
