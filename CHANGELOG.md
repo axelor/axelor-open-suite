@@ -1,3 +1,39 @@
+## [6.4.9] (2023-03-23)
+
+#### Changes
+
+* Webapp: update AOP version to 5.4.19
+
+#### Fixed
+
+* Bank reconciliation: fixed incorrect behaviour while correcting a validated bank reconciliation.
+* Tracking number configuration : 'Auto select sale tracking Nbr.' is now correctly taken into account when creating a stock move from a sale order.
+* Accounting report: For all reports, remove the 10000 and 40 lines limit before page break.
+* Accounting batch: hide "bank details" filter for batch Moves consistency control.
+* Production: fixed an issue in some processes where an error would create inconsistencies.
+* Bank payment: fixed an issue in some processes where an error would create inconsistencies.
+* Account: fixed an issue in some processes where an error would create inconsistencies.
+* HR: fixed an issue in some processes where an error would create inconsistencies.
+* Account: hide analytic settings panel when analytic management is not activated on the company.
+* Payment session: accounting method and move accounting date are now correctly readonly on a canceled payment session.
+* Invoice: fixed PFP check when paying multiple supplier invoices.
+* Accounting batch: reset cut off move status when on journal change.
+* Payment session: fixed an issue where a payment session retrieved day book moves with "retrieve daybook moves in payment session" configuration deactivated.
+* Payment session: fixed filter on payment session for invoice terms to retrieve invoice terms linked to refunds.
+* Template: fix html widget for SMS templates.
+* Template: fix "Emailing" french translation.
+* Stock move: fixed an error occurring when opening a stock move line in a different tab.
+* Stock move: fixed an issue where "to address" was not correctly filled on a generated reversion stock move.
+* Stock move: supplier arrivals now correctly computes the WAP when the unit is different in stock move and stock location.
+* Invoice: fixed an issue preventing from paying invoices and refunds.
+* Doubtful customer batch: fix success count on batch completion.
+* HR: fixed typo "Managment" => "Managment".
+* MRP: generating proposals now correctly generates every purchase order lines.
+* Partner: prevent isCustomer from being unticked automatically if there are existing customer records in database.
+* Move line: fixed an issue where duplicated analytic lines were generated.
+* Financial discount: fixed french help translation.
+* Mail message: fixed an issue preventing follower selection after a recipient has already been selected.
+
 ## [6.4.8] (2023-03-09)
 
 #### Changes
@@ -526,6 +562,7 @@ A new mobile application for stock and production modules are now available, the
 * Account budget: Remove checkAvailableBudget in budget, which was unused.
 * Accounting report: removed old specific export format for Sale, Purchase, Treasury, Refund (1006 to 1009 accounting report type). Already replaced per the generic Journal entry export with a filter on the journal.
 
+[6.4.9]: https://github.com/axelor/axelor-open-suite/compare/v6.4.8...v6.4.9
 [6.4.8]: https://github.com/axelor/axelor-open-suite/compare/v6.4.7...v6.4.8
 [6.4.7]: https://github.com/axelor/axelor-open-suite/compare/v6.4.6...v6.4.7
 [6.4.6]: https://github.com/axelor/axelor-open-suite/compare/v6.4.5...v6.4.6
