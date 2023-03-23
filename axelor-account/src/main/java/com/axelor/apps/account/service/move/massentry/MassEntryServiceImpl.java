@@ -159,12 +159,14 @@ public class MassEntryServiceImpl implements MassEntryService {
     List<MoveLineMassEntry> moveLineMassEntryList =
         massEntryToolService.getEditedMoveLineMassEntry(move.getMoveLineMassEntryList());
 
+    move.setMassEntryErrors(null);
     if (ObjectUtils.notEmpty(moveLineMassEntryList)) {
       for (MoveLineMassEntry moveLineEdited : moveLineMassEntryList) {
         for (MoveLineMassEntry moveLine : move.getMoveLineMassEntryList()) {
+          moveLine.setFieldsErrorList(null);
           if (Objects.equals(
               moveLine.getTemporaryMoveNumber(), moveLineEdited.getTemporaryMoveNumber())) {
-            move.setDate(moveLineEdited.getDate());
+            moveLine.setMoveStatusSelect(MoveRepository.STATUS_NEW);
             massEntryVerificationService.checkAndReplaceFieldsInMoveLineMassEntry(
                 moveLine, move, moveLineEdited, manageCutOff);
             moveLine.setIsEdited(false);
