@@ -32,6 +32,7 @@ import com.axelor.meta.db.MetaJsonRecord;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.team.db.Team;
 import com.axelor.team.db.TeamTask;
+import com.axelor.team.db.repo.TeamRepository;
 import com.axelor.team.db.repo.TeamTaskRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -52,6 +53,8 @@ public class WkfUserActionServiceImpl implements WkfUserActionService {
   @Inject private WkfProcessConfigRepository wkfProcessConfigRepository;
 
   @Inject private TeamTaskRepository teamTaskRepository;
+
+  @Inject private TeamRepository teamRepo;
 
   protected static final Pattern FIELD_PATTERN = Pattern.compile("(\\$\\{[^\\}]+\\})");
 
@@ -88,7 +91,11 @@ public class WkfUserActionServiceImpl implements WkfUserActionService {
       if (teamPath != null) {
         FullContext teamCtx = (FullContext) wkfService.evalExpression(wkfContext, teamPath);
         if (teamCtx != null) {
-          teamTask.setTeam((Team) teamCtx.getTarget());
+          Team team = (Team) teamCtx.getTarget();
+          if (team != null) {
+            team = teamRepo.find(team.getId());
+            teamTask.setTeam(team);
+          }
         }
       }
 
@@ -194,8 +201,8 @@ public class WkfUserActionServiceImpl implements WkfUserActionService {
               .filter(
                   "self.wkfProcess.processId = ?1 "
                       + "AND self.wkfProcess.wkfModel.id = ?2 "
-                      + "AND (?3 is not null AND self.metaModel.fullName = ?3) "
-                      + "OR (?4 is not null AND self.metaJsonModel.name = ?4)",
+                      + "AND ((?3 != '' OR ?3 is not null) AND self.metaModel.fullName = ?3) "
+                      + "OR ((?4 != '' OR ?4 is not null) AND self.metaJsonModel.name = ?4)",
                   processDefinitionId,
                   wkfTaskConfig.getWkfModel().getId(),
                   wkfTaskConfig.getModelName(),

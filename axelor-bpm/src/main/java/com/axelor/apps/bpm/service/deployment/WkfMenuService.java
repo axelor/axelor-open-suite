@@ -19,9 +19,13 @@ package com.axelor.apps.bpm.service.deployment;
 
 import com.axelor.apps.bpm.db.WkfTaskConfig;
 import com.axelor.apps.bpm.service.execution.WkfInstanceService;
+import com.axelor.auth.db.Group;
+import com.axelor.auth.db.Role;
+import com.axelor.auth.db.User;
 import com.axelor.common.Inflector;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
+import com.axelor.meta.CallMethod;
 import com.axelor.meta.db.MetaAction;
 import com.axelor.meta.db.MetaJsonRecord;
 import com.axelor.meta.db.MetaMenu;
@@ -29,11 +33,18 @@ import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.repo.MetaActionRepository;
 import com.axelor.meta.db.repo.MetaMenuRepository;
 import com.axelor.meta.db.repo.MetaModelRepository;
+import com.axelor.team.db.Team;
+import com.axelor.team.db.repo.TeamRepository;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class WkfMenuService {
 
@@ -45,6 +56,8 @@ public class WkfMenuService {
   @Inject protected MetaActionRepository metaActionRepository;
 
   @Inject protected MetaModelRepository metaModelRepository;
+
+  @Inject protected TeamRepository teamRepo;
 
   protected Inflector inflector = Inflector.getInstance();
 
@@ -175,7 +188,7 @@ public class WkfMenuService {
             + permanent
             + ")\" />\n"
             + (userMenu
-                ? "<context name=\"currentUserId\" expr=\"eval:__user__.id\" />\n<context name=\"teamIds\" expr=\"eval:__user__.teamSet.collect{it->it.id}\" />\n"
+                ? "<context name=\"currentUserId\" expr=\"eval:__user__.id\" />\n<context name=\"teamIds\" expr=\"call:com.axelor.apps.bpm.service.deployment.WkfMenuService:getTeamIds(__user__)\" />\n"
                 : "")
             + (isJson
                 ? "<context name=\"jsonModel\" expr=\""
@@ -316,5 +329,34 @@ public class WkfMenuService {
     if (metaAction != null) {
       metaActionRepository.remove(metaAction);
     }
+  }
+
+  @CallMethod
+  public List<Long> getTeamIds(User user) {
+    List<Long> teamIds = new ArrayList<>();
+
+    Set<Role> userRoles = user.getRoles();
+    Group userGroup = user.getGroup();
+
+    List<Team> teams =
+        teamRepo
+            .all()
+            .filter(
+                "?1 MEMBER OF self.members OR self IN "
+                    + "(SELECT team FROM Team team INNER JOIN team.roles role "
+                    + "WHERE role IN (?2) OR role IN (?3))",
+                user,
+                userGroup != null
+                    ? CollectionUtils.isNotEmpty(userGroup.getRoles()) ? userGroup.getRoles() : null
+                    : null,
+                CollectionUtils.isNotEmpty(userRoles) ? userRoles : null)
+            .fetch();
+
+    if (CollectionUtils.isEmpty(teams)) {
+      return teamIds;
+    }
+
+    teamIds = teams.stream().map(team -> team.getId()).collect(Collectors.toList());
+    return teamIds;
   }
 }
