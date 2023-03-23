@@ -223,6 +223,15 @@ public class MoveValidateServiceImpl implements MoveValidateService {
           I18n.get(AccountExceptionMessage.MOVE_MISSING_CUT_OFF_DATE));
     }
 
+    if (move.getPaymentCondition() != null
+        && CollectionUtils.isNotEmpty(move.getPaymentCondition().getPaymentConditionLineList())
+        && move.getPaymentCondition().getPaymentConditionLineList().size() > 1
+        && !appAccountService.getAppAccount().getAllowMultiInvoiceTerms()) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          AccountExceptionMessage.INVOICE_INVOICE_TERM_MULTIPLE_LINES_NO_MULTI);
+    }
+
     moveControlService.checkSameCompany(move);
 
     if (move.getMoveLineList().stream()
