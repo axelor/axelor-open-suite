@@ -1,3 +1,0 @@
----
-title : "PAYMENT SESSION - boolean retrieveDaybookMovesInPaymentSession had no impact on payment session query"
-type : fix
