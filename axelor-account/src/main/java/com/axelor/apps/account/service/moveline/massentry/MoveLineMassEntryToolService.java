@@ -4,6 +4,5 @@ import com.axelor.apps.account.db.MoveLineMassEntry;
 
 public interface MoveLineMassEntryToolService {
 
-  void setPaymentModeOnMoveLineMassEntry(
-      MoveLineMassEntry moveLineMassEntry, Integer technicalTypeSelect);
+  void setPaymentModeOnMoveLineMassEntry(MoveLineMassEntry line, Integer technicalTypeSelect);
 }

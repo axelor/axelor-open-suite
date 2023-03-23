@@ -10,6 +10,7 @@ import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
@@ -56,171 +57,183 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
     this.moveValidateService = moveValidateService;
   }
 
+  @Override
   public void checkAndReplaceFieldsInMoveLineMassEntry(
-      MoveLineMassEntry moveLineMassEntry,
-      Move move,
-      MoveLineMassEntry newMoveLineMassEntry,
+      MoveLineMassEntry moveLine,
+      Move parentMove,
+      MoveLineMassEntry newMoveLine,
       boolean manageCutOff)
       throws AxelorException {
 
     // Check move line mass entry date
-    LocalDate newDate = newMoveLineMassEntry.getDate();
-    if (!moveLineMassEntry.getDate().equals(newDate)) {
-      moveLineMassEntry.setDate(newDate);
+    LocalDate newDate = newMoveLine.getDate();
+    Company company = parentMove.getCompany();
+    if (!moveLine.getDate().equals(newDate)) {
+      moveLine.setDate(newDate);
 
       Period period = null;
-      if (newDate != null && move.getCompany() != null) {
-        period =
-            periodService.getActivePeriod(newDate, move.getCompany(), YearRepository.TYPE_FISCAL);
-        move.setPeriod(period);
+      if (newDate != null && company != null) {
+        period = periodService.getActivePeriod(newDate, company, YearRepository.TYPE_FISCAL);
+        parentMove.setPeriod(period);
       }
-      moveLineToolService.checkDateInPeriod(move, moveLineMassEntry);
+      moveLineToolService.checkDateInPeriod(parentMove, moveLine);
     }
 
     // Check move line mass entry originDate
-    LocalDate newOriginDate = newMoveLineMassEntry.getOriginDate();
-    if (move != null
-        && !newMoveLineMassEntry.getOriginDate().equals(moveLineMassEntry.getOriginDate())) {
-      moveLineMassEntry.setOriginDate(newOriginDate);
+    LocalDate newOriginDate = newMoveLine.getOriginDate();
+    if (!newMoveLine.getOriginDate().equals(moveLine.getOriginDate())) {
+      moveLine.setOriginDate(newOriginDate);
       if (manageCutOff) {
-        moveLineMassEntry.setCutOffStartDate(newOriginDate);
-        moveLineMassEntry.setCutOffEndDate(newOriginDate);
+        moveLine.setCutOffStartDate(newOriginDate);
+        moveLine.setCutOffEndDate(newOriginDate);
       }
     }
 
     // Check move line mass entry origin
-    String newOrigin =
-        newMoveLineMassEntry.getOrigin() != null ? newMoveLineMassEntry.getOrigin() : "";
-    if (!newOrigin.equals(moveLineMassEntry.getOrigin())) {
-      moveLineMassEntry.setOrigin(newOrigin);
+    String newOrigin = newMoveLine.getOrigin() != null ? newMoveLine.getOrigin() : "";
+    if (!newOrigin.equals(moveLine.getOrigin())) {
+      moveLine.setOrigin(newOrigin);
     }
 
     // Check move line mass entry move description
     String newMoveDescription =
-        newMoveLineMassEntry.getMoveDescription() != null
-            ? newMoveLineMassEntry.getMoveDescription()
-            : "";
-    if (!newMoveDescription.equals(moveLineMassEntry.getMoveDescription())) {
-      if (moveLineMassEntry.getMoveDescription().equals(moveLineMassEntry.getDescription())) {
-        moveLineMassEntry.setDescription(newMoveDescription);
+        newMoveLine.getMoveDescription() != null ? newMoveLine.getMoveDescription() : "";
+    if (!newMoveDescription.equals(moveLine.getMoveDescription())) {
+      if (moveLine.getMoveDescription().equals(moveLine.getDescription())) {
+        moveLine.setDescription(newMoveDescription);
       }
-      moveLineMassEntry.setMoveDescription(newMoveDescription);
+      moveLine.setMoveDescription(newMoveDescription);
     }
 
     // Check move line mass entry payment mode
-    if (newMoveLineMassEntry.getAccount() != null
-        && !newMoveLineMassEntry.getAccount().getHasInvoiceTerm()
-        && newMoveLineMassEntry.getMovePaymentMode() != null) {
-      PaymentMode newMovePaymentMode = newMoveLineMassEntry.getMovePaymentMode();
-      if (!newMovePaymentMode.equals(moveLineMassEntry.getMovePaymentMode())) {
-        moveLineMassEntry.setMovePaymentMode(newMovePaymentMode);
+    if (newMoveLine.getAccount() != null
+        && !newMoveLine.getAccount().getHasInvoiceTerm()
+        && newMoveLine.getMovePaymentMode() != null) {
+      PaymentMode newMovePaymentMode = newMoveLine.getMovePaymentMode();
+      if (!newMovePaymentMode.equals(moveLine.getMovePaymentMode())) {
+        moveLine.setMovePaymentMode(newMovePaymentMode);
       }
     }
 
     // Check move line mass entry currency rate
-    BigDecimal newCurrencyRate = newMoveLineMassEntry.getCurrencyRate();
-    if (!newCurrencyRate.equals(moveLineMassEntry.getCurrencyRate())) {
-      moveLineMassEntry.setCurrencyRate(newCurrencyRate);
+    BigDecimal newCurrencyRate = newMoveLine.getCurrencyRate();
+    if (!newCurrencyRate.equals(moveLine.getCurrencyRate())) {
+      moveLine.setCurrencyRate(newCurrencyRate);
     }
 
     // Check move line mass entry payment condition
-    PaymentCondition newPaymentCondition = newMoveLineMassEntry.getMovePaymentCondition();
-    if (!moveLineMassEntry.getMovePaymentCondition().equals(newPaymentCondition)) {
-      moveLineMassEntry.setMovePaymentCondition(newPaymentCondition);
+    PaymentCondition newPaymentCondition = newMoveLine.getMovePaymentCondition();
+    if (!moveLine.getMovePaymentCondition().equals(newPaymentCondition)) {
+      moveLine.setMovePaymentCondition(newPaymentCondition);
     }
 
     // TODO add verification for cutOff when we manageCutOff in mass entry move
   }
 
-  public void checkDateInAllMoveLineMassEntry(Move move) {
+  @Override
+  public void checkDateInAllMoveLineMassEntry(Move move, int temporaryMoveNumber) {
     List<MoveLineMassEntry> differentElements = new ArrayList<>();
     boolean hasDateError;
 
-    MoveLineMassEntry firstMoveLineMassEntry = move.getMoveLineMassEntryList().get(0);
+    MoveLineMassEntry firstMoveLine = move.getMoveLineMassEntryList().get(0);
 
-    for (MoveLineMassEntry moveLineMassEntry : move.getMoveLineMassEntryList()) {
+    for (MoveLineMassEntry moveLine : move.getMoveLineMassEntryList()) {
       hasDateError = false;
       if (move.getPeriod() == null) {
         hasDateError = true;
         // TODO Set an error message
-        this.setMassEntryErrorMessage(move, "Period does not exist", true);
+        this.setMassEntryErrorMessage(move, "Period does not exist", true, temporaryMoveNumber);
       } else {
         if (move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_CLOSED) {
           hasDateError = true;
           // TODO Set an error message
-          this.setMassEntryErrorMessage(move, "Period closed", true);
+          this.setMassEntryErrorMessage(move, "Period closed", true, temporaryMoveNumber);
         } else if (move.getPeriod().getStatusSelect()
             == PeriodRepository.STATUS_CLOSURE_IN_PROGRESS) {
           hasDateError = true;
           // TODO Set an error message
-          this.setMassEntryErrorMessage(move, "Period in closure progress", true);
+          this.setMassEntryErrorMessage(
+              move, "Period in closure progress", true, temporaryMoveNumber);
         }
       }
 
-      if (!firstMoveLineMassEntry.getDate().equals(moveLineMassEntry.getDate())) {
+      if (!firstMoveLine.getDate().equals(moveLine.getDate())) {
         hasDateError = true;
         // TODO Set an error message
         this.setMassEntryErrorMessage(
-            move, "Different dates", ObjectUtils.notEmpty(differentElements));
+            move, "Different dates", ObjectUtils.notEmpty(differentElements), temporaryMoveNumber);
       }
 
       if (hasDateError) {
-        this.setFieldsErrorListMessage(moveLineMassEntry, differentElements, "date");
+        this.setFieldsErrorListMessage(moveLine, differentElements, "date");
       }
     }
   }
 
-  public void checkCurrencyRateInAllMoveLineMassEntry(Move move) {
+  @Override
+  public void checkCurrencyRateInAllMoveLineMassEntry(Move move, int temporaryMoveNumber) {
     List<MoveLineMassEntry> differentElements = new ArrayList<>();
 
-    for (MoveLineMassEntry moveLineMassEntry : move.getMoveLineMassEntryList()) {
+    for (MoveLineMassEntry moveLine : move.getMoveLineMassEntryList()) {
       if (BigDecimal.ZERO
           .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS)
           .equals(
-              moveLineMassEntry
+              moveLine
                   .getCurrencyRate()
                   .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP))) {
-        this.setFieldsErrorListMessage(moveLineMassEntry, differentElements, "currencyRate");
+        this.setFieldsErrorListMessage(moveLine, differentElements, "currencyRate");
       }
     }
     // TODO Set an error message
     this.setMassEntryErrorMessage(
-        move, "Currency Rate is 0.00", ObjectUtils.notEmpty(differentElements));
+        move,
+        "Currency Rate is 0.00",
+        ObjectUtils.notEmpty(differentElements),
+        temporaryMoveNumber);
   }
 
-  public void checkOriginDateInAllMoveLineMassEntry(Move move) {
+  @Override
+  public void checkOriginDateInAllMoveLineMassEntry(Move move, int temporaryMoveNumber) {
     List<MoveLineMassEntry> differentElements = new ArrayList<>();
 
-    MoveLineMassEntry firstMoveLineMassEntry = move.getMoveLineMassEntryList().get(0);
-    for (MoveLineMassEntry moveLineMassEntry : move.getMoveLineMassEntryList()) {
-      if (!firstMoveLineMassEntry.getOriginDate().equals(moveLineMassEntry.getOriginDate())) {
-        this.setFieldsErrorListMessage(moveLineMassEntry, differentElements, "originDate");
+    MoveLineMassEntry firstMoveLine = move.getMoveLineMassEntryList().get(0);
+    for (MoveLineMassEntry moveLine : move.getMoveLineMassEntryList()) {
+      if (!firstMoveLine.getOriginDate().equals(moveLine.getOriginDate())) {
+        this.setFieldsErrorListMessage(moveLine, differentElements, "originDate");
       }
     }
     // TODO Set an error message
     this.setMassEntryErrorMessage(
-        move, "Different origin dates", ObjectUtils.notEmpty(differentElements));
+        move,
+        "Different origin dates",
+        ObjectUtils.notEmpty(differentElements),
+        temporaryMoveNumber);
   }
 
-  public void checkOriginInAllMoveLineMassEntry(Move move) {
+  @Override
+  public void checkOriginInAllMoveLineMassEntry(Move move, int temporaryMoveNumber) {
     List<MoveLineMassEntry> differentElements = new ArrayList<>();
 
-    for (MoveLineMassEntry moveLineMassEntry : move.getMoveLineMassEntryList()) {
+    for (MoveLineMassEntry moveLine : move.getMoveLineMassEntryList()) {
       if (move.getJournal() != null
           && move.getPartner() != null
           && move.getJournal().getHasDuplicateDetectionOnOrigin()) {
         List<Move> moveList = moveToolService.getMovesWithDuplicatedOrigin(move);
         if (ObjectUtils.notEmpty(moveList)) {
-          this.setFieldsErrorListMessage(moveLineMassEntry, differentElements, "origin");
+          this.setFieldsErrorListMessage(moveLine, differentElements, "origin");
         }
       }
     }
     // TODO Set an error message
     this.setMassEntryErrorMessage(
-        move, "This origin already exist", ObjectUtils.notEmpty(differentElements));
+        move,
+        "This origin already exist",
+        ObjectUtils.notEmpty(differentElements),
+        temporaryMoveNumber);
   }
 
-  public void checkPartnerInAllMoveLineMassEntry(Move move) {
+  @Override
+  public void checkPartnerInAllMoveLineMassEntry(Move move, int temporaryMoveNumber) {
     List<MoveLineMassEntry> differentElements = new ArrayList<>();
     int[] technicalTypeSelectArray = {
       JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE,
@@ -232,26 +245,25 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
         && ArrayUtils.contains(
             technicalTypeSelectArray,
             move.getJournal().getJournalType().getTechnicalTypeSelect())) {
-      for (MoveLineMassEntry moveLineMassEntry : move.getMoveLineMassEntryList()) {
+      for (MoveLineMassEntry moveLine : move.getMoveLineMassEntryList()) {
         try {
-          moveLineControlService.checkPartner(moveLineMassEntry);
+          moveLineControlService.checkPartner(moveLine);
         } catch (AxelorException e) {
-          this.setFieldsErrorListMessage(moveLineMassEntry, differentElements, "partner");
+          this.setFieldsErrorListMessage(moveLine, differentElements, "partner");
         }
       }
       // TODO Set an error message
       this.setMassEntryErrorMessage(
-          move, "Multiple partners", ObjectUtils.notEmpty(differentElements));
+          move, "Multiple partners", ObjectUtils.notEmpty(differentElements), temporaryMoveNumber);
     }
   }
 
-  private void setMassEntryErrorMessage(Move move, String message, boolean toSet) {
+  private void setMassEntryErrorMessage(
+      Move move, String message, boolean toSet, int temporaryMoveNumber) {
     if (toSet) {
       if (ObjectUtils.isEmpty(move.getMassEntryErrors())) {
         move.setMassEntryErrors(
-            "There is the following errors in move : "
-                + move.getMoveLineMassEntryList().get(0).getTemporaryMoveNumber()
-                + '\n');
+            "There is the following errors in move : " + temporaryMoveNumber + '\n');
       }
 
       move.setMassEntryErrors(move.getMassEntryErrors() + message + '\n');
@@ -259,57 +271,55 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
   }
 
   private void setFieldsErrorListMessage(
-      MoveLineMassEntry moveLineMassEntry,
-      List<MoveLineMassEntry> differentElements,
-      String fieldName) {
+      MoveLineMassEntry moveLine, List<MoveLineMassEntry> differentElements, String fieldName) {
     String message = "";
-    if (ObjectUtils.notEmpty(moveLineMassEntry.getFieldsErrorList())) {
-      message += moveLineMassEntry.getFieldsErrorList() + ";";
+    if (ObjectUtils.notEmpty(moveLine.getFieldsErrorList())) {
+      message += moveLine.getFieldsErrorList() + ";";
     }
     message += fieldName + ":";
 
     switch (fieldName) {
       case "date":
-        message += moveLineMassEntry.getDate().toString();
+        message += moveLine.getDate().toString();
         break;
       case "currencyRate":
-        message += moveLineMassEntry.getCurrencyRate().toString();
+        message += moveLine.getCurrencyRate().toString();
         break;
       case "originDate":
-        message += moveLineMassEntry.getOriginDate().toString();
+        message += moveLine.getOriginDate().toString();
         break;
       case "origin":
-        message += moveLineMassEntry.getOrigin();
+        message += moveLine.getOrigin();
         break;
       case "partner":
-        message += moveLineMassEntry.getPartner().getName();
+        message += moveLine.getPartner().getName();
         break;
       default:
         break;
     }
 
-    moveLineMassEntry.setFieldsErrorList(message);
+    moveLine.setFieldsErrorList(message);
     if (differentElements != null) {
-      differentElements.add(moveLineMassEntry);
+      differentElements.add(moveLine);
     }
   }
 
-  public void setPfpValidatorOnInTaxLines(Move move) {
+  @Override
+  public void setPfpValidatorOnInTaxLines(Move move, int temporaryMoveNumber) {
     // TODO set pfp validator inTax lines using partner.pfpValidatorUser
   }
 
-  public void checkWellBalancedMove(Move move) {
+  @Override
+  public void checkWellBalancedMove(Move move, int temporaryMoveNumber) {
     try {
       moveValidateService.validateWellBalancedMove(move);
     } catch (AxelorException e) {
       for (MoveLineMassEntry element : move.getMoveLineMassEntryList()) {
-        if (Objects.equals(
-            element.getTemporaryMoveNumber(),
-            move.getMoveLineMassEntryList().get(0).getTemporaryMoveNumber())) {
+        if (Objects.equals(element.getTemporaryMoveNumber(), temporaryMoveNumber)) {
           this.setFieldsErrorListMessage(element, null, "balance");
         }
       }
-      this.setMassEntryErrorMessage(move, e.getMessage(), true);
+      this.setMassEntryErrorMessage(move, e.getMessage(), true, temporaryMoveNumber);
     }
   }
 }

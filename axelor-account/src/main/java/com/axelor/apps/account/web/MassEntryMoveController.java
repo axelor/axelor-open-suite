@@ -63,31 +63,28 @@ public class MassEntryMoveController {
       boolean manageCutOff =
           request.getContext().get("manageCutOffDummy") != null
               && (boolean) request.getContext().get("manageCutOffDummy");
-      MassEntryService massEntryService = Beans.get(MassEntryService.class);
+      MassEntryToolService massEntryToolService = Beans.get(MassEntryToolService.class);
 
       if (move != null && ObjectUtils.notEmpty(move.getMoveLineMassEntryList())) {
-        massEntryService.verifyFieldsChangeOnMoveLineMassEntry(move, manageCutOff);
+        Beans.get(MassEntryService.class).verifyFieldsChangeOnMoveLineMassEntry(move, manageCutOff);
 
-        MoveLineMassEntry lastMoveLineMassEntry =
+        MoveLineMassEntry lastLine =
             move.getMoveLineMassEntryList().get(move.getMoveLineMassEntryList().size() - 1);
-        if (lastMoveLineMassEntry.getInputAction() != null
-            && lastMoveLineMassEntry.getInputAction() == 2) {
-          Move moveToGenerateTaxLineAndCounterpart =
-              Beans.get(MassEntryToolService.class)
-                  .createMoveFromMassEntryList(
-                      move, lastMoveLineMassEntry.getTemporaryMoveNumber());
+        if (lastLine.getInputAction() != null && lastLine.getInputAction() == 2) {
+          Move workingMove =
+              massEntryToolService.createMoveFromMassEntryList(
+                  move, lastLine.getTemporaryMoveNumber());
           response.setValues(move);
 
-          Beans.get(MoveToolService.class)
-              .exceptionOnGenerateCounterpart(moveToGenerateTaxLineAndCounterpart);
+          Beans.get(MoveToolService.class).exceptionOnGenerateCounterpart(workingMove);
           Beans.get(MoveLineMassEntryService.class)
               .generateTaxLineAndCounterpart(
                   move,
-                  moveToGenerateTaxLineAndCounterpart,
+                  workingMove,
                   this.extractDueDate(request),
-                  lastMoveLineMassEntry.getTemporaryMoveNumber());
+                  lastLine.getTemporaryMoveNumber());
         }
-        Beans.get(MassEntryToolService.class).sortMoveLinesMassEntryByTemporaryNumber(move);
+        massEntryToolService.sortMoveLinesMassEntryByTemporaryNumber(move);
         response.setValues(move);
         response.setAttr("controlMassEntryMoves", "hidden", false);
         response.setAttr("validateMassEntryMoves", "hidden", true);
@@ -126,7 +123,7 @@ public class MassEntryMoveController {
   public void validateMassEntryMoves(ActionRequest request, ActionResponse response) {
     String error;
     Map.Entry<List<Long>, String> entryMap;
-    List<Long> idMoveList;
+    List<Long> moveIdList;
     try {
       Move move = request.getContext().asType(Move.class);
 
@@ -137,7 +134,7 @@ public class MassEntryMoveController {
                 .entrySet()
                 .iterator()
                 .next();
-        idMoveList = entryMap.getKey();
+        moveIdList = entryMap.getKey();
         error = entryMap.getValue();
 
         response.setValues(move);
@@ -147,16 +144,15 @@ public class MassEntryMoveController {
           response.setAttr("controlMassEntryMoves", "hidden", false);
           response.setAttr("validateMassEntryMoves", "hidden", true);
         } else {
-          Beans.get(MassEntryService.class).addGeneratedMovesIntoMassEntryMove(move, idMoveList);
           response.setFlash(I18n.get(AccountExceptionMessage.MOVE_ACCOUNTING_OK));
-          if (!CollectionUtils.isEmpty(idMoveList)) {
+          if (!CollectionUtils.isEmpty(moveIdList)) {
             response.setView(
                 ActionView.define(I18n.get(AccountExceptionMessage.MOVE_TEMPLATE_3))
                     .model("com.axelor.apps.account.db.Move")
                     .add("grid", "move-grid")
                     .add("form", "move-form")
                     .param("forceEdit", "true")
-                    .domain("self.id in (" + Joiner.on(",").join(idMoveList) + ")")
+                    .domain("self.id in (" + Joiner.on(",").join(moveIdList) + ")")
                     .map());
           }
         }

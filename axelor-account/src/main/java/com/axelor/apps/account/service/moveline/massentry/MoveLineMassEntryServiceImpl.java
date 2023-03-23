@@ -19,6 +19,7 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import org.slf4j.Logger;
@@ -51,39 +52,40 @@ public class MoveLineMassEntryServiceImpl implements MoveLineMassEntryService {
     this.moveLineMassEntryToolService = moveLineMassEntryToolService;
   }
 
+  @Override
   public void generateTaxLineAndCounterpart(
-      Move massEntryMove, Move move, LocalDate dueDate, Integer temporaryMoveNumber)
+      Move parentMove, Move childMove, LocalDate dueDate, Integer temporaryMoveNumber)
       throws AxelorException {
-    if (ObjectUtils.notEmpty(move.getMoveLineList())) {
-      if (move.getStatusSelect().equals(MoveRepository.STATUS_NEW)
-          || move.getStatusSelect().equals(MoveRepository.STATUS_SIMULATED)) {
-        moveLineTaxService.autoTaxLineGenerate(move);
-        moveCounterPartService.generateCounterpartMoveLine(move, dueDate);
+    if (ObjectUtils.notEmpty(childMove.getMoveLineList())) {
+      if (childMove.getStatusSelect().equals(MoveRepository.STATUS_NEW)
+          || childMove.getStatusSelect().equals(MoveRepository.STATUS_SIMULATED)) {
+        moveLineTaxService.autoTaxLineGenerate(childMove);
+        moveCounterPartService.generateCounterpartMoveLine(childMove, dueDate);
       }
       massEntryToolService.clearMoveLineMassEntryListAndAddNewLines(
-          massEntryMove, move, temporaryMoveNumber);
+          parentMove, childMove, temporaryMoveNumber);
     }
   }
 
-  public void loadAccountInformation(Move move, MoveLineMassEntry moveLineMassEntry)
-      throws AxelorException {
+  @Override
+  public void loadAccountInformation(Move move, MoveLineMassEntry moveLine) throws AxelorException {
     Account accountingAccount =
         moveLoadDefaultConfigService.getAccountingAccountFromAccountConfig(move);
 
     if (accountingAccount != null) {
-      moveLineMassEntry.setAccount(accountingAccount);
+      moveLine.setAccount(accountingAccount);
 
       AnalyticDistributionTemplate analyticDistributionTemplate =
           accountingAccount.getAnalyticDistributionTemplate();
       if (accountingAccount.getAnalyticDistributionAuthorized()
           && analyticDistributionTemplate != null) {
-        moveLineMassEntry.setAnalyticDistributionTemplate(analyticDistributionTemplate);
+        moveLine.setAnalyticDistributionTemplate(analyticDistributionTemplate);
       }
     }
-    moveLineMassEntry.setTaxLine(
-        moveLoadDefaultConfigService.getTaxLine(move, moveLineMassEntry, accountingAccount));
+    moveLine.setTaxLine(moveLoadDefaultConfigService.getTaxLine(move, moveLine, accountingAccount));
   }
 
+  @Override
   public Map<String, Map<String, Object>> setAttrsInputActionOnChange(
       boolean isCounterPartLine, Account account) {
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
@@ -122,14 +124,17 @@ public class MoveLineMassEntryServiceImpl implements MoveLineMassEntryService {
     return attrsMap;
   }
 
+  @Override
   public BigDecimal computeCurrentRate(
-      BigDecimal currencyRate, Move move, Integer temporaryMoveNumber, LocalDate originDate)
+      BigDecimal currencyRate,
+      List<MoveLineMassEntry> moveLineList,
+      Currency currency,
+      Currency companyCurrency,
+      Integer temporaryMoveNumber,
+      LocalDate originDate)
       throws AxelorException {
-    Currency currency = move.getCurrency();
-    Currency companyCurrency = move.getCompanyCurrency();
-
     if (currency != null && companyCurrency != null && !currency.equals(companyCurrency)) {
-      if (move.getMoveLineMassEntryList().size() == 0) {
+      if (moveLineList.size() == 0) {
         if (originDate != null) {
           currencyRate =
               currencyService.getCurrencyConversionRate(currency, companyCurrency, originDate);
@@ -137,17 +142,11 @@ public class MoveLineMassEntryServiceImpl implements MoveLineMassEntryService {
           currencyRate = currencyService.getCurrencyConversionRate(currency, companyCurrency);
         }
       } else {
-        if (move.getMoveLineMassEntryList().stream()
-            .anyMatch(
-                moveLineMassEntry1 ->
-                    Objects.equals(
-                        moveLineMassEntry1.getTemporaryMoveNumber(), temporaryMoveNumber))) {
+        if (moveLineList.stream()
+            .anyMatch(it -> Objects.equals(it.getTemporaryMoveNumber(), temporaryMoveNumber))) {
           currencyRate =
-              move.getMoveLineMassEntryList().stream()
-                  .filter(
-                      moveLineMassEntry1 ->
-                          Objects.equals(
-                              moveLineMassEntry1.getTemporaryMoveNumber(), temporaryMoveNumber))
+              moveLineList.stream()
+                  .filter(it -> Objects.equals(it.getTemporaryMoveNumber(), temporaryMoveNumber))
                   .findFirst()
                   .get()
                   .getCurrencyRate();
@@ -157,36 +156,33 @@ public class MoveLineMassEntryServiceImpl implements MoveLineMassEntryService {
     return currencyRate;
   }
 
-  public void setPartnerAndBankDetails(Move move, MoveLineMassEntry moveLineMassEntry)
+  @Override
+  public void setPartnerAndBankDetails(Move move, MoveLineMassEntry moveLine)
       throws AxelorException {
     if (move != null && move.getJournal() != null) {
       moveLineMassEntryToolService.setPaymentModeOnMoveLineMassEntry(
-          moveLineMassEntry, move.getJournal().getJournalType().getTechnicalTypeSelect());
+          moveLine, move.getJournal().getJournalType().getTechnicalTypeSelect());
 
-      move.setPartner(moveLineMassEntry.getPartner());
-      move.setPaymentMode(moveLineMassEntry.getMovePaymentMode());
+      move.setPartner(moveLine.getPartner());
+      move.setPaymentMode(moveLine.getMovePaymentMode());
 
-      moveLineMassEntry.setMovePaymentCondition(null);
+      moveLine.setMovePaymentCondition(null);
       if (move.getJournal().getJournalType().getTechnicalTypeSelect()
           != JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY) {
-        moveLineMassEntry.setMovePaymentCondition(
-            moveLineMassEntry.getPartner().getPaymentCondition());
+        moveLine.setMovePaymentCondition(moveLine.getPartner().getPaymentCondition());
       }
 
-      this.loadAccountInformation(move, moveLineMassEntry);
+      this.loadAccountInformation(move, moveLine);
     }
 
-    moveLineMassEntry.setMovePartnerBankDetails(
-        moveLineMassEntry.getPartner().getBankDetailsList().stream()
-                .anyMatch(it -> it.getIsDefault() && it.getActive())
-            ? moveLineMassEntry.getPartner().getBankDetailsList().stream()
-                .filter(it -> it.getIsDefault() && it.getActive())
-                .findFirst()
-                .get()
-            : null);
-    moveLineMassEntry.setCurrencyCode(
-        moveLineMassEntry.getPartner().getCurrency() != null
-            ? moveLineMassEntry.getPartner().getCurrency().getCodeISO()
+    moveLine.setMovePartnerBankDetails(
+        moveLine.getPartner().getBankDetailsList().stream()
+            .filter(it -> it.getIsDefault() && it.getActive())
+            .findFirst()
+            .orElse(null));
+    moveLine.setCurrencyCode(
+        moveLine.getPartner().getCurrency() != null
+            ? moveLine.getPartner().getCurrency().getCodeISO()
             : null);
   }
 }

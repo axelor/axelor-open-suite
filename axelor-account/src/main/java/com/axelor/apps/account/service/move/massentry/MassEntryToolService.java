@@ -9,26 +9,25 @@ import java.util.List;
 public interface MassEntryToolService {
 
   void clearMoveLineMassEntryListAndAddNewLines(
-      Move massEntryMove, Move move, Integer temporaryMoveNumber);
+      Move parentMove, Move childMove, Integer temporaryMoveNumber);
 
   void sortMoveLinesMassEntryByTemporaryNumber(Move move);
 
   List<MoveLineMassEntry> convertMoveLinesIntoMoveLineMassEntry(
-      Move move, List<MoveLine> moveLines, Integer temporaryMoveNumber);
+      Move move, List<MoveLine> moveLineList, Integer temporaryMoveNumber);
 
   MoveLineMassEntry convertMoveLineIntoMoveLineMassEntry(
       Move move, MoveLine moveLine, Integer temporaryMoveNumber);
 
-  List<MoveLineMassEntry> getEditedMoveLineMassEntry(List<MoveLineMassEntry> moveLineMassEntryList);
+  List<MoveLineMassEntry> getEditedMoveLineMassEntry(List<MoveLineMassEntry> moveLineList);
 
   List<Move> createMoveListFromMassEntryList(Move parentMove);
 
   Move createMoveFromMassEntryList(Move parentMove, int temporaryMoveNumber);
 
-  Integer getMaxTemporaryMoveNumber(List<MoveLineMassEntry> moveLineMassEntryList);
+  Integer getMaxTemporaryMoveNumber(List<MoveLineMassEntry> moveLineList);
 
   void setNewStatusSelectOnMassEntryLines(Move move, Integer newStatusSelect);
 
-  boolean verifyJournalAuthorizeNewMove(
-      List<MoveLineMassEntry> moveLineMassEntryList, Journal journal);
+  boolean verifyJournalAuthorizeNewMove(List<MoveLineMassEntry> moveLineList, Journal journal);
 }

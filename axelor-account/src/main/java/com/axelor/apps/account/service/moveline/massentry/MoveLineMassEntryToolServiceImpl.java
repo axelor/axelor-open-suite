@@ -11,16 +11,16 @@ public class MoveLineMassEntryToolServiceImpl implements MoveLineMassEntryToolSe
 
   @Override
   public void setPaymentModeOnMoveLineMassEntry(
-      MoveLineMassEntry moveLineMassEntry, Integer technicalTypeSelect) {
+      MoveLineMassEntry line, Integer technicalTypeSelect) {
     switch (technicalTypeSelect) {
       case 1:
-        moveLineMassEntry.setMovePaymentMode(moveLineMassEntry.getPartner().getOutPaymentMode());
+        line.setMovePaymentMode(line.getPartner().getOutPaymentMode());
         break;
       case 2:
-        moveLineMassEntry.setMovePaymentMode(moveLineMassEntry.getPartner().getInPaymentMode());
+        line.setMovePaymentMode(line.getPartner().getInPaymentMode());
         break;
       default:
-        moveLineMassEntry.setMovePaymentMode(null);
+        line.setMovePaymentMode(null);
         break;
     }
   }

@@ -40,10 +40,10 @@ public class MoveLineMassEntryController {
   public void getFirstMoveLineMassEntryInformations(
       ActionRequest request, ActionResponse response) {
     try {
-      MoveLineMassEntry moveLineMassEntry = request.getContext().asType(MoveLineMassEntry.class);
+      MoveLineMassEntry line = request.getContext().asType(MoveLineMassEntry.class);
       Context parentContext = request.getContext().getParent();
 
-      if (moveLineMassEntry != null
+      if (line != null
           && parentContext != null
           && Move.class.equals(parentContext.getContextClass())) {
         Move move = parentContext.asType(Move.class);
@@ -52,22 +52,22 @@ public class MoveLineMassEntryController {
                 && (boolean) parentContext.get("manageCutOffDummy");
 
         if (move != null) {
-          moveLineMassEntry.setInputAction(1);
+          line.setInputAction(1);
           if (ObjectUtils.notEmpty(move.getMoveLineMassEntryList())) {
-            if (moveLineMassEntry.getTemporaryMoveNumber() == 0) {
-              moveLineMassEntry.setTemporaryMoveNumber(
+            if (line.getTemporaryMoveNumber() == 0) {
+              line.setTemporaryMoveNumber(
                   Beans.get(MassEntryToolService.class)
                       .getMaxTemporaryMoveNumber(move.getMoveLineMassEntryList()));
-              moveLineMassEntry.setCounter(move.getMoveLineMassEntryList().size() + 1);
+              line.setCounter(move.getMoveLineMassEntryList().size() + 1);
             }
           } else {
-            moveLineMassEntry.setTemporaryMoveNumber(1);
-            moveLineMassEntry.setCounter(1);
+            line.setTemporaryMoveNumber(1);
+            line.setCounter(1);
           }
           response.setValues(
               Beans.get(MassEntryService.class)
                   .getFirstMoveLineMassEntryInformations(
-                      move.getMoveLineMassEntryList(), moveLineMassEntry, manageCutOff));
+                      move.getMoveLineMassEntryList(), line, manageCutOff));
           if (move.getMoveLineMassEntryList() != null
               && move.getMoveLineMassEntryList().size() != 0) {
             response.setAttr("inputAction", "readonly", false);
@@ -83,40 +83,39 @@ public class MoveLineMassEntryController {
   public void setAttrsAndFieldsOnInputActionChanges(
       ActionRequest request, ActionResponse response) {
     try {
-      MoveLineMassEntry moveLineMassEntry = request.getContext().asType(MoveLineMassEntry.class);
+      MoveLineMassEntry moveLine = request.getContext().asType(MoveLineMassEntry.class);
       Context parentContext = request.getContext().getParent();
       boolean isCounterpartLine = false;
 
       if (parentContext != null
           && Move.class.equals(parentContext.getContextClass())
-          && moveLineMassEntry != null
-          && moveLineMassEntry.getInputAction() != null) {
+          && moveLine != null
+          && moveLine.getInputAction() != null) {
         Move move = parentContext.asType(Move.class);
         boolean manageCutOff =
             parentContext.get("manageCutOffDummy") != null
                 && (boolean) parentContext.get("manageCutOffDummy");
 
-        switch (moveLineMassEntry.getInputAction()) {
+        switch (moveLine.getInputAction()) {
           case 2:
             isCounterpartLine = true;
             break;
           case 3:
-            Beans.get(MassEntryService.class)
-                .resetMoveLineMassEntry(moveLineMassEntry, manageCutOff);
-            moveLineMassEntry.setInputAction(1);
-            moveLineMassEntry.setTemporaryMoveNumber(
+            Beans.get(MassEntryService.class).resetMoveLineMassEntry(moveLine, manageCutOff);
+            moveLine.setInputAction(1);
+            moveLine.setTemporaryMoveNumber(
                 Beans.get(MassEntryToolService.class)
                         .getMaxTemporaryMoveNumber(move.getMoveLineMassEntryList())
                     + 1);
-            moveLineMassEntry.setCounter(1);
-            response.setValues(moveLineMassEntry);
+            moveLine.setCounter(1);
+            response.setValues(moveLine);
             break;
           default:
             break;
         }
         response.setAttrs(
             Beans.get(MoveLineMassEntryService.class)
-                .setAttrsInputActionOnChange(isCounterpartLine, moveLineMassEntry.getAccount()));
+                .setAttrsInputActionOnChange(isCounterpartLine, moveLine.getAccount()));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -125,25 +124,24 @@ public class MoveLineMassEntryController {
 
   public void changePartnerOnMoveLineMassEntry(ActionRequest request, ActionResponse response) {
     try {
-      MoveLineMassEntry moveLineMassEntry = request.getContext().asType(MoveLineMassEntry.class);
+      MoveLineMassEntry line = request.getContext().asType(MoveLineMassEntry.class);
       Context parentContext = request.getContext().getParent();
 
-      if (moveLineMassEntry != null
+      if (line != null
           && parentContext != null
           && Move.class.equals(parentContext.getContextClass())) {
-        if (moveLineMassEntry.getPartner() == null) {
-          moveLineMassEntry.setPartnerId(null);
-          moveLineMassEntry.setPartnerSeq(null);
-          moveLineMassEntry.setPartnerFullName(null);
-          moveLineMassEntry.setMovePartnerBankDetails(null);
+        if (line.getPartner() == null) {
+          line.setPartnerId(null);
+          line.setPartnerSeq(null);
+          line.setPartnerFullName(null);
+          line.setMovePartnerBankDetails(null);
 
         } else {
           Move move = parentContext.asType(Move.class);
-          Beans.get(MoveLineMassEntryService.class)
-              .setPartnerAndBankDetails(move, moveLineMassEntry);
+          Beans.get(MoveLineMassEntryService.class).setPartnerAndBankDetails(move, line);
         }
       }
-      response.setValues(moveLineMassEntry);
+      response.setValues(line);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -151,7 +149,7 @@ public class MoveLineMassEntryController {
 
   public void computeCurrentRate(ActionRequest request, ActionResponse response) {
     try {
-      MoveLineMassEntry moveLineMassEntry = request.getContext().asType(MoveLineMassEntry.class);
+      MoveLineMassEntry line = request.getContext().asType(MoveLineMassEntry.class);
       Context parentContext = request.getContext().getParent();
       BigDecimal currencyRate = BigDecimal.ONE;
       boolean isOriginRequired = false;
@@ -167,11 +165,13 @@ public class MoveLineMassEntryController {
             Beans.get(MoveLineMassEntryService.class)
                 .computeCurrentRate(
                     currencyRate,
-                    move,
-                    moveLineMassEntry.getTemporaryMoveNumber(),
-                    moveLineMassEntry.getOriginDate());
+                    move.getMoveLineMassEntryList(),
+                    move.getCurrency(),
+                    move.getCompanyCurrency(),
+                    line.getTemporaryMoveNumber(),
+                    line.getOriginDate());
 
-        if (moveLineMassEntry.getOriginDate() != null
+        if (line.getOriginDate() != null
             && ArrayUtils.contains(
                 technicalTypeSelectArray,
                 move.getJournal().getJournalType().getTechnicalTypeSelect())) {

@@ -7,23 +7,23 @@ import com.axelor.exception.AxelorException;
 public interface MassEntryVerificationService {
 
   void checkAndReplaceFieldsInMoveLineMassEntry(
-      MoveLineMassEntry moveLineMassEntry,
-      Move move,
-      MoveLineMassEntry newMoveLineMassEntry,
+      MoveLineMassEntry moveLine,
+      Move parentMove,
+      MoveLineMassEntry newMoveLine,
       boolean manageCutOff)
       throws AxelorException;
 
-  void checkDateInAllMoveLineMassEntry(Move move);
+  void checkDateInAllMoveLineMassEntry(Move move, int temporaryMoveNumber);
 
-  void checkCurrencyRateInAllMoveLineMassEntry(Move move);
+  void checkCurrencyRateInAllMoveLineMassEntry(Move move, int temporaryMoveNumber);
 
-  void checkOriginDateInAllMoveLineMassEntry(Move move);
+  void checkOriginDateInAllMoveLineMassEntry(Move move, int temporaryMoveNumber);
 
-  void checkOriginInAllMoveLineMassEntry(Move move);
+  void checkOriginInAllMoveLineMassEntry(Move move, int temporaryMoveNumber);
 
-  void checkPartnerInAllMoveLineMassEntry(Move move);
+  void checkPartnerInAllMoveLineMassEntry(Move move, int temporaryMoveNumber);
 
-  void setPfpValidatorOnInTaxLines(Move move);
+  void setPfpValidatorOnInTaxLines(Move move, int temporaryMoveNumber);
 
-  void checkWellBalancedMove(Move move);
+  void checkWellBalancedMove(Move move, int temporaryMoveNumber);
 }
