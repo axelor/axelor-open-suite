@@ -376,8 +376,6 @@
         onClick="action-move-method-control-mass-entry-moves" colSpan="12" hidden="false"/>
       <button name="validateMassEntryMoves" title="Validate" hidden="true"
         onClick="action-move-method-validate-mass-entry-moves" colSpan="12"/>
-      <button name="showMassEntryMoves" title="Show moves" hidden="true"
-        onClick="action-move-method-show-mass-entry-moves" colSpan="12"/>
     </toolbar>
 
     <panel name="mainPanel" colSpan="12">
@@ -1324,15 +1322,9 @@
       method="validateMassEntryMoves"/>
   </action-method>
 
-  <action-method name="action-move-method-show-mass-entry-moves">
-    <call class="com.axelor.apps.account.web.MassEntryMoveController"
-      method="showMassEntryMoves"/>
-  </action-method>
-
   <action-attrs name="action-move-attrs-set-hidden-mass-entry-buttons">
     <attribute for="controlMassEntryMoves" name="hidden" expr="false"/>
     <attribute for="validateMassEntryMoves" name="hidden" expr="true"/>
-    <attribute for="showMassEntryMoves" name="hidden" expr="true"/>
   </action-attrs>
 
   <action-group name="action-move-currency-onchange">

@@ -37,18 +37,6 @@ import org.apache.commons.lang3.ArrayUtils;
 @Singleton
 public class MoveLineMassEntryController {
 
-  public void verifyMassEntryMoveBalance(ActionRequest request, ActionResponse response) {
-    try {
-      System.out.println("verifyMassEntryMoveBalance");
-      // TODO
-      // check balance of the last Move of last MoveLineMassEntry
-      // if MoveLineMassEntry debit/credit balance comparison is 0 then make +1 to the
-      // temporaryMoveNumber
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
   public void getFirstMoveLineMassEntryInformations(
       ActionRequest request, ActionResponse response) {
     try {

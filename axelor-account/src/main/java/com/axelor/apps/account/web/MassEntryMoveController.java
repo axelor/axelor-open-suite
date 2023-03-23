@@ -91,7 +91,6 @@ public class MassEntryMoveController {
         response.setValues(move);
         response.setAttr("controlMassEntryMoves", "hidden", false);
         response.setAttr("validateMassEntryMoves", "hidden", true);
-        response.setAttr("showMassEntryMoves", "hidden", true);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
@@ -162,15 +161,6 @@ public class MassEntryMoveController {
           }
         }
       }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-    }
-  }
-
-  public void showMassEntryMoves(ActionRequest request, ActionResponse response) {
-    try {
-      Move move = request.getContext().asType(Move.class);
-      // TODO Create actionView to show mass entry moves
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
