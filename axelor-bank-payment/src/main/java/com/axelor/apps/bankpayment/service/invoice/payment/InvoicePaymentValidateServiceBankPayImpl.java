@@ -42,6 +42,7 @@ import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.DateService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -73,7 +74,8 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
       AppAccountService appAccountService,
       AccountManagementAccountService accountManagementAccountService,
       BankOrderCreateService bankOrderCreateService,
-      BankOrderService bankOrderService) {
+      BankOrderService bankOrderService,
+      DateService dateService) {
     super(
         paymentModeService,
         moveCreateService,
@@ -85,7 +87,8 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
         reconcileService,
         appAccountService,
         accountManagementAccountService,
-        invoicePaymentToolService);
+        invoicePaymentToolService,
+        dateService);
     this.bankOrderCreateService = bankOrderCreateService;
     this.bankOrderService = bankOrderService;
     this.invoiceTermService = invoiceTermService;

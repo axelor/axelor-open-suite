@@ -19,7 +19,10 @@ package com.axelor.apps.bankpayment.db.repo;
 
 import com.axelor.apps.bankpayment.db.EbicsCertificate;
 import com.axelor.apps.bankpayment.ebics.service.EbicsCertificateService;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.google.inject.Inject;
+import javax.persistence.PersistenceException;
 
 public class EbicsCertificateAccountRepository extends EbicsCertificateRepository {
 
@@ -28,8 +31,13 @@ public class EbicsCertificateAccountRepository extends EbicsCertificateRepositor
   @Override
   public EbicsCertificate save(EbicsCertificate entity) {
 
-    certificateService.computeFullName(entity);
+    try {
+      certificateService.computeFullName(entity);
+      return super.save(entity);
 
-    return super.save(entity);
+    } catch (AxelorException e) {
+      TraceBackService.traceExceptionFromSaveMethod(e);
+      throw new PersistenceException(e.getMessage(), e);
+    }
   }
 }

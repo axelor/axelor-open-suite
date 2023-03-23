@@ -67,7 +67,7 @@ public interface EventService {
 
   void applyChangesToAll(Event event);
 
-  String computeRecurrenceName(RecurrenceConfiguration recurrConf);
+  String computeRecurrenceName(RecurrenceConfiguration recurrConf) throws AxelorException;
 
   void generateRecurrentEvents(Event event, RecurrenceConfiguration conf) throws AxelorException;
 

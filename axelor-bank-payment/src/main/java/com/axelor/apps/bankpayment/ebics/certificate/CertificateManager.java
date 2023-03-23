@@ -44,6 +44,7 @@ import com.axelor.apps.bankpayment.db.repo.EbicsCertificateRepository;
 import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
 import com.axelor.apps.bankpayment.db.repo.EbicsUserRepository;
 import com.axelor.apps.bankpayment.ebics.service.EbicsCertificateService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.inject.Beans;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -75,8 +76,9 @@ public class CertificateManager {
    *
    * @throws GeneralSecurityException
    * @throws IOException
+   * @throws AxelorException
    */
-  public void create() throws GeneralSecurityException, IOException {
+  public void create() throws GeneralSecurityException, IOException, AxelorException {
 
     Calendar calendar;
 
@@ -104,8 +106,10 @@ public class CertificateManager {
    *
    * @throws IOException
    * @throws CertificateEncodingException
+   * @throws AxelorException
    */
-  private void setUserCertificates() throws IOException, CertificateEncodingException {
+  private void setUserCertificates()
+      throws IOException, CertificateEncodingException, AxelorException {
 
     EbicsPartner ebicsPartner = user.getEbicsPartner();
 
@@ -137,7 +141,7 @@ public class CertificateManager {
 
   private EbicsCertificate updateCertificate(
       X509Certificate certificate, EbicsCertificate cert, byte[] privateKey, String type)
-      throws CertificateEncodingException, IOException {
+      throws CertificateEncodingException, IOException, AxelorException {
 
     if (cert == null) {
       cert = new EbicsCertificate();
@@ -251,8 +255,9 @@ public class CertificateManager {
    * @param pwdCallBack the password call back
    * @throws GeneralSecurityException
    * @throws IOException
+   * @throws AxelorException
    */
-  public void load(String path) throws GeneralSecurityException, IOException {
+  public void load(String path) throws GeneralSecurityException, IOException, AxelorException {
     KeyStoreManager loader;
 
     loader = new KeyStoreManager();

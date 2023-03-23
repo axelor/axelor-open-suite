@@ -87,7 +87,7 @@ public class EbicsController {
       cm.create();
       ebicsUser.setStatusSelect(EbicsUserRepository.STATUS_WAITING_SENDING_SIGNATURE_CERTIFICATE);
       Beans.get(EbicsUserRepository.class).save(ebicsUser);
-    } catch (GeneralSecurityException | IOException e) {
+    } catch (GeneralSecurityException | IOException | AxelorException e) {
       e.printStackTrace();
     }
     response.setReload(true);

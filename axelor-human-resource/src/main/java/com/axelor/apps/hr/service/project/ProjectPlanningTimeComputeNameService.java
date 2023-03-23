@@ -15,20 +15,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.base.service;
+package com.axelor.apps.hr.service.project;
 
-import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Company;
+import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.project.db.Project;
+import java.time.LocalDate;
 
-public interface CompanyService {
+public interface ProjectPlanningTimeComputeNameService {
 
-  /**
-   * Check whether the provided company has more than one active bank details. In that case, enable
-   * the manageMultiBanks boolean in the general object.
-   *
-   * @param company the company to check for multiple active bank details
-   */
-  void checkMultiBanks(Company company);
-
-  void validateLocale(Company company) throws AxelorException;
+  String computeProjectPlanningTimeFullname(Employee employee, Project project, LocalDate date);
 }
