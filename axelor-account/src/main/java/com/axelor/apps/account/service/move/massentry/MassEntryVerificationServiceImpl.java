@@ -6,6 +6,7 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.move.MoveToolService;
+import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.db.Period;
@@ -22,6 +23,7 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +37,7 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
   protected MoveLineToolService moveLineToolService;
   protected MoveToolService moveToolService;
   protected MoveLineControlService moveLineControlService;
+  protected MoveValidateService moveValidateService;
 
   @Inject
   public MassEntryVerificationServiceImpl(
@@ -42,12 +45,14 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
       PeriodService periodService,
       MoveLineToolService moveLineToolService,
       MoveToolService moveToolService,
-      MoveLineControlService moveLineControlService) {
+      MoveLineControlService moveLineControlService,
+      MoveValidateService moveValidateService) {
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
     this.periodService = periodService;
     this.moveLineToolService = moveLineToolService;
     this.moveToolService = moveToolService;
     this.moveLineControlService = moveLineControlService;
+    this.moveValidateService = moveValidateService;
   }
 
   public void checkAndReplaceDateInMoveLineMassEntry(
@@ -273,10 +278,27 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
     }
 
     moveLineMassEntry.setFieldsErrorList(message);
-    differentElements.add(moveLineMassEntry);
+    if (differentElements != null) {
+      differentElements.add(moveLineMassEntry);
+    }
   }
 
   public void setPfpValidatorOnInTaxLines(Move move) {
     // TODO set pfp validator inTax lines using partner.pfpValidatorUser
+  }
+
+  public void checkWellBalancedMove(Move move) {
+    try {
+      moveValidateService.validateWellBalancedMove(move);
+    } catch (AxelorException e) {
+      for (MoveLineMassEntry element : move.getMoveLineMassEntryList()) {
+        if (Objects.equals(
+            element.getTemporaryMoveNumber(),
+            move.getMoveLineMassEntryList().get(0).getTemporaryMoveNumber())) {
+          this.setFieldsErrorListMessage(element, null, "balance");
+        }
+      }
+      this.setMassEntryErrorMessage(move, e.getMessage(), true);
+    }
   }
 }

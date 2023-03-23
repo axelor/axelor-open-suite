@@ -49,13 +49,19 @@
         background="danger"/>
     </field>
     <field name="currencyAmount"
-      onChange="action-move-line-group-currency-amount-rate-onchange" readonlyIf="!isOtherCurrency"/>
+      onChange="action-move-line-group-currency-amount-rate-onchange" readonlyIf="!isOtherCurrency">
+      <hilite if="$contains(fieldsErrorList,'balance:')" background="danger"/>
+    </field>
     <field name="debit"
       onChange="action-record-account-moveline-debit-onchange,action-group-account-moveline-debitcredit-onchange,action-move-line-method-generate-invoice-terms"
-      width="90" readonlyIf="isOtherCurrency"/>
+      width="90" readonlyIf="isOtherCurrency">
+      <hilite if="$contains(fieldsErrorList,'balance:')" background="danger"/>
+    </field>
     <field name="credit"
       onChange="action-record-account-moveline-credit-onchange,action-group-account-moveline-debitcredit-onchange,action-move-line-method-generate-invoice-terms"
-      width="90" readonlyIf="isOtherCurrency"/>
+      width="90" readonlyIf="isOtherCurrency">
+      <hilite if="$contains(fieldsErrorList,'balance:')" background="danger"/>
+    </field>
     <field name="description"
       requiredIf="$isDescriptionRequired || move.company.accountConfig.isDescriptionRequired"/>
     <field name="cutOffStartDate" requiredIf="account.manageCutOffPeriod"

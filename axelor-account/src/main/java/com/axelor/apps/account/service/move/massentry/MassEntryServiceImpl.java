@@ -251,6 +251,8 @@ public class MassEntryServiceImpl implements MassEntryService {
 
       massEntryVerificationService.checkPartnerInAllMoveLineMassEntry(moveListElement);
 
+      massEntryVerificationService.checkWellBalancedMove(moveListElement);
+
       // TODO add control for AnalyticDistributionTemplate
       // need to be checked after addition on grid
 

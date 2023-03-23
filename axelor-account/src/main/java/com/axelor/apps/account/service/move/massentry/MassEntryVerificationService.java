@@ -41,4 +41,6 @@ public interface MassEntryVerificationService {
   void checkPartnerInAllMoveLineMassEntry(Move move);
 
   void setPfpValidatorOnInTaxLines(Move move);
+
+  void checkWellBalancedMove(Move move);
 }
