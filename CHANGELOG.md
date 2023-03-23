@@ -1,3 +1,29 @@
+## [6.3.14] (2023-03-23)
+
+#### Changes
+
+* Webapp: update AOP version to 5.4.19
+
+#### Fixed
+
+* Tracking number configuration : 'Auto select sale tracking Nbr.' is now correctly taken into account when creating a stock move from a sale order.
+* Accounting report: For all reports, remove the 10000 and 40 lines limit before page break.
+* Production: fixed an issue in some processes where an error would create inconsistencies.
+* Bank payment: fixed an issue in some processes where an error would create inconsistencies.
+* Account: fixed an issue in some processes where an error would create inconsistencies.
+* HR: fixed an issue in some processes where an error would create inconsistencies.
+* Template: fix html widget for SMS templates.
+* Template: fix "Emailing" french translation.
+* Stock move: fixed an error occurring when opening a stock move line in a different tab.
+* Stock move: fixed an issue where "to address" was not correctly filled on a generated reversion stock move.
+* Stock move: supplier arrivals now correctly computes the WAP when the unit is different in stock move and stock location.
+* HR: fixed typo "Managment" => "Managment".
+* MRP: generating proposals now correctly generates every purchase order lines.
+* Partner: prevent isCustomer from being unticked automatically if there are existing customer records in database.
+* Move line: fixed an issue where duplicated analytic lines were generated.
+* Financial discount: fixed french help translation.
+* Mail message: fixed an issue preventing follower selection after a recipient has already been selected.
+
 ## [6.3.13] (2023-03-09)
 
 #### Changes
@@ -525,6 +551,7 @@ If you had modules calling these methods, you will need to update them so they c
 * Account Config: Remove Invoices button and associate action from account config
 * Stock correction: Removed unused future and reserved quantity from database.
 
+[6.3.14]: https://github.com/axelor/axelor-open-suite/compare/v6.3.13...v6.3.14
 [6.3.13]: https://github.com/axelor/axelor-open-suite/compare/v6.3.12...v6.3.13
 [6.3.12]: https://github.com/axelor/axelor-open-suite/compare/v6.3.11...v6.3.12
 [6.3.11]: https://github.com/axelor/axelor-open-suite/compare/v6.3.10...v6.3.11
