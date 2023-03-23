@@ -71,11 +71,13 @@ public class BatchPrintAccountingReportServiceImpl implements BatchPrintAccounti
         accountingReport.setJournal(accountConfig.getReportedBalanceJournal());
       }
     }
-    if (accountingBatch.getYear() != null) {
+    if (accountingBatch.getYear() != null
+        && accountingBatch.getYear().getReportedBalanceDate() != null) {
       accountingReport.setDateFrom(accountingBatch.getYear().getReportedBalanceDate());
-      accountingReport.setDate(accountingBatch.getYear().getReportedBalanceDate());
+      accountingReport.setIssueDateTime(
+          accountingBatch.getYear().getReportedBalanceDate().atStartOfDay());
     }
-    accountingReport.setDateTo(accountingReport.getDate());
+    accountingReport.setDateTo(accountingReport.getIssueDateTime().toLocalDate());
     accountingReport.setPeriod(accountingBatch.getPeriod());
     AccountingReportType accountingReportType = new AccountingReportType();
     accountingReportType.setTypeSelect(AccountingReportRepository.REPORT_GENERAL_BALANCE);

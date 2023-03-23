@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -28,6 +28,18 @@
             <property name="name">odaPassword</property>
             <property name="id">209</property>
             <expression name="value" type="javascript">params["Password"].value</expression>
+        </structure>
+        <structure>
+            <property name="name">queryText</property>
+            <property name="id">489</property>
+        </structure>
+        <structure>
+            <property name="name">queryTimeOut</property>
+            <property name="id">489</property>
+        </structure>
+        <structure>
+            <property name="name">rowFetchSize</property>
+            <property name="id">489</property>
         </structure>
     </list-property>
     <property name="units">in</property>
@@ -659,7 +671,7 @@ where
 (AccountingReport.currency IS NULL OR AccountingReport.currency = Move.currency) AND
 (AccountingReport.date_from IS NULL OR MoveLine.date_val >= AccountingReport.date_from) AND
 (AccountingReport.date_to IS NULL OR MoveLine.date_val <= AccountingReport.date_to) AND
-MoveLine.date_val <= AccountingReport.date_val AND
+MoveLine.date_val <= AccountingReport.issue_date_time AND
 Move.company = AccountingReport.company AND
 (AccountSet.account_set IS NULL OR AccountSet.account_set = Account.id or AccountSet.account_set = ParentAccount.id 
     or AccountSet.account_set = ParentAccount2.id or AccountSet.account_set = ParentAccount3.id
@@ -873,7 +885,7 @@ order by account, MoveLine.date_val, MoveLine.name]]></xml-property>
                     <structure>
                         <property name="position">6</property>
                         <property name="name">report_date</property>
-                        <property name="dataType">date</property>
+                        <property name="dataType">date-time</property>
                     </structure>
                     <structure>
                         <property name="position">7</property>
@@ -993,7 +1005,7 @@ order by account, MoveLine.date_val, MoveLine.name]]></xml-property>
                     <property name="position">6</property>
                     <property name="name">report_date</property>
                     <property name="nativeName">report_date</property>
-                    <property name="dataType">date</property>
+                    <property name="dataType">date-time</property>
                 </structure>
                 <structure>
                     <property name="position">7</property>
@@ -1098,7 +1110,7 @@ Company.height as logo_height,
 Company.width as logo_width, 
 AccountingReport.date_from, 
 AccountingReport.date_to, 
-AccountingReport.date_val as report_date,
+AccountingReport.issue_date_time as report_date,
 AccountingReport.publication_date_time as report_date_edition, 
 MetaFile.file_path as logo_path,
 Period.name as period_name, 
@@ -1300,7 +1312,8 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             <property name="name">report_date</property>
                             <text-property name="displayName">report_date</text-property>
                             <expression name="expression" type="javascript">dataSetRow["report_date"]</expression>
-                            <property name="dataType">date</property>
+                            <property name="dataType">date-time</property>
+                            <property name="allowExport">true</property>
                         </structure>
                         <structure>
                             <property name="name">report_date_edition</property>
@@ -1525,7 +1538,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="name">report_date</property>
                     <text-property name="displayName">ReportDate</text-property>
                     <expression name="expression" type="javascript">dataSetRow["report_date"]</expression>
-                    <property name="dataType">date</property>
+                    <property name="dataType">date-time</property>
                     <property name="allowExport">true</property>
                 </structure>
                 <structure>
@@ -1871,8 +1884,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 <cell id="4129">
                     <data id="4270">
                         <structure name="dateTimeFormat">
-                            <property name="category">Short Date</property>
-                            <property name="pattern">Short Date</property>
+                            <property name="category">Unformatted</property>
                         </structure>
                         <property name="resultSetColumn">report_date</property>
                     </data>

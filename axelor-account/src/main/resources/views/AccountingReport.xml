@@ -8,7 +8,7 @@
   <grid orderBy="-createdOn" name="accounting-report-grid" title="Accounting reports"
     model="com.axelor.apps.account.db.AccountingReport">
     <field name="ref" width="120"/>
-    <field name="date"/>
+    <field name="issueDateTime"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
       if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="currency"/>
@@ -32,7 +32,8 @@
     <panel name="mainPanel"
       readonlyIf="statusSelect == 2 &amp;&amp; (reportType.typeSelect == 19 || reportType.typeSelect == 20)">
       <field name="ref" readonly="true" hideIf="[23,24].includes(reportType.typeSelect)"/>
-      <field name="date" readonlyIf="statusSelect == 2 &amp;&amp; reportType.typeSelect != 18"
+      <field name="issueDateTime"
+        readonlyIf="statusSelect == 2 &amp;&amp; reportType.typeSelect != 18"
         onChange="action-accounting-report-date-change-validate"/>
       <field name="company" canEdit="false" readonlyIf="ref != null" widget="SuggestBox"
         onChange="action-group-account-accounting-report-company-onchange" form-view="company-form"
@@ -228,7 +229,7 @@
   <grid name="accounting-report-export-grid" title="Accounting exports"
     model="com.axelor.apps.account.db.AccountingReport">
     <field name="ref" width="120"/>
-    <field name="date"/>
+    <field name="issueDateTime"/>
     <field name="company" canEdit="false" form-view="company-form" grid-view="company-grid"/>
     <field name="reportType"/>
     <field name="dateFrom"/>
@@ -471,9 +472,10 @@
       if="__user__.activeCompany != null"/>
     <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
       if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
-    <field name="date" expr="eval:__config__.date"/>
-    <field name="date"
-      expr="eval:__config__.app.getTodayDate(__repo__(Company).all().fetchOne())"
+    <field name="issueDateTime"
+      expr="eval:__config__.app.getTodayDateTime()?.toLocalDateTime()"/>
+    <field name="issueDateTime"
+      expr="eval:__config__.app.getTodayDateTime(__repo__(Company).all().fetchOne())?.toLocalDateTime()"
       if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
   </action-record>
 
@@ -536,7 +538,7 @@
   <action-validate name="action-accounting-report-date-change-validate">
     <info
       message="The closing date is earlier than the current date: moves recorded after that date will not be taken into account in the report."
-      if="date &lt; __config__.date"/>
+      if="issueDateTime &lt; __config__.app.getTodayDateTime()?.toLocalDateTime()"/>
   </action-validate>
 
   <action-validate name="action-account-report-alert-typeselect">

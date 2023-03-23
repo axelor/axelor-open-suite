@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202108150822</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -121,6 +121,7 @@
             <list-property name="columnHints">
                 <structure>
                     <property name="columnName">partner_name</property>
+                    <property name="alias">partner_name</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">partner_name</text-property>
                     <property name="onColumnLayout">false</property>
@@ -128,6 +129,7 @@
                 </structure>
                 <structure>
                     <property name="columnName">partner_seq</property>
+                    <property name="alias">partner_seq</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">partner_seq</text-property>
                     <property name="onColumnLayout">false</property>
@@ -135,6 +137,7 @@
                 </structure>
                 <structure>
                     <property name="columnName">invoice_name</property>
+                    <property name="alias">invoice_name</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">invoice_name</text-property>
                     <property name="onColumnLayout">false</property>
@@ -142,60 +145,70 @@
                 </structure>
                 <structure>
                     <property name="columnName">nonDue</property>
+                    <property name="alias">nonDue</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">nonDue</text-property>
                     <text-property name="heading">nonDue</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">&lt;30days</property>
+                    <property name="alias">&lt;30days</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">&lt;30days</text-property>
                     <text-property name="heading">&lt;30days</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">30&lt;days&lt;60</property>
+                    <property name="alias">30&lt;days&lt;60</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">30&lt;days&lt;60</text-property>
                     <text-property name="heading">30&lt;days&lt;60</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">60&lt;days&lt;90</property>
+                    <property name="alias">60&lt;days&lt;90</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">60&lt;days&lt;90</text-property>
                     <text-property name="heading">60&lt;days&lt;90</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">90&lt;days&lt;120</property>
+                    <property name="alias">90&lt;days&lt;120</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">90&lt;days&lt;120</text-property>
                     <text-property name="heading">90&lt;days&lt;120</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">120&lt;days&lt;150</property>
+                    <property name="alias">120&lt;days&lt;150</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">120&lt;days&lt;150</text-property>
                     <text-property name="heading">120&lt;days&lt;150</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">150&lt;days&lt;180</property>
+                    <property name="alias">150&lt;days&lt;180</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">150&lt;days&lt;180</text-property>
                     <text-property name="heading">150&lt;days&lt;180</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">180&lt;days</property>
+                    <property name="alias">180&lt;days</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">180&lt;days</text-property>
                     <text-property name="heading">180&lt;days</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">SoldeClient</property>
+                    <property name="alias">SoldeClient</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">SoldeClient</text-property>
                     <text-property name="heading">SoldeClient</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">showProvisionTitle</property>
+                    <property name="alias">showProvisionTitle</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">showProvisionTitle</text-property>
                     <text-property name="heading">showProvisionTitle</text-property>
@@ -295,97 +308,84 @@
                     <property name="name">partner_name</property>
                     <property name="nativeName">partner_name</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
                     <property name="name">partner_seq</property>
                     <property name="nativeName">partner_seq</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
                     <property name="name">invoice_name</property>
                     <property name="nativeName">invoice_name</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
                     <property name="name">nonDue</property>
                     <property name="nativeName">nonDue</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
                     <property name="name">&lt;30days</property>
                     <property name="nativeName">&lt;30days</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
                     <property name="name">30&lt;days&lt;60</property>
                     <property name="nativeName">30&lt;days&lt;60</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">7</property>
                     <property name="name">60&lt;days&lt;90</property>
                     <property name="nativeName">60&lt;days&lt;90</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">8</property>
                     <property name="name">90&lt;days&lt;120</property>
                     <property name="nativeName">90&lt;days&lt;120</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">9</property>
                     <property name="name">120&lt;days&lt;150</property>
                     <property name="nativeName">120&lt;days&lt;150</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">10</property>
                     <property name="name">150&lt;days&lt;180</property>
                     <property name="nativeName">150&lt;days&lt;180</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">11</property>
                     <property name="name">180&lt;days</property>
                     <property name="nativeName">180&lt;days</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">12</property>
                     <property name="name">SoldeClient</property>
                     <property name="nativeName">SoldeClient</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">13</property>
                     <property name="name">showProvisionTitle</property>
                     <property name="nativeName">showProvisionTitle</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">-7</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[Select MoveLine.partner_full_name as partner_name, 
 MoveLine.partner_seq,
 COALESCE(Invoice.invoice_id,MoveLine.name) as invoice_name,
-SUM(Case when AccountingReport.date_val - InvoiceTerm.due_date  <= 0
+SUM(Case when (DATE(AccountingReport.issue_date_time) - InvoiceTerm.due_date)  <= 0
 then
 (CASE WHEN MoveLine.debit - MoveLine.credit < 0
 THEN InvoiceTerm.company_amount_remaining * -1
@@ -393,8 +393,8 @@ ELSE InvoiceTerm.company_amount_remaining
 END)
 else 0
 END) as "nonDue",
-SUM(Case when AccountingReport.date_val - InvoiceTerm.due_date  <= 30
-	AND AccountingReport.date_val - InvoiceTerm.due_date  > 0
+SUM(Case when (DATE(AccountingReport.issue_date_time) - InvoiceTerm.due_date)  <= 30
+	AND (DATE(AccountingReport.issue_date_time) - InvoiceTerm.due_date)  > 0
 then
 (CASE WHEN MoveLine.debit - MoveLine.credit < 0
 THEN InvoiceTerm.company_amount_remaining * -1
@@ -402,8 +402,8 @@ ELSE InvoiceTerm.company_amount_remaining
 END)
 else 0   
 END) as "<30days",
-SUM(Case when AccountingReport.date_val - InvoiceTerm.due_date > 30
-	AND AccountingReport.date_val - InvoiceTerm.due_date <= 60
+SUM(Case when (DATE(AccountingReport.issue_date_time) - InvoiceTerm.due_date) > 30
+	AND (DATE(AccountingReport.issue_date_time) - InvoiceTerm.due_date) <= 60
 then
 (CASE WHEN MoveLine.debit - MoveLine.credit < 0
 THEN InvoiceTerm.company_amount_remaining * -1
@@ -411,8 +411,8 @@ ELSE InvoiceTerm.company_amount_remaining
 END)
 else 0   
 END) as "30<days<60",
-SUM(Case when AccountingReport.date_val - InvoiceTerm.due_date > 60
-	AND AccountingReport.date_val - InvoiceTerm.due_date <= 90
+SUM(Case when (DATE(AccountingReport.issue_date_time) - InvoiceTerm.due_date) > 60
+	AND (DATE(AccountingReport.issue_date_time) - InvoiceTerm.due_date) <= 90
 then
 (CASE WHEN MoveLine.debit - MoveLine.credit < 0
 THEN InvoiceTerm.company_amount_remaining * -1
@@ -420,8 +420,8 @@ ELSE InvoiceTerm.company_amount_remaining
 END)
 else 0   
 END) as "60<days<90",
-SUM(Case when AccountingReport.date_val - InvoiceTerm.due_date > 90
-	AND AccountingReport.date_val - InvoiceTerm.due_date <= 120
+SUM(Case when (DATE(AccountingReport.issue_date_time) - InvoiceTerm.due_date) > 90
+	AND (DATE(AccountingReport.issue_date_time) - InvoiceTerm.due_date) <= 120
 then
 (CASE WHEN MoveLine.debit - MoveLine.credit < 0
 THEN InvoiceTerm.company_amount_remaining * -1
@@ -429,8 +429,8 @@ ELSE InvoiceTerm.company_amount_remaining
 END)
 else 0   
 END) as "90<days<120",
-SUM(Case when AccountingReport.date_val - InvoiceTerm.due_date > 120
-	AND AccountingReport.date_val - InvoiceTerm.due_date <= 150
+SUM(Case when (DATE(AccountingReport.issue_date_time) - InvoiceTerm.due_date) > 120
+	AND (DATE(AccountingReport.issue_date_time) - InvoiceTerm.due_date) <= 150
 then
 (CASE WHEN MoveLine.debit - MoveLine.credit < 0
 THEN InvoiceTerm.company_amount_remaining * -1
@@ -438,8 +438,8 @@ ELSE InvoiceTerm.company_amount_remaining
 END)
 else 0   
 END) as "120<days<150",
-SUM(Case when AccountingReport.date_val - InvoiceTerm.due_date > 150
-	AND AccountingReport.date_val - InvoiceTerm.due_date <= 180
+SUM(Case when (DATE(AccountingReport.issue_date_time) - InvoiceTerm.due_date) > 150
+	AND (DATE(AccountingReport.issue_date_time) - InvoiceTerm.due_date) <= 180
 then
 (CASE WHEN MoveLine.debit - MoveLine.credit < 0
 THEN InvoiceTerm.company_amount_remaining * -1
@@ -447,7 +447,7 @@ ELSE InvoiceTerm.company_amount_remaining
 END)
 else 0   
 END) as "150<days<180",
-SUM(Case when AccountingReport.date_val - InvoiceTerm.due_date > 180
+SUM(Case when (DATE(AccountingReport.issue_date_time) - InvoiceTerm.due_date) > 180
 then
 (CASE WHEN MoveLine.debit - MoveLine.credit < 0
 THEN InvoiceTerm.company_amount_remaining * -1
@@ -492,6 +492,7 @@ group by MoveLine.partner_full_name,MoveLine.partner_seq,Invoice.invoice_id,Move
             <list-property name="columnHints">
                 <structure>
                     <property name="columnName">comapny_name</property>
+                    <property name="alias">comapny_name</property>
                     <property name="analysis">attribute</property>
                     <text-property name="displayName">comapny_name</text-property>
                     <property name="onColumnLayout">false</property>
@@ -499,6 +500,7 @@ group by MoveLine.partner_full_name,MoveLine.partner_seq,Invoice.invoice_id,Move
                 </structure>
                 <structure>
                     <property name="columnName">period_name</property>
+                    <property name="alias">period_name</property>
                     <property name="analysis">attribute</property>
                     <text-property name="displayName">period_name</text-property>
                     <property name="onColumnLayout">false</property>
@@ -506,6 +508,7 @@ group by MoveLine.partner_full_name,MoveLine.partner_seq,Invoice.invoice_id,Move
                 </structure>
                 <structure>
                     <property name="columnName">detailed</property>
+                    <property name="alias">detailed</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">detailed</text-property>
                     <property name="onColumnLayout">false</property>
@@ -513,6 +516,7 @@ group by MoveLine.partner_full_name,MoveLine.partner_seq,Invoice.invoice_id,Move
                 </structure>
                 <structure>
                     <property name="columnName">date_to</property>
+                    <property name="alias">date_to</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">date_to</text-property>
                     <property name="onColumnLayout">false</property>
@@ -520,6 +524,7 @@ group by MoveLine.partner_full_name,MoveLine.partner_seq,Invoice.invoice_id,Move
                 </structure>
                 <structure>
                     <property name="columnName">date_from</property>
+                    <property name="alias">date_from</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">date_from</text-property>
                     <property name="onColumnLayout">false</property>
@@ -527,6 +532,7 @@ group by MoveLine.partner_full_name,MoveLine.partner_seq,Invoice.invoice_id,Move
                 </structure>
                 <structure>
                     <property name="columnName">date</property>
+                    <property name="alias">date</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">date</text-property>
                     <property name="onColumnLayout">false</property>
@@ -534,6 +540,7 @@ group by MoveLine.partner_full_name,MoveLine.partner_seq,Invoice.invoice_id,Move
                 </structure>
                 <structure>
                     <property name="columnName">ReportDateEdition</property>
+                    <property name="alias">ReportDateEdition</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">ReportDateEdition</text-property>
                     <property name="onColumnLayout">false</property>
@@ -541,18 +548,21 @@ group by MoveLine.partner_full_name,MoveLine.partner_seq,Invoice.invoice_id,Move
                 </structure>
                 <structure>
                     <property name="columnName">currency</property>
+                    <property name="alias">currency</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">currency</text-property>
                     <text-property name="heading">currency</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">display_simulated_move</property>
+                    <property name="alias">display_simulated_move</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">display_simulated_move</text-property>
                     <text-property name="heading">display_simulated_move</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">ref</property>
+                    <property name="alias">ref</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">ref</text-property>
                     <text-property name="heading">ref</text-property>
@@ -601,7 +611,7 @@ group by MoveLine.partner_full_name,MoveLine.partner_seq,Invoice.invoice_id,Move
                     <structure>
                         <property name="position">6</property>
                         <property name="name">date</property>
-                        <property name="dataType">date</property>
+                        <property name="dataType">date-time</property>
                     </structure>
                     <structure>
                         <property name="position">7</property>
@@ -632,74 +642,64 @@ group by MoveLine.partner_full_name,MoveLine.partner_seq,Invoice.invoice_id,Move
                     <property name="name">comapny_name</property>
                     <property name="nativeName">comapny_name</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
                     <property name="name">period_name</property>
                     <property name="nativeName">period_name</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
                     <property name="name">detailed</property>
                     <property name="nativeName">detailed</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
                     <property name="name">date_to</property>
                     <property name="nativeName">date_to</property>
                     <property name="dataType">date</property>
-                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
                     <property name="name">date_from</property>
                     <property name="nativeName">date_from</property>
                     <property name="dataType">date</property>
-                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
                     <property name="name">date</property>
                     <property name="nativeName">date</property>
-                    <property name="dataType">date</property>
-                    <property name="nativeDataType">91</property>
+                    <property name="dataType">date-time</property>
                 </structure>
                 <structure>
                     <property name="position">7</property>
                     <property name="name">ReportDateEdition</property>
                     <property name="nativeName">ReportDateEdition</property>
                     <property name="dataType">date-time</property>
-                    <property name="nativeDataType">93</property>
                 </structure>
                 <structure>
                     <property name="position">8</property>
                     <property name="name">currency</property>
                     <property name="nativeName">currency</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">9</property>
                     <property name="name">display_simulated_move</property>
                     <property name="nativeName">display_simulated_move</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
                     <property name="position">10</property>
                     <property name="name">ref</property>
                     <property name="nativeName">ref</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select Company.name as comapny_name, Period.name as period_name, AccountingReport.detailed , 
-AccountingReport.date_to, AccountingReport.date_from, AccountingReport.date_val as "date", AccountingReport.publication_date_time as "ReportDateEdition" ,
+AccountingReport.date_to, AccountingReport.date_from, AccountingReport.issue_date_time as "date", AccountingReport.publication_date_time as "ReportDateEdition" ,
 Currency.code as currency, AccountingReport.display_simulated_move as display_simulated_move, AccountingReport.ref
 from public.account_accounting_report as AccountingReport
 inner join public.base_company as Company on (AccountingReport.id = ? and AccountingReport.company = Company.id)
@@ -895,7 +895,8 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             <property name="name">date</property>
                             <text-property name="displayName">date</text-property>
                             <expression name="expression" type="javascript">dataSetRow["date"]</expression>
-                            <property name="dataType">date</property>
+                            <property name="dataType">date-time</property>
+                            <property name="allowExport">true</property>
                         </structure>
                         <structure>
                             <property name="name">ReportDateEdition</property>
@@ -1119,7 +1120,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="name">date</property>
                     <text-property name="displayName">date</text-property>
                     <expression name="expression" type="javascript">dataSetRow["date"]</expression>
-                    <property name="dataType">date</property>
+                    <property name="dataType">date-time</property>
                     <property name="allowExport">true</property>
                 </structure>
                 <structure>
@@ -1175,8 +1176,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 <cell id="534">
                     <data id="4220">
                         <structure name="dateTimeFormat">
-                            <property name="category">Short Date</property>
-                            <property name="pattern">Short Date</property>
+                            <property name="category">Unformatted</property>
                         </structure>
                         <property name="resultSetColumn">date</property>
                     </data>
@@ -3231,7 +3231,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <property name="borderRightColor">#000000</property>
                                         <property name="borderRightStyle">solid</property>
                                         <property name="borderRightWidth">thin</property>
-                                        <data id="6436">
+                                        <data id="6452">
                                             <property name="fontSize">8pt</property>
                                             <property name="textAlign">right</property>
                                             <property name="resultSetColumn">Sum30&lt;days&lt;60ByInvoiceName</property>
@@ -3257,7 +3257,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <property name="borderRightColor">#000000</property>
                                         <property name="borderRightStyle">solid</property>
                                         <property name="borderRightWidth">thin</property>
-                                        <data id="6438">
+                                        <data id="6453">
                                             <property name="fontSize">8pt</property>
                                             <property name="textAlign">right</property>
                                             <property name="resultSetColumn">Sum90&lt;days&lt;120ByInvoiceName</property>
@@ -3270,7 +3270,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <property name="borderRightColor">#000000</property>
                                         <property name="borderRightStyle">solid</property>
                                         <property name="borderRightWidth">thin</property>
-                                        <data id="6439">
+                                        <data id="6454">
                                             <property name="fontSize">8pt</property>
                                             <property name="textAlign">right</property>
                                             <property name="resultSetColumn">Sum120&lt;days&lt;150ByInvoiceName</property>

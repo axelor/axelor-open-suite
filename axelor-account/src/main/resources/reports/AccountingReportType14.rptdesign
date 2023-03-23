@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202108150822</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -111,6 +111,7 @@
             <list-property name="columnHints">
                 <structure>
                     <property name="columnName">MoveLineId</property>
+                    <property name="alias">MoveLineId</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">MoveLineId</text-property>
                     <property name="onColumnLayout">false</property>
@@ -118,6 +119,7 @@
                 </structure>
                 <structure>
                     <property name="columnName">MoveLineName</property>
+                    <property name="alias">MoveLineName</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">MoveLineName</text-property>
                     <property name="onColumnLayout">false</property>
@@ -125,6 +127,7 @@
                 </structure>
                 <structure>
                     <property name="columnName">Description</property>
+                    <property name="alias">Description</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">Description</text-property>
                     <property name="onColumnLayout">false</property>
@@ -132,6 +135,7 @@
                 </structure>
                 <structure>
                     <property name="columnName">Debit</property>
+                    <property name="alias">Debit</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">Debit</text-property>
                     <property name="onColumnLayout">false</property>
@@ -139,6 +143,7 @@
                 </structure>
                 <structure>
                     <property name="columnName">Credit</property>
+                    <property name="alias">Credit</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">Credit</text-property>
                     <property name="onColumnLayout">false</property>
@@ -146,6 +151,7 @@
                 </structure>
                 <structure>
                     <property name="columnName">MoveLineDate</property>
+                    <property name="alias">MoveLineDate</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">MoveLineDate</text-property>
                     <property name="onColumnLayout">false</property>
@@ -153,6 +159,7 @@
                 </structure>
                 <structure>
                     <property name="columnName">PartnerFullName</property>
+                    <property name="alias">PartnerFullName</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">PartnerFullName</text-property>
                     <property name="onColumnLayout">false</property>
@@ -160,6 +167,7 @@
                 </structure>
                 <structure>
                     <property name="columnName">PartnerId</property>
+                    <property name="alias">PartnerId</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">PartnerId</text-property>
                     <property name="onColumnLayout">false</property>
@@ -167,6 +175,7 @@
                 </structure>
                 <structure>
                     <property name="columnName">PartnerSeq</property>
+                    <property name="alias">PartnerSeq</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">PartnerSeq</text-property>
                     <property name="onColumnLayout">false</property>
@@ -174,6 +183,7 @@
                 </structure>
                 <structure>
                     <property name="columnName">AccountCode</property>
+                    <property name="alias">AccountCode</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">AccountCode</text-property>
                     <property name="onColumnLayout">false</property>
@@ -181,6 +191,7 @@
                 </structure>
                 <structure>
                     <property name="columnName">AccountName</property>
+                    <property name="alias">AccountName</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">AccountName</text-property>
                     <property name="onColumnLayout">false</property>
@@ -257,6 +268,16 @@
                         <property name="name">AccountName</property>
                         <property name="dataType">string</property>
                     </structure>
+                    <structure>
+                        <property name="position">12</property>
+                        <property name="name">currency_amount</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">13</property>
+                        <property name="name">currency_code</property>
+                        <property name="dataType">string</property>
+                    </structure>
                 </list-property>
             </structure>
             <property name="rowFetchLimit">0</property>
@@ -267,77 +288,78 @@
                     <property name="name">MoveLineId</property>
                     <property name="nativeName">MoveLineId</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
                     <property name="name">MoveLineName</property>
                     <property name="nativeName">MoveLineName</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
                     <property name="name">Description</property>
                     <property name="nativeName">Description</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
                     <property name="name">Debit</property>
                     <property name="nativeName">Debit</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
                     <property name="name">Credit</property>
                     <property name="nativeName">Credit</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
                     <property name="name">MoveLineDate</property>
                     <property name="nativeName">MoveLineDate</property>
                     <property name="dataType">date</property>
-                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">7</property>
                     <property name="name">PartnerFullName</property>
                     <property name="nativeName">PartnerFullName</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">8</property>
                     <property name="name">PartnerId</property>
                     <property name="nativeName">PartnerId</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">9</property>
                     <property name="name">PartnerSeq</property>
                     <property name="nativeName">PartnerSeq</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">10</property>
                     <property name="name">AccountCode</property>
                     <property name="nativeName">AccountCode</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">11</property>
                     <property name="name">AccountName</property>
                     <property name="nativeName">AccountName</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">12</property>
+                    <property name="name">currency_amount</property>
+                    <property name="nativeName">currency_amount</property>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="position">13</property>
+                    <property name="name">currency_code</property>
+                    <property name="nativeName">currency_code</property>
+                    <property name="dataType">string</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select MoveLine.id as "MoveLineId", MoveLine.name as "MoveLineName", MoveLine.description as "Description", MoveLine.debit as "Debit", MoveLine.credit as "Credit",
@@ -361,7 +383,7 @@ where
 (AccountingReport.currency IS NULL OR AccountingReport.currency = Move.currency) AND
 (AccountingReport.date_from IS NULL OR MoveLine.date_val >= AccountingReport.date_from) AND 
 (AccountingReport.date_to IS NULL OR MoveLine.date_val <= AccountingReport.date_to) AND
-MoveLine.date_val <= AccountingReport.date_val AND Move.company = AccountingReport.company AND
+MoveLine.date_val <= AccountingReport.issue_date_time AND Move.company = AccountingReport.company AND
 (AccountSet.account_set IS NULL OR AccountSet.account_set = Account.id) AND
 (PartnerSet.partner_set IS NULL OR PartnerSet.partner_set = MoveLine.partner) AND 
 Move.ignore_in_accounting_ok = false AND 
@@ -378,24 +400,28 @@ AND (AccountingReport.display_opening_accounting_moves is true
             <list-property name="columnHints">
                 <structure>
                     <property name="columnName">CompanyName</property>
+                    <property name="alias">CompanyName</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">CompanyName</text-property>
                     <text-property name="heading">CompanyName</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">PeriodName</property>
+                    <property name="alias">PeriodName</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">PeriodName</text-property>
                     <text-property name="heading">PeriodName</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">DateFrom</property>
+                    <property name="alias">DateFrom</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">DateFrom</text-property>
                     <text-property name="heading">DateFrom</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">ReportDate</property>
+                    <property name="alias">ReportDate</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">ReportDate</text-property>
                     <property name="onColumnLayout">false</property>
@@ -403,12 +429,14 @@ AND (AccountingReport.display_opening_accounting_moves is true
                 </structure>
                 <structure>
                     <property name="columnName">DateTo</property>
+                    <property name="alias">DateTo</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">DateTo</text-property>
                     <text-property name="heading">DateTo</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">ReportDateEdition</property>
+                    <property name="alias">ReportDateEdition</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">ReportDateEdition</text-property>
                     <property name="onColumnLayout">false</property>
@@ -416,12 +444,14 @@ AND (AccountingReport.display_opening_accounting_moves is true
                 </structure>
                 <structure>
                     <property name="columnName">currency</property>
+                    <property name="alias">currency</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">currency</text-property>
                     <text-property name="heading">currency</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">ref</property>
+                    <property name="alias">ref</property>
                     <text-property name="displayName">ref</text-property>
                     <text-property name="heading">ref</text-property>
                 </structure>
@@ -459,7 +489,7 @@ AND (AccountingReport.display_opening_accounting_moves is true
                     <structure>
                         <property name="position">4</property>
                         <property name="name">ReportDate</property>
-                        <property name="dataType">date</property>
+                        <property name="dataType">date-time</property>
                     </structure>
                     <structure>
                         <property name="position">5</property>
@@ -490,60 +520,52 @@ AND (AccountingReport.display_opening_accounting_moves is true
                     <property name="name">CompanyName</property>
                     <property name="nativeName">CompanyName</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
                     <property name="name">PeriodName</property>
                     <property name="nativeName">PeriodName</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
                     <property name="name">DateFrom</property>
                     <property name="nativeName">DateFrom</property>
                     <property name="dataType">date</property>
-                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
                     <property name="name">ReportDate</property>
                     <property name="nativeName">ReportDate</property>
-                    <property name="dataType">date</property>
-                    <property name="nativeDataType">91</property>
+                    <property name="dataType">date-time</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
                     <property name="name">DateTo</property>
                     <property name="nativeName">DateTo</property>
                     <property name="dataType">date</property>
-                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
                     <property name="name">ReportDateEdition</property>
                     <property name="nativeName">ReportDateEdition</property>
                     <property name="dataType">date-time</property>
-                    <property name="nativeDataType">93</property>
                 </structure>
                 <structure>
                     <property name="position">7</property>
                     <property name="name">currency</property>
                     <property name="nativeName">currency</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">8</property>
                     <property name="name">ref</property>
                     <property name="nativeName">ref</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select Company.name as "CompanyName", Period.name as "PeriodName", AccountingReport.date_from as "DateFrom", 
-AccountingReport.date_val as "ReportDate", AccountingReport.date_to as "DateTo", 
+AccountingReport.issue_date_time as "ReportDate", AccountingReport.date_to as "DateTo", 
 AccountingReport.publication_date_time as "ReportDateEdition",
 Currency.code as currency,
 AccountingReport.ref
@@ -620,7 +642,8 @@ left outer join public.base_currency as Currency on (AccountingReport.currency =
                             <property name="name">ReportDate</property>
                             <text-property name="displayName">ReportDate</text-property>
                             <expression name="expression" type="javascript">dataSetRow["ReportDate"]</expression>
-                            <property name="dataType">date</property>
+                            <property name="dataType">date-time</property>
+                            <property name="allowExport">true</property>
                         </structure>
                         <structure>
                             <property name="name">DateTo</property>
@@ -785,7 +808,8 @@ left outer join public.base_currency as Currency on (AccountingReport.currency =
                     <property name="name">ReportDate</property>
                     <text-property name="displayName">ReportDate</text-property>
                     <expression name="expression" type="javascript">dataSetRow["ReportDate"]</expression>
-                    <property name="dataType">date</property>
+                    <property name="dataType">date-time</property>
+                    <property name="allowExport">true</property>
                 </structure>
                 <structure>
                     <property name="name">DateTo</property>
@@ -849,8 +873,7 @@ left outer join public.base_currency as Currency on (AccountingReport.currency =
                 <cell id="514">
                     <data id="3163">
                         <structure name="dateTimeFormat">
-                            <property name="category">Long Date</property>
-                            <property name="pattern">Long Date</property>
+                            <property name="category">Unformatted</property>
                         </structure>
                         <property name="resultSetColumn">ReportDate</property>
                     </data>

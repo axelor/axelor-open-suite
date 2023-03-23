@@ -342,7 +342,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     List<String[]> allMoveLineData = new ArrayList<>();
     Company company = accountingReport.getCompany();
 
-    LocalDate interfaceDate = accountingReport.getDate();
+    LocalDate interfaceDate = accountingReport.getIssueDateTime().toLocalDate();
 
     String moveLineQueryStr =
         String.format("(self.move.statusSelect = %s", MoveRepository.STATUS_ACCOUNTED);
@@ -372,9 +372,11 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
       }
     }
 
-    if (accountingReport.getDate() != null) {
+    if (accountingReport.getIssueDateTime() != null) {
       moveLineQueryStr +=
-          String.format(" AND self.date <= '%s'", accountingReport.getDate().toString());
+          String.format(
+              " AND self.date <= '%s'",
+              accountingReport.getIssueDateTime().toLocalDate().toString());
     }
 
     moveLineQueryStr += " AND self.move.ignoreInAccountingOk = false";
@@ -603,7 +605,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     accountingReport.setDateFrom(startDate);
     accountingReport.setDateTo(endDate);
     accountingReport.setStatusSelect(AccountingReportRepository.STATUS_DRAFT);
-    accountingReport.setDate(appAccountService.getTodayDateTime().toLocalDate());
+    accountingReport.setIssueDateTime(appAccountService.getTodayDateTime().toLocalDateTime());
     accountingReport.setRef(accountingReportService.getSequence(accountingReport));
 
     accountingReportService.buildQuery(accountingReport);
