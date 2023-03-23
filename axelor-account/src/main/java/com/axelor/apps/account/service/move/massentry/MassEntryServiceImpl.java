@@ -83,6 +83,7 @@ public class MassEntryServiceImpl implements MassEntryService {
   }
 
   public Move fillMoveLineListWithMoveLineMassEntryList(Move move, Integer temporaryMoveNumber) {
+    // TODO remove and use createMoveListFromMassEntryList
     List<MoveLine> moveLineList = new ArrayList<>();
     boolean firstLine = true;
     Move moveToFill = new Move();
@@ -358,9 +359,7 @@ public class MassEntryServiceImpl implements MassEntryService {
               move.getPartner(),
               move.getDate(),
               move.getOriginDate(),
-              move.getPartner() == null || move.getPartner().getOutPaymentMode() == null
-                  ? null
-                  : move.getPartner().getOutPaymentMode(),
+              move.getPaymentMode(),
               move.getPartner().getFiscalPosition(),
               move.getPartnerBankDetails(),
               MoveRepository.TECHNICAL_ORIGIN_TEMPLATE,
@@ -371,6 +370,7 @@ public class MassEntryServiceImpl implements MassEntryService {
               move.getOrigin(),
               move.getDescription(),
               move.getCompanyBankDetails());
+      newMove.setPaymentCondition(move.getPaymentCondition());
 
       int counter = 1;
 
