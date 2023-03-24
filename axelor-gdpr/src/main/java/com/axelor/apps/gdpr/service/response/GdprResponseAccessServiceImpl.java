@@ -25,6 +25,7 @@ import com.axelor.apps.base.db.repo.AdvancedExportRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.advancedExport.AdvancedExportService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.gdpr.db.GDPRDataToExcludeConfig;
 import com.axelor.apps.gdpr.db.GDPRRequest;
 import com.axelor.apps.gdpr.db.GDPRResponse;
 import com.axelor.apps.gdpr.db.repo.GDPRRequestRepository;
@@ -63,13 +64,7 @@ import java.io.InputStream;
 import java.lang.invoke.MethodHandles;
 import java.nio.file.Files;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -86,6 +81,8 @@ public class GdprResponseAccessServiceImpl implements GdprResponseAccessService 
 
   protected GDPRResponseRepository gdprResponseRepository;
   protected MetaModelRepository metaModelRepo;
+  protected MetaFieldRepository metaFieldRepository;
+  protected GdprDmsFileRepository gdprDmsFileRepository;
   protected GdprResponseService gdprResponseService;
   protected AdvancedExportService advancedExportService;
   protected AdvancedExportLineRepository advancedExportLineRepository;
@@ -95,11 +92,14 @@ public class GdprResponseAccessServiceImpl implements GdprResponseAccessService 
   protected AppBaseService appBaseService;
   protected AppGdprService appGdprService;
   protected TemplateMessageService templateMessageService;
+  protected MetaFiles metaFiles;
 
   @Inject
   public GdprResponseAccessServiceImpl(
       GDPRResponseRepository gdprResponseRepository,
       MetaModelRepository metaModelRepo,
+      MetaFieldRepository metaFieldRepository,
+      GdprDmsFileRepository gdprDmsFileRepository,
       GdprResponseService gdprResponseService,
       AdvancedExportService advancedExportService,
       AdvancedExportLineRepository advancedExportLineRepository,
@@ -108,9 +108,12 @@ public class GdprResponseAccessServiceImpl implements GdprResponseAccessService 
       TemplateRepository templateRepository,
       AppBaseService appBaseService,
       AppGdprService appGdprService,
-      TemplateMessageService templateMessageService) {
+      TemplateMessageService templateMessageService,
+      MetaFiles metaFiles) {
     this.gdprResponseRepository = gdprResponseRepository;
     this.metaModelRepo = metaModelRepo;
+    this.metaFieldRepository = metaFieldRepository;
+    this.gdprDmsFileRepository = gdprDmsFileRepository;
     this.gdprResponseService = gdprResponseService;
     this.advancedExportService = advancedExportService;
     this.advancedExportLineRepository = advancedExportLineRepository;
@@ -120,6 +123,7 @@ public class GdprResponseAccessServiceImpl implements GdprResponseAccessService 
     this.appBaseService = appBaseService;
     this.appGdprService = appGdprService;
     this.templateMessageService = templateMessageService;
+    this.metaFiles = metaFiles;
   }
 
   @SuppressWarnings("unchecked")
@@ -163,7 +167,7 @@ public class GdprResponseAccessServiceImpl implements GdprResponseAccessService 
     dataMetaFile.setFileName(exportFileName);
 
     addFilesToZip(zip, files);
-    Beans.get(MetaFiles.class).upload(zip, dataMetaFile);
+    metaFiles.upload(zip, dataMetaFile);
     gdprResponse.setDataFile(dataMetaFile);
     gdprRequest.setGdprResponse(gdprResponse);
     gdprRequest.setStatusSelect(GDPRRequestRepository.REQUEST_STATUS_CONFIRMED);
@@ -216,7 +220,7 @@ public class GdprResponseAccessServiceImpl implements GdprResponseAccessService 
         byte[] img = Base64.getDecoder().decode(base64ImgData);
         ByteArrayInputStream inImg = new ByteArrayInputStream(img);
 
-        MetaFile picture = Beans.get(MetaFiles.class).upload(inImg, fileName);
+        MetaFile picture = metaFiles.upload(inImg, fileName);
 
         File file = MetaFiles.getPath(picture).toFile();
 
@@ -258,12 +262,11 @@ public class GdprResponseAccessServiceImpl implements GdprResponseAccessService 
                 .filter(gdprRequest.getModelId() + " MEMBER OF " + metaField.getName())
                 .fetch();
       }
-      if (records.size() > 1) {
-        LOG.debug("records : {}", records);
-      }
+
       if (!records.isEmpty()) {
-        File csvFile = createCSV(records, metaField.getMetaModel());
-        generatedFiles.add(csvFile);
+        LOG.debug("records : {}", records);
+        Optional.ofNullable(createCSV(records, metaField.getMetaModel()))
+            .ifPresent(csvFile -> generatedFiles.add(csvFile));
       }
     }
 
@@ -276,7 +279,14 @@ public class GdprResponseAccessServiceImpl implements GdprResponseAccessService 
     AdvancedExport advancedExport = new AdvancedExport();
     advancedExport.setMetaModel(metaModel);
     advancedExport.setIncludeArchivedRecords(true);
-    advancedExport.setAdvancedExportLineList(getAllFields(advancedExport));
+
+    List<AdvancedExportLine> fieldsToExport = getAllFields(advancedExport);
+
+    if (fieldsToExport.isEmpty()) {
+      return null;
+    }
+
+    advancedExport.setAdvancedExportLineList(fieldsToExport);
     advancedExportRepository.save(advancedExport);
     File file = null;
     List<Long> recordsIds = new ArrayList<>();
@@ -294,18 +304,43 @@ public class GdprResponseAccessServiceImpl implements GdprResponseAccessService 
   public List<AdvancedExportLine> getAllFields(AdvancedExport advancedExport)
       throws ClassNotFoundException {
 
+    // search dataToExclude configuration
+    List<GDPRDataToExcludeConfig> dataToExcludeConfig =
+        appGdprService.getAppGDPR().getDataToExcludeConfig();
+
+    boolean excludeModel;
+    List<MetaField> metaFieldsToExclude = new ArrayList<>();
+
+    excludeModel =
+        dataToExcludeConfig.stream()
+            .map(GDPRDataToExcludeConfig::getMetaModel)
+            .anyMatch(metaModel -> metaModel.equals(advancedExport.getMetaModel()));
+
+    if (excludeModel) {
+      // if empty, means do not export full Model
+      metaFieldsToExclude =
+          dataToExcludeConfig.stream()
+              .filter(
+                  gdprDataToExcludeConfig ->
+                      gdprDataToExcludeConfig.getMetaModel().equals(advancedExport.getMetaModel()))
+              .map(GDPRDataToExcludeConfig::getMetaFields)
+              .flatMap(Collection::stream)
+              .collect(Collectors.toList());
+    }
+
     Inflector inflector;
     inflector = Inflector.getInstance();
 
-    if (advancedExport.getMetaModel() == null) {
+    if (advancedExport.getMetaModel() == null || (excludeModel && metaFieldsToExclude.isEmpty())) {
       return Collections.emptyList();
     }
 
     List<AdvancedExportLine> advancedExportLineList = new ArrayList<>();
-    MetaModelRepository metaModelRepository = Beans.get(MetaModelRepository.class);
-    MetaFieldRepository metaFieldRepository = Beans.get(MetaFieldRepository.class);
 
     for (MetaField field : advancedExport.getMetaModel().getMetaFields()) {
+      if (metaFieldsToExclude.contains(field)) {
+        continue;
+      }
       AdvancedExportLine advancedExportLine = new AdvancedExportLine();
       advancedExportLine.setCurrentDomain(advancedExport.getMetaModel().getName());
 
@@ -319,7 +354,7 @@ public class GdprResponseAccessServiceImpl implements GdprResponseAccessService 
 
       if (!Strings.isNullOrEmpty(field.getRelationship())) {
         MetaModel metaModel =
-            metaModelRepository.all().filter("self.name = ?", field.getTypeName()).fetchOne();
+            metaModelRepo.all().filter("self.name = ?", field.getTypeName()).fetchOne();
 
         Class<?> klass = Class.forName(metaModel.getFullName());
         Mapper mapper = Mapper.of(klass);
@@ -396,8 +431,7 @@ public class GdprResponseAccessServiceImpl implements GdprResponseAccessService 
   protected List<File> searchDMSFile(GDPRRequest gdprRequest) {
 
     List<DMSFile> dmsFiles =
-        Beans.get(GdprDmsFileRepository.class)
-            .findByModel(gdprRequest.getModelId(), gdprRequest.getModelSelect());
+        gdprDmsFileRepository.findByModel(gdprRequest.getModelId(), gdprRequest.getModelSelect());
 
     return dmsFiles.stream()
         .map(dmsFile -> MetaFiles.getPath(dmsFile.getMetaFile()).toFile())
