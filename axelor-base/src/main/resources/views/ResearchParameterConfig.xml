@@ -10,9 +10,10 @@
   </grid>
 
   <form name="research-parameter-config-form" title="Search configuration"
-    model="com.axelor.apps.base.db.ResearchParameterConfig">
+    model="com.axelor.apps.base.db.ResearchParameterConfig" width="large">
     <panel name="mainPanel">
-      <field name="model"/>
+      <field name="model"
+        onChange="action-base-research-parameter-config-set-meta-model-method" colSpan="3"/>
       <field name="metaModel" hidden="true" readonly="true"/>
       <help>
         <![CDATA[
@@ -22,12 +23,18 @@
 
       <field name="researchParameterList" colSpan="12" showTitle="false">
         <editor colSpan="12">
-          <field name="researchPrimaryKey" colSpan="4"/>
-          <field name="query" colSpan="4"/>
-          <field name="mapping" colSpan="4"/>
+          <field name="researchPrimaryKey" colSpan="3" required="true"/>
+          <field name="query" colSpan="3" required="true"/>
+          <field name="mapping" colSpan="3" required="true"/>
+          <field name="binding" colSpan="3" required="true"/>
         </editor>
       </field>
     </panel>
   </form>
+
+  <action-method name="action-base-research-parameter-config-set-meta-model-method">
+    <call class="com.axelor.apps.base.web.ResearchParameterConfigController"
+      method="setMetaModel"/>
+  </action-method>
 
 </object-views>

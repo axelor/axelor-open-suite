@@ -524,4 +524,9 @@ public final class BaseExceptionMessage {
 
   public static final String ADVANCED_IMPORT_NOT_VALIDATED = /*$$(*/
       "Advanced import is not validated" /*)*/;
+
+  public static final String FIELD_NOT_FOUND = /*$$(*/ "This field doesn't exist." /*)*/;
+
+  public static final String ERROR_MISSING_RESEARCH_PARAMETER_CONFIGURATION = /*$$(*/
+      "Missing parameter configuration" /*)*/;
 }

@@ -9,6 +9,8 @@
 
     <string name="name" title="Name" namecolumn="true"/>
     <string name="code" title="Code" unique="true"/>
+    <integer name="typeSelect" title="Type" selection="research.primary.key.type.select"
+      default="0"/>
     <one-to-many name="researchParameterList"
       ref="com.axelor.apps.base.db.ResearchParameter" mappedBy="researchPrimaryKey"/>
 

@@ -174,7 +174,7 @@
     <option value="com.axelor.apps.base.db.Partner">Partner</option>
   </selection>
 
-  <selection id="crm-research-model-selection" name="research-model-selection">
+  <selection id="crm.research.model.selection" name="research.model.selection">
     <option value="com.axelor.apps.base.db.Partner.Contact">Contact</option>
     <option value="com.axelor.apps.crm.db.Lead">Lead</option>
     <option value="com.axelor.apps.crm.db.Event">Event</option>

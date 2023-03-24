@@ -6,15 +6,20 @@
 
   <grid name="research-primary-key-grid" title="Primary keys"
     model="com.axelor.apps.base.db.ResearchPrimaryKey">
-    <field name="name"/>
     <field name="code"/>
+    <field name="name"/>
+    <field name="typeSelect"/>
   </grid>
 
   <form name="research-primary-key-from" title="Primary key"
     model="com.axelor.apps.base.db.ResearchPrimaryKey">
-    <panel name="requestOriginPanel">
+    <panel name="mainPanel">
+      <field name="code" required="true"/>
       <field name="name"/>
-      <field name="code"/>
+      <field name="typeSelect"/>
+      <panel-related name="researchParameterListPanel" field="researchParameterList"
+        form-view="research-parameter-form" grid-view="research-parameter-grid" colSpan="12"
+        readonly="true"/>
     </panel>
   </form>
 

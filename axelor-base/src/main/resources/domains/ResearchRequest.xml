@@ -8,7 +8,7 @@
   <entity name="ResearchRequest" lang="java">
 
 
-    <string name="models" title="Models to search" selection="research-model-selection"/>
+    <string name="models" title="Models to search" selection="research.model.selection"/>
     <string name="name" title="Name"/>
     <date name="searchDate" title="Date"/>
     <many-to-one name="research1" ref="com.axelor.apps.base.db.ResearchPrimaryKey"
@@ -19,10 +19,13 @@
       title="Research 3"/>
     <many-to-one name="research4" ref="com.axelor.apps.base.db.ResearchPrimaryKey"
       title="Research 4"/>
+    <many-to-one name="dateResearch1" ref="com.axelor.apps.base.db.ResearchPrimaryKey"
+      title="Date research 1"/>
     <string name="research1Value" title="Value 1"/>
     <string name="research2Value" title="Value 2"/>
     <string name="research3Value" title="Value 3"/>
     <string name="research4Value" title="Value 4"/>
+    <date name="dateResearch1Value" title="Date 1"/>
     <one-to-many name="researchResultLineList"
       ref="com.axelor.apps.base.db.ResearchResultLine" mappedBy="researchRequest"/>
 

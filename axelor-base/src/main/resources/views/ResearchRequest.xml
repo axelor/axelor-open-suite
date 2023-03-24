@@ -16,16 +16,30 @@
       <field name="name" colSpan="3" required="true"/>
       <field name="models" required="true" widget="MultiSelect" colSpan="3"/>
       <panel title="Search" icon="fa-search" name="searchPanel" colSpan="12">
-        <field name="research1" canEdit="false" canNew="false" title="Research 1" colSpan="2"/>
-        <field name="research1Value" title="Value 1" colSpan="4"/>
-        <field name="research2" canEdit="false" canNew="false" title="Research 2" colSpan="2"/>
-        <field name="research2Value" title="Value 2" colSpan="4"/>
-        <field name="research3" canEdit="false" canNew="false" title="Research 3" colSpan="2"/>
-        <field name="research3Value" title="Value 3" colSpan="4"/>
-        <field name="research4" canEdit="false" canNew="false" title="Research 4" colSpan="2"/>
-        <field name="research4Value" title="Value 4" colSpan="4"/>
-        <button name="searchBtn" title="Search" icon="fa-search" onClick="action-base-search"
-          colOffset="8" colSpan="4"/>
+
+        <field name="research1" canEdit="false" canNew="false" title="Research 1" colSpan="2"
+          domain="self.typeSelect = 0 and self.id"/>
+        <field name="research1Value" requiredIf="research1" title="Value 1" colSpan="4"/>
+
+        <field name="research2" canEdit="false" canNew="false" title="Research 2" colSpan="2"
+          domain="self.typeSelect = 0"/>
+        <field name="research2Value" requiredIf="research2" title="Value 2" colSpan="4"/>
+
+        <field name="research3" canEdit="false" canNew="false" title="Research 3" colSpan="2"
+          domain="self.typeSelect = 0"/>
+        <field name="research3Value" requiredIf="research3" title="Value 3" colSpan="4"/>
+
+        <field name="research4" canEdit="false" canNew="false" title="Research 4" colSpan="2"
+          domain="self.typeSelect = 0"/>
+        <field name="research4Value" requiredIf="research4" title="Value 4" colSpan="4"
+          domain="self.typeSelect = 0"/>
+
+        <field name="dateResearch1" canEdit="false" canNew="false" title="Date research 1"
+          colSpan="2" domain="self.typeSelect = 1"/>
+        <field name="dateResearch1Value" requiredIf="dateResearch1" title="Date 1" colSpan="4"/>
+
+        <button name="searchBtn" title="Search" icon="fa-search"
+          onClick="save,action-base-search" colOffset="8" colSpan="4"/>
         <panel-related name="researchResultsPanel" title="Results"
           field="researchResultLineList" colSpan="12" grid-view="research-result-line-grid"
           form-view="research-result-line-form" canNew="false" canView="false" canRemove="false"
@@ -40,7 +54,7 @@
   </form>
 
   <action-method name="action-base-search">
-    <call class="com.axelor.apps.base.web.SearchRequestController" method="searchObject"/>
+    <call class="com.axelor.apps.base.web.ResearchRequestController" method="searchObject"/>
   </action-method>
 
 </object-views>

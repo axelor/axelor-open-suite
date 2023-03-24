@@ -7,7 +7,7 @@
 
   <entity name="ResearchParameterConfig" lang="java">
 
-    <string name="model" title="Model" selection="research-model-selection"/>
+    <string name="model" title="Model" selection="research.model.selection"/>
     <many-to-one ref="com.axelor.meta.db.MetaModel" name="metaModel" unique="true"
       title="Meta model"/>
     <one-to-many ref="com.axelor.apps.base.db.ResearchParameter"

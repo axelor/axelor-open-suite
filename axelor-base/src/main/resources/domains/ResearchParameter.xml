@@ -12,9 +12,10 @@
       title="Search configuration"/>
     <many-to-one name="researchPrimaryKey"
       ref="com.axelor.apps.base.db.ResearchPrimaryKey"/>
-    <string name="query" required="true" help="JPQL filter to add to the query" title="Query"/>
-    <string name="mapping" required="true"
-      help="Field displayed in the result of the research" title="Mapping"/>
+    <string name="query" help="JPQL filter to add to the query" title="Query"/>
+    <string name="mapping" help="Field displayed in the result of the research"
+      title="Mapping"/>
+    <string name="binding" help="Field to bind for the query" title="Binding"/>
     <unique-constraint columns="researchPrimaryKey,researchParameterConfig"/>
 
   </entity>
