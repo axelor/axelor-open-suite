@@ -1747,7 +1747,7 @@
     <field name="fiscalPosition" expr="eval: clientPartner?.fiscalPosition"
       if="__config__.app.isApp('account')"/>
     <field name="currency" expr="eval: clientPartner?.currency"
-      if="!template &amp;&amp; saleOrderLineList?.isEmpty()"/>
+      if="!template &amp;&amp; (saleOrderLineList == null || saleOrderLineList?.isEmpty() )"/>
     <field name="paymentMode" expr="eval: clientPartner?.inPaymentMode"
       if="__config__.app.isApp('supplychain') &amp;&amp; clientPartner?.inPaymentMode != null"/>
     <field name="paymentMode" expr="eval: company?.accountConfig?.inPaymentMode"
