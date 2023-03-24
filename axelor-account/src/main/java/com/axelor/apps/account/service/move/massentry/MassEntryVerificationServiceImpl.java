@@ -107,11 +107,10 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
     }
 
     // Check move line mass entry payment mode
-    if (newMoveLine.getAccount() != null
-        && !newMoveLine.getAccount().getHasInvoiceTerm()
-        && newMoveLine.getMovePaymentMode() != null) {
+    if (newMoveLine.getAccount() != null && !newMoveLine.getAccount().getHasInvoiceTerm()) {
       PaymentMode newMovePaymentMode = newMoveLine.getMovePaymentMode();
-      if (!newMovePaymentMode.equals(moveLine.getMovePaymentMode())) {
+      if (moveLine.getMovePaymentMode() == null
+          || !moveLine.getMovePaymentMode().equals(newMovePaymentMode)) {
         moveLine.setMovePaymentMode(newMovePaymentMode);
       }
     }
@@ -124,7 +123,8 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
 
     // Check move line mass entry payment condition
     PaymentCondition newPaymentCondition = newMoveLine.getMovePaymentCondition();
-    if (!moveLine.getMovePaymentCondition().equals(newPaymentCondition)) {
+    if (moveLine.getMovePaymentCondition() == null
+        || !moveLine.getMovePaymentCondition().equals(newPaymentCondition)) {
       moveLine.setMovePaymentCondition(newPaymentCondition);
     }
 

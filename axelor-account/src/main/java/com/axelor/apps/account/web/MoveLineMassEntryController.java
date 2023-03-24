@@ -55,7 +55,7 @@ public class MoveLineMassEntryController {
         if (move != null) {
           line.setInputAction(MoveLineMassEntryRepository.MASS_ENTRY_INPUT_ACTION_LINE);
           if (ObjectUtils.notEmpty(move.getMoveLineMassEntryList())) {
-            if (line.getTemporaryMoveNumber() == 0) {
+            if (line.getTemporaryMoveNumber() <= 0) {
               line.setTemporaryMoveNumber(
                   Beans.get(MassEntryToolService.class)
                       .getMaxTemporaryMoveNumber(move.getMoveLineMassEntryList()));
