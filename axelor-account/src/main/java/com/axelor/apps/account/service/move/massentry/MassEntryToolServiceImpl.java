@@ -4,6 +4,7 @@ import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.MoveLineMassEntry;
+import com.axelor.apps.account.db.repo.MoveLineMassEntryRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.PeriodService;
@@ -81,7 +82,7 @@ public class MassEntryToolServiceImpl implements MassEntryToolService {
       Move move, MoveLine moveLine, Integer tempMoveNumber) {
     MoveLineMassEntry moveLineResult = new MoveLineMassEntry();
     if (move != null && moveLine != null) {
-      moveLineResult.setInputAction(1);
+      moveLineResult.setInputAction(MoveLineMassEntryRepository.MASS_ENTRY_INPUT_ACTION_LINE);
       moveLineResult.setMovePaymentMode(move.getPaymentMode());
       moveLineResult.setMovePaymentCondition(move.getPaymentCondition());
       moveLineResult.setTemporaryMoveNumber(tempMoveNumber);
@@ -106,6 +107,7 @@ public class MassEntryToolServiceImpl implements MassEntryToolService {
       moveLineResult.setCurrencyAmount(moveLine.getCurrencyAmount());
       moveLineResult.setCurrencyRate(moveLine.getCurrencyRate());
       moveLineResult.setSourceTaxLine(moveLine.getSourceTaxLine());
+      moveLineResult.setVatSystemSelect(moveLine.getVatSystemSelect());
     }
 
     return moveLineResult;
@@ -116,7 +118,7 @@ public class MassEntryToolServiceImpl implements MassEntryToolService {
     List<MoveLineMassEntry> resultList = new ArrayList<>();
 
     for (MoveLineMassEntry moveLine : moveLineList) {
-      if (moveLine.getIsEdited()) {
+      if (moveLine.getIsEdited() > MoveLineMassEntryRepository.MASS_ENTRY_IS_EDITED_NULL) {
         resultList.add(moveLine);
       }
     }
@@ -150,7 +152,8 @@ public class MassEntryToolServiceImpl implements MassEntryToolService {
 
     for (MoveLineMassEntry massEntryLine : parentMove.getMoveLineMassEntryList()) {
       if (massEntryLine.getTemporaryMoveNumber() == temporaryMoveNumber
-          && massEntryLine.getInputAction() == 1) {
+          && massEntryLine.getInputAction()
+              == MoveLineMassEntryRepository.MASS_ENTRY_INPUT_ACTION_LINE) {
         if (firstMoveLine) {
           if (massEntryLine.getDate() != null && moveResult.getCompany() != null) {
             moveResult.setPeriod(

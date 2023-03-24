@@ -8,7 +8,7 @@
     onNew="action-account-move-line-onnew-group">
     <field name="temporaryMoveNumber" width="50"
       onChange="action-move-line-mass-entry-method-get-first-move-line-informations"/>
-    <field name="inputAction" selection="iaccount.move.input.action.select"
+    <field name="inputAction" selection="iaccount.move.line.mass.entry.input.action.select"
       onChange="action-move-line-mass-entry-method-input-action-onchange" readonly="true"
       required="true" width="50"/>
     <field name="date" onChange="account-move-line-group-date-onchange">
@@ -78,7 +78,8 @@
     <field name="pfpValidatorUser" title="PFP Validator"
       if="__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <field name="deliveryDate" title="Delivery date"/>
-    <field name="vatSystemSelect" onChange="action-move-line-mass-entry-record-set-is-edited"/>
+    <field name="vatSystemSelect"
+      onChange="action-move-line-mass-entry-record-set-is-edited-vat-system"/>
     <field name="moveStatusSelect"/>
     <field name="isOtherCurrency" hidden="true"/>
     <field name="fieldsErrorList" hidden="true"/>
@@ -89,7 +90,12 @@
   <!-- Action record -->
   <action-record name="action-move-line-mass-entry-record-set-is-edited"
     model="com.axelor.apps.account.db.MoveLineMassEntry">
-    <field name="isEdited" expr="true"/>
+    <field name="isEdited" expr="1" if="isEdited == 0"/>
+  </action-record>
+
+  <action-record name="action-move-line-mass-entry-record-set-is-edited-vat-system"
+    model="com.axelor.apps.account.db.MoveLineMassEntry">
+    <field name="isEdited" expr="2"/>
   </action-record>
 
   <!-- Action attrs -->

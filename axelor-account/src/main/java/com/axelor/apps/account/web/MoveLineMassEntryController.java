@@ -20,6 +20,7 @@ package com.axelor.apps.account.web;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLineMassEntry;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
+import com.axelor.apps.account.db.repo.MoveLineMassEntryRepository;
 import com.axelor.apps.account.service.move.massentry.MassEntryService;
 import com.axelor.apps.account.service.move.massentry.MassEntryToolService;
 import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryService;
@@ -52,7 +53,7 @@ public class MoveLineMassEntryController {
                 && (boolean) parentContext.get("manageCutOffDummy");
 
         if (move != null) {
-          line.setInputAction(1);
+          line.setInputAction(MoveLineMassEntryRepository.MASS_ENTRY_INPUT_ACTION_LINE);
           if (ObjectUtils.notEmpty(move.getMoveLineMassEntryList())) {
             if (line.getTemporaryMoveNumber() == 0) {
               line.setTemporaryMoveNumber(
@@ -97,12 +98,12 @@ public class MoveLineMassEntryController {
                 && (boolean) parentContext.get("manageCutOffDummy");
 
         switch (moveLine.getInputAction()) {
-          case 2:
+          case MoveLineMassEntryRepository.MASS_ENTRY_INPUT_ACTION_COUNTERPART:
             isCounterpartLine = true;
             break;
-          case 3:
+          case MoveLineMassEntryRepository.MASS_ENTRY_INPUT_ACTION_MOVE:
             Beans.get(MassEntryService.class).resetMoveLineMassEntry(moveLine, manageCutOff);
-            moveLine.setInputAction(1);
+            moveLine.setInputAction(MoveLineMassEntryRepository.MASS_ENTRY_INPUT_ACTION_LINE);
             moveLine.setTemporaryMoveNumber(
                 Beans.get(MassEntryToolService.class)
                         .getMaxTemporaryMoveNumber(move.getMoveLineMassEntryList())
@@ -180,7 +181,8 @@ public class MoveLineMassEntryController {
       }
       response.setValue("currencyRate", currencyRate);
       response.setAttr("origin", "required", isOriginRequired);
-      response.setValue("isEdited", true);
+      response.setValue(
+          "isEdited", MoveLineMassEntryRepository.MASS_ENTRY_IS_EDITED_EXCEPT_VAT_SYSTEM);
     } catch (AxelorException e) {
       TraceBackService.trace(response, e);
     }

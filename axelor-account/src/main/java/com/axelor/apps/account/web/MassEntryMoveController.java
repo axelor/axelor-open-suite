@@ -19,6 +19,7 @@ package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLineMassEntry;
+import com.axelor.apps.account.db.repo.MoveLineMassEntryRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.massentry.MassEntryService;
@@ -70,7 +71,9 @@ public class MassEntryMoveController {
 
         MoveLineMassEntry lastLine =
             move.getMoveLineMassEntryList().get(move.getMoveLineMassEntryList().size() - 1);
-        if (lastLine.getInputAction() != null && lastLine.getInputAction() == 2) {
+        if (lastLine.getInputAction() != null
+            && lastLine.getInputAction()
+                == MoveLineMassEntryRepository.MASS_ENTRY_INPUT_ACTION_COUNTERPART) {
           Move workingMove =
               massEntryToolService.createMoveFromMassEntryList(
                   move, lastLine.getTemporaryMoveNumber());

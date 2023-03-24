@@ -535,10 +535,16 @@
     <option value='9'>Irrecoverable</option>
   </selection>
 
-  <selection name='iaccount.move.input.action.select'>
+  <selection name='iaccount.move.line.mass.entry.input.action.select'>
     <option value='1'>Line</option>
     <option value='2'>Counterpart</option>
     <option value='3'>Move</option>
+  </selection>
+
+  <selection name='iaccount.move.line.mass.entry.edited.field.select'>
+    <option value='0'/>
+    <option value='1'>Except VAT System</option>
+    <option value='2'>All</option>
   </selection>
 
   <selection name='iaccount.move.mass.entry.status.select'>

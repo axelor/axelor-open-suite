@@ -5,6 +5,7 @@ import com.axelor.apps.account.db.MoveLineMassEntry;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
+import com.axelor.apps.account.db.repo.MoveLineMassEntryRepository;
 import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
@@ -129,7 +130,8 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
 
     // Check move line mass entry VatSystemSelect
     int newVatSystemSelect = newMoveLine.getVatSystemSelect();
-    if (!moveLine.getVatSystemSelect().equals(newVatSystemSelect)) {
+    if (!moveLine.getVatSystemSelect().equals(newVatSystemSelect)
+        && moveLine.getIsEdited() == MoveLineMassEntryRepository.MASS_ENTRY_IS_EDITED_ALL) {
       moveLine.setVatSystemSelect(newVatSystemSelect);
     }
 

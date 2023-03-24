@@ -20,6 +20,7 @@ package com.axelor.apps.account.service.move.massentry;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.MoveLineMassEntry;
+import com.axelor.apps.account.db.repo.MoveLineMassEntryRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.PeriodServiceAccount;
@@ -106,17 +107,13 @@ public class MassEntryServiceImpl implements MassEntryService {
           inputLine.setMovePartnerBankDetails(moveLine.getMovePartnerBankDetails());
           inputLine.setCutOffStartDate(moveLine.getCutOffStartDate());
           inputLine.setCutOffEndDate(moveLine.getCutOffEndDate());
+          inputLine.setVatSystemSelect(moveLine.getVatSystemSelect());
+          inputLine.setIsEdited(MoveLineMassEntryRepository.MASS_ENTRY_IS_EDITED_NULL);
           break;
         }
       }
     } else {
-      inputLine.setDate(LocalDate.now());
-      inputLine.setOriginDate(LocalDate.now());
-      if (manageCutOff) {
-        inputLine.setCutOffStartDate(LocalDate.now());
-        inputLine.setCutOffEndDate(LocalDate.now());
-      }
-      inputLine.setDeliveryDate(LocalDate.now());
+      resetMoveLineMassEntry(inputLine, manageCutOff);
     }
     return inputLine;
   }
@@ -147,6 +144,8 @@ public class MassEntryServiceImpl implements MassEntryService {
     moveLine.setDeliveryDate(LocalDate.now());
     moveLine.setCutOffStartDate(LocalDate.now());
     moveLine.setCutOffEndDate(LocalDate.now());
+    moveLine.setIsEdited(MoveLineMassEntryRepository.MASS_ENTRY_IS_EDITED_NULL);
+    moveLine.setFieldsErrorList(null);
 
     if (!manageCutOff) {
       moveLine.setCutOffStartDate(null);
@@ -170,7 +169,7 @@ public class MassEntryServiceImpl implements MassEntryService {
             moveLine.setMoveStatusSelect(MoveRepository.STATUS_NEW);
             massEntryVerificationService.checkAndReplaceFieldsInMoveLineMassEntry(
                 moveLine, parentMove, moveLineEdited, manageCutOff);
-            moveLine.setIsEdited(false);
+            moveLine.setIsEdited(MoveLineMassEntryRepository.MASS_ENTRY_IS_EDITED_NULL);
           }
         }
       }
@@ -339,6 +338,7 @@ public class MassEntryServiceImpl implements MassEntryService {
                 counter,
                 moveLineElement.getOrigin(),
                 moveLineElement.getName());
+        moveLine.setVatSystemSelect(moveLineElement.getVatSystemSelect());
         newMove.getMoveLineList().add(moveLine);
 
         moveLine.setTaxLine(moveLineElement.getTaxLine());
