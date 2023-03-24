@@ -78,6 +78,42 @@
     <field name="pfpValidatorUser" title="PFP Validator"
       if="__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <field name="deliveryDate" title="Delivery date"/>
+    <field name="analyticDistributionTemplate"
+      if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"
+      grid-view="analytic-distribution-template-grid"
+      form-view="analytic-distribution-template-form"
+      onChange="action-move-line-group-analytic-distribution-template-onchange"
+      onSelect="action-move-line-group-set-analytic-distribution-template-onselect"
+      readonlyIf="!account || !account.analyticDistributionAuthorized"
+      requiredIf="(!analyticMoveLineList || !analyticMoveLineList.length) &amp;&amp; account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines &amp;&amp; (axis1AnalyticAccount == null &amp;&amp; axis2AnalyticAccount == null &amp;&amp; axis3AnalyticAccount == null &amp;&amp; axis4AnalyticAccount == null &amp;&amp; axis5AnalyticAccount == null)"/>
+    <field name="axis1AnalyticAccount" grid-view="analytic-account-grid"
+      form-view="analytic-account-form"
+      readonlyIf="account.analyticDistributionAuthorized == false || !account"
+      onSelect="action-move-line-attrs-set-domain-axis"
+      onChange="action-move-line-group-analytic-axis-onchange"/>
+    <field name="axis2AnalyticAccount" grid-view="analytic-account-grid"
+      form-view="analytic-account-form"
+      readonlyIf="account.analyticDistributionAuthorized == false || !account"
+      onSelect="action-move-line-attrs-set-domain-axis"
+      onChange="action-move-line-group-analytic-axis-onchange"/>
+    <field name="axis3AnalyticAccount" grid-view="analytic-account-grid"
+      form-view="analytic-account-form"
+      readonlyIf="account.analyticDistributionAuthorized == false || !account"
+      onSelect="action-move-line-attrs-set-domain-axis"
+      onChange="action-move-line-group-analytic-axis-onchange"/>
+    <field name="axis4AnalyticAccount" grid-view="analytic-account-grid"
+      form-view="analytic-account-form"
+      readonlyIf="account.analyticDistributionAuthorized == false || !account"
+      onSelect="action-move-line-attrs-set-domain-axis"
+      onChange="action-move-line-group-analytic-axis-onchange"/>
+    <field name="axis5AnalyticAccount" grid-view="analytic-account-grid"
+      form-view="analytic-account-form"
+      readonlyIf="account.analyticDistributionAuthorized == false || !account"
+      onSelect="action-move-line-attrs-set-domain-axis"
+      onChange="action-move-line-group-analytic-axis-onchange"/>
+    <field name="analyticMoveLineList" grid-view="analytic-move-line-move-line-grid"
+      form-view="analytic-move-line-move-line-form"
+      onChange="action-move-line-method-check-analytic-account-on-move-line,action-move-line-method-set-required-analytic-accounts"/>
     <field name="vatSystemSelect"
       onChange="action-move-line-mass-entry-record-set-is-edited-vat-system"/>
     <field name="moveStatusSelect"/>

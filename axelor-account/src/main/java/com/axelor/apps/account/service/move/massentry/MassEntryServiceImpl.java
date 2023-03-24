@@ -146,6 +146,13 @@ public class MassEntryServiceImpl implements MassEntryService {
     moveLine.setCutOffEndDate(LocalDate.now());
     moveLine.setIsEdited(MoveLineMassEntryRepository.MASS_ENTRY_IS_EDITED_NULL);
     moveLine.setFieldsErrorList(null);
+    moveLine.setAnalyticDistributionTemplate(null);
+    moveLine.setAxis1AnalyticAccount(null);
+    moveLine.setAxis2AnalyticAccount(null);
+    moveLine.setAxis3AnalyticAccount(null);
+    moveLine.setAxis4AnalyticAccount(null);
+    moveLine.setAxis5AnalyticAccount(null);
+    moveLine.setAnalyticMoveLineList(null);
 
     if (!manageCutOff) {
       moveLine.setCutOffStartDate(null);
@@ -344,6 +351,12 @@ public class MassEntryServiceImpl implements MassEntryService {
         moveLine.setTaxLine(moveLineElement.getTaxLine());
 
         moveLine.setAnalyticDistributionTemplate(moveLineElement.getAnalyticDistributionTemplate());
+        moveLine.setAxis1AnalyticAccount(moveLineElement.getAxis1AnalyticAccount());
+        moveLine.setAxis2AnalyticAccount(moveLineElement.getAxis2AnalyticAccount());
+        moveLine.setAxis3AnalyticAccount(moveLineElement.getAxis3AnalyticAccount());
+        moveLine.setAxis4AnalyticAccount(moveLineElement.getAxis4AnalyticAccount());
+        moveLine.setAxis5AnalyticAccount(moveLineElement.getAxis5AnalyticAccount());
+        moveLine.setAnalyticMoveLineList(moveLineElement.getAnalyticMoveLineList());
         moveLineComputeAnalyticService.generateAnalyticMoveLines(moveLine);
 
         counter++;
