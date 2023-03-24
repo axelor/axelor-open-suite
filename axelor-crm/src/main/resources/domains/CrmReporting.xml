@@ -5,7 +5,7 @@
 
   <module name="crm" package="com.axelor.apps.crm.db"/>
 
-  <entity name="CrmReporting" lang="java">
+  <entity name="CrmReporting">
 
     <string name="typeSelect" title="Type" selection="crm.reporting.type.select"/>
     <many-to-many name="companySet" ref="com.axelor.apps.base.db.Company"
