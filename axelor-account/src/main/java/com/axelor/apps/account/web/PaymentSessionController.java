@@ -311,6 +311,8 @@ public class PaymentSessionController {
     try {
       PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
       paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
+      Beans.get(PaymentSessionCancelService.class).cancelInvoiceTerms(paymentSession);
+      paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
       Beans.get(PaymentSessionService.class).retrieveEligibleTerms(paymentSession);
       response.setReload(true);
     } catch (Exception e) {
