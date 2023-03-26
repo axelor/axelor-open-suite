@@ -279,31 +279,33 @@ public class AccountingReportDas2ServiceImpl implements AccountingReportDas2Serv
   }
 
   public BigDecimal getDebitBalance(String query) {
-    Query q =
-        JPA.em()
-            .createQuery(
-                "select SUM(self.exTaxProratedAmount) + Sum(self.taxProratedAmount) FROM PaymentMoveLineDistribution as self WHERE "
-                    + query,
-                BigDecimal.class);
-    return getNullSafeBalance(q);
+    return getBalance(query, false);
   }
 
   public BigDecimal getCreditBalance(String query) {
+    return getBalance(query, true);
+  }
+
+  protected BigDecimal getBalance(String query, boolean isCredit) {
+    String sumQuery;
+    if (isCredit) {
+      sumQuery = "SUM(self.inTaxProratedAmount)";
+    } else {
+      sumQuery = "SUM(self.exTaxProratedAmount) + SUM(self.taxProratedAmount)";
+    }
     Query q =
         JPA.em()
             .createQuery(
-                "select SUM(self.inTaxProratedAmount) FROM PaymentMoveLineDistribution as self WHERE "
-                    + query,
+                "select " + sumQuery + " FROM PaymentMoveLineDistribution as self WHERE " + query,
                 BigDecimal.class);
 
     return getNullSafeBalance(q);
   }
 
   protected BigDecimal getNullSafeBalance(Query q) {
-    BigDecimal result = (BigDecimal) q.getSingleResult();
-    if (result == null) {
-      result = BigDecimal.ZERO;
+    if (q.getSingleResult() == null) {
+      return BigDecimal.ZERO;
     }
-    return result;
+    return (BigDecimal) q.getSingleResult();
   }
 }
