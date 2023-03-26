@@ -162,7 +162,8 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
     this.validateDates(timesheet);
 
     timesheet.setStatusSelect(TimesheetRepository.STATUS_CONFIRMED);
-    timesheet.setSentDate(appHumanResourceService.getTodayDate(timesheet.getCompany()));
+    timesheet.setSentDateTime(
+        appHumanResourceService.getTodayDateTime(timesheet.getCompany()).toLocalDateTime());
   }
 
   @Override
@@ -245,7 +246,8 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
     timesheet.setIsCompleted(true);
     timesheet.setStatusSelect(TimesheetRepository.STATUS_VALIDATED);
     timesheet.setValidatedBy(AuthUtils.getUser());
-    timesheet.setValidationDate(appHumanResourceService.getTodayDate(timesheet.getCompany()));
+    timesheet.setValidationDateTime(
+        appHumanResourceService.getTodayDateTime(timesheet.getCompany()).toLocalDateTime());
   }
 
   @Override
@@ -278,7 +280,8 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
 
     timesheet.setStatusSelect(TimesheetRepository.STATUS_REFUSED);
     timesheet.setRefusedBy(AuthUtils.getUser());
-    timesheet.setRefusalDate(appHumanResourceService.getTodayDate(timesheet.getCompany()));
+    timesheet.setRefusalDateTime(
+        appHumanResourceService.getTodayDateTime(timesheet.getCompany()).toLocalDateTime());
   }
 
   @Override
