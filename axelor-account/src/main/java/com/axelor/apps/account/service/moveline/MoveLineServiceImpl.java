@@ -106,20 +106,23 @@ public class MoveLineServiceImpl implements MoveLineService {
     if (move.getMoveLineList() != null) {
       BigDecimal totalCredit =
           move.getMoveLineList().stream()
-              .map(it -> it.getCredit())
-              .reduce((a, b) -> a.add(b))
+              .map(MoveLine::getCredit)
+              .reduce(BigDecimal::add)
               .orElse(BigDecimal.ZERO);
+
       BigDecimal totalDebit =
           move.getMoveLineList().stream()
-              .map(it -> it.getDebit())
-              .reduce((a, b) -> a.add(b))
+              .map(MoveLine::getDebit)
+              .reduce(BigDecimal::add)
               .orElse(BigDecimal.ZERO);
+
       if (totalCredit.compareTo(totalDebit) < 0) {
         moveLine.setCredit(totalDebit.subtract(totalCredit));
       } else if (totalCredit.compareTo(totalDebit) > 0) {
         moveLine.setDebit(totalCredit.subtract(totalDebit));
       }
     }
+
     return moveLine;
   }
 
@@ -360,6 +363,10 @@ public class MoveLineServiceImpl implements MoveLineService {
 
   @Override
   public void computeFinancialDiscount(MoveLine moveLine) {
+    if (!appAccountService.getAppAccount().getManageFinancialDiscount()) {
+      return;
+    }
+
     if (moveLine.getAccount() != null
         && moveLine.getAccount().getHasInvoiceTerm()
         && moveLine.getFinancialDiscount() != null) {
