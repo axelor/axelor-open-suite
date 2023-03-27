@@ -1031,7 +1031,7 @@
     <attribute name="hidden" for="moveLineMassEntryList.cutOffEndDate"
       expr="eval: !manageCutOffDummy"/>
     <attribute name="hidden" for="moveLineMassEntryList.deliveryDate"
-      expr="eval: ![1,2,3].contains(journal?.journalType?.technicalTypeSelect)"/>
+      expr="eval: !manageCutOffDummy || ![1,2,3].contains(journal?.journalType?.technicalTypeSelect)"/>
   </action-attrs>
 
   <!-- ACTION METHOD -->
