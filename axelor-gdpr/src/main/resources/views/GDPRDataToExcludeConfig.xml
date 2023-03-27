@@ -13,7 +13,9 @@
     model="com.axelor.apps.gdpr.db.GDPRDataToExcludeConfig">
     <panel name="mainPanel">
       <field name="metaModel"/>
-      <field name="metaFields" help="Select fields to exclude from the access request response. Leave empty if all fields should be excluded." colSpan="12" canNew="false" canSelect="true" canEdit="false"
+      <field name="metaFields"
+        help="Select fields to exclude from the access request response. Leave empty if all fields should be excluded."
+        colSpan="12" canNew="false" canSelect="true" canEdit="false"
         domain="self.metaModel = :metaModel"/>
     </panel>
   </form>
