@@ -1,0 +1,3 @@
+---
+title : "Ventilated supplier invoice : update financialDiscountDeadlineDate when updating originDate"
+type: fix

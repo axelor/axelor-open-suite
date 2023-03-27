@@ -1217,7 +1217,22 @@ public class InvoiceController {
       response.setValue(
           "remainingAmountAfterFinDiscount", invoice.getRemainingAmountAfterFinDiscount());
       response.setValue(
-          "financialDiscountDeadLineDate", invoice.getFinancialDiscountDeadlineDate());
+          "financialDiscountDeadlineDate", invoice.getFinancialDiscountDeadlineDate());
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void updateFinancialDiscountDeadlineDate(ActionRequest request, ActionResponse response) {
+    try {
+      Invoice invoice = request.getContext().asType(Invoice.class);
+
+      LocalDate financialDiscountDeadlineDate =
+          Beans.get(InvoiceService.class)
+              .getFinancialDiscountDeadlineDate(invoice, invoice.getFinancialDiscount());
+
+      response.setValue("financialDiscountDeadlineDate", financialDiscountDeadlineDate);
 
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);

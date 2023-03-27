@@ -558,7 +558,7 @@
       </field>
       <field name="originDate" showIf="operationTypeSelect == 1 || operationTypeSelect == 2"
         requiredIf="((operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; statusSelect == 2) || (operationSubTypeSelect == 2 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 2))"
-        onChange="action-invoice-group-payment-condition-onchange"/>
+        onChange="action-invoice-group-origin-date-onchange"/>
       <field name="$supplierInvoiceNbStatic" type="string" hidden="true"/>
     </panel>
 
@@ -1646,6 +1646,11 @@ InvoiceSet.length > 0))"
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
   </action-group>
 
+  <action-group name="action-invoice-group-origin-date-onchange">
+    <action name="action-invoice-group-payment-condition-onchange"/>
+    <action name="action-invoice-method-update-final-discount-deadline-date"/>
+  </action-group>
+
   <action-group name="action-invoice-group-payment-condition-onchange">
     <action name="action-invoice-method-generate-invoice-terms"/>
     <action name="action-invoice-method-compute-invoice-terms-due-dates"/>
@@ -1703,6 +1708,11 @@ InvoiceSet.length > 0))"
   <action-method name="action-invoice-method-update-final-discount">
     <call class="com.axelor.apps.account.web.InvoiceController"
       method="updateFinancialDiscount"/>
+  </action-method>
+
+  <action-method name="action-invoice-method-update-final-discount-deadline-date">
+    <call class="com.axelor.apps.account.web.InvoiceController"
+      method="updateFinancialDiscountDeadlineDate"/>
   </action-method>
 
   <action-group name="action-invoice-group-partner-onchange">
