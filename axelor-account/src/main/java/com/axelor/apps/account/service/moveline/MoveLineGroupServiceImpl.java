@@ -84,7 +84,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
     Map<String, Map<String, Object>> attrsMap =
         new HashMap<>(this.getAnalyticDistributionTemplateOnChangeAttrsMap(moveLine, move));
 
-    moveLineAttrsService.addAnalyticAxisAttrs(moveLine, move, attrsMap);
+    moveLineAttrsService.addAnalyticAxisAttrs(move, attrsMap);
     moveLineAttrsService.addDescriptionRequired(move, attrsMap);
 
     return attrsMap;

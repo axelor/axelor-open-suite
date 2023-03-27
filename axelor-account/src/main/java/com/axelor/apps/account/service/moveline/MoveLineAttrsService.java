@@ -6,7 +6,7 @@ import com.axelor.exception.AxelorException;
 import java.util.Map;
 
 public interface MoveLineAttrsService {
-  void addAnalyticAxisAttrs(MoveLine moveLine, Move move, Map<String, Map<String, Object>> attrsMap)
+  void addAnalyticAxisAttrs(Move move, Map<String, Map<String, Object>> attrsMap)
       throws AxelorException;
 
   void addDescriptionRequired(Move move, Map<String, Map<String, Object>> attrsMap)

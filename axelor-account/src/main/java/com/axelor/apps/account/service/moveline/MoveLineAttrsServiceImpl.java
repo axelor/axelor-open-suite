@@ -41,7 +41,7 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
 
   @Override
   public void addAnalyticAxisAttrs(
-      MoveLine moveLine, Move move, Map<String, Map<String, Object>> attrsMap)
+      Move move, Map<String, Map<String, Object>> attrsMap)
       throws AxelorException {
     if (move != null && move.getCompany() != null) {
       AccountConfig accountConfig = accountConfigService.getAccountConfig(move.getCompany());
