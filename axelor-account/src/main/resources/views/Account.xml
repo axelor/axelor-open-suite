@@ -506,7 +506,7 @@
   </action-attrs>
 
   <action-attrs name="action-attrs-account-set-is-retrieved-on-payment-session">
-    <attribute name="value" for="isRetrievedOnPaymentSession" expr="eval: hasInvoiceTerm"/>
+    <attribute name="value" for="isRetrievedOnPaymentSession" expr="eval: useForPartnerBalance"/>
   </action-attrs>
 
   <action-view name="action-account-view-accounting-report-config-line" title=""
