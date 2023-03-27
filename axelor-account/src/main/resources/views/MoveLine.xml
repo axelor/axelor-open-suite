@@ -827,7 +827,7 @@
     <action name="action-move-line-mass-entry-method-get-first-move-line-informations"
       if="__parent__.massEntryStatusSelect != 0"/>
     <action name="action-move-line-method-get-account-informations"/>
-    <action name="action-move-line-mass-entry-attrs-set-hidden-cut-off"
+    <action name="action-move-line-mass-entry-attrs-set-hidden-and-readonly"
       if="__parent__.massEntryStatusSelect != 0"/>
     <action name="action-move-line-method-compute-analytic-distribution"/>
     <action name="action-move-line-method-hide-axis-analytic-account"/>
@@ -899,7 +899,7 @@
   </action-group>
 
   <action-group name="action-account-move-line-account-group-on-change">
-    <action name="action-move-line-mass-entry-attrs-set-hidden-cut-off"
+    <action name="action-move-line-mass-entry-attrs-set-hidden-and-readonly"
       if="__parent__.massEntryStatusSelect != 0"/>
     <action name="action-move-line-record-set-cut-off-dates"
       if="__config__.app.getApp('account').manageCutOffPeriod &amp;&amp; __parent__.massEntryStatusSelect == 0"/>

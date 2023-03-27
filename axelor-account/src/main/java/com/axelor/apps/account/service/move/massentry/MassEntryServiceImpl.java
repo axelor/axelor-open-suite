@@ -107,6 +107,7 @@ public class MassEntryServiceImpl implements MassEntryService {
           inputLine.setMovePartnerBankDetails(moveLine.getMovePartnerBankDetails());
           inputLine.setCutOffStartDate(moveLine.getCutOffStartDate());
           inputLine.setCutOffEndDate(moveLine.getCutOffEndDate());
+          inputLine.setDeliveryDate(moveLine.getDeliveryDate());
           inputLine.setVatSystemSelect(moveLine.getVatSystemSelect());
           inputLine.setIsEdited(MoveLineMassEntryRepository.MASS_ENTRY_IS_EDITED_NULL);
           break;
@@ -346,6 +347,8 @@ public class MassEntryServiceImpl implements MassEntryService {
                 moveLineElement.getOrigin(),
                 moveLineElement.getName());
         moveLine.setVatSystemSelect(moveLineElement.getVatSystemSelect());
+        moveLine.setCutOffStartDate(moveLineElement.getCutOffStartDate());
+        moveLine.setCutOffEndDate(moveLineElement.getCutOffEndDate());
         newMove.getMoveLineList().add(moveLine);
 
         moveLine.setTaxLine(moveLineElement.getTaxLine());

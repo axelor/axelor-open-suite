@@ -135,11 +135,13 @@
   </action-record>
 
   <!-- Action attrs -->
-  <action-attrs name="action-move-line-mass-entry-attrs-set-hidden-cut-off">
+  <action-attrs name="action-move-line-mass-entry-attrs-set-hidden-and-readonly">
     <attribute for="cutOffStartDate" name="readonly"
       expr="eval: !account.manageCutOffPeriod" if="account != null"/>
     <attribute for="cutOffEndDate" name="readonly"
       expr="eval: !account.manageCutOffPeriod" if="account != null"/>
+    <attribute for="movePaymentMode" name="readonly" expr="eval: !account.hasInvoiceTerm"
+      if="account != null"/>
   </action-attrs>
 
   <action-attrs name="action-move-line-attrs-set-debit-credit-focus">
