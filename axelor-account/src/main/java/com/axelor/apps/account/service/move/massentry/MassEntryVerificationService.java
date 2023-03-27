@@ -26,4 +26,6 @@ public interface MassEntryVerificationService {
   void setPfpValidatorOnInTaxLines(Move move, int temporaryMoveNumber);
 
   void checkWellBalancedMove(Move move, int temporaryMoveNumber);
+
+  void checkAccountAnalytic(Move move, int temporaryMoveNumber);
 }

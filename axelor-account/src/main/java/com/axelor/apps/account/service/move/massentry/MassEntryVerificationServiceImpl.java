@@ -1,11 +1,13 @@
 package com.axelor.apps.account.service.move.massentry;
 
 import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.MoveLineMassEntry;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineMassEntryRepository;
+import com.axelor.apps.account.service.move.MoveControlService;
 import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
@@ -41,6 +43,7 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
   protected MoveToolService moveToolService;
   protected MoveLineControlService moveLineControlService;
   protected MoveValidateService moveValidateService;
+  protected MoveControlService moveControlService;
 
   @Inject
   public MassEntryVerificationServiceImpl(
@@ -49,13 +52,15 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
       MoveLineToolService moveLineToolService,
       MoveToolService moveToolService,
       MoveLineControlService moveLineControlService,
-      MoveValidateService moveValidateService) {
+      MoveValidateService moveValidateService,
+      MoveControlService moveControlService) {
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
     this.periodService = periodService;
     this.moveLineToolService = moveLineToolService;
     this.moveToolService = moveToolService;
     this.moveLineControlService = moveLineControlService;
     this.moveValidateService = moveValidateService;
+    this.moveControlService = moveControlService;
   }
 
   @Override
@@ -134,8 +139,6 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
         && moveLine.getIsEdited() == MoveLineMassEntryRepository.MASS_ENTRY_IS_EDITED_ALL) {
       moveLine.setVatSystemSelect(newVatSystemSelect);
     }
-
-    // TODO add verification for cutOff when we manageCutOff in mass entry move
   }
 
   @Override
@@ -220,24 +223,17 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
 
   @Override
   public void checkOriginInAllMoveLineMassEntry(Move move, int temporaryMoveNumber) {
-    List<MoveLineMassEntry> differentElements = new ArrayList<>();
-
-    for (MoveLineMassEntry moveLine : move.getMoveLineMassEntryList()) {
-      if (move.getJournal() != null
-          && move.getPartner() != null
-          && move.getJournal().getHasDuplicateDetectionOnOrigin()) {
-        List<Move> moveList = moveToolService.getMovesWithDuplicatedOrigin(move);
-        if (ObjectUtils.notEmpty(moveList)) {
-          this.setFieldsErrorListMessage(moveLine, differentElements, "origin");
+    try {
+      moveControlService.checkDuplicateOrigin(move);
+    } catch (AxelorException e) {
+      for (MoveLineMassEntry element : move.getMoveLineMassEntryList()) {
+        if (Objects.equals(element.getTemporaryMoveNumber(), temporaryMoveNumber)) {
+          this.setFieldsErrorListMessage(element, null, "origin");
         }
       }
+      // TODO Set an error message
+      this.setMassEntryErrorMessage(move, "This origin already exist", true, temporaryMoveNumber);
     }
-    // TODO Set an error message
-    this.setMassEntryErrorMessage(
-        move,
-        "This origin already exist",
-        ObjectUtils.notEmpty(differentElements),
-        temporaryMoveNumber);
   }
 
   @Override
@@ -328,6 +324,23 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
         }
       }
       this.setMassEntryErrorMessage(move, e.getMessage(), true, temporaryMoveNumber);
+    }
+  }
+
+  public void checkAccountAnalytic(Move move, int temporaryMoveNumber) {
+    for (MoveLine moveLine : move.getMoveLineList()) {
+      try {
+        moveLineControlService.checkAccountAnalytic(move, moveLine, moveLine.getAccount());
+      } catch (AxelorException e) {
+        for (MoveLineMassEntry element : move.getMoveLineMassEntryList()) {
+          if (Objects.equals(element.getTemporaryMoveNumber(), temporaryMoveNumber)
+              && Objects.equals(element.getCounter(), moveLine.getCounter())) {
+            this.setFieldsErrorListMessage(element, null, "analytic:");
+          }
+        }
+        this.setMassEntryErrorMessage(
+            move, "There is an analytic error", true, temporaryMoveNumber);
+      }
     }
   }
 }

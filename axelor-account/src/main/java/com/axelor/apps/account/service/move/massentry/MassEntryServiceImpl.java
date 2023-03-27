@@ -209,14 +209,7 @@ public class MassEntryServiceImpl implements MassEntryService {
 
       massEntryVerificationService.checkWellBalancedMove(element, temporaryMoveNumber);
 
-      // TODO add control for AnalyticDistributionTemplate
-      // need to be checked after addition on grid
-
-      // TODO add control for AnalyticAccount
-      // need to be checked after addition on grid
-
-      // TODO add control for AnalyticDistributionLine
-      // need to be checked after addition on grid
+      massEntryVerificationService.checkAccountAnalytic(element, temporaryMoveNumber);
 
       if (ObjectUtils.notEmpty(element.getMassEntryErrors())) {
         move.setMassEntryErrors(move.getMassEntryErrors() + element.getMassEntryErrors() + '\n');
