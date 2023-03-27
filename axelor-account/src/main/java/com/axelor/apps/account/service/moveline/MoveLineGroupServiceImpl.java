@@ -125,4 +125,28 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
 
     return attrsMap;
   }
+
+  @Override
+  public Map<String, Object> getDebitCreditOnChangeValuesMap(MoveLine moveLine, Move move)
+          throws AxelorException {
+    moveLineCheckService.checkDebitCredit(moveLine);
+    moveLineDefaultService.cleanDebitCredit(moveLine);
+    moveLineComputeAnalyticService.computeAnalyticDistribution(moveLine, move);
+    moveLineRecordService.setCurrencyFields(moveLine, move);
+    moveLineService.computeFinancialDiscount(moveLine);
+
+    Map<String, Object> valuesMap = new HashMap<>();
+
+    valuesMap.put("credit", moveLine.getCredit());
+    valuesMap.put("debit", moveLine.getDebit());
+    valuesMap.put("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
+    valuesMap.put("currencyRate", moveLine.getCurrencyRate());
+    valuesMap.put("currencyAmount", moveLine.getCurrencyAmount());
+    valuesMap.put("financialDiscountRate", moveLine.getFinancialDiscountRate());
+    valuesMap.put("financialDiscountTotalAmount", moveLine.getFinancialDiscountTotalAmount());
+    valuesMap.put("remainingAmountAfterFinDiscount", moveLine.getRemainingAmountAfterFinDiscount());
+    valuesMap.put("invoiceTermList", moveLine.getInvoiceTermList());
+
+    return valuesMap;
+  }
 }

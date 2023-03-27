@@ -14,4 +14,6 @@ public interface MoveLineDefaultService {
   void setIsOtherCurrency(MoveLine moveLine, Move move);
 
   void setFinancialDiscount(MoveLine moveLine);
+
+  void cleanDebitCredit(MoveLine moveLine);
 }

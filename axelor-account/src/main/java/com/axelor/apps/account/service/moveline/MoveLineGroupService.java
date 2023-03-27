@@ -16,4 +16,7 @@ public interface MoveLineGroupService {
 
   Map<String, Map<String, Object>> getAnalyticDistributionTemplateOnChangeAttrsMap(
       MoveLine moveLine, Move move) throws AxelorException;
+
+  Map<String, Object> getDebitCreditOnChangeValuesMap(MoveLine moveLine, Move move)
+          throws AxelorException;
 }

@@ -7,4 +7,6 @@ public interface MoveLineCheckService {
   void checkAnalyticByTemplate(MoveLine moveLine) throws AxelorException;
 
   void checkAnalyticAxes(MoveLine moveLine) throws AxelorException;
+
+  void checkDebitCredit(MoveLine moveLine) throws AxelorException;
 }

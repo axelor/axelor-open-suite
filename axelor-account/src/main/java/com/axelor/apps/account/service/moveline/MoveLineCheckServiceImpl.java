@@ -49,4 +49,15 @@ public class MoveLineCheckServiceImpl implements MoveLineCheckService {
           moveLine.getAccount(), moveLine.getAnalyticDistributionTemplate());
     }
   }
+
+  @Override
+  public void checkDebitCredit(MoveLine moveLine) throws AxelorException {
+    if (moveLine.getCredit().signum() == 0 && moveLine.getDebit().signum() == 0) {
+      throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, AccountExceptionMessage.MOVE_LINE_NO_DEBIT_CREDIT);
+    }
+
+    if (moveLine.getCredit().signum() < 0 || moveLine.getDebit().signum() < 0) {
+      throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, AccountExceptionMessage.MOVE_LINE_NEGATIVE_DEBIT_CREDIT);
+    }
+  }
 }

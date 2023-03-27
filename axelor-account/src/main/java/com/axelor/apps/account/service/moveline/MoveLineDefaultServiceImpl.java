@@ -11,6 +11,8 @@ import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import org.apache.commons.collections.CollectionUtils;
 
+import java.math.BigDecimal;
+
 public class MoveLineDefaultServiceImpl implements MoveLineDefaultService {
   protected AppAccountService appAccountService;
   protected MoveLoadDefaultConfigService moveLoadDefaultConfigService;
@@ -100,5 +102,16 @@ public class MoveLineDefaultServiceImpl implements MoveLineDefaultService {
     }
 
     moveLine.setFinancialDiscount(moveLine.getPartner().getFinancialDiscount());
+  }
+
+  @Override
+  public void cleanDebitCredit(MoveLine moveLine) {
+    if (moveLine.getDebit().signum() < 0) {
+      moveLine.setDebit(BigDecimal.ZERO);
+    }
+
+    if (moveLine.getCredit().signum() < 0) {
+      moveLine.setCredit(BigDecimal.ZERO);
+    }
   }
 }

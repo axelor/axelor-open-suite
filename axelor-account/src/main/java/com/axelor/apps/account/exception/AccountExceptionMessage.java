@@ -116,6 +116,12 @@ public final class AccountExceptionMessage {
       "No move lines to reconcile." /*)*/;
   public static final String MOVE_LINE_GENERATION_FIXED_ASSET_MISSING_DESCRIPTION = /*$$(*/
       "The move line %s is missing description in order to create fixed asset" /*)*/;
+
+  public static final String MOVE_LINE_NO_DEBIT_CREDIT = /*$$(*/
+          "An accounting moveline must have either a credit value or a debit value." /*)*/;
+
+  public static final String MOVE_LINE_NEGATIVE_DEBIT_CREDIT = /*$$(*/
+          "Debit and credit value cannot be negative." /*)*/;
   public static final String MOVE_ARCHIVE_OR_REMOVE_NOT_OK_NB = /*$$(*/
       "%d moves couldn't be deleted or archived, please check the logs." /*)*/;
 
