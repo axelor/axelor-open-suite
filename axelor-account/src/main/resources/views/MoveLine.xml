@@ -953,7 +953,8 @@
     <action name="action-move-line-mass-entry-method-set-currencyRate"
       if="__parent__.massEntryStatusSelect != 0"/>
     <action name="action-move-line-method-compute-analytic-distribution"/>
-    <action name="action-move-line-validate-check-date-in-period"/>
+    <action name="action-move-line-validate-check-date-in-period"
+      if="__parent__.massEntryStatusSelect == 0"/>
   </action-group>
 
   <action-group name="action-move-line-group-account-onchange">
