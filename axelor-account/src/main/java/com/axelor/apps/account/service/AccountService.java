@@ -182,13 +182,6 @@ public class AccountService {
                     "Please put AnalyticDistributionLines in the Analytic Distribution Template"));
           } else {
             List<Long> rulesAnalyticAccountList = getRulesIds(account);
-            if (CollectionUtils.isEmpty(rulesAnalyticAccountList)) {
-              throw new AxelorException(
-                  TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-                  I18n.get(
-                      AccountExceptionMessage
-                          .ANALYTIC_DISTRIBUTION_TEMPLATE_CONTAINS_NOT_ALLOWED_ACCOUNTS));
-            }
 
             if (CollectionUtils.isNotEmpty(rulesAnalyticAccountList)
                 && analyticDistributionTemplate.getAnalyticDistributionLineList().stream()
