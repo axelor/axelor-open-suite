@@ -15,4 +15,14 @@ public interface MoveLineAttrsService {
   void addAnalyticAccountRequired(
       MoveLine moveLine, Move move, Map<String, Map<String, Object>> attrsMap)
       throws AxelorException;
+
+  void addAnalyticDistributionTypeSelect(Move move, Map<String, Map<String, Object>> attrsMap)
+      throws AxelorException;
+
+  void addInvoiceTermListPercentageWarningText(
+      MoveLine moveLine, Map<String, Map<String, Object>> attrsMap);
+
+  void addReadonly(Move move, Map<String, Map<String, Object>> attrsMap);
+
+  void addShowTaxAmount(MoveLine moveLine, Map<String, Map<String, Object>> attrsMap);
 }

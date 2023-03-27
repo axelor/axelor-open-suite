@@ -397,12 +397,10 @@
         onChange="action-move-line-group-account-onchange"/>
       <field name="debit"
         readonlyIf="credit &gt; 0 || amountPaid &gt; 0 || reconcileGroup != null"
-        css="label-bold bold" onChange="action-move-line-method-debit-credit-onchange"
-        colSpan="3"/>
+        css="label-bold bold" onChange="action-move-line-method-debit-credit-onchange" colSpan="3"/>
       <field name="credit"
         readonlyIf="debit &gt; 0 || amountPaid &gt; 0 || reconcileGroup != null"
-        css="label-bold bold" onChange="action-move-line-method-debit-credit-onchange"
-        colSpan="3"/>
+        css="label-bold bold" onChange="action-move-line-method-debit-credit-onchange" colSpan="3"/>
       <field name="amountRemaining" colSpan="3"
         showIf="move.statusSelect == 3 || move.statusSelect == 4"/>
       <field name="amountPaid" colSpan="3"
@@ -819,18 +817,12 @@
   <action-method name="action-move-line-method-onnew">
     <call class="com.axelor.apps.account.web.MoveLineController" method="onNew"/>
   </action-method>
-  
+
   <action-method name="action-move-line-method-debit-credit-onchange">
     <call class="com.axelor.apps.account.web.MoveLineController" method="debitCreditOnChange"/>
   </action-method>
 
   <action-group name="action-account-moveline-onload-group">
-    <action name="action-record-analytic-distribution-type-select"/>
-    <action name="action-account-move-line-method-display-invoice-term-warning-message"/>
-    <action name="action-move-line-attrs-readonly"/>
-    <action name="action-move-line-attrs-show-tax-amount"/>
-    <action name="action-move-line-method-description-required"
-      if="__parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.account.db.Move'"/>
     <action name="action-move-line-method-hide-axis-analytic-account"/>
   </action-group>
 

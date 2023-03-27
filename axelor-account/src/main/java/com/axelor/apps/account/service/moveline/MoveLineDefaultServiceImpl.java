@@ -9,9 +9,8 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveLoadDefaultConfigService;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
-import org.apache.commons.collections.CollectionUtils;
-
 import java.math.BigDecimal;
+import org.apache.commons.collections.CollectionUtils;
 
 public class MoveLineDefaultServiceImpl implements MoveLineDefaultService {
   protected AppAccountService appAccountService;

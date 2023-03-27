@@ -5,8 +5,10 @@ import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticAxisByCompany;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import java.util.HashMap;
@@ -18,15 +20,18 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
 
   protected AccountConfigService accountConfigService;
   protected MoveLineComputeAnalyticService moveLineComputeAnalyticService;
+  protected MoveLineControlService moveLineControlService;
   protected AnalyticLineService analyticLineService;
 
   @Inject
   public MoveLineAttrsServiceImpl(
       AccountConfigService accountConfigService,
       MoveLineComputeAnalyticService moveLineComputeAnalyticService,
+      MoveLineControlService moveLineControlService,
       AnalyticLineService analyticLineService) {
     this.accountConfigService = accountConfigService;
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
+    this.moveLineControlService = moveLineControlService;
     this.analyticLineService = analyticLineService;
   }
 
@@ -40,8 +45,7 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
   }
 
   @Override
-  public void addAnalyticAxisAttrs(
-      Move move, Map<String, Map<String, Object>> attrsMap)
+  public void addAnalyticAxisAttrs(Move move, Map<String, Map<String, Object>> attrsMap)
       throws AxelorException {
     if (move != null && move.getCompany() != null) {
       AccountConfig accountConfig = accountConfigService.getAccountConfig(move.getCompany());
@@ -108,6 +112,55 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
         "$isDescriptionRequired",
         "value",
         accountConfigService.getAccountConfig(move.getCompany()).getIsDescriptionRequired(),
+        attrsMap);
+  }
+
+  @Override
+  public void addAnalyticDistributionTypeSelect(
+      Move move, Map<String, Map<String, Object>> attrsMap) throws AxelorException {
+    this.addAttr(
+        "$analyticDistributionTypeSelect",
+        "value",
+        accountConfigService
+            .getAccountConfig(move.getCompany())
+            .getAnalyticDistributionTypeSelect(),
+        attrsMap);
+  }
+
+  @Override
+  public void addInvoiceTermListPercentageWarningText(
+      MoveLine moveLine, Map<String, Map<String, Object>> attrsMap) {
+    this.addAttr(
+        "$invoiceTermListPercentageWarningText",
+        "value",
+        !moveLineControlService.displayInvoiceTermWarningMessage(moveLine),
+        attrsMap);
+  }
+
+  @Override
+  public void addReadonly(Move move, Map<String, Map<String, Object>> attrsMap) {
+    boolean statusCondition =
+        move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK
+            || move.getStatusSelect() == MoveRepository.STATUS_CANCELED;
+    boolean singleStatusCondition = move.getStatusSelect() == MoveRepository.STATUS_CANCELED;
+
+    this.addAttr("informationsPanel", "readonly", statusCondition, attrsMap);
+    this.addAttr("analyticDistributionPanel", "readonly", statusCondition, attrsMap);
+    this.addAttr("irrecoverableDetailsPanel", "readonly", singleStatusCondition, attrsMap);
+    this.addAttr("currency", "readonly", singleStatusCondition, attrsMap);
+    this.addAttr("otherPanel", "readonly", singleStatusCondition, attrsMap);
+
+    if (move.getPaymentCondition() != null) {
+      this.addAttr("dueDate", "readonly", move.getPaymentCondition().getIsFree(), attrsMap);
+    }
+  }
+
+  @Override
+  public void addShowTaxAmount(MoveLine moveLine, Map<String, Map<String, Object>> attrsMap) {
+    this.addAttr(
+        "taxAmount",
+        "hidden",
+        !moveLine.getAccount().getReconcileOk() || !moveLine.getAccount().getUseForPartnerBalance(),
         attrsMap);
   }
 }
