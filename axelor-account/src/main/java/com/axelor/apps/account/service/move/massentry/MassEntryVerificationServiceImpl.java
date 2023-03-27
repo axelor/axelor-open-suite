@@ -7,6 +7,7 @@ import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineMassEntryRepository;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.move.MoveControlService;
 import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.move.MoveToolService;
@@ -17,10 +18,12 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -152,19 +155,17 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
       hasDateError = false;
       if (move.getPeriod() == null) {
         hasDateError = true;
-        // TODO Set an error message
-        this.setMassEntryErrorMessage(move, "Period does not exist", true, temporaryMoveNumber);
+        this.setMassEntryErrorMessage(
+            move,
+            String.format(BaseExceptionMessage.PERIOD_1, move.getCompany(), move.getDate()),
+            true,
+            temporaryMoveNumber);
       } else {
-        if (move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_CLOSED) {
+        if (move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_CLOSED
+            || move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_CLOSURE_IN_PROGRESS) {
           hasDateError = true;
-          // TODO Set an error message
-          this.setMassEntryErrorMessage(move, "Period closed", true, temporaryMoveNumber);
-        } else if (move.getPeriod().getStatusSelect()
-            == PeriodRepository.STATUS_CLOSURE_IN_PROGRESS) {
-          hasDateError = true;
-          // TODO Set an error message
           this.setMassEntryErrorMessage(
-              move, "Period in closure progress", true, temporaryMoveNumber);
+              move, AccountExceptionMessage.MOVE_PERIOD_IS_CLOSED, true, temporaryMoveNumber);
         }
       }
 
@@ -231,8 +232,7 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
           this.setFieldsErrorListMessage(element, null, "origin");
         }
       }
-      // TODO Set an error message
-      this.setMassEntryErrorMessage(move, "This origin already exist", true, temporaryMoveNumber);
+      this.setMassEntryErrorMessage(move, e.getMessage(), true, temporaryMoveNumber);
     }
   }
 
@@ -256,9 +256,14 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
           this.setFieldsErrorListMessage(moveLine, differentElements, "partner");
         }
       }
-      // TODO Set an error message
       this.setMassEntryErrorMessage(
-          move, "Multiple partners", ObjectUtils.notEmpty(differentElements), temporaryMoveNumber);
+          move,
+          String.format(
+              AccountExceptionMessage.MOVE_LINE_INCONSISTENCY_DETECTED_PARTNER,
+              differentElements.get(0).getPartner(),
+              move.getPartner()),
+          ObjectUtils.notEmpty(differentElements),
+          temporaryMoveNumber);
     }
   }
 
@@ -328,18 +333,28 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
   }
 
   public void checkAccountAnalytic(Move move, int temporaryMoveNumber) {
+    String message = "";
+    int lineCount = 0;
+
     for (MoveLine moveLine : move.getMoveLineList()) {
       try {
         moveLineControlService.checkAccountAnalytic(move, moveLine, moveLine.getAccount());
       } catch (AxelorException e) {
+        lineCount++;
         for (MoveLineMassEntry element : move.getMoveLineMassEntryList()) {
           if (Objects.equals(element.getTemporaryMoveNumber(), temporaryMoveNumber)
               && Objects.equals(element.getCounter(), moveLine.getCounter())) {
             this.setFieldsErrorListMessage(element, null, "analytic:");
+            break;
           }
         }
-        this.setMassEntryErrorMessage(
-            move, "There is an analytic error", true, temporaryMoveNumber);
+        if (Objects.equals(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getCategory())) {
+          message = String.format(AccountExceptionMessage.MOVE_11, lineCount);
+        } else if (Objects.equals(TraceBackRepository.CATEGORY_MISSING_FIELD, e.getCategory())) {
+          message =
+              String.format(AccountExceptionMessage.MOVE_10, moveLine.getAccount(), lineCount);
+        }
+        this.setMassEntryErrorMessage(move, message, true, temporaryMoveNumber);
       }
     }
   }
