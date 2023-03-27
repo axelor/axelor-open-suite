@@ -25,4 +25,11 @@ public interface MoveLineAttrsService {
   void addReadonly(Move move, Map<String, Map<String, Object>> attrsMap);
 
   void addShowTaxAmount(MoveLine moveLine, Map<String, Map<String, Object>> attrsMap);
+
+  void addShowAnalyticDistributionPanel(
+      Move move, MoveLine moveLine, Map<String, Map<String, Object>> attrsMap)
+      throws AxelorException;
+
+  void addValidatePeriod(Move move, Map<String, Map<String, Object>> attrsMap)
+      throws AxelorException;
 }

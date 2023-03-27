@@ -277,23 +277,6 @@ public class MoveLineController {
     }
   }
 
-  public void descriptionRequired(ActionRequest request, ActionResponse response) {
-
-    try {
-      Context parentContext = request.getContext().getParent();
-      if (ObjectUtils.notEmpty(parentContext)
-          && Move.class.equals(parentContext.getClass())
-          && parentContext != null) {
-        Move move = parentContext.asType(Move.class);
-        AccountConfig accountConfig =
-            Beans.get(AccountConfigService.class).getAccountConfig(move.getCompany());
-        response.setValue("$isDescriptionRequired", accountConfig.getIsDescriptionRequired());
-      }
-    } catch (AxelorException e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
   public void setSelectedBankReconciliation(ActionRequest request, ActionResponse response) {
     MoveLine moveLine =
         Beans.get(MoveLineRepository.class)
@@ -513,18 +496,6 @@ public class MoveLineController {
     }
   }
 
-  public void getValidatePeriod(ActionRequest request, ActionResponse response) {
-    try {
-      Context parentContext = request.getContext().getParent();
-      if (ObjectUtils.notEmpty(parentContext)
-          && Move.class.equals(parentContext.getContextClass())) {
-        response.setValue("$validatePeriod", parentContext.get("validatePeriod"));
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
   public void clearAnalytic(ActionRequest request, ActionResponse response) {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
@@ -602,18 +573,6 @@ public class MoveLineController {
           "readonly",
           Beans.get(MoveLineControlService.class)
               .isInvoiceTermReadonly(moveLine, request.getUser()));
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void displayInvoiceTermWarningMessage(ActionRequest request, ActionResponse response) {
-    try {
-      MoveLine moveLine = request.getContext().asType(MoveLine.class);
-      response.setAttr(
-          "$invoiceTermListPercentageWarningText",
-          "hidden",
-          !(Beans.get(MoveLineControlService.class).displayInvoiceTermWarningMessage(moveLine)));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -820,6 +779,18 @@ public class MoveLineController {
       Move move = moveLine.getMove();
 
       response.setAttrs(Beans.get(MoveLineGroupService.class).getOnLoadAttrsMap(moveLine, move));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void onLoadMove(ActionRequest request, ActionResponse response) {
+    try {
+      MoveLine moveLine = request.getContext().asType(MoveLine.class);
+      Move move = moveLine.getMove();
+
+      response.setAttrs(
+          Beans.get(MoveLineGroupService.class).getOnLoadMoveAttrsMap(moveLine, move));
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

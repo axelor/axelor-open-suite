@@ -6,9 +6,11 @@ import com.axelor.apps.account.db.AnalyticAxisByCompany;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.service.PeriodServiceAccount;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveLineControlService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import java.util.HashMap;
@@ -22,17 +24,20 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
   protected MoveLineComputeAnalyticService moveLineComputeAnalyticService;
   protected MoveLineControlService moveLineControlService;
   protected AnalyticLineService analyticLineService;
+  protected PeriodServiceAccount periodServiceAccount;
 
   @Inject
   public MoveLineAttrsServiceImpl(
       AccountConfigService accountConfigService,
       MoveLineComputeAnalyticService moveLineComputeAnalyticService,
       MoveLineControlService moveLineControlService,
-      AnalyticLineService analyticLineService) {
+      AnalyticLineService analyticLineService,
+      PeriodServiceAccount periodServiceAccount) {
     this.accountConfigService = accountConfigService;
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
     this.moveLineControlService = moveLineControlService;
     this.analyticLineService = analyticLineService;
+    this.periodServiceAccount = periodServiceAccount;
   }
 
   protected void addAttr(
@@ -161,6 +166,27 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
         "taxAmount",
         "hidden",
         !moveLine.getAccount().getReconcileOk() || !moveLine.getAccount().getUseForPartnerBalance(),
+        attrsMap);
+  }
+
+  @Override
+  public void addShowAnalyticDistributionPanel(
+      Move move, MoveLine moveLine, Map<String, Map<String, Object>> attrsMap)
+      throws AxelorException {
+    boolean condition =
+        accountConfigService.getAccountConfig(move.getCompany()).getManageAnalyticAccounting()
+            && moveLine.getAccount().getAnalyticDistributionAuthorized();
+
+    this.addAttr("analyticDistributionPanel", "hidden", !condition, attrsMap);
+  }
+
+  @Override
+  public void addValidatePeriod(Move move, Map<String, Map<String, Object>> attrsMap)
+      throws AxelorException {
+    this.addAttr(
+        "$validatePeriod",
+        "value",
+        periodServiceAccount.isAuthorizedToAccountOnPeriod(move.getPeriod(), AuthUtils.getUser()),
         attrsMap);
   }
 }

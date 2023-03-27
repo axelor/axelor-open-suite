@@ -107,6 +107,24 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
   }
 
   @Override
+  public Map<String, Map<String, Object>> getOnLoadMoveAttrsMap(MoveLine moveLine, Move move)
+      throws AxelorException {
+    Map<String, Map<String, Object>> attrsMap =
+        new HashMap<>(this.getAnalyticDistributionTemplateOnChangeAttrsMap(moveLine, move));
+
+    moveLineAttrsService.addInvoiceTermListPercentageWarningText(moveLine, attrsMap);
+    moveLineAttrsService.addReadonly(move, attrsMap);
+    moveLineAttrsService.addShowTaxAmount(moveLine, attrsMap);
+    moveLineAttrsService.addDescriptionRequired(move, attrsMap);
+    moveLineAttrsService.addAnalyticAxisAttrs(move, attrsMap);
+    moveLineAttrsService.addValidatePeriod(move, attrsMap);
+    moveLineAttrsService.addAnalyticDistributionTypeSelect(move, attrsMap);
+    moveLineAttrsService.addShowAnalyticDistributionPanel(move, moveLine, attrsMap);
+
+    return attrsMap;
+  }
+
+  @Override
   public Map<String, Object> getAnalyticDistributionTemplateOnChangeValuesMap(
       MoveLine moveLine, Move move) throws AxelorException {
     moveLineComputeAnalyticService.clearAnalyticAccounting(moveLine);

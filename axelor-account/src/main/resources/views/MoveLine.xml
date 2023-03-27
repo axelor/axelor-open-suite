@@ -364,7 +364,7 @@
 
   <form name="move-line-form" title="Move line" model="com.axelor.apps.account.db.MoveLine"
     onNew="action-move-line-method-onnew" canNew="false" canDelete="false"
-    onLoad="action-account-moveline-onload-group" canArchive="false">
+    onLoad="action-move-line-method-onload" canArchive="false">
     <panel name="mainPanel" readonly="true">
       <field name="name" colSpan="8" showTitle="false">
         <viewer depends="name">
@@ -577,7 +577,7 @@
 
   <form name="move-line-move-form" title="Move line"
     model="com.axelor.apps.account.db.MoveLine" onNew="action-move-line-method-onnew"
-    onLoad="action-account-moveline-move-onload-group" width="large">
+    onLoad="action-move-line-method-onload-move" width="large">
     <panel name="informationsPanel" title="Information" colSpan="12" canArchive="false">
       <field name="$validatePeriod" hidden="true"/>
       <field name="name" colSpan="8" showTitle="false">
@@ -822,20 +822,13 @@
     <call class="com.axelor.apps.account.web.MoveLineController" method="debitCreditOnChange"/>
   </action-method>
 
-  <action-group name="action-account-moveline-onload-group">
-    <action name="action-move-line-method-hide-axis-analytic-account"/>
-  </action-group>
+  <action-method name="action-move-line-method-onload">
+    <call class="com.axelor.apps.account.web.MoveLineController" method="onLoad"/>
+  </action-method>
 
-  <action-group name="action-account-moveline-move-onload-group">
-    <action name="action-account-move-line-method-display-invoice-term-warning-message"/>
-    <action name="action-move-line-attrs-readonly"/>
-    <action name="action-move-line-attrs-show-tax-amount"/>
-    <action name="action-move-line-method-description-required"/>
-    <action name="action-move-line-method-hide-axis-analytic-account"/>
-    <action name="action-move-line-account-method-get-validate-period"/>
-    <action name="action-record-analytic-distribution-type-select"/>
-    <action name="action-move-line-attrs-set-hidden-analytic-distribution-panel"/>
-  </action-group>
+  <action-method name="action-move-line-method-onload-move">
+    <call class="com.axelor.apps.account.web.MoveLineController" method="onLoadMove"/>
+  </action-method>
 
   <action-group name="action-group-account-moveline-usher-process-onchange">
     <action name="save"/>
@@ -947,24 +940,9 @@
       method="refreshAccountInformation"/>
   </action-method>
 
-  <action-method name="action-move-line-account-method-get-validate-period">
-    <call class="com.axelor.apps.account.web.MoveLineController" method="getValidatePeriod"/>
-  </action-method>
-
   <action-method name="action-move-line-check-distribution-template-account">
     <call class="com.axelor.apps.account.web.MoveLineController" method="checkAnalyticAccount"/>
   </action-method>
-
-  <action-attrs name="action-move-line-attrs-readonly">
-    <attribute name="readonly" for="informationsPanel"
-      expr="eval: move?.statusSelect == 3 || move?.statusSelect == 4"/>
-    <attribute name="readonly" for="analyticDistributionPanel"
-      expr="eval: move?.statusSelect == 3 || move?.statusSelect == 4"/>
-    <attribute name="readonly" for="irrecoverableDetailsPanel,currency,othersPanel"
-      expr="eval: move?.statusSelect == 3 "/>
-    <attribute name="readonly" for="dueDate"
-      expr="eval: !__parent__.paymentCondition.isFree" if="__parent__?.paymentCondition"/>
-  </action-attrs>
 
   <action-attrs name="action-move-line-attrs-domain-account">
     <attribute for="account" name="domain"
@@ -1091,18 +1069,8 @@
     <call class="com.axelor.apps.account.web.MoveLineController" method="filterPartner"/>
   </action-method>
 
-  <action-method name="action-move-line-method-description-required">
-    <call class="com.axelor.apps.account.web.MoveLineController" method="descriptionRequired"/>
-  </action-method>
-
   <action-method name="action-account-move-line-method-update-tax-move-line">
     <call class="com.axelor.apps.account.web.MoveLineController" method="updateTaxMoveLine"/>
-  </action-method>
-
-  <action-method
-    name="action-account-move-line-method-display-invoice-term-warning-message">
-    <call class="com.axelor.apps.account.web.MoveLineController"
-      method="displayInvoiceTermWarningMessage"/>
   </action-method>
 
   <search-filters name="move-line-filters"
