@@ -246,7 +246,10 @@ public class BatchAutoMoveLettering extends BatchStrategy {
   }
 
   private boolean canBeReconciled(
-      int reconcileMethodSelect, MoveLine debitMoveLine, MoveLine creditMoveLine, boolean isBalanced) {
+      int reconcileMethodSelect,
+      MoveLine debitMoveLine,
+      MoveLine creditMoveLine,
+      boolean isBalanced) {
     if (reconcileMethodSelect
         == AccountingBatchRepository.AUTO_MOVE_LETTERING_RECONCILE_BY_BALANCED_MOVE) {
       return true;

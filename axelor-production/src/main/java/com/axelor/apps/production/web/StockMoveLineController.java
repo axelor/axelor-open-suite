@@ -43,15 +43,17 @@ public class StockMoveLineController {
 
     if (!stockMove.isPresent()) {
       Context parentContext = request.getContext().getParent();
-      if (parentContext.getContextClass().equals(StockMove.class)) {
-        stockMove = Optional.ofNullable(parentContext.asType(StockMove.class));
-      } else if (parentContext.getContextClass().equals(ManufOrder.class)) {
-        ManufOrder manufOrder = parentContext.asType(ManufOrder.class);
-        ManufOrderStockMoveService manufOrderStockMoveService =
-            Beans.get(ManufOrderStockMoveService.class);
-        stockMove = manufOrderStockMoveService.getPlannedStockMove(manufOrder.getInStockMoveList());
+      if (parentContext != null) {
+        if (parentContext.getContextClass().equals(StockMove.class)) {
+          stockMove = Optional.ofNullable(parentContext.asType(StockMove.class));
+        } else if (parentContext.getContextClass().equals(ManufOrder.class)) {
+          ManufOrder manufOrder = parentContext.asType(ManufOrder.class);
+          ManufOrderStockMoveService manufOrderStockMoveService =
+              Beans.get(ManufOrderStockMoveService.class);
+          stockMove =
+              manufOrderStockMoveService.getPlannedStockMove(manufOrder.getInStockMoveList());
+        }
       }
-
       if (!stockMove.isPresent()) {
         return;
       }

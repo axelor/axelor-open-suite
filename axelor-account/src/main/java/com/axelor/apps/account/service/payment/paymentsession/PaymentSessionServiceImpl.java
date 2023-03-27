@@ -247,7 +247,8 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
             .all()
             .filter(retrieveEligibleTermsQuery(paymentSession.getCompany()))
             .bind("company", paymentSession.getCompany())
-            .bind("paymentModeTypeSelect", paymentSession.getPaymentMode().getTypeSelect())
+            .bind("paymentMode", paymentSession.getPaymentMode())
+            .bind("paymentModeInOutSelect", paymentSession.getPaymentMode().getInOutSelect())
             .bind(
                 "paymentDatePlusMargin",
                 paymentSession
@@ -288,20 +289,18 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
             + " AND self.bankDetails IS NOT NULL "
             + " AND self.moveLine.account.isRetrievedOnPaymentSession = TRUE ";
     AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
-    if (company != null
-        && accountConfig != null
-        && accountConfig.getRetrieveDaybookMovesInPaymentSession()) {
+    if (!accountConfig.getRetrieveDaybookMovesInPaymentSession()) {
       generalCondition += " AND self.moveLine.move.statusSelect != 2 ";
     }
 
     String termsMoveLineCondition =
         " AND (0 in (:partnerIds) OR self.moveLine.move.partner.id in (:partnerIds))"
             + " AND ((self.moveLine.partner.isCustomer = TRUE "
-            + " AND self.paymentMode.typeSelect = :paymentModeTypeSelect"
+            + " AND (self.paymentMode = :paymentMode OR self.paymentMode.inOutSelect != :paymentModeInOutSelect)"
             + " AND :partnerTypeSelect = :partnerTypeClient"
             + " AND self.moveLine.move.functionalOriginSelect = :functionalOriginClient)"
             + " OR ( self.moveLine.partner.isSupplier = TRUE "
-            + " AND self.paymentMode.typeSelect = :paymentModeTypeSelect"
+            + " AND (self.paymentMode = :paymentMode OR self.paymentMode.inOutSelect != :paymentModeInOutSelect)"
             + " AND :partnerTypeSelect = :partnerTypeSupplier "
             + " AND self.moveLine.move.functionalOriginSelect = :functionalOriginSupplier "
             + " AND (self.moveLine.move.company.accountConfig.isManagePassedForPayment is NULL "
