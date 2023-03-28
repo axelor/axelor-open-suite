@@ -720,6 +720,7 @@
 
   <selection name="research.model.selection">
     <option value="com.axelor.apps.base.db.Partner">Partner</option>
+    <option value="com.axelor.apps.base.db.Partner.Contact">Contact</option>
   </selection>
 
   <selection name="research.primary.key.type.select">

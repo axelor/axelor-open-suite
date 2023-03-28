@@ -11,7 +11,7 @@
       ref="com.axelor.apps.base.db.ResearchParameterConfig" required="true"
       title="Search configuration"/>
     <many-to-one name="researchPrimaryKey"
-      ref="com.axelor.apps.base.db.ResearchPrimaryKey"/>
+      ref="com.axelor.apps.base.db.ResearchPrimaryKey" title="Primary key"/>
     <string name="query" help="JPQL filter to add to the query" title="Query"/>
     <string name="mapping" help="Field displayed in the result of the research"
       title="Mapping"/>

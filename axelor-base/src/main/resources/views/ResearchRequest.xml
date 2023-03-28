@@ -18,7 +18,7 @@
       <panel title="Search" icon="fa-search" name="searchPanel" colSpan="12">
 
         <field name="research1" canEdit="false" canNew="false" title="Research 1" colSpan="2"
-          domain="self.typeSelect = 0 and self.id"/>
+          domain="self.typeSelect = 0"/>
         <field name="research1Value" requiredIf="research1" title="Value 1" colSpan="4"/>
 
         <field name="research2" canEdit="false" canNew="false" title="Research 2" colSpan="2"

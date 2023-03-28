@@ -27,7 +27,8 @@
     <string name="research4Value" title="Value 4"/>
     <date name="dateResearch1Value" title="Date 1"/>
     <one-to-many name="researchResultLineList"
-      ref="com.axelor.apps.base.db.ResearchResultLine" mappedBy="researchRequest"/>
+      ref="com.axelor.apps.base.db.ResearchResultLine" title="Research result lines"
+      mappedBy="researchRequest"/>
 
 
   </entity>

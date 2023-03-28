@@ -55,7 +55,9 @@ public class ResearchRequestServiceImpl implements ResearchRequestService {
         if (researchParameterConfig == null) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(BaseExceptionMessage.ERROR_MISSING_RESEARCH_PARAMETER_CONFIGURATION));
+              String.format(
+                  I18n.get(BaseExceptionMessage.ERROR_MISSING_RESEARCH_PARAMETER_CONFIGURATION),
+                  modelStr));
         }
         researchResultLineList.addAll(
             bindDataUsingSearchConfig(searchParams, researchParameterConfig, researchRequest));
@@ -101,7 +103,11 @@ public class ResearchRequestServiceImpl implements ResearchRequestService {
         convertResultToDisplayMap(researchParameterConfig, model);
     researchResultLine.setOriginId((Long) resultToDisplayMap.get("objectId"));
     researchResultLine.setOriginTypeSelect(researchParameterConfig.getModel());
-    researchResultLine.setOrigin((String) resultToDisplayMap.get("type"));
+    if (researchParameterConfig.getModel().contains("Contact")) {
+      researchResultLine.setOrigin("Contact");
+    } else {
+      researchResultLine.setOrigin((String) resultToDisplayMap.get("type"));
+    }
     if (researchRequest.getResearch1() != null) {
       researchResultLine.setResearch1Value(
           (String) resultToDisplayMap.get(researchRequest.getResearch1().getCode()));
@@ -146,6 +152,10 @@ public class ResearchRequestServiceImpl implements ResearchRequestService {
     }
 
     query.append(" 1 = 1");
+
+    if (searchConfig.getModel().contains("Contact")) {
+      query.append(" AND self.isContact is true ");
+    }
     return query.toString();
   }
 

@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
 
-  <grid name="research-parameter-config-grid" title="Search configurations"
+  <grid name="research-parameter-config-grid" title="Research configurations"
     model="com.axelor.apps.base.db.ResearchParameterConfig">
     <field name="model"/>
   </grid>
