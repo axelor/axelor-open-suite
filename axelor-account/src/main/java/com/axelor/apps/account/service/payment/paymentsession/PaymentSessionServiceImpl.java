@@ -42,6 +42,7 @@ import com.axelor.apps.base.db.Blocking;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BlockingRepository;
+import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
@@ -233,9 +234,8 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
   }
 
   @Override
-  @Transactional
   public void retrieveEligibleTerms(PaymentSession paymentSession) throws AxelorException {
-    List<InvoiceTerm> eligibleInvoiceTermList =
+    Query<InvoiceTerm> eligibleInvoiceTermQuery =
         invoiceTermRepository
             .all()
             .filter(retrieveEligibleTermsQuery(paymentSession.getCompany()))
@@ -258,18 +258,9 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
             .bind("pfpValidateStatusValidated", InvoiceTermRepository.PFP_STATUS_VALIDATED)
             .bind(
                 "pfpValidateStatusPartiallyValidated",
-                InvoiceTermRepository.PFP_STATUS_PARTIALLY_VALIDATED)
-            .fetch();
+                InvoiceTermRepository.PFP_STATUS_PARTIALLY_VALIDATED);
 
-    eligibleInvoiceTermList = this.filterNotAwaitingPayment(eligibleInvoiceTermList);
-    eligibleInvoiceTermList = this.filterBlocking(eligibleInvoiceTermList, paymentSession);
-    for (InvoiceTerm invoiceTerm : eligibleInvoiceTermList) {
-      paymentSession = paymentSessionRepository.find(paymentSession.getId());
-      invoiceTerm = invoiceTermRepository.find(invoiceTerm.getId());
-      this.saveInvoiceTermWithPaymentSession(paymentSession, invoiceTerm);
-      JPA.clear();
-    }
-
+    this.filterInvoiceTerms(eligibleInvoiceTermQuery, paymentSession);
     computeTotalPaymentSession(paymentSession);
   }
 
@@ -304,8 +295,24 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
     return generalCondition + termsMoveLineCondition + paymentHistoryCondition;
   }
 
-  public List<InvoiceTerm> filterNotAwaitingPayment(List<InvoiceTerm> invoiceTermList) {
-    return invoiceTermList.stream().filter(this::isNotAwaitingPayment).collect(Collectors.toList());
+  @Transactional
+  public void filterInvoiceTerms(
+      Query<InvoiceTerm> eligibleInvoiceTermQuery, PaymentSession paymentSession) {
+    int offset = 0;
+    List<InvoiceTerm> invoiceTermList;
+
+    while (!(invoiceTermList = eligibleInvoiceTermQuery.fetch(AbstractBatch.FETCH_LIMIT, offset))
+        .isEmpty()) {
+      paymentSession = paymentSessionRepository.find(paymentSession.getId());
+      for (InvoiceTerm invoiceTerm : invoiceTermList) {
+        offset++;
+        if (this.isNotAwaitingPayment(invoiceTerm)
+            && !this.isBlocking(invoiceTerm, paymentSession)) {
+          this.saveInvoiceTermWithPaymentSession(paymentSession, invoiceTerm);
+        }
+      }
+      JPA.clear();
+    }
   }
 
   public boolean isNotAwaitingPayment(InvoiceTerm invoiceTerm) {
@@ -325,13 +332,6 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
     }
 
     return true;
-  }
-
-  protected List<InvoiceTerm> filterBlocking(
-      List<InvoiceTerm> invoiceTermList, PaymentSession paymentSession) {
-    return invoiceTermList.stream()
-        .filter(it -> !this.isBlocking(it, paymentSession))
-        .collect(Collectors.toList());
   }
 
   protected boolean isBlocking(InvoiceTerm invoiceTerm, PaymentSession paymentSession) {
