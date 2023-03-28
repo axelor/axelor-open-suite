@@ -52,6 +52,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import com.google.inject.servlet.RequestScoped;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -69,6 +70,7 @@ import javax.persistence.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@RequestScoped
 public class MoveLineExportServiceImpl implements MoveLineExportService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -393,96 +395,105 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
       }
     }
 
-    List<MoveLine> moveLineList =
+    com.axelor.db.Query<MoveLine> moveLineQuery =
         moveLineRepo
             .all()
             .filter(moveLineQueryStr)
             .order("move.accountingDate")
             .order("date")
-            .order("name")
-            .fetch();
+            .order("name");
 
-    if (!moveLineList.isEmpty()) {
-      List<Move> moveList = new ArrayList<>();
+    int offset = 0;
+    List<MoveLine> moveLineList;
+    List<Move> moveList = new ArrayList<>();
+
+    while (!(moveLineList = moveLineQuery.fetch(10000, offset)).isEmpty()) {
+
       for (MoveLine moveLine : moveLineList) {
-        String[] items = new String[18];
-        Move move = moveLine.getMove();
-        if (!moveList.contains(move)) {
-          moveList.add(move);
-        }
-        Journal journal = move.getJournal();
-        items[0] = journal.getCode();
-        items[1] = journal.getName();
-        items[2] = moveLine.getMove().getReference();
-        items[3] = moveLine.getDate().format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDD));
-        items[4] = moveLine.getAccount().getCode();
-        items[5] = moveLine.getAccount().getName();
-        items[6] = "";
-        items[7] = "";
-        Partner partner = moveLine.getPartner();
-        if (partner != null) {
-          items[6] =
-              moveLine.getAccount().getAccountType().getIsManageSubsidiaryAccount()
-                  ? partner.getPartnerSeq()
-                  : "";
-          items[7] =
-              moveLine.getAccount().getAccountType().getIsManageSubsidiaryAccount()
-                  ? partner.getName()
-                  : "";
-        }
-        String origin = moveLine.getOrigin();
-        items[8] = Strings.isNullOrEmpty(origin) ? "NA" : origin;
-        if (moveLine.getOriginDate() != null) {
-          items[9] =
-              moveLine.getOriginDate().format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDD));
-        }
-        items[10] = moveLine.getDescription();
-        items[11] = moveLine.getDebit().toString().replace('.', ',');
-        items[12] = moveLine.getCredit().toString().replace('.', ',');
-
-        ReconcileGroup reconcileGroup = moveLine.getReconcileGroup();
-        if (reconcileGroup != null
-            && reconcileGroup.getStatusSelect() == ReconcileGroupRepository.STATUS_FINAL) {
-          items[13] = reconcileGroup.getCode();
-          items[14] =
-              reconcileGroup
-                  .getDateOfLettering()
-                  .format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDD))
-                  .toString();
-        } else {
-          items[13] = "";
-          items[14] = "";
-        }
-
-        if (move.getAccountingDate() != null) {
-          items[15] =
-              move.getAccountingDate().format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDD));
-        }
-
-        items[16] = moveLine.getCurrencyAmount().toString().replace('.', ',');
-        if (moveLine.getCurrencyAmount().compareTo(BigDecimal.ZERO) > 0
-            && moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0) {
-          items[16] = "-" + items[16];
-        }
-
-        if (move.getCurrency() != null) {
-          items[17] = move.getCurrency().getCodeISO();
-        }
-        allMoveLineData.add(items);
+        offset++;
+        allMoveLineData.add(createItemForExportMoveLine(moveLine, moveList));
       }
+
+      JPA.clear();
 
       if (!administration) {
         String exportNumber = this.getSaleExportNumber(company);
         this.updateMoveList(moveList, accountingReport, interfaceDate, exportNumber);
       }
     }
-
     accountingReport = accountingReportRepo.find(accountingReport.getId());
 
     String fileName = this.setFileName(accountingReport);
     accountingReportRepo.save(accountingReport);
+
     return writeMoveLineToCsvFile(
         company, fileName, this.createHeaderForJournalEntry(), allMoveLineData, accountingReport);
+  }
+
+  protected String[] createItemForExportMoveLine(MoveLine moveLine, List<Move> moveList) {
+    String[] items = new String[18];
+    Move move = moveLine.getMove();
+    if (!moveList.contains(move)) {
+      moveList.add(move);
+    }
+    Journal journal = move.getJournal();
+    items[0] = journal.getCode();
+    items[1] = journal.getName();
+    items[2] = moveLine.getMove().getReference();
+    items[3] = moveLine.getDate().format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDD));
+    items[4] = moveLine.getAccount().getCode();
+    items[5] = moveLine.getAccount().getName();
+    items[6] = "";
+    items[7] = "";
+    Partner partner = moveLine.getPartner();
+    if (partner != null) {
+      items[6] =
+          moveLine.getAccount().getAccountType().getIsManageSubsidiaryAccount()
+              ? partner.getPartnerSeq()
+              : "";
+      items[7] =
+          moveLine.getAccount().getAccountType().getIsManageSubsidiaryAccount()
+              ? partner.getName()
+              : "";
+    }
+    String origin = moveLine.getOrigin();
+    items[8] = Strings.isNullOrEmpty(origin) ? "NA" : origin;
+    if (moveLine.getOriginDate() != null) {
+      items[9] = moveLine.getOriginDate().format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDD));
+    }
+    items[10] = moveLine.getDescription();
+    items[11] = moveLine.getDebit().toString().replace('.', ',');
+    items[12] = moveLine.getCredit().toString().replace('.', ',');
+
+    ReconcileGroup reconcileGroup = moveLine.getReconcileGroup();
+    if (reconcileGroup != null
+        && reconcileGroup.getStatusSelect() == ReconcileGroupRepository.STATUS_FINAL) {
+      items[13] = reconcileGroup.getCode();
+      items[14] =
+          reconcileGroup
+              .getDateOfLettering()
+              .format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDD))
+              .toString();
+    } else {
+      items[13] = "";
+      items[14] = "";
+    }
+
+    if (move.getAccountingDate() != null) {
+      items[15] =
+          move.getAccountingDate().format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDD));
+    }
+
+    items[16] = moveLine.getCurrencyAmount().toString().replace('.', ',');
+    if (moveLine.getCurrencyAmount().compareTo(BigDecimal.ZERO) > 0
+        && moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0) {
+      items[16] = "-" + items[16];
+    }
+
+    if (move.getCurrency() != null) {
+      items[17] = move.getCurrency().getCodeISO();
+    }
+    return items;
   }
 
   /**
