@@ -44,9 +44,9 @@ import com.axelor.apps.account.service.move.MoveSimulateService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.move.MoveViewHelperService;
-import com.axelor.apps.account.service.move.attributes.MoveAttributeViewService;
+import com.axelor.apps.account.service.move.attributes.MoveAttrsService;
 import com.axelor.apps.account.service.move.control.MoveCheckService;
-import com.axelor.apps.account.service.move.record.MoveDefaultRecordService;
+import com.axelor.apps.account.service.move.record.MoveDefaultService;
 import com.axelor.apps.account.service.move.record.MoveRecordService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
@@ -916,7 +916,7 @@ public class MoveController {
   public void setDefaultMove(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
-      move = Beans.get(MoveDefaultRecordService.class).setDefaultMoveValues(move);
+      move = Beans.get(MoveDefaultService.class).setDefaultMoveValues(move);
 
       response.setValue("company", move.getCompany());
       response.setValue("getInfoFromFirstMoveLineOk", move.getGetInfoFromFirstMoveLineOk());
@@ -931,7 +931,7 @@ public class MoveController {
   public void setDefaultCurrency(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
-      move = Beans.get(MoveDefaultRecordService.class).setDefaultCurrency(move);
+      move = Beans.get(MoveDefaultService.class).setDefaultCurrency(move);
 
       response.setValue("companyCurrency", move.getCompanyCurrency());
       response.setValue("currency", move.getCurrency());
@@ -1065,7 +1065,7 @@ public class MoveController {
       Move move = request.getContext().asType(Move.class);
 
       Map<String, Map<String, Object>> mapValues =
-          Beans.get(MoveAttributeViewService.class).getHiddenAttributeValues(move);
+          Beans.get(MoveAttrsService.class).getHiddenAttributeValues(move);
 
       response.setAttrs(mapValues);
     } catch (Exception e) {
@@ -1078,7 +1078,7 @@ public class MoveController {
       Move move = request.getContext().asType(Move.class);
 
       Map<String, Map<String, Object>> mapValues =
-          Beans.get(MoveAttributeViewService.class).getFunctionalOriginSelectDomain(move);
+          Beans.get(MoveAttrsService.class).getFunctionalOriginSelectDomain(move);
 
       response.setAttrs(mapValues);
     } catch (Exception e) {
@@ -1103,7 +1103,7 @@ public class MoveController {
       Move move = request.getContext().asType(Move.class);
 
       Map<String, Map<String, Object>> mapValues =
-          Beans.get(MoveAttributeViewService.class).getBankDetailsAttributes(move);
+          Beans.get(MoveAttrsService.class).getBankDetailsAttributes(move);
 
       response.setAttrs(mapValues);
     } catch (Exception e) {

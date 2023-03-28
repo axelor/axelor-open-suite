@@ -3,7 +3,7 @@ package com.axelor.apps.account.service.move.attributes;
 import com.axelor.apps.account.db.Move;
 import java.util.Map;
 
-public interface MoveAttributeViewService {
+public interface MoveAttrsService {
 
   /**
    * This method generates a map of move fields that should be hide or not for the current move

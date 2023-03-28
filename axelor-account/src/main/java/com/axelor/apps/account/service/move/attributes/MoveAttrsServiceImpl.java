@@ -12,12 +12,12 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-public class MoveAttributeViewServiceImpl implements MoveAttributeViewService {
+public class MoveAttrsServiceImpl implements MoveAttrsService {
 
   protected AppBaseService appBaseService;
 
   @Inject
-  public MoveAttributeViewServiceImpl(AppBaseService appBaseService) {
+  public MoveAttrsServiceImpl(AppBaseService appBaseService) {
     this.appBaseService = appBaseService;
   }
 

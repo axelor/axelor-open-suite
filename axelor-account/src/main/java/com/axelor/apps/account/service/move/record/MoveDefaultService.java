@@ -2,7 +2,7 @@ package com.axelor.apps.account.service.move.record;
 
 import com.axelor.apps.account.db.Move;
 
-public interface MoveDefaultRecordService {
+public interface MoveDefaultService {
 
   /**
    * Set default values of move.

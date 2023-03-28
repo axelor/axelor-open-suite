@@ -9,14 +9,14 @@ import com.axelor.apps.base.service.user.UserService;
 import com.google.inject.Inject;
 import java.util.Objects;
 
-public class MoveDefaultRecordServiceImpl implements MoveDefaultRecordService {
+public class MoveDefaultServiceImpl implements MoveDefaultService {
 
   protected UserService userService;
   protected CompanyRepository companyRepository;
   protected AppBaseService appBaseService;
 
   @Inject
-  public MoveDefaultRecordServiceImpl(
+  public MoveDefaultServiceImpl(
       UserService userService, CompanyRepository companyRepository, AppBaseService appBaseService) {
     this.userService = userService;
     this.companyRepository = companyRepository;
