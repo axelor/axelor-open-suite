@@ -37,6 +37,8 @@ allprojects {
   }
 }
 
+tasks.withType(PublishToMavenRepository).configureEach { it.enabled = false }
+
 dependencies {
   gradle.appModules.each { dir ->
     implementation project(":modules:$dir.name")
