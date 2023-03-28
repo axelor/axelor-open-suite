@@ -20,6 +20,7 @@ package com.axelor.apps.account.service.move.massentry;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLineMassEntry;
 import com.axelor.exception.AxelorException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -40,4 +41,7 @@ public interface MassEntryService {
   Map<List<Long>, String> validateMassEntryMove(Move move);
 
   Move generateMassEntryMove(Move move) throws AxelorException;
+
+  int generatedTaxeAndCounterPart(
+      Move parentMove, Move workingMove, LocalDate dueDate, int temporaryMoveNumber);
 }

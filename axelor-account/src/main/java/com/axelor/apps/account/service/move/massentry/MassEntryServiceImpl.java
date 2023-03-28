@@ -25,9 +25,11 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.PeriodServiceAccount;
 import com.axelor.apps.account.service.move.MoveCreateService;
+import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
@@ -36,6 +38,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
@@ -372,5 +375,19 @@ public class MassEntryServiceImpl implements MassEntryService {
     }
 
     return newMove;
+  }
+
+  @Override
+  public int generatedTaxeAndCounterPart(
+      Move parentMove, Move workingMove, LocalDate dueDate, int temporaryMoveNumber) {
+    try {
+      Beans.get(MoveToolService.class).exceptionOnGenerateCounterpart(workingMove);
+      Beans.get(MoveLineMassEntryService.class)
+          .generateTaxLineAndCounterpart(parentMove, workingMove, dueDate, temporaryMoveNumber);
+    } catch (AxelorException e) {
+      TraceBackService.trace(e);
+      return e.getCategory();
+    }
+    return 0;
   }
 }

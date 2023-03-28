@@ -21,10 +21,8 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLineMassEntry;
 import com.axelor.apps.account.db.repo.MoveLineMassEntryRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.massentry.MassEntryService;
 import com.axelor.apps.account.service.move.massentry.MassEntryToolService;
-import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
@@ -59,8 +57,9 @@ public class MassEntryMoveController {
 
   public void verifyFieldsAndGenerateTaxLineAndCounterpart(
       ActionRequest request, ActionResponse response) {
+    Move move = request.getContext().asType(Move.class);
+
     try {
-      Move move = request.getContext().asType(Move.class);
       boolean manageCutOff =
           request.getContext().get("manageCutOffDummy") != null
               && (boolean) request.getContext().get("manageCutOffDummy");
@@ -74,23 +73,27 @@ public class MassEntryMoveController {
         if (lastLine.getInputAction() != null
             && lastLine.getInputAction()
                 == MoveLineMassEntryRepository.MASS_ENTRY_INPUT_ACTION_COUNTERPART) {
+          move.getMoveLineMassEntryList().remove(move.getMoveLineMassEntryList().size() - 1);
           Move workingMove =
               massEntryToolService.createMoveFromMassEntryList(
                   move, lastLine.getTemporaryMoveNumber());
-          response.setValues(move);
 
-          Beans.get(MoveToolService.class).exceptionOnGenerateCounterpart(workingMove);
-          Beans.get(MoveLineMassEntryService.class)
-              .generateTaxLineAndCounterpart(
-                  move,
-                  workingMove,
-                  this.extractDueDate(request),
-                  lastLine.getTemporaryMoveNumber());
+          int categoryError =
+              Beans.get(MassEntryService.class)
+                  .generatedTaxeAndCounterPart(
+                      move,
+                      workingMove,
+                      this.extractDueDate(request),
+                      lastLine.getTemporaryMoveNumber());
+          response.setValues(move);
+          if (categoryError == 0) {
+            massEntryToolService.sortMoveLinesMassEntryByTemporaryNumber(move);
+            response.setAttr("controlMassEntryMoves", "hidden", true);
+            response.setAttr("validateMassEntryMoves", "hidden", false);
+          }
+          // TODO set else statement and an error message with move.setMassEntryErrors() + hilite
+          // the line and fields
         }
-        massEntryToolService.sortMoveLinesMassEntryByTemporaryNumber(move);
-        response.setValues(move);
-        response.setAttr("controlMassEntryMoves", "hidden", false);
-        response.setAttr("validateMassEntryMoves", "hidden", true);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
