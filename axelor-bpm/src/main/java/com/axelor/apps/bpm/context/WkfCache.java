@@ -41,7 +41,11 @@ public class WkfCache {
     Map<Long, String> modelMap = new HashMap<Long, String>();
     modelMap.put(0L, "");
     for (WkfProcessConfig config : wkfProcessConfigs) {
-      modelMap.put(config.getId(), config.getModel());
+      String model = config.getModel();
+      if (config.getMetaJsonModel() != null) {
+        model = config.getMetaJsonModel().getName();
+      }
+      modelMap.put(config.getId(), model);
     }
     WKF_MODEL_CACHE.put(BpmTools.getCurentTenant(), modelMap);
   }
