@@ -52,7 +52,6 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import com.google.inject.servlet.RequestScoped;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -70,7 +69,6 @@ import javax.persistence.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@RequestScoped
 public class MoveLineExportServiceImpl implements MoveLineExportService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -421,11 +419,11 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
         this.updateMoveList(moveList, accountingReport, interfaceDate, exportNumber);
       }
     }
+
     accountingReport = accountingReportRepo.find(accountingReport.getId());
 
     String fileName = this.setFileName(accountingReport);
     accountingReportRepo.save(accountingReport);
-
     return writeMoveLineToCsvFile(
         company, fileName, this.createHeaderForJournalEntry(), allMoveLineData, accountingReport);
   }
