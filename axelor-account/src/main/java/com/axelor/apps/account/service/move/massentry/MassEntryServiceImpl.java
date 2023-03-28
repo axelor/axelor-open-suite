@@ -187,6 +187,7 @@ public class MassEntryServiceImpl implements MassEntryService {
   @Override
   public void checkMassEntryMoveGeneration(Move move) {
     List<Move> moveList;
+    int newMoveStatus = MoveRepository.STATUS_DAYBOOK;
 
     moveList = massEntryToolService.createMoveListFromMassEntryList(move);
     move.setMassEntryErrors("");
@@ -196,28 +197,20 @@ public class MassEntryServiceImpl implements MassEntryService {
       int temporaryMoveNumber = element.getMoveLineMassEntryList().get(0).getTemporaryMoveNumber();
 
       massEntryVerificationService.checkDateInAllMoveLineMassEntry(element, temporaryMoveNumber);
-
       massEntryVerificationService.checkOriginDateInAllMoveLineMassEntry(
           element, temporaryMoveNumber);
-
       massEntryVerificationService.checkOriginInAllMoveLineMassEntry(element, temporaryMoveNumber);
-
       massEntryVerificationService.checkCurrencyRateInAllMoveLineMassEntry(
           element, temporaryMoveNumber);
-
       massEntryVerificationService.checkPartnerInAllMoveLineMassEntry(element, temporaryMoveNumber);
-
       massEntryVerificationService.checkWellBalancedMove(element, temporaryMoveNumber);
-
       massEntryVerificationService.checkAccountAnalytic(element, temporaryMoveNumber);
 
       if (ObjectUtils.notEmpty(element.getMassEntryErrors())) {
         move.setMassEntryErrors(move.getMassEntryErrors() + element.getMassEntryErrors() + '\n');
-        massEntryToolService.setNewStatusSelectOnMassEntryLines(element, MoveRepository.STATUS_NEW);
-      } else {
-        massEntryToolService.setNewStatusSelectOnMassEntryLines(
-            element, MoveRepository.STATUS_DAYBOOK);
+        newMoveStatus = MoveRepository.STATUS_NEW;
       }
+      massEntryToolService.setNewStatusSelectOnMassEntryLines(element, newMoveStatus);
     }
   }
 

@@ -244,6 +244,7 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
       JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE,
       JournalTypeRepository.TECHNICAL_TYPE_SELECT_CREDIT_NOTE
     };
+    StringBuilder differentPartner = new StringBuilder();
 
     if (move.getJournal() != null
         && ArrayUtils.contains(
@@ -254,13 +255,14 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
           moveLineControlService.checkPartner(moveLine);
         } catch (AxelorException e) {
           this.setFieldsErrorListMessage(moveLine, differentElements, "partner");
+          differentPartner.append(",").append(moveLine.getPartner().getName());
         }
       }
       this.setMassEntryErrorMessage(
           move,
           String.format(
               AccountExceptionMessage.MOVE_LINE_INCONSISTENCY_DETECTED_PARTNER,
-              differentElements.get(0).getPartner(),
+              differentPartner,
               move.getPartner()),
           ObjectUtils.notEmpty(differentElements),
           temporaryMoveNumber);
@@ -269,45 +271,48 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
 
   private void setMassEntryErrorMessage(
       Move move, String message, boolean toSet, int temporaryMoveNumber) {
-    if (toSet) {
-      if (ObjectUtils.isEmpty(move.getMassEntryErrors())) {
-        move.setMassEntryErrors(
-            "There is the following errors in move : " + temporaryMoveNumber + '\n');
-      }
+    String massEntryErrors = move.getMassEntryErrors();
+    StringBuilder finalMessage = new StringBuilder();
 
-      move.setMassEntryErrors(move.getMassEntryErrors() + message + '\n');
+    if (toSet) {
+      if (ObjectUtils.isEmpty(massEntryErrors)) {
+        // TODO Set an error message
+        finalMessage.append(
+            String.format("There is the following errors in move : %s\n", temporaryMoveNumber));
+      }
+      finalMessage.append(message).append('\n');
+      move.setMassEntryErrors(massEntryErrors + finalMessage);
     }
   }
 
   private void setFieldsErrorListMessage(
       MoveLineMassEntry moveLine, List<MoveLineMassEntry> differentElements, String fieldName) {
-    String message = "";
+    StringBuilder message = new StringBuilder();
+
     if (ObjectUtils.notEmpty(moveLine.getFieldsErrorList())) {
-      message += moveLine.getFieldsErrorList() + ";";
+      message.append(moveLine.getFieldsErrorList()).append(';');
     }
-    message += fieldName + ":";
+    message.append(fieldName).append(':');
 
     switch (fieldName) {
       case "date":
-        message += moveLine.getDate().toString();
+        message.append(moveLine.getDate().toString());
         break;
       case "currencyRate":
-        message += moveLine.getCurrencyRate().toString();
+        message.append(moveLine.getCurrencyRate().toString());
         break;
       case "originDate":
-        message += moveLine.getOriginDate().toString();
+        message.append(moveLine.getOriginDate().toString());
         break;
       case "origin":
-        message += moveLine.getOrigin();
+        message.append(moveLine.getOrigin());
         break;
       case "partner":
-        message += moveLine.getPartner().getName();
-        break;
-      default:
+        message.append(moveLine.getPartner().getName());
         break;
     }
 
-    moveLine.setFieldsErrorList(message);
+    moveLine.setFieldsErrorList(message.toString());
     if (differentElements != null) {
       differentElements.add(moveLine);
     }
