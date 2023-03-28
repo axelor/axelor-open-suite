@@ -86,7 +86,7 @@ public class OperationOrderWorkflowService {
     this.prodProcessLineService = prodProcessLineService;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void manageDurationWithMachinePlanning(
       OperationOrder operationOrder, WeeklyPlanning weeklyPlanning, Long duration)
       throws AxelorException {
@@ -479,7 +479,7 @@ public class OperationOrderWorkflowService {
    *
    * @param operationOrder An operation order
    */
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void cancel(OperationOrder operationOrder) throws AxelorException {
     int oldStatus = operationOrder.getStatusSelect();
     operationOrder.setStatusSelect(OperationOrderRepository.STATUS_CANCELED);
@@ -658,7 +658,7 @@ public class OperationOrderWorkflowService {
     return prodProcessLineService.computeEntireCycleDuration(prodProcessLine, qty);
   }
 
-  private void calculateHoursOfUse(OperationOrder operationOrder) {
+  protected void calculateHoursOfUse(OperationOrder operationOrder) {
 
     if (operationOrder.getMachineTool() == null) {
       return;

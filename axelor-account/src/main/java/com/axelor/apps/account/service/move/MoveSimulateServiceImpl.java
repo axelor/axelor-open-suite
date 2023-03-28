@@ -48,10 +48,10 @@ public class MoveSimulateServiceImpl implements MoveSimulateService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void simulate(Move move) throws AxelorException {
     moveValidateService.checkPreconditions(move);
-    moveValidateService.freezeAccountAndPartnerFieldsOnMoveLines(move);
+    moveValidateService.freezeFieldsOnMoveLines(move);
     moveValidateService.completeMoveLines(move);
     move.setStatusSelect(MoveRepository.STATUS_SIMULATED);
     moveRepository.save(move);

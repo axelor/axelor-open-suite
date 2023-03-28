@@ -1,0 +1,5 @@
+"module";"object";"view";"field";"help"
+"axelor-maintenance";"Machine";"maintenance-machine-form";"startingDuration";"The time the machine starts before it can be used."
+"axelor-maintenance";"Machine";"maintenance-machine-form";"setupDuration";"Time between two cycles. This is the time to wait until the end of a cycle to start a new cycle."
+"axelor-maintenance";"Machine";"maintenance-machine-form";"endingDuration";"Ending duration of the machine."
+"axelor-maintenance";"Machine";"maintenance-machine-form";"weeklyPlanning";"Enables to select a general planning of machine availability (full-time or part-time). "

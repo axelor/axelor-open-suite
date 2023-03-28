@@ -34,13 +34,13 @@ public class PurchaseOrderManagementRepository extends PurchaseOrderRepository {
     copy.setStatusSelect(PurchaseOrderRepository.STATUS_DRAFT);
     copy.setPurchaseOrderSeq(null);
     copy.setVersionNumber(1);
-    copy.setDeliveryDate(null);
+    copy.setEstimatedReceiptDate(null);
     copy.setValidatedByUser(null);
     copy.setValidationDate(null);
     if (copy.getPurchaseOrderLineList() != null) {
       for (PurchaseOrderLine purchaseOrderLine : copy.getPurchaseOrderLineList()) {
-        purchaseOrderLine.setDesiredDelivDate(null);
-        purchaseOrderLine.setEstimatedDelivDate(null);
+        purchaseOrderLine.setDesiredReceiptDate(null);
+        purchaseOrderLine.setEstimatedReceiptDate(null);
       }
     }
     return copy;

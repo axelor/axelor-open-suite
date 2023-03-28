@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.account.service.invoice;
 
-import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.FinancialDiscount;
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Invoice;
@@ -36,7 +35,6 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.CallMethod;
-import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
@@ -48,17 +46,6 @@ import org.apache.commons.lang3.tuple.Pair;
 public interface InvoiceService {
 
   public Map<Invoice, List<Alarm>> getAlarms(Invoice... invoices);
-
-  /**
-   * Fetches suitable account for partner bound to the invoice, depending in the partner and the
-   * type of invoice, and if holdback.
-   *
-   * @param invoice Invoice to fetch the partner account for
-   * @return null if the invoice does not contains enough information to determine the partner
-   *     account.
-   * @throws AxelorException
-   */
-  Account getPartnerAccount(Invoice invoice, boolean isHoldback) throws AxelorException;
 
   /**
    * Fetches the journal to apply to an invoice, based on the operationType and A.T.I amount
@@ -124,7 +111,6 @@ public interface InvoiceService {
    * @param invoice Une facture.
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {Exception.class})
   public void cancel(Invoice invoice) throws AxelorException;
 
   /**
@@ -133,7 +119,6 @@ public interface InvoiceService {
    *
    * @param invoice Une facture
    */
-  @Transactional
   public void usherProcess(Invoice invoice);
 
   String checkNotImputedRefunds(Invoice invoice) throws AxelorException;
@@ -147,7 +132,6 @@ public interface InvoiceService {
    * @return
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {Exception.class})
   public Invoice createRefund(Invoice invoice) throws AxelorException;
 
   public void setDraftSequence(Invoice invoice) throws AxelorException;
@@ -315,7 +299,6 @@ public interface InvoiceService {
 
   public String checkNotLetteredAdvancePaymentMoveLines(Invoice invoice) throws AxelorException;
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public void refusalToPay(
       Invoice invoice, CancelReason reasonOfRefusalToPay, String reasonOfRefusalToPayStr);
 

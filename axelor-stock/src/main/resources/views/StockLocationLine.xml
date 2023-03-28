@@ -73,8 +73,9 @@
       title="Product quantity in other stock locations"/>
     <panel-dashlet name="stockRulesPanel"
       action="action-stock-location-line-view-stock-rule" title="Stock Rules"/>
-    <panel-dashlet name="wapHistoryPanel"
-      action="action-stock-location-line-view-wap-history" title="WAP history"/>
+    <panel-dashlet name="stockLocationLineHistoryHistoryPanel"
+      action="action-stock-location-line-view-stock-location-line-history"
+      title="Stock location line history"/>
     <panel name="stockCorrectionPanel" sidebar="true">
       <button name="stockCorrectionBtn" title="Stock Correction"
         onClick="action-stock-location-line-view-open-stock-correction-form"/>
@@ -175,7 +176,7 @@
       action="action-stock-location-line-view-product-qty"
       title="Product quantity in other stock locations"/>
     <panel-dashlet name="wapHistoryPanel"
-      action="action-stock-location-line-view-wap-history" title="WAP history"/>
+      action="action-stock-location-line-view-stock-location-line-history" title="WAP history"/>
   </form>
 
   <grid name="stock-location-line-product-group-by-variant-grid"
@@ -343,6 +344,14 @@
     model="com.axelor.apps.stock.db.WapHistory">
     <view type="grid" name="wap-history-grid"/>
     <view type="form" name="wap-history-form"/>
+    <domain>self.stockLocationLine.id = :id</domain>
+  </action-view>
+
+
+  <action-view name="action-stock-location-line-view-stock-location-line-history"
+    title="Stock location line history" model="com.axelor.apps.stock.db.StockLocationLineHistory">
+    <view type="grid" name="stock-location-line-history-grid"/>
+    <view type="form" name="stock-location-line-history-form"/>
     <domain>self.stockLocationLine.id = :id</domain>
   </action-view>
 

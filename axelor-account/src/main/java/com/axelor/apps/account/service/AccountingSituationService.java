@@ -19,6 +19,8 @@ package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountingSituation;
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceLineTax;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -92,6 +94,21 @@ public interface AccountingSituationService {
   void setHoldBackAccounts(AccountingSituation accountingSituation, Partner partner)
       throws AxelorException;
 
-  int determineVatSystemSelect(AccountingSituation accountingSituation, int vatSystem)
+  int determineVatSystemSelect(AccountingSituation accountingSituation, Account account)
       throws AxelorException;
+
+  int determineVatSystemSelect(
+      AccountingSituation accountingSituation, InvoiceLineTax invoiceLineTax)
+      throws AxelorException;
+
+  /**
+   * Fetches suitable account for partner bound to the invoice, depending in the partner and the
+   * type of invoice, and if holdback.
+   *
+   * @param invoice Invoice to fetch the partner account for
+   * @return null if the invoice does not contains enough information to determine the partner
+   *     account.
+   * @throws AxelorException
+   */
+  Account getPartnerAccount(Invoice invoice, boolean isHoldback) throws AxelorException;
 }

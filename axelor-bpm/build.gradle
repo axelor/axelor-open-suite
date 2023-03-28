@@ -12,6 +12,10 @@ axelor {
         description "Axelor BPM  Module"
 }
 
+license {
+  exclude "**/token-assets/**"
+}
+
 test {
 	exclude "com/axelor/apps/baml/test/**"
 }

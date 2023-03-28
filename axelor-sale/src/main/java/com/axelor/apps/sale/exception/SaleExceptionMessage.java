@@ -100,4 +100,7 @@ public final class SaleExceptionMessage {
       "Can only complete a confirmed sale order." /*)*/;
   public static final String SALE_ORDER_CANCEL_WRONG_STATUS = /*$$(*/
       "Can only cancel a drafted or finalized sale order." /*)*/;
+
+  public static final String OPPORTUNITY_PARTNER_MISSING = /*$$(*/
+      "You must fill a partner for the opportunity %s." /*)*/;
 }

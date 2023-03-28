@@ -80,7 +80,7 @@ public class WkfDashboardServiceImpl implements WkfDashboardService {
     return query.getResultList();
   }
 
-  private Query createCommonRecordQuery(String tableName, String condition, String status) {
+  protected Query createCommonRecordQuery(String tableName, String condition, String status) {
 
     StringBuilder queryBuilder = new StringBuilder();
 

@@ -18,6 +18,7 @@
 package com.axelor.apps.account.service.fixedasset;
 
 import com.axelor.apps.account.db.FixedAsset;
+import com.axelor.apps.base.db.Company;
 import java.time.LocalDate;
 
 public interface FixedAssetDateService {
@@ -33,6 +34,12 @@ public interface FixedAssetDateService {
 
   /** Compute first depreciation date of ifrs plan */
   void computeIfrsFirstDepreciationDate(FixedAsset fixedAsset);
+
+  LocalDate computeLastDayOfFiscalPeriod(
+      Company company, LocalDate date, Integer periodicityTypeSelect);
+
+  LocalDate computeLastDayOfFiscalYear(
+      Company company, LocalDate date, Integer periodicityTypeSelect);
 
   /**
    * Compute and return the last day of the month/year depending on the periodicity type.

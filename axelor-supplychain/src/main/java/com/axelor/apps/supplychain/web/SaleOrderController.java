@@ -73,6 +73,7 @@ public class SaleOrderController {
 
   private final String SO_LINES_WIZARD_QTY_TO_INVOICE_FIELD = "qtyToInvoice";
   private final String SO_LINES_WIZARD_PRICE_FIELD = "price";
+  private final String SO_LINES_WIZARD_QTY_FIELD = "qty";
 
   public void createStockMove(ActionRequest request, ActionResponse response) {
 
@@ -313,6 +314,7 @@ public class SaleOrderController {
 
       SaleOrderInvoiceService saleOrderInvoiceService = Beans.get(SaleOrderInvoiceService.class);
 
+      Map<Long, BigDecimal> qtyMap = new HashMap<>();
       Map<Long, BigDecimal> qtyToInvoiceMap = new HashMap<>();
       Map<Long, BigDecimal> priceMap = new HashMap<>();
 
@@ -328,6 +330,8 @@ public class SaleOrderController {
             qtyToInvoiceMap.put(soLineId, qtyToInvoiceItem);
             BigDecimal priceItem = new BigDecimal(map.get(SO_LINES_WIZARD_PRICE_FIELD).toString());
             priceMap.put(soLineId, priceItem);
+            BigDecimal qtyItem = new BigDecimal(map.get(SO_LINES_WIZARD_QTY_FIELD).toString());
+            qtyMap.put(soLineId, qtyItem);
           }
         }
       }
@@ -335,7 +339,13 @@ public class SaleOrderController {
       // Re-compute amount to invoice if invoicing partially
       amountToInvoice =
           saleOrderInvoiceService.computeAmountToInvoice(
-              amountToInvoice, operationSelect, saleOrder, qtyToInvoiceMap, priceMap);
+              amountToInvoice,
+              operationSelect,
+              saleOrder,
+              qtyToInvoiceMap,
+              priceMap,
+              qtyMap,
+              isPercent);
 
       saleOrderInvoiceService.displayErrorMessageIfSaleOrderIsInvoiceable(
           saleOrder, amountToInvoice, isPercent);
@@ -427,11 +437,11 @@ public class SaleOrderController {
     List<Integer> operationSelectValues =
         Beans.get(SaleOrderInvoiceService.class).getInvoicingWizardOperationDomain(saleOrder);
     response.setAttr(
-        "operationSelect",
+        "$operationSelect",
         "value",
         operationSelectValues.stream().min(Integer::compareTo).orElse(null));
 
-    response.setAttr("operationSelect", "selection-in", operationSelectValues);
+    response.setAttr("$operationSelect", "selection-in", operationSelectValues);
   }
 
   /**
@@ -493,7 +503,7 @@ public class SaleOrderController {
         saleOrderLineMap.put(SO_LINES_WIZARD_QTY_TO_INVOICE_FIELD, BigDecimal.ZERO);
         saleOrderLineList.add(saleOrderLineMap);
       }
-      response.setValue("amountToInvoice", BigDecimal.ZERO);
+      response.setValue("$amountToInvoice", BigDecimal.ZERO);
       response.setValue("saleOrderLineList", saleOrderLineList);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -509,8 +519,21 @@ public class SaleOrderController {
         Integer deliveryState = saleOrderLine.getDeliveryState();
         if (!deliveryState.equals(SaleOrderLineRepository.DELIVERY_STATE_DELIVERED)
             && !deliveryState.equals(SaleOrderLineRepository.DELIVERY_STATE_PARTIALLY_DELIVERED)) {
-          saleOrderLine.setEstimatedDelivDate(saleOrder.getDeliveryDate());
+          saleOrderLine.setEstimatedShippingDate(saleOrder.getEstimatedShippingDate());
         }
+      }
+    }
+
+    response.setValue("saleOrderLineList", saleOrderLineList);
+  }
+
+  public void fillSaleOrderLinesDeliveryDate(ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+
+    List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
+    if (saleOrderLineList != null) {
+      for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+        saleOrderLine.setEstimatedDeliveryDate(saleOrder.getEstimatedDeliveryDate());
       }
     }
 

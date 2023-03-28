@@ -121,7 +121,7 @@ public class PrepareCsv {
    * @throws IOException
    * @throws ParserConfigurationException
    */
-  private String getNameColumn(String fileName)
+  protected String getNameColumn(String fileName)
       throws SAXException, IOException, ParserConfigurationException {
     DocumentBuilder dBuilder =
         Beans.get(XPathParse.class).getDocumentBuilderFactory().newDocumentBuilder();

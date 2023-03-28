@@ -25,7 +25,7 @@
       <field name="accountCodeNbrCharSelect" colSpan="3" showIf="hasAccountCodeFixedNbrChar"
         readonlyIf="hasChartImported"/>
       <button name="installTemplateBtn" title="Import a chart"
-        readonlyIf="hasChartImported || company == null || accountChart == null || accountCodeNbrCharSelect == 0"
+        readonlyIf="hasChartImported || company == null || accountChart == null || (hasAccountCodeFixedNbrChar &amp;&amp; (accountCodeNbrCharSelect == 0 || accountCodeNbrCharSelect == null))"
         icon="fa-import" onClick="action-group-account-config-installchart-click"/>
 
       <field name="hasChartImported"/>
@@ -207,7 +207,6 @@
       </panel>
 
       <panel title="Invoicing" name="invoicingPanel">
-        <field name="allowCancelVentilatedInvoice" widget="boolean-switch"/>
         <field name="generateMoveForInvoicePayment" widget="boolean-switch"/>
         <field name="invoiceInAtiSelect"/>
         <field name="fixedAssetCatReqOnInvoice" widget="boolean-switch"/>
@@ -217,9 +216,11 @@
 
         <panel name="passedForPaymentPanel" title="Passed for payment" colSpan="12"
           if="__config__.app.getApp('account')?.getActivatePassedForPayment()">
-          <field name="isManagePassedForPayment" widget="boolean-switch"/>
+          <field name="isManagePassedForPayment" widget="boolean-switch" colSpan="4"/>
           <field name="isManagePFPInRefund" widget="boolean-switch"
-            showIf="isManagePassedForPayment"/>
+            showIf="isManagePassedForPayment" colSpan="4"/>
+          <field name="isManageDaybookInPFP" widget="boolean-switch"
+            showIf="isManagePassedForPayment" colSpan="4"/>
         </panel>
 
         <panel name="invoiceSequencesPanel" title="Invoices sequences" colSpan="12">
@@ -258,8 +259,22 @@
             if="__config__.app.isApp('business-project') &amp;&amp;  __config__.app.isApp('expense')"/>
           <field name="isPrintInvoicesInCompanyLanguage" widget="boolean-switch"/>
           <field name="displayHeadOfficeAddrOnInvoicePrinting" widget="boolean-switch"/>
-          <field name="displayStockMoveOnInvoicePrinting" widget="boolean-switch" colSpan="12"
+          <field name="displayStockMoveOnInvoicePrinting" widget="boolean-switch"
             if="__config__.app.isApp('supplychain')"/>
+          <field name="displayPartnerSirenOnInvoicePrinting" widget="boolean-switch"
+            colSpan="12"/>
+          <field name="displayItemsCategoriesOnPrinting" widget="boolean-switch"/>
+          <panel name="statementsPanel" title="Invoice product statements" colSpan="12"
+            hideIf="!displayItemsCategoriesOnPrinting">
+            <field name="statementsForItemsCategoriesList" colSpan="12"
+              title="Statements present in the invoice according to product types"
+              help="You can define a statement for a specific combination of product types.">
+              <editor>
+                <field name="typeList" widget="MultiSelect" colSpan="4"/>
+                <field name="statement" colSpan="8" height="1"/>
+              </editor>
+            </field>
+          </panel>
           <field name="invoiceWatermark" widget="Image"/>
           <field name="invoiceClientBox" widget="html" x-lite="true" colSpan="12"/>
           <field name="saleInvoiceLegalNote" widget="html" x-lite="true" colSpan="12"/>

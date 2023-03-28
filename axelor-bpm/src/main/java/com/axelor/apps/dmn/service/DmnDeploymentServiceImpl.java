@@ -66,7 +66,7 @@ public class DmnDeploymentServiceImpl implements DmnDeploymentService {
     Beans.get(WkfDmnModelRepository.class).save(wkfDmnModel);
   }
 
-  private void setDecisionTables(WkfDmnModel wkfDmnModel, DmnModelInstance dmnModelInstance) {
+  protected void setDecisionTables(WkfDmnModel wkfDmnModel, DmnModelInstance dmnModelInstance) {
 
     Map<String, DmnTable> dmnTableMap = new HashMap<String, DmnTable>();
 
@@ -96,7 +96,7 @@ public class DmnDeploymentServiceImpl implements DmnDeploymentService {
     }
   }
 
-  private void setDmnField(DecisionTable decisionTable, DmnTable dmnTable) {
+  protected void setDmnField(DecisionTable decisionTable, DmnTable dmnTable) {
 
     Map<String, DmnField> outputFieldMap = new HashMap<String, DmnField>();
     if (dmnTable.getOutputDmnFieldList() != null) {

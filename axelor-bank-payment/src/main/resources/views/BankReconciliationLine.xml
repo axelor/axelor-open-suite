@@ -8,8 +8,9 @@
     canNew="false">
     <button onClick="save,action-bank-reconciliation-line-method-set-selected" name="select"
       title="Select / Unselect" icon="fa-check-circle" showIf="!isSelectedBankReconciliation"/>
-    <button onClick="save,action-bank-reconciliation-line-method-set-selected" name="select"
-      title="Select / Unselect" icon="fa-minus-circle" showIf="isSelectedBankReconciliation"/>
+    <button onClick="save,action-bank-reconciliation-line-method-set-selected"
+      name="unselect" title="Select / Unselect" icon="fa-minus-circle"
+      showIf="isSelectedBankReconciliation"/>
     <field name="postedNbr"/>
     <field name="confidenceIndex" readonly="true">
       <hilite if="confidenceIndex == 1" color="green"/>

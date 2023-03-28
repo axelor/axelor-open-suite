@@ -60,6 +60,13 @@ public class CancelState extends WorkflowInvoice {
         && invoice.getCompany().getAccountConfig().getAllowCancelVentilatedInvoice()) {
       cancelMove();
     }
+
+    updateInvoiceFromCancellation();
+
+    workflowService.afterCancel(invoice);
+  }
+
+  protected void updateInvoiceFromCancellation() throws AxelorException {
     setStatus();
     if (Beans.get(AccountConfigService.class)
         .getAccountConfig(invoice.getCompany())
@@ -72,8 +79,6 @@ public class CancelState extends WorkflowInvoice {
     for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
       invoiceLine.clearBudgetDistributionList();
     }
-
-    workflowService.afterCancel(invoice);
   }
 
   @Transactional

@@ -28,13 +28,16 @@ import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
+import com.axelor.apps.stock.service.StockMoveCheckWapService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.StockMoveToolService;
+import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.stock.service.stockmove.print.ConformityCertificatePrintService;
 import com.axelor.apps.stock.service.stockmove.print.PickingStockMovePrintService;
 import com.axelor.apps.stock.service.stockmove.print.StockMovePrintService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.common.ObjectUtils;
+import com.axelor.common.StringUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
@@ -678,6 +681,40 @@ public class StockMoveController {
       response.setValue("toStockLocation", toStockLocation);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void checkWap(ActionRequest request, ActionResponse response) {
+
+    try {
+      StockMove stockMove = request.getContext().asType(StockMove.class);
+      stockMove = Beans.get(StockMoveRepository.class).find(stockMove.getId());
+      String productsWithErrorStr = Beans.get(StockMoveCheckWapService.class).checkWap(stockMove);
+      if (StringUtils.isEmpty(productsWithErrorStr)) {
+        response.setValue("isValidWAP", true);
+        return;
+      }
+
+      Integer percentToleranceForWapChange =
+          Beans.get(StockConfigService.class)
+              .getStockConfig(stockMove.getToStockLocation().getCompany())
+              .getPercentToleranceForWapChange();
+      response.setView(
+          ActionView.define(I18n.get("Stock move"))
+              .model(StockMove.class.getName())
+              .add("form", "popup-stock-move-check-wap-form")
+              .param("popup", "reload")
+              .param("show-toolbar", "false")
+              .param("show-confirm", "false")
+              .param("popup-save", "false")
+              .context("_showRecord", stockMove.getId())
+              .context("_percentToleranceForWapChange", percentToleranceForWapChange)
+              .context("_productsWithErrorStr", productsWithErrorStr)
+              .map());
+
+      response.setValue("isValidWAP", false);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 }

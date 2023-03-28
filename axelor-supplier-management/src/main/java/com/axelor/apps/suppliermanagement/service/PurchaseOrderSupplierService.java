@@ -33,6 +33,7 @@ import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
+import com.axelor.apps.purchase.service.SupplierCatalogService;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.PurchaseOrderSupplychainService;
@@ -65,8 +66,10 @@ public class PurchaseOrderSupplierService {
 
   @Inject protected PurchaseOrderRepository poRepo;
 
+  @Inject protected SupplierCatalogService supplierCatalogService;
+
   @Transactional
-  public void generateAllSuppliersRequests(PurchaseOrder purchaseOrder) {
+  public void generateAllSuppliersRequests(PurchaseOrder purchaseOrder) throws AxelorException {
 
     for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
 
@@ -82,15 +85,17 @@ public class PurchaseOrderSupplierService {
    * format below.
    *
    * @param purchaseOrderLine
+   * @throws AxelorException
    */
   @Transactional
-  public void generateSuppliersRequests(PurchaseOrderLine purchaseOrderLine) {
+  public void generateSuppliersRequests(PurchaseOrderLine purchaseOrderLine)
+      throws AxelorException {
     this.generateSuppliersRequests(purchaseOrderLine, purchaseOrderLine.getPurchaseOrder());
   }
 
   @Transactional
   public void generateSuppliersRequests(
-      PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder) {
+      PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder) throws AxelorException {
 
     if (purchaseOrder == null) {
       return;
@@ -110,7 +115,9 @@ public class PurchaseOrderSupplierService {
                 .getBlocking(supplierPartner, company, BlockingRepository.PURCHASE_BLOCKING);
         if (blocking == null) {
           purchaseOrderLine.addPurchaseOrderSupplierLineListItem(
-              purchaseOrderSupplierLineService.create(supplierPartner, supplierCatalog.getPrice()));
+              purchaseOrderSupplierLineService.create(
+                  supplierPartner,
+                  supplierCatalogService.getPurchasePrice(supplierCatalog, company)));
         }
       }
     }

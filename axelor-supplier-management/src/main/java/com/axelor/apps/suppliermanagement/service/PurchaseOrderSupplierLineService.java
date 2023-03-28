@@ -43,7 +43,7 @@ public class PurchaseOrderSupplierLineService {
 
     PurchaseOrderLine purchaseOrderLine = purchaseOrderSupplierLine.getPurchaseOrderLine();
 
-    purchaseOrderLine.setEstimatedDelivDate(purchaseOrderSupplierLine.getEstimatedDelivDate());
+    purchaseOrderLine.setEstimatedReceiptDate(purchaseOrderSupplierLine.getEstimatedDelivDate());
 
     Partner supplierPartner = purchaseOrderSupplierLine.getSupplierPartner();
     Company company = purchaseOrderLine.getPurchaseOrder().getCompany();
