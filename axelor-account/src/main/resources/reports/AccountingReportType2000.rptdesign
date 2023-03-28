@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202108150822</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -141,60 +141,70 @@
             <list-property name="columnHints">
                 <structure>
                     <property name="columnName">analytic_journal_id</property>
+                    <property name="alias">analytic_journal_id</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">analytic_journal_id</text-property>
                     <text-property name="heading">analytic_journal_id</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">analytic_journal_name</property>
+                    <property name="alias">analytic_journal_name</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">analytic_journal_name</text-property>
                     <text-property name="heading">analytic_journal_name</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">analytic_axis_id</property>
+                    <property name="alias">analytic_axis_id</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">analytic_axis_id</text-property>
                     <text-property name="heading">analytic_axis_id</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">analytic_axis_code</property>
+                    <property name="alias">analytic_axis_code</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">analytic_axis_code</text-property>
                     <text-property name="heading">analytic_axis_code</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">analytic_axis_name</property>
+                    <property name="alias">analytic_axis_name</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">analytic_axis_name</text-property>
                     <text-property name="heading">analytic_axis_name</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">analytic_account_id</property>
+                    <property name="alias">analytic_account_id</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">analytic_account_id</text-property>
                     <text-property name="heading">analytic_account_id</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">analytic_account_code</property>
+                    <property name="alias">analytic_account_code</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">analytic_account_code</text-property>
                     <text-property name="heading">analytic_account_code</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">analytic_account_name</property>
+                    <property name="alias">analytic_account_name</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">analytic_account_name</text-property>
                     <text-property name="heading">analytic_account_name</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">account_type_name</property>
+                    <property name="alias">account_type_name</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">account_type_name</text-property>
                     <text-property name="heading">account_type_name</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">amount</property>
+                    <property name="alias">amount</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">amount</text-property>
                     <text-property name="heading">amount</text-property>
@@ -275,70 +285,60 @@
                     <property name="name">analytic_journal_id</property>
                     <property name="nativeName">analytic_journal_id</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
                     <property name="name">analytic_journal_name</property>
                     <property name="nativeName">analytic_journal_name</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
                     <property name="name">analytic_axis_id</property>
                     <property name="nativeName">analytic_axis_id</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
                     <property name="name">analytic_axis_code</property>
                     <property name="nativeName">analytic_axis_code</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
                     <property name="name">analytic_axis_name</property>
                     <property name="nativeName">analytic_axis_name</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
                     <property name="name">analytic_account_id</property>
                     <property name="nativeName">analytic_account_id</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">7</property>
                     <property name="name">analytic_account_code</property>
                     <property name="nativeName">analytic_account_code</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">8</property>
                     <property name="name">analytic_account_name</property>
                     <property name="nativeName">analytic_account_name</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">9</property>
                     <property name="name">account_type_name</property>
                     <property name="nativeName">account_type_name</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">10</property>
                     <property name="name">amount</property>
                     <property name="nativeName">amount</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select AnalyticJournal.id as analytic_journal_id, AnalyticJournal.name as analytic_journal_name,
@@ -371,7 +371,7 @@ where
 (AccountingReport.journal IS NULL OR AccountingReport.journal  = Move.journal) AND
 (AccountingReport.date_from IS NULL OR AnalyticMoveLine.date_val >= AccountingReport.date_from) AND 
 (AccountingReport.date_to IS NULL OR AnalyticMoveLine.date_val <= AccountingReport.date_to) AND
-AnalyticMoveLine.date_val <= AccountingReport.date_val AND 
+AnalyticMoveLine.date_val <= AccountingReport.issue_date_time AND 
 AnalyticJournal.company = AccountingReport.company 
 AND (AccountingReport.analytic_journal IS NULL OR AccountingReport.analytic_journal  = AnalyticJournal.id)  
 AND AnalyticMoveLine.type_select = 3
@@ -390,6 +390,7 @@ order by AnalyticJournal.name, AnalyticAxis.code, AnalyticAccount.code, AccountT
             <list-property name="columnHints">
                 <structure>
                     <property name="columnName">company_name</property>
+                    <property name="alias">company_name</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">company_name</text-property>
                     <property name="onColumnLayout">false</property>
@@ -397,18 +398,21 @@ order by AnalyticJournal.name, AnalyticAxis.code, AnalyticAccount.code, AccountT
                 </structure>
                 <structure>
                     <property name="columnName">logo_height</property>
+                    <property name="alias">logo_height</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">logo_height</text-property>
                     <text-property name="heading">logo_height</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">logo_width</property>
+                    <property name="alias">logo_width</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">logo_width</text-property>
                     <text-property name="heading">logo_width</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">date_from</property>
+                    <property name="alias">date_from</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">date_from</text-property>
                     <property name="onColumnLayout">false</property>
@@ -416,6 +420,7 @@ order by AnalyticJournal.name, AnalyticAxis.code, AnalyticAccount.code, AccountT
                 </structure>
                 <structure>
                     <property name="columnName">date_to</property>
+                    <property name="alias">date_to</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">date_to</text-property>
                     <property name="onColumnLayout">false</property>
@@ -423,6 +428,7 @@ order by AnalyticJournal.name, AnalyticAxis.code, AnalyticAccount.code, AccountT
                 </structure>
                 <structure>
                     <property name="columnName">report_date</property>
+                    <property name="alias">report_date</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">report_date</text-property>
                     <property name="onColumnLayout">false</property>
@@ -430,6 +436,7 @@ order by AnalyticJournal.name, AnalyticAxis.code, AnalyticAccount.code, AccountT
                 </structure>
                 <structure>
                     <property name="columnName">report_date_edition</property>
+                    <property name="alias">report_date_edition</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">report_date_edition</text-property>
                     <property name="onColumnLayout">false</property>
@@ -437,6 +444,7 @@ order by AnalyticJournal.name, AnalyticAxis.code, AnalyticAccount.code, AccountT
                 </structure>
                 <structure>
                     <property name="columnName">logo_path</property>
+                    <property name="alias">logo_path</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">logo_path</text-property>
                     <property name="onColumnLayout">false</property>
@@ -444,6 +452,7 @@ order by AnalyticJournal.name, AnalyticAxis.code, AnalyticAccount.code, AccountT
                 </structure>
                 <structure>
                     <property name="columnName">journal_name</property>
+                    <property name="alias">journal_name</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">journal_name</text-property>
                     <property name="onColumnLayout">false</property>
@@ -451,12 +460,14 @@ order by AnalyticJournal.name, AnalyticAxis.code, AnalyticAccount.code, AccountT
                 </structure>
                 <structure>
                     <property name="columnName">currency</property>
+                    <property name="alias">currency</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">currency</text-property>
                     <text-property name="heading">currency</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">ref</property>
+                    <property name="alias">ref</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">ref</text-property>
                     <text-property name="heading">ref</text-property>
@@ -505,7 +516,7 @@ order by AnalyticJournal.name, AnalyticAxis.code, AnalyticAccount.code, AccountT
                     <structure>
                         <property name="position">6</property>
                         <property name="name">report_date</property>
-                        <property name="dataType">date</property>
+                        <property name="dataType">date-time</property>
                     </structure>
                     <structure>
                         <property name="position">7</property>
@@ -541,83 +552,72 @@ order by AnalyticJournal.name, AnalyticAxis.code, AnalyticAccount.code, AccountT
                     <property name="name">company_name</property>
                     <property name="nativeName">company_name</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
                     <property name="name">logo_height</property>
                     <property name="nativeName">logo_height</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
                     <property name="name">logo_width</property>
                     <property name="nativeName">logo_width</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
                     <property name="name">date_from</property>
                     <property name="nativeName">date_from</property>
                     <property name="dataType">date</property>
-                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
                     <property name="name">date_to</property>
                     <property name="nativeName">date_to</property>
                     <property name="dataType">date</property>
-                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
                     <property name="name">report_date</property>
                     <property name="nativeName">report_date</property>
-                    <property name="dataType">date</property>
-                    <property name="nativeDataType">91</property>
+                    <property name="dataType">date-time</property>
                 </structure>
                 <structure>
                     <property name="position">7</property>
                     <property name="name">report_date_edition</property>
                     <property name="nativeName">report_date_edition</property>
                     <property name="dataType">date-time</property>
-                    <property name="nativeDataType">93</property>
                 </structure>
                 <structure>
                     <property name="position">8</property>
                     <property name="name">logo_path</property>
                     <property name="nativeName">logo_path</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">9</property>
                     <property name="name">journal_name</property>
                     <property name="nativeName">journal_name</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">10</property>
                     <property name="name">currency</property>
                     <property name="nativeName">currency</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">11</property>
                     <property name="name">ref</property>
                     <property name="nativeName">ref</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select Company.name as company_name,
 Company.height as logo_height,
 Company.width as logo_width,
-AccountingReport.date_from, AccountingReport.date_to, AccountingReport.date_val as report_date, 
+AccountingReport.date_from, AccountingReport.date_to, AccountingReport.issue_date_time as report_date, 
 AccountingReport.publication_date_time as report_date_edition, MetaFile.file_path as logo_path, AnalyticJournal.name as journal_name,
 Currency.code as currency,
 AccountingReport.ref
@@ -803,7 +803,8 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             <property name="name">report_date</property>
                             <text-property name="displayName">report_date</text-property>
                             <expression name="expression" type="javascript">dataSetRow["report_date"]</expression>
-                            <property name="dataType">date</property>
+                            <property name="dataType">date-time</property>
+                            <property name="allowExport">true</property>
                         </structure>
                         <structure>
                             <property name="name">report_date_edition</property>
@@ -1011,7 +1012,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="name">report_date</property>
                     <text-property name="displayName">ReportDate</text-property>
                     <expression name="expression" type="javascript">dataSetRow["report_date"]</expression>
-                    <property name="dataType">date</property>
+                    <property name="dataType">date-time</property>
                     <property name="allowExport">true</property>
                 </structure>
                 <structure>
@@ -1194,8 +1195,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 <cell id="4129">
                     <data id="4311">
                         <structure name="dateTimeFormat">
-                            <property name="category">Short Date</property>
-                            <property name="pattern">Short Date</property>
+                            <property name="category">Unformatted</property>
                         </structure>
                         <property name="resultSetColumn">report_date</property>
                     </data>

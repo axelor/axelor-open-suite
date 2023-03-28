@@ -214,8 +214,8 @@ public class AccountingReportServiceImpl implements AccountingReportService {
       this.addParams("self.date <= ?%d", accountingReport.getDateTo());
     }
 
-    if (accountingReport.getDate() != null) {
-      this.addParams("self.date <= ?%d", accountingReport.getDate());
+    if (accountingReport.getIssueDateTime() != null) {
+      this.addParams("self.date <= ?%d", accountingReport.getIssueDateTime().toLocalDate());
     }
 
     if (accountingReport.getJournal() != null) {
@@ -694,7 +694,9 @@ public class AccountingReportServiceImpl implements AccountingReportService {
       this.addParams("self.date <= ?%d", accountingReport.getDateTo());
     }
 
-    this.addParams("self.date <= ?%d", accountingReport.getDate());
+    if (accountingReport.getIssueDateTime() != null) {
+      this.addParams("self.date <= ?%d", accountingReport.getIssueDateTime().toLocalDate());
+    }
 
     if (accountingReport.getAnalyticJournal() != null) {
       this.addParams("self.analyticJournal = ?%d", accountingReport.getAnalyticJournal());
@@ -883,7 +885,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
     AccountingReport accountingExport = new AccountingReport();
 
-    accountingExport.setDate(accountingReport.getDate());
+    accountingExport.setIssueDateTime(accountingReport.getIssueDateTime());
     AccountingReportType reportType =
         Beans.get(AccountingReportTypeRepository.class)
             .all()
@@ -929,7 +931,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
         modelAccountingReportCopy.setTotalCredit(null);
         modelAccountingReportCopy.setTotalDebit(null);
         modelAccountingReportCopy.setBalance(null);
-        modelAccountingReportCopy.setDate(accountingReport.getDate());
+        modelAccountingReportCopy.setIssueDateTime(accountingReport.getIssueDateTime());
         modelAccountingReportCopy.setStatusSelect(accountingReport.getStatusSelect());
         Map<String, Object> modelAccountingReportCopyMap = Mapper.toMap(modelAccountingReportCopy);
         return modelAccountingReportCopyMap;

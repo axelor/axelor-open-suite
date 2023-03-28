@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -295,18 +295,21 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 </structure>
                 <structure>
                     <property name="columnName">currencycode</property>
+                    <property name="alias">currencycode</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">currencycode</text-property>
                     <text-property name="heading">currencycode</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">logo_height</property>
+                    <property name="alias">logo_height</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">logo_height</text-property>
                     <text-property name="heading">logo_height</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">logo_width</property>
+                    <property name="alias">logo_width</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">logo_width</text-property>
                     <text-property name="heading">logo_width</text-property>
@@ -335,7 +338,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <structure>
                         <property name="position">2</property>
                         <property name="name">report_date</property>
-                        <property name="dataType">date</property>
+                        <property name="dataType">date-time</property>
                     </structure>
                     <structure>
                         <property name="position">3</property>
@@ -371,54 +374,47 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="name">company_name</property>
                     <property name="nativeName">company_name</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
                     <property name="name">report_date</property>
                     <property name="nativeName">report_date</property>
-                    <property name="dataType">date</property>
-                    <property name="nativeDataType">91</property>
+                    <property name="dataType">date-time</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
                     <property name="name">report_date_edition</property>
                     <property name="nativeName">report_date_edition</property>
                     <property name="dataType">date-time</property>
-                    <property name="nativeDataType">93</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
                     <property name="name">logo_path</property>
                     <property name="nativeName">logo_path</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
                     <property name="name">currencycode</property>
                     <property name="nativeName">currencycode</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
                     <property name="name">logo_height</property>
                     <property name="nativeName">logo_height</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">7</property>
                     <property name="name">logo_width</property>
                     <property name="nativeName">logo_width</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select 
 Company.name as company_name,
-AccountingReport.date_val as report_date,
+AccountingReport.issue_date_time as report_date,
 AccountingReport.publication_date_time as report_date_edition, 
 MetaFile.file_path as logo_path,
 Currency.code as currencyCode,
@@ -468,24 +464,28 @@ where AccountingReport.id = ? ]]></xml-property>
                 </structure>
                 <structure>
                     <property name="columnName">concataccount</property>
+                    <property name="alias">concataccount</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">concataccount</text-property>
                     <text-property name="heading">concataccount</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">concatjournal</property>
+                    <property name="alias">concatjournal</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">concatjournal</text-property>
                     <text-property name="heading">concatjournal</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">accountcode</property>
+                    <property name="alias">accountcode</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">accountcode</text-property>
                     <text-property name="heading">accountcode</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">journalcode</property>
+                    <property name="alias">journalcode</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">journalcode</text-property>
                     <text-property name="heading">journalcode</text-property>
@@ -508,12 +508,14 @@ where AccountingReport.id = ? ]]></xml-property>
                 </structure>
                 <structure>
                     <property name="columnName">amountremaining</property>
+                    <property name="alias">amountremaining</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">amountremaining</text-property>
                     <text-property name="heading">amountremaining</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">accountid</property>
+                    <property name="alias">accountid</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">accountid</text-property>
                     <text-property name="heading">accountid</text-property>
@@ -614,84 +616,72 @@ where AccountingReport.id = ? ]]></xml-property>
                     <property name="name">moveline_id</property>
                     <property name="nativeName">moveline_id</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
                     <property name="name">move_line_name</property>
                     <property name="nativeName">move_line_name</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
                     <property name="name">move_line_description</property>
                     <property name="nativeName">move_line_description</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
                     <property name="name">date_val</property>
                     <property name="nativeName">date_val</property>
                     <property name="dataType">date</property>
-                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
                     <property name="name">concataccount</property>
                     <property name="nativeName">concataccount</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
                     <property name="name">concatjournal</property>
                     <property name="nativeName">concatjournal</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">7</property>
                     <property name="name">accountcode</property>
                     <property name="nativeName">accountcode</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">8</property>
                     <property name="name">journalcode</property>
                     <property name="nativeName">journalcode</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">9</property>
                     <property name="name">debit</property>
                     <property name="nativeName">debit</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">10</property>
                     <property name="name">credit</property>
                     <property name="nativeName">credit</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">11</property>
                     <property name="name">amountremaining</property>
                     <property name="nativeName">amountremaining</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">12</property>
                     <property name="name">accountid</property>
                     <property name="nativeName">accountid</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-5</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select DISTINCT MoveLine.id as moveLine_id, 
@@ -718,7 +708,7 @@ left outer join public.account_accounting_report_journal_set as JournalSet on Jo
 left outer join public.account_journal as Journal on Move.journal = Journal.id
 where BankReconciliationLine.id is null
 AND AccountingReport.currency = Move.company_currency
-AND MoveLine.date_val <= AccountingReport.date_val
+AND MoveLine.date_val <= AccountingReport.issue_date_time
 AND Move.company = AccountingReport.company 
 AND(AccountSet.account_set IS NULL OR AccountSet.account_set = Account.id)
 AND(JournalSet.journal_set IS NULL OR JournalSet.journal_set = Journal.id)
@@ -740,7 +730,7 @@ MoveLine.account_code as accountCode,
 Journal.code as journalCode,
 MoveLine.debit as debit, 
 MoveLine.credit as credit, 
-(MoveLine.debit + MoveLine.credit) - SUM(CASE WHEN BankReconciliationLine.is_posted = true AND BankReconciliation.validated_date <=  AccountingReport.date_val THEN BankReconciliationLine.credit+BankReconciliationLine.debit ELSE 0 END) as amountRemaining,
+(MoveLine.debit + MoveLine.credit) - SUM(CASE WHEN BankReconciliationLine.is_posted = true AND BankReconciliation.validated_date <=  AccountingReport.issue_date_time THEN BankReconciliationLine.credit+BankReconciliationLine.debit ELSE 0 END) as amountRemaining,
 Account.id as accountId
 from public.account_accounting_report as AccountingReport
 left outer join public.account_move_line as MoveLine on (AccountingReport.id = ?)
@@ -755,7 +745,7 @@ left outer join public.account_accounting_report_journal_set as JournalSet on Jo
 left outer join public.account_journal as Journal on Move.journal = Journal.id
 where BankReconciliationLine.id is not null
 AND AccountingReport.currency = Move.company_currency
-AND MoveLine.date_val <= AccountingReport.date_val
+AND MoveLine.date_val <= AccountingReport.issue_date_time
 AND Move.company = AccountingReport.company 
 AND(AccountSet.account_set IS NULL OR AccountSet.account_set = Account.id)
 AND(JournalSet.journal_set IS NULL OR JournalSet.journal_set = Journal.id)
@@ -772,7 +762,7 @@ MoveLine.debit,
 MoveLine.credit,
 concatJournal,
 accountId
-HAVING SUM(CASE WHEN BankReconciliationLine.is_posted = true AND BankReconciliation.validated_date <=  AccountingReport.date_val THEN BankReconciliationLine.credit+BankReconciliationLine.debit ELSE 0 END) < (MoveLine.debit + MoveLine.credit)
+HAVING SUM(CASE WHEN BankReconciliationLine.is_posted = true AND BankReconciliation.validated_date <=  AccountingReport.issue_date_time THEN BankReconciliationLine.credit+BankReconciliationLine.debit ELSE 0 END) < (MoveLine.debit + MoveLine.credit)
 
 order by accountCode,journalCode,move_line_name
 
@@ -782,48 +772,56 @@ order by accountCode,journalCode,move_line_name
             <list-property name="columnHints">
                 <structure>
                     <property name="columnName">bankdetailsfullname</property>
+                    <property name="alias">bankdetailsfullname</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">bankdetailsfullname</text-property>
                     <text-property name="heading">bankdetailsfullname</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">date</property>
+                    <property name="alias">date</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">date</text-property>
                     <text-property name="heading">date</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">reference</property>
+                    <property name="alias">reference</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">reference</text-property>
                     <text-property name="heading">reference</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">name</property>
+                    <property name="alias">name</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">name</text-property>
                     <text-property name="heading">name</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">debit</property>
+                    <property name="alias">debit</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">debit</text-property>
                     <text-property name="heading">debit</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">credit</property>
+                    <property name="alias">credit</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">credit</text-property>
                     <text-property name="heading">credit</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">amountremaining</property>
+                    <property name="alias">amountremaining</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">amountremaining</text-property>
                     <text-property name="heading">amountremaining</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">bankdetailsid</property>
+                    <property name="alias">bankdetailsid</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">bankdetailsid</text-property>
                     <text-property name="heading">bankdetailsid</text-property>
@@ -902,56 +900,48 @@ order by accountCode,journalCode,move_line_name
                     <property name="name">bankdetailsfullname</property>
                     <property name="nativeName">bankdetailsfullname</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
                     <property name="name">date</property>
                     <property name="nativeName">date</property>
                     <property name="dataType">date</property>
-                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
                     <property name="name">reference</property>
                     <property name="nativeName">reference</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
                     <property name="name">name</property>
                     <property name="nativeName">name</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
                     <property name="name">debit</property>
                     <property name="nativeName">debit</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
                     <property name="name">credit</property>
                     <property name="nativeName">credit</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">7</property>
                     <property name="name">amountremaining</property>
                     <property name="nativeName">amountremaining</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">8</property>
                     <property name="name">bankdetailsid</property>
                     <property name="nativeName">bankdetailsid</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-5</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select  BankDetails.full_name as bankdetailsfullname,
@@ -972,7 +962,7 @@ LEFT JOIN public.bankpayment_bank_reconciliation as BankReconciliation on BankRe
 LEFT JOIN public.account_accounting_report_bank_details_set as AccountingReportBankDetailsSet on AccountingReport.id = AccountingReportBankDetailsSet.account_accounting_report
 WHERE BankReconciliationLine.id is null
 AND AccountingReport.currency = BankStatementLine.currency
-AND BankStatementLine.operation_date <= AccountingReport.date_val
+AND BankStatementLine.operation_date <= AccountingReport.issue_date_time
 AND(AccountingReportBankDetailsSet.bank_details_set is null OR AccountingReportBankDetailsSet.bank_details_set = BankStatementLine.bank_details)
 AND AccountingReport.company = Company.id
 AND BankStatementLine.debit + BankStatementLine.credit > 0
@@ -987,7 +977,7 @@ BankStatementLine.reference as reference,
 BankStatementLine.description as name,
 BankStatementLine.debit AS debit , 
 BankStatementLine.credit AS credit,
-(BankStatementLine.debit + BankStatementLine.credit) - SUM(CASE WHEN BankReconciliationLine.is_posted = true AND BankReconciliation.validated_date <=  AccountingReport.date_val THEN BankReconciliationLine.credit+BankReconciliationLine.debit ELSE 0 END) as amountRemaining,
+(BankStatementLine.debit + BankStatementLine.credit) - SUM(CASE WHEN BankReconciliationLine.is_posted = true AND BankReconciliation.validated_date <=  AccountingReport.issue_date_time THEN BankReconciliationLine.credit+BankReconciliationLine.debit ELSE 0 END) as amountRemaining,
 BankDetails.id as bankDetailsId
 FROM public.account_accounting_report as AccountingReport
 LEFT JOIN public.bankpayment_bank_statement_line_afb120 as BankStatementLine on (AccountingReport.id = ?)
@@ -999,7 +989,7 @@ LEFT JOIN public.bankpayment_bank_reconciliation as BankReconciliation on BankRe
 LEFT JOIN public.account_accounting_report_bank_details_set as AccountingReportBankDetailsSet on AccountingReport.id = AccountingReportBankDetailsSet.account_accounting_report
 WHERE BankReconciliationLine.id is not null
 and AccountingReport.currency = BankStatementLine.currency
-AND BankStatementLine.operation_date <= AccountingReport.date_val
+AND BankStatementLine.operation_date <= AccountingReport.issue_date_time
 AND(AccountingReportBankDetailsSet.bank_details_set is null OR AccountingReportBankDetailsSet.bank_details_set = BankStatementLine.bank_details)
 AND AccountingReport.company = Company.id
 AND BankReconciliation.validated_date is not null
@@ -1014,7 +1004,7 @@ BankStatementLine.debit,
 BankStatementLine.credit,
 BankDetails.full_name,
 BankDetails.id
-HAVING SUM(CASE WHEN BankReconciliationLine.is_posted = true AND BankReconciliation.validated_date <=  AccountingReport.date_val THEN BankReconciliationLine.credit+BankReconciliationLine.debit ELSE 0 END) < (BankStatementLine.debit + BankStatementLine.credit)
+HAVING SUM(CASE WHEN BankReconciliationLine.is_posted = true AND BankReconciliation.validated_date <=  AccountingReport.issue_date_time THEN BankReconciliationLine.credit+BankReconciliationLine.debit ELSE 0 END) < (BankStatementLine.debit + BankStatementLine.credit)
 order by date
 
 ]]></xml-property>
@@ -1023,6 +1013,7 @@ order by date
             <list-property name="columnHints">
                 <structure>
                     <property name="columnName">initialamount</property>
+                    <property name="alias">initialamount</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">initialamount</text-property>
                     <text-property name="heading">initialamount</text-property>
@@ -1064,7 +1055,6 @@ order by date
                     <property name="name">initialamount</property>
                     <property name="nativeName">initialamount</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT COALESCE(SUM(MoveLine.debit) - SUM(MoveLine.credit),0) as initialAmount
@@ -1075,7 +1065,7 @@ LEFT JOIN account_move as Move on MoveLine.move = Move.id
 WHERE Account.id = ?
 AND Account.id is not null
 AND AccountingReport.currency = Move.company_currency
-AND MoveLine.date_val <= AccountingReport.date_val
+AND MoveLine.date_val <= AccountingReport.issue_date_time
 AND Move.company = AccountingReport.company 
 AND Move.status_select not in (1,4)
 AND Move.ignore_in_accounting_ok in (false,null)]]></xml-property>
@@ -1084,6 +1074,7 @@ AND Move.ignore_in_accounting_ok in (false,null)]]></xml-property>
             <list-property name="columnHints">
                 <structure>
                     <property name="columnName">initialamount</property>
+                    <property name="alias">initialamount</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">initialamount</text-property>
                     <text-property name="heading">initialamount</text-property>
@@ -1125,7 +1116,6 @@ AND Move.ignore_in_accounting_ok in (false,null)]]></xml-property>
                     <property name="name">initialamount</property>
                     <property name="nativeName">initialamount</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT BankStatementLine.credit - BankStatementLine.debit as initialAmount
@@ -1137,7 +1127,7 @@ WHERE BankDetails.id = ?
 AND BankDetails.id is not null
 AND AccountingReport.company = Company.id
 AND AccountingReport.currency = BankStatementLine.currency
-AND BankStatementLine.operation_date <= AccountingReport.date_val
+AND BankStatementLine.operation_date <= AccountingReport.issue_date_time
 AND BankStatementLine.line_type_select = 3
 ORDER BY  BankStatementLine.operation_date DESC,BankStatementLine.id DESC
 LIMIT 1
@@ -1148,24 +1138,28 @@ LIMIT 1
             <list-property name="columnHints">
                 <structure>
                     <property name="columnName">accountid</property>
+                    <property name="alias">accountid</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">accountid</text-property>
                     <text-property name="heading">accountid</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">bankdetailsid</property>
+                    <property name="alias">bankdetailsid</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">bankdetailsid</text-property>
                     <text-property name="heading">bankdetailsid</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">bankdetailsfullname</property>
+                    <property name="alias">bankdetailsfullname</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">bankdetailsfullname</text-property>
                     <text-property name="heading">bankdetailsfullname</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">concataccount</property>
+                    <property name="alias">concataccount</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">concataccount</text-property>
                     <text-property name="heading">concataccount</text-property>
@@ -1214,28 +1208,24 @@ LIMIT 1
                     <property name="name">accountid</property>
                     <property name="nativeName">accountid</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
                     <property name="name">bankdetailsid</property>
                     <property name="nativeName">bankdetailsid</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
                     <property name="name">bankdetailsfullname</property>
                     <property name="nativeName">bankdetailsfullname</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
                     <property name="name">concataccount</property>
                     <property name="nativeName">concataccount</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT Account.id as accountId,
@@ -1261,30 +1251,35 @@ GROUP by Account.id,BankDetails.id,bankdetailsfullname,concatAccount
             <list-property name="columnHints">
                 <structure>
                     <property name="columnName">accountamount</property>
+                    <property name="alias">accountamount</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">accountamount</text-property>
                     <text-property name="heading">accountamount</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">bankamount</property>
+                    <property name="alias">bankamount</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">bankamount</text-property>
                     <text-property name="heading">bankamount</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">finaltotalunreconcileamount</property>
+                    <property name="alias">finaltotalunreconcileamount</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">finaltotalunreconcileamount</text-property>
                     <text-property name="heading">finaltotalunreconcileamount</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">gapbetweenaccountandbank</property>
+                    <property name="alias">gapbetweenaccountandbank</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">gapbetweenaccountandbank</text-property>
                     <text-property name="heading">gapbetweenaccountandbank</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">unreconcilegap</property>
+                    <property name="alias">unreconcilegap</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">unreconcilegap</text-property>
                     <text-property name="heading">unreconcilegap</text-property>
@@ -1400,35 +1395,30 @@ GROUP by Account.id,BankDetails.id,bankdetailsfullname,concatAccount
                     <property name="name">accountamount</property>
                     <property name="nativeName">accountamount</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
                     <property name="name">bankamount</property>
                     <property name="nativeName">bankamount</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
                     <property name="name">finaltotalunreconcileamount</property>
                     <property name="nativeName">finaltotalunreconcileamount</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
                     <property name="name">gapbetweenaccountandbank</property>
                     <property name="nativeName">gapbetweenaccountandbank</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
                     <property name="name">unreconcilegap</property>
                     <property name="nativeName">unreconcilegap</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT AccountAmountTable.accountAmount, 
@@ -1444,7 +1434,7 @@ LEFT JOIN account_move as Move on MoveLine.move = Move.id
 WHERE Account.id = ?
 AND Account.id is not null
 AND AccountingReport.currency = Move.company_currency
-AND MoveLine.date_val <= AccountingReport.date_val
+AND MoveLine.date_val <= AccountingReport.issue_date_time
 AND Move.company = AccountingReport.company 
 AND Move.status_select not in (1,4)
 AND Move.ignore_in_accounting_ok in (false,null)) as AccountAmountTable
@@ -1458,7 +1448,7 @@ WHERE BankDetails.id = ?
 AND BankDetails.id is not null
 AND AccountingReport.company = Company.id
 AND AccountingReport.currency = BankStatementLine.currency
-AND BankStatementLine.operation_date <= AccountingReport.date_val
+AND BankStatementLine.operation_date <= AccountingReport.issue_date_time
 AND BankStatementLine.line_type_select = 3
 ORDER BY  BankStatementLine.operation_date DESC,BankStatementLine.id DESC
 LIMIT 1) as BankAmountTable
@@ -1479,7 +1469,7 @@ left outer join public.account_journal as Journal on Move.journal = Journal.id
 where Account.id = ?
 and BankReconciliationLine.id is null
 AND AccountingReport.currency = Move.company_currency
-AND MoveLine.date_val <= AccountingReport.date_val
+AND MoveLine.date_val <= AccountingReport.issue_date_time
 AND Move.company = AccountingReport.company 
 AND(AccountSet.account_set IS NULL OR AccountSet.account_set = Account.id)
 AND(JournalSet.journal_set IS NULL OR JournalSet.journal_set = Journal.id)
@@ -1491,7 +1481,7 @@ UNION
 select coalesce(SUM(coalesce(UnreconcileAmountTable.unreconcileAmount,0)),0) as totalUnreconcileAmount
 from(
 SELECT (MoveLine.debit - MoveLine.credit) 
-- SUM(CASE WHEN BankReconciliationLine.is_posted = true AND BankReconciliation.validated_date <=  AccountingReport.date_val THEN BankReconciliationLine.credit+BankReconciliationLine.debit ELSE 0 END) as unreconcileAmount
+- SUM(CASE WHEN BankReconciliationLine.is_posted = true AND BankReconciliation.validated_date <=  AccountingReport.issue_date_time THEN BankReconciliationLine.credit+BankReconciliationLine.debit ELSE 0 END) as unreconcileAmount
 from public.account_accounting_report as AccountingReport
 left outer join public.account_move_line as MoveLine on (AccountingReport.id = ?)
 left outer join public.bankpayment_bank_reconciliation_line as BankReconciliationLine on MoveLine.id = BankReconciliationLine.move_line
@@ -1506,7 +1496,7 @@ left outer join public.account_journal as Journal on Move.journal = Journal.id
 where Account.id = ?
 and BankReconciliationLine.id is not null
 AND AccountingReport.currency = Move.company_currency
-AND MoveLine.date_val <= AccountingReport.date_val
+AND MoveLine.date_val <= AccountingReport.issue_date_time
 AND Move.company = AccountingReport.company 
 AND(AccountSet.account_set IS NULL OR AccountSet.account_set = Account.id)
 AND(JournalSet.journal_set IS NULL OR JournalSet.journal_set = Journal.id)
@@ -1516,7 +1506,7 @@ AND BankReconciliation.validated_date is not null
 AND Move.ignore_in_accounting_ok in (false,null)
 group by MoveLine.debit,
 MoveLine.credit
-HAVING SUM(CASE WHEN BankReconciliationLine.is_posted = true AND BankReconciliation.validated_date <=  AccountingReport.date_val THEN BankReconciliationLine.credit+BankReconciliationLine.debit ELSE 0 END) < (MoveLine.debit + MoveLine.credit)) as UnreconcileAmountTable) as UnreconcileAmountTableSup)
+HAVING SUM(CASE WHEN BankReconciliationLine.is_posted = true AND BankReconciliation.validated_date <=  AccountingReport.issue_date_time THEN BankReconciliationLine.credit+BankReconciliationLine.debit ELSE 0 END) < (MoveLine.debit + MoveLine.credit)) as UnreconcileAmountTable) as UnreconcileAmountTableSup)
 as UnreconcileAmountTableSupSup
 ]]></xml-property>
         </oda-data-set>
@@ -1545,7 +1535,8 @@ as UnreconcileAmountTableSupSup
                             <property name="name">report_date</property>
                             <text-property name="displayName">report_date</text-property>
                             <expression name="expression" type="javascript">dataSetRow["report_date"]</expression>
-                            <property name="dataType">date</property>
+                            <property name="dataType">date-time</property>
+                            <property name="allowExport">true</property>
                         </structure>
                         <structure>
                             <property name="name">report_date_edition</property>
@@ -1719,7 +1710,8 @@ as UnreconcileAmountTableSupSup
                                 <property name="name">report_date</property>
                                 <text-property name="displayName">report_date</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["report_date"]</expression>
-                                <property name="dataType">date</property>
+                                <property name="dataType">date-time</property>
+                                <property name="allowExport">true</property>
                             </structure>
                             <structure>
                                 <property name="name">report_date_edition</property>
@@ -1902,8 +1894,7 @@ as UnreconcileAmountTableSupSup
                                     <property name="fontFamily">sans-serif</property>
                                     <property name="fontSize">10pt</property>
                                     <structure name="dateTimeFormat">
-                                        <property name="category">Short Date</property>
-                                        <property name="pattern">Short Date</property>
+                                        <property name="category">Unformatted</property>
                                     </structure>
                                     <property name="dataSet">AccountingReportDS</property>
                                     <list-property name="boundDataColumns">
@@ -1911,7 +1902,8 @@ as UnreconcileAmountTableSupSup
                                             <property name="name">report_date</property>
                                             <text-property name="displayName">report_date</text-property>
                                             <expression name="expression" type="javascript">dataSetRow["report_date"]</expression>
-                                            <property name="dataType">date</property>
+                                            <property name="dataType">date-time</property>
+                                            <property name="allowExport">true</property>
                                         </structure>
                                     </list-property>
                                     <property name="resultSetColumn">report_date</property>
@@ -2383,7 +2375,8 @@ as UnreconcileAmountTableSupSup
                                 <property name="name">report_date</property>
                                 <text-property name="displayName">report_date</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["report_date"]</expression>
-                                <property name="dataType">date</property>
+                                <property name="dataType">date-time</property>
+                                <property name="allowExport">true</property>
                             </structure>
                             <structure>
                                 <property name="name">report_date_edition</property>
@@ -3129,7 +3122,8 @@ else
                                 <property name="name">report_date</property>
                                 <text-property name="displayName">report_date</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["report_date"]</expression>
-                                <property name="dataType">date</property>
+                                <property name="dataType">date-time</property>
+                                <property name="allowExport">true</property>
                             </structure>
                             <structure>
                                 <property name="name">report_date_edition</property>

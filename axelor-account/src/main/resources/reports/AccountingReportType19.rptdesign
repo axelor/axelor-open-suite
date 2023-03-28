@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202108150822</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
     <property name="units">in</property>
     <method name="beforeFactory"><![CDATA[reportContext.getAppContext().put("MAX_PAGE_BREAK_INTERVAL", 1000000);]]></method>
     <property name="iconFile">/templates/blank_report.gif</property>
@@ -133,6 +133,7 @@
                 </structure>
                 <structure>
                     <property name="columnName">logo_height</property>
+                    <property name="alias">logo_height</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">logo_height</text-property>
                     <property name="onColumnLayout">false</property>
@@ -140,6 +141,7 @@
                 </structure>
                 <structure>
                     <property name="columnName">logo_width</property>
+                    <property name="alias">logo_width</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">logo_width</text-property>
                     <property name="onColumnLayout">false</property>
@@ -187,6 +189,7 @@
                 </structure>
                 <structure>
                     <property name="columnName">currency</property>
+                    <property name="alias">currency</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">currency</text-property>
                     <property name="onColumnLayout">false</property>
@@ -194,6 +197,7 @@
                 </structure>
                 <structure>
                     <property name="columnName">report_type</property>
+                    <property name="alias">report_type</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">report_type</text-property>
                     <property name="onColumnLayout">false</property>
@@ -201,12 +205,14 @@
                 </structure>
                 <structure>
                     <property name="columnName">min_amount</property>
+                    <property name="alias">min_amount</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">min_amount</text-property>
                     <text-property name="heading">min_amount</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">ref</property>
+                    <property name="alias">ref</property>
                     <text-property name="displayName">ref</text-property>
                     <text-property name="heading">ref</text-property>
                 </structure>
@@ -254,7 +260,7 @@
                     <structure>
                         <property name="position">6</property>
                         <property name="name">report_date</property>
-                        <property name="dataType">date</property>
+                        <property name="dataType">date-time</property>
                     </structure>
                     <structure>
                         <property name="position">7</property>
@@ -295,84 +301,72 @@
                     <property name="name">company_name</property>
                     <property name="nativeName">company_name</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
                     <property name="name">logo_height</property>
                     <property name="nativeName">logo_height</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
                     <property name="name">logo_width</property>
                     <property name="nativeName">logo_width</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
                     <property name="name">date_from</property>
                     <property name="nativeName">date_from</property>
                     <property name="dataType">date</property>
-                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
                     <property name="name">date_to</property>
                     <property name="nativeName">date_to</property>
                     <property name="dataType">date</property>
-                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
                     <property name="name">report_date</property>
                     <property name="nativeName">report_date</property>
-                    <property name="dataType">date</property>
-                    <property name="nativeDataType">91</property>
+                    <property name="dataType">date-time</property>
                 </structure>
                 <structure>
                     <property name="position">7</property>
                     <property name="name">report_date_edition</property>
                     <property name="nativeName">report_date_edition</property>
                     <property name="dataType">date-time</property>
-                    <property name="nativeDataType">93</property>
                 </structure>
                 <structure>
                     <property name="position">8</property>
                     <property name="name">logo_path</property>
                     <property name="nativeName">logo_path</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">9</property>
                     <property name="name">currency</property>
                     <property name="nativeName">currency</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">10</property>
                     <property name="name">report_type</property>
                     <property name="nativeName">report_type</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">11</property>
                     <property name="name">min_amount</property>
                     <property name="nativeName">min_amount</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">12</property>
                     <property name="name">ref</property>
                     <property name="nativeName">ref</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select 
@@ -381,7 +375,7 @@ Company.height as logo_height,
 Company.width as logo_width, 
 AccountingReport.date_from, 
 AccountingReport.date_to, 
-AccountingReport.date_val as report_date,
+AccountingReport.issue_date_time as report_date,
 AccountingReport.publication_date_time as report_date_edition, 
 MetaFile.file_path as logo_path,
 Currency.code as currency,
@@ -917,7 +911,8 @@ GROUP BY PARTNER.FULL_NAME,DAS2_ACTIVITY.NAME,SERVICETYPE.CODE,SERVICETYPE.NAME,
                             <property name="name">report_date</property>
                             <text-property name="displayName">report_date</text-property>
                             <expression name="expression" type="javascript">dataSetRow["report_date"]</expression>
-                            <property name="dataType">date</property>
+                            <property name="dataType">date-time</property>
+                            <property name="allowExport">true</property>
                         </structure>
                         <structure>
                             <property name="name">report_date_edition</property>
@@ -984,7 +979,8 @@ GROUP BY PARTNER.FULL_NAME,DAS2_ACTIVITY.NAME,SERVICETYPE.CODE,SERVICETYPE.NAME,
                                         <property name="name">report_date</property>
                                         <text-property name="displayName">report_date</text-property>
                                         <expression name="expression" type="javascript">dataSetRow["report_date"]</expression>
-                                        <property name="dataType">date</property>
+                                        <property name="dataType">date-time</property>
+                                        <property name="allowExport">true</property>
                                     </structure>
                                     <structure>
                                         <property name="name">report_date_edition</property>
@@ -1100,7 +1096,8 @@ GROUP BY PARTNER.FULL_NAME,DAS2_ACTIVITY.NAME,SERVICETYPE.CODE,SERVICETYPE.NAME,
                                                 <structure>
                                                     <property name="name">report_date</property>
                                                     <expression name="expression" type="javascript">dataSetRow["report_date"]</expression>
-                                                    <property name="dataType">date</property>
+                                                    <property name="dataType">date-time</property>
+                                                    <property name="allowExport">true</property>
                                                 </structure>
                                                 <structure>
                                                     <property name="name">report_date_edition</property>
@@ -1239,7 +1236,7 @@ GROUP BY PARTNER.FULL_NAME,DAS2_ACTIVITY.NAME,SERVICETYPE.CODE,SERVICETYPE.NAME,
                     <property name="name">report_date</property>
                     <text-property name="displayName">ReportDate</text-property>
                     <expression name="expression" type="javascript">dataSetRow["report_date"]</expression>
-                    <property name="dataType">date</property>
+                    <property name="dataType">date-time</property>
                     <property name="allowExport">true</property>
                 </structure>
                 <structure>
@@ -1530,8 +1527,7 @@ GROUP BY PARTNER.FULL_NAME,DAS2_ACTIVITY.NAME,SERVICETYPE.CODE,SERVICETYPE.NAME,
                 <cell id="3064">
                     <data id="4270">
                         <structure name="dateTimeFormat">
-                            <property name="category">Short Date</property>
-                            <property name="pattern">Short Date</property>
+                            <property name="category">Unformatted</property>
                         </structure>
                         <property name="resultSetColumn">report_date</property>
                     </data>
