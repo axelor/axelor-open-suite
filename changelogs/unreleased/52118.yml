@@ -1,3 +1,0 @@
----
-title: "Partner : prevent isCustomer from being unticked automatically if there are existing customer records in database"
-type: fix
