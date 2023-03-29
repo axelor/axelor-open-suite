@@ -28,4 +28,7 @@ public interface MassEntryVerificationService {
   void checkWellBalancedMove(Move move, int temporaryMoveNumber);
 
   void checkAccountAnalytic(Move move, int temporaryMoveNumber);
+
+  void setErrorOnMoveLineMassEntry(
+      Move move, int temporaryMoveNumber, String fieldName, String errorMessage);
 }

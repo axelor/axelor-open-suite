@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.repo.MoveLineMassEntryRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.move.massentry.MassEntryService;
 import com.axelor.apps.account.service.move.massentry.MassEntryToolService;
+import com.axelor.apps.account.service.move.massentry.MassEntryVerificationService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
@@ -88,9 +89,14 @@ public class MassEntryMoveController {
           response.setValues(move);
           if (categoryError == 0) {
             massEntryToolService.sortMoveLinesMassEntryByTemporaryNumber(move);
+          } else {
+            Beans.get(MassEntryVerificationService.class)
+                .setErrorOnMoveLineMassEntry(
+                    move,
+                    lastLine.getTemporaryMoveNumber(),
+                    "paymentMode",
+                    I18n.get(AccountExceptionMessage.EXCEPTION_GENERATE_COUNTERPART));
           }
-          // TODO set else statement and an error message with move.setMassEntryErrors() + hilite
-          // the line and fields
         }
         response.setAttr("controlMassEntryMoves", "hidden", false);
         response.setAttr("validateMassEntryMoves", "hidden", true);
@@ -107,9 +113,9 @@ public class MassEntryMoveController {
       if (move != null && ObjectUtils.notEmpty(move.getMoveLineMassEntryList())) {
         Beans.get(MassEntryService.class).checkMassEntryMoveGeneration(move);
         if (ObjectUtils.isEmpty(move.getMassEntryErrors())) {
-          response.setNotify(AccountExceptionMessage.MASS_ENTRY_MOVE_CONTROL_SUCCESSFUL);
+          response.setNotify(I18n.get(AccountExceptionMessage.MASS_ENTRY_MOVE_CONTROL_SUCCESSFUL));
         } else {
-          response.setNotify(AccountExceptionMessage.MASS_ENTRY_MOVE_CONTROL_ERROR);
+          response.setNotify(I18n.get(AccountExceptionMessage.MASS_ENTRY_MOVE_CONTROL_ERROR));
         }
 
         if (move.getJournal().getAllowAccountingNewOnMassEntry()
@@ -119,7 +125,7 @@ public class MassEntryMoveController {
         }
         response.setValues(move);
       } else {
-        response.setError(AccountExceptionMessage.MASS_ENTRY_MOVE_NO_LINE);
+        response.setError(I18n.get(AccountExceptionMessage.MASS_ENTRY_MOVE_NO_LINE));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);

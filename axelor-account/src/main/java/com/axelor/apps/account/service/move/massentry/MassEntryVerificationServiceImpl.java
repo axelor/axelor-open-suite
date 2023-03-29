@@ -24,6 +24,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -146,7 +147,7 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
 
   @Override
   public void checkDateInAllMoveLineMassEntry(Move move, int temporaryMoveNumber) {
-    List<MoveLineMassEntry> differentElements = new ArrayList<>();
+    List<Long> differentElements = new ArrayList<>();
     boolean hasDateError;
 
     MoveLineMassEntry firstMoveLine = move.getMoveLineMassEntryList().get(0);
@@ -157,7 +158,8 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
         hasDateError = true;
         this.setMassEntryErrorMessage(
             move,
-            String.format(BaseExceptionMessage.PERIOD_1, move.getCompany(), move.getDate()),
+            String.format(
+                I18n.get(BaseExceptionMessage.PERIOD_1), move.getCompany(), move.getDate()),
             true,
             temporaryMoveNumber);
       } else {
@@ -165,26 +167,28 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
             || move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_CLOSURE_IN_PROGRESS) {
           hasDateError = true;
           this.setMassEntryErrorMessage(
-              move, AccountExceptionMessage.MOVE_PERIOD_IS_CLOSED, true, temporaryMoveNumber);
+              move,
+              I18n.get(AccountExceptionMessage.MOVE_PERIOD_IS_CLOSED),
+              true,
+              temporaryMoveNumber);
         }
       }
 
       if (!firstMoveLine.getDate().equals(moveLine.getDate())) {
         hasDateError = true;
         // TODO Set an error message
-        this.setMassEntryErrorMessage(
-            move, "Different dates", ObjectUtils.notEmpty(differentElements), temporaryMoveNumber);
+        this.setMassEntryErrorMessage(move, "Different dates", true, temporaryMoveNumber);
       }
 
       if (hasDateError) {
-        this.setFieldsErrorListMessage(moveLine, differentElements, "date");
+        this.setFieldsErrorListMessage(moveLine, "date");
       }
     }
   }
 
   @Override
   public void checkCurrencyRateInAllMoveLineMassEntry(Move move, int temporaryMoveNumber) {
-    List<MoveLineMassEntry> differentElements = new ArrayList<>();
+    boolean errorAdded = false;
 
     for (MoveLineMassEntry moveLine : move.getMoveLineMassEntryList()) {
       if (BigDecimal.ZERO
@@ -193,33 +197,28 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
               moveLine
                   .getCurrencyRate()
                   .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP))) {
-        this.setFieldsErrorListMessage(moveLine, differentElements, "currencyRate");
+        this.setFieldsErrorListMessage(moveLine, "currencyRate");
+        if (!errorAdded) {
+          errorAdded = true;
+        }
       }
     }
     // TODO Set an error message
-    this.setMassEntryErrorMessage(
-        move,
-        "Currency Rate is 0.00",
-        ObjectUtils.notEmpty(differentElements),
-        temporaryMoveNumber);
+    this.setMassEntryErrorMessage(move, "Currency Rate is 0.00", errorAdded, temporaryMoveNumber);
   }
 
   @Override
   public void checkOriginDateInAllMoveLineMassEntry(Move move, int temporaryMoveNumber) {
-    List<MoveLineMassEntry> differentElements = new ArrayList<>();
+    boolean errorAdded = false;
 
     MoveLineMassEntry firstMoveLine = move.getMoveLineMassEntryList().get(0);
     for (MoveLineMassEntry moveLine : move.getMoveLineMassEntryList()) {
       if (!firstMoveLine.getOriginDate().equals(moveLine.getOriginDate())) {
-        this.setFieldsErrorListMessage(moveLine, differentElements, "originDate");
+        this.setFieldsErrorListMessage(moveLine, "originDate");
       }
     }
     // TODO Set an error message
-    this.setMassEntryErrorMessage(
-        move,
-        "Different origin dates",
-        ObjectUtils.notEmpty(differentElements),
-        temporaryMoveNumber);
+    this.setMassEntryErrorMessage(move, "Different origin dates", errorAdded, temporaryMoveNumber);
   }
 
   @Override
@@ -227,18 +226,13 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
     try {
       moveControlService.checkDuplicateOrigin(move);
     } catch (AxelorException e) {
-      for (MoveLineMassEntry element : move.getMoveLineMassEntryList()) {
-        if (Objects.equals(element.getTemporaryMoveNumber(), temporaryMoveNumber)) {
-          this.setFieldsErrorListMessage(element, null, "origin");
-        }
-      }
-      this.setMassEntryErrorMessage(move, e.getMessage(), true, temporaryMoveNumber);
+      this.setErrorOnMoveLineMassEntry(move, temporaryMoveNumber, "origin", e.getMessage());
     }
   }
 
   @Override
   public void checkPartnerInAllMoveLineMassEntry(Move move, int temporaryMoveNumber) {
-    List<MoveLineMassEntry> differentElements = new ArrayList<>();
+    boolean errorAdded = false;
     int[] technicalTypeSelectArray = {
       JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE,
       JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE,
@@ -254,17 +248,18 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
         try {
           moveLineControlService.checkPartner(moveLine);
         } catch (AxelorException e) {
-          this.setFieldsErrorListMessage(moveLine, differentElements, "partner");
+          this.setFieldsErrorListMessage(moveLine, "partner");
+          errorAdded = true;
           differentPartner.append(",").append(moveLine.getPartner().getName());
         }
       }
       this.setMassEntryErrorMessage(
           move,
           String.format(
-              AccountExceptionMessage.MOVE_LINE_INCONSISTENCY_DETECTED_PARTNER,
+              I18n.get(AccountExceptionMessage.MOVE_LINE_INCONSISTENCY_DETECTED_PARTNER),
               differentPartner,
               move.getPartner()),
-          ObjectUtils.notEmpty(differentElements),
+          errorAdded,
           temporaryMoveNumber);
     }
   }
@@ -279,14 +274,14 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
         // TODO Set an error message
         finalMessage.append(
             String.format("There is the following errors in move : %s\n", temporaryMoveNumber));
+        massEntryErrors = "";
       }
       finalMessage.append(message).append('\n');
       move.setMassEntryErrors(massEntryErrors + finalMessage);
     }
   }
 
-  private void setFieldsErrorListMessage(
-      MoveLineMassEntry moveLine, List<MoveLineMassEntry> differentElements, String fieldName) {
+  private void setFieldsErrorListMessage(MoveLineMassEntry moveLine, String fieldName) {
     StringBuilder message = new StringBuilder();
 
     if (ObjectUtils.notEmpty(moveLine.getFieldsErrorList())) {
@@ -313,9 +308,6 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
     }
 
     moveLine.setFieldsErrorList(message.toString());
-    if (differentElements != null) {
-      differentElements.add(moveLine);
-    }
   }
 
   @Override
@@ -328,12 +320,7 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
     try {
       moveValidateService.validateWellBalancedMove(move);
     } catch (AxelorException e) {
-      for (MoveLineMassEntry element : move.getMoveLineMassEntryList()) {
-        if (Objects.equals(element.getTemporaryMoveNumber(), temporaryMoveNumber)) {
-          this.setFieldsErrorListMessage(element, null, "balance");
-        }
-      }
-      this.setMassEntryErrorMessage(move, e.getMessage(), true, temporaryMoveNumber);
+      this.setErrorOnMoveLineMassEntry(move, temporaryMoveNumber, "balance", e.getMessage());
     }
   }
 
@@ -349,18 +336,32 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
         for (MoveLineMassEntry element : move.getMoveLineMassEntryList()) {
           if (Objects.equals(element.getTemporaryMoveNumber(), temporaryMoveNumber)
               && Objects.equals(element.getCounter(), moveLine.getCounter())) {
-            this.setFieldsErrorListMessage(element, null, "analytic:");
+            this.setFieldsErrorListMessage(element, "analytic:");
             break;
           }
         }
         if (Objects.equals(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getCategory())) {
-          message = String.format(AccountExceptionMessage.MOVE_11, lineCount);
+          message = String.format(I18n.get(AccountExceptionMessage.MOVE_11), lineCount);
         } else if (Objects.equals(TraceBackRepository.CATEGORY_MISSING_FIELD, e.getCategory())) {
           message =
-              String.format(AccountExceptionMessage.MOVE_10, moveLine.getAccount(), lineCount);
+              String.format(
+                  I18n.get(AccountExceptionMessage.MOVE_10), moveLine.getAccount(), lineCount);
         }
         this.setMassEntryErrorMessage(move, message, true, temporaryMoveNumber);
       }
     }
+  }
+
+  @Override
+  public void setErrorOnMoveLineMassEntry(
+      Move move, int temporaryMoveNumber, String fieldName, String errorMessage) {
+    boolean errorAdded = false;
+    for (MoveLineMassEntry element : move.getMoveLineMassEntryList()) {
+      if (Objects.equals(element.getTemporaryMoveNumber(), temporaryMoveNumber)) {
+        this.setFieldsErrorListMessage(element, fieldName);
+        errorAdded = true;
+      }
+    }
+    this.setMassEntryErrorMessage(move, errorMessage, errorAdded, temporaryMoveNumber);
   }
 }
