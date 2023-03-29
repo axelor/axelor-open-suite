@@ -18,7 +18,7 @@
     model="com.axelor.apps.businessproject.db.ProjectInvoicingAssistantBatch"
     onNew="action-project-invoicing-assistant-batch-record-on-new">
     <panel name="mainPanel">
-      <field name="actionSelect" onChange="action-base-batch-attrs-action-select"/>
+      <field name="actionSelect"/>
       <field name="code" x-bind="{{code|unaccent|uppercase}}"
         onChange="action-base-batch-condition-check-unique-code"/>
       <field name="company" widget="SuggestBox" form-view="company-form"
