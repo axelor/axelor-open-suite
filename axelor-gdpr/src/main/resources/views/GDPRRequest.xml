@@ -32,7 +32,7 @@
         x-related="modelId" title="Reference" colSpan="12" readonly="true"/>
 
       <panel title="Search" icon="fa-search" name="searchPanel" colSpan="12" hidden="true"
-        showIf="modelSelect == null">
+        showIf="statusSelect == 0">
         <field name="__lastName" title="Last name"
           onChange="action-gdpr-request-group-search-person" colSpan="6"/>
         <field name="__firstName" title="First name"
