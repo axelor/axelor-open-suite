@@ -621,7 +621,6 @@
   </action-group>
 
   <action-group name="action-account-move-group-generate-counterpart">
-    <action name="action-account-move-group-onsave"/>
     <action name="action-account-move-method-exception-counterpart"/>
     <action name="action-account-move-method-automatic-taxline-generation"/>
     <action name="action-account-move-method-generate-counterpart"/>
@@ -629,7 +628,6 @@
   </action-group>
 
   <action-group name="action-account-move-group-generate-tax-lines">
-    <action name="action-account-move-group-onsave"/>
     <action name="action-account-move-method-automatic-taxline-generation"/>
     <action name="action-account-move-method-compute-totals"/>
   </action-group>
@@ -672,6 +670,8 @@
     <action name="action-method-initialize-permission-validation-move"/>
     <action name="action-move-method-check-period-permissions"/>
     <action name="action-move-method-set-moveline-dates"/>
+    <action name="action-move-method-update-currency-rate"/>
+    <action name="action-account-move-method-compute-totals"/>
     <action name="action-move-attrs-date-change"/>
     <action name="action-move-method-display-and-compute-due-date"/>
     <action name="action-account-move-group-onsave"/>
@@ -717,7 +717,6 @@
     <action name="action-move-attrs-date-change"/>
     <action name="action-move-method-display-and-compute-due-date"/>
     <action name="action-move-attrs-payment-condition-change"/>
-    <action name="action-account-move-group-onsave"/>
   </action-group>
 
   <action-group name="action-move-group-check-term-in-payment">
@@ -1003,6 +1002,11 @@
 
   <action-method name="action-move-method-update-due-date">
     <call class="com.axelor.apps.account.web.MoveController" method="updateDueDate"/>
+  </action-method>
+
+  <action-method name="action-move-method-update-currency-rate">
+    <call class="com.axelor.apps.account.web.MoveController"
+      method="updateMoveLinesCurrencyRate"/>
   </action-method>
 
   <action-attrs name="action-move-attrs-check-period-and-status"
