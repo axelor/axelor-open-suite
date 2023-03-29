@@ -12,11 +12,11 @@
     <one-to-many name="gdprProcessingRegisterRuleList"
       ref="com.axelor.apps.gdpr.db.GDPRProcessingRegisterRule" mappedBy="gdprProcessingRegister"/>
     <string name="description" large="true"/>
-    <integer name="status" selection="gdpr.processing.register.status.select" copy="false"/>
+    <integer name="status" selection="gdpr.processing.register.status.select"/>
     <many-to-one ref="com.axelor.apps.base.db.Anonymizer" name="anonymizer"
       title="Pseudonymizer"/>
     <one-to-many ref="com.axelor.apps.gdpr.db.GDPRProcessingRegisterLog"
-      name="gdprProcessingRegisterLogList" mappedBy="gdprProcessingRegister" copy="false"/>
+      name="gdprProcessingRegisterLogList" mappedBy="gdprProcessingRegister"/>
 
     <finder-method name="findByStatus" using="status" all="true"/>
 

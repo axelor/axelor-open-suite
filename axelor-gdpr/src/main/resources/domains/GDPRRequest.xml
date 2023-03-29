@@ -11,8 +11,7 @@
       ref="com.axelor.apps.gdpr.db.GDPRRequestOrigin"/>
     <datetime name="requestDateT" title="Request date"/>
     <datetime name="dueSendingDateT" title="Due sending date"/>
-    <integer name="statusSelect" title="Status" selection="gdpr.request.status.select"
-      copy="false"/>
+    <integer name="statusSelect" title="Status" selection="gdpr.request.status.select"/>
     <long name="modelId" title="Model id"/>
     <string name="modelSelect" title="Model" selection="gdpr.request.model.select"/>
     <string name="requestComment" title="Comment"/>
@@ -29,7 +28,7 @@
 	]]>
     </string>
     <many-to-one name="gdprResponse" ref="com.axelor.apps.gdpr.db.GDPRResponse"
-      title="Response" copy="false"/>
+      title="Response"/>
 
     <extra-code> <![CDATA[
     		public static int REQUEST_TYPE_ACCESS = 0;

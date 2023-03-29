@@ -15,7 +15,7 @@
     <field name="dueSendingDateT"/>
   </grid>
 
-  <form name="gdpr-request-form" title="Request" canNew="true"
+  <form name="gdpr-request-form" title="Request" canNew="true" canCopy="false"
     model="com.axelor.apps.gdpr.db.GDPRRequest"
     onNew="action-gdpr-record-gdpr-set-pre-filled-request"
     onLoad="action-gdpr-request-attrs-hide-cancel">
@@ -28,9 +28,8 @@
       <field name="typeSelect" colSpan="3" readonlyIf="statusSelect > 0"/>
       <field name="gdprRequestOrigin" requiredIf="statusSelect != 3" colSpan="3"
         readonlyIf="statusSelect > 0" widget="SuggestBox"/>
-      <field name="modelSelect" widget="refSelect"
-        showIf="statusSelect > 0 || modelSelect != null" x-related="modelId" title="Reference"
-        colSpan="12" readonly="true"/>
+      <field name="modelSelect" widget="refSelect" showIf="statusSelect > 0"
+        x-related="modelId" title="Reference" colSpan="12" readonly="true"/>
 
       <panel title="Search" icon="fa-search" name="searchPanel" colSpan="12" hidden="true"
         showIf="modelSelect == null">
