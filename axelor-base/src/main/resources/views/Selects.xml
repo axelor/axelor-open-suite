@@ -732,4 +732,13 @@
     <option value="java.util.concurrent.TimeUnit">TimeUnit</option>
   </selection>
 
+  <selection name="base.faker.api.field.data.type.select">
+    <option value="Integer">Integer</option>
+    <option value="Long">Long</option>
+    <option value="BigDecimal">BigDecimal</option>
+    <option value="LocalDate">LocalDate</option>
+    <option value="LocalDateTime">LocalDateTime</option>
+    <option value="String">String</option>
+  </selection>
+
 </object-views>

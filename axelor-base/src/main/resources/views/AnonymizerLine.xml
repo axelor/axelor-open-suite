@@ -28,7 +28,8 @@
       <field name="useFakeData" widget="boolean-switch"
         onChange="action-anonymizer-line-attrs-clear-faker-api-field"/>
       <field name="fakerApiField" grid-view="faker-api-field-grid"
-        form-view="faker-api-field-form" hidden="true" showIf="useFakeData" requiredIf="useFakeData"/>
+        form-view="faker-api-field-form" hidden="true" showIf="useFakeData" requiredIf="useFakeData"
+        onSelect="action-anonymizer-line-attrs-filter-faker-field"/>
     </panel>
   </form>
 
@@ -69,5 +70,13 @@
   <action-attrs name="action-anonymizer-line-attr-on-select-meta-json-field">
     <attribute name="domain" for="metaJsonField"
       expr="eval:&quot; self.type NOT IN ('panel', 'button', 'label', 'spacer', 'separator') AND self.model = '${metaModel?.fullName}' AND self.modelField = '${metaField?.name}' &quot;"/>
+  </action-attrs>
+
+  <action-attrs name="action-anonymizer-line-attrs-filter-faker-field">
+    <attribute for="fakerApiField" name="domain"
+      expr="eval:&quot; self.dataType = '${metaField?.typeName}'&quot;"
+      if="__repo__(FakerApiField).all().filter(&quot;self.dataType = :dataType&quot;).bind('dataType',metaField.typeName).count()>0"/>
+    <attribute for="fakerApiField" name="domain" expr=""
+      if="__repo__(FakerApiField).all().filter(&quot;self.dataType = :dataType&quot;).bind('dataType',metaField.typeName).count()==0"/>
   </action-attrs>
 </object-views>
