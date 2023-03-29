@@ -418,6 +418,8 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
         String exportNumber = this.getSaleExportNumber(company);
         this.updateMoveList(moveList, accountingReport, interfaceDate, exportNumber);
       }
+
+      moveList.clear();
     }
 
     accountingReport = accountingReportRepo.find(accountingReport.getId());
