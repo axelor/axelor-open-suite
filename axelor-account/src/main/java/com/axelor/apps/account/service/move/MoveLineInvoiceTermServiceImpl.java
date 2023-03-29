@@ -99,7 +99,7 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
         && !appAccountService.getAppAccount().getAllowMultiInvoiceTerms()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          AccountExceptionMessage.INVOICE_INVOICE_TERM_MULTIPLE_LINES_NO_MULTI);
+          I18n.get(AccountExceptionMessage.INVOICE_INVOICE_TERM_MULTIPLE_LINES_NO_MULTI));
     }
 
     moveLine.clearInvoiceTermList();

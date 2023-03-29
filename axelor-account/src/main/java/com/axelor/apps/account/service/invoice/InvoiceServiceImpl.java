@@ -309,7 +309,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
         && !appAccountService.getAppAccount().getAllowMultiInvoiceTerms()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          AccountExceptionMessage.INVOICE_INVOICE_TERM_MULTIPLE_LINES_NO_MULTI);
+          I18n.get(AccountExceptionMessage.INVOICE_INVOICE_TERM_MULTIPLE_LINES_NO_MULTI));
     }
 
     for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
