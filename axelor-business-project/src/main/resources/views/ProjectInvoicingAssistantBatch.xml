@@ -19,7 +19,7 @@
     onNew="action-project-invoicing-assistant-batch-record-on-new">
     <panel name="mainPanel">
       <field name="actionSelect"
-        onChange="action-base-batch-attrs-action-select,action-project-invoicing-assistant-batch-record-action-select-on-change"/>
+        onChange="action-project-invoicing-assistant-batch-record-action-select-on-change"/>
       <field name="code" x-bind="{{code|unaccent|uppercase}}"
         onChange="action-base-batch-condition-check-unique-code"/>
       <field name="company" widget="SuggestBox" form-view="company-form"
