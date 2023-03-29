@@ -29,6 +29,9 @@ import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionResponse;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.concurrent.TimeUnit;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -88,7 +91,7 @@ public class FakerServiceImpl implements FakerService {
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(AdminExceptionMessage.FAKER_METHOD_ERROR),
           fakerApiField.getMethodName());
-    } catch (ClassNotFoundException e) {
+    } catch (ClassNotFoundException | ParseException e) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(AdminExceptionMessage.FAKER_METHOD_PARAMS_ERROR),
@@ -154,7 +157,7 @@ public class FakerServiceImpl implements FakerService {
    * @return
    */
   protected Object[] convertParametersToValueArray(
-      List<FakerApiFieldParameters> fakerApiFieldParameters) {
+      List<FakerApiFieldParameters> fakerApiFieldParameters) throws ParseException {
     Object[] paramValues = new Object[fakerApiFieldParameters.size()];
     int i = 0;
     for (FakerApiFieldParameters fieldParameters : fakerApiFieldParameters) {
@@ -170,7 +173,8 @@ public class FakerServiceImpl implements FakerService {
    * @param fieldParameters
    * @return
    */
-  protected Object convertValueToType(FakerApiFieldParameters fieldParameters) {
+  protected Object convertValueToType(FakerApiFieldParameters fieldParameters)
+      throws ParseException {
     switch (fieldParameters.getParamType()) {
       case "int":
         return Integer.parseInt(fieldParameters.getParamValue());
@@ -180,6 +184,11 @@ public class FakerServiceImpl implements FakerService {
         return Long.parseLong(fieldParameters.getParamValue());
       case "boolean":
         return Boolean.parseBoolean(fieldParameters.getParamValue());
+      case "java.util.concurrent.TimeUnit":
+        return TimeUnit.valueOf(fieldParameters.getParamValue());
+      case "java.util.Date":
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");
+        return simpleDateFormat.parse(fieldParameters.getParamValue());
       default:
         return fieldParameters.getParamValue();
     }
@@ -246,6 +255,8 @@ public class FakerServiceImpl implements FakerService {
       TraceBackService.trace(e);
     } catch (ClassNotFoundException | NoSuchMethodException e) {
       resultMessage.put(KEY_ERROR, I18n.get("Please check your parameters configuration."));
+    } catch (ParseException e) {
+      resultMessage.put(KEY_ERROR, I18n.get("Please check your parameters value format."));
     }
 
     return resultMessage;
