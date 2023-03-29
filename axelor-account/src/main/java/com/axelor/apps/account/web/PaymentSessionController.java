@@ -122,6 +122,17 @@ public class PaymentSessionController {
     }
   }
 
+  public void setHasInvoiceTerm(ActionRequest request, ActionResponse response) {
+    try {
+      PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
+      boolean hasInvoiceTerm =
+          Beans.get(PaymentSessionService.class).setHasInvoiceTerm(paymentSession);
+      response.setValue("$hasInvoiceTerm", hasInvoiceTerm);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   public void checkAndProcessInvoiceTerms(ActionRequest request, ActionResponse response) {
     try {
       PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
