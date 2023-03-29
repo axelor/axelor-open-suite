@@ -144,21 +144,18 @@ public class PaymentServiceImpl implements PaymentService {
       }
 
       for (MoveLine creditMoveLine : creditMoveLines) {
-
-        if (creditMoveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
-
-          for (MoveLine debitMoveLine : debitMoveLines) {
-            if (debitMoveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
-              try {
-                createReconcile(
-                    debitMoveLine, creditMoveLine, debitTotalRemaining, creditTotalRemaining);
-              } catch (Exception e) {
-                if (dontThrow) {
-                  TraceBackService.trace(e);
-                  log.debug(e.getMessage());
-                } else {
-                  throw e;
-                }
+        for (MoveLine debitMoveLine : debitMoveLines) {
+          if (creditMoveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0
+              && debitMoveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
+            try {
+              createReconcile(
+                  debitMoveLine, creditMoveLine, debitTotalRemaining, creditTotalRemaining);
+            } catch (Exception e) {
+              if (dontThrow) {
+                TraceBackService.trace(e);
+                log.debug(e.getMessage());
+              } else {
+                throw e;
               }
             }
           }
