@@ -278,7 +278,7 @@ public class MoveLineController {
           if (move.getMoveLineList().size() == 0) {
             currencyRate =
                 Beans.get(CurrencyService.class)
-                    .getCurrencyConversionRate(currency, companyCurrency, move.getDate());
+                    .getCurrencyConversionRate(currency, companyCurrency);
           } else {
             currencyRate = move.getMoveLineList().get(0).getCurrencyRate();
           }
