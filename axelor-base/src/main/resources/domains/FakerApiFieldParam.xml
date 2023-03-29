@@ -5,12 +5,9 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="FakerApiField">
-    <string name="name" title="Name" namecolumn="true"/>
-    <string name="className" title="Class name" required="true"/>
-    <string name="methodName" title="Method name" required="true"/>
-    <one-to-many name="fakerFieldParametersList"
-      ref="com.axelor.apps.base.db.FakerApiFieldParameters"/>
+  <entity name="FakerApiFieldParameters">
+    <string name="paramType" title="Type" selection="base.faker.api.field.param.type.select"/>
+    <string name="paramValue" title="Value"/>
   </entity>
 
 </domain-models>

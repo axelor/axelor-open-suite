@@ -20,6 +20,7 @@ package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.FakerApiField;
+import com.axelor.rpc.ActionResponse;
 
 public interface FakerService {
   /**
@@ -30,4 +31,6 @@ public interface FakerService {
    * @throws AxelorException if the class or method given doesn't exist.
    */
   String generateFakeData(FakerApiField fakerApiField) throws AxelorException;
+
+  void checkMethod(FakerApiField fakerApiField, ActionResponse response);
 }

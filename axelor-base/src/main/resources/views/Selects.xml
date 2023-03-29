@@ -721,4 +721,12 @@
     <option value="3">Generate new random passwords and force password change</option>
   </selection>
 
+  <selection name="base.faker.api.field.param.type.select">
+    <option value="int">int</option>
+    <option value="long">long</option>
+    <option value="double">double</option>
+    <option value="boolean">boolean</option>
+    <option value="java.lang.String">string</option>
+  </selection>
+
 </object-views>

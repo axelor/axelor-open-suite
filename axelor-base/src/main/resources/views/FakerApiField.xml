@@ -17,10 +17,27 @@
       <field name="name" readonly="true" showIf="id!=null" colSpan="12"/>
       <field name="className"/>
       <field name="methodName" title="FakerApiField.methodName"/>
+
+      <panel name="paramPanel" title="Method parameters" colSpan="12" hidden="true"
+        showIf="!id || (!$readonly()) || ($readonly() &amp;&amp; fakerFieldParametersList!=null &amp;&amp; fakerFieldParametersList.length&gt;0)">
+        <help><![CDATA[Pay attention to the type and the order of the parameters.]]></help>
+        <field name="fakerFieldParametersList" colSpan="12" showTitle="false">
+          <editor>
+            <field name="paramType" requiredIf="paramValue"/>
+            <field name="paramValue" requiredIf="paramType"/>
+          </editor>
+        </field>
+      </panel>
+
+      <button name="testBtn" title="Test" onClick="action-faker-api-field-method-test-input"/>
     </panel>
   </form>
 
   <action-attrs name="action-faker-api-field-attrs-compute-name">
     <attribute for="name" name="value" expr="eval: className + &quot;.&quot; + methodName"/>
   </action-attrs>
+
+  <action-method name="action-faker-api-field-method-test-input">
+    <call class="com.axelor.apps.base.web.FakerApiFieldController" method="checkMethod"/>
+  </action-method>
 </object-views>

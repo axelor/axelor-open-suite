@@ -40,4 +40,7 @@ public final class AdminExceptionMessage {
 
   public static final String JSON_FIELD_CAN_NOT_BE_ANONYMIZED = /*$$(*/
       "Json field can not be anonymized" /*)*/;
+
+  public static final String FAKER_METHOD_PARAMS_ERROR = /*$$(*/
+      "There is a type error on parameters of the method '%s'." /*)*/;
 }
