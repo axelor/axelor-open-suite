@@ -129,6 +129,7 @@ return $ctx.save(rec)</camunda:script>
       <bpmn2:outgoing>Flow_1ui47s7</bpmn2:outgoing>
       <bpmn2:script>askPizza = $ctx.create('AskPizza')
 askPizza.hungryPizza = $ctx.filterOne('HungryPizza','self.id = ?1', hungryPizzaId)?.getTarget()
+askPizza.name = 'Ask for the Pizza : ' + askPizza.hungryPizza.id
 $ctx.save(askPizza)</bpmn2:script>
     </bpmn2:scriptTask>
     <bpmn2:sequenceFlow id="Flow_0gqk03c" sourceRef="Activity_08hvpsb" targetRef="Event_0ub5fcs" />
@@ -223,6 +224,7 @@ $ctx.save(askPizza)</bpmn2:script>
         <camunda:executionListener event="start">
           <camunda:script scriptFormat="axelor">calCustomer = $ctx.create('CalmCustomer')
 calCustomer.pizzaOrder = $ctx.filterOne('PizzaOrder','self.id = ?1', pizzaOrderId)?.getTarget()
+calCustomer.name = 'Calm customer for : ' + calCustomer.pizzaOrder.id
 $ctx.save(calCustomer)</camunda:script>
         </camunda:executionListener>
       </bpmn2:extensionElements>
