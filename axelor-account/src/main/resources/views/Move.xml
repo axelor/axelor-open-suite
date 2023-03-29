@@ -373,15 +373,25 @@
     onSave="action-account-move-group-onsave" readonlyIf="massEntryStatusSelect == 2">
     <toolbar>
       <button name="controlMassEntryMoves" title="Control moves consistency"
-        onClick="action-move-method-control-mass-entry-moves" colSpan="12" hidden="false"/>
+        onClick="action-move-method-control-mass-entry-moves" colSpan="12" hidden="false"
+        css="btn-primary"/>
       <button name="validateMassEntryMoves" title="Validate" hidden="true"
-        onClick="action-move-method-validate-mass-entry-moves" colSpan="12"/>
+        onClick="action-move-method-validate-mass-entry-moves" colSpan="12" css="btn-success"/>
     </toolbar>
 
     <panel name="mainPanel" colSpan="12">
       <panel name="moveDetailsPanel" colSpan="12">
-        <field name="reference" colSpan="8" hideIf="id == null"/>
-        <field name="massEntryStatusSelect" readonly="true"/>
+        <field name="reference" colSpan="8" showIf="id != null"/>
+        <field name="massEntryStatusSelect" showTitle="false" readonly="true" colSpan="4">
+          <viewer depends="massEntryStatusSelect">
+            <![CDATA[
+                      <h4 class="text-right">
+	                      <span class="label label-success" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.massEntryStatusSelect == 1" x-translate>Ongoing</span>
+	                      <span class="label label-warning" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.massEntryStatusSelect == 2" x-translate>Closed</span>
+                      </h4>
+                    ]]>
+          </viewer>
+        </field>
         <panel name="moveContentPanel" colSpan="12">
           <field name="company" canEdit="false" widget="SuggestBox"
             readonlyIf="$validatePeriod || moveLineMassEntryList.length &gt; 0 || statusSelect == 3"

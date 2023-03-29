@@ -88,12 +88,12 @@ public class MassEntryMoveController {
           response.setValues(move);
           if (categoryError == 0) {
             massEntryToolService.sortMoveLinesMassEntryByTemporaryNumber(move);
-            response.setAttr("controlMassEntryMoves", "hidden", true);
-            response.setAttr("validateMassEntryMoves", "hidden", false);
           }
           // TODO set else statement and an error message with move.setMassEntryErrors() + hilite
           // the line and fields
         }
+        response.setAttr("controlMassEntryMoves", "hidden", false);
+        response.setAttr("validateMassEntryMoves", "hidden", true);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
