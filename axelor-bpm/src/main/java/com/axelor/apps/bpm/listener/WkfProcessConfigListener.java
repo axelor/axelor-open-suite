@@ -37,7 +37,11 @@ public class WkfProcessConfigListener {
       WkfCache.WKF_MODEL_CACHE.put(tenantId, new HashMap<Long, String>());
     }
 
-    WkfCache.WKF_MODEL_CACHE.get(tenantId).put(config.getId(), config.getModel());
+    String modelName = config.getModel();
+    if (config.getMetaJsonModel() != null) {
+      modelName = config.getMetaJsonModel().getName();
+    }
+    WkfCache.WKF_MODEL_CACHE.get(tenantId).put(config.getId(), modelName);
   }
 
   @PostRemove
