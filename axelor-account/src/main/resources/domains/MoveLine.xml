@@ -52,7 +52,7 @@
 
     <decimal name="currencyRate" title="Currency Rate" precision="20" scale="5"
       initParam="true"/>
-    <decimal name="currencyAmount" title="Amount in move currency" initParam="true"/>
+    <decimal name="currencyAmount" title="Amount in Acc. currency" initParam="true"/>
 
     <string name="postedNbr" title="Posted number"/>
     <!-- Fixed asset fields -->
