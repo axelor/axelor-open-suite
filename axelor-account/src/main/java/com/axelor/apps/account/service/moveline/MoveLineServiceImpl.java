@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.FinancialDiscount;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
@@ -34,6 +35,7 @@ import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
 import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -445,19 +447,27 @@ public class MoveLineServiceImpl implements MoveLineService {
   }
 
   @Override
-  public void computeNewCurrencyRateOnMoveLineList(
-      Move move, BigDecimal newCurrencyRate, LocalDate dueDate) throws AxelorException {
+  public void computeNewCurrencyRateOnMoveLineList(Move move, LocalDate dueDate)
+      throws AxelorException {
+    BigDecimal currencyRate = BigDecimal.ONE;
+
+    currencyRate =
+        Beans.get(CurrencyService.class)
+            .getCurrencyConversionRate(
+                move.getCurrency(), move.getCompanyCurrency(), move.getDate());
+
     for (MoveLine moveLine : move.getMoveLineList()) {
       BigDecimal currencyAmount = BigDecimal.ZERO;
 
-      if (BigDecimal.ZERO.compareTo(moveLine.getDebit().add(moveLine.getCredit())) == 0) {
+      if (moveLine.getDebit().add(moveLine.getCredit()).signum() == 0) {
         if (moveLine.getAccount() != null) {
+          BigDecimal computedAmount = moveLine.getCurrencyAmount().multiply(currencyRate);
           switch (moveLine.getAccount().getCommonPosition()) {
-            case 1:
-              moveLine.setCredit(moveLine.getCurrencyAmount().multiply(newCurrencyRate));
+            case AccountRepository.COMMON_POSITION_CREDIT:
+              moveLine.setCredit(computedAmount);
               break;
-            case 2:
-              moveLine.setDebit(moveLine.getCurrencyAmount().multiply(newCurrencyRate));
+            case AccountRepository.COMMON_POSITION_DEBIT:
+              moveLine.setDebit(computedAmount);
               break;
             default:
               break;
@@ -467,10 +477,10 @@ public class MoveLineServiceImpl implements MoveLineService {
       currencyAmount = moveLine.getDebit().add(moveLine.getCredit());
       currencyAmount =
           currencyAmount.divide(
-              newCurrencyRate, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+              currencyRate, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
 
       moveLine.setCurrencyAmount(currencyAmount);
-      moveLine.setCurrencyRate(newCurrencyRate);
+      moveLine.setCurrencyRate(currencyRate);
 
       moveLine.clearInvoiceTermList();
       moveLineInvoiceTermService.generateDefaultInvoiceTerm(moveLine, dueDate, false);

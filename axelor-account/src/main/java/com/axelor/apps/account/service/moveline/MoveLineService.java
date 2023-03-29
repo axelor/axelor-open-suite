@@ -64,6 +64,5 @@ public interface MoveLineService {
 
   List<MoveLine> getReconcilableMoveLines(List<Integer> moveLineIds);
 
-  void computeNewCurrencyRateOnMoveLineList(
-      Move move, BigDecimal newCurrencyRate, LocalDate dueDate) throws AxelorException;
+  void computeNewCurrencyRateOnMoveLineList(Move move, LocalDate dueDate) throws AxelorException;
 }

@@ -53,7 +53,6 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.BankDetailsService;
-import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
@@ -917,13 +916,7 @@ public class MoveController {
           && ObjectUtils.notEmpty(move.getMoveLineList())
           && move.getCurrency() != null
           && move.getCompanyCurrency() != null) {
-        BigDecimal currencyRate = BigDecimal.ONE;
-        currencyRate =
-            Beans.get(CurrencyService.class)
-                .getCurrencyConversionRate(
-                    move.getCurrency(), move.getCompanyCurrency(), move.getDate());
-        Beans.get(MoveLineService.class)
-            .computeNewCurrencyRateOnMoveLineList(move, currencyRate, dueDate);
+        Beans.get(MoveLineService.class).computeNewCurrencyRateOnMoveLineList(move, dueDate);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
