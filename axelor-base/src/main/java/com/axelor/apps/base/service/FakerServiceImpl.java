@@ -23,7 +23,6 @@ import com.axelor.apps.base.db.FakerApiField;
 import com.axelor.apps.base.db.FakerApiFieldParameters;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.AdminExceptionMessage;
-import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionResponse;
@@ -157,7 +156,8 @@ public class FakerServiceImpl implements FakerService {
    * @return
    */
   protected Object[] convertParametersToValueArray(
-      List<FakerApiFieldParameters> fakerApiFieldParameters) throws ParseException {
+      List<FakerApiFieldParameters> fakerApiFieldParameters)
+      throws ParseException, IllegalArgumentException {
     Object[] paramValues = new Object[fakerApiFieldParameters.size()];
     int i = 0;
     for (FakerApiFieldParameters fieldParameters : fakerApiFieldParameters) {
@@ -174,7 +174,7 @@ public class FakerServiceImpl implements FakerService {
    * @return
    */
   protected Object convertValueToType(FakerApiFieldParameters fieldParameters)
-      throws ParseException {
+      throws ParseException, IllegalArgumentException {
     switch (fieldParameters.getParamType()) {
       case "int":
         return Integer.parseInt(fieldParameters.getParamValue());
@@ -252,10 +252,10 @@ public class FakerServiceImpl implements FakerService {
                 fakerMethod.invoke(classMethod, paramValues).toString()));
       }
     } catch (InvocationTargetException | IllegalAccessException e) {
-      TraceBackService.trace(e);
+      resultMessage.put(KEY_ERROR, I18n.get("An error occured, please check your configuration."));
     } catch (ClassNotFoundException | NoSuchMethodException e) {
       resultMessage.put(KEY_ERROR, I18n.get("Please check your parameters configuration."));
-    } catch (ParseException e) {
+    } catch (ParseException | IllegalArgumentException e) {
       resultMessage.put(KEY_ERROR, I18n.get("Please check your parameters value format."));
     }
 
