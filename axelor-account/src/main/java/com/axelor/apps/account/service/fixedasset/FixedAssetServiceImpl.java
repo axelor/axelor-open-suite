@@ -31,6 +31,7 @@ import com.axelor.apps.account.service.fixedasset.factory.FixedAssetLineServiceF
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.DateService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
@@ -74,6 +75,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
   protected FixedAssetLineGenerationService fixedAssetLineGenerationService;
 
   protected FixedAssetLineServiceFactory fixedAssetLineServiceFactory;
+  protected DateService dateService;
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -91,7 +93,8 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       FixedAssetLineServiceFactory fixedAssetLineServiceFactory,
       FixedAssetGenerationService fixedAssetGenerationService,
       FixedAssetLineGenerationService fixedAssetLineGenerationService,
-      FixedAssetDateService fixedAssetDateService) {
+      FixedAssetDateService fixedAssetDateService,
+      DateService dateService) {
     this.fixedAssetRepo = fixedAssetRepo;
     this.fixedAssetLineMoveService = fixedAssetLineMoveService;
     this.fixedAssetDerogatoryLineService = fixedAssetDerogatoryLineService;
@@ -102,6 +105,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     this.fixedAssetLineComputationService = fixedAssetLineComputationService;
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
     this.fixedAssetDateService = fixedAssetDateService;
+    this.dateService = dateService;
   }
 
   @Override
@@ -319,6 +323,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     multiplyFieldsToSplit(fixedAsset, remainingProrata);
 
     String commentsToAdd = "";
+    DateTimeFormatter dateFormat = dateService.getDateFormat();
 
     // Qty or grossValue
     if (splitType == FixedAssetRepository.SPLIT_TYPE_QUANTITY) {
@@ -329,7 +334,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
           String.format(
               I18n.get(AccountExceptionMessage.SPLIT_MESSAGE_COMMENT),
               amount,
-              splittingDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+              splittingDate.format(dateFormat));
     } else if (splitType == FixedAssetRepository.SPLIT_TYPE_AMOUNT) {
       newFixedAsset.setGrossValue(amount);
       fixedAsset.setGrossValue(newAmount);
@@ -339,7 +344,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
               I18n.get(AccountExceptionMessage.SPLIT_MESSAGE_COMMENT_AMOUNT),
               amount,
               fixedAsset.getCompany().getCurrency().getCode(),
-              splittingDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+              splittingDate.format(dateFormat));
     }
 
     // Comments

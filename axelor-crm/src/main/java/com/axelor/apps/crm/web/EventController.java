@@ -467,9 +467,14 @@ public class EventController {
   }
 
   public void computeRecurrenceName(ActionRequest request, ActionResponse response) {
-    RecurrenceConfiguration recurrConf = request.getContext().asType(RecurrenceConfiguration.class);
-    response.setValue(
-        "recurrenceName", Beans.get(EventService.class).computeRecurrenceName(recurrConf));
+    try {
+      RecurrenceConfiguration recurrConf =
+          request.getContext().asType(RecurrenceConfiguration.class);
+      response.setValue(
+          "recurrenceName", Beans.get(EventService.class).computeRecurrenceName(recurrConf));
+    } catch (AxelorException e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void setCalendarDomain(ActionRequest request, ActionResponse response) {

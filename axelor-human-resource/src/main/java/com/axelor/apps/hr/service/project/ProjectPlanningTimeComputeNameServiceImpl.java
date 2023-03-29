@@ -15,50 +15,50 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.hr.service.timesheet;
+package com.axelor.apps.hr.service.project;
 
 import com.axelor.apps.base.service.DateService;
 import com.axelor.apps.hr.db.Employee;
-import com.axelor.apps.hr.db.Timesheet;
+import com.axelor.apps.project.db.Project;
 import com.google.inject.Inject;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class TimesheetComputeNameServiceImpl implements TimesheetComputeNameService {
+public class ProjectPlanningTimeComputeNameServiceImpl
+    implements ProjectPlanningTimeComputeNameService {
 
   protected DateService dateService;
 
   @Inject
-  public TimesheetComputeNameServiceImpl(DateService dateService) {
+  public ProjectPlanningTimeComputeNameServiceImpl(DateService dateService) {
     this.dateService = dateService;
   }
 
   @Override
-  public String computeTimesheetFullname(Timesheet timesheet) {
-    return computeTimesheetFullname(
-        timesheet.getEmployee(), timesheet.getFromDate(), timesheet.getToDate());
-  }
+  public String computeProjectPlanningTimeFullname(
+      Employee employee, Project project, LocalDate date) {
+    String fullName = "";
 
-  @Override
-  public String computeTimesheetFullname(Employee employee, LocalDate fromDate, LocalDate toDate) {
     try {
-      DateTimeFormatter pattern = dateService.getDateFormat();
+      if (employee != null && employee.getName() != null) {
+        fullName += employee.getName();
+      }
 
-      if (employee != null && employee.getName() != null && fromDate != null && toDate != null) {
-        return employee.getName() + " " + fromDate.format(pattern) + "-" + toDate.format(pattern);
-      } else if (employee != null && employee.getName() != null && fromDate != null) {
-        return employee.getName() + " " + fromDate.format(pattern);
-      } else if (employee != null && employee.getName() != null) {
-        return employee.getName();
+      if (project != null && project.getCode() != null) {
+        fullName += "-" + project.getCode();
+      }
+
+      String dateStr = date.format(dateService.getDateFormat());
+      if (!fullName.isEmpty()) {
+        fullName += "-" + dateStr;
       } else {
-        return "";
+        fullName = dateStr;
       }
     } catch (Exception e) {
       Logger logger = LoggerFactory.getLogger(getClass());
       logger.error(e.getMessage());
     }
-    return "";
+    return fullName;
   }
 }

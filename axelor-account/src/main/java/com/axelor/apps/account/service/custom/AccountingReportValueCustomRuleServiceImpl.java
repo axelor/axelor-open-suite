@@ -25,6 +25,8 @@ import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountingReportConfigLineRepository;
 import com.axelor.apps.account.db.repo.AccountingReportValueRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.DateService;
 import com.axelor.common.StringUtils;
 import com.axelor.rpc.Context;
 import com.axelor.script.GroovyScriptHelper;
@@ -45,8 +47,9 @@ public class AccountingReportValueCustomRuleServiceImpl extends AccountingReport
   public AccountingReportValueCustomRuleServiceImpl(
       AccountRepository accountRepo,
       AccountingReportValueRepository accountingReportValueRepo,
-      AnalyticAccountRepository analyticAccountRepo) {
-    super(accountRepo, accountingReportValueRepo, analyticAccountRepo);
+      AnalyticAccountRepository analyticAccountRepo,
+      DateService dateService) {
+    super(accountRepo, accountingReportValueRepo, analyticAccountRepo, dateService);
   }
 
   @Override
@@ -61,7 +64,8 @@ public class AccountingReportValueCustomRuleServiceImpl extends AccountingReport
       String parentTitle,
       LocalDate startDate,
       LocalDate endDate,
-      int analyticCounter) {
+      int analyticCounter)
+      throws AxelorException {
     if (accountingReport.getDisplayDetails()
         && line.getDetailBySelect() != AccountingReportConfigLineRepository.DETAIL_BY_NOTHING) {
       for (String lineCode :
@@ -110,7 +114,8 @@ public class AccountingReportValueCustomRuleServiceImpl extends AccountingReport
       LocalDate startDate,
       LocalDate endDate,
       String parentTitle,
-      int analyticCounter) {
+      int analyticCounter)
+      throws AxelorException {
     this.createValueFromCustomRule(
         accountingReport,
         column,
@@ -138,7 +143,8 @@ public class AccountingReportValueCustomRuleServiceImpl extends AccountingReport
       LocalDate endDate,
       String parentTitle,
       String lineCode,
-      int analyticCounter) {
+      int analyticCounter)
+      throws AxelorException {
     Map<String, AccountingReportValue> valuesMap =
         this.getValuesMap(
             column,

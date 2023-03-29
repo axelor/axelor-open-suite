@@ -35,6 +35,7 @@ import com.axelor.apps.bankpayment.service.bankorder.BankOrderCreateService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
 import com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentValidateServiceBankPayImpl;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.DateService;
 import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
 import com.axelor.apps.project.db.ProjectTask;
@@ -68,7 +69,8 @@ public class InvoicePaymentValidateProjectServiceImpl
       AccountManagementAccountService accountManagementAccountService,
       BankOrderCreateService bankOrderCreateService,
       BankOrderService bankOrderService,
-      InvoicingProjectRepository invoicingProjectRepo) {
+      InvoicingProjectRepository invoicingProjectRepo,
+      DateService dateService) {
     super(
         paymentModeService,
         moveCreateService,
@@ -83,7 +85,8 @@ public class InvoicePaymentValidateProjectServiceImpl
         appAccountService,
         accountManagementAccountService,
         bankOrderCreateService,
-        bankOrderService);
+        bankOrderService,
+        dateService);
     this.invoicingProjectRepo = invoicingProjectRepo;
   }
 
