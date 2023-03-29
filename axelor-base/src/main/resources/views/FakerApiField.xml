@@ -29,7 +29,8 @@
         </field>
       </panel>
 
-      <button name="testBtn" title="Test configuration" onClick="action-faker-api-field-method-test-input"/>
+      <button name="testBtn" title="Test configuration"
+        onClick="action-faker-api-field-method-test-input"/>
     </panel>
   </form>
 
