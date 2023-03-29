@@ -65,6 +65,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import javax.persistence.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -402,12 +403,18 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
             .order("name");
 
     int offset = 0;
-    List<MoveLine> moveLineList;
+    List<Long> moveLineIdList;
     List<Move> moveList = new ArrayList<>();
 
-    while (!(moveLineList = moveLineQuery.fetch(10000, offset)).isEmpty()) {
+    while (!(moveLineIdList =
+            moveLineQuery
+                .fetchStream(10000, offset)
+                .map(MoveLine::getId)
+                .collect(Collectors.toList()))
+        .isEmpty()) {
 
-      for (MoveLine moveLine : moveLineList) {
+      for (Long id : moveLineIdList) {
+        MoveLine moveLine = moveLineRepo.find(id);
         offset++;
         allMoveLineData.add(createItemForExportMoveLine(moveLine, moveList));
       }
@@ -446,15 +453,9 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     items[6] = "";
     items[7] = "";
     Partner partner = moveLine.getPartner();
-    if (partner != null) {
-      items[6] =
-          moveLine.getAccount().getAccountType().getIsManageSubsidiaryAccount()
-              ? partner.getPartnerSeq()
-              : "";
-      items[7] =
-          moveLine.getAccount().getAccountType().getIsManageSubsidiaryAccount()
-              ? partner.getName()
-              : "";
+    if (partner != null && moveLine.getAccount().getAccountType().getIsManageSubsidiaryAccount()) {
+      items[6] = partner.getPartnerSeq();
+      items[7] = partner.getName();
     }
     String origin = moveLine.getOrigin();
     items[8] = Strings.isNullOrEmpty(origin) ? "NA" : origin;
