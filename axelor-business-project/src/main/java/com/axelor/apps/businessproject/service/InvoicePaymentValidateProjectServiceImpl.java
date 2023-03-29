@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,10 +20,15 @@ package com.axelor.apps.businessproject.service;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
+import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.ReconcileService;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.move.MoveLineService;
-import com.axelor.apps.account.service.move.MoveService;
+import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.apps.account.service.move.MoveCreateService;
+import com.axelor.apps.account.service.move.MoveToolService;
+import com.axelor.apps.account.service.move.MoveValidateService;
+import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderCreateService;
@@ -36,10 +41,12 @@ import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import com.google.inject.servlet.RequestScoped;
 import java.io.IOException;
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
 
+@RequestScoped
 public class InvoicePaymentValidateProjectServiceImpl
     extends InvoicePaymentValidateServiceBankPayImpl {
 
@@ -48,25 +55,35 @@ public class InvoicePaymentValidateProjectServiceImpl
   @Inject
   public InvoicePaymentValidateProjectServiceImpl(
       PaymentModeService paymentModeService,
-      MoveService moveService,
-      MoveLineService moveLineService,
+      MoveCreateService moveCreateService,
+      MoveValidateService moveValidateService,
+      MoveToolService moveToolService,
+      MoveLineCreateService moveLineCreateService,
       AccountConfigService accountConfigService,
       InvoicePaymentRepository invoicePaymentRepository,
       ReconcileService reconcileService,
+      InvoicePaymentToolService invoicePaymentToolService,
+      InvoiceTermService invoiceTermService,
+      AppAccountService appAccountService,
+      AccountManagementAccountService accountManagementAccountService,
       BankOrderCreateService bankOrderCreateService,
       BankOrderService bankOrderService,
-      InvoicePaymentToolService invoicePaymentToolService,
       InvoicingProjectRepository invoicingProjectRepo) {
     super(
         paymentModeService,
-        moveService,
-        moveLineService,
+        moveCreateService,
+        moveValidateService,
+        moveToolService,
+        moveLineCreateService,
         accountConfigService,
         invoicePaymentRepository,
         reconcileService,
+        invoicePaymentToolService,
+        invoiceTermService,
+        appAccountService,
+        accountManagementAccountService,
         bankOrderCreateService,
-        bankOrderService,
-        invoicePaymentToolService);
+        bankOrderService);
     this.invoicingProjectRepo = invoicingProjectRepo;
   }
 

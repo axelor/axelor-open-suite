@@ -15,6 +15,7 @@
       title="Stock moves"/>
     <boolean name="interco" title="Interco"/>
     <boolean name="createdByInterco" default="false"/>
+    <many-to-one name="incoterm" ref="com.axelor.apps.stock.db.Incoterm"/>
 
     <extra-code><![CDATA[
 

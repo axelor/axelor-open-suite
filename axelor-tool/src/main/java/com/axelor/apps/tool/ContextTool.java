@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -16,6 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.tool;
+
+import com.axelor.rpc.Context;
+import org.apache.poi.ss.formula.functions.T;
 
 public final class ContextTool {
 
@@ -42,6 +45,30 @@ public final class ContextTool {
       return formattedMessage;
     } else {
       return String.format("<span class='label %s'>%s</span>", spanClass, message);
+    }
+  }
+
+  /**
+   * Function that returns the object instance corresponding to a certain depth of parent contexts
+   *
+   * @param context The context from which to get the parent
+   * @param klass The class of the desired parent
+   * @param depth The depth from which to get the parent
+   * @return The desired parent, or null if it doesn't exist or is of a different class
+   */
+  public static <T> T getContextParent(Context context, Class<T> klass, int depth) {
+    for (int i = 0; i < depth; i++) {
+      if (context.getParent() == null) {
+        return null;
+      } else {
+        context = context.getParent();
+      }
+    }
+
+    if (context.containsKey("_model") && context.get("_model").equals(klass.getName())) {
+      return context.asType(klass);
+    } else {
+      return null;
     }
   }
 }

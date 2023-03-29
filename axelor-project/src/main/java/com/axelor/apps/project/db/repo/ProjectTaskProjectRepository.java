@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,9 +18,12 @@
 package com.axelor.apps.project.db.repo;
 
 import com.axelor.apps.base.db.Frequency;
+import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
-import com.axelor.apps.project.exception.IExceptionMessage;
+import com.axelor.apps.project.exception.ProjectExceptionMessage;
 import com.axelor.apps.project.service.ProjectTaskService;
+import com.axelor.apps.project.service.app.AppProjectService;
+import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import java.lang.invoke.MethodHandles;
@@ -59,19 +62,26 @@ public class ProjectTaskProjectRepository extends ProjectTaskRepository {
       projectTask.setIsFirst(true);
     }
 
-    Frequency frequency = projectTask.getFrequency();
-    if (frequency != null && projectTask.getIsFirst() && projectTask.getNextProjectTask() == null) {
-      if (projectTask.getTaskDate() != null) {
-        if (frequency.getEndDate().isBefore(projectTask.getTaskDate())) {
+    Project project = projectTask.getProject();
+    if (project.getIsShowFrequency()) {
+      Frequency frequency = projectTask.getFrequency();
+      if (frequency != null
+          && projectTask.getIsFirst()
+          && projectTask.getNextProjectTask() == null) {
+        if (projectTask.getTaskDate() != null) {
+          if (frequency.getEndDate().isBefore(projectTask.getTaskDate())) {
+            throw new PersistenceException(
+                I18n.get(
+                    ProjectExceptionMessage
+                        .PROJECT_TASK_FREQUENCY_END_DATE_CAN_NOT_BE_BEFORE_TASK_DATE));
+          }
+        } else {
           throw new PersistenceException(
-              I18n.get(
-                  IExceptionMessage.PROJECT_TASK_FREQUENCY_END_DATE_CAN_NOT_BE_BEFORE_TASK_DATE));
+              I18n.get(ProjectExceptionMessage.PROJECT_TASK_FILL_TASK_DATE));
         }
-      } else {
-        throw new PersistenceException(I18n.get(IExceptionMessage.PROJECT_TASK_FILL_TASK_DATE));
-      }
 
-      projectTaskService.generateTasks(projectTask, frequency);
+        projectTaskService.generateTasks(projectTask, frequency);
+      }
     }
 
     if (projectTask.getDoApplyToAllNextTasks()) {
@@ -80,6 +90,15 @@ public class ProjectTaskProjectRepository extends ProjectTaskRepository {
 
     projectTask.setDoApplyToAllNextTasks(false);
     projectTask.setHasDateOrFrequencyChanged(false);
+
+    if (StringUtils.isEmpty(projectTask.getTicketNumber())
+        && Beans.get(AppProjectService.class).getAppProject().getIsEnablePerProjectTaskSequence()) {
+      int sequence = project.getNextProjectTaskSequence();
+      project.setNextProjectTaskSequence(sequence + 1);
+      projectTask.setTicketNumber(project.getCode() + sequence);
+    }
+
+    projectTask.setDescription(projectTaskService.getTaskLink(projectTask.getDescription()));
 
     return super.save(projectTask);
   }

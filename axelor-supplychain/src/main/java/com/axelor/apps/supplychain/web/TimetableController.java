@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -25,7 +25,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.db.TimetableTemplate;
 import com.axelor.apps.supplychain.db.repo.TimetableRepository;
-import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.TimetableService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
@@ -55,7 +55,7 @@ public class TimetableController {
     if (parentContext != null && parentContext.getContextClass().equals(SaleOrder.class)) {
       SaleOrder saleOrder = parentContext.asType(SaleOrder.class);
       if (saleOrder.getStatusSelect() < SaleOrderRepository.STATUS_ORDER_CONFIRMED) {
-        response.setAlert(I18n.get(IExceptionMessage.TIMETABLE_SALE_ORDER_NOT_CONFIRMED));
+        response.setAlert(I18n.get(SupplychainExceptionMessage.TIMETABLE_SALE_ORDER_NOT_CONFIRMED));
         return;
       }
     }
@@ -63,13 +63,14 @@ public class TimetableController {
     if (parentContext != null && parentContext.getContextClass().equals(PurchaseOrder.class)) {
       PurchaseOrder purchaseOrder = parentContext.asType(PurchaseOrder.class);
       if (purchaseOrder.getStatusSelect() < PurchaseOrderRepository.STATUS_VALIDATED) {
-        response.setAlert(I18n.get(IExceptionMessage.TIMETABLE_PURCHASE_OREDR_NOT_VALIDATED));
+        response.setAlert(
+            I18n.get(SupplychainExceptionMessage.TIMETABLE_PURCHASE_OREDR_NOT_VALIDATED));
         return;
       }
     }
 
     if (timetable.getInvoice() != null) {
-      response.setAlert(I18n.get(IExceptionMessage.TIMETABLE_INVOICE_ALREADY_GENERATED));
+      response.setAlert(I18n.get(SupplychainExceptionMessage.TIMETABLE_INVOICE_ALREADY_GENERATED));
       return;
     }
 

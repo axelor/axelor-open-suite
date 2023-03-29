@@ -5,7 +5,7 @@
 
   <form name="talent-employee-form" title="Employee" model="com.axelor.apps.hr.db.Employee">
     <panel name="skillsPanel" title="Skills" if="__config__.app.isApp('training')">
-      <field name="trainingSkillSet" colSpan="12"/>
+      <field name="trainingSkillList" colSpan="12"/>
       <field name="experienceSkillSet" colSpan="12"/>
       <field name="skillSet" colSpan="12"/>
     </panel>

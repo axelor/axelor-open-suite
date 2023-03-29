@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.PaymentCondition;
@@ -27,6 +28,7 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLineTax;
@@ -223,6 +225,16 @@ public interface SaleOrderInvoiceService {
   BigDecimal computeAmountToInvoicePercent(
       SaleOrder saleOrder, BigDecimal amount, boolean isPercent) throws AxelorException;
 
+  BigDecimal computeAmountToInvoice(
+      BigDecimal amountToInvoice,
+      int operationSelect,
+      SaleOrder saleOrder,
+      Map<Long, BigDecimal> qtyToInvoiceMap,
+      Map<Long, BigDecimal> priceMap,
+      Map<Long, BigDecimal> qtyMap,
+      boolean isPercent)
+      throws AxelorException;
+
   /**
    * Set the updated sale order amount invoiced without checking.
    *
@@ -258,6 +270,8 @@ public interface SaleOrderInvoiceService {
       PriceList priceList,
       PaymentMode paymentMode,
       PaymentCondition paymentCondition,
+      TradingName tradingName,
+      FiscalPosition fiscalPosition,
       SaleOrder saleOrder)
       throws AxelorException;
 

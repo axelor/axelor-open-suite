@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,6 +19,7 @@ package com.axelor.csv.script;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.service.invoice.InvoiceService;
+import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -83,6 +84,8 @@ public class ImportSupplyChain {
 
   @Inject protected InventoryLineService inventoryLineService;
 
+  @Inject protected InvoiceTermService invoiceTermService;
+
   @SuppressWarnings("rawtypes")
   public Object importSupplyChain(Object bean, Map values) {
 
@@ -94,7 +97,7 @@ public class ImportSupplyChain {
     return bean;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public Object importPurchaseOrderFromSupplyChain(Object bean, Map<String, Object> values) {
 
     try {
@@ -120,10 +123,10 @@ public class ImportSupplyChain {
         List<Long> idList =
             purchaseOrderStockServiceImpl.createStockMoveFromPurchaseOrder(purchaseOrder);
         for (Long id : idList) {
-          StockMove stockMove = Beans.get(StockMoveRepository.class).find(id);
+          StockMove stockMove = stockMoveRepo.find(id);
           stockMoveService.copyQtyToRealQty(stockMove);
           stockMoveService.realize(stockMove);
-          stockMove.setRealDate(purchaseOrder.getDeliveryDate());
+          stockMove.setRealDate(purchaseOrder.getEstimatedReceiptDate());
         }
         purchaseOrder.setValidationDate(purchaseOrder.getOrderDate());
         purchaseOrder.setValidatedByUser(AuthUtils.getUser());
@@ -144,9 +147,12 @@ public class ImportSupplyChain {
         }
         invoice.setInvoiceDate(date);
         invoice.setOriginDate(date.minusDays(15));
+        invoiceTermService.computeInvoiceTerms(invoice);
 
         invoiceService.validateAndVentilate(invoice);
-        purchaseOrderWorkflowService.finishPurchaseOrder(purchaseOrder);
+        if (purchaseOrder.getStatusSelect() != PurchaseOrderRepository.STATUS_FINISHED) {
+          purchaseOrderWorkflowService.finishPurchaseOrder(purchaseOrder);
+        }
       }
 
     } catch (Exception e) {
@@ -156,7 +162,7 @@ public class ImportSupplyChain {
     return null;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public Object importSaleOrderFromSupplyChain(Object bean, Map<String, Object> values) {
     try {
       SaleOrderWorkflowService saleOrderWorkflowService = Beans.get(SaleOrderWorkflowService.class);
@@ -187,15 +193,16 @@ public class ImportSupplyChain {
           invoice.setInvoiceDate(
               Beans.get(AppBaseService.class).getTodayDate(saleOrder.getCompany()));
         }
+        invoiceTermService.computeInvoiceTerms(invoice);
         invoiceService.validateAndVentilate(invoice);
 
         List<Long> idList = saleOrderStockService.createStocksMovesFromSaleOrder(saleOrder);
         for (Long id : idList) {
-          StockMove stockMove = Beans.get(StockMoveRepository.class).find(id);
+          StockMove stockMove = stockMoveRepo.find(id);
           if (stockMove.getStockMoveLineList() != null
               && !stockMove.getStockMoveLineList().isEmpty()) {
             stockMoveService.copyQtyToRealQty(stockMove);
-            stockMoveService.validate(stockMove);
+            stockMoveService.realize(stockMove);
             if (saleOrder.getConfirmationDateTime() != null) {
               stockMove.setRealDate(saleOrder.getConfirmationDateTime().toLocalDate());
             }

@@ -94,6 +94,7 @@
         readonlyIf="!$reportTypeSelect" colSpan="3"/>
     </panel>
   </form>
+
   <action-view name="action-abc-analysis-reports-wizard" title="Select Report Format"
     model="com.axelor.apps.base.db.ABCAnalysis">
     <view type="form" name="abc-analysis-reports-wizard-form"/>

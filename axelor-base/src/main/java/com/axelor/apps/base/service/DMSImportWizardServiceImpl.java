@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,7 +17,7 @@
  */
 package com.axelor.apps.base.service;
 
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.dms.db.DMSFile;
 import com.axelor.dms.db.repo.DMSFileRepository;
 import com.axelor.exception.AxelorException;
@@ -60,15 +60,15 @@ public class DMSImportWizardServiceImpl implements DMSImportWizardService {
       }
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.DMS_IMPORT_PROCESS_SUCCESS_MESSAGE));
+          I18n.get(BaseExceptionMessage.DMS_IMPORT_PROCESS_SUCCESS_MESSAGE));
     } catch (IOException | UnsupportedOperationException e) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.DMS_IMPORT_FILE_PROCESS_ERROR));
+          I18n.get(BaseExceptionMessage.DMS_IMPORT_FILE_PROCESS_ERROR));
     }
   }
 
-  private ZipInputStream validateZip(File file) throws AxelorException {
+  protected ZipInputStream validateZip(File file) throws AxelorException {
     try (AutoDetectReader autoDetectReader = new AutoDetectReader(new FileInputStream(file));
         ZipInputStream zis =
             new ZipInputStream(new FileInputStream(file), autoDetectReader.getCharset())) {
@@ -76,11 +76,11 @@ public class DMSImportWizardServiceImpl implements DMSImportWizardService {
     } catch (IOException | TikaException e) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.DMS_IMPORT_INVALID_ZIP_ERROR));
+          I18n.get(BaseExceptionMessage.DMS_IMPORT_INVALID_ZIP_ERROR));
     }
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void createDmsTree(ZipInputStream zipInputStream, ZipFile zipfile) throws IOException {
     ZipEntry zipEntry = zipInputStream.getNextEntry();
     Map<String, DMSFile> dmsMap = new HashMap<>();
@@ -116,13 +116,13 @@ public class DMSImportWizardServiceImpl implements DMSImportWizardService {
     }
   }
 
-  private String getFileName(ZipEntry zipEntry) {
+  protected String getFileName(ZipEntry zipEntry) {
     String entryName = zipEntry.getName();
     String[] names = entryName.split(File.separator);
     return names[names.length - 1];
   }
 
-  private String getParentName(ZipEntry zipEntry, String fileName) {
+  protected String getParentName(ZipEntry zipEntry, String fileName) {
     String entryName = zipEntry.getName();
     return entryName.substring(0, entryName.lastIndexOf(File.separator + fileName) + 1);
   }

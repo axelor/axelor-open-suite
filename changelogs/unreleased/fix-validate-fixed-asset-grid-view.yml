@@ -1,3 +1,0 @@
----
-title: "FixedAsset: validation of a fixed asset is now correctly prevented when the validation is done from a grid view and the fixed asset does not have a positive gross value."
-type: fix

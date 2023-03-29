@@ -12,6 +12,30 @@
       <field name="isRequiredShipmentSupplierDetails" widget="boolean-switch" colSpan="4"/>
       <field name="stockUnit" colSpan="4" form-view="unit-form" grid-view="unit-grid"/>
     </panel>
+    <panel name="barCodePanel" title="Barcode">
+      <panel name="trackingNumberBarCodePanel" title="Tracking number" colSpan="12">
+        <field name="activateTrackingNumberBarCodeGeneration" widget="Boolean-switch"
+          colSpan="4"/>
+        <field name="editTrackingNumberBarcodeType"
+          showIf="activateTrackingNumberBarCodeGeneration == true" widget="boolean-switch"
+          colSpan="4"/>
+        <field name="trackingNumberBarcodeTypeConfig"
+          showIf="activateTrackingNumberBarCodeGeneration == true"
+          requiredIf="activateTrackingNumberBarCodeGeneration &amp;&amp; !editTrackingNumberBarcodeType"
+          colSpan="4"/>
+      </panel>
+      <panel name="stockLocationBarCodePanel" title="Stock location" colSpan="12">
+        <field name="activateStockLocationBarCodeGeneration" widget="Boolean-switch"
+          colSpan="4"/>
+        <field name="editStockLocationBarcodeType"
+          showIf="activateStockLocationBarCodeGeneration == true" widget="boolean-switch"
+          colSpan="4"/>
+        <field name="stockLocationBarcodeTypeConfig"
+          showIf="activateStockLocationBarCodeGeneration == true"
+          requiredIf="activateStockLocationBarCodeGeneration &amp;&amp; !editStockLocationBarcodeType"
+          colSpan="4"/>
+      </panel>
+    </panel>
     <panel name="customsPanel" title="Customs">
       <field name="economicArea"/>
     </panel>

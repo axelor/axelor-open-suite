@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -24,12 +24,14 @@ import com.axelor.apps.account.db.ReconcileGroup;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.ReconcileGroupRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -71,7 +73,7 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
     if (CollectionUtils.isEmpty(reconcileList)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.RECONCILE_GROUP_VALIDATION_NO_LINES),
+          I18n.get(AccountExceptionMessage.RECONCILE_GROUP_VALIDATION_NO_LINES),
           reconcileGroup);
     }
 
@@ -207,6 +209,10 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
 
     ReconcileGroup reconcileGroup = reconcile.getReconcileGroup();
 
+    if (reconcileGroup == null) {
+      return;
+    }
+
     // update move lines
     List<MoveLine> moveLineToRemoveList =
         moveLineRepository.findByReconcileGroup(reconcileGroup).fetch();
@@ -225,6 +231,7 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
   }
 
   @Override
+  @Transactional(rollbackOn = Exception.class)
   public void updateStatus(ReconcileGroup reconcileGroup) throws AxelorException {
     List<Reconcile> reconcileList = this.getReconcileList(reconcileGroup);
     int status = reconcileGroup.getStatusSelect();
@@ -243,6 +250,18 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
         reconcileGroupSequenceService.fillCodeFromSequence(reconcileGroup);
       }
     }
+  }
+
+  @Override
+  public void letter(ReconcileGroup reconcileGroup) throws AxelorException {
+
+    List<MoveLine> moveLines =
+        moveLineRepository
+            .all()
+            .filter("self.reconcileGroup = :reconcileGroup")
+            .bind("reconcileGroup", reconcileGroup)
+            .fetch();
+    Beans.get(MoveLineService.class).reconcileMoveLines(moveLines);
   }
 
   @Override

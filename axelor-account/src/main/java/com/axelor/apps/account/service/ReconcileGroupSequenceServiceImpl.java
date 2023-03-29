@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,7 +19,7 @@ package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.ReconcileGroup;
 import com.axelor.apps.account.db.repo.ReconcileGroupRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.exception.AxelorException;
@@ -35,14 +35,15 @@ public class ReconcileGroupSequenceServiceImpl implements ReconcileGroupSequence
     String exceptionMessage;
     if (reconcileGroup.getStatusSelect() == ReconcileGroupRepository.STATUS_FINAL) {
       sequenceCode = SequenceRepository.RECONCILE_GROUP_FINAL;
-      exceptionMessage = IExceptionMessage.RECONCILE_GROUP_NO_FINAL_SEQUENCE;
+      exceptionMessage = AccountExceptionMessage.RECONCILE_GROUP_NO_FINAL_SEQUENCE;
     } else {
       sequenceCode = SequenceRepository.RECONCILE_GROUP_DRAFT;
-      exceptionMessage = IExceptionMessage.RECONCILE_GROUP_NO_TEMP_SEQUENCE;
+      exceptionMessage = AccountExceptionMessage.RECONCILE_GROUP_NO_TEMP_SEQUENCE;
     }
     String code =
         Beans.get(SequenceService.class)
-            .getSequenceNumber(sequenceCode, reconcileGroup.getCompany());
+            .getSequenceNumber(
+                sequenceCode, reconcileGroup.getCompany(), ReconcileGroup.class, "code");
 
     if (code == null) {
       throw new AxelorException(

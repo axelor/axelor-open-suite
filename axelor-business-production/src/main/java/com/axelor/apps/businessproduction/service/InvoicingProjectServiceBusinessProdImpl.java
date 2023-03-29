@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.businessproduction.service;
 
+import com.axelor.apps.base.db.AppBusinessProject;
 import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.service.InvoicingProjectService;
 import com.axelor.apps.production.db.ManufOrder;
@@ -25,7 +26,6 @@ import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.service.ProjectServiceImpl;
-import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.persist.Transactional;
 import java.time.LocalDateTime;
@@ -44,6 +44,12 @@ public class InvoicingProjectServiceBusinessProdImpl extends InvoicingProjectSer
         || !appProductionService.getAppProduction().getManageBusinessProduction()) {
       super.setLines(invoicingProject, project, counter);
       return;
+    }
+
+    AppBusinessProject appBusinessProject = appBusinessProjectService.getAppBusinessProject();
+    if (appBusinessProject.getAutomaticInvoicing()) {
+      projectTaskBusinessProjectService.taskInvoicing(project, appBusinessProject);
+      timesheetLineBusinessService.timsheetLineInvoicing(project);
     }
 
     if (counter > ProjectServiceImpl.MAX_LEVEL_OF_PROJECT) {
@@ -136,7 +142,7 @@ public class InvoicingProjectServiceBusinessProdImpl extends InvoicingProjectSer
     return toInvoiceCount;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   @Override
   public InvoicingProject generateInvoicingProject(Project project, int consolidatePhaseSelect) {
 

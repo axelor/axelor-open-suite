@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,6 +18,7 @@
 package com.axelor.apps.stock.service;
 
 import com.axelor.apps.base.db.Address;
+import com.axelor.apps.base.db.AppStock;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.db.Product;
@@ -36,15 +37,18 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.TrackingNumberConfiguration;
+import com.axelor.apps.stock.db.repo.StockLocationLineHistoryRepository;
 import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.db.repo.TrackingNumberRepository;
-import com.axelor.apps.stock.exception.IExceptionMessage;
+import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.service.app.AppStockService;
+import com.axelor.exception.AxelorAlertException;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.MoreObjects;
@@ -80,6 +84,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
   protected TrackingNumberRepository trackingNumberRepo;
   protected ProductCompanyService productCompanyService;
   protected ShippingCoefService shippingCoefService;
+  protected StockLocationLineHistoryService stockLocationLineHistoryService;
 
   @Inject
   public StockMoveLineServiceImpl(
@@ -93,7 +98,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       WeightedAveragePriceService weightedAveragePriceService,
       TrackingNumberRepository trackingNumberRepo,
       ProductCompanyService productCompanyService,
-      ShippingCoefService shippingCoefService) {
+      ShippingCoefService shippingCoefService,
+      StockLocationLineHistoryService stockLocationLineHistoryService) {
     this.trackingNumberService = trackingNumberService;
     this.appBaseService = appBaseService;
     this.appStockService = appStockService;
@@ -105,6 +111,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     this.trackingNumberRepo = trackingNumberRepo;
     this.productCompanyService = productCompanyService;
     this.shippingCoefService = shippingCoefService;
+    this.stockLocationLineHistoryService = stockLocationLineHistoryService;
   }
 
   @Override
@@ -178,7 +185,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
           unitPrice.setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
       unitPriceUntaxed =
           unitPrice.divide(
-              taxRate.add(BigDecimal.ONE),
+              taxRate.divide(new BigDecimal(100)).add(BigDecimal.ONE),
               appBaseService.getNbDecimalDigitForUnitPrice(),
               RoundingMode.HALF_UP);
     } else {
@@ -186,7 +193,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
           unitPrice.setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
       unitPriceTaxed =
           unitPrice
-              .multiply(taxRate.add(BigDecimal.ONE))
+              .multiply(taxRate.divide(new BigDecimal(100)).add(BigDecimal.ONE))
               .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
     }
     return this.createStockMoveLine(
@@ -224,8 +231,9 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
                   trackingNumberConfiguration,
                   product,
                   trackingNumberConfiguration.getSaleQtyByTracking());
+            }
 
-            } else {
+            if (trackingNumberConfiguration.getHasSaleAutoSelectTrackingNbr()) {
               // Rechercher le numéro de suivi d'apèrs FIFO/LIFO
               this.assignTrackingNumber(stockMoveLine, product, stockMove.getFromStockLocation());
             }
@@ -283,7 +291,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     if (qtyByTracking.compareTo(BigDecimal.ZERO) <= 0) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.STOCK_MOVE_QTY_BY_TRACKING));
+          I18n.get(StockExceptionMessage.STOCK_MOVE_QTY_BY_TRACKING));
     }
     while (stockMoveLine.getQty().compareTo(qtyByTracking) > 0) {
 
@@ -304,7 +312,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       if (generateTrakingNumberCounter == 1000) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.STOCK_MOVE_TOO_MANY_ITERATION));
+            I18n.get(StockExceptionMessage.STOCK_MOVE_TOO_MANY_ITERATION));
       }
     }
     if (stockMoveLine.getTrackingNumber() == null) {
@@ -446,6 +454,31 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       boolean realQty)
       throws AxelorException {
 
+    updateLocations(
+        fromStockLocation,
+        toStockLocation,
+        fromStatus,
+        toStatus,
+        stockMoveLineList,
+        lastFutureStockMoveDate,
+        realQty,
+        null,
+        null);
+  }
+
+  @Override
+  public void updateLocations(
+      StockLocation fromStockLocation,
+      StockLocation toStockLocation,
+      int fromStatus,
+      int toStatus,
+      List<StockMoveLine> stockMoveLineList,
+      LocalDate lastFutureStockMoveDate,
+      boolean realQty,
+      LocalDate date,
+      String origin)
+      throws AxelorException {
+
     stockMoveLineList = MoreObjects.firstNonNull(stockMoveLineList, Collections.emptyList());
 
     for (StockMoveLine stockMoveLine : stockMoveLineList) {
@@ -472,18 +505,43 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
             toStatus,
             lastFutureStockMoveDate,
             stockMoveLine.getTrackingNumber());
-        if (toStockLocation.getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL
-            && toStatus == StockMoveRepository.STATUS_REALIZED) {
-          this.updateAveragePriceLocationLine(toStockLocation, stockMoveLine, fromStatus, toStatus);
+        if (toStatus == StockMoveRepository.STATUS_REALIZED) {
+
+          if (fromStockLocation.getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
+            // We dont recompute average price for outgoing lines
+            this.updateStockLocationLineHistory(
+                fromStockLocation, stockMoveLine, date, origin, toStatus);
+          }
+          if (toStockLocation.getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
+            this.updateAveragePriceAndLocationLineHistory(
+                toStockLocation, stockMoveLine, fromStatus, toStatus, date, origin);
+          }
           weightedAveragePriceService.computeAvgPriceForProduct(stockMoveLine.getProduct());
+        }
+        if (fromStatus == StockMoveRepository.STATUS_REALIZED
+            && toStatus == StockMoveRepository.STATUS_CANCELED) {
+          // We dont recompute on cancel
+          if (fromStockLocation.getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
+            this.updateStockLocationLineHistory(
+                fromStockLocation, stockMoveLine, date, origin, toStatus);
+          }
+          if (toStockLocation.getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
+            this.updateStockLocationLineHistory(
+                toStockLocation, stockMoveLine, date, origin, toStatus);
+          }
         }
       }
     }
   }
 
   @Override
-  public void updateAveragePriceLocationLine(
-      StockLocation stockLocation, StockMoveLine stockMoveLine, int fromStatus, int toStatus)
+  public void updateAveragePriceAndLocationLineHistory(
+      StockLocation stockLocation,
+      StockMoveLine stockMoveLine,
+      int fromStatus,
+      int toStatus,
+      LocalDate date,
+      String origin)
       throws AxelorException {
     StockLocationLine stockLocationLine =
         stockLocationLineService.getOrCreateStockLocationLine(
@@ -493,11 +551,60 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     }
 
     if (toStatus == StockMoveRepository.STATUS_REALIZED) {
-      this.computeNewAveragePriceLocationLine(stockLocationLine, stockMoveLine);
+      BigDecimal avgPrice =
+          this.computeNewAveragePriceLocationLine(stockLocationLine, stockMoveLine);
+      stockLocationLine.setAvgPrice(avgPrice);
+
+      stockLocationLineService.updateHistory(
+          stockLocationLine,
+          stockMoveLine,
+          date != null ? date.atStartOfDay() : null,
+          origin,
+          getStockLocationLineHistoryTypeSelect(toStatus));
     }
   }
 
-  protected void computeNewAveragePriceLocationLine(
+  /**
+   * Method that return proper stockLocationLineHistory.typeSelect depending of the statusStockMove
+   *
+   * @param statusStockMove
+   * @return typeSelect matching with statusStockMove
+   */
+  protected String getStockLocationLineHistoryTypeSelect(int statusStockMove) {
+    switch (statusStockMove) {
+      case StockMoveRepository.STATUS_CANCELED:
+        return StockLocationLineHistoryRepository.TYPE_SELECT_CANCELATION;
+      case StockMoveRepository.STATUS_REALIZED:
+        return StockLocationLineHistoryRepository.TYPE_SELECT_STOCK_MOVE;
+      default:
+        return null;
+    }
+  }
+
+  protected void updateStockLocationLineHistory(
+      StockLocation stockLocation,
+      StockMoveLine stockMoveLine,
+      LocalDate date,
+      String origin,
+      int toStatus) {
+    StockLocationLine stockLocationLine =
+        stockLocationLineService.getOrCreateStockLocationLine(
+            stockLocation, stockMoveLine.getProduct());
+    if (stockLocationLine == null) {
+      return;
+    }
+    stockLocationLine.setAvgPrice(
+        Optional.ofNullable(stockLocationLine.getAvgPrice()).orElse(BigDecimal.ZERO));
+    stockLocationLineService.updateHistory(
+        stockLocationLine,
+        stockMoveLine,
+        date != null ? date.atStartOfDay() : null,
+        origin,
+        getStockLocationLineHistoryTypeSelect(toStatus));
+  }
+
+  @Override
+  public BigDecimal computeNewAveragePriceLocationLine(
       StockLocationLine stockLocationLine, StockMoveLine stockMoveLine) throws AxelorException {
     BigDecimal oldAvgPrice = stockLocationLine.getAvgPrice();
     // avgPrice in stock move line is a bigdecimal but is nullable.
@@ -530,8 +637,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
       newPrice =
           unitConversionService.convert(
-              stockMoveLineUnit,
               stockLocationLineUnit,
+              stockMoveLineUnit,
               newPrice,
               newPrice.scale(),
               stockMoveLine.getProduct());
@@ -552,7 +659,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     } else {
       newAvgPrice = oldAvgPrice;
     }
-    stockLocationLineService.updateWap(stockLocationLine, newAvgPrice, stockMoveLine);
+    return newAvgPrice;
   }
 
   @Override
@@ -573,7 +680,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       throw new AxelorException(
           stockMoveLine,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.STOCK_MOVE_LINE_MUST_FILL_CONFORMITY),
+          I18n.get(StockExceptionMessage.STOCK_MOVE_LINE_MUST_FILL_CONFORMITY),
           product.getName());
     }
   }
@@ -607,13 +714,13 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       throw new AxelorException(
           stockMove,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.STOCK_MOVE_LINE_MUST_FILL_CONFORMITY),
+          I18n.get(StockExceptionMessage.STOCK_MOVE_LINE_MUST_FILL_CONFORMITY),
           productsWithErrorStr);
     }
   }
 
   @Override
-  public void checkExpirationDates(StockMove stockMove) throws AxelorException {
+  public void checkExpirationDates(StockMove stockMove) {
     List<String> errorList = new ArrayList<>();
 
     for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
@@ -643,10 +750,12 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
     if (!errorList.isEmpty()) {
       String errorStr = errorList.stream().collect(Collectors.joining(", "));
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.STOCK_MOVE_LINE_EXPIRED_PRODUCTS),
-          errorStr);
+      TraceBackService.trace(
+          new AxelorAlertException(
+              stockMove,
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(StockExceptionMessage.STOCK_MOVE_LINE_EXPIRED_PRODUCTS),
+              errorStr));
     }
   }
 
@@ -680,7 +789,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       String productWithErrorsStr = productsWithErrors.stream().collect(Collectors.joining(", "));
       throw new AxelorException(
           TraceBackRepository.CATEGORY_NO_VALUE,
-          I18n.get(IExceptionMessage.STOCK_MOVE_LINE_MUST_FILL_TRACKING_NUMBER),
+          I18n.get(StockExceptionMessage.STOCK_MOVE_LINE_MUST_FILL_TRACKING_NUMBER),
           productWithErrorsStr);
     }
   }
@@ -956,7 +1065,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
         stockMoveLine, updatedLogisticalFormLineList);
   }
 
-  private BigDecimal computeSpreadableQtyOverLogisticalFormLines(
+  protected BigDecimal computeSpreadableQtyOverLogisticalFormLines(
       StockMoveLine stockMoveLine, List<LogisticalFormLine> logisticalFormLineList) {
 
     if (stockMoveLine == null) {
@@ -1035,7 +1144,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.MISSING_PRODUCT_MASS_UNIT),
+          I18n.get(StockExceptionMessage.MISSING_PRODUCT_MASS_UNIT),
           product.getName());
     }
 
@@ -1113,7 +1222,32 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
         if (trackingNumberItem.get("note") != null) {
           trackingNumber.setNote(trackingNumberItem.get("note").toString());
         }
+        if (trackingNumberItem.get("serialNbr") != null) {
+          trackingNumber.setSerialNumber(trackingNumberItem.get("serialNbr").toString());
+        }
         trackingNumber.setProduct(stockMoveLine.getProduct());
+
+        if (stockMoveLine.getProduct() != null) {
+          // In case of barcode generation, retrieve the one set on tracking number configuration
+          AppStock appStock = appStockService.getAppStock();
+          TrackingNumberConfiguration trackingNumberConfiguration =
+              stockMoveLine.getProduct().getTrackingNumberConfiguration();
+          if (appStock != null
+              && appStock.getActivateTrackingNumberBarCodeGeneration()
+              && trackingNumberConfiguration != null) {
+            if (appStock.getEditTrackingNumberBarcodeType()) {
+              trackingNumber.setBarcodeTypeConfig(
+                  trackingNumberConfiguration.getBarcodeTypeConfig());
+            } else {
+              trackingNumber.setBarcodeTypeConfig(appStock.getTrackingNumberBarcodeTypeConfig());
+            }
+            if (trackingNumberConfiguration.getUseTrackingNumberSeqAsSerialNbr()) {
+              trackingNumber.setSerialNumber(trackingNumber.getTrackingNumberSeq());
+            }
+            // It will launch barcode generation
+            trackingNumberRepo.save(trackingNumber);
+          }
+        }
       }
 
       StockMoveLine newStockMoveLine = stockMoveLineRepository.copy(stockMoveLine, true);
@@ -1180,19 +1314,36 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
   }
 
   @Override
-  public String createDomainForProduct(StockMoveLine stockMoveLine, StockMove stockMove) {
+  public String createDomainForProduct(StockMoveLine stockMoveLine, StockMove stockMove)
+      throws AxelorException {
+    String domain = getCommonFilter(stockMoveLine);
+    domain += getProductTypeFilter(stockMoveLine, stockMove);
+    return domain;
+  }
+
+  protected String getCommonFilter(StockMoveLine stockMoveLine) {
     String domain = "self.isModel = false AND self.isShippingCostsProduct = false";
     if (stockMoveLine.getProductModel() != null) {
       domain += " AND self.parentProduct.id = " + stockMoveLine.getProductModel().getId();
     }
+    domain += " AND self.dtype = 'Product'";
+    return domain;
+  }
+
+  protected String getProductTypeFilter(StockMoveLine stockMoveLine, StockMove stockMove)
+      throws AxelorException {
+    return getFilterForStorables(stockMoveLine, stockMove);
+  }
+
+  protected String getFilterForStorables(StockMoveLine stockMoveLine, StockMove stockMove)
+      throws AxelorException {
     if (stockMoveLine.getFilterOnAvailableProducts()
         && stockMove.getFromStockLocation().getTypeSelect() != 3) {
-      domain +=
-          " AND self.id in (select sll.product.id from StockLocation sl inner join sl.stockLocationLineList sll WHERE sl.id = "
-              + stockMove.getFromStockLocation().getId()
-              + " AND sll.currentQty > 0)";
+      return " AND self.id in (select sll.product.id from StockLocation sl inner join sl.stockLocationLineList sll WHERE sl.id = "
+          + stockMove.getFromStockLocation().getId()
+          + " AND sll.currentQty > 0)";
     }
-    return domain + " AND self.dtype = 'Product'";
+    return "";
   }
 
   @Override
@@ -1250,5 +1401,57 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
     stockLocationLineOpt.ifPresent(
         stockLocationLine -> stockMoveLine.setWapPrice(stockLocationLine.getAvgPrice()));
+  }
+
+  /** Create new stock line, then set product infos and compute prices (API AOS) */
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public StockMoveLine createStockMoveLine(
+      StockMove stockMove,
+      Product product,
+      TrackingNumber trackingNumber,
+      BigDecimal qty,
+      BigDecimal realQty,
+      Unit unit,
+      Integer conformitySelect)
+      throws AxelorException {
+
+    StockMoveLine line =
+        createStockMoveLine(
+            product,
+            product.getName(),
+            "",
+            qty,
+            null,
+            null,
+            null,
+            null,
+            unit,
+            stockMove,
+            trackingNumber);
+    setProductInfo(stockMove, line, stockMove.getCompany());
+    compute(line, stockMove);
+    line.setRealQty(realQty);
+    line.setConformitySelect(conformitySelect);
+    stockMoveLineRepository.save(line);
+    return line;
+  }
+
+  /** Update stock move line realQty and conformity (API AOS) */
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void updateStockMoveLine(
+      StockMoveLine stockMoveLine, BigDecimal realQty, Integer conformity) throws AxelorException {
+    if (stockMoveLine.getStockMove() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY, "Error: missing parent stock move.");
+    } else {
+      if (stockMoveLine.getStockMove().getStatusSelect() != StockMoveRepository.STATUS_REALIZED
+          && stockMoveLine.getStockMove().getStatusSelect()
+              != StockMoveRepository.STATUS_CANCELED) {
+        stockMoveLine.setRealQty(realQty);
+        stockMoveLine.setConformitySelect(conformity);
+      }
+    }
   }
 }

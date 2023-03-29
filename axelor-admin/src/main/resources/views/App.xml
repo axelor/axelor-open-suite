@@ -70,7 +70,7 @@
     <panel name="wizardPanel">
       <field type="many-to-one" name="metaFile" title="File" widget="binary-link"
         target="com.axelor.meta.db.MetaFile"/>
-      <button name="importAccessBtn" title="Import" colSpan="4"
+      <button name="importAccessBtn" title="import.verb" colSpan="4"
         onClick="action-app-method-import-access-config" readonlyIf="metaFile == null"/>
     </panel>
   </form>

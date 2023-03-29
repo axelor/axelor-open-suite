@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,6 +19,8 @@ package com.axelor.apps.stock.service;
 
 import com.axelor.apps.stock.db.StockHistoryLine;
 import com.axelor.exception.AxelorException;
+import com.axelor.meta.db.MetaFile;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -36,6 +38,27 @@ public interface StockHistoryService {
    * @return the computed lines.
    */
   List<StockHistoryLine> computeStockHistoryLineList(
+      Long productId, Long companyId, Long stockLocationId, LocalDate beginDate, LocalDate endDate)
+      throws AxelorException;
+
+  MetaFile exportStockHistoryLineList(List<StockHistoryLine> stockHistoryLineList, String fileName)
+      throws IOException;
+
+  public String getStockHistoryLineExportName(String productName);
+
+  /**
+   * Same as {@link StockHistoryService#computeStockHistoryLineList(Long, Long, Long, LocalDate,
+   * LocalDate)} But, this method will save the computed stock history lines
+   *
+   * @param productId
+   * @param companyId
+   * @param stockLocationId
+   * @param beginDate
+   * @param endDate
+   * @return
+   * @throws AxelorException
+   */
+  List<StockHistoryLine> computeAndSaveStockHistoryLineList(
       Long productId, Long companyId, Long stockLocationId, LocalDate beginDate, LocalDate endDate)
       throws AxelorException;
 }

@@ -12,6 +12,7 @@ libs.commons_lang3 = 'org.apache.commons:commons-lang3:3.2'
 libs.commons_math3 = 'org.apache.commons:commons-math3:3.6.1'
 libs.commons_net = 'commons-net:commons-net:2.0'
 libs.commons_validator = 'commons-validator:commons-validator:1.4.0'
+libs.commons_text = 'org.apache.commons:commons-text:1.9'
 
 libs.pdfbox = 'org.apache.pdfbox:pdfbox:2.0.9'
 libs.itextpdf = 'com.itextpdf:itextpdf:5.5.13.1'

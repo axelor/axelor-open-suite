@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -62,15 +62,16 @@ public class WkfExecutionListener implements ExecutionListener {
     } else if (eventName.equals(EVENTNAME_END)) {
 
       BpmnModelElementInstance modelElementInstance = execution.getBpmnModelElementInstance();
-      String typeName = modelElementInstance.getElementType().getTypeName();
-      if (modelElementInstance != null
-          && typeName.equals(BpmnModelConstants.BPMN_ELEMENT_BUSINESS_RULE_TASK)) {
-        checkDMNValue(execution);
+      if (modelElementInstance != null) {
+        String typeName = modelElementInstance.getElementType().getTypeName();
+        if (typeName.equals(BpmnModelConstants.BPMN_ELEMENT_BUSINESS_RULE_TASK)) {
+          checkDMNValue(execution);
+        }
       }
     }
   }
 
-  private void checkDMNValue(DelegateExecution execution) throws AxelorException {
+  protected void checkDMNValue(DelegateExecution execution) throws AxelorException {
 
     String compulsory =
         execution
@@ -93,7 +94,7 @@ public class WkfExecutionListener implements ExecutionListener {
     }
   }
 
-  private void createWkfInstance(DelegateExecution execution) {
+  protected void createWkfInstance(DelegateExecution execution) {
 
     String instanceId = execution.getProcessInstanceId();
     WkfInstanceRepository instanceRepo = Beans.get(WkfInstanceRepository.class);
@@ -107,7 +108,7 @@ public class WkfExecutionListener implements ExecutionListener {
     }
   }
 
-  private void processNodeStart(DelegateExecution execution) {
+  protected void processNodeStart(DelegateExecution execution) {
 
     FlowElement flowElement = execution.getBpmnModelElementInstance();
     if (flowElement == null) {
@@ -130,7 +131,7 @@ public class WkfExecutionListener implements ExecutionListener {
     }
   }
 
-  private void sendMessage(FlowElement flowElement, DelegateExecution execution) {
+  protected void sendMessage(FlowElement flowElement, DelegateExecution execution) {
 
     Collection<MessageEventDefinition> messageDefinitions =
         flowElement.getChildElementsByType(MessageEventDefinition.class);
@@ -172,7 +173,7 @@ public class WkfExecutionListener implements ExecutionListener {
     }
   }
 
-  private String getProcessKey(DelegateExecution execution, String processDefinitionId) {
+  protected String getProcessKey(DelegateExecution execution, String processDefinitionId) {
 
     return execution
         .getProcessEngineServices()
@@ -198,7 +199,7 @@ public class WkfExecutionListener implements ExecutionListener {
     instanceRepo.save(wkfInstance);
   }
 
-  private void onNodeActivation(DelegateExecution execution) {
+  protected void onNodeActivation(DelegateExecution execution) {
 
     WkfTaskConfig wkfTaskConfig =
         Beans.get(WkfTaskConfigRepository.class)
@@ -218,7 +219,7 @@ public class WkfExecutionListener implements ExecutionListener {
     }
   }
 
-  private boolean blockingNode(String type) {
+  protected boolean blockingNode(String type) {
 
     boolean blockinNode = false;
     switch (type) {

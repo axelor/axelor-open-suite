@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -95,7 +95,7 @@ public class FileTabServiceImpl implements FileTabService {
     return fileTab;
   }
 
-  private String getSubImportField(MetaField importField) throws ClassNotFoundException {
+  protected String getSubImportField(MetaField importField) throws ClassNotFoundException {
     String modelName = importField.getTypeName();
     MetaModel metaModel = Beans.get(MetaModelRepository.class).findByName(modelName);
 

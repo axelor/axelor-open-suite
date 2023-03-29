@@ -14,8 +14,11 @@
     <bind to="origin" column="PieceRef"/>
     <bind to="description" column="EcritureLib"/>
     <bind to="currencyAmount" eval="Montantdevise.replace(',', '.')" column="Montantdevise"/>
-    <bind to="reconcileGroup" column="EcritureLet" search="self.code = :EcritureLet"
-      update="true"/>
+    <bind to="reconcileGroup" column="EcritureLet" search="self.code = :EcritureLet">
+      <bind to="code" column="EcritureLet"/>
+      <bind to="dateOfLettering" column="reconcileGroupDateOfLettering"
+        eval="Date.parse('yyyyMMdd',reconcileGroupDateOfLettering)"/>
+    </bind>
   </input>
 
 </csv-inputs>

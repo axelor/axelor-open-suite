@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,9 +19,8 @@ package com.axelor.apps.account.service.payment.invoice.payment;
 
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.Move;
-import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
-import com.axelor.apps.account.db.repo.ReconcileRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveCancelService;
@@ -68,22 +67,14 @@ public class InvoicePaymentCancelServiceImpl implements InvoicePaymentCancelServ
    */
   @Transactional(rollbackOn = {Exception.class})
   public void cancel(InvoicePayment invoicePayment) throws AxelorException {
-
     Move paymentMove = invoicePayment.getMove();
-    Reconcile reconcile = invoicePayment.getReconcile();
 
-    log.debug("cancel : reconcile : {}", reconcile);
-
-    if (reconcile != null && reconcile.getStatusSelect() == ReconcileRepository.STATUS_CONFIRMED) {
-      reconcileService.unreconcile(reconcile);
-    }
-
-    if (paymentMove != null
-        && invoicePayment.getTypeSelect() == InvoicePaymentRepository.TYPE_PAYMENT) {
-      invoicePayment.setMove(null);
+    if (paymentMove != null) {
+      if (paymentMove.getStatusSelect() == MoveRepository.STATUS_NEW) {
+        invoicePayment.setMove(null);
+      }
       moveCancelService.cancel(paymentMove);
-    } else {
-      this.updateCancelStatus(invoicePayment);
+      updateCancelStatus(invoicePayment);
     }
   }
 

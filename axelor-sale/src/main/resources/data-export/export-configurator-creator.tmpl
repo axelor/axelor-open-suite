@@ -149,6 +149,10 @@ def configuratorProductFormulaMethod = {
                 if (cf.metaField?.id != null) {
                 configuratorProductFormula += "<metaField>${cf.metaField?.name}</metaField>"
                 }
+	            if (cf.metaJsonField != null) {
+		            configuratorProductFormula += """
+		                <metaJsonField>${cf.metaJsonField?.name}</metaJsonField>"""
+	            }   		              
                 configuratorProductFormula += 	"""
                 <formula>"""
                 if (cf.formula != null) {
@@ -172,6 +176,10 @@ def configuratorSOLineFormulaMethod = {
                 if (cf.metaField?.id != null) {
                 configuratorSOLineFormula += "<metaField>${ cf.metaField?.name}</metaField>"
                 }
+	            if (cf.metaJsonField != null) {
+		            configuratorProductFormula += """
+		                <metaJsonField>${cf.metaJsonField?.name}</metaJsonField>"""
+	            }   		               
                 configuratorSOLineFormula += 	"""
                 <formula>"""
                 if (cf.formula != null) {

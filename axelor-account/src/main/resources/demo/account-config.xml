@@ -9,13 +9,22 @@
   <input file="account_fiscalPosition.csv" separator=";"
     type="com.axelor.apps.account.db.FiscalPosition"/>
 
-  <input file="account_account.csv" separator=";" type="com.axelor.apps.account.db.Account"/>
+  <input file="account_serviceType.csv" separator=";"
+    type="com.axelor.apps.account.db.ServiceType" search="self.importId = :importId"/>
+
+  <input file="account_account.csv" separator=";" type="com.axelor.apps.account.db.Account"
+    search="self.importId = :importId"/>
 
   <input file="account_accountEquiv.csv" separator=";"
     type="com.axelor.apps.account.db.AccountEquiv"/>
 
+  <input file="account_accountConfig.csv" separator=";"
+    type="com.axelor.apps.account.db.AccountConfig" search="self.importId = :importId"/>
+
   <input file="account_account.csv" separator=";" type="com.axelor.apps.account.db.Account"
-    search="self.importId = :importId" update="true">
+    search="self.importId = :importId" update="true"
+    prepare-context="com.axelor.csv.script.ImportAccount:resetLineNo"
+    call="com.axelor.csv.script.ImportAccount:importAccount">
     <bind to="importId" column="importId"/>
     <bind to="parentAccount" search="self.code = :parent_code AND self.company.id = 1"
       update="true">
@@ -46,22 +55,30 @@
   </input>
 
   <input file="account_journal.csv" separator=";" type="com.axelor.apps.account.db.Journal"
-    search="self.importId = :importId" call="com.axelor.csv.script.ImportJournal:importAccountType"/>
+    search="self.importId = :importId" call="com.axelor.csv.script.ImportJournal:importAccountType">
+    <bind column="validAccountTypes" to="validAccountTypeSet"
+      search="self.technicalTypeSelect in :validAccountTypes"
+      eval="validAccountTypes.split('\\|') as List"/>
+    <bind column="validAccounts" to="validAccountSet"
+      search="self.code in :validAccounts and self.company.importId = :company_importId"
+      eval="validAccounts.split('\\|') as List"/>
+    <bind to="company" search="self.importId = :company_importId"/>
+  </input>
 
   <input file="account_paymentMode.csv" separator=";"
-    type="com.axelor.apps.account.db.PaymentMode" search="self.importId = :importId"/>
+    type="com.axelor.apps.account.db.PaymentMode" search="self.importId = :importId">
+    <bind column="generateBankOrder" to="generateBankOrder" adapter="Boolean"/>
+    <bind column="generateMoveAutoFromBankOrder" to="generateMoveAutoFromBankOrder"
+      adapter="Boolean"/>
+    <bind column="consoBankOrderLinePerPartner" to="consoBankOrderLinePerPartner"
+      adapter="Boolean"/>
+  </input>
 
   <input file="account_paymentCondition.csv" separator=";"
     type="com.axelor.apps.account.db.PaymentCondition" search="self.importId = :importId"/>
 
-  <input file="account_analyticAxis.csv" separator=";"
-    type="com.axelor.apps.account.db.AnalyticAxis" search="self.importId = :importId"/>
-
-  <input file="account_analyticJournal.csv" separator=";"
-    type="com.axelor.apps.account.db.AnalyticJournal" search="self.importId = :importId"/>
-
-  <input file="account_analyticAccount.csv" separator=";"
-    type="com.axelor.apps.account.db.AnalyticAccount" search="self.importId = :importId"/>
+  <input file="account_paymentConditionLine.csv" separator=";"
+    type="com.axelor.apps.account.db.PaymentConditionLine" search="self.importId = :importId"/>
 
   <input file="base_company.csv" separator=";" type="com.axelor.apps.base.db.Company"
     search="self.importId = :importId" update="true"
@@ -117,15 +134,17 @@
     </bind>
   </input>
 
+  <input file="message_template.csv" separator=";" type="com.axelor.apps.message.db.Template"/>
+
   <input file="account_debtRecoveryMethod.csv" separator=";"
     type="com.axelor.apps.account.db.DebtRecoveryMethod" search="self.code = :code"/>
 
   <input file="account_debtRecoveryMethodLine.csv" separator=";"
-    type="com.axelor.apps.account.db.DebtRecoveryMethodLine"/>
+    type="com.axelor.apps.account.db.DebtRecoveryMethodLine">
+    <bind column="messageTemplateSet" to="messageTemplateSet"
+      search="self.name in :messageTemplateSet" eval="messageTemplateSet.split('\\|') as List"/>
+  </input>
 
-
-  <input file="account_fixedAssetType.csv" separator=";" search="self.importId = :importId"
-    type="com.axelor.apps.account.db.FixedAssetType"/>
 
   <input file="account_fixedAssetCategory.csv" separator=";"
     search="self.importId = :importId" type="com.axelor.apps.account.db.FixedAssetCategory">
@@ -137,20 +156,83 @@
     <bind search="self.importId = :company_id" to="company" update="true"/>
     <bind search="self.code = :cashAccount_code and self.company.importId = :company_id"
       to="cashAccount" update="true" if="cashAccount_code"/>
+    <bind
+      search="self.code = :saleTaxVatSystem1Account_code and self.company.importId = :company_id"
+      to="saleTaxVatSystem1Account" update="true" if="saleTaxVatSystem1Account_code"/>
     <bind search="self.code = :saleAccount_code and self.company.importId = :company_id"
       to="saleAccount" update="true" if="saleAccount_code"/>
+    <bind
+      search="self.code = :saleTaxVatSystem2Account_code and self.company.importId = :company_id"
+      to="saleTaxVatSystem2Account" update="true" if="saleTaxVatSystem2Account_code"/>
     <bind search="self.code = :purchaseAccount_code and self.company.importId = :company_id"
       to="purchaseAccount" update="true" if="purchaseAccount_code"/>
+    <bind
+      search="self.code = :purchaseTaxVatSystem1Account_code and self.company.importId = :company_id"
+      to="purchaseTaxVatSystem1Account" update="true" if="purchaseTaxVatSystem1Account_code"/>
+    <bind
+      search="self.code = :purchaseTaxVatSystem2Account_code and self.company.importId = :company_id"
+      to="purchaseTaxVatSystem2Account" update="true" if="purchaseTaxVatSystem2Account_code"/>
+    <bind
+      search="self.code = :purchVatRegulationAccount_code and self.company.importId = :company_id"
+      to="purchVatRegulationAccount" update="true" if="purchVatRegulationAccount_code"/>
+    <bind
+      search="self.code = :saleVatRegulationAccount_code and self.company.importId = :company_id"
+      to="saleVatRegulationAccount" update="true" if="saleVatRegulationAccount_code"/>
     <bind search="self.importId = :sequence_importId" to="sequence" update="true"
       if="sequence_importId"/>
     <bind search="self.importId = :journal_importId and self.company.importId = :company_id"
       to="journal" update="true" if="journal_importId"/>
     <bind search="self.importId = :bankDetails_importId" to="bankDetails" update="true"
       if="bankDetails_importId"/>
+    <bind
+      search="self.code = :globalAccountingCashAccount_code and self.company.importId = :company_id"
+      to="globalAccountingCashAccount" update="true" if="globalAccountingCashAccount_code"/>
+    <bind
+      search="self.code = :chequeDepositJournal_code and self.company.importId = :company_id"
+      to="chequeDepositJournal" update="true" if="chequeDepositJournal_code"/>
+    <bind
+      search="self.code = :allowedFinDiscountTaxVatSystem1Account_code and self.company.importId = :company_id"
+      to="allowedFinDiscountTaxVatSystem1Account" update="true"
+      if="allowedFinDiscountTaxVatSystem1Account_code"/>
+    <bind
+      search="self.code = :allowedFinDiscountTaxVatSystem2Account_code and self.company.importId = :company_id"
+      to="allowedFinDiscountTaxVatSystem2Account" update="true"
+      if="allowedFinDiscountTaxVatSystem2Account_code"/>
+    <bind
+      search="self.code = :obtainedFinDiscountTaxVatSystem1Account_code and self.company.importId = :company_id"
+      to="obtainedFinDiscountTaxVatSystem1Account" update="true"
+      if="obtainedFinDiscountTaxVatSystem1Account_code"/>
+    <bind
+      search="self.code = :obtainedFinDiscountTaxVatSystem2Account_code and self.company.importId = :company_id"
+      to="obtainedFinDiscountTaxVatSystem2Account" update="true"
+      if="obtainedFinDiscountTaxVatSystem2Account_code"/>
+    <bind
+      search="self.code = :purchFixedAssetsTaxVatSystem1Account_code and self.company.importId = :company_id"
+      to="purchFixedAssetsTaxVatSystem1Account" update="true"
+      if="purchFixedAssetsTaxVatSystem1Account_code"/>
+    <bind
+      search="self.code = :purchFixedAssetsTaxVatSystem2Account_code and self.company.importId = :company_id"
+      to="purchFixedAssetsTaxVatSystem2Account" update="true"
+      if="purchFixedAssetsTaxVatSystem2Account_code"/>
+    <bind
+      search="self.code = :saleTaxVatSystem2Account_code and self.company.importId = :company_id"
+      to="saleTaxVatSystem2Account" update="true" if="saleTaxVatSystem2Account_code"/>
+    <bind
+      search="self.code = :saleTaxVatSystem1Account_code and self.company.importId = :company_id"
+      to="saleTaxVatSystem1Account" update="true" if="saleTaxVatSystem1Account_code"/>
+    <bind
+      search="self.code = :purchaseTaxVatSystem2Account_code and self.company.importId = :company_id"
+      to="purchaseTaxVatSystem2Account" update="true" if="purchaseTaxVatSystem2Account_code"/>
+    <bind
+      search="self.code = :purchaseTaxVatSystem1Account_code and self.company.importId = :company_id"
+      to="purchaseTaxVatSystem1Account" update="true" if="purchaseTaxVatSystem1Account_code"/>
   </input>
 
   <input file="account_cfonbConfig.csv" separator=";"
     type="com.axelor.apps.account.db.CfonbConfig" search="self.importId = :importId"/>
+
+  <input file="account_analyticJournal.csv" separator=";"
+    type="com.axelor.apps.account.db.AnalyticJournal" search="self.importId = :importId"/>
 
   <input file="account_accountConfig.csv" separator=";"
     type="com.axelor.apps.account.db.AccountConfig" search="self.importId = :importId"/>
@@ -177,9 +259,8 @@
     type="com.axelor.apps.base.db.AppAccount"/>
 
   <input file="base_sequence.csv" separator=";" type="com.axelor.apps.base.db.Sequence"
-    search="self.importId = :importId">
-    <bind to="yearlyResetOk" column="yearlyResetOk" eval="yearlyResetOk == '1' ? true : false"
-      if="yearlyResetOk"/>
+    search="self.importId = :importId" call="com.axelor.csv.script.ImportSequence:importSequence">
+    <bind to="yearlyResetOk" column="yearlyResetOk" adapter="Boolean" if="yearlyResetOk"/>
     <bind to="nextNum" column="nextNum" eval="nextNum?.empty ? '1' : nextNum"/>
     <bind to="padding" column="padding" eval="padding?.empty ? '1' : padding"/>
     <bind to="toBeAdded" column="toBeAdded" eval="toBeAdded?.empty ? '1' : toBeAdded"/>
@@ -226,21 +307,60 @@
     type="com.axelor.apps.account.db.AccountingReportType" search="self.importId = :importId">
     <bind to="name" column="name"/>
     <bind to="reportExportTypeSelect" eval="'1'"/>
-    <bind to="typeSelect" eval="'3000'"/>
     <bind to="reportTitle" column="name"/>
     <bind to="company" column="company" search="self.importId = :company"/>
+    <bind to="comparison" eval="'0'"/>
   </input>
 
   <input file="account_accountingReportConfigLine.csv" separator=";"
     type="com.axelor.apps.account.db.AccountingReportConfigLine" search="self.importId = :importId"
     call="com.axelor.csv.script.ImportAccountingReportConfigLine:setAccounts">
-    <bind to="typeSelect" column="type"/>
-    <bind to="ruleTypeSelect" column="ruleType"/>
-    <bind to="label" column="label" if="typeSelect != 3 &amp;&amp; ruleTypeSelect != 1"/>
-    <bind to="code" column="code" if="typeSelect != 3 &amp;&amp; ruleTypeSelect != 1"/>
-    <bind to="resultSelect" column="result" if="ruleTypeSelect == 2"/>
-    <bind to="rule" column="rule"/>
-    <bind to="reportType" search="self.importId = :reportTypeId"/>
+    <bind to="label" if="typeSelect != 3 &amp;&amp; ruleTypeSelect != 1"/>
+    <bind to="code" if="typeSelect != 3 &amp;&amp; ruleTypeSelect != 1"/>
+    <bind to="resultSelect" if="ruleTypeSelect == 2"/>
+    <bind to="reportType" search="self.importId = :reportTypeId" if="reportTypeId"/>
+    <bind to="reportTypeColumn" search="self.importId = :reportTypeColumnId"
+      if="reportTypeColumnId"/>
+  </input>
+
+  <input file="account_paymentDelayReason.csv" separator=";"
+    type="com.axelor.apps.account.db.PaymentDelayReason" search="self.importId = :importId"/>
+
+  <input file="account_analyticAxis.csv" separator=";"
+    type="com.axelor.apps.account.db.AnalyticAxis" search="self.importId = :importId"/>
+
+  <input file="account_analyticGrouping.csv" separator=";"
+    type="com.axelor.apps.account.db.AnalyticGrouping" search="self.importId = :importId"/>
+
+  <input file="account_analyticAxis.csv" separator=";"
+    type="com.axelor.apps.account.db.AnalyticAxis" search="self.importId = :importId" update="true"/>
+
+  <input file="account_analyticGroupingValue.csv" separator=";"
+    type="com.axelor.apps.account.db.AnalyticGroupingValue" search="self.importId = :importId"/>
+
+  <input file="account_analyticAccount.csv" separator=";"
+    type="com.axelor.apps.account.db.AnalyticAccount" search="self.importId = :importId"/>
+
+  <input file="account_analyticAxisByCompany.csv" separator=";"
+    type="com.axelor.apps.account.db.AnalyticAxisByCompany" search="self.importId = :importId"/>
+
+  <input file="account_analyticDistributionTemplate.csv" separator=";"
+    type="com.axelor.apps.account.db.AnalyticDistributionTemplate"
+    search="self.importId = :importId"/>
+
+  <input file="account_analyticDistributionLine.csv" separator=";"
+    type="com.axelor.apps.account.db.AnalyticDistributionLine" search="self.importId = :importId"/>
+
+  <input file="account_das2Activity.csv" separator=";"
+    type="com.axelor.apps.account.db.Das2Activity" search="self.code = :code"/>
+
+  <input file="account_financialDiscount.csv" separator=";"
+    type="com.axelor.apps.account.db.FinancialDiscount" search="self.importId = :importId"/>
+
+  <input file="account_invoiceProductStatement.csv" separator=";"
+    search="self.importId = :importId" type="com.axelor.apps.account.db.InvoiceProductStatement">
+    <bind to="accountConfig" column="accountConfig_importId"
+      search="self.importId = :accountConfig_importId"/>
   </input>
 
 </csv-inputs>

@@ -105,6 +105,26 @@
     </field>
   </grid>
 
+  <grid name="stock-move-line-cut-off-grid" title="Stock move lines concerned by cut off"
+    model="com.axelor.apps.stock.db.StockMoveLine" groupBy="stockMove">
+    <toolbar>
+      <button name="validateBtn" title="Validate" icon="fa-check"
+        onClick="action-stock-move-line-method-validate-cut-off-batch"/>
+    </toolbar>
+    <hilite color="danger" if="$get('stockMove.cutOffMoveGenerated')"/>
+    <field name="stockMove.stockMoveSeq"/>
+    <field name="stockMove.typeSelect"/>
+    <field name="stockMove.realDate"/>
+    <field name="stockMove.statusSelect"/>
+    <field name="productName"/>
+    <field name="realQty" x-scale="2"/>
+    <field name="qtyInvoiced" x-scale="2"/>
+    <field name="unitPriceUntaxed" x-scale="2"/>
+    <field name="$notInvoicedAmount" title="Amount not invoiced" type="decimal" x-scale="2"/>
+    <field name="stockMove.cutOffMoveGenerated" hidden="true"/>
+    <field name="stockMove" hidden="true"/>
+  </grid>
+
   <form name="allocated-qty-stock-move-line-form" title="Change allocated qty"
     model="com.axelor.apps.stock.db.StockMoveLine">
     <panel name="mainPanel">
@@ -168,6 +188,11 @@
   <action-method name="action-method-stock-move-line-cancel-reservation">
     <call class="com.axelor.apps.supplychain.web.StockMoveLineController"
       method="cancelReservation"/>
+  </action-method>
+
+  <action-method name="action-stock-move-line-method-validate-cut-off-batch">
+    <call class="com.axelor.apps.supplychain.web.StockMoveLineController"
+      method="validateCutOffBatch"/>
   </action-method>
 
   <action-attrs name="action-supplychain-stock-move-line-attrs-hide-button">

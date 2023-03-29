@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,7 +18,7 @@
 package com.axelor.apps.crm.service.batch;
 
 import com.axelor.apps.base.db.Batch;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.AbstractBatchService;
 import com.axelor.apps.crm.db.CrmBatch;
 import com.axelor.apps.crm.db.repo.CrmBatchRepository;
@@ -53,14 +53,10 @@ public class CrmBatchService extends AbstractBatchService {
         batch = eventReminder(crmBatch);
         break;
 
-      case CrmBatchRepository.ACTION_BATCH_TARGET:
-        batch = target(crmBatch);
-        break;
-
       default:
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.BASE_BATCH_1),
+            I18n.get(BaseExceptionMessage.BASE_BATCH_1),
             crmBatch.getActionSelect(),
             crmBatch.getCode());
     }
@@ -71,10 +67,5 @@ public class CrmBatchService extends AbstractBatchService {
   public Batch eventReminder(CrmBatch crmBatch) {
 
     return Beans.get(BatchEventReminder.class).run(crmBatch);
-  }
-
-  public Batch target(CrmBatch crmBatch) {
-
-    return Beans.get(BatchTarget.class).run(crmBatch);
   }
 }

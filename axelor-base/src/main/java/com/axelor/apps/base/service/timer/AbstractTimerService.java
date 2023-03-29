@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,7 +21,7 @@ import com.axelor.apps.base.db.Timer;
 import com.axelor.apps.base.db.TimerHistory;
 import com.axelor.apps.base.db.repo.TimerHistoryRepository;
 import com.axelor.apps.base.db.repo.TimerRepository;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
@@ -101,7 +101,7 @@ public abstract class AbstractTimerService implements TimerService {
     } else if (timer.getStatusSelect().equals(TimerRepository.TIMER_STARTED)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.TIMER_IS_NOT_STOPPED));
+          I18n.get(BaseExceptionMessage.TIMER_IS_NOT_STOPPED));
     }
     timer.setStatusSelect(TimerRepository.TIMER_STARTED);
     return timerRepository.save(timer);
@@ -111,13 +111,13 @@ public abstract class AbstractTimerService implements TimerService {
   @Transactional(rollbackOn = {Exception.class})
   public TimerHistory stop(Model model, Timer timer, LocalDateTime dateTime)
       throws AxelorException {
-    Preconditions.checkNotNull(timer, I18n.get(IExceptionMessage.TIMER_IS_NOT_STARTED));
+    Preconditions.checkNotNull(timer, I18n.get(BaseExceptionMessage.TIMER_IS_NOT_STARTED));
 
     TimerHistory last = timerHistoryRepository.findByTimer(timer).order("-startDateT").fetchOne();
     if (last == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.TIMER_IS_NOT_STARTED));
+          I18n.get(BaseExceptionMessage.TIMER_IS_NOT_STARTED));
     }
     last.setEndDateT(dateTime);
     timer.setStatusSelect(TimerRepository.TIMER_STOPPED);

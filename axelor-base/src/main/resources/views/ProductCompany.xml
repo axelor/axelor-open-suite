@@ -39,6 +39,10 @@
       <field name="company.currency" title="Company currency" readonly="true"/>
       <field name="autoUpdateSalePrice"/>
       <field name="lastPurchasePrice" readonly="true" colSpan="3"/>
+      <field name="defaultBillOfMaterial" showIf="procurementMethodSelect != 'buy'"
+        onSelect="action-product-company-attrs-bill-of-material-domain"
+        if="__config__.app.isApp('production') &amp;&amp;__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'defaultBillOfMaterial'})"
+        if-module="axelor-production"/>
     </panel>
   </form>
 
@@ -77,6 +81,11 @@
     <attribute name="domain" for="company"
       expr="eval: &quot;NOT self.id IN (${__parent__.productCompanyList.findAll{it -> it?.company?.id != company?.id}.collect{it?.company?.id}.join(',')})&quot;"
       if="__parent__?.productCompanyList &amp;&amp; !__parent__?.productCompanyList.isEmpty() &amp;&amp; __parent__.productCompanyList.findAll{it -> it?.company?.id != company?.id}.size() > 0"/>
+  </action-attrs>
+
+  <action-attrs name="action-product-company-attrs-bill-of-material-domain">
+    <attribute name="domain" for="defaultBillOfMaterial"
+      expr="eval: &quot;self.product.id = ${product?.id} AND self.company.id = ${company?.id} AND self.defineSubBillOfMaterial = true&quot;"/>
   </action-attrs>
 
 </object-views>

@@ -10,7 +10,7 @@
     <date name="date" column="date_val" title="Date" required="true"/>
     <decimal name="plannedHours" title="Planned hours"/>
 
-    <many-to-one name="user" ref="com.axelor.auth.db.User" title="User" column="user_id"
+    <many-to-one name="employee" ref="com.axelor.apps.hr.db.Employee" title="Employee"
       required="true"/>
     <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"
       required="true"/>
@@ -28,8 +28,8 @@
 			<![CDATA[
 	  		String fullName = "";
 
-	  		if(user != null && user.getName() != null)  {
-				fullName += user.getName();
+	  	  if(employee != null && employee.getName() != null)  {
+				fullName += employee.getName();
 			}
 
 			if (project != null && project.getCode() != null) {

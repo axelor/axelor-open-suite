@@ -15,6 +15,14 @@
     <one-to-many name="interbankCodeLineList" ref="InterbankCodeLine"
       mappedBy="interbankCode" title="Rejects/Return Reason Code List"/>
 
+    <extra-code><![CDATA[
+
+	   // TYPE SELECT
+		public static final int TYPE_OPERATION_CODE = 1;
+		public static final int TYPE_REJECT_RETURN_CODE = 2;
+
+	]]></extra-code>
+
   </entity>
 
 </domain-models>

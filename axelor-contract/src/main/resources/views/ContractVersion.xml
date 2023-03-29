@@ -42,7 +42,7 @@
         </field>
         <field name="nextContract.company" colSpan="4"/>
         <field name="nextContract.partner" colSpan="4"/>
-        <field if="__config__.app.getApp('contract').isInvoicingManagement"
+        <field if="__config__.app.getApp('contract')?.isInvoicingManagement"
           name="nextContract.currency" colSpan="4"/>
         <field name="nextContract.name" css="highlight" colSpan="12"/>
         <panel name="contractDatesPanel" title="Contract Dates" hidden="true" showIf="id"
@@ -84,9 +84,11 @@
             onClick="action.contract.view.contract,close"/>
           <button name="showBtn" title="Show contract" showIf="id"
             onClick="action.contract.view.contract,close"/>
-          <button name="waitingBtn" title="Waiting" showIf="id &amp;&amp; statusSelect == 1"
+          <button name="waitingBtn" title="Put on-hold"
+            showIf="id &amp;&amp; statusSelect == 1"
             onClick="save,action-contract-version-method-waiting"/>
-          <button name="ongoingBtn" title="Ongoing" showIf="id &amp;&amp; statusSelect == 2"
+          <button name="ongoingBtn" title="Activate contract"
+            showIf="id &amp;&amp; statusSelect == 2"
             onClick="save,action-contract-version-method-active,close"/>
         </panel>
         <panel title="Notes" stacked="true" name="notePanel">
@@ -96,24 +98,24 @@
     </panel>
     <panel-tabs name="mainPanelTab">
       <panel title="Content" name="contentPanel">
-        <field if="__config__.app.getApp('contract').isInvoicingManagement" hidden="true"
+        <field if="__config__.app.getApp('contract')?.isInvoicingManagement" hidden="true"
           showIf="nextContract.isInvoicingManagement" name="contractLineList" colSpan="12"/>
         <field name="description" colSpan="9" widget="html"/>
         <field name="metaFile" colSpan="3" widget="binary-link"/>
       </panel>
-      <panel if="__config__.app.getApp('contract').isConfigContract" title="Config."
+      <panel if="__config__.app.getApp('contract')?.isConfigContract" title="Config."
         name="configPanel">
-        <panel if="__config__.app.getApp('contract').isInvoicingManagement" title="Invoicing"
+        <panel if="__config__.app.getApp('contract')?.isInvoicingManagement" title="Invoicing"
           colSpan="12" name="configSubPanel">
           <field name="nextContract.isInvoicingManagement" colSpan="6" widget="boolean-switch"/>
           <panel name="managementPanel" hidden="true"
             showIf="nextContract.isInvoicingManagement" colSpan="6">
             <field if="__config__.app.getApp('contract')isAdditionalBenefitManagement"
               widget="boolean-switch" name="nextContract.isAdditionaBenefitManagement" colSpan="6"/>
-            <field if="__config__.app.getApp('contract').isConsumptionManagement"
+            <field if="__config__.app.getApp('contract')?.isConsumptionManagement"
               widget="boolean-switch" name="nextContract.isConsumptionManagement" colSpan="6"/>
           </panel>
-          <field if="__config__.app.getApp('contract').isConsumptionManagement"
+          <field if="__config__.app.getApp('contract')?.isConsumptionManagement"
             widget="boolean-switch" name="isConsumptionBeforeEndDate" hidden="true"
             showIf="nextContract.isConsumptionManagement" colSpan="6"/>
           <panel name="invoicingSubPanel" hidden="true"
@@ -127,17 +129,21 @@
               <field name="invoicingMomentSelect" showIf="automaticInvoicing" colSpan="3"/>
             </panel>
             <panel name="invoicingDetailsPanel" colSpan="12">
-              <field name="isPeriodicInvoicing" colSpan="3" widget="boolean-switch"/>
+              <field name="isPeriodicInvoicing" colSpan="3" widget="boolean-switch"
+                readonlyIf="!nextContract.currentContractVersion.isPeriodicInvoicing"/>
               <panel showIf="isPeriodicInvoicing" colSpan="9" name="subInvoicingDetailsPanel">
                 <field name="invoicingDuration" colSpan="4"/>
                 <field name="isTimeProratedInvoice" colSpan="4" widget="boolean-switch"/>
                 <field name="isVersionProratedInvoice" hidden="true"
                   showIf="isTimeProratedInvoice" widget="boolean-switch" colSpan="4"/>
+                <field name="nextContract.currentContractVersion" hidden="true"/>
+                <field name="nextContract.currentContractVersion.isPeriodicInvoicing"
+                  hidden="true"/>
               </panel>
             </panel>
           </panel>
         </panel>
-        <panel if="__config__.app.getApp('contract').isRenewalManagement" title="Renewal"
+        <panel if="__config__.app.getApp('contract')?.isRenewalManagement" title="Renewal"
           colSpan="12" name="renewalDetailsPanel">
           <field name="isTacitRenewal" colSpan="3" widget="boolean-switch"/>
           <field name="renewalDuration" colSpan="3" requiredIf="isTacitRenewal"/>

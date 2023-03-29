@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,35 +20,30 @@ package com.axelor.apps.hr.service.extra.hours;
 import com.axelor.apps.hr.db.ExtraHours;
 import com.axelor.apps.message.db.Message;
 import com.axelor.exception.AxelorException;
-import com.google.inject.persist.Transactional;
 import java.io.IOException;
 import javax.mail.MessagingException;
 import wslite.json.JSONException;
 
 public interface ExtraHoursService {
 
-  @Transactional(rollbackOn = {Exception.class})
   public void cancel(ExtraHours extraHours) throws AxelorException;
 
   public Message sendCancellationEmail(ExtraHours extraHours)
       throws AxelorException, ClassNotFoundException, InstantiationException,
           IllegalAccessException, MessagingException, IOException, JSONException;
 
-  @Transactional(rollbackOn = {Exception.class})
   public void confirm(ExtraHours extraHours) throws AxelorException;
 
   public Message sendConfirmationEmail(ExtraHours extraHours)
       throws AxelorException, ClassNotFoundException, InstantiationException,
           IllegalAccessException, MessagingException, IOException, JSONException;
 
-  @Transactional(rollbackOn = {Exception.class})
   public void validate(ExtraHours extraHours) throws AxelorException;
 
   public Message sendValidationEmail(ExtraHours extraHours)
       throws AxelorException, ClassNotFoundException, InstantiationException,
           IllegalAccessException, MessagingException, IOException, JSONException;
 
-  @Transactional(rollbackOn = {Exception.class})
   public void refuse(ExtraHours extraHours) throws AxelorException;
 
   public Message sendRefusalEmail(ExtraHours extraHours)

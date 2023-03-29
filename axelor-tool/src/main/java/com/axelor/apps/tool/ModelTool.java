@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,7 +17,8 @@
  */
 package com.axelor.apps.tool;
 
-import com.axelor.apps.tool.exception.IExceptionMessage;
+import com.axelor.apps.tool.exception.ToolExceptionMessage;
+import com.axelor.common.Inflector;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.JPA;
 import com.axelor.db.JpaRepository;
@@ -40,6 +41,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.persistence.Column;
+import org.apache.commons.lang3.StringUtils;
 
 public final class ModelTool {
 
@@ -101,7 +103,7 @@ public final class ModelTool {
 
     for (Field field : fields) {
       String message =
-          messages.getOrDefault(field.getName(), IExceptionMessage.RECORD_UNIQUE_FIELD);
+          messages.getOrDefault(field.getName(), ToolExceptionMessage.RECORD_UNIQUE_FIELD);
       errors.put(field.getName(), message);
     }
 
@@ -164,6 +166,12 @@ public final class ModelTool {
 
   private static String capitalize(String string) {
     return string.substring(0, 1).toUpperCase() + string.substring(1);
+  }
+
+  public static String normalizeKeyword(String name, boolean isFieldName) {
+    if (name == null) return "";
+    name = StringUtils.stripAccents(name).replaceAll("[^a-zA-Z0-9 ]", "");
+    return Inflector.getInstance().camelize(name, isFieldName);
   }
 
   @SuppressWarnings("unchecked")

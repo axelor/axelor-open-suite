@@ -16,8 +16,7 @@
     <view-param name="search-filters" value="customer-invoices-filters"/>
     <domain>self.operationTypeSelect = 3</domain>
     <context name="_operationTypeSelect" expr="eval:3"/>
-    <context name="todayDate"
-      expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+    <context name="todayDate" expr="eval:__config__.date"/>
   </action-view>
 
   <menuitem name="invoice-root-custrefunds" parent="invoice-root" order="10"
@@ -30,8 +29,7 @@
     <view-param name="search-filters" value="customer-refunds-filters"/>
     <domain>self.operationTypeSelect = 4</domain>
     <context name="_operationTypeSelect" expr="eval:4"/>
-    <context name="todayDate"
-      expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+    <context name="todayDate" expr="eval:__config__.date"/>
   </action-view>
 
   <menuitem name="invoice-root-purchase-supinvoices" parent="invoice-root" order="15"
@@ -44,31 +42,29 @@
     <view-param name="search-filters" value="supplier-invoices-filters"/>
     <domain>self.operationTypeSelect = 1</domain>
     <context name="_operationTypeSelect" expr="eval:1"/>
-    <context name="todayDate"
-      expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+    <context name="todayDate" expr="eval:__config__.date"/>
   </action-view>
 
   <menuitem name="invoice-root-my-awaiting-pfp" title="My awaiting PFP"
     action="invoice.root.my.awaiting.pfp" parent="invoice-root"
-    if="__config__.app.getApp('account').getActivatePassedForPayment() &amp;&amp; !__user__.isSuperPfpUser"
+    if="__config__.app.getApp('account')?.getActivatePassedForPayment() &amp;&amp; !__user__.isSuperPfpUser"
     order="16"/>
 
   <menuitem name="invoice-root-pfp" title="PFP" parent="invoice-root"
-    if="__config__.app.getApp('account').getActivatePassedForPayment() &amp;&amp; __user__.isSuperPfpUser"
+    if="__config__.app.getApp('account')?.getActivatePassedForPayment() &amp;&amp; __user__.isSuperPfpUser"
     order="16"/>
 
   <menuitem name="invoice-root-pfp-my-awaiting-pfp" title="My awaiting PFP"
     action="invoice.root.my.awaiting.pfp" parent="invoice-root-pfp"
-    if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
+    if="__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
 
   <action-view name="invoice.root.my.awaiting.pfp" title="My awaiting PFP"
-    model="com.axelor.apps.account.db.Invoice">
-    <view type="grid" name="invoice-supplier-grid"/>
-    <view type="form" name="invoice-form"/>
+    model="com.axelor.apps.account.db.InvoiceTerm">
+    <view type="grid" name="invoice-term-pfp-grid"/>
+    <view type="form" name="invoice-term-form"/>
     <view-param name="search-filters" value="supplier-invoices-filters"/>
-    <domain>self.company.accountConfig.isManagePassedForPayment = true and (self.operationTypeSelect
-      = 1 or (self.company.accountConfig.isManagePFPInRefund = true and self.operationTypeSelect =
-      2)) and self.statusSelect != 4 and self.pfpValidateStatusSelect in (1,3) and
+    <domain>((self.invoice IS NOT NULL AND self.invoice.statusSelect IN (2,3)) OR (self.invoice IS
+      NULL AND self.moveLine.move.statusSelect IN (2,3))) AND self.pfpValidateStatusSelect = 1 AND
       self.pfpValidatorUser = :_currentUser</domain>
     <context name="_operationTypeSelect" expr="eval:1"/>
     <context name="_currentUser" expr="eval:__user__"/>
@@ -76,16 +72,15 @@
 
   <menuitem name="invoice-root-pfp-awaiting-pfp" title="awaitingPfpMenuTitle"
     action="invoice.root.pfp.awaiting.pfp" parent="invoice-root-pfp"
-    if="__config__.app.getApp('account').getActivatePassedForPayment() &amp;&amp; __user__.isSuperPfpUser"/>
+    if="__config__.app.getApp('account')?.getActivatePassedForPayment() &amp;&amp; __user__.isSuperPfpUser"/>
 
   <action-view name="invoice.root.pfp.awaiting.pfp" title="awaitingPfpMenuTitle"
-    model="com.axelor.apps.account.db.Invoice">
-    <view type="grid" name="invoice-supplier-grid"/>
-    <view type="form" name="invoice-form"/>
+    model="com.axelor.apps.account.db.InvoiceTerm">
+    <view type="grid" name="invoice-term-pfp-grid"/>
+    <view type="form" name="invoice-term-form"/>
     <view-param name="search-filters" value="supplier-invoices-filters"/>
-    <domain>self.company.accountConfig.isManagePassedForPayment = true and (self.operationTypeSelect
-      = 1 or (self.company.accountConfig.isManagePFPInRefund = true and self.operationTypeSelect =
-      2)) and self.statusSelect != 4 and self.pfpValidateStatusSelect in (1,3)</domain>
+    <domain>((self.invoice IS NOT NULL AND self.invoice.statusSelect IN (2,3)) OR (self.invoice IS
+      NULL AND self.moveLine.move.statusSelect IN (2,3))) AND self.pfpValidateStatusSelect = 1</domain>
     <context name="_operationTypeSelect" expr="eval:1"/>
   </action-view>
 
@@ -99,10 +94,17 @@
     <view-param name="search-filters" value="supplier-refunds-filters"/>
     <domain>self.operationTypeSelect = 2</domain>
     <context name="_operationTypeSelect" expr="eval:2"/>
-    <context name="todayDate"
-      expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+    <context name="todayDate" expr="eval:__config__.date"/>
   </action-view>
 
+  <menuitem name="invoice-root-invoice-terms" parent="invoice-root" order="21"
+    title="Terms list" action="invoice.root.invoice.terms"/>
+
+  <action-view name="invoice.root.invoice.terms" title="Terms list"
+    model="com.axelor.apps.account.db.InvoiceTerm">
+    <view type="grid" name="invoice-term-grid"/>
+    <view type="form" name="invoice-term-form"/>
+  </action-view>
 
   <menuitem name="account-root-payment-schedule" title="Payment Schedule" order="25"
     if-module="axelor-bank-payment" parent="invoice-root"
@@ -136,21 +138,34 @@
 
   <menuitem name="account-root" title="Accounting" order="-90"
     if="__config__.app.isApp('account')" icon="fa-calculator" icon-background="#2fa042"/>
-
   <menuitem name="account-root-move" parent="account-root" title="Moves" order="0"/>
 
   <menuitem name="account-root-move-move" parent="account-root-move" title="Moves"
-    action="account.root.move.move"/>
+    action="account.root.move.move" order="0"/>
 
   <action-view name="account.root.move.move" title="Moves"
     model="com.axelor.apps.account.db.Move">
     <view type="grid" name="move-grid"/>
     <view type="form" name="move-form"/>
     <view-param name="search-filters" value="move-filters"/>
+    <context name="_isActivateSimulatedMoves"
+      expr="eval:__user__?.activeCompany?.accountConfig?.isActivateSimulatedMove"/>
+  </action-view>
+
+  <menuitem name="account-root-move-simplified-move" parent="account-root-move"
+    title="Simplified Moves" action="account.root.move.move.simplifed" order="0"/>
+
+  <action-view name="account.root.move.move.simplifed"
+    model="com.axelor.apps.account.db.Move" title="Simplified Moves">
+    <view name="move-grid" type="grid"/>
+    <view name="move-simplified-form" type="form"/>
+    <view-param name="search-filters" value="move-filters"/>
+    <context name="_isActivateSimulatedMoves"
+      expr="eval:__user__.activeCompany?.accountConfig?.isActivateSimulatedMove"/>
   </action-view>
 
   <menuitem name="account-root-move-move-line" parent="account-root-move"
-    title="Move lines" action="account.root.move.move.line"/>
+    title="Move lines" action="account.root.move.move.line" order="5"/>
 
   <action-view name="account.root.move.move.line" title="Move lines"
     model="com.axelor.apps.account.db.MoveLine">
@@ -159,10 +174,59 @@
     <view-param name="search-filters" value="move-line-filters"/>
   </action-view>
 
+  <menuitem name="account-root-pfp" title="PFP" parent="account-root"
+    if="__config__.app.getApp('account')?.getActivatePassedForPayment() &amp;&amp; __user__.isPfpValidator"
+    order="2"/>
+
+  <menuitem name="account-root-pfp-my-awaiting-pfp" title="My awaiting PFP"
+    action="account.root.my.awaiting.pfp" parent="account-root-pfp"
+    if="__config__.app.getApp('account')?.getActivatePassedForPayment() &amp;&amp; __user__.isPfpValidator"/>
+
+  <action-view name="account.root.my.awaiting.pfp" title="My awaiting PFP"
+    model="com.axelor.apps.account.db.InvoiceTerm">
+    <view type="grid" name="invoice-term-pfp-grid"/>
+    <view type="form" name="invoice-term-move-form"/>
+    <view-param name="search-filters" value="supplier-invoices-filters"/>
+    <view-param name="details-view" value="true"/>
+    <domain> self.pfpValidateStatusSelect IN (1,4) AND
+      self.pfpValidatorUser = :_currentUser AND (
+      self.moveLine.move.statusSelect = 3 OR (self.moveLine.move.statusSelect = 2 AND
+      self.moveLine.move.company.accountConfig.isManageDaybookInPFP = true))</domain>
+    <context name="_operationTypeSelect" expr="eval:1"/>
+    <context name="_currentUser" expr="eval:__user__"/>
+  </action-view>
+
+  <menuitem name="account-root-pfp-awaiting-pfp" title="awaitingPfpMenuTitle"
+    action="account.root.pfp.awaiting.pfp" parent="account-root-pfp"
+    if="__config__.app.getApp('account')?.getActivatePassedForPayment() &amp;&amp; __user__.isSuperPfpUser"/>
+
+  <action-view name="account.root.pfp.awaiting.pfp" title="awaitingPfpMenuTitle"
+    model="com.axelor.apps.account.db.InvoiceTerm">
+    <view type="grid" name="invoice-term-pfp-grid"/>
+    <view type="form" name="invoice-term-move-form"/>
+    <view-param name="search-filters" value="supplier-invoices-filters"/>
+    <view-param name="details-view" value="true"/>
+    <domain> self.pfpValidateStatusSelect IN (1,4) AND
+      (self.moveLine.move.statusSelect = 3 OR
+      (self.moveLine.move.statusSelect = 2 AND
+      self.moveLine.move.company.accountConfig.isManageDaybookInPFP = true))</domain>
+    <context name="_operationTypeSelect" expr="eval:1"/>
+  </action-view>
+
   <menuitem name="account-root-payments" parent="account-root" title="Payments" order="5"/>
 
+  <menuitem name="account-root-payments-payment-session" parent="account-root-payments"
+    title="Payment sessions" action="account.root.payments.payment.session"
+    if="__config__.app.isApp('account')" order="0"/>
+
+  <action-view name="account.root.payments.payment.session" title="Payment sessions"
+    model="com.axelor.apps.account.db.PaymentSession">
+    <view type="grid" name="payment-session-grid"/>
+    <view type="form" name="payment-session-form"/>
+  </action-view>
+
   <menuitem name="account-root-payments-payment-voucher" parent="account-root-payments"
-    title="Payments assistant" action="account.root.payments.payment.voucher"/>
+    title="Payments assistant" action="account.root.payments.payment.voucher" order="5"/>
 
   <action-view name="account.root.payments.payment.voucher" title="Payments assistant"
     model="com.axelor.apps.account.db.PaymentVoucher">
@@ -174,7 +238,7 @@
 
   <menuitem name="account-root-payments-suppl-invoices-to-pay"
     parent="account-root-payments" title="Suppl. Invoices to pay"
-    action="account.root.payments.suppl.invoices.to.pay"/>
+    action="account.root.payments.suppl.invoices.to.pay" order="10"/>
 
   <action-view name="account.root.payments.suppl.invoices.to.pay"
     title="Suppl. Invoices to pay" model="com.axelor.apps.account.db.Invoice">
@@ -184,18 +248,38 @@
     <domain>self.operationTypeSelect = 1 and self.statusSelect = 3 and self.amountRemaining != 0 and
       self.pfpValidateStatusSelect in :_pfpStatus</domain>
     <context name="_operationTypeSelect" expr="eval:1"/>
-    <context name="todayDate"
-      expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+    <context name="todayDate" expr="eval:__config__.date"/>
     <context name="_pfpStatus"
-      expr="eval:__config__.app.getApp('account').getActivatePassedForPayment()?[2]:[1,2,3]"/>
+      expr="eval:__config__.app.getApp('account')?.getActivatePassedForPayment()?[2]:[0,1,2,3]"/>
+  </action-view>
+
+  <menuitem name="account-root-payments-cheque-deposit-slip-all"
+    parent="account-root-payments" title="Deposit slips"
+    action="account.root.payments.cheque.deposit.slip.all" order="15"/>
+
+  <action-view name="account.root.payments.cheque.deposit.slip.all"
+    title="Deposit slips" model="com.axelor.apps.account.db.DepositSlip">
+    <view type="grid" name="cheque-deposit-slip-grid"/>
+    <view type="form" name="cheque-deposit-slip-form"/>
+    <view-param name="search-filters" value="cheque-deposit-slip-filters"/>
   </action-view>
 
   <menuitem name="account-root-periodic-processing" parent="account-root"
     title="Periodical processing" order="10"/>
 
+  <menuitem name="account-root-periodic-processing-reconcile-manager"
+    parent="account-root-periodic-processing" title="Reconcile managers"
+    action="account.root.periodic.processing.reconcile.manager" order="1"/>
+
+  <action-view name="account.root.periodic.processing.reconcile.manager"
+    title="Reconcile managers" model="com.axelor.apps.account.db.MoveLineQuery">
+    <view type="grid" name="move-line-query-grid"/>
+    <view type="form" name="move-line-query-form"/>
+  </action-view>
+
   <menuitem name="account-root-periodic-processing-reconcile"
     parent="account-root-periodic-processing" title="Reconcilations"
-    action="account.root.periodic.processing.reconcile"/>
+    action="account.root.periodic.processing.reconcile" order="2"/>
 
   <action-view name="account.root.periodic.processing.reconcile" title="Reconcilations"
     model="com.axelor.apps.account.db.Reconcile">
@@ -206,7 +290,7 @@
 
   <menuitem name="account-root-periodic-processing-reconcile-group"
     parent="account-root-periodic-processing" title="Reconcile Groups"
-    action="account.root.periodic.processing.reconcile.group"/>
+    action="account.root.periodic.processing.reconcile.group" order="3"/>
 
   <action-view name="account.root.periodic.processing.reconcile.group"
     title="Reconcile Groups" model="com.axelor.apps.account.db.ReconcileGroup">
@@ -217,7 +301,7 @@
 
   <menuitem name="account-root-periodic-processing-overpayment-clearances"
     parent="account-root-periodic-processing" title="Overpayments clearances"
-    action="account.root.periodic.processing.overpayment.clearances"/>
+    action="account.root.periodic.processing.overpayment.clearances" order="4"/>
 
   <action-view name="account.root.periodic.processing.overpayment.clearances"
     title="Overpayments clearances" model="com.axelor.apps.account.db.AccountClearance">
@@ -228,7 +312,7 @@
 
   <menuitem name="account-root-periodic-processing-shift-irrecoverable"
     parent="account-root-periodic-processing" title="Shift to irrecoverable"
-    action="account.root.periodic.processing.shift.irrecoverable"/>
+    action="account.root.periodic.processing.shift.irrecoverable" order="5"/>
 
   <action-view name="account.root.periodic.processing.shift.irrecoverable"
     title="Shift to irrecoverable" model="com.axelor.apps.account.db.Irrecoverable">
@@ -239,7 +323,7 @@
 
   <menuitem name="account-root-periodic-processing-cheque-reject"
     parent="account-root-periodic-processing" title="Rejects of cheques"
-    action="account.root.periodic.processing.cheque.reject"/>
+    action="account.root.periodic.processing.cheque.reject" order="6"/>
 
   <action-view name="account.root.periodic.processing.cheque.reject"
     title="Rejects of cheques" model="com.axelor.apps.account.db.ChequeRejection">
@@ -249,6 +333,20 @@
     <context name="_newDate1" expr="eval: __config__.date.minusDays(5)"/>
     <context name="_newDate2" expr="eval: __config__.date.minusDays(30)"/>
   </action-view>
+
+  <menuitem name="account-root-periodic-processing-annual-processing"
+    parent="account-root-periodic-processing" title="Annual processing" order="7"/>
+
+  <menuitem name="account-root-periodic-processing-annual-processing-year-closure"
+    parent="account-root-periodic-processing-annual-processing" title="Year closure"
+    action="account.root.periodic.processing.annual.processing.year.closure"/>
+
+  <action-view name="account.root.periodic.processing.annual.processing.year.closure"
+    title="Year closure" model="com.axelor.apps.account.db.ClosureAssistant">
+    <view type="grid" name="closure-assistant-grid"/>
+    <view type="form" name="closure-assistant-form"/>
+  </action-view>
+
 
   <menuitem name="account-root-debt-recovery" parent="account-root" title="Debt recovery"
     order="15"/>
@@ -331,17 +429,6 @@
     <view-param name="search-filters" value="reimbursement-filters"/>
   </action-view>
 
-  <menuitem name="account-root-accounting-cheque-deposit-slip-all"
-    parent="account-root-accounting" title="Deposit slips"
-    action="account.root.accounting.cheque.deposit.slip.all"/>
-
-  <action-view name="account.root.accounting.cheque.deposit.slip.all"
-    title="Deposit slips" model="com.axelor.apps.account.db.DepositSlip">
-    <view type="grid" name="cheque-deposit-slip-grid"/>
-    <view type="form" name="cheque-deposit-slip-form"/>
-    <view-param name="search-filters" value="cheque-deposit-slip-filters"/>
-  </action-view>
-
   <menuitem name="account-root-accounting-accounting-reports"
     parent="account-root-accounting" title="Accounting reports"
     action="account.root.accounting.accounting.reports" icon="fa-bar-chart"/>
@@ -350,7 +437,7 @@
     title="Accounting reports" model="com.axelor.apps.account.db.AccountingReport">
     <view type="grid" name="accounting-report-grid"/>
     <view type="form" name="accounting-report-form"/>
-    <view-param name="search-filters" value="accounting-report-filter"/>
+    <view-param name="search-filters" value="accounting-report-filters"/>
     <domain>self.reportType.typeSelect &lt; 1000 or self.reportType.typeSelect &gt;= 2000</domain>
   </action-view>
 
@@ -365,7 +452,16 @@
     <domain>self.reportType.typeSelect &gt;= 1000 and self.reportType.typeSelect &lt; 2000</domain>
   </action-view>
 
-  <menuitem name="account-conf-reporting" parent="account-conf" title="Reportings/Exports"/>
+  <menuitem name="account-conf-reporting" parent="account-conf" title="Exports/Imports"/>
+
+  <menuitem title="Import FEC Type" name="account-conf-import-fec-type"
+    parent="account-conf-reporting" action="account.conf.import.fec.type"/>
+
+  <action-view name="account.conf.import.fec.type" title="Import FEC Type"
+    model="com.axelor.apps.account.db.ImportFECType">
+    <view type="grid" name="import-fec-type-grid"/>
+    <view type="form" name="import-fec-type-form"/>
+  </action-view>
 
   <menuitem name="account-conf-reporting-interbank-code" parent="account-conf-reporting"
     title="Interbank codes" action="account.conf.reporting.interbank.code"/>
@@ -376,14 +472,28 @@
     <view type="form" name="interbank-code-form"/>
   </action-view>
 
-  <menuitem name="account-root-accounting-conf-report-types"
-    parent="account-conf-reporting" title="Report types"
-    action="account.conf.reporting.accounting.report.types"/>
+  <menuitem name="account-root-accounting-conf-report-types-report"
+    action="account.conf.reporting.accounting.report.types.report" parent="account-conf-reporting"
+    title="Report types"/>
 
-  <action-view name="account.conf.reporting.accounting.report.types"
+  <menuitem name="account-root-accounting-conf-report-types-export"
+    action="account.conf.reporting.accounting.report.types.export" parent="account-conf-reporting"
+    title="Export types"/>
+
+  <action-view name="account.conf.reporting.accounting.report.types.report"
     title="Report types" model="com.axelor.apps.account.db.AccountingReportType">
     <view type="grid" name="accounting-report-type-grid"/>
     <view type="form" name="accounting-report-type-form"/>
+    <domain>self.reportExportTypeSelect = 1</domain>
+    <context name="_reportExportTypeSelect" expr="1"/>
+  </action-view>
+
+  <action-view name="account.conf.reporting.accounting.report.types.export"
+    title="Report types" model="com.axelor.apps.account.db.AccountingReportType">
+    <view type="grid" name="accounting-report-type-grid"/>
+    <view type="form" name="accounting-report-type-form"/>
+    <domain>self.reportExportTypeSelect = 2</domain>
+    <context name="_reportExportTypeSelect" expr="2"/>
   </action-view>
 
   <menuitem name="account-root-budget-management" parent="account-root"
@@ -418,7 +528,8 @@
     order="30"/>
 
   <menuitem title="Fixed assets" name="account-root-asset-management-fixed-assets"
-    parent="account-root-asset-management" action="account.root.asset.management.fixed.assets"/>
+    parent="account-root-asset-management" action="account.root.asset.management.fixed.assets"
+    order="1"/>
 
   <action-view name="account.root.asset.management.fixed.assets" title="Fixed assets"
     model="com.axelor.apps.account.db.FixedAsset">
@@ -428,7 +539,7 @@
   </action-view>
 
   <menuitem title="Configurations" name="account-root-asset-management-conf"
-    parent="account-root-asset-management" icon="fa-cog"/>
+    parent="account-root-asset-management" icon="fa-cog" order="10"/>
 
   <menuitem title="Fixed asset categories"
     name="account-root-asset-management-conf-asset-categories"
@@ -452,6 +563,17 @@
     <view type="form" name="fixed-asset-type-form"/>
   </action-view>
 
+  <menuitem title="Asset disposal reasons"
+    name="account-root-asset-management-asset-disposal-reasons"
+    parent="account-root-asset-management-conf"
+    action="account.root.asset.management.asset-disposal-reasons" order="2"/>
+
+  <action-view name="account.root.asset.management.asset-disposal-reasons"
+    title="Asset disposal reasons" model="com.axelor.apps.account.db.AssetDisposalReason">
+    <view type="grid" name="asset-disposal-reason-grid"/>
+    <view type="form" name="asset-disposal-reason-form"/>
+  </action-view>
+
 
   <menuitem name="account-root-report" parent="account-root" title="Reportings" order="35"
     icon="fa-bar-chart"/>
@@ -465,7 +587,7 @@
   <menuitem name="account-conf-fiscal-position" parent="account-conf-financial"
     title="Fiscal positions" action="account.conf.fiscal.position"/>
 
-  <action-view name="account.conf.fiscal.position" title="Fiscal position"
+  <action-view name="account.conf.fiscal.position" title="Fiscal positions"
     model="com.axelor.apps.account.db.FiscalPosition">
     <view type="grid" name="fiscal-position-grid"/>
     <view type="form" name="fiscal-position-form"/>
@@ -559,8 +681,36 @@
     <view type="form" name="tax-form"/>
     <view-param name="search-filters" value="tax-filters"/>
   </action-view>
+  <menuitem name="account-conf-financial-service-types" parent="account-conf-financial"
+    title="Service types" action="account.conf.financial.service.types"/>
 
-  <menuitem name="account-conf-analytic" parent="account-conf" title="Analytic"/>
+  <action-view name="account.conf.financial.service.types" title="Service types"
+    model="com.axelor.apps.account.db.ServiceType">
+    <view type="grid" name="service-type-grid"/>
+    <view type="form" name="service-type-form"/>
+  </action-view>
+
+  <menuitem name="account-conf-financial-tax-number" parent="account-conf-financial"
+    title="Tax numbers" action="account.conf.financial.tax.number"/>
+
+  <action-view name="account.conf.financial.tax.number" title="Tax number"
+    model="com.axelor.apps.account.db.TaxNumber">
+    <view type="grid" name="tax-number-grid"/>
+    <view type="form" name="tax-number-form"/>
+  </action-view>
+
+  <menuitem name="account-conf-financial-financial-discount" title="Financial Discounts"
+    parent="account-conf-financial" action="financial.discount"
+    if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
+
+  <action-view name="financial.discount" title="Financial Discounts"
+    model="com.axelor.apps.account.db.FinancialDiscount">
+    <view type="grid" name="financial-discount-grid"/>
+    <view type="form" name="financial-discount-form"/>
+  </action-view>
+
+  <menuitem name="account-conf-analytic" parent="account-conf" title="Analytic"
+    if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"/>
 
   <menuitem name="account-conf-analytic-journal" parent="account-conf-analytic"
     title="Analytic journals" action="account.conf.analytic.journal"/>
@@ -600,9 +750,9 @@
   </action-view>
 
   <menuitem name="account-conf-analytic-axis" parent="account-conf-analytic"
-    title="Analytic axis" action="account.conf.analytic.axis"/>
+    title="analyticAxis.plurial" action="account.conf.analytic.axis"/>
 
-  <action-view name="account.conf.analytic.axis" title="Analytic axis"
+  <action-view name="account.conf.analytic.axis" title="analyticAxis.plurial"
     model="com.axelor.apps.account.db.AnalyticAxis">
     <view type="grid" name="analytic-axis-grid"/>
     <view type="form" name="analytic-axis-form"/>
@@ -628,6 +778,7 @@
     <view type="grid" name="analytic-distribution-template-grid"/>
     <view type="form" name="analytic-distribution-template-form"/>
     <view-param name="search-filters" value="analytic-distribution-template-filters"/>
+    <domain>self.isSpecific = false</domain>
   </action-view>
 
   <menuitem name="account-conf-payment" parent="account-conf" title="Payment"/>
@@ -641,6 +792,7 @@
     <view type="form" name="payment-mode-form"/>
     <view-param name="search-filters" value="payment-mode-filters"/>
   </action-view>
+
 
   <menuitem name="account-conf-payment-payment-condition" parent="account-conf-payment"
     title="Payment conditions" action="account.conf.payment.payment.condition"/>
@@ -665,6 +817,7 @@
 
   <!-- Top Menus -->
 
+
   <menuitem name="top-invoicing" title="Invoicing" order="5" top="true"
     if="__config__.app.isApp('invoice')" left="false"/>
 
@@ -679,6 +832,7 @@
     <domain>self.operationTypeSelect = 3</domain>
     <context name="_operationTypeSelect" expr="eval:3"/>
   </action-view>
+
 
   <menuitem name="top-invoicing-custrefunds" title="Cust. Refunds"
     action="top.invoicing.custrefunds" parent="top-invoicing" top="true"/>
@@ -701,6 +855,7 @@
     <view type="form" name="invoice-form"/>
     <view-param name="search-filters" value="supplier-invoices-filters"/>
     <domain>self.operationTypeSelect = 1</domain>
+
     <context name="_operationTypeSelect" expr="eval:1"/>
   </action-view>
 
@@ -767,11 +922,17 @@
     <view type="dashboard" name="accounting.dashboard.sample"/>
   </action-view>
 
+  <menuitem name="menu-accounting-dashboard-2" parent="account-root-report"
+    title="Accounting with invoice terms" action="accounting.dashboard.invoice.terms.view"/>
+
+  <action-view name="accounting.dashboard.invoice.terms.view"
+    title="Accounting Details with invoice terms">
+    <view type="dashboard" name="accounting.dashboard.invoice.terms.sample"/>
+  </action-view>
   <!-- Move template -->
 
   <menuitem name="move-template-wizard" title="Move From Template"
-    parent="account-root-move" action="move.template.wizard" top="true"/>
-
+    parent="account-root-move" action="move.template.wizard" top="true" order="10"/>
   <action-view name="move.template.wizard" title="Move From Template"
     model="com.axelor.apps.base.db.Wizard">
     <view type="form" name="move-template-wizard-form"/>
@@ -796,35 +957,18 @@
 
   <menuitem name="move-template-type" title="Move Template Types"
     parent="move-template-root" action="move.template.type" top="true"/>
-
   <action-view name="move.template.type" title="Move Template Types"
     model="com.axelor.apps.account.db.MoveTemplateType">
     <view type="grid" name="move-template-type-grid"/>
     <view type="form" name="move-template-type-form"/>
   </action-view>
 
-  <action-view name="action-customer-invoice-line-menu" title="Customer Invoice Line"
-    model="com.axelor.apps.account.db.InvoiceLine">
-    <view type="grid" name="invoice-line-menu-grid"/>
-    <view type="form" name="invoice-line-menu-form"/>
-    <view-param name="search-filters" value="invoice-line-filters"/>
-    <domain>self.invoice.operationTypeSelect in (3,4)</domain>
-  </action-view>
-
-  <action-view name="action-supplier-invoice-line-menu" title="Supplier Invoice Line"
-    model="com.axelor.apps.account.db.InvoiceLine">
-    <view type="grid" name="invoice-line-menu-grid"/>
-    <view type="form" name="invoice-line-menu-form"/>
-    <view-param name="search-filters" value="invoice-line-filters"/>
-    <domain>self.invoice.operationTypeSelect in (1,2)</domain>
-  </action-view>
-
   <menuitem name="invoice-conf" parent="invoice-root" title="Configuration" order="50"
-    icon="fa-cog" if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
+    icon="fa-cog" if="__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
 
   <menuitem name="invoice-conf-refusalreason" parent="invoice-conf"
     title="Reason of refusal" action="invoice.conf.refusalreason"
-    if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
+    if="__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
 
   <action-view name="invoice.conf.refusalreason" title="Reason of refusal"
     model="com.axelor.apps.base.db.CancelReason">
@@ -833,6 +977,17 @@
     <view-param name="search-filters" value="cancel-reason-filters"/>
     <domain>self.applicationType = :_xApplicationType</domain>
     <context name="_xApplicationType" expr="eval: com.axelor.apps.account.db.Invoice"/>
+  </action-view>
+
+  <menuitem name="invoice-conf-pfp-partial-reason" parent="invoice-conf"
+    title="PFP Partial Reasons" action="invoice.conf.pfp.partial.reason"
+    if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
+
+  <action-view name="invoice.conf.pfp.partial.reason" title="PFP Partial Reasons"
+    model="com.axelor.apps.account.db.PfpPartialReason">
+    <view type="grid" name="pfp-partial-reason-grid"/>
+    <view type="form" name="pfp-partial-reason-form"/>
+    <view-param name="details-view" value="true"/>
   </action-view>
 
   <!-- FEC Import -->
@@ -845,4 +1000,89 @@
     <view type="form" name="fec-import-form"/>
   </action-view>
 
+  <!-- Delay Reason -->
+
+  <menuitem name="debt-recovery-root-conf-payment-delay-reason"
+    parent="debt-recovery-root-conf" title="Payment delay reasons"
+    action="debt.recovery.root.conf.payment.delay.reason"/>
+
+  <action-view name="debt.recovery.root.conf.payment.delay.reason"
+    title="Payment delay reasons" model="com.axelor.apps.account.db.PaymentDelayReason">
+    <view type="grid" name="payment-delay-reason-grid"/>
+    <view type="form" name="payment-delay-reason-form"/>
+  </action-view>
+
+
+  <!-- Conf Referential -->
+
+  <menuitem name="referential-conf-das2-activity" parent="referential-conf"
+    title="DAS2 activities" action="account.referential.conf.das2.activity"/>
+
+  <action-view name="account.referential.conf.das2.activity" title="DAS2 activities"
+    model="com.axelor.apps.account.db.Das2Activity">
+    <view type="grid" name="das2-activity-grid"/>
+    <view type="form" name="das2-activity-form"/>
+  </action-view>
+
+
+
+  <menuitem name="account-analytic-grouping" parent="account-conf-analytic"
+    title="Analytic Groupings" action="account.analytic.grouping"/>
+
+  <action-view name="account.analytic.grouping" title="Analytic Groupings"
+    model="com.axelor.apps.account.db.AnalyticGrouping">
+    <view type="grid" name="analytic-grouping-grid"/>
+    <view type="form" name="analytic-grouping-form"/>
+  </action-view>
+
+
+  <menuitem name="account-analytic-structure" parent="account-conf-analytic"
+    action="account.conf.analytic.axis.tree" title="Analytic Structure" icon="fa-sitemap" order="-1"/>
+
+  <action-view name="account.conf.analytic.axis.tree" title="Analytic Tree"
+    model="com.axelor.apps.account.db.AnalyticAccount">
+    <view type="tree" name="analytic-account-axis-tree"/>
+  </action-view>
+
+  <menuitem name="account-analytic-rules" parent="account-conf-analytic"
+    action="account.conf.analytic.rules" title="Analytic Rules"/>
+
+  <action-view name="account.conf.analytic.rules" title="Analytic Rules"
+    model="com.axelor.apps.account.db.AnalyticRules">
+    <view type="grid" name="analytic-rules-grid"/>
+    <view type="form" name="analytic-rules-form"/>
+  </action-view>
+
+  <menuitem name="account-analytic-grouping-value" parent="account-conf-analytic"
+    action="account.conf.analytic.grouping.values" title="Analytic Regrouping Values" order="90"/>
+
+  <action-view name="account.conf.analytic.grouping.values"
+    title="Analytic Regrouping Values" model="com.axelor.apps.account.db.AnalyticGroupingValue">
+    <view type="grid" name="analytic-grouping-value-grid"/>
+    <view type="form" name="analytic-grouping-value-form"/>
+  </action-view>
+
+  <menuitem name="account-root-periodic-processing-annual-move-consistency-control"
+    parent="account-root-periodic-processing-annual-processing"
+    action="account.root.periodic.processing.annual.processing.move.consistency.control"
+    title="Moves consistency control" order="90"/>
+
+  <action-view
+    name="account.root.periodic.processing.annual.processing.move.consistency.control"
+    title="Moves consistency control" model="com.axelor.apps.account.db.AccountingBatch">
+    <view type="grid" name="accounting-batch-grid"/>
+    <view type="form" name="accounting-batch-form"/>
+    <view-param name="search-filters" value="accounting-batch-filters"/>
+    <domain>self.actionSelect = 25</domain>
+  </action-view>
+
+  <menuitem name="account-analytic-move-line-search" title="Analytic review"
+    parent="account-conf-analytic" action="account.analytic.move.line.search"
+    if="__config__.app.getApp('account').getManageAnalyticAccounting()"/>
+
+  <action-view name="account.analytic.move.line.search" title="Analytic review"
+    model="com.axelor.apps.account.db.AnalyticMoveLineQuery">
+    <view type="grid" name="analytic-move-line-query-grid"/>
+    <view type="form" name="analytic-move-line-query-form"/>
+  </action-view>
 </object-views>

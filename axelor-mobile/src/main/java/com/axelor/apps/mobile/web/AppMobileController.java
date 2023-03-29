@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -53,16 +53,6 @@ public class AppMobileController {
     data.put(
         "isQualityAppEnable",
         appService.isApp("quality") ? appMobile.getIsQualityAppEnable() : false);
-    data.put(
-        "isStockAppEnable", appService.isApp("stock") ? appMobile.getIsStockAppEnable() : false);
-    boolean isProductionAppEnable =
-        appService.isApp("production") ? appMobile.getIsProductionAppEnable() : false;
-    data.put("isProductionAppEnable", isProductionAppEnable);
-
-    if (isProductionAppEnable) {
-      data.put(
-          "mOFilterOnStockDetailStatusSelect", appMobile.getmOFilterOnStockDetailStatusSelect());
-    }
 
     data.put("offlineRecordLimit", appMobile.getOfflineRecordLimit());
 
@@ -71,11 +61,10 @@ public class AppMobileController {
     data.put("projectSet", convertToData(appMobile.getProjectSet()));
     data.put("leadSet", convertToData(appMobile.getLeadSet()));
     data.put("productSet", convertToData(appMobile.getProductSet()));
-
     response.setData(data);
   }
 
-  private Object convertToData(Set<? extends AuditableModel> modelSet) {
+  protected Object convertToData(Set<? extends AuditableModel> modelSet) {
 
     return modelSet.stream()
         .map(

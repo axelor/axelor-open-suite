@@ -22,6 +22,7 @@
       name="idx_bankpayment_bsl_afb120_bsl_opt_icl"/>
     <index columns="reject_interbank_code_line" name="idx_bankpayment_bsl_afb120_bsl_rej_icl"/>
     <index columns="bank_statement" name="idx_bankpayment_bsl_afb120_bsl_bank_statement"/>
+
     <extra-code><![CDATA[
 		public static final int LINE_TYPE_INITIAL_BALANCE = 1;
 		public static final int LINE_TYPE_MOVEMENT = 2;

@@ -1,5 +1,5 @@
 "importId";"code";"name";"navigation";"permissions";"technicalStaff";"roles";"isClient";"isSupplier";"menus_set"
-1;"admins";"ADMINS";;;"true";;"false";"false";
+1;"admins";"ADMINS";;;"true";"Admin";"false";"false";
 2;"users";"Users";;;"false";;"false";"false";
 3;"BPM";"BPM";;;"false";;"false";"false";
 4;"CLT";"Client";"hidden";"perms.user";"false";"role.client";"true";"false";

@@ -29,8 +29,7 @@
   <action-view name="dashlet.product.launches.withdrawal.each.month"
     title="Product launches/withdrawal each month" model="com.axelor.apps.base.db.Product">
     <view type="chart" name="chart.product.launches.withdrawal.each.month"/>
-    <context name="todayDate"
-      expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+    <context name="todayDate" expr="eval:__config__.date"/>
   </action-view>
 
   <action-view name="dashlet.nbr.product.per.family"

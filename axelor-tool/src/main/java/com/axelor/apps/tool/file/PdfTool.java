@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,7 +17,7 @@
  */
 package com.axelor.apps.tool.file;
 
-import com.axelor.apps.tool.exception.IExceptionMessage;
+import com.axelor.apps.tool.exception.ToolExceptionMessage;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.google.common.base.Preconditions;
@@ -100,7 +100,7 @@ public final class PdfTool {
    */
   public static File printCopiesToFile(File file, int copyNumber) throws IOException {
     Preconditions.checkArgument(
-        copyNumber > 0, I18n.get(IExceptionMessage.BAD_COPY_NUMBER_ARGUMENT));
+        copyNumber > 0, I18n.get(ToolExceptionMessage.BAD_COPY_NUMBER_ARGUMENT));
     List<File> invoicePrintingToMerge = Collections.nCopies(copyNumber, file);
     return mergePdf(invoicePrintingToMerge);
   }

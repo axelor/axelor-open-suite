@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,6 +18,7 @@
 package com.axelor.apps.production.service;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.ProductCompanyService;
@@ -27,10 +28,12 @@ import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.TempBomTree;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.TempBomTreeRepository;
-import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.report.IReport;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -46,8 +49,10 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javax.persistence.Query;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -82,7 +87,7 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
         != ProductRepository.COST_TYPE_STANDARD) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.COST_TYPE_CANNOT_BE_CHANGED));
+          I18n.get(ProductionExceptionMessage.COST_TYPE_CANNOT_BE_CHANGED));
     }
 
     productCompanyService.set(
@@ -127,7 +132,7 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
     if (depth > 1000) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.MAX_DEPTH_REACHED));
+          I18n.get(ProductionExceptionMessage.MAX_DEPTH_REACHED));
     }
 
     if (billOfMaterial != null) {
@@ -136,7 +141,7 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
       personalizedBOM.setName(
           personalizedBOM.getName()
               + " ("
-              + I18n.get(IExceptionMessage.BOM_1)
+              + I18n.get(ProductionExceptionMessage.BOM_1)
               + " "
               + personalizedBOM.getId()
               + ")");
@@ -229,6 +234,7 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
   }
 
   @Override
+  @Transactional
   public TempBomTree generateTree(BillOfMaterial billOfMaterial, boolean useProductDefaultBom) {
 
     processedBom = new ArrayList<>();
@@ -330,9 +336,14 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
   }
 
   @Override
-  @Transactional
-  public void setBillOfMaterialAsDefault(BillOfMaterial billOfMaterial) {
-    billOfMaterial.getProduct().setDefaultBillOfMaterial(billOfMaterial);
+  @Transactional(rollbackOn = {Exception.class})
+  public void setBillOfMaterialAsDefault(BillOfMaterial billOfMaterial) throws AxelorException {
+    Company company = billOfMaterial.getCompany();
+    Product product = billOfMaterial.getProduct();
+    if (company != null) {
+      productCompanyService.set(product, "defaultBillOfMaterial", billOfMaterial, company);
+    }
+    product.setDefaultBillOfMaterial(billOfMaterial);
   }
 
   @Override
@@ -349,7 +360,7 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void addRawMaterials(
       long billOfMaterialId, ArrayList<LinkedHashMap<String, Object>> rawMaterials)
       throws AxelorException {
@@ -376,7 +387,7 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
     }
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   protected BillOfMaterial createBomFromRawMaterial(long productId, int priority)
       throws AxelorException {
     BillOfMaterial newBom = new BillOfMaterial();
@@ -388,7 +399,7 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
     if (rawMaterial.getUnit() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.BOM_MISSING_UNIT_ON_PRODUCT),
+          I18n.get(ProductionExceptionMessage.BOM_MISSING_UNIT_ON_PRODUCT),
           rawMaterial.getFullName());
     }
     newBom.setUnit(rawMaterial.getUnit());
@@ -401,5 +412,104 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
     newBom.setFullName(name);
 
     return newBom;
+  }
+
+  @Override
+  public BillOfMaterial getDefaultBOM(Product originalProduct, Company company)
+      throws AxelorException {
+
+    if (company == null) {
+      company = Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null);
+    }
+
+    BillOfMaterial billOfMaterial = null;
+    if (originalProduct != null) {
+      billOfMaterial =
+          (BillOfMaterial)
+              productCompanyService.get(originalProduct, "defaultBillOfMaterial", company);
+
+      if (billOfMaterial == null) {
+        billOfMaterial = originalProduct.getDefaultBillOfMaterial();
+      }
+    }
+
+    return billOfMaterial;
+  }
+
+  @Override
+  public List<BillOfMaterial> getAlternativesBOM(Product originalProduct, Company company)
+      throws AxelorException {
+
+    BillOfMaterial defaultBOM = this.getDefaultBOM(originalProduct, company);
+    return billOfMaterialRepo
+        .all()
+        .filter(
+            "self.product = ?1 AND self.company = ?2 AND self.id != ?3 AND self.statusSelect = ?4",
+            originalProduct,
+            company,
+            defaultBOM != null ? defaultBOM.getId() : 0,
+            BillOfMaterialRepository.STATUS_APPLICABLE)
+        .fetch();
+  }
+
+  protected BillOfMaterial getAnyBOM(Product originalProduct, Company company) {
+    return billOfMaterialRepo
+        .all()
+        .filter(
+            "self.product = ?1 AND self.company = ?2 AND self.statusSelect = ?3",
+            originalProduct,
+            company,
+            BillOfMaterialRepository.STATUS_APPLICABLE)
+        .order("id")
+        .fetchOne();
+  }
+
+  @Override
+  public BillOfMaterial getBOM(Product originalProduct, Company company) throws AxelorException {
+
+    if (company == null) {
+      company = Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null);
+    }
+
+    BillOfMaterial billOfMaterial = null;
+    if (originalProduct != null) {
+
+      // First we try to search for company specific default BOM in the the original product.
+      Object obj =
+          productCompanyService.getWithNoDefault(originalProduct, "defaultBillOfMaterial", company);
+
+      if (obj != null) {
+        billOfMaterial = (BillOfMaterial) obj;
+      }
+      // If we can't find any
+      if (billOfMaterial == null) {
+        // Get any BOM with original product and company.
+        billOfMaterial = getAnyBOM(originalProduct, company);
+      }
+
+      // If we can't find any again, then we take the default bom of the original product regardless
+      // of the company
+      if (billOfMaterial == null) {
+        billOfMaterial = originalProduct.getDefaultBillOfMaterial();
+      }
+    }
+
+    return billOfMaterial;
+  }
+
+  @Override
+  public List<Long> getBillOfMaterialProductsId(Set<Company> companySet) throws AxelorException {
+
+    if (companySet == null || companySet.isEmpty()) {
+      return Collections.emptyList();
+    }
+    String stringQuery =
+        "SELECT DISTINCT self.product.id from BillOfMaterial as self WHERE self.company.id in (?1)";
+    Query query = JPA.em().createQuery(stringQuery, Long.class);
+
+    query.setParameter(1, companySet.stream().map(Company::getId).collect(Collectors.toList()));
+    List<Long> productIds = (List<Long>) query.getResultList();
+
+    return productIds;
   }
 }

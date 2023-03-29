@@ -41,10 +41,15 @@
 
     <boolean name="enableTaskTemplatesByProduct" title="Enable task templates by product"/>
 
-    <string name="preTaskStatusSet" title="Status for invoice pre task tasks"
-      selection="project.task.status"/>
-    <string name="postTaskStatusSet" title="Status for invoice post task tasks"
-      selection="project.task.status"/>
+    <boolean name="generateProjectSequence" title="Generate sequence for project"/>
+
+    <boolean name="automaticInvoicing" title="Automatic invoicing"
+      help="On creation of an Invoicing project, attached Timesheet Lines and Teamtasks will be automatically set as to invoice regarding Status for invoice pre task tasks, Status for invoice post task tasks and Exclude tasks for invoicing field"/>
+
+    <many-to-many name="preTaskStatusSet" title="Status for invoice pre task tasks"
+      ref="com.axelor.apps.project.db.ProjectStatus"/>
+    <many-to-many name="postTaskStatusSet" title="Status for invoice post task tasks"
+      ref="com.axelor.apps.project.db.ProjectStatus"/>
     <string name="exculdeTaskInvoicing" title="Exculde tasks for invoicing"
       help="Here you can enter a groovy formula to exclude certain tasks from invoicing according to certain desired criteria"/>
 

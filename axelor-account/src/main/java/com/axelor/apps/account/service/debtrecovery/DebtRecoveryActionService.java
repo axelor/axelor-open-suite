@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,10 +22,11 @@ import com.axelor.apps.account.db.DebtRecoveryHistory;
 import com.axelor.apps.account.db.DebtRecoveryMethodLine;
 import com.axelor.apps.account.db.repo.DebtRecoveryHistoryRepository;
 import com.axelor.apps.account.db.repo.DebtRecoveryRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.TemplateMessageAccountService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
@@ -96,8 +97,8 @@ public class DebtRecoveryActionService {
           "%s :\n"
               + I18n.get("Partner")
               + " %s: "
-              + I18n.get(IExceptionMessage.DEBT_RECOVERY_ACTION_1),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+              + I18n.get(AccountExceptionMessage.DEBT_RECOVERY_ACTION_1),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           partner.getName());
     }
 
@@ -108,15 +109,15 @@ public class DebtRecoveryActionService {
           "%s :\n"
               + I18n.get("Partner")
               + " %s: "
-              + I18n.get(IExceptionMessage.DEBT_RECOVERY_ACTION_2),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+              + I18n.get(AccountExceptionMessage.DEBT_RECOVERY_ACTION_2),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           partner.getName());
 
     } else if (CollectionUtils.isEmpty(debtRecoveryMethodLine.getMessageTemplateSet())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.DEBT_RECOVERY_ACTION_3),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.DEBT_RECOVERY_ACTION_3),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           partner.getName(),
           debtRecoveryMethodLine.getDebtRecoveryMethod().getName(),
           debtRecoveryMethodLine.getSequence());
@@ -195,8 +196,8 @@ public class DebtRecoveryActionService {
           "%s :\n"
               + I18n.get("Partner")
               + " %s: "
-              + I18n.get(IExceptionMessage.DEBT_RECOVERY_ACTION_1),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+              + I18n.get(AccountExceptionMessage.DEBT_RECOVERY_ACTION_1),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           partner.getName());
     }
 
@@ -206,15 +207,15 @@ public class DebtRecoveryActionService {
           "%s :\n"
               + I18n.get("Partner")
               + " %s: "
-              + I18n.get(IExceptionMessage.DEBT_RECOVERY_ACTION_2),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+              + I18n.get(AccountExceptionMessage.DEBT_RECOVERY_ACTION_2),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           partner.getName());
 
     } else if (CollectionUtils.isEmpty(debtRecoveryMethodLine.getMessageTemplateSet())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.DEBT_RECOVERY_ACTION_3),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.DEBT_RECOVERY_ACTION_3),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           partner.getName(),
           debtRecoveryMethodLine.getDebtRecoveryMethod().getName(),
           debtRecoveryMethodLine.getSequence());
@@ -258,13 +259,14 @@ public class DebtRecoveryActionService {
           && message.getMailAccount() == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.DEBT_RECOVERY_ACTION_4));
+            I18n.get(AccountExceptionMessage.DEBT_RECOVERY_ACTION_4));
       }
 
-      if (CollectionUtils.isEmpty(message.getToEmailAddressSet())) {
+      if (message.getMediaTypeSelect() != MessageRepository.MEDIA_TYPE_MAIL
+          && CollectionUtils.isEmpty(message.getToEmailAddressSet())) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(IExceptionMessage.DEBT_RECOVERY_ACTION_5),
+            I18n.get(AccountExceptionMessage.DEBT_RECOVERY_ACTION_5),
             debtRecovery.getDebtRecoveryMethodLine().getDebtRecoveryLevelLabel());
       }
 

@@ -14,6 +14,8 @@
     <many-to-one name="dataMetaFile" ref="com.axelor.meta.db.MetaFile" title="Data(s)"
       required="true" initParam="true"/>
     <many-to-one name="logMetaFile" title="Log" ref="com.axelor.meta.db.MetaFile"/>
+    <many-to-one name="advanceImport" title="Advance import"
+      ref="com.axelor.apps.base.db.AdvancedImport"/>
 
   </entity>
 

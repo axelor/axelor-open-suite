@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -25,10 +25,10 @@ import com.axelor.apps.hr.db.LeaveReason;
 import com.axelor.apps.hr.db.repo.EmployeeHRRepository;
 import com.axelor.apps.hr.db.repo.LeaveLineRepository;
 import com.axelor.apps.hr.db.repo.LeaveManagementRepository;
-import com.axelor.apps.hr.exception.IExceptionMessage;
+import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
+import com.axelor.apps.hr.service.employee.EmployeeService;
 import com.axelor.apps.hr.service.leave.LeaveService;
 import com.axelor.apps.hr.service.leave.management.LeaveManagementService;
-import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.ExceptionOriginRepository;
@@ -56,6 +56,7 @@ public class BatchLeaveManagement extends BatchStrategy {
 
   protected LeaveLineRepository leaveLineRepository;
   protected LeaveManagementRepository leaveManagementRepository;
+  protected EmployeeService employeeService;
 
   @Inject private Provider<LeaveService> leaveServiceProvider;
 
@@ -63,11 +64,13 @@ public class BatchLeaveManagement extends BatchStrategy {
   public BatchLeaveManagement(
       LeaveManagementService leaveManagementService,
       LeaveLineRepository leaveLineRepository,
-      LeaveManagementRepository leaveManagementRepository) {
+      LeaveManagementRepository leaveManagementRepository,
+      EmployeeService employeeService) {
 
     super(leaveManagementService);
     this.leaveLineRepository = leaveLineRepository;
     this.leaveManagementRepository = leaveManagementRepository;
+    this.employeeService = employeeService;
   }
 
   @Override
@@ -81,7 +84,7 @@ public class BatchLeaveManagement extends BatchStrategy {
       TraceBackService.trace(
           new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(IExceptionMessage.BATCH_MISSING_FIELD)),
+              I18n.get(HumanResourceExceptionMessage.BATCH_MISSING_FIELD)),
           ExceptionOriginRepository.LEAVE_MANAGEMENT,
           batch.getId());
     }
@@ -188,7 +191,7 @@ public class BatchLeaveManagement extends BatchStrategy {
     LeaveManagement leaveManagement =
         leaveManagementService.createLeaveManagement(
             leaveLine,
-            AuthUtils.getUser(),
+            employeeService.getUser(employee),
             batch.getHrBatch().getComments(),
             null,
             batch.getHrBatch().getStartDate(),
@@ -205,7 +208,7 @@ public class BatchLeaveManagement extends BatchStrategy {
         throw new AxelorException(
             employee,
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.BATCH_LEAVE_MANAGEMENT_QTY_OUT_OF_BOUNDS),
+            I18n.get(HumanResourceExceptionMessage.BATCH_LEAVE_MANAGEMENT_QTY_OUT_OF_BOUNDS),
             limit.longValue());
       }
 
@@ -225,20 +228,28 @@ public class BatchLeaveManagement extends BatchStrategy {
   protected void stop() {
 
     String comment =
-        String.format(I18n.get(IExceptionMessage.BATCH_LEAVE_MANAGEMENT_ENDING_0), total) + '\n';
+        String.format(
+                I18n.get(HumanResourceExceptionMessage.BATCH_LEAVE_MANAGEMENT_ENDING_0), total)
+            + '\n';
 
     comment +=
-        String.format(I18n.get(IExceptionMessage.BATCH_LEAVE_MANAGEMENT_ENDING_1), batch.getDone())
+        String.format(
+                I18n.get(HumanResourceExceptionMessage.BATCH_LEAVE_MANAGEMENT_ENDING_1),
+                batch.getDone())
             + '\n';
 
     if (confAnomaly > 0) {
       comment +=
-          String.format(I18n.get(IExceptionMessage.BATCH_LEAVE_MANAGEMENT_ENDING_2), confAnomaly)
+          String.format(
+                  I18n.get(HumanResourceExceptionMessage.BATCH_LEAVE_MANAGEMENT_ENDING_2),
+                  confAnomaly)
               + '\n';
     }
     if (noValueAnomaly > 0) {
       comment +=
-          String.format(I18n.get(IExceptionMessage.BATCH_LEAVE_MANAGEMENT_ENDING_3), noValueAnomaly)
+          String.format(
+                  I18n.get(HumanResourceExceptionMessage.BATCH_LEAVE_MANAGEMENT_ENDING_3),
+                  noValueAnomaly)
               + '\n';
     }
 

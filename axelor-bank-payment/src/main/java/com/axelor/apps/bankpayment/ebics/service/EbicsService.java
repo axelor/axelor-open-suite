@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -32,7 +32,7 @@ import com.axelor.apps.bankpayment.ebics.client.FileTransfer;
 import com.axelor.apps.bankpayment.ebics.client.KeyManagement;
 import com.axelor.apps.bankpayment.ebics.client.OrderType;
 import com.axelor.apps.bankpayment.ebics.io.IOUtils;
-import com.axelor.apps.bankpayment.exception.IExceptionMessage;
+import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -150,7 +150,7 @@ public class EbicsService {
    * @throws JDOMException
    * @throws IOException
    */
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void sendINIRequest(EbicsUser ebicsUser, EbicsProduct product) throws AxelorException {
 
     if (ebicsUser.getStatusSelect()
@@ -185,7 +185,7 @@ public class EbicsService {
    * @param product the application product.
    * @throws AxelorException
    */
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void sendHIARequest(EbicsUser ebicsUser, EbicsProduct product) throws AxelorException {
 
     if (ebicsUser.getStatusSelect()
@@ -218,7 +218,7 @@ public class EbicsService {
    * @param product the application product.
    * @throws AxelorException
    */
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public X509Certificate[] sendHPBRequest(EbicsUser user, EbicsProduct product)
       throws AxelorException {
 
@@ -244,7 +244,7 @@ public class EbicsService {
    * @param product the session product
    * @throws AxelorException
    */
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void sendSPRRequest(EbicsUser ebicsUser, EbicsProduct product) throws AxelorException {
 
     EbicsSession session = new EbicsSession(ebicsUser);
@@ -315,7 +315,7 @@ public class EbicsService {
 
     throw new AxelorException(
         TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-        I18n.get(IExceptionMessage.EBICS_NO_SERVICE_CONFIGURED),
+        I18n.get(BankPaymentExceptionMessage.EBICS_NO_SERVICE_CONFIGURED),
         ebicsPartner.getPartnerId(),
         format.getName());
   }
@@ -476,7 +476,7 @@ public class EbicsService {
     return partner.getTestMode();
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void addResponseFile(EbicsUser user, File file) throws IOException {
 
     EbicsRequestLog requestLog =

@@ -15,6 +15,11 @@
     <string name="origin" title="Origin"/>
     <string name="note" title="Note" large="true"/>
 
+    <many-to-one name="barCode" title="Barcode" ref="com.axelor.meta.db.MetaFile"/>
+    <string name="serialNumber" title="Serial Nbr"/>
+    <many-to-one name="barcodeTypeConfig" title="Barcode Type"
+      ref="com.axelor.apps.base.db.BarcodeTypeConfig"/>
+
     <unique-constraint columns="product,trackingNumberSeq"/>
 
     <finder-method name="findBySeq" using="trackingNumberSeq"/>

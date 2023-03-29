@@ -42,6 +42,12 @@
 
     <string name="useCondition" title="Condition" large="true"/>
 
+    <many-to-one name="workshopStockLocation"
+      ref="com.axelor.apps.stock.db.StockLocation" title="Workshop"/>
+    <string name="workshopStockLocationFormula" title="Workshop" large="true"/>
+    <boolean name="defWorkshopStockLocationAsFormula" title="Define with a script"
+      default="false"/>
+
     <!--we don't want a real database relation between configurator and bill of materials, so we just
       save the id -->
     <long name="billOfMaterialId"/>

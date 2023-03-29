@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -44,10 +44,9 @@ import com.axelor.apps.hr.db.repo.EmployeeHRRepository;
 import com.axelor.apps.hr.db.repo.HRConfigRepository;
 import com.axelor.apps.hr.db.repo.LeaveLineRepository;
 import com.axelor.apps.hr.db.repo.LeaveManagementRepository;
-import com.axelor.apps.hr.exception.IExceptionMessage;
+import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.employee.EmployeeService;
 import com.axelor.apps.hr.service.leave.management.LeaveManagementService;
-import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.ExceptionOriginRepository;
@@ -79,16 +78,19 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
 
   protected LeaveLineRepository leaveLineRepository;
   protected LeaveManagementRepository leaveManagementRepository;
+  protected EmployeeService employeeService;
 
   @Inject
   public BatchSeniorityLeaveManagement(
       LeaveManagementService leaveManagementService,
       LeaveLineRepository leaveLineRepository,
-      LeaveManagementRepository leaveManagementRepository) {
+      LeaveManagementRepository leaveManagementRepository,
+      EmployeeService employeeService) {
 
     super(leaveManagementService);
     this.leaveLineRepository = leaveLineRepository;
     this.leaveManagementRepository = leaveManagementRepository;
+    this.employeeService = employeeService;
   }
 
   @Override
@@ -102,7 +104,7 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
       TraceBackService.trace(
           new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(IExceptionMessage.BATCH_MISSING_FIELD)),
+              I18n.get(HumanResourceExceptionMessage.BATCH_MISSING_FIELD)),
           ExceptionOriginRepository.LEAVE_MANAGEMENT,
           batch.getId());
     total = 0;
@@ -195,7 +197,7 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
       throw new AxelorException(
           employee,
           TraceBackRepository.CATEGORY_NO_VALUE,
-          I18n.get(IExceptionMessage.EMPLOYEE_NO_LEAVE_MANAGEMENT),
+          I18n.get(HumanResourceExceptionMessage.EMPLOYEE_NO_LEAVE_MANAGEMENT),
           employee.getName(),
           batch.getHrBatch().getLeaveReason().getName());
     }
@@ -203,7 +205,7 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
       throw new AxelorException(
           employee,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.EMPLOYEE_DOUBLE_LEAVE_MANAGEMENT),
+          I18n.get(HumanResourceExceptionMessage.EMPLOYEE_DOUBLE_LEAVE_MANAGEMENT),
           employee.getName(),
           batch.getHrBatch().getLeaveReason().getName());
     }
@@ -213,7 +215,7 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
       if (contract == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_NO_VALUE,
-            IExceptionMessage.EMPLOYEE_CONTRACT_OF_EMPLOYMENT);
+            HumanResourceExceptionMessage.EMPLOYEE_CONTRACT_OF_EMPLOYMENT);
       }
       Integer executiveStatusSelect = contract.getExecutiveStatusSelect();
 
@@ -231,14 +233,13 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
               formula.replace(
                   hrConfig.getSeniorityVariableName(),
                   String.valueOf(
-                      Beans.get(EmployeeService.class)
-                          .getLengthOfService(employee, batch.getHrBatch().getReferentialDate())));
+                      employeeService.getLengthOfService(
+                          employee, batch.getHrBatch().getReferentialDate())));
           formula =
               formula.replace(
                   hrConfig.getAgeVariableName(),
                   String.valueOf(
-                      Beans.get(EmployeeService.class)
-                          .getAge(employee, batch.getHrBatch().getReferentialDate())));
+                      employeeService.getAge(employee, batch.getHrBatch().getReferentialDate())));
           maker.setTemplate(formula);
           eval = maker.make();
           CompilerConfiguration conf = new CompilerConfiguration();
@@ -262,7 +263,7 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
       LeaveManagement leaveManagement =
           leaveManagementService.createLeaveManagement(
               leaveLine,
-              AuthUtils.getUser(),
+              employeeService.getUser(employee),
               batch.getHrBatch().getComments(),
               null,
               batch.getHrBatch().getStartDate(),
@@ -280,21 +281,25 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
   protected void stop() {
 
     String comment =
-        String.format(I18n.get(IExceptionMessage.BATCH_LEAVE_MANAGEMENT_ENDING_0) + '\n', total);
+        String.format(
+            I18n.get(HumanResourceExceptionMessage.BATCH_LEAVE_MANAGEMENT_ENDING_0) + '\n', total);
 
     comment +=
         String.format(
-            I18n.get(IExceptionMessage.BATCH_LEAVE_MANAGEMENT_ENDING_1) + '\n', batch.getDone());
+            I18n.get(HumanResourceExceptionMessage.BATCH_LEAVE_MANAGEMENT_ENDING_1) + '\n',
+            batch.getDone());
 
     if (confAnomaly > 0) {
       comment +=
           String.format(
-              I18n.get(IExceptionMessage.BATCH_LEAVE_MANAGEMENT_ENDING_2) + '\n', confAnomaly);
+              I18n.get(HumanResourceExceptionMessage.BATCH_LEAVE_MANAGEMENT_ENDING_2) + '\n',
+              confAnomaly);
     }
     if (noValueAnomaly > 0) {
       comment +=
           String.format(
-              I18n.get(IExceptionMessage.BATCH_LEAVE_MANAGEMENT_ENDING_3) + '\n', noValueAnomaly);
+              I18n.get(HumanResourceExceptionMessage.BATCH_LEAVE_MANAGEMENT_ENDING_3) + '\n',
+              noValueAnomaly);
     }
 
     addComment(comment);

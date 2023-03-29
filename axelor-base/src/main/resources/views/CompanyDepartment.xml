@@ -7,7 +7,7 @@
     model="com.axelor.apps.base.db.CompanyDepartment">
     <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
     <field name="name"/>
-    <field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="company" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
   </grid>
 
   <form name="company-department-form" title="Company department"
@@ -36,6 +36,6 @@
   <search-filters name="company-department-filters"
     model="com.axelor.apps.base.db.CompanyDepartment" title="Company department filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
   </search-filters>
 </object-views>

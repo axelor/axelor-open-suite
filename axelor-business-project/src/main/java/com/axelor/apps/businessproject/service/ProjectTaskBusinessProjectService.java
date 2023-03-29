@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -25,6 +25,7 @@ import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.TaskTemplate;
 import com.axelor.apps.project.service.ProjectTaskService;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.tool.QueryBuilder;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
@@ -49,11 +50,17 @@ public interface ProjectTaskBusinessProjectService extends ProjectTaskService {
   List<InvoiceLine> createInvoiceLine(Invoice invoice, ProjectTask projectTask, int priority)
       throws AxelorException;
 
-  ProjectTask computeDefaultInformation(ProjectTask projectTask) throws AxelorException;
+  ProjectTask updateTaskFinancialInfo(ProjectTask projectTask) throws AxelorException;
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  ProjectTask updateTask(ProjectTask projectTask, AppBusinessProject appBusinessProject)
-      throws AxelorException;
+  QueryBuilder<ProjectTask> getTaskInvoicingFilter();
+
+  void taskInvoicing(Project project, AppBusinessProject appBusinessProject);
+
+  @Transactional
+  ProjectTask updateTaskToInvoice(ProjectTask projectTask, AppBusinessProject appBusinessProject);
 
   ProjectTask resetProjectTaskValues(ProjectTask projectTask);
+
+  @Transactional(rollbackOn = {Exception.class})
+  ProjectTask setProjectTaskValues(ProjectTask projectTask) throws AxelorException;
 }

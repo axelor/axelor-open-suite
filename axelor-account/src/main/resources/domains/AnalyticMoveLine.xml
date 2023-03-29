@@ -33,12 +33,24 @@
 
     <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
 
+    <integer name="subTypeSelect" title="SubType"
+      selection="account.analytic.move.line.sub.type.select" required="true" default="1"/>
+    <many-to-one name="originAnalyticMoveLine"
+      ref="com.axelor.apps.account.db.AnalyticMoveLine"/>
+
+    <finder-method name="findByAnalyticAxis" using="analyticAxis" all="true"/>
+
     <extra-code><![CDATA[
 
 	   	// STATUS SELECT
 		public static final int STATUS_FORECAST_ORDER = 1;
 		public static final int STATUS_FORECAST_INVOICE = 2;
 		public static final int STATUS_REAL_ACCOUNTING = 3;
+
+		// SUB TYPE SELECT
+		public static final int SUB_TYPE_ORIGINAL = 1;
+		public static final int SUB_TYPE_REVERSE = 2;
+		public static final int SUB_TYPE_REVISION = 3;
 
 	]]></extra-code>
 

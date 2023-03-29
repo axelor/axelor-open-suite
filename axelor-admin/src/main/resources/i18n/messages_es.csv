@@ -131,6 +131,8 @@
 "Status","Estado",,
 "Tab name","Nombre de la pestaña",,
 "Technical maintenance","Mantenimiento técnico",,
+"The 'Query' of the line '%s' cannot be empty.",,,
+"The 'Relational field' of the line '%s' cannot be empty.",,,
 "This app is used by %s. Please deactivate them before continue.","Esta aplicación es utilizada por %s. Desactívelos antes de continuar.",,
 "Title","Título",,
 "Type","Tipo",,

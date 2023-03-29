@@ -5,7 +5,7 @@
 
   <grid name="shipping-coef-grid" title="Shipping Coef. Table"
     model="com.axelor.apps.base.db.ShippingCoef">
-    <field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="company" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="shippingCoef"/>
   </grid>
 

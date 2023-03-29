@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -28,12 +28,16 @@ import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.repo.AccountClearanceRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.move.MoveLineService;
-import com.axelor.apps.account.service.move.MoveService;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.move.MoveCreateService;
+import com.axelor.apps.account.service.move.MoveValidateService;
+import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.SequenceRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
@@ -58,8 +62,8 @@ public class AccountClearanceService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  protected MoveService moveService;
-  protected MoveLineService moveLineService;
+  protected MoveCreateService moveCreateService;
+  protected MoveValidateService moveValidateService;
   protected MoveLineRepository moveLineRepo;
   protected SequenceService sequenceService;
   protected ReconcileService reconcileService;
@@ -68,30 +72,36 @@ public class AccountClearanceService {
   protected AccountClearanceRepository accountClearanceRepo;
   protected AppBaseService appBaseService;
   protected User user;
+  protected MoveLineCreateService moveLineCreateService;
+  protected BankDetailsService bankDetailsService;
 
   @Inject
   public AccountClearanceService(
       UserService userService,
       AppBaseService appBaseService,
-      MoveService moveService,
-      MoveLineService moveLineService,
+      MoveCreateService moveCreateService,
+      MoveValidateService moveValidateService,
       MoveLineRepository moveLineRepo,
       SequenceService sequenceService,
       ReconcileService reconcileService,
       TaxService taxService,
       TaxAccountService taxAccountService,
-      AccountClearanceRepository accountClearanceRepo) {
+      AccountClearanceRepository accountClearanceRepo,
+      MoveLineCreateService moveLineCreateService,
+      BankDetailsService bankDetailsService) {
 
     this.appBaseService = appBaseService;
     this.user = userService.getUser();
-    this.moveService = moveService;
-    this.moveLineService = moveLineService;
+    this.moveCreateService = moveCreateService;
+    this.moveValidateService = moveValidateService;
     this.moveLineRepo = moveLineRepo;
     this.sequenceService = sequenceService;
     this.reconcileService = reconcileService;
     this.taxService = taxService;
     this.taxAccountService = taxAccountService;
     this.accountClearanceRepo = accountClearanceRepo;
+    this.moveLineCreateService = moveLineCreateService;
+    this.bankDetailsService = bankDetailsService;
   }
 
   public List<? extends MoveLine> getExcessPayment(AccountClearance accountClearance)
@@ -105,18 +115,18 @@ public class AccountClearanceService {
         moveLineRepo
             .all()
             .filter(
-                "self.company = ?1 AND self.account.useForPartnerBalance = 'true' "
+                "self.move.company = ?1 AND self.account.useForPartnerBalance = 'true' "
                     + "AND (self.move.statusSelect = ?2 OR self.move.statusSelect = ?3) "
                     + "AND self.amountRemaining > 0 AND self.amountRemaining <= ?4 AND self.credit > 0 AND self.account in ?5 AND self.date <= ?6",
                 company,
-                MoveRepository.STATUS_VALIDATED,
                 MoveRepository.STATUS_ACCOUNTED,
+                MoveRepository.STATUS_DAYBOOK,
                 accountClearance.getAmountThreshold(),
                 company.getAccountConfig().getClearanceAccountSet(),
                 accountClearance.getDateThreshold())
             .fetch();
 
-    log.debug("Liste des trop perçus récupérés : {}", moveLineList);
+    log.debug("Fetched excess payment list: {}", moveLineList);
 
     return moveLineList;
   }
@@ -141,23 +151,38 @@ public class AccountClearanceService {
 
     BigDecimal taxRate =
         taxService.getTaxRate(tax, appBaseService.getTodayDateTime().toLocalDate());
-    Account taxAccount = taxAccountService.getAccount(tax, company, false, false);
     Account profitAccount = accountConfig.getProfitAccount();
     Journal journal = accountConfig.getAccountClearanceJournal();
 
     Set<MoveLine> moveLineList = accountClearance.getMoveLineSet();
 
     for (MoveLine moveLine : moveLineList) {
+      if (moveLine.getAccount().getVatSystemSelect() == null
+          || moveLine.getAccount().getVatSystemSelect() == 0) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(AccountExceptionMessage.MISSING_VAT_SYSTEM_ON_ACCOUNT),
+            moveLine.getAccount().getCode());
+      }
+      Account taxAccount =
+          taxAccountService.getAccount(
+              tax,
+              company,
+              journal,
+              moveLine.getAccount().getVatSystemSelect(),
+              false,
+              moveLine.getMove().getFunctionalOriginSelect());
       Move move =
           this.createAccountClearanceMove(
               moveLine, taxRate, taxAccount, profitAccount, company, journal, accountClearance);
-      moveService.getMoveValidateService().validate(move);
+      moveValidateService.accounting(move);
     }
 
     accountClearance.setStatusSelect(AccountClearanceRepository.STATUS_VALIDATED);
     accountClearance.setDateTime(appBaseService.getTodayDateTime());
     accountClearance.setName(
-        sequenceService.getSequenceNumber(SequenceRepository.ACCOUNT_CLEARANCE, company));
+        sequenceService.getSequenceNumber(
+            SequenceRepository.ACCOUNT_CLEARANCE, company, AccountClearance.class, "name"));
     accountClearanceRepo.save(accountClearance);
   }
 
@@ -173,22 +198,29 @@ public class AccountClearanceService {
     Partner partner = moveLine.getPartner();
 
     // Move
+    BankDetails companyBankDetails = null;
+    if (company != null) {
+      companyBankDetails =
+          bankDetailsService.getDefaultCompanyBankDetails(company, null, partner, null);
+    }
     Move move =
-        moveService
-            .getMoveCreateService()
-            .createMove(
-                journal,
-                company,
-                null,
-                partner,
-                null,
-                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-                moveLine.getMove().getFunctionalOriginSelect());
+        moveCreateService.createMove(
+            journal,
+            company,
+            null,
+            partner,
+            null,
+            partner != null ? partner.getFiscalPosition() : null,
+            MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+            moveLine.getMove().getFunctionalOriginSelect(),
+            null,
+            null,
+            companyBankDetails);
 
     // Debit MoveLine 411
     BigDecimal amount = moveLine.getAmountRemaining();
     MoveLine debitMoveLine =
-        moveLineService.createMoveLine(
+        moveLineCreateService.createMoveLine(
             move,
             partner,
             moveLine.getAccount(),
@@ -201,13 +233,13 @@ public class AccountClearanceService {
     move.getMoveLineList().add(debitMoveLine);
 
     // Credit MoveLine 77. (profit account)
-    BigDecimal divid = taxRate.add(BigDecimal.ONE);
+    BigDecimal divid = taxRate.divide(new BigDecimal(100)).add(BigDecimal.ONE);
     BigDecimal profitAmount =
         amount
             .divide(divid, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP)
             .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
     MoveLine creditMoveLine1 =
-        moveLineService.createMoveLine(
+        moveLineCreateService.createMoveLine(
             move,
             partner,
             profitAccount,
@@ -222,7 +254,7 @@ public class AccountClearanceService {
     // Credit MoveLine 445 (Tax account)
     BigDecimal taxAmount = amount.subtract(profitAmount);
     MoveLine creditMoveLine2 =
-        moveLineService.createMoveLine(
+        moveLineCreateService.createMoveLine(
             move,
             partner,
             taxAccount,
@@ -236,7 +268,7 @@ public class AccountClearanceService {
 
     Reconcile reconcile = reconcileService.createReconcile(debitMoveLine, moveLine, amount, false);
     if (reconcile != null) {
-      reconcileService.confirmReconcile(reconcile, true);
+      reconcileService.confirmReconcile(reconcile, true, true);
     }
 
     debitMoveLine.setAccountClearance(accountClearance);
@@ -276,24 +308,24 @@ public class AccountClearanceService {
     if (accountConfig == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CLEARANCE_1),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.ACCOUNT_CLEARANCE_1),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           company.getName());
     }
 
     if (accountConfig.getProfitAccount() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CLEARANCE_2),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.ACCOUNT_CLEARANCE_2),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           company.getName());
     }
 
     if (accountConfig.getStandardRateTax() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CLEARANCE_3),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.ACCOUNT_CLEARANCE_3),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           company.getName());
     }
 
@@ -301,24 +333,24 @@ public class AccountClearanceService {
         || accountConfig.getClearanceAccountSet().size() == 0) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CLEARANCE_4),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.ACCOUNT_CLEARANCE_4),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           company.getName());
     }
 
     if (!sequenceService.hasSequence(SequenceRepository.ACCOUNT_CLEARANCE, company)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CLEARANCE_5),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.ACCOUNT_CLEARANCE_5),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           company.getName());
     }
 
     if (accountConfig.getAccountClearanceJournal() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CLEARANCE_6),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.ACCOUNT_CLEARANCE_6),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           company.getName());
     }
   }

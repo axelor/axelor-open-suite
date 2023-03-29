@@ -22,8 +22,8 @@
       <field name="language" readonlyIf="metaFile"/>
       <button name="createFileBtn" title="Create file" colSpan="3"
         onClick="save,action-meta-method-create-group-menu-file"/>
-      <button name="importFileBtn" title="Import" readonlyIf="metaFile == null" colSpan="3"
-        onClick="save,action-meta-method-import-group-menu,save"/>
+      <button name="importFileBtn" title="import.verb" readonlyIf="metaFile == null"
+        colSpan="3" onClick="save,action-meta-method-import-group-menu,save"/>
       <panel name="detailsPanel" title="Details" colSpan="12">
         <field name="importDate" colSpan="4"/>
         <field name="createdBy" colSpan="4"/>

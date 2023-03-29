@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,64 +22,17 @@ import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
-import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.meta.schema.actions.ActionView;
-import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 @Singleton
 public class ProjectPlanningTimeController {
-
-  public void showPlanning(ActionRequest request, ActionResponse response) {
-
-    Context context = request.getContext();
-
-    Collection<Map<String, Object>> users =
-        (Collection<Map<String, Object>>) context.get("userSet");
-    Map<String, Object> project = (Map<String, Object>) context.get("_project");
-
-    String userIds = "";
-    if (users != null) {
-      for (Map<String, Object> user : users) {
-        if (userIds.isEmpty()) {
-          userIds = user.get("id").toString();
-        } else {
-          userIds += "," + user.get("id").toString();
-        }
-      }
-    }
-
-    String projectId = "";
-    if (project != null && project.get("id") != null) {
-      projectId = project.get("id").toString();
-    }
-
-    ActionViewBuilder builder =
-        ActionView.define(I18n.get("Project Planning time"))
-            .model(ProjectPlanningTime.class.getName());
-    String url = "project/planning";
-
-    if (!userIds.isEmpty() && !projectId.isEmpty()) {
-      url += "?userIds=" + userIds + "&projectIds=" + projectId;
-    } else if (!userIds.isEmpty()) {
-      url += "?userIds=" + userIds;
-    } else if (!projectId.isEmpty()) {
-      url += "?projectIds=" + projectId;
-    }
-
-    builder.add("html", url);
-
-    response.setView(builder.map());
-    response.setCanClose(true);
-  }
 
   public void addMultipleProjectPlanningTime(ActionRequest request, ActionResponse response)
       throws AxelorException {
@@ -119,6 +72,7 @@ public class ProjectPlanningTimeController {
     }
   }
 
+  @SuppressWarnings("unchecked")
   public void removeProjectPlanningTime(ActionRequest request, ActionResponse response) {
 
     List<Map<String, Object>> projectPlanningTimeLines =

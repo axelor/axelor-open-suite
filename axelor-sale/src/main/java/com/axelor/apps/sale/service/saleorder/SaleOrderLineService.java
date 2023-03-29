@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -46,6 +46,14 @@ public interface SaleOrderLineService {
       throws AxelorException;
 
   SaleOrderLine resetProductInformation(SaleOrderLine line);
+
+  /**
+   * Reset price and inTaxPrice (only if the line.enableFreezeField is disabled) of the
+   * saleOrderLine
+   *
+   * @param line
+   */
+  void resetPrice(SaleOrderLine line);
 
   /**
    * Compute totals from a sale order line
@@ -102,19 +110,6 @@ public interface SaleOrderLineService {
    */
   public BigDecimal computeDiscount(SaleOrderLine saleOrderLine, Boolean inAti);
 
-  /**
-   * Convert a product's unit price from incl. tax to ex. tax or the other way round.
-   *
-   * <p>If the price is ati, it will be converted to ex. tax, and if it isn't it will be converted
-   * to ati.
-   *
-   * @param priceIsAti a boolean indicating if the price is ati.
-   * @param taxLine the tax to apply.
-   * @param price the unit price to convert.
-   * @return the converted price as a BigDecimal.
-   */
-  public BigDecimal convertUnitPrice(Boolean inAti, TaxLine taxLine, BigDecimal price);
-
   public Map<String, Object> getDiscountsFromPriceLists(
       SaleOrder saleOrder, SaleOrderLine saleOrderLine, BigDecimal price);
 
@@ -124,9 +119,6 @@ public interface SaleOrderLineService {
   public Unit getSaleUnit(SaleOrderLine saleOrderLine);
 
   public SaleOrder getSaleOrder(Context context);
-
-  public Map<String, BigDecimal> computeSubMargin(SaleOrder saleOrder, SaleOrderLine saleOrderLine)
-      throws AxelorException;
 
   public BigDecimal getAvailableStock(SaleOrder saleOrder, SaleOrderLine saleOrderLine);
 
@@ -156,7 +148,8 @@ public interface SaleOrderLineService {
       SaleOrder saleOrder,
       BigDecimal packQty,
       BigDecimal conversionRate,
-      Integer sequence);
+      Integer sequence)
+      throws AxelorException;
 
   /**
    * Get unique values of type field from pack lines
@@ -300,14 +293,43 @@ public interface SaleOrderLineService {
   /**
    * To manage Complementary Product sale order line.
    *
-   * @param saleOrderLine
+   * @param complementaryProduct
    * @param saleOrder
-   * @param complementaryProducts
+   * @param saleOrderLine
+   * @return New complementary sales order lines
    * @throws AxelorException
    */
   public List<SaleOrderLine> manageComplementaryProductSaleOrderLine(
-      SaleOrderLine saleOrderLine,
-      SaleOrder saleOrder,
-      List<ComplementaryProduct> complementaryProducts)
+      ComplementaryProduct complementaryProduct, SaleOrder saleOrder, SaleOrderLine saleOrderLine)
+      throws AxelorException;
+
+  public List<SaleOrderLine> updateLinesAfterFiscalPositionChange(SaleOrder saleOrder)
+      throws AxelorException;
+
+  /**
+   * Methods to compute the pricing scale of saleOrderLine <br>
+   * It is supposed that only one root pricing (pricing with no previousPricing) exists with the
+   * configuration of the saleOrderLine. (product, productCategory, company, concernedModel) Having
+   * more than one pricing matched may result on a unexpected result
+   *
+   * @param saleOrderLine
+   * @throws AxelorException
+   */
+  public void computePricingScale(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+      throws AxelorException;
+
+  /**
+   * Methods that checks if saleOrderLine can be can classified with a pricing line of a existing
+   * and started pricing. <br>
+   * It is supposed that only one root pricing (pricing with no previousPricing) exists with the
+   * configuration of the saleOrderLine. (product, productCategory, company, concernedModel) Having
+   * more than one pricing matched may have different result each time this method is called
+   *
+   * @param saleOrderLine
+   * @param saleOrder
+   * @return true if it can be classified, else false
+   * @throws AxelorException
+   */
+  public boolean hasPricingLine(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException;
 }

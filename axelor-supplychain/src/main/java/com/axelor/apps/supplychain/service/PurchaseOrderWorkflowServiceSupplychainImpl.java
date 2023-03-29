@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -60,9 +60,11 @@ public class PurchaseOrderWorkflowServiceSupplychainImpl extends PurchaseOrderWo
   public void validatePurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
     super.validatePurchaseOrder(purchaseOrder);
 
-    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+    if (!appSupplychainService.isApp("supplychain")) {
       return;
     }
+
+    budgetSupplychainService.updateBudgetLinesFromPurchaseOrder(purchaseOrder);
 
     if (appSupplychainService.getAppSupplychain().getSupplierStockMoveGenerationAuto()
         && !purchaseOrderStockService.existActiveStockMoveForPurchaseOrder(purchaseOrder.getId())) {
@@ -74,24 +76,23 @@ public class PurchaseOrderWorkflowServiceSupplychainImpl extends PurchaseOrderWo
       purchaseOrderSupplychainService.generateBudgetDistribution(purchaseOrder);
     }
     int intercoPurchaseCreatingStatus =
-        Beans.get(AppSupplychainService.class)
-            .getAppSupplychain()
-            .getIntercoPurchaseCreatingStatusSelect();
+        appSupplychainService.getAppSupplychain().getIntercoPurchaseCreatingStatusSelect();
     if (purchaseOrder.getInterco()
         && intercoPurchaseCreatingStatus == PurchaseOrderRepository.STATUS_VALIDATED) {
       Beans.get(IntercoService.class).generateIntercoSaleFromPurchase(purchaseOrder);
     }
 
-    budgetSupplychainService.updateBudgetLinesFromPurchaseOrder(purchaseOrder);
+    if (!appAccountService.getAppBudget().getManageMultiBudget()) {
+      purchaseOrderSupplychainService.updateBudgetDistributionAmountAvailable(purchaseOrder);
+    }
   }
 
   @Override
-  @Transactional
-  public void cancelPurchaseOrder(PurchaseOrder purchaseOrder) {
+  @Transactional(rollbackOn = {Exception.class})
+  public void cancelPurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
     super.cancelPurchaseOrder(purchaseOrder);
 
-    if (Beans.get(AppSupplychainService.class).isApp("supplychain")
-        && appAccountService.isApp("budget")) {
+    if (appSupplychainService.isApp("supplychain") && appAccountService.isApp("budget")) {
       budgetSupplychainService.updateBudgetLinesFromPurchaseOrder(purchaseOrder);
 
       if (purchaseOrder.getPurchaseOrderLineList() != null) {

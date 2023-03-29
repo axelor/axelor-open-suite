@@ -1,0 +1,2 @@
+"name";"value"
+"invoiceTermList";"__repo__(InvoiceTerm).all().filter(""(self.invoice.partner = :partner OR self.moveLine.partner = :partner) AND self.paymentSession = :id AND self.isSelectedOnPaymentSession IS TRUE"").bind(""partner"", partnerForEmail).bind(""id"", id).fetch()"

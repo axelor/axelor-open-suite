@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,6 +17,8 @@
  */
 package com.axelor.apps.sale.service.saleorder;
 
+import com.axelor.apps.account.db.FiscalPosition;
+import com.axelor.apps.account.db.TaxNumber;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
@@ -90,17 +92,19 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
       Company company,
       Partner contactPartner,
       Currency currency,
-      LocalDate deliveryDate,
+      LocalDate estimatedShippingDate,
       String internalReference,
       String externalReference,
       PriceList priceList,
       Partner clientPartner,
       Team team,
+      TaxNumber taxNumber,
+      FiscalPosition fiscalPosition,
       TradingName tradingName)
       throws AxelorException {
 
     logger.debug(
-        "Création d'un devis client : Société = {},  Reference externe = {}, Client = {}",
+        "Creation of a sale order: Company = {},  External reference = {}, Supplier partner = {}",
         company,
         externalReference,
         clientPartner.getFullName());
@@ -111,7 +115,10 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
     saleOrder.setContactPartner(contactPartner);
     saleOrder.setCurrency(currency);
     saleOrder.setExternalReference(externalReference);
-    saleOrder.setDeliveryDate(deliveryDate);
+    saleOrder.setEstimatedShippingDate(estimatedShippingDate);
+    saleOrder.setEstimatedDeliveryDate(estimatedShippingDate);
+    saleOrder.setTaxNumber(taxNumber);
+    saleOrder.setFiscalPosition(fiscalPosition);
 
     saleOrder.setPrintingSettings(
         Beans.get(TradingNameService.class).getDefaultPrintingSettings(tradingName, company));
@@ -161,7 +168,9 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
       Company company,
       Partner contactPartner,
       PriceList priceList,
-      Team team)
+      Team team,
+      TaxNumber taxNumber,
+      FiscalPosition fiscalPosition)
       throws AxelorException {
 
     String numSeq = "";
@@ -191,7 +200,9 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
             externalRef,
             priceList,
             clientPartner,
-            team);
+            team,
+            taxNumber,
+            fiscalPosition);
 
     this.attachToNewSaleOrder(saleOrderList, saleOrderMerged);
 
@@ -251,6 +262,7 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
       SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
       for (SaleOrderLine saleOrderLine : saleOrderLineList) {
         if (saleOrderLine.getProduct() != null) {
+          saleOrderLineService.resetPrice(saleOrderLine);
           saleOrderLineService.fillPrice(saleOrderLine, saleOrder);
           saleOrderLineService.computeValues(saleOrder, saleOrderLine);
         }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -28,12 +28,10 @@ import com.axelor.apps.hr.db.DPAE;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.EmploymentContract;
 import com.axelor.apps.hr.db.HRConfig;
-import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
-import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
-import com.axelor.apps.hr.exception.IExceptionMessage;
-import com.axelor.apps.hr.service.leave.LeaveService;
+import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrService;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -44,7 +42,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeService {
@@ -68,7 +65,7 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
           e.getCause(),
           employee,
           TraceBackRepository.CATEGORY_NO_VALUE,
-          I18n.get(IExceptionMessage.EMPLOYEE_NO_SENIORITY_DATE),
+          I18n.get(HumanResourceExceptionMessage.EMPLOYEE_NO_SENIORITY_DATE),
           employee.getName());
     }
   }
@@ -90,7 +87,7 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
           e.getCause(),
           employee,
           TraceBackRepository.CATEGORY_NO_VALUE,
-          I18n.get(IExceptionMessage.EMPLOYEE_NO_BIRTH_DATE),
+          I18n.get(HumanResourceExceptionMessage.EMPLOYEE_NO_BIRTH_DATE),
           employee.getName());
     }
   }
@@ -113,7 +110,7 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
       throw new AxelorException(
           employee,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.EMPLOYEE_PLANNING),
+          I18n.get(HumanResourceExceptionMessage.EMPLOYEE_PLANNING),
           employee.getName());
     }
 
@@ -129,7 +126,7 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
       throw new AxelorException(
           employee,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.EMPLOYEE_PUBLIC_HOLIDAY),
+          I18n.get(HumanResourceExceptionMessage.EMPLOYEE_PUBLIC_HOLIDAY),
           employee.getName());
     }
 
@@ -148,32 +145,6 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
                 .computePublicHolidayDays(fromDate, toDate, weeklyPlanning, publicHolidayPlanning));
 
     return duration;
-  }
-
-  @Override
-  public BigDecimal getDaysWorkedInPeriod(Employee employee, LocalDate fromDate, LocalDate toDate)
-      throws AxelorException {
-    BigDecimal daysWorks = getDaysWorksInPeriod(employee, fromDate, toDate);
-
-    BigDecimal daysLeave = BigDecimal.ZERO;
-    List<LeaveRequest> leaveRequestList =
-        Beans.get(LeaveRequestRepository.class)
-            .all()
-            .filter(
-                "self.user = ?1 AND self.duration >= 1 AND self.statusSelect = ?2 AND (self.fromDateT BETWEEN ?3 AND ?4 OR self.toDateT BETWEEN ?3 AND ?4 OR ?3 BETWEEN self.fromDateT AND self.toDateT OR ?4 BETWEEN self.fromDateT AND self.toDateT)",
-                employee.getUser(),
-                LeaveRequestRepository.STATUS_VALIDATED,
-                fromDate,
-                toDate)
-            .fetch();
-
-    for (LeaveRequest leaveRequest : leaveRequestList) {
-      daysLeave =
-          daysLeave.add(
-              Beans.get(LeaveService.class).computeDuration(leaveRequest, fromDate, toDate));
-    }
-
-    return daysWorks.subtract(daysLeave);
   }
 
   public Map<String, String> getSocialNetworkUrl(String name, String firstName) {
@@ -216,7 +187,7 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
     if (mainEmploymentContract == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(IExceptionMessage.EMPLOYEE_CONTRACT_OF_EMPLOYMENT),
+          I18n.get(HumanResourceExceptionMessage.EMPLOYEE_CONTRACT_OF_EMPLOYMENT),
           employee.getName());
     }
 
@@ -259,5 +230,18 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
 
     Beans.get(EmployeeRepository.class).save(employee);
     return newDPAE.getId();
+  }
+
+  @Override
+  public User getUser(Employee employee) throws AxelorException {
+
+    User user = employee.getUser();
+    if (user != null) {
+      return user;
+    }
+    throw new AxelorException(
+        TraceBackRepository.CATEGORY_NO_VALUE,
+        I18n.get(HumanResourceExceptionMessage.NO_USER_FOR_EMPLOYEE),
+        employee.getName());
   }
 }

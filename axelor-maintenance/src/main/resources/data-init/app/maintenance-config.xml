@@ -10,7 +10,7 @@
     <bind to="padding" column="padding" eval="padding?.empty ? '1' : padding"/>
     <bind to="toBeAdded" column="toBeAdded" eval="toBeAdded?.empty ? '1' : toBeAdded"/>
     <bind to="resetDate"
-      eval="call:com.axelor.apps.base.service.app.AppBaseService:getTodayDate()"/>
+      eval="call:com.axelor.apps.base.service.app.AppBaseService:getTodayDate(null)"/>
   </input>
 
 </csv-inputs>

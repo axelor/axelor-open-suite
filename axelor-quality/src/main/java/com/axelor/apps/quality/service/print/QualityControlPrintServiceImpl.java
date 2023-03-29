@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,17 +18,26 @@
 package com.axelor.apps.quality.service.print;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.project.service.ProjectService;
 import com.axelor.apps.quality.db.QualityControl;
-import com.axelor.apps.quality.exception.IExceptionMessage;
+import com.axelor.apps.quality.exception.QualityExceptionMessage;
 import com.axelor.apps.quality.report.IReport;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.tool.file.PdfTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.google.inject.Inject;
 import java.io.File;
 
 public class QualityControlPrintServiceImpl {
+
+  protected ProjectService projectService;
+
+  @Inject
+  public QualityControlPrintServiceImpl(ProjectService projectService) {
+    this.projectService = projectService;
+  }
 
   public String getFileName(QualityControl qualityControl) {
 
@@ -57,7 +66,8 @@ public class QualityControlPrintServiceImpl {
     if (qualityControl.getPrintingSettings() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
-          String.format(I18n.get(IExceptionMessage.QUALITY_CONTROL_MISSING_PRINTING_SETTINGS)),
+          String.format(
+              I18n.get(QualityExceptionMessage.QUALITY_CONTROL_MISSING_PRINTING_SETTINGS)),
           qualityControl);
     }
 
@@ -75,10 +85,7 @@ public class QualityControlPrintServiceImpl {
         .addFormat(format);
   }
 
-  private String getTimezone(QualityControl qualityControl) {
-    if (qualityControl.getProject() == null || qualityControl.getProject().getCompany() == null) {
-      return null;
-    }
-    return qualityControl.getProject().getCompany().getTimezone();
+  protected String getTimezone(QualityControl qualityControl) {
+    return projectService.getTimeZone(qualityControl.getProject());
   }
 }

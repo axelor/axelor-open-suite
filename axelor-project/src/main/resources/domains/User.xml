@@ -9,6 +9,9 @@
 
     <many-to-many name="projectSet" title="Projects"
       ref="com.axelor.apps.project.db.Project" mappedBy="membersUserSet"/>
+    <many-to-one name="contextProject" title="Context project"
+      ref="com.axelor.apps.project.db.Project"/>
+    <boolean name="isIncludeSubContextProjects" title="Include sub context projects"/>
 
   </entity>
 

@@ -9,6 +9,10 @@
 
     <one-to-one name="accountConfig" ref="com.axelor.apps.account.db.AccountConfig"
       title="Accounting configuration" mappedBy="company"/>
+    <many-to-many name="analyticAccountSet"
+      ref="com.axelor.apps.account.db.AnalyticAccount" title="Linked accounts"/>
+    <one-to-many name="taxNumberList" title="Tax numbers"
+      ref="com.axelor.apps.account.db.TaxNumber" mappedBy="company"/>
 
   </entity>
 

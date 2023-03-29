@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -28,7 +28,7 @@ import java.math.BigDecimal;
 
 public interface ProductService {
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void updateProductPrice(Product product) throws AxelorException;
 
   public String getSequence(Product product) throws AxelorException;
@@ -37,7 +37,7 @@ public interface ProductService {
 
   public boolean hasActivePriceList(Product product);
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void generateProductVariants(Product productModel) throws AxelorException;
 
   public Product createProduct(Product productModel, ProductVariant productVariant, int seq)
@@ -45,7 +45,7 @@ public interface ProductService {
 
   /**
    * @param productVariant
-   * @param applicationPriceSelect - 1 : Sale price - 2 : Cost price
+   * @param applicationPriceSelect - 1 : Sale price - 2 : Cost price - 3 : Purchase Price
    * @return
    */
   public BigDecimal getProductExtraPrice(ProductVariant productVariant, int applicationPriceSelect);
@@ -55,7 +55,8 @@ public interface ProductService {
       ProductVariantValue productVariantValue1,
       ProductVariantValue productVariantValue2,
       ProductVariantValue productVariantValue3,
-      ProductVariantValue productVariantValue4);
+      ProductVariantValue productVariantValue4,
+      ProductVariantValue productVariantValue5);
 
   public void copyProduct(Product product, Product copy);
 }

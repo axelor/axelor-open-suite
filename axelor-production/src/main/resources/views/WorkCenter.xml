@@ -40,7 +40,7 @@
       <field name="machineTool" domain="self.machine = :machine"
         showIf="workCenterTypeSelect == 2 || workCenterTypeSelect == 3"
         form-view="machine-tool-form" grid-view="machine-tool-grid"
-        if="__config__.app.getApp('production').getEnableToolManagement()"/>
+        if="__config__.app.getApp('production')?.getEnableToolManagement()"/>
     </panel>
     <panel-tabs name="mainPanelTab">
       <panel name="defaultMachineSettingsPanel" title="Machine settings" readonlyIf="!machine"
@@ -49,6 +49,8 @@
           <field name="minCapacityPerCycle" colSpan="3"/>
           <field name="maxCapacityPerCycle" colSpan="3"/>
           <field name="durationPerCycle" colSpan="3" widget="duration" x-big="true"
+            x-seconds="true"/>
+          <field name="timingOfImplementation" colSpan="3" widget="duration" x-big="true"
             x-seconds="true"/>
         </panel>
         <panel name="costingSettingsPanel" title="Costing settings" colSpan="12">
@@ -94,6 +96,8 @@
         <field name="minCapacityPerCycle" colSpan="3"/>
         <field name="maxCapacityPerCycle" colSpan="3"/>
         <field name="durationPerCycle" colSpan="3" widget="duration" x-big="true"
+          x-seconds="true"/>
+        <field name="timingOfImplementation" colSpan="3" widget="duration" x-big="true"
           x-seconds="true"/>
       </panel>
       <panel name="costingSettingsPanel" title="Costing settings" colSpan="12">

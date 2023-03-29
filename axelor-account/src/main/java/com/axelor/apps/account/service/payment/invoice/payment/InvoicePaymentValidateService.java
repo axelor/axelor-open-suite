@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,21 +19,18 @@ package com.axelor.apps.account.service.payment.invoice.payment;
 
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.exception.AxelorException;
-import com.google.inject.persist.Transactional;
 import java.io.IOException;
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
 
 public interface InvoicePaymentValidateService {
 
-  @Transactional(rollbackOn = {Exception.class})
   public void validate(InvoicePayment invoicePayment, boolean force)
       throws AxelorException, JAXBException, IOException, DatatypeConfigurationException;
 
   public void validate(InvoicePayment invoicePayment)
       throws AxelorException, JAXBException, IOException, DatatypeConfigurationException;
 
-  @Transactional(rollbackOn = {Exception.class})
   public InvoicePayment createMoveForInvoicePayment(InvoicePayment invoicePayment)
       throws AxelorException;
 }

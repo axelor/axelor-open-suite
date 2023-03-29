@@ -37,14 +37,12 @@
           hidden="true">
           <button name="$totalProjects" title="Projects" width="190px" widget="info-button"
             onClick="action-method-show-client-view-total-projects"/>
-          <button name="$newTasks" title="New tasks" width="190px" widget="info-button"
-            onClick="action-method-show-client-view-new-tasks"/>
-          <button name="$tasksInProgress" title="Tasks in progress" width="190px"
-            widget="info-button" onClick="action-method-show-client-view-tasks-progress"/>
+          <button name="$tasksInCompleted" title="Tasks incompleted" width="190px"
+            widget="info-button" onClick="action-method-show-client-view-tasks-in-completed"/>
           <button name="$tasksDue" title="Tasks due" width="190px" widget="info-button"
             onClick="action-method-show-client-view-tasks-due"/>
         </panel>
-        <panel name="saleOrderPanel" title="Order" if-module="axelor-sale" itemSpan="12"
+        <panel name="saleOrderPanel" title="Sale order" if-module="axelor-sale" itemSpan="12"
           hidden="true">
           <button name="$myQuotation" title="My quotations" width="190px"
             widget="info-button" onClick="action-method-show-client-view-my-quotation"/>
@@ -101,29 +99,29 @@
 
   <action-attrs name="action-attrs-client-view-hide-modules">
     <attribute name="hidden" for="myQuotationsBtn"
-      expr="eval: !(__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal').getManageSaleOrders())"/>
+      expr="eval: !(__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal')?.getManageSaleOrders())"/>
     <attribute name="hidden" for="saleOrderPanel"
-      expr="eval: !(__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal').getManageSaleOrders())"/>
+      expr="eval: !(__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal')?.getManageSaleOrders())"/>
     <attribute name="hidden" for="myInvoicesBtn"
-      expr="eval: !(__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal').getManageInvoices())"/>
+      expr="eval: !(__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal')?.getManageInvoices())"/>
     <attribute name="hidden" for="invoicePanel"
-      expr="eval: !(__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal').getManageInvoices())"/>
+      expr="eval: !(__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal')?.getManageInvoices())"/>
     <attribute name="hidden" for="dashletSumInvoices"
-      expr="eval: !(__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal').getManageInvoices())"/>
+      expr="eval: !(__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal')?.getManageInvoices())"/>
     <attribute name="hidden" for="myTicketsBtn"
-      expr="eval: !(__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal').getManageTickets())"/>
+      expr="eval: !(__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal')?.getManageTickets())"/>
     <attribute name="hidden" for="ticketPanel"
-      expr="eval: !(__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal').getManageTickets())"/>
+      expr="eval: !(__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal')?.getManageTickets())"/>
     <attribute name="hidden" for="myProjectsBtn"
-      expr="eval: !(__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal').getManageProjects())"/>
+      expr="eval: !(__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal')?.getManageProjects())"/>
     <attribute name="hidden" for="projectPanel"
-      expr="eval: !(__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal').getManageProjects())"/>
+      expr="eval: !(__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal')?.getManageProjects())"/>
     <attribute name="hidden" for="myDeliveriesBtn"
-      expr="eval: !(__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal').getManageDelivery())"/>
+      expr="eval: !(__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal')?.getManageDelivery())"/>
     <attribute name="hidden" for="deliveryPanel"
-      expr="eval: !(__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal').getManageDelivery())"/>
+      expr="eval: !(__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal')?.getManageDelivery())"/>
     <attribute name="hidden" for="myCatalogBtn"
-      expr="eval: !(__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal').getShowCatalog())"/>
+      expr="eval: !(__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal')?.getShowCatalog())"/>
   </action-attrs>
 
   <action-view name="wizard-client-form-open-my-catalog" title="Catalog"
@@ -189,15 +187,10 @@
       method="showClientMyTotalProjects"/>
   </action-method>
 
-  <action-method name="action-method-show-client-view-new-tasks"
-    model="com.axelor.apps.base.db.Wizard">
-    <call class="com.axelor.apps.portal.web.ClientViewController" method="showClientMyNewTasks"/>
-  </action-method>
-
-  <action-method name="action-method-show-client-view-tasks-progress"
+  <action-method name="action-method-show-client-view-tasks-in-completed"
     model="com.axelor.apps.base.db.Wizard">
     <call class="com.axelor.apps.portal.web.ClientViewController"
-      method="showClientMyTasksInProgress"/>
+      method="showClientMyTasksInCompleted"/>
   </action-method>
 
   <action-method name="action-method-show-client-view-tasks-due"

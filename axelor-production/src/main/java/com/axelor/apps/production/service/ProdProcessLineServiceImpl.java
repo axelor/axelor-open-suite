@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,76 +17,32 @@
  */
 package com.axelor.apps.production.service;
 
-import com.axelor.apps.production.db.ProdHumanResource;
+import com.axelor.apps.production.db.Machine;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.WorkCenterGroup;
 import com.axelor.apps.production.db.repo.ProdProcessLineRepository;
 import com.axelor.apps.production.db.repo.WorkCenterRepository;
-import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
-import org.apache.commons.collections.CollectionUtils;
+import java.math.RoundingMode;
 
 public class ProdProcessLineServiceImpl implements ProdProcessLineService {
 
   protected ProdProcessLineRepository prodProcessLineRepo;
+  protected WorkCenterService workCenterService;
 
   @Inject
-  public ProdProcessLineServiceImpl(ProdProcessLineRepository prodProcessLineRepo) {
+  public ProdProcessLineServiceImpl(
+      ProdProcessLineRepository prodProcessLineRepo, WorkCenterService workCenterService) {
     this.prodProcessLineRepo = prodProcessLineRepo;
-  }
-
-  @Override
-  public Long getProdProcessLineDurationFromWorkCenter(WorkCenter workCenter) {
-    List<Long> durations = new ArrayList<>();
-
-    if (workCenter.getWorkCenterTypeSelect() == WorkCenterRepository.WORK_CENTER_TYPE_MACHINE
-        || workCenter.getWorkCenterTypeSelect() == WorkCenterRepository.WORK_CENTER_TYPE_BOTH) {
-      durations.add(workCenter.getDurationPerCycle());
-    }
-
-    if (workCenter.getWorkCenterTypeSelect() == WorkCenterRepository.WORK_CENTER_TYPE_HUMAN
-        || workCenter.getWorkCenterTypeSelect() == WorkCenterRepository.WORK_CENTER_TYPE_BOTH) {
-      if (workCenter.getProdHumanResourceList() != null) {
-        for (ProdHumanResource prodHumanResource : workCenter.getProdHumanResourceList()) {
-          durations.add(prodHumanResource.getDuration());
-        }
-      }
-    }
-
-    return !CollectionUtils.isEmpty(durations) ? Collections.max(durations) : 0L;
-  }
-
-  @Override
-  public BigDecimal getProdProcessLineMinCapacityPerCycleFromWorkCenter(WorkCenter workCenter) {
-    if (workCenter.getWorkCenterTypeSelect() == WorkCenterRepository.WORK_CENTER_TYPE_MACHINE
-        || workCenter.getWorkCenterTypeSelect() == WorkCenterRepository.WORK_CENTER_TYPE_BOTH) {
-      return workCenter.getMinCapacityPerCycle();
-    } else {
-      return BigDecimal.ONE;
-    }
-  }
-
-  @Override
-  public BigDecimal getProdProcessLineMaxCapacityPerCycleFromWorkCenter(WorkCenter workCenter) {
-    if (workCenter.getWorkCenterTypeSelect() == WorkCenterRepository.WORK_CENTER_TYPE_MACHINE
-        || workCenter.getWorkCenterTypeSelect() == WorkCenterRepository.WORK_CENTER_TYPE_BOTH) {
-      return workCenter.getMaxCapacityPerCycle();
-    } else {
-      return BigDecimal.ONE;
-    }
+    this.workCenterService = workCenterService;
   }
 
   @Override
@@ -94,13 +50,15 @@ public class ProdProcessLineServiceImpl implements ProdProcessLineService {
   public void setWorkCenterGroup(ProdProcessLine prodProcessLine, WorkCenterGroup workCenterGroup)
       throws AxelorException {
     prodProcessLine = copyWorkCenterGroup(prodProcessLine, workCenterGroup);
-    WorkCenter workCenter = getMainWorkCenterFromGroup(prodProcessLine);
+    WorkCenter workCenter =
+        workCenterService.getMainWorkCenterFromGroup(prodProcessLine.getWorkCenterGroup());
     prodProcessLine.setWorkCenter(workCenter);
-    prodProcessLine.setDurationPerCycle(getProdProcessLineDurationFromWorkCenter(workCenter));
+    prodProcessLine.setDurationPerCycle(workCenterService.getDurationFromWorkCenter(workCenter));
     prodProcessLine.setMinCapacityPerCycle(
-        getProdProcessLineMinCapacityPerCycleFromWorkCenter(workCenter));
+        workCenterService.getMinCapacityPerCycleFromWorkCenter(workCenter));
     prodProcessLine.setMaxCapacityPerCycle(
-        getProdProcessLineMaxCapacityPerCycleFromWorkCenter(workCenter));
+        workCenterService.getMaxCapacityPerCycleFromWorkCenter(workCenter));
+    prodProcessLine.setTimingOfImplementation(workCenter.getTimingOfImplementation());
   }
 
   /**
@@ -115,28 +73,58 @@ public class ProdProcessLineServiceImpl implements ProdProcessLineService {
     workCenterGroup.getWorkCenterSet().forEach((workCenterGroupCopy::addWorkCenterSetItem));
 
     prodProcessLine.setWorkCenterGroup(workCenterGroupCopy);
-    return Beans.get(ProdProcessLineRepository.class).save(prodProcessLine);
+    return prodProcessLineRepo.save(prodProcessLine);
   }
 
   @Override
-  public WorkCenter getMainWorkCenterFromGroup(ProdProcessLine prodProcessLine)
+  public long computeEntireCycleDuration(ProdProcessLine prodProcessLine, BigDecimal qty)
       throws AxelorException {
-    WorkCenterGroup workCenterGroup = prodProcessLine.getWorkCenterGroup();
-    if (workCenterGroup == null) {
-      return null;
-    }
-    Set<WorkCenter> workCenterSet = workCenterGroup.getWorkCenterSet();
-    if (workCenterSet == null || workCenterSet.isEmpty()) {
+    WorkCenter workCenter = prodProcessLine.getWorkCenter();
+
+    long duration = 0;
+    if (prodProcessLine.getWorkCenter() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.NO_WORK_CENTER_GROUP));
+          I18n.get(ProductionExceptionMessage.PROD_PROCESS_LINE_MISSING_WORK_CENTER),
+          prodProcessLine.getProdProcess() != null
+              ? prodProcessLine.getProdProcess().getCode()
+              : "null",
+          prodProcessLine.getName());
     }
-    return workCenterSet.stream()
-        .min(Comparator.comparing(WorkCenter::getSequence))
-        .orElseThrow(
-            () ->
-                new AxelorException(
-                    TraceBackRepository.CATEGORY_INCONSISTENCY,
-                    I18n.get(IExceptionMessage.NO_WORK_CENTER_GROUP)));
+
+    BigDecimal maxCapacityPerCycle = prodProcessLine.getMaxCapacityPerCycle();
+
+    BigDecimal nbCycles;
+    if (maxCapacityPerCycle.compareTo(BigDecimal.ZERO) == 0) {
+      nbCycles = qty;
+    } else {
+      nbCycles = qty.divide(maxCapacityPerCycle, 0, RoundingMode.UP);
+    }
+
+    int workCenterTypeSelect = workCenter.getWorkCenterTypeSelect();
+
+    if (workCenterTypeSelect == WorkCenterRepository.WORK_CENTER_TYPE_MACHINE
+        || workCenterTypeSelect == WorkCenterRepository.WORK_CENTER_TYPE_BOTH) {
+      Machine machine = workCenter.getMachine();
+      if (machine == null) {
+        throw new AxelorException(
+            workCenter,
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            I18n.get(ProductionExceptionMessage.WORKCENTER_NO_MACHINE),
+            workCenter.getName());
+      }
+      duration += machine.getStartingDuration();
+      duration += machine.getEndingDuration();
+      duration +=
+          nbCycles
+              .subtract(new BigDecimal(1))
+              .multiply(new BigDecimal(machine.getSetupDuration()))
+              .longValue();
+    }
+
+    BigDecimal durationPerCycle = new BigDecimal(prodProcessLine.getDurationPerCycle());
+    duration += nbCycles.multiply(durationPerCycle).longValue();
+
+    return duration;
   }
 }

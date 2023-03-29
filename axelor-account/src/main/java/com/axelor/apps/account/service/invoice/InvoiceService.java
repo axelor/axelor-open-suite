@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,7 +17,8 @@
  */
 package com.axelor.apps.account.service.invoice;
 
-import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.FinancialDiscount;
+import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.Journal;
@@ -31,9 +32,10 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
-import com.axelor.auth.db.User;
+import com.axelor.apps.base.db.TradingName;
 import com.axelor.exception.AxelorException;
-import com.google.inject.persist.Transactional;
+import com.axelor.meta.CallMethod;
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -44,17 +46,6 @@ import org.apache.commons.lang3.tuple.Pair;
 public interface InvoiceService {
 
   public Map<Invoice, List<Alarm>> getAlarms(Invoice... invoices);
-
-  /**
-   * Fetches suitable account for partner bound to the invoice, depending in the partner and the
-   * type of invoice.
-   *
-   * @param invoice Invoice to fetch the partner account for
-   * @return null if the invoice does not contains enough information to determine the partner
-   *     account.
-   * @throws AxelorException
-   */
-  Account getPartnerAccount(Invoice invoice) throws AxelorException;
 
   /**
    * Fetches the journal to apply to an invoice, based on the operationType and A.T.I amount
@@ -120,7 +111,6 @@ public interface InvoiceService {
    * @param invoice Une facture.
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {Exception.class})
   public void cancel(Invoice invoice) throws AxelorException;
 
   /**
@@ -129,7 +119,6 @@ public interface InvoiceService {
    *
    * @param invoice Une facture
    */
-  @Transactional
   public void usherProcess(Invoice invoice);
 
   String checkNotImputedRefunds(Invoice invoice) throws AxelorException;
@@ -143,7 +132,6 @@ public interface InvoiceService {
    * @return
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {Exception.class})
   public Invoice createRefund(Invoice invoice) throws AxelorException;
 
   public void setDraftSequence(Invoice invoice) throws AxelorException;
@@ -156,7 +144,9 @@ public interface InvoiceService {
       Partner contactPartner,
       PriceList priceList,
       PaymentMode paymentMode,
-      PaymentCondition paymentCondition)
+      PaymentCondition paymentCondition,
+      TradingName tradingName,
+      FiscalPosition fiscalPosition)
       throws AxelorException;
 
   public Invoice mergeInvoice(
@@ -167,7 +157,39 @@ public interface InvoiceService {
       Partner contactPartner,
       PriceList priceList,
       PaymentMode paymentMode,
-      PaymentCondition paymentCondition)
+      PaymentCondition paymentCondition,
+      TradingName tradingName,
+      FiscalPosition fiscalPosition)
+      throws AxelorException;
+
+  public Invoice mergeInvoiceProcess(
+      List<Invoice> invoiceList,
+      Company company,
+      Currency currency,
+      Partner partner,
+      Partner contactPartner,
+      PriceList priceList,
+      PaymentMode paymentMode,
+      PaymentCondition paymentCondition,
+      TradingName tradingName,
+      FiscalPosition fiscalPosition,
+      String supplierInvoiceNb,
+      LocalDate originDate)
+      throws AxelorException;
+
+  public Invoice mergeInvoice(
+      List<Invoice> invoiceList,
+      Company company,
+      Currency currency,
+      Partner partner,
+      Partner contactPartner,
+      PriceList priceList,
+      PaymentMode paymentMode,
+      PaymentCondition paymentCondition,
+      TradingName tradingName,
+      FiscalPosition fiscalPosition,
+      String supplierInvoiceNb,
+      LocalDate originDate)
       throws AxelorException;
 
   public List<InvoiceLine> getInvoiceLinesFromInvoiceList(List<Invoice> invoiceList);
@@ -209,8 +231,9 @@ public interface InvoiceService {
    *
    * @param invoice
    * @return
+   * @throws AxelorException
    */
-  List<MoveLine> getMoveLinesFromInvoiceAdvancePayments(Invoice invoice);
+  List<MoveLine> getMoveLinesFromInvoiceAdvancePayments(Invoice invoice) throws AxelorException;
 
   /**
    * Return the move line from the advance payment from related sale order lines.
@@ -276,13 +299,33 @@ public interface InvoiceService {
 
   public String checkNotLetteredAdvancePaymentMoveLines(Invoice invoice) throws AxelorException;
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public void refusalToPay(
       Invoice invoice, CancelReason reasonOfRefusalToPay, String reasonOfRefusalToPayStr);
 
-  public User getPfpValidatorUser(Invoice invoice);
+  @CallMethod
+  LocalDate getFinancialDiscountDeadlineDate(Invoice invoice, FinancialDiscount financialDiscount);
 
-  public String getPfpValidatorUserDomain(Invoice invoice);
+  boolean checkInvoiceLinesAnalyticDistribution(Invoice invoice);
 
-  public boolean getIsDuplicateInvoiceNbr(Invoice invoice);
+  boolean checkInvoiceLinesCutOffDates(Invoice invoice);
+
+  boolean checkManageCutOffDates(Invoice invoice);
+
+  void applyCutOffDates(Invoice invoice, LocalDate cutOffStartDate, LocalDate cutOffEndDate);
+
+  boolean isSelectedPfpValidatorEqualsPartnerPfpValidator(Invoice invoice);
+
+  public void validatePfp(Long invoiceId) throws AxelorException;
+
+  void updateUnpaidInvoiceTerms(Invoice invoice);
+
+  /**
+   * Check invoice terms before opening payment wizard
+   *
+   * @param invoice
+   * @return true if there would be at least one invoice term in the invoice payment
+   */
+  boolean checkInvoiceTerms(Invoice invoice) throws AxelorException;
+
+  void updateInvoiceTermsParentFields(Invoice invoice);
 }

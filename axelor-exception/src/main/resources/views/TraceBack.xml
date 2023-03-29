@@ -18,11 +18,24 @@
     <field name="exception"/>
   </grid>
 
+  <grid name="trace-back-lite-grid" title="TraceBack" model="com.axelor.exception.db.TraceBack"
+    orderBy="-id" canDelete="false" canNew="false" canSave="false" canEdit="false">
+    <toolbar>
+      <button name="cancel" title="" hidden="true" onClick=""/>
+    </toolbar>
+    <field name="date"/>
+    <field name="typeSelect"/>
+    <field name="categorySelect"/>
+    <field name="message" width="1000"/>
+  </grid>
+
   <form name="trace-back-form" title="TraceBack" model="com.axelor.exception.db.TraceBack"
     onLoad="action-trace-back-load" canNew="false" canEdit="false" canSave="false" canCopy="false"
     canDelete="false">
     <toolbar>
       <button name="cancel" title="" hidden="true" onClick=""/>
+      <button name="printBtn" title="Print" icon="fa-print"
+        onClick="action-trace-back-method-print-trace-back"/>
     </toolbar>
     <panel name="mainPanel" sidebar="true">
       <field name="date"/>
@@ -70,6 +83,10 @@
 
   <action-method name="action-traceback-show-reference">
     <call class="com.axelor.exception.web.TraceBackController" method="showReference"/>
+  </action-method>
+
+  <action-method name="action-trace-back-method-print-trace-back">
+    <call class="com.axelor.apps.base.web.TracebackController" method="printTraceback"/>
   </action-method>
 
 </object-views>

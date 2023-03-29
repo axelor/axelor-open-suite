@@ -224,6 +224,154 @@
     <series key="total" type="bar"/>
   </chart>
 
+  <action-attrs name="action-chart-bpm-manager-default-wkf-model">
+    <attribute name="value" for="wkfModel"
+      expr="eval:__repo__(WkfModel).all().filter('size(self.wkfProcessList) > 0').fetchOne()"/>
+    <attribute name="value" for="typeSelect" expr="eval: 'lateTask'"/>
+    <attribute name="value" for="unit" expr="eval: 'minutes'"/>
+  </action-attrs>
+
+  <chart name="chart.wkf.bpm.manager.assigned.me.tasks" title="Assigned to me"
+    onInit="action-chart-bpm-manager-default-wkf-model">
+    <search-fields>
+      <field name="wkfModel" title="BPM model" type="reference"
+        target="com.axelor.apps.bpm.db.WkfModel" domain="size(self.wkfProcessList) &gt; 0"
+        x-required="true"/>
+    </search-fields>
+    <dataset type="rpc">
+  		<![CDATA[
+			com.axelor.apps.bpm.web.BpmManagerDashboardController:getAssignedToMeTask
+  		]]>
+    </dataset>
+    <category key="status" type="text"/>
+    <series key="total" type="donut"/>
+    <config name="onClick" value="action-bpm-manager-view-assigned-me-task"/>
+  </chart>
+
+  <action-method name="action-bpm-manager-view-assigned-me-task">
+    <call class="com.axelor.apps.bpm.web.BpmManagerDashboardController"
+      method="showAssignedToMeTask"/>
+  </action-method>
+
+  <chart name="chart.wkf.bpm.manager.assigned.other.tasks" title="Assigned to others"
+    onInit="action-chart-bpm-manager-default-wkf-model">
+    <search-fields>
+      <field name="wkfModel" title="BPM model" type="reference"
+        target="com.axelor.apps.bpm.db.WkfModel" domain="size(self.wkfProcessList) &gt; 0"
+        x-required="true"/>
+    </search-fields>
+    <dataset type="rpc">
+  		<![CDATA[
+			com.axelor.apps.bpm.web.BpmManagerDashboardController:getAssignedToOtherTask
+  		]]>
+    </dataset>
+    <category key="status" type="text"/>
+    <series key="total" type="donut"/>
+    <config name="onClick" value="action-bpm-manager-view-assigned-other-task"/>
+  </chart>
+
+  <action-method name="action-bpm-manager-view-assigned-other-task">
+    <call class="com.axelor.apps.bpm.web.BpmManagerDashboardController"
+      method="showAssignedToOtherTask"/>
+  </action-method>
+
+  <chart name="chart.wkf.bpm.manager.task.by.process" title="Tasks by process"
+    onInit="action-chart-bpm-manager-default-wkf-model">
+    <search-fields>
+      <field name="wkfModel" title="BPM model" type="reference"
+        target="com.axelor.apps.bpm.db.WkfModel" domain="size(self.wkfProcessList) &gt; 0"
+        x-required="true"/>
+      <field name="typeSelect" title="Type" type="string"
+        selection="chart.wkf.bpm.manager.type.select" x-required="true"/>
+    </search-fields>
+    <dataset type="rpc">
+  		<![CDATA[
+			com.axelor.apps.bpm.web.BpmManagerDashboardController:getTaskByProcess
+  		]]>
+    </dataset>
+    <category key="process" type="text"/>
+    <series key="total" type="bar" groupBy="model"/>
+    <config name="onClick" value="action-bpm-manager-view-task-by-process"/>
+  </chart>
+
+  <action-method name="action-bpm-manager-view-task-by-process">
+    <call class="com.axelor.apps.bpm.web.BpmManagerDashboardController"
+      method="showTaskByProcess"/>
+  </action-method>
+
+  <chart name="chart.wkf.bpm.manager.average.time.per.node.by.user"
+    title="Average time spent per node by per users"
+    onInit="action-chart-bpm-manager-default-wkf-model">
+    <search-fields>
+      <field name="wkfModel" title="BPM model" type="reference"
+        target="com.axelor.apps.bpm.db.WkfModel" domain="size(self.wkfProcessList) &gt; 0"
+        x-required="true"/>
+      <field name="unit" title="Unit" selection="chart.wkf.bpm.manager.unit.select"
+        type="string" x-required="true"/>
+    </search-fields>
+    <dataset type="rpc">
+  		<![CDATA[
+			com.axelor.apps.bpm.web.BpmManagerDashboardController:getAvgTimePerUser
+  		]]>
+    </dataset>
+    <category key="status" type="text"/>
+    <series key="time" type="hbar" groupBy="user"/>
+  </chart>
+
+  <chart name="chart.wkf.bpm.manager.task.done.today.per.user"
+    title="Task done today per user" onInit="action-chart-bpm-manager-default-wkf-model">
+    <search-fields>
+      <field name="wkfModel" title="BPM model" type="reference"
+        target="com.axelor.apps.bpm.db.WkfModel" domain="size(self.wkfProcessList) &gt; 0"
+        x-required="true"/>
+    </search-fields>
+    <dataset type="rpc">
+  		<![CDATA[
+			com.axelor.apps.bpm.web.BpmManagerDashboardController:getTaskDoneTodayPerUser
+  		]]>
+    </dataset>
+    <category key="user" type="text"/>
+    <series key="total" type="donut"/>
+  </chart>
+
+  <chart name="chart.wkf.bpm.manager.task.to.do.per.user" title="Task to do per user"
+    onInit="action-chart-bpm-manager-default-wkf-model">
+    <search-fields>
+      <field name="wkfModel" title="BPM model" type="reference"
+        target="com.axelor.apps.bpm.db.WkfModel" domain="size(self.wkfProcessList) &gt; 0"
+        x-required="true"/>
+    </search-fields>
+    <dataset type="rpc">
+  		<![CDATA[
+			com.axelor.apps.bpm.web.BpmManagerDashboardController:getTaskToDoPerUser
+  		]]>
+    </dataset>
+    <category key="user" type="text"/>
+    <series key="total" type="donut"/>
+  </chart>
+
+  <action-attrs name="action-chart-bpm-manager-task-completion-dates-default">
+    <attribute name="value" for="fromDate" expr="eval: __date__.minusDays(4)"/>
+    <attribute name="value" for="toDate" expr="eval: __date__"/>
+  </action-attrs>
+
+  <chart name="chart.wkf.bpm.manager.task.completion.by.days" title="Tasks completion by days"
+    onInit="action-chart-bpm-manager-task-completion-dates-default" stacked="true">
+    <search-fields>
+      <field name="fromDate" type="date" title="From" x-required="true"/>
+      <field name="toDate" type="date" title="To" x-required="true"/>
+    </search-fields>
+    <dataset type="rpc">
+  		<![CDATA[
+			com.axelor.apps.bpm.web.BpmManagerDashboardController:getTaskCompletionByDays
+  		]]>
+    </dataset>
+    <category key="dates" type="date"/>
+    <series key="total" type="bar" groupBy="status"/>
+    <config name="colors" value="#064664,#ecc424"/>
+    <config name="xFormat" value="DD/MM/YYYY"/>
+  </chart>
+
   <form model="com.axelor.apps.base.db.Wizard" title="Select model"
     name="chart-wkf-select-model-form" onNew="action-chart-wkf-wizard-method-onnew">
     <panel>
@@ -254,11 +402,11 @@
   </action-view>
 
   <action-method name="action-chart-wkf-wizard-method-onnew">
-    <call class="com.axelor.apps.bpm.web.WkfModelController" method="setModelsDomain"/>
+    <call class="com.axelor.apps.bpm.web.WkfDashboardController" method="setModelsDomain"/>
   </action-method>
 
   <action-method name="action-chart-wkf-method-show-record">
-    <call class="com.axelor.apps.bpm.web.WkfModelController" method="showRecord"/>
+    <call class="com.axelor.apps.bpm.web.WkfDashboardController" method="showRecord"/>
   </action-method>
 
 </object-views>

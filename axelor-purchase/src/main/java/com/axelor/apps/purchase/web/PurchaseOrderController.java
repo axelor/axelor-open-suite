@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.purchase.web;
 
+import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
@@ -34,8 +35,11 @@ import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
-import com.axelor.apps.purchase.exception.IExceptionMessage;
+import com.axelor.apps.purchase.exception.PurchaseExceptionMessage;
+import com.axelor.apps.purchase.service.PurchaseOrderDomainService;
+import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.purchase.service.PurchaseOrderWorkflowService;
 import com.axelor.apps.purchase.service.print.PurchaseOrderPrintService;
@@ -150,7 +154,7 @@ public class PurchaseOrderController {
       } else {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(IExceptionMessage.NO_PURCHASE_ORDER_SELECTED_FOR_PRINTING));
+            I18n.get(PurchaseExceptionMessage.NO_PURCHASE_ORDER_SELECTED_FOR_PRINTING));
       }
       response.setView(ActionView.define(title).add("html", fileLink).map());
     } catch (Exception e) {
@@ -264,22 +268,24 @@ public class PurchaseOrderController {
 
     StringBuilder fieldErrors = new StringBuilder();
     if (commonCurrency == null) {
-      fieldErrors.append(I18n.get(IExceptionMessage.PURCHASE_ORDER_MERGE_ERROR_CURRENCY));
+      fieldErrors.append(I18n.get(PurchaseExceptionMessage.PURCHASE_ORDER_MERGE_ERROR_CURRENCY));
     }
     if (commonSupplierPartner == null) {
       if (fieldErrors.length() > 0) {
         fieldErrors.append("<br/>");
       }
-      fieldErrors.append(I18n.get(IExceptionMessage.PURCHASE_ORDER_MERGE_ERROR_SUPPLIER_PARTNER));
+      fieldErrors.append(
+          I18n.get(PurchaseExceptionMessage.PURCHASE_ORDER_MERGE_ERROR_SUPPLIER_PARTNER));
     }
     if (commonCompany == null) {
       if (fieldErrors.length() > 0) {
         fieldErrors.append("<br/>");
       }
-      fieldErrors.append(I18n.get(IExceptionMessage.PURCHASE_ORDER_MERGE_ERROR_COMPANY));
+      fieldErrors.append(I18n.get(PurchaseExceptionMessage.PURCHASE_ORDER_MERGE_ERROR_COMPANY));
     }
     if (commonTradingName == null && !allTradingNamesAreNull) {
-      fieldErrors.append(I18n.get(IExceptionMessage.PURCHASE_ORDER_MERGE_ERROR_TRADING_NAME));
+      fieldErrors.append(
+          I18n.get(PurchaseExceptionMessage.PURCHASE_ORDER_MERGE_ERROR_TRADING_NAME));
     }
 
     if (fieldErrors.length() > 0) {
@@ -306,7 +312,7 @@ public class PurchaseOrderController {
     if (!fromPopup && (existContactPartnerDiff || existPriceListDiff)) {
       // Need to display intermediate screen to select some values
       ActionViewBuilder confirmView =
-          ActionView.define("Confirm merge purchase order")
+          ActionView.define(I18n.get("Confirm merge purchase order"))
               .model(Wizard.class.getName())
               .add("form", "purchase-order-merge-confirm-form")
               .param("popup", "true")
@@ -344,7 +350,7 @@ public class PurchaseOrderController {
       if (purchaseOrder != null) {
         // Open the generated purchase order in a new tab
         response.setView(
-            ActionView.define("Purchase order")
+            ActionView.define(I18n.get("Purchase order"))
                 .model(PurchaseOrder.class.getName())
                 .add("grid", "purchase-order-grid")
                 .add("form", "purchase-order-form")
@@ -508,10 +514,8 @@ public class PurchaseOrderController {
     try {
       PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
       Company company = purchaseOrder.getCompany();
-      long companyId = company.getPartner() == null ? 0L : company.getPartner().getId();
-      String domain =
-          String.format(
-              "self.id != %d AND self.isContact = false AND self.isSupplier = true", companyId);
+      String domain = Beans.get(PurchaseOrderDomainService.class).getPartnerBaseDomain(company);
+
       String blockedPartnerQuery =
           Beans.get(BlockingService.class)
               .listOfBlockedPartner(company, BlockingRepository.PURCHASE_BLOCKING);
@@ -520,8 +524,74 @@ public class PurchaseOrderController {
         domain += String.format(" AND self.id NOT in (%s)", blockedPartnerQuery);
       }
 
-      domain += " AND :company member of self.companySet";
       response.setAttr("supplierPartner", "domain", domain);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  /**
+   * Empty the fiscal position field if its value is no longer compatible with the new taxNumber
+   * after a change
+   *
+   * @param request
+   * @param response
+   */
+  public void emptyFiscalPositionIfNotCompatible(ActionRequest request, ActionResponse response) {
+    try {
+      PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+      FiscalPosition poFiscalPosition = purchaseOrder.getFiscalPosition();
+      if (poFiscalPosition == null) {
+        return;
+      }
+      if (purchaseOrder.getTaxNumber() == null) {
+        if (purchaseOrder.getSupplierPartner() != null
+            && purchaseOrder.getFiscalPosition()
+                == purchaseOrder.getSupplierPartner().getFiscalPosition()) {
+          return;
+        }
+      } else {
+        for (FiscalPosition fiscalPosition : purchaseOrder.getTaxNumber().getFiscalPositionSet()) {
+          if (fiscalPosition.getId().equals(poFiscalPosition.getId())) {
+            return;
+          }
+        }
+      }
+      response.setValue("fiscalPosition", null);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  /**
+   * Called from purchase order form view upon changing the fiscalPosition (directly or via changing
+   * the taxNumber) Updates taxLine, taxEquiv and prices by calling {@link
+   * PurchaseOrderLineService#fill(PurchaseOrderLine, PurchaseOrder)} and {@link
+   * PurchaseOrderLineService#compute(PurchaseOrderLine, PurchaseOrder)}.
+   *
+   * @param request
+   * @param response
+   */
+  public void updateLinesAfterFiscalPositionChange(ActionRequest request, ActionResponse response) {
+    try {
+      PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+      if (purchaseOrder.getPurchaseOrderLineList() != null) {
+        Beans.get(PurchaseOrderLineService.class)
+            .updateLinesAfterFiscalPositionChange(purchaseOrder);
+      }
+      response.setValue("purchaseOrderLineList", purchaseOrder.getPurchaseOrderLineList());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void draftPurchaseOrder(ActionRequest request, ActionResponse response) {
+    try {
+      PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+      purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
+
+      Beans.get(PurchaseOrderWorkflowService.class).draftPurchaseOrder(purchaseOrder);
+      response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

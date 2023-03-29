@@ -12,6 +12,11 @@
       title="Bank accounting account"/>
     <many-to-one name="journal" ref="com.axelor.apps.account.db.Journal" title="Journal"/>
 
+    <track>
+      <field name="bankAccount" on="UPDATE"/>
+      <field name="journal" on="UPDATE"/>
+    </track>
+
   </entity>
 
 </domain-models>

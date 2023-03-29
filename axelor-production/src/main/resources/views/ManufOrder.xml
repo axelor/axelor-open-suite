@@ -17,9 +17,9 @@
     <field name="prioritySelect" hidden="true"/>
     <field name="manufOrderSeq" width="120"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="workshopStockLocation"
-      if="__config__.app.getApp('production').getManageWorkshop()"/>
+      if="__config__.app.getApp('production')?.getManageWorkshop()"/>
     <field name="product" form-view="product-form" grid-view="product-grid"/>
     <field name="qty" x-scale="2"/>
     <field name="unit"/>
@@ -57,7 +57,7 @@
     <field name="productionOrder" width="120"/>
     <field name="manufOrderSeq" width="120"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="product" form-view="product-form" grid-view="product-grid"/>
     <field name="billOfMaterial" grid-view="bill-of-material-grid"
       form-view="bill-of-material-form"/>
@@ -89,7 +89,7 @@
     <field name="productionOrder" width="120"/>
     <field name="manufOrderSeq" width="120"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="product" form-view="product-form" grid-view="product-grid"/>
     <field name="prodProcess" grid-view="prod-process-grid" form-view="prod-process-form"/>
     <field name="plannedStartDateT"/>
@@ -103,7 +103,7 @@
     <field name="productionOrder" width="120"/>
     <field name="manufOrderSeq" width="120"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="product" form-view="product-form" grid-view="product-grid"/>
     <field name="prodProcess" grid-view="prod-process-grid" form-view="prod-process-form"/>
     <field name="plannedEndDateT"/>
@@ -139,7 +139,7 @@
         <field name="workshopStockLocation" required="true" form-view="stock-location-form"
           grid-view="stock-location-grid" colSpan="2" canEdit="false"
           onChange="action-manuf-order-record-workshop-onchange" readonlyIf="statusSelect &gt; 1"
-          if="__config__.app.getApp('production').getManageWorkshop()"
+          if="__config__.app.getApp('production')?.getManageWorkshop()"
           domain="self.company = :company and self.typeSelect = 1 and self.isWorkshop = true"/>
         <field name="$viewerIsOutsourcing" showTitle="false" readonly="true"
           showIf="$readonly()" colSpan="2" depends="prodProcess.outsourcing">
@@ -165,19 +165,24 @@
           widget="NavSelect"/>
         <field name="billOfMaterial" required="true" readonlyIf="statusSelect &gt; 1"
           onChange="action-manuf-order-group-onchange"
-          domain="self.defineSubBillOfMaterial = true AND self.statusSelect = 3 AND ((:workshopStockLocation IS NULL AND self.workshopStockLocation IS NULL) OR self.workshopStockLocation = :workshopStockLocation)"
+          domain="self.defineSubBillOfMaterial = true AND self.statusSelect = 3 AND ((:workshopStockLocation IS NULL AND self.workshopStockLocation IS NULL) OR self.workshopStockLocation = :workshopStockLocation) AND self.typeSelect = 1"
           grid-view="bill-of-material-grid" form-view="bill-of-material-form" colSpan="3"
-          canEdit="false"/>
+          canEdit="false" edit-window="blank"/>
         <field name="prodProcess" onChange="action-manuf-order-group-prod-process-onchange"
           onSelect="action-manuf-order-attrs-filter-prodProcess" readonlyIf="statusSelect &gt; 1"
-          grid-view="prod-process-grid" form-view="prod-process-form" colSpan="3" canEdit="false"/>
+          grid-view="prod-process-grid" form-view="prod-process-form" colSpan="3" canEdit="false"
+          edit-window="blank"/>
         <field name="outsourcing" colSpan="3"
           onChange="action-production-attrs-hide-purchaseOrder"/>
+        <field name="$producibleQty" title="Producible qty" type="decimal" colSpan="3"
+          readonly="true" hideIf="statusSelect != 1"/>
         <field name="product" canEdit="false" required="true"
           readonlyIf="statusSelect &gt; 1 || !product.isModel" form-view="product-form"
-          grid-view="product-grid" onSelect="action-manuf-order-attrs-filter-product"/>
-        <field name="qty" readonlyIf="statusSelect &gt; 1 || typeSelect == 2"
-          validIf="typeSelect == 2 || qty > 0" colSpan="3"/>
+          grid-view="product-grid" onSelect="action-manuf-order-attrs-filter-product"
+          edit-window="blank"/>
+        <field name="qty" hideIf="typeSelect != 1"
+          readonlyIf="statusSelect &gt; 1 || typeSelect == 2" validIf="typeSelect == 2 || qty > 0"
+          colSpan="3"/>
         <field name="product.economicManufOrderQty" colSpan="3"/>
         <field name="unit" readonly="true" form-view="unit-form" grid-view="unit-grid"/>
         <field name="clientPartner" form-view="partner-form" grid-view="partner-grid"
@@ -194,9 +199,9 @@
         <field name="isConsProOnOperation" hidden="true"/>
         <field name="isToInvoice" onChange="save,action-manuf-order-method-is-to-invoice"
           if-module="axelor-business-production"
-          showIf="__config__.app.getApp('production').getManageBusinessProduction()"/>
+          if="__config__.app.getApp('production')?.getManageBusinessProduction()"/>
         <field name="invoiced" showIf="isToInvoice" if-module="axelor-business-production"
-          if="__config__.app.getApp('production').getManageBusinessProduction()"/>
+          if="__config__.app.getApp('production')?.getManageBusinessProduction()"/>
         <button name="preFillOperationsBtn" colSpan="4" title="Pre-fill operations"
           hideIf="statusSelect &gt; 1  &#124;&#124; operationOrderList.length &gt; 0"
           onClick="save,action-manuf-order-method-pre-fill-operations"/>
@@ -226,7 +231,7 @@
     <panel-tabs name="mainPanelTab" colSpan="4">
       <panel-related name="operationOrderListPanel" field="operationOrderList"
         readonlyIf="statusSelect == 6" colSpan="12" height="15" form-view="operation-order-form"
-        grid-view="operation-order-grid"/>
+        grid-view="operation-order-grid" canNew="false"/>
       <panel name="datesPanel" title="Dates" readonlyIf="statusSelect == 6">
         <panel name="plannedDatesPanel" title="Planned dates">
           <field name="plannedStartDateT" title="Start date"
@@ -252,9 +257,9 @@
       <panel name="stockMovesPanel" title="Stock moves" showIf="statusSelect &gt;= 3">
         <panel name="stockMoveListPanel" title="Moves In/Out" readonly="true" colSpan="12">
           <field name="inStockMoveList" form-view="stock-move-form"
-            grid-view="stock-move-manuf-order-grid" hideIf="isConsProOnOperation" colSpan="12"/>
+            grid-view="in-stock-move-manuf-order-grid" hideIf="isConsProOnOperation" colSpan="12"/>
           <field name="outStockMoveList" form-view="stock-move-form"
-            grid-view="stock-move-manuf-order-grid" colSpan="12"/>
+            grid-view="out-stock-move-manuf-order-grid" colSpan="12"/>
         </panel>
         <panel name="productionWastePanel" title="Production waste" colSpan="12"
           showIf="statusSelect &gt;= 4">
@@ -262,7 +267,7 @@
             readonlyIf="wasteStockMove != null"
             onClick="save,action-manuf-order-method-generate-waste-stock-move"/>
           <field name="wasteStockMove" form-view="stock-move-form"
-            grid-view="stock-move-manuf-order-grid" readonly="true"/>
+            grid-view="out-stock-move-manuf-order-grid" readonly="true"/>
         </panel>
       </panel>
       <panel name="consumedProductsPanel" title="Consumed products"
@@ -275,6 +280,11 @@
         <button name="multiLevelPlanningBtn" title="Multi-level planning" colSpan="12"
           showIf="statusSelect != 6 &amp;&amp; !isPermanent"
           onClick="save,action-manuf-order-multi-level-planing-popup-form-view" css="btn-custom"/>
+        <field name="parentMO"/>
+        <button name="openMultilevelMOTreeBtn" title="Open MO tree"
+          onClick="save,action-manuf-order-view-mo-tree" colSpan="12" css="btn-custom"/>
+        <panel-dashlet name="childMOPanelDashlet"
+          action="action-manuf-order-view-all-child-mo" colSpan="12" title="Children MO"/>
         <panel-related name="toConsumeProdProductListPanel"
           field="toConsumeProdProductList" readonly="true" colSpan="12"
           grid-view="prod-product-consume-manuf-order-grid" form-view="prod-product-form"
@@ -287,6 +297,18 @@
           onChange="action-manuf-order-method-check-consumed-stock-move,save,action-manuf-order-method-update-consumed-stock-move"
           readonlyIf="statusSelect == 6" colSpan="12" form-view="stock-move-line-production-form"
           grid-view="stock-move-line-consumed-production-grid"/>
+        <panel name="allocationToolsPanel" colSpan="12"
+          showIf="$contains([3,4,5], statusSelect)"
+          if="__config__.app.getApp('supplychain')?.manageStockReservation">
+          <button name="allocateAllItem" colSpan="3" title="Allocate all"
+            onClick="save,action-manuf-order-method-allocate-all"/>
+          <button name="deallocateAllItem" colSpan="3" title="Deallocate all"
+            onClick="save,action-manuf-order-method-deallocate-all"/>
+          <button name="reserveAllItem" colSpan="3" title="Reserve all"
+            onClick="save,action-manuf-order-method-reserve-all"/>
+          <button name="cancelReservationItem" colSpan="3" title="Cancel reservation"
+            onClick="save,action-manuf-order-method-cancel-reservation"/>
+        </panel>
         <panel-related name="diffStockMoveLineListPanel"
           field="diffConsumeProdProductList" readonly="true" colSpan="12"
           grid-view="prod-product-diff-manuf-order-grid" form-view="prod-product-form"/>
@@ -304,6 +326,18 @@
           onClick="save,action-manuf-order-update-real-qty-popup-form-view" css="btn-custom"/>
         <panel-dashlet name="operationOrderConsumedProductPanel" readonly="true"
           colSpan="12" action="action-manuf-order-view-operation-order-consumed-product"/>
+        <panel name="allocationToolsPanel" colSpan="12"
+          showIf="$contains([3,4,5], statusSelect)"
+          if="__config__.app.getApp('supplychain')?.manageStockReservation">
+          <button name="allocateAllItem" colSpan="3" title="Allocate all"
+            onClick="save,action-manuf-order-method-allocate-all"/>
+          <button name="deallocateAllItem" colSpan="3" title="Deallocate all"
+            onClick="save,action-manuf-order-method-deallocate-all"/>
+          <button name="reserveAllItem" colSpan="3" title="Reserve all"
+            onClick="save,action-manuf-order-method-reserve-all"/>
+          <button name="cancelReservationItem" colSpan="3" title="Cancel reservation"
+            onClick="save,action-manuf-order-method-cancel-reservation"/>
+        </panel>
         <panel-dashlet name="operationOrderDiffConsumeProductPanel" readonly="true"
           colSpan="12" action="action-manuf-order-view-operation-order-diff-consume-product"/>
       </panel>
@@ -348,10 +382,15 @@
           colSpan="12">
           <field name="moCommentFromSaleOrder" showTitle="false" colSpan="12" widget="Html"/>
         </panel>
+        <panel name="moCommentFromSaleOrderLinePanel"
+          title="MO's comment from sale order line" colSpan="12">
+          <field name="moCommentFromSaleOrderLine" showTitle="false" colSpan="12"
+            widget="Html"/>
+        </panel>
       </panel>
       <panel name="residualProductsPanel" title="Residual products"
         showIf="billOfMaterial != null &amp;&amp; billOfMaterial.prodResidualProductList.length > 0"
-        if="__config__.app.getApp('production').getManageResidualProductOnBom()">
+        if="__config__.app.getApp('production')?.getManageResidualProductOnBom()">
         <field name="billOfMaterial.prodResidualProductList" title="Residual products"
           colSpan="12" grid-view="prod-residual-product-grid" form-view="prod-residual-product-form"/>
       </panel>
@@ -423,14 +462,37 @@
 
   <form name="multi-level-planing-wizard-form" title="Multi-level planning"
     model="com.axelor.apps.production.db.ManufOrder"
-    onLoad="com.axelor.apps.production.web.ManufOrderController:multiLevelManufOrderOnLoad">
+    onLoad="action-manuf-order-method-multi-level-on-load">
     <panel name="mainPanel" colSpan="12">
       <field name="$components" title="Products" type="one-to-many" canView="false"
         readonly="true" target="com.axelor.apps.production.db.ProdProduct"
         grid-view="prod-product-multi-level-manuf-order-grid" colSpan="12"/>
-      <button name="generateMO" title="Generate MO"
-        onClick="com.axelor.apps.production.web.ManufOrderController:generateMultiLevelManufOrder"
-        colSpan="4" colOffset="8"/>
+      <button name="generateMO" title="Generate MO."
+        onClick="action-manuf-order-method-generate-multi-level" colSpan="4" colOffset="8"/>
+    </panel>
+  </form>
+
+  <grid name="draft-generated-manuf-order-grid" title="Manufacturing orders"
+    model="com.axelor.apps.production.db.ManufOrder" orderBy="-manufOrderSeq" canNew="false"
+    canEdit="false" canDelete="false">
+    <field name="manufOrderSeq" width="120"/>
+    <field name="product" form-view="product-form" grid-view="product-grid"/>
+    <field name="qty" x-scale="2"/>
+    <field name="unit"/>
+
+  </grid>
+
+  <form model="com.axelor.apps.base.db.Wizard" title="Draft orders"
+    name="multi-level-generated-draft-manuf-order-wizard-form"
+    onNew="action-manuf-order-attrs-multi-level-wizard-onnew">
+    <panel name="mainPanel">
+      <field name="$draftManufOrderList" type="one-to-many"
+        target="com.axelor.apps.production.db.ManufOrder" canNew="false" canEdit="false"
+        canRemove="false" colSpan="12" grid-view="generated-manuf-order-grid"/>
+
+      <button title="Plan selected orders and discard others" name="planSelectedOrders"
+        colSpan="12"
+        onClick="action-manuf-order-validate-order-selection,com.axelor.apps.production.web.ManufOrderController:removeUnselectedMOs,close"/>
     </panel>
   </form>
 
@@ -445,13 +507,21 @@
       onClick="action-manuf-order-view-open-form-view-onclick,close"/>
   </grid>
 
+  <action-attrs name="action-manuf-order-attrs-multi-level-wizard-onnew">
+    <attribute name="value" for="$draftManufOrderList" expr="eval:_moList"/>
+  </action-attrs>
+
+  <action-validate name="action-manuf-order-validate-order-selection">
+    <error message="Please select at least one MO"
+      if="draftManufOrderList &amp;&amp; !draftManufOrderList.any{it.get('selected')}"/>
+  </action-validate>
+
   <action-view name="action-manuf-order-view-open-form-view-onclick"
     title="Manufacturing Order" model="com.axelor.apps.production.db.ManufOrder">
     <view type="form" name="manuf-order-form"/>
     <view type="grid" name="manuf-order-grid"/>
     <context name="_showRecord" expr="eval: id"/>
   </action-view>
-
   <action-view name="action-manuf-order-update-real-qty-popup-form-view"
     title="Update real quantities (Components and FP)"
     model="com.axelor.apps.production.db.ManufOrder">
@@ -497,6 +567,16 @@
       method="propagateIsToInvoice"/>
   </action-method>
 
+  <action-method name="action-manuf-order-method-multi-level-on-load">
+    <call class="com.axelor.apps.production.web.ManufOrderController"
+      method="multiLevelManufOrderOnLoad"/>
+  </action-method>
+
+  <action-method name="action-manuf-order-method-generate-multi-level">
+    <call class="com.axelor.apps.production.web.ManufOrderController"
+      method="generateMultiLevelManufOrder"/>
+  </action-method>
+
   <action-record name="action-manuf-order-record-isConsProOnOperation"
     model="com.axelor.apps.production.db.ManufOrder">
     <field name="isConsProOnOperation" expr="eval: prodProcess?.isConsProOnOperation"/>
@@ -530,6 +610,8 @@
       expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
     <attribute name="scale" for="product.economicManufOrderQty"
       expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+    <attribute name="scale" for="$producibleQty"
+      expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
   </action-attrs>
 
   <action-record name="action-manuf-order-record-client-partner-onchange-sale-order"
@@ -549,7 +631,7 @@
       expr="eval: _createPermanent ? __repo__(ManufOrder).TYPE_PERMANENT : __repo__(ManufOrder).TYPE_PRODUCTION"/>
     <field name="qty" expr="eval: 0" if="_createPermanent"/>
     <field name="workshopStockLocation" expr="eval:__user__.workshopStockLocation"
-      if="__config__.app.getApp('production').getManageWorkshop() &amp;&amp; __user__.workshopStockLocation != null"/>
+      if="__config__.app.getApp('production')?.getManageWorkshop() &amp;&amp; __user__.workshopStockLocation != null"/>
   </action-record>
 
   <action-record name="action-manuf-order-record-update-qty-from-prod-process"
@@ -598,7 +680,9 @@
     <action name="action-manuf-order-attrs-price-digits"/>
     <action name="action-manuf-order-attrs-scale-and-precision"/>
     <action name="action-production-attrs-hide-purchaseOrder"/>
+    <action name="action-manuf-order-method-compute-producible-qty" if="statusSelect == 1"/>
   </action-group>
+
   <action-attrs name="action-production-attrs-hide-purchaseOrder">
     <attribute name="hidden" for="purchaseOrder"
       expr="eval: !(outsourcing &amp;&amp; prodProcess?.generatePurchaseOrderOnMoPlanning)"/>
@@ -627,6 +711,7 @@
     <action name="action-manuf-order-attrs-set-unit" if="billOfMaterial != null"/>
     <action name="action-production-attrs-set-outsourcing-value"/>
     <action name="action-production-attrs-hide-purchaseOrder"/>
+    <action name="action-manuf-order-method-compute-producible-qty"/>
   </action-group>
 
   <action-group name="action-manuf-order-group-cancel-confirm">
@@ -705,6 +790,23 @@
       method="updateProducedStockMoveFromManufOrder"/>
   </action-method>
 
+  <action-method name="action-manuf-order-method-allocate-all">
+    <call class="com.axelor.apps.production.web.ManufOrderController" method="allocateAll"/>
+  </action-method>
+
+  <action-method name="action-manuf-order-method-deallocate-all">
+    <call class="com.axelor.apps.production.web.ManufOrderController" method="deallocateAll"/>
+  </action-method>
+
+  <action-method name="action-manuf-order-method-reserve-all">
+    <call class="com.axelor.apps.production.web.ManufOrderController" method="reserveAll"/>
+  </action-method>
+
+  <action-method name="action-manuf-order-method-cancel-reservation">
+    <call class="com.axelor.apps.production.web.ManufOrderController"
+      method="cancelReservation"/>
+  </action-method>
+
   <action-view name="action-manuf-order-view-operation-order-to-consume-product"
     title="To consume products" model="com.axelor.apps.production.db.ProdProduct">
     <view type="grid" name="prod-product-consume-manuf-order-grid"/>
@@ -743,10 +845,10 @@
 
   <action-attrs name="action-manuf-order-attrs-filter-prodProcess">
     <attribute name="domain" for="prodProcess"
-      expr="eval: &quot; (self.id = ${billOfMaterial?.prodProcess?.id} OR self.product.id = ${billOfMaterial?.product?.id}) AND self.statusSelect = 3 AND ((:workshopStockLocation IS NULL AND self.workshopStockLocation IS NULL) OR self.workshopStockLocation = :workshopStockLocation) &quot;"
+      expr="eval: &quot; (self.id = ${billOfMaterial?.prodProcess?.id} OR self.product.id = ${billOfMaterial?.product?.id}) AND self.statusSelect = 3 AND ((:workshopStockLocation IS NULL AND self.workshopStockLocation IS NULL) OR self.workshopStockLocation = :workshopStockLocation) AND self.typeSelect = ${__repo__(ManufOrder).TYPE_PRODUCTION} &quot;"
       if="prodProcess != null &amp;&amp; billOfMaterial != null"/>
     <attribute name="domain" for="prodProcess"
-      expr="eval: &quot; self.statusSelect = 3 AND ((:workshopStockLocation IS NULL AND self.workshopStockLocation IS NULL) OR self.workshopStockLocation = :workshopStockLocation) &quot;"
+      expr="eval: &quot; self.statusSelect = 3 AND ((:workshopStockLocation IS NULL AND self.workshopStockLocation IS NULL) OR self.workshopStockLocation = :workshopStockLocation) AND self.typeSelect = ${__repo__(ManufOrder).TYPE_PRODUCTION} &quot;"
       if="billOfMaterial == null"/>
   </action-attrs>
 
@@ -819,16 +921,65 @@
     <domain>self.statusSelect = 7 and self.manufOrderMergeResult = :id</domain>
   </action-view>
 
+  <action-view name="action-manuf-order-view-mo-tree" title="Multi Level MO tree"
+    model="com.axelor.apps.production.db.ManufOrder">
+    <view type="tree" name="multi-level-mo-tree"/>
+    <context name="_moId" expr="eval: __self__.parentMO?__self__.parentMO?.id: id"/>
+  </action-view>
+
+  <tree name="multi-level-mo-tree" title="Multi level MO">
+    <column name="manufOrderSeq" type="string" title="MO"/>
+    <column name="product" type="reference"/>
+    <column name="qty" type="decimal"/>
+    <column name="statusSelect" type="integer" title="status"/>
+
+    <node model="com.axelor.apps.production.db.ManufOrder" domain="self.id = :_moId"
+      onClick="action-view-manuf-order-from-tree">
+      <field name="manufOrderSeq" as="manufOrderSeq"/>
+      <field name="product" as="product"/>
+      <field name="qty" as="qty"/>
+      <field name="statusSelect" as="statusSelect"/>
+    </node>
+
+    <node model="com.axelor.apps.production.db.ManufOrder" parent="parentMO" draggable="true"
+      onClick="action-view-manuf-order-from-tree">
+      <field name="manufOrderSeq" as="manufOrderSeq"/>
+      <field name="product" as="product"/>
+      <field name="qty" as="qty"/>
+      <field name="statusSelect" as="statusSelect"/>
+    </node>
+  </tree>
+
+  <action-view name="action-view-manuf-order-from-tree" title="Manufacturing order"
+    model="com.axelor.apps.production.db.ManufOrder">
+    <view type="form" name="manuf-order-form"/>
+    <view type="grid" name="manuf-order-grid"/>
+    <context name="_showRecord" expr="eval: id"/>
+  </action-view>
+
+  <action-view name="action-manuf-order-view-all-child-mo" title="All Child MO"
+    model="com.axelor.apps.production.db.ManufOrder">
+    <view type="grid" name="manuf-order-grid"/>
+    <view type="form" name="manuf-order-form"/>
+    <domain>self.parentMO.id = :_id</domain>
+    <context name="_id" expr="eval: id"/>
+  </action-view>
+
+  <action-method name="action-manuf-order-method-compute-producible-qty">
+    <call class="com.axelor.apps.production.web.ManufOrderController"
+      method="computeProducibleQty"/>
+  </action-method>
+
   <search-filters name="manuf-order-filters"
     model="com.axelor.apps.production.db.ManufOrder" title="Manufacturing order filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="workshopStockLocation" hidden="true"
-      if="!__config__.app.getApp('production').getManageWorkshop()"/>
+      if="!__config__.app.getApp('production')?.getManageWorkshop()"/>
     <field name="isToInvoice" hidden="true"
-      if="!__config__.app.getApp('production').getManageBusinessProduction()"/>
+      if="!__config__.app.getApp('production')?.getManageBusinessProduction()"/>
     <field name="invoiced" hidden="true"
-      if="!__config__.app.getApp('production').getManageBusinessProduction()"/>
+      if="!__config__.app.getApp('production')?.getManageBusinessProduction()"/>
     <filter title="Draft MOs">
       <domain>self.statusSelect = 1</domain>
     </filter>

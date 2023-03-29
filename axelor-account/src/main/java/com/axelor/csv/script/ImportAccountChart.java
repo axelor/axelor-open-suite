@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -42,7 +42,7 @@ public class ImportAccountChart {
 
   @Inject private MetaFiles metaFiles;
 
-  private File getDataFile(AccountChart accountChart) throws IOException {
+  protected File getDataFile(AccountChart accountChart) throws IOException {
 
     File tempDir = new File(Files.createTempDir(), accountChart.getCode());
     if (!tempDir.exists()) tempDir.mkdir();
@@ -84,7 +84,7 @@ public class ImportAccountChart {
     return tempDir;
   }
 
-  private File getZipFile(AccountChart accountChart) throws IOException {
+  protected File getZipFile(AccountChart accountChart) throws IOException {
 
     File directory = this.getDataFile(accountChart);
     String fileName = accountChart.getCode() + "_" + accountChart.getCountryCode() + ".zip";
@@ -96,7 +96,7 @@ public class ImportAccountChart {
     return zipFile;
   }
 
-  private void zipIt(File directory, File zipFile) throws IOException {
+  protected void zipIt(File directory, File zipFile) throws IOException {
 
     byte[] buffer = new byte[1024];
 

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -26,7 +26,7 @@ import com.axelor.apps.base.db.PrintLine;
 import com.axelor.apps.base.db.PrintTemplate;
 import com.axelor.apps.base.db.PrintTemplateLine;
 import com.axelor.apps.base.db.repo.PrintRepository;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.message.TemplateMessageServiceBaseImpl;
 import com.axelor.apps.message.db.TemplateContext;
 import com.axelor.apps.message.service.TemplateContextService;
@@ -84,7 +84,7 @@ public class PrintTemplateServiceImpl implements PrintTemplateService {
 
   @SuppressWarnings("unchecked")
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Print generatePrint(Long objectId, PrintTemplate printTemplate)
       throws AxelorException, IOException, ClassNotFoundException {
     MetaModel metaModel = printTemplate.getMetaModel();
@@ -185,7 +185,7 @@ public class PrintTemplateServiceImpl implements PrintTemplateService {
     return print;
   }
 
-  private void processPrintTemplateLineList(
+  protected void processPrintTemplateLineList(
       List<PrintTemplateLine> templateLineList,
       Print print,
       PrintLine parent,
@@ -214,7 +214,7 @@ public class PrintTemplateServiceImpl implements PrintTemplateService {
           } else {
             throw new AxelorException(
                 TraceBackRepository.CATEGORY_INCONSISTENCY,
-                I18n.get(IExceptionMessage.PRINT_TEMPLATE_CONDITION_MUST_BE_BOOLEAN));
+                I18n.get(BaseExceptionMessage.PRINT_TEMPLATE_CONDITION_MUST_BE_BOOLEAN));
           }
         }
 
@@ -269,14 +269,14 @@ public class PrintTemplateServiceImpl implements PrintTemplateService {
       } catch (Exception e) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.PRINT_TEMPLATE_ERROR_ON_LINE_WITH_SEQUENCE_AND_TITLE),
+            I18n.get(BaseExceptionMessage.PRINT_TEMPLATE_ERROR_ON_LINE_WITH_SEQUENCE_AND_TITLE),
             printTemplateLine.getSequence(),
             printTemplateLine.getTitle());
       }
     }
   }
 
-  private void addSequencesInContext(TemplateMaker maker, int level, int seq, PrintLine parent) {
+  protected void addSequencesInContext(TemplateMaker maker, int level, int seq, PrintLine parent) {
     maker.addInContext(TEMPLATE_CONTEXT_SEQUENCE_KEY_PREFIX + level, seq);
     if (ObjectUtils.notEmpty(parent)) {
       addSequencesInContext(maker, level - 1, parent.getSequence(), parent.getParent());

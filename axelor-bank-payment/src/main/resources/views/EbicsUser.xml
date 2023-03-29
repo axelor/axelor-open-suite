@@ -7,7 +7,7 @@
     model="com.axelor.apps.bankpayment.db.EbicsUser">
     <toolbar>
       <button name="exportUsersBtn" title="Export" onClick="action-export-ebics-user"/>
-      <button name="importUsersBtn" title="Import"
+      <button name="importUsersBtn" title="import.verb"
         onClick="action-ebics-open-import-ebics-users"/>
     </toolbar>
     <hilite if="statusSelect &lt; 3" color="primary"/>
@@ -27,7 +27,7 @@
     orderBy="ebicsPartner.ebicsBank,ebicsPartner,userId">
     <toolbar>
       <button name="exportUsersBtn" title="Export" onClick="action-export-ebics-user"/>
-      <button name="importUsersBtn" title="Import"
+      <button name="importUsersBtn" title="import.verb"
         onClick="action-ebics-open-import-ebics-users"/>
     </toolbar>
     <hilite if="statusSelect &lt; 3" color="primary"/>

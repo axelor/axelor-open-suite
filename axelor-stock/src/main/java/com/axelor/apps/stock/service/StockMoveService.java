@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,12 +21,15 @@ import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.stock.db.FreightCarrierMode;
 import com.axelor.apps.stock.db.Incoterm;
 import com.axelor.apps.stock.db.ShipmentMode;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -48,7 +51,7 @@ public interface StockMoveService {
    * @param toStockLocation
    * @param realDate
    * @param estimatedDate
-   * @param description
+   * @param note
    * @param shipmentMode
    * @param freightCarrierMode
    * @param carrierPartner
@@ -79,12 +82,6 @@ public interface StockMoveService {
   /**
    * Generic method to create any stock move for internal stock move (without partner information)
    *
-   * @param clientPartner
-   * @param shipmentMode
-   * @param freightCarrierMode
-   * @param carrierPartner
-   * @param forwarderPartner
-   * @param incoterm
    * @param fromAddress
    * @param toAddress
    * @param company
@@ -92,7 +89,7 @@ public interface StockMoveService {
    * @param toStockLocation
    * @param realDate
    * @param estimatedDate
-   * @param description
+   * @param note
    * @param typeSelect
    * @return
    * @throws AxelorException No Stock move sequence defined
@@ -107,6 +104,17 @@ public interface StockMoveService {
       LocalDate estimatedDate,
       String note,
       int typeSelect)
+      throws AxelorException;
+
+  /** To create an internal stock move with one product, mostly for mobile app (API AOS) * */
+  StockMove createStockMoveMobility(
+      StockLocation fromStockLocation,
+      StockLocation toStockLocation,
+      Company company,
+      Product product,
+      TrackingNumber trackNb,
+      BigDecimal movedQty,
+      Unit unit)
       throws AxelorException;
 
   public void validate(StockMove stockMove) throws AxelorException;
@@ -199,8 +207,6 @@ public interface StockMoveService {
 
   void setAvailableStatus(StockMove stockMove);
 
-  void checkExpirationDates(StockMove stockMove) throws AxelorException;
-
   /**
    * Update editDate of one Outgoing Stock Move
    *
@@ -226,4 +232,25 @@ public interface StockMoveService {
   void updateStocks(StockMove stockMove) throws AxelorException;
 
   void updateProductNetMass(StockMove stockMove) throws AxelorException;
+
+  /**
+   * Update locations from a planned stock move, by copying stock move lines in the stock move then
+   * updating locations.
+   *
+   * @param stockMove
+   * @param fromStockLocation
+   * @param toStockLocation
+   * @param initialStatus the initial status of the stock move.
+   * @throws AxelorException
+   */
+  void updateLocations(
+      StockMove stockMove,
+      StockLocation fromStockLocation,
+      StockLocation toStockLocation,
+      int initialStatus)
+      throws AxelorException;
+
+  StockLocation getFromStockLocation(StockMove stockMove) throws AxelorException;
+
+  StockLocation getToStockLocation(StockMove stockMove) throws AxelorException;
 }

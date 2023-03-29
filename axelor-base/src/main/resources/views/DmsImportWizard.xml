@@ -7,7 +7,7 @@
     <panel>
       <field name="metaFile" title="File" type="many-to-one"
         target="com.axelor.meta.db.MetaFile" widget="binary-link"/>
-      <button name="importDMS" title="Import" showIf="metaFile != null"
+      <button name="importDMS" title="import.verb" showIf="metaFile != null"
         onClick="com.axelor.apps.base.web.DmsImportWizardController:importDMS"/>
     </panel>
   </form>

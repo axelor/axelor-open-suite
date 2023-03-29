@@ -69,4 +69,10 @@
     <option value="1">Technicien</option>
   </selection>
 
+  <selection name="skill.talent.type.select">
+    <option value="training">Training</option>
+    <option value="clearance">Clearance</option>
+    <option value="license">License</option>
+  </selection>
+
 </object-views>

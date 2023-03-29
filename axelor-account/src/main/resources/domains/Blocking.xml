@@ -6,6 +6,7 @@
   <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="Blocking" lang="java">
+    <string name="blockingComment" title="Comment" large="true"/>
     <extra-code>
             <![CDATA[
                 public static final Integer DEBIT_BLOCKING = 4;

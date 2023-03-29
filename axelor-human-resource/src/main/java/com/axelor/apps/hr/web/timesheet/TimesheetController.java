@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -29,9 +29,11 @@ import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
+import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.report.IReport;
 import com.axelor.apps.hr.service.HRMenuTagService;
 import com.axelor.apps.hr.service.HRMenuValidateService;
+import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
 import com.axelor.apps.hr.service.timesheet.TimesheetService;
 import com.axelor.apps.hr.service.user.UserHrService;
@@ -44,6 +46,7 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -83,6 +86,14 @@ public class TimesheetController {
   public void generateLines(ActionRequest request, ActionResponse response) throws AxelorException {
     try {
       Timesheet timesheet = request.getContext().asType(Timesheet.class);
+      if (timesheet.getEmployee() == null) {
+        throw new AxelorException(
+            timesheet,
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(HumanResourceExceptionMessage.LEAVE_USER_EMPLOYEE),
+            AuthUtils.getUser().getName());
+      }
+
       Context context = request.getContext();
 
       LocalDate fromGenerationDate = null;
@@ -114,7 +125,7 @@ public class TimesheetController {
                 .find(((Integer) productContext.get("id")).longValue());
       }
       if (context.get("showActivity") == null || !(Boolean) context.get("showActivity")) {
-        product = Beans.get(UserHrService.class).getTimesheetProduct(timesheet.getUser());
+        product = Beans.get(UserHrService.class).getTimesheetProduct(timesheet.getEmployee());
       }
 
       timesheet =
@@ -132,8 +143,8 @@ public class TimesheetController {
         Beans.get(TimesheetRepository.class)
             .all()
             .filter(
-                "self.user = ?1 AND self.company = ?2 AND self.statusSelect = 1",
-                AuthUtils.getUser(),
+                "self.employee.user.id = ?1 AND self.company = ?2 AND self.statusSelect = 1",
+                AuthUtils.getUser().getId(),
                 Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null))
             .fetch();
     if (timesheetList.isEmpty()) {
@@ -180,10 +191,10 @@ public class TimesheetController {
     if (employee == null || !employee.getHrManager()) {
       if (employee == null || employee.getManagerUser() == null) {
         actionView
-            .domain("self.user = :_user OR self.user.employee.managerUser = :_user")
-            .context("_user", user);
+            .domain("self.employee.user.id = :_userId OR self.employee.managerUser = :_user")
+            .context("_userId", user.getId());
       } else {
-        actionView.domain("self.user.employee.managerUser = :_user").context("_user", user);
+        actionView.domain("self.employee.managerUser = :_user").context("_user", user);
       }
     }
 
@@ -248,7 +259,7 @@ public class TimesheetController {
     Timesheet timesheet =
         Beans.get(TimesheetRepository.class).find(Long.valueOf((Integer) timesheetMap.get("id")));
     response.setView(
-        ActionView.define("Timesheet")
+        ActionView.define(I18n.get("Timesheet"))
             .model(Timesheet.class.getName())
             .add("form", "timesheet-form")
             .param("forceEdit", "true")
@@ -273,7 +284,7 @@ public class TimesheetController {
 
     if (employee == null || !employee.getHrManager()) {
       actionView
-          .domain(actionView.get().getDomain() + " AND self.user.employee.managerUser = :_user")
+          .domain(actionView.get().getDomain() + " AND self.employee.managerUser = :_user")
           .context("_user", user);
     }
 
@@ -299,8 +310,7 @@ public class TimesheetController {
     if (employee == null || !employee.getHrManager()) {
       actionView
           .domain(
-              actionView.get().getDomain()
-                  + " AND self.timesheet.user.employee.managerUser = :_user")
+              actionView.get().getDomain() + " AND self.timesheet.employee.managerUser = :_user")
           .context("_user", user);
     }
 
@@ -320,7 +330,7 @@ public class TimesheetController {
             .param("search-filters", "timesheet-filters");
 
     String domain =
-        "self.user.employee.managerUser.employee.managerUser = :_user AND self.company = :_activeCompany AND self.statusSelect = 2";
+        "self.employee.managerUser.employee.managerUser = :_user AND self.company = :_activeCompany AND self.statusSelect = 2";
 
     long nbTimesheets =
         Query.of(Timesheet.class)
@@ -417,7 +427,7 @@ public class TimesheetController {
             .add("form", "timesheet-form")
             .add("grid", "timesheet-grid")
             .param("search-filters", "timesheet-filters")
-            .domain("self.user = :_user")
+            .domain("self.employee.user = :_user")
             .context("_user", AuthUtils.getUser())
             .map());
   }
@@ -459,6 +469,20 @@ public class TimesheetController {
       TraceBackService.trace(response, e);
     } finally {
       response.setReload(true);
+    }
+  }
+
+  public void complete(ActionRequest request, ActionResponse response) {
+    try {
+      Timesheet timesheet = request.getContext().asType(Timesheet.class);
+      timesheet = Beans.get(TimesheetRepository.class).find(timesheet.getId());
+      // confirm
+      Beans.get(TimesheetService.class).confirm(timesheet);
+
+      // validate
+      this.valid(request, response);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 
@@ -529,11 +553,15 @@ public class TimesheetController {
 
     boolean showActivity = true;
 
-    User user = timesheet.getUser();
-    if (user != null) {
-      Company company = user.getActiveCompany();
-      if (company != null && company.getHrConfig() != null) {
-        showActivity = !company.getHrConfig().getUseUniqueProductForTimesheet();
+    if (timesheet.getEmployee() != null) {
+      User user = timesheet.getEmployee().getUser();
+      if (user != null) {
+        Company company = user.getActiveCompany();
+        if (company != null && company.getHrConfig() != null) {
+          showActivity =
+              !company.getHrConfig().getUseUniqueProductForTimesheet()
+                  && Beans.get(AppHumanResourceService.class).getAppTimesheet().getEnableActivity();
+        }
       }
     }
 
@@ -545,7 +573,7 @@ public class TimesheetController {
     Context context = request.getContext();
 
     String url =
-        "hr/timesheet?timesheetId="
+        "hr/timesheet/?timesheetId="
             + context.get("id")
             + "&showActivity="
             + context.get("showActivity");

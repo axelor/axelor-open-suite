@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,6 +20,7 @@ package com.axelor.apps.businessproject.service;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.repo.ConsumptionLineRepository;
 import com.axelor.apps.contract.db.repo.ContractLineRepository;
@@ -41,7 +42,8 @@ public class ProjectContractServiceImpl extends ContractServiceImpl {
       DurationService durationService,
       ContractLineRepository contractLineRepo,
       ConsumptionLineRepository consumptionLineRepo,
-      ContractRepository contractRepository) {
+      ContractRepository contractRepository,
+      TaxService taxService) {
     super(
         appBaseService,
         versionService,
@@ -49,7 +51,8 @@ public class ProjectContractServiceImpl extends ContractServiceImpl {
         durationService,
         contractLineRepo,
         consumptionLineRepo,
-        contractRepository);
+        contractRepository,
+        taxService);
   }
 
   @Override

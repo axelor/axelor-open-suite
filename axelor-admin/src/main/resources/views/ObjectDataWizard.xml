@@ -18,8 +18,9 @@
   </form>
 
   <action-attrs name="action-object-data-anonymize-wizard-defaults">
-    <attribute name="value" for="modelSelect" expr="eval:_modelSelect"/>
-    <attribute name="value" for="objectDataConfigId" expr="eval:_objectDataConfigId"/>
+    <attribute name="value" for="modelSelect" expr="eval: _modelSelect"/>
+    <attribute name="value" for="objectDataConfigId" expr="eval: _objectDataConfigId"/>
+    <attribute name="value" for="modelSelectId" expr="eval: 0"/>
   </action-attrs>
 
   <action-validate name="action-object-data-export-wizard-validate-anonymize">

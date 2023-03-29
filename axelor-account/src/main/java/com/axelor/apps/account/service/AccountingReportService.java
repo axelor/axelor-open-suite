@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,13 +19,18 @@ package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountingReport;
-import com.axelor.apps.account.db.JournalType;
 import com.axelor.exception.AxelorException;
-import com.google.inject.persist.Transactional;
+import com.axelor.meta.db.MetaFile;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Map;
 
 public interface AccountingReportService {
+
+  String print(AccountingReport accountingReport) throws AxelorException, IOException;
+
+  MetaFile export(AccountingReport accountingReport) throws AxelorException, IOException;
 
   public String getMoveLineList(AccountingReport accountingReport) throws AxelorException;
 
@@ -35,21 +40,13 @@ public interface AccountingReportService {
 
   public String addParams(String paramQuery);
 
-  @Transactional
   public void setSequence(AccountingReport accountingReport, String sequence);
 
   public String getSequence(AccountingReport accountingReport) throws AxelorException;
 
-  public JournalType getJournalType(AccountingReport accountingReport) throws AxelorException;
-
   public Account getAccount(AccountingReport accountingReport);
 
-  @Transactional
   public void setStatus(AccountingReport accountingReport);
-
-  /** @param accountingReport */
-  @Transactional
-  public void setPublicationDateTime(AccountingReport accountingReport);
 
   /**
    * @param queryFilter
@@ -69,10 +66,21 @@ public interface AccountingReportService {
 
   public BigDecimal getCreditBalanceType4();
 
-  public String getReportFileLink(AccountingReport accountingReport, String name)
-      throws AxelorException;
-
   public boolean isThereTooManyLines(AccountingReport accountingReport) throws AxelorException;
 
   public void testReportedDateField(LocalDate reportedDate) throws AxelorException;
+
+  public AccountingReport createAccountingExportFromReport(
+      AccountingReport accountingReport, int exportTypeSelect, boolean isComplementary)
+      throws AxelorException;
+
+  /**
+   * Method to get fields from ReportTypeModelAccountingReport
+   *
+   * @param accountingReport the accouting report linked to the ReportTypeModelAccountingReport
+   * @return map if ReportTypeModelAccountingReport is found else null
+   * @throws AxelorException
+   */
+  public Map<String, Object> getFieldsFromReportTypeModelAccountingReport(
+      AccountingReport accountingReport) throws AxelorException;
 }

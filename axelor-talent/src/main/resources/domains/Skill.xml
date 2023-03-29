@@ -7,6 +7,9 @@
 
   <entity name="Skill" lang="java" cacheable="true">
     <string name="name" title="Name" required="true"/>
+    <many-to-one name="validityDuration" title="Validity duration"
+      ref="com.axelor.apps.base.db.Duration"/>
+    <string name="typeSelect" title="Type" selection="skill.talent.type.select"/>
   </entity>
 
 </domain-models>

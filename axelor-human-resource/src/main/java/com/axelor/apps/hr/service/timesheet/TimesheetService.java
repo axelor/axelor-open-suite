@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -28,19 +28,19 @@ import com.axelor.apps.message.db.Message;
 import com.axelor.apps.project.db.Project;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
+import com.axelor.meta.CallMethod;
 import com.axelor.meta.schema.actions.ActionView;
-import com.google.inject.persist.Transactional;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.mail.MessagingException;
 import wslite.json.JSONException;
 
 public interface TimesheetService {
 
-  @Transactional(rollbackOn = {Exception.class})
   public void confirm(Timesheet timesheet) throws AxelorException;
 
   public Message sendConfirmationEmail(Timesheet timesheet)
@@ -59,7 +59,6 @@ public interface TimesheetService {
    */
   public void checkEmptyPeriod(Timesheet timesheet) throws AxelorException;
 
-  @Transactional(rollbackOn = {Exception.class})
   public void validate(Timesheet timesheet) throws AxelorException;
 
   public Message sendValidationEmail(Timesheet timesheet)
@@ -70,7 +69,6 @@ public interface TimesheetService {
       throws AxelorException, ClassNotFoundException, InstantiationException,
           IllegalAccessException, MessagingException, IOException, JSONException;
 
-  @Transactional(rollbackOn = {Exception.class})
   public void refuse(Timesheet timesheet) throws AxelorException;
 
   public Message sendRefusalEmail(Timesheet timesheet)
@@ -107,13 +105,12 @@ public interface TimesheetService {
       Product product)
       throws AxelorException;
 
-  public LocalDate getFromPeriodDate();
-
   public Timesheet getCurrentTimesheet();
 
-  public Timesheet getCurrentOrCreateTimesheet();
+  public Timesheet getCurrentOrCreateTimesheet() throws AxelorException;
 
-  public Timesheet createTimesheet(User user, LocalDate fromDate, LocalDate toDate);
+  public Timesheet createTimesheet(Employee employee, LocalDate fromDate, LocalDate toDate)
+      throws AxelorException;
 
   public List<InvoiceLine> createInvoiceLines(
       Invoice invoice, List<TimesheetLine> timesheetLineList, int priority) throws AxelorException;
@@ -121,14 +118,13 @@ public interface TimesheetService {
   public List<InvoiceLine> createInvoiceLine(
       Invoice invoice,
       Product product,
-      User user,
+      Employee employee,
       String date,
       BigDecimal hoursDuration,
       int priority,
       PriceList priceList)
       throws AxelorException;
 
-  @Transactional
   public void computeTimeSpent(Timesheet timesheet);
 
   public BigDecimal computeSubTimeSpent(Project project);
@@ -136,8 +132,6 @@ public interface TimesheetService {
   public void computeParentTimeSpent(Project project);
 
   public BigDecimal computeTimeSpent(Project project);
-
-  public String computeFullName(Timesheet timesheet);
 
   public List<Map<String, Object>> createDefaultLines(Timesheet timesheet);
 
@@ -159,7 +153,6 @@ public interface TimesheetService {
    */
   void updateTimeLoggingPreference(Timesheet timesheet) throws AxelorException;
 
-  @Transactional(rollbackOn = {Exception.class})
   public void generateLinesFromExpectedProjectPlanning(Timesheet timesheet) throws AxelorException;
 
   public void prefillLines(Timesheet timesheet) throws AxelorException;
@@ -167,4 +160,7 @@ public interface TimesheetService {
   public void setProjectTaskTotalRealHrs(List<TimesheetLine> timesheetLines, boolean isAdd);
 
   public void removeAfterToDateTimesheetLines(Timesheet timesheet);
+
+  @CallMethod
+  public Set<Long> getContextProjectIds();
 }

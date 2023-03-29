@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,18 +19,14 @@ package com.axelor.apps.businessproject.web;
 
 import com.axelor.apps.businessproject.service.ProjectTaskBusinessProjectService;
 import com.axelor.apps.project.db.ProjectTask;
-import com.axelor.apps.project.db.ProjectTaskCategory;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class ProjectTaskController {
-
-  @Inject private ProjectTaskBusinessProjectService businessProjectService;
 
   public void updateDiscount(ActionRequest request, ActionResponse response) {
 
@@ -84,18 +80,17 @@ public class ProjectTaskController {
   }
 
   public void onChangeCategory(ActionRequest request, ActionResponse response) {
-    ProjectTask task = request.getContext().asType(ProjectTask.class);
-    ProjectTaskCategory projectTaskCategory = task.getProjectTaskCategory();
     try {
-      task = businessProjectService.resetProjectTaskValues(task);
-      if (projectTaskCategory != null) {
-        task = businessProjectService.computeDefaultInformation(task);
+      ProjectTask task = request.getContext().asType(ProjectTask.class);
+      if (task.getSaleOrderLine() == null && task.getInvoiceLine() == null) {
+        ProjectTaskBusinessProjectService projectTaskBusinessProjectService =
+            Beans.get(ProjectTaskBusinessProjectService.class);
+        task = projectTaskBusinessProjectService.resetProjectTaskValues(task);
+        if (task.getProjectTaskCategory() != null) {
+          task = projectTaskBusinessProjectService.updateTaskFinancialInfo(task);
+        }
+        response.setValues(task);
       }
-
-      if (task.getInvoicingType() == ProjectTaskRepository.INVOICING_TYPE_TIME_SPENT) {
-        task.setToInvoice(true);
-      }
-      response.setValues(task);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

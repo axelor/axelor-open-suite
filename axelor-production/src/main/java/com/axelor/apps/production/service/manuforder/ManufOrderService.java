@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -25,10 +25,10 @@ import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.exception.AxelorException;
-import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import org.apache.commons.lang3.tuple.Pair;
 
 public interface ManufOrderService {
@@ -37,25 +37,14 @@ public interface ManufOrderService {
   public static int DEFAULT_PRIORITY_INTERVAL = 10;
   public static boolean IS_TO_INVOICE = false;
 
-  public static int ORIGIN_TYPE_MRP = 1;
-  public static int ORIGIN_TYPE_SALE_ORDER = 2;
-  public static int ORIGIN_TYPE_OTHER = 3;
+  public interface ManufOrderOriginType {}
 
-  /**
-   * @param product
-   * @param qtyRequested
-   * @param priority
-   * @param isToInvoice
-   * @param billOfMaterial
-   * @param plannedStartDateT
-   * @param originType
-   *     <li>1 : MRP
-   *     <li>2 : Sale order
-   *     <li>3 : Other
-   * @return
-   * @throws AxelorException
-   */
-  @Transactional(rollbackOn = {Exception.class})
+  public enum ManufOrderOriginTypeProduction implements ManufOrderOriginType {
+    ORIGIN_TYPE_MRP,
+    ORIGIN_TYPE_SALE_ORDER,
+    ORIGIN_TYPE_OTHER;
+  }
+
   public ManufOrder generateManufOrder(
       Product product,
       BigDecimal qtyRequested,
@@ -64,7 +53,7 @@ public interface ManufOrderService {
       BillOfMaterial billOfMaterial,
       LocalDateTime plannedStartDateT,
       LocalDateTime plannedEndDateT,
-      int originType)
+      ManufOrderOriginType manufOrderOriginType)
       throws AxelorException;
 
   public void createToConsumeProdProductList(ManufOrder manufOrder);
@@ -95,7 +84,6 @@ public interface ManufOrderService {
       LocalDateTime plannedEndDateT)
       throws AxelorException;
 
-  @Transactional(rollbackOn = {Exception.class})
   public void preFillOperations(ManufOrder manufOrder) throws AxelorException;
 
   public void updateOperationsName(ManufOrder manufOrder);
@@ -173,6 +161,8 @@ public interface ManufOrderService {
    */
   void updateConsumedStockMoveFromManufOrder(ManufOrder manufOrder) throws AxelorException;
 
+  StockMove getConsumedStockMoveFromManufOrder(ManufOrder manufOrder) throws AxelorException;
+
   /**
    * On changing {@link ManufOrder#producedStockMoveLineList}, we also update the stock move.
    *
@@ -180,6 +170,8 @@ public interface ManufOrderService {
    * @throws AxelorException
    */
   void updateProducedStockMoveFromManufOrder(ManufOrder manufOrder) throws AxelorException;
+
+  StockMove getProducedStockMoveFromManufOrder(ManufOrder manufOrder) throws AxelorException;
 
   /**
    * Check the realized consumed stock move lines in manuf order has not changed.
@@ -246,8 +238,11 @@ public interface ManufOrderService {
   public List<ManufOrder> generateAllSubManufOrder(List<Product> productList, ManufOrder manufOrder)
       throws AxelorException;
 
+  public List<Long> planSelectedOrdersAndDiscardOthers(List<Map<String, Object>> manufOrders)
+      throws AxelorException;
+
   public List<Pair<BillOfMaterial, BigDecimal>> getToConsumeSubBomList(
-      BillOfMaterial bom, ManufOrder mo, List<Product> productList);
+      BillOfMaterial bom, ManufOrder mo, List<Product> productList) throws AxelorException;
 
   /**
    * Merge different manufacturing orders into a single one.
@@ -263,4 +258,16 @@ public interface ManufOrderService {
    * @param ids List of ids of manufacturing orders to merge
    */
   public boolean canMerge(List<Long> ids);
+
+  /**
+   * Create a barcode from {@link ManufOrder}'s sequence and it will get displayed in the report of
+   * {@link ManufOrder} on the header of every page.
+   *
+   * @return
+   */
+  public void createBarcode(ManufOrder manufOrder);
+
+  List<ManufOrder> getChildrenManufOrder(ManufOrder manufOrder);
+
+  public BigDecimal computeProducibleQty(ManufOrder manufOrder) throws AxelorException;
 }

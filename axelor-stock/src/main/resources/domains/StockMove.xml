@@ -15,7 +15,7 @@
       required="true" title="To stock location"/>
 
     <date name="estimatedDate" title="Estimated date"/>
-    <date name="realDate" title="Move date" readonly="true"/>
+    <date name="realDate" title="stockMove.realDate" readonly="true"/>
 
     <date name="supplierShipmentDate" title="Supplier Shipment Date"/>
     <string name="supplierShipmentRef" title="Supplier Shipment Ref"/>
@@ -84,12 +84,12 @@
     <many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName"/>
     <many-to-one name="printingSettings" ref="com.axelor.apps.base.db.PrintingSettings"/>
     <boolean name="groupProductsOnPrintings" title="Group products on printings"/>
-
     <boolean name="isIspmRequired" title="Is ISPM15 required"/>
     <boolean name="isReversion" readonly="true"/>
-
     <boolean name="isNeedingConformityCertificate" title="Certificate of conformity"/>
     <boolean name="isConformityCertifSigned" title="Is certificate of conformity signed"/>
+    <boolean name="cutOffMoveGenerated" title="Cut off move generated"/>
+
     <many-to-one name="electronicSignature" ref="com.axelor.meta.db.MetaFile"
       title="Electronic signature"/>
     <many-to-one name="signatoryUser" ref="com.axelor.auth.db.User"

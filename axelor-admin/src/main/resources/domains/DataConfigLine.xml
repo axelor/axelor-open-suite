@@ -6,9 +6,11 @@
   <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="DataConfigLine" cacheable="true">
+
     <![CDATA[
-    This object store the configuration lines for export of data
+      This object stores the configuration lines for export of data.
     ]]>
+
     <many-to-one name="metaModel" title="Object" ref="com.axelor.meta.db.MetaModel"/>
     <integer name="typeSelect" title="Query/path" selection="data.config.line.type.select"/>
     <string name="path" title="Query"/>
@@ -24,17 +26,17 @@
     <many-to-many name="toDeleteMetaFieldSet" ref="com.axelor.meta.db.MetaField"
       title="Fields to delete"/>
     <string name="tabName" title="Tab name" required="true"/>
-    <unique-constraint columns="objectDataConfig,tabName"/>
-    <extra-code>
-	<![CDATA[
-		public static final int TYPE_PATH = 0;
-		public static final int TYPE_QUERY = 1;
 
-		public static final int RESET_NONE = 0;
-		public static final int RESET_REPLACE = 1;
-		public static final int RESET_DELETE = 2;
-	]]>
-    </extra-code>
+    <unique-constraint columns="objectDataConfig,tabName"/>
+
+    <extra-code><![CDATA[
+      public static final int TYPE_PATH = 0;
+      public static final int TYPE_QUERY = 1;
+
+      public static final int RESET_NONE = 0;
+      public static final int RESET_REPLACE = 1;
+      public static final int RESET_DELETE = 2;
+    ]]></extra-code>
 
   </entity>
 

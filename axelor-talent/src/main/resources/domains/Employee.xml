@@ -12,6 +12,8 @@
       title="Experience skills"/>
     <many-to-many name="skillSet" ref="com.axelor.apps.talent.db.Skill"
       title="Other skills"/>
+    <one-to-many name="trainingSkillList" title="Training skills"
+      ref="com.axelor.apps.talent.db.TrainingSkill" mappedBy="employee"/>
   </entity>
 
 </domain-models>

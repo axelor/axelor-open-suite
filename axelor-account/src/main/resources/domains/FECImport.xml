@@ -10,11 +10,14 @@
     <string name="name" namecolumn="true"/>
     <many-to-one name="user" ref="com.axelor.auth.db.User" title="User" required="true"
       column="user_id"/>
-    <many-to-one name="bindMetaFile" ref="com.axelor.meta.db.MetaFile"
-      title="Binding file" required="true"/>
+    <many-to-one ref="com.axelor.apps.account.db.ImportFECType" name="importFECType"
+      required="true"/>
     <many-to-one name="dataMetaFile" ref="com.axelor.meta.db.MetaFile" title="Data file"
       required="true"/>
     <string name="description" large="true" title="Description"/>
+    <boolean name="validGeneratedMove" title="Valid the generated move"/>
+    <many-to-one ref="com.axelor.apps.base.db.Company" name="company" title="Company"/>
+    <string name="moveDescription" title="Move description"/>
 
   </entity>
 

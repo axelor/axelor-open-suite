@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,13 +20,17 @@ package com.axelor.apps.production.service;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.user.UserService;
+import com.axelor.apps.crm.service.app.AppCrmService;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.productionorder.ProductionOrderSaleOrderService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService;
+import com.axelor.apps.supplychain.service.PartnerSupplychainService;
+import com.axelor.apps.supplychain.service.SaleOrderCheckAnalyticService;
 import com.axelor.apps.supplychain.service.SaleOrderPurchaseService;
 import com.axelor.apps.supplychain.service.SaleOrderStockService;
 import com.axelor.apps.supplychain.service.SaleOrderWorkflowServiceSupplychainImpl;
@@ -47,27 +51,33 @@ public class SaleOrderWorkflowServiceProductionImpl
       PartnerRepository partnerRepo,
       SaleOrderRepository saleOrderRepo,
       AppSaleService appSaleService,
+      AppCrmService appCrmService,
       UserService userService,
       SaleOrderLineService saleOrderLineService,
       SaleOrderStockService saleOrderStockService,
       SaleOrderPurchaseService saleOrderPurchaseService,
       AppSupplychainService appSupplychainService,
       AccountingSituationSupplychainService accountingSituationSupplychainService,
+      PartnerSupplychainService partnerSupplychainService,
+      SaleConfigService saleConfigService,
+      SaleOrderCheckAnalyticService saleOrderCheckAnalyticService,
       ProductionOrderSaleOrderService productionOrderSaleOrderService,
       AppProductionService appProductionService) {
-
     super(
         sequenceService,
         partnerRepo,
         saleOrderRepo,
         appSaleService,
+        appCrmService,
         userService,
         saleOrderLineService,
         saleOrderStockService,
         saleOrderPurchaseService,
         appSupplychainService,
-        accountingSituationSupplychainService);
-
+        accountingSituationSupplychainService,
+        partnerSupplychainService,
+        saleConfigService,
+        saleOrderCheckAnalyticService);
     this.productionOrderSaleOrderService = productionOrderSaleOrderService;
     this.appProductionService = appProductionService;
   }

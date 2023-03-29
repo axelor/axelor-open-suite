@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -25,9 +25,11 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherConfirmService;
+import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherControlService;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherLoadService;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherSequenceService;
 import com.axelor.apps.base.db.BankDetails;
@@ -70,7 +72,7 @@ public class PaymentVoucherController {
   }
 
   // Loading move lines of the selected partner (1st O2M)
-  public void loadMoveLines(ActionRequest request, ActionResponse response) {
+  public void loadInvoiceTerms(ActionRequest request, ActionResponse response) {
 
     PaymentVoucher paymentVoucher = request.getContext().asType(PaymentVoucher.class);
 
@@ -89,10 +91,15 @@ public class PaymentVoucherController {
     PaymentVoucher paymentVoucher = request.getContext().asType(PaymentVoucher.class);
 
     try {
-      Beans.get(PaymentVoucherLoadService.class).loadSelectedLines(paymentVoucher);
+      boolean generateAll =
+          Beans.get(PaymentVoucherLoadService.class).loadSelectedLines(paymentVoucher);
       response.setValue("payVoucherDueElementList", paymentVoucher.getPayVoucherDueElementList());
       response.setValue(
           "payVoucherElementToPayList", paymentVoucher.getPayVoucherElementToPayList());
+
+      if (!generateAll) {
+        response.setFlash(I18n.get(AccountExceptionMessage.PAYMENT_VOUCHER_NOT_GENERATE_ALL));
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -126,6 +133,11 @@ public class PaymentVoucherController {
                 .getPaymentModeJournal(paymentMode, company, companyBankDetails);
         if (journal.getExcessPaymentOk()) {
           response.setAlert(I18n.get("No items have been selected. Do you want to continue?"));
+        }
+        if (!Beans.get(PaymentVoucherControlService.class).controlMoveAmounts(paymentVoucher)) {
+          response.setError(
+              I18n.get(
+                  "Some move amounts have been changed since the imputation. Please remake the imputation."));
         }
       } catch (Exception e) {
         TraceBackService.trace(response, e);
@@ -225,6 +237,19 @@ public class PaymentVoucherController {
             .reloadElementToPayList(paymentVoucher, contextPaymentVoucher);
       }
       response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setReceiptDisplay(ActionRequest request, ActionResponse response) {
+    try {
+      PaymentVoucher paymentVoucher = request.getContext().asType(PaymentVoucher.class);
+      boolean displayReceipt =
+          Beans.get(PaymentVoucherControlService.class).isReceiptDisplayed(paymentVoucher);
+
+      response.setAttr("receiptNo", "hidden", !displayReceipt);
+      response.setAttr("printPaymentVoucherBtn", "hidden", !displayReceipt);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

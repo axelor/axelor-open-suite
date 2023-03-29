@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,6 +20,8 @@ package com.axelor.apps.talent.db.repo;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.talent.db.JobPosition;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.google.inject.Inject;
 
 public class JobPositionTalentRepository extends JobPositionRepository {
@@ -30,8 +32,13 @@ public class JobPositionTalentRepository extends JobPositionRepository {
   public JobPosition save(JobPosition jobPosition) {
 
     if (jobPosition.getStatusSelect() > 0 && jobPosition.getJobReference() == null) {
-      jobPosition.setJobReference(
-          sequenceService.getSequenceNumber(SequenceRepository.JOB_POSITION));
+      try {
+        jobPosition.setJobReference(
+            sequenceService.getSequenceNumber(
+                SequenceRepository.JOB_POSITION, JobPosition.class, "jobReference"));
+      } catch (AxelorException e) {
+        TraceBackService.traceExceptionFromSaveMethod(e);
+      }
     }
 
     return super.save(jobPosition);

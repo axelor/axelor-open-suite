@@ -45,7 +45,8 @@
       </panel>
       <panel name="connectionSettingsPanel" title="Connection settings" colSpan="12">
         <panel name="detailsPanel" colSpan="12">
-          <field name="url" required="true"/>
+          <field name="url" required="true" widget="url"
+            pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$"/>
           <field name="typeSelect" required="true"/>
           <field name="isSslConnection" onChange="action-calendar-record-set-port"
             widget="boolean-switch"/>

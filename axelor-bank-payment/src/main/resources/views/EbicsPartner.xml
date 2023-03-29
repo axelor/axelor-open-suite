@@ -41,7 +41,7 @@
       <field name="bankStatementEndDate" colSpan="6" showIf="bankStatementGetModeSelect == 2"/>
       <button name="getBankStatementBtn" title="Get the bank statements" colSpan="6"
         onClick="save,action-ebics-partner-method-get-bank-statement"
-        readonlyIf="!bsEbicsPartnerServiceList"/>
+        readonlyIf="!(bsEbicsPartnerServiceList &amp;&amp; bsEbicsPartnerServiceList.length > 0)"/>
       <button name="showBankStatementBtn" title="Show the bank statements"
         onClick="action-ebics-partner-view-show-bank-statement"/>
     </panel>

@@ -233,7 +233,8 @@
         <metaField></metaField>
         <valueJson></valueJson>
         <valueField></valueField>
-        <value>com.axelor.inject.Beans.get(com.axelor.apps.base.service.administration.SequenceService.class).getSequenceNumber('pr')
+        <value>com.axelor.inject.Beans.get(com.axelor.apps.base.service.administration.SequenceService.class).getSequenceNumber('pr',
+          null, null)
         </value>
         <conditionText></conditionText>
         <filter></filter>

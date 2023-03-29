@@ -10,6 +10,12 @@
       <attribute name="onLoad" value="action-group-supplychain-saleorder-onload"/>
       <attribute name="onSave" value="action-supplychain-saleorder-onsave"/>
     </extend>
+    <extend target="//field[@name='versionNumber']">
+      <insert position="after">
+        <field colSpan="3" name="directOrderLocation"
+          onChange="action-sale-order-record-direct-order-location-onchange" widget="boolean-switch"/>
+      </insert>
+    </extend>
     <extend target="//field[@name='shipmentMode']">
       <attribute name="onChange" value="supplychain-action-create-shipment-cost-line"/>
       <attribute name="readOnlyIf" value="statusSelect &gt; 1"/>
@@ -100,7 +106,7 @@
     <action name="save"/>
     <action name="action-method-sale-order-validate-changes"/>
     <action name="action-sale-order-method-notify-stock-move-created"
-      if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').customerStockMoveGenerationAuto "/>
+      if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.customerStockMoveGenerationAuto "/>
   </action-group>
 
   <action-group name="action-group-supplychain-saleorder-onnew">
@@ -111,6 +117,7 @@
     <action name="action-sale-order-attrs-interco"/>
     <action name="action-sale-order-record-interco"/>
     <action name="supplychain-action-create-shipment-cost-line"/>
+    <action name="action-sale-order-record-set-default-tax-number"/>
   </action-group>
 
   <action-group name="action-group-sale-order-supplychain-set-main-invoicing-address">
@@ -240,13 +247,13 @@
   <action-attrs name="action-sale-order-attrs-set-stock-location-domain">
     <attribute name="domain" for="stockLocation"
       if="!tradingName?.stockLocationList &amp;&amp; !directOrderLocation"
-      expr="eval: &quot;self.company = :company and self.typeSelect != 3 and self.usableOnSaleOrder = true and self.directOrderLocation = false&quot;"/>
+      expr="eval: &quot;self.company = :company and self.typeSelect != 3 and self.usableOnSaleOrder = true&quot;"/>
     <attribute name="domain" for="stockLocation"
       if="!tradingName?.stockLocationList &amp;&amp; directOrderLocation"
       expr="eval: &quot;self.typeSelect != 3 and self.usableOnSaleOrder = true and self.directOrderLocation = true&quot;"/>
     <attribute name="domain" for="stockLocation"
       if="tradingName?.stockLocationList &amp;&amp; !directOrderLocation"
-      expr="eval: &quot;self.company = :company AND ((self.typeSelect != 3 and self.usableOnSaleOrder = true AND self.directOrderLocation = false) OR self.id IN (${tradingName?.stockLocationList?.collect{it.id+[0]}.join(',')}))&quot;"/>
+      expr="eval: &quot;self.company = :company AND ((self.typeSelect != 3 and self.usableOnSaleOrder = true) OR self.id IN (${tradingName?.stockLocationList?.collect{it.id+[0]}.join(',')}))&quot;"/>
     <attribute name="domain" for="stockLocation"
       if="tradingName?.stockLocationList &amp;&amp; directOrderLocation"
       expr="eval: &quot;(self.typeSelect != 3 and self.usableOnSaleOrder = true and self.directOrderLocation = true) OR self.id IN (${tradingName?.stockLocationList?.collect{it.id+[0]}.join(',')})&quot;"/>
@@ -299,16 +306,12 @@
     <field name="incoterm"
       expr="eval: __repo__(PartnerStockSettings).all().filter('self.company = ? AND self.partner = ?', company, clientPartner).fetchOne()?.incoterm"
       if="company != null &amp;&amp; clientPartner != null"/>
-    <field name="stockLocation" if="stockLocation == null"
-      expr="call: com.axelor.apps.stock.service.PartnerStockSettingsService:getDefaultStockLocation(clientPartner, company)"/>
-    <field name="toStockLocation"
-      expr="call: com.axelor.apps.stock.service.PartnerStockSettingsService:getDefaultExternalStockLocation(clientPartner, company)"/>
   </action-record>
 
   <action-record name="action-sale-order-record-update-timetable-amounts"
     model="com.axelor.apps.sale.db.SaleOrder">
     <field name="timetableList"
-      expr="eval: timetableList.collect{it -> it.amount = (exTaxTotal * it.percentage / 100).setScale(__config__.app.getApp('base').nbDecimalDigitForUnitPrice, java.math.RoundingMode.HALF_UP); it}"
+      expr="eval: timetableList.collect{it -> it.amount = (exTaxTotal * it.percentage / 100).setScale(__config__.app.getApp('base')?.nbDecimalDigitForUnitPrice, java.math.RoundingMode.HALF_UP); it}"
       if="timetableList != null"/>
   </action-record>
 
@@ -370,6 +373,11 @@
     name="action-sale-order-supplychain-method-set-default-invoiced-delivered-partners-and-addresses">
     <call class="com.axelor.apps.supplychain.web.SaleOrderController"
       method="setDefaultInvoicedAndDeliveredPartnersAndAddresses"/>
+  </action-method>
+
+  <action-method name="action-supplychain-sale-order-method-get-to-stock-location">
+    <call class="com.axelor.apps.supplychain.web.SaleOrderController"
+      method="getToStockLocation"/>
   </action-method>
 
 </object-views>
