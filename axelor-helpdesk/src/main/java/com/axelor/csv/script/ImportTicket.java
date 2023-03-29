@@ -15,28 +15,27 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.base.web;
+package com.axelor.csv.script;
 
-import com.axelor.apps.base.db.Querie;
-import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.apps.base.service.querie.QuerieService;
-import com.axelor.i18n.I18n;
+import com.axelor.apps.helpdesk.db.Ticket;
+import com.axelor.apps.helpdesk.service.TicketService;
 import com.axelor.inject.Beans;
-import com.axelor.rpc.ActionRequest;
-import com.axelor.rpc.ActionResponse;
-import com.google.inject.Singleton;
+import java.util.Map;
 
-@Singleton
-public class QuerieController {
+public class ImportTicket {
 
-  public void checkQuerie(ActionRequest request, ActionResponse response) {
+  public Object importTicket(Object bean, Map<String, Object> values) {
+    assert bean instanceof Ticket;
+
+    Ticket ticket = (Ticket) bean;
 
     try {
-      Beans.get(QuerieService.class).checkQuerie(request.getContext().asType(Querie.class));
-      response.setInfo(I18n.get(BaseExceptionMessage.QUERIE_3));
+      Beans.get(TicketService.class).computeSeq(ticket);
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(e);
     }
+
+    return ticket;
   }
 }

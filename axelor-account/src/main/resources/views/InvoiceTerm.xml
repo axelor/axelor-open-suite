@@ -267,19 +267,19 @@
         </panel>
         <panel name="pfpDecisionFullPfp" showIf="pfpValidateStatusSelect == 2" readonly="true"
           colSpan="12">
-          <field name="decisionPfpTakenDate"/>
+          <field name="decisionPfpTakenDateTime"/>
           <field name="initialPfpAmount"/>
         </panel>
         <panel name="pfpDecisionPartialPfp" readonly="true"
           showIf="pfpValidateStatusSelect == 4">
-          <field name="decisionPfpTakenDate"/>
+          <field name="decisionPfpTakenDateTime"/>
           <field name="pfpPartialReason"/>
           <field name="initialPfpAmount"/>
           <field name="remainingPfpAmount"/>
         </panel>
         <panel name="pfpDecisionDetailsReject" readonly="true"
           showIf="pfpValidateStatusSelect == 3">
-          <field name="decisionPfpTakenDate"/>
+          <field name="decisionPfpTakenDateTime"/>
           <field name="reasonOfRefusalToPayStr"/>
         </panel>
         <panel name="pfpButtonPanel" itemSpan="4"
@@ -431,17 +431,17 @@
             selection-in="[1,2,3,4]"/>
         </panel>
         <panel name="pfpDecisionFullPfp" showIf="pfpValidateStatusSelect == 2">
-          <field name="decisionPfpTakenDate" readonly="true"/>
+          <field name="decisionPfpTakenDateTime" readonly="true"/>
           <field name="initialPfpAmount" readonly="true"/>
         </panel>
         <panel name="pfpDecisionPartialPfp" showIf="pfpValidateStatusSelect == 4">
-          <field name="decisionPfpTakenDate" readonly="true"/>
+          <field name="decisionPfpTakenDateTime" readonly="true"/>
           <field name="pfpPartialReason" readonly="true"/>
           <field name="initialPfpAmount" readonly="true"/>
           <field name="remainingPfpAmount" readonly="true"/>
         </panel>
         <panel name="pfpDecisionDetailsReject" showIf="pfpValidateStatusSelect == 3">
-          <field name="decisionPfpTakenDate" readonly="true"/>
+          <field name="decisionPfpTakenDateTime" readonly="true"/>
           <field name="reasonOfRefusalToPayStr" readonly="true"/>
         </panel>
         <panel name="pfpButtonPanel" itemSpan="4"
@@ -605,18 +605,18 @@
             selection-in="[1,2,3,4]"/>
         </panel>
         <panel name="pfpDecisionFullPfp" showIf="pfpValidateStatusSelect == 2">
-          <field name="decisionPfpTakenDate" readonly="true"/>
+          <field name="decisionPfpTakenDateTime" readonly="true"/>
           <field name="initialPfpAmount" readonly="true"/>
         </panel>
         <panel name="pfpDecisionPartialPfp" showIf="pfpValidateStatusSelect == 4">
-          <field name="decisionPfpTakenDate" readonly="true"/>
+          <field name="decisionPfpTakenDateTime" readonly="true"/>
           <field name="pfpPartialReason" readonly="true"/>
           <field name="initialPfpAmount" readonly="true"/>
           <field name="remainingPfpAmount" readonly="true"/>
           <field name="originInvoiceTerm" readonly="true"/>
         </panel>
         <panel name="pfpDecisionDetailsReject" showIf="pfpValidateStatusSelect == 3">
-          <field name="decisionPfpTakenDate" readonly="true"/>
+          <field name="decisionPfpTakenDateTime" readonly="true"/>
           <field name="reasonOfRefusalToPayStr" readonly="true"/>
         </panel>
         <panel name="pfpButtonPanel" itemSpan="4"
@@ -766,19 +766,19 @@
         </panel>
         <panel name="pfpDecisionFullPfp" showIf="pfpValidateStatusSelect == 2" readonly="true"
           colSpan="12">
-          <field name="decisionPfpTakenDate"/>
+          <field name="decisionPfpTakenDateTime"/>
           <field name="initialPfpAmount"/>
         </panel>
         <panel name="pfpDecisionPartialPfp" readonly="true"
           showIf="pfpValidateStatusSelect == 4">
-          <field name="decisionPfpTakenDate"/>
+          <field name="decisionPfpTakenDateTime"/>
           <field name="pfpPartialReason"/>
           <field name="initialPfpAmount"/>
           <field name="remainingPfpAmount"/>
         </panel>
         <panel name="pfpDecisionDetailsReject" readonly="true"
           showIf="pfpValidateStatusSelect == 3">
-          <field name="decisionPfpTakenDate"/>
+          <field name="decisionPfpTakenDateTime"/>
           <field name="reasonOfRefusalToPayStr"/>
         </panel>
         <panel name="pfpButtonPanel" itemSpan="4"

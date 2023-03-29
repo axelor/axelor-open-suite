@@ -177,7 +177,7 @@
 "%s records(s) updated on %s record(s) selected(s).",,,
 "(Debit %s account %s amount %s - Credit %s account %s amount %s)",,,
 "* %s Account(s) situation(s) treated",,,
-"* %s Invoice(s) treated",,,
+"* %s Invoice(s)/Move(s) treated",,,
 ", to separate multiple expressions with an ""OR"" logic",,,
 "0",,,
 "1",,,

@@ -35,6 +35,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
@@ -57,7 +58,8 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
   public void validatePfp(InvoiceTerm invoiceTerm, User currentUser) {
     Company company = invoiceTerm.getCompany();
 
-    invoiceTerm.setDecisionPfpTakenDate(Beans.get(AppBaseService.class).getTodayDate(company));
+    invoiceTerm.setDecisionPfpTakenDateTime(
+        Beans.get(AppBaseService.class).getTodayDateTime(company).toLocalDateTime());
     invoiceTerm.setInitialPfpAmount(invoiceTerm.getAmount());
     invoiceTerm.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_VALIDATED);
     invoiceTerm.setPfpValidatorUser(currentUser);
@@ -173,8 +175,10 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
   public void refusalToPay(
       InvoiceTerm invoiceTerm, CancelReason reasonOfRefusalToPay, String reasonOfRefusalToPayStr) {
     invoiceTerm.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_LITIGATION);
-    invoiceTerm.setDecisionPfpTakenDate(
-        Beans.get(AppBaseService.class).getTodayDate(invoiceTerm.getCompany()));
+    invoiceTerm.setDecisionPfpTakenDateTime(
+        Beans.get(AppBaseService.class)
+            .getTodayDateTime(invoiceTerm.getCompany())
+            .toLocalDateTime());
     invoiceTerm.setInitialPfpAmount(BigDecimal.ZERO);
     invoiceTerm.setRemainingPfpAmount(invoiceTerm.getAmount());
     invoiceTerm.setPfpValidatorUser(AuthUtils.getUser());
@@ -270,7 +274,7 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
     originalInvoiceTerm.setPfpValidateStatusSelect(
         InvoiceTermRepository.PFP_STATUS_PARTIALLY_VALIDATED);
     originalInvoiceTerm.setRemainingPfpAmount(amount);
-    originalInvoiceTerm.setDecisionPfpTakenDate(LocalDate.now());
+    originalInvoiceTerm.setDecisionPfpTakenDateTime(LocalDateTime.now());
     originalInvoiceTerm.setPfpPartialReason(partialReason);
     originalInvoiceTerm.setCompanyAmount(
         originalInvoiceTerm.getCompanyAmount().subtract(newInvoiceTerm.getCompanyAmount()));

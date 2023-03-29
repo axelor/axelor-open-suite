@@ -25,28 +25,17 @@
     <time name="endTime" title="End time"/>
 
     <string name="fullName" namecolumn="true">
-			<![CDATA[
-	  		String fullName = "";
-
-	  	  if(employee != null && employee.getName() != null)  {
-				fullName += employee.getName();
-			}
-
-			if (project != null && project.getCode() != null) {
-				fullName += "-" + project.getCode();
-			}
-
-			String dateStr = date.format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-			if (!fullName.isEmpty()) {
-				fullName += "-" + dateStr;
-			}
-			else {
-				fullName = dateStr;
-			}
-
-	  		return fullName;
+		 <![CDATA[
+      		return Beans.get(ProjectPlanningTimeComputeNameService.class).computeProjectPlanningTimeFullname(this.getEmployee(),this.getProject(),this.getDate());
 	  	]]>
     </string>
+
+    <extra-imports>
+      <![CDATA[
+	      import com.axelor.inject.Beans;
+	      import com.axelor.apps.hr.service.project.ProjectPlanningTimeComputeNameService;
+      ]]>
+    </extra-imports>
 
   </entity>
 

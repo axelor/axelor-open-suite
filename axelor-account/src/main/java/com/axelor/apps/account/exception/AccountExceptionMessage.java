@@ -464,7 +464,7 @@ public final class AccountExceptionMessage {
   public static final String BATCH_DOUBTFUL_1 = /*$$(*/
       "Doubtful account's determination's reporting" /*)*/;
 
-  public static final String BATCH_DOUBTFUL_2 = /*$$(*/ "* %s Invoice(s) treated" /*)*/;
+  public static final String BATCH_DOUBTFUL_2 = /*$$(*/ "* %s Invoice(s)/Move(s) treated" /*)*/;
 
   /** Batch move line export */
   public static final String BATCH_MOVELINE_EXPORT_1 = /*$$(*/
@@ -1024,9 +1024,6 @@ public final class AccountExceptionMessage {
   public static final String INVOICE_4 = /*$$(*/ "Refunds from invoice %s" /*)*/;
 
   public static final String INVOICE_NO_INVOICE_TO_PAY = /*$$(*/ "No invoice to pay" /*)*/;
-  public static final String
-      INVOICE_CAN_NOT_GO_BACK_TO_VALIDATE_STATUS_OR_CANCEL_VENTILATED_INVOICE = /*$$(*/
-          "It is not possible to go back to validate status or cancel a ventilated invoice." /*)*/;
 
   public static final String INVOICE_WRONG_ANALYTIC_DISTRIBUTION = /*$$(*/
       "Some invoice lines analytic distributions are not correct, please correct them." /*)*/;

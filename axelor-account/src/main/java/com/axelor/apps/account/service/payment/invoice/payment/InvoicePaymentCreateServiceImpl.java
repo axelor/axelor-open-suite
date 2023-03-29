@@ -537,7 +537,7 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
             I18n.get(AccountExceptionMessage.INVOICE_MERGE_ERROR_CURRENCY));
       }
 
-      if (invoiceVisibilityService.getManagePfpCondition(invoice)
+      if (invoiceVisibilityService.getPfpCondition(invoice)
           && invoice.getPfpValidateStatusSelect() != InvoiceRepository.PFP_STATUS_VALIDATED) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,

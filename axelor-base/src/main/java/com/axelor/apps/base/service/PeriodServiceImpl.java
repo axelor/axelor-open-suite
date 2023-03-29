@@ -151,7 +151,7 @@ public class PeriodServiceImpl implements PeriodService {
   @Transactional
   protected void updateCloseTemporarilyPeriod(Period period) {
     period.setStatusSelect(PeriodRepository.STATUS_TEMPORARILY_CLOSED);
-    period.setTemporarilyCloseDate(LocalDate.now());
+    period.setTemporarilyCloseDateTime(LocalDateTime.now());
 
     periodRepo.save(period);
   }

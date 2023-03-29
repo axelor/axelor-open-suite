@@ -25,7 +25,7 @@ import java.util.List;
 
 public interface PaymentSessionService {
 
-  public String computeName(PaymentSession paymentSession);
+  public String computeName(PaymentSession paymentSession) throws AxelorException;
 
   public void setBankDetails(PaymentSession paymentSession);
 
