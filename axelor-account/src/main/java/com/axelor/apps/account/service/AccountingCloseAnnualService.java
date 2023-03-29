@@ -22,7 +22,6 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Year;
 import com.axelor.exception.AxelorException;
-import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
@@ -30,7 +29,6 @@ import org.apache.commons.lang3.tuple.Pair;
 
 public interface AccountingCloseAnnualService {
 
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public List<Move> generateCloseAndOpenAnnualAccount(
       Year year,
       Account account,
@@ -44,7 +42,6 @@ public interface AccountingCloseAnnualService {
       boolean allocatePerPartner)
       throws AxelorException;
 
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public List<Move> generateCloseAnnualAccount(
       Year year,
       Account account,
@@ -57,7 +54,6 @@ public interface AccountingCloseAnnualService {
       boolean allocatePerPartner)
       throws AxelorException;
 
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public List<Move> generateOpenAnnualAccount(
       Year year,
       Account account,

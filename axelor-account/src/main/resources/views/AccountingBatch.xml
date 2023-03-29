@@ -24,7 +24,7 @@
       <field name="company" canEdit="false" widget="SuggestBox" form-view="company-form"
         grid-view="company-grid" onChange="action-accounting-batch-group-company-on-change"/>
       <field name="bankDetails"
-        hideIf="actionSelect &amp;&amp; ([14,15,16,17,18,21,26].indexOf(actionSelect) &gt; -1 || (actionSelect == 11 &amp;&amp; reimbursementTypeSelect == 2) || (actionSelect == 12 &amp;&amp; directDebitDataTypeSelect == 2))"
+        hideIf="actionSelect &amp;&amp; ([14,15,16,17,18,21,25,26].indexOf(actionSelect) &gt; -1 || (actionSelect == 11 &amp;&amp; reimbursementTypeSelect == 2) || (actionSelect == 12 &amp;&amp; directDebitDataTypeSelect == 2))"
         widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain"
         form-view="bank-details-form" grid-view="bank-details-grid"/>
       <field name="company.tradingNameSet" colSpan="12" hidden="true"/>
@@ -360,6 +360,7 @@
 
   <action-record name="action-record-accounting-batch-journal-onchange"
     model="com.axelor.apps.account.db.AccountingBatch">
+    <field name="cutOffMoveStatusSelect" expr="eval: null"/>
     <field name="cutOffMoveStatusSelect" expr="eval: __repo__(Move).STATUS_SIMULATED"
       if="miscOpeJournal?.authorizeSimulatedMove"/>
     <field name="cutOffMoveStatusSelect" expr="eval: __repo__(Move).STATUS_DAYBOOK"

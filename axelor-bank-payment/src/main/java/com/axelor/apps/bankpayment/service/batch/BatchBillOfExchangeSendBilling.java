@@ -146,7 +146,7 @@ public class BatchBillOfExchangeSendBilling extends AbstractBatch {
     }
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   protected void generateNoteBillsAndSend(Entry<Partner, List<Invoice>> entry) {
     Objects.requireNonNull(entry);
     Company company = null;
@@ -214,7 +214,7 @@ public class BatchBillOfExchangeSendBilling extends AbstractBatch {
     ;
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   protected void addBatchSet(Batch batch, Invoice invoice) {
     Objects.requireNonNull(batch);
     Objects.requireNonNull(invoice);

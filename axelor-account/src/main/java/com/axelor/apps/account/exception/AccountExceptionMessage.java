@@ -50,7 +50,7 @@ public final class AccountExceptionMessage {
   public static final String IMMO_FIXED_ASSET_GENERATE_DISPOSAL_MOVE_CATEGORY_ACCOUNTS_MISSING =
       /*$$(*/ "Fixed asset: Disposal move could not be generated because the following account setting : '%s' is missing on the associated fixed asset category." /*)*/;
   public static final String IMMO_FIXED_ASSET_GENERATE_MOVE_CATEGORY_ACCOUNTS_MISSING =
-      /*$$(*/ "Fixed asset: could not generate depreciation move because fixed category is one of missing theses account %s" /*)*/;
+      /*$$(*/ "Fixed asset: the depreciation move(s) cannot be generated because of the following missing account(s) setting(s) on the fixed asset category : %s." /*)*/;
   public static final String IMMO_FIXED_ASSET_CATEGORY_ACCOUNTS_MISSING =
       /*$$(*/ "Fixed asset: fixed asset category is missing one of these accounts : %s" /*)*/;
   public static final String IMMO_FIXED_ASSET_MISSING_DEROGATORY_LINE =
@@ -461,7 +461,7 @@ public final class AccountExceptionMessage {
   public static final String BATCH_DOUBTFUL_1 = /*$$(*/
       "Doubtful account's determination's reporting" /*)*/;
 
-  public static final String BATCH_DOUBTFUL_2 = /*$$(*/ "* %s Invoice(s) treated" /*)*/;
+  public static final String BATCH_DOUBTFUL_2 = /*$$(*/ "* %s Invoice(s)/Move(s) treated" /*)*/;
 
   /** Batch move line export */
   public static final String BATCH_MOVELINE_EXPORT_1 = /*$$(*/
@@ -1544,4 +1544,7 @@ public final class AccountExceptionMessage {
 
   public static final String REPORT_TYPE_SAME_AS_GROUP_NO_GROUP = /*$$(*/
       "Report type %s has a column or line having the same computation method as the group but there is none." /*)*/;
+
+  public static final String ANALYTIC_DISTRIBUTION_TEMPLATE_CONTAINS_NOT_ALLOWED_ACCOUNTS = /*$$(*/
+      "The selected Analytic Distribution template contains Analytic Accounts which are not allowed on this account. Please select an appropriate template or modify the analytic coherence rule for this account." /*)*/;
 }

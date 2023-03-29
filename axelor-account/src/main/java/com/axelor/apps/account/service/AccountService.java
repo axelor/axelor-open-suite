@@ -21,7 +21,7 @@ import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountType;
 import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticDistributionLine;
-import com.axelor.apps.account.db.repo.AccountAnalyticRulesRepository;
+import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
@@ -63,16 +63,12 @@ public class AccountService {
   public static final int MAX_LEVEL_OF_ACCOUNT = 20;
 
   protected AccountRepository accountRepository;
-  protected AccountAnalyticRulesRepository accountAnalyticRulesRepository;
   protected AccountConfigService accountConfigService;
 
   @Inject
   public AccountService(
-      AccountRepository accountRepository,
-      AccountAnalyticRulesRepository accountAnalyticRulesRepository,
-      AccountConfigService accountConfigService) {
+      AccountRepository accountRepository, AccountConfigService accountConfigService) {
     this.accountRepository = accountRepository;
-    this.accountAnalyticRulesRepository = accountAnalyticRulesRepository;
     this.accountConfigService = accountConfigService;
   }
 
@@ -163,9 +159,11 @@ public class AccountService {
         .collect(Collectors.toList());
   }
 
-  public void checkAnalyticAxis(Account account) throws AxelorException {
+  public void checkAnalyticAxis(
+      Account account, AnalyticDistributionTemplate analyticDistributionTemplate)
+      throws AxelorException {
     if (account != null && account.getAnalyticDistributionAuthorized()) {
-      if (account.getAnalyticDistributionTemplate() == null
+      if (analyticDistributionTemplate == null
           && account.getCompany() != null
           && accountConfigService
                   .getAccountConfig(account.getCompany())
@@ -176,8 +174,8 @@ public class AccountService {
             I18n.get("Please put AnalyticDistribution Template"));
 
       } else {
-        if (account.getAnalyticDistributionTemplate() != null) {
-          if (account.getAnalyticDistributionTemplate().getAnalyticDistributionLineList() == null) {
+        if (analyticDistributionTemplate != null) {
+          if (analyticDistributionTemplate.getAnalyticDistributionLineList() == null) {
             throw new AxelorException(
                 TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
                 I18n.get(
@@ -186,8 +184,7 @@ public class AccountService {
             List<Long> rulesAnalyticAccountList = getRulesIds(account);
 
             if (CollectionUtils.isNotEmpty(rulesAnalyticAccountList)
-                && account.getAnalyticDistributionTemplate().getAnalyticDistributionLineList()
-                    .stream()
+                && analyticDistributionTemplate.getAnalyticDistributionLineList().stream()
                     .map(AnalyticDistributionLine::getAnalyticAccount)
                     .filter(Objects::nonNull)
                     .map(AnalyticAccount::getId)
@@ -195,7 +192,8 @@ public class AccountService {
               throw new AxelorException(
                   TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
                   I18n.get(
-                      "The selected Analytic Distribution template contains Analytic Accounts which are not allowed on this account. Please select an appropriate template or modify the analytic coherence rule for this account."));
+                      AccountExceptionMessage
+                          .ANALYTIC_DISTRIBUTION_TEMPLATE_CONTAINS_NOT_ALLOWED_ACCOUNTS));
             }
           }
         }

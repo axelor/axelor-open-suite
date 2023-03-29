@@ -20,6 +20,7 @@ package com.axelor.apps.account.web;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.repo.AccountRepository;
+import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountService;
 import com.axelor.apps.account.service.analytic.AnalyticDistributionTemplateService;
@@ -105,7 +106,8 @@ public class AccountController {
   public void checkAnalyticAccount(ActionRequest request, ActionResponse response) {
     try {
       Account account = request.getContext().asType(Account.class);
-      Beans.get(AccountService.class).checkAnalyticAxis(account);
+      Beans.get(AccountService.class)
+          .checkAnalyticAxis(account, account.getAnalyticDistributionTemplate());
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
@@ -114,11 +116,16 @@ public class AccountController {
   public void manageAnalytic(ActionRequest request, ActionResponse response) {
     try {
       Account account = request.getContext().asType(Account.class);
+      response.setAttr("analyticSettingsPanel", "hidden", false);
+
       if (account.getCompany() == null
           || !Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()
           || !Beans.get(AccountConfigService.class)
               .getAccountConfig(account.getCompany())
-              .getManageAnalyticAccounting()) {
+              .getManageAnalyticAccounting()
+          || account.getAccountType() == null
+          || AccountTypeRepository.TYPE_VIEW.equals(
+              account.getAccountType().getTechnicalTypeSelect())) {
         response.setAttr("analyticSettingsPanel", "hidden", true);
       }
     } catch (Exception e) {
@@ -261,6 +268,8 @@ public class AccountController {
           Beans.get(AnalyticDistributionTemplateService.class);
       analyticDistributionTemplateService.verifyTemplateValues(
           account.getAnalyticDistributionTemplate());
+      Beans.get(AccountService.class)
+          .checkAnalyticAxis(account, account.getAnalyticDistributionTemplate());
       analyticDistributionTemplateService.validateTemplatePercentages(
           account.getAnalyticDistributionTemplate());
     } catch (Exception e) {

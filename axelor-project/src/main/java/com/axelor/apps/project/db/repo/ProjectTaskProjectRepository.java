@@ -26,7 +26,6 @@ import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -40,7 +39,6 @@ import org.slf4j.LoggerFactory;
 public class ProjectTaskProjectRepository extends ProjectTaskRepository {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-  @Inject ProjectTaskService projectTaskService;
 
   @Override
   public ProjectTask save(ProjectTask projectTask) {

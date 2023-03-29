@@ -36,7 +36,15 @@ import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.exception.AxelorMessageException;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.apps.stock.db.*;
+import com.axelor.apps.stock.db.FreightCarrierMode;
+import com.axelor.apps.stock.db.Incoterm;
+import com.axelor.apps.stock.db.InventoryLine;
+import com.axelor.apps.stock.db.ShipmentMode;
+import com.axelor.apps.stock.db.StockConfig;
+import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.repo.InventoryLineRepository;
 import com.axelor.apps.stock.db.repo.InventoryRepository;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
@@ -850,7 +858,7 @@ public class StockMoveServiceImpl implements StockMoveService {
       newStockMove.setCarrierPartner(stockMove.getPartner().getCarrierPartner());
     }
     newStockMove.setReversionOriginStockMove(stockMove);
-    newStockMove.setFromAddressStr(stockMove.getFromAddressStr());
+    newStockMove.setFromAddressStr(stockMove.getToAddressStr());
     newStockMove.setNote(stockMove.getNote());
     newStockMove.setNumOfPackages(stockMove.getNumOfPackages());
     newStockMove.setNumOfPalettes(stockMove.getNumOfPalettes());
