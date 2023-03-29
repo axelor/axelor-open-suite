@@ -86,7 +86,7 @@
               onChange="action-group-move-date-onchange"/>
             <field name="originDate" onChange="action-move-group-origin-date-onchange"
               readonlyIf="$validatePeriod || moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"/>
-            <field name="$dueDate" type="date" title="Due date" hidden="true"
+            <field name="dueDate" type="date" title="Due date" hidden="true"
               readonlyIf="!paymentCondition.isFree"
               help="This field allows to modify directly the move line due date which is by default calculated based on the payment condition."/>
           </panel>
@@ -1094,7 +1094,7 @@
 
   <action-attrs name="action-move-attrs-date-change">
     <attribute name="value" for="$dateChange" expr="eval: true"/>
-    <attribute name="value" for="$dueDate" expr="eval: null"/>
+    <attribute name="value" for="dueDate" expr="eval: null"/>
   </action-attrs>
 
   <action-attrs name="action-move-attrs-manage-bank-details">
