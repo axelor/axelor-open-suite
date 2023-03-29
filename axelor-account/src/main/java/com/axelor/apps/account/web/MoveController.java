@@ -906,4 +906,20 @@ public class MoveController {
             .getDefaultCompanyBankDetails(company, paymentMode, partner, null);
     response.setValue("companyBankDetails", defaultBankDetails);
   }
+
+  public void updateMoveLinesCurrencyRate(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      LocalDate dueDate = this.extractDueDate(request);
+
+      if (move != null
+          && ObjectUtils.notEmpty(move.getMoveLineList())
+          && move.getCurrency() != null
+          && move.getCompanyCurrency() != null) {
+        Beans.get(MoveLineService.class).computeNewCurrencyRateOnMoveLineList(move, dueDate);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }
