@@ -26,6 +26,14 @@ public interface MoveLineTaxService {
 
   void autoTaxLineGenerate(Move move) throws AxelorException;
 
+  /**
+   * Same as method 'autoTaxLineGenerate' but this method will not save the move.
+   *
+   * @param move
+   * @throws AxelorException
+   */
+  void autoTaxLineGenerateNoSave(Move move) throws AxelorException;
+
   MoveLine computeTaxAmount(MoveLine moveLine) throws AxelorException;
 
   MoveLine reverseTaxPaymentMoveLines(MoveLine customerMoveLine, Reconcile reconcile)
