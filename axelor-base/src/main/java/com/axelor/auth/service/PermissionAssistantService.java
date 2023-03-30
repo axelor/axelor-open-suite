@@ -147,7 +147,7 @@ public class PermissionAssistantService {
 
   protected void writeGroup(CSVPrinter printer, PermissionAssistant assistant) throws IOException {
 
-    String[] groupRow = null;
+    String[] groupRow;
     Integer count = header.size();
     ResourceBundle bundle = I18n.getBundle(new Locale(assistant.getLanguage()));
 
@@ -167,12 +167,14 @@ public class PermissionAssistantService {
         headerRow.addAll(getTranslatedStrings(groupHeader, bundle));
         count += groupHeader.size();
       }
+    } else {
+      groupRow = new String[0];
     }
 
     LOG.debug("Header row created: {}", headerRow);
 
-    printer.printRecord(groupRow);
-    printer.printRecord(headerRow.toArray(groupRow));
+    printer.printRecord(Arrays.asList(groupRow));
+    printer.printRecord(Arrays.asList(headerRow.toArray(groupRow)));
 
     writeObject(printer, assistant, groupRow.length, bundle);
   }
@@ -209,7 +211,7 @@ public class PermissionAssistantService {
         }
       }
 
-      printer.printRecord(row);
+      printer.printRecord(Arrays.asList(row));
 
       if (!assistant.getFieldPermission()) {
         continue;
@@ -238,7 +240,7 @@ public class PermissionAssistantService {
             colIndex++;
           }
         }
-        printer.printRecord(row);
+        printer.printRecord(Arrays.asList(row));
       }
     }
   }

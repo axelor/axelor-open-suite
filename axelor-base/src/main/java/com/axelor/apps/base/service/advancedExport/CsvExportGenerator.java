@@ -27,6 +27,7 @@ import com.axelor.i18n.I18n;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
 import org.apache.commons.csv.CSVPrinter;
 
@@ -65,7 +66,7 @@ public class CsvExportGenerator extends AdvancedExportGenerator {
       for (AdvancedExportLine advancedExportLine : advancedExport.getAdvancedExportLineList()) {
         totalCols[index++] = I18n.get(advancedExportLine.getTitle());
       }
-      printer.printRecord(totalCols);
+      printer.printRecord(Arrays.asList(totalCols));
     } catch (IOException e) {
       TraceBackService.trace(e);
       throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
@@ -86,7 +87,7 @@ public class CsvExportGenerator extends AdvancedExportGenerator {
           }
           totalCols[colIndex] = columnValue;
         }
-        printer.printRecord(totalCols);
+        printer.printRecord(Arrays.asList(totalCols));
       }
     } catch (IOException e) {
       TraceBackService.trace(e);
