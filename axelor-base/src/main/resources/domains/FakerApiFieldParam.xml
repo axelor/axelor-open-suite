@@ -6,6 +6,7 @@
   <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="FakerApiFieldParameters">
+    <many-to-one name="fakerApiField" ref="com.axelor.apps.base.db.FakerApiField"/>
     <string name="paramType" title="Type" selection="base.faker.api.field.param.type.select"/>
     <string name="paramValue" title="Value"/>
   </entity>
