@@ -292,7 +292,8 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
             + " AND self.moveLine.account.isRetrievedOnPaymentSession = TRUE ";
     AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
     if (!accountConfig.getRetrieveDaybookMovesInPaymentSession()) {
-      generalCondition += " AND self.moveLine.move.statusSelect != 2 ";
+      generalCondition +=
+          " AND self.moveLine.move.statusSelect != " + MoveRepository.STATUS_DAYBOOK + " ";
     }
 
     String termsMoveLineCondition =

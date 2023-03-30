@@ -117,6 +117,31 @@
     </panel>
   </form>
 
+  <form id="stock-product-form" name="product-form" title="Product"
+    model="com.axelor.apps.base.db.Product" extension="true">
+    <extend target="//panel[@name='productionInformationsPanel']">
+      <insert position="after">
+        <panel name="trackingNumberPanel" title="Tracking number" showTitle="false"
+          showIf="productTypeSelect == 'storable'" if="__config__.app.isApp('stock')">
+          <panel colSpan="12" name="trackingDetailsPanel">
+            <field name="hasWarranty"/>
+            <field name="warrantyNbrOfMonths" showIf="hasWarranty"/>
+            <field name="isPerishable"/>
+            <field name="perishableNbrOfMonths" showIf="isPerishable"/>
+            <field name="checkExpirationDateAtStockMoveRealization"
+              showIf="hasWarranty || isPerishable"/>
+          </panel>
+          <panel colSpan="12" name="trackingConfigPanel">
+            <field name="trackingNumberConfiguration"
+              requiredIf="checkExpirationDateAtStockMoveRealization" canNew="true"
+              form-view="tracking-number-configuration-form"
+              grid-view="tracking-number-configuration-grid"/>
+          </panel>
+        </panel>
+      </insert>
+    </extend>
+  </form>
+
   <action-method name="action-stock-product-method-set-stock-per-day">
     <call class="com.axelor.apps.stock.web.ProductStockController" method="setStockPerDay"/>
   </action-method>
