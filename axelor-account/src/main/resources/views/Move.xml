@@ -433,8 +433,8 @@
         onChange="action-move-group-move-line-list-onchange"/>
     </panel>
 
-    <panel name="errorPanel">
-      <field name="massEntryErrors" readonly="true" widget="text"/>
+    <panel name="errorPanel" colSpan="12">
+      <field name="massEntryErrors" readonly="true" widget="Text" colSpan="12"/>
     </panel>
   </form>
 

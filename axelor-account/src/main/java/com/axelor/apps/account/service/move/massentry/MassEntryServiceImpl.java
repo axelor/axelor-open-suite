@@ -38,7 +38,6 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
@@ -66,6 +65,8 @@ public class MassEntryServiceImpl implements MassEntryService {
   protected MoveLineComputeAnalyticService moveLineComputeAnalyticService;
   protected PeriodServiceAccount periodServiceAccount;
   protected MoveValidateService moveValidateService;
+  protected MoveToolService moveToolService;
+  protected MoveLineMassEntryService moveLineMassEntryService;
   protected int jpaLimit = 20;
 
   @Inject
@@ -76,7 +77,9 @@ public class MassEntryServiceImpl implements MassEntryService {
       MoveLineCreateService moveLineCreateService,
       MoveLineComputeAnalyticService moveLineComputeAnalyticService,
       PeriodServiceAccount periodServiceAccount,
-      MoveValidateService moveValidateService) {
+      MoveValidateService moveValidateService,
+      MoveToolService moveToolService,
+      MoveLineMassEntryService moveLineMassEntryService) {
     this.massEntryToolService = massEntryToolService;
     this.massEntryVerificationService = massEntryVerificationService;
     this.moveCreateService = moveCreateService;
@@ -84,6 +87,8 @@ public class MassEntryServiceImpl implements MassEntryService {
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
     this.periodServiceAccount = periodServiceAccount;
     this.moveValidateService = moveValidateService;
+    this.moveToolService = moveToolService;
+    this.moveLineMassEntryService = moveLineMassEntryService;
   }
 
   @Override
@@ -387,9 +392,9 @@ public class MassEntryServiceImpl implements MassEntryService {
   public int generatedTaxeAndCounterPart(
       Move parentMove, Move workingMove, LocalDate dueDate, int temporaryMoveNumber) {
     try {
-      Beans.get(MoveToolService.class).exceptionOnGenerateCounterpart(workingMove);
-      Beans.get(MoveLineMassEntryService.class)
-          .generateTaxLineAndCounterpart(parentMove, workingMove, dueDate, temporaryMoveNumber);
+      moveToolService.exceptionOnGenerateCounterpart(workingMove);
+      moveLineMassEntryService.generateTaxLineAndCounterpart(
+          parentMove, workingMove, dueDate, temporaryMoveNumber);
     } catch (AxelorException e) {
       TraceBackService.trace(e);
       return e.getCategory();

@@ -86,7 +86,6 @@ public class MassEntryMoveController {
                       workingMove,
                       this.extractDueDate(request),
                       lastLine.getTemporaryMoveNumber());
-          response.setValues(move);
           if (categoryError == 0) {
             massEntryToolService.sortMoveLinesMassEntryByTemporaryNumber(move);
           } else {
@@ -98,6 +97,7 @@ public class MassEntryMoveController {
                     I18n.get(AccountExceptionMessage.EXCEPTION_GENERATE_COUNTERPART));
           }
         }
+        response.setValues(move);
         response.setAttr("controlMassEntryMoves", "hidden", false);
         response.setAttr("validateMassEntryMoves", "hidden", true);
       }
