@@ -274,11 +274,11 @@ public class WkfInstanceServiceImpl implements WkfInstanceService {
     long tasks =
         engineService
             .getEngine()
-            .getTaskService()
-            .createTaskQuery()
-            .active()
+            .getHistoryService()
+            .createHistoricActivityInstanceQuery()
             .processInstanceId(processInstanceId)
-            .taskDefinitionKey(taskId)
+            .unfinished()
+            .activityId(taskId)
             .count();
 
     return tasks > 0;
