@@ -274,7 +274,7 @@ public class InventoryService {
   }
 
   protected InventoryLine copyAndEditInventoryLine(
-      InventoryLine inventoryLine, String description, BigDecimal realQty) {
+      InventoryLine inventoryLine, String description, BigDecimal realQty) throws AxelorException {
 
     // There is not one to many for inventoryLine, so true or false is the same.
     InventoryLine inventoryLineResult = inventoryLineRepository.copy(inventoryLine, true);
@@ -283,6 +283,7 @@ public class InventoryService {
     if (inventoryLineResult.getTrackingNumber() != null) {
       inventoryLineResult.getTrackingNumber().setCounter(realQty);
     }
+    inventoryLineService.compute(inventoryLineResult, inventoryLineResult.getInventory());
     return inventoryLineResult;
   }
 
