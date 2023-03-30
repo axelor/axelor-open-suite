@@ -81,7 +81,6 @@ public class GdprSearchEngineController {
   public void fillReferenceWithData(ActionRequest request, ActionResponse response) {
     try {
       Context context = request.getContext();
-
       List<Map<String, Object>> resultList =
           (List<Map<String, Object>>) context.get("__searchResults");
       Map<String, Object> selectedObject =
