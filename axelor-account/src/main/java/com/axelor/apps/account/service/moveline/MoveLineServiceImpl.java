@@ -80,7 +80,6 @@ public class MoveLineServiceImpl implements MoveLineService {
   protected AccountConfigService accountConfigService;
   protected InvoiceTermService invoiceTermService;
   protected MoveLineControlService moveLineControlService;
-  protected MoveLineService moveLineService;
   protected MoveLineInvoiceTermService moveLineInvoiceTermService;
   protected CurrencyService currencyService;
 
@@ -95,7 +94,6 @@ public class MoveLineServiceImpl implements MoveLineService {
       InvoiceTermService invoiceTermService,
       MoveLineControlService moveLineControlService,
       MoveLineInvoiceTermService moveLineInvoiceTermService,
-      MoveLineService moveLineService,
       CurrencyService currencyService) {
     this.moveLineRepository = moveLineRepository;
     this.invoiceRepository = invoiceRepository;
@@ -105,7 +103,6 @@ public class MoveLineServiceImpl implements MoveLineService {
     this.accountConfigService = accountConfigService;
     this.invoiceTermService = invoiceTermService;
     this.moveLineControlService = moveLineControlService;
-    this.moveLineService = moveLineService;
     this.moveLineInvoiceTermService = moveLineInvoiceTermService;
     this.currencyService = currencyService;
   }
@@ -479,7 +476,7 @@ public class MoveLineServiceImpl implements MoveLineService {
 
       moveLine.clearInvoiceTermList();
       moveLineInvoiceTermService.generateDefaultInvoiceTerm(moveLine, dueDate, false);
-      moveLineService.computeFinancialDiscount(moveLine);
+      this.computeFinancialDiscount(moveLine);
     }
   }
 }
