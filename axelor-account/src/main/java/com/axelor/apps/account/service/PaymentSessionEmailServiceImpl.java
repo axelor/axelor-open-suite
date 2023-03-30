@@ -111,6 +111,7 @@ public class PaymentSessionEmailServiceImpl implements PaymentSessionEmailServic
     if (partnerIdList.size() > 0) {
       paymentSession = paymentSessionRepo.find(paymentSession.getId());
       paymentSession.setHasEmailsSent(true);
+      paymentSession.setPartnerForEmail(null);
       paymentSessionRepo.save(paymentSession);
     }
 
