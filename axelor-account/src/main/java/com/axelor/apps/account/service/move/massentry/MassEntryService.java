@@ -33,6 +33,9 @@ public interface MassEntryService {
 
   void resetMoveLineMassEntry(MoveLineMassEntry moveLineMassEntry, boolean manageCutOff);
 
+  void verifyFieldsAndGenerateTaxLineAndCounterpart(
+      Move parentMove, boolean manageCutOff, LocalDate dueDate) throws AxelorException;
+
   void verifyFieldsChangeOnMoveLineMassEntry(Move move, boolean manageCutOff)
       throws AxelorException;
 
