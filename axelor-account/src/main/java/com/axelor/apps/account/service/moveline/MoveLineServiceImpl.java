@@ -76,31 +76,30 @@ public class MoveLineServiceImpl implements MoveLineService {
   protected MoveLineRepository moveLineRepository;
   protected InvoiceRepository invoiceRepository;
   protected PaymentService paymentService;
-  protected AppBaseService appBaseService;
   protected AppAccountService appAccountService;
   protected AccountConfigService accountConfigService;
   protected InvoiceTermService invoiceTermService;
   protected MoveLineControlService moveLineControlService;
   protected MoveLineService moveLineService;
   protected MoveLineInvoiceTermService moveLineInvoiceTermService;
+  protected CurrencyService currencyService;
 
   @Inject
   public MoveLineServiceImpl(
       MoveLineRepository moveLineRepository,
       InvoiceRepository invoiceRepository,
       PaymentService paymentService,
-      AppBaseService appBaseService,
       MoveLineToolService moveLineToolService,
       AppAccountService appAccountService,
       AccountConfigService accountConfigService,
       InvoiceTermService invoiceTermService,
       MoveLineControlService moveLineControlService,
       MoveLineInvoiceTermService moveLineInvoiceTermService,
-      MoveLineService moveLineService) {
+      MoveLineService moveLineService,
+      CurrencyService currencyService) {
     this.moveLineRepository = moveLineRepository;
     this.invoiceRepository = invoiceRepository;
     this.paymentService = paymentService;
-    this.appBaseService = appBaseService;
     this.moveLineToolService = moveLineToolService;
     this.appAccountService = appAccountService;
     this.accountConfigService = accountConfigService;
@@ -108,6 +107,7 @@ public class MoveLineServiceImpl implements MoveLineService {
     this.moveLineControlService = moveLineControlService;
     this.moveLineService = moveLineService;
     this.moveLineInvoiceTermService = moveLineInvoiceTermService;
+    this.currencyService = currencyService;
   }
 
   @Override
@@ -449,16 +449,11 @@ public class MoveLineServiceImpl implements MoveLineService {
   @Override
   public void computeNewCurrencyRateOnMoveLineList(Move move, LocalDate dueDate)
       throws AxelorException {
-    BigDecimal currencyRate = BigDecimal.ONE;
-
-    currencyRate =
-        Beans.get(CurrencyService.class)
-            .getCurrencyConversionRate(
-                move.getCurrency(), move.getCompanyCurrency(), move.getDate());
+    BigDecimal currencyRate =
+        currencyService.getCurrencyConversionRate(
+            move.getCurrency(), move.getCompanyCurrency(), move.getDate());
 
     for (MoveLine moveLine : move.getMoveLineList()) {
-      BigDecimal currencyAmount = BigDecimal.ZERO;
-
       if (moveLine.getDebit().add(moveLine.getCredit()).signum() == 0) {
         if (moveLine.getAccount() != null) {
           BigDecimal computedAmount = moveLine.getCurrencyAmount().multiply(currencyRate);
@@ -474,7 +469,7 @@ public class MoveLineServiceImpl implements MoveLineService {
           }
         }
       }
-      currencyAmount = moveLine.getDebit().add(moveLine.getCredit());
+      BigDecimal currencyAmount = moveLine.getDebit().add(moveLine.getCredit());
       currencyAmount =
           currencyAmount.divide(
               currencyRate, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
@@ -484,7 +479,6 @@ public class MoveLineServiceImpl implements MoveLineService {
 
       moveLine.clearInvoiceTermList();
       moveLineInvoiceTermService.generateDefaultInvoiceTerm(moveLine, dueDate, false);
-
       moveLineService.computeFinancialDiscount(moveLine);
     }
   }
