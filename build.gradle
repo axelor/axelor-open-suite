@@ -45,10 +45,6 @@ dependencies {
   }
 }
 
-war {
-  archiveFileName = 'axelor-erp-7.0.0.war'
-}
-
 apply from: 'gradle/style.gradle'
 
 task("dataImport", type: JavaExec) {
