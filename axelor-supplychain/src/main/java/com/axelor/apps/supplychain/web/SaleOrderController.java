@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BlockingRepository;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.message.exception.MessageExceptionMessage;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -29,6 +30,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
@@ -43,7 +45,6 @@ import com.axelor.apps.supplychain.service.SaleOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.SaleOrderStockService;
 import com.axelor.apps.supplychain.service.SaleOrderSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
-import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
@@ -62,11 +63,13 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Singleton
 public class SaleOrderController {
@@ -162,136 +165,128 @@ public class SaleOrderController {
   @SuppressWarnings({"unchecked"})
   public void generatePurchaseOrdersFromSelectedSOLines(
       ActionRequest request, ActionResponse response) {
-
-    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-
     try {
-      if (saleOrder.getId() != null) {
+      Context context = request.getContext();
+      SaleOrder saleOrder = context.asType(SaleOrder.class);
+      Map<String, Object> purchaseOrderGenerationMap = getPurchaseOrderGenerationMap(context);
+      boolean isDirectOrderLocation =
+          (boolean) purchaseOrderGenerationMap.get("directOrderLocation");
+      Partner supplierPartner = (Partner) purchaseOrderGenerationMap.get("supplierPartner");
+      List<Long> saleOrderLineIdSelected =
+          (List<Long>) purchaseOrderGenerationMap.get("saleOrderLineIdSelected");
 
-        Partner supplierPartner = null;
-        List<Long> saleOrderLineIdSelected;
-        Boolean isDirectOrderLocation = false;
-        Boolean noProduct = true;
-        Map<String, Object> values = getSelectedId(request, response, saleOrder);
-        supplierPartner = (Partner) values.get("supplierPartner");
-        saleOrderLineIdSelected = (List<Long>) values.get("saleOrderLineIdSelected");
-        isDirectOrderLocation = (Boolean) values.get("isDirectOrderLocation");
+      List<SaleOrderLine> saleOrderLinesSelected =
+          Beans.get(SaleOrderLineService.class).getSaleOrderLineList(saleOrderLineIdSelected);
 
-        if (supplierPartner == null) {
-          saleOrderLineIdSelected = new ArrayList<>();
-          for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-            if (saleOrderLine.isSelected()) {
-              if (supplierPartner == null) {
-                supplierPartner = saleOrderLine.getSupplierPartner();
-              }
-              if (saleOrderLine.getProduct() != null) {
-                noProduct = false;
-              }
-              saleOrderLineIdSelected.add(saleOrderLine.getId());
-            }
-          }
+      generateAndDisplayPurchaseOrder(
+          response, saleOrder, supplierPartner, saleOrderLinesSelected, isDirectOrderLocation);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 
-          if (saleOrderLineIdSelected.isEmpty() || noProduct) {
-            response.setFlash(I18n.get(SupplychainExceptionMessage.SO_LINE_PURCHASE_AT_LEAST_ONE));
-          } else {
-            response.setView(
-                ActionView.define(I18n.get("SaleOrder"))
-                    .model(SaleOrder.class.getName())
-                    .add("form", "sale-order-generate-po-select-supplierpartner-form")
-                    .param("popup", "true")
-                    .param("show-toolbar", "false")
-                    .param("show-confirm", "false")
-                    .param("popup-save", "false")
-                    .param("forceEdit", "true")
-                    .context("_showRecord", String.valueOf(saleOrder.getId()))
-                    .context(
-                        "supplierPartnerId",
-                        ((supplierPartner != null) ? supplierPartner.getId() : 0L))
-                    .context(
-                        "saleOrderLineIdSelected", Joiner.on(",").join(saleOrderLineIdSelected))
-                    .map());
-          }
-        } else {
-          List<SaleOrderLine> saleOrderLinesSelected =
-              JPA.all(SaleOrderLine.class)
-                  .filter("self.id IN (:saleOderLineIdList)")
-                  .bind("saleOderLineIdList", saleOrderLineIdSelected)
-                  .fetch();
-          PurchaseOrder purchaseOrder =
-              Beans.get(SaleOrderPurchaseService.class)
-                  .createPurchaseOrder(
-                      supplierPartner,
-                      saleOrderLinesSelected,
-                      Beans.get(SaleOrderRepository.class).find(saleOrder.getId()));
-          response.setView(
-              ActionView.define(I18n.get("Purchase order"))
-                  .model(PurchaseOrder.class.getName())
-                  .add("form", "purchase-order-form")
-                  .param("forceEdit", "true")
-                  .context("_showRecord", String.valueOf(purchaseOrder.getId()))
-                  .map());
+  public void generatePurchaseOrderFromSaleOrder(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+      List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
+      Partner supplierPartner = saleOrder.getStockLocation().getPartner();
+      List<SaleOrderLine> selectedSaleOrderLines =
+          saleOrderLineService.getSelectedSaleOrderLines(saleOrderLineList);
 
-          if (isDirectOrderLocation == false) {
-            response.setCanClose(true);
-          }
-        }
+      if (selectedSaleOrderLines.isEmpty()
+          || saleOrderLineService.noProductInList(selectedSaleOrderLines)) {
+        response.setError(I18n.get(SupplychainExceptionMessage.SO_LINE_PURCHASE_AT_LEAST_ONE));
+      }
+
+      generateAndDisplayPurchaseOrder(
+          response,
+          saleOrder,
+          supplierPartner,
+          selectedSaleOrderLines,
+          saleOrder.getDirectOrderLocation());
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  protected Map<String, Object> getPurchaseOrderGenerationMap(Context context) {
+    Map<String, Object> purchaseOrderGenerationMap = new HashMap<>();
+
+    List<Long> saleOrderLineIdSelected =
+        Arrays.stream(context.get("saleOrderLineIdSelected").toString().split(","))
+            .map(Long::valueOf)
+            .collect(Collectors.toList());
+    purchaseOrderGenerationMap.put("saleOrderLineIdSelected", saleOrderLineIdSelected);
+
+    LinkedHashMap<String, Object> supplierId =
+        (LinkedHashMap<String, Object>) context.get("supplierPartnerSelect");
+    Partner supplierPartner =
+        Beans.get(PartnerRepository.class).find(Long.valueOf((Integer) supplierId.get("id")));
+    purchaseOrderGenerationMap.put("supplierPartner", supplierPartner);
+
+    purchaseOrderGenerationMap.put("directOrderLocation", context.get("directOrderLocation"));
+    return purchaseOrderGenerationMap;
+  }
+
+  public void generatePurchaseOrderWizard(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+      List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
+      List<SaleOrderLine> selectedSaleOrderLines =
+          saleOrderLineService.getSelectedSaleOrderLines(saleOrderLineList);
+
+      if (selectedSaleOrderLines.isEmpty()
+          || saleOrderLineService.noProductInList(selectedSaleOrderLines)) {
+        response.setError(I18n.get(SupplychainExceptionMessage.SO_LINE_PURCHASE_AT_LEAST_ONE));
+      } else {
+        List<Long> saleOrderLineIdSelected =
+            saleOrderLineService.getSaleOrderLineIdList(selectedSaleOrderLines);
+
+        response.setView(
+            ActionView.define(I18n.get("SaleOrder"))
+                .model(SaleOrder.class.getName())
+                .add("form", "sale-order-generate-po-select-supplierpartner-form")
+                .param("popup", "true")
+                .param("show-toolbar", "false")
+                .param("show-confirm", "false")
+                .param("popup-save", "false")
+                .param("forceEdit", "true")
+                .context("_showRecord", String.valueOf(saleOrder.getId()))
+                .context("saleOrderLineIdSelected", Joiner.on(",").join(saleOrderLineIdSelected))
+                .map());
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
   }
 
-  @SuppressWarnings("rawtypes")
-  private Map<String, Object> getSelectedId(
-      ActionRequest request, ActionResponse response, SaleOrder saleOrder) throws AxelorException {
-    Partner supplierPartner = null;
-    List<Long> saleOrderLineIdSelected = new ArrayList<>();
-    Map<String, Object> values = new HashMap<>();
-    Boolean isDirectOrderLocation = false;
-    Boolean noProduct = true;
+  protected void generateAndDisplayPurchaseOrder(
+      ActionResponse response,
+      SaleOrder saleOrder,
+      Partner supplierPartner,
+      List<SaleOrderLine> selectedSaleOrderLines,
+      boolean directOrderLocation)
+      throws AxelorException {
+    PurchaseOrder purchaseOrder =
+        Beans.get(SaleOrderPurchaseService.class)
+            .createPurchaseOrder(
+                supplierPartner,
+                selectedSaleOrderLines,
+                Beans.get(SaleOrderRepository.class).find(saleOrder.getId()));
+    response.setView(
+        ActionView.define(I18n.get("Purchase order"))
+            .model(PurchaseOrder.class.getName())
+            .add("form", "purchase-order-form")
+            .param("forceEdit", "true")
+            .context("_showRecord", String.valueOf(purchaseOrder.getId()))
+            .map());
 
-    if (saleOrder.getDirectOrderLocation()
-        && saleOrder.getStockLocation() != null
-        && saleOrder.getStockLocation().getPartner() != null
-        && saleOrder.getStockLocation().getPartner().getIsSupplier()) {
-      values.put("supplierPartner", saleOrder.getStockLocation().getPartner());
-
-      for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-        if (saleOrderLine.isSelected()) {
-          if (saleOrderLine.getProduct() != null) {
-            noProduct = false;
-          }
-          saleOrderLineIdSelected.add(saleOrderLine.getId());
-        }
-      }
-      values.put("saleOrderLineIdSelected", saleOrderLineIdSelected);
-      isDirectOrderLocation = true;
-      values.put("isDirectOrderLocation", isDirectOrderLocation);
-
-      if (saleOrderLineIdSelected.isEmpty() || noProduct) {
-        throw new AxelorException(
-            3, I18n.get(SupplychainExceptionMessage.SO_LINE_PURCHASE_AT_LEAST_ONE));
-      }
-    } else if (request.getContext().get("supplierPartnerSelect") != null) {
-      supplierPartner =
-          JPA.em()
-              .find(
-                  Partner.class,
-                  Long.valueOf(
-                      (Integer)
-                          ((Map) request.getContext().get("supplierPartnerSelect")).get("id")));
-      values.put("supplierPartner", supplierPartner);
-      String saleOrderLineIdSelectedStr =
-          (String) request.getContext().get("saleOrderLineIdSelected");
-
-      for (String saleOrderId : saleOrderLineIdSelectedStr.split(",")) {
-        saleOrderLineIdSelected.add(Long.valueOf(saleOrderId));
-      }
-      values.put("saleOrderLineIdSelected", saleOrderLineIdSelected);
-      values.put("isDirectOrderLocation", isDirectOrderLocation);
+    if (!directOrderLocation) {
+      response.setCanClose(true);
     }
-
-    return values;
   }
 
   /**

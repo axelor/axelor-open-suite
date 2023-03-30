@@ -35,8 +35,7 @@
   </form>
 
   <form name="sale-order-generate-po-select-supplierpartner-form"
-    model="com.axelor.apps.sale.db.SaleOrder" title="Confirm Purchase order generation"
-    onLoad="action-record-load-dummy-supplier-partner">
+    model="com.axelor.apps.sale.db.SaleOrder" title="Confirm Purchase order generation">
     <panel name="mainPanel">
       <field name="supplierPartnerSelect" title="Select supplier partner" type="many-to-one"
         target="com.axelor.apps.base.db.Partner"
@@ -173,11 +172,6 @@
     <alert message="The amount to be spread over the timetable is negative."
       if="amountToBeSpreadOverTheTimetable &lt; 0"/>
   </action-validate>
-
-  <action-record name="action-record-load-dummy-supplier-partner"
-    model="com.axelor.apps.sale.db.SaleOrder">
-    <field name="supplierPartnerSelect" expr="eval:__repo__(Partner).find(supplierPartnerId)"/>
-  </action-record>
 
   <action-record name="action-sale-order-record-payment-mode"
     model="com.axelor.apps.sale.db.SaleOrder">
@@ -379,5 +373,26 @@
     <call class="com.axelor.apps.supplychain.web.SaleOrderController"
       method="getToStockLocation"/>
   </action-method>
+
+  <action-method
+    name="action-supplychain-sale-order-method-generate-purchase-order-from-sale-order">
+    <call class="com.axelor.apps.supplychain.web.SaleOrderController"
+      method="generatePurchaseOrderFromSaleOrder"/>
+  </action-method>
+
+  <action-method
+    name="action-supplychain-sale-order-method-generate-purchase-order-wizard">
+    <call class="com.axelor.apps.supplychain.web.SaleOrderController"
+      method="generatePurchaseOrderWizard"/>
+  </action-method>
+
+  <action-group name="action-sale-order-group-generate-purchase-order-btn">
+    <action name="save"/>
+    <action
+      name="action-supplychain-sale-order-method-generate-purchase-order-from-sale-order"
+      if="directOrderLocation &amp;&amp; stockLocation != null &amp;&amp; stockLocation?.partner != null"/>
+    <action name="action-supplychain-sale-order-method-generate-purchase-order-wizard"
+      if="stockLocation == null || stockLocation?.partner == null"/>
+  </action-group>
 
 </object-views>

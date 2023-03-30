@@ -332,4 +332,12 @@ public interface SaleOrderLineService {
    */
   public boolean hasPricingLine(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException;
+
+  List<SaleOrderLine> getSaleOrderLineList(List<Long> idList);
+
+  boolean noProductInList(List<SaleOrderLine> saleOrderLineList);
+
+  List<SaleOrderLine> getSelectedSaleOrderLines(List<SaleOrderLine> saleOrderLineList);
+
+  List<Long> getSaleOrderLineIdList(List<SaleOrderLine> saleOrderLineList);
 }

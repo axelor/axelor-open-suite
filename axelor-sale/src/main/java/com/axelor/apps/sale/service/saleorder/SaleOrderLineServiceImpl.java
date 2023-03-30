@@ -70,6 +70,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -190,6 +191,30 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     }
 
     return false;
+  }
+
+  @Override
+  public List<SaleOrderLine> getSaleOrderLineList(List<Long> idList) {
+    List<SaleOrderLine> saleOrderLineList = new ArrayList<>();
+    idList.forEach(id -> saleOrderLineList.add(saleOrderLineRepo.find(id)));
+    return saleOrderLineList;
+  }
+
+  @Override
+  public boolean noProductInList(List<SaleOrderLine> saleOrderLineList) {
+    return saleOrderLineList.stream().allMatch(saleOrderLine -> saleOrderLine.getProduct() == null);
+  }
+
+  @Override
+  public List<SaleOrderLine> getSelectedSaleOrderLines(List<SaleOrderLine> saleOrderLineList) {
+    return saleOrderLineList.stream()
+        .filter(SaleOrderLine::isSelected)
+        .collect(Collectors.toList());
+  }
+
+  @Override
+  public List<Long> getSaleOrderLineIdList(List<SaleOrderLine> saleOrderLineList) {
+    return saleOrderLineList.stream().map(SaleOrderLine::getId).collect(Collectors.toList());
   }
 
   @Override

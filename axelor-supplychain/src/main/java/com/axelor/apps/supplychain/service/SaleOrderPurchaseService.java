@@ -22,7 +22,6 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.exception.AxelorException;
-import com.google.inject.persist.Transactional;
 import java.util.List;
 import java.util.Map;
 
@@ -33,8 +32,7 @@ public interface SaleOrderPurchaseService {
   public Map<Partner, List<SaleOrderLine>> splitBySupplierPartner(
       List<SaleOrderLine> saleOrderLineList) throws AxelorException;
 
-  @Transactional(rollbackOn = {Exception.class})
-  public PurchaseOrder createPurchaseOrder(
+  PurchaseOrder createPurchaseOrder(
       Partner supplierPartner, List<SaleOrderLine> saleOrderLineList, SaleOrder saleOrder)
       throws AxelorException;
 }

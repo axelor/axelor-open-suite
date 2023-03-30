@@ -18,9 +18,14 @@
 package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.PartnerPriceListService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
+import com.axelor.apps.purchase.service.SupplierCatalogService;
+import com.axelor.apps.purchase.service.config.PurchaseConfigService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.supplychain.service.PurchaseOrderLineServiceSupplyChain;
@@ -38,9 +43,21 @@ public class ProjectPurchaseServiceImpl extends SaleOrderPurchaseServiceImpl {
   public ProjectPurchaseServiceImpl(
       PurchaseOrderSupplychainService purchaseOrderSupplychainService,
       PurchaseOrderLineServiceSupplyChain purchaseOrderLineServiceSupplychain,
-      PurchaseOrderService purchaseOrderService) {
+      PurchaseOrderService purchaseOrderService,
+      PurchaseOrderRepository purchaseOrderRepository,
+      PurchaseConfigService purchaseConfigService,
+      AppBaseService appBaseService,
+      PartnerPriceListService partnerPriceListService,
+      SupplierCatalogService supplierCatalogService) {
     super(
-        purchaseOrderSupplychainService, purchaseOrderLineServiceSupplychain, purchaseOrderService);
+        purchaseOrderSupplychainService,
+        purchaseOrderLineServiceSupplychain,
+        purchaseOrderService,
+        purchaseOrderRepository,
+        purchaseConfigService,
+        appBaseService,
+        partnerPriceListService,
+        supplierCatalogService);
   }
 
   @Override
