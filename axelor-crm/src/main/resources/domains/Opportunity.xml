@@ -30,7 +30,10 @@
     <many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User"
       title="Assigned to"/>
     <many-to-one name="team" ref="com.axelor.team.db.Team" title="Team"/>
-
+    <datetime name="lastEventDateT" title="Last event date"/>
+    <datetime name="nextScheduledEventDateT" title="Next scheduled event date"/>
+    <one-to-many name="eventList" ref="com.axelor.apps.crm.db.Event" title="Events"
+      mappedBy="opportunity"/>
     <many-to-one name="lostReason" ref="LostReason" title="Lost reason"/>
     <string name="lostReasonStr" title="Lost reason" large="true"/>
     <many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName"/>
