@@ -172,8 +172,21 @@
           readonlyIf="$get('opportunityStatus.id') == $closedWonId || $get('opportunityStatus.id') == $closedLostId"
           colSpan="12" widget="html"/>
       </panel>
-      <panel name="recurrentPanel" title="Recurrent"
-        if="__config__.app.getApp('crm')?.isManageRecurrent" colSpan="12"
+      <panel name="eventPanel" title="Events">
+        <button name="meetingBtn" title="Create a meeting" link="" icon="fa-pencil-square-o"
+          onClick="save,action-opportunity-view-meeting-event" colSpan="3"/>
+        <button name="callBtn" title="Create a call" link="" icon="fa-phone"
+          onClick="save,action-opportunity-view-call-event" colSpan="3"/>
+        <button name="taskBtn" title="Create a task" link="" icon="fa-tasks"
+          onClick="save,action-opportunity-view-task-event" colSpan="3"/>
+        <button name="noteBtn" title="Create a note" link="" icon="fa-sticky-note-o"
+          onClick="save,action-opportunity-view-note-event" colSpan="3"/>
+        <panel-dashlet name="eventPanelDashlet"
+          action="action-opportunity-view-events" title="Events" height="550" colSpan="12"/>
+      </panel>
+
+      <panel name="recurrentPanel" title="Recurrent" colSpan="12"
+        if="__config__.app.getApp('crm')?.isManageRecurrent"
         readonlyIf="$get('opportunityStatus.id') == $closedWonId || $get('opportunityStatus.id') == $closedLostId">
         <field name="recurrentAmount"/>
         <field name="expectedDurationOfRecurringRevenue"/>
@@ -208,6 +221,10 @@
           if-module="axelor-cash-management" name="bankDetails" canEdit="false" widget="SuggestBox"
           onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form"
           grid-view="bank-details-grid"/>
+        <panel name="eventDateTPanel" colSpan="12">
+          <field name="lastEventDateT" readonly="true"/>
+          <field name="nextScheduledEventDateT" readonly="true"/>
+        </panel>
         <panel name="lostReasonPanel" colSpan="12" hidden="true" showIf="lostReason">
           <field name="lostReason" readonly="true" showIf="!lostReasonStr"/>
           <field name="lostReasonStr" readonly="true" hidden="true" showIf="lostReasonStr"
@@ -354,6 +371,49 @@
     <context name="_showRecord" expr="eval: id"/>
   </action-view>
 
+  <action-view name="action-opportunity-view-meeting-event"
+    title="Meeting Event(${ fullName})" model="com.axelor.apps.crm.db.Event">
+    <view type="form" name="event-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="show-toolbar" value="false"/>
+    <context name="_opportunity" expr="eval: __this__"/>
+    <context name="_meeting" expr="eval: true"/>
+  </action-view>
+
+  <action-view name="action-opportunity-view-call-event"
+    title="Call Event(${ fullName})" model="com.axelor.apps.crm.db.Event">
+    <view type="form" name="event-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="show-toolbar" value="false"/>
+    <context name="_opportunity" expr="eval: __this__"/>
+    <context name="_call" expr="eval: true"/>
+  </action-view>
+
+  <action-view name="action-opportunity-view-task-event"
+    title="Task Event(${ fullName})" model="com.axelor.apps.crm.db.Event">
+    <view type="form" name="event-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="show-toolbar" value="false"/>
+    <context name="_opportunity" expr="eval: __this__"/>
+    <context name="_task" expr="eval: true"/>
+  </action-view>
+
+  <action-view name="action-opportunity-view-note-event"
+    title="Note Event(${ fullName})" model="com.axelor.apps.crm.db.Event">
+    <view type="form" name="event-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="show-toolbar" value="false"/>
+    <context name="_opportunity" expr="eval: __this__"/>
+    <context name="_note" expr="eval: true"/>
+  </action-view>
+
+  <action-view name="action-opportunity-view-events" title="Events"
+    model="com.axelor.apps.crm.db.Event">
+    <view type="grid" name="list-event-grid"/>
+    <view type="form" name="event-form"/>
+    <domain>self.opportunity.id = :_id</domain>
+  </action-view>
+
   <action-group name="action-opportunity-group-new">
     <action name="action-opportunity-record-new"/>
     <action name="action-opportunity-record-currency"/>
@@ -388,7 +448,8 @@
       expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
     <field name="expectedDurationOfRecurringRevenue"
       expr="eval: __config__.app.getApp('crm').defaultRecurringDuration"
-      if="__config__.app.getApp('crm').isManageRecurrent &amp;&amp; __config__.app.getApp('crm').defaultRecurringDuration != null"/>
+      if="__config__.app.getApp('crm').isManageRecurrent &amp;&amp; __config__.app.getApp('crm').defaultRecurringDuration
+      != null"/>
     <field name="opportunityStatus"
       expr="eval: __repo__(OpportunityStatus).getDefaultStatus()"/>
   </action-record>
