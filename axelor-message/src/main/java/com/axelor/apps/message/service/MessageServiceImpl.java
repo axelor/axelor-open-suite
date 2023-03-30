@@ -426,6 +426,8 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
     }
     if (!Strings.isNullOrEmpty(message.getContent())) {
       mailBuilder.html(message.getContent());
+    } else {
+      mailBuilder.html("");
     }
 
     if (!isTemporaryEmail) {
