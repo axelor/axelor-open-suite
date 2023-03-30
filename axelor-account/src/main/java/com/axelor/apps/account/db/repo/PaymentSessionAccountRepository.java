@@ -81,6 +81,7 @@ public class PaymentSessionAccountRepository extends PaymentSessionRepository {
     copy.setValidatedDate(null);
     copy.setName(null);
     copy.setSequence(null);
+    copy.setPartnerForEmail(null);
     return copy;
   }
 }

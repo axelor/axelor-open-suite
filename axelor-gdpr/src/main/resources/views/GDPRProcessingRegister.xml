@@ -20,7 +20,7 @@
   </grid>
 
   <form name="gdpr-processing-register-form" title="Processing register"
-    model="com.axelor.apps.gdpr.db.GDPRProcessingRegister" width="large">
+    model="com.axelor.apps.gdpr.db.GDPRProcessingRegister" width="large" canCopy="false">
     <panel name="statusPanel">
       <field name="status" widget="NavSelect" colSpan="6" readonly="true" showTitle="false"/>
     </panel>
