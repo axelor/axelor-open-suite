@@ -69,7 +69,6 @@ public interface AccountingCutOffService {
       BigDecimal lowerAmountLimit,
       BigDecimal upperAmountLimit,
       int accountingCutOffTypeSelect,
-      boolean recoveredTax,
       boolean ati)
       throws AxelorException;
 }

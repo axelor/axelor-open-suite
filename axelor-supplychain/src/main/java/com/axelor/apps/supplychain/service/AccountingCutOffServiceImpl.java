@@ -686,7 +686,6 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
       BigDecimal lowerAmountLimit,
       BigDecimal upperAmountLimit,
       int accountingCutOffTypeSelect,
-      boolean recoveredTax,
       boolean ati)
       throws AxelorException {
     List<StockMoveLine> stockMoveLines = stockMove.getStockMoveLineList();
@@ -696,8 +695,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
     BigDecimal totalAmount = BigDecimal.ZERO;
     for (StockMoveLine stockMoveLine : stockMoveLines) {
       totalAmount =
-          totalAmount.add(
-              getNotInvoicedAmount(stockMoveLine, accountingCutOffTypeSelect, recoveredTax, ati));
+          totalAmount.add(getNotInvoicedAmount(stockMoveLine, accountingCutOffTypeSelect, ati));
     }
     if (totalAmount.compareTo(lowerAmountLimit) < 0
         || (upperAmountLimit.signum() != 0 && totalAmount.compareTo(upperAmountLimit) > 0)) {
@@ -707,10 +705,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
   }
 
   protected BigDecimal getNotInvoicedAmount(
-      StockMoveLine stockMoveLine,
-      int accountingCutOffTypeSelect,
-      boolean recoveredTax,
-      boolean ati)
+      StockMoveLine stockMoveLine, int accountingCutOffTypeSelect, boolean ati)
       throws AxelorException {
     SaleOrderLine saleOrderLine = stockMoveLine.getSaleOrderLine();
     PurchaseOrderLine purchaseOrderLine = stockMoveLine.getPurchaseOrderLine();

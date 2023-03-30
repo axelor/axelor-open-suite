@@ -92,12 +92,7 @@ public class BatchAccountingCutOff extends BatchStrategy {
 
         try {
           if (!cutOffService.checkPriceLimit(
-              stockMove,
-              lowerAmountLimit,
-              upperAmountLimit,
-              accountingCutOffTypeSelect,
-              recoveredTax,
-              ati)) {
+              stockMove, lowerAmountLimit, upperAmountLimit, accountingCutOffTypeSelect, ati)) {
             continue;
           }
           List<Move> moveList =
