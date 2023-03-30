@@ -524,7 +524,7 @@ public class ClientViewServiceImpl implements ClientViewService {
     Filter filterFromPermission = security.getFilter(JpaSecurity.CAN_READ, Ticket.class);
     Filter filter =
         new JPQLFilter(
-            "self.customer.id = "
+            "self.customerPartner.id = "
                 + user.getPartner().getId()
                 + " AND self.assignedToUser.id = "
                 + user.getId());
@@ -539,7 +539,7 @@ public class ClientViewServiceImpl implements ClientViewService {
     Filter filterFromPermission = security.getFilter(JpaSecurity.CAN_READ, Ticket.class);
     Filter filter =
         new JPQLFilter(
-            "self.customer.id = "
+            "self.customerPartner.id = "
                 + user.getPartner().getId()
                 + " AND self.assignedToUser.id = "
                 + user.getActiveCompany().getId());
@@ -554,7 +554,7 @@ public class ClientViewServiceImpl implements ClientViewService {
     Filter filterFromPermission = security.getFilter(JpaSecurity.CAN_READ, Ticket.class);
     Filter filter =
         new JPQLFilter(
-            "self.customer.id = "
+            "self.customerPartner.id = "
                 + user.getPartner().getId()
                 + " AND self.assignedToUser.id = "
                 + user.getId()
@@ -574,7 +574,7 @@ public class ClientViewServiceImpl implements ClientViewService {
     Filter filterFromPermission = security.getFilter(JpaSecurity.CAN_READ, Ticket.class);
     Filter filter =
         new JPQLFilter(
-            "self.customer.id = "
+            "self.customerPartner.id = "
                 + user.getPartner().getId()
                 + " AND self.assignedToUser.id = "
                 + user.getId()
