@@ -3,6 +3,7 @@ package com.axelor.apps.account.service.moveline;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.exception.AxelorException;
+import java.time.LocalDate;
 import java.util.Map;
 
 public interface MoveLineGroupService {
@@ -24,5 +25,16 @@ public interface MoveLineGroupService {
       MoveLine moveLine, Move move) throws AxelorException;
 
   Map<String, Object> getDebitCreditOnChangeValuesMap(MoveLine moveLine, Move move)
+      throws AxelorException;
+
+  Map<String, Object> getAccountOnChangeValuesMap(
+      MoveLine moveLine,
+      Move move,
+      LocalDate cutOffStartDate,
+      LocalDate cutOffEndDate,
+      LocalDate dueDate)
+      throws AxelorException;
+
+  Map<String, Map<String, Object>> getAccountOnChangeAttrsMap(MoveLine moveLine, Move move)
       throws AxelorException;
 }

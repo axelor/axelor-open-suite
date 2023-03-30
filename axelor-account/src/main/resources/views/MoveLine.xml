@@ -101,7 +101,7 @@
       readonly="false"/>
     <field name="account" form-view="account-form" grid-view="account-grid"
       onSelect="action-move-line-attrs-domain-account" width="200" canEdit="false"
-      readonlyIf="amountPaid &gt; 0" onChange="action-account-move-line-account-group-on-change"/>
+      readonlyIf="amountPaid &gt; 0" onChange="action-move-line-method-account-onchange"/>
     <field name="currencyAmount"
       onChange="action-move-line-group-currency-amount-rate-onchange" readonlyIf="!isOtherCurrency"/>
     <field name="currencyRate" onChange="action-move-line-group-currency-amount-rate-onchange"
@@ -249,7 +249,7 @@
       onSelect="action-account-move-line-partner-group" form-view="partner-form"
       grid-view="partner-grid"/>
     <field name="account" readonlyIf="amountPaid > 0" width="400" canEdit="false"
-      onChange="action-account-move-line-account-group-on-change"
+      onChange="action-move-line-method-account-onchange"
       onSelect="action-move-line-attrs-domain-account" form-view="account-form"
       grid-view="account-grid"/>
     <field name="currencyAmount" hidden="true" readonlyIf="!isOtherCurrency"
@@ -843,19 +843,9 @@
     <action name="action-account-move-line-method-set-partner-readonly"/>
   </action-group>
 
-  <action-group name="action-account-move-line-account-group-on-change">
-    <action name="action-move-line-record-set-cut-off-dates"
-      if="__config__.app.getApp('account').manageCutOffPeriod"/>
-    <action name="action-move-line-record-set-cut-off-generated-false"/>
-    <action name="action-move-line-method-compute-analytic-distribution"/>
-    <action name="action-account-move-line-method-set-partner-readonly"/>
-    <action name="action-move-line-method-refresh-account-informations"/>
-    <action name="action-move-line-method-hide-axis-analytic-account"/>
-    <action name="action-move-line-method-change-account-set-default-distribution-template"/>
-    <action name="action-move-line-group-analytic-distribution-template-onchange"/>
-    <action name="action-move-line-record-set-partner"/>
-    <action name="action-move-line-method-generate-invoice-terms"/>
-  </action-group>
+  <action-method name="action-move-line-method-account-onchange">
+    <call class="com.axelor.apps.account.web.MoveLineController" method="accountOnChange"/>
+  </action-method>
 
   <action-group name="action-account-move-line-move-form-account-group-on-change">
     <action name="action-move-line-method-compute-analytic-distribution"/>
@@ -933,11 +923,6 @@
   </action-method>
   <action-method name="action-account-move-line-method-calculate-balance">
     <call class="com.axelor.apps.account.web.MoveLineController" method="showCalculatedBalance"/>
-  </action-method>
-
-  <action-method name="action-move-line-method-refresh-account-informations">
-    <call class="com.axelor.apps.account.web.MoveLineController"
-      method="refreshAccountInformation"/>
   </action-method>
 
   <action-method name="action-move-line-check-distribution-template-account">
@@ -1028,11 +1013,6 @@
       expr="eval: account?.manageCutOffPeriod ? __parent__?.cutOffEndDate : null"/>
   </action-record>
 
-  <action-record name="action-move-line-record-set-partner"
-    model="com.axelor.apps.account.db.MoveLine">
-    <field name="partner" expr="eval: __parent__?.partner" if="__parent__?.partner != null"/>
-  </action-record>
-
   <action-record name="action-move-line-record-reset-partner-details"
     model="com.axelor.apps.account.db.MoveLine">
     <field name="partnerFullName,partnerSeq,partnerId" expr="eval: null" if="!partner"/>
@@ -1120,12 +1100,6 @@
   <action-method name="action-move-line-method-set-required-analytic-accounts">
     <call class="com.axelor.apps.account.web.MoveLineController"
       method="setRequiredAnalyticAccount"/>
-  </action-method>
-
-  <action-method
-    name="action-move-line-method-change-account-set-default-distribution-template">
-    <call class="com.axelor.apps.account.web.MoveLineController"
-      method="selectDefaultDistributionTemplate"/>
   </action-method>
 
   <action-method name="action-move-line-method-hide-axis-analytic-account">

@@ -189,4 +189,15 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
         periodServiceAccount.isAuthorizedToAccountOnPeriod(move.getPeriod(), AuthUtils.getUser()),
         attrsMap);
   }
+
+  public void addPartnerReadonly(
+      MoveLine moveLine, Move move, Map<String, Map<String, Object>> attrsMap) {
+    boolean readonly =
+        moveLine.getAmountPaid().signum() != 0
+            || (moveLine.getAccount() != null
+                && move.getPartner() != null
+                && moveLine.getAccount().getUseForPartnerBalance());
+
+    this.addAttr("partner", "readonly", readonly, attrsMap);
+  }
 }

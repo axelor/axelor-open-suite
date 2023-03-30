@@ -15,13 +15,16 @@ import org.apache.commons.collections.CollectionUtils;
 public class MoveLineDefaultServiceImpl implements MoveLineDefaultService {
   protected AppAccountService appAccountService;
   protected MoveLoadDefaultConfigService moveLoadDefaultConfigService;
+  protected MoveLineComputeAnalyticService moveLineComputeAnalyticService;
 
   @Inject
   public MoveLineDefaultServiceImpl(
       AppAccountService appAccountService,
-      MoveLoadDefaultConfigService moveLoadDefaultConfigService) {
+      MoveLoadDefaultConfigService moveLoadDefaultConfigService,
+      MoveLineComputeAnalyticService moveLineComputeAnalyticService) {
     this.appAccountService = appAccountService;
     this.moveLoadDefaultConfigService = moveLoadDefaultConfigService;
+    this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
   }
 
   @Override
@@ -111,6 +114,13 @@ public class MoveLineDefaultServiceImpl implements MoveLineDefaultService {
 
     if (moveLine.getCredit().signum() < 0) {
       moveLine.setCredit(BigDecimal.ZERO);
+    }
+  }
+
+  @Override
+  public void setDefaultDistributionTemplate(MoveLine moveLine, Move move) throws AxelorException {
+    if (move != null && moveLineComputeAnalyticService.checkManageAnalytic(move.getCompany())) {
+      moveLineComputeAnalyticService.selectDefaultDistributionTemplate(moveLine);
     }
   }
 }

@@ -16,4 +16,6 @@ public interface MoveLineDefaultService {
   void setFinancialDiscount(MoveLine moveLine);
 
   void cleanDebitCredit(MoveLine moveLine);
+
+  void setDefaultDistributionTemplate(MoveLine moveLine, Move move) throws AxelorException;
 }

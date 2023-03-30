@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.account.web;
 
-import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticAxisByCompany;
@@ -40,7 +39,6 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
-import com.axelor.apps.account.service.move.MoveLoadDefaultConfigService;
 import com.axelor.apps.account.service.move.MoveViewHelperService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineGroupService;
@@ -290,38 +288,6 @@ public class MoveLineController {
     }
   }
 
-  public void refreshAccountInformation(ActionRequest request, ActionResponse response) {
-    Context parentContext = request.getContext().getParent();
-    MoveLine moveLine = request.getContext().asType(MoveLine.class);
-    try {
-      if (parentContext != null) {
-        Move move = parentContext.asType(Move.class);
-        Account accountingAccount = moveLine.getAccount();
-        if (accountingAccount != null && accountingAccount.getIsTaxAuthorizedOnMoveLine()) {
-          TaxLine taxLine =
-              Beans.get(MoveLoadDefaultConfigService.class)
-                  .getTaxLine(move, moveLine, accountingAccount);
-          TaxEquiv taxEquiv = null;
-          FiscalPosition fiscalPosition = move.getFiscalPosition();
-          if (taxLine != null) {
-            if (fiscalPosition != null) {
-              taxEquiv =
-                  Beans.get(FiscalPositionService.class)
-                      .getTaxEquiv(fiscalPosition, taxLine.getTax());
-            }
-
-            response.setValue("taxLine", taxLine);
-            if (taxEquiv != null) {
-              response.setValue("taxEquiv", taxEquiv);
-            }
-          }
-        }
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
   public void setPartnerReadonlyIf(ActionRequest request, ActionResponse response) {
     boolean readonly = false;
     MoveLine moveLine = request.getContext().asType(MoveLine.class);
@@ -419,25 +385,6 @@ public class MoveLineController {
             "required",
             analyticLineService.isAxisRequired(
                 moveLine, move != null ? move.getCompany() : null, i));
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void selectDefaultDistributionTemplate(ActionRequest request, ActionResponse response) {
-    try {
-      MoveLine moveLine = request.getContext().asType(MoveLine.class);
-      Move move = request.getContext().getParent().asType(Move.class);
-      if (move != null
-          && Beans.get(MoveLineComputeAnalyticService.class)
-              .checkManageAnalytic(move.getCompany())) {
-        moveLine =
-            Beans.get(MoveLineComputeAnalyticService.class)
-                .selectDefaultDistributionTemplate(moveLine);
-        response.setValue(
-            "analyticDistributionTemplate", moveLine.getAnalyticDistributionTemplate());
-        response.setValue("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -810,6 +757,34 @@ public class MoveLineController {
 
       response.setValues(
           Beans.get(MoveLineGroupService.class).getDebitCreditOnChangeValuesMap(moveLine, move));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void accountOnChange(ActionRequest request, ActionResponse response) {
+    try {
+      MoveLine moveLine = request.getContext().asType(MoveLine.class);
+      Move move;
+      LocalDate cutOffStartDate = null;
+      LocalDate cutOffEndDate = null;
+      LocalDate dueDate = this.extractDueDate(request);
+
+      if (request.getContext().getParent() != null
+          && Move.class.equals(request.getContext().getParent().getContextClass())) {
+        move = request.getContext().getParent().asType(Move.class);
+        cutOffStartDate = (LocalDate) request.getContext().getParent().get("cutOffStartDate");
+        cutOffEndDate = (LocalDate) request.getContext().getParent().get("cutOffEndDate");
+      } else {
+        move = moveLine.getMove();
+      }
+
+      MoveLineGroupService moveLineGroupService = Beans.get(MoveLineGroupService.class);
+
+      response.setValues(
+          moveLineGroupService.getAccountOnChangeValuesMap(
+              moveLine, move, cutOffStartDate, cutOffEndDate, dueDate));
+      response.setAttrs(moveLineGroupService.getAccountOnChangeAttrsMap(moveLine, move));
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

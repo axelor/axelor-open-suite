@@ -32,4 +32,6 @@ public interface MoveLineAttrsService {
 
   void addValidatePeriod(Move move, Map<String, Map<String, Object>> attrsMap)
       throws AxelorException;
+
+  void addPartnerReadonly(MoveLine moveLine, Move move, Map<String, Map<String, Object>> attrsMap);
 }
