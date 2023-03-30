@@ -447,7 +447,7 @@ LEFT JOIN Public.account_fiscal_position as FiscalPosition on (TaxPaymentMoveLin
 WHERE AccountingReport.id = ?
 AND  Move.ignore_in_accounting_ok = false 
 AND (Move.status_select = 3 OR Move.status_select = 2 OR (Move.status_select = 5 AND AccountingReport.display_simulated_move))
-AND Tax.type_select = 1	
+AND Tax.type_select = 1
 AND AccountingReport.currency = Move.company_currency
 AND MoveLine.date_val >= AccountingReport.date_from
 AND MoveLine.date_val <= AccountingReport.date_to
@@ -861,7 +861,7 @@ end) as baseDebit,
 SUM(Case  when MoveLine.debit > 0 then TaxPaymentMoveLine.tax_amount
 else 0
 end) as taxDebit
-FROM public.account_accounting_report as AccountingReport 
+FROM public.account_accounting_report as AccountingReport
 CROSS JOIN public.account_move_line as MoveLine
 LEFT JOIN public.account_account as Account on (MoveLine.account = Account.id)
 LEFT JOIN public.account_account_type as AccountType on (Account.account_type = AccountType.id)
@@ -872,11 +872,11 @@ LEFT JOIN public.account_tax as Tax on (TaxLine.tax = Tax.id)
 LEFT JOIN public.account_fiscal_position as FiscalPosition on (TaxPaymentMoveLine.fiscal_position = FiscalPosition.id)
 WHERE AccountingReport.id = ?
 AND  Move.ignore_in_accounting_ok = false 
-AND (Move.status_select = 3 OR Move.status_select = 2)
-AND Tax.type_select = 1	
+AND (Move.status_select = 3 OR Move.status_select = 2 OR (Move.status_select = 5 AND AccountingReport.display_simulated_move))
+AND Tax.type_select = 1
 AND AccountingReport.currency = Move.company_currency
-AND MoveLine.date_val >= AccountingReport.date_from
-AND MoveLine.date_val <= AccountingReport.date_to
+AND TaxPaymentMoveLine.date_val >= AccountingReport.date_from
+AND TaxPaymentMoveLine.date_val <= AccountingReport.date_to
 AND (AccountingReport.display_closing_accounting_moves is true
 	OR(AccountingReport.display_closing_accounting_moves is false
 		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 2)))
