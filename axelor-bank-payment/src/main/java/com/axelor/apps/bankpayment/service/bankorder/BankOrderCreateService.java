@@ -180,6 +180,7 @@ public class BankOrderCreateService {
             null,
             invoice);
     bankOrder.addBankOrderLineListItem(bankOrderLine);
+    invoicePayment.setBankOrder(bankOrder);
 
     bankOrder = bankOrderRepo.save(bankOrder);
 

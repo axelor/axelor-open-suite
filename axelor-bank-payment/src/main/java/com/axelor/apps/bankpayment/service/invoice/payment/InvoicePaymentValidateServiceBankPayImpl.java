@@ -182,8 +182,5 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
     if (invoicePayment.getPaymentMode().getAutoConfirmBankOrder()) {
       bankOrderService.confirm(bankOrder);
     }
-    invoicePayment.setBankOrder(bankOrder);
-
-    invoicePaymentRepository.save(invoicePayment);
   }
 }
