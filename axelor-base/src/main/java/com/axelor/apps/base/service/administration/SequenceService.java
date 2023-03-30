@@ -122,16 +122,15 @@ public class SequenceService {
   }
 
   public void isSequenceLengthValid(Sequence sequence) throws AxelorException {
-    SequenceVersion sequenceVersion =
-        getVersion(sequence, appBaseService.getTodayDate(sequence.getCompany()));
+    Company company = sequence.getCompany();
+    SequenceVersion sequenceVersion = getVersion(sequence, appBaseService.getTodayDate(company));
     String nextSeq =
-        computeNextSeq(
-            sequenceVersion, sequence, appBaseService.getTodayDate(sequence.getCompany()));
+        computeNextSeq(sequenceVersion, sequence, appBaseService.getTodayDate(company));
 
     if (nextSeq.length() > 14) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.SEQUENCE_LENGTH_NOT_VALID));
+          I18n.get(BaseExceptionMessage.SEQUENCE_LENGTH_NOT_VALID));
     }
   }
 
