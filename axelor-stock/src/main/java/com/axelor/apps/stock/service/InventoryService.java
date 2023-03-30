@@ -254,6 +254,7 @@ public class InventoryService {
         inventoryLine.setRealQty(realQty.setScale(qtyScale, RoundingMode.HALF_UP));
         inventoryLine.setDescription(description);
         inventoryLine.setTrackingNumber(this.getTrackingNumber(trackingNumberSeq));
+        inventoryLineService.compute(inventoryLine, inventory);
         inventoryLineList.add(inventoryLine);
       }
     }
