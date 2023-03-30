@@ -35,13 +35,13 @@
 
     <!-- Stock line verification config -->
     <boolean name="isVerifyCustomerDeliveryLineEnabled"
-      title="Enable customer delivery line verification" default="false"/>
+      title="Enable line verification on customer deliveries" default="false"/>
     <boolean name="isVerifySupplierArrivalLineEnabled"
-      title="Enable supplier arrival line verification" default="false"/>
+      title="Enable line verification on supplier arrivals" default="false"/>
     <boolean name="isVerifyInternalMoveLineEnabled"
-      title="Enable internal move line verification" default="false"/>
-    <boolean name="isVerifyInventoryLineEnabled" title="Enable inventory line verification"
-      default="false"/>
+      title="Enable line verification on internal moves" default="false"/>
+    <boolean name="isVerifyInventoryLineEnabled"
+      title="Enable line verification on inventories" default="false"/>
 
     <track>
       <field name="isStockAppEnable"/>
