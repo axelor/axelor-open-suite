@@ -31,8 +31,8 @@ import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.apps.account.service.move.MoveComputeService;
 import com.axelor.apps.account.service.move.MoveCreateService;
-import com.axelor.apps.account.service.move.MoveStatusService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
@@ -89,6 +89,7 @@ public class PaymentSessionValidateBankPaymentServiceImpl
       AppBaseService appBaseService,
       MoveCreateService moveCreateService,
       MoveValidateService moveValidateService,
+      MoveComputeService moveComputeService,
       MoveLineCreateService moveLineCreateService,
       ReconcileService reconcileService,
       InvoiceTermService invoiceTermService,
@@ -109,12 +110,12 @@ public class PaymentSessionValidateBankPaymentServiceImpl
       BankOrderRepository bankOrderRepo,
       CurrencyService currencyService,
       AppAccountService appAccountService,
-      InvoicePaymentRepository invoicePaymentRepo,
-      MoveStatusService moveStatusService) {
+      InvoicePaymentRepository invoicePaymentRepo) {
     super(
         appBaseService,
         moveCreateService,
         moveValidateService,
+        moveComputeService,
         moveLineCreateService,
         reconcileService,
         invoiceTermService,
@@ -128,8 +129,7 @@ public class PaymentSessionValidateBankPaymentServiceImpl
         invoicePaymentRepo,
         accountConfigService,
         partnerService,
-        paymentModeService,
-        moveStatusService);
+        paymentModeService);
     this.bankOrderService = bankOrderService;
     this.bankOrderCreateService = bankOrderCreateService;
     this.bankOrderLineService = bankOrderLineService;

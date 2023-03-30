@@ -35,8 +35,8 @@ import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.apps.account.service.move.MoveComputeService;
 import com.axelor.apps.account.service.move.MoveCreateService;
-import com.axelor.apps.account.service.move.MoveStatusService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
@@ -78,6 +78,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
   protected AppBaseService appBaseService;
   protected MoveCreateService moveCreateService;
   protected MoveValidateService moveValidateService;
+  protected MoveComputeService moveComputeService;
   protected MoveLineCreateService moveLineCreateService;
   protected ReconcileService reconcileService;
   protected InvoiceTermService invoiceTermService;
@@ -92,7 +93,6 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
   protected AccountConfigService accountConfigService;
   protected PartnerService partnerService;
   protected PaymentModeService paymentModeService;
-  protected MoveStatusService moveStatusService;
   protected int counter = 0;
 
   @Inject
@@ -100,6 +100,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       AppBaseService appBaseService,
       MoveCreateService moveCreateService,
       MoveValidateService moveValidateService,
+      MoveComputeService moveComputeService,
       MoveLineCreateService moveLineCreateService,
       ReconcileService reconcileService,
       InvoiceTermService invoiceTermService,
@@ -113,11 +114,11 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       InvoicePaymentRepository invoicePaymentRepo,
       AccountConfigService accountConfigService,
       PartnerService partnerService,
-      PaymentModeService paymentModeService,
-      MoveStatusService moveStatusService) {
+      PaymentModeService paymentModeService) {
     this.appBaseService = appBaseService;
     this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;
+    this.moveComputeService = moveComputeService;
     this.moveLineCreateService = moveLineCreateService;
     this.reconcileService = reconcileService;
     this.invoiceTermService = invoiceTermService;
@@ -132,7 +133,6 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     this.accountConfigService = accountConfigService;
     this.partnerService = partnerService;
     this.paymentModeService = paymentModeService;
-    this.moveStatusService = moveStatusService;
   }
 
   @Override
@@ -406,6 +406,8 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       this.createFinancialDiscountMoveLine(paymentSession, invoiceTerm, move, out);
     }
 
+    moveComputeService.autoApplyCutOffDates(move);
+
     return moveRepo.save(move);
   }
 
@@ -634,6 +636,8 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     this.generateCashMoveLine(
         move, null, this.getCashAccount(paymentSession, false), paymentAmount, description, out);
 
+    moveComputeService.autoApplyCutOffDates(move);
+
     moveRepo.save(move);
 
     this.updateStatus(move, paymentSession.getJournal().getAllowAccountingDaybook());
@@ -757,12 +761,11 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     moveValidateService.updateValidateStatus(move, daybook);
 
     if (daybook) {
-      moveStatusService.update(move, MoveRepository.STATUS_DAYBOOK);
+      move.setStatusSelect(MoveRepository.STATUS_DAYBOOK);
       moveValidateService.completeMoveLines(move);
       moveValidateService.freezeFieldsOnMoveLines(move);
     } else {
       moveValidateService.accounting(move);
-      moveStatusService.applyCutOffDates(move);
     }
   }
 

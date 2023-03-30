@@ -94,6 +94,23 @@ public class MoveComputeServiceImpl implements MoveComputeService {
   }
 
   @Override
+  public void autoApplyCutOffDates(Move move) {
+    move.getMoveLineList().stream()
+        .filter(
+            moveLine ->
+                moveLine.getAccount().getManageCutOffPeriod()
+                    && moveLine.getAccount().getHasAutomaticApplicationAccountingDate()
+                    && moveLine.getCutOffStartDate() == null
+                    && moveLine.getCutOffEndDate() == null)
+        .forEach(
+            moveLine -> {
+              LocalDate cutOffDate = move.getDate();
+              moveLineService.applyCutOffDates(moveLine, move, cutOffDate, cutOffDate);
+              moveLine.setIsCutOffGenerated(true);
+            });
+  }
+
+  @Override
   public void applyCutOffDatesInEmptyLines(
       Move move, LocalDate cutOffStartDate, LocalDate cutOffEndDate) {
     if (CollectionUtils.isNotEmpty(move.getMoveLineList())) {
