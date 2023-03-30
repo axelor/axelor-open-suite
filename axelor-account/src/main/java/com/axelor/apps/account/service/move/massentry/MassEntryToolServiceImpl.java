@@ -153,6 +153,7 @@ public class MassEntryToolServiceImpl implements MassEntryToolService {
     boolean firstMoveLine = true;
 
     moveResult.setJournal(parentMove.getJournal());
+    moveResult.setFunctionalOriginSelect(parentMove.getFunctionalOriginSelect());
     moveResult.setCompany(parentMove.getCompany());
     moveResult.setCurrency(parentMove.getCurrency());
     moveResult.setCompanyBankDetails(parentMove.getCompanyBankDetails());
