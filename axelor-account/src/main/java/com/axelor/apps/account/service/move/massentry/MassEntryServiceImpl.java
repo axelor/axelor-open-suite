@@ -206,19 +206,7 @@ public class MassEntryServiceImpl implements MassEntryService {
         element.setMassEntryErrors("");
         int temporaryMoveNumber =
             element.getMoveLineMassEntryList().get(0).getTemporaryMoveNumber();
-
-        massEntryVerificationService.checkDateInAllMoveLineMassEntry(element, temporaryMoveNumber);
-        massEntryVerificationService.checkOriginDateInAllMoveLineMassEntry(
-            element, temporaryMoveNumber);
-        massEntryVerificationService.checkOriginInAllMoveLineMassEntry(
-            element, temporaryMoveNumber);
-        massEntryVerificationService.checkCurrencyRateInAllMoveLineMassEntry(
-            element, temporaryMoveNumber);
-        massEntryVerificationService.checkPartnerInAllMoveLineMassEntry(
-            element, temporaryMoveNumber);
-        massEntryVerificationService.checkWellBalancedMove(element, temporaryMoveNumber);
-        massEntryVerificationService.checkAccountAnalytic(element, temporaryMoveNumber);
-
+        massEntryVerificationService.checkPreconditionsMassEntry(element, temporaryMoveNumber);
         if (ObjectUtils.notEmpty(element.getMassEntryErrors())) {
           move.setMassEntryErrors(move.getMassEntryErrors() + element.getMassEntryErrors() + '\n');
           newMoveStatus = MoveRepository.STATUS_NEW;

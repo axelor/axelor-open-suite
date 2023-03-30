@@ -197,5 +197,10 @@ public class MoveLineMassEntryServiceImpl implements MoveLineMassEntryService {
         moveLine.getPartner().getCurrency() != null
             ? moveLine.getPartner().getCurrency().getCodeISO()
             : null);
+
+    // TODO display or update pfp validator on line when partner != null and account != null and
+    // account.useForPartnerBalance == true
+    // obviously just set it when partner.pfpValidator != null
+    // Same process when we update the account
   }
 }

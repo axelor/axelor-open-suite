@@ -10,9 +10,7 @@ import com.axelor.apps.account.db.repo.MoveLineMassEntryRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.move.MoveControlService;
 import com.axelor.apps.account.service.move.MoveLineControlService;
-import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
-import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Period;
@@ -30,8 +28,6 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
@@ -41,30 +37,35 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  protected MoveLineComputeAnalyticService moveLineComputeAnalyticService;
   protected PeriodService periodService;
   protected MoveLineToolService moveLineToolService;
-  protected MoveToolService moveToolService;
   protected MoveLineControlService moveLineControlService;
   protected MoveValidateService moveValidateService;
   protected MoveControlService moveControlService;
 
   @Inject
   public MassEntryVerificationServiceImpl(
-      MoveLineComputeAnalyticService moveLineComputeAnalyticService,
       PeriodService periodService,
       MoveLineToolService moveLineToolService,
-      MoveToolService moveToolService,
       MoveLineControlService moveLineControlService,
       MoveValidateService moveValidateService,
       MoveControlService moveControlService) {
-    this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
     this.periodService = periodService;
     this.moveLineToolService = moveLineToolService;
-    this.moveToolService = moveToolService;
     this.moveLineControlService = moveLineControlService;
     this.moveValidateService = moveValidateService;
     this.moveControlService = moveControlService;
+  }
+
+  @Override
+  public void checkPreconditionsMassEntry(Move move, int temporaryMoveNumber) {
+    this.checkDateInAllMoveLineMassEntry(move, temporaryMoveNumber);
+    this.checkOriginDateInAllMoveLineMassEntry(move, temporaryMoveNumber);
+    this.checkOriginInAllMoveLineMassEntry(move, temporaryMoveNumber);
+    this.checkCurrencyRateInAllMoveLineMassEntry(move, temporaryMoveNumber);
+    this.checkPartnerInAllMoveLineMassEntry(move, temporaryMoveNumber);
+    this.checkWellBalancedMove(move, temporaryMoveNumber);
+    this.checkAccountAnalytic(move, temporaryMoveNumber);
   }
 
   @Override
@@ -147,7 +148,6 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
 
   @Override
   public void checkDateInAllMoveLineMassEntry(Move move, int temporaryMoveNumber) {
-    List<Long> differentElements = new ArrayList<>();
     boolean hasDateError;
 
     MoveLineMassEntry firstMoveLine = move.getMoveLineMassEntryList().get(0);

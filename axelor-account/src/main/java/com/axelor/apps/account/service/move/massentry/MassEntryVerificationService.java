@@ -6,6 +6,8 @@ import com.axelor.exception.AxelorException;
 
 public interface MassEntryVerificationService {
 
+  void checkPreconditionsMassEntry(Move move, int temporaryMoveNumber);
+
   void checkAndReplaceFieldsInMoveLineMassEntry(
       MoveLineMassEntry moveLine,
       Move parentMove,
