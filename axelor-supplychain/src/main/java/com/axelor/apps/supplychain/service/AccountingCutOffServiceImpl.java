@@ -731,7 +731,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
               stockMoveLine.getRealQty().subtract(stockMoveLine.getQtyInvoiced()),
               stockMoveLine.getRealQty().scale(),
               purchaseOrderLine.getProduct());
-      if (ati && !recoveredTax) {
+      if (ati) {
         amountInCurrency = purchaseOrderLine.getInTaxTotal();
       } else {
         amountInCurrency = purchaseOrderLine.getExTaxTotal();
