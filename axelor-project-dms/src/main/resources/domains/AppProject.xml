@@ -9,6 +9,10 @@
 
     <decimal name="defaultIncrement" title="Default increment"/>
 
+    <track>
+      <field name="defaultIncrement" on="UPDATE"/>
+    </track>
+
   </entity>
 
 </domain-models>
