@@ -21,8 +21,8 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLineMassEntry;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineMassEntryRepository;
+import com.axelor.apps.account.service.move.massentry.MassEntryMoveCreateService;
 import com.axelor.apps.account.service.move.massentry.MassEntryService;
-import com.axelor.apps.account.service.move.massentry.MassEntryToolService;
 import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
@@ -57,7 +57,7 @@ public class MoveLineMassEntryController {
           if (ObjectUtils.notEmpty(move.getMoveLineMassEntryList())) {
             if (line.getTemporaryMoveNumber() <= 0) {
               line.setTemporaryMoveNumber(
-                  Beans.get(MassEntryToolService.class)
+                  Beans.get(MassEntryMoveCreateService.class)
                       .getMaxTemporaryMoveNumber(move.getMoveLineMassEntryList()));
               line.setCounter(move.getMoveLineMassEntryList().size() + 1);
             }
@@ -105,7 +105,7 @@ public class MoveLineMassEntryController {
             Beans.get(MassEntryService.class).resetMoveLineMassEntry(moveLine, manageCutOff);
             moveLine.setInputAction(MoveLineMassEntryRepository.MASS_ENTRY_INPUT_ACTION_LINE);
             moveLine.setTemporaryMoveNumber(
-                Beans.get(MassEntryToolService.class)
+                Beans.get(MassEntryMoveCreateService.class)
                         .getMaxTemporaryMoveNumber(move.getMoveLineMassEntryList())
                     + 1);
             moveLine.setCounter(1);

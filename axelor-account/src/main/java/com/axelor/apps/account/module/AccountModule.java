@@ -279,6 +279,8 @@ import com.axelor.apps.account.service.move.PaymentMoveLineDistributionService;
 import com.axelor.apps.account.service.move.PaymentMoveLineDistributionServiceImpl;
 import com.axelor.apps.account.service.move.SimulatedMoveService;
 import com.axelor.apps.account.service.move.SimulatedMoveServiceImpl;
+import com.axelor.apps.account.service.move.massentry.MassEntryMoveCreateService;
+import com.axelor.apps.account.service.move.massentry.MassEntryMoveCreateServiceImpl;
 import com.axelor.apps.account.service.move.massentry.MassEntryService;
 import com.axelor.apps.account.service.move.massentry.MassEntryServiceImpl;
 import com.axelor.apps.account.service.move.massentry.MassEntryToolService;
@@ -684,6 +686,8 @@ public class AccountModule extends AxelorModule {
     bind(MassEntryToolService.class).to(MassEntryToolServiceImpl.class);
 
     bind(MassEntryVerificationService.class).to(MassEntryVerificationServiceImpl.class);
+
+    bind(MassEntryMoveCreateService.class).to(MassEntryMoveCreateServiceImpl.class);
 
     bind(MoveLineMassEntryService.class).to(MoveLineMassEntryServiceImpl.class);
 

@@ -21,12 +21,6 @@ public interface MassEntryToolService {
 
   List<MoveLineMassEntry> getEditedMoveLineMassEntry(List<MoveLineMassEntry> moveLineList);
 
-  List<Move> createMoveListFromMassEntryList(Move parentMove);
-
-  Move createMoveFromMassEntryList(Move parentMove, int temporaryMoveNumber);
-
-  Integer getMaxTemporaryMoveNumber(List<MoveLineMassEntry> moveLineList);
-
   void setNewStatusSelectOnMassEntryLines(Move move, Integer newStatusSelect);
 
   boolean verifyJournalAuthorizeNewMove(List<MoveLineMassEntry> moveLineList, Journal journal);

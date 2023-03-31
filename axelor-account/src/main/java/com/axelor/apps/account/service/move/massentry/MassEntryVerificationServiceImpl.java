@@ -86,7 +86,7 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
     if (!moveLine.getDate().equals(newDate)) {
       moveLine.setDate(newDate);
 
-      Period period = null;
+      Period period;
       if (newDate != null && company != null) {
         period = periodService.getActivePeriod(newDate, company, YearRepository.TYPE_FISCAL);
         parentMove.setPeriod(period);

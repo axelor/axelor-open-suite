@@ -6,8 +6,6 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.MoveLineMassEntry;
 import com.axelor.apps.account.db.repo.MoveLineMassEntryRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.base.db.repo.YearRepository;
-import com.axelor.apps.base.service.PeriodService;
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
@@ -22,12 +20,8 @@ public class MassEntryToolServiceImpl implements MassEntryToolService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  protected PeriodService periodService;
-
   @Inject
-  public MassEntryToolServiceImpl(PeriodService periodService) {
-    this.periodService = periodService;
-  }
+  public MassEntryToolServiceImpl() {}
 
   @Override
   public void clearMoveLineMassEntryListAndAddNewLines(
@@ -130,77 +124,6 @@ public class MassEntryToolServiceImpl implements MassEntryToolService {
       }
     }
     return resultList;
-  }
-
-  @Override
-  public List<Move> createMoveListFromMassEntryList(Move parentMove) {
-    List<Move> moveList = new ArrayList<>();
-    Move moveToAdd;
-
-    for (int i = 1;
-        i <= this.getMaxTemporaryMoveNumber(parentMove.getMoveLineMassEntryList());
-        i++) {
-      moveToAdd = this.createMoveFromMassEntryList(parentMove, i);
-      moveList.add(moveToAdd);
-    }
-
-    return moveList;
-  }
-
-  @Override
-  public Move createMoveFromMassEntryList(Move parentMove, int temporaryMoveNumber) {
-    Move moveResult = new Move();
-    boolean firstMoveLine = true;
-
-    moveResult.setJournal(parentMove.getJournal());
-    moveResult.setFunctionalOriginSelect(parentMove.getFunctionalOriginSelect());
-    moveResult.setCompany(parentMove.getCompany());
-    moveResult.setCurrency(parentMove.getCurrency());
-    moveResult.setCompanyBankDetails(parentMove.getCompanyBankDetails());
-
-    for (MoveLineMassEntry massEntryLine : parentMove.getMoveLineMassEntryList()) {
-      if (massEntryLine.getTemporaryMoveNumber() == temporaryMoveNumber
-          && massEntryLine.getInputAction()
-              == MoveLineMassEntryRepository.MASS_ENTRY_INPUT_ACTION_LINE) {
-        if (firstMoveLine) {
-          if (massEntryLine.getDate() != null && moveResult.getCompany() != null) {
-            moveResult.setPeriod(
-                periodService.getPeriod(
-                    massEntryLine.getDate(), moveResult.getCompany(), YearRepository.TYPE_FISCAL));
-          }
-          moveResult.setReference(massEntryLine.getTemporaryMoveNumber().toString());
-          moveResult.setDate(massEntryLine.getDate());
-          moveResult.setPartner(massEntryLine.getPartner());
-          moveResult.setOrigin(massEntryLine.getOrigin());
-          moveResult.setStatusSelect(massEntryLine.getMoveStatusSelect());
-          moveResult.setOriginDate(massEntryLine.getOriginDate());
-          moveResult.setDescription(massEntryLine.getMoveDescription());
-          moveResult.setPaymentMode(massEntryLine.getMovePaymentMode());
-          moveResult.setPaymentCondition(massEntryLine.getMovePaymentCondition());
-          moveResult.setPartnerBankDetails(massEntryLine.getMovePartnerBankDetails());
-          firstMoveLine = false;
-        }
-        massEntryLine.setMove(moveResult);
-        massEntryLine.setFieldsErrorList(null);
-        moveResult.addMoveLineListItem(massEntryLine);
-        moveResult.addMoveLineMassEntryListItem(massEntryLine);
-      }
-    }
-
-    return moveResult;
-  }
-
-  @Override
-  public Integer getMaxTemporaryMoveNumber(List<MoveLineMassEntry> moveLineList) {
-    int max = 0;
-
-    for (MoveLineMassEntry moveLine : moveLineList) {
-      if (moveLine.getTemporaryMoveNumber() > max) {
-        max = moveLine.getTemporaryMoveNumber();
-      }
-    }
-
-    return max;
   }
 
   @Override
