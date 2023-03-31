@@ -394,7 +394,7 @@
         onChange="action-move-line-method-update-invoice-terms"/>
       <field name="account" readonlyIf="amountPaid &gt; 0" form-view="account-form"
         grid-view="account-grid" onSelect="action-move-line-attrs-domain-account" canEdit="false"
-        onChange="action-move-line-group-account-onchange"/>
+        onChange="action-move-line-method-account-onchange"/>
       <field name="debit"
         readonlyIf="credit &gt; 0 || amountPaid &gt; 0 || reconcileGroup != null"
         css="label-bold bold" onChange="action-move-line-method-debit-credit-onchange" colSpan="3"/>
@@ -853,15 +853,6 @@
   <action-method name="account-move-line-method-date-onchange">
     <call class="com.axelor.apps.account.web.MoveLineController" method="dateOnChange"/>
   </action-method>
-
-  <action-group name="action-move-line-group-account-onchange">
-    <action name="action-move-line-record-set-cut-off-dates"
-      if="__config__.app.getApp('account').manageCutOffPeriod"/>
-    <action name="action-move-line-record-set-cut-off-generated-false"/>
-    <action name="action-move-line-method-compute-analytic-distribution"/>
-    <action name="action-move-line-attrs-show-tax-amount"/>
-    <action name="action-move-line-attrs-set-hidden-analytic-distribution-panel"/>
-  </action-group>
 
   <action-group name="action-move-line-group-analytic-distribution-template-onchange">
     <action name="action-move-line-method-clear-analytic-move-line"/>
