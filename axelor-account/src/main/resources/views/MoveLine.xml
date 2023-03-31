@@ -849,6 +849,8 @@
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
     <action name="action-move-line-method-compute-financial-discount"
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
+    <action name="action-move-line-mass-entry-attrs-set-input-action-selection"
+      if="__parent__.massEntryStatusSelect != 0"/>
   </action-group>
 
   <action-group name="action-group-account-moveline-debitcredit-onchange">
