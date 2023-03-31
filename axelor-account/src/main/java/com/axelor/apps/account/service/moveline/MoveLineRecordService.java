@@ -17,4 +17,6 @@ public interface MoveLineRecordService {
   void setParentFromMove(MoveLine moveLine, Move move);
 
   void setOriginDate(MoveLine moveLine);
+
+  void setDebitCredit(MoveLine moveLine);
 }

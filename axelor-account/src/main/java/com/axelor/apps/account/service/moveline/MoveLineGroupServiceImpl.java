@@ -275,4 +275,19 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
 
     return valuesMap;
   }
+
+  @Override
+  public Map<String, Object> getCurrencyAmountRateOnChangeValuesMap(
+      MoveLine moveLine, LocalDate dueDate) throws AxelorException {
+    moveLineRecordService.setDebitCredit(moveLine);
+    moveLineInvoiceTermService.generateDefaultInvoiceTerm(moveLine, dueDate, false);
+
+    Map<String, Object> valuesMap = new HashMap<>();
+
+    valuesMap.put("debit", moveLine.getDebit());
+    valuesMap.put("credit", moveLine.getCredit());
+    valuesMap.put("invoiceTermList", moveLine.getInvoiceTermList());
+
+    return valuesMap;
+  }
 }

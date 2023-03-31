@@ -5,6 +5,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveLoadDefaultConfigService;
 import com.axelor.apps.base.db.Currency;
@@ -112,5 +113,21 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
   @Override
   public void setOriginDate(MoveLine moveLine) {
     moveLine.setOriginDate(moveLine.getDate());
+  }
+
+  @Override
+  public void setDebitCredit(MoveLine moveLine) {
+    if (moveLine.getAccount() == null) {
+      return;
+    }
+
+    BigDecimal amount = moveLine.getCurrencyAmount().multiply(moveLine.getCurrencyRate());
+
+    if (moveLine.getAccount().getCommonPosition() == AccountRepository.COMMON_POSITION_CREDIT) {
+      moveLine.setCredit(amount);
+    } else if (moveLine.getAccount().getCommonPosition()
+        == AccountRepository.COMMON_POSITION_DEBIT) {
+      moveLine.setDebit(amount);
+    }
   }
 }

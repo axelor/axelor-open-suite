@@ -753,4 +753,17 @@ public class MoveLineController {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
+
+  public void currencyAmountRateOnChange(ActionRequest request, ActionResponse response) {
+    try {
+      MoveLine moveLine = request.getContext().asType(MoveLine.class);
+      LocalDate dueDate = this.extractDueDate(request);
+
+      response.setValues(
+          Beans.get(MoveLineGroupService.class)
+              .getCurrencyAmountRateOnChangeValuesMap(moveLine, dueDate));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
 }
