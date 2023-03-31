@@ -29,8 +29,10 @@
 	]]></extra-code>
 
     <track>
-      <field name="sequence"/>
-      <field name="customizeMenu"/>
+      <field name="sequence" on="UPDATE"/>
+      <field name="customizeMenu" on="UPDATE"/>
+      <field name="isAppEnable" on="UPDATE"/>
+      <field name="customizeMenu" on="UPDATE"/>
     </track>
   </entity>
 
