@@ -240,7 +240,8 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
             .all()
             .filter(retrieveEligibleTermsQuery(paymentSession.getCompany()))
             .bind("company", paymentSession.getCompany())
-            .bind("paymentModeTypeSelect", paymentSession.getPaymentMode().getTypeSelect())
+            .bind("paymentMode", paymentSession.getPaymentMode())
+            .bind("paymentModeInOutSelect", paymentSession.getPaymentMode().getInOutSelect())
             .bind(
                 "paymentDatePlusMargin",
                 paymentSession
@@ -277,13 +278,12 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
             + " AND self.dueDate <= :paymentDatePlusMargin "
             + " AND self.moveLine.move.currency = :currency "
             + " AND self.bankDetails IS NOT NULL "
-            + " AND self.paymentMode.typeSelect = :paymentModeTypeSelect"
+            + " AND (self.paymentMode = :paymentMode OR self.paymentMode.inOutSelect != :paymentModeInOutSelect)"
             + " AND self.moveLine.account.isRetrievedOnPaymentSession = TRUE ";
     AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
-    if (company != null
-        && accountConfig != null
-        && accountConfig.getRetrieveDaybookMovesInPaymentSession()) {
-      generalCondition += " AND self.moveLine.move.statusSelect != 2 ";
+    if (!accountConfig.getRetrieveDaybookMovesInPaymentSession()) {
+      generalCondition +=
+          " AND self.moveLine.move.statusSelect != " + MoveRepository.STATUS_DAYBOOK + " ";
     }
 
     String termsMoveLineCondition =

@@ -67,7 +67,6 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
   }
 
   @Override
-  // @Transactional(rollbackOn = {Exception.class})
   public void generateCounterpartMoveLine(Move move, LocalDate singleTermDueDate)
       throws AxelorException {
     MoveLine counterPartMoveLine = createCounterpartMoveLine(move);
@@ -77,9 +76,6 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
     move.addMoveLineListItem(counterPartMoveLine);
     moveLineInvoiceTermService.generateDefaultInvoiceTerm(
         counterPartMoveLine, singleTermDueDate, true);
-
-    // TODO Need to be removed by AOS
-    // moveRepository.save(move);
   }
 
   @Override

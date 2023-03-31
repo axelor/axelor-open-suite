@@ -205,8 +205,15 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
   }
 
   @Override
-  // @Transactional(rollbackOn = {Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void autoTaxLineGenerate(Move move) throws AxelorException {
+
+    autoTaxLineGenerateNoSave(move);
+    moveRepository.save(move);
+  }
+
+  @Override
+  public void autoTaxLineGenerateNoSave(Move move) throws AxelorException {
 
     List<MoveLine> moveLineList = move.getMoveLineList();
 
@@ -254,8 +261,6 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
     }
 
     moveLineList.addAll(newMap.values());
-    // TODO Need to be removed by AOS
-    // moveRepository.save(move);
   }
 
   protected boolean isGenerateMoveLineForAutoTax(String accountType) {

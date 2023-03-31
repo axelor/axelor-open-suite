@@ -64,7 +64,7 @@ public class MoveLineMassEntryServiceImpl implements MoveLineMassEntryService {
     if (ObjectUtils.notEmpty(childMove.getMoveLineList())) {
       if (childMove.getStatusSelect().equals(MoveRepository.STATUS_NEW)
           || childMove.getStatusSelect().equals(MoveRepository.STATUS_SIMULATED)) {
-        moveLineTaxService.autoTaxLineGenerate(childMove);
+        moveLineTaxService.autoTaxLineGenerateNoSave(childMove);
         moveCounterPartService.generateCounterpartMoveLine(childMove, dueDate);
       }
       massEntryToolService.clearMoveLineMassEntryListAndAddNewLines(
