@@ -9,7 +9,7 @@
 
     <many-to-one name="stockLocation" title="FixedAsset.Location"
       ref="com.axelor.apps.stock.db.StockLocation"/>
-    <many-to-one name="trackingNumber" title="Tracking Number"
+    <many-to-one name="trackingNumber" title="Tracking number"
       ref="com.axelor.apps.stock.db.TrackingNumber"/>
 
   </entity>

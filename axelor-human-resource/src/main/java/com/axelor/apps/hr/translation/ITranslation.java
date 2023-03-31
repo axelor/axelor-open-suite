@@ -20,7 +20,7 @@ package com.axelor.apps.hr.translation;
 public interface ITranslation {
 
   public static final String EMPLOYEES_MANAGEMENT_APP_NAME = /*$$(*/
-      "value:Employees Managment"; /*)*/
+      "value:Employees Management"; /*)*/
   public static final String EXTRA_HOURS_APP_NAME = /*$$(*/ "value:Extra hours"; /*)*/
   public static final String EXPENSE_MANAGEMENT_APP_NAME = /*$$(*/ "value:Expense Management"; /*)*/
   public static final String TIMESHEET_MANAGEMENT_APP_NAME = /*$$(*/

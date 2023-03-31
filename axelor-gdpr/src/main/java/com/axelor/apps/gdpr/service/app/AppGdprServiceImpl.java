@@ -23,6 +23,6 @@ import com.axelor.studio.db.AppGdpr;
 public class AppGdprServiceImpl implements AppGdprService {
   @Override
   public AppGdpr getAppGDPR() {
-    return Query.of(AppGdpr.class).cacheable().fetchOne();
+    return Query.of(AppGdpr.class).fetchOne();
   }
 }

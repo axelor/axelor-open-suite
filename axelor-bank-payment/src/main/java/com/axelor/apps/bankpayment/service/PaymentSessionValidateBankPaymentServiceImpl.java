@@ -53,6 +53,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.DateService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.StringUtils;
@@ -64,7 +65,6 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -81,6 +81,7 @@ public class PaymentSessionValidateBankPaymentServiceImpl
   protected BankOrderRepository bankOrderRepo;
   protected CurrencyService currencyService;
   protected AppAccountService appAccountService;
+  protected DateService dateService;
 
   @Inject
   public PaymentSessionValidateBankPaymentServiceImpl(
@@ -107,7 +108,8 @@ public class PaymentSessionValidateBankPaymentServiceImpl
       BankOrderRepository bankOrderRepo,
       CurrencyService currencyService,
       AppAccountService appAccountService,
-      InvoicePaymentRepository invoicePaymentRepo) {
+      InvoicePaymentRepository invoicePaymentRepo,
+      DateService dateService) {
     super(
         appBaseService,
         moveCreateService,
@@ -133,6 +135,7 @@ public class PaymentSessionValidateBankPaymentServiceImpl
     this.bankOrderRepo = bankOrderRepo;
     this.currencyService = currencyService;
     this.appAccountService = appAccountService;
+    this.dateService = dateService;
   }
 
   @Override
@@ -346,17 +349,18 @@ public class PaymentSessionValidateBankPaymentServiceImpl
         paymentSession.getPaymentMode().getName(), paymentSession.getCompany().getName());
   }
 
-  protected String getReference(InvoiceTerm invoiceTerm) {
+  protected String getReference(InvoiceTerm invoiceTerm) throws AxelorException {
     if (StringUtils.isEmpty(invoiceTerm.getMoveLine().getOrigin())) {
       return null;
     }
     return String.format(
         "%s (%s)",
         invoiceTerm.getMoveLine().getOrigin(),
-        invoiceTerm.getDueDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+        invoiceTerm.getDueDate().format(dateService.getDateFormat()));
   }
 
-  protected void updateReference(InvoiceTerm invoiceTerm, BankOrderLine bankOrderLine) {
+  protected void updateReference(InvoiceTerm invoiceTerm, BankOrderLine bankOrderLine)
+      throws AxelorException {
     String newReference =
         String.format(
             "%s/%s", bankOrderLine.getReceiverReference(), this.getReference(invoiceTerm));

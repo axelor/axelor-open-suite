@@ -524,4 +524,10 @@ public final class BaseExceptionMessage {
 
   public static final String ADVANCED_IMPORT_NOT_VALIDATED = /*$$(*/
       "Advanced import is not validated" /*)*/;
+
+  public static final String COMPANY_INVALID_LOCALE = /*$$(*/
+      "Warning: locale %s is invalid, please enter a valid locale." /*)*/;
+
+  public static final String COMPANY_LOCALE_MISSING = /*$$(*/
+      "Please fill locale for the company %s" /*)*/;
 }

@@ -28,14 +28,12 @@ import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
+import com.axelor.i18n.L10n;
 import com.axelor.inject.Beans;
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
 public class SupplierViewServiceImpl implements SupplierViewService {
-  protected static final DateTimeFormatter DATE_FORMATTER =
-      DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
   protected static final String SUPPLIER_PORTAL_NO_DATE = /*$$(*/ "None" /*)*/;
 
@@ -56,10 +54,11 @@ public class SupplierViewServiceImpl implements SupplierViewService {
         "$quotationInProgress",
         getCount(PurchaseOrder.class, getPurchaseQuotationsInProgressOfSupplier(user)));
     PurchaseOrder lastOrder = getData(PurchaseOrder.class, getLastPurchaseOrderOfSupplier(user));
+    L10n dateFormat = L10n.getInstance();
     map.put(
         "$lastOrder",
         lastOrder != null
-            ? lastOrder.getValidationDateTime().format(DATE_FORMATTER)
+            ? dateFormat.format(lastOrder.getValidationDateTime())
             : I18n.get(SUPPLIER_PORTAL_NO_DATE));
 
     /* StockMove */
@@ -67,14 +66,14 @@ public class SupplierViewServiceImpl implements SupplierViewService {
     map.put(
         "$lastDelivery",
         stockMoveLastDelivery != null
-            ? stockMoveLastDelivery.getRealDate().format(DATE_FORMATTER)
+            ? dateFormat.format(stockMoveLastDelivery.getRealDate())
             : I18n.get(SUPPLIER_PORTAL_NO_DATE));
 
     StockMove stockMoveNextDelivery = getData(StockMove.class, getNextDeliveryOfSupplier(user));
     map.put(
         "$nextDelivery",
         stockMoveNextDelivery != null
-            ? stockMoveNextDelivery.getEstimatedDate().format(DATE_FORMATTER)
+            ? dateFormat.format(stockMoveNextDelivery.getEstimatedDate())
             : I18n.get(SUPPLIER_PORTAL_NO_DATE));
 
     map.put(

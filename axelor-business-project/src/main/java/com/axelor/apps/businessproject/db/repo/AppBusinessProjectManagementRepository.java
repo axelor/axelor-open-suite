@@ -32,10 +32,10 @@ public class AppBusinessProjectManagementRepository extends AppBusinessProjectRe
   @Override
   public AppBusinessProject save(AppBusinessProject entity) {
     try {
-      if (!Strings.isNullOrEmpty(entity.getExculdeTaskInvoicing())) {
+      if (!Strings.isNullOrEmpty(entity.getExcludeTaskInvoicing())) {
         Beans.get(ProjectTaskRepository.class)
             .all()
-            .filter(entity.getExculdeTaskInvoicing())
+            .filter(entity.getExcludeTaskInvoicing())
             .count();
       }
       return super.save(entity);

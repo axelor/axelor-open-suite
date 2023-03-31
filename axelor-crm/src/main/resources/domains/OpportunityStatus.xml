@@ -5,7 +5,7 @@
 
   <module name="crm" package="com.axelor.apps.crm.db"/>
 
-  <entity name="OpportunityStatus" lang="java">
+  <entity name="OpportunityStatus">
 
     <string name="name" title="Name" required="true"/>
     <integer name="sequence" title="Sequence" unique="true"/>
