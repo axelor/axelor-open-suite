@@ -12,6 +12,7 @@ import com.axelor.apps.account.service.move.MoveControlService;
 import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
+import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryToolService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.PeriodRepository;
@@ -42,6 +43,7 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
   protected MoveLineControlService moveLineControlService;
   protected MoveValidateService moveValidateService;
   protected MoveControlService moveControlService;
+  protected MoveLineMassEntryToolService moveLineMassEntryToolService;
 
   @Inject
   public MassEntryVerificationServiceImpl(
@@ -49,12 +51,14 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
       MoveLineToolService moveLineToolService,
       MoveLineControlService moveLineControlService,
       MoveValidateService moveValidateService,
-      MoveControlService moveControlService) {
+      MoveControlService moveControlService,
+      MoveLineMassEntryToolService moveLineMassEntryToolService) {
     this.periodService = periodService;
     this.moveLineToolService = moveLineToolService;
     this.moveLineControlService = moveLineControlService;
     this.moveValidateService = moveValidateService;
     this.moveControlService = moveControlService;
+    this.moveLineMassEntryToolService = moveLineMassEntryToolService;
   }
 
   @Override
@@ -143,6 +147,13 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
     if (!moveLine.getVatSystemSelect().equals(newVatSystemSelect)
         && moveLine.getIsEdited() == MoveLineMassEntryRepository.MASS_ENTRY_IS_EDITED_ALL) {
       moveLine.setVatSystemSelect(newVatSystemSelect);
+    }
+
+    // Check move line mass entry partner
+    if (parentMove.getJournal().getJournalType().getTechnicalTypeSelect()
+            == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE
+        && !moveLine.getPartner().equals(newMoveLine.getPartner())) {
+      moveLineMassEntryToolService.setPartnerChanges(moveLine, newMoveLine);
     }
   }
 

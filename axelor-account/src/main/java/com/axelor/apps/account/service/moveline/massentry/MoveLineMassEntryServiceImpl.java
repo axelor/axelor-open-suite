@@ -164,43 +164,47 @@ public class MoveLineMassEntryServiceImpl implements MoveLineMassEntryService {
   @Override
   public void setPartnerAndRelatedFields(Move move, MoveLineMassEntry moveLine)
       throws AxelorException {
-    if (move != null && move.getJournal() != null) {
-      moveLineMassEntryToolService.setPaymentModeOnMoveLineMassEntry(
-          moveLine, move.getJournal().getJournalType().getTechnicalTypeSelect());
+    if (moveLine.getPartner() == null) {
+      moveLineMassEntryToolService.setPartnerChanges(moveLine, null);
+    } else {
+      if (move != null && move.getJournal() != null) {
+        int journalTechnicalTypeSelect =
+            move.getJournal().getJournalType().getTechnicalTypeSelect();
+        moveLineMassEntryToolService.setPaymentModeOnMoveLineMassEntry(
+            moveLine, journalTechnicalTypeSelect);
 
-      move.setPartner(moveLine.getPartner());
-      move.setPaymentMode(moveLine.getMovePaymentMode());
+        move.setPartner(moveLine.getPartner());
+        moveLine.setMovePaymentCondition(null);
+        if (journalTechnicalTypeSelect != JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY) {
+          moveLine.setMovePaymentCondition(moveLine.getPartner().getPaymentCondition());
+        }
 
-      moveLine.setMovePaymentCondition(null);
-      if (move.getJournal().getJournalType().getTechnicalTypeSelect()
-          != JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY) {
-        moveLine.setMovePaymentCondition(moveLine.getPartner().getPaymentCondition());
+        this.loadAccountInformation(move, moveLine);
+        move.setPartner(null);
+
+        AccountingSituation accountingSituation =
+            accountingSituationService.getAccountingSituation(
+                moveLine.getPartner(), move.getCompany());
+        moveLine.setVatSystemSelect(null);
+        if (accountingSituation != null) {
+          moveLine.setVatSystemSelect(accountingSituation.getVatSystemSelect());
+        }
       }
 
-      this.loadAccountInformation(move, moveLine);
+      moveLine.setMovePartnerBankDetails(
+          moveLine.getPartner().getBankDetailsList().stream()
+              .filter(it -> it.getIsDefault() && it.getActive())
+              .findFirst()
+              .orElse(null));
+      moveLine.setCurrencyCode(
+          moveLine.getPartner().getCurrency() != null
+              ? moveLine.getPartner().getCurrency().getCodeISO()
+              : null);
 
-      AccountingSituation accountingSituation =
-          accountingSituationService.getAccountingSituation(
-              moveLine.getPartner(), move.getCompany());
-      moveLine.setVatSystemSelect(null);
-      if (accountingSituation != null) {
-        moveLine.setVatSystemSelect(accountingSituation.getVatSystemSelect());
-      }
+      // TODO display or update pfp validator on line when partner != null and account != null and
+      // account.useForPartnerBalance == true
+      // obviously just set it when partner.pfpValidator != null
+      // Same process when we update the account
     }
-
-    moveLine.setMovePartnerBankDetails(
-        moveLine.getPartner().getBankDetailsList().stream()
-            .filter(it -> it.getIsDefault() && it.getActive())
-            .findFirst()
-            .orElse(null));
-    moveLine.setCurrencyCode(
-        moveLine.getPartner().getCurrency() != null
-            ? moveLine.getPartner().getCurrency().getCodeISO()
-            : null);
-
-    // TODO display or update pfp validator on line when partner != null and account != null and
-    // account.useForPartnerBalance == true
-    // obviously just set it when partner.pfpValidator != null
-    // Same process when we update the account
   }
 }

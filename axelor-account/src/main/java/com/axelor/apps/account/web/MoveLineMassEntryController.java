@@ -131,16 +131,9 @@ public class MoveLineMassEntryController {
       if (line != null
           && parentContext != null
           && Move.class.equals(parentContext.getContextClass())) {
-        if (line.getPartner() == null) {
-          line.setPartnerId(null);
-          line.setPartnerSeq(null);
-          line.setPartnerFullName(null);
-          line.setMovePartnerBankDetails(null);
-          line.setVatSystemSelect(null);
-        } else {
-          Move move = parentContext.asType(Move.class);
-          Beans.get(MoveLineMassEntryService.class).setPartnerAndRelatedFields(move, line);
-        }
+        Move move = parentContext.asType(Move.class);
+        Beans.get(MoveLineMassEntryService.class).setPartnerAndRelatedFields(move, line);
+        line.setIsEdited(MoveLineMassEntryRepository.MASS_ENTRY_IS_EDITED_ALL);
       }
       response.setValues(line);
     } catch (Exception e) {
