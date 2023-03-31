@@ -52,7 +52,7 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -128,7 +128,7 @@ public class ImportSupplyChain {
           stockMoveService.realize(stockMove);
           stockMove.setRealDate(purchaseOrder.getEstimatedReceiptDate());
         }
-        purchaseOrder.setValidationDate(purchaseOrder.getOrderDate());
+        purchaseOrder.setValidationDateTime(purchaseOrder.getOrderDate().atStartOfDay());
         purchaseOrder.setValidatedByUser(AuthUtils.getUser());
         purchaseOrder.setSupplierPartner(purchaseOrderService.validateSupplier(purchaseOrder));
         Invoice invoice =
@@ -139,14 +139,17 @@ public class ImportSupplyChain {
 
         invoice.setInternalReference(purchaseOrder.getInternalReference());
 
-        LocalDate date;
-        if (purchaseOrder.getValidationDate() != null) {
-          date = purchaseOrder.getValidationDate();
+        LocalDateTime dateTime;
+        if (purchaseOrder.getValidationDateTime() != null) {
+          dateTime = purchaseOrder.getValidationDateTime();
         } else {
-          date = Beans.get(AppBaseService.class).getTodayDate(purchaseOrder.getCompany());
+          dateTime =
+              Beans.get(AppBaseService.class)
+                  .getTodayDateTime(purchaseOrder.getCompany())
+                  .toLocalDateTime();
         }
-        invoice.setInvoiceDate(date);
-        invoice.setOriginDate(date.minusDays(15));
+        invoice.setInvoiceDate(dateTime.toLocalDate());
+        invoice.setOriginDate(dateTime.toLocalDate().minusDays(15));
         invoiceTermService.computeInvoiceTerms(invoice);
 
         invoiceService.validateAndVentilate(invoice);
