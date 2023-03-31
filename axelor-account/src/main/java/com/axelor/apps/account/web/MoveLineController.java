@@ -29,11 +29,8 @@ import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.AccountService;
 import com.axelor.apps.account.service.IrrecoverableService;
-import com.axelor.apps.account.service.analytic.AnalyticDistributionTemplateService;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
-import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
@@ -417,37 +414,6 @@ public class MoveLineController {
     }
   }
 
-  public void clearAnalytic(ActionRequest request, ActionResponse response) {
-    try {
-      MoveLine moveLine = request.getContext().asType(MoveLine.class);
-      if (moveLine != null) {
-        Beans.get(MoveLineComputeAnalyticService.class).clearAnalyticAccounting(moveLine);
-        response.setValues(moveLine);
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void checkAnalyticByTemplate(ActionRequest request, ActionResponse response) {
-    try {
-      MoveLine moveLine = request.getContext().asType(MoveLine.class);
-      if (moveLine != null && moveLine.getAnalyticDistributionTemplate() != null) {
-        AnalyticMoveLineService analyticMoveLineService = Beans.get(AnalyticMoveLineService.class);
-        analyticMoveLineService.validateLines(
-            moveLine.getAnalyticDistributionTemplate().getAnalyticDistributionLineList());
-        if (!analyticMoveLineService.validateAnalyticMoveLines(
-            moveLine.getAnalyticMoveLineList())) {
-          response.setError(I18n.get(AccountExceptionMessage.INVALID_ANALYTIC_MOVE_LINE));
-        }
-        Beans.get(AnalyticDistributionTemplateService.class)
-            .validateTemplatePercentages(moveLine.getAnalyticDistributionTemplate());
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-    }
-  }
-
   public void checkDateInPeriod(ActionRequest request, ActionResponse response) {
     try {
       if (request.getContext().getParent() != null) {
@@ -457,19 +423,6 @@ public class MoveLineController {
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-    }
-  }
-
-  public void printAnalyticAccounts(ActionRequest request, ActionResponse response) {
-    try {
-      MoveLine moveLine = request.getContext().asType(MoveLine.class);
-      Move move = request.getContext().getParent().asType(Move.class);
-      if (moveLine != null && move != null) {
-        Beans.get(AnalyticLineService.class).printAnalyticAccount(moveLine, move.getCompany());
-        response.setValues(moveLine);
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
     }
   }
 
@@ -647,32 +600,6 @@ public class MoveLineController {
     }
   }
 
-  public void checkAnalyticAccount(ActionRequest request, ActionResponse response) {
-    try {
-      AccountService accountService = Beans.get(AccountService.class);
-
-      if (Move.class.equals(request.getContext().getContextClass())) {
-        Move move = request.getContext().asType(Move.class);
-        if (move != null && CollectionUtils.isNotEmpty(move.getMoveLineList())) {
-          for (MoveLine moveLine : move.getMoveLineList()) {
-            if (moveLine != null && moveLine.getAccount() != null) {
-              accountService.checkAnalyticAxis(
-                  moveLine.getAccount(), moveLine.getAnalyticDistributionTemplate());
-            }
-          }
-        }
-      } else {
-        MoveLine moveLine = request.getContext().asType(MoveLine.class);
-        if (moveLine != null && moveLine.getAccount() != null) {
-          accountService.checkAnalyticAxis(
-              moveLine.getAccount(), moveLine.getAnalyticDistributionTemplate());
-        }
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-    }
-  }
-
   public void onNew(ActionRequest request, ActionResponse response) {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
@@ -799,6 +726,29 @@ public class MoveLineController {
 
       response.setValues(
           Beans.get(MoveLineGroupService.class).getDateOnChangeValuesMap(moveLine, move));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void analyticDistributionTemplateOnChange(ActionRequest request, ActionResponse response) {
+    try {
+      MoveLine moveLine = request.getContext().asType(MoveLine.class);
+      Move move;
+
+      if (request.getContext().getParent() != null
+          && Move.class.equals(request.getContext().getParent().getContextClass())) {
+        move = request.getContext().getParent().asType(Move.class);
+      } else {
+        move = moveLine.getMove();
+      }
+
+      MoveLineGroupService moveLineGroupService = Beans.get(MoveLineGroupService.class);
+
+      response.setValues(
+          moveLineGroupService.getAnalyticDistributionTemplateOnChangeValuesMap(moveLine, move));
+      response.setAttrs(
+          moveLineGroupService.getAnalyticDistributionTemplateOnChangeAttrsMap(moveLine, move));
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
