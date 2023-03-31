@@ -132,27 +132,27 @@
       form-view="analytic-account-form"
       readonlyIf="account.analyticDistributionAuthorized == false || !account"
       onSelect="action-move-line-attrs-set-domain-axis"
-      onChange="action-move-line-group-analytic-axis-onchange"/>
+      onChange="action-move-line-method-analytic-axis-onchange"/>
     <field name="axis2AnalyticAccount" grid-view="analytic-account-grid"
       form-view="analytic-account-form"
       readonlyIf="account.analyticDistributionAuthorized == false || !account"
       onSelect="action-move-line-attrs-set-domain-axis"
-      onChange="action-move-line-group-analytic-axis-onchange"/>
+      onChange="action-move-line-method-analytic-axis-onchange"/>
     <field name="axis3AnalyticAccount" grid-view="analytic-account-grid"
       form-view="analytic-account-form"
       readonlyIf="account.analyticDistributionAuthorized == false || !account"
       onSelect="action-move-line-attrs-set-domain-axis"
-      onChange="action-move-line-group-analytic-axis-onchange"/>
+      onChange="action-move-line-method-analytic-axis-onchange"/>
     <field name="axis4AnalyticAccount" grid-view="analytic-account-grid"
       form-view="analytic-account-form"
       readonlyIf="account.analyticDistributionAuthorized == false || !account"
       onSelect="action-move-line-attrs-set-domain-axis"
-      onChange="action-move-line-group-analytic-axis-onchange"/>
+      onChange="action-move-line-method-analytic-axis-onchange"/>
     <field name="axis5AnalyticAccount" grid-view="analytic-account-grid"
       form-view="analytic-account-form"
       readonlyIf="account.analyticDistributionAuthorized == false || !account"
       onSelect="action-move-line-attrs-set-domain-axis"
-      onChange="action-move-line-group-analytic-axis-onchange"/>
+      onChange="action-move-line-method-analytic-axis-onchange"/>
     <field name="origin" width="120" hidden="true"/>
     <field name="description"
       requiredIf="$isDescriptionRequired || move.company.accountConfig.isDescriptionRequired"/>
@@ -313,27 +313,27 @@
         form-view="analytic-account-form"
         readonlyIf="account.analyticDistributionAuthorized == false || !account"
         onSelect="action-move-line-attrs-set-domain-axis"
-        onChange="action-move-line-group-analytic-axis-onchange"/>
+        onChange="action-move-line-method-analytic-axis-onchange"/>
       <field name="axis2AnalyticAccount" grid-view="analytic-account-grid"
         form-view="analytic-account-form"
         readonlyIf="account.analyticDistributionAuthorized == false || !account"
         onSelect="action-move-line-attrs-set-domain-axis"
-        onChange="action-move-line-group-analytic-axis-onchange"/>
+        onChange="action-move-line-method-analytic-axis-onchange"/>
       <field name="axis3AnalyticAccount" grid-view="analytic-account-grid"
         form-view="analytic-account-form"
         readonlyIf="account.analyticDistributionAuthorized == false || !account"
         onSelect="action-move-line-attrs-set-domain-axis"
-        onChange="action-move-line-group-analytic-axis-onchange"/>
+        onChange="action-move-line-method-analytic-axis-onchange"/>
       <field name="axis4AnalyticAccount" grid-view="analytic-account-grid"
         form-view="analytic-account-form"
         readonlyIf="account.analyticDistributionAuthorized == false || !account"
         onSelect="action-move-line-attrs-set-domain-axis"
-        onChange="action-move-line-group-analytic-axis-onchange"/>
+        onChange="action-move-line-method-analytic-axis-onchange"/>
       <field name="axis5AnalyticAccount" grid-view="analytic-account-grid"
         form-view="analytic-account-form"
         readonlyIf="account.analyticDistributionAuthorized == false || !account"
         onSelect="action-move-line-attrs-set-domain-axis"
-        onChange="action-move-line-group-analytic-axis-onchange"/>
+        onChange="action-move-line-method-analytic-axis-onchange"/>
       <panel-related name="analyticMoveLineListPanelCanNew"
         field="analyticMoveLineList" grid-view="analytic-move-line-distribution-grid"
         form-view="analytic-move-line-distribution-form" colSpan="12"
@@ -605,8 +605,7 @@
       </panel>
       <field name="account" form-view="account-form" grid-view="account-grid"
         onSelect="action-move-line-attrs-domain-account" canEdit="false"
-        readonlyIf="amountPaid &gt; 0"
-        onChange="action-move-line-method-account-onchange"/>
+        readonlyIf="amountPaid &gt; 0" onChange="action-move-line-method-account-onchange"/>
       <field name="partner" form-view="partner-form" grid-view="partner-grid"
         onSelect="action-move-line-attrs-domain-partner" canEdit="false"
         readonlyIf="amountPaid &gt; 0"
@@ -847,24 +846,9 @@
     <call class="com.axelor.apps.account.web.MoveLineController" method="accountOnChange"/>
   </action-method>
 
-  <action-group name="action-move-line-group-analytic-axis-onchange">
-    <action name="action-move-line-method-clear-analytic-move-line"
-      if="axis1AnalyticAccount == null &amp;&amp; axis2AnalyticAccount == null &amp;&amp; axis3AnalyticAccount == null &amp;&amp; axis4AnalyticAccount == null &amp;&amp; axis5AnalyticAccount == null"/>
-    <action name="action-move-line-method-axis-create-analytic-line"/>
-    <action name="action-move-line-method-set-required-analytic-accounts"/>
-    <action name="action-move-line-method-clear-analytic-move-line"
-      if="axis1AnalyticAccount == null &amp;&amp; axis2AnalyticAccount == null &amp;&amp; axis3AnalyticAccount == null &amp;&amp; axis4AnalyticAccount == null &amp;&amp; axis5AnalyticAccount == null"/>
-  </action-group>
-
-  <action-record name="action-move-line-record-get-creditdebit-balance"
-    model="com.axelor.apps.account.db.MoveLine">
-    <field name="debit"
-      expr="eval: __parent__?.moveLineList.collect{new BigDecimal(it.credit)}.sum() - __parent__?.moveLineList.collect{new BigDecimal(it.debit)}.sum()"
-      if="eval: __parent__?.moveLineList.collect{new BigDecimal(it.credit)}.sum() &gt; __parent__?.moveLineList.collect{new BigDecimal(it.debit)}.sum()"/>
-    <field name="credit"
-      expr="eval: __parent__?.moveLineList.collect{new BigDecimal(it.debit)}.sum() - __parent__?.moveLineList.collect{new BigDecimal(it.credit)}.sum()"
-      if="eval: __parent__?.moveLineList.collect{new BigDecimal(it.credit)}.sum() &lt; __parent__?.moveLineList.collect{new BigDecimal(it.debit)}.sum()"/>
-  </action-record>
+  <action-method name="action-move-line-method-analytic-axis-onchange">
+    <call class="com.axelor.apps.account.web.MoveLineController" method="analyticAxisOnChange"/>
+  </action-method>
 
   <action-group name="account-move-line-group-date-onchange">
     <action name="account-move-line-record-date-onchange"/>
@@ -1075,11 +1059,6 @@
 
   <action-method name="action-account-move-line-method-set-partner-readonly">
     <call class="com.axelor.apps.account.web.MoveLineController" method="setPartnerReadonlyIf"/>
-  </action-method>
-
-  <action-method name="action-move-line-method-axis-create-analytic-line">
-    <call class="com.axelor.apps.account.web.MoveLineController"
-      method="createAnalyticAccountLines"/>
   </action-method>
 
   <action-method name="action-move-line-attrs-set-domain-axis">

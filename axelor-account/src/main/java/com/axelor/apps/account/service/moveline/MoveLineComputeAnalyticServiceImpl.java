@@ -235,13 +235,32 @@ public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyt
     moveLine.setAxis3AnalyticAccount(null);
     moveLine.setAxis4AnalyticAccount(null);
     moveLine.setAxis5AnalyticAccount(null);
+
+    this.clearAnalyticMoveLineList(moveLine);
+
+    return moveLine;
+  }
+
+  @Override
+  public MoveLine clearAnalyticAccountingIfEmpty(MoveLine moveLine) {
+    if (moveLine.getAxis1AnalyticAccount() == null
+        && moveLine.getAxis2AnalyticAccount() == null
+        && moveLine.getAxis3AnalyticAccount() == null
+        && moveLine.getAxis4AnalyticAccount() == null
+        && moveLine.getAxis5AnalyticAccount() == null) {
+      this.clearAnalyticMoveLineList(moveLine);
+    }
+
+    return moveLine;
+  }
+
+  protected void clearAnalyticMoveLineList(MoveLine moveLine) {
     if (!CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())) {
       moveLine
           .getAnalyticMoveLineList()
           .forEach(analyticMoveLine -> analyticMoveLine.setMoveLine(null));
       moveLine.getAnalyticMoveLineList().clear();
     }
-    return moveLine;
   }
 
   @Override

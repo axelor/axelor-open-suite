@@ -232,4 +232,28 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
 
     return attrsMap;
   }
+
+  @Override
+  public Map<String, Object> getAnalyticAxisOnChangeValuesMap(MoveLine moveLine, Move move)
+      throws AxelorException {
+    moveLineComputeAnalyticService.clearAnalyticAccountingIfEmpty(moveLine);
+    moveLineComputeAnalyticService.createAnalyticDistributionWithTemplate(moveLine, move);
+    moveLineComputeAnalyticService.clearAnalyticAccountingIfEmpty(moveLine);
+
+    Map<String, Object> valuesMap = new HashMap<>();
+
+    valuesMap.put("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
+
+    return valuesMap;
+  }
+
+  @Override
+  public Map<String, Map<String, Object>> getAnalyticAxisOnChangeAttrsMap(
+      MoveLine moveLine, Move move) throws AxelorException {
+    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+
+    moveLineAttrsService.addAnalyticAccountRequired(moveLine, move, attrsMap);
+
+    return attrsMap;
+  }
 }

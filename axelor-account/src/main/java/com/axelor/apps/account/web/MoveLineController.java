@@ -92,32 +92,6 @@ public class MoveLineController {
     }
   }
 
-  public void createAnalyticDistributionWithTemplate(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-    try {
-
-      Context context = request.getContext();
-      Context parent = context.getParent();
-      MoveLine moveLine = context.asType(MoveLine.class);
-      Move move = null;
-      if (ObjectUtils.notEmpty(parent) && parent.getContextClass() == Move.class) {
-        move = parent.asType(Move.class);
-      } else {
-        move = moveLine.getMove();
-      }
-
-      if (move != null
-          && Beans.get(MoveLineComputeAnalyticService.class)
-              .checkManageAnalytic(move.getCompany())) {
-        Beans.get(MoveLineComputeAnalyticService.class)
-            .createAnalyticDistributionWithTemplate(moveLine);
-        response.setValue("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
   public void usherProcess(ActionRequest request, ActionResponse response) {
 
     MoveLine moveLine = request.getContext().asType(MoveLine.class);
@@ -785,6 +759,27 @@ public class MoveLineController {
           moveLineGroupService.getAccountOnChangeValuesMap(
               moveLine, move, cutOffStartDate, cutOffEndDate, dueDate));
       response.setAttrs(moveLineGroupService.getAccountOnChangeAttrsMap(moveLine, move));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void analyticAxisOnChange(ActionRequest request, ActionResponse response) {
+    try {
+      MoveLine moveLine = request.getContext().asType(MoveLine.class);
+      Move move;
+
+      if (request.getContext().getParent() != null
+          && Move.class.equals(request.getContext().getParent().getContextClass())) {
+        move = request.getContext().getParent().asType(Move.class);
+      } else {
+        move = moveLine.getMove();
+      }
+
+      MoveLineGroupService moveLineGroupService = Beans.get(MoveLineGroupService.class);
+
+      response.setValues(moveLineGroupService.getAnalyticAxisOnChangeValuesMap(moveLine, move));
+      response.setAttrs(moveLineGroupService.getAnalyticAxisOnChangeAttrsMap(moveLine, move));
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
