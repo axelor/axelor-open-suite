@@ -43,4 +43,6 @@ public interface MoveLineGroupService {
 
   Map<String, Map<String, Object>> getAnalyticAxisOnChangeAttrsMap(MoveLine moveLine, Move move)
       throws AxelorException;
+
+  Map<String, Object> getDateOnChangeValuesMap(MoveLine moveLine, Move move) throws AxelorException;
 }

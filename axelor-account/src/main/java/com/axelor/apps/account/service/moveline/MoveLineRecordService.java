@@ -15,4 +15,6 @@ public interface MoveLineRecordService {
   void refreshAccountInformation(MoveLine moveLine, Move move) throws AxelorException;
 
   void setParentFromMove(MoveLine moveLine, Move move);
+
+  void setOriginDate(MoveLine moveLine);
 }

@@ -784,4 +784,23 @@ public class MoveLineController {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
+
+  public void dateOnChange(ActionRequest request, ActionResponse response) {
+    try {
+      MoveLine moveLine = request.getContext().asType(MoveLine.class);
+      Move move;
+
+      if (request.getContext().getParent() != null
+          && Move.class.equals(request.getContext().getParent().getContextClass())) {
+        move = request.getContext().getParent().asType(Move.class);
+      } else {
+        move = moveLine.getMove();
+      }
+
+      response.setValues(
+          Beans.get(MoveLineGroupService.class).getDateOnChangeValuesMap(moveLine, move));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
 }

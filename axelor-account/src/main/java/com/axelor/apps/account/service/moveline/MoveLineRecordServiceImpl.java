@@ -108,4 +108,9 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
       moveLine.setPartner(move.getPartner());
     }
   }
+
+  @Override
+  public void setOriginDate(MoveLine moveLine) {
+    moveLine.setOriginDate(moveLine.getDate());
+  }
 }

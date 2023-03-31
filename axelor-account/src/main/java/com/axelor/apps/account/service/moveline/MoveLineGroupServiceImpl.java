@@ -18,6 +18,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
   protected MoveLineComputeAnalyticService moveLineComputeAnalyticService;
   protected MoveLineCheckService moveLineCheckService;
   protected MoveLineInvoiceTermService moveLineInvoiceTermService;
+  protected MoveLineToolService moveLineToolService;
   protected AnalyticLineService analyticLineService;
 
   @Inject
@@ -29,6 +30,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
       MoveLineComputeAnalyticService moveLineComputeAnalyticService,
       MoveLineCheckService moveLineCheckService,
       MoveLineInvoiceTermService moveLineInvoiceTermService,
+      MoveLineToolService moveLineToolService,
       AnalyticLineService analyticLineService) {
     this.moveLineService = moveLineService;
     this.moveLineDefaultService = moveLineDefaultService;
@@ -37,6 +39,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
     this.moveLineCheckService = moveLineCheckService;
     this.moveLineInvoiceTermService = moveLineInvoiceTermService;
+    this.moveLineToolService = moveLineToolService;
     this.analyticLineService = analyticLineService;
   }
 
@@ -255,5 +258,20 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
     moveLineAttrsService.addAnalyticAccountRequired(moveLine, move, attrsMap);
 
     return attrsMap;
+  }
+
+  @Override
+  public Map<String, Object> getDateOnChangeValuesMap(MoveLine moveLine, Move move)
+      throws AxelorException {
+    moveLineRecordService.setOriginDate(moveLine);
+    moveLineComputeAnalyticService.computeAnalyticDistribution(moveLine, move);
+    moveLineToolService.checkDateInPeriod(move, moveLine);
+
+    Map<String, Object> valuesMap = new HashMap<>();
+
+    valuesMap.put("originDate", moveLine.getOriginDate());
+    valuesMap.put("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
+
+    return valuesMap;
   }
 }
