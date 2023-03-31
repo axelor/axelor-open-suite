@@ -92,6 +92,7 @@
     </field>
     <field name="axis1AnalyticAccount" grid-view="analytic-account-grid"
       form-view="analytic-account-form"
+      if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"
       readonlyIf="account.analyticDistributionAuthorized == false || !account"
       onSelect="action-move-line-attrs-set-domain-axis"
       onChange="action-move-line-group-analytic-axis-onchange">
@@ -99,6 +100,7 @@
     </field>
     <field name="axis2AnalyticAccount" grid-view="analytic-account-grid"
       form-view="analytic-account-form"
+      if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"
       readonlyIf="account.analyticDistributionAuthorized == false || !account"
       onSelect="action-move-line-attrs-set-domain-axis"
       onChange="action-move-line-group-analytic-axis-onchange">
@@ -106,6 +108,7 @@
     </field>
     <field name="axis3AnalyticAccount" grid-view="analytic-account-grid"
       form-view="analytic-account-form"
+      if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"
       readonlyIf="account.analyticDistributionAuthorized == false || !account"
       onSelect="action-move-line-attrs-set-domain-axis"
       onChange="action-move-line-group-analytic-axis-onchange">
@@ -113,6 +116,7 @@
     </field>
     <field name="axis4AnalyticAccount" grid-view="analytic-account-grid"
       form-view="analytic-account-form"
+      if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"
       readonlyIf="account.analyticDistributionAuthorized == false || !account"
       onSelect="action-move-line-attrs-set-domain-axis"
       onChange="action-move-line-group-analytic-axis-onchange">
@@ -120,6 +124,7 @@
     </field>
     <field name="axis5AnalyticAccount" grid-view="analytic-account-grid"
       form-view="analytic-account-form"
+      if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"
       readonlyIf="account.analyticDistributionAuthorized == false || !account"
       onSelect="action-move-line-attrs-set-domain-axis"
       onChange="action-move-line-group-analytic-axis-onchange">
@@ -127,6 +132,7 @@
     </field>
     <field name="analyticMoveLineList" grid-view="analytic-move-line-move-line-grid"
       form-view="analytic-move-line-move-line-form"
+      if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"
       onChange="action-move-line-method-check-analytic-account-on-move-line,action-move-line-method-set-required-analytic-accounts">
       <hilite if="$contains(fieldsErrorList,'analytic:')" background="danger"/>
     </field>
