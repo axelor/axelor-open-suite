@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.8.0.v201806072022</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
     <list-property name="userProperties">
         <structure>
             <property name="name">Data Cube.MoveLineDS.x</property>
@@ -493,8 +493,8 @@ AND  Move.ignore_in_accounting_ok = false
 AND (Move.status_select = 3 OR Move.status_select = 2 OR (Move.status_select = 5 AND AccountingReport.display_simulated_move))
 AND TaxPaymentMoveLine.vat_system_select = 2
 AND (AccountingReport.currency IS NULL OR AccountingReport.currency = Move.currency)
-AND TaxPaymentMoveLine.date_val >= AccountingReport.date_from
-AND TaxPaymentMoveLine.date_val <= AccountingReport.date_to
+AND DATE(TaxPaymentMoveLine.date_time) >= AccountingReport.date_from
+AND DATE(TaxPaymentMoveLine.date_time) <= AccountingReport.date_to
 AND (AccountingReport.display_closing_accounting_moves is true
 	OR(AccountingReport.display_closing_accounting_moves is false
 		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 2)))
@@ -972,8 +972,8 @@ AND  Move.ignore_in_accounting_ok = false
 AND (Move.status_select = 3 OR Move.status_select = 2 OR (Move.status_select = 5 AND AccountingReport.display_simulated_move))
 AND TaxPaymentMoveLine.vat_system_select = 2
 AND (AccountingReport.currency IS NULL OR AccountingReport.currency = Move.currency)
-AND TaxPaymentMoveLine.date_val >= AccountingReport.date_from
-AND TaxPaymentMoveLine.date_val <= AccountingReport.date_to
+AND DATE(TaxPaymentMoveLine.date_time) >= AccountingReport.date_from
+AND DATE(TaxPaymentMoveLine.date_time) <= AccountingReport.date_to
 AND (AccountingReport.display_closing_accounting_moves is true
 	OR(AccountingReport.display_closing_accounting_moves is false
 		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 2)))

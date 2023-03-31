@@ -157,7 +157,7 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
             reconcile,
             vatRate,
             detailPaymentAmount,
-            appBaseService.getTodayDate(reconcile.getCompany()));
+            appBaseService.getTodayDateTime(reconcile.getCompany()).toLocalDateTime());
 
     taxPaymentMoveLine.setFiscalPosition(invoiceMove.getFiscalPosition());
 

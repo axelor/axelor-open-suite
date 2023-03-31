@@ -11,7 +11,7 @@
     <field name="detailPaymentAmount" readonly="true" title="Base"/>
     <field name="taxRate" readonly="true" x-scale="2"/>
     <field name="taxAmount" readonly="true"/>
-    <field name="date" readonly="true"/>
+    <field name="dateTime" readonly="true"/>
     <field name="fiscalPosition" readonly="true"/>
   </grid>
 
@@ -27,7 +27,7 @@
       <field name="taxRate" readonly="true"/>
       <field name="taxAmount" readonly="true"/>
       <field name="fiscalPosition" readonly="true"/>
-      <field name="date" readonly="true"/>
+      <field name="dateTime" readonly="true"/>
     </panel>
   </form>
 

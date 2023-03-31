@@ -21,7 +21,7 @@
     <decimal name="taxAmount" scale="2" precision="20" title="Tax amount" readonly="true"/>
     <decimal name="detailPaymentAmount" scale="2" precision="20" readonly="true"
       initParam="true"/>
-    <date name="date" column="date_val" title="Date" readonly="true" initParam="true"/>
+    <datetime name="dateTime" title="Date" readonly="true" initParam="true"/>
     <boolean name="isAlreadyReverse" default="false" readonly="true" hidden="true"/>
     <integer name="vatSystemSelect" title="VAT System"
       selection="iaccount.tax.payment.move.vat.system.select"/>
