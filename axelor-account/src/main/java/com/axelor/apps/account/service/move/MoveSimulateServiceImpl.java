@@ -19,7 +19,7 @@ package com.axelor.apps.account.service.move;
 
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.exception.AxelorException;
+import com.axelor.apps.base.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.List;
@@ -48,7 +48,7 @@ public class MoveSimulateServiceImpl implements MoveSimulateService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void simulate(Move move) throws AxelorException {
     moveValidateService.checkPreconditions(move);
     moveValidateService.freezeFieldsOnMoveLines(move);

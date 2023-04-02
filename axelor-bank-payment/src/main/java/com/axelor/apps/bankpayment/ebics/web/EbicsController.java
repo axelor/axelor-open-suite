@@ -34,11 +34,11 @@ import com.axelor.apps.bankpayment.ebics.service.EbicsCertificateService;
 import com.axelor.apps.bankpayment.ebics.service.EbicsService;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.report.IReport;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.imports.listener.ImporterListener;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.data.xml.XMLImporter;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
@@ -87,7 +87,7 @@ public class EbicsController {
       cm.create();
       ebicsUser.setStatusSelect(EbicsUserRepository.STATUS_WAITING_SENDING_SIGNATURE_CERTIFICATE);
       Beans.get(EbicsUserRepository.class).save(ebicsUser);
-    } catch (GeneralSecurityException | IOException e) {
+    } catch (GeneralSecurityException | IOException | AxelorException e) {
       e.printStackTrace();
     }
     response.setReload(true);

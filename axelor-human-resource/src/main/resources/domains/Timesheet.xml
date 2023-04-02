@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
@@ -32,11 +32,18 @@
 
     <string name="fullName" namecolumn="true" readonly="true">
       <![CDATA[
-      		return com.axelor.apps.hr.service.timesheet.TimesheetComputeNameServiceImpl.computeTimesheetFullname(this.getEmployee(),this.getFromDate(),this.getToDate());
+      		return Beans.get(TimesheetComputeNameService.class).computeTimesheetFullname(this.getEmployee(),this.getFromDate(),this.getToDate());
 	  ]]>
     </string>
 
     <finder-method name="findByEmployeeAndStatus" using="employee,statusSelect"/>
+
+    <extra-imports>
+      <![CDATA[
+      import com.axelor.inject.Beans;
+      import com.axelor.apps.hr.service.timesheet.TimesheetComputeNameService;
+      ]]>
+    </extra-imports>
 
     <extra-code>
       	<![CDATA[

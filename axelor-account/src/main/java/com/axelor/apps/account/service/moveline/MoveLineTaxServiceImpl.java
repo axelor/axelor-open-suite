@@ -29,11 +29,11 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.TaxPaymentMoveLineService;
 import com.axelor.apps.account.util.TaxAccountToolService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -193,8 +193,8 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public MoveLine computeTaxAmount(MoveLine moveLine) throws AxelorException {
+  @Transactional
+  public MoveLine computeTaxAmount(MoveLine moveLine) {
     moveLine.setTaxAmount(BigDecimal.ZERO);
     if (!ObjectUtils.isEmpty(moveLine.getTaxPaymentMoveLineList())) {
       for (TaxPaymentMoveLine taxPaymentMoveLine : moveLine.getTaxPaymentMoveLineList()) {
@@ -207,6 +207,13 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void autoTaxLineGenerate(Move move) throws AxelorException {
+
+    autoTaxLineGenerateNoSave(move);
+    moveRepository.save(move);
+  }
+
+  @Override
+  public void autoTaxLineGenerateNoSave(Move move) throws AxelorException {
 
     List<MoveLine> moveLineList = move.getMoveLineList();
 
@@ -254,7 +261,6 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
     }
 
     moveLineList.addAll(newMap.values());
-    moveRepository.save(move);
   }
 
   protected boolean isGenerateMoveLineForAutoTax(String accountType) {

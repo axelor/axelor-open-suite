@@ -57,7 +57,7 @@ public class PaymentMoveLineDistributionServiceImpl implements PaymentMoveLineDi
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public void generatePaymentMoveLineDistributionList(Move move, Reconcile reconcile) {
 
     BigDecimal invoiceTotalAmount =
@@ -95,7 +95,7 @@ public class PaymentMoveLineDistributionServiceImpl implements PaymentMoveLineDi
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public void reversePaymentMoveLineDistributionList(Reconcile reconcile) {
 
     List<PaymentMoveLineDistribution> reverseLines = Lists.newArrayList();

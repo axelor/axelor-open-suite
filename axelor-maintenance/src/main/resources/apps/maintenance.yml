@@ -2,7 +2,7 @@
 name: Maintenance
 code: maintenance
 typeSelect: standard
-installOrder: 50
+installOrder: 2350
 description: |
    Computerized Maintenance Management System
 image: app-maintenance.png

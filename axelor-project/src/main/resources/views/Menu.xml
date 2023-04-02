@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <menuitem name="menu-project-root" order="-103" title="Projects" icon="fa-tasks"
     if="__config__.app.isApp('project')" icon-background="#3f6bb9"/>
@@ -42,11 +42,11 @@
       method="allOpenProjectTickets"/>
   </action-method>
 
-  <menuitem name="project-template" parent="menu-project-root" order="38" title="Template"/>
+  <menuitem name="project-template" parent="menu-project-root" order="38" title="Templates"/>
 
-  <menuitem name="project-task-template" parent="project-template" title="Task template"
+  <menuitem name="project-task-template" parent="project-template" title="Task templates"
     action="project.task.template"/>
-  <action-view name="project.task.template" title="Task template"
+  <action-view name="project.task.template" title="Task templates"
     model="com.axelor.apps.project.db.TaskTemplate">
     <view type="grid" name="task-template-grid"/>
     <view type="form" name="task-template-form"/>
@@ -54,8 +54,8 @@
   </action-view>
 
   <menuitem name="project-project-template" parent="project-template"
-    title="Project template" action="project.project.template"/>
-  <action-view name="project.project.template" title="Project template"
+    title="Project templates" action="project.project.template"/>
+  <action-view name="project.project.template" title="Project templates"
     model="com.axelor.apps.project.db.ProjectTemplate">
     <view type="grid" name="project-template-grid"/>
     <view type="form" name="project-template-form"/>
@@ -68,7 +68,7 @@
   <menuitem name="project-activity" title="Project Activities"
     parent="project-current-project" action="project.activity" order="10"/>
   <action-view name="project.activity" title="Project Activity"
-    model="com.axelor.message.db.Wizard">
+    model="com.axelor.utils.db.Wizard">
     <view type="form" name="project-activity-dashboard-form"/>
   </action-view>
 
@@ -128,7 +128,7 @@
     order="33" title="Project dashboard" action="project.reporting.projects.dashboard"
     if="__user__.contextProject"/>
   <action-view name="project.reporting.projects.dashboard" title="Project dashboard"
-    model="com.axelor.message.db.Wizard">
+    model="com.axelor.utils.db.Wizard">
     <view type="form" name="project-dashboard-form"/>
   </action-view>
 

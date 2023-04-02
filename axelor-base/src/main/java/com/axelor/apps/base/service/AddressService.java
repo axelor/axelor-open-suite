@@ -17,9 +17,9 @@
  */
 package com.axelor.apps.base.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Country;
-import com.axelor.exception.AxelorException;
 import com.axelor.meta.CallMethod;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -93,6 +93,7 @@ public interface AddressService {
    * @param address
    * @return the string field corresponding to the given address.
    */
+  @CallMethod
   String computeAddressStr(Address address);
 
   /**

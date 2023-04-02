@@ -23,7 +23,6 @@ import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
-import com.axelor.apps.account.service.invoice.factory.CancelFactory;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveReverseServiceImpl;
 import com.axelor.apps.account.service.move.MoveValidateService;
@@ -34,8 +33,8 @@ import com.axelor.apps.bankpayment.db.repo.BankReconciliationLineRepository;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationRepository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -59,7 +58,6 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
       MoveRepository moveRepository,
       MoveLineCreateService moveLineCreateService,
       ExtractContextMoveService extractContextMoveService,
-      CancelFactory cancelFactory,
       InvoicePaymentRepository invoicePaymentRepository,
       InvoicePaymentCancelService invoicePaymentCancelService,
       BankReconciliationService bankReconciliationService,
@@ -71,7 +69,6 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
         moveRepository,
         moveLineCreateService,
         extractContextMoveService,
-        cancelFactory,
         invoicePaymentRepository,
         invoicePaymentCancelService);
     this.bankReconciliationService = bankReconciliationService;
@@ -79,7 +76,7 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Move generateReverse(Move move, Map<String, Object> assistantMap) throws AxelorException {
 
     boolean isHiddenMoveLinesInBankReconciliation =
@@ -119,7 +116,7 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public List<Move> massReverse(List<Move> moveList, Map<String, Object> assistantMap)
       throws AxelorException {
     boolean isHiddenMoveLinesInBankReconciliation =

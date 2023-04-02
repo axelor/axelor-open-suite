@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="project-invoicing-assistant-batch-grid"
     title="Project invoicing assistant batches"
@@ -19,7 +19,7 @@
     onNew="action-project-invoicing-assistant-batch-record-on-new">
     <panel name="mainPanel">
       <field name="actionSelect"
-        onChange="action-base-batch-attrs-action-select,action-project-invoicing-assistant-batch-record-action-select-on-change"/>
+        onChange="action-project-invoicing-assistant-batch-record-action-select-on-change"/>
       <field name="code" x-bind="{{code|unaccent|uppercase}}"
         onChange="action-base-batch-condition-check-unique-code"/>
       <field name="company" widget="SuggestBox" form-view="company-form"

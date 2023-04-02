@@ -23,10 +23,12 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.studio.app.service.AppVersionService;
 import com.axelor.studio.db.AppBankPayment;
 import com.axelor.studio.db.repo.AppBankPaymentRepository;
 import com.axelor.studio.db.repo.AppRepository;
+import com.axelor.studio.service.AppSettingsStudioService;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
@@ -44,10 +46,12 @@ public class AppBankPaymentServiceImpl extends AppBaseServiceImpl implements App
       AppRepository appRepo,
       MetaFiles metaFiles,
       AppVersionService appVersionService,
+      MetaModelRepository metaModelRepo,
+      AppSettingsStudioService appSettingsStudioService,
       AppBankPaymentRepository appBankPaymentRepo,
       BankPaymentConfigRepository bankPaymentConfigRepo,
       CompanyRepository companyRepo) {
-    super(appRepo, metaFiles, appVersionService);
+    super(appRepo, metaFiles, appVersionService, metaModelRepo, appSettingsStudioService);
     this.appBankPaymentRepo = appBankPaymentRepo;
     this.bankPaymentConfigRepo = bankPaymentConfigRepo;
     this.companyRepo = companyRepo;

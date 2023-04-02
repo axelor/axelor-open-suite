@@ -2,7 +2,7 @@
 name: Extra hours
 code: exthrs
 typeSelect: standard
-installOrder: 16
+installOrder: 2170
 description: |
    Extra hours
 image: app-extra-hours.png

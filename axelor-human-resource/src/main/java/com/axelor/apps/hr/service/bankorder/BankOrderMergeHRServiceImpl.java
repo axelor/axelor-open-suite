@@ -24,9 +24,9 @@ import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMergeServiceImpl;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.repo.ExpenseHRRepository;
-import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.studio.app.service.AppService;
 import com.google.inject.Inject;
@@ -56,7 +56,7 @@ public class BankOrderMergeHRServiceImpl extends BankOrderMergeServiceImpl {
     this.expenseHRRepository = expenseHRRepository;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   @Override
   public BankOrder mergeBankOrders(Collection<BankOrder> bankOrders) throws AxelorException {
     if (!Beans.get(AppService.class).isApp("employee")) {

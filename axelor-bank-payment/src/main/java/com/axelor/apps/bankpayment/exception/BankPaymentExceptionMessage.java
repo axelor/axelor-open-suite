@@ -292,6 +292,9 @@ public final class BankPaymentExceptionMessage {
   public static final String BATCH_BOE_SEND_BILLING_PARTNER_ADRESS_MISSING = /*$$(*/
       "Email adress is missing for partner %s" /*)*/;
 
+  public static final String PAYMENT_SESSION_GENERATED_BANK_ORDER = /*$$(*/
+      "The bank order %s has been generated successfully." /*)*/;
+
   public static final String
       BANK_STATEMENT_MOVE_LINE_QUERY_FORMULA_NOT_EVALUATED_TO_MOVE_LINE = /*$$(*/
           "Move line's query formula has not been evaluated to a Move line" /*)*/;
@@ -303,6 +306,14 @@ public final class BankPaymentExceptionMessage {
 
   public static final String BANK_STATEMENT_RULE_COUNTERPART_ACCOUNT_MISSING = /*$$(*/
       "Please select a counterpart account in the bank statement rule %s" /*)*/;
+
+  public static final String STATEMENT_REMOVE_NOT_OK_NB = /*$$(*/
+      "%d bank statement couldn't be deleted, please check the logs." /*)*/;
+
+  public static final String STATEMENT_REMOVE_OK = /*$$(*/
+      "Bank statement(s) has been removed successfully" /*)*/;
+
+  public static final String NO_STATEMENT_TO_REMOVE = /*$$(*/ "Please select statements" /*)*/;
 
   /** Move Reverse */
   public static final String MOVE_LINKED_TO_VALIDATED_BANK_RECONCILIATION = /*$$(*/

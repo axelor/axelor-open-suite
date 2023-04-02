@@ -25,9 +25,11 @@ import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.studio.app.service.AppVersionService;
 import com.axelor.studio.db.AppProduction;
 import com.axelor.studio.db.repo.AppRepository;
+import com.axelor.studio.service.AppSettingsStudioService;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
@@ -40,13 +42,17 @@ public class AppProductionServiceImpl extends AppBaseServiceImpl implements AppP
 
   @Inject
   public AppProductionServiceImpl(
-      AppRepository appRepo, MetaFiles metaFiles, AppVersionService appVersionService) {
-    super(appRepo, metaFiles, appVersionService);
+      AppRepository appRepo,
+      MetaFiles metaFiles,
+      AppVersionService appVersionService,
+      MetaModelRepository metaModelRepo,
+      AppSettingsStudioService appSettingsStudioService) {
+    super(appRepo, metaFiles, appVersionService, metaModelRepo, appSettingsStudioService);
   }
 
   @Override
   public AppProduction getAppProduction() {
-    return Query.of(AppProduction.class).cacheable().fetchOne();
+    return Query.of(AppProduction.class).fetchOne();
   }
 
   @Override

@@ -19,7 +19,7 @@ package com.axelor.apps.account.db.repo;
 
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentValidateService;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.inject.Beans;
 import javax.persistence.PersistenceException;
 
@@ -30,6 +30,7 @@ public class InvoicePaymentManagementRepository extends InvoicePaymentRepository
     try {
       if (invoicePayment.getStatusSelect() == InvoicePaymentRepository.STATUS_DRAFT) {
         Beans.get(InvoicePaymentValidateService.class).validate(invoicePayment);
+        return invoicePayment;
       }
       return super.save(invoicePayment);
     } catch (Exception e) {

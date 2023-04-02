@@ -27,12 +27,12 @@ import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
@@ -144,21 +144,18 @@ public class PaymentServiceImpl implements PaymentService {
       }
 
       for (MoveLine creditMoveLine : creditMoveLines) {
-
-        if (creditMoveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
-
-          for (MoveLine debitMoveLine : debitMoveLines) {
-            if (debitMoveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
-              try {
-                createReconcile(
-                    debitMoveLine, creditMoveLine, debitTotalRemaining, creditTotalRemaining);
-              } catch (Exception e) {
-                if (dontThrow) {
-                  TraceBackService.trace(e);
-                  log.debug(e.getMessage());
-                } else {
-                  throw e;
-                }
+        for (MoveLine debitMoveLine : debitMoveLines) {
+          if (creditMoveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0
+              && debitMoveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
+            try {
+              createReconcile(
+                  debitMoveLine, creditMoveLine, debitTotalRemaining, creditTotalRemaining);
+            } catch (Exception e) {
+              if (dontThrow) {
+                TraceBackService.trace(e);
+                log.debug(e.getMessage());
+              } else {
+                throw e;
               }
             }
           }
@@ -177,8 +174,8 @@ public class PaymentServiceImpl implements PaymentService {
    * @param creditTotalRemaining
    * @throws AxelorException
    */
-  @Transactional
-  private void createReconcile(
+  @Transactional(rollbackOn = {Exception.class})
+  protected void createReconcile(
       MoveLine debitMoveLine,
       MoveLine creditMoveLine,
       BigDecimal debitTotalRemaining,

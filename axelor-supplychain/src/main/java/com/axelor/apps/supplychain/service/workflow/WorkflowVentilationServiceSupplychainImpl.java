@@ -29,7 +29,9 @@ import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.workflow.ventilate.WorkflowVentilationServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -49,8 +51,6 @@ import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -167,7 +167,7 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
     }
   }
 
-  private void saleOrderProcess(Invoice invoice) throws AxelorException {
+  protected void saleOrderProcess(Invoice invoice) throws AxelorException {
 
     // Get all different saleOrders from invoice
     Set<SaleOrder> saleOrderSet = new HashSet<>();
@@ -195,7 +195,7 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
     }
   }
 
-  private SaleOrder saleOrderLineProcess(Invoice invoice, InvoiceLine invoiceLine)
+  protected SaleOrder saleOrderLineProcess(Invoice invoice, InvoiceLine invoiceLine)
       throws AxelorException {
 
     SaleOrderLine saleOrderLine = invoiceLine.getSaleOrderLine();
@@ -230,7 +230,7 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
     return saleOrder;
   }
 
-  private void purchaseOrderProcess(Invoice invoice) throws AxelorException {
+  protected void purchaseOrderProcess(Invoice invoice) throws AxelorException {
 
     // Get all different purchaseOrders from invoice
     Set<PurchaseOrder> purchaseOrderSet = new HashSet<>();
@@ -253,7 +253,7 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
     }
   }
 
-  private PurchaseOrder purchaseOrderLineProcess(Invoice invoice, InvoiceLine invoiceLine)
+  protected PurchaseOrder purchaseOrderLineProcess(Invoice invoice, InvoiceLine invoiceLine)
       throws AxelorException {
 
     PurchaseOrderLine purchaseOrderLine = invoiceLine.getPurchaseOrderLine();
@@ -289,7 +289,7 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
     return purchaseOrder;
   }
 
-  private void stockMoveProcess(Invoice invoice) throws AxelorException {
+  protected void stockMoveProcess(Invoice invoice) throws AxelorException {
     // update qty invoiced in stock move line
     for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
       StockMoveLine stockMoveLine = invoiceLine.getStockMoveLine();
@@ -379,7 +379,7 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
     }
   }
 
-  private boolean isStockMoveInvoicingPartiallyActivated(
+  protected boolean isStockMoveInvoicingPartiallyActivated(
       Invoice invoice, StockMoveLine stockMoveLine) throws AxelorException {
     SupplyChainConfig supplyChainConfig =
         supplyChainConfigService.getSupplyChainConfig(invoice.getCompany());

@@ -18,7 +18,7 @@
 package com.axelor.apps.bankpayment.service.extract;
 
 import com.axelor.apps.account.service.extract.ExtractContextMoveServiceImpl;
-import com.axelor.exception.AxelorException;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.rpc.Context;
 import java.util.Map;
 

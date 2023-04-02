@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="event-grid" title="Events" model="com.axelor.apps.crm.db.Event"
     orderBy="-startDateTime">
@@ -389,7 +389,7 @@
   </action-group>
 
   <action-view name="action-event-view-modifications-recurrence"
-    title="Apply modifications" model="com.axelor.message.db.Wizard">
+    title="Apply modifications" model="com.axelor.utils.db.Wizard">
     <view type="form" name="modifications-assistant-form"/>
     <view-param name="popup" value="reload"/>
     <view-param name="forceEdit" value="true"/>
@@ -418,7 +418,7 @@
     <context name="_relatedToSelectId" expr="eval: relatedToSelectId"/>
   </action-view>
 
-  <form model="com.axelor.message.db.Wizard" title="Apply modifications"
+  <form model="com.axelor.utils.db.Wizard" title="Apply modifications"
     name="modifications-assistant-form">
     <panel name="wizardPanel">
       <button name="applyToThisBtn" title="Apply changes to this event only" onClick="close"

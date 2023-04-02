@@ -24,8 +24,8 @@ import com.axelor.apps.bankpayment.db.repo.EbicsRequestLogRepository;
 import com.axelor.apps.bankpayment.db.repo.EbicsUserRepository;
 import com.axelor.apps.bankpayment.ebics.client.EbicsRootElement;
 import com.axelor.apps.bankpayment.ebics.client.EbicsUtils;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -250,7 +250,7 @@ public class EbicsUserService {
     requestLogRepo.save(requestLog);
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public String getNextOrderId(EbicsUser user) throws AxelorException {
 
     String orderId = user.getNextOrderId();

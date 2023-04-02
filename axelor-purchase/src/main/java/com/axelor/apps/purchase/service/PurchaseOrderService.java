@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.purchase.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
@@ -24,7 +25,6 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.auth.db.User;
-import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
 import java.util.List;
@@ -45,7 +45,7 @@ public interface PurchaseOrderService {
    * @param purchaseOrder
    * @throws AxelorException
    */
-  void _populatePurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException;
+  void _populatePurchaseOrder(PurchaseOrder purchaseOrder);
 
   /**
    * Calculer le montant d'une commande.

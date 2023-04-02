@@ -19,9 +19,9 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.service.AccountingSituationService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.exception.AxelorException;
 
 public interface AccountingSituationSupplychainService extends AccountingSituationService {
 

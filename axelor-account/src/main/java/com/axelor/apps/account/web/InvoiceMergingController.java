@@ -27,15 +27,15 @@ import com.axelor.apps.account.service.invoice.InvoiceMergingService.InvoiceMerg
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.TradingName;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.db.AuditableModel;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.message.db.Wizard;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.utils.MapTools;
+import com.axelor.utils.db.Wizard;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
@@ -44,7 +44,7 @@ import org.apache.commons.collections.CollectionUtils;
 
 public class InvoiceMergingController {
 
-  private String getMergeConfirmFormViewName(InvoiceMergingResult result) {
+  protected String getMergeConfirmFormViewName(InvoiceMergingResult result) {
     if (result.getInvoiceType() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE) {
       return "supplier-invoices-merge-confirm-form";
     }

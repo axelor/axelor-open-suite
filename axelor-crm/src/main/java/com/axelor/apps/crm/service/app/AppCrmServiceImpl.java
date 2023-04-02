@@ -17,8 +17,10 @@
  */
 package com.axelor.apps.crm.service.app;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.CompanyRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.apps.crm.db.CrmConfig;
 import com.axelor.apps.crm.db.LeadStatus;
@@ -26,13 +28,13 @@ import com.axelor.apps.crm.db.OpportunityStatus;
 import com.axelor.apps.crm.db.repo.CrmConfigRepository;
 import com.axelor.apps.crm.exception.CrmExceptionMessage;
 import com.axelor.db.Query;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.studio.app.service.AppVersionService;
 import com.axelor.studio.db.AppCrm;
 import com.axelor.studio.db.repo.AppRepository;
+import com.axelor.studio.service.AppSettingsStudioService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.List;
@@ -48,9 +50,11 @@ public class AppCrmServiceImpl extends AppBaseServiceImpl implements AppCrmServi
       AppRepository appRepo,
       MetaFiles metaFiles,
       AppVersionService appVersionService,
+      MetaModelRepository metaModelRepo,
+      AppSettingsStudioService appSettingsStudioService,
       CompanyRepository companyRepo,
       CrmConfigRepository crmConfigRepo) {
-    super(appRepo, metaFiles, appVersionService);
+    super(appRepo, metaFiles, appVersionService, metaModelRepo, appSettingsStudioService);
     this.companyRepo = companyRepo;
     this.crmConfigRepo = crmConfigRepo;
   }
@@ -70,7 +74,7 @@ public class AppCrmServiceImpl extends AppBaseServiceImpl implements AppCrmServi
 
   @Override
   public AppCrm getAppCrm() {
-    return Query.of(AppCrm.class).cacheable().fetchOne();
+    return Query.of(AppCrm.class).fetchOne();
   }
 
   @Override

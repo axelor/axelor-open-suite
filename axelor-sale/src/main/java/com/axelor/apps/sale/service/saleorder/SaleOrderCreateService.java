@@ -19,6 +19,7 @@ package com.axelor.apps.sale.service.saleorder;
 
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.TaxNumber;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
@@ -26,9 +27,7 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.auth.db.User;
-import com.axelor.exception.AxelorException;
 import com.axelor.team.db.Team;
-import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -135,12 +134,10 @@ public interface SaleOrderCreateService {
       FiscalPosition fiscalPosition)
       throws AxelorException;
 
-  @Transactional
-  public SaleOrder createTemplate(SaleOrder context);
+  SaleOrder createTemplate(SaleOrder context);
 
-  @Transactional(rollbackOn = {Exception.class})
-  public SaleOrder createSaleOrder(
-      SaleOrder context, Currency wizardCurrency, PriceList wizardPriceList) throws AxelorException;
+  SaleOrder createSaleOrder(SaleOrder context, Currency wizardCurrency, PriceList wizardPriceList)
+      throws AxelorException;
 
-  public void updateSaleOrderLineList(SaleOrder saleOrder) throws AxelorException;
+  void updateSaleOrderLineList(SaleOrder saleOrder) throws AxelorException;
 }

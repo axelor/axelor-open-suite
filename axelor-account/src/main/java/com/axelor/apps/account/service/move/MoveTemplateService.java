@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service.move;
 
+import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.MoveTemplate;
@@ -33,13 +34,13 @@ import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.common.ObjectUtils;
-import com.axelor.exception.AxelorException;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
@@ -253,9 +254,19 @@ public class MoveTemplateService {
                 moveLine.setVatSystemSelect(moveLineTaxService.getVatSystem(move, moveLine));
               }
             }
+            List<AnalyticMoveLine> analyticMoveLineList =
+                CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())
+                    ? new ArrayList<>()
+                    : new ArrayList<>(moveLine.getAnalyticMoveLineList());
+            moveLine.clearAnalyticMoveLineList();
             moveLine.setAnalyticDistributionTemplate(
                 moveTemplateLine.getAnalyticDistributionTemplate());
+
             moveLineComputeAnalyticService.generateAnalyticMoveLines(moveLine);
+
+            if (CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())) {
+              moveLine.setAnalyticMoveLineList(analyticMoveLineList);
+            }
 
             counter++;
           }
@@ -360,9 +371,19 @@ public class MoveTemplateService {
               }
             }
 
+            List<AnalyticMoveLine> analyticMoveLineList =
+                CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())
+                    ? new ArrayList<>()
+                    : new ArrayList<>(moveLine.getAnalyticMoveLineList());
+            moveLine.clearAnalyticMoveLineList();
             moveLine.setAnalyticDistributionTemplate(
                 moveTemplateLine.getAnalyticDistributionTemplate());
+
             moveLineComputeAnalyticService.generateAnalyticMoveLines(moveLine);
+
+            if (CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())) {
+              moveLine.setAnalyticMoveLineList(analyticMoveLineList);
+            }
             counter++;
           } else {
             taxLineDescription = moveTemplateLine.getName();

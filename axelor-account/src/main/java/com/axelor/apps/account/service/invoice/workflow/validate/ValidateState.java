@@ -29,13 +29,13 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.workflow.WorkflowInvoice;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.BlockingRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.user.UserService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 
@@ -138,7 +138,7 @@ public class ValidateState extends WorkflowInvoice {
     }
   }
 
-  private void generateBudgetDistribution(Invoice invoice) {
+  protected void generateBudgetDistribution(Invoice invoice) {
     if (invoice.getInvoiceLineList() != null) {
       for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
         if (invoiceLine.getBudget() != null

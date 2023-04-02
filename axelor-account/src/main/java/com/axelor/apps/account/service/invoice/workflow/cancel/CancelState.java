@@ -22,15 +22,14 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
-import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.BudgetService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.workflow.WorkflowInvoice;
 import com.axelor.apps.account.service.move.MoveCancelService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -57,19 +56,8 @@ public class CancelState extends WorkflowInvoice {
 
     workflowService.beforeCancel(invoice);
 
-    if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED
-        && invoice.getCompany().getAccountConfig().getAllowCancelVentilatedInvoice()) {
-      cancelMove();
-    }
-
     updateInvoiceFromCancellation();
 
-    workflowService.afterCancel(invoice);
-  }
-
-  public void cancelInvoiceInformation() throws AxelorException {
-    workflowService.beforeCancel(invoice);
-    updateInvoiceFromCancellation();
     workflowService.afterCancel(invoice);
   }
 
@@ -104,9 +92,7 @@ public class CancelState extends WorkflowInvoice {
 
     Move move = invoice.getMove();
 
-    if (move.getStatusSelect() == MoveRepository.STATUS_NEW) {
-      invoice.setMove(null);
-    }
+    invoice.setMove(null);
 
     Beans.get(MoveCancelService.class).cancel(move);
   }

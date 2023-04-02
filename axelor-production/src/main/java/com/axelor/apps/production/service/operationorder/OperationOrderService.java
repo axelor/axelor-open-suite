@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.production.service.operationorder;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.production.db.Machine;
 import com.axelor.apps.production.db.MachineTool;
 import com.axelor.apps.production.db.ManufOrder;
@@ -25,19 +26,15 @@ import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.stock.db.StockMoveLine;
-import com.axelor.exception.AxelorException;
-import com.google.inject.persist.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
 public interface OperationOrderService {
 
-  @Transactional(rollbackOn = {Exception.class})
   public OperationOrder createOperationOrder(ManufOrder manufOrder, ProdProcessLine prodProcessLine)
       throws AxelorException;
 
-  @Transactional(rollbackOn = {Exception.class})
   public OperationOrder createOperationOrder(
       ManufOrder manufOrder,
       int priority,

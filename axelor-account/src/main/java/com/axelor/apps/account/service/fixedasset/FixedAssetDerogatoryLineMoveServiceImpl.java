@@ -32,14 +32,14 @@ import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BatchRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.BankDetailsService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
@@ -93,7 +93,7 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void realize(
       FixedAssetDerogatoryLine fixedAssetDerogatoryLine, boolean isBatch, boolean generateMove)
       throws AxelorException {
@@ -319,7 +319,7 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
     return moveRepo.save(move);
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   @Override
   public void simulate(FixedAssetDerogatoryLine fixedAssetDerogatoryLine) throws AxelorException {
     Objects.requireNonNull(fixedAssetDerogatoryLine);

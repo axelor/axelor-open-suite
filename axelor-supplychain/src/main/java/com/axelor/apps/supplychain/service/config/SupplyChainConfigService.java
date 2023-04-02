@@ -17,9 +17,9 @@
  */
 package com.axelor.apps.supplychain.service.config;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
-import com.axelor.exception.AxelorException;
 
 public interface SupplyChainConfigService {
 

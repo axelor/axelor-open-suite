@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="template-grid" id="template-grid-base" title="Templates"
     model="com.axelor.message.db.Template">
@@ -66,7 +66,10 @@
         </panel>
         <panel name="subjectContentPanel" title="Content" colSpan="12">
           <field name="subject" colSpan="12" height="2"/>
-          <field name="content" showTitle="false" colSpan="12" widget="html"/>
+          <field name="content" showTitle="false" colSpan="12" widget="html"
+            showIf="mediaTypeSelect != 5"/>
+          <field name="content" colSpan="12" showTitle="false" widget="html" x-lite="true"
+            showIf="mediaTypeSelect == 5"/>
         </panel>
         <panel name="signature-panel" title="Signature" showIf="mediaTypeSelect != 3"
           colSpan="12">

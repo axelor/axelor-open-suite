@@ -2,7 +2,7 @@
 name: Expense Management
 code: expense
 typeSelect: standard
-installOrder: 15
+installOrder: 2160
 description: |
    Expense Management
 image: app-expense.png

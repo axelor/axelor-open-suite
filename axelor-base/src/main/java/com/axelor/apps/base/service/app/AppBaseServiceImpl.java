@@ -28,11 +28,13 @@ import com.axelor.db.Query;
 import com.axelor.inject.Beans;
 import com.axelor.meta.CallMethod;
 import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.studio.app.service.AppServiceImpl;
 import com.axelor.studio.app.service.AppVersionService;
 import com.axelor.studio.db.AppBase;
 import com.axelor.studio.db.repo.AppBaseRepository;
 import com.axelor.studio.db.repo.AppRepository;
+import com.axelor.studio.service.AppSettingsStudioService;
 import com.axelor.utils.date.DateTool;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -51,13 +53,17 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
 
   @Inject
   public AppBaseServiceImpl(
-      AppRepository appRepo, MetaFiles metaFiles, AppVersionService appVersionService) {
-    super(appRepo, metaFiles, appVersionService);
+      AppRepository appRepo,
+      MetaFiles metaFiles,
+      AppVersionService appVersionService,
+      MetaModelRepository metaModelRepo,
+      AppSettingsStudioService appSettingsStudioService) {
+    super(appRepo, metaFiles, appVersionService, metaModelRepo, appSettingsStudioService);
   }
 
   @Override
   public AppBase getAppBase() {
-    return Query.of(AppBase.class).cacheable().fetchOne();
+    return Query.of(AppBase.class).fetchOne();
   }
 
   @Override

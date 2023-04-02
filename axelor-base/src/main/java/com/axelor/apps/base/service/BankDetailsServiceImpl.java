@@ -18,12 +18,12 @@
 package com.axelor.apps.base.service;
 
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Bank;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.exception.AxelorException;
 import com.axelor.utils.StringTool;
 import org.iban4j.CountryCode;
 import org.iban4j.IbanFormatException;
@@ -189,49 +189,5 @@ public class BankDetailsServiceImpl implements BankDetailsService {
     if (IbanUtil.isSupportedCountry(countryCode)) {
       IbanUtil.validate(iban);
     }
-  }
-
-  public String computeBankDetailsFullName(BankDetails bankDetails) {
-    if (bankDetails.getBank() != null) {
-      return computeBankDetailsFullName(
-          bankDetails.getCode(),
-          bankDetails.getLabel(),
-          bankDetails.getIban(),
-          bankDetails.getBank().getFullName());
-    } else {
-      return computeBankDetailsFullName(
-          bankDetails.getCode(), bankDetails.getLabel(), bankDetails.getIban(), null);
-    }
-  }
-
-  public static String computeBankDetailsFullName(
-      String code, String label, String iban, String bankFullName) {
-    StringBuilder stringBuilder = new StringBuilder();
-
-    if (code != null && !code.isEmpty()) {
-      stringBuilder.append(code);
-    }
-
-    if (label != null && !label.isEmpty()) {
-      if (stringBuilder.toString().isEmpty()) {
-        stringBuilder.append(label);
-      } else {
-        stringBuilder.append(" - ").append(label);
-      }
-    }
-
-    if (!stringBuilder.toString().isEmpty()) {
-      stringBuilder.append(" - ");
-    }
-
-    if (iban != null && !iban.isEmpty()) {
-      stringBuilder.append(iban);
-    }
-
-    if (bankFullName != null && !bankFullName.isEmpty()) {
-      stringBuilder.append(" - ").append(bankFullName);
-    }
-
-    return stringBuilder.toString();
   }
 }

@@ -33,10 +33,10 @@ import com.axelor.apps.bankpayment.ebics.client.KeyManagement;
 import com.axelor.apps.bankpayment.ebics.client.OrderType;
 import com.axelor.apps.bankpayment.ebics.io.IOUtils;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.db.User;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.google.common.base.Preconditions;
@@ -150,7 +150,7 @@ public class EbicsService {
    * @throws JDOMException
    * @throws IOException
    */
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void sendINIRequest(EbicsUser ebicsUser, EbicsProduct product) throws AxelorException {
 
     if (ebicsUser.getStatusSelect()
@@ -185,7 +185,7 @@ public class EbicsService {
    * @param product the application product.
    * @throws AxelorException
    */
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void sendHIARequest(EbicsUser ebicsUser, EbicsProduct product) throws AxelorException {
 
     if (ebicsUser.getStatusSelect()
@@ -218,7 +218,7 @@ public class EbicsService {
    * @param product the application product.
    * @throws AxelorException
    */
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public X509Certificate[] sendHPBRequest(EbicsUser user, EbicsProduct product)
       throws AxelorException {
 
@@ -244,7 +244,7 @@ public class EbicsService {
    * @param product the session product
    * @throws AxelorException
    */
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void sendSPRRequest(EbicsUser ebicsUser, EbicsProduct product) throws AxelorException {
 
     EbicsSession session = new EbicsSession(ebicsUser);
@@ -476,7 +476,7 @@ public class EbicsService {
     return partner.getTestMode();
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void addResponseFile(EbicsUser user, File file) throws IOException {
 
     EbicsRequestLog requestLog =

@@ -27,13 +27,13 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Year;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -90,7 +90,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
     this.bankDetailsService = bankDetailsService;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public List<Move> generateCloseAndOpenAnnualAccount(
       Year year,
       Account account,
@@ -154,7 +154,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
     return moveList;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public List<Move> generateCloseAnnualAccount(
       Year year,
       Account account,
@@ -193,7 +193,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
     return moveList;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public List<Move> generateOpenAnnualAccount(
       Year year,
       Account account,

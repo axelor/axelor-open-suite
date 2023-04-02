@@ -17,9 +17,9 @@
  */
 package com.axelor.apps.gdpr.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.auth.db.AuditableModel;
 import com.axelor.db.mapper.Mapper;
-import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.mail.db.MailMessage;
 import com.axelor.mail.db.repo.MailMessageRepository;

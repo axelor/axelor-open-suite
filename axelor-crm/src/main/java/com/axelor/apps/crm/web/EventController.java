@@ -17,9 +17,13 @@
  */
 package com.axelor.apps.crm.web;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.ResponseMessageType;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.EventReminder;
 import com.axelor.apps.crm.db.Lead;
@@ -35,10 +39,6 @@ import com.axelor.apps.crm.service.LeadService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.base.service.ical.ICalendarEventService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.ResponseMessageType;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.EmailAddress;
@@ -467,9 +467,14 @@ public class EventController {
   }
 
   public void computeRecurrenceName(ActionRequest request, ActionResponse response) {
-    RecurrenceConfiguration recurrConf = request.getContext().asType(RecurrenceConfiguration.class);
-    response.setValue(
-        "recurrenceName", Beans.get(EventService.class).computeRecurrenceName(recurrConf));
+    try {
+      RecurrenceConfiguration recurrConf =
+          request.getContext().asType(RecurrenceConfiguration.class);
+      response.setValue(
+          "recurrenceName", Beans.get(EventService.class).computeRecurrenceName(recurrConf));
+    } catch (AxelorException e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void setCalendarDomain(ActionRequest request, ActionResponse response) {

@@ -20,17 +20,17 @@ package com.axelor.apps.hr.service.batch;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.db.repo.CompanyRepository;
+import com.axelor.apps.base.db.repo.ExceptionOriginRepository;
 import com.axelor.apps.base.db.repo.MailBatchRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.AbstractBatch;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.repo.EmployeeHRRepository;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.auth.AuthUtils;
-import com.axelor.exception.db.repo.ExceptionOriginRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.Message;
@@ -41,7 +41,6 @@ import com.axelor.message.service.MessageService;
 import com.axelor.message.service.TemplateMessageService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import javax.mail.MessagingException;
@@ -198,7 +197,7 @@ public class BatchTimesheetValidationReminder extends AbstractBatch {
     }
   }
 
-  @Transactional(rollbackOn = {MessagingException.class, IOException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   protected Message generateAndSendMessage(Employee employee) throws MessagingException {
 
     Message message = new Message();

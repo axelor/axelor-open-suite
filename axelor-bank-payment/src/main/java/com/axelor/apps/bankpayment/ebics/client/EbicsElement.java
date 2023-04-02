@@ -36,7 +36,7 @@ package com.axelor.apps.bankpayment.ebics.client;
  * $Id$
  */
 
-import com.axelor.exception.AxelorException;
+import com.axelor.apps.base.AxelorException;
 import java.io.PrintStream;
 
 public interface EbicsElement {

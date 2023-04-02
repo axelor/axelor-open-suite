@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.marketing.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.Lead;
@@ -25,7 +26,6 @@ import com.axelor.apps.marketing.db.Campaign;
 import com.axelor.apps.marketing.db.repo.CampaignRepository;
 import com.axelor.apps.marketing.exception.MarketingExceptionMessage;
 import com.axelor.db.Model;
-import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.Message;
@@ -228,7 +228,7 @@ public class CampaignServiceImpl implements CampaignService {
     }
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void generateTargets(Campaign campaign) throws AxelorException {
 
     TargetListService targetListService = Beans.get(TargetListService.class);

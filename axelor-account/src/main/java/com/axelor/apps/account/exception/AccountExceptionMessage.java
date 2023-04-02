@@ -50,7 +50,7 @@ public final class AccountExceptionMessage {
   public static final String IMMO_FIXED_ASSET_GENERATE_DISPOSAL_MOVE_CATEGORY_ACCOUNTS_MISSING =
       /*$$(*/ "Fixed asset: Disposal move could not be generated because the following account setting : '%s' is missing on the associated fixed asset category." /*)*/;
   public static final String IMMO_FIXED_ASSET_GENERATE_MOVE_CATEGORY_ACCOUNTS_MISSING =
-      /*$$(*/ "Fixed asset: could not generate depreciation move because fixed category is one of missing theses account %s" /*)*/;
+      /*$$(*/ "Fixed asset: the depreciation move(s) cannot be generated because of the following missing account(s) setting(s) on the fixed asset category : %s." /*)*/;
   public static final String IMMO_FIXED_ASSET_CATEGORY_ACCOUNTS_MISSING =
       /*$$(*/ "Fixed asset: fixed asset category is missing one of these accounts : %s" /*)*/;
   public static final String IMMO_FIXED_ASSET_MISSING_DEROGATORY_LINE =
@@ -461,7 +461,7 @@ public final class AccountExceptionMessage {
   public static final String BATCH_DOUBTFUL_1 = /*$$(*/
       "Doubtful account's determination's reporting" /*)*/;
 
-  public static final String BATCH_DOUBTFUL_2 = /*$$(*/ "* %s Invoice(s) treated" /*)*/;
+  public static final String BATCH_DOUBTFUL_2 = /*$$(*/ "* %s Invoice(s)/Move(s) treated" /*)*/;
 
   /** Batch move line export */
   public static final String BATCH_MOVELINE_EXPORT_1 = /*$$(*/
@@ -1010,9 +1010,6 @@ public final class AccountExceptionMessage {
   public static final String INVOICE_4 = /*$$(*/ "Refunds from invoice %s" /*)*/;
 
   public static final String INVOICE_NO_INVOICE_TO_PAY = /*$$(*/ "No invoice to pay" /*)*/;
-  public static final String
-      INVOICE_CAN_NOT_GO_BACK_TO_VALIDATE_STATUS_OR_CANCEL_VENTILATED_INVOICE = /*$$(*/
-          "It is not possible to go back to validate status or cancel a ventilated invoice." /*)*/;
 
   public static final String INVOICE_WRONG_ANALYTIC_DISTRIBUTION = /*$$(*/
       "Some invoice lines analytic distributions are not correct, please correct them." /*)*/;
@@ -1503,6 +1500,24 @@ public final class AccountExceptionMessage {
   public static final String MOVE_INVOICE_TERM_IN_PAYMENT_AWAITING_CHANGE = /*$$(*/
       "At least one of the invoice term is paid or partially paid, thus, the payment condition can't be modified but this is still possible to modify the remaining unreconcilied terms." /*)*/;
 
+  public static final String MISSING_VAT_SYSTEM_ON_ACCOUNT = /*$$(*/
+      "Please select a vat system on the account %s." /*)*/;
+
+  public static final String MISSING_VAT_SYSTEM_ON_PARTNER = /*$$(*/
+      "Please select a vat system on the accounting config for partner %s." /*)*/;
+
+  public static final String MISSING_VAT_SYSTEM_ON_INVOICE_TAX = /*$$(*/
+      "Please select a vat system on the tax lines for invoice %s." /*)*/;
+
+  public static final String MISSING_VAT_SYSTEM_ON_ACCOUNT_PARTNER = /*$$(*/
+      "Please select a vat system on the account %s and on the accounting config for partner %s." /*)*/;
+
+  public static final String MISSING_VAT_SYSTEM_ON_INVOICE_TAX_PARTNER = /*$$(*/
+      "Please select a vat system on the tax lines for invoice %s and partner %s." /*)*/;
+
+  public static final String MISSING_VAT_SYSTEM_ON_MISSING_ACCOUNTING_SITUATION = /*$$(*/
+      "Please create an accounting situation for partner %s and company %s and select a vat system in order to compute it" /*)*/;
+
   public static final String CUSTOM_REPORT_TIMEOUT = /*$$(*/
       "Custom report %s couldn't be computed (timeout)." /*)*/;
 
@@ -1526,4 +1541,7 @@ public final class AccountExceptionMessage {
 
   public static final String REPORT_TYPE_SAME_AS_GROUP_NO_GROUP = /*$$(*/
       "Report type %s has a column or line having the same computation method as the group but there is none." /*)*/;
+
+  public static final String ANALYTIC_DISTRIBUTION_TEMPLATE_CONTAINS_NOT_ALLOWED_ACCOUNTS = /*$$(*/
+      "The selected Analytic Distribution template contains Analytic Accounts which are not allowed on this account. Please select an appropriate template or modify the analytic coherence rule for this account." /*)*/;
 }

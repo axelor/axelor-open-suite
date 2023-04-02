@@ -19,13 +19,13 @@ package com.axelor.apps.account.service.payment.paymentsession;
 
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.PaymentSession;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
-import com.axelor.exception.AxelorException;
 import java.util.List;
 
 public interface PaymentSessionService {
 
-  public String computeName(PaymentSession paymentSession);
+  public String computeName(PaymentSession paymentSession) throws AxelorException;
 
   public void setBankDetails(PaymentSession paymentSession);
 
@@ -45,5 +45,5 @@ public interface PaymentSessionService {
 
   public void unSelectAll(PaymentSession paymentSession) throws AxelorException;
 
-  public void retrieveEligibleTerms(PaymentSession paymentSession);
+  public void retrieveEligibleTerms(PaymentSession paymentSession) throws AxelorException;
 }

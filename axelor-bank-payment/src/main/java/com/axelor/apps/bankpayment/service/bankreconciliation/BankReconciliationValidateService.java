@@ -28,11 +28,11 @@ import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.db.BankReconciliationLine;
 import com.axelor.apps.bankpayment.db.BankStatementLine;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationRepository;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.AuthUtils;
-import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -188,7 +188,7 @@ public class BankReconciliationValidateService {
     bankReconciliationLineService.updateBankReconciledAmounts(bankReconciliationLine);
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public void validateMultipleBankReconciles(
       BankReconciliation bankReconciliation,
       BankReconciliationLine bankReconciliationLine,
@@ -256,6 +256,7 @@ public class BankReconciliationValidateService {
         }
         if (isUnderCorrection) {
           bankReconciliationLine.setIsPosted(true);
+          bankReconciliationLineService.checkAmount(bankReconciliationLine);
           bankReconciliationLineService.updateBankReconciledAmounts(bankReconciliationLine);
         }
         bankStatementAmountRemaining = bankStatementAmountRemaining.subtract(debit.add(credit));

@@ -19,9 +19,9 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.db.Model;
-import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
 import java.util.List;
 

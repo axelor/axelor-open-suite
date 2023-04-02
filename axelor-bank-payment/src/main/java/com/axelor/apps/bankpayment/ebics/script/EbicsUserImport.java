@@ -22,6 +22,7 @@ import com.axelor.apps.bankpayment.db.EbicsCertificate;
 import com.axelor.apps.bankpayment.db.EbicsPartner;
 import com.axelor.apps.bankpayment.db.EbicsUser;
 import com.axelor.apps.bankpayment.ebics.service.EbicsCertificateService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Bank;
 import com.axelor.apps.base.service.BankService;
 import com.google.inject.Inject;
@@ -36,7 +37,7 @@ public class EbicsUserImport {
 
   @Inject private BankService bankService;
 
-  public Object importEbicsUser(Object bean, Map<String, Object> context) {
+  public Object importEbicsUser(Object bean, Map<String, Object> context) throws AxelorException {
 
     assert bean instanceof EbicsUser;
 
@@ -64,7 +65,7 @@ public class EbicsUserImport {
     return user;
   }
 
-  private void updateCertificate(EbicsCertificate cert) {
+  private void updateCertificate(EbicsCertificate cert) throws AxelorException {
 
     if (cert == null) {
       return;

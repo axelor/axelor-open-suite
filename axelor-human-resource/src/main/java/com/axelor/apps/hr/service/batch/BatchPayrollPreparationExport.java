@@ -17,9 +17,12 @@
  */
 package com.axelor.apps.hr.service.batch;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.CompanyRepository;
+import com.axelor.apps.base.db.repo.ExceptionOriginRepository;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.db.HrBatch;
 import com.axelor.apps.hr.db.PayrollPreparation;
 import com.axelor.apps.hr.db.repo.HrBatchRepository;
@@ -27,9 +30,6 @@ import com.axelor.apps.hr.db.repo.PayrollPreparationRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.PayrollPreparationService;
 import com.axelor.apps.hr.service.config.HRConfigService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.ExceptionOriginRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
@@ -40,7 +40,7 @@ import com.google.inject.persist.Transactional;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -128,7 +128,8 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
       throws IOException {
 
     List<String[]> list = new ArrayList<>();
-    LocalDate today = Beans.get(AppBaseService.class).getTodayDate(hrBatch.getCompany());
+    LocalDateTime today =
+        Beans.get(AppBaseService.class).getTodayDateTime(hrBatch.getCompany()).toLocalDateTime();
 
     for (PayrollPreparation payrollPreparation : payrollPreparationList) {
       String[] item = new String[5];
@@ -140,7 +141,7 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
       list.add(item);
 
       payrollPreparation.setExported(true);
-      payrollPreparation.setExportDate(today);
+      payrollPreparation.setExportDateTime(today);
       payrollPreparation.setExportTypeSelect(HrBatchRepository.EXPORT_TYPE_STANDARD);
       payrollPreparation.addBatchListItem(batch);
       payrollPreparationRepository.save(payrollPreparation);

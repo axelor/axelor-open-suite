@@ -17,10 +17,10 @@
  */
 package com.axelor.apps.purchase.db.repo;
 
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import javax.persistence.PersistenceException;
 
@@ -36,7 +36,7 @@ public class PurchaseOrderManagementRepository extends PurchaseOrderRepository {
     copy.setVersionNumber(1);
     copy.setEstimatedReceiptDate(null);
     copy.setValidatedByUser(null);
-    copy.setValidationDate(null);
+    copy.setValidationDateTime(null);
     if (copy.getPurchaseOrderLineList() != null) {
       for (PurchaseOrderLine purchaseOrderLine : copy.getPurchaseOrderLineList()) {
         purchaseOrderLine.setDesiredReceiptDate(null);

@@ -17,12 +17,12 @@
  */
 package com.axelor.apps.stock.rest;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.rest.dto.StockTrackingNumberPostRequest;
 import com.axelor.apps.stock.rest.dto.StockTrackingNumberResponse;
 import com.axelor.apps.stock.service.TrackingNumberService;
-import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.HttpExceptionHandler;
 import com.axelor.utils.api.RequestValidator;

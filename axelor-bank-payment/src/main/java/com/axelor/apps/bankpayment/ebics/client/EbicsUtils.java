@@ -37,9 +37,9 @@ package com.axelor.apps.bankpayment.ebics.client;
  */
 
 import com.axelor.app.AppSettings;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.common.StringUtils;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.xml.XPathParse;
@@ -49,8 +49,6 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
@@ -323,21 +321,6 @@ public class EbicsUtils {
       cipher.init(mode, keySpec, iv);
       return cipher.doFinal(input);
     } catch (GeneralSecurityException e) {
-      throw new AxelorException(
-          e.getCause(), TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getMessage());
-    }
-  }
-
-  /**
-   * Parses a string date
-   *
-   * @param date the given string date
-   * @return the date value
-   */
-  public static Date parse(String date) throws AxelorException {
-    try {
-      return new SimpleDateFormat(AppSettings.get().get("date.format")).parse(date);
-    } catch (Exception e) {
       throw new AxelorException(
           e.getCause(), TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getMessage());
     }

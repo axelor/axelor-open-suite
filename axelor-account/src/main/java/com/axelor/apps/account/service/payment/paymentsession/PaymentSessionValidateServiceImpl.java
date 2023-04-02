@@ -42,9 +42,11 @@ import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentValidateService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -52,8 +54,6 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -293,7 +293,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     return false;
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   protected InvoicePayment generatePendingPaymentFromInvoiceTerm(
       PaymentSession paymentSession, InvoiceTerm invoiceTerm) {
     if (invoiceTerm.getInvoice() == null) {
@@ -558,9 +558,9 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     String description = this.getMoveLineDescription(paymentSession);
 
     this.generateCashMoveLine(
-        move, null, this.getCashAccount(paymentSession, true), paymentAmount, description, out);
+        move, null, this.getCashAccount(paymentSession, true), paymentAmount, description, !out);
     this.generateCashMoveLine(
-        move, null, this.getCashAccount(paymentSession, false), paymentAmount, description, !out);
+        move, null, this.getCashAccount(paymentSession, false), paymentAmount, description, out);
 
     moveRepo.save(move);
 
@@ -633,7 +633,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
         isGlobal);
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   protected InvoiceTerm releaseInvoiceTerm(InvoiceTerm invoiceTerm) {
     invoiceTerm.setPaymentSession(null);
     invoiceTerm.setPaymentAmount(BigDecimal.ZERO);
@@ -641,7 +641,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     return invoiceTermRepo.save(invoiceTerm);
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   protected void updateStatus(PaymentSession paymentSession) {
     paymentSession = paymentSessionRepo.find(paymentSession.getId());
 
@@ -691,7 +691,8 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     }
   }
 
-  protected LocalDate getAccountingDate(PaymentSession paymentSession, InvoiceTerm invoiceTerm) {
+  @Override
+  public LocalDate getAccountingDate(PaymentSession paymentSession, InvoiceTerm invoiceTerm) {
     switch (paymentSession.getMoveAccountingDateSelect()) {
       case PaymentSessionRepository.MOVE_ACCOUNTING_DATE_PAYMENT:
         return paymentSession.getPaymentDate();
@@ -706,7 +707,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     return null;
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   protected void updatePaymentDescription(Move move) {
     for (InvoicePayment invoicePayment :
         invoicePaymentRepo.all().filter("self.move = ?", move).fetch()) {

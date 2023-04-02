@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
   <grid name="manuf-order-grid" title="Manufacturing orders"
     model="com.axelor.apps.production.db.ManufOrder" orderBy="-manufOrderSeq">
     <toolbar>
@@ -211,21 +211,23 @@
       <panel name="actionsPanel" title="Actions" colSpan="4">
         <button name="planBtn" icon="fa-calendar" title="Plan" colSpan="12"
           showIf="statusSelect == 1 || statusSelect == 2"
-          onClick="save,action-manuf-order-method-plan"/>
+          onClick="save,action-manuf-order-method-plan" hidden="true"/>
         <button name="startBtn" icon="fa-play" title="Start" colSpan="12"
-          showIf="statusSelect == 3" onClick="save,action-manuf-order-method-start"/>
+          showIf="statusSelect == 3" onClick="save,action-manuf-order-method-start" hidden="true"/>
         <button name="pauseBtn" icon="fa-pause" title="Pause" colSpan="12"
-          showIf="statusSelect == 4" onClick="save,action-manuf-order-method-pause"/>
+          showIf="statusSelect == 4" onClick="save,action-manuf-order-method-pause" hidden="true"/>
         <button name="resumeBtn" icon="fa-step-forward" title="Resume" colSpan="12"
-          showIf="statusSelect == 5" onClick="save,action-manuf-order-method-resume"/>
+          showIf="statusSelect == 5" onClick="save,action-manuf-order-method-resume" hidden="true"/>
         <button name="realizeBtn" icon="fa-check" title="Consume in stock moves" colSpan="12"
-          showIf="statusSelect == 4" onClick="save,action-manuf-order-method-consume-stock-move"/>
+          showIf="statusSelect == 4" onClick="save,action-manuf-order-method-consume-stock-move"
+          hidden="true"/>
         <button name="finishBtn" icon="fa-power-off" title="Finish" colSpan="12"
-          showIf="statusSelect == 4" onClick="save,action-manuf-order-group-finish"/>
+          showIf="statusSelect == 4" onClick="save,action-manuf-order-group-finish" hidden="true"/>
         <button name="finishPartBtn" icon="fa-power-off" title="Partial Finish" colSpan="12"
-          showIf="statusSelect == 4" onClick="save, action-manuf-order-method-part-finish"/>
+          showIf="statusSelect == 4" onClick="save, action-manuf-order-method-part-finish"
+          hidden="true"/>
         <button name="cancelBtn" icon="fa-times-circle" title="Cancel" colSpan="12"
-          showIf="statusSelect != 2" onClick="save,action-manuf-order-view-cancel"/>
+          showIf="statusSelect != 2" onClick="save,action-manuf-order-view-cancel" hidden="true"/>
       </panel>
     </panel>
     <panel-tabs name="mainPanelTab" colSpan="4">
@@ -482,7 +484,7 @@
 
   </grid>
 
-  <form model="com.axelor.message.db.Wizard" title="Draft orders"
+  <form model="com.axelor.utils.db.Wizard" title="Draft orders"
     name="multi-level-generated-draft-manuf-order-wizard-form"
     onNew="action-manuf-order-attrs-multi-level-wizard-onnew">
     <panel name="mainPanel">

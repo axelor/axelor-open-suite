@@ -17,25 +17,26 @@
  */
 package com.axelor.apps.base.service.message;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.ModelEmailLink;
 import com.axelor.apps.base.db.PrintingSettings;
 import com.axelor.apps.base.db.repo.ModelEmailLinkRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.EmailAccount;
 import com.axelor.message.db.EmailAddress;
 import com.axelor.message.db.Message;
 import com.axelor.message.db.repo.MessageRepository;
+import com.axelor.message.service.AppSettingsMessageService;
 import com.axelor.message.service.MessageServiceImpl;
 import com.axelor.message.service.SendMailQueueService;
 import com.axelor.meta.db.MetaFile;
@@ -75,9 +76,14 @@ public class MessageServiceBaseImpl extends MessageServiceImpl implements Messag
       MetaAttachmentRepository metaAttachmentRepository,
       MessageRepository messageRepository,
       SendMailQueueService sendMailQueueService,
+      AppSettingsMessageService appSettingsMessageService,
       UserService userService,
       AppBaseService appBaseService) {
-    super(metaAttachmentRepository, messageRepository, sendMailQueueService);
+    super(
+        metaAttachmentRepository,
+        messageRepository,
+        sendMailQueueService,
+        appSettingsMessageService);
     this.userService = userService;
     this.appBaseService = appBaseService;
   }

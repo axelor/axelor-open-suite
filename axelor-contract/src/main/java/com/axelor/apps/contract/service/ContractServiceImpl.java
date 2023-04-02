@@ -32,8 +32,10 @@ import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
@@ -50,8 +52,6 @@ import com.axelor.apps.contract.db.repo.ContractVersionRepository;
 import com.axelor.apps.contract.exception.ContractExceptionMessage;
 import com.axelor.apps.contract.generator.InvoiceGeneratorContract;
 import com.axelor.auth.AuthUtils;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.date.DateTool;
@@ -184,7 +184,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
   }
 
   @Transactional
-  private void fillInvoicingDateByInvoicingMoment(Contract contract) {
+  protected void fillInvoicingDateByInvoicingMoment(Contract contract) {
     ContractVersion version = contract.getCurrentContractVersion();
     if (version.getAutomaticInvoicing()) {
       switch (version.getInvoicingMomentSelect()) {
@@ -213,6 +213,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
   }
 
   @Override
+  @Transactional(rollbackOn = {Exception.class})
   public void isValid(Contract contract) throws AxelorException {
     if (contract.getId() == null) {
       return;
@@ -306,6 +307,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
   }
 
   @Override
+  @Transactional(rollbackOn = {Exception.class})
   public void checkCanTerminateContract(Contract contract) throws AxelorException {
     if (contract.getTerminatedDate() == null) {
       throw new AxelorException(
@@ -375,7 +377,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void close(Contract contract, LocalDate terminationDate) throws AxelorException {
     LocalDate today = appBaseService.getTodayDate(contract.getCompany());
 

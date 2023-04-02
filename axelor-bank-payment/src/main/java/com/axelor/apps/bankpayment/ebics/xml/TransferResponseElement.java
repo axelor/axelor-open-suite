@@ -41,7 +41,7 @@ import com.axelor.apps.account.ebics.schema.h003.EbicsResponseDocument.EbicsResp
 import com.axelor.apps.bankpayment.db.EbicsUser;
 import com.axelor.apps.bankpayment.ebics.exception.ReturnCode;
 import com.axelor.apps.bankpayment.ebics.interfaces.ContentFactory;
-import com.axelor.exception.AxelorException;
+import com.axelor.apps.base.AxelorException;
 
 /**
  * The <code>TransferResponseElement</code> is the common element response for all ebics transfers.

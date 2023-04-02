@@ -19,10 +19,12 @@ package com.axelor.apps.quality.service.app;
 
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.studio.app.service.AppVersionService;
 import com.axelor.studio.db.AppQuality;
 import com.axelor.studio.db.repo.AppQualityRepository;
 import com.axelor.studio.db.repo.AppRepository;
+import com.axelor.studio.service.AppSettingsStudioService;
 import com.google.inject.Inject;
 
 public class AppQualityServiceImpl extends AppBaseServiceImpl implements AppQualityService {
@@ -34,8 +36,10 @@ public class AppQualityServiceImpl extends AppBaseServiceImpl implements AppQual
       AppRepository appRepo,
       MetaFiles metaFiles,
       AppVersionService appVersionService,
+      MetaModelRepository metaModelRepo,
+      AppSettingsStudioService appSettingsStudioService,
       AppQualityRepository appQualityRepo) {
-    super(appRepo, metaFiles, appVersionService);
+    super(appRepo, metaFiles, appVersionService, metaModelRepo, appSettingsStudioService);
     this.appQualityRepo = appQualityRepo;
   }
 

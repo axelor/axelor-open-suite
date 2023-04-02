@@ -17,11 +17,10 @@
  */
 package com.axelor.apps.contract.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractVersion;
-import com.axelor.exception.AxelorException;
 import com.axelor.utils.date.DateTool;
-import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
 
 public interface ContractVersionService {
@@ -31,7 +30,6 @@ public interface ContractVersionService {
    *
    * @param version of the contract will be waiting.
    */
-  @Transactional(rollbackOn = {Exception.class})
   void waiting(ContractVersion version) throws AxelorException;
 
   /**
@@ -40,7 +38,6 @@ public interface ContractVersionService {
    * @param version of the contract will be waiting.
    * @param date of waiting.
    */
-  @Transactional(rollbackOn = {Exception.class})
   void waiting(ContractVersion version, LocalDate date) throws AxelorException;
 
   /**
@@ -48,7 +45,6 @@ public interface ContractVersionService {
    *
    * @param version of te contract will be ongoing.
    */
-  @Transactional(rollbackOn = {Exception.class})
   void ongoing(ContractVersion version) throws AxelorException;
 
   /**
@@ -57,7 +53,6 @@ public interface ContractVersionService {
    * @param version of the contract will be ongoing.
    * @param date of activation.
    */
-  @Transactional(rollbackOn = {Exception.class})
   void ongoing(ContractVersion version, LocalDate date) throws AxelorException;
 
   /**
@@ -65,7 +60,6 @@ public interface ContractVersionService {
    *
    * @param version of the contract will be terminate.
    */
-  @Transactional
   void terminate(ContractVersion version) throws AxelorException;
 
   /**
@@ -74,7 +68,6 @@ public interface ContractVersionService {
    * @param version of the contract will be terminate.
    * @param date of terminate.
    */
-  @Transactional
   void terminate(ContractVersion version, LocalDate date) throws AxelorException;
 
   /**

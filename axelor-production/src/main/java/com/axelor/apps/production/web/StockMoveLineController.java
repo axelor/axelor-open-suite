@@ -17,7 +17,10 @@
  */
 package com.axelor.apps.production.web;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
@@ -26,9 +29,6 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.db.mapper.Mapper;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -43,15 +43,17 @@ public class StockMoveLineController {
 
     if (!stockMove.isPresent()) {
       Context parentContext = request.getContext().getParent();
-      if (parentContext.getContextClass().equals(StockMove.class)) {
-        stockMove = Optional.ofNullable(parentContext.asType(StockMove.class));
-      } else if (parentContext.getContextClass().equals(ManufOrder.class)) {
-        ManufOrder manufOrder = parentContext.asType(ManufOrder.class);
-        ManufOrderStockMoveService manufOrderStockMoveService =
-            Beans.get(ManufOrderStockMoveService.class);
-        stockMove = manufOrderStockMoveService.getPlannedStockMove(manufOrder.getInStockMoveList());
+      if (parentContext != null) {
+        if (parentContext.getContextClass().equals(StockMove.class)) {
+          stockMove = Optional.ofNullable(parentContext.asType(StockMove.class));
+        } else if (parentContext.getContextClass().equals(ManufOrder.class)) {
+          ManufOrder manufOrder = parentContext.asType(ManufOrder.class);
+          ManufOrderStockMoveService manufOrderStockMoveService =
+              Beans.get(ManufOrderStockMoveService.class);
+          stockMove =
+              manufOrderStockMoveService.getPlannedStockMove(manufOrder.getInStockMoveList());
+        }
       }
-
       if (!stockMove.isPresent()) {
         return;
       }

@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.studio.app.service.AppVersionService;
 import com.axelor.studio.db.AppAccount;
 import com.axelor.studio.db.AppBudget;
@@ -31,6 +32,7 @@ import com.axelor.studio.db.repo.AppAccountRepository;
 import com.axelor.studio.db.repo.AppBudgetRepository;
 import com.axelor.studio.db.repo.AppInvoiceRepository;
 import com.axelor.studio.db.repo.AppRepository;
+import com.axelor.studio.service.AppSettingsStudioService;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
@@ -54,12 +56,14 @@ public class AppAccountServiceImpl extends AppBaseServiceImpl implements AppAcco
       AppRepository appRepo,
       MetaFiles metaFiles,
       AppVersionService appVersionService,
+      MetaModelRepository metaModelRepo,
+      AppSettingsStudioService appSettingsStudioService,
       AppAccountRepository appAccountRepo,
       AppBudgetRepository appBudgetRepo,
       AppInvoiceRepository appInvoiceRepo,
       AccountConfigRepository accountConfigRepo,
       CompanyRepository companyRepo) {
-    super(appRepo, metaFiles, appVersionService);
+    super(appRepo, metaFiles, appVersionService, metaModelRepo, appSettingsStudioService);
     this.appAccountRepo = appAccountRepo;
     this.appBudgetRepo = appBudgetRepo;
     this.appInvoiceRepo = appInvoiceRepo;

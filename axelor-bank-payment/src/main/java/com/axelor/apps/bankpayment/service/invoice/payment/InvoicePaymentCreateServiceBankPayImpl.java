@@ -20,16 +20,17 @@ package com.axelor.apps.bankpayment.service.invoice.payment;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
+import com.axelor.apps.account.service.InvoiceVisibilityService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoiceTermPaymentService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMergeService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -48,7 +49,8 @@ public class InvoicePaymentCreateServiceBankPayImpl extends InvoicePaymentCreate
       AppBaseService appBaseService,
       InvoiceTermPaymentService invoiceTermPaymentService,
       InvoiceTermService invoiceTermService,
-      InvoiceService invoiceService) {
+      InvoiceService invoiceService,
+      InvoiceVisibilityService invoiceVisibilityService) {
 
     super(
         invoicePaymentRepository,
@@ -57,7 +59,8 @@ public class InvoicePaymentCreateServiceBankPayImpl extends InvoicePaymentCreate
         appBaseService,
         invoiceTermPaymentService,
         invoiceTermService,
-        invoiceService);
+        invoiceService,
+        invoiceVisibilityService);
   }
 
   @Override

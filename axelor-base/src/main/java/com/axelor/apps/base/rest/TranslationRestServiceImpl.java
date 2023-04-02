@@ -17,8 +17,8 @@
  */
 package com.axelor.apps.base.rest;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.db.Query;
-import com.axelor.exception.AxelorException;
 import com.axelor.meta.db.MetaTranslation;
 import com.axelor.meta.db.repo.MetaTranslationRepository;
 import com.google.inject.Inject;

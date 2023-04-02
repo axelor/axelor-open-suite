@@ -17,8 +17,8 @@
  */
 package com.axelor.apps.base.service.advancedExport;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.AdvancedExport;
-import com.axelor.exception.AxelorException;
 import com.itextpdf.text.DocumentException;
 import java.io.File;
 import java.io.IOException;
@@ -48,9 +48,10 @@ public abstract class AdvancedExportGenerator {
    * This method generate the body of export file.
    *
    * @param dataList
+   * @throws AxelorException
    */
   @SuppressWarnings("rawtypes")
-  public abstract void generateBody(List<List> dataList);
+  public abstract void generateBody(List<List> dataList) throws AxelorException;
 
   /**
    * This method close the object.

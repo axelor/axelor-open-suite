@@ -17,12 +17,17 @@
  */
 package com.axelor.apps.stock.service;
 
+import com.axelor.app.AppSettings;
+import com.axelor.app.AvailableAppSettings;
+import com.axelor.app.internal.AppFilter;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductCategory;
 import com.axelor.apps.base.db.ProductFamily;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.SequenceRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.Inventory;
@@ -43,9 +48,8 @@ import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.Query;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.i18n.L10n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
@@ -73,9 +77,12 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.LocaleUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
@@ -509,7 +516,8 @@ public class InventoryService {
     }
 
     checkMissingStockLocation(inventory.getInventoryLineList());
-    inventory.setValidatedOn(appBaseService.getTodayDate(inventory.getCompany()));
+    inventory.setValidatedOn(
+        appBaseService.getTodayDateTime(inventory.getCompany()).toLocalDateTime());
     inventory.setStatusSelect(InventoryRepository.STATUS_VALIDATED);
     inventory.setValidatedBy(AuthUtils.getUser());
     generateStockMoves(inventory, true);
@@ -560,7 +568,7 @@ public class InventoryService {
     inventory.setStatusSelect(InventoryRepository.STATUS_CANCELED);
   }
 
-  private void storeLastInventoryData(Inventory inventory) {
+  protected void storeLastInventoryData(Inventory inventory) {
     Map<Pair<Product, TrackingNumber>, BigDecimal> realQties = new HashMap<>();
     Map<Product, BigDecimal> consolidatedRealQties = new HashMap<>();
     Map<Product, String> realRacks = new HashMap<>();
@@ -592,7 +600,7 @@ public class InventoryService {
         if (realQty != null) {
           stockLocationLine.setLastInventoryRealQty(realQty);
           stockLocationLine.setLastInventoryDateT(
-              inventory.getValidatedOn().atStartOfDay().atZone(ZoneOffset.UTC));
+              inventory.getValidatedOn().atZone(ZoneOffset.UTC));
         }
 
         String rack = realRacks.get(product);
@@ -613,7 +621,7 @@ public class InventoryService {
         if (realQty != null) {
           detailsStockLocationLine.setLastInventoryRealQty(realQty);
           detailsStockLocationLine.setLastInventoryDateT(
-              inventory.getValidatedOn().atStartOfDay().atZone(ZoneOffset.UTC));
+              inventory.getValidatedOn().atZone(ZoneOffset.UTC));
         }
 
         String rack = realRacks.get(product);
@@ -680,7 +688,7 @@ public class InventoryService {
     String inventorySeq = inventory.getInventorySeq();
 
     LocalDate inventoryDate = inventory.getPlannedStartDateT().toLocalDate();
-    LocalDate realDate = inventory.getValidatedOn();
+    LocalDate realDate = inventory.getValidatedOn().toLocalDate();
     StockMove stockMove =
         stockMoveService.createStockMove(
             null,
@@ -915,6 +923,16 @@ public class InventoryService {
 
     List<String[]> list = new ArrayList<>();
 
+    AppSettings appSettings = AppSettings.get();
+    final Locale locale =
+        Optional.ofNullable(
+                LocaleUtils.toLocale(appSettings.get(AvailableAppSettings.DATA_EXPORT_LOCALE)))
+            .orElse(AppFilter.getLocale());
+    final String separator =
+        Optional.ofNullable(appSettings.get(AvailableAppSettings.DATA_EXPORT_SEPARATOR))
+            .orElse(";");
+    L10n dateFormat = L10n.getInstance(locale);
+
     for (InventoryLine inventoryLine : inventory.getInventoryLineList()) {
       String[] item = new String[10];
       String realQty = "";
@@ -948,9 +966,7 @@ public class InventoryService {
       if (stockLocationLine != null) {
         ZonedDateTime lastInventoryDateT = stockLocationLine.getLastInventoryDateT();
         lastInventoryDateTString =
-            lastInventoryDateT == null
-                ? ""
-                : lastInventoryDateT.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+            lastInventoryDateT == null ? "" : dateFormat.format(lastInventoryDateT.toLocalDate());
       }
       item[8] = lastInventoryDateTString;
       item[9] =
@@ -987,7 +1003,7 @@ public class InventoryService {
       LAST_INVENTORY_DATE,
       STOCK_LOCATION
     };
-    CsvTool.csvWriter(file.getParent(), file.getName(), ';', '"', headers, list);
+    CsvTool.csvWriter(file.getParent(), file.getName(), separator.charAt(0), '"', headers, list);
 
     try (InputStream is = new FileInputStream(file)) {
       return Beans.get(MetaFiles.class).upload(is, fileName + ".csv");

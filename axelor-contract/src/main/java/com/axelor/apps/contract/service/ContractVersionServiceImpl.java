@@ -17,6 +17,8 @@
  */
 package com.axelor.apps.contract.service;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractVersion;
@@ -25,8 +27,6 @@ import com.axelor.apps.contract.db.repo.ContractVersionRepository;
 import com.axelor.apps.contract.exception.ContractExceptionMessage;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
@@ -49,6 +49,7 @@ public class ContractVersionServiceImpl extends ContractVersionRepository
   }
 
   @Override
+  @Transactional(rollbackOn = {Exception.class})
   public void waiting(ContractVersion version) throws AxelorException {
     waiting(
         version,
@@ -92,6 +93,7 @@ public class ContractVersionServiceImpl extends ContractVersionRepository
   }
 
   @Override
+  @Transactional(rollbackOn = {Exception.class})
   public void ongoing(ContractVersion version) throws AxelorException {
     ongoing(
         version,
@@ -142,6 +144,7 @@ public class ContractVersionServiceImpl extends ContractVersionRepository
   }
 
   @Override
+  @Transactional(rollbackOn = {Exception.class})
   public void terminate(ContractVersion version) throws AxelorException {
     terminate(
         version,
@@ -154,7 +157,7 @@ public class ContractVersionServiceImpl extends ContractVersionRepository
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void terminate(ContractVersion version, LocalDate date) throws AxelorException {
 
     if (version.getStatusSelect() == null

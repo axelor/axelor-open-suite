@@ -37,8 +37,8 @@ package com.axelor.apps.bankpayment.ebics.io;
  */
 
 import com.axelor.apps.bankpayment.ebics.interfaces.ContentFactory;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;

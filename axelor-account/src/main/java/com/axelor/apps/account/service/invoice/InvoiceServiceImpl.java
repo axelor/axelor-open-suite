@@ -47,6 +47,7 @@ import com.axelor.apps.account.service.invoice.print.InvoicePrintService;
 import com.axelor.apps.account.service.invoice.print.InvoiceProductStatementService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Alarm;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.CancelReason;
@@ -57,6 +58,7 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.BankDetailsRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
@@ -67,8 +69,6 @@ import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.ModelTool;
@@ -424,7 +424,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     return null;
   }
 
-  private long getRefundsAmount(Long partnerId, int refundType) {
+  protected long getRefundsAmount(Long partnerId, int refundType) {
     return invoiceRepo
         .all()
         .filter(
@@ -1004,7 +1004,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void refusalToPay(
       Invoice invoice, CancelReason reasonOfRefusalToPay, String reasonOfRefusalToPayStr) {
 
@@ -1115,8 +1115,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
                 invoiceTermService.getPfpValidatorUser(invoice.getPartner(), invoice.getCompany()));
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public void validatePfp(Long invoiceId) throws AxelorException {
+  @Transactional
+  public void validatePfp(Long invoiceId) {
     Invoice invoice = invoiceRepo.find(invoiceId);
     User currentUser = AuthUtils.getUser();
 

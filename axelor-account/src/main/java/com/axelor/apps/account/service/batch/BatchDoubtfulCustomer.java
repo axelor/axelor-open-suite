@@ -25,12 +25,12 @@ import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountingService;
 import com.axelor.apps.account.service.debtrecovery.DoubtfulCustomerService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.repo.ExceptionOriginRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.ExceptionOriginRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
@@ -142,31 +142,31 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
    */
   public void createDoubtFulCustomerMove(
       List<Move> moveList, Account doubtfulCustomerAccount, String debtPassReason) {
+    for (int i = 0; i < moveList.size(); i++) {
+      Move move = moveList.get(i);
 
-    int i = 0;
-    for (Move move : moveList) {
       try {
-
         doubtfulCustomerService.createDoubtFulCustomerMove(
             moveRepo.find(move.getId()),
             accountRepo.find(doubtfulCustomerAccount.getId()),
             debtPassReason);
+
         Move myMove = moveRepo.find(move.getId());
+
         if (myMove.getInvoice() != null) {
           updateInvoice(myMove.getInvoice());
-          i++;
+        } else {
+          updateAccountMove(myMove, true);
         }
 
       } catch (AxelorException e) {
-
         TraceBackService.trace(
             new AxelorException(e, e.getCategory(), I18n.get("Invoice") + " %s", move.getOrigin()),
             ExceptionOriginRepository.DOUBTFUL_CUSTOMER,
             batch.getId());
+
         incrementAnomaly();
-
       } catch (Exception e) {
-
         TraceBackService.trace(
             new Exception(String.format(I18n.get("Invoice") + " %s", move.getOrigin()), e),
             ExceptionOriginRepository.DOUBTFUL_CUSTOMER,
@@ -177,9 +177,7 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
         log.error(
             "Anomaly generated for the invoice {}",
             moveRepo.find(move.getId()).getInvoice().getInvoiceId());
-
       } finally {
-
         if (i % 10 == 0) {
           JPA.clear();
         }

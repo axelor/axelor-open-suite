@@ -17,8 +17,8 @@
  */
 package com.axelor.apps.crm.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.crm.db.CrmReporting;
-import com.axelor.exception.AxelorException;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 
 public interface CrmReportingService {

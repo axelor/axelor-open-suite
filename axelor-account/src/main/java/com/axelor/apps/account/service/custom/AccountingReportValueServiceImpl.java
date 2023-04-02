@@ -32,12 +32,13 @@ import com.axelor.apps.account.db.repo.AccountingReportTypeRepository;
 import com.axelor.apps.account.db.repo.AccountingReportValueRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.DateService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -79,8 +80,9 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
       AccountingReportValueMoveLineService accountingReportValueMoveLineService,
       AccountingReportValuePercentageService accountingReportValuePercentageService,
       AppBaseService appBaseService,
-      AnalyticAccountRepository analyticAccountRepo) {
-    super(accountRepo, accountingReportValueRepo, analyticAccountRepo);
+      AnalyticAccountRepository analyticAccountRepo,
+      DateService dateService) {
+    super(accountRepo, accountingReportValueRepo, analyticAccountRepo, dateService);
     this.accountingReportValueCustomRuleService = accountingReportValueCustomRuleService;
     this.accountingReportValueMoveLineService = accountingReportValueMoveLineService;
     this.accountingReportValuePercentageService = accountingReportValuePercentageService;
@@ -96,7 +98,7 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public void clearReportValues(AccountingReport accountingReport) {
     accountingReportValueRepo.findByAccountingReport(accountingReport).remove();
   }

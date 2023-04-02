@@ -17,21 +17,22 @@
  */
 package com.axelor.apps.crm.message;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.ICalendarEventRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.exception.CrmExceptionMessage;
 import com.axelor.apps.crm.service.config.CrmConfigService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.Message;
 import com.axelor.message.db.Template;
 import com.axelor.message.db.repo.MessageRepository;
+import com.axelor.message.service.AppSettingsMessageService;
 import com.axelor.message.service.SendMailQueueService;
 import com.axelor.message.service.TemplateMessageService;
 import com.axelor.meta.db.repo.MetaAttachmentRepository;
@@ -46,12 +47,14 @@ public class MessageServiceCrmImpl extends MessageServiceBaseImpl {
       MetaAttachmentRepository metaAttachmentRepository,
       MessageRepository messageRepository,
       SendMailQueueService sendMailQueueService,
+      AppSettingsMessageService appSettingsMessageService,
       UserService userService,
       AppBaseService appBaseService) {
     super(
         metaAttachmentRepository,
         messageRepository,
         sendMailQueueService,
+        appSettingsMessageService,
         userService,
         appBaseService);
   }

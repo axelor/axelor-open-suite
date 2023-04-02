@@ -19,6 +19,7 @@ package com.axelor.apps.purchase.service;
 
 import static com.axelor.apps.base.service.administration.AbstractBatch.FETCH_LIMIT;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.ABCAnalysis;
 import com.axelor.apps.base.db.ABCAnalysisLine;
 import com.axelor.apps.base.db.Product;
@@ -34,9 +35,9 @@ import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
-import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -78,11 +79,11 @@ public class ABCAnalysisServicePurchaseImpl extends ABCAnalysisServiceImpl {
         purchaseOrderLineRepository
             .all()
             .filter(
-                "(self.purchaseOrder.statusSelect = :statusValidated OR self.purchaseOrder.statusSelect = :statusFinished) AND self.purchaseOrder.validationDate >= :startDate AND self.purchaseOrder.validationDate <= :endDate AND self.product.id = :productId")
+                "(self.purchaseOrder.statusSelect = :statusValidated OR self.purchaseOrder.statusSelect = :statusFinished) AND self.purchaseOrder.validationDateTime >= :startDate AND self.purchaseOrder.validationDateTime <= :endDate AND self.product.id = :productId")
             .bind("statusValidated", PurchaseOrderRepository.STATUS_VALIDATED)
             .bind("statusFinished", PurchaseOrderRepository.STATUS_FINISHED)
-            .bind("startDate", abcAnalysis.getStartDate())
-            .bind("endDate", abcAnalysis.getEndDate())
+            .bind("startDate", abcAnalysis.getStartDate().atStartOfDay())
+            .bind("endDate", abcAnalysis.getEndDate().atTime(LocalTime.MAX))
             .bind("productId", product.getId())
             .order("id");
 

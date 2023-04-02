@@ -18,7 +18,7 @@
 package com.axelor.apps.account.service.move;
 
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.exception.AxelorException;
+import com.axelor.apps.base.AxelorException;
 import java.time.LocalDate;
 
 public interface MoveLineInvoiceTermService {

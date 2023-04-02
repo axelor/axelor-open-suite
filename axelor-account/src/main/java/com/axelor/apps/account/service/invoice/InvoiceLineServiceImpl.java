@@ -31,6 +31,7 @@ import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.PriceList;
@@ -45,7 +46,6 @@ import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.common.ObjectUtils;
-import com.axelor.exception.AxelorException;
 import com.axelor.studio.db.AppInvoice;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
@@ -140,7 +140,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
    * @return the unit price of the invoice line
    * @throws AxelorException
    */
-  private BigDecimal getUnitPrice(
+  protected BigDecimal getUnitPrice(
       Invoice invoice,
       InvoiceLine invoiceLine,
       TaxLine taxLine,
@@ -531,7 +531,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     return this.computeAnalyticDistributionWithUpdatedQty(invoiceLine);
   }
 
-  private InvoiceLine computeAnalyticDistributionWithUpdatedQty(InvoiceLine invoiceLine) {
+  protected InvoiceLine computeAnalyticDistributionWithUpdatedQty(InvoiceLine invoiceLine) {
 
     if (appAccountService.getAppAccount().getManageAnalyticAccounting()) {
       List<AnalyticMoveLine> analyticMoveLineList =

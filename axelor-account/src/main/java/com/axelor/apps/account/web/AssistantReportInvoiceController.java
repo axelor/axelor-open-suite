@@ -20,9 +20,11 @@ package com.axelor.apps.account.web;
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.AssistantReportInvoice;
 import com.axelor.apps.account.report.IReport;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.DateService;
 import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -37,8 +39,6 @@ import org.slf4j.LoggerFactory;
 public class AssistantReportInvoiceController {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-
-  private static final DateTimeFormatter dtFormater = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
   public void printSales(ActionRequest request, ActionResponse response) throws AxelorException {
 
@@ -65,7 +65,9 @@ public class AssistantReportInvoiceController {
     response.setView(ActionView.define(name).add("html", fileLink).map());
   }
 
-  private String getDateString(AssistantReportInvoice assistant) {
+  protected String getDateString(AssistantReportInvoice assistant) throws AxelorException {
+    DateTimeFormatter dtFormater = Beans.get(DateService.class).getDateFormat();
+
     return assistant.getFromDate().format(dtFormater) + assistant.getToDate().format(dtFormater);
   }
 

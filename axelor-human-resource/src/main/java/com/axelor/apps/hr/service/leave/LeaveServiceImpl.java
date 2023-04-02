@@ -17,12 +17,14 @@
  */
 package com.axelor.apps.hr.service.leave;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.DayPlanning;
 import com.axelor.apps.base.db.EventsPlanning;
 import com.axelor.apps.base.db.ICalendarEvent;
 import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.apps.base.db.repo.ICalendarEventRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.ical.ICalendarService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
@@ -40,8 +42,6 @@ import com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.message.db.Message;
 import com.axelor.message.service.TemplateMessageService;
@@ -726,7 +726,8 @@ public class LeaveServiceImpl implements LeaveService {
 
     leaveRequest.setStatusSelect(LeaveRequestRepository.STATUS_VALIDATED);
     leaveRequest.setValidatedBy(AuthUtils.getUser());
-    leaveRequest.setValidationDate(appBaseService.getTodayDate(leaveRequest.getCompany()));
+    leaveRequest.setValidationDateTime(
+        appBaseService.getTodayDateTime(leaveRequest.getCompany()).toLocalDateTime());
 
     LeaveLine leaveLine = getLeaveLine(leaveRequest);
     if (leaveLine != null) {
@@ -766,7 +767,8 @@ public class LeaveServiceImpl implements LeaveService {
 
     leaveRequest.setStatusSelect(LeaveRequestRepository.STATUS_REFUSED);
     leaveRequest.setRefusedBy(AuthUtils.getUser());
-    leaveRequest.setRefusalDate(appBaseService.getTodayDate(leaveRequest.getCompany()));
+    leaveRequest.setRefusalDateTime(
+        appBaseService.getTodayDateTime(leaveRequest.getCompany()).toLocalDateTime());
 
     leaveRequestRepo.save(leaveRequest);
     if (leaveRequest.getLeaveReason().getManageAccumulation()) {
@@ -852,9 +854,8 @@ public class LeaveServiceImpl implements LeaveService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public LeaveLine addLeaveReasonOrCreateIt(Employee employee, LeaveReason leaveReason)
-      throws AxelorException {
+  @Transactional
+  public LeaveLine addLeaveReasonOrCreateIt(Employee employee, LeaveReason leaveReason) {
     return getLeaveReasonToJustify(employee, leaveReason)
         .orElseGet(() -> createLeaveReasonToJustify(employee, leaveReason));
   }

@@ -18,8 +18,10 @@
 package com.axelor.apps.businessproject.service.batch;
 
 import com.axelor.apps.base.db.repo.BatchRepository;
+import com.axelor.apps.base.db.repo.ExceptionOriginRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.AbstractBatch;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.ProjectTaskBusinessProjectService;
 import com.axelor.apps.businessproject.service.TimesheetLineBusinessService;
@@ -30,8 +32,6 @@ import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
-import com.axelor.exception.db.repo.ExceptionOriginRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppBusinessProject;
 import com.axelor.utils.QueryBuilder;
@@ -83,7 +83,7 @@ public class BatchUpdateTaskService extends AbstractBatch {
     }
   }
 
-  private void updateTasks() {
+  protected void updateTasks() {
     QueryBuilder<ProjectTask> taskQueryBuilder =
         projectTaskBusinessProjectService.getTaskInvoicingFilter();
 
@@ -96,7 +96,7 @@ public class BatchUpdateTaskService extends AbstractBatch {
       findBatch();
       for (ProjectTask projectTask : taskList) {
         try {
-          projectTask = projectTaskBusinessProjectService.updateTaskFinancialInfo(projectTask);
+          projectTask = projectTaskBusinessProjectService.setProjectTaskValues(projectTask);
         } catch (Exception e) {
           incrementAnomaly();
           TraceBackService.trace(
@@ -114,14 +114,14 @@ public class BatchUpdateTaskService extends AbstractBatch {
     }
   }
 
-  private void updateTaskToInvoice(
+  protected void updateTaskToInvoice(
       Map<String, Object> contextValues, AppBusinessProject appBusinessProject) {
 
     QueryBuilder<ProjectTask> taskQueryBuilder =
         projectTaskBusinessProjectService.getTaskInvoicingFilter();
 
-    if (!Strings.isNullOrEmpty(appBusinessProject.getExculdeTaskInvoicing())) {
-      String filter = "NOT (" + appBusinessProject.getExculdeTaskInvoicing() + ")";
+    if (!Strings.isNullOrEmpty(appBusinessProject.getExcludeTaskInvoicing())) {
+      String filter = "NOT (" + appBusinessProject.getExcludeTaskInvoicing() + ")";
       taskQueryBuilder = taskQueryBuilder.add(filter);
     }
     Query<ProjectTask> taskQuery = taskQueryBuilder.build().order("id");
@@ -163,7 +163,7 @@ public class BatchUpdateTaskService extends AbstractBatch {
         batch, updatedTaskList, "updatedTaskSet", contextValues);
   }
 
-  private void updateTimesheetLines(Map<String, Object> contextValues) {
+  protected void updateTimesheetLines(Map<String, Object> contextValues) {
 
     List<Object> updatedTimesheetLineList = new ArrayList<Object>();
 

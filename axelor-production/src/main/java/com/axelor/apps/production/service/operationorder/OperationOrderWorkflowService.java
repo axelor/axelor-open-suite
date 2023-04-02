@@ -17,8 +17,10 @@
  */
 package com.axelor.apps.production.service.operationorder;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.DayPlanning;
 import com.axelor.apps.base.db.WeeklyPlanning;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.production.db.Machine;
 import com.axelor.apps.production.db.MachineTool;
@@ -42,8 +44,6 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.date.DateTool;
@@ -86,7 +86,7 @@ public class OperationOrderWorkflowService {
     this.prodProcessLineService = prodProcessLineService;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void manageDurationWithMachinePlanning(
       OperationOrder operationOrder, WeeklyPlanning weeklyPlanning, Long duration)
       throws AxelorException {
@@ -479,7 +479,7 @@ public class OperationOrderWorkflowService {
    *
    * @param operationOrder An operation order
    */
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void cancel(OperationOrder operationOrder) throws AxelorException {
     int oldStatus = operationOrder.getStatusSelect();
     operationOrder.setStatusSelect(OperationOrderRepository.STATUS_CANCELED);
@@ -658,7 +658,7 @@ public class OperationOrderWorkflowService {
     return prodProcessLineService.computeEntireCycleDuration(prodProcessLine, qty);
   }
 
-  private void calculateHoursOfUse(OperationOrder operationOrder) {
+  protected void calculateHoursOfUse(OperationOrder operationOrder) {
 
     if (operationOrder.getMachineTool() == null) {
       return;

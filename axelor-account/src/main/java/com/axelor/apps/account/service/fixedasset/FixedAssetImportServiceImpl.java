@@ -22,7 +22,7 @@ import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetCategoryRepository;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
-import com.axelor.exception.AxelorException;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.utils.date.DateTool;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -74,7 +74,7 @@ public class FixedAssetImportServiceImpl implements FixedAssetImportService {
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public FixedAsset generateAndComputeLines(
       FixedAsset fixedAsset, FixedAssetRepository fixedAssetRepository) throws AxelorException {
     if (isImported(fixedAsset)) {

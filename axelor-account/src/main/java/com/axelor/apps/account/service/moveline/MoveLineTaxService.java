@@ -20,11 +20,19 @@ package com.axelor.apps.account.service.moveline;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
-import com.axelor.exception.AxelorException;
+import com.axelor.apps.base.AxelorException;
 
 public interface MoveLineTaxService {
 
   void autoTaxLineGenerate(Move move) throws AxelorException;
+
+  /**
+   * Same as method 'autoTaxLineGenerate' but this method will not save the move.
+   *
+   * @param move
+   * @throws AxelorException
+   */
+  void autoTaxLineGenerateNoSave(Move move) throws AxelorException;
 
   MoveLine computeTaxAmount(MoveLine moveLine) throws AxelorException;
 

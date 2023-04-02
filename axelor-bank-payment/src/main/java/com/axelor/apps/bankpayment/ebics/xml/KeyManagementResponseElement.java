@@ -41,7 +41,7 @@ import com.axelor.apps.account.ebics.schema.h003.EbicsKeyManagementResponseDocum
 import com.axelor.apps.bankpayment.db.EbicsUser;
 import com.axelor.apps.bankpayment.ebics.exception.ReturnCode;
 import com.axelor.apps.bankpayment.ebics.interfaces.ContentFactory;
-import com.axelor.exception.AxelorException;
+import com.axelor.apps.base.AxelorException;
 
 /**
  * The <code>KeyManagementResponseElement</code> is the common element for ebics key management
