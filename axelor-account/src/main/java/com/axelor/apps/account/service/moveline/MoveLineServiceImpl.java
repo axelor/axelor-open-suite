@@ -360,7 +360,7 @@ public class MoveLineServiceImpl implements MoveLineService {
   @Override
   public void computeFinancialDiscount(MoveLine moveLine) {
     if (moveLine.getAccount() != null
-        && moveLine.getAccount().getHasInvoiceTerm()
+        && moveLine.getAccount().getUseForPartnerBalance()
         && moveLine.getFinancialDiscount() != null) {
       FinancialDiscount financialDiscount = moveLine.getFinancialDiscount();
       BigDecimal amount = moveLine.getCredit().max(moveLine.getDebit());

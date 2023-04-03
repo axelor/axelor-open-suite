@@ -387,7 +387,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       origin = invoice.getSupplierInvoiceNb();
     }
 
-    if (partnerAccount != null && partnerAccount.getHasInvoiceTerm()) {
+    if (partnerAccount.getUseForPartnerBalance()) {
       moveLines.addAll(
           addInvoiceTermMoveLines(invoice, partnerAccount, move, partner, isDebitCustomer, origin));
     } else {
