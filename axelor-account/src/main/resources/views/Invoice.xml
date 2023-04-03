@@ -516,6 +516,7 @@
       <field name="paymentCondition" colSpan="3" canEdit="false"
         readonlyIf="statusSelect == 3" widget="SuggestBox"
         onChange="action-invoice-group-payment-condition-onchange"
+        onSelect="action-invoice-attrs-payment-condition-set-domain"
         form-view="payment-condition-form" grid-view="payment-condition-grid"/>
       <field name="$partnerBankDetailsListWarning" showTitle="false" hidden="true"
         readonly="true" colSpan="12">
@@ -526,7 +527,8 @@
       <field name="bankDetails" canEdit="false" widget="SuggestBox"
         onSelect="action-invoice-attrs-bank-details-from-partner-domain"
         form-view="bank-details-form" grid-view="bank-details-grid"
-        requiredIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9 || paymentMode.typeSelect == 10"/>
+        requiredIf="[2,3,9,10].includes(paymentMode.typeSelect)"
+        onChange="action-invoice-method-update-invoice-term-bank-details"/>
       <field name="partnerTaxNbr" readonlyIf="statusSelect != 1"
         hideIf="operationTypeSelect != 3 &amp;&amp; operationTypeSelect != 4"
         if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
@@ -591,6 +593,7 @@
           colSpan="12" form-view="invoice-line-tax-form" grid-view="invoice-line-tax-grid"/>
       </panel>
       <panel name="invoiceTermsPanel" title="Terms" showTitle="true"
+        if="__config__.app.getApp('account').allowMultiInvoiceTerms"
         showIf="invoiceTermList != null">
         <button name="showInvoiceTermsBtn" title="Show related invoice term(s)"
           onClick="save,action-invoice-view-show-related-invoice-terms"
@@ -1154,6 +1157,7 @@ InvoiceSet.length > 0))"
       <field name="paymentCondition" canEdit="false" readonlyIf="statusSelect == 3"
         widget="SuggestBox"
         onChange="action-invoice-method-generate-invoice-terms,action-invoice-method-compute-invoice-terms-due-dates,action-invoice-record-due-dates"
+        onSelect="action-invoice-attrs-payment-condition-set-domain"
         form-view="payment-condition-form" grid-view="payment-condition-grid"/>
       <field name="bankDetails" canEdit="false" widget="SuggestBox"
         onSelect="action-invoice-attrs-bank-details-from-partner-domain"
@@ -2069,6 +2073,12 @@ InvoiceSet.length > 0))"
          (${(partner?.partnerAddressList?.findAll{it.isDeliveryAddr}.collect{it.address.id}+[null]).join(',')})&quot;"/>
   </action-attrs>
 
+  <action-attrs name="action-invoice-attrs-payment-condition-set-domain">
+    <attribute name="domain" for="paymentCondition"
+      expr="eval: &quot; SIZE(self.paymentConditionLineList) &lt; 2 &quot;"
+      if="!__config__.app.getApp('account').allowMultiInvoiceTerms"/>
+  </action-attrs>
+
   <!-- ACTION VALIDATE -->
 
   <action-validate name="action-validate-invoice-check-selection">
@@ -2328,6 +2338,11 @@ InvoiceSet.length > 0))"
   <action-method name="action-invoice-method-update-invoice-term-payment-mode">
     <call class="com.axelor.apps.account.web.InvoiceController"
       method="updateInvoiceTermPaymentMode"/>
+  </action-method>
+
+  <action-method name="action-invoice-method-update-invoice-term-bank-details">
+    <call class="com.axelor.apps.account.web.InvoiceController"
+      method="updateInvoiceTermBankDetails"/>
   </action-method>
 
   <action-method name="action-invoice-method-check-multi-currency">
