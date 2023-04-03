@@ -227,9 +227,16 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
     return invoiceTermRepository
         .all()
         .filter(
-            "self.paymentSession = :paymentSession AND self.isSelectedOnPaymentSession IS :isSelectedOnPaymentSession")
+            "self.paymentSession = :paymentSession AND (self.isSelectedOnPaymentSession IS :isSelectedOnPaymentSession )")
         .bind("paymentSession", paymentSession.getId())
         .bind("isSelectedOnPaymentSession", isSelectedOnPaymentSession);
+  }
+
+  protected Query<InvoiceTerm> getTermsBySession(PaymentSession paymentSession) {
+    return invoiceTermRepository
+        .all()
+        .filter("self.paymentSession = :paymentSession ")
+        .bind("paymentSession", paymentSession.getId());
   }
 
   @Override
@@ -433,5 +440,10 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
       }
     }
     return isSignedNegative;
+  }
+
+  @Override
+  public boolean hasInvoiceTerm(PaymentSession paymentSession) {
+    return getTermsBySession(paymentSession).count() > 0;
   }
 }
