@@ -240,7 +240,8 @@
         itemSpan="4" if="__config__.app.getApp('account').getManageFinancialDiscount()"
         hidden="true" showIf="applyFinancialDiscount &amp;&amp; $showFinancialDiscount"
         readonlyIf="amount != amountRemaining || isPaid">
-        <field name="financialDiscount" onChange="action-invoice-term-method-update-financial-discount"/>
+        <field name="financialDiscount"
+          onChange="action-invoice-term-method-update-financial-discount"/>
         <field name="financialDiscount.discountRate"/>
         <field name="financialDiscountDeadlineDate"/>
         <field name="financialDiscountAmount"/>
@@ -408,7 +409,8 @@
         if="__config__.app.getApp('account').getManageFinancialDiscount()" hidden="true"
         showIf="applyFinancialDiscount &amp;&amp; $showFinancialDiscount"
         readonlyIf="amount != amountRemaining || paymentSession || isPaid">
-        <field name="financialDiscount" onChange="action-invoice-term-method-update-financial-discount"/>
+        <field name="financialDiscount"
+          onChange="action-invoice-term-method-update-financial-discount"/>
         <field name="financialDiscount.discountRate"/>
         <field name="financialDiscountDeadlineDate" readonlyIf="financialDiscount"/>
         <field name="financialDiscountAmount" readonly="true"/>
@@ -581,7 +583,8 @@
         if="__config__.app.getApp('account').getManageFinancialDiscount()" hidden="true"
         showIf="applyFinancialDiscount &amp;&amp; $showFinancialDiscount"
         readonlyIf="amount != amountRemaining || paymentSession || isPaid">
-        <field name="financialDiscount" onChange="action-invoice-term-method-update-financial-discount"/>
+        <field name="financialDiscount"
+          onChange="action-invoice-term-method-update-financial-discount"/>
         <field name="financialDiscount.discountRate"/>
         <field name="financialDiscountDeadlineDate"/>
         <field name="financialDiscountAmount" readonly="true"/>
@@ -758,7 +761,8 @@
         itemSpan="4" if="__config__.app.getApp('account').getManageFinancialDiscount()"
         hidden="true" showIf="applyFinancialDiscount &amp;&amp; $showFinancialDiscount"
         readonlyIf="amount != amountRemaining || isPaid">
-        <field name="financialDiscount" onChange="action-invoice-term-method-update-financial-discount"/>
+        <field name="financialDiscount"
+          onChange="action-invoice-term-method-update-financial-discount"/>
         <field name="financialDiscount.discountRate"/>
         <field name="financialDiscountDeadlineDate"/>
         <field name="financialDiscountAmount"/>
@@ -1154,9 +1158,10 @@
   <action-method name="action-invoice-term-move-method-add-linked-files">
     <call class="com.axelor.apps.account.web.InvoiceTermController" method="addLinkedFiles"/>
   </action-method>
-  
+
   <action-method name="action-invoice-term-method-update-financial-discount">
-  	<call class="com.axelor.apps.account.web.InvoiceTermController" method="updateFinancialDiscount"/>
+    <call class="com.axelor.apps.account.web.InvoiceTermController"
+      method="updateFinancialDiscount"/>
   </action-method>
 
   <action-view name="action-invoiceterm-view-refusal-to-pay" title="Cancellation"
