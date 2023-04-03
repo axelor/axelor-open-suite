@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.exception.AxelorException;
@@ -89,4 +90,6 @@ public interface SaleOrderLineServiceSupplyChain extends SaleOrderLineService {
   void updateStockMoveReservationDateTime(SaleOrderLine saleOrderLine) throws AxelorException;
 
   public SaleOrderLine createAnalyticDistributionWithTemplate(SaleOrderLine saleOrderLine);
+
+  Partner getFirstSupplierPartner(List<SaleOrderLine> saleOrderLineList);
 }

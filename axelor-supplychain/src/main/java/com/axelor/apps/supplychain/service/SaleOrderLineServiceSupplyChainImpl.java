@@ -210,6 +210,15 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
   }
 
   @Override
+  public Partner getFirstSupplierPartner(List<SaleOrderLine> saleOrderLineList) {
+    return saleOrderLineList.stream()
+        .map(SaleOrderLine::getSupplierPartner)
+        .filter(Objects::nonNull)
+        .findFirst()
+        .orElse(null);
+  }
+
+  @Override
   public BigDecimal getAvailableStock(SaleOrder saleOrder, SaleOrderLine saleOrderLine) {
 
     if (!appAccountService.isApp("supplychain")) {

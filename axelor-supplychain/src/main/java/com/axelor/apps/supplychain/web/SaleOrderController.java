@@ -238,6 +238,10 @@ public class SaleOrderController {
       List<SaleOrderLine> selectedSaleOrderLines =
           saleOrderLineService.getSelectedSaleOrderLines(saleOrderLineList);
 
+      Partner supplierPartner =
+          Beans.get(SaleOrderLineServiceSupplyChain.class)
+              .getFirstSupplierPartner(selectedSaleOrderLines);
+
       if (selectedSaleOrderLines.isEmpty()
           || saleOrderLineService.noProductInList(selectedSaleOrderLines)) {
         response.setError(I18n.get(SupplychainExceptionMessage.SO_LINE_PURCHASE_AT_LEAST_ONE));
@@ -255,6 +259,8 @@ public class SaleOrderController {
                 .param("popup-save", "false")
                 .param("forceEdit", "true")
                 .context("_showRecord", String.valueOf(saleOrder.getId()))
+                .context(
+                    "supplierPartnerId", ((supplierPartner != null) ? supplierPartner.getId() : 0L))
                 .context("saleOrderLineIdSelected", Joiner.on(",").join(saleOrderLineIdSelected))
                 .map());
       }
