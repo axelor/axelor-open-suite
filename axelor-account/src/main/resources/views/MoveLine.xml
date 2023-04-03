@@ -299,7 +299,7 @@
 
   <form name="incl-analytic-distribution-move-line-form"
     model="com.axelor.apps.account.db.MoveLine" title="Move line" canArchive="false"
-    onLoad="action-record-initialize-permission-validation-move-line,action-move-line-attrs-set-hidden-analytic-distribution-panel">
+    onLoad="action-move-line-method-analytic-distribution-onload">
     <panel name="analyticDistributionPanel" title="Analytic distribution"
       readonlyIf="move.period.statusSelect == 2 || $validatePeriod">
       <field name="analyticDistributionTemplate"
@@ -901,11 +901,10 @@
       method="analyticDistributionTemplateOnSelect"/>
   </action-method>
 
-  <action-record name="action-record-initialize-permission-validation-move-line"
-    model="com.axelor.apps.account.db.MoveLine">
-    <field name="$validatePeriod"
-      expr="call:com.axelor.apps.account.service.move.MoveToolService:isTemporarilyClosurePeriodManage(__this__.move?.period,__this__.move?.journal,__user__)"/>
-  </action-record>
+  <action-method name="action-move-line-method-analytic-distribution-onload">
+    <call class="com.axelor.apps.account.web.MoveLineController"
+      method="onLoadAnalyticDistribution"/>
+  </action-method>
 
   <action-record name="action-account-move-line-record-calculate-balance"
     model="com.axelor.apps.base.db.Wizard">
@@ -1065,9 +1064,4 @@
     <domain>self.moveLine.id = :_moveLineId</domain>
     <context name="_moveLineId" expr="eval: id"/>
   </action-view>
-
-  <action-attrs name="action-move-line-attrs-set-hidden-analytic-distribution-panel">
-    <attribute for="analyticDistributionPanel" name="hidden"
-      expr="eval: !__config__.app.getApp('account')?.getManageAnalyticAccounting() || !__parent__?.company?.accountConfig?.getManageAnalyticAccounting() || !account?.analyticDistributionAuthorized"/>
-  </action-attrs>
 </object-views>

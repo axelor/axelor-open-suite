@@ -4,6 +4,8 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
+import com.axelor.apps.account.service.move.MoveToolService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import java.time.LocalDate;
@@ -19,6 +21,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
   protected MoveLineCheckService moveLineCheckService;
   protected MoveLineInvoiceTermService moveLineInvoiceTermService;
   protected MoveLineToolService moveLineToolService;
+  protected MoveToolService moveToolService;
   protected AnalyticLineService analyticLineService;
 
   @Inject
@@ -31,6 +34,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
       MoveLineCheckService moveLineCheckService,
       MoveLineInvoiceTermService moveLineInvoiceTermService,
       MoveLineToolService moveLineToolService,
+      MoveToolService moveToolService,
       AnalyticLineService analyticLineService) {
     this.moveLineService = moveLineService;
     this.moveLineDefaultService = moveLineDefaultService;
@@ -40,6 +44,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
     this.moveLineCheckService = moveLineCheckService;
     this.moveLineInvoiceTermService = moveLineInvoiceTermService;
     this.moveLineToolService = moveLineToolService;
+    moveToolService = moveToolService;
     this.analyticLineService = analyticLineService;
   }
 
@@ -314,7 +319,32 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
       Move move) {
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
-    moveLineAttrsService.addPartnerDomain(move, attrsMap);
+    moveLineAttrsService.addAnalyticDistributionTemplateDomain(move, attrsMap);
+
+    return attrsMap;
+  }
+
+  @Override
+  public Map<String, Object> getOnLoadAnalyticDistributionValuesMap(Move move)
+      throws AxelorException {
+    Map<String, Object> valuesMap = new HashMap<>();
+
+    if (move != null) {
+      valuesMap.put(
+          "$validatePeriod",
+          moveToolService.isTemporarilyClosurePeriodManage(
+              move.getPeriod(), move.getJournal(), AuthUtils.getUser()));
+    }
+
+    return valuesMap;
+  }
+
+  @Override
+  public Map<String, Map<String, Object>> getOnLoadAnalyticDistributionAttrsMap(
+      MoveLine moveLine, Move move) throws AxelorException {
+    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+
+    moveLineAttrsService.addShowAnalyticDistributionPanel(move, moveLine, attrsMap);
 
     return attrsMap;
   }

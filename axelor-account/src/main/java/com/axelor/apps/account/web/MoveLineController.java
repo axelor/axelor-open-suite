@@ -611,6 +611,20 @@ public class MoveLineController {
     }
   }
 
+  public void onLoadAnalyticDistribution(ActionRequest request, ActionResponse response) {
+    try {
+      MoveLine moveLine = request.getContext().asType(MoveLine.class);
+      Move move = moveLine.getMove();
+
+      MoveLineGroupService moveLineGroupService = Beans.get(MoveLineGroupService.class);
+
+      response.setValues(moveLineGroupService.getOnLoadAnalyticDistributionValuesMap(move));
+      response.setAttrs(moveLineGroupService.getOnLoadAnalyticDistributionAttrsMap(moveLine, move));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
   public void debitCreditOnChange(ActionRequest request, ActionResponse response) {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);

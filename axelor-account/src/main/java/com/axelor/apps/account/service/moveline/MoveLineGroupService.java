@@ -54,4 +54,9 @@ public interface MoveLineGroupService {
   Map<String, Map<String, Object>> getPartnerOnSelectAttrsMap(Move move);
 
   Map<String, Map<String, Object>> getAnalyticDistributionTemplateOnSelectAttrsMap(Move move);
+
+  Map<String, Object> getOnLoadAnalyticDistributionValuesMap(Move move) throws AxelorException;
+
+  Map<String, Map<String, Object>> getOnLoadAnalyticDistributionAttrsMap(
+      MoveLine moveLine, Move move) throws AxelorException;
 }
