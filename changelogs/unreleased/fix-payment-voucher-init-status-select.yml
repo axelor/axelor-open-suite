@@ -1,0 +1,3 @@
+---
+title : "PaymentVoucher: init draft status select at creation when required error is throwed"
+type: fix

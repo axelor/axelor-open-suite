@@ -44,7 +44,7 @@ public class PurchaseProductServiceImpl implements PurchaseProductService {
             .bind("productId", product.getId())
             .bind("validated", PurchaseOrderRepository.STATUS_VALIDATED)
             .bind("finished", PurchaseOrderRepository.STATUS_FINISHED)
-            .order("-purchaseOrder.validationDate")
+            .order("-purchaseOrder.validationDateTime")
             .fetchOne();
     if (lastPurchaseOrderLine != null) {
       Partner partner = lastPurchaseOrderLine.getPurchaseOrder().getSupplierPartner();

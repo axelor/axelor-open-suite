@@ -22,11 +22,9 @@ import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.google.inject.persist.Transactional;
 
 public interface SaleOrderWorkflowService {
 
-  @Transactional
   Partner validateCustomer(SaleOrder saleOrder);
 
   String getSequence(Company company) throws AxelorException;

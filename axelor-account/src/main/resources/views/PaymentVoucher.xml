@@ -265,6 +265,7 @@
     <field name="currency" expr="eval:__repo__(Company).all().fetchOne()?.currency"
       if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
     <field name="tradingName" expr="eval: _invoice.tradingName" if="_invoice"/>
+    <field name="statusSelect" expr="eval: 1"/>
   </action-record>
 
   <action-record name="action-payment-voucher-getDate"
