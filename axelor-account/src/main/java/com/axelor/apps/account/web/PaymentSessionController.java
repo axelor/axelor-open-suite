@@ -126,7 +126,7 @@ public class PaymentSessionController {
     try {
       PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
       boolean hasInvoiceTerm =
-          Beans.get(PaymentSessionService.class).setHasInvoiceTerm(paymentSession);
+          Beans.get(PaymentSessionService.class).hasInvoiceTerm(paymentSession);
       response.setValue("$hasInvoiceTerm", hasInvoiceTerm);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
