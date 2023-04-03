@@ -147,7 +147,7 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
 
   @Override
   public boolean hasUnselectedInvoiceTerm(PaymentSession paymentSession) {
-    return getTermsBySession(paymentSession, false, false).count() > 0;
+    return getTermsBySession(paymentSession, false).count() > 0;
   }
 
   @Override
@@ -209,7 +209,7 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void selectAll(PaymentSession paymentSession) throws AxelorException {
-    List<InvoiceTerm> invoiceTermList = getTermsBySession(paymentSession, false, false).fetch();
+    List<InvoiceTerm> invoiceTermList = getTermsBySession(paymentSession, false).fetch();
     invoiceTermService.toggle(invoiceTermList, true);
     computeTotalPaymentSession(paymentSession);
   }
@@ -217,22 +217,26 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void unSelectAll(PaymentSession paymentSession) throws AxelorException {
-    List<InvoiceTerm> invoiceTermList = getTermsBySession(paymentSession, true, false).fetch();
+    List<InvoiceTerm> invoiceTermList = getTermsBySession(paymentSession, true).fetch();
     invoiceTermService.toggle(invoiceTermList, false);
     computeTotalPaymentSession(paymentSession);
   }
 
   protected Query<InvoiceTerm> getTermsBySession(
-      PaymentSession paymentSession,
-      boolean isSelectedOnPaymentSession,
-      boolean allTermsOnPaymentSession) {
+      PaymentSession paymentSession, boolean isSelectedOnPaymentSession) {
     return invoiceTermRepository
         .all()
         .filter(
-            "self.paymentSession = :paymentSession AND (:allTermsOnPaymentSession or (self.isSelectedOnPaymentSession IS :isSelectedOnPaymentSession ))")
+            "self.paymentSession = :paymentSession AND (self.isSelectedOnPaymentSession IS :isSelectedOnPaymentSession )")
         .bind("paymentSession", paymentSession.getId())
-        .bind("isSelectedOnPaymentSession", isSelectedOnPaymentSession)
-        .bind("allTermsOnPaymentSession", allTermsOnPaymentSession);
+        .bind("isSelectedOnPaymentSession", isSelectedOnPaymentSession);
+  }
+
+  protected Query<InvoiceTerm> getTermsBySession(PaymentSession paymentSession) {
+    return invoiceTermRepository
+        .all()
+        .filter("self.paymentSession = :paymentSession ")
+        .bind("paymentSession", paymentSession.getId());
   }
 
   @Override
@@ -440,6 +444,6 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
 
   @Override
   public boolean hasInvoiceTerm(PaymentSession paymentSession) {
-    return getTermsBySession(paymentSession, false, true).count() > 0;
+    return getTermsBySession(paymentSession).count() > 0;
   }
 }
