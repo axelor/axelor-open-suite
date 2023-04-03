@@ -21,7 +21,6 @@ import com.axelor.apps.account.db.FinancialDiscount;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
@@ -31,12 +30,9 @@ import com.axelor.apps.account.service.batch.BatchAccountingCutOff;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveLineControlService;
-import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
 import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.service.CurrencyService;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -80,8 +76,6 @@ public class MoveLineServiceImpl implements MoveLineService {
   protected AccountConfigService accountConfigService;
   protected InvoiceTermService invoiceTermService;
   protected MoveLineControlService moveLineControlService;
-  protected MoveLineInvoiceTermService moveLineInvoiceTermService;
-  protected CurrencyService currencyService;
 
   @Inject
   public MoveLineServiceImpl(
@@ -92,9 +86,7 @@ public class MoveLineServiceImpl implements MoveLineService {
       AppAccountService appAccountService,
       AccountConfigService accountConfigService,
       InvoiceTermService invoiceTermService,
-      MoveLineControlService moveLineControlService,
-      MoveLineInvoiceTermService moveLineInvoiceTermService,
-      CurrencyService currencyService) {
+      MoveLineControlService moveLineControlService) {
     this.moveLineRepository = moveLineRepository;
     this.invoiceRepository = invoiceRepository;
     this.paymentService = paymentService;
@@ -103,8 +95,6 @@ public class MoveLineServiceImpl implements MoveLineService {
     this.accountConfigService = accountConfigService;
     this.invoiceTermService = invoiceTermService;
     this.moveLineControlService = moveLineControlService;
-    this.moveLineInvoiceTermService = moveLineInvoiceTermService;
-    this.currencyService = currencyService;
   }
 
   @Override
@@ -441,42 +431,5 @@ public class MoveLineServiceImpl implements MoveLineService {
       moveLineList.add(moveLine);
     }
     return moveLineList;
-  }
-
-  @Override
-  public void computeNewCurrencyRateOnMoveLineList(Move move, LocalDate dueDate)
-      throws AxelorException {
-    BigDecimal currencyRate =
-        currencyService.getCurrencyConversionRate(
-            move.getCurrency(), move.getCompanyCurrency(), move.getDate());
-
-    for (MoveLine moveLine : move.getMoveLineList()) {
-      if (moveLine.getDebit().add(moveLine.getCredit()).signum() == 0) {
-        if (moveLine.getAccount() != null) {
-          BigDecimal computedAmount = moveLine.getCurrencyAmount().multiply(currencyRate);
-          switch (moveLine.getAccount().getCommonPosition()) {
-            case AccountRepository.COMMON_POSITION_CREDIT:
-              moveLine.setCredit(computedAmount);
-              break;
-            case AccountRepository.COMMON_POSITION_DEBIT:
-              moveLine.setDebit(computedAmount);
-              break;
-            default:
-              break;
-          }
-        }
-      }
-      BigDecimal currencyAmount = moveLine.getDebit().add(moveLine.getCredit());
-      currencyAmount =
-          currencyAmount.divide(
-              currencyRate, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
-
-      moveLine.setCurrencyAmount(currencyAmount);
-      moveLine.setCurrencyRate(currencyRate);
-
-      moveLine.clearInvoiceTermList();
-      moveLineInvoiceTermService.generateDefaultInvoiceTerm(moveLine, dueDate, false);
-      this.computeFinancialDiscount(moveLine);
-    }
   }
 }

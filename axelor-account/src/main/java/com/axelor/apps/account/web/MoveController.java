@@ -42,6 +42,7 @@ import com.axelor.apps.account.service.move.MoveSimulateService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.move.MoveViewHelperService;
+import com.axelor.apps.account.service.moveline.MoveLineCurrencyService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
@@ -916,7 +917,8 @@ public class MoveController {
           && ObjectUtils.notEmpty(move.getMoveLineList())
           && move.getCurrency() != null
           && move.getCompanyCurrency() != null) {
-        Beans.get(MoveLineService.class).computeNewCurrencyRateOnMoveLineList(move, dueDate);
+        Beans.get(MoveLineCurrencyService.class)
+            .computeNewCurrencyRateOnMoveLineList(move, dueDate);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
