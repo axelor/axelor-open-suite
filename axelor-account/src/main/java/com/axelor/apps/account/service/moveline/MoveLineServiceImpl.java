@@ -33,7 +33,6 @@ import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -72,7 +71,6 @@ public class MoveLineServiceImpl implements MoveLineService {
   protected MoveLineRepository moveLineRepository;
   protected InvoiceRepository invoiceRepository;
   protected PaymentService paymentService;
-  protected AppBaseService appBaseService;
   protected AppAccountService appAccountService;
   protected AccountConfigService accountConfigService;
   protected InvoiceTermService invoiceTermService;
@@ -83,7 +81,6 @@ public class MoveLineServiceImpl implements MoveLineService {
       MoveLineRepository moveLineRepository,
       InvoiceRepository invoiceRepository,
       PaymentService paymentService,
-      AppBaseService appBaseService,
       MoveLineToolService moveLineToolService,
       AppAccountService appAccountService,
       AccountConfigService accountConfigService,
@@ -92,7 +89,6 @@ public class MoveLineServiceImpl implements MoveLineService {
     this.moveLineRepository = moveLineRepository;
     this.invoiceRepository = invoiceRepository;
     this.paymentService = paymentService;
-    this.appBaseService = appBaseService;
     this.moveLineToolService = moveLineToolService;
     this.appAccountService = appAccountService;
     this.accountConfigService = accountConfigService;
