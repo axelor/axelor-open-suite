@@ -79,9 +79,8 @@ public class StockMoveUpdateServiceImpl implements StockMoveUpdateService {
   }
 
   /**
-   * @deprecated
-   * To update unit or qty of an internal stock move with one product, mostly for mobile
-   * app (API AOS) *
+   * @deprecated To update unit or qty of an internal stock move with one product, mostly for mobile
+   *     app (API AOS) *
    */
   @Deprecated
   @Override
