@@ -306,7 +306,7 @@
         grid-view="analytic-distribution-template-grid" colSpan="12"
         form-view="analytic-distribution-template-form"
         onChange="action-move-line-method-create-analytic-distribution,action-move-line-method-set-required-analytic-accounts"
-        onSelect="action-move-line-attrs-set-domain-analytic-distribution-template"
+        onSelect="action-move-line-method-analytic-distribution-template-onselect"
         readonlyIf="!account.analyticDistributionAuthorized"
         requiredIf="(!analyticMoveLineList || !analyticMoveLineList.length) &amp;&amp; account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines &amp;&amp; (axis1AnalyticAccount == null &amp;&amp; axis2AnalyticAccount == null &amp;&amp; axis3AnalyticAccount == null &amp;&amp; axis4AnalyticAccount == null &amp;&amp; axis5AnalyticAccount == null)"/>
       <field name="axis1AnalyticAccount" grid-view="analytic-account-grid"
@@ -895,14 +895,11 @@
     <call class="com.axelor.apps.account.web.MoveLineController" method="partnerOnSelect"/>
   </action-method>
 
-  <action-attrs name="action-move-line-attrs-set-domain-analytic-distribution-template">
-    <attribute name="domain" for="analyticDistributionTemplate"
-      expr="eval: &quot; self.company.id = ${move?.company?.id} AND self.isSpecific=false &quot;"
-      if="__parent__ == null"/>
-    <attribute name="domain" for="analyticDistributionTemplate"
-      expr="eval: &quot; self.company.id = ${__parent__?.company?.id} AND self.isSpecific=false &quot;"
-      if="__parent__!= null"/>
-  </action-attrs>
+  <action-method
+    name="action-move-line-method-analytic-distribution-template-onselect">
+    <call class="com.axelor.apps.account.web.MoveLineController"
+      method="analyticDistributionTemplateOnSelect"/>
+  </action-method>
 
   <action-record name="action-record-initialize-permission-validation-move-line"
     model="com.axelor.apps.account.db.MoveLine">

@@ -728,6 +728,19 @@ public class MoveLineController {
     }
   }
 
+  public void analyticDistributionTemplateOnSelect(ActionRequest request, ActionResponse response) {
+    try {
+      MoveLine moveLine = request.getContext().asType(MoveLine.class);
+      Move move = this.getMove(request, moveLine);
+
+      response.setAttrs(
+          Beans.get(MoveLineGroupService.class)
+              .getAnalyticDistributionTemplateOnSelectAttrsMap(move));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
   protected Move getMove(ActionRequest request, MoveLine moveLine) {
     if (request.getContext().getParent() != null
         && Move.class.equals(request.getContext().getParent().getContextClass())) {

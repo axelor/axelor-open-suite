@@ -257,4 +257,18 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
 
     this.addAttr("account", "domain", domain, attrsMap);
   }
+
+  @Override
+  public void addAnalyticDistributionTemplateDomain(
+      Move move, Map<String, Map<String, Object>> attrsMap) {
+    if (move == null) {
+      return;
+    }
+
+    String domain =
+        String.format(
+            "self.isSpecific IS FALSE AND self.company.id = %d", move.getCompany().getId());
+
+    this.addAttr("account", "domain", domain, attrsMap);
+  }
 }

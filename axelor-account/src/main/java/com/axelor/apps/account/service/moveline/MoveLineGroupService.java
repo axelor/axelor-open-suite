@@ -52,4 +52,6 @@ public interface MoveLineGroupService {
   Map<String, Map<String, Object>> getAccountOnSelectAttrsMap(Move move);
 
   Map<String, Map<String, Object>> getPartnerOnSelectAttrsMap(Move move);
+
+  Map<String, Map<String, Object>> getAnalyticDistributionTemplateOnSelectAttrsMap(Move move);
 }
