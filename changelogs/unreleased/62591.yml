@@ -1,0 +1,3 @@
+---
+title: "Stock move: when updating a stock move line, can now set an unit with the stock API."
+type: fix

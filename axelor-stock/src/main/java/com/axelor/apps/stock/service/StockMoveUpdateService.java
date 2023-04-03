@@ -24,13 +24,18 @@ import java.math.BigDecimal;
 
 public interface StockMoveUpdateService {
 
-  /** To update status of a stock move (API AOS) */
+  /**
+   * @deprecated
+   * To update status of a stock move (API AOS) */
+  @Deprecated
   void updateStatus(StockMove stockMove, Integer status) throws AxelorException;
 
   /**
+   * @deprecated
    * To update unit or qty of an internal stock move with one product, mostly for mobile app (API
    * AOS)
    */
+  @Deprecated
   void updateStockMoveMobility(StockMove stockMove, BigDecimal movedQty, Unit unit)
       throws AxelorException;
 }
