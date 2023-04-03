@@ -753,7 +753,7 @@ public class MoveLineController {
         return;
       }
 
-      if (moveLine.getAccount() != null && moveLine.getAccount().getHasInvoiceTerm()) {
+      if (moveLine.getAccount() != null && moveLine.getAccount().getUseForPartnerBalance()) {
 
         if (moveLine.getMove() == null) {
           moveLine.setMove(ContextTool.getContextParent(request.getContext(), Move.class, 1));
