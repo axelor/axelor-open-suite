@@ -45,6 +45,8 @@
     <panel-tabs name="appConfigPanelTab">
       <panel name="stockConfigPanel" title="Stock" hideIf="!isStockAppEnable">
         <field name="isTrackerMessageOnStockApp" widget="boolean-switch" colSpan="4"/>
+        <field name="isInventoryValidationEnable" widget="boolean-switch" colSpan="4"/>
+        <field name="isStockCorrectionValidationEnable" widget="boolean-switch" colSpan="4"/>
         <field name="manageCarrierOption" widget="boolean-switch" colSpan="4" hidden="true"/>
         <!-- This field manageCarrierOption will be used later when carrier mode is implemented in AOS
           and App mobile -->
