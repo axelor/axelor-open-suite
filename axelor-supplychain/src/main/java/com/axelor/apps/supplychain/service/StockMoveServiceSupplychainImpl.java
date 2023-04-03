@@ -132,7 +132,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
   }
 
   @Override
-  public String realize(StockMove stockMove, boolean check) throws AxelorException {
+  public String realizeStockMove(StockMove stockMove, boolean check) throws AxelorException {
 
     if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
         && (stockMove.getPartner() != null
@@ -143,16 +143,11 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
     }
 
     if (!appSupplyChainService.isApp("supplychain")) {
-      return super.realize(stockMove, check);
+      return super.realizeStockMove(stockMove, check);
     }
 
-    return supplychainStockMove(stockMove, check);
-  }
-
-  @Transactional(rollbackOn = {Exception.class})
-  protected String supplychainStockMove(StockMove stockMove, boolean check) throws AxelorException {
     LOG.debug("Stock move realization: {} ", stockMove.getStockMoveSeq());
-    String newStockSeq = super.realize(stockMove, check);
+    String newStockSeq = super.realizeStockMove(stockMove, check);
     AppSupplychain appSupplychain = appSupplyChainService.getAppSupplychain();
 
     if (StockMoveRepository.ORIGIN_SALE_ORDER.equals(stockMove.getOriginTypeSelect())) {
@@ -247,12 +242,11 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
   }
 
   @Override
-  public void plan(StockMove stockMove) throws AxelorException {
-    super.plan(stockMove);
+  public void planStockMove(StockMove stockMove) throws AxelorException {
+    super.planStockMove(stockMove);
     updateReservedQuantity(stockMove);
   }
 
-  @Transactional(rollbackOn = {Exception.class})
   protected void updateReservedQuantity(StockMove stockMove) throws AxelorException {
     if (appSupplyChainService.isApp("supplychain")
         && appSupplyChainService.getAppSupplychain().getManageStockReservation()) {

@@ -316,7 +316,7 @@ public class StockMoveServiceImpl implements StockMoveService {
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  private void planStockMove(StockMove stockMove) throws AxelorException {
+  protected void planStockMove(StockMove stockMove) throws AxelorException {
     if (stockMove.getStatusSelect() == null
         || stockMove.getStatusSelect() != StockMoveRepository.STATUS_DRAFT) {
       throw new AxelorException(
@@ -380,8 +380,6 @@ public class StockMoveServiceImpl implements StockMoveService {
     updateLocations(stockMove, fromStockLocation, toStockLocation, initialStatus);
 
     stockMove.setCancelReason(null);
-
-    stockMoveRepo.save(stockMove);
   }
 
   /**
@@ -391,7 +389,6 @@ public class StockMoveServiceImpl implements StockMoveService {
    */
   protected void setPlannedStatus(StockMove stockMove) {
     stockMove.setStatusSelect(StockMoveRepository.STATUS_PLANNED);
-    stockMoveRepo.save(stockMove);
   }
 
   /**
@@ -528,7 +525,6 @@ public class StockMoveServiceImpl implements StockMoveService {
       }
     }
     computeMasses(stockMove);
-    stockMoveRepo.save(stockMove);
     return newStockSeq;
   }
 
@@ -539,7 +535,6 @@ public class StockMoveServiceImpl implements StockMoveService {
    */
   protected void setRealizedStatus(StockMove stockMove) {
     stockMove.setStatusSelect(StockMoveRepository.STATUS_REALIZED);
-    stockMoveRepo.save(stockMove);
   }
 
   /**
