@@ -365,7 +365,7 @@
       readonlyIf="statusSelect == 4" itemSpan="6" canCollapse="true" collapseIf="true">
       <field name="orderDate"/>
       <spacer name="orderDateSpacer"/>
-      <field name="validationDate"/>
+      <field name="validationDateTime"/>
       <field name="validatedByUser" canNew="false" canEdit="false" canView="false"
         form-view="user-form" grid-view="user-grid"/>
     </panel>
@@ -752,13 +752,6 @@
     <field name="paymentMode"
       expr="eval: __user__.activeCompany?.accountConfig?.outPaymentMode"
       if="supplierPartner?.outPaymentMode == null"/>
-  </action-record>
-
-  <action-record name="action-purchase-order-record-validate"
-    model="com.axelor.apps.purchase.db.PurchaseOrder">
-    <field name="statusSelect" expr="3"/>
-    <field name="validationDate" expr="eval: __config__.date"/>
-    <field name="validatedByUser" expr="eval:__user__"/>
   </action-record>
 
   <action-record name="action-purchase-order-record-empty-freight-carrier-mode"
