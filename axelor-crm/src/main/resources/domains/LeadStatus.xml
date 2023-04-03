@@ -5,7 +5,7 @@
 
   <module name="crm" package="com.axelor.apps.crm.db"/>
 
-  <entity name="LeadStatus" lang="java">
+  <entity name="LeadStatus">
     <string name="name" title="Name"/>
     <integer name="sequence" title="Sequence"/>
     <boolean name="isOpen" title="Open"/>

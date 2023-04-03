@@ -69,6 +69,8 @@ import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.AddressServiceImpl;
 import com.axelor.apps.base.service.AnonymizeService;
 import com.axelor.apps.base.service.AnonymizeServiceImpl;
+import com.axelor.apps.base.service.BankDetailsFullNameComputeService;
+import com.axelor.apps.base.service.BankDetailsFullNameComputeServiceImpl;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.BankDetailsServiceImpl;
 import com.axelor.apps.base.service.BankService;
@@ -304,5 +306,6 @@ public class BaseModule extends AxelorModule {
     bind(DataBackupRepository.class).to(DataBackupManagementRepository.class);
     bind(DataBackupAnonymizeService.class).to(DataBackupAnonymizeServiceImpl.class);
     bind(DataBackupService.class).to(DataBackupServiceImpl.class);
+    bind(BankDetailsFullNameComputeService.class).to(BankDetailsFullNameComputeServiceImpl.class);
   }
 }

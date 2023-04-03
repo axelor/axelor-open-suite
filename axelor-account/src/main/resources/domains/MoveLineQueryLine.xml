@@ -5,7 +5,7 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="MoveLineQueryLine" lang="java" cacheable="true">
+  <entity name="MoveLineQueryLine">
 
     <many-to-one name="moveLine" ref="MoveLine" title="Move line" initParam="true"/>
     <many-to-one name="moveLineQuery" ref="MoveLineQuery" title="Reconcile manager"

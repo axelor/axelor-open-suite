@@ -74,7 +74,7 @@ public class AppCrmServiceImpl extends AppBaseServiceImpl implements AppCrmServi
 
   @Override
   public AppCrm getAppCrm() {
-    return Query.of(AppCrm.class).cacheable().fetchOne();
+    return Query.of(AppCrm.class).fetchOne();
   }
 
   @Override

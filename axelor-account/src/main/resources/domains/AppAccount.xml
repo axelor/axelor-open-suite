@@ -5,7 +5,7 @@
 
   <module name="studio" package="com.axelor.studio.db"/>
 
-  <entity name="AppAccount">
+  <entity name="AppAccount" cacheable="true">
 
     <one-to-one ref="com.axelor.studio.db.App" name="app"/>
 
@@ -34,6 +34,7 @@
     <boolean name="activatePassedForPayment" title="Activate passed for payment"/>
     <boolean name="manageFinancialDiscount" title="Manage financial discount"
       help="Field allowing to activate the financial discounts"/>
+    <boolean name="allowMultiInvoiceTerms" title="Allow multi invoice terms"/>
 
     <!-- DAS2 - N4DS -->
     <many-to-one name="defaultServiceTypeTypology"
