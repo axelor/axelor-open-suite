@@ -47,5 +47,5 @@ public interface PaymentSessionService {
 
   public void retrieveEligibleTerms(PaymentSession paymentSession) throws AxelorException;
 
-  public boolean setHasInvoiceTerm(PaymentSession paymentSession);
+  public boolean hasInvoiceTerm(PaymentSession paymentSession);
 }
