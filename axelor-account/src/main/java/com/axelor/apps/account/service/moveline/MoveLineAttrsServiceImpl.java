@@ -244,4 +244,17 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
 
     this.addAttr("account", "domain", domain, attrsMap);
   }
+
+  @Override
+  public void addPartnerDomain(Move move, Map<String, Map<String, Object>> attrsMap) {
+    if (move == null) {
+      return;
+    }
+
+    String domain =
+        String.format(
+            "self.isContact IS FALSE AND %d MEMBER OF self.companySet", move.getCompany().getId());
+
+    this.addAttr("account", "domain", domain, attrsMap);
+  }
 }

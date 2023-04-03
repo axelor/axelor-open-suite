@@ -36,4 +36,6 @@ public interface MoveLineAttrsService {
   void addPartnerReadonly(MoveLine moveLine, Move move, Map<String, Map<String, Object>> attrsMap);
 
   void addAccountDomain(Move move, Map<String, Map<String, Object>> attrsMap);
+
+  void addPartnerDomain(Move move, Map<String, Map<String, Object>> attrsMap);
 }

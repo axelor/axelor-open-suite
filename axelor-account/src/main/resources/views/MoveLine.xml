@@ -390,7 +390,7 @@
         <field name="originDate"/>
       </panel>
       <field name="partner" readonlyIf="amountPaid &gt; 0" form-view="partner-form"
-        grid-view="partner-grid" onSelect="action-move-line-attrs-domain-partner" canEdit="false"
+        grid-view="partner-grid" onSelect="action-move-line-method-partner-onselect" canEdit="false"
         onChange="action-move-line-method-update-invoice-terms"/>
       <field name="account" readonlyIf="amountPaid &gt; 0" form-view="account-form"
         grid-view="account-grid" onSelect="action-move-line-method-account-onselect" canEdit="false"
@@ -607,7 +607,7 @@
         onSelect="action-move-line-method-account-onselect" canEdit="false"
         readonlyIf="amountPaid &gt; 0" onChange="action-move-line-method-account-onchange"/>
       <field name="partner" form-view="partner-form" grid-view="partner-grid"
-        onSelect="action-move-line-attrs-domain-partner" canEdit="false"
+        onSelect="action-move-line-method-partner-onselect" canEdit="false"
         readonlyIf="amountPaid &gt; 0"
         onChange="action-move-line-method-update-invoice-terms,action-move-line-record-reset-partner-details"
         requiredIf="account.useForPartnerBalance &amp;&amp; account.hasInvoiceTerm"/>
@@ -828,7 +828,7 @@
   <action-group name="action-account-move-line-partner-group">
     <action name="action-account-move-line-method-filter-partner"
       if="__parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.account.db.Move'"/>
-    <action name="action-move-line-attrs-domain-partner"
+    <action name="action-move-line-method-partner-onselect"
       if="__parent__ == null || __parent__._model != 'com.axelor.apps.account.db.Move'"/>
     <action name="action-account-move-line-method-set-partner-readonly"/>
   </action-group>
@@ -891,11 +891,9 @@
     <call class="com.axelor.apps.account.web.MoveLineController" method="accountOnSelect"/>
   </action-method>
 
-  <action-attrs name="action-move-line-attrs-domain-partner">
-    <attribute name="domain" for="partner"
-      expr="eval: &quot;self.isContact = false AND ${move?.company?.id} MEMBER OF self.companySet&quot;"
-      if="__parent__ == null || __parent__._model != 'com.axelor.apps.account.db.Move'"/>
-  </action-attrs>
+  <action-method name="action-move-line-method-partner-onselect">
+    <call class="com.axelor.apps.account.web.MoveLineController" method="partnerOnSelect"/>
+  </action-method>
 
   <action-attrs name="action-move-line-attrs-set-domain-analytic-distribution-template">
     <attribute name="domain" for="analyticDistributionTemplate"

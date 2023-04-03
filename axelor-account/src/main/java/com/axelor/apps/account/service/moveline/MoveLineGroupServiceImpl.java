@@ -299,4 +299,13 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
 
     return attrsMap;
   }
+
+  @Override
+  public Map<String, Map<String, Object>> getPartnerOnSelectAttrsMap(Move move) {
+    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+
+    moveLineAttrsService.addPartnerDomain(move, attrsMap);
+
+    return attrsMap;
+  }
 }

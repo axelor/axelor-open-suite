@@ -50,4 +50,6 @@ public interface MoveLineGroupService {
       throws AxelorException;
 
   Map<String, Map<String, Object>> getAccountOnSelectAttrsMap(Move move);
+
+  Map<String, Map<String, Object>> getPartnerOnSelectAttrsMap(Move move);
 }
