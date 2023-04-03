@@ -45,7 +45,6 @@
     <boolean name="manageCutOffPeriod" title="Manage Cut off period" massUpdate="true"/>
     <boolean name="hasAutomaticApplicationAccountingDate"
       title="Automatic application of accounting date"/>
-    <boolean name="hasInvoiceTerm" title="Activate invoice term"/>
     <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
     <many-to-one name="serviceType" ref="ServiceType" title="Service type"
       massUpdate="true"

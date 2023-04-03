@@ -58,7 +58,7 @@ public class SupplierViewServiceImpl implements SupplierViewService {
     map.put(
         "$lastOrder",
         lastOrder != null
-            ? dateFormat.format(lastOrder.getValidationDate())
+            ? dateFormat.format(lastOrder.getValidationDateTime())
             : I18n.get(SUPPLIER_PORTAL_NO_DATE));
 
     /* StockMove */
@@ -116,8 +116,8 @@ public class SupplierViewServiceImpl implements SupplierViewService {
         + user.getPartner().getId()
         + " AND self.statusSelect = "
         + PurchaseOrderRepository.STATUS_FINISHED
-        + " GROUP BY self.validationDate,self.id"
-        + " ORDER BY self.validationDate DESC";
+        + " GROUP BY self.validationDateTime,self.id"
+        + " ORDER BY self.validationDateTime DESC";
   }
 
   /* StockMove Query */

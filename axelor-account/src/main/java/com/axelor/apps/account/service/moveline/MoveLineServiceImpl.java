@@ -39,7 +39,6 @@ import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
@@ -78,7 +77,6 @@ public class MoveLineServiceImpl implements MoveLineService {
   protected MoveLineRepository moveLineRepository;
   protected InvoiceRepository invoiceRepository;
   protected PaymentService paymentService;
-  protected AppBaseService appBaseService;
   protected AppAccountService appAccountService;
   protected AccountConfigService accountConfigService;
   protected InvoiceTermService invoiceTermService;
@@ -90,7 +88,6 @@ public class MoveLineServiceImpl implements MoveLineService {
       MoveLineRepository moveLineRepository,
       InvoiceRepository invoiceRepository,
       PaymentService paymentService,
-      AppBaseService appBaseService,
       MoveLineToolService moveLineToolService,
       AppAccountService appAccountService,
       AccountConfigService accountConfigService,
@@ -100,7 +97,6 @@ public class MoveLineServiceImpl implements MoveLineService {
     this.moveLineRepository = moveLineRepository;
     this.invoiceRepository = invoiceRepository;
     this.paymentService = paymentService;
-    this.appBaseService = appBaseService;
     this.moveLineToolService = moveLineToolService;
     this.appAccountService = appAccountService;
     this.accountConfigService = accountConfigService;
@@ -420,7 +416,7 @@ public class MoveLineServiceImpl implements MoveLineService {
   @Override
   public void computeFinancialDiscount(MoveLine moveLine) {
     if (moveLine.getAccount() != null
-        && moveLine.getAccount().getHasInvoiceTerm()
+        && moveLine.getAccount().getUseForPartnerBalance()
         && moveLine.getFinancialDiscount() != null) {
       FinancialDiscount financialDiscount = moveLine.getFinancialDiscount();
       BigDecimal amount = moveLine.getCredit().max(moveLine.getDebit());
