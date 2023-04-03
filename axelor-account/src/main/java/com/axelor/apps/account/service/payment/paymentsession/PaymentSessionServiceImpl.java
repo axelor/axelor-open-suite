@@ -316,13 +316,13 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
             + " AND (self.moveLine.move.company.accountConfig.isManagePassedForPayment is NULL "
             + " OR self.moveLine.move.company.accountConfig.isManagePassedForPayment = FALSE  "
             + " OR (self.moveLine.move.company.accountConfig.isManagePassedForPayment = TRUE "
-            + " AND (self.pfpValidateStatusSelect = :pfpValidateStatusValidated OR self.pfpValidateStatusSelect = :pfpValidateStatusPartiallyValidated))))) "
+            + " AND (self.pfpValidateStatusSelect = :pfpValidateStatusValidated OR self.pfpValidateStatusSelect = :pfpValidateStatusPartiallyValidated)))) "
             + " OR ( :accountingMethodSelect in (2,3) AND self.moveLine.partner.isCustomer = TRUE AND self.moveLine.partner.isSupplier = TRUE AND self.moveLine.partner.isCompensation = TRUE "
-            + " AND (self.moveLine.move.functionalOriginSelect = :functionalOriginClient OR (self.moveLine.move.functionalOriginSelect = :functionalOriginSupplier "
+            + " AND (self.moveLine.move.functionalOriginSelect = :functionalOriginClient OR self.moveLine.move.functionalOriginSelect = :functionalOriginSupplier )"
             + " AND (self.moveLine.move.company.accountConfig.isManagePassedForPayment is NULL "
             + " OR self.moveLine.move.company.accountConfig.isManagePassedForPayment = FALSE  "
             + " OR (self.moveLine.move.company.accountConfig.isManagePassedForPayment = TRUE "
-            + " AND (self.pfpValidateStatusSelect = :pfpValidateStatusValidated OR self.pfpValidateStatusSelect = :pfpValidateStatusPartiallyValidated)))))))";
+            + " AND (self.pfpValidateStatusSelect = :pfpValidateStatusValidated OR self.pfpValidateStatusSelect = :pfpValidateStatusPartiallyValidated)))))";
     String paymentHistoryCondition =
         " AND self.isPaid = FALSE"
             + " AND self.amountRemaining > 0"

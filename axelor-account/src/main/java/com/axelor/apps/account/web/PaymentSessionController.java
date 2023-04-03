@@ -369,7 +369,7 @@ public class PaymentSessionController {
 
       Beans.get(PaymentSessionService.class).removeNegativeLines(paymentSession);
 
-      response.setInfo(AccountExceptionMessage.PAYMENT_SESSION_NEGATIVE_LINES_REMOVED);
+      response.setInfo(I18n.get(AccountExceptionMessage.PAYMENT_SESSION_NEGATIVE_LINES_REMOVED));
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
