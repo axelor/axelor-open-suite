@@ -48,4 +48,6 @@ public interface MoveLineGroupService {
 
   Map<String, Object> getCurrencyAmountRateOnChangeValuesMap(MoveLine moveLine, LocalDate dueDate)
       throws AxelorException;
+
+  Map<String, Map<String, Object>> getAccountOnSelectAttrsMap(Move move);
 }

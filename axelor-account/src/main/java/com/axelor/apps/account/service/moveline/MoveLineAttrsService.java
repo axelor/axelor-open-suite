@@ -34,4 +34,6 @@ public interface MoveLineAttrsService {
       throws AxelorException;
 
   void addPartnerReadonly(MoveLine moveLine, Move move, Map<String, Map<String, Object>> attrsMap);
+
+  void addAccountDomain(Move move, Map<String, Map<String, Object>> attrsMap);
 }

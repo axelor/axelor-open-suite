@@ -43,9 +43,7 @@ import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.db.Batch;
-import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Wizard;
-import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.tool.ContextTool;
@@ -218,30 +216,6 @@ public class MoveLineController {
         response.setAttr("partner", "domain", domain);
       }
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void computeCurrentRate(ActionRequest request, ActionResponse response) {
-    try {
-      Context parentContext = request.getContext().getParent();
-      BigDecimal currencyRate = BigDecimal.ONE;
-      if (parentContext != null && Move.class.equals(parentContext.getContextClass())) {
-        Move move = parentContext.asType(Move.class);
-        Currency currency = move.getCurrency();
-        Currency companyCurrency = move.getCompanyCurrency();
-        if (currency != null && companyCurrency != null && !currency.equals(companyCurrency)) {
-          if (move.getMoveLineList().size() == 0) {
-            currencyRate =
-                Beans.get(CurrencyService.class)
-                    .getCurrencyConversionRate(currency, companyCurrency);
-          } else {
-            currencyRate = move.getMoveLineList().get(0).getCurrencyRate();
-          }
-        }
-      }
-      response.setValue("currencyRate", currencyRate);
-    } catch (AxelorException e) {
       TraceBackService.trace(response, e);
     }
   }
@@ -603,14 +577,7 @@ public class MoveLineController {
   public void onNew(ActionRequest request, ActionResponse response) {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
-      Move move;
-
-      if (request.getContext().getParent() != null
-          && Move.class.equals(request.getContext().getParent().getContextClass())) {
-        move = request.getContext().getParent().asType(Move.class);
-      } else {
-        move = moveLine.getMove();
-      }
+      Move move = this.getMove(request, moveLine);
 
       MoveLineGroupService moveLineGroupService = Beans.get(MoveLineGroupService.class);
 
@@ -647,14 +614,7 @@ public class MoveLineController {
   public void debitCreditOnChange(ActionRequest request, ActionResponse response) {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
-      Move move;
-
-      if (request.getContext().getParent() != null
-          && Move.class.equals(request.getContext().getParent().getContextClass())) {
-        move = request.getContext().getParent().asType(Move.class);
-      } else {
-        move = moveLine.getMove();
-      }
+      Move move = this.getMove(request, moveLine);
 
       response.setValues(
           Beans.get(MoveLineGroupService.class).getDebitCreditOnChangeValuesMap(moveLine, move));
@@ -694,14 +654,7 @@ public class MoveLineController {
   public void analyticAxisOnChange(ActionRequest request, ActionResponse response) {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
-      Move move;
-
-      if (request.getContext().getParent() != null
-          && Move.class.equals(request.getContext().getParent().getContextClass())) {
-        move = request.getContext().getParent().asType(Move.class);
-      } else {
-        move = moveLine.getMove();
-      }
+      Move move = this.getMove(request, moveLine);
 
       MoveLineGroupService moveLineGroupService = Beans.get(MoveLineGroupService.class);
 
@@ -715,14 +668,7 @@ public class MoveLineController {
   public void dateOnChange(ActionRequest request, ActionResponse response) {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
-      Move move;
-
-      if (request.getContext().getParent() != null
-          && Move.class.equals(request.getContext().getParent().getContextClass())) {
-        move = request.getContext().getParent().asType(Move.class);
-      } else {
-        move = moveLine.getMove();
-      }
+      Move move = this.getMove(request, moveLine);
 
       response.setValues(
           Beans.get(MoveLineGroupService.class).getDateOnChangeValuesMap(moveLine, move));
@@ -734,14 +680,7 @@ public class MoveLineController {
   public void analyticDistributionTemplateOnChange(ActionRequest request, ActionResponse response) {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
-      Move move;
-
-      if (request.getContext().getParent() != null
-          && Move.class.equals(request.getContext().getParent().getContextClass())) {
-        move = request.getContext().getParent().asType(Move.class);
-      } else {
-        move = moveLine.getMove();
-      }
+      Move move = this.getMove(request, moveLine);
 
       MoveLineGroupService moveLineGroupService = Beans.get(MoveLineGroupService.class);
 
@@ -764,6 +703,26 @@ public class MoveLineController {
               .getCurrencyAmountRateOnChangeValuesMap(moveLine, dueDate));
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void accountOnSelect(ActionRequest request, ActionResponse response) {
+    try {
+      MoveLine moveLine = request.getContext().asType(MoveLine.class);
+      Move move = this.getMove(request, moveLine);
+
+      response.setAttrs(Beans.get(MoveLineGroupService.class).getAccountOnSelectAttrsMap(move));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  protected Move getMove(ActionRequest request, MoveLine moveLine) {
+    if (request.getContext().getParent() != null
+        && Move.class.equals(request.getContext().getParent().getContextClass())) {
+      return request.getContext().getParent().asType(Move.class);
+    } else {
+      return moveLine.getMove();
     }
   }
 }

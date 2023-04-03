@@ -290,4 +290,13 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
 
     return valuesMap;
   }
+
+  @Override
+  public Map<String, Map<String, Object>> getAccountOnSelectAttrsMap(Move move) {
+    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+
+    moveLineAttrsService.addAccountDomain(move, attrsMap);
+
+    return attrsMap;
+  }
 }

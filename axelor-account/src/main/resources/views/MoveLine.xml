@@ -100,7 +100,7 @@
       onChange="action-move-line-record-reset-partner-details" width="120" canEdit="false"
       readonly="false"/>
     <field name="account" form-view="account-form" grid-view="account-grid"
-      onSelect="action-move-line-attrs-domain-account" width="200" canEdit="false"
+      onSelect="action-move-line-method-account-onselect" width="200" canEdit="false"
       readonlyIf="amountPaid &gt; 0" onChange="action-move-line-method-account-onchange"/>
     <field name="currencyAmount"
       onChange="action-move-line-method-currency-amount-rate-onchange" readonlyIf="!isOtherCurrency"/>
@@ -250,7 +250,7 @@
       grid-view="partner-grid"/>
     <field name="account" readonlyIf="amountPaid > 0" width="400" canEdit="false"
       onChange="action-move-line-method-account-onchange"
-      onSelect="action-move-line-attrs-domain-account" form-view="account-form"
+      onSelect="action-move-line-method-account-onselect" form-view="account-form"
       grid-view="account-grid"/>
     <field name="currencyAmount" hidden="true" readonlyIf="!isOtherCurrency"
       onChange="action-move-line-method-currency-amount-rate-onchange"/>
@@ -393,7 +393,7 @@
         grid-view="partner-grid" onSelect="action-move-line-attrs-domain-partner" canEdit="false"
         onChange="action-move-line-method-update-invoice-terms"/>
       <field name="account" readonlyIf="amountPaid &gt; 0" form-view="account-form"
-        grid-view="account-grid" onSelect="action-move-line-attrs-domain-account" canEdit="false"
+        grid-view="account-grid" onSelect="action-move-line-method-account-onselect" canEdit="false"
         onChange="action-move-line-method-account-onchange"/>
       <field name="debit"
         readonlyIf="credit &gt; 0 || amountPaid &gt; 0 || reconcileGroup != null"
@@ -604,7 +604,7 @@
         <field name="originDate" onChange="action-move-line-method-update-invoice-terms"/>
       </panel>
       <field name="account" form-view="account-form" grid-view="account-grid"
-        onSelect="action-move-line-attrs-domain-account" canEdit="false"
+        onSelect="action-move-line-method-account-onselect" canEdit="false"
         readonlyIf="amountPaid &gt; 0" onChange="action-move-line-method-account-onchange"/>
       <field name="partner" form-view="partner-form" grid-view="partner-grid"
         onSelect="action-move-line-attrs-domain-partner" canEdit="false"
@@ -804,15 +804,6 @@
     </panel>
   </form>
 
-  <action-method name="action-method-accounting-reconcile">
-    <call class="com.axelor.apps.account.web.MoveLineController" method="accountingReconcile"/>
-  </action-method>
-
-  <action-method name="account-move-line-compute-tax-amount-method-on-change"
-    model="com.axelor.apps.account.db.MoveLine">
-    <call class="com.axelor.apps.account.web.MoveLineController" method="computeTaxAmount"/>
-  </action-method>
-
   <action-method name="action-move-line-method-onnew">
     <call class="com.axelor.apps.account.web.MoveLineController" method="onNew"/>
   </action-method>
@@ -865,6 +856,15 @@
       method="currencyAmountRateOnChange"/>
   </action-method>
 
+  <action-method name="action-method-accounting-reconcile">
+    <call class="com.axelor.apps.account.web.MoveLineController" method="accountingReconcile"/>
+  </action-method>
+
+  <action-method name="account-move-line-compute-tax-amount-method-on-change"
+    model="com.axelor.apps.account.db.MoveLine">
+    <call class="com.axelor.apps.account.web.MoveLineController" method="computeTaxAmount"/>
+  </action-method>
+
   <action-method name="action-move-line-method-compute-analytic-distribution">
     <call class="com.axelor.apps.account.web.MoveLineController"
       method="computeAnalyticDistribution"/>
@@ -878,18 +878,18 @@
   <action-method name="action-method-account-moveline-usher-process">
     <call class="com.axelor.apps.account.web.MoveLineController" method="usherProcess"/>
   </action-method>
+
   <action-method name="action-account-move-line-method-calculate-balance">
     <call class="com.axelor.apps.account.web.MoveLineController" method="showCalculatedBalance"/>
   </action-method>
 
-  <action-attrs name="action-move-line-attrs-domain-account">
-    <attribute for="account" name="domain"
-      if="__parent__ == null || __parent__?._model != 'com.axelor.apps.account.db.Move'"
-      expr="eval: &quot; self.statusSelect = 1 AND self.company.id = ${move?.company?.id} AND (self.accountType.id IN (${(move?.journal?.validAccountTypeSet?.collect{it.id}+[0]).join(',')}) OR self.id IN (${(move?.journal?.validAccountSet?.collect{it.id}+[0]).join(',')})) &quot;"/>
-    <attribute for="account" name="domain"
-      if="__parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.account.db.Move'"
-      expr="eval: &quot; self.statusSelect = 1 AND self.company.id = ${__parent__?.company?.id} AND (self.accountType.id IN (${(__parent__?.journal?.validAccountTypeSet?.collect{it.id}+[0]).join(',')}) OR self.id IN (${(__parent__?.journal?.validAccountSet?.collect{it.id}+[0]).join(',')})) &quot;"/>
-  </action-attrs>
+  <action-method name="action-account-move-line-method-filter-partner">
+    <call class="com.axelor.apps.account.web.MoveLineController" method="filterPartner"/>
+  </action-method>
+
+  <action-method name="action-move-line-method-account-onselect">
+    <call class="com.axelor.apps.account.web.MoveLineController" method="accountOnSelect"/>
+  </action-method>
 
   <action-attrs name="action-move-line-attrs-domain-partner">
     <attribute name="domain" for="partner"
@@ -923,11 +923,6 @@
     model="com.axelor.apps.account.db.MoveLine">
     <field name="dueDate" expr="eval: date"/>
   </action-record>
-
-  <action-method name="action-move-line-method-set-currencyRate"
-    model="com.axelor.apps.account.db.MoveLine">
-    <call class="com.axelor.apps.account.web.MoveLineController" method="computeCurrentRate"/>
-  </action-method>
 
   <action-record name="action-move-line-record-set-currencyAmount"
     model="com.axelor.apps.account.db.MoveLine">
@@ -978,14 +973,6 @@
     <domain>self.moveLine = :_id</domain>
     <context name="_id" expr="eval: id"/>
   </action-view>
-
-  <action-method name="action-account-move-line-method-filter-partner">
-    <call class="com.axelor.apps.account.web.MoveLineController" method="filterPartner"/>
-  </action-method>
-
-  <action-method name="action-account-move-line-method-update-tax-move-line">
-    <call class="com.axelor.apps.account.web.MoveLineController" method="updateTaxMoveLine"/>
-  </action-method>
 
   <search-filters name="move-line-filters"
     model="com.axelor.apps.account.db.MoveLine" title="Move line filters">
