@@ -1,3 +1,19 @@
 ---
-title : "APP ACCOUNT : Add a way to know if the application can have multiple invoice terms"
+title : "APP ACCOUNT : Add a way to know if the application can have multiple invoice terms."
 type: fix
+description: |
+  For this fix to work, database changes have been made as a new boolean configuration `allowMultiInvoiceTerms` has been added in `AppAccount` and `hasInvoiceTerm` has been removed in `Account`.
+  If you do nothing, it will work but you will need to activate the new configuration in App account if you want to use invoice term feature. Else it is recommended to run the SQL script below before starting the server.
+  ```sql
+    ALTER TABLE base_app_account
+    ADD COLUMN allow_multi_invoice_terms BOOLEAN;
+
+    UPDATE base_app_account
+    SET allow_multi_invoice_terms = EXISTS(
+	    SELECT 1 FROM account_account
+	    WHERE has_invoice_term IS TRUE
+    );
+
+    ALTER TABLE account_account
+    DROP COLUMN has_invoice_term;
+  ```
