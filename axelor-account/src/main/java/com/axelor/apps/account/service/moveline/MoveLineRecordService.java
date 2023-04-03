@@ -19,4 +19,8 @@ public interface MoveLineRecordService {
   void setOriginDate(MoveLine moveLine);
 
   void setDebitCredit(MoveLine moveLine);
+
+  void resetCredit(MoveLine moveLine);
+
+  void resetDebit(MoveLine moveLine);
 }

@@ -130,4 +130,18 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
       moveLine.setDebit(amount);
     }
   }
+
+  @Override
+  public void resetCredit(MoveLine moveLine) {
+    if (moveLine.getCredit().signum() != 0 && moveLine.getDebit().signum() != 0) {
+      moveLine.setCredit(BigDecimal.ZERO);
+    }
+  }
+
+  @Override
+  public void resetDebit(MoveLine moveLine) {
+    if (moveLine.getCredit().signum() != 0 && moveLine.getDebit().signum() != 0) {
+      moveLine.setDebit(BigDecimal.ZERO);
+    }
+  }
 }

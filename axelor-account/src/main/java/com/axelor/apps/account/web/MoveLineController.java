@@ -755,6 +755,33 @@ public class MoveLineController {
     }
   }
 
+  public void debitOnChange(ActionRequest request, ActionResponse response) {
+    try {
+      MoveLine moveLine = request.getContext().asType(MoveLine.class);
+      Move move = this.getMove(request, moveLine);
+      LocalDate dueDate = this.extractDueDate(request);
+
+      response.setValues(
+          Beans.get(MoveLineGroupService.class).getDebitOnChangeValuesMap(moveLine, move, dueDate));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void creditOnChange(ActionRequest request, ActionResponse response) {
+    try {
+      MoveLine moveLine = request.getContext().asType(MoveLine.class);
+      Move move = this.getMove(request, moveLine);
+      LocalDate dueDate = this.extractDueDate(request);
+
+      response.setValues(
+          Beans.get(MoveLineGroupService.class)
+              .getCreditOnChangeValuesMap(moveLine, move, dueDate));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
   protected Move getMove(ActionRequest request, MoveLine moveLine) {
     if (request.getContext().getParent() != null
         && Move.class.equals(request.getContext().getParent().getContextClass())) {

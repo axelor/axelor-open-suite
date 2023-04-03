@@ -59,4 +59,10 @@ public interface MoveLineGroupService {
 
   Map<String, Map<String, Object>> getOnLoadAnalyticDistributionAttrsMap(
       MoveLine moveLine, Move move) throws AxelorException;
+
+  Map<String, Object> getDebitOnChangeValuesMap(MoveLine moveLine, Move move, LocalDate dueDate)
+      throws AxelorException;
+
+  Map<String, Object> getCreditOnChangeValuesMap(MoveLine moveLine, Move move, LocalDate dueDate)
+      throws AxelorException;
 }

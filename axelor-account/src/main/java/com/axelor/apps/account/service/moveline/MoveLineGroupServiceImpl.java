@@ -348,4 +348,34 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
 
     return attrsMap;
   }
+
+  @Override
+  public Map<String, Object> getDebitOnChangeValuesMap(
+      MoveLine moveLine, Move move, LocalDate dueDate) throws AxelorException {
+    moveLineRecordService.resetCredit(moveLine);
+
+    Map<String, Object> valuesMap =
+        new HashMap<>(this.getDebitCreditOnChangeValuesMap(moveLine, move));
+
+    moveLineInvoiceTermService.generateDefaultInvoiceTerm(moveLine, dueDate, false);
+
+    valuesMap.put("invoiceTermList", moveLine.getInvoiceTermList());
+
+    return valuesMap;
+  }
+
+  @Override
+  public Map<String, Object> getCreditOnChangeValuesMap(
+      MoveLine moveLine, Move move, LocalDate dueDate) throws AxelorException {
+    moveLineRecordService.resetDebit(moveLine);
+
+    Map<String, Object> valuesMap =
+        new HashMap<>(this.getDebitCreditOnChangeValuesMap(moveLine, move));
+
+    moveLineInvoiceTermService.generateDefaultInvoiceTerm(moveLine, dueDate, false);
+
+    valuesMap.put("invoiceTermList", moveLine.getInvoiceTermList());
+
+    return valuesMap;
+  }
 }
