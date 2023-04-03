@@ -10,8 +10,8 @@ description: |
 
     UPDATE base_app_account
     SET allow_multi_invoice_terms = EXISTS(
-	    SELECT 1 FROM account_account
-	    WHERE has_invoice_term IS TRUE
+      SELECT 1 FROM account_account
+      WHERE has_invoice_term IS TRUE
     );
 
     ALTER TABLE account_account
