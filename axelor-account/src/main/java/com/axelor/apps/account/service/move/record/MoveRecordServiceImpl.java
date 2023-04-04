@@ -49,7 +49,7 @@ public class MoveRecordServiceImpl implements MoveRecordService {
 
     if (partner != null
         && journalType != null
-        && journalType
+        && !journalType
             .getTechnicalTypeSelect()
             .equals(JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY)) {
       move.setPaymentCondition(partner.getPaymentCondition());

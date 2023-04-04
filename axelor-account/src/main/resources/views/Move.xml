@@ -104,7 +104,10 @@
           <field name="currency"
             readonlyIf="$validatePeriod || moveLineList.length &gt; 0 || statusSelect == 3"
             colSpan="3" onChange="action-move-method-set-currency-code" required="true"/>
-          <field name="companyBankDetails" canEdit="false" colSpan="3"
+          <field name="companyBankDetails"
+            if="__config__.app.getApp('base').getManageMultiBanks()"
+            requiredIf="journal.journalType.technicalTypeSelect == 1 || journal.journalType.technicalTypeSelect == 2"
+            canEdit="false" colSpan="3"
             onSelect="com.axelor.apps.base.web.CompanyBankDetailsController:fillCompanyBankDetailsDomain"
             form-view="bank-details-form" grid-view="bank-details-grid"/>
           <field name="paymentMode" colSpan="3"
@@ -113,8 +116,9 @@
             onChange="action-move-group-payment-mode-onchange"
             onSelect="action-move-attrs-set-domain-payment-mode"/>
           <spacer/>
-          <field name="paymentCondition" colSpan="3" showIf="$journalTechnicalTypeSelect != 4"
-            form-view="payment-condition-form" grid-view="payment-condition-grid"
+          <field name="paymentCondition" colSpan="3"
+            showIf="journal.journalType.technicalTypeSelect != 4" form-view="payment-condition-form"
+            grid-view="payment-condition-grid"
             readonlyIf="$validatePeriod &amp;&amp; statusSelect == 3"
             onChange="action-move-group-payment-condition-onchange"/>
           <field name="partnerBankDetails" colSpan="3"
@@ -124,7 +128,8 @@
             onChange="action-move-attrs-header-change"/>
           <field name="period.statusSelect" hidden="true"/>
           <field name="paymentMode.typeSelect" hidden="true"/>
-          <field name="$journalTechnicalTypeSelect" type="integer" hidden="true"/>
+          <field name="journal.journalType" type="integer" hidden="true"/>
+          <field name="journal.journalType.technicalTypeSelect" type="integer" hidden="true"/>
           <field name="$headerChange" type="boolean" hidden="true"/>
           <field name="$paymentConditionChange" type="boolean" hidden="true"/>
           <field name="$paymentConditionChangeError" hidden="true"/>
@@ -208,18 +213,26 @@
           hideIf="statusSelect == 3 || statusSelect == 4" widget="boolean-switch"/>
         <field name="accountingDate" readonly="true" showIf="statusSelect == 3"/>
         <field name="journal.authorizeSimulatedMove" hidden="true"/>
+        <field name="journal.allowAccountingDaybook" hidden="true"/>
+        <field name="company.accountConfig" hidden="true"/>
+        <field name="company.accountConfig.accountingDaybook" hidden="true"/>
         <panel name="actionPanel" readonlyIf="$validatePeriod" itemSpan="12" colSpan="12">
           <button name="simulateBtn" title="Simulate"
             onClick="action-move-account-group-simulate" colSpan="12"
             showIf="statusSelect == 1 &amp;&amp; journal.authorizeSimulatedMove"/>
           <button name="accountingBtn" title="Accounting.toAccount"
             onClick="action-account-move-group-accounting-click" colSpan="12"
-            hideIf="statusSelect == 3 || statusSelect == 4"/>
+            showIf="(statusSelect != 3 &amp;&amp; statusSelect != 4)
+           &amp;&amp; (!journal.allowAccountingDaybook || !company.accountConfig.accountingDaybook)"/>
+          <button name="accountingBtn" title="DayBook.button"
+            onClick="action-account-move-group-accounting-click" colSpan="12"
+            showIf="(statusSelect != 3 &amp;&amp; statusSelect != 4)
+            &amp;&amp; !(!journal.allowAccountingDaybook || !company.accountConfig.accountingDaybook)"/>
           <button name="autoTaxLineGenerateBtn" title="Generate tax lines"
             onClick="action-account-move-group-generate-tax-lines" colSpan="12"
             showIf="statusSelect == 1 || statusSelect == 5"/>
           <button
-            showIf="journal != null &amp;&amp; statusSelect != 3 &amp;&amp; ($journalTechnicalTypeSelect == 1 || $journalTechnicalTypeSelect == 2 || $journalTechnicalTypeSelect == 4)"
+            showIf="journal != null &amp;&amp; statusSelect != 3 &amp;&amp; (journal.journalType.technicalTypeSelect == 1 || journal.journalType.technicalTypeSelect == 2 || journal.journalType.technicalTypeSelect == 4)"
             name="counterpartGenerateBtn" title="Generate counterpart"
             onClick="action-account-move-group-generate-counterpart" colSpan="12"/>
         </panel>
@@ -265,7 +278,7 @@
       <field name="$totalDebit" title="Total debit" type="decimal" colSpan="3" readonly="true">
         <viewer>
 					<![CDATA[
-						<h3>{{$fmt('$totalDebit')+' '+$fmt('$companyCurrencyCodeIso')}}</h3>
+						<h3>{{$fmt('$totalDebit')+' '+$fmt('companyCurrencyCode')}}</h3>
 					]]>
         </viewer>
       </field>
@@ -273,7 +286,7 @@
         readonly="true">
         <viewer>
 					<![CDATA[
-						<h3>{{$fmt('$totalCredit')+' '+$fmt('$companyCurrencyCodeIso')}}</h3>
+						<h3>{{$fmt('$totalCredit')+' '+$fmt('companyCurrencyCode')}}</h3>
 					]]>
         </viewer>
       </field>
@@ -281,8 +294,8 @@
         <viewer>
 					<![CDATA[
 						<h3>
-							<span ng-show="record.$difference == 0">{{$fmt('$difference')+' '+$fmt('$companyCurrencyCodeIso')}}</span>
-							<span style="color:#d9534f;" ng-show="record.$difference != 0">{{$fmt('$difference')+' '+$fmt('$companyCurrencyCodeIso')}}</span>
+							<span ng-show="record.$difference == 0">{{$fmt('$difference')+' '+$fmt('companyCurrencyCode')}}</span>
+							<span style="color:#d9534f;" ng-show="record.$difference != 0">{{$fmt('$difference')+' '+$fmt('companyCurrencyCode')}}</span>
 						</h3>
 					]]>
         </viewer>
@@ -325,7 +338,7 @@
         <field name="currency"/>
         <field name="companyCurrency"/>
         <field name="currencyCode" hidden="true"/>
-        <field name="$companyCurrencyCodeIso" hidden="true"/>
+        <field name="companyCurrencyCode" hidden="true"/>
       </panel>
 
       <panel name="fecImportPanel" title="FEC Import" showIf="technicalOriginSelect == 4">
@@ -382,7 +395,8 @@
             form-view="trading-name-form" grid-view="trading-name-grid"/>
           <field name="paymentMode" colSpan="3"
             onSelect="action-move-attrs-set-domain-payment-mode"/>
-          <field name="$journalTechnicalTypeSelect" hidden="true" type="integer"/>
+          <field name="journal.journalType" type="integer" hidden="true"/>
+          <field name="journal.journalType.technicalTypeSelect" hidden="true" type="integer"/>
           <field name="journal.authorizeSimulatedMove" hidden="true"/>
         </panel>
         <field name="description" colSpan="6"
@@ -392,7 +406,7 @@
         <field name="journal.hasRequiredOrigin" readonly="true" hidden="true"/>
         <field name="journal.hasDuplicateDetectionOnOrigin" readonly="true" hidden="true"/>
         <field name="journal.authorizedFunctionalOriginSelect" hidden="true"/>
-        <field name="$companyCurrencyCodeIso" hidden="true"/>
+        <field name="companyCurrencyCode" hidden="true"/>
       </panel>
       <panel name="otherDetailsPanel" readonlyIf="statusSelect == 3" colSpan="3">
         <field name="$viewerTags" showTitle="false">
@@ -427,10 +441,18 @@
 	                ]]></viewer>
         </field>
         <field name="journal.authorizeSimulatedMove" hidden="true"/>
+        <field name="journal.allowAccountingDaybook" hidden="true"/>
+        <field name="company.accountConfig" hidden="true"/>
+        <field name="company.accountConfig.accountingDaybook" hidden="true"/>
         <panel name="actionPanel" readonlyIf="$validatePeriod" itemSpan="12" colSpan="12">
           <button name="accountingBtn" title="Accounting.toAccount"
             onClick="action-account-move-group-accounting-click" colSpan="12"
-            hideIf="statusSelect == 3 || statusSelect == 4"/>
+            showIf="(statusSelect != 3 &amp;&amp; statusSelect != 4)
+           &amp;&amp; (!journal.allowAccountingDaybook || !company.accountConfig.accountingDaybook)"/>
+          <button name="accountingBtn" title="DayBook.button"
+            onClick="action-account-move-group-accounting-click" colSpan="12"
+            showIf="(statusSelect != 3 &amp;&amp; statusSelect != 4)
+            &amp;&amp; !(!journal.allowAccountingDaybook || !company.accountConfig.accountingDaybook)"/>
           <button name="simulateBtn" title="Simulate"
             onClick="action-move-account-group-simulate" colSpan="12"
             showIf="statusSelect == 1 &amp;&amp; _isActivateSimulatedMoves &amp;&amp; journal.authorizeSimulatedMove"/>
@@ -438,7 +460,7 @@
             onClick="action-account-move-group-generate-tax-lines" colSpan="12"
             showIf="statusSelect == 1 || statusSelect == 5"/>
           <button
-            showIf="journal != null &amp;&amp; statusSelect != 3 &amp;&amp; ($journalTechnicalTypeSelect == 1 || $journalTechnicalTypeSelect == 2 || $journalTechnicalTypeSelect == 4)"
+            showIf="journal != null &amp;&amp; statusSelect != 3 &amp;&amp; (journal.journalType.technicalTypeSelect == 1 || journal.journalType.technicalTypeSelect == 2 || journal.journalType.technicalTypeSelect == 4)"
             name="counterpartGenerateBtn" title="Generate counterpart"
             onClick="action-account-move-group-generate-counterpart" colSpan="12"/>
         </panel>
@@ -484,7 +506,7 @@
       <field name="$totalDebit" title="Total debit" readonly="true" colSpan="3" type="decimal">
         <viewer><![CDATA[
 
-					<h3>{{$fmt('$totalDebit')+' '+$fmt('$companyCurrencyCodeIso')}}</h3>
+					<h3>{{$fmt('$totalDebit')+' '+$fmt('companyCurrencyCode')}}</h3>
 
 			]]></viewer>
       </field>
@@ -492,7 +514,7 @@
         type="decimal">
         <viewer><![CDATA[
 
-					<h3>{{$fmt('$totalCredit')+' '+$fmt('$companyCurrencyCodeIso')}}</h3>
+					<h3>{{$fmt('$totalCredit')+' '+$fmt('companyCurrencyCode')}}</h3>
 
 			]]></viewer>
       </field>
@@ -500,8 +522,8 @@
         <viewer><![CDATA[
 
 					<h3>
-						<span ng-show="record.$difference == 0">{{$fmt('$difference')+' '+$fmt('$companyCurrencyCodeIso')}}</span>
-						<span style="color:#d9534f;" ng-show="record.$difference != 0">{{$fmt('$difference')+' '+$fmt('$companyCurrencyCodeIso')}}</span>
+						<span ng-show="record.$difference == 0">{{$fmt('$difference')+' '+$fmt('companyCurrencyCode')}}</span>
+						<span style="color:#d9534f;" ng-show="record.$difference != 0">{{$fmt('$difference')+' '+$fmt('companyCurrencyCode')}}</span>
 					</h3>
 
 			]]></viewer>
@@ -569,7 +591,6 @@
     <action name="action-move-method-default-move"/>
     <action name="action-move-method-set-default-move-currency"/>
     <action name="action-move-method-set-journal"/>
-    <action name="action-move-method-set-journal-technical-type-select"/>
     <action name="action-move-method-get-period"/>
     <action name="action-move-method-hide-move-line-fields-in-draft-status"/>
     <action name="action-move-is-hidden-move-line-list-viewer-attrs-method"/>
@@ -577,24 +598,20 @@
     <action name="action-move-method-check-period-and-status"/>
     <action name="action-move-method-set-functional-origin-select-domain"/>
     <action name="action-move-method-set-functional-origin-select"/>
-    <action name="action-move-method-manage-bank-details"/>
     <action name="action-move-method-check-period-permissions"/>
     <action name="action-method-hide-axis-analytic-account-move-line"/>
   </action-group>
 
   <action-group name="action-account-move-group-onload">
-    <action name="action-move-method-set-company-currency-code-iso"/>
     <action name="action-move-method-hide-move-line-fields-in-draft-status"/>
     <action name="action-account-move-method-compute-totals"/>
     <action name="action-move-is-hidden-move-line-list-viewer-attrs-method"/>
-    <action name="action-move-method-set-journal-technical-type-select"/>
     <action name="action-method-initialize-permission-validation-move"/>
     <action name="action-move-method-check-related-cut-off-moves"
       if="__config__.app.getApp('account').manageCutOffPeriod"/>
     <action name="action-move-method-check-period-and-status"/>
     <action name="action-move-method-set-functional-origin-select-domain"/>
     <action name="action-move-method-display-and-compute-due-date"/>
-    <action name="action-move-method-manage-bank-details"/>
     <action name="action-method-hide-axis-analytic-account-move-line"/>
   </action-group>
 
@@ -669,7 +686,6 @@
   </action-group>
 
   <action-group name="action-move-group-journal-on-change">
-    <action name="action-move-method-set-journal-technical-type-select"/>
     <action name="action-move-method-set-functional-origin-select-domain"/>
     <action name="action-move-method-set-functional-origin-select"/>
     <action name="action-move-method-journal-on-change"/>
@@ -746,108 +762,33 @@
       if="!com.google.common.base.Strings.isNullOrEmpty(paymentConditionChangeError)"/>
   </action-validate>
 
-  <!-- ACTION RECORD -->
-  <action-record name="default-move-record" model="com.axelor.apps.account.db.Move">
-    <field name="company" expr="eval:__user__.activeCompany"
-      if="__user__.activeCompany != null"/>
-    <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
-      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
-    <field name="getInfoFromFirstMoveLineOk" expr="eval: true"/>
-    <field name="date" expr="eval:__config__.date" if="date == null"/>
-    <field name="date"
-      expr="eval:__config__.app.getTodayDate(__repo__(Company).all().fetchOne())"
-      if="date == null &amp;&amp; __user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
-    <field name="technicalOriginSelect" expr="1"/>
-    <field name="tradingName" expr="eval: __user__?.tradingName"/>
-  </action-record>
-
   <action-method name="action-move-method-default-move">
     <call class="com.axelor.apps.account.web.MoveController" method="setDefaultMove"/>
   </action-method>
-
-  <action-record name="default-move-record-currency"
-    model="com.axelor.apps.account.db.Move">
-    <field name="companyCurrency" expr="eval: company?.currency"/>
-    <field name="$companyCurrencyCodeIso" expr="eval: company?.currency.codeISO"/>
-    <field name="currency" expr="eval: company?.currency"/>
-    <field name="currencyCode" expr="eval: company?.currency.codeISO"/>
-  </action-record>
 
   <action-method name="action-move-method-set-default-move-currency">
     <call class="com.axelor.apps.account.web.MoveController" method="setDefaultCurrency"/>
   </action-method>
 
-
-  <action-record name="action-move-record-set-currency-code"
-    model="com.axelor.apps.account.db.Move">
-    <field name="currencyCode" expr="eval: currency?.codeISO"/>
-  </action-record>
-
   <action-method name="action-move-method-set-currency-code">
     <call class="com.axelor.apps.account.web.MoveController" method="setCurrencyCode"/>
   </action-method>
-
-  <action-record name="action-move-record-journal"
-    model="com.axelor.apps.account.db.Move">
-    <field name="journal" expr="eval: company?.accountConfig?.manualMiscOpeJournal"/>
-  </action-record>
 
   <action-method name="action-move-method-set-journal">
     <call class="com.axelor.apps.account.web.MoveController" method="setJournal"/>
   </action-method>
 
-  <action-record name="action-account-move-record-set-currency"
-    model="com.axelor.apps.account.db.Move">
-    <field name="currency" expr="eval: partner?.currency"/>
-    <field name="currencyCode" expr="eval: partner?.currency?.codeISO"/>
-    <field name="fiscalPosition" expr="eval: partner?.fiscalPosition"/>
-  </action-record>
-
   <action-method name="action-move-method-set-currency-by-partner">
     <call class="com.axelor.apps.account.web.MoveController" method="setCurrencyByPartner"/>
   </action-method>
-
-  <action-record name="action-move-account-record-set-journal-technical-type-select"
-    model="com.axelor.apps.account.db.Move">
-    <field name="$journalTechnicalTypeSelect"
-      expr="eval: journal?.journalType.technicalTypeSelect"/>
-  </action-record>
-
-  <action-method name="action-move-method-set-journal-technical-type-select">
-    <call class="com.axelor.apps.account.web.MoveController"
-      method="setJournalTechnicalTypeSelect"/>
-  </action-method>
-
-  <action-record name="action-move-record-set-payment-mode"
-    model="com.axelor.apps.account.db.Move">
-    <field name="paymentMode" expr="eval: null"/>
-    <field name="paymentMode" expr="eval: partner?.outPaymentMode"
-      if="partner &amp;&amp; journal?.journalType?.technicalTypeSelect == 1"/>
-    <field name="paymentMode" expr="eval: partner?.inPaymentMode"
-      if="partner &amp;&amp; journal?.journalType?.technicalTypeSelect == 2"/>
-  </action-record>
 
   <action-method name="action-move-method-set-payment-mode">
     <call class="com.axelor.apps.account.web.MoveController" method="setPaymentMode"/>
   </action-method>
 
-  <action-record name="action-move-record-set-payment-condition"
-    model="com.axelor.apps.account.db.Move">
-    <field name="paymentCondition" expr="eval: null"/>
-    <field name="paymentCondition" expr="eval: partner?.paymentCondition"
-      if="partner &amp;&amp; journal?.journalType?.technicalTypeSelect != 4"/>
-  </action-record>
-
   <action-method name="action-move-method-set-payment-condition">
     <call class="com.axelor.apps.account.web.MoveController" method="setPaymentCondition"/>
   </action-method>
-
-  <action-record name="action-move-record-set-bank-details"
-    model="com.axelor.apps.account.db.Move">
-    <field name="partnerBankDetails" expr="eval: null"/>
-    <field name="partnerBankDetails" if="partner"
-      expr="eval: partner?.bankDetailsList.find{ it -> it.isDefault &amp;&amp; it.active }"/>
-  </action-record>
 
   <action-method name="action-move-method-set-partner-bank-details">
     <call class="com.axelor.apps.account.web.MoveController" method="setPartnerBankDetails"/>
@@ -891,15 +832,6 @@
     <attribute name="value" for="isHiddenMoveLinesInBankReconciliation" expr="eval: true"/>
     <attribute name="value" for="dateOfReversion" expr="eval: _moveDate"/>
   </action-attrs>
-
-  <action-attrs name="action-move-attrs-set-company-currency-code-iso">
-    <attribute for="$companyCurrencyCodeIso" name="value"
-      expr="eval: company?.currency.codeISO"/>
-  </action-attrs>
-
-  <action-method name="action-move-method-set-company-currency-code-iso">
-    <call class="com.axelor.apps.account.web.MoveController" method="setCompanyCurrencyCodeIso"/>
-  </action-method>
 
   <action-attrs name="action-move-attrs-check-related-cut-off-moves">
     <attribute name="value" for="$isThereRelatedCutOffMoves"

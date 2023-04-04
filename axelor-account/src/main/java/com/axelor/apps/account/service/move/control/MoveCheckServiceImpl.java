@@ -28,7 +28,15 @@ public class MoveCheckServiceImpl implements MoveCheckService {
   public boolean checkRelatedCutoffMoves(Move move) {
     Objects.requireNonNull(move);
 
-    return moveRepository.all().filter("self.cutOffOriginMove = :id", move.getId()).count() > 0;
+    if (move.getId() != null) {
+      return moveRepository
+              .all()
+              .filter("self.cutOffOriginMove = :id")
+              .bind("id", move.getId())
+              .count()
+          > 0;
+    }
+    return false;
   }
 
   @Override

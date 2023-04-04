@@ -937,7 +937,6 @@ public class MoveController {
       response.setValue("currency", move.getCurrency());
       response.setValue("currencyCode", move.getCurrencyCode());
       response.setValue("companyCurrencyCode", move.getCompanyCurrencyCode());
-      response.setValue("$companyCurrencyCodeIso", move.getCompanyCurrencyCode());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -1006,16 +1005,6 @@ public class MoveController {
       move = Beans.get(MoveRecordService.class).setJournal(move);
 
       response.setValue("journal", move.getJournal());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void setCompanyCurrencyCodeIso(ActionRequest request, ActionResponse response) {
-    try {
-      Move move = request.getContext().asType(Move.class);
-
-      response.setValue("$companyCurrencyCodeIso", move.getCompanyCurrencyCode());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
