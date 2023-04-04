@@ -19,7 +19,6 @@ package com.axelor.apps.account.service.move.massentry;
 
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLineMassEntry;
-import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineMassEntryRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
@@ -41,7 +40,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -173,15 +171,10 @@ public class MassEntryServiceImpl implements MassEntryService {
     };
 
     if ((ObjectUtils.notEmpty(inputAction)
-            && inputAction == MoveLineMassEntryRepository.MASS_ENTRY_INPUT_ACTION_COUNTERPART)
-        || (ArrayUtils.contains(technicalTypeSelectArray, journalTechnicalTypeSelect)
-            && (AccountTypeRepository.TYPE_INCOME.equals(technicalTypeSelect)
-                || AccountTypeRepository.TYPE_CHARGE.equals(technicalTypeSelect)))) {
-      if (MoveLineMassEntryRepository.MASS_ENTRY_INPUT_ACTION_COUNTERPART == inputAction) {
-        parentMove
-            .getMoveLineMassEntryList()
-            .remove(parentMove.getMoveLineMassEntryList().size() - 1);
-      }
+        && inputAction == MoveLineMassEntryRepository.MASS_ENTRY_INPUT_ACTION_COUNTERPART)) {
+      parentMove
+          .getMoveLineMassEntryList()
+          .remove(parentMove.getMoveLineMassEntryList().size() - 1);
       Move workingMove =
           massEntryMoveCreateService.createMoveFromMassEntryList(parentMove, temporaryMoveNumber);
 
