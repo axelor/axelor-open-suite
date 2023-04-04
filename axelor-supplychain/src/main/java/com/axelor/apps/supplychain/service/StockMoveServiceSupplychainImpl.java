@@ -132,6 +132,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
   }
 
   @Override
+  @Transactional(rollbackOn = {Exception.class})
   public String realizeStockMove(StockMove stockMove, boolean check) throws AxelorException {
 
     if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
@@ -242,6 +243,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
   }
 
   @Override
+  @Transactional(rollbackOn = {Exception.class})
   public void planStockMove(StockMove stockMove) throws AxelorException {
     super.planStockMove(stockMove);
     updateReservedQuantity(stockMove);

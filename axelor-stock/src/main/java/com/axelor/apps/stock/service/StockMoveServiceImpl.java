@@ -443,10 +443,7 @@ public class StockMoveServiceImpl implements StockMoveService {
       throws AxelorException {
     String newStockSeq = realizeStockMove(stockMove, checkOngoingInventoryFlag);
 
-    if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING
-        && !stockMove.getIsReversion()) {
-      partnerProductQualityRatingService.calculate(stockMove);
-    } else if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
+    if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
         && stockMove.getRealStockMoveAutomaticMail() != null
         && stockMove.getRealStockMoveAutomaticMail()) {
       sendMailForStockMove(stockMove, stockMove.getRealStockMoveMessageTemplate());
@@ -525,6 +522,12 @@ public class StockMoveServiceImpl implements StockMoveService {
       }
     }
     computeMasses(stockMove);
+
+    if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING
+        && !stockMove.getIsReversion()) {
+      partnerProductQualityRatingService.calculate(stockMove);
+    }
+
     return newStockSeq;
   }
 
