@@ -83,7 +83,7 @@ public class SequenceController {
 
     try {
       Sequence sequence = request.getContext().asType(Sequence.class);
-      Beans.get(SequenceService.class).isSequenceLengthValid(sequence);
+      Beans.get(SequenceService.class).checkSequenceLengthValidity(sequence);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

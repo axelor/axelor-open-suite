@@ -66,6 +66,7 @@ public class SequenceService {
   protected static final String PATTERN_DAY = "%D";
   protected static final String PATTERN_WEEK = "%WY";
   protected static final String PADDING_STRING = "0";
+  protected static final int SEQ_MAX_LENGTH = 14;
 
   protected final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -121,13 +122,12 @@ public class SequenceService {
         && (seq.contains(PATTERN_YEAR) || seq.contains(PATTERN_FULL_YEAR));
   }
 
-  public void isSequenceLengthValid(Sequence sequence) throws AxelorException {
+  public void checkSequenceLengthValidity(Sequence sequence) throws AxelorException {
     Company company = sequence.getCompany();
     SequenceVersion sequenceVersion = getVersion(sequence, appBaseService.getTodayDate(company));
-    String nextSeq =
-        computeNextSeq(sequenceVersion, sequence, appBaseService.getTodayDate(company));
+    String nextSeq = computeTestSeq(sequence, appBaseService.getTodayDate(company));
 
-    if (nextSeq.length() > 14) {
+    if (nextSeq.length() > SEQ_MAX_LENGTH) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(BaseExceptionMessage.SEQUENCE_LENGTH_NOT_VALID));
