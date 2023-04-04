@@ -2,6 +2,7 @@ package com.axelor.apps.base.module;
 
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
@@ -15,21 +16,35 @@ public class ControllerMethodInterceptor implements MethodInterceptor {
 
   @Override
   public Object invoke(MethodInvocation invocation) throws Throwable {
-    ActionResponse response = getActionResponse(invocation);
-    if (manageErrorException(invocation)) {
+    if (checkControllerMethod(invocation)) {
+      ActionResponse response = getActionResponse(invocation);
       try {
         invocation.proceed();
       } catch (Exception e) {
-        TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-      }
-    } else {
-      try {
-        invocation.proceed();
-      } catch (Exception e) {
-        TraceBackService.trace(response, e);
+        if (manageErrorException(invocation)) {
+          TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+        } else {
+          TraceBackService.trace(response, e);
+        }
       }
     }
     return null;
+  }
+
+  protected boolean checkControllerMethod(MethodInvocation invocation) {
+    int parameterCounter = 0;
+    boolean responsePresent = false;
+    boolean requestPresent = false;
+    for (Object argument : invocation.getArguments()) {
+      parameterCounter++;
+      if (argument instanceof ActionResponse) {
+        responsePresent = true;
+      }
+      if (argument instanceof ActionRequest) {
+        requestPresent = true;
+      }
+    }
+    return requestPresent && responsePresent && parameterCounter == 2;
   }
 
   protected boolean manageErrorException(MethodInvocation invocation) {
