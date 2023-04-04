@@ -174,11 +174,20 @@
         value="crm-action-group-partner-onload, action-partner-attrs-hide-customer-recovery"/>
       <attribute name="onNew" value="crm-action-group-partner-onnew"/>
     </extend>
+    
     <extend target="//panel[@name='imagePanel']">
       <insert position="before">
         <field name="partnerStatus" showTitle="false" colSpan="12" widget="NavSelect"
-          x-order="sequence" onChange="action-partner-group-partner-status-onchange"/>
+          x-order="sequence" onChange="action-partner-group-partner-status-onchange"
+          if="__config__.app.getApp('crm')?.getCrmProcessOnPartner()"/>
       </insert>
+    </extend>
+    <extend target="//field[@name='sellerCode']">
+    	<insert position="after">
+    		<field name="lostReason" hidden="true" colSpan="6"/>
+      		<field name="lostReasonStr" showIf="lostReason.freeText" colSpan="6"/>
+      		<field name="lostReason.freeText" hidden="true"/>
+    	</insert>
     </extend>
   </form>
 
@@ -365,7 +374,7 @@
     </template>
   </cards>
 
-  <form name="partner-form-lost-popup" model="com.axelor.apps.crm.db.Partner"
+  <form name="partner-form-lost-popup" model="com.axelor.apps.base.db.Partner"
     title="Lost reason" width="large" onSave="action-crm-group-close-lost-partner">
     <panel name="mainPanel">
       <field name="lostReason" canEdit="false" colOffset="4" colSpan="4"/>
@@ -530,10 +539,15 @@
     <field name="isProspect" expr="true"
       if="_isProspect || (__user__?.activeCompany?.defaultPartnerCategorySelect == 1 &amp;&amp; !_isSupplier &amp;&amp; !_isCarrier &amp;&amp; !_isSubcontractor)"/>
   </action-record>
+  
+  <action-record name="action-partner-record-set-partner-status" model="com.axelor.apps.base.db.Partner">
+  	<field name="partnerStatus" expr="eval: __repo__(PartnerStatus).getDefaultStatus()"/>
+  </action-record>
 
   <action-group name="crm-action-group-partner-onnew">
     <action name="action-group-base-partner-onnew"/>
     <action name="action-partner-record-set-is-prospect"/>
+    <action name="action-partner-record-set-partner-status"/>
   </action-group>
 
   <action-group name="action-partner-group-partner-status-onchange">
@@ -547,7 +561,7 @@
   </action-group>
 
   <action-view name="action-partner-view-partner-popup-view"
-    model="com.axelor.apps.crm.db.Partner" title="Lost reason">
+    model="com.axelor.apps.base.db.Partner" title="Lost reason">
     <view type="form" name="partner-form-lost-popup"/>
     <view-param name="popup" value="reload"/>
     <view-param name="show-toolbar" value="false"/>
@@ -558,8 +572,8 @@
   </action-view>
 
   <action-record name="action-partner-record-win"
-    model="com.axelor.apps.crm.db.Partner">
-    <field name="isClient" expr="eval: true"/>
+    model="com.axelor.apps.base.db.Partner">
+    <field name="isCustomer" expr="eval: true"/>
     <field name="isProspect" expr="eval: false"/>
   </action-record>
 
