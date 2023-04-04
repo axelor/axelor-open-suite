@@ -44,7 +44,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
     this.moveLineCheckService = moveLineCheckService;
     this.moveLineInvoiceTermService = moveLineInvoiceTermService;
     this.moveLineToolService = moveLineToolService;
-    moveToolService = moveToolService;
+    this.moveToolService = moveToolService;
     this.analyticLineService = analyticLineService;
   }
 
@@ -390,6 +390,35 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
     valuesMap.put("partnerId", moveLine.getPartnerId());
     valuesMap.put("partnerSeq", moveLine.getPartnerSeq());
     valuesMap.put("partnerFullName", moveLine.getPartnerFullName());
+
+    return valuesMap;
+  }
+
+  @Override
+  public Map<String, Object> getAnalyticDistributionTemplateOnChangeLightValuesMap(
+      MoveLine moveLine) {
+    analyticLineService.checkAnalyticLineForAxis(moveLine);
+
+    Map<String, Object> valuesMap = new HashMap<>();
+
+    valuesMap.put("axis1AnalyticAccount", moveLine.getAxis1AnalyticAccount());
+    valuesMap.put("axis2AnalyticAccount", moveLine.getAxis2AnalyticAccount());
+    valuesMap.put("axis3AnalyticAccount", moveLine.getAxis3AnalyticAccount());
+    valuesMap.put("axis4AnalyticAccount", moveLine.getAxis4AnalyticAccount());
+    valuesMap.put("axis5AnalyticAccount", moveLine.getAxis5AnalyticAccount());
+    valuesMap.put("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
+
+    return valuesMap;
+  }
+
+  @Override
+  public Map<String, Object> getAnalyticDistributionTemplateAnalyticDistributionOnChangeValuesMap(
+      MoveLine moveLine, Move move) throws AxelorException {
+    moveLineComputeAnalyticService.createAnalyticDistributionWithTemplate(moveLine, move);
+
+    Map<String, Object> valuesMap = new HashMap<>();
+
+    valuesMap.put("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
 
     return valuesMap;
   }

@@ -401,18 +401,6 @@ public class MoveLineController {
     }
   }
 
-  public void checkAnalyticMoveLineForAxis(ActionRequest request, ActionResponse response) {
-    try {
-      MoveLine moveLine = request.getContext().asType(MoveLine.class);
-      if (moveLine != null) {
-        Beans.get(AnalyticLineService.class).checkAnalyticLineForAxis(moveLine);
-        response.setValues(moveLine);
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
   public void setInvoiceTermReadonly(ActionRequest request, ActionResponse response) {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
@@ -801,6 +789,41 @@ public class MoveLineController {
 
       response.setValues(
           Beans.get(MoveLineGroupService.class).getPartnerOnChangeValuesMap(moveLine));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void analyticDistributionTemplateOnChangeLight(
+      ActionRequest request, ActionResponse response) {
+    try {
+      MoveLine moveLine = request.getContext().asType(MoveLine.class);
+      Move move = this.getMove(request, moveLine);
+
+      MoveLineGroupService moveLineGroupService = Beans.get(MoveLineGroupService.class);
+
+      response.setValues(
+          moveLineGroupService.getAnalyticDistributionTemplateOnChangeLightValuesMap(moveLine));
+      response.setAttrs(
+          moveLineGroupService.getAnalyticDistributionTemplateOnChangeAttrsMap(moveLine, move));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void analyticDistributionTemplateAnalyticDistributionOnChange(
+      ActionRequest request, ActionResponse response) {
+    try {
+      MoveLine moveLine = request.getContext().asType(MoveLine.class);
+      Move move = this.getMove(request, moveLine);
+
+      MoveLineGroupService moveLineGroupService = Beans.get(MoveLineGroupService.class);
+
+      response.setValues(
+          moveLineGroupService.getAnalyticDistributionTemplateAnalyticDistributionOnChangeValuesMap(
+              moveLine, move));
+      response.setAttrs(
+          moveLineGroupService.getAnalyticDistributionTemplateOnChangeAttrsMap(moveLine, move));
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
