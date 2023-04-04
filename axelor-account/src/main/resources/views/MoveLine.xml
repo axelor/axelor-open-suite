@@ -523,10 +523,10 @@
         if="__config__.app.getApp('account').manageCutOffPeriod">
         <field name="cutOffStartDate" requiredIf="account.manageCutOffPeriod"
           validIf="!cutOffEndDate || cutOffStartDate &lt;= cutOffEndDate"
-          onChange="action-move-line-record-set-cut-off-generated-false"/>
+          onChange="action-move-line-method-set-is-cut-off-generated-false"/>
         <field name="cutOffEndDate" requiredIf="account.manageCutOffPeriod"
           validIf="!cutOffStartDate || cutOffEndDate &gt;= cutOffStartDate"
-          onChange="action-move-line-record-set-cut-off-generated-false"/>
+          onChange="action-move-line-method-set-is-cut-off-generated-false"/>
         <field name="move.statusSelect" hidden="true"/>
         <field name="move.technicalOriginSelect" hidden="true"/>
       </panel>
@@ -773,10 +773,10 @@
         if="__config__.app.getApp('account').manageCutOffPeriod">
         <field name="cutOffStartDate" requiredIf="account.manageCutOffPeriod"
           validIf="!cutOffEndDate || cutOffStartDate &lt;= cutOffEndDate"
-          onChange="action-move-line-record-set-cut-off-generated-false"/>
+          onChange="action-move-line-method-set-is-cut-off-generated-false"/>
         <field name="cutOffEndDate" requiredIf="account.manageCutOffPeriod"
           validIf="!cutOffStartDate || cutOffEndDate &gt;= cutOffStartDate"
-          onChange="action-move-line-record-set-cut-off-generated-false"/>
+          onChange="action-move-line-method-set-is-cut-off-generated-false"/>
         <field name="move.statusSelect" hidden="true"/>
         <field name="move.technicalOriginSelect" hidden="true"/>
       </panel>
@@ -915,60 +915,10 @@
     <call class="com.axelor.apps.account.web.MoveLineController" method="partnerOnChange"/>
   </action-method>
 
-  <action-record name="action-account-move-line-record-calculate-balance"
-    model="com.axelor.apps.base.db.Wizard">
-    <field name="$credit" expr="eval: _credit" if="_credit != null"/>
-    <field name="$debit" expr="eval: _debit" if="_debit != null"/>
-    <field name="$balance" expr="eval: _balance" if="_balance != null"/>
-  </action-record>
-
-  <action-record name="action-move-line-record-set-cut-off-generated-false"
-    model="com.axelor.apps.account.db.MoveLine">
-    <field name="isCutOffGenerated" expr="eval: false"/>
-  </action-record>
-
-  <action-view name="action-account-view-show-move-lines" title="${label} move lines"
-    model="com.axelor.apps.account.db.MoveLine">
-    <view type="grid" name="move-line-account-grid" if="!reconcileOk"/>
-    <view type="grid" name="move-line-account-reconcile-group-grid" if="reconcileOk"/>
-    <view type="form" name="move-line-form"/>
-    <domain>self.account.id = :_id</domain>
-  </action-view>
-
-  <action-view name="action-move-line-view-bank-reconciliation-lines"
-    title="Bank reconciliation lines" model="com.axelor.apps.bankpayment.db.BankReconciliationLine">
-    <view type="grid" name="bank-reconciliation-line-grid"/>
-    <view type="form" name="bank-reconciliation-line-form"/>
-    <domain>self.moveLine = :_id</domain>
-    <context name="_id" expr="eval: id"/>
-  </action-view>
-
-  <search-filters name="move-line-filters"
-    model="com.axelor.apps.account.db.MoveLine" title="Move line filters">
-    <field name="move.period" title="Period"/>
-    <field name="move.journal" title="Journal"/>
-    <field name="move.statusSelect" title="Status"/>
-    <field name="move.company" title="Company" hidden="true"
-      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
-    <field name="account.reconcileOk" title="Reconcilable"/>
-    <field name="analyticMoveLineList" hidden="true"
-      if="!__config__.app.getApp('account')?.getManageAnalyticAccounting()"/>
-    <field name="analyticDistributionTemplate" hidden="true"
-      if="!__config__.app.getApp('account')?.getManageAnalyticAccounting()"/>
-    <filter title="Sale Entries">
-      <domain>self.move.invoice.operationTypeSelect = 3 OR self.move.invoice.operationTypeSelect = 4</domain>
-    </filter>
-    <filter title="Due Sale Entries">
-      <domain>(self.move.invoice.operationTypeSelect = 3 OR self.move.invoice.operationTypeSelect =
-        4) AND self.dueDate &lt; CURRENT_DATE AND self.amountRemaining &gt; 0</domain>
-    </filter>
-    <filter title="Purchase Entries">
-      <domain>self.move.invoice.operationTypeSelect = 1 OR self.move.invoice.operationTypeSelect = 2</domain>
-    </filter>
-    <filter title="Simulated Move Lines">
-      <domain>self.move.statusSelect = 5</domain>
-    </filter>
-  </search-filters>
+  <action-method name="action-move-line-method-set-is-cut-off-generated-false">
+    <call class="com.axelor.apps.account.web.MoveLineController"
+      method="setIsCutOffGeneratedFalse"/>
+  </action-method>
 
   <action-method name="action-move-line-validate-check-date-in-period">
     <call class="com.axelor.apps.account.web.MoveLineController" method="checkDateInPeriod"/>
@@ -1017,6 +967,13 @@
     <call class="com.axelor.apps.account.web.MoveLineController" method="updateTaxEquiv"/>
   </action-method>
 
+  <action-record name="action-account-move-line-record-calculate-balance"
+                 model="com.axelor.apps.base.db.Wizard">
+    <field name="$credit" expr="eval: _credit" if="_credit != null"/>
+    <field name="$debit" expr="eval: _debit" if="_debit != null"/>
+    <field name="$balance" expr="eval: _balance" if="_balance != null"/>
+  </action-record>
+
   <action-view name="action-move-line-view-open-move" title="Account move"
     model="com.axelor.apps.account.db.Move">
     <view type="form" name="move-form"/>
@@ -1039,4 +996,47 @@
     <domain>self.moveLine.id = :_moveLineId</domain>
     <context name="_moveLineId" expr="eval: id"/>
   </action-view>
+
+  <action-view name="action-account-view-show-move-lines" title="${label} move lines"
+    model="com.axelor.apps.account.db.MoveLine">
+    <view type="grid" name="move-line-account-grid" if="!reconcileOk"/>
+    <view type="grid" name="move-line-account-reconcile-group-grid" if="reconcileOk"/>
+    <view type="form" name="move-line-form"/>
+    <domain>self.account.id = :_id</domain>
+  </action-view>
+
+  <action-view name="action-move-line-view-bank-reconciliation-lines"
+    title="Bank reconciliation lines" model="com.axelor.apps.bankpayment.db.BankReconciliationLine">
+    <view type="grid" name="bank-reconciliation-line-grid"/>
+    <view type="form" name="bank-reconciliation-line-form"/>
+    <domain>self.moveLine = :_id</domain>
+    <context name="_id" expr="eval: id"/>
+  </action-view>
+
+  <search-filters name="move-line-filters"
+    model="com.axelor.apps.account.db.MoveLine" title="Move line filters">
+    <field name="move.period" title="Period"/>
+    <field name="move.journal" title="Journal"/>
+    <field name="move.statusSelect" title="Status"/>
+    <field name="move.company" title="Company" hidden="true"
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
+    <field name="account.reconcileOk" title="Reconcilable"/>
+    <field name="analyticMoveLineList" hidden="true"
+      if="!__config__.app.getApp('account')?.getManageAnalyticAccounting()"/>
+    <field name="analyticDistributionTemplate" hidden="true"
+      if="!__config__.app.getApp('account')?.getManageAnalyticAccounting()"/>
+    <filter title="Sale Entries">
+      <domain>self.move.invoice.operationTypeSelect = 3 OR self.move.invoice.operationTypeSelect = 4</domain>
+    </filter>
+    <filter title="Due Sale Entries">
+      <domain>(self.move.invoice.operationTypeSelect = 3 OR self.move.invoice.operationTypeSelect =
+        4) AND self.dueDate &lt; CURRENT_DATE AND self.amountRemaining &gt; 0</domain>
+    </filter>
+    <filter title="Purchase Entries">
+      <domain>self.move.invoice.operationTypeSelect = 1 OR self.move.invoice.operationTypeSelect = 2</domain>
+    </filter>
+    <filter title="Simulated Move Lines">
+      <domain>self.move.statusSelect = 5</domain>
+    </filter>
+  </search-filters>
 </object-views>
