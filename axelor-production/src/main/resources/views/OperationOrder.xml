@@ -116,11 +116,11 @@
     <panel name="datesPanel" title="Dates" colSpan="12" readonlyIf="statusSelect == 6">
       <panel name="plannedDates" title="Planned dates" colSpan="6">
         <field name="plannedStartDateT"
-          onChange="save,action-operation-order-method-compute-duration,save"/>
+          onChange="action-operation-order-record-set-planned-end-date-time"/>
         <field name="plannedEndDateT"
-          onChange="save,action-operation-order-method-compute-duration,save"/>
+          onChange="action-operation-order-record-set-planned-start-date-time-and-duration"/>
         <field name="plannedDuration" colSpan="12" widget="duration" x-seconds="true"
-          x-big="true"/>
+          x-big="true" onChange="action-operation-order-record-set-planned-end-date-time"/>
       </panel>
       <panel name="realDatesPanel" title="Real dates" colSpan="6">
         <field name="realStartDateT"
@@ -297,6 +297,22 @@
     <attribute name="hidden" for="machine"
       expr="eval: workCenter?.workCenterTypeSelect == 1"/>
   </action-attrs>
+
+  <action-record
+    name="action-operation-order-record-set-planned-start-date-time-and-duration"
+    model="com.axelor.apps.production.db.OperationOrder">
+    <field name="plannedStartDateT"
+      expr="eval: plannedEndDateT?.minusSeconds(plannedDuration)"
+      if="plannedStartDateT != null &amp;&amp; plannedEndDateT != null &amp;&amp; plannedEndDateT.isBefore(plannedStartDateT)"/>
+    <field name="plannedDuration"
+      expr="eval: com.axelor.apps.tool.date.DurationTool.getSecondsDuration(com.axelor.apps.tool.date.DurationTool.computeDuration(plannedStartDateT, plannedEndDateT))"
+      if="plannedStartDateT != null &amp;&amp; plannedEndDateT != null &amp;&amp; plannedEndDateT.isAfter(plannedStartDateT)"/>
+  </action-record>
+
+  <action-record name="action-operation-order-record-set-planned-end-date-time"
+    model="com.axelor.apps.production.db.OperationOrder">
+    <field name="plannedEndDateT" expr="eval: plannedStartDateT?.plusSeconds(plannedDuration)"/>
+  </action-record>
 
   <search-filters name="operation-order-filters"
     model="com.axelor.apps.production.db.OperationOrder" title="Operation order filters">
