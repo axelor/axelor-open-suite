@@ -174,7 +174,7 @@
         value="crm-action-group-partner-onload, action-partner-attrs-hide-customer-recovery"/>
       <attribute name="onNew" value="crm-action-group-partner-onnew"/>
     </extend>
-    
+
     <extend target="//panel[@name='imagePanel']">
       <insert position="before">
         <field name="partnerStatus" showTitle="false" colSpan="12" widget="NavSelect"
@@ -183,11 +183,11 @@
       </insert>
     </extend>
     <extend target="//field[@name='sellerCode']">
-    	<insert position="after">
-    		<field name="lostReason" hidden="true" colSpan="6"/>
-      		<field name="lostReasonStr" showIf="lostReason.freeText" colSpan="6"/>
-      		<field name="lostReason.freeText" hidden="true"/>
-    	</insert>
+      <insert position="after">
+        <field name="lostReason" hidden="true" colSpan="6"/>
+        <field name="lostReasonStr" showIf="lostReason.freeText" colSpan="6"/>
+        <field name="lostReason.freeText" hidden="true"/>
+      </insert>
     </extend>
   </form>
 
@@ -539,9 +539,10 @@
     <field name="isProspect" expr="true"
       if="_isProspect || (__user__?.activeCompany?.defaultPartnerCategorySelect == 1 &amp;&amp; !_isSupplier &amp;&amp; !_isCarrier &amp;&amp; !_isSubcontractor)"/>
   </action-record>
-  
-  <action-record name="action-partner-record-set-partner-status" model="com.axelor.apps.base.db.Partner">
-  	<field name="partnerStatus" expr="eval: __repo__(PartnerStatus).getDefaultStatus()"/>
+
+  <action-record name="action-partner-record-set-partner-status"
+    model="com.axelor.apps.base.db.Partner">
+    <field name="partnerStatus" expr="eval: __repo__(PartnerStatus).getDefaultStatus()"/>
   </action-record>
 
   <action-group name="crm-action-group-partner-onnew">
