@@ -70,7 +70,7 @@ clean {
 
 jar {
   dependsOn 'buildFront'
-  into('webapp') {
+  into('webapp/hr/timesheet') {
     from "src/main/axelor-react-timesheet/build"
     duplicatesStrategy 'exclude'
   }
@@ -78,3 +78,4 @@ jar {
 
 
 build.dependsOn copyWebapp
+rootProject.tasks.war.dependsOn copyWebapp
