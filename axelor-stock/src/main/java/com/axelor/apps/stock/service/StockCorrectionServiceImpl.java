@@ -250,8 +250,7 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
       Product product,
       TrackingNumber trackingNumber,
       BigDecimal realQty,
-      StockCorrectionReason reason)
-      throws Exception {
+      StockCorrectionReason reason) {
 
     StockCorrection stockCorrection = new StockCorrection();
     setNewStockCorrectionInformation(

@@ -22,14 +22,12 @@ import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.StockRules;
 import com.axelor.exception.AxelorException;
-import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 
 public interface StockRulesService {
   void generateOrder(Product product, BigDecimal qty, StockLocationLine stockLocationLine, int type)
       throws AxelorException;
 
-  @Transactional(rollbackOn = {Exception.class})
   void generatePurchaseOrder(
       Product product, BigDecimal qty, StockLocationLine stockLocationLine, int type)
       throws AxelorException;

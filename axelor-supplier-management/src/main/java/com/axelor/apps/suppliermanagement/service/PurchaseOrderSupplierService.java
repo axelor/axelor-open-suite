@@ -68,7 +68,7 @@ public class PurchaseOrderSupplierService {
 
   @Inject protected SupplierCatalogService supplierCatalogService;
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void generateAllSuppliersRequests(PurchaseOrder purchaseOrder) throws AxelorException {
 
     for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
@@ -87,13 +87,13 @@ public class PurchaseOrderSupplierService {
    * @param purchaseOrderLine
    * @throws AxelorException
    */
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void generateSuppliersRequests(PurchaseOrderLine purchaseOrderLine)
       throws AxelorException {
     this.generateSuppliersRequests(purchaseOrderLine, purchaseOrderLine.getPurchaseOrder());
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void generateSuppliersRequests(
       PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder) throws AxelorException {
 

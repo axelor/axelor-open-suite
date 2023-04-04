@@ -311,7 +311,7 @@ public class StockLocationServiceImpl implements StockLocationService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public void changeProductLocker(StockLocation stockLocation, Product product, String newLocker) {
     List<StockLocationLine> stockLocationLineList = stockLocation.getStockLocationLineList();
     for (StockLocationLine stockLocationLine : stockLocationLineList) {
