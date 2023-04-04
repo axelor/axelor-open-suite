@@ -36,7 +36,6 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
-import com.axelor.apps.account.service.move.MoveViewHelperService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineGroupService;
 import com.axelor.apps.account.service.moveline.MoveLineRecordService;
@@ -207,20 +206,6 @@ public class MoveLineController {
     }
   }
 
-  public void filterPartner(ActionRequest request, ActionResponse response) {
-    Move move = request.getContext().getParent().asType(Move.class);
-    try {
-      if (move != null) {
-        String domain =
-            Beans.get(MoveViewHelperService.class)
-                .filterPartner(move.getCompany(), move.getJournal());
-        response.setAttr("partner", "domain", domain);
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
   public void setSelectedBankReconciliation(ActionRequest request, ActionResponse response) {
     MoveLine moveLine =
         Beans.get(MoveLineRepository.class)
@@ -229,25 +214,6 @@ public class MoveLineController {
       moveLine = Beans.get(MoveLineService.class).setIsSelectedBankReconciliation(moveLine);
       response.setValue("isSelectedBankReconciliation", moveLine.getIsSelectedBankReconciliation());
       response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void setPartnerReadonlyIf(ActionRequest request, ActionResponse response) {
-    boolean readonly = false;
-    MoveLine moveLine = request.getContext().asType(MoveLine.class);
-    Move move = request.getContext().getParent().asType(Move.class);
-    try {
-      if (moveLine.getAmountPaid().compareTo(BigDecimal.ZERO) != 0) {
-        readonly = true;
-      }
-      if (moveLine.getAccount() != null
-          && move.getPartner() != null
-          && moveLine.getAccount().getUseForPartnerBalance()) {
-        readonly = true;
-      }
-      response.setAttr("partner", "readonly", readonly);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -725,7 +691,8 @@ public class MoveLineController {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
       Move move = this.getMove(request, moveLine);
 
-      response.setAttrs(Beans.get(MoveLineGroupService.class).getPartnerOnSelectAttrsMap(move));
+      response.setAttrs(
+          Beans.get(MoveLineGroupService.class).getPartnerOnSelectAttrsMap(moveLine, move));
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

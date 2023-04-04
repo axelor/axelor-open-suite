@@ -96,7 +96,7 @@
     <field name="date" width="100" onChange="account-move-line-method-date-onchange"
       hidden="true"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid"
-      onSelect="action-account-move-line-partner-group"
+      onSelect="action-move-line-method-partner-onselect"
       onChange="action-move-line-method-partner-onchange" width="120" canEdit="false"
       readonly="false"/>
     <field name="account" form-view="account-form" grid-view="account-grid"
@@ -244,7 +244,7 @@
     model="com.axelor.apps.account.db.MoveLine" onNew="action-move-line-method-onnew"
     canArchive="false" edit-icon="true">
     <field name="partner" readonly="false" width="120" canEdit="false"
-      onSelect="action-account-move-line-partner-group" form-view="partner-form"
+      onSelect="action-move-line-method-partner-onselect" form-view="partner-form"
       grid-view="partner-grid"/>
     <field name="account" readonlyIf="amountPaid > 0" width="400" canEdit="false"
       onChange="action-move-line-method-account-onchange"
@@ -801,6 +801,11 @@
     </panel>
   </form>
 
+  <action-group name="action-group-account-moveline-usher-process-onchange">
+    <action name="save"/>
+    <action name="action-method-account-moveline-usher-process"/>
+  </action-group>
+
   <action-method name="action-move-line-method-onnew">
     <call class="com.axelor.apps.account.web.MoveLineController" method="onNew"/>
   </action-method>
@@ -821,19 +826,6 @@
   <action-method name="action-move-line-method-onload-move">
     <call class="com.axelor.apps.account.web.MoveLineController" method="onLoadMove"/>
   </action-method>
-
-  <action-group name="action-group-account-moveline-usher-process-onchange">
-    <action name="save"/>
-    <action name="action-method-account-moveline-usher-process"/>
-  </action-group>
-
-  <action-group name="action-account-move-line-partner-group">
-    <action name="action-account-move-line-method-filter-partner"
-      if="__parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.account.db.Move'"/>
-    <action name="action-move-line-method-partner-onselect"
-      if="__parent__ == null || __parent__._model != 'com.axelor.apps.account.db.Move'"/>
-    <action name="action-account-move-line-method-set-partner-readonly"/>
-  </action-group>
 
   <action-method name="action-move-line-method-account-onchange">
     <call class="com.axelor.apps.account.web.MoveLineController" method="accountOnChange"/>
@@ -886,10 +878,6 @@
     <call class="com.axelor.apps.account.web.MoveLineController" method="showCalculatedBalance"/>
   </action-method>
 
-  <action-method name="action-account-move-line-method-filter-partner">
-    <call class="com.axelor.apps.account.web.MoveLineController" method="filterPartner"/>
-  </action-method>
-
   <action-method name="action-move-line-method-account-onselect">
     <call class="com.axelor.apps.account.web.MoveLineController" method="accountOnSelect"/>
   </action-method>
@@ -928,10 +916,6 @@
 
   <action-method name="action-move-line-validate-check-date-in-period">
     <call class="com.axelor.apps.account.web.MoveLineController" method="checkDateInPeriod"/>
-  </action-method>
-
-  <action-method name="action-account-move-line-method-set-partner-readonly">
-    <call class="com.axelor.apps.account.web.MoveLineController" method="setPartnerReadonlyIf"/>
   </action-method>
 
   <action-method name="action-move-line-attrs-set-domain-axis">

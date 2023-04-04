@@ -319,10 +319,11 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
   }
 
   @Override
-  public Map<String, Map<String, Object>> getPartnerOnSelectAttrsMap(Move move) {
+  public Map<String, Map<String, Object>> getPartnerOnSelectAttrsMap(MoveLine moveLine, Move move) {
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
     moveLineAttrsService.addPartnerDomain(move, attrsMap);
+    moveLineAttrsService.addPartnerReadonly(moveLine, move, attrsMap);
 
     return attrsMap;
   }
