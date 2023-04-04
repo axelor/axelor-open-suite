@@ -899,13 +899,6 @@
   </action-method>
 
   <action-method
-    name="action-purchase-order-method-update-purchase-order-lines-estimated-deliv-date"
-    if-module="axelor-supplychain">
-    <call class="com.axelor.apps.supplychain.web.PurchaseOrderController"
-      method="updateEstimatedDelivDate"/>
-  </action-method>
-
-  <action-method
     name="action-purchase-order-method-update-purchase-order-lines-estimated-receipt-date"
     if-module="axelor-supplychain">
     <call class="com.axelor.apps.supplychain.web.PurchaseOrderController"
