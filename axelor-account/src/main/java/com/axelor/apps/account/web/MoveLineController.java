@@ -481,32 +481,6 @@ public class MoveLineController {
     }
   }
 
-  public void generateInvoiceTerms(ActionRequest request, ActionResponse response) {
-    try {
-      MoveLine moveLine = request.getContext().asType(MoveLine.class);
-
-      if (moveLine.getCredit().add(moveLine.getDebit()).compareTo(BigDecimal.ZERO) == 0) {
-        return;
-      }
-
-      if (moveLine.getAccount() != null && moveLine.getAccount().getHasInvoiceTerm()) {
-
-        if (moveLine.getMove() == null) {
-          moveLine.setMove(ContextTool.getContextParent(request.getContext(), Move.class, 1));
-        }
-
-        LocalDate dueDate = this.extractDueDate(request);
-        moveLine.clearInvoiceTermList();
-        Beans.get(MoveLineInvoiceTermService.class)
-            .generateDefaultInvoiceTerm(moveLine, dueDate, false);
-      }
-      response.setValues(moveLine);
-      response.setValue("invoiceTermList", moveLine.getInvoiceTermList());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
   public void updateDueDates(ActionRequest request, ActionResponse response) {
     MoveLine moveLine = request.getContext().asType(MoveLine.class);
     if (moveLine.getMove() != null && moveLine.getMove().getOriginDate() != null) {
@@ -633,6 +607,20 @@ public class MoveLineController {
 
       response.setValues(
           Beans.get(MoveLineGroupService.class).getDebitCreditOnChangeValuesMap(moveLine, move));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void debitCreditInvoiceTermOnChange(ActionRequest request, ActionResponse response) {
+    try {
+      MoveLine moveLine = request.getContext().asType(MoveLine.class);
+      Move move = this.getMove(request, moveLine);
+      LocalDate dueDate = this.extractDueDate(request);
+
+      response.setValues(
+          Beans.get(MoveLineGroupService.class)
+              .getDebitCreditInvoiceTermOnChangeValuesMap(moveLine, move, dueDate));
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

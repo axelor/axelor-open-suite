@@ -27,6 +27,9 @@ public interface MoveLineGroupService {
   Map<String, Object> getDebitCreditOnChangeValuesMap(MoveLine moveLine, Move move)
       throws AxelorException;
 
+  Map<String, Object> getDebitCreditInvoiceTermOnChangeValuesMap(
+      MoveLine moveLine, Move move, LocalDate dueDate) throws AxelorException;
+
   Map<String, Object> getAccountOnChangeValuesMap(
       MoveLine moveLine,
       Move move,

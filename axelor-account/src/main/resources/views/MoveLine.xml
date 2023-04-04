@@ -616,11 +616,11 @@
         readonlyIf="!isOtherCurrency" colSpan="3"/>
       <field name="isOtherCurrency" hidden="true"/>
       <field name="debit"
-        onChange="action-move-line-method-debit-credit-onchange,action-move-line-method-generate-invoice-terms"
-        readonlyIf="credit &gt; 0 || amountPaid &gt; 0 || reconcileGroup != null"
+        onChange="action-move-line-method-debit-credit-invoice-term-onchange"
+        readonlyIf="credit &gt; 0 || amountPaid &gt; 0 || reconcileGroup != null"
         css="label-bold bold" colSpan="3"/>
       <field name="credit"
-        onChange="action-move-line-method-debit-credit-onchange,action-move-line-method-generate-invoice-terms"
+        onChange="action-move-line-method-debit-credit-invoice-term-onchange"
         readonlyIf="debit &gt; 0 || amountPaid &gt; 0 || reconcileGroup != null"
         css="label-bold bold" colSpan="3"/>
       <field name="amountRemaining" colSpan="3"
@@ -809,6 +809,11 @@
     <call class="com.axelor.apps.account.web.MoveLineController" method="debitCreditOnChange"/>
   </action-method>
 
+  <action-method name="action-move-line-method-debit-credit-invoice-term-onchange">
+    <call class="com.axelor.apps.account.web.MoveLineController"
+      method="debitCreditInvoiceTermOnChange"/>
+  </action-method>
+
   <action-method name="action-move-line-method-onload">
     <call class="com.axelor.apps.account.web.MoveLineController" method="onLoad"/>
   </action-method>
@@ -949,10 +954,6 @@
 
   <action-method name="action-move-line-method-update-invoice-terms">
     <call class="com.axelor.apps.account.web.MoveLineController" method="updateInvoiceTerms"/>
-  </action-method>
-
-  <action-method name="action-move-line-method-generate-invoice-terms">
-    <call class="com.axelor.apps.account.web.MoveLineController" method="generateInvoiceTerms"/>
   </action-method>
 
   <action-method name="action-move-line-method-update-due-dates">
