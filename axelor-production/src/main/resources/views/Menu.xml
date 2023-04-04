@@ -105,7 +105,7 @@
     <view type="grid" name="operation-order-grid"/>
     <view type="form" name="operation-order-form"/>
     <view-param name="search-filters" value="operation-order-filters"/>
-    <domain>self.statusSelect = 3</domain>
+    <domain>self.manufOrder.statusSelect IN (3,4,5,6)</domain>
   </action-view>
 
   <menuitem name="manufacturing-root-operation-order-real-calendar"
