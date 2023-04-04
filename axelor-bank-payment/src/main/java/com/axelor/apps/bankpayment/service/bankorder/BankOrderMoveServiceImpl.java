@@ -162,21 +162,21 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
             .bind("bankOrder", bankOrder)
             .order("id");
 
-    if (query.count() == 1) {
-      generateMoves(query.fetchOne());
+    List<BankOrderLine> bankOrderLines = query.fetch(FETCH_LIMIT, 0);
+    if (bankOrderLines.size() == 1) {
+      generateMoves(bankOrderLines.get(0));
     } else {
-      List<BankOrderLine> bankOrderLines = null;
-      int offSet = 0;
+      int offSet = FETCH_LIMIT;
 
-      while (!(bankOrderLines = query.fetch(FETCH_LIMIT, offSet)).isEmpty()) {
-
+      while (!bankOrderLines.isEmpty()) {
         for (BankOrderLine bankOrderLine : bankOrderLines) {
           generateMoves(bankOrderLine);
         }
-        offSet += FETCH_LIMIT;
 
         JPA.clear();
         fetchDetachedEntities();
+        bankOrderLines = query.fetch(FETCH_LIMIT, offSet);
+        offSet += FETCH_LIMIT;
       }
     }
   }
