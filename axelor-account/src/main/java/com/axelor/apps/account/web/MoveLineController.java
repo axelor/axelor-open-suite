@@ -782,6 +782,17 @@ public class MoveLineController {
     }
   }
 
+  public void partnerOnChange(ActionRequest request, ActionResponse response) {
+    try {
+      MoveLine moveLine = request.getContext().asType(MoveLine.class);
+
+      response.setValues(
+          Beans.get(MoveLineGroupService.class).getPartnerOnChangeValuesMap(moveLine));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
   protected Move getMove(ActionRequest request, MoveLine moveLine) {
     if (request.getContext().getParent() != null
         && Move.class.equals(request.getContext().getParent().getContextClass())) {

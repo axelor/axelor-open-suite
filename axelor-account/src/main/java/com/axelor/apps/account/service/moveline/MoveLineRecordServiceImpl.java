@@ -144,4 +144,13 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
       moveLine.setDebit(BigDecimal.ZERO);
     }
   }
+
+  @Override
+  public void resetPartnerFields(MoveLine moveLine) {
+    if (moveLine.getPartner() == null) {
+      moveLine.setPartnerId(null);
+      moveLine.setPartnerSeq(null);
+      moveLine.setPartnerFullName(null);
+    }
+  }
 }

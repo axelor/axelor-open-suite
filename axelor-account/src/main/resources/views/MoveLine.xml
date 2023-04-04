@@ -97,7 +97,7 @@
       hidden="true"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid"
       onSelect="action-account-move-line-partner-group"
-      onChange="action-move-line-record-reset-partner-details" width="120" canEdit="false"
+      onChange="action-move-line-method-partner-onchange" width="120" canEdit="false"
       readonly="false"/>
     <field name="account" form-view="account-form" grid-view="account-grid"
       onSelect="action-move-line-method-account-onselect" width="200" canEdit="false"
@@ -606,8 +606,7 @@
         readonlyIf="amountPaid &gt; 0" onChange="action-move-line-method-account-onchange"/>
       <field name="partner" form-view="partner-form" grid-view="partner-grid"
         onSelect="action-move-line-method-partner-onselect" canEdit="false"
-        readonlyIf="amountPaid &gt; 0"
-        onChange="action-move-line-method-update-invoice-terms,action-move-line-record-reset-partner-details"
+        readonlyIf="amountPaid &gt; 0" onChange="action-move-line-method-partner-onchange"
         requiredIf="account.useForPartnerBalance &amp;&amp; account.hasInvoiceTerm"/>
       <field name="currencyAmount"
         onChange="action-move-line-method-currency-amount-rate-onchange"
@@ -912,24 +911,15 @@
     <call class="com.axelor.apps.account.web.MoveLineController" method="creditOnChange"/>
   </action-method>
 
+  <action-method name="action-move-line-method-partner-onchange">
+    <call class="com.axelor.apps.account.web.MoveLineController" method="partnerOnChange"/>
+  </action-method>
+
   <action-record name="action-account-move-line-record-calculate-balance"
     model="com.axelor.apps.base.db.Wizard">
     <field name="$credit" expr="eval: _credit" if="_credit != null"/>
     <field name="$debit" expr="eval: _debit" if="_debit != null"/>
     <field name="$balance" expr="eval: _balance" if="_balance != null"/>
-  </action-record>
-
-  <action-record name="action-move-line-record-set-cut-off-dates"
-    model="com.axelor.apps.account.db.MoveLine">
-    <field name="cutOffStartDate"
-      expr="eval: account?.manageCutOffPeriod ? __parent__?.cutOffStartDate : null"/>
-    <field name="cutOffEndDate"
-      expr="eval: account?.manageCutOffPeriod ? __parent__?.cutOffEndDate : null"/>
-  </action-record>
-
-  <action-record name="action-move-line-record-reset-partner-details"
-    model="com.axelor.apps.account.db.MoveLine">
-    <field name="partnerFullName,partnerSeq,partnerId" expr="eval: null" if="!partner"/>
   </action-record>
 
   <action-record name="action-move-line-record-set-cut-off-generated-false"

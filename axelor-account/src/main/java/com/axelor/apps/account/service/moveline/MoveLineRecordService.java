@@ -23,4 +23,6 @@ public interface MoveLineRecordService {
   void resetCredit(MoveLine moveLine);
 
   void resetDebit(MoveLine moveLine);
+
+  void resetPartnerFields(MoveLine moveLine);
 }

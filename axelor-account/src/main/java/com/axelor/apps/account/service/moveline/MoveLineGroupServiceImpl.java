@@ -378,4 +378,19 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
 
     return valuesMap;
   }
+
+  @Override
+  public Map<String, Object> getPartnerOnChangeValuesMap(MoveLine moveLine) {
+    moveLineInvoiceTermService.updateInvoiceTermsParentFields(moveLine);
+    moveLineRecordService.resetPartnerFields(moveLine);
+
+    Map<String, Object> valuesMap = new HashMap<>();
+
+    valuesMap.put("partner", moveLine.getPartner());
+    valuesMap.put("partnerId", moveLine.getPartnerId());
+    valuesMap.put("partnerSeq", moveLine.getPartnerSeq());
+    valuesMap.put("partnerFullName", moveLine.getPartnerFullName());
+
+    return valuesMap;
+  }
 }

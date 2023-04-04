@@ -65,4 +65,6 @@ public interface MoveLineGroupService {
 
   Map<String, Object> getCreditOnChangeValuesMap(MoveLine moveLine, Move move, LocalDate dueDate)
       throws AxelorException;
+
+  Map<String, Object> getPartnerOnChangeValuesMap(MoveLine moveLine);
 }
