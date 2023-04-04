@@ -8,6 +8,7 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineMassEntryRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveControlService;
 import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.move.MoveValidateService;
@@ -44,6 +45,7 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
   protected MoveValidateService moveValidateService;
   protected MoveControlService moveControlService;
   protected MoveLineMassEntryToolService moveLineMassEntryToolService;
+  protected AppAccountService appAccountService;
 
   @Inject
   public MassEntryVerificationServiceImpl(
@@ -52,13 +54,15 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
       MoveLineControlService moveLineControlService,
       MoveValidateService moveValidateService,
       MoveControlService moveControlService,
-      MoveLineMassEntryToolService moveLineMassEntryToolService) {
+      MoveLineMassEntryToolService moveLineMassEntryToolService,
+      AppAccountService appAccountService) {
     this.periodService = periodService;
     this.moveLineToolService = moveLineToolService;
     this.moveLineControlService = moveLineControlService;
     this.moveValidateService = moveValidateService;
     this.moveControlService = moveControlService;
     this.moveLineMassEntryToolService = moveLineMassEntryToolService;
+    this.appAccountService = appAccountService;
   }
 
   @Override
@@ -121,7 +125,7 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
     }
 
     // Check move line mass entry payment mode
-    if (newMoveLine.getAccount() != null && !newMoveLine.getAccount().getHasInvoiceTerm()) {
+    if (appAccountService.getAppAccount().getAllowMultiInvoiceTerms()) {
       PaymentMode newMovePaymentMode = newMoveLine.getMovePaymentMode();
       if (moveLine.getMovePaymentMode() == null
           || !moveLine.getMovePaymentMode().equals(newMovePaymentMode)) {
