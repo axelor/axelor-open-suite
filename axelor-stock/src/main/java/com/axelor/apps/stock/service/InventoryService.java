@@ -232,6 +232,7 @@ public class InventoryService {
         if (inventoryLine.getTrackingNumber() != null) {
           inventoryLine.getTrackingNumber().setCounter(realQty);
         }
+        inventoryLineService.compute(inventoryLine, inventory);
       } else {
         BigDecimal currentQty;
         try {
