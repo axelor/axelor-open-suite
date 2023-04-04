@@ -1405,7 +1405,8 @@
   </action-group>
 
   <action-group name="action-group-partner-contact-onload">
-    <action name="action-partner-attrs-hide-employee-panel"/>
+    <action name="action-partner-attrs-hide-employee-panel"
+      if="__config__.app.isApp('employee')"/>
     <action name="action-partner-method-check-name"/>
     <action name="action-partner-method-check-name-in-archive"/>
     <action name="action-partner-attrs-change-name"/>
