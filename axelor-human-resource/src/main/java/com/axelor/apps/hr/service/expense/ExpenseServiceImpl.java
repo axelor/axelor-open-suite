@@ -508,7 +508,9 @@ public class ExpenseServiceImpl implements ExpenseService {
                 : "");
     moveLine.setAnalyticDistributionTemplate(expenseLine.getAnalyticDistributionTemplate());
     List<AnalyticMoveLine> analyticMoveLineList =
-        new ArrayList<>(moveLine.getAnalyticMoveLineList());
+        CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())
+            ? new ArrayList<>()
+            : new ArrayList<>(moveLine.getAnalyticMoveLineList());
     moveLine.clearAnalyticMoveLineList();
     expenseLine
         .getAnalyticMoveLineList()
@@ -737,7 +739,7 @@ public class ExpenseServiceImpl implements ExpenseService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public void resetExpensePaymentAfterCancellation(Expense expense) {
     expense.setPaymentStatusSelect(InvoicePaymentRepository.STATUS_CANCELED);
     expense.setStatusSelect(ExpenseRepository.STATUS_VALIDATED);

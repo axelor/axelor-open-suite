@@ -47,8 +47,8 @@ public class UnitCostCalculationManagementRepository extends UnitCostCalculation
   public UnitCostCalculation copy(UnitCostCalculation entity, boolean deep) {
     entity.setStatusSelect(UnitCostCalculationRepository.STATUS_DRAFT);
     entity.setUnitCostCalcSeq(null);
-    entity.setCalculationDate(null);
-    entity.setUpdateCostDate(null);
+    entity.setCalculationDateTime(null);
+    entity.setUpdateCostDateTime(null);
     entity.setUnitCostCalcLineList(null);
 
     return super.copy(entity, deep);

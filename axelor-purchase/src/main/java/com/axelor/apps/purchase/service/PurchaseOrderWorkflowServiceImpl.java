@@ -75,7 +75,8 @@ public class PurchaseOrderWorkflowServiceImpl implements PurchaseOrderWorkflowSe
     purchaseOrderService.computePurchaseOrder(purchaseOrder);
 
     purchaseOrder.setStatusSelect(PurchaseOrderRepository.STATUS_VALIDATED);
-    purchaseOrder.setValidationDate(appPurchaseService.getTodayDate(purchaseOrder.getCompany()));
+    purchaseOrder.setValidationDateTime(
+        appPurchaseService.getTodayDateTime(purchaseOrder.getCompany()).toLocalDateTime());
     purchaseOrder.setValidatedByUser(AuthUtils.getUser());
 
     purchaseOrder.setSupplierPartner(purchaseOrderService.validateSupplier(purchaseOrder));

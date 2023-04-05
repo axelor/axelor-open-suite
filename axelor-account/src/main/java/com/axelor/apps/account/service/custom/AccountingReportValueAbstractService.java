@@ -27,6 +27,8 @@ import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountingReportConfigLineRepository;
 import com.axelor.apps.account.db.repo.AccountingReportValueRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.DateService;
 import com.axelor.common.StringUtils;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
@@ -48,15 +50,18 @@ public abstract class AccountingReportValueAbstractService {
   protected AccountRepository accountRepo;
   protected AccountingReportValueRepository accountingReportValueRepo;
   protected AnalyticAccountRepository analyticAccountRepo;
+  protected DateService dateService;
 
   @Inject
   public AccountingReportValueAbstractService(
       AccountRepository accountRepo,
       AccountingReportValueRepository accountingReportValueRepo,
-      AnalyticAccountRepository analyticAccountRepo) {
+      AnalyticAccountRepository analyticAccountRepo,
+      DateService dateService) {
     this.accountRepo = accountRepo;
     this.accountingReportValueRepo = accountingReportValueRepo;
     this.analyticAccountRepo = analyticAccountRepo;
+    this.dateService = dateService;
   }
 
   protected void addNullValue(
@@ -74,7 +79,7 @@ public abstract class AccountingReportValueAbstractService {
     valuesMapByLine.get(lineCode).put(columnCode, null);
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   protected void createReportValue(
       AccountingReport accountingReport,
       AccountingReportConfigLine column,
@@ -89,8 +94,9 @@ public abstract class AccountingReportValueAbstractService {
       Map<String, Map<String, AccountingReportValue>> valuesMapByLine,
       AnalyticAccount configAnalyticAccount,
       String lineCode,
-      int analyticCounter) {
-    DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+      int analyticCounter)
+      throws AxelorException {
+    DateTimeFormatter format = dateService.getDateFormat();
     String period = String.format("%s - %s", startDate.format(format), endDate.format(format));
     int groupNumber = groupColumn == null ? 0 : groupColumn.getSequence();
     int columnNumber = column.getSequence();

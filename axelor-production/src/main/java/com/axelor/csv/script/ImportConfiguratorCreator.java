@@ -32,7 +32,7 @@ public class ImportConfiguratorCreator {
 
   @Inject ConfiguratorCreatorImportService configuratorCreatorImportService;
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public Object importConfiguratorCreator(Object bean, Map values)
       throws AxelorException, IOException {
     String path = String.valueOf(values.get("path"));

@@ -1,0 +1,3 @@
+---
+title : "Account, Invoice and Move: Remove error message at analytic distribution template on change when no analytic rules is configured"
+type: fix

@@ -468,7 +468,7 @@ public class ReconcileServiceImpl implements ReconcileService {
       }
     }
     List<InvoiceTermPayment> invoiceTermPaymentList = null;
-    if (moveLine.getAccount().getHasInvoiceTerm() && updateInvoiceTerms) {
+    if (moveLine.getAccount().getUseForPartnerBalance() && updateInvoiceTerms) {
       List<InvoiceTerm> invoiceTermList = this.getInvoiceTermsToPay(invoice, otherMove, moveLine);
       invoiceTermPaymentList =
           this.updateInvoiceTerms(invoiceTermList, invoicePayment, amount, reconcile);

@@ -57,7 +57,7 @@
     <!-- Validation and totals -->
     <many-to-one name="validatedByUser" ref="com.axelor.auth.db.User" readonly="true"
       title="Validated by"/>
-    <date name="validationDate" title="Validation date" readonly="true"/>
+    <datetime name="validationDateTime" title="Validation date" readonly="true"/>
     <decimal name="exTaxTotal" title="Total W.T." scale="2" precision="20" readonly="true"/>
     <decimal name="taxTotal" title="Total Tax" scale="2" precision="20" readonly="true"/>
     <decimal name="inTaxTotal" title="Total A.T.I." scale="2" precision="20" readonly="true"/>

@@ -19,7 +19,6 @@ package com.axelor.apps.account.service.payment.invoice.payment;
 
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.base.AxelorException;
-import com.google.inject.persist.Transactional;
 
 public interface InvoicePaymentCancelService {
 
@@ -32,9 +31,7 @@ public interface InvoicePaymentCancelService {
    * @param invoicePayment An invoice payment
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {Exception.class})
   public void cancel(InvoicePayment invoicePayment) throws AxelorException;
 
-  @Transactional(rollbackOn = {Exception.class})
   public void updateCancelStatus(InvoicePayment invoicePayment) throws AxelorException;
 }

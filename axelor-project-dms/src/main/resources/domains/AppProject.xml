@@ -5,9 +5,13 @@
 
   <module name="studio" package="com.axelor.studio.db"/>
 
-  <entity name="AppProject">
+  <entity name="AppProject" cacheable="true">
 
     <decimal name="defaultIncrement" title="Default increment"/>
+
+    <track>
+      <field name="defaultIncrement" on="UPDATE"/>
+    </track>
 
   </entity>
 

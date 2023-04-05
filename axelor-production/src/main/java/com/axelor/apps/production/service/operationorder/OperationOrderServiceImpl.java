@@ -41,6 +41,7 @@ import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.i18n.I18n;
+import com.axelor.i18n.L10n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
@@ -67,9 +68,6 @@ public class OperationOrderServiceImpl implements OperationOrderService {
 
   @Inject protected AppProductionService appProductionService;
 
-  private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-  private static final DateTimeFormatter DATE_TIME_FORMAT =
-      DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Transactional(rollbackOn = {Exception.class})
@@ -97,15 +95,14 @@ public class OperationOrderServiceImpl implements OperationOrderService {
     return Beans.get(OperationOrderRepository.class).save(operationOrder);
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public OperationOrder createOperationOrder(
       ManufOrder manufOrder,
       int priority,
       WorkCenter workCenter,
       Machine machine,
       MachineTool machineTool,
-      ProdProcessLine prodProcessLine)
-      throws AxelorException {
+      ProdProcessLine prodProcessLine) {
 
     logger.debug(
         "Creation of an operation {} for the manufacturing order {}",
@@ -279,16 +276,17 @@ public class OperationOrderServiceImpl implements OperationOrderService {
         }
       }
       Set<String> keyList = map.keySet();
+      String dateTime = L10n.getInstance().format(itDateTime);
       for (String key : machineNameList) {
         if (keyList.contains(key)) {
           Map<String, Object> dataMap = new HashMap<String, Object>();
-          dataMap.put("dateTime", (Object) itDateTime.format(DATE_TIME_FORMAT));
+          dataMap.put("dateTime", (Object) dateTime);
           dataMap.put("charge", (Object) map.get(key));
           dataMap.put("machine", (Object) key);
           dataList.add(dataMap);
         } else {
           Map<String, Object> dataMap = new HashMap<String, Object>();
-          dataMap.put("dateTime", (Object) itDateTime.format(DATE_TIME_FORMAT));
+          dataMap.put("dateTime", (Object) dateTime);
           dataMap.put("charge", (Object) BigDecimal.ZERO);
           dataMap.put("machine", (Object) key);
           dataList.add(dataMap);
@@ -302,7 +300,6 @@ public class OperationOrderServiceImpl implements OperationOrderService {
 
   public List<Map<String, Object>> chargeByMachineDays(
       LocalDateTime fromDateTime, LocalDateTime toDateTime) throws AxelorException {
-
     List<Map<String, Object>> dataList = new ArrayList<Map<String, Object>>();
     fromDateTime = fromDateTime.withHour(0).withMinute(0);
     toDateTime = toDateTime.withHour(23).withMinute(59);
@@ -412,11 +409,12 @@ public class OperationOrderServiceImpl implements OperationOrderService {
         }
       }
       Set<String> keyList = map.keySet();
+      String itDate = L10n.getInstance().format(itDateTime.toLocalDate());
       for (String key : machineNameList) {
         if (keyList.contains(key)) {
           int found = 0;
           for (Map<String, Object> mapIt : dataList) {
-            if (mapIt.get("dateTime").equals((Object) itDateTime.format(DATE_FORMAT))
+            if (mapIt.get("dateTime").equals((Object) itDate)
                 && mapIt.get("machine").equals((Object) key)) {
               mapIt.put("charge", new BigDecimal(mapIt.get("charge").toString()).add(map.get(key)));
               found = 1;
@@ -426,7 +424,7 @@ public class OperationOrderServiceImpl implements OperationOrderService {
           if (found == 0) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
 
-            dataMap.put("dateTime", (Object) itDateTime.format(DATE_FORMAT));
+            dataMap.put("dateTime", (Object) itDate);
             dataMap.put("charge", (Object) map.get(key));
             dataMap.put("machine", (Object) key);
             dataList.add(dataMap);

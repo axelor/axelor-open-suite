@@ -5,7 +5,7 @@
 
   <module name="studio" package="com.axelor.studio.db"/>
 
-  <entity name="AppMobileSettings">
+  <entity name="AppMobileSettings" cacheable="true">
 
     <one-to-one ref="com.axelor.studio.db.App" name="app"/>
 
@@ -34,13 +34,15 @@
       help="Enabling this setting, allows you to see on the mobile application the comments and changes that are tracked on the web application."/>
 
     <track>
-      <field name="isStockAppEnable"/>
-      <field name="isProductionAppEnable"/>
-      <field name="isCrmAppEnable"/>
-      <field name="isLoginUserQrcodeEnable"/>
-      <field name="isTrackerMessageOnStockApp"/>
-      <field name="isTrackerMessageOnProductionApp"/>
-      <field name="isTrackerMessageOnCrmApp"/>
+      <field name="isStockAppEnable" on="UPDATE"/>
+      <field name="isProductionAppEnable" on="UPDATE"/>
+      <field name="isCrmAppEnable" on="UPDATE"/>
+      <field name="isLoginUserQrcodeEnable" on="UPDATE"/>
+      <field name="isTrackerMessageOnStockApp" on="UPDATE"/>
+      <field name="isTrackerMessageOnProductionApp" on="UPDATE"/>
+      <field name="isTrackerMessageOnCrmApp" on="UPDATE"/>
+      <field name="manageCarrierOption" on="UPDATE"/>
+      <field name="qrCode" on="UPDATE"/>
     </track>
   </entity>
 </domain-models>

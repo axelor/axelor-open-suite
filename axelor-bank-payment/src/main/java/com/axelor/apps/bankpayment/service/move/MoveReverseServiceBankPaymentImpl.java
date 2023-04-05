@@ -76,7 +76,7 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Move generateReverse(Move move, Map<String, Object> assistantMap) throws AxelorException {
 
     boolean isHiddenMoveLinesInBankReconciliation =
@@ -116,7 +116,7 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public List<Move> massReverse(List<Move> moveList, Map<String, Object> assistantMap)
       throws AxelorException {
     boolean isHiddenMoveLinesInBankReconciliation =

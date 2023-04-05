@@ -5,7 +5,7 @@
 
   <module name="studio" package="com.axelor.studio.db"/>
 
-  <entity name="AppProject">
+  <entity name="AppProject" cacheable="true">
 
     <one-to-one ref="com.axelor.studio.db.App" name="app"/>
 
@@ -26,6 +26,9 @@
     <track>
       <field name="projectLabel" on="UPDATE"/>
       <field name="resourceManagement" on="UPDATE"/>
+      <field name="checkResourceAvailibility" on="UPDATE"/>
+      <field name="isEnableSignature" on="UPDATE"/>
+      <field name="isEnablePerProjectTaskSequence" on="UPDATE"/>
     </track>
   </entity>
 

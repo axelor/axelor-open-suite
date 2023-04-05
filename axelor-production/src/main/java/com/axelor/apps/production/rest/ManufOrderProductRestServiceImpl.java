@@ -249,7 +249,7 @@ public class ManufOrderProductRestServiceImpl implements ManufOrderProductRestSe
     return stockMoveLine;
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   @Override
   public void addWasteProduct(ManufOrder manufOrder, ProdProduct wasteProduct) {
     if (manufOrder != null && wasteProduct != null) {
@@ -257,7 +257,7 @@ public class ManufOrderProductRestServiceImpl implements ManufOrderProductRestSe
     }
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   @Override
   public void updateProdProductQty(ProdProduct prodProduct, BigDecimal qty) {
     if (prodProduct != null && qty != null) {

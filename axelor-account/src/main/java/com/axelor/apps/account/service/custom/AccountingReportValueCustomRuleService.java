@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.AccountingReportConfigLine;
 import com.axelor.apps.account.db.AccountingReportValue;
 import com.axelor.apps.account.db.AnalyticAccount;
+import com.axelor.apps.base.AxelorException;
 import java.time.LocalDate;
 import java.util.Map;
 
@@ -36,7 +37,8 @@ public interface AccountingReportValueCustomRuleService {
       String parentTitle,
       LocalDate startDate,
       LocalDate endDate,
-      int analyticCounter);
+      int analyticCounter)
+      throws AxelorException;
 
   void createValueFromCustomRule(
       AccountingReport accountingReport,
@@ -49,5 +51,6 @@ public interface AccountingReportValueCustomRuleService {
       LocalDate startDate,
       LocalDate endDate,
       String parentTitle,
-      int analyticCounter);
+      int analyticCounter)
+      throws AxelorException;
 }

@@ -230,9 +230,11 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
   @Transactional
   protected void updateStatusToComputed(UnitCostCalculation unitCostCalculation) {
 
-    unitCostCalculation.setCalculationDate(
-        appProductionService.getTodayDate(
-            Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null)));
+    unitCostCalculation.setCalculationDateTime(
+        appProductionService
+            .getTodayDateTime(
+                Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null))
+            .toLocalDateTime());
 
     unitCostCalculation.setStatusSelect(UnitCostCalculationRepository.STATUS_COSTS_COMPUTED);
 
@@ -475,7 +477,7 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
         unitCostCalculationRepository.find(unitCostCalculation.getId()));
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   protected void updateUnitCosts(UnitCostCalcLine unitCostCalcLine) throws AxelorException {
 
     Product product = unitCostCalcLine.getProduct();
@@ -495,9 +497,11 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
   @Transactional
   protected void updateStatusProductCostPriceUpdated(UnitCostCalculation unitCostCalculation) {
 
-    unitCostCalculation.setUpdateCostDate(
-        appProductionService.getTodayDate(
-            Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null)));
+    unitCostCalculation.setUpdateCostDateTime(
+        appProductionService
+            .getTodayDateTime(
+                Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null))
+            .toLocalDateTime());
 
     unitCostCalculation.setStatusSelect(UnitCostCalculationRepository.STATUS_COSTS_UPDATED);
 

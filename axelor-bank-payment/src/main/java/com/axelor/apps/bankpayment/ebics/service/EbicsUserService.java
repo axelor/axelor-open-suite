@@ -250,7 +250,7 @@ public class EbicsUserService {
     requestLogRepo.save(requestLog);
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public String getNextOrderId(EbicsUser user) throws AxelorException {
 
     String orderId = user.getNextOrderId();

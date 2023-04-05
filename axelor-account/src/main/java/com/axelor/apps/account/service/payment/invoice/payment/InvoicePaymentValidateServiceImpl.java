@@ -51,6 +51,7 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.DateService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -60,7 +61,6 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -80,6 +80,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
   protected AppAccountService appAccountService;
   protected AccountManagementAccountService accountManagementAccountService;
   protected InvoicePaymentToolService invoicePaymentToolService;
+  protected DateService dateService;
 
   @Inject
   public InvoicePaymentValidateServiceImpl(
@@ -93,7 +94,8 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
       ReconcileService reconcileService,
       AppAccountService appAccountService,
       AccountManagementAccountService accountManagementAccountService,
-      InvoicePaymentToolService invoicePaymentToolService) {
+      InvoicePaymentToolService invoicePaymentToolService,
+      DateService dateService) {
 
     this.paymentModeService = paymentModeService;
     this.moveLineCreateService = moveLineCreateService;
@@ -106,6 +108,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
     this.appAccountService = appAccountService;
     this.accountManagementAccountService = accountManagementAccountService;
     this.invoicePaymentToolService = invoicePaymentToolService;
+    this.dateService = dateService;
   }
 
   /**
@@ -135,6 +138,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
 
     setInvoicePaymentStatus(invoicePayment);
     createInvoicePaymentMove(invoicePayment);
+    invoicePayment = invoicePaymentRepository.find(invoicePayment.getId());
     invoicePaymentToolService.updateAmountPaid(invoicePayment.getInvoice());
 
     if (invoicePayment.getInvoice() != null
@@ -203,7 +207,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
               "%s-%s-%s",
               invoicePayment.getPaymentMode().getName(),
               invoice.getPartner().getName(),
-              invoice.getDueDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+              invoice.getDueDate().format(dateService.getDateFormat()));
     }
 
     Account customerAccount;

@@ -60,12 +60,12 @@ import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.message.db.Wizard;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.axelor.utils.StringTool;
+import com.axelor.utils.db.Wizard;
 import com.google.common.base.Function;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
@@ -221,16 +221,6 @@ public class InvoiceController {
 
     Invoice invoice = request.getContext().asType(Invoice.class);
     invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
-
-    if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED
-        && invoice.getCompany().getAccountConfig() != null
-        && !invoice.getCompany().getAccountConfig().getAllowCancelVentilatedInvoice()) {
-      response.setError(
-          I18n.get(
-              AccountExceptionMessage
-                  .INVOICE_CAN_NOT_GO_BACK_TO_VALIDATE_STATUS_OR_CANCEL_VENTILATED_INVOICE));
-      return;
-    }
 
     Beans.get(InvoiceService.class).cancel(invoice);
     response.setInfo(I18n.get(AccountExceptionMessage.INVOICE_1));
@@ -1173,6 +1163,24 @@ public class InvoiceController {
           .filter(invoiceTermService::isNotReadonly)
           .forEach(it -> it.setPaymentMode(invoice.getPaymentMode()));
 
+      response.setValue("invoiceTermList", invoice.getInvoiceTermList());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void updateInvoiceTermBankDetails(ActionRequest request, ActionResponse response) {
+    try {
+      Invoice invoice = request.getContext().asType(Invoice.class);
+
+      if (Beans.get(AppAccountService.class).getAppAccount().getAllowMultiInvoiceTerms()
+          || CollectionUtils.isEmpty(invoice.getInvoiceTermList())
+          || !Beans.get(InvoiceTermService.class)
+              .isNotReadonly(invoice.getInvoiceTermList().get(0))) {
+        return;
+      }
+
+      invoice.getInvoiceTermList().get(0).setBankDetails(invoice.getBankDetails());
       response.setValue("invoiceTermList", invoice.getInvoiceTermList());
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);

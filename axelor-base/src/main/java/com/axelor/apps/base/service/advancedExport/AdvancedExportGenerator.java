@@ -48,9 +48,10 @@ public abstract class AdvancedExportGenerator {
    * This method generate the body of export file.
    *
    * @param dataList
+   * @throws AxelorException
    */
   @SuppressWarnings("rawtypes")
-  public abstract void generateBody(List<List> dataList);
+  public abstract void generateBody(List<List> dataList) throws AxelorException;
 
   /**
    * This method close the object.

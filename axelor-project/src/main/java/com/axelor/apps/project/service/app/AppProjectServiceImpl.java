@@ -24,6 +24,7 @@ import com.axelor.studio.app.service.AppVersionService;
 import com.axelor.studio.db.AppProject;
 import com.axelor.studio.db.repo.AppProjectRepository;
 import com.axelor.studio.db.repo.AppRepository;
+import com.axelor.studio.service.AppSettingsStudioService;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -38,8 +39,9 @@ public class AppProjectServiceImpl extends AppBaseServiceImpl implements AppProj
       MetaFiles metaFiles,
       AppVersionService appVersionService,
       MetaModelRepository metaModelRepo,
+      AppSettingsStudioService appSettingsStudioService,
       AppProjectRepository appProjectRepo) {
-    super(appRepo, metaFiles, appVersionService, metaModelRepo);
+    super(appRepo, metaFiles, appVersionService, metaModelRepo, appSettingsStudioService);
     this.appProjectRepo = appProjectRepo;
   }
 

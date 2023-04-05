@@ -60,12 +60,12 @@ import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.message.db.Wizard;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.axelor.utils.ContextTool;
+import com.axelor.utils.db.Wizard;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -278,7 +278,7 @@ public class MoveLineController {
           if (move.getMoveLineList().size() == 0) {
             currencyRate =
                 Beans.get(CurrencyService.class)
-                    .getCurrencyConversionRate(currency, companyCurrency);
+                    .getCurrencyConversionRate(currency, companyCurrency, move.getDate());
           } else {
             currencyRate = move.getMoveLineList().get(0).getCurrencyRate();
           }
@@ -753,7 +753,7 @@ public class MoveLineController {
         return;
       }
 
-      if (moveLine.getAccount() != null && moveLine.getAccount().getHasInvoiceTerm()) {
+      if (moveLine.getAccount() != null && moveLine.getAccount().getUseForPartnerBalance()) {
 
         if (moveLine.getMove() == null) {
           moveLine.setMove(ContextTool.getContextParent(request.getContext(), Move.class, 1));

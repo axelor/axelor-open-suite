@@ -255,7 +255,9 @@ public class MoveTemplateService {
               }
             }
             List<AnalyticMoveLine> analyticMoveLineList =
-                new ArrayList<>(moveLine.getAnalyticMoveLineList());
+                CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())
+                    ? new ArrayList<>()
+                    : new ArrayList<>(moveLine.getAnalyticMoveLineList());
             moveLine.clearAnalyticMoveLineList();
             moveLine.setAnalyticDistributionTemplate(
                 moveTemplateLine.getAnalyticDistributionTemplate());
@@ -370,7 +372,9 @@ public class MoveTemplateService {
             }
 
             List<AnalyticMoveLine> analyticMoveLineList =
-                new ArrayList<>(moveLine.getAnalyticMoveLineList());
+                CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())
+                    ? new ArrayList<>()
+                    : new ArrayList<>(moveLine.getAnalyticMoveLineList());
             moveLine.clearAnalyticMoveLineList();
             moveLine.setAnalyticDistributionTemplate(
                 moveTemplateLine.getAnalyticDistributionTemplate());

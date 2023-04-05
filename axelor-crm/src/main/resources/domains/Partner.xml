@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="Partner" lang="java">
+  <entity name="Partner">
 
     <integer name="sizeSelect" title="Size" selection="crm.lead.size.select"/>
     <integer name="leadScoringSelect" title="Lead scoring"

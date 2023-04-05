@@ -423,8 +423,8 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     taskQueryBuilder =
         taskQueryBuilder.add("self.project.id = :projectId").bind("projectId", project.getId());
 
-    if (!Strings.isNullOrEmpty(appBusinessProject.getExculdeTaskInvoicing())) {
-      String filter = "NOT (" + appBusinessProject.getExculdeTaskInvoicing() + ")";
+    if (!Strings.isNullOrEmpty(appBusinessProject.getExcludeTaskInvoicing())) {
+      String filter = "NOT (" + appBusinessProject.getExcludeTaskInvoicing() + ")";
       taskQueryBuilder = taskQueryBuilder.add(filter);
     }
     Query<ProjectTask> taskQuery = taskQueryBuilder.build().order("id");

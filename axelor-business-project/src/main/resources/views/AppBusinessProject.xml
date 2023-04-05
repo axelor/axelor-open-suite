@@ -25,7 +25,7 @@
       <field name="automaticInvoicing" widget="boolean-switch"/>
       <field name="preTaskStatusSet" widget="TagSelect" domain="self.relatedToSelect = 2"/>
       <field name="postTaskStatusSet" widget="TagSelect" domain="self.relatedToSelect = 2"/>
-      <field name="exculdeTaskInvoicing"/>
+      <field name="excludeTaskInvoicing"/>
       <field name="generateProjectSequence" widget="boolean-switch"/>
     </panel>
 
