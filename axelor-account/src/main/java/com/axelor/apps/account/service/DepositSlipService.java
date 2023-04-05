@@ -53,4 +53,6 @@ public interface DepositSlipService {
    * @throws IOException
    */
   void validate(DepositSlip depositSlip) throws AxelorException;
+
+  void updateInvoicePayments(DepositSlip depositSlip, LocalDate depositDate);
 }

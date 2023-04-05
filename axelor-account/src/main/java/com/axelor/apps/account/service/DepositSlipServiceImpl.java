@@ -19,7 +19,10 @@ package com.axelor.apps.account.service;
 
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.DepositSlip;
+import com.axelor.apps.account.db.InvoicePayment;
+import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.PaymentVoucher;
+import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
@@ -37,6 +40,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.google.common.base.Strings;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
 import java.util.List;
@@ -50,6 +54,12 @@ import org.slf4j.LoggerFactory;
 public class DepositSlipServiceImpl implements DepositSlipService {
 
   protected final Logger logger = LoggerFactory.getLogger(getClass());
+  protected InvoicePaymentRepository invoicePaymentRepository;
+
+  @Inject
+  public DepositSlipServiceImpl(InvoicePaymentRepository invoicePaymentRepository) {
+    this.invoicePaymentRepository = invoicePaymentRepository;
+  }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
@@ -72,6 +82,14 @@ public class DepositSlipServiceImpl implements DepositSlipService {
           I18n.get(
               AccountExceptionMessage.DEPOSIT_SLIP_CONTAINS_PAYMENT_VOUCHER_WITH_MISSING_INFO));
     }
+
+    paymentVouchers.stream()
+        .forEach(
+            paymentVoucher ->
+                updateInvoicePayment(
+                    paymentVoucher.getChequeDate(),
+                    depositSlip.getDepositNumber(),
+                    paymentVoucher.getGeneratedMove()));
 
     Set<BankDetails> bankDetailsCollection =
         paymentVouchers.stream()
@@ -233,5 +251,35 @@ public class DepositSlipServiceImpl implements DepositSlipService {
     }
 
     depositSlip.setIsBankDepositMoveGenerated(true);
+  }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public void updateInvoicePayments(DepositSlip depositSlip, LocalDate depositDate) {
+    depositSlip.getPaymentVoucherList().stream()
+        .forEach(
+            paymentVoucher ->
+                updateInvoicePayment(
+                    depositDate,
+                    depositSlip.getDepositNumber(),
+                    paymentVoucher.getValueForCollectionMove()));
+  }
+
+  private void updateInvoicePayment(LocalDate depositDate, String depositNumber, Move move) {
+    InvoicePayment invoicePayment =
+        invoicePaymentRepository
+            .all()
+            .filter(
+                "self.move = :move AND self.paymentMode.typeSelect = :paymentModeTypeSelect AND self.statusSelect = :statusSelect")
+            .bind("move", move)
+            .bind("paymentModeTypeSelect", PaymentModeRepository.TYPE_CHEQUE)
+            .bind("statusSelect", InvoicePaymentRepository.STATUS_VALIDATED)
+            .fetchOne();
+    if (invoicePayment == null) {
+      return;
+    }
+    invoicePayment.setBankDepositDate(depositDate);
+    invoicePayment.setDescription(invoicePayment.getDescription() + ":" + depositNumber);
+    invoicePaymentRepository.save(invoicePayment);
   }
 }
