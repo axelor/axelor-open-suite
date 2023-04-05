@@ -123,7 +123,6 @@ public class SequenceService {
 
   public void checkSequenceLengthValidity(Sequence sequence) throws AxelorException {
     Company company = sequence.getCompany();
-    SequenceVersion sequenceVersion = getVersion(sequence, appBaseService.getTodayDate(company));
     String nextSeq = computeTestSeq(sequence, appBaseService.getTodayDate(company));
 
     if (nextSeq.length() > SEQ_MAX_LENGTH) {
