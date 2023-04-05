@@ -125,6 +125,7 @@ public class StockMoveRestController {
    * Update an internal stock move depending on the elements given in requestBody. Full path to
    * request is /ws/aos/stock-move/internal/{id}
    */
+  @Deprecated
   @Path("/internal/{id}")
   @PUT
   @HttpExceptionHandler
