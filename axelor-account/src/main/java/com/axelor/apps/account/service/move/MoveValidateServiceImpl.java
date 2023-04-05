@@ -93,7 +93,6 @@ public class MoveValidateServiceImpl implements MoveValidateService {
   protected MoveLineTaxService moveLineTaxService;
   protected PeriodServiceAccount periodServiceAccount;
   protected MoveControlService moveControlService;
-  protected MoveStatusService moveStatusService;
 
   @Inject
   public MoveValidateServiceImpl(
@@ -112,8 +111,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
       FixedAssetGenerationService fixedAssetGenerationService,
       MoveLineTaxService moveLineTaxService,
       PeriodServiceAccount periodServiceAccount,
-      MoveControlService moveControlService,
-      MoveStatusService moveStatusService) {
+      MoveControlService moveControlService) {
 
     this.moveLineControlService = moveLineControlService;
     this.moveLineToolService = moveLineToolService;
@@ -131,7 +129,6 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     this.moveLineTaxService = moveLineTaxService;
     this.periodServiceAccount = periodServiceAccount;
     this.moveControlService = moveControlService;
-    this.moveStatusService = moveStatusService;
   }
 
   /**
@@ -382,6 +379,9 @@ public class MoveValidateServiceImpl implements MoveValidateService {
 
     log.debug("Accounting of the move {}", move.getReference());
 
+    this.checkPreconditions(move);
+
+    log.debug("Precondition check of move {} OK", move.getReference());
     boolean dayBookMode =
         accountConfigService.getAccountConfig(move.getCompany()).getAccountingDaybook()
             && move.getJournal().getAllowAccountingDaybook();
@@ -420,10 +420,6 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     if (move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED) {
       this.generateFixedAssetMoveLine(move);
     }
-
-    this.checkPreconditions(move);
-
-    log.debug("Precondition check of move {} OK", move.getReference());
 
     moveRepository.save(move);
 
@@ -514,10 +510,10 @@ public class MoveValidateServiceImpl implements MoveValidateService {
   @Override
   public void updateValidateStatus(Move move, boolean daybook) throws AxelorException {
     if (move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK || !daybook) {
-      moveStatusService.update(move, MoveRepository.STATUS_ACCOUNTED);
+      move.setStatusSelect(MoveRepository.STATUS_ACCOUNTED);
       move.setAccountingDate(appBaseService.getTodayDate(move.getCompany()));
     } else {
-      moveStatusService.update(move, MoveRepository.STATUS_DAYBOOK);
+      move.setStatusSelect(MoveRepository.STATUS_DAYBOOK);
     }
   }
 

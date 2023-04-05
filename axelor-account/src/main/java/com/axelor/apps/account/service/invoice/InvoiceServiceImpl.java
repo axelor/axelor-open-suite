@@ -1115,18 +1115,6 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   }
 
   @Override
-  public void autoApplyCutOffDates(Invoice invoice) {
-    for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
-      if (invoiceLine.getAccount() != null
-          && invoiceLine.getAccount().getManageCutOffPeriod()
-          && invoiceLine.getAccount().getHasAutomaticApplicationAccountingDate()) {
-        invoiceLine.setCutOffStartDate(invoice.getInvoiceDate());
-        invoiceLine.setCutOffEndDate(invoice.getInvoiceDate());
-      }
-    }
-  }
-
-  @Override
   public boolean isSelectedPfpValidatorEqualsPartnerPfpValidator(Invoice invoice) {
     return invoice.getPfpValidatorUser() != null
         && invoice
