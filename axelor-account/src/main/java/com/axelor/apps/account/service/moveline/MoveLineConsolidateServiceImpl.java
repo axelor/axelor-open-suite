@@ -19,6 +19,7 @@ package com.axelor.apps.account.service.moveline;
 
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.PaymentConditionLine;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -116,18 +117,28 @@ public class MoveLineConsolidateServiceImpl implements MoveLineConsolidateServic
 
     Map<List<Object>, MoveLine> map = new HashMap<List<Object>, MoveLine>();
     MoveLine consolidateMoveLine = null;
+    boolean haveOldBack =
+        moveLines.stream()
+            .anyMatch(
+                ml ->
+                    ml.getMove().getPaymentCondition().getPaymentConditionLineList().stream()
+                        .anyMatch(PaymentConditionLine::getIsHoldback));
 
     for (MoveLine moveLine : moveLines) {
 
       List<Object> keys = new ArrayList<Object>();
 
+      keys.add(moveLine.getCounter());
       keys.add(moveLine.getAccount());
       keys.add(moveLine.getTaxLine());
       keys.add(moveLine.getAnalyticDistributionTemplate());
       keys.add(moveLine.getCutOffStartDate());
       keys.add(moveLine.getCutOffEndDate());
 
-      consolidateMoveLine = this.findConsolidateMoveLine(map, moveLine, keys);
+      if (!haveOldBack) {
+        consolidateMoveLine = this.findConsolidateMoveLine(map, moveLine, keys);
+      }
+
       if (consolidateMoveLine != null) {
 
         BigDecimal consolidateCurrencyAmount = BigDecimal.ZERO;
