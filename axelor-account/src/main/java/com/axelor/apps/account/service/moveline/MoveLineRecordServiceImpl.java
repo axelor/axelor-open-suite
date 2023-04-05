@@ -13,7 +13,6 @@ import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.exception.AxelorException;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -23,15 +22,18 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
   protected AppAccountService appAccountService;
   protected MoveLoadDefaultConfigService moveLoadDefaultConfigService;
   protected FiscalPositionService fiscalPositionService;
+  protected CurrencyService currencyService;
 
   @Inject
   public MoveLineRecordServiceImpl(
       AppAccountService appAccountService,
       MoveLoadDefaultConfigService moveLoadDefaultConfigService,
-      FiscalPositionService fiscalPositionService) {
+      FiscalPositionService fiscalPositionService,
+      CurrencyService currencyService) {
     this.appAccountService = appAccountService;
     this.moveLoadDefaultConfigService = moveLoadDefaultConfigService;
     this.fiscalPositionService = fiscalPositionService;
+    this.currencyService = currencyService;
   }
 
   @Override
@@ -43,7 +45,7 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
     if (currency != null && companyCurrency != null && !currency.equals(companyCurrency)) {
       if (move.getMoveLineList().size() == 0) {
         currencyRate =
-            Beans.get(CurrencyService.class).getCurrencyConversionRate(currency, companyCurrency);
+            currencyService.getCurrencyConversionRate(currency, companyCurrency, move.getDate());
       } else {
         currencyRate = move.getMoveLineList().get(0).getCurrencyRate();
       }

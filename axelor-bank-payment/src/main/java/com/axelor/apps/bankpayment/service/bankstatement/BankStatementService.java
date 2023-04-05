@@ -313,15 +313,13 @@ public class BankStatementService {
           bankPaymentBankStatementLineAFB120Repository
               .findByBankStatementBankDetailsAndLineType(
                   bankStatement, bd, BankStatementLineAFB120Repository.LINE_TYPE_INITIAL_BALANCE)
-              .order("operationDate")
               .order("sequence")
               .fetch();
       List<BankStatementLineAFB120> finalBankStatementLineAFB120 =
           bankPaymentBankStatementLineAFB120Repository
               .findByBankStatementBankDetailsAndLineType(
                   bankStatement, bd, BankStatementLineAFB120Repository.LINE_TYPE_FINAL_BALANCE)
-              .order("-operationDate")
-              .order("-sequence")
+              .order("sequence")
               .fetch();
       initialBankStatementLineAFB120.remove(0);
       finalBankStatementLineAFB120.remove(finalBankStatementLineAFB120.size() - 1);

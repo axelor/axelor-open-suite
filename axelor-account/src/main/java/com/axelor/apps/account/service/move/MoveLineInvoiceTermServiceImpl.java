@@ -78,6 +78,10 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
   public void generateDefaultInvoiceTerm(
       MoveLine moveLine, LocalDate singleTermDueDate, boolean canCreateHolbackMoveLine)
       throws AxelorException {
+    if (moveLine == null || !moveLine.getAccount().getUseForPartnerBalance()) {
+      return;
+    }
+
     Move move = moveLine.getMove();
 
     if (move == null) {
@@ -94,6 +98,12 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
           false);
 
       return;
+    } else if (CollectionUtils.isNotEmpty(move.getPaymentCondition().getPaymentConditionLineList())
+        && move.getPaymentCondition().getPaymentConditionLineList().size() > 1
+        && !appAccountService.getAppAccount().getAllowMultiInvoiceTerms()) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(AccountExceptionMessage.INVOICE_INVOICE_TERM_MULTIPLE_LINES_NO_MULTI));
     }
 
     moveLine.clearInvoiceTermList();
