@@ -54,7 +54,7 @@ public class WeightedAveragePriceServiceImpl implements WeightedAveragePriceServ
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void computeAvgPriceForProduct(Product product) throws AxelorException {
 
     Boolean avgPriceHandledByCompany = false;
