@@ -54,6 +54,10 @@ public class BankDetailsServiceAccountImpl extends BankDetailsServiceImpl {
         || !appAccountService.getAppBase().getManageMultiBanks()) {
       return super.createCompanyBankDetailsDomain(
           partner, company, paymentMode, operationTypeSelect);
+    } else if (Boolean.TRUE.equals(appAccountService.getAppAccount().getManageFactors())
+        && partner != null
+        && Boolean.TRUE.equals(partner.getFactorizedCustomer())) {
+      return "self.partner.isFactor = true AND self.active = true";
     } else {
       List<BankDetails> authorizedBankDetails;
 
