@@ -132,6 +132,12 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
       BankDetails companyBankDetails = invoice.getPaymentSchedule().getCompanyBankDetails();
       invoicePayment.setCompanyBankDetails(companyBankDetails);
     }
+
+    if (paymentVoucher != null && paymentMode.getTypeSelect() == 7) {
+      invoicePayment.setChequeNumber(paymentVoucher.getChequeNumber());
+      invoicePayment.setDescription(paymentVoucher.getRef());
+    }
+
     computeAdvancePaymentImputation(invoicePayment, paymentMove);
     invoice.addInvoicePaymentListItem(invoicePayment);
     invoicePaymentToolService.updateAmountPaid(invoice);

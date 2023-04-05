@@ -1,0 +1,3 @@
+---
+title : "PAYMENTVOUCHER / INVOICEPAYMENT / DEPOSITSLIP : Update cheque and deposit info on the invoice payment record when generated from Payment Voucher and Deposit slip."
+type : fix
