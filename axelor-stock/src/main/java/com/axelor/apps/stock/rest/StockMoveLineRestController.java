@@ -59,7 +59,11 @@ public class StockMoveLineRestController {
         ObjectFinder.find(StockMoveLine.class, stockMoveLineId, requestBody.getVersion());
 
     Beans.get(StockMoveLineService.class)
-        .updateStockMoveLine(stockmoveLine, requestBody.getRealQty(), requestBody.getConformity());
+        .updateStockMoveLine(
+            stockmoveLine,
+            requestBody.getRealQty(),
+            requestBody.getConformity(),
+            requestBody.fetchUnit());
 
     return ResponseConstructor.build(
         Response.Status.OK, "Line successfully updated.", new StockMoveLineResponse(stockmoveLine));
