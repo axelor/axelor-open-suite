@@ -21,7 +21,7 @@
       width="100px" x-scale="2"
       readonlyIf="$get('stockMove.statusSelect') &gt; 1 || lineTypeSelect == 1"/>
     <field name="realQty" aggregate="sum" width="100px" x-scale="2"
-      onChange="action-stock-move-line-group-real-qty-onchange, action-stock-move-line-real-qty-group-mobile-api"
+      onChange="action-stock-move-line-group-real-qty-onchange, action-stock-move-line-attrs-set-real-qty-modified-by-user-true"
       readonlyIf="($get('stockMove.statusSelect') == 2 &amp;&amp; $get('stockMove.pickingIsEdited')) || $get('stockMove.statusSelect') == 3 || lineTypeSelect == 1"/>
     <field name="requestedReservedQty" if-module="axelor-supplychain" readonly="true"
       x-scale="2" if="__config__.app.getApp('supplychain')?.getManageStockReservation()"
@@ -156,7 +156,7 @@
       <field name="qty" onChange="action-stock-move-line-group-qty-onchange" colSpan="3"
         readonlyIf="$get('stockMove.statusSelect') > 1"/>
       <field name="realQty" colSpan="3"
-        onChange="action-stock-move-line-group-real-qty-onchange, action-stock-move-line-real-qty-group-mobile-api"/>
+        onChange="action-stock-move-line-group-real-qty-onchange, action-stock-move-line-attrs-set-real-qty-modified-by-user-true"/>
       <field name="isRealQtyModifiedByUser" hidden="true"/>
       <field name="qtyInvoiced" colSpan="6" readonly="true"/>
       <field name="$availableQty" showIf="product &amp;&amp; productTypeSelect != 'service'"
@@ -265,7 +265,7 @@
       onChange="action-stock-move-line-group-qty-onchange"
       readonlyIf="$get('stockMove.statusSelect') > 1"/>
     <field name="realQty" aggregate="sum"
-      onChange="action-stock-move-line-group-real-qty-onchange, action-stock-move-line-real-qty-group-mobile-api"
+      onChange="action-stock-move-line-group-real-qty-onchange, action-stock-move-line-attrs-set-real-qty-modified-by-user-true"
       x-scale="2"/>
     <field name="isRealQtyModifiedByUser" hidden="true"/>
     <field name="qtyInvoiced" readonly="true" x-scale="2"/>
@@ -300,7 +300,7 @@
     <field name="productName"/>
     <field name="stockMove.partner"/>
     <field name="realQty" aggregate="sum"
-      onChange="action-stock-move-line-group-real-qty-onchange, action-stock-move-line-real-qty-group-mobile-api"
+      onChange="action-stock-move-line-group-real-qty-onchange, action-stock-move-line-attrs-set-real-qty-modified-by-user-true"
       x-scale="2"/>
     <field name="isRealQtyModifiedByUser" hidden="true"/>
     <field name="qtyInvoiced" readonly="true" x-scale="2"/>
@@ -333,7 +333,7 @@
     <field name="productName"/>
     <field name="stockMove.partner"/>
     <field name="realQty" aggregate="sum"
-      onChange="action-stock-move-line-group-real-qty-onchange, action-stock-move-line-real-qty-group-mobile-api"
+      onChange="action-stock-move-line-group-real-qty-onchange, action-stock-move-line-attrs-set-real-qty-modified-by-user-true"
       x-scale="2"/>
     <field name="isRealQtyModifiedByUser" hidden="true"/>
     <field name="reservedQty" if-module="axelor-supplychain"
@@ -396,7 +396,7 @@
         onChange="action-stock-move-line-group-qty-onchange"
         readonlyIf="$get('stockMove.statusSelect') > 1"/>
       <field name="realQty" colSpan="2" min="0"
-        onChange="action-stock-move-line-group-real-qty-onchange, action-stock-move-line-real-qty-group-mobile-api"
+        onChange="action-stock-move-line-group-real-qty-onchange, action-stock-move-line-attrs-set-real-qty-modified-by-user-true"
         readonlyIf="$get('stockMove.statusSelect') > 1"/>
       <field name="isRealQtyModifiedByUser" hidden="true"/>
       <field name="qtyInvoiced" colSpan="2" readonly="true"/>
@@ -692,11 +692,6 @@
 
   <action-group name="action-stock-move-line-group-net-mass-onchange">
     <action name="action-stock-move-line-group-real-qty-onchange"/>
-  </action-group>
-
-  <action-group name="action-stock-move-line-real-qty-group-mobile-api">
-    <action name="action-stock-move-line-attrs-set-real-qty-modified-by-user-true"
-      if="stockMove?.statusSelect != 1"/>
   </action-group>
 
   <action-record name="action-stock-move-line-record-qty"
