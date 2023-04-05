@@ -80,10 +80,21 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
       throws AxelorException {
     Move move = moveLine.getMove();
 
+    boolean containsHoldback =
+        move.getPaymentCondition().getPaymentConditionLineList().stream()
+            .anyMatch(PaymentConditionLine::getIsHoldback);
+    boolean isHoldbackAllowed =
+        Lists.newArrayList(
+                MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE,
+                MoveRepository.FUNCTIONAL_ORIGIN_FIXED_ASSET,
+                MoveRepository.FUNCTIONAL_ORIGIN_SALE)
+            .contains(moveLine.getMove().getFunctionalOriginSelect());
+
     if (move == null) {
       return;
     } else if (move.getPaymentCondition() == null
-        || CollectionUtils.isEmpty(move.getPaymentCondition().getPaymentConditionLineList())) {
+        || CollectionUtils.isEmpty(move.getPaymentCondition().getPaymentConditionLineList())
+        || (containsHoldback && !isHoldbackAllowed)) {
       this.computeInvoiceTerm(
           moveLine,
           move,
@@ -104,9 +115,6 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
 
     moveLine.clearInvoiceTermList();
 
-    boolean containsHoldback =
-        move.getPaymentCondition().getPaymentConditionLineList().stream()
-            .anyMatch(PaymentConditionLine::getIsHoldback);
     Account holdbackAccount = containsHoldback ? this.getHoldbackAccount(moveLine, move) : null;
     boolean isHoldback = moveLine.getAccount().equals(holdbackAccount);
     BigDecimal total =
