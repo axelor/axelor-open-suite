@@ -1,9 +1,6 @@
 package com.axelor.apps.account.service.move.attributes;
 
-import com.axelor.apps.account.db.Journal;
-import com.axelor.apps.account.db.JournalType;
 import com.axelor.apps.account.db.Move;
-import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.google.inject.Inject;
@@ -69,34 +66,5 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
     mapResult.get("functionalOriginSelect").put("selection-in", selectionValue);
 
     return mapResult;
-  }
-
-  @Override
-  public Map<String, Map<String, Object>> getBankDetailsAttributes(Move move) {
-    Objects.requireNonNull(move);
-
-    Map<String, Map<String, Object>> mapResult = new HashMap<>();
-
-    Integer technicalTypeSelect =
-        Optional.ofNullable(move.getJournal())
-            .map(Journal::getJournalType)
-            .map(JournalType::getTechnicalTypeSelect)
-            .orElse(null);
-    boolean technicalTypeSelectRequired = false;
-    if (technicalTypeSelect == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE
-        || technicalTypeSelect == JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE) {
-      technicalTypeSelectRequired = true;
-    }
-
-    mapResult.put("companyBankDetails", new HashMap<>());
-    mapResult
-        .get("companyBankDetails")
-        .put("hidden", !appBaseService.getAppBase().getManageMultiBanks());
-    mapResult
-        .get("companyBankDetails")
-        .put(
-            "required",
-            appBaseService.getAppBase().getManageMultiBanks() && technicalTypeSelectRequired);
-    return null;
   }
 }

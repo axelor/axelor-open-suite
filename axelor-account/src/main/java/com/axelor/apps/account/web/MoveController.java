@@ -1086,17 +1086,4 @@ public class MoveController {
       TraceBackService.trace(response, e);
     }
   }
-
-  public void manageBankDetails(ActionRequest request, ActionResponse response) {
-    try {
-      Move move = request.getContext().asType(Move.class);
-
-      Map<String, Map<String, Object>> mapValues =
-          Beans.get(MoveAttrsService.class).getBankDetailsAttributes(move);
-
-      response.setAttrs(mapValues);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
 }

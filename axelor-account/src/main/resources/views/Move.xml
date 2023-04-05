@@ -128,8 +128,8 @@
             onChange="action-move-attrs-header-change"/>
           <field name="period.statusSelect" hidden="true"/>
           <field name="paymentMode.typeSelect" hidden="true"/>
-          <field name="journal.journalType" type="integer" hidden="true"/>
-          <field name="journal.journalType.technicalTypeSelect" type="integer" hidden="true"/>
+          <field name="journal.journalType" hidden="true"/>
+          <field name="journal.journalType.technicalTypeSelect" hidden="true"/>
           <field name="$headerChange" type="boolean" hidden="true"/>
           <field name="$paymentConditionChange" type="boolean" hidden="true"/>
           <field name="$paymentConditionChangeError" hidden="true"/>
@@ -395,8 +395,8 @@
             form-view="trading-name-form" grid-view="trading-name-grid"/>
           <field name="paymentMode" colSpan="3"
             onSelect="action-move-attrs-set-domain-payment-mode"/>
-          <field name="journal.journalType" type="integer" hidden="true"/>
-          <field name="journal.journalType.technicalTypeSelect" hidden="true" type="integer"/>
+          <field name="journal.journalType" hidden="true"/>
+          <field name="journal.journalType.technicalTypeSelect" type="integer"/>
           <field name="journal.authorizeSimulatedMove" hidden="true"/>
         </panel>
         <field name="description" colSpan="6"
@@ -807,22 +807,9 @@
       if="eval: statusSelect &gt; 2"/>
   </action-attrs>
 
-  <action-attrs name="action-move-attrs-hide-move-line-name-in-draft-status">
-    <attribute name="hidden" for="moveLineList.counter"
-      expr="eval: statusSelect == null || statusSelect == 1"/>
-    <attribute name="hidden" for="moveLineList.amountRemaining"
-      expr="eval: statusSelect == null || statusSelect == 1 || statusSelect == 4 || statusSelect == 5"/>
-  </action-attrs>
-
   <action-method name="action-move-method-hide-move-line-fields-in-draft-status">
     <call class="com.axelor.apps.account.web.MoveController" method="hideMoveLineFields"/>
   </action-method>
-
-  <action-attrs
-    name="action-move-attrs-hide-move-line-reconcile-group-in-draft-cancel-status">
-    <attribute name="hidden" for="moveLineList.reconcileGroup"
-      expr="eval: statusSelect == 1 || statusSelect == 4"/>
-  </action-attrs>
 
   <action-attrs name="action-move-attrs-set-generate-reverse-wizard-defaults">
     <attribute name="value" for="isAutomaticReconcile" expr="eval: true"/>
@@ -831,11 +818,6 @@
     <attribute name="value" for="isUnreconcileOriginalMove" expr="eval: true"/>
     <attribute name="value" for="isHiddenMoveLinesInBankReconciliation" expr="eval: true"/>
     <attribute name="value" for="dateOfReversion" expr="eval: _moveDate"/>
-  </action-attrs>
-
-  <action-attrs name="action-move-attrs-check-related-cut-off-moves">
-    <attribute name="value" for="$isThereRelatedCutOffMoves"
-      expr="eval: __repo__(Move).all().filter('self.cutOffOriginMove = ?', id).count() > 0"/>
   </action-attrs>
 
   <action-method name="action-move-method-check-related-cut-off-moves">
@@ -850,20 +832,10 @@
       if="partner?.bankDetailsList &amp;&amp; !partner.bankDetailsList.isEmpty()"/>
   </action-attrs>
 
-  <action-attrs name="action-move-attrs-set-functional-origin-select-domain">
-    <attribute name="selection-in" for="functionalOriginSelect"
-      expr="eval: journal ? (journal.authorizedFunctionalOriginSelect ? journal.authorizedFunctionalOriginSelect : '0') : null "/>
-  </action-attrs>
-
   <action-method name="action-move-method-set-functional-origin-select-domain">
     <call class="com.axelor.apps.account.web.MoveController"
       method="setFunctionalOriginSelectDomain"/>
   </action-method>
-
-  <action-attrs name="action-move-attrs-set-functional-origin-select">
-    <attribute name="value" for="functionalOriginSelect"
-      expr="eval: (journal?.authorizedFunctionalOriginSelect?.split(',')?.length == 1) ? (journal?.authorizedFunctionalOriginSelect) : null"/>
-  </action-attrs>
 
   <action-method name="action-move-method-set-functional-origin-select">
     <call class="com.axelor.apps.account.web.MoveController" method="setFunctionalOriginSelect"/>
@@ -990,14 +962,6 @@
       expr="call:com.axelor.apps.account.service.PeriodServiceAccount:isAuthorizedToAccountOnPeriod(__this__.period,__user__)"/>
   </action-record>
 
-  <action-attrs name="action-move-attrs-check-period-and-status"
-    model="com.axelor.apps.account.db.Move">
-    <attribute name="value" for="$simulatedPeriodClosed"
-      expr="call:com.axelor.apps.account.service.move.MoveToolService:isSimulatedMovePeriodClosed(__this__)"/>
-    <attribute name="value" for="$periodClosed"
-      expr="call: com.axelor.apps.base.service.PeriodService:isClosedPeriod(period)"/>
-  </action-attrs>
-
   <action-method name="action-move-method-check-period-and-status">
     <call class="com.axelor.apps.account.web.MoveController" method="checkPeriodAndStatus"/>
   </action-method>
@@ -1069,17 +1033,6 @@
     <attribute name="value" for="$dueDate" expr="eval: null"/>
   </action-attrs>
 
-  <action-attrs name="action-move-attrs-manage-bank-details">
-    <attribute for="companyBankDetails" name="hidden"
-      expr="eval: !__config__.app.getApp('base')?.getManageMultiBanks()"/>
-    <attribute for="companyBankDetails" name="required"
-      expr="eval: __config__.app.getApp('base')?.getManageMultiBanks() &amp;&amp; [1,2].contains(journal?.journalType?.technicalTypeSelect)"/>
-  </action-attrs>
-
-  <action-method name="action-move-method-manage-bank-details">
-    <call class="com.axelor.apps.account.web.MoveController" method="manageBankDetails"/>
-  </action-method>
-
   <search-filters name="move-filters" model="com.axelor.apps.account.db.Move"
     title="Move filters">
     <field name="company" hidden="true"
@@ -1136,7 +1089,4 @@
     <call class="com.axelor.apps.account.web.MoveController" method="fillCompanyBankDetails"/>
   </action-method>
 
-  <action-attrs name="action-move-attrs-hide-move-line-partner">
-    <attribute for="moveLineList.partner" name="hidden" expr="partner != null"/>
-  </action-attrs>
 </object-views>
