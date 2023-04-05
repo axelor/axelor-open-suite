@@ -206,19 +206,6 @@ public class MoveLineController {
     }
   }
 
-  public void setSelectedBankReconciliation(ActionRequest request, ActionResponse response) {
-    MoveLine moveLine =
-        Beans.get(MoveLineRepository.class)
-            .find(request.getContext().asType(MoveLine.class).getId());
-    try {
-      moveLine = Beans.get(MoveLineService.class).setIsSelectedBankReconciliation(moveLine);
-      response.setValue("isSelectedBankReconciliation", moveLine.getIsSelectedBankReconciliation());
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
   public void createAnalyticAccountLines(ActionRequest request, ActionResponse response) {
     try {
 
