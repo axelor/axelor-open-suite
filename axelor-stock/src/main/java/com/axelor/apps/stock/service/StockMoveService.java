@@ -31,7 +31,6 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.exception.AxelorException;
-import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -145,14 +144,11 @@ public interface StockMoveService {
 
   void cancel(StockMove stockMove, CancelReason cancelReason) throws AxelorException;
 
-  @Transactional
   public boolean splitStockMoveLines(
       StockMove stockMove, List<StockMoveLine> stockMoveLines, BigDecimal splitQty);
 
-  @Transactional
   public void copyQtyToRealQty(StockMove stockMove);
 
-  @Transactional(rollbackOn = {Exception.class})
   public Optional<StockMove> generateReversion(StockMove stockMove) throws AxelorException;
 
   public StockMove splitInto2(

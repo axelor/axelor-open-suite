@@ -44,6 +44,7 @@ import com.axelor.apps.account.service.move.MoveSimulateService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.move.MoveViewHelperService;
+import com.axelor.apps.account.service.moveline.MoveLineCurrencyService;
 import com.axelor.apps.account.service.move.attributes.MoveAttrsService;
 import com.axelor.apps.account.service.move.control.MoveCheckService;
 import com.axelor.apps.account.service.move.record.MoveDefaultService;
@@ -431,18 +432,15 @@ public class MoveController {
   }
 
   public void autoTaxLineGenerate(ActionRequest request, ActionResponse response) {
-    Move move =
-        Beans.get(MoveRepository.class).find(request.getContext().asType(Move.class).getId());
+    Move move = request.getContext().asType(Move.class);
     try {
       if (move.getMoveLineList() != null
           && !move.getMoveLineList().isEmpty()
           && (move.getStatusSelect().equals(MoveRepository.STATUS_NEW)
               || move.getStatusSelect().equals(MoveRepository.STATUS_SIMULATED))) {
-        Beans.get(MoveLineTaxService.class).autoTaxLineGenerate(move);
+        Beans.get(MoveLineTaxService.class).autoTaxLineGenerateNoSave(move);
 
-        if (request.getContext().get("_source").equals("autoTaxLineGenerateBtn")) {
-          response.setReload(true);
-        }
+        response.setValue("moveLineList", move.getMoveLineList());
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
@@ -553,11 +551,10 @@ public class MoveController {
 
   public void generateCounterpart(ActionRequest request, ActionResponse response) {
     try {
-      Move move =
-          Beans.get(MoveRepository.class).find(request.getContext().asType(Move.class).getId());
+      Move move = request.getContext().asType(Move.class);
       Beans.get(MoveCounterPartService.class)
           .generateCounterpartMoveLine(move, this.extractDueDate(request));
-      response.setReload(true);
+      response.setValue("moveLineList", move.getMoveLineList());
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
@@ -565,8 +562,7 @@ public class MoveController {
 
   public void exceptionCounterpart(ActionRequest request, ActionResponse response) {
     try {
-      Move move =
-          Beans.get(MoveRepository.class).find(request.getContext().asType(Move.class).getId());
+      Move move = request.getContext().asType(Move.class);
       Beans.get(MoveToolService.class).exceptionOnGenerateCounterpart(move);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
@@ -773,7 +769,7 @@ public class MoveController {
 
         if (moveInvoiceTermService.displayDueDate(move)) {
           response.setAttr(
-              "$dueDate", "value", moveInvoiceTermService.computeDueDate(move, true, false));
+              "dueDate", "value", moveInvoiceTermService.computeDueDate(move, true, false));
         }
       } else if (request.getContext().containsKey("headerChange")
           && (boolean) request.getContext().get("headerChange")) {
@@ -816,7 +812,7 @@ public class MoveController {
       MoveInvoiceTermService moveInvoiceTermService = Beans.get(MoveInvoiceTermService.class);
       boolean displayDueDate = moveInvoiceTermService.displayDueDate(move);
 
-      response.setAttr("$dueDate", "hidden", !displayDueDate);
+      response.setAttr("dueDate", "hidden", !displayDueDate);
 
       if (displayDueDate) {
         boolean paymentConditionChange =
@@ -830,11 +826,11 @@ public class MoveController {
                   || paymentConditionChange;
 
           response.setAttr(
-              "$dueDate", "value", moveInvoiceTermService.computeDueDate(move, true, isDateChange));
+              "dueDate", "value", moveInvoiceTermService.computeDueDate(move, true, isDateChange));
           response.setAttr("$dateChange", "value", false);
         }
       } else {
-        response.setAttr("$dueDate", "value", null);
+        response.setAttr("dueDate", "value", null);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
@@ -911,6 +907,23 @@ public class MoveController {
         Beans.get(BankDetailsService.class)
             .getDefaultCompanyBankDetails(company, paymentMode, partner, null);
     response.setValue("companyBankDetails", defaultBankDetails);
+  }
+
+  public void updateMoveLinesCurrencyRate(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      LocalDate dueDate = this.extractDueDate(request);
+
+      if (move != null
+          && ObjectUtils.notEmpty(move.getMoveLineList())
+          && move.getCurrency() != null
+          && move.getCompanyCurrency() != null) {
+        Beans.get(MoveLineCurrencyService.class)
+            .computeNewCurrencyRateOnMoveLineList(move, dueDate);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void setDefaultMove(ActionRequest request, ActionResponse response) {
