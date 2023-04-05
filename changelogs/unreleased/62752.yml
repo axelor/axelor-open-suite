@@ -1,0 +1,3 @@
+---
+title: "Stock move line: modifying the expected quantity doesn't modify a field used by the mobile API anymore."
+type: fix
