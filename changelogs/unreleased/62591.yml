@@ -1,5 +1,0 @@
----
-title: "Stock move: when updating a stock move line, can now set an unit with the stock API."
-type: fix
-description: |
-  Deprecate API call to stock-move/internal/{id}
