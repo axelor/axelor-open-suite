@@ -1,3 +1,0 @@
----
-title: "Sequence: fix an issue where we could create sequences with over 14 characters by adding '%'"
-type: fix
