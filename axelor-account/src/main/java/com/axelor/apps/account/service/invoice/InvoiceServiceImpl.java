@@ -63,6 +63,7 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
+import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.exception.AxelorMessageException;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.report.engine.ReportSettings;
@@ -273,8 +274,9 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   @Override
   public void validate(Invoice invoice) throws AxelorException {
     validateProcess(invoice);
-    if (invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
-      sendMail(invoice);
+    if (invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE
+        && invoice.getInvoiceAutomaticMailOnValidate()) {
+      sendMail(invoice, invoice.getInvoiceMessageTemplateOnValidate());
     }
   }
 
@@ -302,7 +304,9 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   @Override
   public void ventilate(Invoice invoice) throws AxelorException {
     ventilateProcess(invoice);
-    sendMail(invoice);
+    if (invoice.getInvoiceAutomaticMail()) {
+      sendMail(invoice, invoice.getInvoiceMessageTemplate());
+    }
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -386,14 +390,9 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
    * @param invoice Une facture.
    * @throws AxelorException
    */
+  @Transactional(rollbackOn = {Exception.class})
   @Override
   public void cancel(Invoice invoice) throws AxelorException {
-    cancelProcess(invoice);
-    sendMail(invoice);
-  }
-
-  @Transactional(rollbackOn = {Exception.class})
-  protected void cancelProcess(Invoice invoice) throws AxelorException {
     log.debug("Canceling invoice {}", invoice.getInvoiceId());
 
     cancelFactory.getCanceller(invoice).process();
@@ -401,17 +400,13 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     invoiceRepo.save(invoice);
   }
 
-  protected void sendMail(Invoice invoice) {
+  protected void sendMail(Invoice invoice, Template template) {
     // send message
-    if (invoice.getInvoiceAutomaticMailOnValidate()) {
-      try {
-        templateMessageService.generateAndSendMessage(
-            invoice, invoice.getInvoiceMessageTemplateOnValidate());
-      } catch (Exception e) {
-        TraceBackService.trace(
-            new AxelorMessageException(
-                e, invoice, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR));
-      }
+    try {
+      templateMessageService.generateAndSendMessage(invoice, template);
+    } catch (Exception e) {
+      TraceBackService.trace(
+          new AxelorMessageException(e, invoice, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR));
     }
   }
 
