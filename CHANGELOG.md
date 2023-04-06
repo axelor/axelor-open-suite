@@ -1,3 +1,32 @@
+## [6.1.35] (2023-04-06)
+
+#### Changes
+
+* Webapp: update AOP version to 5.4.19
+
+#### Fixed
+
+* Tracking number: fix inconsistent french translation.
+* Stock: fixed an issue in some processes where an error would create inconsistencies.
+* Contract: fixed an issue in some processes where an error would create inconsistencies.
+* Sale: fixed an issue in some processes where an error would create inconsistencies.
+* App base config: added missing french translation for "Manage mail account by company".
+* Sequence: fixed sequences with too long prefix in demo data.
+* Base batch: Removed "Target" action in form view as this process does not exist anymore.
+* Company: correctly hide buttons to access config on an unsaved company. 
+* Message: fixed a bug that could occur when sending a mail with no content.
+* Inventory: fixed a bug where inventory lines were not updated on import.
+* Menu: fixed menu title from 'Template' to 'Templates'.
+* Json field: added missing field 'readonlyIf' used to configure whether a json field is readonly.
+* BPM: fixed timer event execution and optimised cache for custom model.
+* Accounting report journal: fixed report having a blank page.
+* Manufacturing order: fixed an issue where emptying planned end date would cause errors. The planned end date is now required for planned manufacturing orders.
+* Studio editor: fixed theme issue.
+* Payment voucher: fixed status initialization on creation.
+* Manufacturing order: in form view, fixed buttons appearing and disappearing during view load.
+* Project: fixed errors occuring when business-project was not installed.
+* City: fixed an error occurring when importing city with manual type.
+
 ## [6.1.34] (2023-03-23)
 
 #### Changes
@@ -1035,6 +1064,7 @@ In price list, we fix the display to exclude list that are defined on an exclusi
 * Moved axelor docusign module from Axelor Open Suite to Axelor Addons repository.
 
 
+[6.1.35]: https://github.com/axelor/axelor-open-suite/compare/v6.1.34...v6.1.35
 [6.1.34]: https://github.com/axelor/axelor-open-suite/compare/v6.1.33...v6.1.34
 [6.1.33]: https://github.com/axelor/axelor-open-suite/compare/v6.1.32...v6.1.33
 [6.1.32]: https://github.com/axelor/axelor-open-suite/compare/v6.1.31...v6.1.32

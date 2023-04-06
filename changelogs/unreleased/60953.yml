@@ -1,3 +1,0 @@
----
-title : "Inventory : Fixed a bug where inventory lines were not updated on import."
-type : fix
