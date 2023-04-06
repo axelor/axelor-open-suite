@@ -5,15 +5,28 @@
 
   <module name="studio" package="com.axelor.studio.db"/>
 
-  <entity name="AppEmployee" cacheable="true">
+  <entity name="AppHumanResource" cacheable="true">
 
     <one-to-one ref="com.axelor.studio.db.App" name="app"/>
 
+    <!-- Employee configuration -->
     <decimal name="dailyWorkHours" title="Daily work hours"/>
     <boolean name="advanceManagement" default="true"/>
     <boolean name="payrollPreparation" title="Payroll preparation"/>
     <boolean name="lunchVoucher" title="Lunch Voucher"/>
     <boolean name="employeeBonus" title="Employee bonus"/>
+
+    <!-- Timesheet configuration -->
+    <boolean name="timesheetManagement" title="Timesheet management"/>
+
+    <!-- Expense configuration -->
+    <boolean name="expenseManagement" title="Expense management"/>
+
+    <!-- Leave configuration -->
+    <boolean name="leaveManagement" title="Leave management"/>
+
+    <!-- Extra hours configuration -->
+    <boolean name="extraHoursManagement" title="Extra hours management"/>
 
     <extra-code>
    		<![CDATA[
@@ -29,6 +42,7 @@
       <field name="lunchVoucher" on="UPDATE"/>
       <field name="employeeBonus" on="UPDATE"/>
     </track>
+
   </entity>
 
 </domain-models>

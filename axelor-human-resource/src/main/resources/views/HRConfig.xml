@@ -117,7 +117,7 @@
         <field name="totalWorkingDaysVariableName"/>
       </panel>
       <panel name="lunchVoucherPanel" title="Lunch vouchers"
-        if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee')?.getLunchVoucher()">
+        if="__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getLunchVoucher()">
         <field name="lunchVoucherWageShare"/>
         <field name="lunchVoucherEmployersShare"/>
         <field name="minStockLunchVoucher"/>

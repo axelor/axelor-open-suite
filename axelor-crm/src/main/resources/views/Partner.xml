@@ -340,7 +340,7 @@
       <menu name="partnerReportsMenu" title="Reports" showTitle="true" icon="fa-files-o">
         <item name="contactPhoneBookItem" title="Contact PhoneBook"
           action="action-print-phonebook"/>
-        <item if="__config__.app.isApp('employee')" name="companyPhoneBookItem"
+        <item if="__config__.app.isApp('human-resource')" name="companyPhoneBookItem"
           title="Company phoneBook" action="action-print-company-phonebook"/>
       </menu>
       <menu name="partnerToolsMenu" title="Tools" showTitle="true" icon="fa-wrench">
@@ -380,7 +380,7 @@
       <button name="printPhoneBookBtn" title="Contact PhoneBook" icon="fa-print"
         onClick="action-print-phonebook"/>
       <button name="printCompanyPhoneBookBtn" title="Company PhoneBook" icon="fa-print"
-        onClick="action-print-company-phonebook" if="__config__.app.isApp('employee')"/>
+        onClick="action-print-company-phonebook" if="__config__.app.isApp('human-resource')"/>
       <button name="checkDuplicateBtn" title="Check Duplicate"
         onClick="action-general-check-duplicate-records"/>
       <button name="replaceDuplicateBtn" title="Merge duplicated"
