@@ -26,7 +26,16 @@ import com.axelor.apps.gdpr.service.GdprSearchEngineService;
 import com.axelor.apps.gdpr.service.GdprSearchEngineServiceImpl;
 import com.axelor.apps.gdpr.service.app.AppGdprService;
 import com.axelor.apps.gdpr.service.app.AppGdprServiceImpl;
-import com.axelor.apps.gdpr.service.response.*;
+import com.axelor.apps.gdpr.service.response.GdprDataToExcludeService;
+import com.axelor.apps.gdpr.service.response.GdprDataToExcludeServiceImpl;
+import com.axelor.apps.gdpr.service.response.GdprGenerateFilesService;
+import com.axelor.apps.gdpr.service.response.GdprGenerateFilesServiceImpl;
+import com.axelor.apps.gdpr.service.response.GdprResponseAccessService;
+import com.axelor.apps.gdpr.service.response.GdprResponseAccessServiceImpl;
+import com.axelor.apps.gdpr.service.response.GdprResponseErasureService;
+import com.axelor.apps.gdpr.service.response.GdprResponseErasureServiceImpl;
+import com.axelor.apps.gdpr.service.response.GdprResponseService;
+import com.axelor.apps.gdpr.service.response.GdprResponseServiceImpl;
 
 public class GdprModule extends AxelorModule {
   @Override
