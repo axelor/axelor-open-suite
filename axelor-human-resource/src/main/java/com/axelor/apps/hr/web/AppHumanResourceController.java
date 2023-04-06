@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.hr.web;
 
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -27,9 +28,11 @@ import com.google.inject.Singleton;
 public class AppHumanResourceController {
 
   public void generateHrConfigurations(ActionRequest request, ActionResponse response) {
-
-    Beans.get(AppHumanResourceService.class).generateHrConfigurations();
-
-    response.setReload(true);
+    try {
+      Beans.get(AppHumanResourceService.class).generateHrConfigurations();
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

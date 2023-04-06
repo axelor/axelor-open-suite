@@ -476,3 +476,6 @@
 "perm.team.all";"com.axelor.team.db.*";"x";"x";"x";"x";"x";;;"Base Manager"
 "perm.team.rwc";"com.axelor.team.db.*";"x";"x";"x";;;;;"Base User"
 "perm.team.r";"com.axelor.team.db.*";"x";;;;;;;"Base Read"
+"perm.base.AppHumanResource.rwcde";"com.axelor.studio.db.AppHumanResource";"x";"x";"x";"x";"x";;;"Base Manager"
+"perm.base.AppHumanResource.rwc";"com.axelor.studio.db.AppHumanResource";"x";"x";"x";;;;;"Base User"
+"perm.base.AppHumanResource.r";"com.axelor.studio.db.AppHumanResource";"x";;;;;;;"Base Read"
