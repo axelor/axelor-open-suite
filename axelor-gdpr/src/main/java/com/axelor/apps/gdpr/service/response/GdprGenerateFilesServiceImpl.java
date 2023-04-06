@@ -1,5 +1,6 @@
 package com.axelor.apps.gdpr.service.response;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.AdvancedExport;
 import com.axelor.apps.base.db.AdvancedExportLine;
 import com.axelor.apps.base.db.repo.AdvancedExportLineRepository;
@@ -17,7 +18,6 @@ import com.axelor.db.mapper.Property;
 import com.axelor.db.mapper.PropertyType;
 import com.axelor.dms.db.DMSFile;
 import com.axelor.dms.db.repo.GdprDmsFileRepository;
-import com.axelor.exception.AxelorException;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaFile;

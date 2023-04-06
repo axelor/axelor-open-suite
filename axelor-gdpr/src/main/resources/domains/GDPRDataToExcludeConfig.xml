@@ -9,7 +9,7 @@
     <many-to-one name="metaModel" title="Model" ref="com.axelor.meta.db.MetaModel"
       required="true"/>
     <one-to-many name="metaFields" title="Fields" ref="com.axelor.meta.db.MetaField"/>
-    <many-to-one ref="com.axelor.apps.base.db.AppGdpr" name="appGdpr" title="GDPR app"/>
+    <many-to-one ref="com.axelor.studio.db.AppGdpr" name="appGdpr" title="GDPR app"/>
   </entity>
 
 </domain-models>
