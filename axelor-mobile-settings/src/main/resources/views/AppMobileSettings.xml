@@ -24,6 +24,9 @@
         <field name="isLoginUserQrcodeEnable" widget="boolean-switch" colSpan="4"/>
       </panel>
     </panel>
+    <panel name="versionPanel" sidebar="true">
+      <field name="minimalRequiredMobileAppVersion"/>
+    </panel>
     <panel name="configPanel" sidebar="true">
       <panel name="configBasePanel" title="General">
         <button name="generateQrCodeBtn" title="Generate barcode" readonlyIf="qrCode != null"
