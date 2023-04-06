@@ -1,3 +1,22 @@
+## [5.4.39] (2023-04-06)
+
+#### Fixed
+
+* Stock: fixed an issue in some processes where an error would create inconsistencies.
+* Contract: fixed an issue in some processes where an error would create inconsistencies.
+* Sale: fixed an issue in some processes where an error would create inconsistencies.
+* App base config: added missing french translation for "Manage mail account by company".
+* Sequence: fixed sequences with too long prefix in demo data.
+* Base batch: Removed "Target" action in form view as this process does not exist anymore.
+* Company: correctly hide buttons to access config on an unsaved company. 
+* Message: fixed a bug that could occur when sending a mail with no content.
+* Menu: fixed menu title from 'Template' to 'Templates'.
+* Json Field: added missing field 'readonlyIf' used to configure whether a json field is readonly.
+* Accounting report journal: fixed report having a blank page.
+* Manufacturing order: fixed an issue where emptying planned end date would cause errors. The planned end date is now required for planned manufacturing orders.
+* Manufacturing order: in form view, fixed buttons appearing and disappearing during view load.
+* Project: fix errors occuring when module business-project was not installed.
+
 ## [5.4.38] (2023-03-23)
 
 #### Fixed
@@ -882,6 +901,7 @@ password only if user type is signatory and ebics partner mode is ebics TS,
 - Bank reconciliation: add management of case of several account management for account domain, journal domain, auto change of journal and cash account fields and now account and journal from bank details are prioritized.
 - Invoice: Fix NullPointerException when the product is not filled in invoice line.
 
+[5.4.39]: https://github.com/axelor/axelor-open-suite/compare/v5.4.38...v5.4.39
 [5.4.38]: https://github.com/axelor/axelor-open-suite/compare/v5.4.37...v5.4.38
 [5.4.37]: https://github.com/axelor/axelor-open-suite/compare/v5.4.36...v5.4.37
 [5.4.36]: https://github.com/axelor/axelor-open-suite/compare/v5.4.35...v5.4.36
