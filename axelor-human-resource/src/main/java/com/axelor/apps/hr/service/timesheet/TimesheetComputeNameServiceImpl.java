@@ -17,12 +17,23 @@
  */
 package com.axelor.apps.hr.service.timesheet;
 
+import com.axelor.apps.base.service.DateService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Timesheet;
+import com.google.inject.Inject;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TimesheetComputeNameServiceImpl implements TimesheetComputeNameService {
+
+  protected DateService dateService;
+
+  @Inject
+  public TimesheetComputeNameServiceImpl(DateService dateService) {
+    this.dateService = dateService;
+  }
 
   @Override
   public String computeTimesheetFullname(Timesheet timesheet) {
@@ -32,16 +43,22 @@ public class TimesheetComputeNameServiceImpl implements TimesheetComputeNameServ
 
   @Override
   public String computeTimesheetFullname(Employee employee, LocalDate fromDate, LocalDate toDate) {
-    DateTimeFormatter pattern = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    try {
+      DateTimeFormatter pattern = dateService.getDateFormat();
 
-    if (employee != null && employee.getName() != null && fromDate != null && toDate != null) {
-      return employee.getName() + " " + fromDate.format(pattern) + "-" + toDate.format(pattern);
-    } else if (employee != null && employee.getName() != null && fromDate != null) {
-      return employee.getName() + " " + fromDate.format(pattern);
-    } else if (employee != null && employee.getName() != null) {
-      return employee.getName();
-    } else {
-      return "";
+      if (employee != null && employee.getName() != null && fromDate != null && toDate != null) {
+        return employee.getName() + " " + fromDate.format(pattern) + "-" + toDate.format(pattern);
+      } else if (employee != null && employee.getName() != null && fromDate != null) {
+        return employee.getName() + " " + fromDate.format(pattern);
+      } else if (employee != null && employee.getName() != null) {
+        return employee.getName();
+      } else {
+        return "";
+      }
+    } catch (Exception e) {
+      Logger logger = LoggerFactory.getLogger(getClass());
+      logger.error(e.getMessage());
     }
+    return "";
   }
 }

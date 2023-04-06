@@ -17,21 +17,30 @@
  */
 package com.axelor.apps.hr.test;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.DateService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.service.timesheet.TimesheetComputeNameServiceImpl;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 public class TestTimesheetComputeNameService {
   protected TimesheetComputeNameServiceImpl timesheetComputeNameService;
+  protected DateService dateService;
 
   @Before
-  public void prepare() {
-    timesheetComputeNameService = new TimesheetComputeNameServiceImpl();
+  public void prepare() throws AxelorException {
+    dateService = mock(DateService.class);
+    when(dateService.getDateFormat()).thenReturn(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+    timesheetComputeNameService = new TimesheetComputeNameServiceImpl(dateService);
   }
 
   @Test

@@ -43,6 +43,7 @@ import com.axelor.apps.base.db.Blocking;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BlockingRepository;
+import com.axelor.apps.base.service.DateService;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
@@ -69,6 +70,7 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
   protected InvoiceTermService invoiceTermService;
   protected PaymentSessionValidateService paymentSessionValidateService;
   protected AccountConfigService accountConfigService;
+  protected DateService dateService;
 
   @Inject
   public PaymentSessionServiceImpl(
@@ -76,16 +78,18 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
       InvoiceTermRepository invoiceTermRepository,
       InvoiceTermService invoiceTermService,
       PaymentSessionValidateService paymentSessionValidateService,
-      AccountConfigService accountConfigService) {
+      AccountConfigService accountConfigService,
+      DateService dateService) {
     this.paymentSessionRepository = paymentSessionRepository;
     this.invoiceTermRepository = invoiceTermRepository;
     this.invoiceTermService = invoiceTermService;
     this.paymentSessionValidateService = paymentSessionValidateService;
     this.accountConfigService = accountConfigService;
+    this.dateService = dateService;
   }
 
   @Override
-  public String computeName(PaymentSession paymentSession) {
+  public String computeName(PaymentSession paymentSession) throws AxelorException {
     StringBuilder name = new StringBuilder("Session");
     User createdBy = paymentSession.getCreatedBy();
     if (ObjectUtils.notEmpty(paymentSession.getPaymentMode())) {
@@ -96,9 +100,7 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
           String.format(
               " %s %s",
               I18n.get(ITranslation.PAYMENT_SESSION_COMPUTE_NAME_ON_THE),
-              paymentSession
-                  .getCreatedOn()
-                  .format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))));
+              paymentSession.getCreatedOn().format(dateService.getDateTimeFormat())));
     }
     if (ObjectUtils.notEmpty(createdBy)) {
       name.append(
@@ -227,9 +229,16 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
     return invoiceTermRepository
         .all()
         .filter(
-            "self.paymentSession = :paymentSession AND self.isSelectedOnPaymentSession IS :isSelectedOnPaymentSession")
+            "self.paymentSession = :paymentSession AND (self.isSelectedOnPaymentSession IS :isSelectedOnPaymentSession )")
         .bind("paymentSession", paymentSession.getId())
         .bind("isSelectedOnPaymentSession", isSelectedOnPaymentSession);
+  }
+
+  protected Query<InvoiceTerm> getTermsBySession(PaymentSession paymentSession) {
+    return invoiceTermRepository
+        .all()
+        .filter("self.paymentSession = :paymentSession ")
+        .bind("paymentSession", paymentSession.getId());
   }
 
   @Override
@@ -282,7 +291,8 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
             + " AND self.moveLine.account.isRetrievedOnPaymentSession = TRUE ";
     AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
     if (!accountConfig.getRetrieveDaybookMovesInPaymentSession()) {
-      generalCondition += " AND self.moveLine.move.statusSelect != 2 ";
+      generalCondition +=
+          " AND self.moveLine.move.statusSelect != " + MoveRepository.STATUS_DAYBOOK + " ";
     }
 
     String termsMoveLineCondition =
@@ -432,5 +442,10 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
       }
     }
     return isSignedNegative;
+  }
+
+  @Override
+  public boolean hasInvoiceTerm(PaymentSession paymentSession) {
+    return getTermsBySession(paymentSession).count() > 0;
   }
 }

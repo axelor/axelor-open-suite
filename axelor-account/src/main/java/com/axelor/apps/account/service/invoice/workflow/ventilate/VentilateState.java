@@ -125,7 +125,8 @@ public class VentilateState extends WorkflowInvoice {
   }
 
   protected void setVentilatedLog() {
-    invoice.setVentilatedDate(appAccountService.getTodayDate(invoice.getCompany()));
+    invoice.setVentilatedDateTime(
+        appAccountService.getTodayDateTime(invoice.getCompany()).toLocalDateTime());
     invoice.setVentilatedByUser(userService.getUser());
   }
 

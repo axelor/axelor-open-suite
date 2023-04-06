@@ -17,6 +17,9 @@
  */
 package com.axelor.apps.stock.service;
 
+import com.axelor.app.AppSettings;
+import com.axelor.app.AvailableAppSettings;
+import com.axelor.app.internal.AppFilter;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
@@ -46,6 +49,7 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
+import com.axelor.i18n.L10n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
@@ -73,9 +77,12 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.LocaleUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
@@ -276,7 +283,7 @@ public class InventoryService {
   }
 
   protected InventoryLine copyAndEditInventoryLine(
-      InventoryLine inventoryLine, String description, BigDecimal realQty) {
+      InventoryLine inventoryLine, String description, BigDecimal realQty) throws AxelorException {
 
     // There is not one to many for inventoryLine, so true or false is the same.
     InventoryLine inventoryLineResult = inventoryLineRepository.copy(inventoryLine, true);
@@ -285,6 +292,7 @@ public class InventoryService {
     if (inventoryLineResult.getTrackingNumber() != null) {
       inventoryLineResult.getTrackingNumber().setCounter(realQty);
     }
+    inventoryLineService.compute(inventoryLineResult, inventoryLineResult.getInventory());
     return inventoryLineResult;
   }
 
@@ -916,6 +924,16 @@ public class InventoryService {
 
     List<String[]> list = new ArrayList<>();
 
+    AppSettings appSettings = AppSettings.get();
+    final Locale locale =
+        Optional.ofNullable(
+                LocaleUtils.toLocale(appSettings.get(AvailableAppSettings.DATA_EXPORT_LOCALE)))
+            .orElse(AppFilter.getLocale());
+    final String separator =
+        Optional.ofNullable(appSettings.get(AvailableAppSettings.DATA_EXPORT_SEPARATOR))
+            .orElse(";");
+    L10n dateFormat = L10n.getInstance(locale);
+
     for (InventoryLine inventoryLine : inventory.getInventoryLineList()) {
       String[] item = new String[10];
       String realQty = "";
@@ -949,9 +967,7 @@ public class InventoryService {
       if (stockLocationLine != null) {
         ZonedDateTime lastInventoryDateT = stockLocationLine.getLastInventoryDateT();
         lastInventoryDateTString =
-            lastInventoryDateT == null
-                ? ""
-                : lastInventoryDateT.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+            lastInventoryDateT == null ? "" : dateFormat.format(lastInventoryDateT.toLocalDate());
       }
       item[8] = lastInventoryDateTString;
       item[9] =
@@ -988,7 +1004,7 @@ public class InventoryService {
       LAST_INVENTORY_DATE,
       STOCK_LOCATION
     };
-    CsvTool.csvWriter(file.getParent(), file.getName(), ';', '"', headers, list);
+    CsvTool.csvWriter(file.getParent(), file.getName(), separator.charAt(0), '"', headers, list);
 
     try (InputStream is = new FileInputStream(file)) {
       return Beans.get(MetaFiles.class).upload(is, fileName + ".csv");

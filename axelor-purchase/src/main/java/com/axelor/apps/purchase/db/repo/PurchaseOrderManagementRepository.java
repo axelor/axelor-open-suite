@@ -36,7 +36,7 @@ public class PurchaseOrderManagementRepository extends PurchaseOrderRepository {
     copy.setVersionNumber(1);
     copy.setEstimatedReceiptDate(null);
     copy.setValidatedByUser(null);
-    copy.setValidationDate(null);
+    copy.setValidationDateTime(null);
     if (copy.getPurchaseOrderLineList() != null) {
       for (PurchaseOrderLine purchaseOrderLine : copy.getPurchaseOrderLineList()) {
         purchaseOrderLine.setDesiredReceiptDate(null);

@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.base.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 
 public interface CompanyService {
@@ -28,4 +29,6 @@ public interface CompanyService {
    * @param company the company to check for multiple active bank details
    */
   void checkMultiBanks(Company company);
+
+  void validateLocale(Company company) throws AxelorException;
 }

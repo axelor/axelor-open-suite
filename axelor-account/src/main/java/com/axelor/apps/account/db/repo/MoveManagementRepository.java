@@ -185,13 +185,10 @@ public class MoveManagementRepository extends MoveRepository {
           }
           moveLineControlService.controlAccountingAccount(moveLine);
 
-          if (!moveLine.getAccount().getHasInvoiceTerm()
+          if (!moveLine.getAccount().getUseForPartnerBalance()
               && CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
             if (moveLine.getInvoiceTermList().stream().allMatch(invoiceTermService::isNotReadonly)
-                && moveLine.getInvoiceTermList().stream()
-                        .filter(invoiceTerm -> invoiceTerm.getIsHoldBack())
-                        .count()
-                    == 0) {
+                && moveLine.getInvoiceTermList().stream().noneMatch(InvoiceTerm::getIsHoldBack)) {
               moveLine.clearInvoiceTermList();
             } else {
               throw new AxelorException(
