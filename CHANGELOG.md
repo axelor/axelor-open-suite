@@ -1,3 +1,37 @@
+## [6.2.23] (2023-04-06)
+
+#### Changes
+
+* Webapp: update AOP version to 5.4.19
+
+#### Fixed
+
+* Tracking number: fix inconsistent french translation.
+* Stock: fixed an issue in some processes where an error would create inconsistencies.
+* Contract: fixed an issue in some processes where an error would create inconsistencies.
+* Sale: fixed an issue in some processes where an error would create inconsistencies.
+* App base config: added missing french translation for "Manage mail account by company".
+* Sequence: fixed sequences with too long prefix in demo data.
+* Bank details: fixed error occurring when base module was installed without bank-payment module.
+* Sale order: fixed the currency not updating when changing the customer partner.
+* Base batch: Removed "Target" action in form view as this process does not exist anymore.
+* Company: correctly hide buttons to access config on an unsaved company. 
+* Message: fixed a bug that could occur when sending a mail with no content.
+* Inventory: fixed a bug where inventory lines were not updated on import.
+* Menu: fixed menu title from 'Template' to 'Templates'.
+* Json field: added missing field 'readonlyIf' used to configure whether a json field is readonly.
+* BPM: fixed timer event execution and optimised cache for custom model.
+* Accounting report journal: fixed report having a blank page.
+* Manufacturing order: fixed an issue where emptying planned end date would cause errors. The planned end date is now required for planned manufacturing orders.
+* Sequence: fix an issue where we could create sequences with over 14 characters by adding '%'
+* Bank statement: fixed issue with balance check on files containing multiple bank details and multiple daily balances.
+* Studio editor: fixed theme issue.
+* Accounting report payment vat: fixed no lines in payment vat report sum by tax part and not lettered part.
+* Payment voucher: fixed status initialization on creation.
+* Manufacturing order: in form view, fixed buttons appearing and disappearing during view load.
+* Project: fixed errors occuring when business-project was not installed.
+* City: fixed an error occurring when importing city with manual type.
+
 ## [6.2.22] (2023-03-23)
 
 #### Changes
@@ -957,6 +991,7 @@ will be equal to the reason for manual forecasts.
 * Territory: Remove object
 
 
+[6.2.23]: https://github.com/axelor/axelor-open-suite/compare/v6.2.22...v6.2.23
 [6.2.22]: https://github.com/axelor/axelor-open-suite/compare/v6.2.21...v6.2.22
 [6.2.21]: https://github.com/axelor/axelor-open-suite/compare/v6.2.20...v6.2.21
 [6.2.20]: https://github.com/axelor/axelor-open-suite/compare/v6.2.19...v6.2.20
