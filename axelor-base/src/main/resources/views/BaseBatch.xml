@@ -31,9 +31,9 @@
       <panel-related name="batchListPanel" field="batchList" colSpan="12"
         form-view="batch-form" grid-view="batch-grid"/>
     </panel>
-    <panel name="synchronizeBtnPanel" sidebar="true">
-      <button name="synchronizeBtn" showIf="actionSelect == 2"
-        title="Batch calendar synchronization" onClick="save,action-base-batch-method-run-batch"/>
+    <panel name="actionPanel" sidebar="true">
+      <button name="runBatchBtn" showIf="actionSelect == 2" title="Run batch"
+        onClick="save,action-base-batch-method-run-batch"/>
     </panel>
   </form>
 
