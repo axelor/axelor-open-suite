@@ -151,6 +151,7 @@ public class MapperValue {
 
     switch (type) {
       case "STRING":
+      case "TEXT":
         value = "'" + StringEscapeUtils.escapeJavaScript(value) + "'";
         break;
       case "DATE":
