@@ -45,7 +45,7 @@ public class FakerServiceImpl implements FakerService {
   public static final String KEY_ERROR = "error";
 
   @Override
-  public String generateFakeData(FakerApiField fakerApiField) throws AxelorException {
+  public Object generateFakeData(FakerApiField fakerApiField) throws AxelorException {
     Faker faker = new Faker(new Locale(AuthUtils.getUser().getLanguage()));
     Object instance = null;
     try {
@@ -72,12 +72,12 @@ public class FakerServiceImpl implements FakerService {
       Method method;
       if (fakerApiFieldParameters == null || fakerApiFieldParameters.isEmpty()) {
         method = instance.getClass().getMethod(fakerApiField.getMethodName());
-        return method.invoke(instance).toString();
+        return method.invoke(instance);
       } else {
         Class[] params = convertParametersToParamsArray(fakerApiFieldParameters);
         Object[] paramValues = convertParametersToValueArray(fakerApiFieldParameters);
         method = instance.getClass().getMethod(fakerApiField.getMethodName(), params);
-        return method.invoke(instance, paramValues).toString();
+        return method.invoke(instance, paramValues);
       }
 
     } catch (NoSuchMethodException e) {
