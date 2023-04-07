@@ -662,7 +662,7 @@
     <action name="default-move-record"/>
     <action name="default-move-record-currency"/>
     <action name="action-move-record-journal"/>
-    <action name="action-move-method-verify-mass-entry-status-select"/>
+    <action name="action-move-mass-entry-method-verify-mass-entry-status-select"/>
     <action name="action-move-account-record-set-journal-technical-type-select"/>
     <action name="action-move-attrs-set-hidden-and-required-fields"
       if="massEntryStatusSelect != 0"/>
@@ -681,7 +681,7 @@
     <action name="action-move-method-check-period-permissions"/>
     <action name="action-method-hide-axis-analytic-account-move-line"/>
     <action name="action-move-method-fill-company-bank-details"/>
-    <action name="action-move-method-verify-company-bank-details"/>
+    <action name="action-move-mass-entry-method-verify-company-bank-details"/>
   </action-group>
 
   <action-group name="action-account-move-group-onload">
@@ -765,7 +765,7 @@
     <action name="action-move-method-fill-company-bank-details"/>
     <action name="action-method-hide-axis-analytic-account-move-line"/>
     <action name="default-move-record-currency"/>
-    <action name="action-move-method-verify-company-bank-details"/>
+    <action name="action-move-mass-entry-method-verify-company-bank-details"/>
     <action name="action-move-attrs-set-hidden-mass-entry-buttons"
       if="massEntryStatusSelect != 0"/>
   </action-group>
@@ -801,7 +801,7 @@
     <action name="action-move-record-set-payment-mode"/>
     <action name="action-move-record-set-payment-condition"/>
     <action name="action-move-record-set-bank-details"/>
-    <action name="action-move-method-verify-company-bank-details"/>
+    <action name="action-move-mass-entry-method-verify-company-bank-details"/>
     <action name="action-move-attrs-set-hidden-mass-entry-buttons"
       if="massEntryStatusSelect != 0"/>
   </action-group>
@@ -1323,13 +1323,14 @@
     <attribute for="moveLineList.partner" name="hidden" expr="partner != null"/>
   </action-attrs>
 
-  <action-method name="action-move-method-verify-mass-entry-status-select">
-    <call class="com.axelor.apps.account.web.MoveController"
+  <action-method name="action-move-mass-entry-method-verify-mass-entry-status-select">
+    <call class="com.axelor.apps.account.web.MassEntryMoveController"
       method="verifyMassEntryStatusSelect"/>
   </action-method>
 
-  <action-method name="action-move-method-verify-company-bank-details">
-    <call class="com.axelor.apps.account.web.MoveController" method="verifyCompanyBankDetails"/>
+  <action-method name="action-move-mass-entry-method-verify-company-bank-details">
+    <call class="com.axelor.apps.account.web.MassEntryMoveController"
+      method="verifyCompanyBankDetails"/>
   </action-method>
 
   <action-method name="action-move-method-control-mass-entry-moves">

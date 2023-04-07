@@ -18,6 +18,8 @@
 package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.repo.JournalTypeRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.move.massentry.MassEntryService;
 import com.axelor.common.ObjectUtils;
@@ -139,6 +141,38 @@ public class MassEntryMoveController {
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void verifyCompanyBankDetails(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      if (move != null
+          && move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL
+          && move.getCompany().getDefaultBankDetails() == null
+          && move.getJournal() != null
+          && (move.getJournal().getJournalType().getTechnicalTypeSelect()
+                  == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE
+              || move.getJournal().getJournalType().getTechnicalTypeSelect()
+                  == JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE)) {
+        response.setError(
+            String.format(
+                I18n.get(AccountExceptionMessage.COMPANY_BANK_DETAILS_MISSING),
+                move.getCompany().getName()));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void verifyMassEntryStatusSelect(ActionRequest request, ActionResponse response) {
+    try {
+      String viewName = request.getContext().get("_viewName").toString();
+      if ("move-mass-entry-form".equals(viewName)) {
+        response.setValue("massEntryStatusSelect", MoveRepository.MASS_ENTRY_STATUS_ON_GOING);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }

@@ -24,7 +24,6 @@ import com.axelor.apps.account.db.AnalyticAxisByCompany;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
-import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.report.IReport;
@@ -901,38 +900,6 @@ public class MoveController {
           Beans.get(BankDetailsService.class)
               .getDefaultCompanyBankDetails(company, paymentMode, partner, null);
       response.setValue("companyBankDetails", defaultBankDetails);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void verifyMassEntryStatusSelect(ActionRequest request, ActionResponse response) {
-    try {
-      String viewName = request.getContext().get("_viewName").toString();
-      if ("move-mass-entry-form".equals(viewName)) {
-        response.setValue("massEntryStatusSelect", MoveRepository.MASS_ENTRY_STATUS_ON_GOING);
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void verifyCompanyBankDetails(ActionRequest request, ActionResponse response) {
-    try {
-      Move move = request.getContext().asType(Move.class);
-      if (move != null
-          && move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL
-          && move.getCompanyBankDetails() == null
-          && move.getJournal() != null
-          && (move.getJournal().getJournalType().getTechnicalTypeSelect()
-                  == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE
-              || move.getJournal().getJournalType().getTechnicalTypeSelect()
-                  == JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE)) {
-        response.setError(
-            String.format(
-                I18n.get(AccountExceptionMessage.COMPANY_BANK_DETAILS_MISSING),
-                move.getCompany().getName()));
-      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
