@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.base.web;
 
+import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -75,6 +76,16 @@ public class SequenceController {
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void isLengthValid(ActionRequest request, ActionResponse response) {
+
+    try {
+      Sequence sequence = request.getContext().asType(Sequence.class);
+      Beans.get(SequenceService.class).checkSequenceLengthValidity(sequence);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 }

@@ -35,7 +35,7 @@
       default="true"/>
     <many-to-one name="validatedByUser" title="Validated By"
       ref="com.axelor.auth.db.User" readonly="true"/>
-    <date name="validatedDate" title="Validated On" readonly="true"/>
+    <datetime name="validateDateTime" title="Validated On" readonly="true"/>
     <boolean name="hasBeenCorrected" title="Corrected" default="false"/>
     <datetime name="correctedDateTime" readonly="true"/>
     <many-to-one name="correctedUser" ref="com.axelor.auth.db.User" readonly="true"/>

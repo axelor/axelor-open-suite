@@ -79,6 +79,8 @@
       <field name="defaultEstimatedDateForPurchaseOrder" on="UPDATE"/>
 
       <field name="numberOfDaysForPurchaseOrder" on="UPDATE"/>
+      <field name="activateIncStockMovePartialInvoicing" on="UPDATE"/>
+      <field name="activateOutStockMovePartialInvoicing" on="UPDATE"/>
     </track>
 
   </entity>
