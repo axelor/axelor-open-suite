@@ -108,7 +108,8 @@ public class ValidateState extends WorkflowInvoice {
 
     invoice.setStatusSelect(InvoiceRepository.STATUS_VALIDATED);
     invoice.setValidatedByUser(userService.getUser());
-    invoice.setValidatedDate(appBaseService.getTodayDate(invoice.getCompany()));
+    invoice.setValidatedDateTime(
+        appBaseService.getTodayDateTime(invoice.getCompany()).toLocalDateTime());
     setPartnerAccount();
 
     if (invoice.getJournal() == null) {
@@ -131,7 +132,8 @@ public class ValidateState extends WorkflowInvoice {
     if (invoice.getPartnerAccount() == null) {
       invoice.setPartnerAccount(accountingSituationService.getPartnerAccount(invoice, false));
     }
-    if (invoice.getPartnerAccount() != null && !invoice.getPartnerAccount().getHasInvoiceTerm()) {
+    if (invoice.getPartnerAccount() != null
+        && !invoice.getPartnerAccount().getUseForPartnerBalance()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
           I18n.get(AccountExceptionMessage.INVOICE_INVOICE_TERM_ACCOUNT));

@@ -10,6 +10,10 @@
       title="Active agency"/>
     <many-to-many name="agencySet" ref="com.axelor.apps.crm.db.Agency" title="Agencies"
       mappedBy="memberSet"/>
+
+    <track>
+      <field name="activeAgency" on="UPDATE"/>
+    </track>
   </entity>
 
 </domain-models>

@@ -219,7 +219,7 @@ public class InvoiceVisibilityServiceImpl implements InvoiceVisibilityService {
   }
 
   protected boolean _getDecisionDateCondition(Invoice invoice) {
-    return invoice.getDecisionPfpTakenDate() != null;
+    return invoice.getDecisionPfpTakenDateTime() != null;
   }
 
   @Override

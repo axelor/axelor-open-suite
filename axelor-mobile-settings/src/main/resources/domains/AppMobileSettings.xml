@@ -22,6 +22,13 @@
     <boolean name="manageCarrierOption" title="Manage carrier option" default="false"
       help="Allow users to manage carrier option for customer deliveries."/>
 
+    <boolean name="isInventoryValidationEnable" title="Enable inventory validation."
+      default="false"
+      help="By enabling this setting, users can validate inventories from the mobile application."/>
+    <boolean name="isStockCorrectionValidationEnable"
+      title="Enable stock correction validation." default="false"
+      help="By enabling this setting, users can validate stock corrections from the mobile application."/>
+
     <boolean name="isCustomerDeliveryLineAdditionEnable"
       title="Enable addition of new lines in customer delivery." default="false"
       help="By enabling this setting, users can add new lines to customer deliveries on mobile application."/>
@@ -41,14 +48,32 @@
       default="false"
       help="Enabling this setting, allows you to see on the mobile application the comments and changes that are tracked on the web application."/>
 
+    <!-- Stock line verification config -->
+    <boolean name="isVerifyCustomerDeliveryLineEnabled"
+      title="Enable line verification on customer deliveries" default="false"/>
+    <boolean name="isVerifySupplierArrivalLineEnabled"
+      title="Enable line verification on supplier arrivals" default="false"/>
+    <boolean name="isVerifyInternalMoveLineEnabled"
+      title="Enable line verification on internal moves" default="false"/>
+    <boolean name="isVerifyInventoryLineEnabled"
+      title="Enable line verification on inventories" default="false"/>
+
     <track>
-      <field name="isStockAppEnable"/>
-      <field name="isProductionAppEnable"/>
-      <field name="isCrmAppEnable"/>
-      <field name="isLoginUserQrcodeEnable"/>
-      <field name="isTrackerMessageOnStockApp"/>
-      <field name="isTrackerMessageOnProductionApp"/>
-      <field name="isTrackerMessageOnCrmApp"/>
+      <field name="isStockAppEnable" on="UPDATE"/>
+      <field name="isProductionAppEnable" on="UPDATE"/>
+      <field name="isCrmAppEnable" on="UPDATE"/>
+      <field name="isLoginUserQrcodeEnable" on="UPDATE"/>
+      <field name="isTrackerMessageOnStockApp" on="UPDATE"/>
+      <field name="isTrackerMessageOnProductionApp" on="UPDATE"/>
+      <field name="isTrackerMessageOnCrmApp" on="UPDATE"/>
+      <field name="manageCarrierOption" on="UPDATE"/>
+      <field name="qrCode" on="UPDATE"/>
+      <field name="isInventoryValidationEnable"/>
+      <field name="isStockCorrectionValidationEnable"/>
+      <field name="isVerifyCustomerDeliveryLineEnabled"/>
+      <field name="isVerifySupplierArrivalLineEnabled"/>
+      <field name="isVerifyInternalMoveLineEnabled"/>
+      <field name="isVerifyInventoryLineEnabled"/>
       <field name="isCustomerDeliveryLineAdditionEnable"/>
       <field name="isSupplierArrivalLineAdditionEnable"/>
     </track>

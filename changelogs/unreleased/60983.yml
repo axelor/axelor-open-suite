@@ -1,0 +1,6 @@
+---
+title: "TracebackService: automatically use tracebackservice on controller exceptions"
+type: feature
+description: |
+  Now, for every controller methods in AOS packages ending with `web`, any
+  exception will create a traceback.

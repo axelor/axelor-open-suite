@@ -48,6 +48,9 @@
         title="Fetch emails"
         showIf="isValid &amp;&amp; serverTypeSelect != null &amp;&amp; serverTypeSelect &gt; 1"/>
     </panel>
+    <panel-mail name="mailPanel">
+      <mail-messages limit="4"/>
+    </panel-mail>
   </form>
 
   <action-record name="action-mail-account-default-record"
