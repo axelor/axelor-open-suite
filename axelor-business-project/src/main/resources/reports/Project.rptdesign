@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202203150031</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -1592,7 +1592,7 @@ group by me_title,me_date,me.currency,project.currency,me.turnover,me.cost;]]></
                     <structure>
                         <property name="position">3</property>
                         <property name="name">exp_validation_date</property>
-                        <property name="dataType">date</property>
+                        <property name="dataType">date-time</property>
                     </structure>
                     <structure>
                         <property name="position">4</property>
@@ -1621,20 +1621,18 @@ group by me_title,me_date,me.currency,project.currency,me.turnover,me.cost;]]></
                     <property name="position">3</property>
                     <property name="name">exp_validation_date</property>
                     <property name="nativeName">exp_validation_date</property>
-                    <property name="dataType">date</property>
-                    <property name="nativeDataType">91</property>
+                    <property name="dataType">date-time</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
                     <property name="name">exp_amt</property>
                     <property name="nativeName">exp_amt</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select emp.id as emp_id,
        emp.name as emp_name,
-       expense.validation_date as exp_validation_date,
+       expense.validation_date_time as exp_validation_date,
        sum(expl.untaxed_amount) as exp_amt
 from hr_expense_line expl
 left join hr_expense expense on (expense.id = expl.expense)
@@ -1715,7 +1713,7 @@ group by emp.id,emp.name,exp_validation_date]]></xml-property>
                     <structure>
                         <property name="position">3</property>
                         <property name="name">tm_validation_date</property>
-                        <property name="dataType">date-time</property>
+                        <property name="dataType">date</property>
                     </structure>
                     <structure>
                         <property name="position">4</property>
@@ -1749,8 +1747,8 @@ group by emp.id,emp.name,exp_validation_date]]></xml-property>
                     <property name="position">3</property>
                     <property name="name">tm_validation_date</property>
                     <property name="nativeName">tm_validation_date</property>
-                    <property name="dataType">date-time</property>
-                    <property name="nativeDataType">93</property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
@@ -1769,7 +1767,7 @@ group by emp.id,emp.name,exp_validation_date]]></xml-property>
             </list-property>
             <xml-property name="queryText"><![CDATA[select emp.id as emp_id,
        emp.name as emp_name,
-       tm.validation_date_time as tm_validation_date,
+       tm.validation_date as tm_validation_date,
        sum(tml.hours_duration) as total_hours,
        sum(tml.hours_duration) * emp.hourly_rate as emp_cost
 from hr_timesheet_line tml
@@ -2707,7 +2705,7 @@ and invoice.status_select = 3
 and invoice.operation_type_select in (1,2)
 group by month
 union
-select to_char(tm.validation_date_time,'YYYY-MM') as month, sum(tml.hours_duration) * sum(prod.cost_price) as cost
+select to_char(tm.validation_date,'YYYY-MM') as month, sum(tml.hours_duration) * sum(prod.cost_price) as cost
 from hr_timesheet_line tml
 left join hr_timesheet tm on (tm.id = tml.timesheet)
 left join hr_employee emp on (emp.id = tm.employee)
@@ -2718,7 +2716,7 @@ where tm.status_select = 3
 and (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
 group by month
 union
-select to_char(expense.validation_date,'YYYY-MM') as month,sum(expl.untaxed_amount) as cost
+select to_char(expense.validation_date_time,'YYYY-MM') as month,sum(expl.untaxed_amount) as cost
 from hr_expense_line expl
 left join project_project project on (project.id = expl.project)
 left join project_project parent_project on (parent_project.id = project.parent_project)
@@ -6037,6 +6035,12 @@ order by task_end_date]]></xml-property>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
+                                <property name="name">tm_validation_date</property>
+                                <text-property name="displayName">tm_validation_date</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["tm_validation_date"]</expression>
+                                <property name="dataType">date</property>
+                            </structure>
+                            <structure>
                                 <property name="name">total_hours</property>
                                 <text-property name="displayName">total_hours</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["total_hours"]</expression>
@@ -6073,12 +6077,6 @@ order by task_end_date]]></xml-property>
                                     </structure>
                                 </list-property>
                                 <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">tm_validation_date</property>
-                                <text-property name="displayName">tm_validation_date</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["tm_validation_date"]</expression>
-                                <property name="dataType">date-time</property>
                             </structure>
                         </list-property>
                         <column id="4805">
@@ -6936,7 +6934,7 @@ order by task_end_date]]></xml-property>
                                 <property name="name">exp_validation_date</property>
                                 <text-property name="displayName">exp_validation_date</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["exp_validation_date"]</expression>
-                                <property name="dataType">date</property>
+                                <property name="dataType">date-time</property>
                             </structure>
                             <structure>
                                 <property name="name">exp_amt</property>
