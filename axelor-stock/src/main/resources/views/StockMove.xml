@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="stock-move-grid" title="Stock moves" model="com.axelor.apps.stock.db.StockMove"
     orderBy="statusSelect,-estimatedDate">
@@ -751,7 +751,7 @@
   </action-record>
 
   <form name="stock-move-wizard-special-split-form" title="Special split"
-    model="com.axelor.message.db.Wizard" onNew="action-stock-move-attrs-set-scale"
+    model="com.axelor.utils.db.Wizard" onNew="action-stock-move-attrs-set-scale"
     onLoad="action-stock-move-attrs-set-scale">
     <panel name="mainPanel" colSpan="12">
       <field name="splitQty" type="decimal" widget="Decimal" title="Split in Qty of"
@@ -767,7 +767,7 @@
   </action-attrs>
 
   <form name="stock-move-wizard-stock-per-day" title="Stock Availability"
-    model="com.axelor.message.db.Wizard" canSave="false" canDelete="false" canCopy="false"
+    model="com.axelor.utils.db.Wizard" canSave="false" canDelete="false" canCopy="false"
     canAttach="false" canNew="false" onNew="action-stock-move-wizard-stock-per-day-defaults">
     <toolbar>
       <button icon="fa-play" name="runWizardBtn" title="Run"
@@ -785,7 +785,7 @@
     </panel>
   </form>
 
-  <action-view title="Special split" model="com.axelor.message.db.Wizard"
+  <action-view title="Special split" model="com.axelor.utils.db.Wizard"
     name="action-stock-move-wizard-special-split">
     <view type="form" name="stock-move-wizard-special-split-form"/>
     <view-param name="popup" value="reload"/>

@@ -35,12 +35,16 @@ import org.apache.commons.collections.CollectionUtils;
 public class InvoiceVisibilityServiceImpl implements InvoiceVisibilityService {
   protected InvoiceService invoiceService;
   protected AccountConfigService accountConfigService;
+  protected AppAccountService appAccountService;
 
   @Inject
   public InvoiceVisibilityServiceImpl(
-      InvoiceService invoiceService, AccountConfigService accountConfigService) {
+      InvoiceService invoiceService,
+      AccountConfigService accountConfigService,
+      AppAccountService appAccountService) {
     this.invoiceService = invoiceService;
     this.accountConfigService = accountConfigService;
+    this.appAccountService = appAccountService;
   }
 
   @Override
@@ -215,6 +219,13 @@ public class InvoiceVisibilityServiceImpl implements InvoiceVisibilityService {
   }
 
   protected boolean _getDecisionDateCondition(Invoice invoice) {
-    return invoice.getDecisionPfpTakenDate() != null;
+    return invoice.getDecisionPfpTakenDateTime() != null;
+  }
+
+  @Override
+  public boolean getPfpCondition(Invoice invoice) throws AxelorException {
+    return appAccountService.getAppAccount().getActivatePassedForPayment()
+        && this.getManagePfpCondition(invoice)
+        && this.getOperationTypePurchaseCondition(invoice);
   }
 }

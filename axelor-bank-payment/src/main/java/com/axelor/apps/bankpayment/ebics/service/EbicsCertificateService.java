@@ -24,6 +24,7 @@ import com.axelor.apps.bankpayment.db.repo.EbicsCertificateRepository;
 import com.axelor.apps.bankpayment.ebics.client.EbicsUtils;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.DateService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -80,6 +81,8 @@ public class EbicsCertificateService {
   @Inject private EbicsCertificateRepository certRepo;
 
   @Inject private AppBaseService appBaseService;
+
+  @Inject protected DateService dateService;
 
   public static byte[] getCertificateContent(EbicsBank bank, String type) throws AxelorException {
 
@@ -189,7 +192,7 @@ public class EbicsCertificateService {
 
   public EbicsCertificate updateCertificate(
       X509Certificate certificate, EbicsCertificate cert, boolean cleanPrivateKey)
-      throws CertificateEncodingException, IOException {
+      throws CertificateEncodingException, IOException, AxelorException {
 
     String sha = DigestUtils.sha256Hex(certificate.getEncoded());
     log.debug("sha256 HEX : {}", sha);
@@ -218,10 +221,10 @@ public class EbicsCertificateService {
     return cert;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public EbicsCertificate createCertificate(
       X509Certificate certificate, EbicsBank bank, String type)
-      throws CertificateEncodingException, IOException {
+      throws CertificateEncodingException, IOException, AxelorException {
 
     EbicsCertificate cert = getEbicsCertificate(bank, type);
     if (cert == null) {
@@ -251,7 +254,7 @@ public class EbicsCertificateService {
     return null;
   }
 
-  public void computeFullName(EbicsCertificate entity) {
+  public void computeFullName(EbicsCertificate entity) throws AxelorException {
 
     StringBuilder fullName = new StringBuilder();
     Option item =
@@ -263,10 +266,11 @@ public class EbicsCertificateService {
 
     LocalDate date = entity.getValidFrom();
     if (date != null) {
-      fullName.append(":" + date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+      DateTimeFormatter dateFormat = dateService.getDateFormat();
+      fullName.append(":" + date.format(dateFormat));
       date = entity.getValidTo();
       if (date != null) {
-        fullName.append("-" + date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+        fullName.append("-" + date.format(dateFormat));
       }
     }
 

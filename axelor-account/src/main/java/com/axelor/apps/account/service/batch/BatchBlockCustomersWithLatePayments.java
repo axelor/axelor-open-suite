@@ -135,7 +135,7 @@ public class BatchBlockCustomersWithLatePayments extends BatchStrategy {
     return result.toString();
   }
 
-  @Transactional(rollbackOn = Exception.class)
+  @Transactional
   protected void blockCustomers(List<Long> customersToBlock) {
     if (CollectionUtils.isNotEmpty(customersToBlock)) {
       Query.of(Partner.class)
@@ -145,7 +145,7 @@ public class BatchBlockCustomersWithLatePayments extends BatchStrategy {
     }
   }
 
-  @Transactional(rollbackOn = Exception.class)
+  @Transactional
   protected void unblockCustomers(List<Long> customersToUnblock) {
     if (CollectionUtils.isNotEmpty(customersToUnblock)) {
       Query.of(Partner.class)

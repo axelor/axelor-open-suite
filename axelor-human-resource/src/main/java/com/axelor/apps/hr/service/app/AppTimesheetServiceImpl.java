@@ -35,7 +35,7 @@ public class AppTimesheetServiceImpl implements AppTimesheetService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public void switchTimesheetEditors(Boolean state) {
     List<Timesheet> timesheets;
     Query<Timesheet> query = timesheetRepo.all().order("id");

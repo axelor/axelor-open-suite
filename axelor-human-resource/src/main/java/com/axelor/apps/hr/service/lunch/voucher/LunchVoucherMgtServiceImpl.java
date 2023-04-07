@@ -276,7 +276,8 @@ public class LunchVoucherMgtServiceImpl implements LunchVoucherMgtService {
      */
     // lunchVoucherMgt.setExported(true);
     lunchVoucherMgt.setCsvFile(metaFile);
-    lunchVoucherMgt.setExportDate(appBaseService.getTodayDate(lunchVoucherMgt.getCompany()));
+    lunchVoucherMgt.setExportDateTime(
+        appBaseService.getTodayDateTime(lunchVoucherMgt.getCompany()).toLocalDateTime());
 
     lunchVoucherMgtRepository.save(lunchVoucherMgt);
   }

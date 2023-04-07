@@ -70,6 +70,7 @@ import com.axelor.apps.base.db.PrintingSettings;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.BankDetailsService;
+import com.axelor.apps.base.service.DateService;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.report.engine.ReportSettings;
@@ -93,7 +94,6 @@ import java.math.RoundingMode;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -136,6 +136,7 @@ public class BankReconciliationService {
   protected ReconcileService reconcileService;
   protected TaxService taxService;
   protected MoveLineTaxService moveLineTaxService;
+  protected DateService dateService;
 
   @Inject
   public BankReconciliationService(
@@ -166,7 +167,8 @@ public class BankReconciliationService {
       BankStatementRuleService bankStatementRuleService,
       ReconcileService reconcileService,
       TaxService taxService,
-      MoveLineTaxService moveLineTaxService) {
+      MoveLineTaxService moveLineTaxService,
+      DateService dateService) {
 
     this.bankReconciliationRepository = bankReconciliationRepository;
     this.accountService = accountService;
@@ -196,6 +198,7 @@ public class BankReconciliationService {
     this.reconcileService = reconcileService;
     this.taxService = taxService;
     this.moveLineTaxService = moveLineTaxService;
+    this.dateService = dateService;
   }
 
   public void generateMovesAutoAccounting(BankReconciliation bankReconciliation)
@@ -303,7 +306,7 @@ public class BankReconciliationService {
     }
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public Move generateMove(
       BankReconciliationLine bankReconciliationLine, BankStatementRule bankStatementRule)
       throws AxelorException {
@@ -895,7 +898,7 @@ public class BankReconciliationService {
     return params;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public BankReconciliation reconciliateAccordingToQueries(BankReconciliation bankReconciliation)
       throws AxelorException {
     List<BankStatementQuery> bankStatementQueries =
@@ -949,6 +952,7 @@ public class BankReconciliationService {
                     == BankReconciliationRepository.STATUS_UNDER_CORRECTION;
             if (isUnderCorrection) {
               bankReconciliationLine.setIsPosted(true);
+              bankReconciliationLineService.checkAmount(bankReconciliationLine);
               bankReconciliationLineService.updateBankReconciledAmounts(bankReconciliationLine);
             }
             moveLine.setPostedNbr(bankReconciliationLine.getPostedNbr());
@@ -1267,7 +1271,7 @@ public class BankReconciliationService {
     }
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public BankReconciliation reconcileSelected(BankReconciliation bankReconciliation)
       throws AxelorException {
     BankReconciliationLine bankReconciliationLine;
@@ -1294,6 +1298,7 @@ public class BankReconciliationService {
             == BankReconciliationRepository.STATUS_UNDER_CORRECTION;
     if (isUnderCorrection) {
       bankReconciliationLine.setIsPosted(true);
+      bankReconciliationLineService.checkAmount(bankReconciliationLine);
       bankReconciliationLineService.updateBankReconciledAmounts(bankReconciliationLine);
     }
     return bankReconciliation;
@@ -1391,13 +1396,13 @@ public class BankReconciliationService {
         || haveMoveLineOnClosedPeriod;
   }
 
-  public String getCorrectedLabel(LocalDateTime correctedDateTime, User correctedUser) {
+  public String getCorrectedLabel(LocalDateTime correctedDateTime, User correctedUser)
+      throws AxelorException {
     String space = " ";
     StringBuilder correctedLabel = new StringBuilder();
     correctedLabel.append(I18n.get("Reconciliation corrected at"));
     correctedLabel.append(space);
-    correctedLabel.append(
-        correctedDateTime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")));
+    correctedLabel.append(correctedDateTime.format(dateService.getDateTimeFormat()));
     correctedLabel.append(space);
     correctedLabel.append(I18n.get("by"));
     correctedLabel.append(space);

@@ -56,11 +56,6 @@ public class CancelState extends WorkflowInvoice {
 
     workflowService.beforeCancel(invoice);
 
-    if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED
-        && invoice.getCompany().getAccountConfig().getAllowCancelVentilatedInvoice()) {
-      cancelMove();
-    }
-
     updateInvoiceFromCancellation();
 
     workflowService.afterCancel(invoice);
@@ -104,7 +99,7 @@ public class CancelState extends WorkflowInvoice {
 
   protected void setPfpStatus() throws AxelorException {
     InvoiceToolService.setPfpStatus(invoice);
-    invoice.setDecisionPfpTakenDate(null);
+    invoice.setDecisionPfpTakenDateTime(null);
 
     invoice.getInvoiceTermList().stream()
         .filter(it -> it.getPfpValidateStatusSelect() != InvoiceTermRepository.PFP_STATUS_NO_PFP)

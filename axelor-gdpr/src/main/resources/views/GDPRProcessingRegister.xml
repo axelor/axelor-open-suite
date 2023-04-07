@@ -2,7 +2,7 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views
-  http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="gdpr-processing-register-grid" title="GDPR processing registers" canNew="true"
     model="com.axelor.apps.gdpr.db.GDPRProcessingRegister">
@@ -20,7 +20,7 @@
   </grid>
 
   <form name="gdpr-processing-register-form" title="Processing register"
-    model="com.axelor.apps.gdpr.db.GDPRProcessingRegister" width="large">
+    model="com.axelor.apps.gdpr.db.GDPRProcessingRegister" width="large" canCopy="false">
     <panel name="statusPanel">
       <field name="status" widget="NavSelect" colSpan="6" readonly="true" showTitle="false"/>
     </panel>

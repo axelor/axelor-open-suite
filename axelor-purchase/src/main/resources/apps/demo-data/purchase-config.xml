@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <csv-inputs xmlns="http://axelor.com/xml/ns/data-import"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_6.1.xsd">
 
   <input file="studio_appPurchase.csv" separator=";" type="com.axelor.studio.db.AppPurchase"
     search="self.app.code = :code"/>
@@ -24,12 +24,12 @@
   <input file="purchase_purchaseOrderLine.csv" separator=";"
     type="com.axelor.apps.purchase.db.PurchaseOrderLine"
     call="com.axelor.apps.purchase.script.ImportPurchaseOrderLine:importPurchaseOrderLine">
-    <bind to="desiredDelivDate"
-      eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(desiredDelivDate)"
-      column="desiredDelivDate"/>
-    <bind to="estimatedDelivDate"
-      eval="call:com.axelor.csv.script.ImportDateTime:importDate(estimatedDelivDate)"
-      column="estimatedDelivDate"/>
+    <bind to="desiredReceiptDate"
+      eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(desiredReceiptDate)"
+      column="desiredReceiptDate"/>
+    <bind to="estimatedReceiptDate"
+      eval="call:com.axelor.csv.script.ImportDateTime:importDate(estimatedReceiptDate)"
+      column="estimatedReceiptDate"/>
   </input>
 
   <input file="purchase_supplierCatalog.csv" separator=";"

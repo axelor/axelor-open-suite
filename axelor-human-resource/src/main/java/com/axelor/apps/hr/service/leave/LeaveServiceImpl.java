@@ -726,7 +726,8 @@ public class LeaveServiceImpl implements LeaveService {
 
     leaveRequest.setStatusSelect(LeaveRequestRepository.STATUS_VALIDATED);
     leaveRequest.setValidatedBy(AuthUtils.getUser());
-    leaveRequest.setValidationDate(appBaseService.getTodayDate(leaveRequest.getCompany()));
+    leaveRequest.setValidationDateTime(
+        appBaseService.getTodayDateTime(leaveRequest.getCompany()).toLocalDateTime());
 
     LeaveLine leaveLine = getLeaveLine(leaveRequest);
     if (leaveLine != null) {
@@ -766,7 +767,8 @@ public class LeaveServiceImpl implements LeaveService {
 
     leaveRequest.setStatusSelect(LeaveRequestRepository.STATUS_REFUSED);
     leaveRequest.setRefusedBy(AuthUtils.getUser());
-    leaveRequest.setRefusalDate(appBaseService.getTodayDate(leaveRequest.getCompany()));
+    leaveRequest.setRefusalDateTime(
+        appBaseService.getTodayDateTime(leaveRequest.getCompany()).toLocalDateTime());
 
     leaveRequestRepo.save(leaveRequest);
     if (leaveRequest.getLeaveReason().getManageAccumulation()) {
@@ -852,9 +854,8 @@ public class LeaveServiceImpl implements LeaveService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public LeaveLine addLeaveReasonOrCreateIt(Employee employee, LeaveReason leaveReason)
-      throws AxelorException {
+  @Transactional
+  public LeaveLine addLeaveReasonOrCreateIt(Employee employee, LeaveReason leaveReason) {
     return getLeaveReasonToJustify(employee, leaveReason)
         .orElseGet(() -> createLeaveReasonToJustify(employee, leaveReason));
   }

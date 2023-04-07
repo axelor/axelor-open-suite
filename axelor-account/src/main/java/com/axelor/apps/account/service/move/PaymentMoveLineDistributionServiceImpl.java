@@ -57,7 +57,7 @@ public class PaymentMoveLineDistributionServiceImpl implements PaymentMoveLineDi
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public void generatePaymentMoveLineDistributionList(Move move, Reconcile reconcile) {
 
     BigDecimal invoiceTotalAmount =
@@ -79,7 +79,7 @@ public class PaymentMoveLineDistributionServiceImpl implements PaymentMoveLineDi
           new PaymentMoveLineDistribution(
               move.getPartner(), reconcile, moveLine, move, moveLine.getTaxLine());
 
-      paymentMvlD.setOperationDate(reconcile.getReconciliationDate());
+      paymentMvlD.setOperationDate(reconcile.getReconciliationDateTime().toLocalDate());
       if (!moveLine.getAccount().getReconcileOk()) {
         this.computeProratedAmounts(
             paymentMvlD,
@@ -95,7 +95,7 @@ public class PaymentMoveLineDistributionServiceImpl implements PaymentMoveLineDi
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public void reversePaymentMoveLineDistributionList(Reconcile reconcile) {
 
     List<PaymentMoveLineDistribution> reverseLines = Lists.newArrayList();
@@ -111,7 +111,8 @@ public class PaymentMoveLineDistributionServiceImpl implements PaymentMoveLineDi
                 paymentMvlD.getTaxLine());
 
         reversePaymentMvlD.setIsAlreadyReverse(true);
-        reversePaymentMvlD.setOperationDate(reconcile.getReconciliationCancelDate());
+        reversePaymentMvlD.setOperationDate(
+            reconcile.getReconciliationCancelDateTime().toLocalDate());
         if (!paymentMvlD.getMoveLine().getAccount().getReconcileOk()) {
           reversePaymentMvlD.setExTaxProratedAmount(paymentMvlD.getExTaxProratedAmount().negate());
           reversePaymentMvlD.setTaxProratedAmount(paymentMvlD.getTaxProratedAmount().negate());

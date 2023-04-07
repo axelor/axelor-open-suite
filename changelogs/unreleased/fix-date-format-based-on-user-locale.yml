@@ -1,0 +1,3 @@
+---
+title: "Date format: use User locale instead of hard coded date format"
+type: fix

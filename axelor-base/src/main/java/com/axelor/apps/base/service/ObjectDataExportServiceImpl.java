@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.ObjectDataConfigExport;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.Inflector;
+import com.axelor.common.csv.CSVFile;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
 import com.axelor.db.mapper.Mapper;
@@ -36,11 +37,9 @@ import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.schema.views.Selection.Option;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
-import com.opencsv.CSVWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -51,6 +50,7 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.io.IOUtils;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -233,9 +233,11 @@ public class ObjectDataExportServiceImpl implements ObjectDataExportService {
       for (Entry<String, List<String[]>> modelEntry : data.entrySet()) {
         String key = modelEntry.getKey();
         File modelFile = MetaFiles.createTempFile(key, ".csv").toFile();
-        CSVWriter writer = new CSVWriter(new FileWriter(modelFile), ';');
-        writer.writeAll(modelEntry.getValue());
-        writer.close();
+        CSVFile csvFormat =
+            CSVFile.DEFAULT.withDelimiter(';').withQuoteAll().withFirstRecordAsHeader();
+        try (CSVPrinter printer = csvFormat.write(modelFile)) {
+          printer.printRecords(modelEntry.getValue());
+        }
         zout.putNextEntry(new ZipEntry(key + ".csv"));
         zout.write(IOUtils.toByteArray(new FileInputStream(modelFile)));
         zout.closeEntry();

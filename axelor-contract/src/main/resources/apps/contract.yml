@@ -2,7 +2,7 @@
 name: Contract
 code: contract
 typeSelect: standard
-installOrder: 25
+installOrder: 2250
 description: |
    Contract configuration
 image: app-contract.png

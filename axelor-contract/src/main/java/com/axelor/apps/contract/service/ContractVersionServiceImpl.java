@@ -49,6 +49,7 @@ public class ContractVersionServiceImpl extends ContractVersionRepository
   }
 
   @Override
+  @Transactional(rollbackOn = {Exception.class})
   public void waiting(ContractVersion version) throws AxelorException {
     waiting(
         version,
@@ -92,6 +93,7 @@ public class ContractVersionServiceImpl extends ContractVersionRepository
   }
 
   @Override
+  @Transactional(rollbackOn = {Exception.class})
   public void ongoing(ContractVersion version) throws AxelorException {
     ongoing(
         version,
@@ -142,6 +144,7 @@ public class ContractVersionServiceImpl extends ContractVersionRepository
   }
 
   @Override
+  @Transactional(rollbackOn = {Exception.class})
   public void terminate(ContractVersion version) throws AxelorException {
     terminate(
         version,
@@ -154,7 +157,7 @@ public class ContractVersionServiceImpl extends ContractVersionRepository
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void terminate(ContractVersion version, LocalDate date) throws AxelorException {
 
     if (version.getStatusSelect() == null

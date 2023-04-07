@@ -182,13 +182,6 @@ public final class BaseExceptionMessage {
   public static final String TEMPLATE_MESSAGE_BASE_2 = /*$$(*/
       "Unable to generate Birt report file" /*)*/;
 
-  /** Querie Service and controller */
-  public static final String QUERIE_1 = /*$$(*/
-      "Error : There is no query set for the querie %s" /*)*/;
-
-  public static final String QUERIE_2 = /*$$(*/ "Error : Incorrect query for the querie %s" /*)*/;
-  public static final String QUERIE_3 = /*$$(*/ "Valid query." /*)*/;
-
   /** Tax service */
   public static final String TAX_1 = /*$$(*/ "Please enter a tax version for the tax %s" /*)*/;
 
@@ -203,6 +196,9 @@ public final class BaseExceptionMessage {
   /** Sequence service */
   public static final String SEQUENCE_NOT_SAVED_RECORD = /*$$(*/
       "Can't generate draft sequence number on an unsaved record." /*)*/;
+
+  public static final String SEQUENCE_LENGTH_NOT_VALID = /*$$(*/
+      "Total sequence length must be less than 15 characters." /*)*/;
 
   /** Address controller */
   public static final String ADDRESS_1 = /*$$(*/ "OK" /*)*/;
@@ -531,4 +527,10 @@ public final class BaseExceptionMessage {
 
   public static final String ADVANCED_IMPORT_NOT_VALIDATED = /*$$(*/
       "Advanced import is not validated" /*)*/;
+
+  public static final String COMPANY_INVALID_LOCALE = /*$$(*/
+      "Warning: locale %s is invalid, please enter a valid locale." /*)*/;
+
+  public static final String COMPANY_LOCALE_MISSING = /*$$(*/
+      "Please fill locale for the company %s" /*)*/;
 }

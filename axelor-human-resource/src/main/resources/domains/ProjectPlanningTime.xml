@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="project" package="com.axelor.apps.project.db"/>
 
@@ -25,28 +25,17 @@
     <time name="endTime" title="End time"/>
 
     <string name="fullName" namecolumn="true">
-			<![CDATA[
-	  		String fullName = "";
-
-	  	  if(employee != null && employee.getName() != null)  {
-				fullName += employee.getName();
-			}
-
-			if (project != null && project.getCode() != null) {
-				fullName += "-" + project.getCode();
-			}
-
-			String dateStr = date.format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-			if (!fullName.isEmpty()) {
-				fullName += "-" + dateStr;
-			}
-			else {
-				fullName = dateStr;
-			}
-
-	  		return fullName;
+		 <![CDATA[
+      		return Beans.get(ProjectPlanningTimeComputeNameService.class).computeProjectPlanningTimeFullname(this.getEmployee(),this.getProject(),this.getDate());
 	  	]]>
     </string>
+
+    <extra-imports>
+      <![CDATA[
+	      import com.axelor.inject.Beans;
+	      import com.axelor.apps.hr.service.project.ProjectPlanningTimeComputeNameService;
+      ]]>
+    </extra-imports>
 
   </entity>
 

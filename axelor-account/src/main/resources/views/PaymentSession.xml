@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="payment-session-grid" title="Payment sessions" canDelete="false"
     model="com.axelor.apps.account.db.PaymentSession" orderBy="-paymentDate,-sequence">
@@ -77,8 +77,7 @@
           x-currency="company.currency.symbol"/>
       </panel>
     </panel>
-    <panel name="mainPanel" itemSpan="4"
-      readonlyIf="statusSelect > 1 || sessionTotalAmount > 0">
+    <panel name="mainPanel" itemSpan="4" readonlyIf="statusSelect > 1 || $hasInvoiceTerm">
       <field name="createdOn"/>
       <field name="sequence"/>
       <field name="company" form-view="company-form" grid-view="company-grid"
@@ -106,9 +105,9 @@
       showIf="paymentMode &amp;&amp; company &amp;&amp; paymentDate &amp;&amp; bankDetails">
       <button name="searchEligibleTermsBtn" title="Search due Terms"
         onClick="action-group-payment-session-search-eligible-terms"
-        hideIf="statusSelect > 1 || sessionTotalAmount > 0 || (sessionTotalAmount == 0 &amp;&amp; $hasUnselectedInvoiceTerm)"/>
+        hideIf="statusSelect > 1 || $hasInvoiceTerm"/>
       <button name="refreshEligibleTermsBtn" title="Refresh terms list"
-        showIf="id &amp;&amp; sessionTotalAmount > 0 &amp;&amp; statusSelect == 1"
+        showIf="id &amp;&amp; $hasInvoiceTerm &amp;&amp; statusSelect == 1"
         onClick="action-method-payment-session-search-eligible-terms"/>
       <button name="selectAllBtn" title="Select all"
         onClick="action-payment-session-method-select-all" colSpan="3" hidden="true"/>
@@ -128,6 +127,7 @@
       <button name="cancelBtn" title="Cancel" css="btn-danger"
         showIf="statusSelect == 1 &amp;&amp; id" onClick="action-payment-session-group-cancel"/>
       <field name="$hasUnselectedInvoiceTerm" hidden="true"/>
+      <field name="$hasInvoiceTerm" hidden="true"/>
     </panel>
     <panel name="emailPanel" sidebar="true" showIf="id &amp;&amp; sessionTotalAmount > 0">
       <button name="sendEmailsBtn" title="Send emails payment notice"
@@ -150,26 +150,27 @@
       <field name="validatedDate" readonly="true"/>
     </panel>
     <panel name="accountingSettingsPanel" title="Accounting Settings" sidebar="true"
-      readonlyIf="statusSelect > 1 &amp;&amp; sessionTotalAmount > 0" itemSpan="6">
+      readonlyIf="statusSelect > 1 &amp;&amp; $hasInvoiceTerm" itemSpan="6">
       <panel name="accountingMethodPanel" stacked="true">
-        <field name="accountingMethodSelect" showIf="moveAccountingDateSelect != 3"/>
+        <field name="accountingMethodSelect" showIf="moveAccountingDateSelect != 3"
+          readonlyIf="statusSelect == 4"/>
         <field name="accountingMethodSelect" showIf="moveAccountingDateSelect == 3"
-          selection-in="[1,2]"/>
+          selection-in="[1,2]" readonlyIf="statusSelect == 4"/>
       </panel>
       <panel name="moveAccountingDatePanel" stacked="true">
-        <field name="moveAccountingDateSelect" showIf="accountingMethodSelect != 3"/>
+        <field name="moveAccountingDateSelect" showIf="accountingMethodSelect != 3"
+          readonlyIf="statusSelect == 4"/>
         <field name="moveAccountingDateSelect" showIf="accountingMethodSelect == 3"
-          selection-in="[1,2]"/>
+          readonlyIf="statusSelect == 4" selection-in="[1,2]"/>
       </panel>
       <field name="accountingTriggerSelect" readonlyIf="!paymentMode.generateBankOrder"
         selection-in="[1,2,3,4]"/>
-      <field name="daysMarginOnPaySession"
-        readonlyIf="statusSelect > 1 || sessionTotalAmount > 0 || (sessionTotalAmount == 0 &amp;&amp; $hasUnselectedInvoiceTerm)"/>
+      <field name="daysMarginOnPaySession" readonlyIf="statusSelect > 1 || $hasInvoiceTerm"/>
     </panel>
   </form>
 
 
-  <form name="payment-session-print-wizard-form" model="com.axelor.message.db.Wizard"
+  <form name="payment-session-print-wizard-form" model="com.axelor.utils.db.Wizard"
     title="Payment session print wizard">
     <panel name="mainPanel">
       <field name="_exportTypeSelect" type="string" title="Export format"
@@ -211,6 +212,7 @@
 
   <action-group name="action-group-payment-session-on-load">
     <action name="action-payment-session-method-set-has-invoice-term-selected"/>
+    <action name="action-payment-session-method-set-has-invoice-term"/>
     <action name="action-payment-session-record-set-session-total-amount-btn"/>
   </action-group>
 
@@ -241,13 +243,18 @@
       method="setHasInvoiceTermSelected"/>
   </action-method>
 
+  <action-method name="action-payment-session-method-set-has-invoice-term">
+    <call class="com.axelor.apps.account.web.PaymentSessionController"
+      method="setHasInvoiceTerm"/>
+  </action-method>
+
   <action-validate name="action-payment-session-validate-cancel">
     <alert
       message="You are about to lose your work in progress. Are you confirming the cancellation of the session ?"/>
   </action-validate>
 
   <action-view name="action-view-account-payment-session-print-wizard"
-    title="Payment session print wizard" model="com.axelor.message.db.Wizard">
+    title="Payment session print wizard" model="com.axelor.utils.db.Wizard">
     <view type="form" name="payment-session-print-wizard-form"/>
     <view-param name="popup" value="true"/>
     <view-param name="show-toolbar" value="false"/>

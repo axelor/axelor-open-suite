@@ -86,7 +86,7 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public FixedAsset generateAndComputeLines(FixedAsset fixedAsset) throws AxelorException {
 
     if (fixedAsset.getFixedAssetLineList() != null
@@ -267,7 +267,7 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
     return fixedAsset;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   @Override
   public FixedAsset generateAndSaveFixedAsset(Move move, MoveLine moveLine) throws AxelorException {
 

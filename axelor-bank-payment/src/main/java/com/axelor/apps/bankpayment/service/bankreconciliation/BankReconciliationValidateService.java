@@ -97,8 +97,10 @@ public class BankReconciliationValidateService {
 
     bankReconciliation.setStatusSelect(BankReconciliationRepository.STATUS_VALIDATED);
     bankReconciliation.setValidatedByUser(AuthUtils.getUser());
-    bankReconciliation.setValidatedDate(
-        Beans.get(AppBaseService.class).getTodayDate(bankReconciliation.getCompany()));
+    bankReconciliation.setValidateDateTime(
+        Beans.get(AppBaseService.class)
+            .getTodayDateTime(bankReconciliation.getCompany())
+            .toLocalDateTime());
     bankReconciliation = bankReconciliationService.computeEndingBalance(bankReconciliation);
     bankReconciliationRepository.save(bankReconciliation);
   }
@@ -188,7 +190,7 @@ public class BankReconciliationValidateService {
     bankReconciliationLineService.updateBankReconciledAmounts(bankReconciliationLine);
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public void validateMultipleBankReconciles(
       BankReconciliation bankReconciliation,
       BankReconciliationLine bankReconciliationLine,
@@ -256,6 +258,7 @@ public class BankReconciliationValidateService {
         }
         if (isUnderCorrection) {
           bankReconciliationLine.setIsPosted(true);
+          bankReconciliationLineService.checkAmount(bankReconciliationLine);
           bankReconciliationLineService.updateBankReconciledAmounts(bankReconciliationLine);
         }
         bankStatementAmountRemaining = bankStatementAmountRemaining.subtract(debit.add(credit));

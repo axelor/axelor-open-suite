@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="stock-move-line-grid" title="Stock move lines"
     model="com.axelor.apps.stock.db.StockMoveLine" editable="true">
@@ -21,7 +21,7 @@
       width="100px" x-scale="2"
       readonlyIf="$get('stockMove.statusSelect') &gt; 1 || lineTypeSelect == 1"/>
     <field name="realQty" aggregate="sum" width="100px" x-scale="2"
-      onChange="action-stock-move-line-group-real-qty-onchange"
+      onChange="action-stock-move-line-group-real-qty-onchange, action-stock-move-line-attrs-set-real-qty-modified-by-user-true"
       readonlyIf="($get('stockMove.statusSelect') == 2 &amp;&amp; $get('stockMove.pickingIsEdited')) || $get('stockMove.statusSelect') == 3 || lineTypeSelect == 1"/>
     <field name="requestedReservedQty" if-module="axelor-supplychain" readonly="true"
       x-scale="2" if="__config__.app.getApp('supplychain')?.getManageStockReservation()"
@@ -156,7 +156,8 @@
       <field name="qty" onChange="action-stock-move-line-group-qty-onchange" colSpan="3"
         readonlyIf="$get('stockMove.statusSelect') > 1"/>
       <field name="realQty" colSpan="3"
-        onChange="action-stock-move-line-group-real-qty-onchange"/>
+        onChange="action-stock-move-line-group-real-qty-onchange, action-stock-move-line-attrs-set-real-qty-modified-by-user-true"/>
+      <field name="isRealQtyModifiedByUser" hidden="true"/>
       <field name="qtyInvoiced" colSpan="6" readonly="true"/>
       <field name="$availableQty" showIf="product &amp;&amp; productTypeSelect != 'service'"
         type="decimal" title="Available qty" readonly="true" hidden="true"/>
@@ -264,7 +265,9 @@
       onChange="action-stock-move-line-group-qty-onchange"
       readonlyIf="$get('stockMove.statusSelect') > 1"/>
     <field name="realQty" aggregate="sum"
-      onChange="action-stock-move-line-group-real-qty-onchange" x-scale="2"/>
+      onChange="action-stock-move-line-group-real-qty-onchange, action-stock-move-line-attrs-set-real-qty-modified-by-user-true"
+      x-scale="2"/>
+    <field name="isRealQtyModifiedByUser" hidden="true"/>
     <field name="qtyInvoiced" readonly="true" x-scale="2"/>
     <field name="unitPriceUntaxed" x-scale="2"/>
     <field name="unitPriceTaxed" x-scale="2" hidden="true"/>
@@ -297,7 +300,9 @@
     <field name="productName"/>
     <field name="stockMove.partner"/>
     <field name="realQty" aggregate="sum"
-      onChange="action-stock-move-line-group-real-qty-onchange" x-scale="2"/>
+      onChange="action-stock-move-line-group-real-qty-onchange, action-stock-move-line-attrs-set-real-qty-modified-by-user-true"
+      x-scale="2"/>
+    <field name="isRealQtyModifiedByUser" hidden="true"/>
     <field name="qtyInvoiced" readonly="true" x-scale="2"/>
     <field name="unitPriceUntaxed" x-scale="2"/>
     <field name="unitPriceTaxed" x-scale="2" hidden="true"/>
@@ -328,7 +333,9 @@
     <field name="productName"/>
     <field name="stockMove.partner"/>
     <field name="realQty" aggregate="sum"
-      onChange="action-stock-move-line-group-real-qty-onchange" x-scale="2"/>
+      onChange="action-stock-move-line-group-real-qty-onchange, action-stock-move-line-attrs-set-real-qty-modified-by-user-true"
+      x-scale="2"/>
+    <field name="isRealQtyModifiedByUser" hidden="true"/>
     <field name="reservedQty" if-module="axelor-supplychain"
       if="__config__.app.getApp('supplychain')?.getManageStockReservation()" aggregate="sum"
       x-scale="2"/>
@@ -389,8 +396,9 @@
         onChange="action-stock-move-line-group-qty-onchange"
         readonlyIf="$get('stockMove.statusSelect') > 1"/>
       <field name="realQty" colSpan="2" min="0"
-        onChange="action-stock-move-line-group-real-qty-onchange"
+        onChange="action-stock-move-line-group-real-qty-onchange, action-stock-move-line-attrs-set-real-qty-modified-by-user-true"
         readonlyIf="$get('stockMove.statusSelect') > 1"/>
+      <field name="isRealQtyModifiedByUser" hidden="true"/>
       <field name="qtyInvoiced" colSpan="2" readonly="true"/>
       <field name="$availableQty" type="decimal" title="Available qty" readonly="true"
         showIf="stockMove &amp;&amp; stockMove.statusSelect &lt; 3" colSpan="3"/>
@@ -451,7 +459,7 @@
     </panel-mail>
   </form>
 
-  <form model="com.axelor.message.db.Wizard" title="Enter tracking numbers"
+  <form model="com.axelor.utils.db.Wizard" title="Enter tracking numbers"
     name="stock-move-line-track-number-wizard-form"
     onNew="action-track-number-atts-from-stock-move-line">
     <panel name="wizardPanel" colSpan="12">
@@ -680,8 +688,6 @@
     <action name="action-stock-move-line-compute-price"/>
     <action name="action-stock-move-line-record-total-net-mass"/>
     <action name="action-stock-move-line-method-set-available-status"/>
-    <action name="action-stock-move-line-attrs-set-real-qty-modified-by-user-true"
-      if="stockMove?.statusSelect != 1"/>
   </action-group>
 
   <action-group name="action-stock-move-line-group-net-mass-onchange">

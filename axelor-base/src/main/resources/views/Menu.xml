@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <menuitem id="abs-menu-mail" name="menu-mail"
     if="__config__.app.isApp('base') &amp;&amp; __config__.app.getApp('base')?.getEnterpriseCommunication()"
@@ -754,7 +754,7 @@
     title="Convert demo file" action="admin.root.convert.demo.file"/>
 
   <action-view name="admin.root.convert.demo.file" title="Convert demo file"
-    model="com.axelor.message.db.Wizard">
+    model="com.axelor.utils.db.Wizard">
     <view type="form" name="convert-demo-file-wizard-form"/>
   </action-view>
 
@@ -762,7 +762,7 @@
     title="Import demo data" action="admin.root.import.demo.data"/>
 
   <action-view name="admin.root.import.demo.data" title="Import demo data"
-    model="com.axelor.message.db.Wizard">
+    model="com.axelor.utils.db.Wizard">
     <view type="form" name="import-demo-data-wizard-form"/>
   </action-view>
 
@@ -805,7 +805,7 @@
   <menuitem title="DMS Import" name="menu-dms-import-wizard"
     parent="admin-root-maintenance" action="menu.dms.import.wizard"/>
 
-  <action-view name="menu.dms.import.wizard" model="com.axelor.message.db.Wizard"
+  <action-view name="menu.dms.import.wizard" model="com.axelor.utils.db.Wizard"
     title="DMS Import">
     <view name="dms-import-wizard-form" type="form"/>
     <view-param name="show-confirm" value="false"/>
@@ -930,7 +930,7 @@
     parent="admin-root-maintenance" action="admin.global.tracking.log.show"/>
 
   <action-view name="admin.global.tracking.log.show" title="Global tracking logs"
-    model="com.axelor.message.db.Wizard">
+    model="com.axelor.utils.db.Wizard">
     <view type="form" name="global-tracking-log-view-wizard-form"/>
   </action-view>
 

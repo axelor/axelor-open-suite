@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
@@ -51,7 +51,7 @@
     <boolean name="isCustomized" title="Is customized" default="false"/>
     <many-to-one ref="com.axelor.apps.base.db.BankDetails" name="bankDetails"/>
 
-    <date name="decisionPfpTakenDate" readonly="true" title="PFP decision date"/>
+    <datetime name="decisionPfpTakenDateTime" readonly="true" title="PFP decision date"/>
     <many-to-one name="pfpValidatorUser" ref="com.axelor.auth.db.User"
       title="PFP Validator"/>
     <integer name="pfpValidateStatusSelect" title="PFP Status"
@@ -127,7 +127,7 @@
       <field name="financialDiscount"/>
       <field name="invoice"/>
       <field name="moveLine"/>
-      <field name="decisionPfpTakenDate"/>
+      <field name="decisionPfpTakenDateTime"/>
       <field name="paymentSession"/>
       <field name="pfpValidateStatusSelect"/>
       <field name="pfpValidatorUser"/>

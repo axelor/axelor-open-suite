@@ -25,7 +25,7 @@ import java.util.List;
 
 public interface PaymentSessionService {
 
-  public String computeName(PaymentSession paymentSession);
+  public String computeName(PaymentSession paymentSession) throws AxelorException;
 
   public void setBankDetails(PaymentSession paymentSession);
 
@@ -45,5 +45,7 @@ public interface PaymentSessionService {
 
   public void unSelectAll(PaymentSession paymentSession) throws AxelorException;
 
-  public void retrieveEligibleTerms(PaymentSession paymentSession);
+  public void retrieveEligibleTerms(PaymentSession paymentSession) throws AxelorException;
+
+  public boolean hasInvoiceTerm(PaymentSession paymentSession);
 }

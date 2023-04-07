@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
@@ -156,6 +156,16 @@
 
       <field name="displayTrackNbrOnCertificateOfConformityPrinting" on="UPDATE"/>
       <field name="displayExtRefOnCertificateOfConformityPrinting" on="UPDATE"/>
+      <field name="virtualOutsourcingStockLocation" on="UPDATE"/>
+      <field name="outsourcingReceiptStockLocation" on="UPDATE"/>
+      <field name="logisticalFormAutomaticEmail" on="UPDATE"/>
+      <field name="logisticalFormMessageTemplate" on="UPDATE"/>
+      <field name="isDisplayPurchaseValueInPrinting" on="UPDATE"/>
+      <field name="stockRuleMessageTemplate" on="UPDATE"/>
+      <field name="displayProductCodeOnPrinting" on="UPDATE"/>
+      <field name="displayPriceOnPrinting" on="UPDATE"/>
+      <field name="displayOrderReferenceAndOrderDate" on="UPDATE"/>
+      <field name="percentToleranceForWapChange" on="UPDATE"/>
     </track>
   </entity>
 

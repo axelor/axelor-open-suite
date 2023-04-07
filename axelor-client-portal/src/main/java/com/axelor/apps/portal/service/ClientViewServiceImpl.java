@@ -33,13 +33,13 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.auth.db.User;
 import com.axelor.db.JpaSecurity;
 import com.axelor.i18n.I18n;
+import com.axelor.i18n.L10n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.filter.Filter;
 import com.axelor.rpc.filter.JPQLFilter;
 import com.axelor.studio.app.service.AppService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -55,9 +55,6 @@ public class ClientViewServiceImpl implements ClientViewService {
   protected ProjectTaskRepository projectTaskRepo;
   protected JpaSecurity security;
   protected AppService appService;
-
-  protected static final DateTimeFormatter DATE_FORMATTER =
-      DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
   static final String CLIENT_PORTAL_NO_DATE = /*$$(*/ "None" /*)*/;
 
@@ -137,7 +134,7 @@ public class ClientViewServiceImpl implements ClientViewService {
       return I18n.get(CLIENT_PORTAL_NO_DATE);
     }
     return saleOrder.getConfirmationDateTime() != null
-        ? saleOrder.getConfirmationDateTime().format(DATE_FORMATTER)
+        ? L10n.getInstance().format(saleOrder.getConfirmationDateTime().toLocalDate())
         : I18n.get(CLIENT_PORTAL_NO_DATE);
   }
 
@@ -149,7 +146,7 @@ public class ClientViewServiceImpl implements ClientViewService {
       return I18n.get(CLIENT_PORTAL_NO_DATE);
     }
     return stockMove.getRealDate() != null
-        ? stockMove.getRealDate().format(DATE_FORMATTER)
+        ? L10n.getInstance().format(stockMove.getRealDate())
         : I18n.get(CLIENT_PORTAL_NO_DATE);
   }
 
@@ -161,7 +158,7 @@ public class ClientViewServiceImpl implements ClientViewService {
       return I18n.get(CLIENT_PORTAL_NO_DATE);
     }
     return stockMove.getEstimatedDate() != null
-        ? stockMove.getEstimatedDate().format(DATE_FORMATTER)
+        ? L10n.getInstance().format(stockMove.getEstimatedDate())
         : I18n.get(CLIENT_PORTAL_NO_DATE);
   }
 

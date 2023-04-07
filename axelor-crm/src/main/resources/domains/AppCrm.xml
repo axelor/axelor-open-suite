@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="studio" package="com.axelor.studio.db"/>
 
-  <entity name="AppCrm">
+  <entity name="AppCrm" cacheable="true">
     <one-to-one ref="com.axelor.studio.db.App" name="app"/>
 
     <integer name="assignableUsers" title="Assignable Users"
@@ -31,7 +31,17 @@
 
     <track>
       <field name="assignableUsers" on="UPDATE"/>
+      <field name="groupsAssignable" on="UPDATE"/>
       <field name="displayCustomerDescriptionInOpportunity" on="UPDATE"/>
+      <field name="isManageRecurrent" on="UPDATE"/>
+      <field name="defaultRecurringDuration" on="UPDATE"/>
+      <field name="isManageCatalogs" on="UPDATE"/>
+      <field name="agenciesManagement" on="UPDATE"/>
+      <field name="closedWinOpportunityStatus" on="UPDATE"/>
+      <field name="closedLostOpportunityStatus" on="UPDATE"/>
+      <field name="salesPropositionStatus" on="UPDATE"/>
+      <field name="convertedLeadStatus" on="UPDATE"/>
+      <field name="lostLeadStatus" on="UPDATE"/>
     </track>
   </entity>
 

@@ -202,8 +202,8 @@ public class DebtRecoverySessionService {
    * @throws AxelorException
    * @param relance
    */
-  @Transactional(rollbackOn = {Exception.class})
-  public void debtRecoveryInitialization(DebtRecovery debtRecovery) throws AxelorException {
+  @Transactional
+  public void debtRecoveryInitialization(DebtRecovery debtRecovery) {
 
     if (debtRecovery != null) {
       log.debug("Begin debtRecoveryInitialization service...");

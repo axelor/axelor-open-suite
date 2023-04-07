@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <form name="mail-account-form" id="base-mail-account-form" title="Mail account"
     model="com.axelor.message.db.EmailAccount" onNew="action-mail-account-default-record"
@@ -48,6 +48,9 @@
         title="Fetch emails"
         showIf="isValid &amp;&amp; serverTypeSelect != null &amp;&amp; serverTypeSelect &gt; 1"/>
     </panel>
+    <panel-mail name="mailPanel">
+      <mail-messages limit="4"/>
+    </panel-mail>
   </form>
 
   <action-record name="action-mail-account-default-record"

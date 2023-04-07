@@ -22,6 +22,7 @@ import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.DateService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.Lead;
@@ -55,8 +56,6 @@ import org.apache.commons.math3.exception.TooManyIterationsException;
 
 public class EventServiceImpl implements EventService {
 
-  private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-
   private static final DateTimeFormatter MONTH_FORMAT = DateTimeFormatter.ofPattern("dd/MM");
 
   protected PartnerService partnerService;
@@ -69,6 +68,8 @@ public class EventServiceImpl implements EventService {
 
   protected LeadRepository leadRepo;
 
+  protected DateService dateService;
+
   private static final int ITERATION_LIMIT = 1000;
 
   @Inject
@@ -77,12 +78,14 @@ public class EventServiceImpl implements EventService {
       EventRepository eventRepo,
       EmailAddressRepository emailAddressRepo,
       PartnerRepository partnerRepo,
-      LeadRepository leadRepo) {
+      LeadRepository leadRepo,
+      DateService dateService) {
     this.partnerService = partnerService;
     this.eventRepo = eventRepo;
     this.emailAddressRepo = emailAddressRepo;
     this.partnerRepo = partnerRepo;
     this.leadRepo = leadRepo;
+    this.dateService = dateService;
   }
 
   @Override
@@ -360,8 +363,10 @@ public class EventServiceImpl implements EventService {
   }
 
   @Override
-  public String computeRecurrenceName(RecurrenceConfiguration recurrConf) {
+  public String computeRecurrenceName(RecurrenceConfiguration recurrConf) throws AxelorException {
     String recurrName = "";
+    final DateTimeFormatter dateFormat = dateService.getDateFormat();
+
     switch (recurrConf.getRecurrenceType()) {
       case RecurrenceConfigurationRepository.TYPE_DAY:
         if (recurrConf.getPeriodicity() == 1) {
@@ -375,7 +380,7 @@ public class EventServiceImpl implements EventService {
               String.format(", " + I18n.get("%d times"), recurrConf.getRepetitionsNumber());
         } else if (recurrConf.getEndDate() != null) {
           recurrName +=
-              ", " + I18n.get("until the") + " " + recurrConf.getEndDate().format(DATE_FORMAT);
+              ", " + I18n.get("until the") + " " + recurrConf.getEndDate().format(dateFormat);
         }
         break;
 
@@ -432,7 +437,7 @@ public class EventServiceImpl implements EventService {
               String.format(" " + I18n.get("%d times"), recurrConf.getRepetitionsNumber());
         } else if (recurrConf.getEndDate() != null) {
           recurrName +=
-              " " + I18n.get("until the") + " " + recurrConf.getEndDate().format(DATE_FORMAT);
+              " " + I18n.get("until the") + " " + recurrConf.getEndDate().format(dateFormat);
         }
         break;
 
@@ -453,13 +458,14 @@ public class EventServiceImpl implements EventService {
               String.format(", " + I18n.get("%d times"), recurrConf.getRepetitionsNumber());
         } else if (recurrConf.getEndDate() != null) {
           recurrName +=
-              ", " + I18n.get("until the") + " " + recurrConf.getEndDate().format(DATE_FORMAT);
+              ", " + I18n.get("until the") + " " + recurrConf.getEndDate().format(dateFormat);
         }
         break;
 
       case RecurrenceConfigurationRepository.TYPE_YEAR:
         if (recurrConf.getPeriodicity() == 1) {
-          recurrName += I18n.get("Every year the") + recurrConf.getStartDate().format(MONTH_FORMAT);
+          recurrName +=
+              I18n.get("Every year the ") + recurrConf.getStartDate().format(MONTH_FORMAT);
         } else {
           recurrName +=
               String.format(
@@ -473,7 +479,7 @@ public class EventServiceImpl implements EventService {
               String.format(", " + I18n.get("%d times"), recurrConf.getRepetitionsNumber());
         } else if (recurrConf.getEndDate() != null) {
           recurrName +=
-              ", " + I18n.get("until the") + " " + recurrConf.getEndDate().format(DATE_FORMAT);
+              ", " + I18n.get("until the") + " " + recurrConf.getEndDate().format(dateFormat);
         }
         break;
 
