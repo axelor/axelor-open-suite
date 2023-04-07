@@ -34,4 +34,10 @@ public interface MoveCheckService {
   void checkRemovedLines(Move move) throws AxelorException;
 
   void checkAnalyticAccount(Move move) throws AxelorException;
+
+  void checkPartnerCompatible(Move move) throws AxelorException;
+
+  void checkDuplicatedMoveOrigin(Move move) throws AxelorException;
+
+  void checkOrigin(Move move) throws AxelorException;
 }

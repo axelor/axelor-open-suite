@@ -5,9 +5,11 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.journal.JournalCheckPartnerTypeService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.PeriodService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -18,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 public class MoveCheckServiceImpl implements MoveCheckService {
@@ -27,6 +30,7 @@ public class MoveCheckServiceImpl implements MoveCheckService {
   protected PeriodService periodService;
   protected AppAccountService appAccountService;
   protected MoveLineCheckService moveLineCheckService;
+  protected JournalCheckPartnerTypeService journalCheckPartnerTypeService;
 
   @Inject
   public MoveCheckServiceImpl(
@@ -34,12 +38,14 @@ public class MoveCheckServiceImpl implements MoveCheckService {
       MoveToolService moveToolService,
       PeriodService periodService,
       AppAccountService appAccountService,
-      MoveLineCheckService moveLineCheckService) {
+      MoveLineCheckService moveLineCheckService,
+      JournalCheckPartnerTypeService journalCheckPartnerTypeService) {
     this.moveRepository = moveRepository;
     this.moveToolService = moveToolService;
     this.periodService = periodService;
     this.appAccountService = appAccountService;
     this.moveLineCheckService = moveLineCheckService;
+    this.journalCheckPartnerTypeService = journalCheckPartnerTypeService;
   }
 
   @Override
@@ -119,6 +125,46 @@ public class MoveCheckServiceImpl implements MoveCheckService {
     Objects.requireNonNull(move);
     if (move != null && CollectionUtils.isNotEmpty(move.getMoveLineList())) {
       moveLineCheckService.checkAnalyticAccount(move.getMoveLineList());
+    }
+  }
+
+  @Override
+  public void checkPartnerCompatible(Move move) throws AxelorException {
+    if (move.getPartner() != null) {
+      boolean isPartnerCompatible =
+          journalCheckPartnerTypeService.isPartnerCompatible(move.getJournal(), move.getPartner());
+      if (!isPartnerCompatible) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(AccountExceptionMessage.MOVE_PARTNER_IS_NOT_COMPATIBLE_WITH_SELECTED_JOURNAL));
+      }
+    }
+  }
+
+  @Override
+  public void checkDuplicatedMoveOrigin(Move move) throws AxelorException {
+    if (move.getJournal() != null
+        && move.getPartner() != null
+        && move.getJournal().getHasDuplicateDetectionOnOrigin()) {
+      List<Move> moveList = moveToolService.getMovesWithDuplicatedOrigin(move);
+      if (ObjectUtils.notEmpty(moveList)) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            String.format(
+                I18n.get(AccountExceptionMessage.MOVE_DUPLICATE_ORIGIN_NON_BLOCKING_MESSAGE),
+                moveList.stream().map(Move::getReference).collect(Collectors.joining(",")),
+                move.getPartner().getFullName(),
+                move.getPeriod().getYear().getName()));
+      }
+    }
+  }
+
+  @Override
+  public void checkOrigin(Move move) throws AxelorException {
+    if (move.getOrigin() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(AccountExceptionMessage.MOVE_CHECK_ORIGIN));
     }
   }
 }

@@ -33,7 +33,6 @@ import com.axelor.apps.account.service.PeriodServiceAccount;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
-import com.axelor.apps.account.service.journal.JournalCheckPartnerTypeService;
 import com.axelor.apps.account.service.move.MoveComputeService;
 import com.axelor.apps.account.service.move.MoveCounterPartService;
 import com.axelor.apps.account.service.move.MoveInvoiceTermService;
@@ -694,25 +693,6 @@ public class MoveController {
     }
   }
 
-  public void onChangeJournal(ActionRequest request, ActionResponse response) {
-    try {
-      Move move = request.getContext().asType(Move.class);
-      if (move.getPartner() != null) {
-        boolean isPartnerCompatible =
-            Beans.get(JournalCheckPartnerTypeService.class)
-                .isPartnerCompatible(move.getJournal(), move.getPartner());
-        if (!isPartnerCompatible) {
-          response.setValue("partner", null);
-          response.setNotify(
-              I18n.get(
-                  AccountExceptionMessage.MOVE_PARTNER_IS_NOT_COMPATIBLE_WITH_SELECTED_JOURNAL));
-        }
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-    }
-  }
-
   public void roundInvoiceTermPercentages(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
@@ -1106,8 +1086,17 @@ public class MoveController {
 
       response.setValues(result.getValues());
       response.setAttrs(result.getAttrs());
+      if (!result.getFlash().isEmpty()) {
+        response.setFlash(result.getFlash());
+      }
+      if (!result.getNotify().isEmpty()) {
+        response.setNotify(result.getNotify());
+      }
+      if (!result.getAlert().isEmpty()) {
+        response.setAlert(result.getAlert());
+      }
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 
@@ -1117,8 +1106,17 @@ public class MoveController {
       MoveContext result = Beans.get(MoveRecordService.class).onLoad(move, request.getContext());
       response.setValues(result.getValues());
       response.setAttrs(result.getAttrs());
+      if (!result.getFlash().isEmpty()) {
+        response.setFlash(result.getFlash());
+      }
+      if (!result.getNotify().isEmpty()) {
+        response.setNotify(result.getNotify());
+      }
+      if (!result.getAlert().isEmpty()) {
+        response.setAlert(result.getAlert());
+      }
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 
@@ -1132,9 +1130,15 @@ public class MoveController {
       if (!result.getFlash().isEmpty()) {
         response.setFlash(result.getFlash());
       }
+      if (!result.getNotify().isEmpty()) {
+        response.setNotify(result.getNotify());
+      }
+      if (!result.getAlert().isEmpty()) {
+        response.setAlert(result.getAlert());
+      }
 
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 
@@ -1148,9 +1152,147 @@ public class MoveController {
       if (!result.getFlash().isEmpty()) {
         response.setFlash(result.getFlash());
       }
+      if (!result.getNotify().isEmpty()) {
+        response.setNotify(result.getNotify());
+      }
+      if (!result.getAlert().isEmpty()) {
+        response.setAlert(result.getAlert());
+      }
 
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void onChangeDate(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      MoveContext result =
+          Beans.get(MoveRecordService.class).onChangeDate(move, request.getContext());
+      response.setValues(result.getValues());
+      response.setAttrs(result.getAttrs());
+      if (!result.getFlash().isEmpty()) {
+        response.setFlash(result.getFlash());
+      }
+      if (!result.getNotify().isEmpty()) {
+        response.setNotify(result.getNotify());
+      }
+      if (!result.getAlert().isEmpty()) {
+        response.setAlert(result.getAlert());
+      }
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void onChangeJournal(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      MoveContext result =
+          Beans.get(MoveRecordService.class).onChangeJournal(move, request.getContext());
+      response.setValues(result.getValues());
+      response.setAttrs(result.getAttrs());
+      if (!result.getFlash().isEmpty()) {
+        response.setFlash(result.getFlash());
+      }
+      if (!result.getNotify().isEmpty()) {
+        response.setNotify(result.getNotify());
+      }
+      if (!result.getAlert().isEmpty()) {
+        response.setAlert(result.getAlert());
+      }
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void onChangePartner(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      MoveContext result =
+          Beans.get(MoveRecordService.class).onChangePartner(move, request.getContext());
+      response.setValues(result.getValues());
+      response.setAttrs(result.getAttrs());
+      if (!result.getFlash().isEmpty()) {
+        response.setFlash(result.getFlash());
+      }
+      if (!result.getNotify().isEmpty()) {
+        response.setNotify(result.getNotify());
+      }
+      if (!result.getAlert().isEmpty()) {
+        response.setAlert(result.getAlert());
+      }
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void onChangeMoveLineList(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      MoveContext result =
+          Beans.get(MoveRecordService.class).onChangeMoveLineList(move, request.getContext());
+      response.setValues(result.getValues());
+      response.setAttrs(result.getAttrs());
+      if (!result.getFlash().isEmpty()) {
+        response.setFlash(result.getFlash());
+      }
+      if (!result.getNotify().isEmpty()) {
+        response.setNotify(result.getNotify());
+      }
+      if (!result.getAlert().isEmpty()) {
+        response.setAlert(result.getAlert());
+      }
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void onChangeOriginDate(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      MoveContext result =
+          Beans.get(MoveRecordService.class).onChangeOriginDate(move, request.getContext());
+      response.setValues(result.getValues());
+      response.setAttrs(result.getAttrs());
+      if (!result.getFlash().isEmpty()) {
+        response.setFlash(result.getFlash());
+      }
+      if (!result.getNotify().isEmpty()) {
+        response.setNotify(result.getNotify());
+      }
+      if (!result.getAlert().isEmpty()) {
+        response.setAlert(result.getAlert());
+      }
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void onChangeOrigin(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      MoveContext result =
+          Beans.get(MoveRecordService.class).onChangeOrigin(move, request.getContext());
+      response.setValues(result.getValues());
+      response.setAttrs(result.getAttrs());
+      if (!result.getFlash().isEmpty()) {
+        response.setFlash(result.getFlash());
+      }
+      if (!result.getNotify().isEmpty()) {
+        response.setNotify(result.getNotify());
+      }
+      if (!result.getAlert().isEmpty()) {
+        response.setAlert(result.getAlert());
+      }
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 }

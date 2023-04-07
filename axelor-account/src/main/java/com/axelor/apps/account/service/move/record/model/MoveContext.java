@@ -10,6 +10,8 @@ public class MoveContext {
   protected final Map<String, Object> valuesContext;
   protected final Map<String, Map<String, Object>> attrsContext;
   protected StringJoiner flashContext = new StringJoiner("\n");
+  protected StringJoiner alertContext = new StringJoiner("\n");
+  protected StringJoiner notifyContext = new StringJoiner("\n");
 
   public MoveContext() {
     this.valuesContext = new HashMap<>();
@@ -53,11 +55,28 @@ public class MoveContext {
     return flashContext.toString();
   }
 
+  public void putInAlert(String value) {
+    this.alertContext.add(value);
+  }
+
+  public String getAlert() {
+    return alertContext.toString();
+  }
+
+  public void putInNotify(String value) {
+    this.notifyContext.add(value);
+  }
+
+  public String getNotify() {
+    return notifyContext.toString();
+  }
+
   public void merge(MoveContext moveContext) {
     if (moveContext != null) {
       this.attrsContext.putAll(moveContext.getAttrs());
       this.valuesContext.putAll(moveContext.getValues());
       this.flashContext.add(moveContext.getFlash());
+      this.alertContext.add(moveContext.getAlert());
     }
   }
 }

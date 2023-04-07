@@ -16,4 +16,6 @@ public interface MoveRecordUpdateService {
   void updateDueDate(Move move, Context context);
 
   void updateInDayBookMode(Move move) throws AxelorException;
+
+  void updateMoveLinesCurrencyRate(Move move, Context context) throws AxelorException;
 }

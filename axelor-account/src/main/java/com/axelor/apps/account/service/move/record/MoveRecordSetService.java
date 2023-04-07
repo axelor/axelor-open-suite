@@ -68,5 +68,13 @@ public interface MoveRecordSetService {
    */
   Map<String, Object> setFunctionalOriginSelect(Move move);
 
-  void setPeriod(Move move) throws AxelorException;
+  Map<String, Object> setPeriod(Move move) throws AxelorException;
+
+  Map<String, Object> setMoveLineDates(Move move) throws AxelorException;
+
+  Map<String, Object> setCompanyBankDetails(Move move) throws AxelorException;
+
+  Map<String, Object> setMoveLineOriginDates(Move move) throws AxelorException;
+
+  Map<String, Object> setOriginOnMoveLineList(Move move) throws AxelorException;
 }

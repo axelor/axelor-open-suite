@@ -6,7 +6,9 @@ import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.move.MoveInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.move.record.model.MoveContext;
+import com.axelor.apps.account.service.moveline.MoveLineCurrencyService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.rpc.Context;
@@ -20,17 +22,20 @@ public class MoveRecordUpdateServiceImpl implements MoveRecordUpdateService {
   protected MoveRepository moveRepository;
   protected MoveInvoiceTermService moveInvoiceTermService;
   protected MoveValidateService moveValidateService;
+  protected MoveLineCurrencyService moveLineCurrencyService;
 
   @Inject
   public MoveRecordUpdateServiceImpl(
       MoveLineService moveLineService,
       MoveRepository moveRepository,
       MoveInvoiceTermService moveInvoiceTermService,
-      MoveValidateService moveValidateService) {
+      MoveValidateService moveValidateService,
+      MoveLineCurrencyService moveLineCurrencyService) {
     this.moveLineService = moveLineService;
     this.moveRepository = moveRepository;
     this.moveInvoiceTermService = moveInvoiceTermService;
     this.moveValidateService = moveValidateService;
+    this.moveLineCurrencyService = moveLineCurrencyService;
   }
 
   @Override
@@ -107,6 +112,18 @@ public class MoveRecordUpdateServiceImpl implements MoveRecordUpdateService {
     if (move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK
         || move.getStatusSelect() == MoveRepository.STATUS_SIMULATED) {
       moveValidateService.updateInDayBookMode(move);
+    }
+  }
+
+  @Override
+  public void updateMoveLinesCurrencyRate(Move move, Context context) throws AxelorException {
+    LocalDate dueDate = this.extractDueDate(context);
+
+    if (move != null
+        && ObjectUtils.notEmpty(move.getMoveLineList())
+        && move.getCurrency() != null
+        && move.getCompanyCurrency() != null) {
+      moveLineCurrencyService.computeNewCurrencyRateOnMoveLineList(move, dueDate);
     }
   }
 }
