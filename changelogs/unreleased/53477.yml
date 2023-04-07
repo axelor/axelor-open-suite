@@ -1,0 +1,6 @@
+---
+title: "Meta Group Menu Assistant : fix errors linked to the create file button"
+type: fix
+description: |
+  Fix an error occurring when saving before creating a file.
+  Creating a file doesn't generate an empty file anymore.
