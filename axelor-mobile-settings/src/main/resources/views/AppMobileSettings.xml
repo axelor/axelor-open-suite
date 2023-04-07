@@ -44,12 +44,26 @@
     </panel>
     <panel-tabs name="appConfigPanelTab">
       <panel name="stockConfigPanel" title="Stock" hideIf="!isStockAppEnable">
-        <field name="isTrackerMessageOnStockApp" widget="boolean-switch" colSpan="4"/>
-        <field name="isInventoryValidationEnable" widget="boolean-switch" colSpan="4"/>
-        <field name="isStockCorrectionValidationEnable" widget="boolean-switch" colSpan="4"/>
-        <field name="manageCarrierOption" widget="boolean-switch" colSpan="4" hidden="true"/>
-        <!-- This field manageCarrierOption will be used later when carrier mode is implemented in AOS
-          and App mobile -->
+        <panel name="generalStockConfigPanel" title="General configuration" colSpan="6">
+          <field name="isTrackerMessageOnStockApp" widget="boolean-switch" colSpan="12"/>
+          <field name="isInventoryValidationEnable" widget="boolean-switch" colSpan="4"/>
+          <field name="isStockCorrectionValidationEnable" widget="boolean-switch" colSpan="4"/>
+          <field name="manageCarrierOption" widget="boolean-switch" colSpan="12" hidden="true"/>
+          <!-- This field manageCarrierOption will be used later when carrier mode is implemented in
+            AOS and App mobile -->
+        </panel>
+        <panel name="stockLineConfigPanel" title="Activation of stock line verification"
+          colSpan="6"
+          help="For each of the following features, if configuration is enabled, users will be asked to confirm the tracking number or product of the line before accessing the details screen. If the setting is disabled, they will be able to access the details screen directly.">
+          <field name="isVerifyCustomerDeliveryLineEnabled" title="On customer deliveries"
+            widget="boolean-switch" colSpan="6"/>
+          <field name="isVerifySupplierArrivalLineEnabled" title="On supplier arrivals"
+            widget="boolean-switch" colSpan="6"/>
+          <field name="isVerifyInternalMoveLineEnabled" title="On internal moves"
+            widget="boolean-switch" colSpan="6"/>
+          <field name="isVerifyInventoryLineEnabled" title="On inventories"
+            widget="boolean-switch" colSpan="6"/>
+        </panel>
       </panel>
       <panel name="productionConfigPanel" title="Production" hideIf="!isProductionAppEnable">
         <field name="isTrackerMessageOnProductionApp" widget="boolean-switch" colSpan="4"/>
