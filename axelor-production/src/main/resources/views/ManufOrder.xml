@@ -239,7 +239,7 @@
           <field name="plannedStartDateT" title="Start date"
             onChange="action-manuf-order-method-update-planned-dates"/>
           <field name="plannedEndDateT" title="End date"
-            onChange="action-manuf-order-validate-planned-end-date"/>
+            onChange="action-manuf-order-validate-planned-end-date" requiredIf="statusSelect > 1"/>
           <field name="$totalPlannedDuration" title="Total Planned Duration" type="long"
             readonly="true" widget="duration" x-seconds="true" x-big="true"/>
           <field name="cancelReason" hidden="true" grid-view="cancel-reason-grid"
@@ -896,7 +896,7 @@
   <action-validate name="action-manuf-order-validate-planned-end-date"
     model="com.axelor.apps.production.db.ManufOrder">
     <alert message="The planned end date is inferior to the actual date"
-      if="plannedEndDateT.isBefore(__config__.app.getTodayDateTime().toLocalDateTime())"/>
+      if="plannedEndDateT?.isBefore(__config__.app.getTodayDateTime().toLocalDateTime())"/>
   </action-validate>
 
   <action-group name="action-manuf-order-group-merge">

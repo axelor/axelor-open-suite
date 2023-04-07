@@ -66,9 +66,9 @@ public class ExpenseHRRepository extends ExpenseRepository {
     if (CollectionUtils.isNotEmpty(expense.getKilometricExpenseLineList())) {
       expense.getKilometricExpenseLineList().forEach(line -> line.setExpenseDate(null));
     }
-    expense.setSentDate(null);
+    expense.setSentDateTime(null);
     expense.setValidatedBy(null);
-    expense.setValidationDate(null);
+    expense.setValidationDateTime(null);
     expense.setPeriod(expenseFetchPeriodService.getPeriod(expense));
     expense.setExpenseSeq(null);
     expense.setMove(null);

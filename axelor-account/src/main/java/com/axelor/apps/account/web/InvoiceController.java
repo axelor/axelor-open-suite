@@ -1012,7 +1012,7 @@ public class InvoiceController {
           "pfpValidatorUser", "hidden", !invoiceVisibilityService.isValidatorUserVisible(invoice));
 
       response.setAttr(
-          "decisionPfpTakenDate",
+          "decisionPfpTakenDateTime",
           "hidden",
           !invoiceVisibilityService.isDecisionPfpVisible(invoice));
 
