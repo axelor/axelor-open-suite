@@ -58,7 +58,6 @@ public class FakerServiceImpl implements FakerService {
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(AdminExceptionMessage.FAKER_CLASS_DOES_NOT_EXIST),
           fakerApiField.getClassName());
-
     } catch (IllegalAccessException | InvocationTargetException e) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
