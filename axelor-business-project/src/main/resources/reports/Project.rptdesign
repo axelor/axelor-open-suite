@@ -6568,8 +6568,8 @@ order by task_end_date]]></xml-property>
                                     <property name="borderRightWidth">thin</property>
                                     <data id="5789">
                                         <structure name="dateTimeFormat">
-                                            <property name="category">Custom</property>
-                                            <property name="pattern">dd/MM/yyyy HH:mm</property>
+                                            <property name="category">Short Date</property>
+                                            <property name="pattern">Short Date</property>
                                         </structure>
                                         <property name="textAlign">center</property>
                                         <property name="resultSetColumn">tm_validation_date</property>
