@@ -1,5 +1,7 @@
 package com.axelor.apps.account.service.move.record;
 
+import java.util.Objects;
+
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.PeriodServiceAccount;
@@ -12,7 +14,6 @@ import com.axelor.exception.AxelorException;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.util.Objects;
 
 public class MoveRecordServiceImpl implements MoveRecordService {
 
@@ -122,9 +123,10 @@ public class MoveRecordServiceImpl implements MoveRecordService {
         "$isThereRelatedCutOffMoves", moveCheckService.checkRelatedCutoffMoves(move));
     result.putInValues(moveCheckService.checkPeriodAndStatus(move));
     result.putInAttrs(moveAttrsService.getFunctionalOriginSelectDomain(move));
-    // result.putInAttrs(moveAttrsService.computeAndGetDueDate(move, context));
+    result.putInAttrs(moveAttrsService.computeAndGetDueDate(move, context));
     result.putInAttrs(moveAttrsService.getMoveLineAnalyticAttrs(move));
 
     return result;
   }
+
 }
