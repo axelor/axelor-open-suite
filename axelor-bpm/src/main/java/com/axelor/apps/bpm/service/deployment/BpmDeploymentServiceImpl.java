@@ -132,6 +132,7 @@ public class BpmDeploymentServiceImpl implements BpmDeploymentService {
 
     if (wkfModel.getDeploymentId() != null && migrationMap != null) {
       migrateRunningInstances(wkfModel.getDeploymentId(), engine, definitions);
+      Beans.get(WkfNodeService.class).removeOldMenus(wkfModel);
     }
 
     if (definitions.size() == 1) {
