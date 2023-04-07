@@ -1,6 +1,8 @@
 package com.axelor.apps.account.service.move.attributes;
 
 import com.axelor.apps.account.db.Move;
+import com.axelor.exception.AxelorException;
+import com.axelor.rpc.Context;
 import java.util.Map;
 
 public interface MoveAttrsService {
@@ -25,4 +27,11 @@ public interface MoveAttrsService {
    * @return generated map
    */
   Map<String, Map<String, Object>> getFunctionalOriginSelectDomain(Move move);
+
+  boolean isHiddenMoveLineListViewer(Move move);
+
+  Map<String, Map<String, Object>> getMoveLineAnalyticAttrs(Move move) throws AxelorException;
+
+  Map<String, Map<String, Object>> computeAndGetDueDate(Move move, Context context)
+      throws AxelorException;
 }

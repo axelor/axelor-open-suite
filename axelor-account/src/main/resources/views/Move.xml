@@ -51,7 +51,7 @@
 
   <form name="move-form" title="Account move" canArchive="false"
     model="com.axelor.apps.account.db.Move" canDelete="false" width="large"
-    onNew="action-account-move-onnew-group" onLoad="action-account-move-group-onload"
+    onNew="action-account-move-method-onnew" onLoad="action-account-move-method-onLoad"
     onSave="action-account-move-group-onsave" readonlyIf="$simulatedPeriodClosed">
     <toolbar>
       <button name="printBtn" title="Print Move" icon="fa-print"
@@ -360,8 +360,8 @@
   </form>
 
   <form name="move-simplified-form" title="Account move"
-    model="com.axelor.apps.account.db.Move" width="large" onLoad="action-account-move-group-onload"
-    onSave="action-account-move-group-onsave" onNew="action-account-move-onnew-group"
+    model="com.axelor.apps.account.db.Move" width="large" onLoad="action-account-move-method-onLoad"
+    onSave="action-account-move-group-onsave" onNew="action-account-move-method-onnew"
     canDelete="false" canArchive="false">
     <toolbar>
       <button name="printBtn" title="Print Move" icon="fa-print"
@@ -583,47 +583,27 @@
       if="dateOfReversionSelect == 3"/>
   </action-record>
 
-  <!-- ACTION GROUPs -->
-  <action-group name="action-account-move-onnew-group">
-    <action name="action-move-method-default-move"/>
-    <action name="action-move-method-set-default-move-currency"/>
-    <action name="action-move-method-set-journal"/>
-    <action name="action-move-method-get-period"/>
-    <action name="action-move-method-hide-move-line-fields-in-draft-status"/>
-    <action name="action-move-is-hidden-move-line-list-viewer-attrs-method"/>
-    <action name="action-method-initialize-permission-validation-move"/>
-    <action name="action-move-method-check-period-and-status"/>
-    <action name="action-move-method-set-functional-origin-select-domain"/>
-    <action name="action-move-method-set-functional-origin-select"/>
-    <action name="action-move-method-check-period-permissions"/>
-    <action name="action-method-hide-axis-analytic-account-move-line"/>
-  </action-group>
+  <action-method name="action-account-move-method-onnew">
+    <call class="com.axelor.apps.account.web.MoveController" method="onNew"/>
+  </action-method>
 
-  <action-group name="action-account-move-group-onload">
-    <action name="action-move-method-hide-move-line-fields-in-draft-status"/>
-    <action name="action-account-move-method-compute-totals"/>
-    <action name="action-move-is-hidden-move-line-list-viewer-attrs-method"/>
-    <action name="action-method-initialize-permission-validation-move"/>
-    <action name="action-move-method-check-related-cut-off-moves"
-      if="__config__.app.getApp('account').manageCutOffPeriod"/>
-    <action name="action-move-method-check-period-and-status"/>
-    <action name="action-move-method-set-functional-origin-select-domain"/>
-    <action name="action-move-method-display-and-compute-due-date"/>
-    <action name="action-method-hide-axis-analytic-account-move-line"/>
-  </action-group>
+  <action-method name="action-account-move-method-onLoad">
+    <call class="com.axelor.apps.account.web.MoveController" method="onLoad"/>
+  </action-method>
+
+  <action-method name="action-account-move-method-onSave-before">
+    <call class="com.axelor.apps.account.web.MoveController" method="onSaveBefore"/>
+  </action-method>
+
+  <action-method name="action-account-move-method-onSave-after">
+    <call class="com.axelor.apps.account.web.MoveController" method="onSaveAfter"/>
+  </action-method>
+
 
   <action-group name="action-account-move-group-onsave">
-    <action name="action-move-method-check-dates"/>
-    <action name="action-move-method-check-period-permissions"/>
-    <action name="action-move-method-check-remove-lines"/>
-    <action name="action-move-line-check-distribution-template-account"/>
-    <action name="action-move-method-update-partner" if="id != null"/>
+    <action name="action-account-move-method-onSave-before"/>
     <action name="save"/>
-    <action name="action-move-method-update-invoice-terms"/>
-    <action name="action-move-method-round-invoice-term-percentages"/>
-    <action name="action-move-method-update-due-date"/>
-    <action name="action-move-method-update-in-day-book-mode"/>
-    <action name="action-move-method-display-and-compute-due-date"/>
+    <action name="action-account-move-method-onSave-after"/>
   </action-group>
 
   <action-group name="action-account-move-group-generate-counterpart">
@@ -645,6 +625,11 @@
     <action name="action-move-method-accounting"/>
   </action-group>
 
+  <action-group name="action-move-account-group-simulate">
+    <action name="action-account-move-group-onsave"/>
+    <action name="action-move-method-set-status-simulate"/>
+  </action-group>
+
   <action-group name="action-account-move-group-set-description-on-lines">
     <action name="action-account-move-method-description-is-empty"/>
     <action name="action-account-move-method-set-description-on-lines"/>
@@ -657,10 +642,7 @@
     <action name="action-account-move-method-set-origin-on-lines"/>
   </action-group>
 
-  <action-group name="action-move-account-group-simulate">
-    <action name="action-account-move-group-onsave"/>
-    <action name="action-move-method-set-status-simulate"/>
-  </action-group>
+
 
   <action-group name="action-group-move-company-onchange">
     <action name="action-move-method-set-journal"/>
@@ -757,10 +739,6 @@
     <error message="$paymentConditionChangeError"
       if="!com.google.common.base.Strings.isNullOrEmpty(paymentConditionChangeError)"/>
   </action-validate>
-
-  <action-method name="action-move-method-default-move">
-    <call class="com.axelor.apps.account.web.MoveController" method="setDefaultMove"/>
-  </action-method>
 
   <action-method name="action-move-method-set-default-move-currency">
     <call class="com.axelor.apps.account.web.MoveController" method="setDefaultCurrency"/>

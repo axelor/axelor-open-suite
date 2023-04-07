@@ -1,138 +1,130 @@
 package com.axelor.apps.account.service.move.record;
 
-import com.axelor.apps.account.db.AccountConfig;
-import com.axelor.apps.account.db.Journal;
-import com.axelor.apps.account.db.JournalType;
 import com.axelor.apps.account.db.Move;
-import com.axelor.apps.account.db.repo.JournalTypeRepository;
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Currency;
-import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.service.PeriodServiceAccount;
+import com.axelor.apps.account.service.move.MoveComputeService;
+import com.axelor.apps.account.service.move.attributes.MoveAttrsService;
+import com.axelor.apps.account.service.move.control.MoveCheckService;
+import com.axelor.apps.account.service.move.record.model.MoveContext;
+import com.axelor.auth.AuthUtils;
+import com.axelor.exception.AxelorException;
+import com.axelor.rpc.Context;
+import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.util.Objects;
-import java.util.Optional;
 
 public class MoveRecordServiceImpl implements MoveRecordService {
 
-  @Override
-  public Move setPaymentMode(Move move) {
-    Objects.requireNonNull(move);
+  protected MoveDefaultService moveDefaultService;
+  protected MoveAttrsService moveAttrsService;
+  protected PeriodServiceAccount periodAccountService;
+  protected MoveCheckService moveCheckService;
+  protected MoveComputeService moveComputeService;
+  protected MoveRecordUpdateService moveRecordUpdateService;
+  protected MoveRecordSetService moveRecordSetService;
+  protected MoveRepository moveRepository;
 
-    Partner partner = move.getPartner();
-    JournalType journalType =
-        Optional.ofNullable(move.getJournal()).map(Journal::getJournalType).orElse(null);
-
-    if (partner != null && journalType != null) {
-      if (journalType
-          .getTechnicalTypeSelect()
-          .equals(JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE)) {
-        move.setPaymentMode(partner.getOutPaymentMode());
-      } else if (journalType
-          .getTechnicalTypeSelect()
-          .equals(JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE)) {
-        move.setPaymentMode(partner.getInPaymentMode());
-      } else {
-        move.setPaymentMode(null);
-      }
-    } else {
-      move.setPaymentMode(null);
-    }
-    return move;
+  @Inject
+  public MoveRecordServiceImpl(
+      MoveDefaultService moveDefaultService,
+      MoveAttrsService moveAttrsService,
+      PeriodServiceAccount periodAccountService,
+      MoveCheckService moveCheckService,
+      MoveComputeService moveComputeService,
+      MoveRecordUpdateService moveRecordUpdateService,
+      MoveRecordSetService moveRecordSetService,
+      MoveRepository moveRepository) {
+    this.moveDefaultService = moveDefaultService;
+    this.moveAttrsService = moveAttrsService;
+    this.periodAccountService = periodAccountService;
+    this.moveCheckService = moveCheckService;
+    this.moveComputeService = moveComputeService;
+    this.moveRecordUpdateService = moveRecordUpdateService;
+    this.moveRepository = moveRepository;
+    this.moveRecordSetService = moveRecordSetService;
   }
 
   @Override
-  public Move setPaymentCondition(Move move) {
+  @Transactional(rollbackOn = Exception.class)
+  public MoveContext onSaveBefore(Move move, Context context) throws AxelorException {
     Objects.requireNonNull(move);
+    Objects.requireNonNull(context);
 
-    Partner partner = move.getPartner();
-    JournalType journalType =
-        Optional.ofNullable(move.getJournal()).map(Journal::getJournalType).orElse(null);
+    MoveContext result = new MoveContext();
 
-    if (partner != null
-        && journalType != null
-        && !journalType
-            .getTechnicalTypeSelect()
-            .equals(JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY)) {
-      move.setPaymentCondition(partner.getPaymentCondition());
-    } else {
-      move.setPaymentCondition(null);
-    }
+    moveCheckService.checkDates(move);
+    moveCheckService.checkPeriodPermission(move);
+    moveCheckService.checkRemovedLines(move);
+    moveCheckService.checkAnalyticAccount(move);
+    moveRecordUpdateService.updatePartner(move);
 
-    return move;
+    return result;
   }
 
   @Override
-  public Move setPartnerBankDetails(Move move) {
+  @Transactional(rollbackOn = Exception.class)
+  public MoveContext onSaveAfter(Move move, Context context) throws AxelorException {
     Objects.requireNonNull(move);
+    Objects.requireNonNull(context);
 
-    Partner partner = move.getPartner();
+    MoveContext result = new MoveContext();
 
-    if (partner != null) {
-      move.setPartnerBankDetails(
-          partner.getBankDetailsList().stream()
-              .filter(bankDetails -> bankDetails.getIsDefault() && bankDetails.getActive())
-              .findFirst()
-              .orElse(null));
-    } else {
-      move.setPartnerBankDetails(null);
-    }
-    return move;
+    result.merge(moveRecordUpdateService.updateInvoiceTerms(move, context));
+    moveRecordUpdateService.updateRoundInvoiceTermPercentages(move);
+    moveRecordUpdateService.updateDueDate(move, context);
+    moveRecordUpdateService.updateInDayBookMode(move);
+
+    return result;
   }
 
   @Override
-  public Move setCurrencyByPartner(Move move) {
+  public MoveContext onNew(Move move) throws AxelorException {
     Objects.requireNonNull(move);
 
-    Partner partner = move.getPartner();
+    MoveContext result = new MoveContext();
 
-    if (partner != null) {
-      move.setCurrency(partner.getCurrency());
-      move.setCurrencyCode(
-          Optional.ofNullable(partner.getCurrency()).map(Currency::getCodeISO).orElse(null));
-      move.setFiscalPosition(partner.getFiscalPosition());
-    }
+    result.putInValues(moveDefaultService.setDefaultMoveValues(move));
+    result.putInValues(moveDefaultService.setDefaultCurrency(move));
+    result.putInValues(moveRecordSetService.setJournal(move));
+    moveRecordSetService.setPeriod(move);
+    result.putInValues("period", move.getPeriod());
+    result.putInAttrs(moveAttrsService.getHiddenAttributeValues(move));
+    result.putInAttrs(
+        "$reconcileTags", "hidden", moveAttrsService.isHiddenMoveLineListViewer(move));
+    result.putInValues(
+        "$validatePeriod",
+        !periodAccountService.isAuthorizedToAccountOnPeriod(move, AuthUtils.getUser()));
+    result.putInValues(moveCheckService.checkPeriodAndStatus(move));
+    result.putInAttrs(moveAttrsService.getFunctionalOriginSelectDomain(move));
+    result.putInValues(moveRecordSetService.setFunctionalOriginSelect(move));
+    moveCheckService.checkPeriodPermission(move);
+    result.putInAttrs(moveAttrsService.getMoveLineAnalyticAttrs(move));
 
-    return move;
+    return result;
   }
 
   @Override
-  public Move setCurrencyCode(Move move) {
+  public MoveContext onLoad(Move move, Context context) throws AxelorException {
     Objects.requireNonNull(move);
+    Objects.requireNonNull(context);
 
-    if (move.getCurrency() != null) {
-      move.setCurrencyCode(move.getCurrency().getCodeISO());
-    } else {
-      move.setCurrencyCode(null);
-    }
+    MoveContext result = new MoveContext();
 
-    return move;
-  }
+    result.putInAttrs(moveAttrsService.getHiddenAttributeValues(move));
+    result.putInValues(moveComputeService.computeTotals(move));
+    result.putInAttrs(
+        "$reconcileTags", "hidden", moveAttrsService.isHiddenMoveLineListViewer(move));
+    result.putInValues(
+        "$validatePeriod",
+        !periodAccountService.isAuthorizedToAccountOnPeriod(move, AuthUtils.getUser()));
+    result.putInValues(
+        "$isThereRelatedCutOffMoves", moveCheckService.checkRelatedCutoffMoves(move));
+    result.putInValues(moveCheckService.checkPeriodAndStatus(move));
+    result.putInAttrs(moveAttrsService.getFunctionalOriginSelectDomain(move));
+    // result.putInAttrs(moveAttrsService.computeAndGetDueDate(move, context));
+    result.putInAttrs(moveAttrsService.getMoveLineAnalyticAttrs(move));
 
-  @Override
-  public Move setJournal(Move move) {
-    Objects.requireNonNull(move);
-
-    move.setJournal(
-        Optional.ofNullable(move.getCompany())
-            .map(Company::getAccountConfig)
-            .map(AccountConfig::getManualMiscOpeJournal)
-            .orElse(null));
-    return move;
-  }
-
-  @Override
-  public Move setFunctionalOriginSelect(Move move) {
-    Objects.requireNonNull(move);
-
-    if (move.getJournal() != null
-        && move.getJournal().getAuthorizedFunctionalOriginSelect() != null) {
-      if (move.getJournal().getAuthorizedFunctionalOriginSelect().split(",").length == 1) {
-        move.setFunctionalOriginSelect(
-            Integer.valueOf(move.getJournal().getAuthorizedFunctionalOriginSelect()));
-      } else {
-        move.setFunctionalOriginSelect(null);
-      }
-    }
-
-    return move;
+    return result;
   }
 }

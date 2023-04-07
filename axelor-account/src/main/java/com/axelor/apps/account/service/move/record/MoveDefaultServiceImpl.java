@@ -7,6 +7,8 @@ import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.user.UserService;
 import com.google.inject.Inject;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 public class MoveDefaultServiceImpl implements MoveDefaultService {
@@ -24,10 +26,23 @@ public class MoveDefaultServiceImpl implements MoveDefaultService {
   }
 
   @Override
-  public Move setDefaultMoveValues(Move move) {
+  public Map<String, Object> setDefaultMoveValues(Move move) {
 
     Objects.requireNonNull(move);
+    HashMap<String, Object> resultMap = new HashMap<>();
 
+    setDefaultValues(move);
+
+    resultMap.put("company", move.getCompany());
+    resultMap.put("getInfoFromFirstMoveLineOk", move.getGetInfoFromFirstMoveLineOk());
+    resultMap.put("date", move.getDate());
+    resultMap.put("technicalOriginSelect", move.getTechnicalOriginSelect());
+    resultMap.put("tradingName", move.getTradingName());
+
+    return resultMap;
+  }
+
+  protected void setDefaultValues(Move move) {
     Company activeCompany = userService.getUserActiveCompany();
 
     setCompany(move, activeCompany);
@@ -36,8 +51,6 @@ public class MoveDefaultServiceImpl implements MoveDefaultService {
     move.setTechnicalOriginSelect(MoveRepository.TECHNICAL_ORIGIN_ENTRY);
     move.setTradingName(userService.getTradingName());
     this.setDefaultCurrency(move);
-
-    return move;
   }
 
   protected void setDate(Move move) {
@@ -61,8 +74,10 @@ public class MoveDefaultServiceImpl implements MoveDefaultService {
   }
 
   @Override
-  public Move setDefaultCurrency(Move move) {
+  public Map<String, Object> setDefaultCurrency(Move move) {
+
     Objects.requireNonNull(move);
+    HashMap<String, Object> resultMap = new HashMap<>();
 
     Company company = move.getCompany();
 
@@ -73,6 +88,11 @@ public class MoveDefaultServiceImpl implements MoveDefaultService {
       move.setCompanyCurrencyCode(company.getCurrency().getCodeISO());
     }
 
-    return move;
+    resultMap.put("companyCurrency", move.getCompanyCurrency());
+    resultMap.put("currency", move.getCurrency());
+    resultMap.put("currencyCode", move.getCurrencyCode());
+    resultMap.put("companyCurrencyCode", move.getCompanyCurrencyCode());
+
+    return resultMap;
   }
 }

@@ -1,6 +1,7 @@
 package com.axelor.apps.account.service.move.record;
 
 import com.axelor.apps.account.db.Move;
+import java.util.Map;
 
 public interface MoveDefaultService {
 
@@ -8,15 +9,15 @@ public interface MoveDefaultService {
    * Set default values of move.
    *
    * @param move
-   * @return modified move.
+   * @return Map of modified fields.
    */
-  Move setDefaultMoveValues(Move move);
+  Map<String, Object> setDefaultMoveValues(Move move);
 
   /**
    * Set default currency value for move. Note: this method is called in setDefaultMoveValues method
    *
    * @param move
-   * @return Modified move.
+   * @return Map of modified fields.
    */
-  Move setDefaultCurrency(Move move);
+  Map<String, Object> setDefaultCurrency(Move move);
 }

@@ -26,4 +26,12 @@ public interface MoveCheckService {
    * @throws AxelorException
    */
   Map<String, Object> checkPeriodAndStatus(Move move) throws AxelorException;
+
+  void checkPeriodPermission(Move move) throws AxelorException;
+
+  void checkDates(Move move) throws AxelorException;
+
+  void checkRemovedLines(Move move) throws AxelorException;
+
+  void checkAnalyticAccount(Move move) throws AxelorException;
 }

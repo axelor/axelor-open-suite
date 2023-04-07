@@ -1,68 +1,48 @@
 package com.axelor.apps.account.service.move.record;
 
 import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.service.move.record.model.MoveContext;
+import com.axelor.exception.AxelorException;
+import com.axelor.rpc.Context;
 
 public interface MoveRecordService {
 
   /**
-   * Set the payment mode of move.
-   *
-   * <p>Note: This method can set paymentMode to null even if it was not before.
+   * Method called on action onNew. The move will be modified but not persisted, a Map of 'field,
+   * value' will be returned that contains every modified value.
    *
    * @param move
-   * @return Modified move
+   * @return a Object {@link MoveContext} that containts attrs and values context
+   * @throws AxelorException
    */
-  Move setPaymentMode(Move move);
+  MoveContext onNew(Move move) throws AxelorException;
 
   /**
-   * Set the paymentCondition of move.
+   * Method called on action onLoad. The move will be modified but not persisted, a Map of 'field,
+   * value' will be returned that contains every modified value.
    *
-   * <p>Note: This method can set paymentCondition to null even if it was not before.
-   *
-   * @param move
-   * @return Modified move
+   * @param move: can not be null
+   * @param context: can not be null
+   * @return a Object {@link MoveContext} that containts attrs and values context
+   * @throws AxelorException
    */
-  Move setPaymentCondition(Move move);
+  MoveContext onLoad(Move move, Context context) throws AxelorException;
 
   /**
-   * Set the partnerBankDetails of move.
+   * Method called on action onSave
    *
-   * <p>Note: This method can set partnerBankDetails to null even if it was not before.
-   *
-   * @param move
-   * @return Modified move
+   * @param move: can not be null
+   * @param context: can not be null
+   * @throws AxelorException
    */
-  Move setPartnerBankDetails(Move move);
+  MoveContext onSaveBefore(Move move, Context context) throws AxelorException;
 
   /**
-   * Set the currency of move by using the move.partner.
+   * Method called on action onSave
    *
-   * @param move
-   * @return Modified move
+   * @param move: can not be null
+   * @param context: can not be null
+   * @throws AxelorException
    */
-  Move setCurrencyByPartner(Move move);
-
-  /**
-   * Set the currencyCode of the move by using current currency
-   *
-   * @param move
-   * @return Modified move
-   */
-  Move setCurrencyCode(Move move);
-
-  /**
-   * Set the journal of the move by using the move company
-   *
-   * @param move
-   * @return Modified move
-   */
-  Move setJournal(Move move);
-
-  /**
-   * Set the functionOriginSelect of the move
-   *
-   * @param move
-   * @return modified move
-   */
-  Move setFunctionalOriginSelect(Move move);
+  MoveContext onSaveAfter(Move move, Context context) throws AxelorException;
 }

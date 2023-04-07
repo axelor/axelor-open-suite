@@ -48,6 +48,8 @@ import com.axelor.apps.account.service.move.attributes.MoveAttrsService;
 import com.axelor.apps.account.service.move.control.MoveCheckService;
 import com.axelor.apps.account.service.move.record.MoveDefaultService;
 import com.axelor.apps.account.service.move.record.MoveRecordService;
+import com.axelor.apps.account.service.move.record.MoveRecordSetService;
+import com.axelor.apps.account.service.move.record.model.MoveContext;
 import com.axelor.apps.account.service.moveline.MoveLineCurrencyService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
@@ -929,13 +931,10 @@ public class MoveController {
   public void setDefaultMove(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
-      move = Beans.get(MoveDefaultService.class).setDefaultMoveValues(move);
+      Map<String, Object> resultMap =
+          Beans.get(MoveDefaultService.class).setDefaultMoveValues(move);
 
-      response.setValue("company", move.getCompany());
-      response.setValue("getInfoFromFirstMoveLineOk", move.getGetInfoFromFirstMoveLineOk());
-      response.setValue("date", move.getDate());
-      response.setValue("technicalOriginSelect", move.getTechnicalOriginSelect());
-      response.setValue("tradingName", move.getTradingName());
+      response.setValues(resultMap);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -944,12 +943,9 @@ public class MoveController {
   public void setDefaultCurrency(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
-      move = Beans.get(MoveDefaultService.class).setDefaultCurrency(move);
+      Map<String, Object> resultMap = Beans.get(MoveDefaultService.class).setDefaultCurrency(move);
 
-      response.setValue("companyCurrency", move.getCompanyCurrency());
-      response.setValue("currency", move.getCurrency());
-      response.setValue("currencyCode", move.getCurrencyCode());
-      response.setValue("companyCurrencyCode", move.getCompanyCurrencyCode());
+      response.setValues(resultMap);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -958,9 +954,9 @@ public class MoveController {
   public void setPaymentMode(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
-      move = Beans.get(MoveRecordService.class).setPaymentMode(move);
+      Map<String, Object> resultMap = Beans.get(MoveRecordSetService.class).setPaymentMode(move);
 
-      response.setValue("paymentMode", move.getPaymentMode());
+      response.setValues(resultMap);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -969,9 +965,10 @@ public class MoveController {
   public void setPaymentCondition(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
-      move = Beans.get(MoveRecordService.class).setPaymentCondition(move);
+      Map<String, Object> resultMap =
+          Beans.get(MoveRecordSetService.class).setPaymentCondition(move);
 
-      response.setValue("paymentCondition", move.getPaymentCondition());
+      response.setValues(resultMap);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -980,9 +977,10 @@ public class MoveController {
   public void setPartnerBankDetails(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
-      move = Beans.get(MoveRecordService.class).setPartnerBankDetails(move);
+      Map<String, Object> resultMap =
+          Beans.get(MoveRecordSetService.class).setPartnerBankDetails(move);
 
-      response.setValue("partnerBankDetails", move.getPartnerBankDetails());
+      response.setValues(resultMap);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -991,11 +989,10 @@ public class MoveController {
   public void setCurrencyByPartner(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
-      move = Beans.get(MoveRecordService.class).setCurrencyByPartner(move);
+      Map<String, Object> resultMap =
+          Beans.get(MoveRecordSetService.class).setCurrencyByPartner(move);
 
-      response.setValue("currency", move.getCurrency());
-      response.setValue("currencyCode", move.getCurrencyCode());
-      response.setValue("fiscalPosition", move.getFiscalPosition());
+      response.setValues(resultMap);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -1004,9 +1001,9 @@ public class MoveController {
   public void setCurrencyCode(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
-      move = Beans.get(MoveRecordService.class).setCurrencyCode(move);
+      Map<String, Object> resultMap = Beans.get(MoveRecordSetService.class).setCurrencyCode(move);
 
-      response.setValue("currencyCode", move.getCurrencyCode());
+      response.setValues(resultMap);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -1015,9 +1012,10 @@ public class MoveController {
   public void setJournal(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
-      move = Beans.get(MoveRecordService.class).setJournal(move);
+      Map<String, Object> resultMap = Beans.get(MoveRecordSetService.class).setJournal(move);
 
       response.setValue("journal", move.getJournal());
+      response.setValues(resultMap);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -1092,9 +1090,65 @@ public class MoveController {
     try {
       Move move = request.getContext().asType(Move.class);
 
-      move = Beans.get(MoveRecordService.class).setFunctionalOriginSelect(move);
+      Map<String, Object> resultMap =
+          Beans.get(MoveRecordSetService.class).setFunctionalOriginSelect(move);
 
-      response.setValue("functionalOriginSelect", move.getFunctionalOriginSelect());
+      response.setValues(resultMap);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void onNew(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      MoveContext result = Beans.get(MoveRecordService.class).onNew(move);
+
+      response.setValues(result.getValues());
+      response.setAttrs(result.getAttrs());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void onLoad(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      MoveContext result = Beans.get(MoveRecordService.class).onLoad(move, request.getContext());
+      response.setValues(result.getValues());
+      response.setAttrs(result.getAttrs());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void onSaveBefore(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      MoveContext result =
+          Beans.get(MoveRecordService.class).onSaveBefore(move, request.getContext());
+      response.setValues(result.getValues());
+      response.setAttrs(result.getAttrs());
+      if (!result.getFlash().isEmpty()) {
+        response.setFlash(result.getFlash());
+      }
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void onSaveAfter(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      MoveContext result =
+          Beans.get(MoveRecordService.class).onSaveAfter(move, request.getContext());
+      response.setValues(result.getValues());
+      response.setAttrs(result.getAttrs());
+      if (!result.getFlash().isEmpty()) {
+        response.setFlash(result.getFlash());
+      }
+
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
