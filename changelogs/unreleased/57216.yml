@@ -1,3 +1,0 @@
----
-title: "Bank statement: fixed issue with balance check on files containing multiple bank details and multiple daily balances."
-type: fix

@@ -26,6 +26,9 @@
     <track>
       <field name="projectLabel" on="UPDATE"/>
       <field name="resourceManagement" on="UPDATE"/>
+      <field name="checkResourceAvailibility" on="UPDATE"/>
+      <field name="isEnableSignature" on="UPDATE"/>
+      <field name="isEnablePerProjectTaskSequence" on="UPDATE"/>
     </track>
   </entity>
 

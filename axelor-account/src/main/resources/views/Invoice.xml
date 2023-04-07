@@ -884,7 +884,7 @@ InvoiceSet.length > 0))"
         <button name="registerPaymentBtn" title="Register payment" colSpan="12"
           onClick="save,action-invoice-view-register-payment-voucher" hidden="true"/>
         <field name="validatedByUser" showIf="validatedByUser" colSpan="6" canView="false"/>
-        <field name="validatedDate" hidden="true" showIf="validatedDate" colSpan="6"/>
+        <field name="validatedDateTime" hidden="true" showIf="validatedDateTime" colSpan="6"/>
         <field name="pfpValidatorUser" hidden="true"
           if="__config__.app.getApp('account')?.getActivatePassedForPayment()"
           readonlyIf="pfpValidateStatusSelect != 1" colSpan="6"
@@ -892,13 +892,13 @@ InvoiceSet.length > 0))"
           onChange="action-invoice-group-pfp-validator-user-onchange" canEdit="false"/>
         <panel name="pfpEmailPanel"
           if="__config__.app.getApp('account')?.getActivatePassedForPayment()" colSpan="6">
-          <field name="decisionPfpTakenDate" colSpan="12" hidden="true"/>
+          <field name="decisionPfpTakenDateTime" colSpan="12" hidden="true"/>
           <button name="sendPfpNotifyEmailBtn" colSpan="12" title="Send a notify email"
             hidden="true" onClick="save,action-send-by-email-with-template"/>
         </panel>
         <field name="ventilatedByUser" hidden="true" showIf="ventilatedByUser" colSpan="6"
           canView="false"/>
-        <field name="ventilatedDate" hidden="true" showIf="ventilatedDate" colSpan="6"/>
+        <field name="ventilatedDateTime" hidden="true" showIf="ventilatedDateTime" colSpan="6"/>
       </panel>
     </panel>
     <panel sidebar="true" name="totalsPanel" title="Totals" showTitle="false" itemSpan="6"
@@ -1026,7 +1026,7 @@ InvoiceSet.length > 0))"
       <panel name="datesPanel" title="Dates" readonlyIf="statusSelect == 3" canCollapse="true"
         collapseIf="true">
         <field name="invoiceDate" onChange="action-invoice-group-invoice-date-onchange"
-          readonlyIf="ventilatedByUser || ventilatedDate"/>
+          readonlyIf="ventilatedByUser || ventilatedDateTime"/>
         <spacer/>
         <field name="dueDate" readonlyIf="!paymentCondition.isFree"/>
         <field name="nextDueDate" showIf="invoiceTermList.length > 1"/>
@@ -1216,10 +1216,10 @@ InvoiceSet.length > 0))"
         <field name="hasPendingPayments" hidden="true"/>
         <field name="validatedByUser" hidden="true" showIf="validatedByUser" colSpan="6"
           canView="false"/>
-        <field name="validatedDate" hidden="true" showIf="validatedDate" colSpan="6"/>
+        <field name="validatedDateTime" hidden="true" showIf="validatedDateTime" colSpan="6"/>
         <field name="ventilatedByUser" hidden="true" showIf="ventilatedByUser" colSpan="6"
           canView="false"/>
-        <field name="ventilatedDate" hidden="true" showIf="ventilatedDate" colSpan="6"/>
+        <field name="ventilatedDateTime" hidden="true" showIf="ventilatedDateTime" colSpan="6"/>
       </panel>
     </panel>
 
@@ -1886,13 +1886,6 @@ InvoiceSet.length > 0))"
       expr="eval: (note ? note + &quot;&lt;br&gt;&quot; : '') + (partner?.invoiceComments ? partner.invoiceComments + &quot;&lt;br&gt;&quot; : '')"/>
   </action-record>
 
-  <action-record name="action-invoice-record-refusal-to-pay"
-    model="com.axelor.apps.account.db.Invoice">
-    <field name="pfpValidateStatusSelect" expr="eval: 3"/>
-    <field name="decisionPfpTakenDate" expr="eval: __config__.date"/>
-    <field name="reasonOfRefusalToPayStr" expr="eval: reasonOfRefusalToPay?.name"/>
-  </action-record>
-
   <action-record name="action-invoice-record-set-dummy-field-language"
     model="com.axelor.apps.account.db.Invoice">
     <field name="$language"
@@ -2427,7 +2420,7 @@ InvoiceSet.length > 0))"
       if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <field name="project" hidden="true"
       if="!(__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder())"/>
-    <field name="decisionPfpTakenDate" hidden="true"
+    <field name="decisionPfpTakenDateTime" hidden="true"
       if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <field name="company.accountConfig" hidden="true"
       if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
@@ -2491,7 +2484,7 @@ InvoiceSet.length > 0))"
       if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <field name="project" hidden="true"
       if="!(__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder())"/>
-    <field name="decisionPfpTakenDate" hidden="true"
+    <field name="decisionPfpTakenDateTime" hidden="true"
       if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <field name="company.accountConfig" hidden="true"
       if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
@@ -2546,7 +2539,7 @@ InvoiceSet.length > 0))"
       if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <field name="project" hidden="true"
       if="!(__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder())"/>
-    <field name="decisionPfpTakenDate" hidden="true"
+    <field name="decisionPfpTakenDateTime" hidden="true"
       if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <field name="company.accountConfig" hidden="true"
       if="__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
@@ -2604,7 +2597,7 @@ InvoiceSet.length > 0))"
       if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <field name="project" hidden="true"
       if="!(__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder())"/>
-    <field name="decisionPfpTakenDate" hidden="true"
+    <field name="decisionPfpTakenDateTime" hidden="true"
       if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <field name="company.accountConfig" hidden="true"
       if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>

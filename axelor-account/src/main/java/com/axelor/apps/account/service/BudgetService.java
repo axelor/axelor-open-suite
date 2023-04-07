@@ -35,6 +35,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -129,7 +130,7 @@ public class BudgetService {
       return Optional.of(invoiceDate);
     }
 
-    return Optional.of(invoice.getValidatedDate());
+    return Optional.ofNullable(invoice.getValidatedDateTime()).map(LocalDateTime::toLocalDate);
   }
 
   public List<BudgetLine> generatePeriods(Budget budget) throws AxelorException {

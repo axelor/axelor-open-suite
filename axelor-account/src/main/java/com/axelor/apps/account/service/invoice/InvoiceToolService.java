@@ -289,7 +289,7 @@ public class InvoiceToolService {
     copy.setInterbankCodeLine(null);
     copy.setPaymentMove(null);
     copy.clearRefundInvoiceList();
-    copy.setRejectDate(null);
+    copy.setRejectDateTime(null);
     copy.setOriginalInvoice(null);
     copy.setUsherPassageOk(false);
     copy.setAlreadyPrintedOk(false);
@@ -300,10 +300,10 @@ public class InvoiceToolService {
     copy.setJournal(null);
     copy.clearInvoicePaymentList();
     copy.setPrintedPDF(null);
-    copy.setValidatedDate(null);
+    copy.setValidatedDateTime(null);
     copy.setVentilatedByUser(null);
-    copy.setVentilatedDate(null);
-    copy.setDecisionPfpTakenDate(null);
+    copy.setVentilatedDateTime(null);
+    copy.setDecisionPfpTakenDateTime(null);
     copy.setInternalReference(null);
     copy.setExternalReference(null);
     copy.setLcrAccounted(false);

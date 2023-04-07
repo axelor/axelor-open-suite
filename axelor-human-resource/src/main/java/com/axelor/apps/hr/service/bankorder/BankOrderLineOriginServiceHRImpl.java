@@ -57,7 +57,7 @@ public class BankOrderLineOriginServiceHRImpl extends BankOrderLineOriginService
 
     if (model instanceof Expense) {
 
-      return ((Expense) model).getValidationDate();
+      return ((Expense) model).getValidationDateTime().toLocalDate();
 
     } else {
 
@@ -70,7 +70,7 @@ public class BankOrderLineOriginServiceHRImpl extends BankOrderLineOriginService
 
     if (model instanceof Expense) {
 
-      return ((Expense) model).getValidationDate();
+      return ((Expense) model).getValidationDateTime().toLocalDate();
 
     } else {
 
