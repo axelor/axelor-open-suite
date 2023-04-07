@@ -22,6 +22,13 @@
     <boolean name="manageCarrierOption" title="Manage carrier option" default="false"
       help="Allow users to manage carrier option for customer deliveries."/>
 
+    <boolean name="isInventoryValidationEnable" title="Enable inventory validation."
+      default="false"
+      help="By enabling this setting, users can validate inventories from the mobile application."/>
+    <boolean name="isStockCorrectionValidationEnable"
+      title="Enable stock correction validation." default="false"
+      help="By enabling this setting, users can validate stock corrections from the mobile application."/>
+
     <!-- Tracker messages settings -->
     <boolean name="isTrackerMessageOnStockApp" title="Enable tracker messages."
       default="false"
@@ -43,6 +50,8 @@
       <field name="isTrackerMessageOnCrmApp" on="UPDATE"/>
       <field name="manageCarrierOption" on="UPDATE"/>
       <field name="qrCode" on="UPDATE"/>
+      <field name="isInventoryValidationEnable"/>
+      <field name="isStockCorrectionValidationEnable"/>
     </track>
   </entity>
 </domain-models>
