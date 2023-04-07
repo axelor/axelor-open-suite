@@ -29,6 +29,14 @@
       title="Enable stock correction validation." default="false"
       help="By enabling this setting, users can validate stock corrections from the mobile application."/>
 
+    <boolean name="isCustomerDeliveryLineAdditionEnable"
+      title="Enable addition of new lines in customer delivery." default="false"
+      help="By enabling this setting, users can add new lines to customer deliveries on mobile application."/>
+
+    <boolean name="isSupplierArrivalLineAdditionEnable"
+      title="Enable addition of new lines in supplier arrival." default="false"
+      help="By enabling this setting, users can add new lines to supplier arrivals on mobile application."/>
+
     <!-- Tracker messages settings -->
     <boolean name="isTrackerMessageOnStockApp" title="Enable tracker messages."
       default="false"
@@ -66,6 +74,8 @@
       <field name="isVerifySupplierArrivalLineEnabled"/>
       <field name="isVerifyInternalMoveLineEnabled"/>
       <field name="isVerifyInventoryLineEnabled"/>
+      <field name="isCustomerDeliveryLineAdditionEnable"/>
+      <field name="isSupplierArrivalLineAdditionEnable"/>
     </track>
   </entity>
 </domain-models>

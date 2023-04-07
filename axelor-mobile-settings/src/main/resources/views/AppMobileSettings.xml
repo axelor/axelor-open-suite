@@ -48,6 +48,10 @@
           <field name="isTrackerMessageOnStockApp" widget="boolean-switch" colSpan="12"/>
           <field name="isInventoryValidationEnable" widget="boolean-switch" colSpan="4"/>
           <field name="isStockCorrectionValidationEnable" widget="boolean-switch" colSpan="4"/>
+          <field name="isCustomerDeliveryLineAdditionEnable" widget="boolean-switch"
+            colSpan="4"/>
+          <field name="isSupplierArrivalLineAdditionEnable" widget="boolean-switch"
+            colSpan="4"/>
           <field name="manageCarrierOption" widget="boolean-switch" colSpan="12" hidden="true"/>
           <!-- This field manageCarrierOption will be used later when carrier mode is implemented in
             AOS and App mobile -->
