@@ -17,6 +17,9 @@
  */
 package com.axelor.apps.sale.service.configurator;
 
+import static com.axelor.apps.tool.MetaJsonFieldType.MANY_TO_MANY;
+import static com.axelor.apps.tool.MetaJsonFieldType.ONE_TO_MANY;
+
 import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.db.ConfiguratorFormula;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
@@ -56,8 +59,8 @@ public class ConfiguratorFormulaServiceImpl implements ConfiguratorFormulaServic
           I18n.get(SaleExceptionMessage.CONFIGURATOR_CREATOR_SCRIPT_ERROR));
     } else if (!Beans.get(ConfiguratorService.class)
             .areCompatible(wantedTypeName, getCalculatedClassName(result))
-        && !wantedTypeName.equals("one-to-many")
-        && !wantedTypeName.equals("many-to-many")) {
+        && !wantedTypeName.equals(ONE_TO_MANY)
+        && !wantedTypeName.equals(MANY_TO_MANY)) {
       throw new AxelorException(
           formula,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,

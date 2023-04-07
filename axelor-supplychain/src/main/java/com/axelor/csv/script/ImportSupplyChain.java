@@ -126,7 +126,7 @@ public class ImportSupplyChain {
           StockMove stockMove = stockMoveRepo.find(id);
           stockMoveService.copyQtyToRealQty(stockMove);
           stockMoveService.realize(stockMove);
-          stockMove.setRealDate(purchaseOrder.getDeliveryDate());
+          stockMove.setRealDate(purchaseOrder.getEstimatedReceiptDate());
         }
         purchaseOrder.setValidationDate(purchaseOrder.getOrderDate());
         purchaseOrder.setValidatedByUser(AuthUtils.getUser());

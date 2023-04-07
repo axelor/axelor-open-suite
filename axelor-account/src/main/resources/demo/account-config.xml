@@ -134,11 +134,16 @@
     </bind>
   </input>
 
+  <input file="message_template.csv" separator=";" type="com.axelor.apps.message.db.Template"/>
+
   <input file="account_debtRecoveryMethod.csv" separator=";"
     type="com.axelor.apps.account.db.DebtRecoveryMethod" search="self.code = :code"/>
 
   <input file="account_debtRecoveryMethodLine.csv" separator=";"
-    type="com.axelor.apps.account.db.DebtRecoveryMethodLine"/>
+    type="com.axelor.apps.account.db.DebtRecoveryMethodLine">
+    <bind column="messageTemplateSet" to="messageTemplateSet"
+      search="self.name in :messageTemplateSet" eval="messageTemplateSet.split('\\|') as List"/>
+  </input>
 
 
   <input file="account_fixedAssetCategory.csv" separator=";"
@@ -304,6 +309,7 @@
     <bind to="reportExportTypeSelect" eval="'1'"/>
     <bind to="reportTitle" column="name"/>
     <bind to="company" column="company" search="self.importId = :company"/>
+    <bind to="comparison" eval="'0'"/>
   </input>
 
   <input file="account_accountingReportConfigLine.csv" separator=";"
@@ -312,7 +318,9 @@
     <bind to="label" if="typeSelect != 3 &amp;&amp; ruleTypeSelect != 1"/>
     <bind to="code" if="typeSelect != 3 &amp;&amp; ruleTypeSelect != 1"/>
     <bind to="resultSelect" if="ruleTypeSelect == 2"/>
-    <bind to="reportType" search="self.importId = :reportTypeId"/>
+    <bind to="reportType" search="self.importId = :reportTypeId" if="reportTypeId"/>
+    <bind to="reportTypeColumn" search="self.importId = :reportTypeColumnId"
+      if="reportTypeColumnId"/>
   </input>
 
   <input file="account_paymentDelayReason.csv" separator=";"
@@ -348,5 +356,11 @@
 
   <input file="account_financialDiscount.csv" separator=";"
     type="com.axelor.apps.account.db.FinancialDiscount" search="self.importId = :importId"/>
+
+  <input file="account_invoiceProductStatement.csv" separator=";"
+    search="self.importId = :importId" type="com.axelor.apps.account.db.InvoiceProductStatement">
+    <bind to="accountConfig" column="accountConfig_importId"
+      search="self.importId = :accountConfig_importId"/>
+  </input>
 
 </csv-inputs>

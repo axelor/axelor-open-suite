@@ -28,7 +28,6 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.team.db.Team;
-import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -43,7 +42,7 @@ public interface SaleOrderCreateService {
    *     active company.
    * @param contactPartner Customer contact to assign to the user, might be <code>null</code>.
    * @param currency Order's currency, should not be <code>null</code>.
-   * @param deliveryDate Expected delivery date for order (might be <code>null</code>).
+   * @param estimatedShippingDate Expected shipping date for order (might be <code>null</code>).
    * @param internalReference Unused (…)
    * @param externalReference Client reference for order, if any
    * @param priceList Pricelist to use, if <code>null</code>, will default to partner's default
@@ -59,7 +58,7 @@ public interface SaleOrderCreateService {
       Company company,
       Partner contactPartner,
       Currency currency,
-      LocalDate deliveryDate,
+      LocalDate estimatedShippingDate,
       String internalReference,
       String externalReference,
       PriceList priceList,
@@ -73,7 +72,7 @@ public interface SaleOrderCreateService {
         company,
         contactPartner,
         currency,
-        deliveryDate,
+        estimatedShippingDate,
         internalReference,
         externalReference,
         priceList,
@@ -93,7 +92,7 @@ public interface SaleOrderCreateService {
    *     active company.
    * @param contactPartner Customer contact to assign to the user, might be <code>null</code>.
    * @param currency Order's currency, should not be <code>null</code>.
-   * @param deliveryDate Expected delivery date for order (might be <code>null</code>).
+   * @param estimatedShippingDate Expected shipping date for order (might be <code>null</code>).
    * @param internalReference Unused (…)
    * @param externalReference Client reference for order, if any
    * @param priceList Pricelist to use, if <code>null</code>, will default to partner's default
@@ -110,7 +109,7 @@ public interface SaleOrderCreateService {
       Company company,
       Partner contactPartner,
       Currency currency,
-      LocalDate deliveryDate,
+      LocalDate estimatedShippingDate,
       String internalReference,
       String externalReference,
       PriceList priceList,
@@ -135,12 +134,10 @@ public interface SaleOrderCreateService {
       FiscalPosition fiscalPosition)
       throws AxelorException;
 
-  @Transactional
-  public SaleOrder createTemplate(SaleOrder context);
+  SaleOrder createTemplate(SaleOrder context);
 
-  @Transactional(rollbackOn = {Exception.class})
-  public SaleOrder createSaleOrder(
-      SaleOrder context, Currency wizardCurrency, PriceList wizardPriceList) throws AxelorException;
+  SaleOrder createSaleOrder(SaleOrder context, Currency wizardCurrency, PriceList wizardPriceList)
+      throws AxelorException;
 
-  public void updateSaleOrderLineList(SaleOrder saleOrder) throws AxelorException;
+  void updateSaleOrderLineList(SaleOrder saleOrder) throws AxelorException;
 }

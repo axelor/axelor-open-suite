@@ -47,7 +47,6 @@ import com.axelor.apps.hr.db.repo.LeaveManagementRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.employee.EmployeeService;
 import com.axelor.apps.hr.service.leave.management.LeaveManagementService;
-import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.ExceptionOriginRepository;
@@ -79,16 +78,19 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
 
   protected LeaveLineRepository leaveLineRepository;
   protected LeaveManagementRepository leaveManagementRepository;
+  protected EmployeeService employeeService;
 
   @Inject
   public BatchSeniorityLeaveManagement(
       LeaveManagementService leaveManagementService,
       LeaveLineRepository leaveLineRepository,
-      LeaveManagementRepository leaveManagementRepository) {
+      LeaveManagementRepository leaveManagementRepository,
+      EmployeeService employeeService) {
 
     super(leaveManagementService);
     this.leaveLineRepository = leaveLineRepository;
     this.leaveManagementRepository = leaveManagementRepository;
+    this.employeeService = employeeService;
   }
 
   @Override
@@ -231,14 +233,13 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
               formula.replace(
                   hrConfig.getSeniorityVariableName(),
                   String.valueOf(
-                      Beans.get(EmployeeService.class)
-                          .getLengthOfService(employee, batch.getHrBatch().getReferentialDate())));
+                      employeeService.getLengthOfService(
+                          employee, batch.getHrBatch().getReferentialDate())));
           formula =
               formula.replace(
                   hrConfig.getAgeVariableName(),
                   String.valueOf(
-                      Beans.get(EmployeeService.class)
-                          .getAge(employee, batch.getHrBatch().getReferentialDate())));
+                      employeeService.getAge(employee, batch.getHrBatch().getReferentialDate())));
           maker.setTemplate(formula);
           eval = maker.make();
           CompilerConfiguration conf = new CompilerConfiguration();
@@ -262,7 +263,7 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
       LeaveManagement leaveManagement =
           leaveManagementService.createLeaveManagement(
               leaveLine,
-              AuthUtils.getUser(),
+              employeeService.getUser(employee),
               batch.getHrBatch().getComments(),
               null,
               batch.getHrBatch().getStartDate(),

@@ -18,8 +18,17 @@
 package com.axelor.apps.sale.service.saleorder;
 
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.exception.AxelorException;
+import java.math.BigDecimal;
+import java.util.Map;
 
 public interface SaleOrderMarginService {
 
-  public void computeMarginSaleOrder(SaleOrder saleOrder);
+  void computeMarginSaleOrder(SaleOrder saleOrder);
+
+  void computeSubMargin(SaleOrder saleOrder, SaleOrderLine saleOrderLine) throws AxelorException;
+
+  Map<String, BigDecimal> getSaleOrderLineComputedMarginInfo(
+      SaleOrder saleOrder, SaleOrderLine saleOrderLine) throws AxelorException;
 }

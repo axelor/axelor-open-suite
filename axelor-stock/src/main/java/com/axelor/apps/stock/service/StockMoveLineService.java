@@ -28,7 +28,6 @@ import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.TrackingNumberConfiguration;
 import com.axelor.exception.AxelorException;
-import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.LinkedHashMap;
@@ -147,7 +146,7 @@ public interface StockMoveLineService {
       TrackingNumber trackingNumber)
       throws AxelorException;
 
-  public void updateAveragePriceLocationLine(
+  public void updateAveragePriceAndLocationLineHistory(
       StockLocation stockLocation,
       StockMoveLine stockMoveLine,
       int fromStatus,
@@ -245,7 +244,6 @@ public interface StockMoveLineService {
    */
   boolean checkMassesRequired(StockMove stockMove, StockMoveLine stockMoveLine);
 
-  @Transactional
   public void splitStockMoveLineByTrackingNumber(
       StockMoveLine stockMoveLine, List<LinkedHashMap<String, Object>> trackingNumbers);
 
@@ -286,7 +284,8 @@ public interface StockMoveLineService {
       throws AxelorException;
 
   /** To update realQty and conformity of a stock move line (API AOS) */
-  void updateStockMoveLine(StockMoveLine stockMoveLine, BigDecimal realQty, Integer conformity)
+  void updateStockMoveLine(
+      StockMoveLine stockMoveLine, BigDecimal realQty, Integer conformity, Unit unit)
       throws AxelorException;
 
   /**
@@ -315,4 +314,7 @@ public interface StockMoveLineService {
       LocalDate date,
       String origin)
       throws AxelorException;
+
+  public BigDecimal computeNewAveragePriceLocationLine(
+      StockLocationLine stockLocationLine, StockMoveLine stockMoveLine) throws AxelorException;
 }

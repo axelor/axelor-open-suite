@@ -41,6 +41,7 @@ public class PurchaseOrderSupplychainRepository extends PurchaseOrderManagementR
 
     copy.setReceiptState(PurchaseOrderRepository.STATE_NOT_RECEIVED);
     copy.setAmountInvoiced(null);
+    copy.setBudget(null);
 
     if (copy.getPurchaseOrderLineList() != null) {
       for (PurchaseOrderLine purchaseOrderLine : copy.getPurchaseOrderLineList()) {
@@ -49,6 +50,7 @@ public class PurchaseOrderSupplychainRepository extends PurchaseOrderManagementR
         purchaseOrderLine.setAmountInvoiced(null);
         purchaseOrderLine.setInvoiced(null);
         purchaseOrderLine.setBudgetDistributionList(null);
+        purchaseOrderLine.setBudgetDistributionSumAmount(null);
       }
     }
 

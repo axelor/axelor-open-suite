@@ -204,6 +204,9 @@ public final class BaseExceptionMessage {
   public static final String SEQUENCE_NOT_SAVED_RECORD = /*$$(*/
       "Can't generate draft sequence number on an unsaved record." /*)*/;
 
+  public static final String SEQUENCE_LENGTH_NOT_VALID = /*$$(*/
+      "Total sequence length must be less than 15 characters." /*)*/;
+
   /** Address controller */
   public static final String ADDRESS_1 = /*$$(*/ "OK" /*)*/;
 
@@ -510,4 +513,9 @@ public final class BaseExceptionMessage {
       "Error: The type of the field %s is not managed by the adapter" /*)*/;
 
   public static final String COMPANY_MISSING = /*$$(*/ "Please set a company." /*)*/;
+
+  public static final String PRICING_INVALID_DATES = /*$$(*/
+      "The start date cannot be later than the end date." /*)*/;
+
+  public static final String NO_ACTIVE_COMPANY = /*$$(*/ "Please set an active company." /*)*/;
 }

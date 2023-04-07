@@ -232,10 +232,11 @@ public class ContractController {
       response.setValues(contractLine);
     } catch (Exception e) {
       response.setValues(contractLineService.reset(contractLine));
+      TraceBackService.trace(response, e);
     }
   }
 
-  private LocalDate getTodayDate(Company company) {
+  protected LocalDate getTodayDate(Company company) {
     return Beans.get(AppBaseService.class).getTodayDate(company);
   }
 

@@ -44,6 +44,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineServiceImpl;
+import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
@@ -101,7 +102,8 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
       AppSupplychainService appSupplychainService,
       AccountConfigService accountConfigService,
       PricingService pricingService,
-      TaxService taxService) {
+      TaxService taxService,
+      SaleOrderMarginService saleOrderMarginService) {
     super(
         currencyService,
         priceListService,
@@ -112,7 +114,8 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
         saleOrderLineRepo,
         saleOrderService,
         pricingService,
-        taxService);
+        taxService,
+        saleOrderMarginService);
     this.appAccountService = appAccountService;
     this.analyticMoveLineService = analyticMoveLineService;
     this.appSupplychainService = appSupplychainService;
@@ -371,7 +374,7 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
         .forEach(
             stockMoveLine ->
                 stockMoveLine.setReservationDateTime(
-                    saleOrderLine.getEstimatedDelivDate().atStartOfDay()));
+                    saleOrderLine.getEstimatedShippingDate().atStartOfDay()));
   }
 
   @Override

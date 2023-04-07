@@ -65,6 +65,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import javax.persistence.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -272,7 +273,7 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
     return invoicedAmount;
   }
 
-  private BigDecimal getAmountVentilated(
+  protected BigDecimal getAmountVentilated(
       PurchaseOrder purchaseOrder,
       Long currentInvoiceId,
       boolean excludeCurrentInvoice,
@@ -545,7 +546,7 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public Invoice generateSupplierAdvancePayment(
       PurchaseOrder purchaseOrder, BigDecimal amountToInvoice, boolean isPercent)
       throws AxelorException {
@@ -619,7 +620,12 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
     List<InvoiceLine> invoiceLinesList =
         (taxLineList != null && !taxLineList.isEmpty())
             ? this.createInvoiceLinesFromTax(
-                invoice, taxLineList, invoicingProduct, percentToInvoice)
+                invoice,
+                taxLineList.stream()
+                    .filter(polt -> !polt.getReverseCharged())
+                    .collect(Collectors.toList()),
+                invoicingProduct,
+                percentToInvoice)
             : commonInvoiceService.createInvoiceLinesFromOrder(
                 invoice, purchaseOrder.getInTaxTotal(), invoicingProduct, percentToInvoice);
 

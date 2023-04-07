@@ -47,4 +47,26 @@ public interface ProductCompanyService {
    */
   public void set(Product originalProduct, String fieldName, Object fieldValue, Company company)
       throws AxelorException;
+
+  /**
+   * Method with the same purpose as get(Product originalProduct, String fieldName, Company
+   * company). Except that this method WILL NOT try to get the field value from originalProduct if
+   * there are no product company in it and will instead return null.
+   *
+   * @param originalProduct
+   * @param fieldName
+   * @param company
+   * @return the value of the field, either the value specified for the company or null
+   * @throws AxelorException
+   */
+  Object getWithNoDefault(Product originalProduct, String fieldName, Company company)
+      throws AxelorException;
+
+  /**
+   * Method that checks if field name is a company specific product field
+   *
+   * @param fieldName
+   * @return true if field name is a company specific field, else no.
+   */
+  boolean isCompanySpecificProductFields(String fieldName);
 }

@@ -299,6 +299,9 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
             acquisitionDate,
             depreciationDate);
 
+    BigDecimal maxNbDaysOfPeriod =
+        BigDecimal.valueOf(getPeriodicityInMonthProrataTemporis(fixedAsset) * 30)
+            .setScale(CALCULATION_SCALE, RoundingMode.HALF_UP);
     BigDecimal nbDaysOfPeriod;
     if (nextDate != null) {
       nbDaysOfPeriod =
@@ -306,10 +309,11 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
               fixedAsset.getFixedAssetCategory().getIsUSProrataTemporis(),
               acquisitionDate,
               nextDate);
+      if (nbDaysOfPeriod.compareTo(maxNbDaysOfPeriod) > 0) {
+        nbDaysOfPeriod = maxNbDaysOfPeriod;
+      }
     } else {
-      nbDaysOfPeriod =
-          BigDecimal.valueOf(getPeriodicityInMonthProrataTemporis(fixedAsset) * 30)
-              .setScale(CALCULATION_SCALE, RoundingMode.HALF_UP);
+      nbDaysOfPeriod = maxNbDaysOfPeriod;
     }
 
     prorataTemporis =
@@ -390,7 +394,8 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
     return maxDays == day;
   }
 
-  protected FixedAssetLine createFixedAssetLine(
+  @Override
+  public FixedAssetLine createFixedAssetLine(
       FixedAsset fixedAsset,
       LocalDate depreciationDate,
       BigDecimal depreciation,
@@ -441,7 +446,13 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
     BigDecimal linearDepreciation =
         previousAccountingValue.divide(
             remainingNumberOfDepreciation, RETURNED_SCALE, RoundingMode.HALF_UP);
-    return degressiveDepreciation.max(linearDepreciation);
+    BigDecimal depreciation;
+    if (fixedAsset.getGrossValue().signum() > 0) {
+      depreciation = degressiveDepreciation.max(linearDepreciation);
+    } else {
+      depreciation = degressiveDepreciation.min(linearDepreciation);
+    }
+    return depreciation;
   }
 
   protected BigDecimal numberOfDepreciationDone(FixedAsset fixedAsset) {
@@ -517,8 +528,14 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
     } else {
       depreciation = computeLinearDepreciation(fixedAsset, baseValue);
     }
-    if (BigDecimal.ZERO.compareTo(previousAccountingValue.subtract(depreciation)) > 0) {
-      depreciation = previousAccountingValue;
+    if (fixedAsset.getGrossValue().signum() > 0) {
+      if (BigDecimal.ZERO.compareTo(previousAccountingValue.subtract(depreciation)) > 0) {
+        depreciation = previousAccountingValue;
+      }
+    } else {
+      if (BigDecimal.ZERO.compareTo(previousAccountingValue.subtract(depreciation)) < 0) {
+        depreciation = previousAccountingValue;
+      }
     }
     return depreciation;
   }

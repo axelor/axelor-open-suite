@@ -457,6 +457,7 @@ public class ReconcileServiceImpl implements ReconcileService {
         invoicePayment =
             Optional.of(reconcile)
                 .map(Reconcile::getInvoicePayment)
+                .filter(invPayment -> invoice.equals(invPayment.getInvoice()))
                 .orElse(this.getExistingInvoicePayment(invoice, otherMove));
       }
 
@@ -467,7 +468,7 @@ public class ReconcileServiceImpl implements ReconcileService {
       }
     }
     List<InvoiceTermPayment> invoiceTermPaymentList = null;
-    if (moveLine.getAccount().getHasInvoiceTerm() && updateInvoiceTerms) {
+    if (moveLine.getAccount().getUseForPartnerBalance() && updateInvoiceTerms) {
       List<InvoiceTerm> invoiceTermList = this.getInvoiceTermsToPay(invoice, otherMove, moveLine);
       invoiceTermPaymentList =
           this.updateInvoiceTerms(invoiceTermList, invoicePayment, amount, reconcile);
@@ -739,8 +740,7 @@ public class ReconcileServiceImpl implements ReconcileService {
     // FIXME This feature will manage at a first step only reconcile of purchase (journal type of
     // type purchase)
     Move purchaseMove = reconcile.getCreditMoveLine().getMove();
-    if ((purchaseMove.getJournal().getJournalType() != null
-            && !purchaseMove.getJournal().getJournalType().getCode().equals("ACH"))
+    if (!purchaseMove.getJournal().getJournalType().getCode().equals("ACH")
         || purchaseMove.getPartner() == null) {
       return;
     }

@@ -33,7 +33,6 @@ import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -67,12 +66,12 @@ import org.slf4j.LoggerFactory;
 public class MoveLineServiceImpl implements MoveLineService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  protected int jpaLimit = 20;
 
   protected MoveLineToolService moveLineToolService;
   protected MoveLineRepository moveLineRepository;
   protected InvoiceRepository invoiceRepository;
   protected PaymentService paymentService;
-  protected AppBaseService appBaseService;
   protected AppAccountService appAccountService;
   protected AccountConfigService accountConfigService;
   protected InvoiceTermService invoiceTermService;
@@ -83,7 +82,6 @@ public class MoveLineServiceImpl implements MoveLineService {
       MoveLineRepository moveLineRepository,
       InvoiceRepository invoiceRepository,
       PaymentService paymentService,
-      AppBaseService appBaseService,
       MoveLineToolService moveLineToolService,
       AppAccountService appAccountService,
       AccountConfigService accountConfigService,
@@ -92,7 +90,6 @@ public class MoveLineServiceImpl implements MoveLineService {
     this.moveLineRepository = moveLineRepository;
     this.invoiceRepository = invoiceRepository;
     this.paymentService = paymentService;
-    this.appBaseService = appBaseService;
     this.moveLineToolService = moveLineToolService;
     this.appAccountService = appAccountService;
     this.accountConfigService = accountConfigService;
@@ -175,7 +172,7 @@ public class MoveLineServiceImpl implements MoveLineService {
         log.debug(e.getMessage());
       } finally {
         i++;
-        if (i % 20 == 0) {
+        if (i % jpaLimit == 0) {
           JPA.clear();
         }
       }
@@ -236,19 +233,19 @@ public class MoveLineServiceImpl implements MoveLineService {
         companyPartnerDebitMoveLineList, companyPartnerCreditMoveLineList);
   }
 
-  private void populateCredit(
+  protected void populateCredit(
       Map<List<Object>, Pair<List<MoveLine>, List<MoveLine>>> moveLineMap,
       List<MoveLine> reconciliableMoveLineList) {
     populateMoveLineMap(moveLineMap, reconciliableMoveLineList, true);
   }
 
-  private void populateDebit(
+  protected void populateDebit(
       Map<List<Object>, Pair<List<MoveLine>, List<MoveLine>>> moveLineMap,
       List<MoveLine> reconciliableMoveLineList) {
     populateMoveLineMap(moveLineMap, reconciliableMoveLineList, false);
   }
 
-  private void populateMoveLineMap(
+  protected void populateMoveLineMap(
       Map<List<Object>, Pair<List<MoveLine>, List<MoveLine>>> moveLineMap,
       List<MoveLine> reconciliableMoveLineList,
       boolean isCredit) {
@@ -277,7 +274,7 @@ public class MoveLineServiceImpl implements MoveLineService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public MoveLine setIsSelectedBankReconciliation(MoveLine moveLine) {
     if (moveLine.getIsSelectedBankReconciliation() != null) {
       moveLine.setIsSelectedBankReconciliation(!moveLine.getIsSelectedBankReconciliation());
@@ -288,7 +285,7 @@ public class MoveLineServiceImpl implements MoveLineService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public MoveLine removePostedNbr(MoveLine moveLine, String postedNbr) {
     String posted = moveLine.getPostedNbr();
     List<String> postedNbrs = new ArrayList<String>(Arrays.asList(posted.split(",")));
@@ -360,7 +357,7 @@ public class MoveLineServiceImpl implements MoveLineService {
   @Override
   public void computeFinancialDiscount(MoveLine moveLine) {
     if (moveLine.getAccount() != null
-        && moveLine.getAccount().getHasInvoiceTerm()
+        && moveLine.getAccount().getUseForPartnerBalance()
         && moveLine.getFinancialDiscount() != null) {
       FinancialDiscount financialDiscount = moveLine.getFinancialDiscount();
       BigDecimal amount = moveLine.getCredit().max(moveLine.getDebit());
