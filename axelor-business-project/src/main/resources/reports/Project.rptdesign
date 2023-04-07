@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202071616</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202203150031</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -1715,7 +1715,7 @@ group by emp.id,emp.name,exp_validation_date]]></xml-property>
                     <structure>
                         <property name="position">3</property>
                         <property name="name">tm_validation_date</property>
-                        <property name="dataType">date</property>
+                        <property name="dataType">date-time</property>
                     </structure>
                     <structure>
                         <property name="position">4</property>
@@ -1749,8 +1749,8 @@ group by emp.id,emp.name,exp_validation_date]]></xml-property>
                     <property name="position">3</property>
                     <property name="name">tm_validation_date</property>
                     <property name="nativeName">tm_validation_date</property>
-                    <property name="dataType">date</property>
-                    <property name="nativeDataType">91</property>
+                    <property name="dataType">date-time</property>
+                    <property name="nativeDataType">93</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
@@ -1769,7 +1769,7 @@ group by emp.id,emp.name,exp_validation_date]]></xml-property>
             </list-property>
             <xml-property name="queryText"><![CDATA[select emp.id as emp_id,
        emp.name as emp_name,
-       tm.validation_date as tm_validation_date,
+       tm.validation_date_time as tm_validation_date,
        sum(tml.hours_duration) as total_hours,
        sum(tml.hours_duration) * emp.hourly_rate as emp_cost
 from hr_timesheet_line tml
@@ -2707,7 +2707,7 @@ and invoice.status_select = 3
 and invoice.operation_type_select in (1,2)
 group by month
 union
-select to_char(tm.validation_date,'YYYY-MM') as month, sum(tml.hours_duration) * sum(prod.cost_price) as cost
+select to_char(tm.validation_date_time,'YYYY-MM') as month, sum(tml.hours_duration) * sum(prod.cost_price) as cost
 from hr_timesheet_line tml
 left join hr_timesheet tm on (tm.id = tml.timesheet)
 left join hr_employee emp on (emp.id = tm.employee)
@@ -6037,12 +6037,6 @@ order by task_end_date]]></xml-property>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
-                                <property name="name">tm_validation_date</property>
-                                <text-property name="displayName">tm_validation_date</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["tm_validation_date"]</expression>
-                                <property name="dataType">date</property>
-                            </structure>
-                            <structure>
                                 <property name="name">total_hours</property>
                                 <text-property name="displayName">total_hours</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["total_hours"]</expression>
@@ -6079,6 +6073,12 @@ order by task_end_date]]></xml-property>
                                     </structure>
                                 </list-property>
                                 <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">tm_validation_date</property>
+                                <text-property name="displayName">tm_validation_date</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["tm_validation_date"]</expression>
+                                <property name="dataType">date-time</property>
                             </structure>
                         </list-property>
                         <column id="4805">
