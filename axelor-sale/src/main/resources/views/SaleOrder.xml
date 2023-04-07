@@ -1490,7 +1490,6 @@
       if="__config__.app.isApp('supplychain')"/>
     <action name="action-partner-attrs-hide-contact-partner"/>
     <action name="action-sale-order-method-update-sale-order-line-list" if="template"/>
-    <action name="action-sale-order-method-compute" if="template"/>
     <action name="action-sale-order-attrs-set-is-ispm-required"
       if="__config__.app.isApp('supplychain')"/>
     <action name="action-sale-order-record-set-group-product-on-printing"/>
