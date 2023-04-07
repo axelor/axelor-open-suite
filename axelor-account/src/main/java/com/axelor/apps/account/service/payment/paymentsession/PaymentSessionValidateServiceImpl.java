@@ -596,7 +596,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       for (Partner partner : moveMap.keySet()) {
         for (Move move : moveMap.get(partner)) {
           move = moveRepo.find(move.getId());
-          moveLineTaxService.autoTaxLineGenerate(move);
+          moveLineTaxService.autoTaxLineGenerate(move, null);
         }
       }
     }
