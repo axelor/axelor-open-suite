@@ -1,4 +1,4 @@
-"importId";"purchaseOrder.importId";"sequence";"product.importId";"productName";"qty";"unit.importId";"price";"inTaxPrice";"priceDiscounted";"taxLine.importId";"exTaxTotal";"desiredDelivDate";"estimatedDelivDate"
+"importId";"purchaseOrder.importId";"sequence";"product.importId";"productName";"qty";"unit.importId";"price";"inTaxPrice";"priceDiscounted";"taxLine.importId";"exTaxTotal";"desiredReceiptDate";"estimatedReceiptDate"
 1;1;1;230;"RAMTOP 8 Go DDR3  - Ref: 8000024";20;1;"59.2";"59.2";"59.2";24;"1184";"TODAY[-4M+15d]";"TODAY[-4M+15d]"
 2;1;2;231;"RAMEXTRA 16 Go DDR3  - Ref: 8000026";10;1;"121.6";"121.6";"121.6";24;"1216";"TODAY[-4M+15d]";"TODAY[-4M+15d]"
 3;2;1;200;"HARDSHARK SATA 1 To  - Ref: 7458764";30;1;"47.7";"47.7";"47.7";24;"1431";"TODAY[-3M+15d]";"TODAY[-3M+15d]"
