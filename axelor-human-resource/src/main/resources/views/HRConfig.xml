@@ -86,7 +86,8 @@
           field="kilometricAllowanceRateList" colSpan="12"
           form-view="kilometric-allowance-rate-form" grid-view="kilometric-allowance-rate-grid"/>
       </panel>
-      <panel name="leavesPanel" title="Leaves" if="__config__.app.isApp('leave')">
+      <panel name="leavesPanel" title="Leaves"
+        if="__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getLeaveManagement()">
         <panel name="leavesTemplatesPanel" title="Leaves Templates" colSpan="12">
           <field name="leaveMailNotification" colSpan="12"/>
           <field name="sentLeaveTemplate" canNew="true" form-view="template-form"

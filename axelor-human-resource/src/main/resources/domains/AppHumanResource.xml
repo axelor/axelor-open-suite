@@ -5,16 +5,31 @@
 
   <module name="studio" package="com.axelor.studio.db"/>
 
-  <entity name="AppLeave" cacheable="true">
+  <entity name="AppHumanResource" cacheable="true">
 
     <one-to-one ref="com.axelor.studio.db.App" name="app"/>
 
+    <!-- Employee configuration -->
+    <boolean name="employeeManagement" title="Employee management"/>
+
+    <!-- Timesheet configuration -->
+    <boolean name="timesheetManagement" title="Timesheet management"/>
+
+    <!-- Expense configuration -->
+    <boolean name="expenseManagement" title="Expense management"/>
+
+    <!-- Leave configuration -->
+    <boolean name="leaveManagement" title="Leave management"/>
     <boolean name="allowNegativeLeaveEmployees"
       title="Allow negative values for employee leaves"/>
+
+    <!-- Extra hours configuration -->
+    <boolean name="extraHoursManagement" title="Extra hours management"/>
 
     <track>
       <field name="allowNegativeLeaveEmployees" on="UPDATE"/>
     </track>
+
   </entity>
 
 </domain-models>
