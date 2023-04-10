@@ -43,7 +43,8 @@
             domain="self.metaModel.name = 'Timesheet'"/>
         </panel>
       </panel>
-      <panel name="extraHoursPanel" title="Extra Hours" if="__config__.app.isApp('exthrs')">
+      <panel name="extraHoursPanel" title="Extra Hours"
+        if="__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getExtraHoursManagement()">
         <panel name="extraHoursTemplatesPanel" title="Extra Hours Templates" colSpan="12">
           <field name="extraHoursMailNotification" colSpan="12"/>
           <field name="sentExtraHoursTemplate" canNew="true" form-view="template-form"
