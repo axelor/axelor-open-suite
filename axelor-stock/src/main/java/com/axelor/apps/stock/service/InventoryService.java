@@ -689,7 +689,6 @@ public class InventoryService {
     String inventorySeq = inventory.getInventorySeq();
 
     LocalDate inventoryDate = inventory.getPlannedStartDateT().toLocalDate();
-    LocalDate realDate = inventory.getValidatedOn().toLocalDate();
     StockMove stockMove =
         stockMoveService.createStockMove(
             null,
@@ -697,7 +696,7 @@ public class InventoryService {
             company,
             fromStockLocation,
             toStockLocation,
-            realDate,
+            inventory.getValidatedOn(),
             inventoryDate,
             null,
             StockMoveRepository.TYPE_INTERNAL);

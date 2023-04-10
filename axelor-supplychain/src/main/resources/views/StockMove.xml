@@ -9,7 +9,7 @@
     <field name="fromStockLocation" form-view="stock-location-form"
       grid-view="stock-location-grid"/>
     <field name="estimatedDate"/>
-    <field name="realDate"/>
+    <field name="realDateTime"/>
     <field name="availableStatusSelect"/>
     <field name="statusSelect"/>
     <button name="printStockMoveBtn" title="Print" readonlyIf="statusSelect == 1" width="32"
@@ -25,7 +25,7 @@
     <field name="toStockLocation" form-view="stock-location-form"
       grid-view="stock-location-grid"/>
     <field name="estimatedDate"/>
-    <field name="realDate"/>
+    <field name="realDateTime"/>
     <field name="availableStatusSelect"/>
     <field name="statusSelect"/>
     <button name="printStockMoveBtn" title="Print" readonlyIf="statusSelect == 1" width="32"
@@ -41,7 +41,7 @@
     <field name="fromStockLocation" form-view="stock-location-form"
       grid-view="stock-location-grid"/>
     <field name="estimatedDate"/>
-    <field name="realDate"/>
+    <field name="realDateTime"/>
     <field name="fromAddressStr" hidden="true"/>
     <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid"
       if="__config__.app.getApp('base')?.enableTradingNamesManagement"/>

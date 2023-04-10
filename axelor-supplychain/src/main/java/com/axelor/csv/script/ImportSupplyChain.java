@@ -52,7 +52,9 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 
@@ -126,7 +128,11 @@ public class ImportSupplyChain {
           StockMove stockMove = stockMoveRepo.find(id);
           stockMoveService.copyQtyToRealQty(stockMove);
           stockMoveService.realize(stockMove);
-          stockMove.setRealDate(purchaseOrder.getEstimatedReceiptDate());
+          LocalDate estimatedReceiptDate = purchaseOrder.getEstimatedReceiptDate();
+          stockMove.setRealDateTime(
+              estimatedReceiptDate != null
+                  ? LocalDateTime.of(estimatedReceiptDate, LocalTime.now())
+                  : null);
         }
         purchaseOrder.setValidationDateTime(purchaseOrder.getOrderDate().atStartOfDay());
         purchaseOrder.setValidatedByUser(AuthUtils.getUser());
@@ -181,11 +187,12 @@ public class ImportSupplyChain {
         }
       }
       if (saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_FINALIZED_QUOTATION) {
-        // taskSaleOrderService.createTasks(saleOrder); TODO once we will have done the generation//
+        // taskSaleOrderService.createTasks(saleOrder); TODO once we will have done the
+        // generation//
         // of tasks in project module
         saleOrderWorkflowService.confirmSaleOrder(saleOrder);
         // Beans.get(SaleOrderPurchaseService.class).createPurchaseOrders(saleOrder);
-        //				productionOrderSaleOrderService.generateProductionOrder(saleOrder);
+        // productionOrderSaleOrderService.generateProductionOrder(saleOrder);
         // saleOrder.setClientPartner(saleOrderWorkflowService.validateCustomer(saleOrder));
         // Generate invoice from sale order
         Invoice invoice = Beans.get(SaleOrderInvoiceService.class).generateInvoice(saleOrder);
@@ -207,7 +214,7 @@ public class ImportSupplyChain {
             stockMoveService.copyQtyToRealQty(stockMove);
             stockMoveService.realize(stockMove);
             if (saleOrder.getConfirmationDateTime() != null) {
-              stockMove.setRealDate(saleOrder.getConfirmationDateTime().toLocalDate());
+              stockMove.setRealDateTime(saleOrder.getConfirmationDateTime());
             }
           }
         }

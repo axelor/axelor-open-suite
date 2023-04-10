@@ -66,6 +66,7 @@ import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -122,7 +123,7 @@ public class StockMoveServiceImpl implements StockMoveService {
    * @param clientPartner
    * @param fromStockLocation
    * @param toStockLocation
-   * @param realDate
+   * @param realDateTime
    * @param estimatedDate
    * @param note
    * @param shipmentMode
@@ -141,7 +142,7 @@ public class StockMoveServiceImpl implements StockMoveService {
       Partner clientPartner,
       StockLocation fromStockLocation,
       StockLocation toStockLocation,
-      LocalDate realDate,
+      LocalDateTime realDateTime,
       LocalDate estimatedDate,
       String note,
       ShipmentMode shipmentMode,
@@ -159,7 +160,7 @@ public class StockMoveServiceImpl implements StockMoveService {
             company,
             fromStockLocation,
             toStockLocation,
-            realDate,
+            realDateTime,
             estimatedDate,
             note,
             typeSelect);
@@ -183,7 +184,7 @@ public class StockMoveServiceImpl implements StockMoveService {
    * @param company
    * @param fromStockLocation
    * @param toStockLocation
-   * @param realDate
+   * @param realDateTime
    * @param estimatedDate
    * @param note
    * @param typeSelect
@@ -197,7 +198,7 @@ public class StockMoveServiceImpl implements StockMoveService {
       Company company,
       StockLocation fromStockLocation,
       StockLocation toStockLocation,
-      LocalDate realDate,
+      LocalDateTime realDateTime,
       LocalDate estimatedDate,
       String note,
       int typeSelect)
@@ -214,7 +215,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     stockMoveToolService.computeAddressStr(stockMove);
     stockMove.setCompany(company);
     stockMove.setStatusSelect(StockMoveRepository.STATUS_DRAFT);
-    stockMove.setRealDate(realDate);
+    stockMove.setRealDateTime(realDateTime);
     stockMove.setEstimatedDate(estimatedDate);
     stockMove.setFromStockLocation(fromStockLocation);
     stockMove.setToStockLocation(toStockLocation);
@@ -252,7 +253,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     stockMove.setToAddress(toStockLocation.getAddress());
     stockMove.setNote(""); // comment to display on stock move
     stockMove.setPickingOrderComments(""); // comment to display on picking order
-    stockMove.setRealDate(LocalDate.now());
+    stockMove.setRealDateTime(LocalDateTime.now());
     stockMove.setEstimatedDate(LocalDate.now());
     stockMoveRepo.save(stockMove);
 
@@ -300,7 +301,7 @@ public class StockMoveServiceImpl implements StockMoveService {
           I18n.get(StockExceptionMessage.STOCK_MOVE_CANNOT_GO_BACK_TO_DRAFT));
     }
     stockMove.setAvailabilityRequest(false);
-    stockMove.setPickingEditDate(null);
+    stockMove.setPickingEditDateTime(null);
     stockMove.setPickingIsEdited(false);
     stockMove.setStatusSelect(StockMoveRepository.STATUS_DRAFT);
   }
@@ -487,7 +488,8 @@ public class StockMoveServiceImpl implements StockMoveService {
 
     stockMoveLineService.storeCustomsCodes(stockMove.getStockMoveLineList());
 
-    stockMove.setRealDate(appBaseService.getTodayDate(stockMove.getCompany()));
+    stockMove.setRealDateTime(
+        appBaseService.getTodayDateTime(stockMove.getCompany()).toLocalDateTime());
     resetMasses(stockMove);
 
     if (stockMove.getIsWithBackorder() && mustBeSplit(stockMove.getStockMoveLineList())) {
@@ -730,7 +732,7 @@ public class StockMoveServiceImpl implements StockMoveService {
       return Optional.empty();
     }
 
-    newStockMove.setRealDate(null);
+    newStockMove.setRealDateTime(null);
     newStockMove.setStockMoveSeq(
         stockMoveToolService.getSequenceStockMove(
             newStockMove.getTypeSelect(), newStockMove.getCompany()));
@@ -913,7 +915,8 @@ public class StockMoveServiceImpl implements StockMoveService {
           stockMove.getEstimatedDate(),
           true);
 
-      stockMove.setRealDate(appBaseService.getTodayDate(stockMove.getCompany()));
+      stockMove.setRealDateTime(
+          appBaseService.getTodayDateTime(stockMove.getCompany()).toLocalDateTime());
     }
 
     stockMove.clearPlannedStockMoveLineList();
@@ -1104,7 +1107,7 @@ public class StockMoveServiceImpl implements StockMoveService {
         stockMoveLineRepo
             .all()
             .filter(
-                "self.product.id = ?1 AND self.stockMove.toStockLocation.id = ?2 AND self.stockMove.statusSelect != ?3 AND (self.stockMove.estimatedDate <= ?4 OR self.stockMove.realDate <= ?4)",
+                "self.product.id = ?1 AND self.stockMove.toStockLocation.id = ?2 AND self.stockMove.statusSelect != ?3 AND (self.stockMove.estimatedDate <= ?4 OR DATE(self.stockMove.realDateTime) <= ?4)",
                 productId,
                 locationId,
                 StockMoveRepository.STATUS_CANCELED,
@@ -1115,7 +1118,7 @@ public class StockMoveServiceImpl implements StockMoveService {
         stockMoveLineRepo
             .all()
             .filter(
-                "self.product.id = ?1 AND self.stockMove.fromStockLocation.id = ?2 AND self.stockMove.statusSelect != ?3 AND (self.stockMove.estimatedDate <= ?4 OR self.stockMove.realDate <= ?4)",
+                "self.product.id = ?1 AND self.stockMove.fromStockLocation.id = ?2 AND self.stockMove.statusSelect != ?3 AND (self.stockMove.estimatedDate <= ?4 OR DATE(self.stockMove.realDateTime) <= ?4)",
                 productId,
                 locationId,
                 StockMoveRepository.STATUS_CANCELED,
@@ -1345,10 +1348,11 @@ public class StockMoveServiceImpl implements StockMoveService {
   @Override
   @Transactional
   public void setPickingStockMoveEditDate(StockMove stockMove, String userType) {
-    if ((!stockMove.getPickingIsEdited() || stockMove.getPickingEditDate() == null)
+    if ((!stockMove.getPickingIsEdited() || stockMove.getPickingEditDateTime() == null)
         && stockMove.getStatusSelect() == StockMoveRepository.STATUS_PLANNED
         && StockMoveRepository.USER_TYPE_SENDER.equals(userType)) {
-      stockMove.setPickingEditDate(appBaseService.getTodayDate(stockMove.getCompany()));
+      stockMove.setPickingEditDateTime(
+          appBaseService.getTodayDateTime(stockMove.getCompany()).toLocalDateTime());
       stockMove.setPickingIsEdited(true);
     }
   }
