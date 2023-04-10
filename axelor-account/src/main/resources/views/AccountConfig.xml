@@ -196,7 +196,7 @@
           <field name="expenseTaxAccount"
             domain="self.statusSelect = 1 AND self.company = :company"
             if-module="axelor-human-resource" grid-view="account-grid" form-view="account-form"
-            if="__config__.app.isApp('expense')"/>
+            if="__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getExpenseManagement()"/>
         </panel>
         <panel name="accountingReportPanel" title="Accounting reports" colSpan="12">
           <field name="lineMinBeforeLongReportGenerationMessageNumber"/>
@@ -256,7 +256,7 @@
             if="__config__.app.isApp('business-project') &amp;&amp;  __config__.app.isApp('timesheet')"/>
           <field name="displayExpenseOnPrinting" widget="boolean-switch"
             if-module="axelor-business-project"
-            if="__config__.app.isApp('business-project') &amp;&amp;  __config__.app.isApp('expense')"/>
+            if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getExpenseManagement()"/>
           <field name="isPrintInvoicesInCompanyLanguage" widget="boolean-switch"/>
           <field name="displayHeadOfficeAddrOnInvoicePrinting" widget="boolean-switch"/>
           <field name="displayStockMoveOnInvoicePrinting" widget="boolean-switch"
@@ -323,7 +323,8 @@
           form-view="journal-form"/>
         <field name="expenseJournal"
           domain="self.statusSelect = 1 AND self.company = :company"
-          if-module="axelor-human-resource" if="__config__.app.isApp('expense')"
+          if-module="axelor-human-resource"
+          if="__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getExpenseManagement()"
           grid-view="journal-grid" form-view="journal-form"/>
         <field name="reportedBalanceJournal"
           domain="self.statusSelect = 1 AND self.company = :company" grid-view="journal-grid"

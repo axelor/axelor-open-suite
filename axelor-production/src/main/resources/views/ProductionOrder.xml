@@ -103,10 +103,10 @@
       expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
     <attribute name="domain" for="$product"
       expr="eval:&quot;self.expense = false and self.productTypeSelect = 'storable' and self.procurementMethodSelect = 'produce' AND self.dtype = 'Product'&quot;"
-      if=" __config__.app.isApp('expense')"/>
+      if="__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getExpenseManagement()"/>
     <attribute name="domain" for="$product"
       expr="eval:&quot;self.productTypeSelect = 'storable' and self.procurementMethodSelect = 'produce' AND self.dtype = 'Product'&quot;"
-      if="!__config__.app.isApp('expense')"/>
+      if="!(__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getExpenseManagement())"/>
   </action-attrs>
 
   <action-attrs if-module="axelor-business-production"

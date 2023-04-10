@@ -427,7 +427,8 @@
           readonly="false"/>
       </panel>
 
-      <panel name="vehiclePanel" title="Vehicle" if="__config__.app.isApp('expense')">
+      <panel name="vehiclePanel" title="Vehicle"
+        if="__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getExpenseManagement()">
         <panel-related name="kilometricLogListPanel" title="Kilometric log"
           field="kilometricLogList" colSpan="12" form-view="kilometric-log-form"
           grid-view="kilometric-log-grid" if="__config__.app.isApp('timesheet')" readonly="true"/>
@@ -743,7 +744,8 @@
     <field name="product" hidden="true" if="!__config__.app.isApp('timesheet')"/>
     <field name="timesheetReminder" hidden="true" if="!__config__.app.isApp('timesheet')"/>
     <field name="kilometricLogList" hidden="true" if="!__config__.app.isApp('timesheet')"/>
-    <field name="employeeVehicleList" hidden="true" if="!__config__.app.isApp('expense')"/>
+    <field name="employeeVehicleList" hidden="true"
+      if="!(__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getExpenseManagement())"/>
     <field name="mainEmploymentContract.payCompany"
       title="Pay company main employment contract"/>
     <field name="mainEmploymentContract.executiveStatusSelect"

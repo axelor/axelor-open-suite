@@ -27,7 +27,7 @@
       <field name="fromDate" colSpan="3" required="true"/>
       <field name="toDate" colSpan="3" required="true"/>
       <field name="allowExpenseCreation" if-module="axelor-human-resource"
-        if="__config__.app.isApp('expense')"/>
+        if="__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getExpenseManagement()"/>
     </panel>
     <panel-dashlet action="action-view-period-linked-adjusting-moves-dashlet"
       name="linkedAdjustingMovesPanel"/>
@@ -65,7 +65,7 @@
       <field name="toDate" onChange="action-period-year-on-change-to-date-validate"
         colSpan="3"/>
       <field name="allowExpenseCreation" if-module="axelor-human-resource"
-        if="__config__.app.isApp('expense')"/>
+        if="__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getExpenseManagement()"/>
     </panel>
     <panel-dashlet action="action-view-period-linked-adjusting-moves-dashlet"
       name="linkedAdjustingMovesPanel"/>
