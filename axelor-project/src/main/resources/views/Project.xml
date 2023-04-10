@@ -173,7 +173,8 @@
           onClick="action-project-method-import-members"/>
       </panel>
       <panel title="Planning" name="planningPanel" colSpan="12" hideIf="!isShowPlanning"
-        if="__config__.app.isApp('employee')" if-module="axelor-human-resource">
+        if="__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getEmployeeManagement()"
+        if-module="axelor-human-resource">
         <field name="totalPlannedHrs" readonly="true">
           <viewer><![CDATA[
 		                   	<span>{{$fmt('totalPlannedHrs')}} </span><span x-translate>hours</span>
@@ -461,9 +462,10 @@
         </panel-related>
       </panel>
       <panel title="Configurations" name="configurationsPanel">
-        <field if="__config__.app.isApp('employee')" if-module="axelor-human-resource"
-          name="productSet" colSpan="12" widget="TagSelect" canEdit="false"
-          domain="self.isActivity = true AND self.dtype = 'Product'"
+        <field
+          if="__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getEmployeeManagement()"
+          if-module="axelor-human-resource" name="productSet" colSpan="12" widget="TagSelect"
+          canEdit="false" domain="self.isActivity = true AND self.dtype = 'Product'"
           form-view="product-activity-form" grid-view="product-activity-grid"/>
         <field name="projectFolderSet" colSpan="12" widget="TagSelect"
           if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
@@ -472,7 +474,7 @@
         <field name="childProjectList" hidden="true"/>
         <field name="sequence" hidden="true"/>
         <field name="imputable" colSpan="4" widget="boolean-switch"
-          if="__config__.app.isApp('employee') &amp;&amp; __config__.app.isApp('timesheet')"
+          if="__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getEmployeeManagement() &amp;&amp; __config__.app.isApp('timesheet')"
           if-module="axelor-human-resource"/>
         <panel name="fieldsToDisplay" title="Fields to display" colSpan="12">
           <field name="isShowStatus" colSpan="4" widget="inline-checkbox"
@@ -1117,7 +1119,8 @@
     <field name="priceList" hidden="true" if="!__config__.app.isApp('business-project')"/>
     <field name="contactPartner" hidden="true" if="!__config__.app.isApp('business-project')"/>
     <field name="customerAddress" hidden="true" if="!__config__.app.isApp('business-project')"/>
-    <field name="totalPlannedHrs" hidden="true" if="!__config__.app.isApp('employee')"/>
+    <field name="totalPlannedHrs" hidden="true"
+      if="!(__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getEmployeeManagement())"/>
     <field name="timeSpent" hidden="true" if="!__config__.app.isApp('timesheet')"/>
     <field name="toInvoice" hidden="true" if="!__config__.app.isApp('business-project')"/>
     <field name="isInvoicingTimesheet" hidden="true"
@@ -1137,8 +1140,10 @@
     <field name="roadmapSet" hidden="true" if="!__config__.app.isApp('business-support')"/>
     <field name="announcementList" hidden="true"
       if="!__config__.app.isApp('business-support')"/>
-    <field name="productSet" hidden="true" if="!__config__.app.isApp('employee')"/>
-    <field name="imputable" hidden="true" if="!__config__.app.isApp('employee')"/>
+    <field name="productSet" hidden="true"
+      if="!(__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getEmployeeManagement())"/>
+    <field name="imputable" hidden="true"
+      if="!(__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getEmployeeManagement())"/>
     <field name="isBusinessProject" hidden="true"
       if="!__config__.app.isApp('business-project')"/>
   </search-filters>

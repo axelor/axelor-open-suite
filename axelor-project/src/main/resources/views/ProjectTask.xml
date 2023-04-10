@@ -175,7 +175,8 @@
         <field name="internalDescription" colSpan="12" widget="html"/>
       </panel>
 
-      <panel name="planningPanel" title="Planning" if="__config__.app.isApp('employee')"
+      <panel name="planningPanel" title="Planning"
+        if="__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getEmployeeManagement()"
         if-module="axelor-human-resource" showIf="project.isShowPlanning">
         <field name="totalPlannedHrs" readonly="true" colSpan="4">
           <viewer><![CDATA[
@@ -900,9 +901,12 @@
     <field name="taskDeadline" hidden="true" if="__config__.app.isApp('business-support')"/>
     <field name="internalDescription" hidden="true"
       if="!__config__.app.isApp('business-support')"/>
-    <field name="totalPlannedHrs" hidden="true" if="!__config__.app.isApp('employee')"/>
-    <field name="budgetedTime" hidden="true" if="!__config__.app.isApp('employee')"/>
-    <field name="plannedProgress" hidden="true" if="!__config__.app.isApp('employee')"/>
+    <field name="totalPlannedHrs" hidden="true"
+      if="!(__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getEmployeeManagement())"/>
+    <field name="budgetedTime" hidden="true"
+      if="!(__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getEmployeeManagement())"/>
+    <field name="plannedProgress" hidden="true"
+      if="!(__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getEmployeeManagement())"/>
     <field name="invoicingType" hidden="true" if="!__config__.app.isApp('business-project')"/>
     <field name="toInvoice" hidden="true" if="!__config__.app.isApp('business-project')"/>
     <field name="isPaid" hidden="true" if="!__config__.app.isApp('business-project')"/>

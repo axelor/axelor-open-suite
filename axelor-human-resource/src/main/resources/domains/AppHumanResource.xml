@@ -11,6 +11,11 @@
 
     <!-- Employee configuration -->
     <boolean name="employeeManagement" title="Employee management"/>
+    <decimal name="dailyWorkHours" title="Daily work hours"/>
+    <boolean name="advanceManagement" default="true"/>
+    <boolean name="payrollPreparation" title="Payroll preparation"/>
+    <boolean name="lunchVoucher" title="Lunch Voucher"/>
+    <boolean name="employeeBonus" title="Employee bonus"/>
 
     <!-- Timesheet configuration -->
     <boolean name="timesheetManagement" title="Timesheet management"/>
@@ -23,6 +28,21 @@
 
     <!-- Extra hours configuration -->
     <boolean name="extraHoursManagement" title="Extra hours management"/>
+
+    <extra-code>
+   		<![CDATA[
+   			public static final Integer INVOICING_LOG_TIMES_LINE_ACTIVITY = 1;
+   			public static final Integer INVOICING_LOG_TIMES_EMPLOYEE_ACTIVITY = 2;
+   		]]>
+    </extra-code>
+
+    <track>
+      <field name="dailyWorkHours" on="UPDATE"/>
+      <field name="advanceManagement" on="UPDATE"/>
+      <field name="payrollPreparation" on="UPDATE"/>
+      <field name="lunchVoucher" on="UPDATE"/>
+      <field name="employeeBonus" on="UPDATE"/>
+    </track>
 
   </entity>
 
