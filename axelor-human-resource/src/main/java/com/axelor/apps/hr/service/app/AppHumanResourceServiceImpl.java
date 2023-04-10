@@ -27,11 +27,9 @@ import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.studio.app.service.AppVersionService;
 import com.axelor.studio.db.AppExpense;
 import com.axelor.studio.db.AppHumanResource;
-import com.axelor.studio.db.AppLeave;
 import com.axelor.studio.db.AppTimesheet;
 import com.axelor.studio.db.repo.AppExpenseRepository;
 import com.axelor.studio.db.repo.AppHumanResourceRepository;
-import com.axelor.studio.db.repo.AppLeaveRepository;
 import com.axelor.studio.db.repo.AppRepository;
 import com.axelor.studio.db.repo.AppTimesheetRepository;
 import com.axelor.studio.service.AppSettingsStudioService;
@@ -45,7 +43,6 @@ public class AppHumanResourceServiceImpl extends AppBaseServiceImpl
     implements AppHumanResourceService {
 
   private AppTimesheetRepository appTimesheetRepo;
-  private AppLeaveRepository appLeaveRepo;
   private AppExpenseRepository appExpenseRepo;
 
   protected CompanyRepository companyRepo;
@@ -62,14 +59,12 @@ public class AppHumanResourceServiceImpl extends AppBaseServiceImpl
       MetaModelRepository metaModelRepo,
       AppSettingsStudioService appSettingsStudioService,
       AppTimesheetRepository appTimesheetRepo,
-      AppLeaveRepository appLeaveRepo,
       AppExpenseRepository appExpenseRepo,
       CompanyRepository companyRepo,
       HRConfigRepository hrConfigRepo,
       AppHumanResourceRepository appHumanResourceRepository) {
     super(appRepo, metaFiles, appVersionService, metaModelRepo, appSettingsStudioService);
     this.appTimesheetRepo = appTimesheetRepo;
-    this.appLeaveRepo = appLeaveRepo;
     this.appExpenseRepo = appExpenseRepo;
     this.companyRepo = companyRepo;
     this.hrConfigRepo = hrConfigRepo;
@@ -84,11 +79,6 @@ public class AppHumanResourceServiceImpl extends AppBaseServiceImpl
   @Override
   public AppTimesheet getAppTimesheet() {
     return appTimesheetRepo.all().fetchOne();
-  }
-
-  @Override
-  public AppLeave getAppLeave() {
-    return appLeaveRepo.all().fetchOne();
   }
 
   @Override

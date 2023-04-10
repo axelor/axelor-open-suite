@@ -11,7 +11,6 @@
       mappedBy="app"/>
     <one-to-one ref="com.axelor.studio.db.AppEmployee" name="appEmployee" mappedBy="app"/>
     <one-to-one ref="com.axelor.studio.db.AppExpense" name="appExpense" mappedBy="app"/>
-    <one-to-one ref="com.axelor.studio.db.AppLeave" name="appLeave" mappedBy="app"/>
     <one-to-one ref="com.axelor.studio.db.AppTimesheet" name="appTimesheet"
       mappedBy="app"/>
 

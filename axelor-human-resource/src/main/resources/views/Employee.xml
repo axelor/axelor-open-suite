@@ -181,7 +181,8 @@
     <!-- END OF Employment contract -->
 
     <!-- Leaves and timesheets -->
-    <panel name="leaveListSBSPanel" title="Leave List" if="__config__.app.isApp('leave')"
+    <panel name="leaveListSBSPanel" title="Leave List"
+      if="__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getLeaveManagement()"
       showIf="stepByStepSelect == 3">
       <field name="leaveLineList" colSpan="12" form-view="leave-line-form"
         grid-view="leave-line-grid"/>
@@ -381,7 +382,8 @@
           grid-view="employment-contract-employee-grid"/>
       </panel>
 
-      <panel name="leaveListPanel" title="Leave List" if="__config__.app.isApp('leave')">
+      <panel name="leaveListPanel" title="Leave List"
+        if="__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getLeaveManagement()">
         <field name="leaveLineList" colSpan="12" form-view="leave-line-form"
           grid-view="leave-line-grid"/>
         <field name="negativeValueLeave" widget="InlineCheckbox"/>
@@ -636,8 +638,8 @@
     <field name="dailyWorkHours"
       expr="eval:__config__.app.getApp('base')?.getDailyWorkHours()"/>
     <field name="negativeValueLeave"
-      expr="eval:__config__.app.getApp('leave')?.getAllowNegativeLeaveEmployees()"
-      if="__config__.app.isApp('leave')"/>
+      expr="eval: __config__.app.getApp('human-resource')?.getAllowNegativeLeaveEmployees()"
+      if="__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getLeaveManagement()"/>
     <field name="publicHolidayEventsPlanning"
       expr="eval: __user__.activeCompany?.hrConfig?.publicHolidayEventsPlanning"/>
   </action-record>
@@ -736,8 +738,10 @@
       if="!(__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee')?.getLunchVoucher())"/>
     <field name="employeeAdvanceList" hidden="true"
       if="!(__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee')?.getAdvanceManagement())"/>
-    <field name="leaveLineList" hidden="true" if="!__config__.app.isApp('leave')"/>
-    <field name="negativeValueLeave" hidden="true" if="!__config__.app.isApp('leave')"/>
+    <field name="leaveLineList" hidden="true"
+      if="!(__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getLeaveManagement())"/>
+    <field name="negativeValueLeave" hidden="true"
+      if="!(__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getLeaveManagement())"/>
     <field name="timeLoggingPreferenceSelect" hidden="true"
       if="!__config__.app.isApp('timesheet')"/>
     <field name="product" hidden="true" if="!__config__.app.isApp('timesheet')"/>

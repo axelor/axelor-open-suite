@@ -20,7 +20,6 @@ package com.axelor.apps.hr.service.app;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.studio.db.AppExpense;
 import com.axelor.studio.db.AppHumanResource;
-import com.axelor.studio.db.AppLeave;
 import com.axelor.studio.db.AppTimesheet;
 
 public interface AppHumanResourceService extends AppBaseService {
@@ -28,8 +27,6 @@ public interface AppHumanResourceService extends AppBaseService {
   public AppHumanResource getAppHumanResource();
 
   public AppTimesheet getAppTimesheet();
-
-  public AppLeave getAppLeave();
 
   public AppExpense getAppExpense();
 

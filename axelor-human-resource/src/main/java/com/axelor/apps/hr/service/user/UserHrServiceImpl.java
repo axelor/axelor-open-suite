@@ -29,7 +29,7 @@ import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.inject.Beans;
 import com.axelor.studio.db.AppBase;
-import com.axelor.studio.db.AppLeave;
+import com.axelor.studio.db.AppHumanResource;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -46,13 +46,13 @@ public class UserHrServiceImpl implements UserHrService {
     }
 
     AppBase appBase = appHumanResourceService.getAppBase();
-    AppLeave appLeave = appHumanResourceService.getAppLeave();
+    AppHumanResource appHumanResource = appHumanResourceService.getAppHumanResource();
 
     Employee employee = new Employee();
     employee.setContactPartner(user.getPartner());
     employee.setTimeLoggingPreferenceSelect(appBase.getTimeLoggingPreferenceSelect());
     employee.setDailyWorkHours(appBase.getDailyWorkHours());
-    employee.setNegativeValueLeave(appLeave.getAllowNegativeLeaveEmployees());
+    employee.setNegativeValueLeave(appHumanResource.getAllowNegativeLeaveEmployees());
 
     EventsPlanning planning = null;
     Company company = user.getActiveCompany();

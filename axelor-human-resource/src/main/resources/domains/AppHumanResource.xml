@@ -20,9 +20,15 @@
 
     <!-- Leave configuration -->
     <boolean name="leaveManagement" title="Leave management"/>
+    <boolean name="allowNegativeLeaveEmployees"
+      title="Allow negative values for employee leaves"/>
 
     <!-- Extra hours configuration -->
     <boolean name="extraHoursManagement" title="Extra hours management"/>
+
+    <track>
+      <field name="allowNegativeLeaveEmployees" on="UPDATE"/>
+    </track>
 
   </entity>
 
