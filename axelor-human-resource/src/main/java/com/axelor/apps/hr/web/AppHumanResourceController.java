@@ -22,6 +22,7 @@ import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.studio.db.AppHumanResource;
 import com.google.inject.Singleton;
 
 @Singleton
@@ -31,6 +32,16 @@ public class AppHumanResourceController {
     try {
       Beans.get(AppHumanResourceService.class).generateHrConfigurations();
       response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void switchTimesheetEditors(ActionRequest request, ActionResponse response) {
+    try {
+      AppHumanResource appHumanResource = request.getContext().asType(AppHumanResource.class);
+      Beans.get(AppHumanResourceService.class)
+          .switchTimesheetEditors(appHumanResource.getTimesheetEditor());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

@@ -19,21 +19,24 @@ package com.axelor.apps.hr.service.app;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.CompanyRepository;
+import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.apps.hr.db.HRConfig;
+import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.repo.HRConfigRepository;
+import com.axelor.apps.hr.db.repo.TimesheetRepository;
+import com.axelor.db.JPA;
+import com.axelor.db.Query;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.studio.app.service.AppVersionService;
 import com.axelor.studio.db.AppExpense;
 import com.axelor.studio.db.AppHumanResource;
 import com.axelor.studio.db.AppLeave;
-import com.axelor.studio.db.AppTimesheet;
 import com.axelor.studio.db.repo.AppExpenseRepository;
 import com.axelor.studio.db.repo.AppHumanResourceRepository;
 import com.axelor.studio.db.repo.AppLeaveRepository;
 import com.axelor.studio.db.repo.AppRepository;
-import com.axelor.studio.db.repo.AppTimesheetRepository;
 import com.axelor.studio.service.AppSettingsStudioService;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -44,7 +47,6 @@ import java.util.List;
 public class AppHumanResourceServiceImpl extends AppBaseServiceImpl
     implements AppHumanResourceService {
 
-  private AppTimesheetRepository appTimesheetRepo;
   private AppLeaveRepository appLeaveRepo;
   private AppExpenseRepository appExpenseRepo;
 
@@ -54,6 +56,8 @@ public class AppHumanResourceServiceImpl extends AppBaseServiceImpl
 
   protected AppHumanResourceRepository appHumanResourceRepository;
 
+  protected TimesheetRepository timesheetRepository;
+
   @Inject
   public AppHumanResourceServiceImpl(
       AppRepository appRepo,
@@ -61,14 +65,12 @@ public class AppHumanResourceServiceImpl extends AppBaseServiceImpl
       AppVersionService appVersionService,
       MetaModelRepository metaModelRepo,
       AppSettingsStudioService appSettingsStudioService,
-      AppTimesheetRepository appTimesheetRepo,
       AppLeaveRepository appLeaveRepo,
       AppExpenseRepository appExpenseRepo,
       CompanyRepository companyRepo,
       HRConfigRepository hrConfigRepo,
       AppHumanResourceRepository appHumanResourceRepository) {
     super(appRepo, metaFiles, appVersionService, metaModelRepo, appSettingsStudioService);
-    this.appTimesheetRepo = appTimesheetRepo;
     this.appLeaveRepo = appLeaveRepo;
     this.appExpenseRepo = appExpenseRepo;
     this.companyRepo = companyRepo;
@@ -79,11 +81,6 @@ public class AppHumanResourceServiceImpl extends AppBaseServiceImpl
   @Override
   public AppHumanResource getAppHumanResource() {
     return appHumanResourceRepository.all().fetchOne();
-  }
-
-  @Override
-  public AppTimesheet getAppTimesheet() {
-    return appTimesheetRepo.all().fetchOne();
   }
 
   @Override
@@ -106,6 +103,24 @@ public class AppHumanResourceServiceImpl extends AppBaseServiceImpl
       HRConfig hrConfig = new HRConfig();
       hrConfig.setCompany(company);
       hrConfigRepo.save(hrConfig);
+    }
+  }
+
+  @Override
+  @Transactional
+  public void switchTimesheetEditors(Boolean state) {
+    List<Timesheet> timesheets;
+    Query<Timesheet> query = timesheetRepository.all().order("id");
+    int offset = 0;
+    while (!(timesheets = query.fetch(AbstractBatch.FETCH_LIMIT, offset)).isEmpty()) {
+      for (Timesheet timesheet : timesheets) {
+        offset++;
+        if (timesheet.getShowEditor() != state) {
+          timesheet.setShowEditor(state);
+          timesheetRepository.save(timesheet);
+        }
+      }
+      JPA.clear();
     }
   }
 }
