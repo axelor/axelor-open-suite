@@ -732,7 +732,8 @@
 
   <action-group name="action-product-group-default-new">
     <action name="action-product-record-default-new"/>
-    <action name="hr-action-product-record-default-new" if="__config__.app.getApp('expense')"/>
+    <action name="hr-action-product-record-default-new"
+      if="__config__.app.getApp('human-resource')?.getExpenseManagement()"/>
   </action-group>
 
   <action-record name="action-product-record-default-new"

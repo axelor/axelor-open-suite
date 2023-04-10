@@ -17,12 +17,17 @@
 
     <!-- Expense configuration -->
     <boolean name="expenseManagement" title="Expense management"/>
+    <boolean name="computeDistanceWithWebService"/>
 
     <!-- Leave configuration -->
     <boolean name="leaveManagement" title="Leave management"/>
 
     <!-- Extra hours configuration -->
     <boolean name="extraHoursManagement" title="Extra hours management"/>
+
+    <track>
+      <field name="computeDistanceWithWebService" on="UPDATE"/>
+    </track>
 
   </entity>
 

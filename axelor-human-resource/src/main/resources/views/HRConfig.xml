@@ -60,7 +60,8 @@
             domain="self.metaModel.name = 'ExtraHours'"/>
         </panel>
       </panel>
-      <panel name="expensePanel" title="Expense" if="__config__.app.isApp('expense')">
+      <panel name="expensePanel" title="Expense"
+        if="__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getExpenseManagement()">
         <panel name="expenseTemplatesPanel" title="Expense Templates" colSpan="12">
           <field name="expenseMailNotification" colSpan="12"/>
           <field name="sentExpenseTemplate" canNew="true" form-view="template-form"

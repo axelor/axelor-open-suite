@@ -365,7 +365,8 @@
 
 
   <!-- Expense app -->
-  <menuitem name="expense-root" parent="hr-root" if="__config__.app.isApp('expense')"
+  <menuitem name="expense-root" parent="hr-root"
+    if="__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getExpenseManagement()"
     icon="fa-credit-card" icon-background="#84429f" title="Expenses" order="10"/>
 
   <menuitem name="edit-expense" parent="expense-root" title="Complete my expense"
@@ -649,7 +650,8 @@
     action="edit.timesheet" top="true" if="__config__.app.isApp('timesheet')"/>
 
   <menuitem name="top-menu-hr-my-expense" parent="top-menu-hr" title="My expense"
-    action="edit.expense" top="true" if="__config__.app.isApp('expense')"/>
+    action="edit.expense" top="true"
+    if="__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getExpenseManagement()"/>
 
   <menuitem name="top-menu-hr-my-leave-request" parent="top-menu-hr"
     title="My leave request" action="edit.leave.request" top="true"
