@@ -32,6 +32,7 @@ import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -97,17 +98,19 @@ public class ContractVersionServiceImpl extends ContractVersionRepository
   public void ongoing(ContractVersion version) throws AxelorException {
     ongoing(
         version,
-        appBaseService.getTodayDate(
-            version.getContract() != null
-                ? version.getContract().getCompany()
-                : Optional.ofNullable(AuthUtils.getUser())
-                    .map(User::getActiveCompany)
-                    .orElse(null)));
+        appBaseService
+            .getTodayDateTime(
+                version.getContract() != null
+                    ? version.getContract().getCompany()
+                    : Optional.ofNullable(AuthUtils.getUser())
+                        .map(User::getActiveCompany)
+                        .orElse(null))
+            .toLocalDateTime());
   }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void ongoing(ContractVersion version, LocalDate date) throws AxelorException {
+  public void ongoing(ContractVersion version, LocalDateTime dateTime) throws AxelorException {
     List<Integer> authorizedStatus = new ArrayList<>();
     authorizedStatus.add(AbstractContractVersionRepository.WAITING_VERSION);
     authorizedStatus.add(AbstractContractVersionRepository.DRAFT_VERSION);
@@ -118,7 +121,7 @@ public class ContractVersionServiceImpl extends ContractVersionRepository
           I18n.get(ContractExceptionMessage.CONTRACT_ONGOING_WRONG_STATUS));
     }
 
-    version.setActivationDate(date);
+    version.setActivationDateTime(dateTime);
     version.setActivatedByUser(AuthUtils.getUser());
     version.setStatusSelect(ONGOING_VERSION);
 
@@ -128,7 +131,7 @@ public class ContractVersionServiceImpl extends ContractVersionRepository
         && version.getEngagementStartFromVersion()) {
       Preconditions.checkNotNull(
           version.getContract(), I18n.get("No contract is associated to version."));
-      version.getContract().setEngagementStartDate(date);
+      version.getContract().setEngagementStartDate(dateTime.toLocalDate());
     }
 
     if (version.getContract().getIsInvoicingManagement()
@@ -148,17 +151,19 @@ public class ContractVersionServiceImpl extends ContractVersionRepository
   public void terminate(ContractVersion version) throws AxelorException {
     terminate(
         version,
-        appBaseService.getTodayDate(
-            version.getContract() != null
-                ? version.getContract().getCompany()
-                : Optional.ofNullable(AuthUtils.getUser())
-                    .map(User::getActiveCompany)
-                    .orElse(null)));
+        appBaseService
+            .getTodayDateTime(
+                version.getContract() != null
+                    ? version.getContract().getCompany()
+                    : Optional.ofNullable(AuthUtils.getUser())
+                        .map(User::getActiveCompany)
+                        .orElse(null))
+            .toLocalDateTime());
   }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void terminate(ContractVersion version, LocalDate date) throws AxelorException {
+  public void terminate(ContractVersion version, LocalDateTime dateTime) throws AxelorException {
 
     if (version.getStatusSelect() == null
         || version.getStatusSelect() != AbstractContractVersionRepository.ONGOING_VERSION) {
@@ -167,7 +172,7 @@ public class ContractVersionServiceImpl extends ContractVersionRepository
           I18n.get(ContractExceptionMessage.CONTRACT_TERMINATE_WRONG_STATUS));
     }
 
-    version.setEndDate(date);
+    version.setEndDateTime(dateTime);
     version.setStatusSelect(TERMINATED_VERSION);
 
     save(version);
