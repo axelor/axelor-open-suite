@@ -357,7 +357,7 @@
 "TaskEditor.comment","Commentaires",,
 "TaskEditor.concurrencyError","Erreur de mise à jour. Veuillez rafraîchir la page",,
 "TaskEditor.deleteRecord","Effacer l'enregistrement",,
-"TaskEditor.deleteRecordConfirm","Voulez-vous vraiment supprimer cette section?",,
+"TaskEditor.deleteRecordConfirm","Voulez-vous vraiment supprimer cette section ?",,
 "TaskEditor.deleteSuccess","Supprimé avec succès",,
 "TaskEditor.error","Erreur",,
 "TaskEditor.filter","Filtrer",,
