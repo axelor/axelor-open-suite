@@ -11,7 +11,6 @@ import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
-import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 import java.time.LocalDate;
 import java.util.Objects;
@@ -51,12 +50,12 @@ public class MoveRecordUpdateServiceImpl implements MoveRecordUpdateService {
   }
 
   @Override
-  public MoveContext updateInvoiceTerms(Move move, Context context) throws AxelorException {
+  public MoveContext updateInvoiceTerms(
+      Move move, boolean paymentConditionChange, boolean headerChange) throws AxelorException {
     Objects.requireNonNull(move);
     MoveContext result = new MoveContext();
 
-    if (context.containsKey("paymentConditionChange")
-        && (boolean) context.get("paymentConditionChange")) {
+    if (paymentConditionChange) {
       move = moveRepository.find(move.getId());
 
       moveInvoiceTermService.recreateInvoiceTerms(move);
@@ -65,7 +64,7 @@ public class MoveRecordUpdateServiceImpl implements MoveRecordUpdateService {
         result.putInAttrs(
             "dueDate", "value", moveInvoiceTermService.computeDueDate(move, true, false));
       }
-    } else if (context.containsKey("headerChange") && (boolean) context.get("headerChange")) {
+    } else if (headerChange) {
       move = moveRepository.find(move.getId());
 
       boolean isAllUpdated = moveInvoiceTermService.updateInvoiceTerms(move);
@@ -86,24 +85,11 @@ public class MoveRecordUpdateServiceImpl implements MoveRecordUpdateService {
   }
 
   @Override
-  public void updateDueDate(Move move, Context context) {
-    if (context.containsKey("dueDate") && context.get("dueDate") != null) {
+  public void updateDueDate(Move move, LocalDate dueDate) {
+    if (dueDate != null) {
       move = moveRepository.find(move.getId());
 
-      moveInvoiceTermService.updateSingleInvoiceTermDueDate(move, this.extractDueDate(context));
-    }
-  }
-
-  protected LocalDate extractDueDate(Context context) {
-    if (!context.containsKey("dueDate") || context.get("dueDate") == null) {
-      return null;
-    }
-
-    Object dueDateObj = context.get("dueDate");
-    if (dueDateObj.getClass() == LocalDate.class) {
-      return (LocalDate) dueDateObj;
-    } else {
-      return LocalDate.parse((String) dueDateObj);
+      moveInvoiceTermService.updateSingleInvoiceTermDueDate(move, dueDate);
     }
   }
 
@@ -116,8 +102,7 @@ public class MoveRecordUpdateServiceImpl implements MoveRecordUpdateService {
   }
 
   @Override
-  public void updateMoveLinesCurrencyRate(Move move, Context context) throws AxelorException {
-    LocalDate dueDate = this.extractDueDate(context);
+  public void updateMoveLinesCurrencyRate(Move move, LocalDate dueDate) throws AxelorException {
 
     if (move != null
         && ObjectUtils.notEmpty(move.getMoveLineList())

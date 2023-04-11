@@ -12,7 +12,9 @@ import com.axelor.exception.AxelorException;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.time.LocalDate;
 import java.util.Objects;
+import java.util.Optional;
 
 public class MoveRecordServiceImpl implements MoveRecordService {
 
@@ -70,9 +72,19 @@ public class MoveRecordServiceImpl implements MoveRecordService {
 
     MoveContext result = new MoveContext();
 
-    result.merge(moveRecordUpdateService.updateInvoiceTerms(move, context));
+    boolean paymentConditionChange =
+        Optional.ofNullable(context.get("paymentConditionChange"))
+            .map(value -> (Boolean) value)
+            .orElse(false);
+    boolean headerChange =
+        Optional.ofNullable(context.get("headerChange"))
+            .map(value -> (Boolean) value)
+            .orElse(false);
+
+    result.merge(
+        moveRecordUpdateService.updateInvoiceTerms(move, paymentConditionChange, headerChange));
     moveRecordUpdateService.updateRoundInvoiceTermPercentages(move);
-    moveRecordUpdateService.updateDueDate(move, context);
+    moveRecordUpdateService.updateDueDate(move, this.extractDueDate(context));
     moveRecordUpdateService.updateInDayBookMode(move);
 
     return result;
@@ -141,7 +153,7 @@ public class MoveRecordServiceImpl implements MoveRecordService {
         !periodAccountService.isAuthorizedToAccountOnPeriod(move, AuthUtils.getUser()));
     moveCheckService.checkPeriodPermission(move);
     result.putInValues(moveRecordSetService.setMoveLineDates(move));
-    moveRecordUpdateService.updateMoveLinesCurrencyRate(move, context);
+    moveRecordUpdateService.updateMoveLinesCurrencyRate(move, this.extractDueDate(context));
     result.putInValues(moveComputeService.computeTotals(move));
     updateDummiesDateConText(context);
     result.putInAttrs(moveAttrsService.computeAndGetDueDate(move, context));
@@ -255,6 +267,19 @@ public class MoveRecordServiceImpl implements MoveRecordService {
       moveCheckService.checkOrigin(move);
     } catch (AxelorException e) {
       result.putInAlert(e.getMessage());
+    }
+  }
+
+  protected LocalDate extractDueDate(Context context) {
+    if (!context.containsKey("dueDate") || context.get("dueDate") == null) {
+      return null;
+    }
+
+    Object dueDateObj = context.get("dueDate");
+    if (dueDateObj.getClass() == LocalDate.class) {
+      return (LocalDate) dueDateObj;
+    } else {
+      return LocalDate.parse((String) dueDateObj);
     }
   }
 }
