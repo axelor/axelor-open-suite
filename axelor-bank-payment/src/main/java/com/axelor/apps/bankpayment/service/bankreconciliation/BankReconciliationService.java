@@ -373,8 +373,7 @@ public class BankReconciliationService {
       }
     }
     if (vatSystemSelect == AccountRepository.VAT_SYSTEM_DEFAULT) {
-      vatSystemSelect =
-          bankStatementRule.getAccountManagement().getCashAccount().getVatSystemSelect();
+      vatSystemSelect = bankStatementRule.getCounterpartAccount().getVatSystemSelect();
     }
     Journal journal = move.getJournal();
     TaxLine taxLine = moveLine.getTaxLine();
