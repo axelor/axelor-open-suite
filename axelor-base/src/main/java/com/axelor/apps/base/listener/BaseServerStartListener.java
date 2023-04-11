@@ -15,18 +15,25 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.supplychain.service;
+package com.axelor.apps.base.listener;
 
-import com.axelor.apps.account.db.AccountingBatch;
-import com.axelor.apps.bankpayment.service.batch.AccountingBatchBankPaymentService;
-import com.axelor.apps.base.db.Batch;
-import com.axelor.apps.supplychain.service.batch.BatchAccountingCutOffSupplyChain;
+import com.axelor.app.AppSettings;
+import com.axelor.apps.base.openapi.AosSwagger;
+import com.axelor.event.Observes;
+import com.axelor.events.StartupEvent;
 import com.axelor.inject.Beans;
+import java.lang.invoke.MethodHandles;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class AccountingBatchSupplyChainService extends AccountingBatchBankPaymentService {
+public class BaseServerStartListener {
 
-  @Override
-  public Batch accountingCutOff(AccountingBatch accountingBatch) {
-    return Beans.get(BatchAccountingCutOffSupplyChain.class).run(accountingBatch);
+  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+  public void initSwaggerOnStartup(@Observes StartupEvent startupEvent) {
+    if (Boolean.parseBoolean(AppSettings.get().get("aos.swagger.enable"))) {
+      Beans.get(AosSwagger.class).initSwagger();
+      log.info("Initialize swagger");
+    }
   }
 }

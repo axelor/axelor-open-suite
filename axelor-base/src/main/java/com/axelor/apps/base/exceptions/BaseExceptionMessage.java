@@ -533,4 +533,9 @@ public final class BaseExceptionMessage {
 
   public static final String COMPANY_LOCALE_MISSING = /*$$(*/
       "Please fill locale for the company %s" /*)*/;
+
+  public static final String SWAGGER_DISABLED = /*$$(*/ "Swagger is not enabled." /*)*/;
+
+  public static final String SWAGGER_NO_RESOURCE_PACKAGES = /*$$(*/
+      "Swagger is enabled but not resource packages is specified." /*)*/;
 }

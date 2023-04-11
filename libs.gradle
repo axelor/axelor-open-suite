@@ -72,3 +72,5 @@ libs.tika = dependencies.create('org.apache.tika:tika-core:2.6.0') {
 libs.faker = 'net.datafaker:datafaker:1.6.0'
 
 libs.logback = 'ch.qos.logback:logback-classic:1.4.5'
+
+libs.swagger_jaxrs = 'io.swagger.core.v3:swagger-jaxrs2:2.2.8'
