@@ -9,26 +9,26 @@
 
     <one-to-one ref="com.axelor.studio.db.App" name="app"/>
 
-    <boolean name="isStockAppEnable" title="Stock" default="false"/>
-    <boolean name="isProductionAppEnable" title="Manufacturing" default="false"/>
-    <boolean name="isCrmAppEnable" title="CRM" default="false"/>
+    <boolean name="isStockAppEnabled" title="Stock" default="false"/>
+    <boolean name="isProductionAppEnabled" title="Manufacturing" default="false"/>
+    <boolean name="isCrmAppEnabled" title="CRM" default="false"/>
 
     <many-to-one name="qrCode" title="Barcode" ref="com.axelor.meta.db.MetaFile"/>
 
-    <boolean name="isLoginUserQrcodeEnable" title="Use qrCode for user connection"
+    <boolean name="isLoginUserQrcodeEnabled" title="Use qrCode for user connection"
       default="false"
       help="Allows users to fill in the username field on the login page with the qr code present on the user's form view."/>
 
     <boolean name="manageCarrierOption" title="Manage carrier option" default="false"
       help="Allow users to manage carrier option for customer deliveries."/>
 
-    <boolean name="isInventoryValidationEnable" title="Enable inventory validation."
+    <boolean name="isInventoryValidationEnabled" title="Enable inventory validation."
       default="false"/>
-    <boolean name="isStockCorrectionValidationEnable"
+    <boolean name="isStockCorrectionValidationEnabled"
       title="Enable stock correction validation." default="false"/>
-    <boolean name="isCustomerDeliveryLineAdditionEnable"
+    <boolean name="isCustomerDeliveryLineAdditionEnabled"
       title="Enable addition of new lines in customer delivery." default="false"/>
-    <boolean name="isSupplierArrivalLineAdditionEnable"
+    <boolean name="isSupplierArrivalLineAdditionEnabled"
       title="Enable addition of new lines in supplier arrival." default="false"/>
 
     <string name="minimalRequiredMobileAppVersion"
@@ -49,21 +49,21 @@
       title="Enable line verification on inventories" default="false"/>
 
     <track>
-      <field name="isStockAppEnable" on="UPDATE"/>
-      <field name="isProductionAppEnable" on="UPDATE"/>
-      <field name="isCrmAppEnable" on="UPDATE"/>
-      <field name="isLoginUserQrcodeEnable" on="UPDATE"/>
+      <field name="isStockAppEnabled" on="UPDATE"/>
+      <field name="isProductionAppEnabled" on="UPDATE"/>
+      <field name="isCrmAppEnabled" on="UPDATE"/>
+      <field name="isLoginUserQrcodeEnabled" on="UPDATE"/>
       <field name="isTrackerMessageEnabled" on="UPDATE"/>
       <field name="manageCarrierOption" on="UPDATE"/>
       <field name="qrCode" on="UPDATE"/>
-      <field name="isInventoryValidationEnable"/>
-      <field name="isStockCorrectionValidationEnable"/>
+      <field name="isInventoryValidationEnabled"/>
+      <field name="isStockCorrectionValidationEnabled"/>
       <field name="isVerifyCustomerDeliveryLineEnabled"/>
       <field name="isVerifySupplierArrivalLineEnabled"/>
       <field name="isVerifyInternalMoveLineEnabled"/>
       <field name="isVerifyInventoryLineEnabled"/>
-      <field name="isCustomerDeliveryLineAdditionEnable"/>
-      <field name="isSupplierArrivalLineAdditionEnable"/>
+      <field name="isCustomerDeliveryLineAdditionEnabled"/>
+      <field name="isSupplierArrivalLineAdditionEnabled"/>
       <field name="minimalRequiredMobileAppVersion" on="UPDATE"/>
     </track>
   </entity>
