@@ -870,30 +870,42 @@ public class InvoiceController {
   }
 
   public void refusalToPay(ActionRequest request, ActionResponse response) {
-    Invoice invoice = request.getContext().asType(Invoice.class);
-    Beans.get(InvoiceService.class)
-        .refusalToPay(
-            Beans.get(InvoiceRepository.class).find(invoice.getId()),
-            invoice.getReasonOfRefusalToPay(),
-            invoice.getReasonOfRefusalToPayStr());
-    response.setCanClose(true);
+    try {
+      Invoice invoice = request.getContext().asType(Invoice.class);
+      Beans.get(InvoiceService.class)
+          .refusalToPay(
+              Beans.get(InvoiceRepository.class).find(invoice.getId()),
+              invoice.getReasonOfRefusalToPay(),
+              invoice.getReasonOfRefusalToPayStr());
+      response.setCanClose(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
   }
 
   public void setPfpValidatorUser(ActionRequest request, ActionResponse response) {
-    Invoice invoice = request.getContext().asType(Invoice.class);
-    response.setValue(
-        "pfpValidatorUser",
-        Beans.get(InvoiceTermService.class)
-            .getPfpValidatorUser(invoice.getPartner(), invoice.getCompany()));
+    try {
+      Invoice invoice = request.getContext().asType(Invoice.class);
+      response.setValue(
+          "pfpValidatorUser",
+          Beans.get(InvoiceTermService.class)
+              .getPfpValidatorUser(invoice.getPartner(), invoice.getCompany()));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
   }
 
   public void setPfpValidatorUserDomain(ActionRequest request, ActionResponse response) {
-    Invoice invoice = request.getContext().asType(Invoice.class);
-    response.setAttr(
-        "pfpValidatorUser",
-        "domain",
-        Beans.get(InvoiceTermService.class)
-            .getPfpValidatorUserDomain(invoice.getPartner(), invoice.getCompany()));
+    try {
+      Invoice invoice = request.getContext().asType(Invoice.class);
+      response.setAttr(
+          "pfpValidatorUser",
+          "domain",
+          Beans.get(InvoiceTermService.class)
+              .getPfpValidatorUserDomain(invoice.getPartner(), invoice.getCompany()));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
   }
 
   public void hideSendEmailPfpBtn(ActionRequest request, ActionResponse response) {

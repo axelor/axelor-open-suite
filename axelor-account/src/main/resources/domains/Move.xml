@@ -70,6 +70,14 @@
     <many-to-one name="cutOffOriginMove" title="Cut off origin move"
       ref="com.axelor.apps.account.db.Move"/>
 
+    <many-to-one name="pfpValidatorUser" ref="com.axelor.auth.db.User"
+      title="PFP Validator"/>
+    <integer name="pfpValidateStatusSelect" title="Status"
+      selection="invoice.pfp.validate.status.select" readonly="true" default="0"/>
+    <many-to-one name="reasonOfRefusalToPay" title="Reason of refusal to pay"
+      ref="com.axelor.apps.base.db.CancelReason"/>
+    <string name="reasonOfRefusalToPayStr" title="Reason of refusal to pay" large="true"/>
+
     <many-to-one ref="com.axelor.apps.account.db.FECImport" name="fecImport"
       title="FEC Import"/>
     <unique-constraint columns="reference,company"/>
@@ -107,6 +115,12 @@
 		public static final int FUNCTIONAL_ORIGIN_FIXED_ASSET = 7;
 		public static final int FUNCTIONAL_ORIGIN_DOUBTFUL_CUSTOMER = 8;
 		public static final int FUNCTIONAL_ORIGIN_IRRECOVERABLE = 9;
+
+		// PFP VALIDATE STATUS SELECT
+	    public static final int PFP_NONE = 0;
+	    public static final int PFP_STATUS_AWAITING = 1;
+	    public static final int PFP_STATUS_VALIDATED = 2;
+	    public static final int PFP_STATUS_LITIGATION = 3;
 	]]></extra-code>
 
     <track>
@@ -123,6 +137,10 @@
       <field name="originDate"/>
       <field name="origin"/>
       <field name="description"/>
+      <field name="pfpValidatorUser" on="UPDATE"/>
+      <field name="pfpValidateStatusSelect" on="UPDATE"/>
+      <field name="reasonOfRefusalToPay" on="UPDATE"/>
+      <field name="reasonOfRefusalToPayStr" on="UPDATE"/>
       <message if="true" on="CREATE">Move created</message>
       <message if="statusSelect == 1" tag="important">New move</message>
       <message if="statusSelect == 2" tag="info">Daybook move</message>
