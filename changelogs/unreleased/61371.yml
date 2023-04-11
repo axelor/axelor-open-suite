@@ -1,0 +1,3 @@
+---
+title: "Sale order: generating a purchase order from a sale order now correctly takes into account supplier catalog product code and name."
+type: fix
