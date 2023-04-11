@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.meta.db.MetaFile;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface AccountingReportDas2Service {
@@ -35,4 +36,8 @@ public interface AccountingReportDas2Service {
   List<Long> getAccountingReportDas2Pieces(AccountingReport accountingReport);
 
   AccountingReport getAssociatedDas2Export(AccountingReport accountingReport);
+
+  BigDecimal getDebitBalance(String query);
+
+  BigDecimal getCreditBalance(String query);
 }

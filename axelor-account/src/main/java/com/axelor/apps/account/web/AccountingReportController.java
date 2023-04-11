@@ -74,20 +74,24 @@ public class AccountingReportController {
    * @param response
    */
   public void searchMoveLine(ActionRequest request, ActionResponse response) {
-
     try {
       AccountingReport accountingReport = request.getContext().asType(AccountingReport.class);
-      AccountingReportService accountingReportService = Beans.get(AccountingReportService.class);
-
       accountingReport = Beans.get(AccountingReportRepository.class).find(accountingReport.getId());
-      AccountingReportToolService accountingReportToolService =
-          Beans.get(AccountingReportToolService.class);
+
+      ActionViewBuilder actionViewBuilder =
+          ActionView.define(I18n.get(AccountExceptionMessage.ACCOUNTING_REPORT_3));
+      String query;
+      BigDecimal debitBalance;
+      BigDecimal creditBalance;
 
       if (accountingReport.getReportType().getTypeSelect()
           == AccountingReportRepository.REPORT_FEES_DECLARATION_PREPARATORY_PROCESS) {
 
         AccountingReportDas2Service accountingReportDas2Service =
             Beans.get(AccountingReportDas2Service.class);
+        AccountingReportToolService accountingReportToolService =
+            Beans.get(AccountingReportToolService.class);
+
         if (accountingReportToolService.isThereAlreadyDraftReportInPeriod(accountingReport)) {
           response.setError(
               I18n.get(
@@ -97,42 +101,39 @@ public class AccountingReportController {
 
         List<Long> paymentMoveLinedistributionIdList =
             accountingReportDas2Service.getAccountingReportDas2Pieces(accountingReport);
-        ActionViewBuilder actionViewBuilder =
-            ActionView.define(I18n.get(AccountExceptionMessage.ACCOUNTING_REPORT_3));
+
         actionViewBuilder.model(PaymentMoveLineDistribution.class.getName());
         actionViewBuilder.add("grid", "payment-move-line-distribution-das2-grid");
         actionViewBuilder.add("form", "payment-move-line-distribution-form");
-        String domain = "self.id IN (0)";
+
+        query = "self.id IN (0)";
         if (CollectionUtils.isNotEmpty(paymentMoveLinedistributionIdList)) {
-          domain =
+          query =
               String.format(
                   "self.id in ( %s )", Joiner.on(",").join(paymentMoveLinedistributionIdList));
         }
-        actionViewBuilder.domain(domain);
-
-        response.setReload(true);
-        response.setView(actionViewBuilder.map());
+        debitBalance = accountingReportDas2Service.getDebitBalance(query);
+        creditBalance = accountingReportDas2Service.getCreditBalance(query);
 
       } else {
-        String query = accountingReportService.getMoveLineList(accountingReport);
-        BigDecimal debitBalance = accountingReportService.getDebitBalance();
-        BigDecimal creditBalance = accountingReportService.getCreditBalance();
+        AccountingReportService accountingReportService = Beans.get(AccountingReportService.class);
 
-        response.setValue("totalDebit", debitBalance);
-        response.setValue("totalCredit", creditBalance);
-        response.setValue("balance", debitBalance.subtract(creditBalance));
-
-        ActionViewBuilder actionViewBuilder =
-            ActionView.define(I18n.get(AccountExceptionMessage.ACCOUNTING_REPORT_3));
         actionViewBuilder.model(MoveLine.class.getName());
         actionViewBuilder.add("grid", "move-line-grid");
         actionViewBuilder.add("form", "move-line-form");
         actionViewBuilder.param("search-filters", "move-line-filters");
-        actionViewBuilder.domain(query);
 
-        response.setView(actionViewBuilder.map());
+        query = accountingReportService.getMoveLineList(accountingReport);
+        debitBalance = accountingReportService.getDebitBalance();
+        creditBalance = accountingReportService.getCreditBalance();
       }
+      actionViewBuilder.domain(query);
 
+      response.setValue("totalDebit", debitBalance);
+      response.setValue("totalCredit", creditBalance);
+      response.setValue("balance", debitBalance.subtract(creditBalance));
+
+      response.setView(actionViewBuilder.map());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
