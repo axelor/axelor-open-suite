@@ -379,7 +379,7 @@ public class BankReconciliationService {
     TaxLine taxLine = moveLine.getTaxLine();
     Account account =
         taxAccountService.getAccount(
-            taxLine.getTax(),
+            taxLine != null ? taxLine.getTax() : null,
             company,
             journal,
             vatSystemSelect,
