@@ -538,7 +538,8 @@
   </action-view>
 
   <!-- Extra hours app -->
-  <menuitem name="extra-hours-root" parent="hr-root" if="__config__.app.isApp('exthrs')"
+  <menuitem name="extra-hours-root" parent="hr-root"
+    if="__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getExtraHoursManagement()"
     title="Extra hours" icon="fa-hourglass-end" icon-background="#84429f" order="20"/>
 
   <menuitem name="edit-extra-hours" parent="extra-hours-root" title="Request extra hours"
@@ -656,6 +657,7 @@
     if="__config__.app.isApp('leave')"/>
 
   <menuitem name="top-menu-hr-my-extra-hours" parent="top-menu-hr" title="My extra hours"
-    action="edit.extra.hours" top="true" if="__config__.app.isApp('exthrs')"/>
+    action="edit.extra.hours" top="true"
+    if="__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getExtraHoursManagement()"/>
 
 </object-views>

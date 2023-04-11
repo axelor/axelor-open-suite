@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="studio" package="com.axelor.studio.db"/>
+
+  <entity name="AppHumanResource" cacheable="true">
+
+    <one-to-one ref="com.axelor.studio.db.App" name="app"/>
+
+    <!-- Employee configuration -->
+    <boolean name="employeeManagement" title="Employee management"/>
+
+    <!-- Timesheet configuration -->
+    <boolean name="timesheetManagement" title="Timesheet management"/>
+
+    <!-- Expense configuration -->
+    <boolean name="expenseManagement" title="Expense management"/>
+
+    <!-- Leave configuration -->
+    <boolean name="leaveManagement" title="Leave management"/>
+
+    <!-- Extra hours configuration -->
+    <boolean name="extraHoursManagement" title="Extra hours management"/>
+
+  </entity>
+
+</domain-models>
