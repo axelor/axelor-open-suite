@@ -19,6 +19,7 @@ package com.axelor.apps.bankpayment.service.bankorder;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountingSituation;
+import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
@@ -59,6 +60,7 @@ import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -224,7 +226,7 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
             bankOrderLine.getReceiverLabel(),
             bankOrderLine.getBankOrder().getSenderBankDetails());
 
-    setPartnerBankDetails(bankOrderLine, senderMove);
+    senderMove.setPartnerBankDetails(getPartnerBankDetails(bankOrderLine));
 
     MoveLine bankMoveLine =
         moveLineCreateService.createMoveLine(
@@ -283,7 +285,7 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
             bankOrderLine.getReceiverLabel(),
             bankOrderLine.getBankOrder().getSenderBankDetails());
 
-    setPartnerBankDetails(bankOrderLine, receiverMove);
+    receiverMove.setPartnerBankDetails(getPartnerBankDetails(bankOrderLine));
 
     MoveLine bankMoveLine =
         moveLineCreateService.createMoveLine(
@@ -366,7 +368,7 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
     }
   }
 
-  protected void setPartnerBankDetails(BankOrderLine bankOrderLine, Move move) {
+  protected BankDetails getPartnerBankDetails(BankOrderLine bankOrderLine) {
     if (bankOrderLine.getBankOrderLineOriginList().size() == 1
         && bankOrderLine.getBankOrderLineOriginList().get(0).getRelatedToSelect()
             == BankOrderLineOriginRepository.RELATED_TO_INVOICE_TERM) {
@@ -375,18 +377,21 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
         InvoiceTerm invoiceTerm = invoiceTermRepository.find(origin.getRelatedToSelectId());
 
         if (invoiceTerm != null && invoiceTerm.getBankDetails() != null) {
-          move.setPartnerBankDetails(invoiceTerm.getBankDetails());
-        } else if (invoiceTerm != null
-            && invoiceTerm.getMoveLine() != null
-            && invoiceTerm.getMoveLine().getMove() != null
-            && invoiceTerm.getMoveLine().getMove().getPartnerBankDetails() != null) {
-          move.setPartnerBankDetails(invoiceTerm.getMoveLine().getMove().getPartnerBankDetails());
-        } else if (invoiceTerm != null
-            && invoiceTerm.getInvoice() != null
-            && invoiceTerm.getInvoice().getBankDetails() != null) {
+          return invoiceTerm.getBankDetails();
+        } else if (Optional.ofNullable(invoiceTerm)
+            .map(InvoiceTerm::getMoveLine)
+            .map(MoveLine::getMove)
+            .map(Move::getPartnerBankDetails)
+            .isPresent()) {
+          return invoiceTerm.getMoveLine().getMove().getPartnerBankDetails();
+        } else if (Optional.ofNullable(invoiceTerm)
+            .map(InvoiceTerm::getInvoice)
+            .map(Invoice::getBankDetails)
+            .isPresent()) {
+          return invoiceTerm.getInvoice().getBankDetails();
         }
       }
     }
-    System.err.println(move.getPartnerBankDetails());
+    return null;
   }
 }
