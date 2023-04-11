@@ -24,7 +24,7 @@
 
     <string name="minimalRequiredMobileAppVersion"
       title="Minimal required version of the mobile application."
-      help="Indicates the minimal required version of the mobile application. If the user's version is different than the one indicated, the mobile application will be updated."/>
+      help="Indicates the minimal required version of the mobile application. If the user's version is different than the one indicated, the mobile app will require the user to update to have access to the app."/>
 
     <!-- Tracker messages settings -->
     <boolean name="isTrackerMessageOnStockApp" title="Enable tracker messages."
