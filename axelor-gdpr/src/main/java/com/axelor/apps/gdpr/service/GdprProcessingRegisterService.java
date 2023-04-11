@@ -184,13 +184,16 @@ public class GdprProcessingRegisterService implements Callable<List<GDPRProcessi
     return stringBuilder.toString();
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   protected void anonymize(MetaModel metaModel, AuditableModel model, Anonymizer anonymizer)
-      throws AxelorException, IOException {
+      throws AxelorException {
 
     if (anonymizer == null) {
       return;
     }
+
+    // Need to find if there are more than 10 entities
+    anonymizer = JPA.find(Anonymizer.class, anonymizer.getId());
 
     // get list of anonymizer lines for metaModel
     List<AnonymizerLine> anonymizerLines =
@@ -199,7 +202,7 @@ public class GdprProcessingRegisterService implements Callable<List<GDPRProcessi
             .collect(Collectors.toList());
 
     Mapper mapper = Mapper.of(model.getClass());
-    Object newValue = null;
+    Object newValue;
 
     for (AnonymizerLine anonymizerLine : anonymizerLines) {
       Object currentValue = mapper.get(model, anonymizerLine.getMetaField().getName());
@@ -219,7 +222,7 @@ public class GdprProcessingRegisterService implements Callable<List<GDPRProcessi
     JPA.merge(model);
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional
   protected void addProcessingLog(GDPRProcessingRegister gdprProcessingRegister, int nbProcessed) {
 
     GDPRProcessingRegisterLog processingLog = new GDPRProcessingRegisterLog();
