@@ -336,10 +336,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       }
     }
 
-    Partner partner = null;
-    if (!isGlobal) {
-      partner = invoiceTerm.getMoveLine().getPartner();
-    }
+    Partner partner = invoiceTerm.getMoveLine().getPartner();
 
     Move move = this.getMove(paymentSession, partner, invoiceTerm, moveDateMap, paymentAmountMap);
 
@@ -535,12 +532,11 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       if (!moveMapIt.isEmpty()) {
         this.generateCashMoveLines(paymentSession, moveMapIt, paymentAmountMap, out, isGlobal);
 
-        if (isGlobal
-            && moveDateMap != null
-            && moveDateMap.get(accountingDate) != null
-            && moveDateMap.get(accountingDate).get(null) != null) {
-          BigDecimal paymentAmount =
-              paymentAmountMap.get(moveDateMap.get(accountingDate).get(null).get(0));
+        if (isGlobal && moveDateMap != null && moveDateMap.get(accountingDate) != null) {
+          BigDecimal paymentAmount = BigDecimal.ZERO;
+          for (Move move : paymentAmountMap.keySet()) {
+            paymentAmount = paymentAmount.add(paymentAmountMap.get(move));
+          }
           this.generateCashMove(paymentSession, accountingDate, paymentAmount, out);
         }
       }
@@ -581,11 +577,19 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     BigDecimal amount;
 
     for (Partner partner : moveMap.keySet()) {
-      for (Move move : moveMap.get(partner)) {
+      if (isGlobal) {
+        Move move = moveMap.get(partner).get(0);
         amount = paymentAmountMap.get(move);
 
         this.generateCashMoveLine(
             move, partner, cashAccount, amount, this.getMoveLineDescription(paymentSession), out);
+      } else {
+        for (Move move : moveMap.get(partner)) {
+          amount = paymentAmountMap.get(move);
+
+          this.generateCashMoveLine(
+              move, partner, cashAccount, amount, this.getMoveLineDescription(paymentSession), out);
+        }
       }
     }
   }
