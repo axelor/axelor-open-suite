@@ -39,6 +39,7 @@
       <field name="canConfirmOnline" on="UPDATE"/>
       <field name="canPayOnline" on="UPDATE"/>
       <field name="portalSelect" on="UPDATE"/>
+      <field name="showCatalog" on="UPDATE"/>
     </track>
   </entity>
 

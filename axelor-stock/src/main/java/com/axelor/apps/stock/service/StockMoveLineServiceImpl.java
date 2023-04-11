@@ -1441,7 +1441,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void updateStockMoveLine(
-      StockMoveLine stockMoveLine, BigDecimal realQty, Integer conformity) throws AxelorException {
+      StockMoveLine stockMoveLine, BigDecimal realQty, Integer conformity, Unit unit)
+      throws AxelorException {
     if (stockMoveLine.getStockMove() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY, "Error: missing parent stock move.");
@@ -1451,7 +1452,23 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
               != StockMoveRepository.STATUS_CANCELED) {
         stockMoveLine.setRealQty(realQty);
         stockMoveLine.setConformitySelect(conformity);
+
+        updateUnit(stockMoveLine, unit);
       }
+    }
+  }
+
+  protected void updateUnit(StockMoveLine stockMoveLine, Unit unit) throws AxelorException {
+    if (unit != null) {
+      BigDecimal convertQty =
+          unitConversionService.convert(
+              stockMoveLine.getUnit(),
+              unit,
+              stockMoveLine.getQty(),
+              stockMoveLine.getQty().scale(),
+              stockMoveLine.getProduct());
+      stockMoveLine.setUnit(unit);
+      stockMoveLine.setQty(convertQty);
     }
   }
 }

@@ -141,6 +141,7 @@ public class StockMoveRestController {
   @Operation(
       summary = "Update internal stock move",
       tags = {"Stock move"})
+  @Deprecated
   @Path("/internal/{id}")
   @PUT
   @HttpExceptionHandler

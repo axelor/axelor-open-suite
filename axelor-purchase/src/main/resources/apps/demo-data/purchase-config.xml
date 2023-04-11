@@ -24,12 +24,12 @@
   <input file="purchase_purchaseOrderLine.csv" separator=";"
     type="com.axelor.apps.purchase.db.PurchaseOrderLine"
     call="com.axelor.apps.purchase.script.ImportPurchaseOrderLine:importPurchaseOrderLine">
-    <bind to="desiredDelivDate"
-      eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(desiredDelivDate)"
-      column="desiredDelivDate"/>
-    <bind to="estimatedDelivDate"
-      eval="call:com.axelor.csv.script.ImportDateTime:importDate(estimatedDelivDate)"
-      column="estimatedDelivDate"/>
+    <bind to="desiredReceiptDate"
+      eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(desiredReceiptDate)"
+      column="desiredReceiptDate"/>
+    <bind to="estimatedReceiptDate"
+      eval="call:com.axelor.csv.script.ImportDateTime:importDate(estimatedReceiptDate)"
+      column="estimatedReceiptDate"/>
   </input>
 
   <input file="purchase_supplierCatalog.csv" separator=";"

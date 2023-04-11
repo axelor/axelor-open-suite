@@ -29,6 +29,8 @@
       <field name="isEnabledProductDescriptionCopy" on="UPDATE"/>
       <field name="manageSupplierCatalog" on="UPDATE"/>
       <field name="isDisplayPurchaseOrderLineNumber" on="UPDATE"/>
+      <field name="enablePurchasesProductByTradName" on="UPDATE"/>
+      <field name="purchaseUnit" on="UPDATE"/>
     </track>
 
   </entity>

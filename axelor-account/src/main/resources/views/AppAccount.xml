@@ -15,6 +15,7 @@
       <field name="activatePassedForPayment" widget="boolean-switch"/>
       <field name="manageFinancialDiscount" widget="boolean-switch"/>
       <field name="manageCutOffPeriod" widget="boolean-switch"/>
+      <field name="allowMultiInvoiceTerms" widget="boolean-switch"/>
       <field name="partnerBalConfigSelect"/>
       <panel name="rejectsReasonsAndCodesListPanel" title="Rejects reasons and codes list"
         colSpan="12">

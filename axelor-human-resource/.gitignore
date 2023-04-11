@@ -1,0 +1,12 @@
+src/main/axelor-react-timesheet/.yarn/*
+!src/main/axelor-react-timesheet/.yarn/patches
+!src/main/axelor-react-timesheet/.yarn/plugins
+!src/main/axelor-react-timesheet/.yarn/releases
+!src/main/axelor-react-timesheet/.yarn/sdks
+!src/main/axelor-react-timesheet/.yarn/versions
+
+# Swap the comments on the following lines if you don't wish to use zero-installs
+# Documentation here: https://yarnpkg.com/features/zero-installs
+# !.yarn/cache
+src/main/axelor-react-timesheet/.pnp.*
+
