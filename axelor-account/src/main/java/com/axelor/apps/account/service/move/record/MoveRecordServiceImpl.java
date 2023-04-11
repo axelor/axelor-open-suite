@@ -70,6 +70,7 @@ public class MoveRecordServiceImpl implements MoveRecordService {
     Objects.requireNonNull(move);
     Objects.requireNonNull(context);
 
+    move = moveRepository.find(move.getId());
     MoveContext result = new MoveContext();
 
     boolean paymentConditionChange =
