@@ -20,6 +20,7 @@ package com.axelor.apps.account.service.invoice;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.PfpPartialReason;
 import com.axelor.apps.base.db.CancelReason;
+import com.axelor.apps.base.db.Company;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
@@ -42,4 +43,10 @@ public interface InvoiceTermPfpService {
       BigDecimal grantedAmount,
       PfpPartialReason partialReason)
       throws AxelorException;
+
+  boolean getManagePfpCondition(Company company) throws AxelorException;
+
+  boolean getUserCondition(User pfpValidatorUser, User user);
+
+  boolean getInvoiceTermsCondition(List<InvoiceTerm> invoiceTermList);
 }

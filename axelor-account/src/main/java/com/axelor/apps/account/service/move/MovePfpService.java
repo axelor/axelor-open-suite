@@ -15,26 +15,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.account.service;
+package com.axelor.apps.account.service.move;
 
-import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.Move;
+import com.axelor.apps.base.db.CancelReason;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 
-public interface InvoiceVisibilityService {
-  boolean isPfpButtonVisible(Invoice invoice, User user, boolean litigation) throws AxelorException;
+public interface MovePfpService {
+  void validatePfp(Long moveId);
 
-  boolean isPaymentButtonVisible(Invoice invoice) throws AxelorException;
+  void refusalToPay(Move move, CancelReason reasonOfRefusalToPay, String reasonOfRefusalToPayStr);
 
-  boolean isValidatorUserVisible(Invoice invoice) throws AxelorException;
+  boolean isPfpButtonVisible(Move move, User user, boolean litigation) throws AxelorException;
 
-  boolean isDecisionPfpVisible(Invoice invoice) throws AxelorException;
+  void setPfpStatus(Move move) throws AxelorException;
 
-  boolean isSendNotifyVisible(Invoice invoice) throws AxelorException;
-
-  boolean getOperationTypePurchaseCondition(Invoice invoice) throws AxelorException;
-
-  boolean getPaymentVouchersStatus(Invoice invoice) throws AxelorException;
-
-  boolean getPfpCondition(Invoice invoice) throws AxelorException;
+  boolean isValidatorUserVisible(Move move) throws AxelorException;
 }

@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.PfpPartialReason;
 import com.axelor.apps.account.db.SubstitutePfpValidator;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -36,18 +37,22 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
   protected InvoiceTermService invoiceTermService;
+  protected AccountConfigService accountConfigService;
   protected InvoiceTermRepository invoiceTermRepo;
   protected InvoiceRepository invoiceRepo;
 
   @Inject
   public InvoiceTermPfpServiceImpl(
       InvoiceTermService invoiceTermService,
+      AccountConfigService accountConfigService,
       InvoiceTermRepository invoiceTermRepo,
       InvoiceRepository invoiceRepo) {
     this.invoiceTermService = invoiceTermService;
+    this.accountConfigService = accountConfigService;
     this.invoiceTermRepo = invoiceTermRepo;
     this.invoiceRepo = invoiceRepo;
   }
@@ -310,5 +315,24 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
     } else {
       return invoiceTerm.getPfpValidateStatusSelect();
     }
+  }
+
+  @Override
+  public boolean getManagePfpCondition(Company company) throws AxelorException {
+    return company != null
+        && accountConfigService.getAccountConfig(company).getIsManagePassedForPayment();
+  }
+
+  @Override
+  public boolean getUserCondition(User pfpValidatorUser, User user) {
+    return user.equals(pfpValidatorUser) || user.getIsSuperPfpUser();
+  }
+
+  @Override
+  public boolean getInvoiceTermsCondition(List<InvoiceTerm> invoiceTermList) {
+    return CollectionUtils.isNotEmpty(invoiceTermList)
+        && invoiceTermList.stream()
+            .allMatch(
+                it -> it.getPfpValidateStatusSelect() == InvoiceTermRepository.PFP_STATUS_AWAITING);
   }
 }
