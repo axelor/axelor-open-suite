@@ -18,11 +18,17 @@
 package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.PartnerPriceListService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
+import com.axelor.apps.purchase.service.SupplierCatalogService;
+import com.axelor.apps.purchase.service.config.PurchaseConfigService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.supplychain.service.PurchaseOrderLineServiceSupplyChain;
 import com.axelor.apps.supplychain.service.PurchaseOrderSupplychainService;
 import com.axelor.apps.supplychain.service.SaleOrderPurchaseServiceImpl;
@@ -37,10 +43,24 @@ public class ProjectPurchaseServiceImpl extends SaleOrderPurchaseServiceImpl {
   @Inject
   public ProjectPurchaseServiceImpl(
       PurchaseOrderSupplychainService purchaseOrderSupplychainService,
+      StockLocationService stockLocationService,
       PurchaseOrderLineServiceSupplyChain purchaseOrderLineServiceSupplychain,
-      PurchaseOrderService purchaseOrderService) {
+      PurchaseOrderService purchaseOrderService,
+      PurchaseOrderRepository purchaseOrderRepository,
+      PurchaseConfigService purchaseConfigService,
+      AppBaseService appBaseService,
+      PartnerPriceListService partnerPriceListService,
+      SupplierCatalogService supplierCatalogService) {
     super(
-        purchaseOrderSupplychainService, purchaseOrderLineServiceSupplychain, purchaseOrderService);
+        purchaseOrderSupplychainService,
+        stockLocationService,
+        purchaseOrderLineServiceSupplychain,
+        purchaseOrderService,
+        purchaseOrderRepository,
+        purchaseConfigService,
+        appBaseService,
+        partnerPriceListService,
+        supplierCatalogService);
   }
 
   @Override

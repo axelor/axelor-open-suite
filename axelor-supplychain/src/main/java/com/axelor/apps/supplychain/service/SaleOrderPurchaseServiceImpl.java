@@ -24,8 +24,11 @@ import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
+import com.axelor.apps.purchase.service.SupplierCatalogService;
 import com.axelor.apps.purchase.service.config.PurchaseConfigService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -35,7 +38,6 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -53,17 +55,37 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService {
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected PurchaseOrderSupplychainService purchaseOrderSupplychainService;
+
+  protected StockLocationService stockLocationService;
+
   protected PurchaseOrderLineServiceSupplyChain purchaseOrderLineServiceSupplychain;
   protected PurchaseOrderService purchaseOrderService;
+  protected PurchaseOrderRepository purchaseOrderRepository;
+  protected PurchaseConfigService purchaseConfigService;
+  protected AppBaseService appBaseService;
+  protected PartnerPriceListService partnerPriceListService;
+  protected SupplierCatalogService supplierCatalogService;
 
   @Inject
   public SaleOrderPurchaseServiceImpl(
       PurchaseOrderSupplychainService purchaseOrderSupplychainService,
+      StockLocationService stockLocationService,
       PurchaseOrderLineServiceSupplyChain purchaseOrderLineServiceSupplychain,
-      PurchaseOrderService purchaseOrderService) {
+      PurchaseOrderService purchaseOrderService,
+      PurchaseOrderRepository purchaseOrderRepository,
+      PurchaseConfigService purchaseConfigService,
+      AppBaseService appBaseService,
+      PartnerPriceListService partnerPriceListService,
+      SupplierCatalogService supplierCatalogService) {
     this.purchaseOrderSupplychainService = purchaseOrderSupplychainService;
+    this.stockLocationService = stockLocationService;
     this.purchaseOrderLineServiceSupplychain = purchaseOrderLineServiceSupplychain;
     this.purchaseOrderService = purchaseOrderService;
+    this.purchaseOrderRepository = purchaseOrderRepository;
+    this.purchaseConfigService = purchaseConfigService;
+    this.appBaseService = appBaseService;
+    this.partnerPriceListService = partnerPriceListService;
+    this.supplierCatalogService = supplierCatalogService;
   }
 
   @Override
@@ -121,6 +143,25 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService {
         saleOrder.getSaleOrderSeq());
 
     PurchaseOrder purchaseOrder =
+        createPurchaseOrderAndLines(supplierPartner, saleOrderLineList, saleOrder);
+    getAndSetSupplierCatalogInfo(purchaseOrder);
+    purchaseOrderRepository.save(purchaseOrder);
+
+    return purchaseOrder;
+  }
+
+  protected PurchaseOrder createPurchaseOrderAndLines(
+      Partner supplierPartner, List<SaleOrderLine> saleOrderLineList, SaleOrder saleOrder)
+      throws AxelorException {
+    PurchaseOrder purchaseOrder = createPurchaseOrder(supplierPartner, saleOrder);
+    createPurchaseOrderLines(saleOrderLineList, purchaseOrder);
+    purchaseOrderService.computePurchaseOrder(purchaseOrder);
+    return purchaseOrder;
+  }
+
+  protected PurchaseOrder createPurchaseOrder(Partner supplierPartner, SaleOrder saleOrder)
+      throws AxelorException {
+    PurchaseOrder purchaseOrder =
         purchaseOrderSupplychainService.createPurchaseOrder(
             AuthUtils.getUser(),
             saleOrder.getCompany(),
@@ -133,11 +174,10 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService {
             saleOrder.getExternalReference(),
             saleOrder.getDirectOrderLocation()
                 ? saleOrder.getStockLocation()
-                : Beans.get(StockLocationService.class)
-                    .getDefaultReceiptStockLocation(saleOrder.getCompany()),
-            Beans.get(AppBaseService.class).getTodayDate(saleOrder.getCompany()),
-            Beans.get(PartnerPriceListService.class)
-                .getDefaultPriceList(supplierPartner, PriceListRepository.TYPE_PURCHASE),
+                : stockLocationService.getDefaultReceiptStockLocation(saleOrder.getCompany()),
+            appBaseService.getTodayDate(saleOrder.getCompany()),
+            partnerPriceListService.getDefaultPriceList(
+                supplierPartner, PriceListRepository.TYPE_PURCHASE),
             supplierPartner,
             saleOrder.getTradingName());
 
@@ -145,7 +185,7 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService {
     purchaseOrder.setGroupProductsOnPrintings(supplierPartner.getGroupProductsOnPrintings());
 
     Integer atiChoice =
-        Beans.get(PurchaseConfigService.class)
+        purchaseConfigService
             .getPurchaseConfig(saleOrder.getCompany())
             .getPurchaseOrderInAtiSelect();
     if (atiChoice == AccountConfigRepository.INVOICE_ATI_ALWAYS
@@ -155,19 +195,31 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService {
       purchaseOrder.setInAti(false);
     }
 
+    purchaseOrder.setNotes(supplierPartner.getPurchaseOrderComments());
+    return purchaseOrder;
+  }
+
+  protected void createPurchaseOrderLines(
+      List<SaleOrderLine> saleOrderLineList, PurchaseOrder purchaseOrder) throws AxelorException {
     Collections.sort(saleOrderLineList, Comparator.comparing(SaleOrderLine::getSequence));
     for (SaleOrderLine saleOrderLine : saleOrderLineList) {
       purchaseOrder.addPurchaseOrderLineListItem(
           purchaseOrderLineServiceSupplychain.createPurchaseOrderLine(
               purchaseOrder, saleOrderLine));
     }
+  }
 
-    purchaseOrderService.computePurchaseOrder(purchaseOrder);
-
-    purchaseOrder.setNotes(supplierPartner.getPurchaseOrderComments());
-
-    Beans.get(PurchaseOrderRepository.class).save(purchaseOrder);
-
-    return purchaseOrder;
+  protected void getAndSetSupplierCatalogInfo(PurchaseOrder purchaseOrder) throws AxelorException {
+    for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
+      SupplierCatalog supplierCatalog =
+          supplierCatalogService.getSupplierCatalog(
+              purchaseOrderLine.getProduct(),
+              purchaseOrder.getSupplierPartner(),
+              purchaseOrder.getCompany());
+      if (supplierCatalog != null) {
+        purchaseOrderLine.setProductName(supplierCatalog.getProductSupplierName());
+        purchaseOrderLine.setProductCode(supplierCatalog.getProductSupplierCode());
+      }
+    }
   }
 }
