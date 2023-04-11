@@ -1025,7 +1025,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     }
     invoice.setPfpValidatorUser(currentUser);
     invoice.setPfpValidateStatusSelect(InvoiceRepository.PFP_STATUS_LITIGATION);
-    invoice.setDecisionPfpTakenDate(appBaseService.getTodayDate(invoice.getCompany()));
+    invoice.setDecisionPfpTakenDateTime(
+        appBaseService.getTodayDateTime(invoice.getCompany()).toLocalDateTime());
     invoice.setReasonOfRefusalToPay(reasonOfRefusalToPay);
     invoice.setReasonOfRefusalToPayStr(
         reasonOfRefusalToPayStr != null ? reasonOfRefusalToPayStr : reasonOfRefusalToPay.getName());
@@ -1136,7 +1137,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
     invoice.setPfpValidatorUser(currentUser);
     invoice.setPfpValidateStatusSelect(InvoiceRepository.PFP_STATUS_VALIDATED);
-    invoice.setDecisionPfpTakenDate(appBaseService.getTodayDate(invoice.getCompany()));
+    invoice.setDecisionPfpTakenDateTime(
+        appBaseService.getTodayDateTime(invoice.getCompany()).toLocalDateTime());
   }
 
   @Override

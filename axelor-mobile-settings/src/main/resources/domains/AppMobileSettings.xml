@@ -22,6 +22,21 @@
     <boolean name="manageCarrierOption" title="Manage carrier option" default="false"
       help="Allow users to manage carrier option for customer deliveries."/>
 
+    <boolean name="isInventoryValidationEnable" title="Enable inventory validation."
+      default="false"
+      help="By enabling this setting, users can validate inventories from the mobile application."/>
+    <boolean name="isStockCorrectionValidationEnable"
+      title="Enable stock correction validation." default="false"
+      help="By enabling this setting, users can validate stock corrections from the mobile application."/>
+
+    <boolean name="isCustomerDeliveryLineAdditionEnable"
+      title="Enable addition of new lines in customer delivery." default="false"
+      help="By enabling this setting, users can add new lines to customer deliveries on mobile application."/>
+
+    <boolean name="isSupplierArrivalLineAdditionEnable"
+      title="Enable addition of new lines in supplier arrival." default="false"
+      help="By enabling this setting, users can add new lines to supplier arrivals on mobile application."/>
+
     <string name="minimalRequiredMobileAppVersion"
       title="Minimal required version of the mobile application."
       help="Indicates the minimal required version of the mobile application. If the user's version is different than the one indicated, the mobile app will require the user to update to have access to the app."/>
@@ -37,6 +52,16 @@
       default="false"
       help="Enabling this setting, allows you to see on the mobile application the comments and changes that are tracked on the web application."/>
 
+    <!-- Stock line verification config -->
+    <boolean name="isVerifyCustomerDeliveryLineEnabled"
+      title="Enable line verification on customer deliveries" default="false"/>
+    <boolean name="isVerifySupplierArrivalLineEnabled"
+      title="Enable line verification on supplier arrivals" default="false"/>
+    <boolean name="isVerifyInternalMoveLineEnabled"
+      title="Enable line verification on internal moves" default="false"/>
+    <boolean name="isVerifyInventoryLineEnabled"
+      title="Enable line verification on inventories" default="false"/>
+
     <track>
       <field name="isStockAppEnable" on="UPDATE"/>
       <field name="isProductionAppEnable" on="UPDATE"/>
@@ -47,6 +72,14 @@
       <field name="isTrackerMessageOnCrmApp" on="UPDATE"/>
       <field name="manageCarrierOption" on="UPDATE"/>
       <field name="qrCode" on="UPDATE"/>
+      <field name="isInventoryValidationEnable"/>
+      <field name="isStockCorrectionValidationEnable"/>
+      <field name="isVerifyCustomerDeliveryLineEnabled"/>
+      <field name="isVerifySupplierArrivalLineEnabled"/>
+      <field name="isVerifyInternalMoveLineEnabled"/>
+      <field name="isVerifyInventoryLineEnabled"/>
+      <field name="isCustomerDeliveryLineAdditionEnable"/>
+      <field name="isSupplierArrivalLineAdditionEnable"/>
       <field name="minimalRequiredMobileAppVersion" on="UPDATE"/>
     </track>
   </entity>
