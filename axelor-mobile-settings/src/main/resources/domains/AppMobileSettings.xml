@@ -56,14 +56,14 @@
       <field name="isTrackerMessageEnabled" on="UPDATE"/>
       <field name="manageCarrierOption" on="UPDATE"/>
       <field name="qrCode" on="UPDATE"/>
-      <field name="isInventoryValidationEnabled"/>
-      <field name="isStockCorrectionValidationEnabled"/>
-      <field name="isVerifyCustomerDeliveryLineEnabled"/>
-      <field name="isVerifySupplierArrivalLineEnabled"/>
-      <field name="isVerifyInternalMoveLineEnabled"/>
-      <field name="isVerifyInventoryLineEnabled"/>
-      <field name="isCustomerDeliveryLineAdditionEnabled"/>
-      <field name="isSupplierArrivalLineAdditionEnabled"/>
+      <field name="isInventoryValidationEnabled" on="UPDATE"/>
+      <field name="isStockCorrectionValidationEnabled" on="UPDATE"/>
+      <field name="isVerifyCustomerDeliveryLineEnabled" on="UPDATE"/>
+      <field name="isVerifySupplierArrivalLineEnabled" on="UPDATE"/>
+      <field name="isVerifyInternalMoveLineEnabled" on="UPDATE"/>
+      <field name="isVerifyInventoryLineEnabled" on="UPDATE"/>
+      <field name="isCustomerDeliveryLineAdditionEnabled" on="UPDATE"/>
+      <field name="isSupplierArrivalLineAdditionEnabled" on="UPDATE"/>
       <field name="minimalRequiredMobileAppVersion" on="UPDATE"/>
     </track>
   </entity>
