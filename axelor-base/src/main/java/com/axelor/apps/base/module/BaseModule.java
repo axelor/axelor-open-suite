@@ -61,6 +61,8 @@ import com.axelor.apps.base.db.repo.TeamTaskBaseRepository;
 import com.axelor.apps.base.db.repo.UserBaseRepository;
 import com.axelor.apps.base.db.repo.YearBaseRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
+import com.axelor.apps.base.listener.BaseServerStartListener;
+import com.axelor.apps.base.openapi.AosSwagger;
 import com.axelor.apps.base.rest.TranslationRestService;
 import com.axelor.apps.base.rest.TranslationRestServiceImpl;
 import com.axelor.apps.base.service.ABCAnalysisService;
@@ -336,5 +338,7 @@ public class BaseModule extends AxelorModule {
     bind(DataBackupAnonymizeService.class).to(DataBackupAnonymizeServiceImpl.class);
     bind(DataBackupService.class).to(DataBackupServiceImpl.class);
     bind(BankDetailsFullNameComputeService.class).to(BankDetailsFullNameComputeServiceImpl.class);
+    bind(BaseServerStartListener.class);
+    bind(AosSwagger.class);
   }
 }

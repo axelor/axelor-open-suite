@@ -39,6 +39,9 @@ import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestValidator;
 import com.axelor.utils.api.ResponseConstructor;
 import com.axelor.utils.api.SecurityCheck;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.servers.Server;
 import java.util.Arrays;
 import java.util.List;
 import javax.ws.rs.Consumes;
@@ -50,11 +53,15 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+@OpenAPIDefinition(servers = {@Server(url = "../")})
 @Path("/aos/manuf-order")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class ManufOrderRestController {
 
+  @Operation(
+      summary = "Fetch consumed product",
+      tags = {"Manuf Order"})
   @Path("/consumed-products/fetch")
   @POST
   @HttpExceptionHandler
@@ -75,6 +82,9 @@ public class ManufOrderRestController {
         new ManufOrderProductListResponse(consumedProductList, requestBody.fetchManufOrder()));
   }
 
+  @Operation(
+      summary = "Fetch produced product",
+      tags = {"Manuf Order"})
   @Path("/produced-products/fetch")
   @POST
   @HttpExceptionHandler
@@ -95,6 +105,9 @@ public class ManufOrderRestController {
         new ManufOrderProductListResponse(producedProductList, requestBody.fetchManufOrder()));
   }
 
+  @Operation(
+      summary = "Update product quantity",
+      tags = {"Manuf Order"})
   @Path("/update-product-qty")
   @PUT
   @HttpExceptionHandler
@@ -114,6 +127,9 @@ public class ManufOrderRestController {
         new ManufOrderStockMoveLineResponse(stockMoveLine));
   }
 
+  @Operation(
+      summary = "Update manufacturing order status",
+      tags = {"Manuf Order"})
   @Path("/{manufOrderId}")
   @PUT
   @HttpExceptionHandler
@@ -135,6 +151,9 @@ public class ManufOrderRestController {
         new ManufOrderResponse(manufOrder));
   }
 
+  @Operation(
+      summary = "Add wasted product",
+      tags = {"Manuf Order"})
   @Path("/{manufOrderId}/waste-product/")
   @POST
   @HttpExceptionHandler
@@ -158,6 +177,9 @@ public class ManufOrderRestController {
         new WastedProductResponse(prodProduct));
   }
 
+  @Operation(
+      summary = "Update wasted product quantity",
+      tags = {"Manuf Order"})
   @Path("/waste-product/{prodProductId}")
   @PUT
   @HttpExceptionHandler
@@ -178,6 +200,9 @@ public class ManufOrderRestController {
         new WastedProductResponse(prodProduct));
   }
 
+  @Operation(
+      summary = "Add product",
+      tags = {"Manuf Order"})
   @Path("/{manufOrderId}/add-product/")
   @POST
   @HttpExceptionHandler
