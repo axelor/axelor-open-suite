@@ -41,15 +41,17 @@ public class PaymentSessionCancelServiceImpl implements PaymentSessionCancelServ
   }
 
   @Override
-  @Transactional
   public void cancelPaymentSession(PaymentSession paymentSession) {
-    paymentSession.setStatusSelect(PaymentSessionRepository.STATUS_CANCELLED);
-    paymentSessionRepo.save(paymentSession);
-
+    this.saveCanceledPaymentSession(paymentSession);
     this.cancelInvoiceTerms(paymentSession);
   }
 
   @Transactional
+  protected void saveCanceledPaymentSession(PaymentSession paymentSession) {
+    paymentSession.setStatusSelect(PaymentSessionRepository.STATUS_CANCELLED);
+    paymentSessionRepo.save(paymentSession);
+  }
+
   protected void cancelInvoiceTerms(PaymentSession paymentSession) {
     List<InvoiceTerm> invoiceTermList;
     Query<InvoiceTerm> invoiceTermQuery =
@@ -57,13 +59,16 @@ public class PaymentSessionCancelServiceImpl implements PaymentSessionCancelServ
 
     while (!(invoiceTermList = invoiceTermQuery.fetch(AbstractBatch.FETCH_LIMIT, 0)).isEmpty()) {
       for (InvoiceTerm invoiceTerm : invoiceTermList) {
-        this.cancelInvoiceTerm(invoiceTerm);
-
-        invoiceTermRepo.save(invoiceTerm);
+        this.saveCanceledInvoiceTermWithPaymentSession(invoiceTerm);
       }
-
       JPA.clear();
     }
+  }
+
+  @Transactional
+  protected void saveCanceledInvoiceTermWithPaymentSession(InvoiceTerm invoiceTerm) {
+    this.cancelInvoiceTerm(invoiceTerm);
+    invoiceTermRepo.save(invoiceTerm);
   }
 
   protected void cancelInvoiceTerm(InvoiceTerm invoiceTerm) {

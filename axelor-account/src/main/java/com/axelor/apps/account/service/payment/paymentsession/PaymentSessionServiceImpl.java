@@ -55,10 +55,7 @@ import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -265,7 +262,8 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
             .bind("pfpValidateStatusValidated", InvoiceTermRepository.PFP_STATUS_VALIDATED)
             .bind(
                 "pfpValidateStatusPartiallyValidated",
-                InvoiceTermRepository.PFP_STATUS_PARTIALLY_VALIDATED);
+                InvoiceTermRepository.PFP_STATUS_PARTIALLY_VALIDATED)
+            .order("id");
 
     this.filterInvoiceTerms(eligibleInvoiceTermQuery, paymentSession);
     computeTotalPaymentSession(paymentSession);
@@ -303,20 +301,17 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
     return generalCondition + termsMoveLineCondition + paymentHistoryCondition;
   }
 
-  @Transactional
   public void filterInvoiceTerms(
       Query<InvoiceTerm> eligibleInvoiceTermQuery, PaymentSession paymentSession) {
-    int offset = 0;
     List<InvoiceTerm> invoiceTermList;
 
-    while (!(invoiceTermList = eligibleInvoiceTermQuery.fetch(AbstractBatch.FETCH_LIMIT, offset))
+    while (!(invoiceTermList = eligibleInvoiceTermQuery.fetch(AbstractBatch.FETCH_LIMIT, 0))
         .isEmpty()) {
       paymentSession = paymentSessionRepository.find(paymentSession.getId());
       for (InvoiceTerm invoiceTerm : invoiceTermList) {
-        offset++;
         if (this.isNotAwaitingPayment(invoiceTerm)
             && !this.isBlocking(invoiceTerm, paymentSession)) {
-          this.saveInvoiceTermWithPaymentSession(paymentSession, invoiceTerm);
+          this.saveFilledInvoiceTermWithPaymentSession(paymentSession, invoiceTerm);
         }
       }
       JPA.clear();
@@ -449,9 +444,9 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
   }
 
   @Transactional
-  protected InvoiceTerm saveInvoiceTermWithPaymentSession(
+  protected void saveFilledInvoiceTermWithPaymentSession(
       PaymentSession paymentSession, InvoiceTerm invoiceTerm) {
     fillEligibleTerm(paymentSession, invoiceTerm);
-    return invoiceTerm;
+    invoiceTermRepository.save(invoiceTerm);
   }
 }
