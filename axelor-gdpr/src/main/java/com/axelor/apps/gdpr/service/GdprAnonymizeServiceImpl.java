@@ -17,9 +17,9 @@
  */
 package com.axelor.apps.gdpr.service;
 
+import com.axelor.apps.base.service.app.AnonymizeService;
 import com.axelor.auth.db.AuditableModel;
 import com.axelor.db.mapper.Mapper;
-import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.mail.db.MailMessage;
 import com.axelor.mail.db.repo.MailMessageRepository;
@@ -38,10 +38,15 @@ import wslite.json.JSONException;
 public class GdprAnonymizeServiceImpl implements GdprAnonymizeService {
 
   protected MailMessageRepository mailMessageRepository;
+  protected AnonymizeService anonymizeService;
+
+  protected static final String MAIL_MESSAGE_TYPE_NOTIFICATION = "notification";
 
   @Inject
-  public GdprAnonymizeServiceImpl(MailMessageRepository mailMessageRepository) {
+  public GdprAnonymizeServiceImpl(
+      MailMessageRepository mailMessageRepository, AnonymizeService anonymizeService) {
     this.mailMessageRepository = mailMessageRepository;
+    this.anonymizeService = anonymizeService;
   }
 
   /**
@@ -54,7 +59,7 @@ public class GdprAnonymizeServiceImpl implements GdprAnonymizeService {
    * @throws JsonMappingException
    * @throws IOException
    */
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   @Override
   public void anonymizeTrackingDatas(AuditableModel reference) throws IOException {
 
@@ -64,25 +69,52 @@ public class GdprAnonymizeServiceImpl implements GdprAnonymizeService {
     ObjectMapper json = Beans.get(ObjectMapper.class);
 
     for (MailMessage mm : mailMessages) {
-      mm.setRelatedName(reference.getId().toString());
-      String body = mm.getBody();
-      final Map<String, Object> bodyData = json.readValue(body, Map.class);
-      final List<Map<String, String>> values = new ArrayList<>();
-
-      for (Map<String, String> item : (List<Map>) bodyData.get("tracks")) {
-        values.add(item);
-        Object value = mapper.get(reference, item.get("name"));
-
-        if (Objects.nonNull(value)) {
-          item.put("value", value.toString());
-          item.put("oldValue", value.toString());
-        }
-      }
-
-      bodyData.put("tracks", values);
-      mm.setBody(json.writeValueAsString(bodyData));
+      anonymizeMailMessage(reference, mapper, json, mm);
       mailMessageRepository.save(mm);
     }
+  }
+
+  protected void anonymizeMailMessage(
+      AuditableModel reference, Mapper mapper, ObjectMapper json, MailMessage mm)
+      throws IOException {
+    if (MAIL_MESSAGE_TYPE_NOTIFICATION.equals(mm.getType())) {
+      anonymizeNotification(reference, mapper, json, mm);
+    } else {
+      anonymizeCommentAndMail(mm);
+    }
+  }
+
+  protected void anonymizeCommentAndMail(MailMessage mm) {
+    String subject = mm.getSubject();
+    String body = mm.getBody();
+    if (subject != null) {
+      mm.setSubject(anonymizeService.hashValue(mm.getSubject()));
+    }
+    if (body != null) {
+      mm.setBody(anonymizeService.hashValue(mm.getBody()));
+    }
+  }
+
+  protected void anonymizeNotification(
+      AuditableModel reference, Mapper mapper, ObjectMapper json, MailMessage mm)
+      throws IOException {
+    mm.setRelatedName(reference.getId().toString());
+    String body = mm.getBody();
+    final Map<String, Object> bodyData = json.readValue(body, Map.class);
+    final List<Map<String, String>> values = new ArrayList<>();
+
+    for (Map<String, String> item : (List<Map>) bodyData.get("tracks")) {
+      values.add(item);
+      Object value = mapper.get(reference, item.get("name"));
+
+      if (Objects.nonNull(value)) {
+        item.put("value", value.toString());
+        item.put("oldValue", value.toString());
+      }
+    }
+
+    bodyData.put("tracks", values);
+    mm.setBody(json.writeValueAsString(bodyData));
   }
 
   /**
