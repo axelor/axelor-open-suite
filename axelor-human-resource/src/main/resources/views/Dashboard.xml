@@ -7,7 +7,7 @@
   <!-- Dashboard Manager -->
   <dashboard title="Reportings" name="hr.manager.dashboard.sample">
     <dashlet action="timesheet.validate" height="450" canSearch="true"
-      if="__config__.app.isApp('timesheet')"/>
+      if="__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getTimesheetManagement()"/>
     <dashlet action="extra.hours.validate" height="450" canSearch="true"
       if="__config__.app.isApp('exthrs')"/>
     <dashlet action="expense.validate" height="450" canSearch="true"
@@ -32,7 +32,7 @@
   <!-- Dashboard User -->
   <dashboard title="Reportings" name="hr.user.dashboard.sample">
     <dashlet action="hr.dashboard.my.timesheets" height="350" canSearch="true"
-      if="__config__.app.isApp('timesheet')"/>
+      if="__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getTimesheetManagement()"/>
     <dashlet action="hr.dashboard.my.extrahours" height="350" canSearch="true"
       if="__config__.app.isApp('exthrs')"/>
     <dashlet action="hr.dashboard.my.expenses" height="350" canSearch="true"

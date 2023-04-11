@@ -202,19 +202,20 @@
         <panel-dashlet name="projectPlanningTimePanel" title="Planned Time Planning"
           action="action-project-dashlet-project-planning-time" colSpan="12" canSearch="true"/>
       </panel>
-      <panel title="Log Times" name="logTimesPanel" if="__config__.app.isApp('timesheet')"
+      <panel title="Log Times" name="logTimesPanel"
+        if="__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getTimesheetManagement()"
         if-module="axelor-human-resource" showIf="isShowTimeSpent">
         <field name="timeSpent" title="Time Spent" readonly="true" colSpan="3"/>
         <panel-dashlet name="validatedTimesheetsPanel"
-          if="__config__.app.getApp('timesheet')?.needValidation"
+          if="__config__.app.getApp('human-resource')?.needValidation"
           action="action-project-dashlet-validated-timesheet-lines"
           title="Validated Timesheet lines" colSpan="12" canSearch="true"/>
         <panel-dashlet name="waitingTimesheetLinesPanel"
-          if="__config__.app.getApp('timesheet')?.needValidation"
+          if="__config__.app.getApp('human-resource')?.needValidation"
           action="action-project-dashlet-project-waiting-timesheet-lines"
           title="Waiting Timesheet lines" colSpan="12" canSearch="true"/>
         <panel-dashlet name="allTimesheetsLinesPanel"
-          if="!__config__.app.getApp('timesheet')?.needValidation"
+          if="!__config__.app.getApp('human-resource')?.needValidation"
           action="action-project-dashlet-project-all-timesheet-lines"
           title="TimesheetLine.timeSpent" colSpan="12" canSearch="true"
           help="To create new timespent lines, you need to do it via project task or via the HR &quot;Complete my Timesheet&quot; menu."/>
@@ -467,12 +468,13 @@
           form-view="product-activity-form" grid-view="product-activity-grid"/>
         <field name="projectFolderSet" colSpan="12" widget="TagSelect"
           if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
-        <field name="excludeTimesheetEditor" if="__config__.app.isApp('timesheet')"
+        <field name="excludeTimesheetEditor"
+          if="__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getTimesheetManagement()"
           if-module="axelor-human-resource"/>
         <field name="childProjectList" hidden="true"/>
         <field name="sequence" hidden="true"/>
         <field name="imputable" colSpan="4" widget="boolean-switch"
-          if="__config__.app.isApp('employee') &amp;&amp; __config__.app.isApp('timesheet')"
+          if="__config__.app.isApp('employee') &amp;&amp; __config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getTimesheetManagement()"
           if-module="axelor-human-resource"/>
         <panel name="fieldsToDisplay" title="Fields to display" colSpan="12">
           <field name="isShowStatus" colSpan="4" widget="inline-checkbox"
@@ -493,7 +495,7 @@
           <field name="isShowFrequency" colSpan="4" widget="inline-checkbox"/>
           <field name="isShowTimeSpent" colSpan="4" widget="inline-checkbox"
             onChange="action-project-record-is-show-timespent-reset-values"
-            if="__config__.app.isApp('timesheet')"/>
+            if="__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getTimesheetManagement()"/>
           <field name="isShowSection" colSpan="4" widget="inline-checkbox"
             onChange="action-project-record-section-reset-values"/>
           <field name="isShowTopic" colSpan="4" widget="inline-checkbox"/>
@@ -1118,7 +1120,8 @@
     <field name="contactPartner" hidden="true" if="!__config__.app.isApp('business-project')"/>
     <field name="customerAddress" hidden="true" if="!__config__.app.isApp('business-project')"/>
     <field name="totalPlannedHrs" hidden="true" if="!__config__.app.isApp('employee')"/>
-    <field name="timeSpent" hidden="true" if="!__config__.app.isApp('timesheet')"/>
+    <field name="timeSpent" hidden="true"
+      if="!(__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getTimesheetManagement())"/>
     <field name="toInvoice" hidden="true" if="!__config__.app.isApp('business-project')"/>
     <field name="isInvoicingTimesheet" hidden="true"
       if="!__config__.app.isApp('business-project')"/>

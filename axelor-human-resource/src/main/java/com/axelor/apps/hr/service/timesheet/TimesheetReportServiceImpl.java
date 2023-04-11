@@ -150,7 +150,9 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
   public List<Message> sendReminders(TimesheetReport timesheetReport) throws AxelorException {
 
     Template reminderTemplate =
-        Beans.get(AppHumanResourceService.class).getAppTimesheet().getTimesheetReminderTemplate();
+        Beans.get(AppHumanResourceService.class)
+            .getAppHumanResource()
+            .getTimesheetReminderTemplate();
     if (reminderTemplate == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_NO_VALUE,

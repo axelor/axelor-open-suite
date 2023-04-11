@@ -39,7 +39,7 @@
     <field name="enableEditor" hidden="true"/>
     <field name="comments" width="400"/>
     <field name="timesheet.statusSelect"
-      if="__config__.app.getApp('timesheet')?.needValidation"/>
+      if="__config__.app.getApp('human-resource')?.needValidation"/>
   </grid>
 
   <grid name="timesheet-line-timesheet-readonly-manuf-order-grid" title="Timesheet Lines"
@@ -62,7 +62,7 @@
     <field name="user" form-view="user-form" grid-view="user-grid" hidden="true"
       canEdit="false" canView="false"/>
     <field name="timesheet.statusSelect"
-      if="__config__.app.getApp('timesheet')?.needValidation"/>
+      if="__config__.app.getApp('human-resource')?.needValidation"/>
   </grid>
 
   <form name="timesheet-line-timesheet-manuf-order-form" title="Timesheet Line"
@@ -83,7 +83,8 @@
       <label name="durationLabel" colSpan="1"/>
       <field name="hoursDuration" hidden="true"/>
       <field name="toInvoice"/>
-      <field name="enableEditor" if="__config__.app.getApp('timesheet')?.getTimesheetEditor()"/>
+      <field name="enableEditor"
+        if="__config__.app.getApp('human-resource')?.getTimesheetEditor()"/>
       <field name="comments"/>
       <field name="user" form-view="user-form" grid-view="user-grid" hidden="true"
         canEdit="false" canView="false"/>
@@ -99,7 +100,7 @@
     <alert message="Warning, this manuforder is from another company."
       if="manufOrder &amp;&amp; manufOrder?.company != __parent__.company"/>
     <alert message="Warning, this manuforder is finished"
-      if="manufOrder &amp;&amp; manufOrder?.statusSelect == __repo__(ManufOrder).STATUS_FINISHED &amp;&amp; __config__.app.getApp('timesheet')?.getIsAlertManufOrderFinish()"/>
+      if="manufOrder &amp;&amp; manufOrder?.statusSelect == __repo__(ManufOrder).STATUS_FINISHED &amp;&amp; __config__.app.getApp('human-resource')?.getIsAlertManufOrderFinish()"/>
   </action-validate>
 
   <action-record name="action-timesheet-line-record-manuf-order-onchange"

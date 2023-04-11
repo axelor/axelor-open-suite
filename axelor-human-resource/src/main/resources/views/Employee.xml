@@ -188,7 +188,8 @@
       <field name="negativeValueLeave" widget="InlineCheckbox"/>
     </panel>
 
-    <panel name="timesheetsSBSPanel" title="Timesheets" if="__config__.app.isApp('timesheet')"
+    <panel name="timesheetsSBSPanel" title="Timesheets"
+      if="__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getTimesheetManagement()"
       showIf="stepByStepSelect == 3">
       <field name="timeLoggingPreferenceSelect" colSpan="3"/>
       <field name="product" canEdit="false" colSpan="3"
@@ -387,7 +388,8 @@
         <field name="negativeValueLeave" widget="InlineCheckbox"/>
       </panel>
 
-      <panel name="timesheetsPanel" title="Timesheets" if="__config__.app.isApp('timesheet')">
+      <panel name="timesheetsPanel" title="Timesheets"
+        if="__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getTimesheetManagement()">
         <field name="timeLoggingPreferenceSelect" colSpan="3"/>
         <field name="product" canEdit="false" colSpan="3"
           domain="self.isActivity = true AND self.dtype = 'Product'" form-view="product-form"
@@ -430,7 +432,9 @@
       <panel name="vehiclePanel" title="Vehicle" if="__config__.app.isApp('expense')">
         <panel-related name="kilometricLogListPanel" title="Kilometric log"
           field="kilometricLogList" colSpan="12" form-view="kilometric-log-form"
-          grid-view="kilometric-log-grid" if="__config__.app.isApp('timesheet')" readonly="true"/>
+          grid-view="kilometric-log-grid"
+          if="__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getTimesheetManagement()"
+          readonly="true"/>
 
         <panel name="vehicleListPanel" title="Vehicles" colSpan="12">
           <field name="employeeVehicleList" colSpan="12" showTitle="false">
@@ -739,10 +743,13 @@
     <field name="leaveLineList" hidden="true" if="!__config__.app.isApp('leave')"/>
     <field name="negativeValueLeave" hidden="true" if="!__config__.app.isApp('leave')"/>
     <field name="timeLoggingPreferenceSelect" hidden="true"
-      if="!__config__.app.isApp('timesheet')"/>
-    <field name="product" hidden="true" if="!__config__.app.isApp('timesheet')"/>
-    <field name="timesheetReminder" hidden="true" if="!__config__.app.isApp('timesheet')"/>
-    <field name="kilometricLogList" hidden="true" if="!__config__.app.isApp('timesheet')"/>
+      if="!(__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getTimesheetManagement())"/>
+    <field name="product" hidden="true"
+      if="!(__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getTimesheetManagement())"/>
+    <field name="timesheetReminder" hidden="true"
+      if="!(__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getTimesheetManagement())"/>
+    <field name="kilometricLogList" hidden="true"
+      if="!(__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getTimesheetManagement())"/>
     <field name="employeeVehicleList" hidden="true" if="!__config__.app.isApp('expense')"/>
     <field name="mainEmploymentContract.payCompany"
       title="Pay company main employment contract"/>

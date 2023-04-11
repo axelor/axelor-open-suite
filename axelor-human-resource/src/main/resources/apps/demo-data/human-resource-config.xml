@@ -3,8 +3,8 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_6.1.xsd">
 
-  <input file="studio_appTimesheet.csv" separator=";" type="com.axelor.studio.db.AppTimesheet"
-    search="self.app.code = :code"/>
+  <input file="studio_appHumanResource.csv" separator=";"
+    type="com.axelor.studio.db.AppHumanResource" search="self.app.code = :code"/>
 
   <input file="hr_timesheet.csv" type="com.axelor.apps.hr.db.Timesheet" separator=";"
     search="self.importId = :importId">

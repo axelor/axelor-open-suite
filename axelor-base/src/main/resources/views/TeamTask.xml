@@ -105,7 +105,8 @@
     <field name="exTaxTotal" hidden="true" if="!__config__.app.isApp('business-project')"/>
     <field name="metaFile" hidden="true"
       if="!__config__.app.getApp('project')?.isEnableSignature"/>
-    <field name="totalRealHrs" hidden="true" if="!__config__.app.isApp('timesheet')"/>
+    <field name="totalRealHrs" hidden="true"
+      if="!(__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getTimesheetManagement())"/>
   </search-filters>
 
 

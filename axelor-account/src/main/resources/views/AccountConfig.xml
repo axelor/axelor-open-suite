@@ -253,7 +253,7 @@
           <field name="displayPartnerSeqOnPrinting" widget="boolean-switch"/>
           <field name="displayTimesheetOnPrinting" widget="boolean-switch"
             if-module="axelor-business-project"
-            if="__config__.app.isApp('business-project') &amp;&amp;  __config__.app.isApp('timesheet')"/>
+            if="__config__.app.isApp('business-project') &amp;&amp;  __config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getTimesheetManagement()"/>
           <field name="displayExpenseOnPrinting" widget="boolean-switch"
             if-module="axelor-business-project"
             if="__config__.app.isApp('business-project') &amp;&amp;  __config__.app.isApp('expense')"/>

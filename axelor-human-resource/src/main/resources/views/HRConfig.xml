@@ -22,7 +22,8 @@
       <field name="healthServiceAddress"/>
     </panel>
     <panel-tabs name="mainPanelTab">
-      <panel name="timesheetPanel" title="Timesheet" if="__config__.app.isApp('timesheet')">
+      <panel name="timesheetPanel" title="Timesheet"
+        if="__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getTimesheetManagement()">
         <field name="useUniqueProductForTimesheet"/>
         <field name="uniqueTimesheetProduct" requiredIf="useUniqueProductForTimesheet"
           showIf="useUniqueProductForTimesheet" canNew="true" form-view="product-activity-grid"

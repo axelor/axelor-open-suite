@@ -293,7 +293,8 @@
       </panel>
 
       <panel name="timeSpentPanel" title="Time Spent" if-module="axelor-human-resource"
-        if="__config__.app.isApp('timesheet')" showIf="project.isShowTimeSpent">
+        if="__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getTimesheetManagement()"
+        showIf="project.isShowTimeSpent">
         <field name="totalRealHrs" readonly="true" colSpan="4">
           <viewer><![CDATA[
                    	 <span>{{$fmt('totalRealHrs')}} </span><span x-translate>hours</span>
@@ -302,14 +303,15 @@
         <panel-dashlet name="validatedTimesheetLinesPanel"
           action="action-project-task-dashlet-validated-timesheet-lines"
           title="Validated Timesheet lines" colSpan="12" canSearch="true"
-          if="__config__.app.getApp('timesheet')?.needValidation"/>
+          if="__config__.app.getApp('human-resource')?.needValidation"/>
         <panel-dashlet name="waitingTimesheetLinesPanel"
           action="action-project-task-dashlet-waiting-timesheet-lines"
           title="Waiting Timesheet lines" colSpan="12" canSearch="true"
-          if="__config__.app.getApp('timesheet')?.needValidation"/>
+          if="__config__.app.getApp('human-resource')?.needValidation"/>
         <panel-dashlet name="allTimesheetLinesPanel"
           action="action-project-task-dashlet-all-timesheet-lines" title="TimesheetLine.timeSpent"
-          colSpan="12" canSearch="true" if="!__config__.app.getApp('timesheet')?.needValidation"/>
+          colSpan="12" canSearch="true"
+          if="!__config__.app.getApp('human-resource')?.needValidation"/>
       </panel>
 
       <panel name="timerPanel" title="Timer" showIf="id" hidden="true"
@@ -924,7 +926,8 @@
     <field name="exTaxTotal" hidden="true" if="!__config__.app.isApp('business-project')"/>
     <field name="metaFile" hidden="true"
       if="!__config__.app.getApp('project')?.isEnableSignature"/>
-    <field name="totalRealHrs" hidden="true" if="!__config__.app.isApp('timesheet')"/>
+    <field name="totalRealHrs" hidden="true"
+      if="!(__config__.app.isApp('human-resource') &amp;&amp; __config__.app.getApp('human-resource')?.getTimesheetManagement())"/>
   </search-filters>
 
 </object-views>

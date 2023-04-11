@@ -1,0 +1,14 @@
+---
+name: Human Resource Management
+code: human-resource
+typeSelect: standard
+installOrder: 2120
+description: |
+   Human Resource Management
+image: app-human-resource.png
+modules: 
+   axelor-human-resource
+dependsOn:
+   - account
+   - project
+sequence: 17
