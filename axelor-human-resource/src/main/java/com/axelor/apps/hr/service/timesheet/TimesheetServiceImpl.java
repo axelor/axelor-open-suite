@@ -1117,8 +1117,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
                       + "AND self.id NOT IN "
                       + "(SELECT timesheetLine.projectPlanningTime.id FROM TimesheetLine as timesheetLine "
                       + "WHERE timesheetLine.projectPlanningTime != null "
-                      + "AND timesheetLine.timesheet = ?3) "
-                      + "AND self.projectTask != null ",
+                      + "AND timesheetLine.timesheet = ?3) ",
                   timesheet.getEmployee().getId(),
                   timesheet.getFromDate(),
                   timesheet)
@@ -1133,8 +1132,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
                       + "AND self.id NOT IN "
                       + "(SELECT timesheetLine.projectPlanningTime.id FROM TimesheetLine as timesheetLine "
                       + "WHERE timesheetLine.projectPlanningTime != null "
-                      + "AND timesheetLine.timesheet = ?4) "
-                      + "AND self.projectTask != null ",
+                      + "AND timesheetLine.timesheet = ?4) ",
                   timesheet.getEmployee().getId(),
                   timesheet.getFromDate(),
                   timesheet.getToDate(),
