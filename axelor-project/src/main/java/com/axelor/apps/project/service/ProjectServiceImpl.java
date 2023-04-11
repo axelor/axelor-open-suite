@@ -31,6 +31,7 @@ import com.axelor.apps.project.db.TaskTemplate;
 import com.axelor.apps.project.db.Wiki;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectStatusRepository;
+import com.axelor.apps.project.db.repo.ProjectTemplateRepository;
 import com.axelor.apps.project.db.repo.WikiRepository;
 import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.apps.project.translation.ITranslation;
@@ -61,15 +62,18 @@ public class ProjectServiceImpl implements ProjectService {
   protected ProjectRepository projectRepository;
   protected ProjectStatusRepository projectStatusRepository;
   protected AppProjectService appProjectService;
+  protected ProjectTemplateRepository projTemplateRepo;
 
   @Inject
   public ProjectServiceImpl(
       ProjectRepository projectRepository,
       ProjectStatusRepository projectStatusRepository,
-      AppProjectService appProjectService) {
+      AppProjectService appProjectService,
+      ProjectTemplateRepository projTemplateRepo) {
     this.projectRepository = projectRepository;
     this.projectStatusRepository = projectStatusRepository;
     this.appProjectService = appProjectService;
+    this.projTemplateRepo = projTemplateRepo;
   }
 
   @Inject WikiRepository wikiRepo;
@@ -198,6 +202,20 @@ public class ProjectServiceImpl implements ProjectService {
   @Override
   public Map<String, Object> createProjectFromTemplateView(ProjectTemplate projectTemplate)
       throws AxelorException {
+    if (appProjectService.getAppProject().getGenerateProjectSequence()
+        && !projectTemplate.getIsBusinessProject()) {
+      projectTemplate = projTemplateRepo.find(projectTemplate.getId());
+      Project project =
+          Beans.get(ProjectService.class).createProjectFromTemplate(projectTemplate, null, null);
+      return ActionView.define(I18n.get("Project"))
+          .model(Project.class.getName())
+          .add("form", "project-form")
+          .add("grid", "project-grid")
+          .param("search-filters", "project-filters")
+          .context("_showRecord", project.getId())
+          .map();
+    }
+
     return ActionView.define(I18n.get("Create project from this template"))
         .model(Wizard.class.getName())
         .add("form", "project-template-wizard-form")
