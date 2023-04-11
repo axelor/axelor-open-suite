@@ -245,7 +245,8 @@ public class ExpenseServiceImpl implements ExpenseService {
   public void confirm(Expense expense) throws AxelorException {
 
     expense.setStatusSelect(ExpenseRepository.STATUS_CONFIRMED);
-    expense.setSentDate(appAccountService.getTodayDate(expense.getCompany()));
+    expense.setSentDateTime(
+        appAccountService.getTodayDateTime(expense.getCompany()).toLocalDateTime());
     expenseRepository.save(expense);
   }
 
@@ -289,7 +290,8 @@ public class ExpenseServiceImpl implements ExpenseService {
     Beans.get(EmployeeAdvanceService.class).fillExpenseWithAdvances(expense);
     expense.setStatusSelect(ExpenseRepository.STATUS_VALIDATED);
     expense.setValidatedBy(AuthUtils.getUser());
-    expense.setValidationDate(appAccountService.getTodayDate(expense.getCompany()));
+    expense.setValidationDateTime(
+        appAccountService.getTodayDateTime(expense.getCompany()).toLocalDateTime());
 
     if (expense.getEmployee().getContactPartner() != null) {
       PaymentMode paymentMode = expense.getEmployee().getContactPartner().getOutPaymentMode();
@@ -319,7 +321,8 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     expense.setStatusSelect(ExpenseRepository.STATUS_REFUSED);
     expense.setRefusedBy(AuthUtils.getUser());
-    expense.setRefusalDate(appAccountService.getTodayDate(expense.getCompany()));
+    expense.setRefusalDateTime(
+        appAccountService.getTodayDateTime(expense.getCompany()).toLocalDateTime());
     expenseRepository.save(expense);
   }
 
@@ -934,7 +937,8 @@ public class ExpenseServiceImpl implements ExpenseService {
     if (sequence != null) {
       expense.setExpenseSeq(
           Beans.get(SequenceService.class)
-              .getSequenceNumber(sequence, expense.getSentDate(), Expense.class, "expenseSeq"));
+              .getSequenceNumber(
+                  sequence, expense.getSentDateTime().toLocalDate(), Expense.class, "expenseSeq"));
       if (expense.getExpenseSeq() != null) {
         return;
       }

@@ -29,6 +29,9 @@ import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestValidator;
 import com.axelor.utils.api.ResponseConstructor;
 import com.axelor.utils.api.SecurityCheck;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.servers.Server;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -37,6 +40,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+@OpenAPIDefinition(servers = {@Server(url = "../")})
 @Path("/aos/stock-move-line")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
@@ -46,6 +50,9 @@ public class StockMoveLineRestController {
    * Update realQty and conformity of an incoming stock move. Full path to request is
    * /ws/aos/stock-move-line/{id}
    */
+  @Operation(
+      summary = "Update stock move line",
+      tags = {"Stock move line"})
   @Path("/{id}")
   @PUT
   @HttpExceptionHandler
@@ -59,7 +66,11 @@ public class StockMoveLineRestController {
         ObjectFinder.find(StockMoveLine.class, stockMoveLineId, requestBody.getVersion());
 
     Beans.get(StockMoveLineService.class)
-        .updateStockMoveLine(stockmoveLine, requestBody.getRealQty(), requestBody.getConformity());
+        .updateStockMoveLine(
+            stockmoveLine,
+            requestBody.getRealQty(),
+            requestBody.getConformity(),
+            requestBody.fetchUnit());
 
     return ResponseConstructor.build(
         Response.Status.OK, "Line successfully updated.", new StockMoveLineResponse(stockmoveLine));

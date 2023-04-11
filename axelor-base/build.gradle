@@ -52,4 +52,6 @@ dependencies {
 	api libs.wslite
 
 	implementation libs.logback
+
+	implementation libs.swagger_jaxrs;
 }
