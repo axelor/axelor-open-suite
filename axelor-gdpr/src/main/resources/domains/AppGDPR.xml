@@ -24,8 +24,12 @@
     <many-to-one name="erasureResponseTemplate" ref="com.axelor.message.db.Template"
       title="Email template for erasure request response"
       help="Email template to send when responding to an erasure request."/>
+
     <track>
       <field name="maxRespondingDays" on="UPDATE"/>
+      <field name="anonymizer" on="UPDATE"/>
+      <field name="accessResponseTemplate" on="UPDATE"/>
+      <field name="erasureResponseTemplate" on="UPDATE"/>
     </track>
 
   </entity>

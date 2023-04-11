@@ -178,11 +178,13 @@ public class ClosureAssistantLineServiceImpl implements ClosureAssistantLineServ
     closureAssistantLine.setIsValidated(isValidated);
     if (isValidated) {
       closureAssistantLine.setValidatedByUser(AuthUtils.getUser());
-      closureAssistantLine.setValidatedOnDate(
-          appBaseService.getTodayDate(closureAssistantLine.getClosureAssistant().getCompany()));
+      closureAssistantLine.setValidatedOnDateTime(
+          appBaseService
+              .getTodayDateTime(closureAssistantLine.getClosureAssistant().getCompany())
+              .toLocalDateTime());
     } else {
       closureAssistantLine.setValidatedByUser(null);
-      closureAssistantLine.setValidatedOnDate(null);
+      closureAssistantLine.setValidatedOnDateTime(null);
     }
     setIsPreviousLineValidatedForPreviousAndNextLine(closureAssistantLine, isValidated);
     closureAssistantLineRepository.save(closureAssistantLine);

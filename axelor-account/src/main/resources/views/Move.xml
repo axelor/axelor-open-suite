@@ -116,7 +116,8 @@
           <field name="paymentCondition" colSpan="3" showIf="$journalTechnicalTypeSelect != 4"
             form-view="payment-condition-form" grid-view="payment-condition-grid"
             readonlyIf="$validatePeriod &amp;&amp; statusSelect == 3"
-            onChange="action-move-group-payment-condition-onchange"/>
+            onChange="action-move-group-payment-condition-onchange"
+            onSelect="action-move-attrs-payment-condition-set-domain"/>
           <field name="partnerBankDetails" colSpan="3"
             showIf="[2,3,9,10].includes(paymentMode.typeSelect)"
             onSelect="action-move-attrs-bank-details-from-partner-domain"
@@ -670,6 +671,8 @@
     <action name="action-method-initialize-permission-validation-move"/>
     <action name="action-move-method-check-period-permissions"/>
     <action name="action-move-method-set-moveline-dates"/>
+    <action name="action-move-method-update-currency-rate"/>
+    <action name="action-account-move-method-compute-totals"/>
     <action name="action-move-attrs-date-change"/>
     <action name="action-move-method-display-and-compute-due-date"/>
     <action name="action-account-move-group-onsave"/>
@@ -887,6 +890,12 @@
       expr="eval: (journal?.authorizedFunctionalOriginSelect?.split(',')?.length == 1) ? (journal?.authorizedFunctionalOriginSelect) : null"/>
   </action-attrs>
 
+  <action-attrs name="action-move-attrs-payment-condition-set-domain">
+    <attribute name="domain" for="paymentCondition"
+      expr="eval: &quot; SIZE(self.paymentConditionLineList) &lt; 2 &quot;"
+      if="!__config__.app.getApp('account').allowMultiInvoiceTerms"/>
+  </action-attrs>
+
   <!-- ACTION METHOD -->
   <action-method name="action-move-method-accounting">
     <call class="com.axelor.apps.account.web.MoveController" method="accounting"/>
@@ -1000,6 +1009,11 @@
 
   <action-method name="action-move-method-update-due-date">
     <call class="com.axelor.apps.account.web.MoveController" method="updateDueDate"/>
+  </action-method>
+
+  <action-method name="action-move-method-update-currency-rate">
+    <call class="com.axelor.apps.account.web.MoveController"
+      method="updateMoveLinesCurrencyRate"/>
   </action-method>
 
   <action-attrs name="action-move-attrs-check-period-and-status"

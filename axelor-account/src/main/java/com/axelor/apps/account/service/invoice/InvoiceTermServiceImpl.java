@@ -155,7 +155,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       for (MoveLine moveLineIt : move.getMoveLineList()) {
         if (!moveLineIt.equals(moveLine)
             && moveLineIt.getAccount() != null
-            && moveLineIt.getAccount().getHasInvoiceTerm()
+            && moveLineIt.getAccount().getUseForPartnerBalance()
             && moveLineIt.getInvoiceTermList() != null) {
           for (InvoiceTerm invoiceTerm : moveLineIt.getInvoiceTermList()) {
             sum = sum.add(this.computeCustomizedPercentageUnscaled(invoiceTerm.getAmount(), total));
@@ -844,6 +844,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     return Optional.of(
             invoiceTerm.getApplyFinancialDiscount()
                     && invoiceTerm.getFinancialDiscountDeadlineDate() != null
+                    && date != null
                     && !invoiceTerm.getFinancialDiscountDeadlineDate().isBefore(date)
                 ? invoiceTerm.getAmountRemainingAfterFinDiscount()
                 : invoiceTerm.getAmountRemaining())
@@ -1349,7 +1350,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     MoveLine moveLine = getExistingInvoiceTermMoveLine(invoice);
     if (moveLine == null && !CollectionUtils.isEmpty(moveLineList)) {
       for (MoveLine ml : moveLineList) {
-        if (ml.getAccount().getHasInvoiceTerm()) {
+        if (ml.getAccount().getUseForPartnerBalance()) {
           ml.addInvoiceTermListItem(invoiceTerm);
           return;
         }
@@ -1373,7 +1374,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
         if (!moveLineIt.equals(moveLine)
             && moveLineIt.getCredit().signum() == moveLine.getCredit().signum()
             && moveLineIt.getAccount() != null
-            && moveLineIt.getAccount().getHasInvoiceTerm()
+            && moveLineIt.getAccount().getUseForPartnerBalance()
             && (holdback
                 || (holdbackAccount != null && !moveLineIt.getAccount().equals(holdbackAccount)))) {
           total = total.add(moveLineIt.getCurrencyAmount());

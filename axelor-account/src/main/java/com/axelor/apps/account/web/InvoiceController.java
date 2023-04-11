@@ -1012,7 +1012,7 @@ public class InvoiceController {
           "pfpValidatorUser", "hidden", !invoiceVisibilityService.isValidatorUserVisible(invoice));
 
       response.setAttr(
-          "decisionPfpTakenDate",
+          "decisionPfpTakenDateTime",
           "hidden",
           !invoiceVisibilityService.isDecisionPfpVisible(invoice));
 
@@ -1163,6 +1163,24 @@ public class InvoiceController {
           .filter(invoiceTermService::isNotReadonly)
           .forEach(it -> it.setPaymentMode(invoice.getPaymentMode()));
 
+      response.setValue("invoiceTermList", invoice.getInvoiceTermList());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void updateInvoiceTermBankDetails(ActionRequest request, ActionResponse response) {
+    try {
+      Invoice invoice = request.getContext().asType(Invoice.class);
+
+      if (Beans.get(AppAccountService.class).getAppAccount().getAllowMultiInvoiceTerms()
+          || CollectionUtils.isEmpty(invoice.getInvoiceTermList())
+          || !Beans.get(InvoiceTermService.class)
+              .isNotReadonly(invoice.getInvoiceTermList().get(0))) {
+        return;
+      }
+
+      invoice.getInvoiceTermList().get(0).setBankDetails(invoice.getBankDetails());
       response.setValue("invoiceTermList", invoice.getInvoiceTermList());
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);

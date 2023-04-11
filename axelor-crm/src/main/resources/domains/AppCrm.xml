@@ -31,7 +31,17 @@
 
     <track>
       <field name="assignableUsers" on="UPDATE"/>
+      <field name="groupsAssignable" on="UPDATE"/>
       <field name="displayCustomerDescriptionInOpportunity" on="UPDATE"/>
+      <field name="isManageRecurrent" on="UPDATE"/>
+      <field name="defaultRecurringDuration" on="UPDATE"/>
+      <field name="isManageCatalogs" on="UPDATE"/>
+      <field name="agenciesManagement" on="UPDATE"/>
+      <field name="closedWinOpportunityStatus" on="UPDATE"/>
+      <field name="closedLostOpportunityStatus" on="UPDATE"/>
+      <field name="salesPropositionStatus" on="UPDATE"/>
+      <field name="convertedLeadStatus" on="UPDATE"/>
+      <field name="lostLeadStatus" on="UPDATE"/>
     </track>
   </entity>
 

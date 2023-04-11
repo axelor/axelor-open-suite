@@ -416,10 +416,12 @@
       <field name="move.partner.das2Activity" form-view="das2-activity-form"
         grid-view="das2-activity-grid"/>
       <field name="account.manageCutOffPeriod" hidden="true"/>
+      <field name="account.useForPartnerBalance" hidden="true"/>
     </panel>
     <panel-tabs name="mainPanelTab">
       <panel name="invoiceTermPanel" title="Term(s)"
-        showIf="account.hasInvoiceTerm &amp;&amp; move.invoice == null" colSpan="12">
+        if="__config__.app.getApp('account').allowMultiInvoiceTerms"
+        showIf="account.useForPartnerBalance &amp;&amp; move.invoice == null" colSpan="12">
         <button name="showInvoiceTermsBtn" title="Show related invoice term(s)"
           onClick="save,action-move-line-view-show-related-invoice-terms"
           readonlyIf="!invoiceTermList.length"/>
@@ -428,7 +430,8 @@
           onChange="action-move-line-method-update-due-dates"/>
       </panel>
       <panel name="invoiceTermFromInvoicePanel" title="Term(s)"
-        showIf="account.hasInvoiceTerm  &amp;&amp; move.invoice != null" colSpan="12">
+        if="__config__.app.getApp('account').allowMultiInvoiceTerms"
+        showIf="account.useForPartnerBalance  &amp;&amp; move.invoice != null" colSpan="12">
         <button name="showInvoiceTermsFromInvoiceBtn" title="Show related invoice term(s)"
           onClick="save,action-move-line-view-show-related-invoice-terms-from-invoice"
           readonlyIf="!invoiceTermList.length"/>
@@ -447,7 +450,7 @@
           readonlyIf="fixedAssetCategory != null" type="boolean" widget="boolean"/>
         <field name="fixedAssetCategory"
           showIf="fixedAssetCategory != null || $generateFixedAsset" canNew="false"/>
-        <field name="account.hasInvoiceTerm" hidden="true"/>
+        <field name="account.useForPartnerBalance" hidden="true"/>
         <field name="move.invoice" hidden="true"/>
         <field name="move.period.statusSelect" hidden="true"/>
       </panel>
@@ -613,7 +616,7 @@
         onSelect="action-move-line-attrs-domain-partner" canEdit="false"
         readonlyIf="amountPaid &gt; 0"
         onChange="action-move-line-method-update-invoice-terms,action-move-line-record-reset-partner-details"
-        requiredIf="account.useForPartnerBalance &amp;&amp; account.hasInvoiceTerm"/>
+        requiredIf="account.useForPartnerBalance"/>
       <field name="currencyAmount"
         onChange="action-move-line-group-currency-amount-rate-onchange"
         readonlyIf="!isOtherCurrency" colSpan="3"/>
@@ -641,10 +644,8 @@
       <field name="taxAmount" hidden="true"/>
       <field name="move.statusSelect" hidden="true"/>
       <field name="account.reconcileOk" hidden="true"/>
-      <field name="account.hasInvoiceTerm" hidden="true"/>
       <field name="account.manageCutOffPeriod" hidden="true"/>
       <field name="account.useForPartnerBalance" hidden="true"/>
-      <field name="account.hasInvoiceTerm" hidden="true"/>
     </panel>
     <panel name="detailsPanel">
       <field name="description" colSpan="6" requiredIf="$isDescriptionRequired"
@@ -654,7 +655,8 @@
     </panel>
     <panel-tabs name="mainPanelTab">
       <panel name="invoiceTermPanel" title="Term(s)"
-        showIf="account.hasInvoiceTerm &amp;&amp; move.invoice == null" colSpan="12">
+        if="__config__.app.getApp('account').allowMultiInvoiceTerms"
+        showIf="account.useForPartnerBalance &amp;&amp; move.invoice == null" colSpan="12">
         <panel name="financialDiscountPanel" colSpan="12"
           showIf="move.statusSelect != 1 &amp;&amp; move.statusSelect != 5"
           if="__config__.app.getApp('account').getManageFinancialDiscount()">
@@ -675,7 +677,8 @@
           onChange="action-move-line-method-update-due-dates"/>
       </panel>
       <panel name="invoiceTermFromInvoicePanel" title="Term(s)"
-        showIf="account.hasInvoiceTerm  &amp;&amp; move.invoice != null" colSpan="12">
+        if="__config__.app.getApp('account').allowMultiInvoiceTerms"
+        showIf="account.useForPartnerBalance  &amp;&amp; move.invoice != null" colSpan="12">
         <button name="showInvoiceTermsFromInvoiceBtn" title="Show related invoice term(s)"
           onClick="save,action-move-line-view-show-related-invoice-terms-from-invoice"
           readonlyIf="!invoiceTermList.length"/>
@@ -694,7 +697,7 @@
           readonlyIf="fixedAssetCategory != null" type="boolean" widget="boolean"/>
         <field name="fixedAssetCategory"
           showIf="fixedAssetCategory != null || $generateFixedAsset" canNew="false"/>
-        <field name="account.hasInvoiceTerm" hidden="true"/>
+        <field name="account.useForPartnerBalance" hidden="true"/>
         <field name="move.invoice" hidden="true"/>
         <field name="move.period.statusSelect" hidden="true"/>
       </panel>

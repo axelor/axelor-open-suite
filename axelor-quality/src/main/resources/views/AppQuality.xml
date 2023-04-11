@@ -9,6 +9,9 @@
       <field name="qualityControlTemplate" requiredIf="automaticMail" canEdit="false"/>
       <field name="automaticMail" widget="boolean-switch"/>
     </panel>
+    <panel-mail name="mailPanel">
+      <mail-messages limit="4"/>
+    </panel-mail>
   </form>
 
 </object-views>
