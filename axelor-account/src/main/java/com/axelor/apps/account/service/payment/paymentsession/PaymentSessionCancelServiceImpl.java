@@ -27,7 +27,6 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class PaymentSessionCancelServiceImpl implements PaymentSessionCancelService {
   protected PaymentSessionRepository paymentSessionRepo;
@@ -53,29 +52,19 @@ public class PaymentSessionCancelServiceImpl implements PaymentSessionCancelServ
   }
 
   protected void cancelInvoiceTerms(PaymentSession paymentSession) {
-    List<Long> invoiceTermList;
+    List<InvoiceTerm> invoiceTermList;
     Query<InvoiceTerm> invoiceTermQuery =
         invoiceTermRepo.all().filter("self.paymentSession = ?", paymentSession).order("id");
 
-    while (!(invoiceTermList =
-            invoiceTermQuery
-                .fetchStream(jpaLimit)
-                .map(InvoiceTerm::getId)
-                .collect(Collectors.toList()))
-        .isEmpty()) {
-      for (Long invoiceTermId : invoiceTermList) {
-        this.saveCanceledInvoiceTermWithPaymentSession(invoiceTermId);
+    while (!(invoiceTermList = invoiceTermQuery.fetch(jpaLimit)).isEmpty()) {
+      for (InvoiceTerm invoiceTerm : invoiceTermList) {
+        this.cancelInvoiceTerm(invoiceTerm);
       }
       JPA.clear();
     }
   }
 
   @Transactional
-  protected void saveCanceledInvoiceTermWithPaymentSession(Long invoiceTermId) {
-    InvoiceTerm invoiceTerm = invoiceTermRepo.find(invoiceTermId);
-    this.cancelInvoiceTerm(invoiceTerm);
-  }
-
   protected void cancelInvoiceTerm(InvoiceTerm invoiceTerm) {
     invoiceTerm.setPaymentSession(null);
     invoiceTerm.setIsSelectedOnPaymentSession(false);

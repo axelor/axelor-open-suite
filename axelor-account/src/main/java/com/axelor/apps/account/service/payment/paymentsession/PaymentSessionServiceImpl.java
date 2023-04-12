@@ -306,17 +306,11 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
 
   public void filterInvoiceTerms(
       Query<InvoiceTerm> eligibleInvoiceTermQuery, PaymentSession paymentSession) {
-    List<Long> invoiceTermList;
+    List<InvoiceTerm> invoiceTermList;
 
-    while (!(invoiceTermList =
-            eligibleInvoiceTermQuery
-                .fetchStream(jpaLimit)
-                .map(InvoiceTerm::getId)
-                .collect(Collectors.toList()))
-        .isEmpty()) {
+    while (!(invoiceTermList = eligibleInvoiceTermQuery.fetch(jpaLimit)).isEmpty()) {
       paymentSession = paymentSessionRepository.find(paymentSession.getId());
-      for (Long invoiceTermId : invoiceTermList) {
-        InvoiceTerm invoiceTerm = invoiceTermRepository.find(invoiceTermId);
+      for (InvoiceTerm invoiceTerm : invoiceTermList) {
         if (this.isNotAwaitingPayment(invoiceTerm)
             && !this.isBlocking(invoiceTerm, paymentSession)) {
           this.saveFilledInvoiceTermWithPaymentSession(paymentSession, invoiceTerm);
