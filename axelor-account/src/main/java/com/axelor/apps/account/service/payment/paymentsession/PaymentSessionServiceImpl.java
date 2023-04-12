@@ -70,6 +70,7 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
   protected InvoiceTermService invoiceTermService;
   protected PaymentSessionValidateService paymentSessionValidateService;
   protected AccountConfigService accountConfigService;
+  protected int jpaLimit = 4;
 
   @Inject
   public PaymentSessionServiceImpl(
@@ -241,7 +242,6 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
   }
 
   @Override
-  @Transactional
   public void retrieveEligibleTerms(PaymentSession paymentSession) throws AxelorException {
 
     List<Long> partnerIdList =
@@ -249,7 +249,7 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
     if (CollectionUtils.isEmpty(partnerIdList)) {
       partnerIdList.add((long) 0);
     }
-    List<InvoiceTerm> eligibleInvoiceTermList =
+    Query<InvoiceTerm> eligibleInvoiceTermQuery =
         invoiceTermRepository
             .all()
             .filter(retrieveEligibleTermsQuery(paymentSession.getCompany()))
@@ -275,17 +275,10 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
                 InvoiceTermRepository.PFP_STATUS_PARTIALLY_VALIDATED)
             .bind("partnerIds", partnerIdList)
             .bind("accountingMethodSelect", paymentSession.getAccountingMethodSelect())
-            .fetch();
+            .order("id");
 
-    eligibleInvoiceTermList = this.filterNotAwaitingPayment(eligibleInvoiceTermList);
-    eligibleInvoiceTermList = this.filterBlocking(eligibleInvoiceTermList, paymentSession);
-    eligibleInvoiceTermList.forEach(
-        invoiceTerm -> {
-          fillEligibleTerm(paymentSession, invoiceTerm);
-          invoiceTermRepository.save(invoiceTerm);
-        });
-
-    computeTotalPaymentSession(paymentSession);
+    this.filterInvoiceTerms(eligibleInvoiceTermQuery, paymentSession);
+    computeTotalPaymentSession(paymentSessionRepository.find(paymentSession.getId()));
   }
 
   protected String retrieveEligibleTermsQuery(Company company) throws AxelorException {
@@ -328,8 +321,20 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
     return generalCondition + termsMoveLineCondition + paymentHistoryCondition;
   }
 
-  public List<InvoiceTerm> filterNotAwaitingPayment(List<InvoiceTerm> invoiceTermList) {
-    return invoiceTermList.stream().filter(this::isNotAwaitingPayment).collect(Collectors.toList());
+  public void filterInvoiceTerms(
+      Query<InvoiceTerm> eligibleInvoiceTermQuery, PaymentSession paymentSession) {
+    List<InvoiceTerm> invoiceTermList;
+
+    while (!(invoiceTermList = eligibleInvoiceTermQuery.fetch(jpaLimit)).isEmpty()) {
+      paymentSession = paymentSessionRepository.find(paymentSession.getId());
+      for (InvoiceTerm invoiceTerm : invoiceTermList) {
+        if (this.isNotAwaitingPayment(invoiceTerm)
+            && !this.isBlocking(invoiceTerm, paymentSession)) {
+          this.saveFilledInvoiceTermWithPaymentSession(paymentSession, invoiceTerm);
+        }
+      }
+      JPA.clear();
+    }
   }
 
   public boolean isNotAwaitingPayment(InvoiceTerm invoiceTerm) {
@@ -349,13 +354,6 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
     }
 
     return true;
-  }
-
-  protected List<InvoiceTerm> filterBlocking(
-      List<InvoiceTerm> invoiceTermList, PaymentSession paymentSession) {
-    return invoiceTermList.stream()
-        .filter(it -> !this.isBlocking(it, paymentSession))
-        .collect(Collectors.toList());
   }
 
   protected boolean isBlocking(InvoiceTerm invoiceTerm, PaymentSession paymentSession) {
@@ -503,5 +501,12 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
 
   public boolean hasInvoiceTerm(PaymentSession paymentSession) {
     return getTermsBySession(paymentSession).count() > 0;
+  }
+
+  @Transactional
+  protected void saveFilledInvoiceTermWithPaymentSession(
+      PaymentSession paymentSession, InvoiceTerm invoiceTerm) {
+    fillEligibleTerm(paymentSession, invoiceTerm);
+    invoiceTermRepository.save(invoiceTerm);
   }
 }
