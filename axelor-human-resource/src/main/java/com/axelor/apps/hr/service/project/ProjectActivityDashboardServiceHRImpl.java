@@ -63,9 +63,9 @@ public class ProjectActivityDashboardServiceHRImpl extends ProjectActivityDashbo
   }
 
   @Override
-  protected Map<String, Object> getModelWithUtilityClass(String model) {
-    Map<String, Object> dataMap = super.getModelWithUtilityClass(model);
-    if (TimesheetLine.class.getName().equals(model)) {
+  protected Map<String, Object> getModelWithUtilityClass(MailMessage message) {
+    Map<String, Object> dataMap = super.getModelWithUtilityClass(message);
+    if (TimesheetLine.class.getName().equals(message.getRelatedModel())) {
       dataMap.put("modelName", "Timesheet line");
       dataMap.put("utilityClass", "label-important");
     }
