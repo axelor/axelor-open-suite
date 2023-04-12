@@ -85,7 +85,7 @@ public class MoveRecordServiceImpl implements MoveRecordService {
     result.merge(
         moveRecordUpdateService.updateInvoiceTerms(move, paymentConditionChange, headerChange));
     moveRecordUpdateService.updateRoundInvoiceTermPercentages(move);
-    moveRecordUpdateService.updateDueDate(move, this.extractDueDate(context));
+    moveRecordUpdateService.updateInvoiceTermDueDate(move, this.extractDueDate(context));
     moveRecordUpdateService.updateInDayBookMode(move);
 
     return result;
@@ -124,6 +124,13 @@ public class MoveRecordServiceImpl implements MoveRecordService {
 
     MoveContext result = new MoveContext();
 
+    boolean paymentConditionChange =
+        Optional.ofNullable(context.get("paymentConditionChange"))
+            .map(value -> (Boolean) value)
+            .orElse(false);
+    boolean dateChange =
+        Optional.ofNullable(context.get("dateChange")).map(value -> (Boolean) value).orElse(false);
+
     result.putInAttrs(moveAttrsService.getHiddenAttributeValues(move));
     result.putInValues(moveComputeService.computeTotals(move));
     result.putInAttrs(
@@ -135,7 +142,7 @@ public class MoveRecordServiceImpl implements MoveRecordService {
         "$isThereRelatedCutOffMoves", moveCheckService.checkRelatedCutoffMoves(move));
     result.putInValues(moveCheckService.checkPeriodAndStatus(move));
     result.putInAttrs(moveAttrsService.getFunctionalOriginSelectDomain(move));
-    result.putInAttrs(moveAttrsService.computeAndGetDueDate(move, context));
+    result.merge(moveRecordUpdateService.updateDueDate(move, paymentConditionChange, dateChange));
     result.putInAttrs(moveAttrsService.getMoveLineAnalyticAttrs(move));
 
     return result;
@@ -148,23 +155,30 @@ public class MoveRecordServiceImpl implements MoveRecordService {
 
     MoveContext result = new MoveContext();
 
+    boolean paymentConditionChange =
+        Optional.ofNullable(context.get("paymentConditionChange"))
+            .map(value -> (Boolean) value)
+            .orElse(false);
+    boolean dateChange =
+        Optional.ofNullable(context.get("dateChange")).map(value -> (Boolean) value).orElse(false);
+
     result.putInValues(moveRecordSetService.setPeriod(move));
     result.putInValues(
         "$validatePeriod",
         !periodAccountService.isAuthorizedToAccountOnPeriod(move, AuthUtils.getUser()));
     moveCheckService.checkPeriodPermission(move);
     result.putInValues(moveRecordSetService.setMoveLineDates(move));
-    moveRecordUpdateService.updateMoveLinesCurrencyRate(move, this.extractDueDate(context));
+    moveRecordUpdateService.updateMoveLinesCurrencyRate(move, move.getDueDate());
     result.putInValues(moveComputeService.computeTotals(move));
-    updateDummiesDateConText(context);
-    result.putInAttrs(moveAttrsService.computeAndGetDueDate(move, context));
+    updateDummiesDateConText(move, context);
+    result.merge(moveRecordUpdateService.updateDueDate(move, paymentConditionChange, dateChange));
 
     return result;
   }
 
-  protected void updateDummiesDateConText(Context context) {
+  protected void updateDummiesDateConText(Move move, Context context) {
+    move.setDueDate(null);
     context.put("$dateChange", true);
-    context.put("dueDate", null);
   }
 
   @Override
@@ -200,11 +214,18 @@ public class MoveRecordServiceImpl implements MoveRecordService {
 
     MoveContext result = new MoveContext();
 
+    boolean paymentConditionChange =
+        Optional.ofNullable(context.get("paymentConditionChange"))
+            .map(value -> (Boolean) value)
+            .orElse(false);
+    boolean dateChange =
+        Optional.ofNullable(context.get("dateChange")).map(value -> (Boolean) value).orElse(false);
+
     result.putInValues(moveRecordSetService.setCurrencyByPartner(move));
     result.putInValues(moveRecordSetService.setPaymentMode(move));
     result.putInValues(moveRecordSetService.setPaymentCondition(move));
     result.putInValues(moveRecordSetService.setPartnerBankDetails(move));
-    result.putInAttrs(moveAttrsService.computeAndGetDueDate(move, context));
+    result.merge(moveRecordUpdateService.updateDueDate(move, paymentConditionChange, dateChange));
     result.putInAttrs(moveAttrsService.getHiddenAttributeValues(move));
     result.putInValues(moveRecordSetService.setCompanyBankDetails(move));
 
@@ -218,8 +239,15 @@ public class MoveRecordServiceImpl implements MoveRecordService {
 
     MoveContext result = new MoveContext();
 
+    boolean paymentConditionChange =
+        Optional.ofNullable(context.get("paymentConditionChange"))
+            .map(value -> (Boolean) value)
+            .orElse(false);
+    boolean dateChange =
+        Optional.ofNullable(context.get("dateChange")).map(value -> (Boolean) value).orElse(false);
+
     result.putInValues(moveComputeService.computeTotals(move));
-    result.putInAttrs(moveAttrsService.computeAndGetDueDate(move, context));
+    result.merge(moveRecordUpdateService.updateDueDate(move, paymentConditionChange, dateChange));
     result.putInAttrs(moveAttrsService.getMoveLineAnalyticAttrs(move));
 
     return result;
@@ -232,10 +260,17 @@ public class MoveRecordServiceImpl implements MoveRecordService {
 
     MoveContext result = new MoveContext();
 
+    boolean paymentConditionChange =
+        Optional.ofNullable(context.get("paymentConditionChange"))
+            .map(value -> (Boolean) value)
+            .orElse(false);
+    boolean dateChange =
+        Optional.ofNullable(context.get("dateChange")).map(value -> (Boolean) value).orElse(false);
+
     checkDuplicateOriginMove(move, result);
     result.putInValues(moveRecordSetService.setMoveLineOriginDates(move));
-    updateDummiesDateConText(context);
-    result.putInAttrs(moveAttrsService.computeAndGetDueDate(move, context));
+    updateDummiesDateConText(move, context);
+    result.merge(moveRecordUpdateService.updateDueDate(move, paymentConditionChange, dateChange));
     result.putInValues("$paymentConditionChange", true);
 
     return result;

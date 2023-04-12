@@ -61,8 +61,9 @@ public class MoveRecordUpdateServiceImpl implements MoveRecordUpdateService {
       moveInvoiceTermService.recreateInvoiceTerms(move);
 
       if (moveInvoiceTermService.displayDueDate(move)) {
-        result.putInAttrs(
-            "dueDate", "value", moveInvoiceTermService.computeDueDate(move, true, false));
+        LocalDate dueDate = moveInvoiceTermService.computeDueDate(move, true, false);
+        result.putInAttrs("dueDate", "value", dueDate);
+        move.setDueDate(dueDate);
       }
     } else if (headerChange) {
       move = moveRepository.find(move.getId());
@@ -85,7 +86,7 @@ public class MoveRecordUpdateServiceImpl implements MoveRecordUpdateService {
   }
 
   @Override
-  public void updateDueDate(Move move, LocalDate dueDate) {
+  public void updateInvoiceTermDueDate(Move move, LocalDate dueDate) {
     if (dueDate != null) {
       move = moveRepository.find(move.getId());
 
@@ -110,5 +111,32 @@ public class MoveRecordUpdateServiceImpl implements MoveRecordUpdateService {
         && move.getCompanyCurrency() != null) {
       moveLineCurrencyService.computeNewCurrencyRateOnMoveLineList(move, dueDate);
     }
+  }
+
+  @Override
+  public MoveContext updateDueDate(Move move, boolean paymentConditionChange, boolean dateChange)
+      throws AxelorException {
+    Objects.requireNonNull(move);
+    MoveContext moveContext = new MoveContext();
+
+    boolean displayDueDate = moveInvoiceTermService.displayDueDate(move);
+
+    moveContext.putInAttrs("dueDate", "hidden", !displayDueDate);
+
+    if (displayDueDate) {
+
+      if (move.getDueDate() == null || paymentConditionChange) {
+        boolean isDateChange = dateChange || paymentConditionChange;
+
+        LocalDate dueDate = moveInvoiceTermService.computeDueDate(move, true, isDateChange);
+        move.setDueDate(dueDate);
+        moveContext.putInValues("dueDate", dueDate);
+        moveContext.putInValues("$dateChange", false);
+      }
+    } else {
+      move.setDueDate(null);
+      moveContext.putInValues("dueDate", null);
+    }
+    return moveContext;
   }
 }

@@ -708,7 +708,7 @@ public class MoveController {
       if (!result.getAlert().isEmpty()) {
         response.setAlert(result.getAlert());
       }
-
+      response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

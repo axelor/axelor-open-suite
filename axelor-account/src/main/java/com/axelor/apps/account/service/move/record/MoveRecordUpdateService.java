@@ -14,9 +14,12 @@ public interface MoveRecordUpdateService {
 
   void updateRoundInvoiceTermPercentages(Move move);
 
-  void updateDueDate(Move move, LocalDate dueDate);
+  void updateInvoiceTermDueDate(Move move, LocalDate dueDate);
 
   void updateInDayBookMode(Move move) throws AxelorException;
 
   void updateMoveLinesCurrencyRate(Move move, LocalDate dueDate) throws AxelorException;
+
+  MoveContext updateDueDate(Move move, boolean paymentConditionChange, boolean dateChange)
+      throws AxelorException;
 }

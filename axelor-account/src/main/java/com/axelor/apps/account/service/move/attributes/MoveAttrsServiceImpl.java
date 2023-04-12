@@ -11,7 +11,6 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveInvoiceTermService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
-import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -146,39 +145,6 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
           resultMap.get(analyticAxisKey).put("hidden", true);
         }
       }
-    }
-    return resultMap;
-  }
-
-  @Override
-  public Map<String, Map<String, Object>> computeAndGetDueDate(Move move, Context context)
-      throws AxelorException {
-    Objects.requireNonNull(move);
-    Map<String, Map<String, Object>> resultMap = new HashMap<>();
-
-    boolean displayDueDate = moveInvoiceTermService.displayDueDate(move);
-
-    resultMap.put("dueDate", new HashMap<>());
-    resultMap.get("dueDate").put("hidden", !displayDueDate);
-
-    if (displayDueDate) {
-      boolean paymentConditionChange =
-          context.containsKey("paymentConditionChange")
-              && (boolean) context.get("paymentConditionChange");
-
-      if (context.get("dueDate") == null || paymentConditionChange) {
-        boolean isDateChange =
-            (context.containsKey("dateChange") && (boolean) context.get("dateChange"))
-                || paymentConditionChange;
-
-        resultMap
-            .get("dueDate")
-            .put("value", moveInvoiceTermService.computeDueDate(move, true, isDateChange));
-        resultMap.put("$dateChange", new HashMap<>());
-        resultMap.get("$dateChange").put("value", false);
-      }
-    } else {
-      resultMap.get("dueDate").put("value", null);
     }
     return resultMap;
   }
