@@ -25,6 +25,7 @@ import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.ProjectBusinessService;
 import com.axelor.apps.businessproject.service.ProjectTaskBusinessProjectService;
+import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.businessproject.service.projectgenerator.ProjectGeneratorFactory;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
@@ -36,6 +37,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
+import com.axelor.studio.db.AppBusinessProject;
 import com.axelor.utils.StringTool;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -43,6 +45,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
 
@@ -51,6 +54,7 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
   private ProjectTaskBusinessProjectService projectTaskBusinessProjectService;
   private ProjectTaskRepository projectTaskRepo;
   private ProductCompanyService productCompanyService;
+  private AppBusinessProjectService appBusinessProjectService;
 
   @Inject
   public ProjectGeneratorFactoryTask(
@@ -58,12 +62,14 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
       ProjectRepository projectRepository,
       ProjectTaskBusinessProjectService projectTaskBusinessProjectService,
       ProjectTaskRepository projectTaskRepo,
-      ProductCompanyService productCompanyService) {
+      ProductCompanyService productCompanyService,
+      AppBusinessProjectService appBusinessProjectService) {
     this.projectBusinessService = projectBusinessService;
     this.projectRepository = projectRepository;
     this.projectTaskBusinessProjectService = projectTaskBusinessProjectService;
     this.projectTaskRepo = projectTaskRepo;
     this.productCompanyService = productCompanyService;
+    this.appBusinessProjectService = appBusinessProjectService;
   }
 
   @Override
@@ -95,6 +101,15 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
 
       saleOrderLine.setProject(project);
 
+      // check on product unit
+      AppBusinessProject appBusinessProject = appBusinessProjectService.getAppBusinessProject();
+      if (product != null
+              && !Objects.equals(product.getUnit(), appBusinessProject.getDaysUnit())
+              && !Objects.equals(product.getUnit(), appBusinessProject.getHoursUnit())) {
+        throw new AxelorException(
+                TraceBackRepository.CATEGORY_NO_VALUE,
+                I18n.get(BusinessProjectExceptionMessage.SALE_ORDER_GENERATE_FILL_PRODUCT_UNIT_ERROR));
+      }
       if (product != null
           && ProductRepository.PRODUCT_TYPE_SERVICE.equals(
               (String)

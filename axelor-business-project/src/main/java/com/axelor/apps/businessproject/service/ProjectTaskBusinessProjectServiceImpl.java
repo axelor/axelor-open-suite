@@ -94,6 +94,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     ProjectTask task = create(saleOrderLine.getFullName() + "_task", project, assignedTo);
     task.setProduct(saleOrderLine.getProduct());
     task.setUnit(saleOrderLine.getUnit());
+    task.setTimeUnit(saleOrderLine.getUnit());
     task.setCurrency(project.getClientPartner().getCurrency());
     if (project.getPriceList() != null) {
       PriceListLine line =
@@ -116,6 +117,9 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
         saleOrderLine.getSaleOrder() != null
             ? saleOrderLine.getSaleOrder().getToInvoiceViaTask()
             : false);
+
+    task.setSoldTime(saleOrderLine.getQty());
+    task.setUpdatedTime(saleOrderLine.getQty());
     return task;
   }
 
