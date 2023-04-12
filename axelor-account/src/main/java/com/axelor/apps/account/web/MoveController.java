@@ -391,7 +391,7 @@ public class MoveController {
           && !move.getMoveLineList().isEmpty()
           && (move.getStatusSelect().equals(MoveRepository.STATUS_NEW)
               || move.getStatusSelect().equals(MoveRepository.STATUS_SIMULATED))) {
-        Beans.get(MoveLineTaxService.class).autoTaxLineGenerateNoSave(move);
+        Beans.get(MoveLineTaxService.class).autoTaxLineGenerateNoSave(move, null);
 
         response.setValue("moveLineList", move.getMoveLineList());
       }

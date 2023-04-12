@@ -1,3 +1,0 @@
----
-title: "Bank details: fix error occurring when base module was installed without bank-payment module"
-type: fix

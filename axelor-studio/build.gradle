@@ -12,6 +12,10 @@ axelor {
 	description "Axelor Studio Module"
 }
 
+license {
+  exclude "**/custom-model/**"
+}
+
 dependencies {
   api project(":modules:axelor-admin")
 	api project(":modules:axelor-message")

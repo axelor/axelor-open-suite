@@ -134,7 +134,6 @@
           <field name="journal.journalType.technicalTypeSelect" hidden="true"/>
           <field name="$headerChange" type="boolean" hidden="true"/>
           <field name="$paymentConditionChange" type="boolean" hidden="true"/>
-          <field name="$paymentConditionChangeError" hidden="true"/>
           <field name="$dateChange" type="boolean" hidden="true"/>
           <field name="paymentCondition.isFree" hidden="true"/>
         </panel>
@@ -233,7 +232,7 @@
             onClick="action-account-move-group-generate-tax-lines" colSpan="12"
             showIf="statusSelect == 1 || statusSelect == 5"/>
           <button
-            showIf="journal != null &amp;&amp; statusSelect != 3 &amp;&amp; (journal.journalType.technicalTypeSelect == 1 || journal.journalType.technicalTypeSelect == 2 || journal.journalType.technicalTypeSelect == 4)"
+            showIf="journal != null &amp;&amp; statusSelect != 3 &amp;&amp; ([1,2,4].includes($journalTechnicalTypeSelect) &amp;&amp; functionalOriginSelect &amp;&amp; [3,4,7].includes(functionalOriginSelect))"
             name="counterpartGenerateBtn" title="Generate counterpart"
             onClick="action-account-move-group-generate-counterpart" colSpan="12"/>
         </panel>
@@ -461,7 +460,7 @@
             onClick="action-account-move-group-generate-tax-lines" colSpan="12"
             showIf="statusSelect == 1 || statusSelect == 5"/>
           <button
-            showIf="journal != null &amp;&amp; statusSelect != 3 &amp;&amp; (journal.journalType.technicalTypeSelect == 1 || journal.journalType.technicalTypeSelect == 2 || journal.journalType.technicalTypeSelect == 4)"
+            showIf="journal != null &amp;&amp; statusSelect != 3 &amp;&amp; ([1,2,4].includes($journalTechnicalTypeSelect) &amp;&amp; functionalOriginSelect != null &amp;&amp; [3,4,7].includes($journalTechnicalTypeSelect))"
             name="counterpartGenerateBtn" title="Generate counterpart"
             onClick="action-account-move-group-generate-counterpart" colSpan="12"/>
         </panel>
@@ -674,19 +673,16 @@
   </action-method>
 
   <action-group name="action-move-group-payment-condition-onchange">
-    <action name="action-move-group-check-term-in-payment"/>
+    <action name="action-move-method-check-term-in-payment"/>
     <action name="action-move-attrs-payment-condition-change"/>
-    <action name="action-account-move-group-onsave"/>
+    <action name="action-move-method-update-invoice-terms"/>
+    <action name="action-move-method-update-due-date"/>
+    <action name="action-move-method-display-and-compute-due-date"/>
   </action-group>
 
   <action-method name="action-account-move-method-origin-date-onchange">
     <call class="com.axelor.apps.account.web.MoveController" method="onChangeOriginDate"/>
   </action-method>
-
-  <action-group name="action-move-group-check-term-in-payment">
-    <action name="action-move-method-check-term-in-payment"/>
-    <action name="action-move-validate-check-term-in-payment"/>
-  </action-group>
 
   <action-group name="action-move-group-payment-mode-onchange">
     <action name="action-move-attrs-header-change"/>

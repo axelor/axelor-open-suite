@@ -47,7 +47,10 @@ public class AxelorScriptEngine extends GroovyScriptEngineImpl {
     bindings.put("$json", Beans.get(MetaJsonRecordRepository.class));
     bindings.put("$ctx", WkfContextHelper.class);
     bindings.put("$beans", Beans.class);
-    bindings.put("__user__", new FullContext(AuthUtils.getUser()));
+    bindings.put(
+        "__user__",
+        new FullContext(
+            AuthUtils.getUser() != null ? AuthUtils.getUser() : AuthUtils.getUser("admin")));
     bindings.put("__date__", LocalDate.now());
     bindings.put("__datetime__", LocalDateTime.now());
     return new GroovyScriptHelper(bindings).eval(script);

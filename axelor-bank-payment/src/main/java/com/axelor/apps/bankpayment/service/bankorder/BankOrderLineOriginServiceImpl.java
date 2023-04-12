@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class BankOrderLineOriginServiceImpl implements BankOrderLineOriginService {
 
@@ -182,6 +183,20 @@ public class BankOrderLineOriginServiceImpl implements BankOrderLineOriginServic
                 klass.getCanonicalName(),
                 model.getId())
             .count();
+
+    if (klass.equals(Invoice.class)) {
+      Invoice invoice = (Invoice) model;
+      count +=
+          bankOrderLineOriginRepository
+              .all()
+              .filter(
+                  "self.relatedToSelect = ?1 AND self.relatedToSelectId in (?2)",
+                  BankOrderLineOriginRepository.RELATED_TO_INVOICE_TERM,
+                  invoice.getInvoiceTermList().stream()
+                      .map(InvoiceTerm::getId)
+                      .collect(Collectors.toList()))
+              .count();
+    }
 
     if (count != null && count > 0) {
       return true;
