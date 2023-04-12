@@ -131,7 +131,6 @@
           <field name="$journalTechnicalTypeSelect" type="integer" hidden="true"/>
           <field name="$headerChange" type="boolean" hidden="true"/>
           <field name="$paymentConditionChange" type="boolean" hidden="true"/>
-          <field name="$paymentConditionChangeError" hidden="true"/>
           <field name="$dateChange" type="boolean" hidden="true"/>
           <field name="paymentCondition.isFree" hidden="true"/>
         </panel>
@@ -224,7 +223,7 @@
             onClick="action-account-move-group-generate-tax-lines" colSpan="12"
             showIf="statusSelect == 1 || statusSelect == 5"/>
           <button
-            showIf="journal != null &amp;&amp; statusSelect != 3 &amp;&amp; ($journalTechnicalTypeSelect == 1 || $journalTechnicalTypeSelect == 2 || $journalTechnicalTypeSelect == 4)"
+            showIf="journal != null &amp;&amp; statusSelect != 3 &amp;&amp; ([1,2,4].includes($journalTechnicalTypeSelect) &amp;&amp; functionalOriginSelect &amp;&amp; [3,4,7].includes(functionalOriginSelect))"
             name="counterpartGenerateBtn" title="Generate counterpart"
             onClick="action-account-move-group-generate-counterpart" colSpan="12"/>
         </panel>
@@ -449,7 +448,7 @@
             onClick="action-account-move-group-generate-tax-lines" colSpan="12"
             showIf="statusSelect == 1 || statusSelect == 5"/>
           <button
-            showIf="journal != null &amp;&amp; statusSelect != 3 &amp;&amp; ($journalTechnicalTypeSelect == 1 || $journalTechnicalTypeSelect == 2 || $journalTechnicalTypeSelect == 4)"
+            showIf="journal != null &amp;&amp; statusSelect != 3 &amp;&amp; ([1,2,4].includes($journalTechnicalTypeSelect) &amp;&amp; functionalOriginSelect != null &amp;&amp; [3,4,7].includes($journalTechnicalTypeSelect))"
             name="counterpartGenerateBtn" title="Generate counterpart"
             onClick="action-account-move-group-generate-counterpart" colSpan="12"/>
         </panel>
@@ -624,10 +623,10 @@
     <action name="action-move-method-check-remove-lines"/>
     <action name="action-move-line-check-distribution-template-account"/>
     <action name="action-move-method-update-partner" if="id != null"/>
-    <action name="save"/>
     <action name="action-move-method-update-invoice-terms"/>
-    <action name="action-move-method-round-invoice-term-percentages"/>
     <action name="action-move-method-update-due-date"/>
+    <action name="save"/>
+    <action name="action-move-method-round-invoice-term-percentages"/>
     <action name="action-move-method-update-in-day-book-mode"/>
     <action name="action-move-method-display-and-compute-due-date"/>
   </action-group>
@@ -721,9 +720,11 @@
   </action-group>
 
   <action-group name="action-move-group-payment-condition-onchange">
-    <action name="action-move-group-check-term-in-payment"/>
+    <action name="action-move-method-check-term-in-payment"/>
     <action name="action-move-attrs-payment-condition-change"/>
-    <action name="action-account-move-group-onsave"/>
+    <action name="action-move-method-update-invoice-terms"/>
+    <action name="action-move-method-update-due-date"/>
+    <action name="action-move-method-display-and-compute-due-date"/>
   </action-group>
 
   <action-group name="action-move-group-origin-date-onchange">
@@ -733,11 +734,6 @@
     <action name="action-move-attrs-date-change"/>
     <action name="action-move-method-display-and-compute-due-date"/>
     <action name="action-move-attrs-payment-condition-change"/>
-  </action-group>
-
-  <action-group name="action-move-group-check-term-in-payment">
-    <action name="action-move-method-check-term-in-payment"/>
-    <action name="action-move-validate-check-term-in-payment"/>
   </action-group>
 
   <action-group name="action-move-group-payment-mode-onchange">
@@ -765,11 +761,6 @@
   <action-method name="action-move-method-check-term-in-payment">
     <call class="com.axelor.apps.account.web.MoveController" method="checkTermsInPayment"/>
   </action-method>
-
-  <action-validate name="action-move-validate-check-term-in-payment">
-    <error message="$paymentConditionChangeError"
-      if="!com.google.common.base.Strings.isNullOrEmpty(paymentConditionChangeError)"/>
-  </action-validate>
 
   <action-validate name="action-move-validate-check-pfp-validator-user">
     <alert message="At least one pfp validator is missing, do you wish to continue ?"
