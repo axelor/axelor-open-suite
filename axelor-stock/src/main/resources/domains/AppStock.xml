@@ -39,6 +39,13 @@
       <field name="isSeparateShipmentOperations" on="UPDATE"/>
       <field name="isRequiredShipmentSupplierDetails" on="UPDATE"/>
       <field name="economicArea" on="UPDATE"/>
+      <field name="stockUnit" on="UPDATE"/>
+      <field name="activateTrackingNumberBarCodeGeneration" on="UPDATE"/>
+      <field name="editTrackingNumberBarcodeType" on="UPDATE"/>
+      <field name="trackingNumberBarcodeTypeConfig" on="UPDATE"/>
+      <field name="activateStockLocationBarCodeGeneration" on="UPDATE"/>
+      <field name="editStockLocationBarcodeType" on="UPDATE"/>
+      <field name="stockLocationBarcodeTypeConfig" on="UPDATE"/>
     </track>
   </entity>
 

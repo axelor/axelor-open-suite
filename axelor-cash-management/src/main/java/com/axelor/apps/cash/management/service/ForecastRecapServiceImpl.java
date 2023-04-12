@@ -420,7 +420,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
             + "AND (:bankDetails IS NULL OR self.companyBankDetails = :bankDetails) "
             + "AND self.timetableList IS EMPTY";
       case ForecastRecapLineTypeRepository.ELEMENT_EXPENSE:
-        return "self.validationDate BETWEEN :fromDate AND :toDate "
+        return "self.validationDateTime BETWEEN :fromDate AND :toDate "
             + "AND self.company = :company "
             + "AND self.statusSelect = "
             + ExpenseRepository.STATUS_VALIDATED
@@ -627,7 +627,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
             : purchaseOrder.getExpectedRealisationDate();
       case ForecastRecapLineTypeRepository.ELEMENT_EXPENSE:
         Expense expense = (Expense) forecastModel;
-        return expense.getValidationDate();
+        return expense.getValidationDateTime().toLocalDate();
       case ForecastRecapLineTypeRepository.ELEMENT_FORECAST:
         Forecast forecast = (Forecast) forecastModel;
         return forecast

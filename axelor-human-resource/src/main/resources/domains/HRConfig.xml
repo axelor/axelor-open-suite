@@ -160,6 +160,11 @@
 
       <field name="useUniqueProductForTimesheet" on="UPDATE"/>
       <field name="uniqueTimesheetProduct" on="UPDATE"/>
+
+      <field name="enableDPAE" on="UPDATE"/>
+      <field name="healthService" on="UPDATE"/>
+      <field name="healthServiceAddress" on="UPDATE"/>
+      <field name="exportCodeForDuration" on="UPDATE"/>
     </track>
   </entity>
 

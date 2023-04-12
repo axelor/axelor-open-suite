@@ -99,7 +99,7 @@ public class CancelState extends WorkflowInvoice {
 
   protected void setPfpStatus() throws AxelorException {
     InvoiceToolService.setPfpStatus(invoice);
-    invoice.setDecisionPfpTakenDate(null);
+    invoice.setDecisionPfpTakenDateTime(null);
 
     invoice.getInvoiceTermList().stream()
         .filter(it -> it.getPfpValidateStatusSelect() != InvoiceTermRepository.PFP_STATUS_NO_PFP)

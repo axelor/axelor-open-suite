@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentConditionLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
@@ -81,10 +82,25 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
       throws AxelorException {
     Move move = moveLine.getMove();
 
+    PaymentCondition paymentCondition = move.getPaymentCondition();
+
+    boolean containsHoldback =
+        paymentCondition != null
+            && CollectionUtils.isNotEmpty(paymentCondition.getPaymentConditionLineList())
+            && paymentCondition.getPaymentConditionLineList().stream()
+                .anyMatch(PaymentConditionLine::getIsHoldback);
+    boolean isHoldbackAllowed =
+        Lists.newArrayList(
+                MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE,
+                MoveRepository.FUNCTIONAL_ORIGIN_FIXED_ASSET,
+                MoveRepository.FUNCTIONAL_ORIGIN_SALE)
+            .contains(moveLine.getMove().getFunctionalOriginSelect());
+
     if (move == null) {
       return;
-    } else if (move.getPaymentCondition() == null
-        || CollectionUtils.isEmpty(move.getPaymentCondition().getPaymentConditionLineList())) {
+    } else if (paymentCondition == null
+        || CollectionUtils.isEmpty(paymentCondition.getPaymentConditionLineList())
+        || (containsHoldback && !isHoldbackAllowed)) {
       this.computeInvoiceTerm(
           moveLine,
           move,
@@ -95,8 +111,8 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
           false);
 
       return;
-    } else if (CollectionUtils.isNotEmpty(move.getPaymentCondition().getPaymentConditionLineList())
-        && move.getPaymentCondition().getPaymentConditionLineList().size() > 1
+    } else if (CollectionUtils.isNotEmpty(paymentCondition.getPaymentConditionLineList())
+        && paymentCondition.getPaymentConditionLineList().size() > 1
         && !appAccountService.getAppAccount().getAllowMultiInvoiceTerms()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -105,9 +121,6 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
 
     moveLine.clearInvoiceTermList();
 
-    boolean containsHoldback =
-        move.getPaymentCondition().getPaymentConditionLineList().stream()
-            .anyMatch(PaymentConditionLine::getIsHoldback);
     Account holdbackAccount = containsHoldback ? this.getHoldbackAccount(moveLine, move) : null;
     boolean isHoldback = moveLine.getAccount().equals(holdbackAccount);
     BigDecimal total =
@@ -115,7 +128,7 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
     MoveLine holdbackMoveLine = null;
 
     for (PaymentConditionLine paymentConditionLine :
-        move.getPaymentCondition().getPaymentConditionLineList().stream()
+        paymentCondition.getPaymentConditionLineList().stream()
             .sorted(Comparator.comparing(PaymentConditionLine::getSequence))
             .collect(Collectors.toList())) {
       if (paymentConditionLine.getIsHoldback() == isHoldback) {

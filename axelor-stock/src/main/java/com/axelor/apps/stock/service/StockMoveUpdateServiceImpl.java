@@ -61,6 +61,7 @@ public class StockMoveUpdateServiceImpl implements StockMoveUpdateService {
     this.productRepository = productRepository;
   }
 
+  @Deprecated
   @Override
   public void updateStatus(StockMove stockMove, Integer targetStatus) throws AxelorException {
     if (targetStatus == StockMoveRepository.STATUS_PLANNED) {
@@ -78,9 +79,10 @@ public class StockMoveUpdateServiceImpl implements StockMoveUpdateService {
   }
 
   /**
-   * To update unit or qty of an internal stock move with one product, mostly for mobile app (API
-   * AOS) *
+   * @deprecated To update unit or qty of an internal stock move with one product, mostly for mobile
+   *     app (API AOS) *
    */
+  @Deprecated
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void updateStockMoveMobility(StockMove stockMove, BigDecimal movedQty, Unit unit)

@@ -67,6 +67,11 @@ import java.util.stream.Collectors;
 
 public class PayrollPreparationService {
 
+  private static final DateTimeFormatter NIBELIS_EXPORT_DATE_FORMATTER =
+      DateTimeFormatter.ofPattern("dd/MM/yyyy");
+  private static final DateTimeFormatter SILAE_EXPORT_DATE_FORMATTER =
+      DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
   protected LeaveService leaveService;
   protected LeaveRequestRepository leaveRequestRepo;
   protected WeeklyPlanningService weeklyPlanningService;
@@ -228,7 +233,7 @@ public class PayrollPreparationService {
                     + "AND self.statusSelect = ?2 "
                     + "AND (self.payrollPreparation IS NULL OR self.payrollPreparation.id = ?3) "
                     + "AND self.companyCbSelect = ?4 "
-                    + "AND self.validationDate BETWEEN ?5 AND ?6",
+                    + "AND self.validationDateTime BETWEEN ?5 AND ?6",
                 payrollPreparation.getEmployee(),
                 ExpenseRepository.STATUS_VALIDATED,
                 payrollPreparation.getId(),
@@ -348,9 +353,8 @@ public class PayrollPreparationService {
         if (payrollLeave.getLeaveReason().getPayrollPreprationExport()) {
           String[] leaveLine = createExportFileLine(payrollPreparation);
           leaveLine[3] = payrollLeave.getLeaveReason().getExportCode();
-          leaveLine[4] =
-              payrollLeave.getFromDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-          leaveLine[5] = payrollLeave.getToDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+          leaveLine[4] = payrollLeave.getFromDate().format(NIBELIS_EXPORT_DATE_FORMATTER);
+          leaveLine[5] = payrollLeave.getToDate().format(NIBELIS_EXPORT_DATE_FORMATTER);
           leaveLine[6] = payrollLeave.getDuration().toString();
           list.add(leaveLine);
         }
@@ -489,9 +493,8 @@ public class PayrollPreparationService {
           String[] leaveLine = createSilaeExportFileLine(payrollPrep);
           leaveLine[1] = payrollLeave.getLeaveReason().getExportCode();
           leaveLine[2] = String.valueOf(payrollLeave.getDuration());
-          leaveLine[3] =
-              payrollLeave.getFromDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-          leaveLine[4] = payrollLeave.getToDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+          leaveLine[3] = payrollLeave.getFromDate().format(SILAE_EXPORT_DATE_FORMATTER);
+          leaveLine[4] = payrollLeave.getToDate().format(SILAE_EXPORT_DATE_FORMATTER);
           exportLineList.add(leaveLine);
         }
       }
@@ -523,8 +526,8 @@ public class PayrollPreparationService {
   public String[] createSilaeExportFileLine(PayrollPreparation payroll) {
     String[] item = new String[5];
     item[0] = payroll.getEmployee().getExportCode();
-    item[3] = payroll.getPeriod().getFromDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-    item[4] = payroll.getPeriod().getToDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+    item[3] = payroll.getPeriod().getFromDate().format(SILAE_EXPORT_DATE_FORMATTER);
+    item[4] = payroll.getPeriod().getToDate().format(SILAE_EXPORT_DATE_FORMATTER);
     return item;
   }
 }

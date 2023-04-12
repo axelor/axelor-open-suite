@@ -123,6 +123,7 @@ public interface MoveLineCreateService {
       Map<String, MoveLine> newMap,
       MoveLine moveLine,
       TaxLine taxLine,
-      String accountType)
+      String accountType,
+      Account newAccount)
       throws AxelorException;
 }

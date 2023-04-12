@@ -111,7 +111,8 @@ public class PaymentMoveLineDistributionServiceImpl implements PaymentMoveLineDi
                 paymentMvlD.getTaxLine());
 
         reversePaymentMvlD.setIsAlreadyReverse(true);
-        reversePaymentMvlD.setOperationDate(reconcile.getReconciliationCancelDate());
+        reversePaymentMvlD.setOperationDate(
+            reconcile.getReconciliationCancelDateTime().toLocalDate());
         if (!paymentMvlD.getMoveLine().getAccount().getReconcileOk()) {
           reversePaymentMvlD.setExTaxProratedAmount(paymentMvlD.getExTaxProratedAmount().negate());
           reversePaymentMvlD.setTaxProratedAmount(paymentMvlD.getTaxProratedAmount().negate());
