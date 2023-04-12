@@ -280,6 +280,7 @@ public class BankOrderServiceImpl implements BankOrderService {
         Beans.get(InvoicePaymentValidateServiceBankPayImpl.class);
 
     for (InvoicePayment invoicePayment : invoicePaymentList) {
+
       if (invoicePayment != null
           && invoicePayment.getStatusSelect() != InvoicePaymentRepository.STATUS_VALIDATED
           && invoicePayment.getInvoice() != null) {
@@ -325,7 +326,7 @@ public class BankOrderServiceImpl implements BankOrderService {
 
       if (paymentSession != null) {
         Beans.get(PaymentSessionValidateService.class).processPaymentSession(paymentSession);
-        return bankOrderRepo.find(bankOrder.getId());
+        bankOrder = bankOrderRepo.find(bankOrder.getId());
       }
     }
 
@@ -385,7 +386,6 @@ public class BankOrderServiceImpl implements BankOrderService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void validate(BankOrder bankOrder) throws AxelorException {
-
     bankOrder.setValidationDateTime(LocalDateTime.now());
 
     bankOrder.setStatusSelect(BankOrderRepository.STATUS_VALIDATED);
