@@ -42,7 +42,6 @@ import com.axelor.apps.base.db.Blocking;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BlockingRepository;
-import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
@@ -55,7 +54,10 @@ import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -67,6 +69,7 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
   protected InvoiceTermService invoiceTermService;
   protected PaymentSessionValidateService paymentSessionValidateService;
   protected AccountConfigService accountConfigService;
+  protected int jpaLimit = 4;
 
   @Inject
   public PaymentSessionServiceImpl(
@@ -303,12 +306,17 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
 
   public void filterInvoiceTerms(
       Query<InvoiceTerm> eligibleInvoiceTermQuery, PaymentSession paymentSession) {
-    List<InvoiceTerm> invoiceTermList;
+    List<Long> invoiceTermList;
 
-    while (!(invoiceTermList = eligibleInvoiceTermQuery.fetch(AbstractBatch.FETCH_LIMIT, 0))
+    while (!(invoiceTermList =
+            eligibleInvoiceTermQuery
+                .fetchStream(jpaLimit)
+                .map(InvoiceTerm::getId)
+                .collect(Collectors.toList()))
         .isEmpty()) {
       paymentSession = paymentSessionRepository.find(paymentSession.getId());
-      for (InvoiceTerm invoiceTerm : invoiceTermList) {
+      for (Long invoiceTermId : invoiceTermList) {
+        InvoiceTerm invoiceTerm = invoiceTermRepository.find(invoiceTermId);
         if (this.isNotAwaitingPayment(invoiceTerm)
             && !this.isBlocking(invoiceTerm, paymentSession)) {
           this.saveFilledInvoiceTermWithPaymentSession(paymentSession, invoiceTerm);
