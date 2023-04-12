@@ -49,62 +49,67 @@
     <field name="statusSelect" width="90"/>
   </grid>
 
-  <form name="move-form" title="Account move" model="com.axelor.apps.account.db.Move"
-    width="large" onLoad="action-account-move-group-onload"
-    onSave="action-account-move-group-onsave" onNew="action-account-move-onnew-group"
-    readonlyIf="$simulatedPeriodClosed" canDelete="false" canArchive="false">
+  <form name="move-form" title="Account move" canArchive="false"
+    model="com.axelor.apps.account.db.Move" canDelete="false" width="large"
+    onNew="action-account-move-onnew-group" onLoad="action-account-move-group-onload"
+    onSave="action-account-move-group-onsave" readonlyIf="$simulatedPeriodClosed">
     <toolbar>
       <button name="printBtn" title="Print Move" icon="fa-print"
         onClick="save,action-account-move-method-print-move"/>
-      <button name="reverseBtn" title="Reverse"
-        showIf="id != null &amp;&amp; statusSelect != 5" icon="fa-exchange"
-        onClick="save,action-move-view-open-generate-reverse-wizard"/>
-      <button name="deleteMoveBtn" title="delete"
-        showIf="id != null &amp;&amp; !archived &amp;&amp; statusSelect != 3" icon="fa-trash"
-        onClick="action-move-method-delete-move"/>
+      <button name="reverseBtn" title="Reverse" icon="fa-exchange"
+
+        onClick="save,action-move-view-open-generate-reverse-wizard"
+        showIf="id != null &amp;&amp; statusSelect != 5"/>
+      <button name="deleteMoveBtn" title="delete" icon="fa-trash"
+        onClick="action-move-method-delete-move"
+        showIf="id != null &amp;&amp; !archived &amp;&amp; statusSelect != 3"/>
     </toolbar>
     <panel name="mainPanel" colSpan="12">
       <panel name="moveDetailsPanel" colSpan="9">
         <panel name="moveContentPanel" colSpan="12">
-          <field name="company"
-            readonlyIf="$validatePeriod || moveLineList.length > 0 || statusSelect == 3" colSpan="2"
-            widget="SuggestBox" canEdit="false" onChange="action-group-move-company-onchange"
-            form-view="company-form" grid-view="company-grid"/>
+          <field name="company" canEdit="false" widget="SuggestBox"
+            readonlyIf="$validatePeriod || moveLineList.length &gt; 0 || statusSelect == 3"
+            onChange="action-group-move-company-onchange" form-view="company-form"
+            grid-view="company-grid" colSpan="2"/>
           <field if="__config__.app.getApp('base')?.getManageMultiBanks()"
             name="companyBankDetails" colSpan="2" canEdit="false"
             onSelect="com.axelor.apps.base.web.CompanyBankDetailsController:fillCompanyBankDetailsDomain"
             form-view="bank-details-form" grid-view="bank-details-grid"/>
-          <field if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"
-            name="tradingName"
-            readonlyIf="$validatePeriod || moveLineList.length > 0 &amp;&amp; statusSelect == 3"
-            colSpan="2" canNew="false" onSelect="action-move-set-trading-name-domain"
-            form-view="trading-name-form" grid-view="trading-name-grid"/>
-          <field name="journal"
-            readonlyIf="$validatePeriod || moveLineList.length > 0 || statusSelect == 3" colSpan="3"
-            canNew="false" canEdit="false" onChange="action-move-group-journal-on-change"
-            domain="self.statusSelect = 1 AND self.company = :company" form-view="journal-form"
-            grid-view="journal-grid"/>
+          <spacer if="!__config__.app.getApp('base')?.getManageMultiBanks()" colSpan="2"/>
+          <field name="tradingName"
+            readonlyIf="$validatePeriod || moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"
+            if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"
+            form-view="trading-name-form" grid-view="trading-name-grid" canNew="false"
+            onSelect="action-move-set-trading-name-domain" colSpan="2"/>
+          <spacer if="!__config__.app.getApp('base')?.getEnableTradingNamesManagement()"
+            colSpan="2"/>
+          <field name="journal" domain="self.statusSelect = 1 AND self.company = :company"
+            readonlyIf="$validatePeriod || moveLineList.length &gt; 0 || statusSelect == 3"
+            canNew="false" form-view="journal-form" grid-view="journal-grid" canEdit="false"
+            onChange="action-move-group-journal-on-change" colSpan="3"/>
           <field name="functionalOriginSelect"
-            hideIf="journal.authorizedFunctionalOriginSelect.split(',').length == 1 &amp;&amp; journal.authorizedFunctionalOriginSelect == functionalOriginSelect || journal.authorizedFunctionalOriginSelect == null &amp;&amp; functionalOriginSelect == null"
             readonlyIf="statusSelect != 1 &amp;&amp; statusSelect != 2 &amp;&amp; statusSelect != 5"
-            colSpan="3"/>
-          <panel name="datePanel" colSpan="12" showFrame="false">
-            <field name="period" readonly="true" canView="false" canEdit="false"
-              form-view="period-form" grid-view="period-grid" colSpan="4"/>
+            colSpan="3"
+            hideIf="journal.authorizedFunctionalOriginSelect.split(',').length == 1 &amp;&amp; journal.authorizedFunctionalOriginSelect == functionalOriginSelect || journal.authorizedFunctionalOriginSelect == null &amp;&amp; functionalOriginSelect == null"/>
+          <panel name="datePanel" showFrame="false" colSpan="12">
+            <field name="period" form-view="period-form" grid-view="period-grid"
+              canEdit="false" canView="false" readonly="true" colSpan="4"/>
             <field name="date"
-              readonlyIf="moveLineList.length > 0 &amp;&amp; statusSelect == 3"
+              readonlyIf="moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"
               onChange="action-group-move-date-onchange" colSpan="2"/>
+
+
             <field name="accountingDate" readonly="true" showIf="statusSelect == 3"/>
           </panel>
-          <field name="partner" readonlyIf="$validatePeriod || moveLineList.length > 0"
+          <field name="partner" readonlyIf="$validatePeriod || moveLineList.length &gt; 0"
             colSpan="2" canNew="false" canEdit="false" onChange="action-move-group-partner-onchange"
             onSelect="action-account-move-method-filter-partner" form-view="partner-form"
             grid-view="partner-grid"/>
           <field name="fiscalPosition" colSpan="2" canNew="false" canEdit="false"
             form-view="fiscal-position-form" grid-view="fiscal-position-grid"/>
           <field name="currency"
-            readonlyIf="$validatePeriod || moveLineList.length > 0 || statusSelect == 3" colSpan="2"
-            onChange="action-move-record-set-currency-code" required="true"/>
+            readonlyIf="$validatePeriod || moveLineList.length &gt; 0 || statusSelect == 3"
+            colSpan="2" onChange="action-move-record-set-currency-code" required="true"/>
           <field name="paymentMode"
             readonlyIf="period.statusSelect == 2 || period.statusSelect == 5 || $validatePeriod"
             colSpan="3" onChange="action-move-group-payment-mode-onchange"
@@ -127,7 +132,7 @@
           <field name="origin" readonlyIf="$validatePeriod" colSpan="4"
             onChange="action-account-move-group-set-origin" requiredIf="journal.hasRequiredOrigin"/>
           <field name="originDate" title="Date pièce justificative"
-            readonlyIf="$validatePeriod || moveLineList.length > 0 &amp;&amp; statusSelect == 3"
+            readonlyIf="$validatePeriod || moveLineList.length  &gt; 0 &amp;&amp; statusSelect == 3"
             onChange="action-move-group-origin-date-onchange" colSpan="2"/>
           <field name="description" readonlyIf="$validatePeriod"
             onChange="action-account-move-group-set-description-on-lines" colSpan="6"/>
@@ -140,7 +145,7 @@
           <field name="technicalOriginSelect" readonly="true" widget="SingleSelect"
             showTitle="false" colSpan="4"/>
           <field name="$functionalOriginTag" showTitle="false" readonly="true" colSpan="4">
-            <viewer>
+            <viewer depends="functionalOriginSelect">
                         <![CDATA[
                             <span class="text-left">
                         <span class="label label-important" style="margin: 3px 0 !important; display: inline-table; line-height: initial; font-size: 11px; border-radius: 8px;" ng-show="record.functionalOriginSelect == 1" x-translate>Opening</span>
@@ -155,23 +160,18 @@
                             </span>
                         ]]>
             </viewer>
-            <editor>
-              <field name="adjustingMove" showIf="!adjustingMove" readonly="true"/>
-            </editor>
           </field>
           <field name="reference" showTitle="false" hideIf="reference == null"
             css="label-bold bold" colSpan="4"/>
           <field name="$adjustingMoveTag" showTitle="false" readonly="true" colSpan="8">
-            <viewer>
+            <viewer depends="adjustingMove">
                         <![CDATA[
                             <span class="text-left">
                                        <span class="label label-default" style="background-color: #337AB7; margin: 3px 0 !important; display: inline-table; line-height: initial; font-size: 11px; border-radius: 8px;" ng-show="record.adjustingMove" x-translate>Adjusting Move</span>
                             </span>
                         ]]>
             </viewer>
-            <editor>
-              <field name="adjustingMove" showIf="!adjustingMove" readonly="true"/>
-            </editor>
+
           </field>
         </panel>
         <panel name="actionPanel" readonlyIf="$validatePeriod" colSpan="12" itemSpan="12">
