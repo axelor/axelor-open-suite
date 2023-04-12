@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
+import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.google.inject.Inject;
@@ -31,7 +32,6 @@ import java.util.List;
 public class PaymentSessionCancelServiceImpl implements PaymentSessionCancelService {
   protected PaymentSessionRepository paymentSessionRepo;
   protected InvoiceTermRepository invoiceTermRepo;
-  protected int jpaLimit = 4;
 
   @Inject
   public PaymentSessionCancelServiceImpl(
@@ -41,30 +41,31 @@ public class PaymentSessionCancelServiceImpl implements PaymentSessionCancelServ
   }
 
   @Override
+  @Transactional
   public void cancelPaymentSession(PaymentSession paymentSession) {
-    this.saveCanceledPaymentSession(paymentSession);
+    paymentSession.setStatusSelect(PaymentSessionRepository.STATUS_CANCELLED);
+    paymentSessionRepo.save(paymentSession);
+
     this.cancelInvoiceTerms(paymentSession);
   }
 
   @Transactional
-  protected void saveCanceledPaymentSession(PaymentSession paymentSession) {
-    paymentSession.setStatusSelect(PaymentSessionRepository.STATUS_CANCELLED);
-  }
-
   protected void cancelInvoiceTerms(PaymentSession paymentSession) {
     List<InvoiceTerm> invoiceTermList;
     Query<InvoiceTerm> invoiceTermQuery =
         invoiceTermRepo.all().filter("self.paymentSession = ?", paymentSession).order("id");
 
-    while (!(invoiceTermList = invoiceTermQuery.fetch(jpaLimit)).isEmpty()) {
+    while (!(invoiceTermList = invoiceTermQuery.fetch(AbstractBatch.FETCH_LIMIT, 0)).isEmpty()) {
       for (InvoiceTerm invoiceTerm : invoiceTermList) {
         this.cancelInvoiceTerm(invoiceTerm);
+
+        invoiceTermRepo.save(invoiceTerm);
       }
+
       JPA.clear();
     }
   }
 
-  @Transactional
   protected void cancelInvoiceTerm(InvoiceTerm invoiceTerm) {
     invoiceTerm.setPaymentSession(null);
     invoiceTerm.setIsSelectedOnPaymentSession(false);
