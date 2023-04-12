@@ -65,7 +65,7 @@ public class EbicsPartnerServiceImpl implements EbicsPartnerService {
     this.bankStatementRepository = bankStatementRepository;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public List<BankStatement> getBankStatements(EbicsPartner ebicsPartner)
       throws AxelorException, IOException {
     return getBankStatements(ebicsPartner, null);
@@ -74,8 +74,7 @@ public class EbicsPartnerServiceImpl implements EbicsPartnerService {
   @Transactional
   public List<BankStatement> getBankStatements(
       EbicsPartner ebicsPartner,
-      Collection<BankStatementFileFormat> bankStatementFileFormatCollection)
-      throws AxelorException, IOException {
+      Collection<BankStatementFileFormat> bankStatementFileFormatCollection) {
 
     List<BankStatement> bankStatementList = Lists.newArrayList();
 

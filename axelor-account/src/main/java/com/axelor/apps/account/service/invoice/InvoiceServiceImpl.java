@@ -296,12 +296,22 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
           I18n.get(AccountExceptionMessage.INVOICE_GENERATOR_3),
           I18n.get(BaseExceptionMessage.EXCEPTION));
     }
+
     if (invoice.getPaymentMode() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
           I18n.get(AccountExceptionMessage.INVOICE_GENERATOR_4),
           I18n.get(BaseExceptionMessage.EXCEPTION));
     }
+
+    if (CollectionUtils.isNotEmpty(invoice.getPaymentCondition().getPaymentConditionLineList())
+        && invoice.getPaymentCondition().getPaymentConditionLineList().size() > 1
+        && !appAccountService.getAppAccount().getAllowMultiInvoiceTerms()) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(AccountExceptionMessage.INVOICE_INVOICE_TERM_MULTIPLE_LINES_NO_MULTI));
+    }
+
     for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
       Account account = invoiceLine.getAccount();
 
@@ -1002,7 +1012,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void refusalToPay(
       Invoice invoice, CancelReason reasonOfRefusalToPay, String reasonOfRefusalToPayStr) {
 
@@ -1113,8 +1123,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
                 invoiceTermService.getPfpValidatorUser(invoice.getPartner(), invoice.getCompany()));
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public void validatePfp(Long invoiceId) throws AxelorException {
+  @Transactional
+  public void validatePfp(Long invoiceId) {
     Invoice invoice = invoiceRepo.find(invoiceId);
     User currentUser = AuthUtils.getUser();
 

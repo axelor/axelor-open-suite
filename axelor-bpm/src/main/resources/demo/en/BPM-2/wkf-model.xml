@@ -128,11 +128,12 @@ return $ctx.save(rec)</camunda:script>
       <bpmn2:messageEventDefinition id="MessageEventDefinition_17mttc9" messageRef="Message_0otw31u" />
     </bpmn2:intermediateThrowEvent>
     <bpmn2:sequenceFlow id="Flow_1n4p79g" sourceRef="Event_0ub5fcs" targetRef="Gateway_1bmyxkp" />
-    <bpmn2:scriptTask id="Activity_0fv5yrm" name="Ask for the pizza" scriptFormat="axelor" camunda:displayStatus="false" camunda:scriptValue="{&#34;fields&#34;:[{&#34;name&#34;:&#34;hungryPizza&#34;,&#34;type&#34;:&#34;json-many-to-one&#34;,&#34;target&#34;:&#34;HungryPizza&#34;,&#34;condition&#34;:null,&#34;conditionMeta&#34;:null,&#34;value&#34;:{&#34;from&#34;:&#34;context&#34;,&#34;selected&#34;:{&#34;value&#34;:&#34;hungryPizza&#34;},&#34;query&#34;:null,&#34;subFields&#34;:[{&#34;id&#34;:8,&#34;version&#34;:2,&#34;title&#34;:&#34;Hungry Pizza&#34;,&#34;name&#34;:&#34;HungryPizza&#34;,&#34;type&#34;:&#34;metaJsonModel&#34;,&#34;modelType&#34;:&#34;CUSTOM&#34;}]}}],&#34;targetModel&#34;:&#34;AskPizza&#34;,&#34;sourceModel&#34;:&#34;&#34;,&#34;sourceModelList&#34;:[],&#34;newRecord&#34;:true,&#34;savedRecord&#34;:false,&#34;save&#34;:true,&#34;isJson&#34;:true,&#34;createVariable&#34;:false,&#34;processId&#34;:null,&#34;modelFrom&#34;:{&#34;title&#34;:&#34;Context&#34;,&#34;id&#34;:&#34;context&#34;}}">
+    <bpmn2:scriptTask id="Activity_0fv5yrm" name="Ask for the pizza" scriptFormat="axelor">
       <bpmn2:incoming>Flow_1si7i0z</bpmn2:incoming>
       <bpmn2:outgoing>Flow_1ui47s7</bpmn2:outgoing>
       <bpmn2:script>def rec = $ctx.create('AskPizza')
-rec.hungryPizza = $ctx.find('HungryPizza',hungryPizza?.id)?.getTarget()
+rec.hungryPizza = $ctx.find('HungryPizza',hungryPizzaId)?.getTarget()
+rec.name = 'Ask for the Pizza : ' + rec.hungryPizza.id
 return $ctx.save(rec)</bpmn2:script>
     </bpmn2:scriptTask>
     <bpmn2:sequenceFlow id="Flow_0gqk03c" sourceRef="Activity_08hvpsb" targetRef="Event_0ub5fcs" />
@@ -229,8 +230,9 @@ return $ctx.save(rec)</bpmn2:script>
     <bpmn2:task id="Activity_0sv9q8n" name="Calm customer" camunda:displayStatus="false">
       <bpmn2:extensionElements>
         <camunda:executionListener event="start">
-          <camunda:script scriptFormat="axelor" scriptValue="{&#34;fields&#34;:[{&#34;name&#34;:&#34;pizzaOrder&#34;,&#34;type&#34;:&#34;json-many-to-one&#34;,&#34;target&#34;:&#34;PizzaOrder&#34;,&#34;condition&#34;:null,&#34;conditionMeta&#34;:null,&#34;value&#34;:{&#34;from&#34;:&#34;context&#34;,&#34;selected&#34;:{&#34;value&#34;:&#34;pizzaOrder&#34;},&#34;query&#34;:null,&#34;subFields&#34;:[{&#34;id&#34;:7,&#34;version&#34;:2,&#34;title&#34;:&#34;Pizza order&#34;,&#34;name&#34;:&#34;PizzaOrder&#34;,&#34;type&#34;:&#34;metaJsonModel&#34;,&#34;modelType&#34;:&#34;CUSTOM&#34;}]}}],&#34;targetModel&#34;:&#34;CalmCustomer&#34;,&#34;sourceModel&#34;:&#34;&#34;,&#34;sourceModelList&#34;:[],&#34;newRecord&#34;:true,&#34;savedRecord&#34;:false,&#34;save&#34;:true,&#34;isJson&#34;:true,&#34;createVariable&#34;:false,&#34;processId&#34;:null,&#34;modelFrom&#34;:{&#34;title&#34;:&#34;Context&#34;,&#34;id&#34;:&#34;context&#34;}}">def rec = $ctx.create('CalmCustomer')
-rec.pizzaOrder = $ctx.find('PizzaOrder',pizzaOrder?.id)?.getTarget()
+          <camunda:script scriptFormat="axelor">def rec = $ctx.create('CalmCustomer')
+rec.pizzaOrder = $ctx.find('PizzaOrder',pizzaOrderId)?.getTarget()
+rec.name = 'Calm customer for : ' + rec.pizzaOrder.id
 return $ctx.save(rec)</camunda:script>
         </camunda:executionListener>
       </bpmn2:extensionElements>

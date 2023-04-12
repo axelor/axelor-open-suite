@@ -111,6 +111,7 @@ public class PaymentSessionEmailServiceImpl implements PaymentSessionEmailServic
     if (partnerIdList.size() > 0) {
       paymentSession = paymentSessionRepo.find(paymentSession.getId());
       paymentSession.setHasEmailsSent(true);
+      paymentSession.setPartnerForEmail(null);
       paymentSessionRepo.save(paymentSession);
     }
 
@@ -152,7 +153,7 @@ public class PaymentSessionEmailServiceImpl implements PaymentSessionEmailServic
   @Transactional(rollbackOn = {Exception.class})
   protected Message createEmail(PaymentSession paymentSession, Partner partner)
       throws ClassNotFoundException, InstantiationException, IllegalAccessException,
-          AxelorException, IOException, JSONException {
+          AxelorException, IOException {
     paymentSession.setPartnerForEmail(partner);
     paymentSessionRepo.save(paymentSession);
 

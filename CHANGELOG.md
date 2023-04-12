@@ -1,3 +1,120 @@
+## [6.5.4] (2023-04-06)
+
+#### Database change
+
+* App account: fixed the configuration to activate invoice term feature.
+
+For this fix to work, database changes have been made as a new boolean configuration `allowMultiInvoiceTerms` has been added in `AppAccount` and `hasInvoiceTerm` has been removed in `Account`.
+If you do nothing, it will work but you will need to activate the new configuration in App account if you want to use invoice term feature. Else it is recommended to run the SQL script below before starting the server on the new version.
+
+```sql
+  ALTER TABLE base_app_account
+  ADD COLUMN allow_multi_invoice_terms BOOLEAN;
+
+  UPDATE base_app_account
+  SET allow_multi_invoice_terms = EXISTS(
+    SELECT 1 FROM account_account
+    WHERE has_invoice_term IS TRUE
+  );
+
+  ALTER TABLE account_account
+  DROP COLUMN has_invoice_term;
+```
+
+#### Deprecated
+
+* Stock API: Deprecate API call to stock-move/internal/{id}
+
+#### Changes
+
+* Webapp: update AOP version to 5.4.19
+* GDPR: added help on AppGdpr configuration fields.
+
+#### Fixed
+
+* Tracking number: fix inconsistent french translation.
+* Stock: fixed an issue in some processes where an error would create inconsistencies.
+* Contract: fixed an issue in some processes where an error would create inconsistencies.
+* Sale: fixed an issue in some processes where an error would create inconsistencies.
+* Studio: fixed an issue in some processes where an error would create inconsistencies.
+* Supplier management: fixed an issue in some processes where an error would create inconsistencies.
+* App base config: added missing french translation for "Manage mail account by company".
+* Sequence: fixed sequences with too long prefix in demo data.
+* Supplychain: fixed error while importing purchase order from demo data.
+* Accounting report DGI 2055: fixed issues on both tables.
+* Stock move line: modifying the expected quantity does not modify a field used by the mobile API anymore.
+* Move: fixed an issue so the form is not automatically saved when updating the origin date and the due date.
+* Invoice: fixed payment when bank order confirmation is automatic.
+* Bank details: fixed error occurring when base module was installed without bank-payment module.
+* Sale order: fixed the currency not updating when changing the customer partner.
+* Payment session: fixed an issue where the field "partner for email" was not emptied on copy and after sending the mail.
+* Account management: fixed typo in the title of the field "notification template" and filter this field on payment session template.
+* Base batch: Removed "Target" action in form view as this process does not exist anymore.
+* Move line: fixed retrieval of the conversion rate at the date of the movement.
+* Company: correctly hide buttons to access config on an unsaved company.
+* Message: fixed a bug that could occur when sending a mail with no content.
+* Inventory: fixed a bug where inventory lines were not updated on import.
+* Menu: fixed menu title from 'Template' to 'Templates'.
+* Json field: added missing field 'readonlyIf' used to configure whether a json field is readonly.
+* BPM: fixed timer event execution and optimised cache for custom model.
+* Payment session: fixed buttons displaying wrongly if session payment sum total is inferior or equal to 0.
+* Accounting report journal: fixed report having a blank page.
+* Stock move: when updating a stock move line, can now set an unit with the stock API.
+* Manufacturing order: fixed an issue where emptying planned end date would cause errors. The planned end date is now required for planned manufacturing orders.
+* Sequence: fixed an issue where we could create sequences with over 14 characters by adding '%'.
+* Reconcile: improve reconciliations performances with large move lines lists.
+* Bank statement: fixed issue with balance check on files containing multiple bank details and multiple daily balances.
+* Studio editor: fixed theme issue.
+* SaleOrder: reintroduced send email button in the toolbar.
+* Accounting report payment vat: fixed no lines in payment vat report sum by tax part and not lettered part.
+* Account, Invoice and Move: Remove error message at analytic distribution template on change when no analytic rules is configured.
+* Timesheet: fixed an issue preventing to select a project in the lines generation wizard.
+* Purchase order supplier: fixed desired receipt date field on form view.
+* Payment voucher: fixed status initialization on creation.
+* Manufacturing order: in form view, fixed buttons appearing and disappearing during view load.
+* Project: fixed errors occuring when business-project was not installed.
+* GDPR: fixed issues when copying GDPRRequest and GDPRRegisterProcessing.
+* City: fixed an error occurring when importing city with manual type.
+
+## [6.5.3] (2023-03-23)
+
+#### Changes
+
+* Webapp: update AOP version to 5.4.19
+
+#### Fixed
+
+* Bank reconciliation: fixed incorrect behaviour while correcting a validated bank reconciliation.
+* Tracking number configuration : 'Auto select sale tracking Nbr.' is now correctly taken into account when creating a stock move from a sale order.
+* Accounting report: For all reports, remove the 10000 and 40 lines limit before page break.
+* Accounting batch: hide "bank details" filter for batch Moves consistency control.
+* Production: fixed an issue in some processes where an error would create inconsistencies.
+* Bank payment: fixed an issue in some processes where an error would create inconsistencies.
+* Account: fixed an issue in some processes where an error would create inconsistencies.
+* HR: fixed an issue in some processes where an error would create inconsistencies.
+* Account: hide analytic settings panel when analytic management is not activated on the company.
+* Analytic distribution line: corrected error '0' when analytic account is selected.
+* Payment session: accounting method and move accounting date are now correctly readonly on a canceled payment session.
+* Invoice: fixed PFP check when paying multiple supplier invoices.
+* Helpdesk: fixed error when saving tickets on an instance using demo data.
+* Accounting batch: reset cut off move status when on journal change.
+* Payment session: fixed an issue where a payment session retrieved day book moves with "retrieve daybook moves in payment session" configuration deactivated.
+* Payment session: fixed filter on payment session for invoice terms to retrieve invoice terms linked to refunds.
+* Template: fix html widget for SMS templates.
+* Template: fix "Emailing" french translation.
+* Stock move: fixed an error occurring when opening a stock move line in a different tab.
+* Stock move: fixed an issue where "to address" was not correctly filled on a generated reversion stock move.
+* Stock move: supplier arrivals now correctly computes the WAP when the unit is different in stock move and stock location.
+* Invoice: fixed an issue preventing from paying invoices and refunds.
+* Product: fixed demo data of service so they are not managed in stock.
+* Doubtful customer batch: fix success count on batch completion.
+* HR: fixed typo "Managment" => "Managment".
+* MRP: generating proposals now correctly generates every purchase order lines.
+* Partner: prevent isCustomer from being unticked automatically if there are existing customer records in database.
+* Move line: fixed an issue where duplicated analytic lines were generated.
+* Financial discount: fixed french help translation.
+* Mail message: fixed an issue preventing follower selection after a recipient has already been selected.
+
 ## [6.5.2] (2023-03-09)
 
 #### Changes
@@ -268,6 +385,8 @@ Opportunity Status: add label-help on some opportunities status in form
 * Opportunity : Remove lead field
 * CRM : remove Target and TargetConfiguration from CRM
 
+[6.5.4]: https://github.com/axelor/axelor-open-suite/compare/v6.5.3...v6.5.4
+[6.5.3]: https://github.com/axelor/axelor-open-suite/compare/v6.5.2...v6.5.3
 [6.5.2]: https://github.com/axelor/axelor-open-suite/compare/v6.5.1...v6.5.2
 [6.5.1]: https://github.com/axelor/axelor-open-suite/compare/v6.5.0...v6.5.1
 [6.5.0]: https://github.com/axelor/axelor-open-suite/compare/v6.4.6...v6.5.0

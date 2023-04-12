@@ -397,7 +397,7 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
     return BigDecimal.ZERO;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   protected void generateResultMove(BigDecimal amount) throws AxelorException {
     Company company = accountingBatch.getCompany();
     AccountConfig accountConfig = accountConfigService.getAccountConfig(company);

@@ -71,7 +71,7 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
     if (CollectionUtils.isNotEmpty(move.getMoveLineList())) {
       for (MoveLine moveLine : move.getMoveLineList()) {
         if (moveLine.getAccount() != null
-            && moveLine.getAccount().getHasInvoiceTerm()
+            && moveLine.getAccount().getUseForPartnerBalance()
             && CollectionUtils.isEmpty(moveLine.getInvoiceTermList())) {
           moveLineInvoiceTermService.generateDefaultInvoiceTerm(moveLine, false);
         }
@@ -96,7 +96,7 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
             .filter(
                 it ->
                     it.getAmountRemaining().compareTo(it.getDebit().max(it.getCredit())) == 0
-                        && it.getAccount().getHasInvoiceTerm()
+                        && it.getAccount().getUseForPartnerBalance()
                         && CollectionUtils.isNotEmpty(it.getInvoiceTermList()))
             .map(MoveLine::getInvoiceTermList)
             .flatMap(Collection::stream)
@@ -116,7 +116,7 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
   public void recreateInvoiceTerms(Move move) throws AxelorException {
     if (CollectionUtils.isNotEmpty(move.getMoveLineList())) {
       for (MoveLine moveLine : move.getMoveLineList()) {
-        if (moveLine.getAccount().getHasInvoiceTerm()) {
+        if (moveLine.getAccount().getUseForPartnerBalance()) {
           moveLine.setMove(move);
           moveLineInvoiceTermService.recreateInvoiceTerms(moveLine);
         }
@@ -148,7 +148,7 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
     if (CollectionUtils.isNotEmpty(move.getMoveLineList())) {
       List<MoveLine> moveLinesWithInvoiceTerms =
           move.getMoveLineList().stream()
-              .filter(it -> it.getAccount() != null && it.getAccount().getHasInvoiceTerm())
+              .filter(it -> it.getAccount() != null && it.getAccount().getUseForPartnerBalance())
               .collect(Collectors.toList());
 
       return moveLinesWithInvoiceTerms.size() <= 1
@@ -197,7 +197,7 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
 
   protected InvoiceTerm getSingleInvoiceTerm(Move move) {
     return move.getMoveLineList().stream()
-        .filter(it -> it.getAccount().getHasInvoiceTerm())
+        .filter(it -> it.getAccount().getUseForPartnerBalance())
         .map(MoveLine::getInvoiceTermList)
         .flatMap(Collection::stream)
         .findFirst()
