@@ -261,7 +261,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       paymentSession = paymentSessionRepo.find(paymentSession.getId());
 
       for (InvoiceTerm invoiceTerm : invoiceTermList) {
-        ++offset;
+        offset++;
 
         if (paymentSession.getStatusSelect() == PaymentSessionRepository.STATUS_AWAITING_PAYMENT
             || this.shouldBeProcessed(invoiceTerm)) {
@@ -672,7 +672,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       for (Partner partner : moveMap.keySet()) {
         for (Move move : moveMap.get(partner)) {
           move = moveRepo.find(move.getId());
-          moveLineTaxService.autoTaxLineGenerate(move);
+          moveLineTaxService.autoTaxLineGenerate(move, null);
         }
       }
     }
@@ -796,6 +796,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
 
   protected int getMoveCount(
       Map<LocalDate, Map<Partner, List<Move>>> moveDateMap, boolean isGlobal) {
+
     return moveDateMap.values().stream()
             .map(Map::values)
             .flatMap(Collection::stream)
