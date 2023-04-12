@@ -28,6 +28,11 @@
       <field name="excludeTaskInvoicing"/>
       <field name="generateProjectSequence" widget="boolean-switch"/>
     </panel>
+    <panel name="serviceManagementPanel" title="Service management" colSpan="12">
+      <field name="daysUnit" domain="self.unitTypeSelect = 3"/>
+      <field name="hoursUnit" domain="self.unitTypeSelect = 3"/>
+      <field name="defaultHoursADay"/>
+    </panel>
 
     <panel-mail name="mailPanel">
       <mail-messages limit="4"/>
