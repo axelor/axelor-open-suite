@@ -319,4 +319,31 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
           optMovePartner.get().getName());
     }
   }
+
+  @Override
+  public void checkAccountAnalytic(Move move, MoveLine moveLine, Account account)
+      throws AxelorException {
+    if (moveLine.getAnalyticDistributionTemplate() == null
+        && ObjectUtils.isEmpty(moveLine.getAnalyticMoveLineList())
+        && account.getAnalyticDistributionAuthorized()
+        && account.getAnalyticDistributionRequiredOnMoveLines()) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(AccountExceptionMessage.MOVE_10),
+          account.getName(),
+          moveLine.getName());
+    }
+
+    if (account != null
+        && !account.getAnalyticDistributionAuthorized()
+        && (moveLine.getAnalyticDistributionTemplate() != null
+            || (moveLine.getAnalyticMoveLineList() != null
+                && !moveLine.getAnalyticMoveLineList().isEmpty()))) {
+      throw new AxelorException(
+          move,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(AccountExceptionMessage.MOVE_11),
+          moveLine.getName());
+    }
+  }
 }
