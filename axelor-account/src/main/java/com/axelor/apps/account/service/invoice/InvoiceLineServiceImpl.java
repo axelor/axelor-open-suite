@@ -667,16 +667,4 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     return internationalService.getProductDescriptionAndNameTranslation(
         product, invoice.getPartner(), userLanguage);
   }
-
-  @Override
-  public void autoApplyCutOffDates(InvoiceLine invoiceLine, Invoice invoice) {
-    if (invoiceLine.getAccount() != null
-        && invoiceLine.getAccount().getManageCutOffPeriod()
-        && invoiceLine.getAccount().getHasAutomaticApplicationAccountingDate()
-        && invoiceLine.getCutOffStartDate() == null
-        && invoiceLine.getCutOffEndDate() == null) {
-      invoiceLine.setCutOffStartDate(invoice.getInvoiceDate());
-      invoiceLine.setCutOffEndDate(invoice.getInvoiceDate());
-    }
-  }
 }

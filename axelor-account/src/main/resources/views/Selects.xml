@@ -553,6 +553,24 @@
     <option value='9'>Irrecoverable</option>
   </selection>
 
+  <selection name='iaccount.move.line.mass.entry.input.action.select'>
+    <option value='1'>Line</option>
+    <option value='2'>Counterpart</option>
+    <option value='3'>Move</option>
+  </selection>
+
+  <selection name='iaccount.move.line.mass.entry.edited.field.select'>
+    <option value='0'/>
+    <option value='1'>Except VAT System</option>
+    <option value='2'>All</option>
+  </selection>
+
+  <selection name='iaccount.move.mass.entry.status.select'>
+    <option value='0'/>
+    <option value='1'>Ongoing</option>
+    <option value='2'>Closed</option>
+  </selection>
+
   <selection name="account.year.period.duration.select">
     <option value="0">One time global period</option>
     <option value="1">1 Month</option>

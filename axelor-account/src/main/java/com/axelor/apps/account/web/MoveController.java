@@ -31,11 +31,13 @@ import com.axelor.apps.account.service.PeriodServiceAccount;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
+import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.journal.JournalCheckPartnerTypeService;
 import com.axelor.apps.account.service.move.MoveComputeService;
 import com.axelor.apps.account.service.move.MoveCounterPartService;
 import com.axelor.apps.account.service.move.MoveInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveLineControlService;
+import com.axelor.apps.account.service.move.MovePfpService;
 import com.axelor.apps.account.service.move.MoveRemoveService;
 import com.axelor.apps.account.service.move.MoveReverseService;
 import com.axelor.apps.account.service.move.MoveSimulateService;
@@ -913,25 +915,27 @@ public class MoveController {
    *
    * @param request
    * @param response
-   * @throws AxelorException
    */
-  public void fillCompanyBankDetails(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-    Move move = request.getContext().asType(Move.class);
-    PaymentMode paymentMode = move.getPaymentMode();
-    Company company = move.getCompany();
-    Partner partner = move.getPartner();
-    if (company == null) {
-      response.setValue("companyBankDetails", null);
-      return;
+  public void fillCompanyBankDetails(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      PaymentMode paymentMode = move.getPaymentMode();
+      Company company = move.getCompany();
+      Partner partner = move.getPartner();
+      if (company == null) {
+        response.setValue("companyBankDetails", null);
+        return;
+      }
+      if (partner != null) {
+        partner = Beans.get(PartnerRepository.class).find(partner.getId());
+      }
+      BankDetails defaultBankDetails =
+          Beans.get(BankDetailsService.class)
+              .getDefaultCompanyBankDetails(company, paymentMode, partner, null);
+      response.setValue("companyBankDetails", defaultBankDetails);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
-    if (partner != null) {
-      partner = Beans.get(PartnerRepository.class).find(partner.getId());
-    }
-    BankDetails defaultBankDetails =
-        Beans.get(BankDetailsService.class)
-            .getDefaultCompanyBankDetails(company, paymentMode, partner, null);
-    response.setValue("companyBankDetails", defaultBankDetails);
   }
 
   public void updateMoveLinesCurrencyRate(ActionRequest request, ActionResponse response) {
@@ -948,6 +952,75 @@ public class MoveController {
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setPfpVisibility(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      User user = request.getUser();
+      MovePfpService movePfpService = Beans.get(MovePfpService.class);
+
+      response.setAttr(
+          "passedForPaymentValidationBtn",
+          "hidden",
+          !movePfpService.isPfpButtonVisible(move, user, true));
+
+      response.setAttr(
+          "refusalToPayBtn", "hidden", !movePfpService.isPfpButtonVisible(move, user, false));
+
+      response.setAttr("pfpValidatorUser", "hidden", !movePfpService.isValidatorUserVisible(move));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void validatePfp(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      Beans.get(MovePfpService.class).validatePfp(move.getId());
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void refusalToPay(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      Beans.get(MovePfpService.class)
+          .refusalToPay(
+              Beans.get(MoveRepository.class).find(move.getId()),
+              move.getReasonOfRefusalToPay(),
+              move.getReasonOfRefusalToPayStr());
+      response.setCanClose(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void setPfpValidatorUser(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      response.setValue(
+          "pfpValidatorUser",
+          Beans.get(InvoiceTermService.class)
+              .getPfpValidatorUser(move.getPartner(), move.getCompany()));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void setPfpValidatorUserDomain(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      response.setAttr(
+          "pfpValidatorUser",
+          "domain",
+          Beans.get(InvoiceTermService.class)
+              .getPfpValidatorUserDomain(move.getPartner(), move.getCompany()));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 }

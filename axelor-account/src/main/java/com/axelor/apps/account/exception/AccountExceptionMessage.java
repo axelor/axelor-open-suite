@@ -1070,6 +1070,15 @@ public final class AccountExceptionMessage {
   public static final String MOVE_TEMPLATE_3 = /*$$(*/ "Generated moves" /*)*/;
   public static final String MOVE_TEMPLATE_4 = /*$$(*/ "Please fill input lines" /*)*/;
 
+  /** Mass entry move controller */
+  public static final String MASS_ENTRY_MOVE_CONTROL_ERROR = /*$$(*/
+      "Error(s) during moves control" /*)*/;
+
+  public static final String MASS_ENTRY_MOVE_NO_LINE = /*$$(*/ "Error : no line to control" /*)*/;
+
+  public static final String MASS_ENTRY_MOVE_CONTROL_SUCCESSFUL = /*$$(*/
+      "Control passed without errors" /*)*/;
+
   public static final String MOVE_MISSING_CUT_OFF_DATE = /*$$(*/
       "Please enter a Cut off start and end date for the move lines that have an account Cut off management" /*)*/;
 
@@ -1101,6 +1110,12 @@ public final class AccountExceptionMessage {
    */
   public static final String PARTNER_BANK_DETAILS_MISSING = /*$$(*/
       "Bank details are missing for partner %s." /*)*/;
+
+  /*
+   * Company
+   */
+  public static final String COMPANY_BANK_DETAILS_MISSING = /*$$(*/
+      "Bank details are missing for company %s." /*)*/;
 
   /*
    * Invoice printing
@@ -1567,4 +1582,16 @@ public final class AccountExceptionMessage {
 
   public static final String ANALYTIC_DISTRIBUTION_TEMPLATE_CONTAINS_NOT_ALLOWED_ACCOUNTS = /*$$(*/
       "The selected Analytic Distribution template contains Analytic Accounts which are not allowed on this account. Please select an appropriate template or modify the analytic coherence rule for this account." /*)*/;
+
+  /** Mass entry move control message */
+  public static final String MASS_ENTRY_MOVE_IDENTIFICATION_MESSAGE = /*$$(*/
+      "Errors in move : %s\n" /*)*/;
+
+  public static final String MASS_ENTRY_DIFFERENT_MOVE_LINE_DATE = /*$$(*/
+      "The same move can't have different dates" /*)*/;
+
+  public static final String MASS_ENTRY_CURRENCY_RATE_NULL = /*$$(*/ "Currency Rate is 0.00" /*)*/;
+
+  public static final String MASS_ENTRY_DIFFERENT_MOVE_LINE_ORIGIN_DATE = /*$$(*/
+      "The same move can't have different origin dates" /*)*/;
 }

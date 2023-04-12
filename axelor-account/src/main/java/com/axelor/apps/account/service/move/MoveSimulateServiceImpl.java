@@ -27,16 +27,12 @@ import java.util.List;
 public class MoveSimulateServiceImpl implements MoveSimulateService {
 
   protected MoveValidateService moveValidateService;
-  protected MoveStatusService moveStatusService;
   protected MoveRepository moveRepository;
 
   @Inject
   public MoveSimulateServiceImpl(
-      MoveValidateService moveValidateService,
-      MoveStatusService moveStatusService,
-      MoveRepository moveRepository) {
+      MoveValidateService moveValidateService, MoveRepository moveRepository) {
     this.moveValidateService = moveValidateService;
-    this.moveStatusService = moveStatusService;
     this.moveRepository = moveRepository;
   }
 
@@ -57,7 +53,7 @@ public class MoveSimulateServiceImpl implements MoveSimulateService {
     moveValidateService.checkPreconditions(move);
     moveValidateService.freezeFieldsOnMoveLines(move);
     moveValidateService.completeMoveLines(move);
-    moveStatusService.update(move, MoveRepository.STATUS_SIMULATED);
+    move.setStatusSelect(MoveRepository.STATUS_SIMULATED);
     moveRepository.save(move);
   }
 }
