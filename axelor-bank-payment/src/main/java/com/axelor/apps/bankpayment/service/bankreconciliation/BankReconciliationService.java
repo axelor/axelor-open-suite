@@ -357,25 +357,30 @@ public class BankReconciliationService {
       throws AxelorException {
     int vatSystemSelect = AccountRepository.VAT_SYSTEM_DEFAULT;
     Move move = moveLine.getMove();
-    int journalTechnicalType = move.getJournal().getJournalType().getTechnicalTypeSelect();
-    Company company = moveLine.getMove().getCompany();
-    if (journalTechnicalType == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE) {
-      AccountingSituation accountingSituation =
-          accountingSituationRepository.findByCompanyAndPartner(company, moveLine.getPartner());
-      if (accountingSituation != null && accountingSituation.getVatSystemSelect() != null) {
-        vatSystemSelect = accountingSituation.getVatSystemSelect();
-      }
-    } else if (journalTechnicalType == JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE) {
-      AccountingSituation accountingSituation =
-          accountingSituationRepository.findByCompanyAndPartner(company, company.getPartner());
-      if (accountingSituation != null && accountingSituation.getVatSystemSelect() != null) {
-        vatSystemSelect = accountingSituation.getVatSystemSelect();
-      }
-    }
-    if (vatSystemSelect == AccountRepository.VAT_SYSTEM_DEFAULT) {
-      vatSystemSelect = bankStatementRule.getCounterpartAccount().getVatSystemSelect();
-    }
     Journal journal = move.getJournal();
+    int journalTechnicalType = journal.getJournalType().getTechnicalTypeSelect();
+    Company company = moveLine.getMove().getCompany();
+    Partner partner = null;
+
+    if (journalTechnicalType == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE) {
+      partner = moveLine.getPartner();
+    } else if (journalTechnicalType == JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE) {
+      partner = company.getPartner();
+    }
+
+    if (partner != null) {
+      AccountingSituation accountingSituation =
+          accountingSituationRepository.findByCompanyAndPartner(company, partner);
+      if (accountingSituation != null && accountingSituation.getVatSystemSelect() != null) {
+        vatSystemSelect = accountingSituation.getVatSystemSelect();
+      }
+    }
+
+    Account counterPartAccount = bankStatementRule.getCounterpartAccount();
+    if (vatSystemSelect == AccountRepository.VAT_SYSTEM_DEFAULT && counterPartAccount != null) {
+      vatSystemSelect = counterPartAccount.getVatSystemSelect();
+    }
+
     TaxLine taxLine = moveLine.getTaxLine();
     Account account =
         taxAccountService.getAccount(
