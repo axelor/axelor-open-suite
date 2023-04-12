@@ -13,6 +13,8 @@
     <date name="date" column="date_val" title="Date"/> <!-- Only used for Manual Misc. Operations -->
     <string name="reference" title="Reference" namecolumn="true" readonly="true"/>
     <one-to-many name="moveLineList" ref="MoveLine" title="Move lines" mappedBy="move"/>
+    <one-to-many name="moveLineMassEntryList" ref="MoveLineMassEntry"
+      title="Move lines mass entry" mappedBy="moveMassEntry"/>
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"
       required="true"/>
@@ -80,6 +82,9 @@
 
     <many-to-one ref="com.axelor.apps.account.db.FECImport" name="fecImport"
       title="FEC Import"/>
+    <integer name="massEntryStatusSelect" title="Status" default="0"
+      selection="iaccount.move.mass.entry.status.select"/>
+    <string name="massEntryErrors" title="Error list"/>
     <unique-constraint columns="reference,company"/>
 
     <finder-method name="findByPaymentVoucher" using="paymentVoucher" all="true"/>
@@ -121,6 +126,11 @@
 	    public static final int PFP_STATUS_AWAITING = 1;
 	    public static final int PFP_STATUS_VALIDATED = 2;
 	    public static final int PFP_STATUS_LITIGATION = 3;
+
+		// MASS ENTRY STATUS
+		public static final int MASS_ENTRY_STATUS_NULL = 0;
+		public static final int MASS_ENTRY_STATUS_ON_GOING = 1;
+		public static final int MASS_ENTRY_STATUS_VALIDATED = 2;
 	]]></extra-code>
 
     <track>

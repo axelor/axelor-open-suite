@@ -148,6 +148,20 @@
     <view type="grid" name="move-grid"/>
     <view type="form" name="move-form"/>
     <view-param name="search-filters" value="move-filters"/>
+    <domain> self.massEntryStatusSelect = 0</domain>
+    <context name="_isActivateSimulatedMoves"
+      expr="eval:__user__?.activeCompany?.accountConfig?.isActivateSimulatedMove"/>
+  </action-view>
+
+  <menuitem name="account-root-move-mass-entry-move" parent="account-root-move"
+    title="Mass entry" action="account.root.move.mass.entry.move" order="0"/>
+
+  <action-view name="account.root.move.mass.entry.move" title="Mass entry"
+    model="com.axelor.apps.account.db.Move">
+    <view type="grid" name="move-mass-entry-grid"/>
+    <view type="form" name="move-mass-entry-form"/>
+    <view-param name="search-filters" value="move-filters"/>
+    <domain> self.massEntryStatusSelect != 0</domain>
     <context name="_isActivateSimulatedMoves"
       expr="eval:__user__?.activeCompany?.accountConfig?.isActivateSimulatedMove"/>
   </action-view>
@@ -172,6 +186,7 @@
     <view type="grid" name="move-line-grid"/>
     <view type="form" name="move-line-form"/>
     <view-param name="search-filters" value="move-line-filters"/>
+    <domain>self.move.massEntryStatusSelect = 0</domain>
   </action-view>
 
   <menuitem name="account-root-pfp" title="PFP" parent="account-root"

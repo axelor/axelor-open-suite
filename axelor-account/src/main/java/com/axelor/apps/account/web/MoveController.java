@@ -428,18 +428,15 @@ public class MoveController {
   }
 
   public void autoTaxLineGenerate(ActionRequest request, ActionResponse response) {
-    Move move =
-        Beans.get(MoveRepository.class).find(request.getContext().asType(Move.class).getId());
+    Move move = request.getContext().asType(Move.class);
     try {
       if (move.getMoveLineList() != null
           && !move.getMoveLineList().isEmpty()
           && (move.getStatusSelect().equals(MoveRepository.STATUS_NEW)
               || move.getStatusSelect().equals(MoveRepository.STATUS_SIMULATED))) {
-        Beans.get(MoveLineTaxService.class).autoTaxLineGenerate(move, null);
+        Beans.get(MoveLineTaxService.class).autoTaxLineGenerateNoSave(move, null);
 
-        if (request.getContext().get("_source").equals("autoTaxLineGenerateBtn")) {
-          response.setReload(true);
-        }
+        response.setValue("moveLineList", move.getMoveLineList());
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
@@ -550,11 +547,10 @@ public class MoveController {
 
   public void generateCounterpart(ActionRequest request, ActionResponse response) {
     try {
-      Move move =
-          Beans.get(MoveRepository.class).find(request.getContext().asType(Move.class).getId());
+      Move move = request.getContext().asType(Move.class);
       Beans.get(MoveCounterPartService.class)
           .generateCounterpartMoveLine(move, this.extractDueDate(request));
-      response.setReload(true);
+      response.setValue("moveLineList", move.getMoveLineList());
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
@@ -562,8 +558,7 @@ public class MoveController {
 
   public void exceptionCounterpart(ActionRequest request, ActionResponse response) {
     try {
-      Move move =
-          Beans.get(MoveRepository.class).find(request.getContext().asType(Move.class).getId());
+      Move move = request.getContext().asType(Move.class);
       Beans.get(MoveToolService.class).exceptionOnGenerateCounterpart(move);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
@@ -913,25 +908,27 @@ public class MoveController {
    *
    * @param request
    * @param response
-   * @throws AxelorException
    */
-  public void fillCompanyBankDetails(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-    Move move = request.getContext().asType(Move.class);
-    PaymentMode paymentMode = move.getPaymentMode();
-    Company company = move.getCompany();
-    Partner partner = move.getPartner();
-    if (company == null) {
-      response.setValue("companyBankDetails", null);
-      return;
+  public void fillCompanyBankDetails(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      PaymentMode paymentMode = move.getPaymentMode();
+      Company company = move.getCompany();
+      Partner partner = move.getPartner();
+      if (company == null) {
+        response.setValue("companyBankDetails", null);
+        return;
+      }
+      if (partner != null) {
+        partner = Beans.get(PartnerRepository.class).find(partner.getId());
+      }
+      BankDetails defaultBankDetails =
+          Beans.get(BankDetailsService.class)
+              .getDefaultCompanyBankDetails(company, paymentMode, partner, null);
+      response.setValue("companyBankDetails", defaultBankDetails);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
-    if (partner != null) {
-      partner = Beans.get(PartnerRepository.class).find(partner.getId());
-    }
-    BankDetails defaultBankDetails =
-        Beans.get(BankDetailsService.class)
-            .getDefaultCompanyBankDetails(company, paymentMode, partner, null);
-    response.setValue("companyBankDetails", defaultBankDetails);
   }
 
   public void updateMoveLinesCurrencyRate(ActionRequest request, ActionResponse response) {

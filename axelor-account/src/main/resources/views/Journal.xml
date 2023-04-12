@@ -80,6 +80,7 @@
             showIf="company.accountConfig.isActivateSimulatedMove"/>
           <field name="allowAccountingDaybook"
             showIf="company.accountConfig.accountingDaybook"/>
+          <field name="allowAccountingNewOnMassEntry" widget="Boolean-switch"/>
           <panel name="originControlSettings" showTitle="false" colSpan="12">
             <field name="hasDuplicateDetectionOnOrigin"/>
             <field name="hasRequiredOrigin"/>

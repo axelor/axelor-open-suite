@@ -268,30 +268,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
               account.getName(),
               moveLine.getName());
         }
-
-        if (moveLine.getAnalyticDistributionTemplate() == null
-            && ObjectUtils.isEmpty(moveLine.getAnalyticMoveLineList())
-            && account.getAnalyticDistributionAuthorized()
-            && account.getAnalyticDistributionRequiredOnMoveLines()) {
-          throw new AxelorException(
-              TraceBackRepository.CATEGORY_MISSING_FIELD,
-              I18n.get(AccountExceptionMessage.MOVE_10),
-              account.getName(),
-              moveLine.getName());
-        }
-
-        if (account != null
-            && !account.getAnalyticDistributionAuthorized()
-            && (moveLine.getAnalyticDistributionTemplate() != null
-                || (moveLine.getAnalyticMoveLineList() != null
-                    && !moveLine.getAnalyticMoveLineList().isEmpty()))) {
-          throw new AxelorException(
-              move,
-              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(AccountExceptionMessage.MOVE_11),
-              moveLine.getName());
-        }
-
+        moveLineControlService.checkAccountAnalytic(move, moveLine, account);
         moveLineControlService.validateMoveLine(moveLine);
         moveLineControlService.checkAccountCompany(moveLine);
         moveLineControlService.checkJournalCompany(moveLine);
@@ -303,20 +280,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
 
       this.validateWellBalancedMove(move);
 
-      if (move.getJournal() != null
-          && move.getPartner() != null
-          && move.getJournal().getHasDuplicateDetectionOnOrigin()) {
-        List<Move> moveList = moveToolService.getMovesWithDuplicatedOrigin(move);
-        if (ObjectUtils.notEmpty(moveList)) {
-          throw new AxelorException(
-              move,
-              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(AccountExceptionMessage.MOVE_DUPLICATE_ORIGIN_BLOCKING_MESSAGE),
-              moveList.stream().map(Move::getReference).collect(Collectors.joining(",")),
-              move.getPartner().getFullName(),
-              move.getPeriod().getYear().getName());
-        }
-      }
+      moveControlService.checkDuplicateOrigin(move);
     }
   }
 
