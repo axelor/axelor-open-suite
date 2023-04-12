@@ -8,7 +8,6 @@
     <panel title="Project generation from sale orders" colSpan="12">
       <field name="generateProjectOrder" widget="boolean-switch"/>
       <field name="automaticProject" widget="boolean-switch"/>
-      <field name="generatedElementTypeSelect"/>
     </panel>
 
     <panel title="References" colSpan="12">
