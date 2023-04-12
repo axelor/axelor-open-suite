@@ -40,6 +40,7 @@ import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.move.MoveComputeService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveValidateService;
@@ -76,6 +77,7 @@ public class PaymentVoucherConfirmService {
   protected ReconcileService reconcileService;
   protected MoveCreateService moveCreateService;
   protected MoveValidateService moveValidateService;
+  protected MoveComputeService moveComputeService;
   protected MoveLineCreateService moveLineCreateService;
   protected PaymentService paymentService;
   protected PaymentModeService paymentModeService;
@@ -93,6 +95,7 @@ public class PaymentVoucherConfirmService {
       ReconcileService reconcileService,
       MoveCreateService moveCreateService,
       MoveValidateService moveValidateService,
+      MoveComputeService moveComputeService,
       MoveLineCreateService moveLineCreateService,
       PaymentService paymentService,
       PaymentModeService paymentModeService,
@@ -108,6 +111,7 @@ public class PaymentVoucherConfirmService {
     this.reconcileService = reconcileService;
     this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;
+    this.moveComputeService = moveComputeService;
     this.moveLineCreateService = moveLineCreateService;
     this.paymentService = paymentService;
     this.paymentModeService = paymentModeService;
@@ -331,6 +335,8 @@ public class PaymentVoucherConfirmService {
     if (reconcile != null) {
       reconcileService.confirmReconcile(reconcile, true, true);
     }
+
+    moveComputeService.autoApplyCutOffDates(move);
     moveValidateService.accounting(move);
   }
 
@@ -563,6 +569,7 @@ public class PaymentVoucherConfirmService {
           reconcileService.balanceCredit(moveLine);
         }
       }
+      moveComputeService.autoApplyCutOffDates(move);
       moveValidateService.accounting(move);
       setMove(paymentVoucher, move, valueForCollection);
     }
@@ -711,6 +718,8 @@ public class PaymentVoucherConfirmService {
         move.addMoveLineListItem(financialDiscountVatMoveLine);
       }
     }
+
+    moveComputeService.autoApplyCutOffDates(move);
 
     return moveLineNo;
   }

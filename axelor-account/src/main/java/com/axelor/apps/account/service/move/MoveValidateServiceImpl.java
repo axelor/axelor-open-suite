@@ -93,7 +93,6 @@ public class MoveValidateServiceImpl implements MoveValidateService {
   protected MoveLineTaxService moveLineTaxService;
   protected PeriodServiceAccount periodServiceAccount;
   protected MoveControlService moveControlService;
-  protected MoveStatusService moveStatusService;
 
   @Inject
   public MoveValidateServiceImpl(
@@ -112,8 +111,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
       FixedAssetGenerationService fixedAssetGenerationService,
       MoveLineTaxService moveLineTaxService,
       PeriodServiceAccount periodServiceAccount,
-      MoveControlService moveControlService,
-      MoveStatusService moveStatusService) {
+      MoveControlService moveControlService) {
 
     this.moveLineControlService = moveLineControlService;
     this.moveLineToolService = moveLineToolService;
@@ -131,7 +129,6 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     this.moveLineTaxService = moveLineTaxService;
     this.periodServiceAccount = periodServiceAccount;
     this.moveControlService = moveControlService;
-    this.moveStatusService = moveStatusService;
   }
 
   /**
@@ -271,30 +268,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
               account.getName(),
               moveLine.getName());
         }
-
-        if (moveLine.getAnalyticDistributionTemplate() == null
-            && ObjectUtils.isEmpty(moveLine.getAnalyticMoveLineList())
-            && account.getAnalyticDistributionAuthorized()
-            && account.getAnalyticDistributionRequiredOnMoveLines()) {
-          throw new AxelorException(
-              TraceBackRepository.CATEGORY_MISSING_FIELD,
-              I18n.get(AccountExceptionMessage.MOVE_10),
-              account.getName(),
-              moveLine.getName());
-        }
-
-        if (account != null
-            && !account.getAnalyticDistributionAuthorized()
-            && (moveLine.getAnalyticDistributionTemplate() != null
-                || (moveLine.getAnalyticMoveLineList() != null
-                    && !moveLine.getAnalyticMoveLineList().isEmpty()))) {
-          throw new AxelorException(
-              move,
-              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(AccountExceptionMessage.MOVE_11),
-              moveLine.getName());
-        }
-
+        moveLineControlService.checkAccountAnalytic(move, moveLine, account);
         moveLineControlService.validateMoveLine(moveLine);
         moveLineControlService.checkAccountCompany(moveLine);
         moveLineControlService.checkJournalCompany(moveLine);
@@ -306,20 +280,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
 
       this.validateWellBalancedMove(move);
 
-      if (move.getJournal() != null
-          && move.getPartner() != null
-          && move.getJournal().getHasDuplicateDetectionOnOrigin()) {
-        List<Move> moveList = moveToolService.getMovesWithDuplicatedOrigin(move);
-        if (ObjectUtils.notEmpty(moveList)) {
-          throw new AxelorException(
-              move,
-              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(AccountExceptionMessage.MOVE_DUPLICATE_ORIGIN_BLOCKING_MESSAGE),
-              moveList.stream().map(Move::getReference).collect(Collectors.joining(",")),
-              move.getPartner().getFullName(),
-              move.getPeriod().getYear().getName());
-        }
-      }
+      moveControlService.checkDuplicateOrigin(move);
     }
   }
 
@@ -382,6 +343,9 @@ public class MoveValidateServiceImpl implements MoveValidateService {
 
     log.debug("Accounting of the move {}", move.getReference());
 
+    this.checkPreconditions(move);
+
+    log.debug("Precondition check of move {} OK", move.getReference());
     boolean dayBookMode =
         accountConfigService.getAccountConfig(move.getCompany()).getAccountingDaybook()
             && move.getJournal().getAllowAccountingDaybook();
@@ -420,10 +384,6 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     if (move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED) {
       this.generateFixedAssetMoveLine(move);
     }
-
-    this.checkPreconditions(move);
-
-    log.debug("Precondition check of move {} OK", move.getReference());
 
     moveRepository.save(move);
 
@@ -514,10 +474,10 @@ public class MoveValidateServiceImpl implements MoveValidateService {
   @Override
   public void updateValidateStatus(Move move, boolean daybook) throws AxelorException {
     if (move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK || !daybook) {
-      moveStatusService.update(move, MoveRepository.STATUS_ACCOUNTED);
+      move.setStatusSelect(MoveRepository.STATUS_ACCOUNTED);
       move.setAccountingDate(appBaseService.getTodayDate(move.getCompany()));
     } else {
-      moveStatusService.update(move, MoveRepository.STATUS_DAYBOOK);
+      move.setStatusSelect(MoveRepository.STATUS_DAYBOOK);
     }
   }
 

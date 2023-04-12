@@ -18,9 +18,18 @@
 package com.axelor.apps.account.service.move;
 
 import com.axelor.apps.account.db.Move;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.CancelReason;
+import com.axelor.auth.db.User;
 
-public interface MoveStatusService {
-  void update(Move move, int cutOffMoveStatusSelect);
+public interface MovePfpService {
+  void validatePfp(Long moveId);
 
-  void applyCutOffDates(Move move);
+  void refusalToPay(Move move, CancelReason reasonOfRefusalToPay, String reasonOfRefusalToPayStr);
+
+  boolean isPfpButtonVisible(Move move, User user, boolean litigation) throws AxelorException;
+
+  void setPfpStatus(Move move) throws AxelorException;
+
+  boolean isValidatorUserVisible(Move move) throws AxelorException;
 }

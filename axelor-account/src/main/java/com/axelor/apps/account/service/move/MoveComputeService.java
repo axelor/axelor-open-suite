@@ -28,5 +28,7 @@ public interface MoveComputeService {
 
   void applyCutOffDates(Move move, LocalDate cutOffStartDate, LocalDate cutOffEndDate);
 
+  void autoApplyCutOffDates(Move move);
+
   void applyCutOffDatesInEmptyLines(Move move, LocalDate cutOffStartDate, LocalDate cutOffEndDate);
 }
