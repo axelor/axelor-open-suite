@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service.moveline;
 
+import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
@@ -206,14 +207,14 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void autoTaxLineGenerate(Move move) throws AxelorException {
+  public void autoTaxLineGenerate(Move move, Account account) throws AxelorException {
 
-    autoTaxLineGenerateNoSave(move);
+    autoTaxLineGenerateNoSave(move, account);
     moveRepository.save(move);
   }
 
   @Override
-  public void autoTaxLineGenerateNoSave(Move move) throws AxelorException {
+  public void autoTaxLineGenerateNoSave(Move move, Account account) throws AxelorException {
 
     List<MoveLine> moveLineList = move.getMoveLineList();
 
@@ -255,7 +256,7 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
         if (this.isGenerateMoveLineForAutoTax(accountType)) {
 
           moveLineCreateService.createMoveLineForAutoTax(
-              move, map, newMap, moveLine, taxLine, accountType);
+              move, map, newMap, moveLine, taxLine, accountType, account);
         }
       }
     }
