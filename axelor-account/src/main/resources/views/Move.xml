@@ -178,11 +178,11 @@
           <button name="simulateBtn" css="btn-info" title="Simulate"
             showIf="statusSelect == 1 &amp;&amp; journal.authorizeSimulatedMove"
             readonlyIf="$validatePeriod" colSpan="12" onClick="action-move-account-group-simulate"/>
-          <button name="accountingBtn" css="btn-warning" title="dayBook"
-            hideIf="statusSelect == 3 || statusSelect == 4" readonlyIf="$validatePeriod"
+          <button name="accountingBtn" title="DayBook.button" css="btn-warning"
+            showIf="(statusSelect == 1 || statusSelect == 5) &amp;&amp; journal.allowAccountingDaybook &amp;&amp; company.accountConfig.accountingDaybook"
             colSpan="12" onClick="action-account-move-group-accounting-click"/>
-          <button name="accountingBtn" css="btn-success" title="Accounting.toAccount"
-            hideIf="statusSelect == 3 || statusSelect == 4" readonlyIf="$validatePeriod"
+          <button name="accountingBtn" title="Accounting.toAccount" css="btn-success"
+            showIf="statusSelect == 2 || ((statusSelect == 1 || statusSelect == 5) &amp;&amp; (!journal.allowAccountingDaybook || !company.accountConfig.accountingDaybook))"
             colSpan="12" onClick="action-account-move-group-accounting-click"/>
         </panel>
         <panel name="cutOffPanel" colSpan="12" title="Cut off"
@@ -319,6 +319,9 @@
           <field name="journal.hasDuplicateDetectionOnOrigin" hidden="true" readonly="true"/>
           <field name="journal.authorizeSimulatedMove" hidden="true"/>
           <field name="journal.authorizedFunctionalOriginSelect" hidden="true"/>
+          <field name="journal.allowAccountingDaybook" hidden="true"/>
+          <field name="company.accountConfig" hidden="true"/>
+          <field name="company.accountConfig.accountingDaybook" hidden="true"/>
         </panel>
       </panel>
     </panel-tabs>
