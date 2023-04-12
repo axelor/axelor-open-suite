@@ -21,17 +21,18 @@ import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
-import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class PaymentSessionCancelServiceImpl implements PaymentSessionCancelService {
   protected PaymentSessionRepository paymentSessionRepo;
   protected InvoiceTermRepository invoiceTermRepo;
+  protected int jpaLimit = 4;
 
   @Inject
   public PaymentSessionCancelServiceImpl(
@@ -49,26 +50,30 @@ public class PaymentSessionCancelServiceImpl implements PaymentSessionCancelServ
   @Transactional
   protected void saveCanceledPaymentSession(PaymentSession paymentSession) {
     paymentSession.setStatusSelect(PaymentSessionRepository.STATUS_CANCELLED);
-    paymentSessionRepo.save(paymentSession);
   }
 
   protected void cancelInvoiceTerms(PaymentSession paymentSession) {
-    List<InvoiceTerm> invoiceTermList;
+    List<Long> invoiceTermList;
     Query<InvoiceTerm> invoiceTermQuery =
         invoiceTermRepo.all().filter("self.paymentSession = ?", paymentSession).order("id");
 
-    while (!(invoiceTermList = invoiceTermQuery.fetch(AbstractBatch.FETCH_LIMIT, 0)).isEmpty()) {
-      for (InvoiceTerm invoiceTerm : invoiceTermList) {
-        this.saveCanceledInvoiceTermWithPaymentSession(invoiceTerm);
+    while (!(invoiceTermList =
+            invoiceTermQuery
+                .fetchStream(jpaLimit)
+                .map(InvoiceTerm::getId)
+                .collect(Collectors.toList()))
+        .isEmpty()) {
+      for (Long invoiceTermId : invoiceTermList) {
+        this.saveCanceledInvoiceTermWithPaymentSession(invoiceTermId);
       }
       JPA.clear();
     }
   }
 
   @Transactional
-  protected void saveCanceledInvoiceTermWithPaymentSession(InvoiceTerm invoiceTerm) {
+  protected void saveCanceledInvoiceTermWithPaymentSession(Long invoiceTermId) {
+    InvoiceTerm invoiceTerm = invoiceTermRepo.find(invoiceTermId);
     this.cancelInvoiceTerm(invoiceTerm);
-    invoiceTermRepo.save(invoiceTerm);
   }
 
   protected void cancelInvoiceTerm(InvoiceTerm invoiceTerm) {
