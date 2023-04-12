@@ -45,6 +45,11 @@
       onClick="action-team-task-method-update-to-invoice"/>
   </grid>
 
+  <form name="project-task-form" title="Task" model="com.axelor.apps.project.db.ProjectTask"
+        onNew="action-project-task-group-onnew" onLoad="action-project-task-group-timer-process"
+        width="large">
+  </form>
+
   <action-method name="action-project-task-method-update-to-invoice">
     <call class="com.axelor.apps.businessproject.web.ProjectTaskController"
       method="updateToInvoice"/>
