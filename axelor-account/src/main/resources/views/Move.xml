@@ -118,7 +118,7 @@
             readonlyIf="$validatePeriod &amp;&amp; statusSelect == 3" colSpan="4"
             onChange="action-move-group-payment-condition-onchange"
             form-view="payment-condition-form" grid-view="payment-condition-grid"/>
-          <field name="$dueDate" title="Due date"
+          <field name="dueDate" title="Due date"
             help="This field allows to modify directly the move line due date which is by default calculated based on the payment condition."
             hidden="true" readonlyIf="!paymentCondition.isFree" type="date" colSpan="2"/>
           <spacer/>
@@ -206,7 +206,7 @@
       <panel title="Move Lines" readonlyIf="$validatePeriod">
         <button colSpan="3" name="counterpartGenerateBtn" css="btn-custom text-left"
           icon="fa-plus" title="Generate counterpart"
-          showIf="journal != null &amp;&amp; statusSelect != 3 &amp;&amp; ($journalTechnicalTypeSelect == 1 || $journalTechnicalTypeSelect == 2 || $journalTechnicalTypeSelect == 4)"
+          showIf="journal != null &amp;&amp; statusSelect != 3 &amp;&amp; ([1,2,4].includes($journalTechnicalTypeSelect) &amp;&amp; functionalOriginSelect &amp;&amp; [3,4,7].includes(functionalOriginSelect))"
           onClick="action-account-move-group-generate-counterpart"/>
         <button colSpan="3" name="autoTaxLineGenerateBtn" css="btn-custom text-left"
           icon="fa-plus" title="Generate tax lines" showIf="statusSelect == 1 || statusSelect == 5"
@@ -417,7 +417,7 @@
           readonlyIf="$validatePeriod" onClick="action-account-move-group-generate-tax-lines"
           colSpan="12" showIf="statusSelect == 1 || statusSelect == 5"/>
         <button
-          showIf="journal != null &amp;&amp; statusSelect != 3 &amp;&amp; ([1,2,4].includes($journalTechnicalTypeSelect) &amp;&amp; functionalOriginSelect != null &amp;&amp; [3,4,7].includes($journalTechnicalTypeSelect))"
+          showIf="journal != null &amp;&amp; statusSelect != 3 &amp;&amp; ([1,2,4].includes($journalTechnicalTypeSelect) &amp;&amp; functionalOriginSelect &amp;&amp; [3,4,7].includes(functionalOriginSelect))"
           name="counterpartGenerateBtn" title="Generate counterpart" readonlyIf="$validatePeriod"
           onClick="action-account-move-group-generate-counterpart" colSpan="12"/>
         <field name="$validatePeriod" hidden="true" type="boolean"/>
