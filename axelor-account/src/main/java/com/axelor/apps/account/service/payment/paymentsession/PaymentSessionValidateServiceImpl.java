@@ -489,12 +489,18 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       boolean out,
       BigDecimal reconciliedAmount)
       throws AxelorException {
+
+    BigDecimal amount = invoiceTerm.getAmountPaid().add(reconciliedAmount);
+    if (invoiceTerm.getApplyFinancialDiscountOnPaymentSession()) {
+      amount = amount.add(invoiceTerm.getFinancialDiscountAmount());
+    }
+
     MoveLine moveLine =
         this.generateMoveLine(
             move,
             invoiceTerm.getMoveLine().getPartner(),
             invoiceTerm.getMoveLine().getAccount(),
-            invoiceTerm.getAmountPaid().add(reconciliedAmount),
+            amount,
             origin,
             this.getMoveLineDescription(paymentSession),
             out);
