@@ -26,9 +26,9 @@
       help="Email template to send when responding to an erasure request."/>
     <track>
       <field name="maxRespondingDays" on="UPDATE"/>
-      <field name="anonymizer"/>
-      <field name="accessResponseTemplate"/>
-      <field name="erasureResponseTemplate"/>
+      <field name="anonymizer" on="UPDATE"/>
+      <field name="accessResponseTemplate" on="UPDATE"/>
+      <field name="erasureResponseTemplate" on="UPDATE"/>
     </track>
 
   </entity>
