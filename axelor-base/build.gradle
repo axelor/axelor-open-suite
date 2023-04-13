@@ -50,7 +50,7 @@ dependencies {
 		api project(":modules:axelor-studio")
 	}
 	else {
-		api "com.axelor.addons:axelor-studio:1.0.0-SNAPSHOT"
+		api libs.axelor_studio
 	}
 	implementation libs.faker
 	api libs.commons_csv
