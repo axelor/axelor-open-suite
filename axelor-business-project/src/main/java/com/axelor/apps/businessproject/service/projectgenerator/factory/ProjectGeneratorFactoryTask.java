@@ -80,21 +80,27 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
     List<ProjectTask> tasks = new ArrayList<>();
     projectRepository.save(project);
     for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+
+      if (SaleOrderLineRepository.TYPE_NORMAL != saleOrderLine.getTypeSelect()) {
+        continue;
+      }
+
       Product product = saleOrderLine.getProduct();
       boolean isTaskGenerated =
-          projectTaskRepo
-                  .all()
-                  .filter("self.saleOrderLine = ? AND self.project = ?", saleOrderLine, project)
-                  .fetch()
-                  .size()
-              > 0;
+          !projectTaskRepo
+              .all()
+              .filter("self.saleOrderLine = ? AND self.project = ?", saleOrderLine, project)
+              .fetch()
+              .isEmpty();
+
+      saleOrderLine.setProject(project);
+
       if (product != null
           && ProductRepository.PRODUCT_TYPE_SERVICE.equals(
               (String)
                   productCompanyService.get(product, "productTypeSelect", saleOrder.getCompany()))
           && saleOrderLine.getSaleSupplySelect() == SaleOrderLineRepository.SALE_SUPPLY_PRODUCE
           && !(isTaskGenerated)) {
-
         ProjectTask task =
             projectTaskBusinessProjectService.create(
                 saleOrderLine, project, project.getAssignedTo());

@@ -217,15 +217,12 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
 
   @Override
   public Project generatePhaseProject(SaleOrderLine saleOrderLine, Project parent) {
-    Project project =
-        generateProject(
-            parent,
-            saleOrderLine.getFullName(),
-            saleOrderLine.getSaleOrder().getSalespersonUser(),
-            parent.getCompany(),
-            parent.getClientPartner());
-    saleOrderLine.setProject(project);
-    return project;
+    return generateProject(
+        parent,
+        saleOrderLine.getFullName(),
+        saleOrderLine.getSaleOrder().getSalespersonUser(),
+        parent.getCompany(),
+        parent.getClientPartner());
   }
 
   @Override

@@ -40,7 +40,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
-public class ProjectGeneratorFactoryPhase implements ProjectGeneratorFactory {
+public class ProjectGeneratorFactorySubProject implements ProjectGeneratorFactory {
 
   private ProjectBusinessService projectBusinessService;
   private ProjectRepository projectRepository;
@@ -48,7 +48,7 @@ public class ProjectGeneratorFactoryPhase implements ProjectGeneratorFactory {
   private ProductTaskTemplateService productTaskTemplateService;
 
   @Inject
-  public ProjectGeneratorFactoryPhase(
+  public ProjectGeneratorFactorySubProject(
       ProjectBusinessService projectBusinessService,
       ProjectRepository projectRepository,
       SaleOrderLineRepository saleOrderLineRepository,
@@ -73,13 +73,20 @@ public class ProjectGeneratorFactoryPhase implements ProjectGeneratorFactory {
     List<Project> projects = new ArrayList<>();
     projectRepository.save(project);
     for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+
+      if (SaleOrderLineRepository.TYPE_NORMAL != saleOrderLine.getTypeSelect()) {
+        continue;
+      }
+
       Product product = saleOrderLine.getProduct();
+      Project lineProject = project;
+
       if (product != null
           && ProductRepository.PRODUCT_TYPE_SERVICE.equals(product.getProductTypeSelect())
           && saleOrderLine.getSaleSupplySelect() == SaleOrderLineRepository.SALE_SUPPLY_PRODUCE) {
         Project phase = projectBusinessService.generatePhaseProject(saleOrderLine, project);
+        lineProject = phase;
         phase.setFromDate(startDate);
-        saleOrderLineRepository.save(saleOrderLine);
         projects.add(phase);
 
         if (!CollectionUtils.isEmpty(product.getTaskTemplateSet())) {
@@ -94,7 +101,11 @@ public class ProjectGeneratorFactoryPhase implements ProjectGeneratorFactory {
               saleOrderLine);
         }
       }
+
+      saleOrderLine.setProject(lineProject);
+      saleOrderLineRepository.save(saleOrderLine);
     }
+
     return ActionView.define(String.format("Project%s generated", (projects.size() > 1 ? "s" : "")))
         .model(Project.class.getName())
         .add("grid", "project-grid")
