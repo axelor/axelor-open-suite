@@ -269,6 +269,7 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
             .order("id");
 
     this.filterInvoiceTerms(eligibleInvoiceTermQuery, paymentSession);
+    paymentSessionRepository.find(paymentSession.getId());
     computeTotalPaymentSession(paymentSession);
   }
 
