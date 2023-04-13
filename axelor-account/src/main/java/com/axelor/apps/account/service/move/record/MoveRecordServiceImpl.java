@@ -55,11 +55,23 @@ public class MoveRecordServiceImpl implements MoveRecordService {
 
     MoveContext result = new MoveContext();
 
+    boolean paymentConditionChange =
+        Optional.ofNullable(context.get("paymentConditionChange"))
+            .map(value -> (Boolean) value)
+            .orElse(false);
+    boolean headerChange =
+        Optional.ofNullable(context.get("headerChange"))
+            .map(value -> (Boolean) value)
+            .orElse(false);
+
     moveCheckService.checkDates(move);
     moveCheckService.checkPeriodPermission(move);
     moveCheckService.checkRemovedLines(move);
     moveCheckService.checkAnalyticAccount(move);
     moveRecordUpdateService.updatePartner(move);
+    result.merge(
+        moveRecordUpdateService.updateInvoiceTerms(move, paymentConditionChange, headerChange));
+    moveRecordUpdateService.updateInvoiceTermDueDate(move, this.extractDueDate(context));
 
     return result;
   }
@@ -73,19 +85,7 @@ public class MoveRecordServiceImpl implements MoveRecordService {
     move = moveRepository.find(move.getId());
     MoveContext result = new MoveContext();
 
-    boolean paymentConditionChange =
-        Optional.ofNullable(context.get("paymentConditionChange"))
-            .map(value -> (Boolean) value)
-            .orElse(false);
-    boolean headerChange =
-        Optional.ofNullable(context.get("headerChange"))
-            .map(value -> (Boolean) value)
-            .orElse(false);
-
-    result.merge(
-        moveRecordUpdateService.updateInvoiceTerms(move, paymentConditionChange, headerChange));
     moveRecordUpdateService.updateRoundInvoiceTermPercentages(move);
-    moveRecordUpdateService.updateInvoiceTermDueDate(move, this.extractDueDate(context));
     moveRecordUpdateService.updateInDayBookMode(move);
 
     return result;
@@ -168,7 +168,7 @@ public class MoveRecordServiceImpl implements MoveRecordService {
         !periodAccountService.isAuthorizedToAccountOnPeriod(move, AuthUtils.getUser()));
     moveCheckService.checkPeriodPermission(move);
     result.putInValues(moveRecordSetService.setMoveLineDates(move));
-    moveRecordUpdateService.updateMoveLinesCurrencyRate(move, move.getDueDate());
+    result.merge(moveRecordUpdateService.updateMoveLinesCurrencyRate(move, move.getDueDate()));
     result.putInValues(moveComputeService.computeTotals(move));
     updateDummiesDateConText(move, context);
     result.merge(moveRecordUpdateService.updateDueDate(move, paymentConditionChange, dateChange));
@@ -271,7 +271,7 @@ public class MoveRecordServiceImpl implements MoveRecordService {
     result.putInValues(moveRecordSetService.setMoveLineOriginDates(move));
     updateDummiesDateConText(move, context);
     result.merge(moveRecordUpdateService.updateDueDate(move, paymentConditionChange, dateChange));
-    result.putInValues("$paymentConditionChange", true);
+    result.putInAttrs("$paymentConditionChange", "value", true);
 
     return result;
   }
@@ -317,5 +317,35 @@ public class MoveRecordServiceImpl implements MoveRecordService {
     } else {
       return LocalDate.parse((String) dueDateObj);
     }
+  }
+
+  @Override
+  public MoveContext onChangePaymentCondition(Move move, Context context) throws AxelorException {
+
+    Objects.requireNonNull(move);
+    Objects.requireNonNull(context);
+
+    boolean paymentConditionChange =
+        Optional.ofNullable(context.get("paymentConditionChange"))
+            .map(value -> (Boolean) value)
+            .orElse(false);
+    boolean headerChange =
+        Optional.ofNullable(context.get("headerChange"))
+            .map(value -> (Boolean) value)
+            .orElse(false);
+    boolean dateChange =
+        Optional.ofNullable(context.get("dateChange")).map(value -> (Boolean) value).orElse(false);
+
+    MoveContext result = new MoveContext();
+
+    result.merge(moveCheckService.checkTermsInPayment(move));
+    result.putInAttrs("$paymentConditionChange", "value", true);
+    paymentConditionChange = true;
+    result.merge(
+        moveRecordUpdateService.updateInvoiceTerms(move, paymentConditionChange, headerChange));
+    moveRecordUpdateService.updateInvoiceTermDueDate(move, this.extractDueDate(context));
+    moveRecordUpdateService.updateDueDate(move, paymentConditionChange, dateChange);
+
+    return result;
   }
 }

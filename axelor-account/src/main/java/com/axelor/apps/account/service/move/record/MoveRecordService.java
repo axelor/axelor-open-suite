@@ -57,4 +57,6 @@ public interface MoveRecordService {
   MoveContext onChangeOriginDate(Move move, Context context) throws AxelorException;
 
   MoveContext onChangeOrigin(Move move, Context context) throws AxelorException;
+
+  MoveContext onChangePaymentCondition(Move move, Context context) throws AxelorException;
 }

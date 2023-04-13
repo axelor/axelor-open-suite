@@ -557,12 +557,16 @@ public class MoveController {
       Move move = request.getContext().asType(Move.class);
       String errorMessage =
           Beans.get(MoveInvoiceTermService.class).checkIfInvoiceTermInPayment(move);
-      if (move.getId() != null && !StringUtils.isEmpty(errorMessage)) {
-        response.setValue(
-            "paymentCondition",
-            Beans.get(MoveRepository.class).find(move.getId()).getPaymentCondition());
+
+      if (StringUtils.notEmpty(errorMessage)) {
+        if (move.getId() != null) {
+          response.setValue(
+              "paymentCondition",
+              Beans.get(MoveRepository.class).find(move.getId()).getPaymentCondition());
+        }
+
+        response.setError(errorMessage);
       }
-      response.setValue("$paymentConditionChangeError", errorMessage);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -645,6 +649,9 @@ public class MoveController {
       if (!result.getAlert().isEmpty()) {
         response.setAlert(result.getAlert());
       }
+      if (!result.getError().isEmpty()) {
+        response.setError(result.getError());
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
@@ -665,6 +672,9 @@ public class MoveController {
       if (!result.getAlert().isEmpty()) {
         response.setAlert(result.getAlert());
       }
+      if (!result.getError().isEmpty()) {
+        response.setError(result.getError());
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
@@ -675,7 +685,8 @@ public class MoveController {
       Move move = request.getContext().asType(Move.class);
       MoveContext result =
           Beans.get(MoveRecordService.class).onSaveBefore(move, request.getContext());
-      response.setValues(result.getValues());
+      // As this method will make a update in the invoiceTerms set values move
+      response.setValues(move);
       response.setAttrs(result.getAttrs());
       if (!result.getFlash().isEmpty()) {
         response.setFlash(result.getFlash());
@@ -685,6 +696,9 @@ public class MoveController {
       }
       if (!result.getAlert().isEmpty()) {
         response.setAlert(result.getAlert());
+      }
+      if (!result.getError().isEmpty()) {
+        response.setError(result.getError());
       }
 
     } catch (Exception e) {
@@ -697,7 +711,8 @@ public class MoveController {
       Move move = request.getContext().asType(Move.class);
       MoveContext result =
           Beans.get(MoveRecordService.class).onSaveAfter(move, request.getContext());
-      response.setValues(result.getValues());
+      // As this method will make a update in the invoiceTerms set values move
+      response.setValues(move);
       response.setAttrs(result.getAttrs());
       if (!result.getFlash().isEmpty()) {
         response.setFlash(result.getFlash());
@@ -707,6 +722,9 @@ public class MoveController {
       }
       if (!result.getAlert().isEmpty()) {
         response.setAlert(result.getAlert());
+      }
+      if (!result.getError().isEmpty()) {
+        response.setError(result.getError());
       }
       response.setReload(true);
     } catch (Exception e) {
@@ -730,6 +748,9 @@ public class MoveController {
       if (!result.getAlert().isEmpty()) {
         response.setAlert(result.getAlert());
       }
+      if (!result.getError().isEmpty()) {
+        response.setError(result.getError());
+      }
 
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
@@ -751,6 +772,9 @@ public class MoveController {
       }
       if (!result.getAlert().isEmpty()) {
         response.setAlert(result.getAlert());
+      }
+      if (!result.getError().isEmpty()) {
+        response.setError(result.getError());
       }
 
     } catch (Exception e) {
@@ -774,6 +798,9 @@ public class MoveController {
       if (!result.getAlert().isEmpty()) {
         response.setAlert(result.getAlert());
       }
+      if (!result.getError().isEmpty()) {
+        response.setError(result.getError());
+      }
 
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
@@ -795,6 +822,9 @@ public class MoveController {
       }
       if (!result.getAlert().isEmpty()) {
         response.setAlert(result.getAlert());
+      }
+      if (!result.getError().isEmpty()) {
+        response.setError(result.getError());
       }
 
     } catch (Exception e) {
@@ -818,6 +848,9 @@ public class MoveController {
       if (!result.getAlert().isEmpty()) {
         response.setAlert(result.getAlert());
       }
+      if (!result.getError().isEmpty()) {
+        response.setError(result.getError());
+      }
 
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
@@ -839,6 +872,35 @@ public class MoveController {
       }
       if (!result.getAlert().isEmpty()) {
         response.setAlert(result.getAlert());
+      }
+      if (!result.getError().isEmpty()) {
+        response.setError(result.getError());
+      }
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void onChangePaymentCondition(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      MoveContext result =
+          Beans.get(MoveRecordService.class).onChangePaymentCondition(move, request.getContext());
+      // As this method will make a update in the invoiceTerms set values move
+      response.setValues(move);
+      response.setAttrs(result.getAttrs());
+      if (!result.getFlash().isEmpty()) {
+        response.setFlash(result.getFlash());
+      }
+      if (!result.getNotify().isEmpty()) {
+        response.setNotify(result.getNotify());
+      }
+      if (!result.getAlert().isEmpty()) {
+        response.setAlert(result.getAlert());
+      }
+      if (!result.getError().isEmpty()) {
+        response.setError(result.getError());
       }
 
     } catch (Exception e) {

@@ -121,7 +121,7 @@
             showIf="journal.journalType.technicalTypeSelect != 4" form-view="payment-condition-form"
             grid-view="payment-condition-grid"
             readonlyIf="$validatePeriod &amp;&amp; statusSelect == 3"
-            onChange="action-move-group-payment-condition-onchange"
+            onChange="action-account-move-method-payment-condition-onchange"
             onSelect="action-move-attrs-payment-condition-set-domain"/>
           <field name="partnerBankDetails" colSpan="3"
             showIf="[2,3,9,10].includes(paymentMode.typeSelect)"
@@ -672,13 +672,9 @@
     <call class="com.axelor.apps.account.web.MoveController" method="onChangeMoveLineList"/>
   </action-method>
 
-  <action-group name="action-move-group-payment-condition-onchange">
-    <action name="action-move-method-check-term-in-payment"/>
-    <action name="action-move-attrs-payment-condition-change"/>
-    <action name="action-move-method-update-invoice-terms"/>
-    <action name="action-move-method-update-due-date"/>
-    <action name="action-move-method-display-and-compute-due-date"/>
-  </action-group>
+  <action-method name="action-account-move-method-payment-condition-onchange">
+    <call class="com.axelor.apps.account.web.MoveController" method="onChangePaymentCondition"/>
+  </action-method>
 
   <action-method name="action-account-move-method-origin-date-onchange">
     <call class="com.axelor.apps.account.web.MoveController" method="onChangeOriginDate"/>

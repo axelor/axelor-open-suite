@@ -12,6 +12,7 @@ public class MoveContext {
   protected StringJoiner flashContext = new StringJoiner("\n");
   protected StringJoiner alertContext = new StringJoiner("\n");
   protected StringJoiner notifyContext = new StringJoiner("\n");
+  protected StringJoiner errorContext = new StringJoiner("\n");
 
   public MoveContext() {
     this.valuesContext = new HashMap<>();
@@ -71,12 +72,21 @@ public class MoveContext {
     return notifyContext.toString();
   }
 
+  public void putInError(String value) {
+    this.errorContext.add(value);
+  }
+
+  public String getError() {
+    return errorContext.toString();
+  }
+
   public void merge(MoveContext moveContext) {
     if (moveContext != null) {
       this.attrsContext.putAll(moveContext.getAttrs());
       this.valuesContext.putAll(moveContext.getValues());
       this.flashContext.add(moveContext.getFlash());
       this.alertContext.add(moveContext.getAlert());
+      this.errorContext.add(moveContext.getError());
     }
   }
 }

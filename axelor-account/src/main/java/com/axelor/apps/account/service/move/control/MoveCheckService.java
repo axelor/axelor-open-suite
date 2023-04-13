@@ -1,6 +1,7 @@
 package com.axelor.apps.account.service.move.control;
 
 import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.service.move.record.model.MoveContext;
 import com.axelor.exception.AxelorException;
 import java.util.Map;
 
@@ -40,4 +41,6 @@ public interface MoveCheckService {
   void checkDuplicatedMoveOrigin(Move move) throws AxelorException;
 
   void checkOrigin(Move move) throws AxelorException;
+
+  MoveContext checkTermsInPayment(Move move) throws AxelorException;
 }

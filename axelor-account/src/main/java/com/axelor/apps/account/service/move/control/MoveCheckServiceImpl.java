@@ -2,14 +2,18 @@ package com.axelor.apps.account.service.move.control;
 
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.journal.JournalCheckPartnerTypeService;
+import com.axelor.apps.account.service.move.MoveInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveToolService;
+import com.axelor.apps.account.service.move.record.model.MoveContext;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.common.ObjectUtils;
+import com.axelor.common.StringUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -31,6 +35,7 @@ public class MoveCheckServiceImpl implements MoveCheckService {
   protected AppAccountService appAccountService;
   protected MoveLineCheckService moveLineCheckService;
   protected JournalCheckPartnerTypeService journalCheckPartnerTypeService;
+  protected MoveInvoiceTermService moveInvoiceTermService;
 
   @Inject
   public MoveCheckServiceImpl(
@@ -39,13 +44,15 @@ public class MoveCheckServiceImpl implements MoveCheckService {
       PeriodService periodService,
       AppAccountService appAccountService,
       MoveLineCheckService moveLineCheckService,
-      JournalCheckPartnerTypeService journalCheckPartnerTypeService) {
+      JournalCheckPartnerTypeService journalCheckPartnerTypeService,
+      MoveInvoiceTermService moveInvoiceTermService) {
     this.moveRepository = moveRepository;
     this.moveToolService = moveToolService;
     this.periodService = periodService;
     this.appAccountService = appAccountService;
     this.moveLineCheckService = moveLineCheckService;
     this.journalCheckPartnerTypeService = journalCheckPartnerTypeService;
+    this.moveInvoiceTermService = moveInvoiceTermService;
   }
 
   @Override
@@ -166,5 +173,25 @@ public class MoveCheckServiceImpl implements MoveCheckService {
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(AccountExceptionMessage.MOVE_CHECK_ORIGIN));
     }
+  }
+
+  @Override
+  public MoveContext checkTermsInPayment(Move move) throws AxelorException {
+
+    MoveContext moveContext = new MoveContext();
+    String errorMessage = moveInvoiceTermService.checkIfInvoiceTermInPayment(move);
+
+    if (StringUtils.notEmpty(errorMessage)) {
+      if (move.getId() != null) {
+        PaymentCondition formerPaymentCondition =
+            moveRepository.find(move.getId()).getPaymentCondition();
+        move.setPaymentCondition(formerPaymentCondition);
+        moveContext.putInValues("paymentCondition", formerPaymentCondition);
+      }
+
+      moveContext.putInError(errorMessage);
+    }
+
+    return moveContext;
   }
 }

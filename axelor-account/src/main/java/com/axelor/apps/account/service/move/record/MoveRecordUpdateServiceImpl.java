@@ -56,7 +56,6 @@ public class MoveRecordUpdateServiceImpl implements MoveRecordUpdateService {
     MoveContext result = new MoveContext();
 
     if (paymentConditionChange) {
-      move = moveRepository.find(move.getId());
 
       moveInvoiceTermService.recreateInvoiceTerms(move);
 
@@ -66,7 +65,6 @@ public class MoveRecordUpdateServiceImpl implements MoveRecordUpdateService {
         move.setDueDate(dueDate);
       }
     } else if (headerChange) {
-      move = moveRepository.find(move.getId());
 
       boolean isAllUpdated = moveInvoiceTermService.updateInvoiceTerms(move);
 
@@ -75,8 +73,8 @@ public class MoveRecordUpdateServiceImpl implements MoveRecordUpdateService {
       }
     }
 
-    result.putInValues("$paymentConditionChange", false);
-    result.putInValues("$headerChange", false);
+    result.putInAttrs("$paymentConditionChange", "value", false);
+    result.putInAttrs("$headerChange", "value", false);
     return result;
   }
 
@@ -88,7 +86,6 @@ public class MoveRecordUpdateServiceImpl implements MoveRecordUpdateService {
   @Override
   public void updateInvoiceTermDueDate(Move move, LocalDate dueDate) {
     if (dueDate != null) {
-      move = moveRepository.find(move.getId());
 
       moveInvoiceTermService.updateSingleInvoiceTermDueDate(move, dueDate);
     }
@@ -103,14 +100,18 @@ public class MoveRecordUpdateServiceImpl implements MoveRecordUpdateService {
   }
 
   @Override
-  public void updateMoveLinesCurrencyRate(Move move, LocalDate dueDate) throws AxelorException {
+  public MoveContext updateMoveLinesCurrencyRate(Move move, LocalDate dueDate)
+      throws AxelorException {
 
+    MoveContext moveContext = new MoveContext();
     if (move != null
         && ObjectUtils.notEmpty(move.getMoveLineList())
         && move.getCurrency() != null
         && move.getCompanyCurrency() != null) {
       moveLineCurrencyService.computeNewCurrencyRateOnMoveLineList(move, dueDate);
+      moveContext.putInValues("moveLineList", move.getMoveLineList());
     }
+    return moveContext;
   }
 
   @Override
@@ -131,7 +132,7 @@ public class MoveRecordUpdateServiceImpl implements MoveRecordUpdateService {
         LocalDate dueDate = moveInvoiceTermService.computeDueDate(move, true, isDateChange);
         move.setDueDate(dueDate);
         moveContext.putInValues("dueDate", dueDate);
-        moveContext.putInValues("$dateChange", false);
+        moveContext.putInAttrs("$dateChange", "value", false);
       }
     } else {
       move.setDueDate(null);
