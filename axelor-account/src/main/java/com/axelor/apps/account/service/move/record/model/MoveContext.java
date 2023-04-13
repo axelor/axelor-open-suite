@@ -82,11 +82,21 @@ public class MoveContext {
 
   public void merge(MoveContext moveContext) {
     if (moveContext != null) {
-      this.attrsContext.putAll(moveContext.getAttrs());
-      this.valuesContext.putAll(moveContext.getValues());
-      this.flashContext.add(moveContext.getFlash());
-      this.alertContext.add(moveContext.getAlert());
-      this.errorContext.add(moveContext.getError());
+      if (!moveContext.getAttrs().isEmpty()) {
+        this.attrsContext.putAll(moveContext.getAttrs());
+      }
+      if (!moveContext.getValues().isEmpty()) {
+        this.valuesContext.putAll(moveContext.getValues());
+      }
+      if (!moveContext.getFlash().isEmpty()) {
+        this.flashContext.add(moveContext.getFlash());
+      }
+      if (!moveContext.getAlert().isEmpty()) {
+        this.alertContext.add(moveContext.getAlert());
+      }
+      if (!moveContext.getError().isEmpty()) {
+        this.errorContext.add(moveContext.getError());
+      }
     }
   }
 }
