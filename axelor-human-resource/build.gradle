@@ -52,11 +52,13 @@ task installFrontDeps(type: YarnTask) {
 }
 
 
-task copyWebapp(type: Copy) {
+task copyReactWebapp(type: Copy) {
 	destinationDir = file(rootProject.buildDir)
 	into("webapp/hr/timesheet") {
 		from "src/main/axelor-react-timesheet/build"
 	}
+	
+	dependsOn 'buildFront'
 }
 
 
@@ -78,5 +80,5 @@ jar {
 }
 
 
-build.dependsOn copyWebapp
-rootProject.tasks.war.dependsOn copyWebapp
+build.dependsOn copyReactWebapp
+rootProject.tasks.war.dependsOn copyReactWebapp
