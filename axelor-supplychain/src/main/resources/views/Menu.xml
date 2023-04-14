@@ -33,7 +33,7 @@
 
   <!-- MRP -->
 
-  <menuitem name="stock-mrp" parent="stock-root" title="MRP"
+  <menuitem name="stock-mrp" parent="sc-root-purchase" title="MRP"
     if="__config__.app.isApp('supplychain')" order="1000"/>
 
   <menuitem name="stock-mrp-calculation" parent="stock-mrp" title="MRP"
@@ -206,7 +206,7 @@
 
   <menuitem name="stock-root-stock-details-by-product" parent="stock-root"
     if="__config__.app.isApp('supplychain')" title="Stock details by product"
-    action="stock.root.stock.details.by.product" order="200"/>
+    action="stock.root.stock.details.by.product" order="500"/>
 
   <action-view name="stock.root.stock.details.by.product"
     title="Stock details by product" model="com.axelor.utils.db.Wizard">
@@ -233,9 +233,9 @@
   </action-view>
 
 
-  <menuitem name="stock-root-custdeliveries-invoicing-block"
-    parent="stock-root-stock-moves" tag-count="true" title="Invoicing blocked customer deliveries"
-    action="stock.root.custdeliveries.invoicing.block" order="300"/>
+  <menuitem name="stock-root-custdeliveries-invoicing-block" parent="stock-root-deliveries"
+    tag-count="true" title="Invoicing blocked customer deliveries"
+    action="stock.root.custdeliveries.invoicing.block" order="400"/>
 
   <action-view name="stock.root.custdeliveries.invoicing.block"
     title="Invoicing blocked customer deliveries" model="com.axelor.apps.stock.db.StockMove">

@@ -1577,6 +1577,8 @@
 "Products per companies",,,
 "Products variant attributes",,,
 "Products variants",,,
+"Products.items","Products",,
+"Products.services","Services",,
 "Prof.",,,
 "Prospect",,,
 "Prospects",,,

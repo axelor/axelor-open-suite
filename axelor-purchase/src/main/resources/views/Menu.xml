@@ -106,7 +106,7 @@
       expr="com.axelor.apps.purchase.service.ABCAnalysisServicePurchaseImpl"/>
   </action-view>
 
-  <menuitem name="sc-root-purchase-historical" title="Historical" order="1000"
+  <menuitem name="sc-root-purchase-historical" title="Historical" order="1100"
     parent="sc-root-purchase" action="purchase.historical.orders"/>
 
   <action-view name="purchase.historical.orders" title="Historical"
@@ -119,7 +119,7 @@
   </action-view>
 
   <menuitem name="sc-root-purchase-report" parent="sc-root-purchase" title="Reportings"
-    order="1200" icon="fa-bar-chart"/>
+    order="1300" icon="fa-bar-chart"/>
 
   <menuitem name="purchase-report-maps" parent="sc-root-purchase-report" title="Maps"
     order="300"/>
@@ -132,7 +132,7 @@
   </action-method>
 
   <menuitem name="sc-root-purchase-conf" parent="sc-root-purchase" title="Configuration"
-    order="1300" icon="fa-cog"/>
+    order="1400" icon="fa-cog"/>
 
   <menuitem name="sc-root-purchase-conf-partner-price-list" parent="sc-root-purchase-conf"
     title="Partner price lists" action="sc.root.purchase.conf.partner.price.list" order="100"/>

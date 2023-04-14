@@ -581,8 +581,8 @@
       method="historicExtraHours"/>
   </action-method>
 
-  <action-view name="product.root.product" title="Products" id="hr.product.root.product"
-    model="com.axelor.apps.base.db.Product">
+  <action-view name="product.root.product" title="Products.items"
+    id="hr.product.root.product" model="com.axelor.apps.base.db.Product">
     <view type="cards" name="product-cards"/>
     <view type="grid" name="product-grid"/>
     <view type="form" name="product-form"/>

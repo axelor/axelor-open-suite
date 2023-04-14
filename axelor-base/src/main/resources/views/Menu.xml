@@ -221,9 +221,9 @@
     parent="referential-root"/>
 
   <menuitem name="product-root-product" parent="referential-root-product-root"
-    title="Products" action="product.root.product" order="100"/>
+    title="Products.items" action="product.root.product" order="100"/>
 
-  <action-view name="product.root.product" title="Products"
+  <action-view name="product.root.product" title="Products.items"
     model="com.axelor.apps.base.db.Product">
     <view type="cards" name="product-cards"/>
     <view type="grid" name="product-grid"/>
@@ -239,9 +239,9 @@
 
 
   <menuitem name="product-root-service" parent="referential-root-product-root"
-    title="Services" action="product.root.service" order="200"/>
+    title="Products.services" action="product.root.service" order="200"/>
 
-  <action-view name="product.root.service" title="Services"
+  <action-view name="product.root.service" title="Products.services"
     model="com.axelor.apps.base.db.Product">
     <view type="cards" name="product-cards"/>
     <view type="grid" name="product-grid"/>
