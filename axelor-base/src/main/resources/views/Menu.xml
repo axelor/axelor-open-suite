@@ -816,7 +816,7 @@
   </action-view>
 
   <menuitem name="admin-root-calendars" parent="admin-root"
-    if="__config__.app.isApp('base')" title="Calendars" order="1100"/>
+    if="__config__.app.isApp('base')" title="Calendars" order="1200"/>
 
   <menuitem name="admin-root-calendars-icalendars" title="iCalendars"
     parent="admin-root-calendars" action="admin.root.calendars.icalendars" order="100"/>
@@ -1016,8 +1016,16 @@
   <menuitem id="admin-menu-admin-app-management" name="menu-admin-app-management"
     parent="admin-root" order="100" title="Apps management" action="menu.admin.app.management"/>
 
+  <menuitem name="admin-root-api-documentation" parent="admin-root"
+    if="__config__.app.isApp('base') &amp;&amp; __config__.swagger" title="API Documentation"
+    order="1000" action="admin.root.api.documentation"/>
+
+  <action-view name="admin.root.api.documentation" title="API Documentation">
+    <view type="html" name="swagger/"/>
+  </action-view>
+
   <menuitem name="admin-root-maintenance" parent="admin-root"
-    if="__config__.app.isApp('base')" title="Technical maintenance" order="1000"/>
+    if="__config__.app.isApp('base')" title="Technical maintenance" order="1100"/>
 
   <menuitem name="admin-root-object-data-config" parent="admin-root-maintenance"
     title="Object data config" action="admin.root.object.data.config" order="1200"/>
@@ -1069,14 +1077,6 @@
     model="com.axelor.apps.base.db.FakerApiField">
     <view type="grid" name="faker-api-field-grid"/>
     <view type="form" name="faker-api-field-form"/>
-  </action-view>
-
-  <menuitem name="admin-root-api-documentation" parent="admin-root"
-    if="__config__.app.isApp('base') &amp;&amp; __config__.swagger" title="API Documentation"
-    order="50" action="admin.root.api.documentation"/>
-
-  <action-view name="admin.root.api.documentation" title="API Documentation">
-    <view type="html" name="swagger/"/>
   </action-view>
 
   <menuitem name="studio-app-root" id="base-studio-app-root" title="App" order="-250"
