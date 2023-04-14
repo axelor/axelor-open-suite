@@ -132,7 +132,7 @@
         onChange="action-supplychain-attrs-sale-order-line-max-reserved-qty"/>
       <button name="confirmNewReservationBtn" title="OK"
         onClick="action-method-stock-move-line-change-reserved-qty,close"/>
-      <field name="qty" hidden="true"/>
+      <field name="expectedQty" hidden="true"/>
     </panel>
   </form>
 

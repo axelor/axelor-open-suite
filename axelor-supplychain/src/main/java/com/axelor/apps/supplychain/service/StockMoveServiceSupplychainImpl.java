@@ -492,11 +492,15 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
         super.createSplitStockMoveLine(
             originalStockMove, originalStockMoveLine, modifiedStockMoveLine);
 
-    if (originalStockMoveLine.getQty().compareTo(originalStockMoveLine.getRequestedReservedQty())
+    if (originalStockMoveLine
+            .getExpectedQty()
+            .compareTo(originalStockMoveLine.getRequestedReservedQty())
         < 0) {
       newStockMoveLine.setRequestedReservedQty(
-          originalStockMoveLine.getRequestedReservedQty().subtract(originalStockMoveLine.getQty()));
-      originalStockMoveLine.setRequestedReservedQty(originalStockMoveLine.getQty());
+          originalStockMoveLine
+              .getRequestedReservedQty()
+              .subtract(originalStockMoveLine.getExpectedQty()));
+      originalStockMoveLine.setRequestedReservedQty(originalStockMoveLine.getExpectedQty());
     }
     newStockMoveLine.setPurchaseOrderLine(originalStockMoveLine.getPurchaseOrderLine());
     newStockMoveLine.setSaleOrderLine(originalStockMoveLine.getSaleOrderLine());

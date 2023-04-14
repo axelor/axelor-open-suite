@@ -11,7 +11,7 @@
       domain="self.dtype = 'Product'"/>
     <field name="productModel" form-view="product-form" grid-view="product-grid"
       if="__config__.app.getApp('base')?.manageProductVariants" readonlyIf="product || id"/>
-    <field name="qty" title="Consumed quantity" x-scale="2"/>
+    <field name="expectedQty" title="Consumed quantity" x-scale="2"/>
     <field name="requestedReservedQty" if-module="axelor-supplychain" readonly="true"
       if="__config__.app.getApp('supplychain')?.getManageStockReservation()" aggregate="sum"/>
     <field name="reservedQty" if-module="axelor-supplychain"
@@ -20,7 +20,7 @@
     <button name="allocateAll"
       if="__config__.app.getApp('supplychain')?.manageStockReservation" title="Allocate"
       icon="fa-plus-square"
-      readonlyIf="$get('stockMove.statusSelect') != 2 || $number(reservedQty) == $number(qty)"
+      readonlyIf="$get('stockMove.statusSelect') != 2 || $number(reservedQty) == $number(expectedQty)"
       onClick="save,action-supplychain-stock-move-line-allocate-all"/>
     <button name="deallocate"
       if="__config__.app.getApp('supplychain')?.manageStockReservation" title="Deallocate"
@@ -54,7 +54,7 @@
       domain="self.dtype = 'Product'"/>
     <field name="productModel" form-view="product-form" grid-view="product-grid"
       if="__config__.app.getApp('base')?.manageProductVariants" readonlyIf="product || id"/>
-    <field name="qty" title="Produced quantity" x-scale="2"/>
+    <field name="expectedQty" title="Produced quantity" x-scale="2"/>
     <field name="unitPriceUntaxed" x-scale="2"/>
     <field name="unitPriceTaxed" x-scale="2" hidden="true"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
@@ -88,7 +88,7 @@
         grid-view="product-grid" if="__config__.app.getApp('base')?.manageProductVariants"
         readonlyIf="product || id"/>
       <field name="productName" required="true"/>
-      <field name="qty" onChange="action-stock-move-line-group-qty-onchange"
+      <field name="expectedQty" onChange="action-stock-move-line-group-qty-onchange"
         title="Consumed quantity"/>
       <field name="unitPriceUntaxed"/>
       <field name="unitPriceTaxed" hidden="true"/>

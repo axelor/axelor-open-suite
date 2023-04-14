@@ -226,8 +226,8 @@
   			SELECT estimatedate,locat,SUM(qty) OVER (PARTITION BY locat ORDER BY locat,estimatedate) AS qty
 			FROM (
 				(SELECT DATE(:todayDate) AS estimatedate,location.name AS locat,
-	               		(SELECT SUM(CASE WHEN move.from_stock_location = loc.id THEN -1*qty
-	                           WHEN move.to_stock_location = loc.id THEN qty
+	               		(SELECT SUM(CASE WHEN move.from_stock_location = loc.id THEN -1*expected_qty
+	                           WHEN move.to_stock_location = loc.id THEN expected_qty
 	                           END) AS qty
                			FROM 	stock_stock_move_line line,
 	                    		stock_stock_move move,
@@ -247,8 +247,8 @@
 		   		UNION ALL
 		   		(SELECT estimated_date AS dt,locat,sum(qty)
 		                FROM (SELECT location.name AS locat,move.estimated_date AS estimated_date,
-		         	           	CASE WHEN move.from_stock_location = location.id THEN -1*line.qty
-		                        WHEN move.to_stock_location = location.id THEN line.qty
+		         	           	CASE WHEN move.from_stock_location = location.id THEN -1*line.expected_qty
+		                        WHEN move.to_stock_location = location.id THEN line.expected_qty
 		                        END AS qty
 		                     FROM stock_stock_move_line line
 		                     LEFT JOIN stock_stock_move move ON (line.stock_move = move.id)
@@ -275,7 +275,7 @@
 		         real_date,locat,SUM(qty) OVER (PARTITION BY locat ORDER BY locat,real_date) AS qty
 			FROM
 				 ((SELECT DATE(:fromDate) AS real_date,location.name AS locat,
-			     (SELECT SUM(CASE WHEN move.from_stock_location = loc.id THEN -1*qty WHEN move.to_stock_location = loc.id THEN qty END) AS qty
+			     (SELECT SUM(CASE WHEN move.from_stock_location = loc.id THEN -1*expected_qty WHEN move.to_stock_location = loc.id THEN expected_qty END) AS qty
        		FROM
        			stock_stock_move_line line,
        			stock_stock_move move,
@@ -300,8 +300,8 @@
 		   	    (SELECT real_date AS dt,locat,sum(qty)
 		    FROM
 		        (SELECT location.name AS locat,move.real_date AS real_date,
-     	           	CASE WHEN move.from_stock_location = location.id THEN -1*line.qty
-                    	 WHEN move.to_stock_location = location.id THEN line.qty
+     	           	CASE WHEN move.from_stock_location = location.id THEN -1*line.expected_qty
+                    	 WHEN move.to_stock_location = location.id THEN line.expected_qty
                     END AS qty
 		    FROM
 		     	stock_stock_move_line line
@@ -328,7 +328,7 @@
     <dataset type="jpql">
 	    <![CDATA[
 		SELECT
-	    SUM(_stockMoveLine.qty) AS qty,
+	    SUM(_stockMoveLine.expectedQty) AS qty,
 	    MONTH(_stockMove.estimatedDate) as month,
 	    _to_location.name AS location
 		FROM
@@ -365,8 +365,8 @@
   			SELECT estimatedate,locat,SUM(qty) OVER (PARTITION BY locat ORDER BY locat,estimatedate) AS qty
 					FROM (
 						(SELECT DATE(:todayDate) AS estimatedate,location.name AS locat,
-			               		(SELECT SUM(CASE WHEN move.from_stock_location = loc.id THEN -1*qty
-			                           WHEN move.to_stock_location = loc.id THEN qty
+			               		(SELECT SUM(CASE WHEN move.from_stock_location = loc.id THEN -1*expected_qty
+			                           WHEN move.to_stock_location = loc.id THEN expected_qty
 			                           END) AS qty
 		               			FROM 	stock_stock_move_line line,
 			                    		stock_stock_move move,
@@ -391,8 +391,8 @@
 				   		UNION ALL
 				   		(SELECT estimated_date AS dt,locat,sum(qty)
 				                FROM (SELECT location.name AS locat,move.estimated_date AS estimated_date,
-				         	           	CASE WHEN move.from_stock_location = location.id THEN -1*line.qty
-				                        WHEN move.to_stock_location = location.id THEN line.qty
+				         	           	CASE WHEN move.from_stock_location = location.id THEN -1*line.expected_qty
+				                        WHEN move.to_stock_location = location.id THEN line.expected_qty
 				                        END AS qty
 				                     FROM stock_stock_move_line line
 				                     LEFT JOIN stock_stock_move move ON (line.stock_move = move.id)
@@ -428,7 +428,7 @@
 		         real_date,locat,SUM(qty) OVER (PARTITION BY locat ORDER BY locat,real_date) AS qty
 			FROM
 				 ((SELECT DATE(:fromDate) AS real_date,location.name AS locat,
-			     (SELECT SUM(CASE WHEN move.from_stock_location = loc.id THEN -1*qty WHEN move.to_stock_location = loc.id THEN qty END) AS qty
+			     (SELECT SUM(CASE WHEN move.from_stock_location = loc.id THEN -1*expected_qty WHEN move.to_stock_location = loc.id THEN expected_qty END) AS qty
        		FROM
        			stock_stock_move_line line,
        			stock_stock_move move,
@@ -458,8 +458,8 @@
 		   	    (SELECT real_date AS dt,locat,sum(qty)
 		    FROM
 		        (SELECT location.name AS locat,move.real_date AS real_date,
-     	           	CASE WHEN move.from_stock_location = location.id THEN -1*line.qty
-                    	 WHEN move.to_stock_location = location.id THEN line.qty
+     	           	CASE WHEN move.from_stock_location = location.id THEN -1*line.expected_qty
+                    	 WHEN move.to_stock_location = location.id THEN line.expected_qty
                     END AS qty
 		    FROM
 		     	stock_stock_move_line line

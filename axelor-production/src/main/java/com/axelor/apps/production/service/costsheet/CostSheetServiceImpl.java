@@ -940,8 +940,8 @@ public class CostSheetServiceImpl implements CostSheetService {
                 unitConversionService.convert(
                     stockMoveLine.getUnit(),
                     costSheet.getManufOrder().getUnit(),
-                    stockMoveLine.getQty(),
-                    stockMoveLine.getQty().scale(),
+                    stockMoveLine.getExpectedQty(),
+                    stockMoveLine.getExpectedQty().scale(),
                     product));
       }
     }

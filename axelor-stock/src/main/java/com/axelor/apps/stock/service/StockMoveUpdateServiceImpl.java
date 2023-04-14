@@ -93,14 +93,18 @@ public class StockMoveUpdateServiceImpl implements StockMoveUpdateService {
       BigDecimal convertQty =
           Beans.get(UnitConversionService.class)
               .convert(
-                  line.getUnit(), unit, line.getQty(), line.getQty().scale(), line.getProduct());
+                  line.getUnit(),
+                  unit,
+                  line.getExpectedQty(),
+                  line.getExpectedQty().scale(),
+                  line.getProduct());
       line.setUnit(unit);
-      line.setQty(convertQty);
+      line.setExpectedQty(convertQty);
       line.setRealQty(convertQty);
     }
     if (movedQty != null) {
       // Only one product
-      line.setQty(movedQty);
+      line.setExpectedQty(movedQty);
       line.setRealQty(movedQty);
     }
     stockMoveRepo.save(stockMove);

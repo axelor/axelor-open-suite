@@ -362,7 +362,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
                     stockMoveLine.getStockMove().getStatusSelect()
                             == StockMoveRepository.STATUS_REALIZED
                         && stockMoveLine.getProduct().equals(prodProduct.getProduct()))
-            .map(StockMoveLine::getQty)
+            .map(StockMoveLine::getExpectedQty)
             .reduce(BigDecimal::add)
             .orElse(BigDecimal.ZERO);
     return qtyToProcess.subtract(processedQty);

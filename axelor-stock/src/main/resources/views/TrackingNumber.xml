@@ -85,7 +85,7 @@
       <field name="stockMoveLineList.product.fullName" as="product"/>
       <field name="stockMoveLineList.productName" as="moveLine"/>
       <field name="stockMoveLineList.realQty" as="currentQty"/>
-      <field name="stockMoveLineList.qty" as="futureQty"/>
+      <field name="stockMoveLineList.expectedQty" as="futureQty"/>
       <field name="stockMoveLineList.stockMove.realDate" as="date"/>
       <where>
         <input name="trackingNumber" field="stockMoveLineList.trackingNumber"/>
@@ -118,7 +118,7 @@
     model="com.axelor.apps.stock.db.TrackingNumber">
     <field
       if="eval: __parent__?.stockMove == null || __parent__?.stockMove?.statusSelect == 1"
-      name="counter" expr="eval: __parent__?.qty"/>
+      name="counter" expr="eval: __parent__?.expectedQty"/>
     <field if="eval: __parent__?.stockMove?.statusSelect == 2" name="counter"
       expr="eval: __parent__?.realQty"/>
   </action-record>

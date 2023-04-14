@@ -111,7 +111,7 @@ public class ManufOrderProductRestServiceImpl implements ManufOrderProductRestSe
         product,
         stockMoveLine,
         BigDecimal.ZERO.max(plannedQty),
-        stockMoveLine.getQty(),
+        stockMoveLine.getExpectedQty(),
         missingQty,
         availableQty,
         stockMoveLine.getTrackingNumber(),
@@ -201,9 +201,9 @@ public class ManufOrderProductRestServiceImpl implements ManufOrderProductRestSe
               manufOrder,
               currentLine,
               currentLine
-                  .getQty()
+                  .getExpectedQty()
                   .min(getGlobalPlannedQty(product, prodProductList).subtract(realQty))));
-      realQty = realQty.add(currentLine.getQty());
+      realQty = realQty.add(currentLine.getExpectedQty());
     }
 
     productResponses.add(
@@ -246,7 +246,7 @@ public class ManufOrderProductRestServiceImpl implements ManufOrderProductRestSe
           TraceBackRepository.CATEGORY_NO_VALUE,
           I18n.get(StockExceptionMessage.STOCK_MOVE_LINE_MISSING_QUANTITY));
     }
-    stockMoveLine.setQty(qty);
+    stockMoveLine.setExpectedQty(qty);
     return stockMoveLine;
   }
 

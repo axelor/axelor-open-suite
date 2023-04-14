@@ -19,7 +19,7 @@
     <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
     <boolean name="filterOnAvailableProducts" title="Filter on available products"
       default="true" transient="true"/>
-    <decimal name="qty" min="0" title="Expected Qty" precision="20" scale="10"/>
+    <decimal name="expectedQty" min="0" title="Expected Qty" precision="20" scale="10"/>
     <decimal name="realQty" min="0" title="Real Qty" precision="20" scale="10"/>
     <decimal name="oldQty" hidden="true" precision="20" scale="10"/>
     <decimal name="availableQty" title="Available qty" transient="true" precision="20"

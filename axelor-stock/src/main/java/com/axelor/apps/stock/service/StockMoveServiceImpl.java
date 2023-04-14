@@ -700,7 +700,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 
     for (StockMoveLine stockMoveLine : stockMoveLineList) {
 
-      if (stockMoveLine.getRealQty().compareTo(stockMoveLine.getQty()) != 0) {
+      if (stockMoveLine.getRealQty().compareTo(stockMoveLine.getExpectedQty()) != 0) {
 
         return true;
       }
@@ -725,7 +725,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     newStockMove.setOrigin(stockMove.getOrigin());
     for (StockMoveLine stockMoveLine : stockMoveLines) {
 
-      if (stockMoveLine.getQty().compareTo(stockMoveLine.getRealQty()) > 0) {
+      if (stockMoveLine.getExpectedQty().compareTo(stockMoveLine.getRealQty()) > 0) {
         StockMoveLine newStockMoveLine = copySplittedStockMoveLine(stockMoveLine);
         newStockMove.addStockMoveLineListItem(newStockMoveLine);
       }
@@ -761,8 +761,9 @@ public class StockMoveServiceImpl implements StockMoveService {
       throws AxelorException {
     StockMoveLine newStockMoveLine = stockMoveLineRepo.copy(stockMoveLine, false);
 
-    newStockMoveLine.setQty(stockMoveLine.getQty().subtract(stockMoveLine.getRealQty()));
-    newStockMoveLine.setRealQty(newStockMoveLine.getQty());
+    newStockMoveLine.setExpectedQty(
+        stockMoveLine.getExpectedQty().subtract(stockMoveLine.getRealQty()));
+    newStockMoveLine.setRealQty(newStockMoveLine.getExpectedQty());
     return newStockMoveLine;
   }
 
@@ -811,7 +812,7 @@ public class StockMoveServiceImpl implements StockMoveService {
   protected void copyStockMoveLines(
       StockMove newStockMove, List<StockMoveLine> stockMoveLines, boolean split) {
     for (StockMoveLine stockMoveLine : stockMoveLines) {
-      if (!split || stockMoveLine.getRealQty().compareTo(stockMoveLine.getQty()) > 0) {
+      if (!split || stockMoveLine.getRealQty().compareTo(stockMoveLine.getExpectedQty()) > 0) {
         newStockMove.addStockMoveLineListItem(copyStockMoveLine(stockMoveLine, split));
       }
     }
@@ -821,10 +822,11 @@ public class StockMoveServiceImpl implements StockMoveService {
     StockMoveLine newStockMoveLine = stockMoveLineRepo.copy(stockMoveLine, false);
 
     if (split) {
-      newStockMoveLine.setQty(stockMoveLine.getRealQty().subtract(stockMoveLine.getQty()));
-      newStockMoveLine.setRealQty(newStockMoveLine.getQty());
+      newStockMoveLine.setExpectedQty(
+          stockMoveLine.getRealQty().subtract(stockMoveLine.getExpectedQty()));
+      newStockMoveLine.setRealQty(newStockMoveLine.getExpectedQty());
     } else {
-      newStockMoveLine.setQty(stockMoveLine.getRealQty());
+      newStockMoveLine.setExpectedQty(stockMoveLine.getRealQty());
       newStockMoveLine.setRealQty(stockMoveLine.getRealQty());
     }
     return newStockMoveLine;
@@ -947,12 +949,12 @@ public class StockMoveServiceImpl implements StockMoveService {
       if (moveLine.isSelected()) {
         selected = true;
         StockMoveLine line = stockMoveLineRepo.find(moveLine.getId());
-        BigDecimal totalQty = line.getQty();
+        BigDecimal totalQty = line.getExpectedQty();
         LOG.debug("Move Line selected: {}, Qty: {}", line, totalQty);
         while (splitQty.compareTo(totalQty) < 0) {
           totalQty = totalQty.subtract(splitQty);
           StockMoveLine newLine = stockMoveLineRepo.copy(line, false);
-          newLine.setQty(splitQty);
+          newLine.setExpectedQty(splitQty);
           newLine.setRealQty(splitQty);
           newLine.setStockMove(line.getStockMove());
           stockMoveLineRepo.save(newLine);
@@ -960,7 +962,7 @@ public class StockMoveServiceImpl implements StockMoveService {
         LOG.debug("Qty remains: {}", totalQty);
         if (totalQty.compareTo(BigDecimal.ZERO) > 0) {
           StockMoveLine newLine = stockMoveLineRepo.copy(line, false);
-          newLine.setQty(totalQty);
+          newLine.setExpectedQty(totalQty);
           newLine.setRealQty(totalQty);
           newLine.setStockMove(line.getStockMove());
           stockMoveLineRepo.save(newLine);
@@ -993,7 +995,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 
     modifiedStockMoveLines =
         modifiedStockMoveLines.stream()
-            .filter(stockMoveLine -> stockMoveLine.getQty().compareTo(BigDecimal.ZERO) != 0)
+            .filter(stockMoveLine -> stockMoveLine.getExpectedQty().compareTo(BigDecimal.ZERO) != 0)
             .collect(Collectors.toList());
     for (StockMoveLine moveLine : modifiedStockMoveLines) {
 
@@ -1002,9 +1004,10 @@ public class StockMoveServiceImpl implements StockMoveService {
           originalStockMove.getStockMoveLineList().stream()
               .filter(stockMoveLine -> stockMoveLine.getId().equals(moveLine.getId()))
               .findFirst();
-      if (BigDecimal.ZERO.compareTo(moveLine.getQty()) > 0
+      if (BigDecimal.ZERO.compareTo(moveLine.getExpectedQty()) > 0
           || (correspondingMoveLine.isPresent()
-              && moveLine.getQty().compareTo(correspondingMoveLine.get().getRealQty()) > 0)) {
+              && moveLine.getExpectedQty().compareTo(correspondingMoveLine.get().getRealQty())
+                  > 0)) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(StockExceptionMessage.STOCK_MOVE_16),
@@ -1047,18 +1050,18 @@ public class StockMoveServiceImpl implements StockMoveService {
       StockMoveLine modifiedStockMoveLine) {
 
     StockMoveLine newStockMoveLine = stockMoveLineRepo.copy(modifiedStockMoveLine, false);
-    newStockMoveLine.setQty(modifiedStockMoveLine.getQty());
-    newStockMoveLine.setRealQty(modifiedStockMoveLine.getQty());
+    newStockMoveLine.setExpectedQty(modifiedStockMoveLine.getExpectedQty());
+    newStockMoveLine.setRealQty(modifiedStockMoveLine.getExpectedQty());
 
     // Update quantity in original stock move.
     // If the remaining quantity is 0, remove the stock move line
     BigDecimal remainingQty =
-        originalStockMoveLine.getQty().subtract(modifiedStockMoveLine.getQty());
+        originalStockMoveLine.getExpectedQty().subtract(modifiedStockMoveLine.getExpectedQty());
     if (BigDecimal.ZERO.compareTo(remainingQty) == 0) {
       // Remove the stock move line
       originalStockMove.removeStockMoveLineListItem(originalStockMoveLine);
     } else {
-      originalStockMoveLine.setQty(remainingQty);
+      originalStockMoveLine.setExpectedQty(remainingQty);
       originalStockMoveLine.setRealQty(remainingQty);
     }
 
@@ -1068,7 +1071,8 @@ public class StockMoveServiceImpl implements StockMoveService {
   @Override
   @Transactional
   public void copyQtyToRealQty(StockMove stockMove) {
-    for (StockMoveLine line : stockMove.getStockMoveLineList()) line.setRealQty(line.getQty());
+    for (StockMoveLine line : stockMove.getStockMoveLineList())
+      line.setRealQty(line.getExpectedQty());
     stockMoveRepo.save(stockMove);
   }
 
@@ -1126,10 +1130,14 @@ public class StockMoveServiceImpl implements StockMoveService {
             .fetch();
 
     Double inQty =
-        inLines.stream().mapToDouble(inl -> Double.parseDouble(inl.getQty().toString())).sum();
+        inLines.stream()
+            .mapToDouble(inl -> Double.parseDouble(inl.getExpectedQty().toString()))
+            .sum();
 
     Double outQty =
-        outLines.stream().mapToDouble(out -> Double.parseDouble(out.getQty().toString())).sum();
+        outLines.stream()
+            .mapToDouble(out -> Double.parseDouble(out.getExpectedQty().toString()))
+            .sum();
 
     Double qty = inQty - outQty;
 

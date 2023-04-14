@@ -31,7 +31,7 @@
       <field name="stockMoveLineList.product.fullName" as="product"/>
       <field name="stockMoveLineList.productName" as="moveLine"/>
       <field name="stockMoveLineList.realQty" as="currentQty"/>
-      <field name="stockMoveLineList.qty" as="futureQty"/>
+      <field name="stockMoveLineList.expectedQty" as="futureQty"/>
       <field name="stockMoveLineList.stockMove.realDate" as="date"/>
       <field name="stockMoveLineList.stockMove.origin" as="origin"/>
       <where>
@@ -55,7 +55,7 @@
       <field name="inStockMoveList.stockMoveLineList.product.fullName" as="product"/>
       <field name="inStockMoveList.stockMoveLineList.productName" as="moveLine"/>
       <field name="inStockMoveList.stockMoveLineList.realQty" as="currentQty"/>
-      <field name="inStockMoveList.stockMoveLineList.qty" as="futureQty"/>
+      <field name="inStockMoveList.stockMoveLineList.expectedQty" as="futureQty"/>
       <field name="inStockMoveList.stockMoveLineList.stockMove.realDate" as="date"/>
       <field name="inStockMoveList.stockMoveLineList.stockMove.origin" as="origin"/>
       <where>
@@ -68,7 +68,7 @@
       <field name="outStockMoveList.stockMoveLineList.product.fullName" as="product"/>
       <field name="outStockMoveList.stockMoveLineList.productName" as="moveLine"/>
       <field name="outStockMoveList.stockMoveLineList.realQty" as="currentQty"/>
-      <field name="outStockMoveList.stockMoveLineList.qty" as="futureQty"/>
+      <field name="outStockMoveList.stockMoveLineList.expectedQty" as="futureQty"/>
       <field name="outStockMoveList.stockMoveLineList.stockMove.realDate" as="date"/>
       <field name="outStockMoveList.stockMoveLineList.stockMove.origin" as="origin"/>
       <where>

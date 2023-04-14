@@ -41,8 +41,10 @@ public class StockMoveLineOrigin {
 
   public StockMoveLineOrigin merge(StockMoveLineOrigin stockMoveLineOriginToBeMerged) {
 
-    this.stockMoveLine.setQty(
-        this.stockMoveLine.getQty().add(stockMoveLineOriginToBeMerged.getStockMoveLine().getQty()));
+    this.stockMoveLine.setExpectedQty(
+        this.stockMoveLine
+            .getExpectedQty()
+            .add(stockMoveLineOriginToBeMerged.getStockMoveLine().getExpectedQty()));
     this.stockMoveLine.setRealQty(
         this.stockMoveLine
             .getRealQty()

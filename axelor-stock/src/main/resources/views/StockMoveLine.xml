@@ -22,8 +22,8 @@
       readonlyIf="lineTypeSelect == 1 || product"/>
     <field name="productName" required="true" width="200px"
       readonlyIf="($get('stockMove.statusSelect') == 2 &amp;&amp; $get('stockMove.pickingIsEdited')) || $get('stockMove.statusSelect') == 3"/>
-    <field name="qty" aggregate="sum" onChange="action-stock-move-line-group-qty-onchange"
-      width="100px" x-scale="2"
+    <field name="expectedQty" aggregate="sum"
+      onChange="action-stock-move-line-group-qty-onchange" width="100px" x-scale="2"
       readonlyIf="$get('stockMove.statusSelect') &gt; 1 || lineTypeSelect == 1"/>
     <field name="realQty" aggregate="sum" width="100px" x-scale="2"
       onChange="action-stock-move-line-group-real-qty-onchange, action-stock-move-line-attrs-set-real-qty-modified-by-user-true"
@@ -37,7 +37,7 @@
     <button name="allocateAll"
       if="__config__.app.getApp('supplychain')?.manageStockReservation" hidden="true"
       title="Allocate" icon="fa-plus-square"
-      readonlyIf="$get('stockMove.statusSelect') != 2 || $number(reservedQty) == $number(qty) || $get('product.productTypeSelect') == 'service'"
+      readonlyIf="$get('stockMove.statusSelect') != 2 || $number(reservedQty) == $number(expectedQty) || $get('product.productTypeSelect') == 'service'"
       onClick="save,action-supplychain-stock-move-line-allocate-all"/>
     <button name="deallocate"
       if="__config__.app.getApp('supplychain')?.manageStockReservation" hidden="true"
@@ -97,7 +97,7 @@
       <field name="productName" colSpan="9"/>
       <field name="lineTypeSelect" colSpan="3"
         onChange="action-stock-move-line-method-empty-line"/>
-      <field name="qty" hidden="true" hideIf="lineTypeSelect == 1"/>
+      <field name="expectedQty" hidden="true" hideIf="lineTypeSelect == 1"/>
       <field name="realQty" hidden="true" hideIf="lineTypeSelect == 1"/>
     </panel>
 
@@ -162,8 +162,8 @@
         if="__config__.app.getApp('base')?.getManageProductVariants()"
         readonlyIf="product || $get('stockMove.statusSelect') > 1"/>
       <field name="productName"/>
-      <field name="qty" onChange="action-stock-move-line-group-qty-onchange" colSpan="3"
-        readonlyIf="$get('stockMove.statusSelect') > 1"/>
+      <field name="expectedQty" onChange="action-stock-move-line-group-qty-onchange"
+        colSpan="3" readonlyIf="$get('stockMove.statusSelect') > 1"/>
       <field name="realQty" colSpan="3"
         onChange="action-stock-move-line-group-real-qty-onchange, action-stock-move-line-attrs-set-real-qty-modified-by-user-true"/>
       <field name="isRealQtyModifiedByUser" hidden="true"/>
@@ -242,7 +242,7 @@
       grid-view="product-grid" if="__config__.app.getApp('base')?.getManageProductVariants()"
       readonlyIf="product || $get('stockMove.statusSelect') > 1"/>
     <field name="productName" readonly="true"/>
-    <field name="qty" aggregate="sum"
+    <field name="expectedQty" aggregate="sum"
       onChange="action-stock-move-line-validate-check-split-quantity" x-scale="2"/>
     <field name="unitPriceUntaxed" x-scale="2" readonlyIf="lineTypeSelect == 1"/>
     <field name="unitPriceTaxed" x-scale="2" hidden="true"/>
@@ -270,7 +270,7 @@
       grid-view="product-grid" if="__config__.app.getApp('base')?.getManageProductVariants()"
       readonlyIf="product || $get('stockMove.statusSelect') > 1"/>
     <field name="productName" required="true"/>
-    <field name="qty" x-scale="2" aggregate="sum"
+    <field name="expectedQty" x-scale="2" aggregate="sum"
       onChange="action-stock-move-line-group-qty-onchange"
       readonlyIf="$get('stockMove.statusSelect') > 1"/>
     <field name="realQty" aggregate="sum"
@@ -401,7 +401,7 @@
       <field name="productName" required="true"
         readonlyIf="$get('stockMove.statusSelect') > 1"/>
       <field name="stockMove.partner"/>
-      <field name="qty" colSpan="2" min="0"
+      <field name="expectedQty" colSpan="2" min="0"
         onChange="action-stock-move-line-group-qty-onchange"
         readonlyIf="$get('stockMove.statusSelect') > 1"/>
       <field name="realQty" colSpan="2" min="0"
@@ -660,7 +660,8 @@
   </action-attrs>
 
   <action-attrs name="action-stock-move-line-qty-attrs">
-    <attribute name="readonly" for="qty" expr="eval: __parent__?.statusSelect == 2"/>
+    <attribute name="readonly" for="expectedQty"
+      expr="eval: __parent__?.statusSelect == 2"/>
   </action-attrs>
 
   <action-record name="action-stock-move-line-wizard-record-set-tracking-number-seq"
@@ -688,7 +689,7 @@
 
   <action-record name="action-stock-move-line-record-new"
     model="com.axelor.apps.stock.db.StockMoveLine">
-    <field name="qty" expr="1"/>
+    <field name="expectedQty" expr="1"/>
     <field name="realQty" expr="1"/>
   </action-record>
 
@@ -710,8 +711,8 @@
 
   <action-record name="action-stock-move-line-record-qty"
     model="com.axelor.apps.stock.db.StockMoveLine">
-    <field name="realQty" expr="eval: qty" if="__parent__?.statusSelect &lt;= 2"/>
-    <field name="realQty" expr="eval: qty" if="stockMove?.statusSelect &lt;= 2"/>
+    <field name="realQty" expr="eval: expectedQty" if="__parent__?.statusSelect &lt;= 2"/>
+    <field name="realQty" expr="eval: expectedQty" if="stockMove?.statusSelect &lt;= 2"/>
   </action-record>
 
   <action-record name="action-stock-move-line-record-price-onchange"
@@ -792,7 +793,7 @@
 
     <attribute name="scale" for="oldQty"
       expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
-    <attribute name="scale" for="qty"
+    <attribute name="scale" for="expectedQty"
       expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
     <attribute name="scale" for="realQty"
       expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
@@ -827,8 +828,9 @@
   </action-view>
 
   <action-validate name="action-stock-move-line-validate-check-split-quantity">
-    <error message="Split quantity cannot be negative." if="qty &lt; 0"/>
-    <error message="Split quantity cannot be higher than real quantity." if="qty &gt; realQty"/>
+    <error message="Split quantity cannot be negative." if="expectedQty &lt; 0"/>
+    <error message="Split quantity cannot be higher than real quantity."
+      if="expectedQty &gt; realQty"/>
   </action-validate>
 
   <action-method name="action-stock-move-line-method-compute-available-qty">
@@ -912,7 +914,7 @@
   </action-attrs>
 
   <action-attrs name="action-stock-move-line-attrs-reset-qty">
-    <attribute for="qty" name="value" expr="eval: 0"/>
+    <attribute for="expectedQty" name="value" expr="eval: 0"/>
     <attribute for="realQty" name="value" expr="eval: 0"/>
   </action-attrs>
 

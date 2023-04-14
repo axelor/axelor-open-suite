@@ -614,11 +614,11 @@ public class ManufOrderServiceImpl implements ManufOrderService {
                         .contains(stockMoveLine1.getProduct()))
             .collect(Collectors.toList());
     for (StockMoveLine stockMoveLine : stockMoveLineMissingProductList) {
-      if (stockMoveLine.getQty().compareTo(BigDecimal.ZERO) != 0) {
+      if (stockMoveLine.getExpectedQty().compareTo(BigDecimal.ZERO) != 0) {
         ProdProduct diffProdProduct = new ProdProduct();
-        diffProdProduct.setQty(stockMoveLine.getQty());
+        diffProdProduct.setQty(stockMoveLine.getExpectedQty());
         diffProdProduct.setPlannedQty(BigDecimal.ZERO);
-        diffProdProduct.setRealQty(stockMoveLine.getQty());
+        diffProdProduct.setRealQty(stockMoveLine.getExpectedQty());
         diffProdProduct.setProduct(stockMoveLine.getProduct());
         diffProdProduct.setUnit(stockMoveLine.getUnit());
         diffConsumeList.add(diffProdProduct);
@@ -796,11 +796,11 @@ public class ManufOrderServiceImpl implements ManufOrderService {
                     .convert(
                         stockMoveLine.getUnit(),
                         prodProduct.getUnit(),
-                        stockMoveLine.getQty(),
-                        stockMoveLine.getQty().scale(),
+                        stockMoveLine.getExpectedQty(),
+                        stockMoveLine.getExpectedQty().scale(),
                         product));
       } else {
-        consumedQty = consumedQty.add(stockMoveLine.getQty());
+        consumedQty = consumedQty.add(stockMoveLine.getExpectedQty());
       }
     }
     return consumedQty.subtract(prodProduct.getQty());

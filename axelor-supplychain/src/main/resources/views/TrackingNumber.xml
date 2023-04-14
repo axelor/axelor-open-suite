@@ -31,7 +31,7 @@
       <field name="stockMoveLineList.product.fullName" as="product"/>
       <field name="stockMoveLineList.productName" as="moveLine"/>
       <field name="stockMoveLineList.realQty" as="currentQty"/>
-      <field name="stockMoveLineList.qty" as="futureQty"/>
+      <field name="stockMoveLineList.expectedQty" as="futureQty"/>
       <field name="stockMoveLineList.stockMove.realDate" as="date"/>
       <field name="stockMoveLineList.stockMove.origin" as="origin"/>
       <where>

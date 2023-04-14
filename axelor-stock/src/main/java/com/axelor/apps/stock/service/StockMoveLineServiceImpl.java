@@ -305,9 +305,9 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(StockExceptionMessage.STOCK_MOVE_QTY_BY_TRACKING));
     }
-    while (stockMoveLine.getQty().compareTo(qtyByTracking) > 0) {
+    while (stockMoveLine.getExpectedQty().compareTo(qtyByTracking) > 0) {
 
-      BigDecimal minQty = stockMoveLine.getQty().min(qtyByTracking);
+      BigDecimal minQty = stockMoveLine.getExpectedQty().min(qtyByTracking);
 
       this.splitStockMoveLine(
           stockMoveLine,
@@ -360,7 +360,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     stockMoveLine.setProduct(product);
     stockMoveLine.setProductName(productName);
     stockMoveLine.setDescription(description);
-    stockMoveLine.setQty(quantity);
+    stockMoveLine.setExpectedQty(quantity);
     stockMoveLine.setRealQty(quantity);
     stockMoveLine.setUnitPriceUntaxed(unitPriceUntaxed);
     stockMoveLine.setUnitPriceTaxed(unitPriceTaxed);
@@ -412,7 +412,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       for (StockLocationLine stockLocationLine : stockLocationLineList) {
 
         BigDecimal qty = stockLocationLine.getFutureQty();
-        if (stockMoveLine.getQty().compareTo(qty) > 0) {
+        if (stockMoveLine.getExpectedQty().compareTo(qty) > 0) {
           this.splitStockMoveLine(stockMoveLine, qty, stockLocationLine.getTrackingNumber());
         } else {
           stockMoveLine.setTrackingNumber(stockLocationLine.getTrackingNumber());
@@ -461,7 +461,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
             stockMoveLine.getFromStockLocation(),
             stockMoveLine.getToStockLocation());
 
-    stockMoveLine.setQty(stockMoveLine.getQty().subtract(qty));
+    stockMoveLine.setExpectedQty(stockMoveLine.getExpectedQty().subtract(qty));
     stockMoveLine.setRealQty(stockMoveLine.getRealQty().subtract(qty));
 
     return newStockMoveLine;
@@ -515,7 +515,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
         if (realQty) {
           qty = stockMoveLine.getRealQty();
         } else {
-          qty = stockMoveLine.getQty();
+          qty = stockMoveLine.getExpectedQty();
         }
 
         this.updateLocations(
@@ -1341,7 +1341,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
       StockMoveLine newStockMoveLine = stockMoveLineRepository.copy(stockMoveLine, true);
       //      if (draft) {
-      newStockMoveLine.setQty(counter);
+      newStockMoveLine.setExpectedQty(counter);
       //      } else {
       newStockMoveLine.setRealQty(counter);
       //      }
@@ -1350,9 +1350,9 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       stockMoveLineRepository.save(newStockMoveLine);
     }
 
-    if (totalSplitQty.compareTo(stockMoveLine.getQty()) < 0) {
-      BigDecimal remainingQty = stockMoveLine.getQty().subtract(totalSplitQty);
-      stockMoveLine.setQty(remainingQty);
+    if (totalSplitQty.compareTo(stockMoveLine.getExpectedQty()) < 0) {
+      BigDecimal remainingQty = stockMoveLine.getExpectedQty().subtract(totalSplitQty);
+      stockMoveLine.setExpectedQty(remainingQty);
       stockMoveLine.setRealQty(remainingQty);
       stockMoveLine.setTrackingNumber(null);
       stockMoveLine.setStockMove(stockMoveLine.getStockMove());
@@ -1577,11 +1577,11 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
           unitConversionService.convert(
               stockMoveLine.getUnit(),
               unit,
-              stockMoveLine.getQty(),
-              stockMoveLine.getQty().scale(),
+              stockMoveLine.getExpectedQty(),
+              stockMoveLine.getExpectedQty().scale(),
               stockMoveLine.getProduct());
       stockMoveLine.setUnit(unit);
-      stockMoveLine.setQty(convertQty);
+      stockMoveLine.setExpectedQty(convertQty);
     }
   }
 }

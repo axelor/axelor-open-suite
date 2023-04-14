@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202203150031</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaDriverClass</property>
@@ -231,8 +231,11 @@
                 <structure>
                     <property name="name">param_1</property>
                     <property name="paramName">RawMaterialRequirementId</property>
+                    <property name="nativeName"></property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">0</property>
                     <property name="position">1</property>
+                    <property name="isOptional">false</property>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
                 </structure>
@@ -350,23 +353,23 @@
     ProductionStockLocation.name as "stockLocation",
     ManufOrder.manuf_order_seq,
     CASE ManufOrder.is_cons_pro_on_operation
-      WHEN true THEN sum(StockMoveLine.qty)
+      WHEN true THEN sum(StockMoveLine.expected_qty)
       ELSE
         (CASE count(OperationOrder.id)
-            WHEN 0 THEN sum(StockMoveLine.qty)
-            ELSE sum(StockMoveLine.qty)/count(OperationOrder.id)
+            WHEN 0 THEN sum(StockMoveLine.expected_qty)
+            ELSE sum(StockMoveLine.expected_qty)/count(OperationOrder.id)
         END)
     END as "neededQty",
     (CASE ManufOrder.is_cons_pro_on_operation
-      WHEN true THEN sum(StockMoveLine.qty)
+      WHEN true THEN sum(StockMoveLine.expected_qty)
       ELSE
         (CASE count(OperationOrder.id)
-            WHEN 0 THEN sum(StockMoveLine.qty)
-            ELSE sum(StockMoveLine.qty)/count(OperationOrder.id)
+            WHEN 0 THEN sum(StockMoveLine.expected_qty)
+            ELSE sum(StockMoveLine.expected_qty)/count(OperationOrder.id)
         END)
     END) - ProductionStockLocationLine.current_qty as "missingNegativeQty",
     StockLocation.name as "availableStockLocation",
-    sum(StockLocationLine.current_qty)/count(StockMoveLine.qty) as "availableQty",
+    sum(StockLocationLine.current_qty)/count(StockMoveLine.expected_qty) as "availableQty",
     Unit.label_to_printing
 FROM
     production_raw_material_requirement RawMaterialRequirement

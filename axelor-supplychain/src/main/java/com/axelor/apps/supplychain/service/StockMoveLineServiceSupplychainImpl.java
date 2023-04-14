@@ -463,7 +463,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
     if (Strings.isNullOrEmpty(stockMoveLine.getDescription())) {
       stockMoveLine.setDescription(saleOrderLine.getDescription());
     }
-    stockMoveLine.setQty(saleOrderLine.getQty());
+    stockMoveLine.setExpectedQty(saleOrderLine.getQty());
   }
 
   protected void setProductInfoFromPurchaseOrder(
@@ -474,7 +474,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
     if (Strings.isNullOrEmpty(stockMoveLine.getDescription())) {
       stockMoveLine.setDescription(purchaseOrderLine.getDescription());
     }
-    stockMoveLine.setQty(purchaseOrderLine.getQty());
+    stockMoveLine.setExpectedQty(purchaseOrderLine.getQty());
   }
 
   @Override

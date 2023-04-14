@@ -145,7 +145,7 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
    * @throws AxelorException if the quantities are negative or superior to the planned qty.
    */
   protected void checkRequestedAndReservedQty(StockMoveLine stockMoveLine) throws AxelorException {
-    BigDecimal plannedQty = stockMoveLine.getQty().max(BigDecimal.ZERO);
+    BigDecimal plannedQty = stockMoveLine.getExpectedQty().max(BigDecimal.ZERO);
     BigDecimal requestedReservedQty = stockMoveLine.getRequestedReservedQty();
     BigDecimal reservedQty = stockMoveLine.getReservedQty();
 
@@ -543,7 +543,8 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
       BigDecimal stockMoveRequestedQty =
           convertUnitWithProduct(
               saleOrderLine.getUnit(), stockMoveLine.getUnit(), allocatedRequestedQty, product);
-      BigDecimal requestedQtyInStockMoveLine = stockMoveLine.getQty().min(stockMoveRequestedQty);
+      BigDecimal requestedQtyInStockMoveLine =
+          stockMoveLine.getExpectedQty().min(stockMoveRequestedQty);
       stockMoveLine.setRequestedReservedQty(requestedQtyInStockMoveLine);
       BigDecimal saleOrderRequestedQtyInStockMoveLine =
           convertUnitWithProduct(
@@ -1027,7 +1028,7 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
                   product)
               .add(stockMoveLine.getReservedQty());
       BigDecimal qtyThatWillBeAllocated =
-          stockMoveLine.getQty().min(availableQtyToBeReservedStockMoveLine);
+          stockMoveLine.getExpectedQty().min(availableQtyToBeReservedStockMoveLine);
 
       // allocate it
       if (qtyThatWillBeAllocated.compareTo(stockMoveLine.getReservedQty()) > 0) {
@@ -1067,12 +1068,12 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
     } else {
       stockMoveLine.setReservationDateTime(appBaseService.getTodayDateTime().toLocalDateTime());
       stockMoveLine.setIsQtyRequested(true);
-      if (stockMoveLine.getQty().signum() < 0) {
+      if (stockMoveLine.getExpectedQty().signum() < 0) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(SupplychainExceptionMessage.SALE_ORDER_LINE_REQUEST_QTY_NEGATIVE));
       }
-      this.updateRequestedReservedQty(stockMoveLine, stockMoveLine.getQty());
+      this.updateRequestedReservedQty(stockMoveLine, stockMoveLine.getExpectedQty());
     }
   }
 

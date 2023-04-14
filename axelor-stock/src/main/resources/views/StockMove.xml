@@ -898,9 +898,9 @@
 
   <action-group name="action-stock-move-group-realize">
     <action name="action-stock-move-method-manage-backorder"
-      if="stockMoveLineList.any{it?.realQty.compareTo(it?.qty) &lt; 0} &amp;&amp; !isWithBackorder"/> <!-- first condition = is it necessary to split SM -->
+      if="stockMoveLineList.any{it?.realQty.compareTo(it?.expectedQty) &lt; 0} &amp;&amp; !isWithBackorder"/> <!-- first condition = is it necessary to split SM -->
     <action name="action-stock-move-method-realize"
-      if="!stockMoveLineList.any{it?.realQty.compareTo(it?.qty) &lt; 0} || isWithBackorder"/>
+      if="!stockMoveLineList.any{it?.realQty.compareTo(it?.expectedQty) &lt; 0} || isWithBackorder"/>
   </action-group>
 
   <action-method name="action-stock-move-method-manage-backorder">

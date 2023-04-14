@@ -14,7 +14,7 @@ public class StockInternalMoveStockMoveLinePostRequestMapper {
 
     stockMoveLineResult.setProduct(stockMoveLinePostRequest.fetchProduct());
     stockMoveLineResult.setUnit(stockMoveLinePostRequest.fetchUnit());
-    stockMoveLineResult.setQty(stockMoveLinePostRequest.getRealQty());
+    stockMoveLineResult.setExpectedQty(stockMoveLinePostRequest.getRealQty());
     stockMoveLineResult.setRealQty(stockMoveLinePostRequest.getRealQty());
     stockMoveLineResult.setFromStockLocation(stockMoveLinePostRequest.fetchFromStockLocation());
     stockMoveLineResult.setToStockLocation(stockMoveLinePostRequest.fetchtoStockLocation());
