@@ -216,8 +216,8 @@ export const getStatus = (task = {}, project) => {
 };
 
 export function translate(str) {
-  if (window._t && typeof str === 'string') {
-    return window._t(str);
+  if (window.top && window.top._t && typeof str === "string") {
+    return window.top._t(str);
   }
   return str;
 }
