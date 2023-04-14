@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticJournal;
 import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
@@ -302,6 +303,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
       moveLineTaxService.checkTaxMoveLines(move);
 
       this.validateWellBalancedMove(move);
+      this.checkMoveLineInvoiceTermBalance(move);
 
       if (move.getJournal() != null
           && move.getPartner() != null
@@ -315,6 +317,34 @@ public class MoveValidateServiceImpl implements MoveValidateService {
               moveList.stream().map(Move::getReference).collect(Collectors.joining(",")),
               move.getPartner().getFullName(),
               move.getPeriod().getYear().getName());
+        }
+      }
+    }
+  }
+
+  protected void checkMoveLineInvoiceTermBalance(Move move) throws AxelorException {
+
+    log.debug(
+        "Well-balanced move line invoice terms validation on account move {}", move.getReference());
+
+    if (move.getMoveLineList() != null) {
+
+      for (MoveLine moveLine : move.getMoveLineList()) {
+        if (ObjectUtils.notEmpty(moveLine.getInvoiceTermList())
+            && moveLine.getAccount().getUseForPartnerBalance()) {
+          BigDecimal totalMoveLineInvoiceTerm =
+              moveLine.getInvoiceTermList().stream()
+                  .map(InvoiceTerm::getAmount)
+                  .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+          if (totalMoveLineInvoiceTerm.compareTo(moveLine.getDebit().max(moveLine.getCredit()))
+              != 0) {
+            throw new AxelorException(
+                move,
+                TraceBackRepository.CATEGORY_INCONSISTENCY,
+                I18n.get(AccountExceptionMessage.MOVE_LINE_INVOICE_TERM_SUM_COMPANY_AMOUNT),
+                moveLine.getName());
+          }
         }
       }
     }
