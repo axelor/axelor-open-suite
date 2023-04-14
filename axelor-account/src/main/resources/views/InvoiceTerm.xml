@@ -150,12 +150,10 @@
     groupBy="moveLine.partner" edit-icon="true">
     <hilite color="primary" if="isSelectedOnPaymentSession"/>
     <button name="selectBtn" title="Select"
-      onClick="action-invoice-term-method-select-terms-btn,action-invoice-term-method-compute-total-payment-session"
-      icon="fa-plus-circle"
+      onClick="action-invoice-term-method-select-terms-btn,save" icon="fa-plus-circle"
       readonlyIf="isSelectedOnPaymentSession || $statusSelectPaymentSession &gt; 1"/>
     <button name="unselectBtn" title="Unselect"
-      onClick="action-invoice-term-method-unselect-terms-btn,action-invoice-term-method-compute-total-payment-session"
-      icon="fa-minus-circle"
+      onClick="action-invoice-term-method-unselect-terms-btn,save" icon="fa-minus-circle"
       readonlyIf="!isSelectedOnPaymentSession || $statusSelectPaymentSession &gt; 1"/>
     <button name="selectPartnerBtn" title="Select all terms of this Partner"
       icon="fa-user-plus"
