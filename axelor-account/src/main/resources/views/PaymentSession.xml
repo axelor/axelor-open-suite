@@ -76,7 +76,7 @@
           showIf="sessionTotalAmount &gt; 0 || $hasUnselectedInvoiceTerm"
           x-currency="company.currency.symbol"/>
       </panel>
-      <panel name="btnPanel" colSpan="7" itemSpan="10">
+      <panel name="btnPanel" colSpan="4" itemSpan="12">
         <button name="validateBtn" title="Validate" css="btn-success"
           showIf="statusSelect == 1 &amp;&amp; id &amp;&amp; sessionTotalAmount > 0"
           onClick="action-payment-session-group-validate"/>
@@ -85,8 +85,8 @@
         <field name="$hasUnselectedInvoiceTerm" hidden="true"/>
         <field name="$hasInvoiceTerm" hidden="true"/>
       </panel>
-      <panel name="emailPanel" showIf="id &amp;&amp; sessionTotalAmount > 0" colSpan="7"
-        itemSpan="10">
+      <panel name="emailPanel" showIf="id &amp;&amp; sessionTotalAmount > 0" colSpan="4"
+        itemSpan="12">
         <button name="sendEmailsBtn" title="Send emails payment notice"
           showIf="statusSelect == 2 || statusSelect == 3" readonlyIf="hasEmailsSent == true"
           onClick="save,action-payment-session-method-send-emails"/>
@@ -101,8 +101,7 @@
         ]]></viewer>
         </field>
       </panel>
-      <panel name="datesPanel" showIf="statusSelect == 2 || statusSelect == 3" itemSpan="12"
-        colSpan="3">
+      <panel name="datesPanel" showIf="statusSelect == 2 || statusSelect == 3" colSpan="8">
         <field name="validatedByUser" readonly="true"/>
         <field name="validatedDate" readonly="true"/>
       </panel>
