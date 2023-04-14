@@ -30,13 +30,20 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.FrequencyRepository;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.FrequencyService;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
+import com.axelor.apps.hr.db.TimesheetLine;
+import com.axelor.apps.hr.db.repo.EmployeeRepository;
+import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
+import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.ProjectStatus;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.ProjectTaskCategory;
@@ -50,6 +57,7 @@ import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
+import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppBusinessProject;
 import com.axelor.utils.QueryBuilder;
 import com.google.common.base.Strings;
@@ -70,6 +78,8 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
   private PriceListService priceListService;
   private PartnerPriceListService partnerPriceListService;
   private ProductCompanyService productCompanyService;
+  private TimesheetLineRepository timesheetLineRepository;
+  private AppBusinessProjectService appBusinessProjectService;
 
   @Inject
   public ProjectTaskBusinessProjectServiceImpl(
@@ -80,12 +90,16 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
       PriceListLineRepository priceListLineRepo,
       PriceListService priceListService,
       ProductCompanyService productCompanyService,
-      PartnerPriceListService partnerPriceListService) {
+      PartnerPriceListService partnerPriceListService,
+      TimesheetLineRepository timesheetLineRepository,
+      AppBusinessProjectService appBusinessProjectService) {
     super(projectTaskRepo, frequencyRepo, frequencyService, appBaseService);
     this.priceListLineRepo = priceListLineRepo;
     this.priceListService = priceListService;
     this.partnerPriceListService = partnerPriceListService;
     this.productCompanyService = productCompanyService;
+    this.timesheetLineRepository = timesheetLineRepository;
+    this.appBusinessProjectService = appBusinessProjectService;
   }
 
   @Override
@@ -453,5 +467,91 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     }
     projectTask = updateTaskFinancialInfo(projectTask);
     return projectTaskRepo.save(projectTask);
+  }
+
+  @Override
+  @Transactional
+  public void computeProjectTaskTotals(ProjectTask projectTask) throws AxelorException {
+
+    BigDecimal plannedTime;
+    BigDecimal spentTime = BigDecimal.ZERO;
+
+    Unit timeUnit = projectTask.getTimeUnit();
+
+    plannedTime =
+        projectTask.getProjectPlanningTimeList().stream()
+            .map(ProjectPlanningTime::getPlannedHours)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+    List<TimesheetLine> timeSheetLines =
+        timesheetLineRepository
+            .all()
+            .filter("self.timesheet.statusSelect = 3 AND self.projectTask = :projectTask")
+            .bind("projectTask", projectTask)
+            .fetch();
+
+    for (TimesheetLine timeSheetLine : timeSheetLines) {
+      spentTime =
+          spentTime.add(convertTimesheetLineDurationToProjectTaskUnit(timeSheetLine, timeUnit));
+    }
+
+    List<ProjectTask> projectTaskList = projectTask.getProjectTaskList();
+    for (ProjectTask task : projectTaskList) {
+      computeProjectTaskTotals(task);
+      plannedTime = plannedTime.add(task.getPlannedTime());
+      spentTime = spentTime.add(task.getSpentTime());
+    }
+
+    projectTask.setPlannedTime(plannedTime);
+    projectTask.setSpentTime(spentTime);
+    projectTaskRepo.save(projectTask);
+  }
+
+  protected BigDecimal convertTimesheetLineDurationToProjectTaskUnit(
+      TimesheetLine timesheetLine, Unit timeUnit) throws AxelorException {
+    String timeLoggingUnit = timesheetLine.getTimesheet().getTimeLoggingPreferenceSelect();
+    BigDecimal duration = timesheetLine.getDuration();
+    BigDecimal convertedDuration = BigDecimal.ZERO;
+
+    AppBusinessProject appBusinessProject = appBusinessProjectService.getAppBusinessProject();
+
+    Unit daysUnit = appBusinessProject.getDaysUnit();
+    Unit hoursUnit = appBusinessProject.getHoursUnit();
+    BigDecimal defaultHoursADay = appBusinessProject.getDefaultHoursADay();
+    if (defaultHoursADay.compareTo(BigDecimal.ZERO) == 0) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(HumanResourceExceptionMessage.TIMESHEET_DAILY_WORK_HOURS));
+    }
+
+    switch (timeLoggingUnit) {
+      case EmployeeRepository.TIME_PREFERENCE_DAYS:
+        if (timeUnit.equals(daysUnit)) {
+          convertedDuration = duration;
+        }
+        if (timeUnit.equals(hoursUnit)) {
+          convertedDuration = duration.multiply(defaultHoursADay);
+        }
+        break;
+      case EmployeeRepository.TIME_PREFERENCE_HOURS:
+        if (timeUnit.equals(hoursUnit)) {
+          convertedDuration = duration;
+        }
+        if (timeUnit.equals(daysUnit)) {
+          convertedDuration = duration.divide(defaultHoursADay, 2, RoundingMode.HALF_UP);
+        }
+        break;
+      case EmployeeRepository.TIME_PREFERENCE_MINUTES:
+        // convert to hours
+        convertedDuration = duration.divide(new BigDecimal(60), 2, RoundingMode.HALF_UP);
+        if (timeUnit.equals(daysUnit)) {
+          convertedDuration = duration.divide(defaultHoursADay, 2, RoundingMode.HALF_UP);
+        }
+        break;
+      default:
+        break;
+    }
+
+    return convertedDuration;
   }
 }

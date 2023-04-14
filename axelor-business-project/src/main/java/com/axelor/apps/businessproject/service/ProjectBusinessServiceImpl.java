@@ -28,6 +28,7 @@ import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.ProjectTemplate;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectStatusRepository;
@@ -49,7 +50,9 @@ import com.axelor.studio.db.AppSupplychain;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     implements ProjectBusinessService {
@@ -58,6 +61,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
   protected AddressService addressService;
   protected AppBusinessProjectService appBusinessProjectService;
   protected ProjectTemplateRepository projTemplateRepo;
+  protected ProjectTaskBusinessProjectService projectTaskBusinessProjectService;
 
   @Inject
   public ProjectBusinessServiceImpl(
@@ -67,12 +71,14 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
       AppProjectService appProjectService,
       PartnerService partnerService,
       AddressService addressService,
-      AppBusinessProjectService appBusinessProjectService) {
+      AppBusinessProjectService appBusinessProjectService,
+      ProjectTaskBusinessProjectService projectTaskBusinessProjectService) {
     super(projectRepository, projectStatusRepository, appProjectService);
     this.partnerService = partnerService;
     this.addressService = addressService;
     this.appBusinessProjectService = appBusinessProjectService;
     this.projTemplateRepo = projTemplateRepo;
+    this.projectTaskBusinessProjectService = projectTaskBusinessProjectService;
   }
 
   @Override
@@ -212,6 +218,10 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     if (parentProject != null && parentProject.getIsInvoicingTimesheet()) {
       project.setIsInvoicingTimesheet(true);
     }
+
+    project.setNumberHoursADay(
+        appBusinessProjectService.getAppBusinessProject().getDefaultHoursADay());
+    project.setProjectTimeUnit(appBusinessProjectService.getAppBusinessProject().getDaysUnit());
     return project;
   }
 
@@ -279,5 +289,21 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
       return null;
     }
     return project.getCompany().getTimezone();
+  }
+
+  @Override
+  public void computeProjectTotals(Project project) {
+
+    List<ProjectTask> projectTaskList =
+        project.getProjectTaskList().stream()
+            .filter(projectTask -> projectTask.getParentTask() == null)
+            .collect(Collectors.toList());
+    try {
+      for (ProjectTask projectTask : projectTaskList) {
+        projectTaskBusinessProjectService.computeProjectTaskTotals(projectTask);
+      }
+    } catch (AxelorException e) {
+      throw new RuntimeException(e);
+    }
   }
 }

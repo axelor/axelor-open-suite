@@ -30,4 +30,6 @@ public interface ProjectBusinessService extends ProjectService {
   Project generateProject(SaleOrder saleOrder);
 
   Project generatePhaseProject(SaleOrderLine saleOrderLine, Project parent);
+
+  void computeProjectTotals(Project project);
 }

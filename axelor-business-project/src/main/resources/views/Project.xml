@@ -23,6 +23,7 @@
     model="com.axelor.apps.project.db.Project" extension="true">
     <extend target="/">
       <attribute name="onNew" value="action-business-project-project-group-on-new"/>
+      <attribute name="onLoad" value="action-business-project-project-group-on-load"/>
     </extend>
     <extend target="//field[@name='projectFolderSet']">
       <insert position="after">
@@ -30,11 +31,24 @@
         <field name="projectTimeUnit" if="__config__.app.isApp('business-project')"/>
       </insert>
     </extend>
+    <extend target="//menu[@name='projectToolsMenu']">
+      <insert position="inside">
+        <item title="Compute project totals"
+          action="save,action-project-method-compute-project-totals"
+          if="__config__.app.isApp('business-project')" showIf="id"/>
+      </insert>
+    </extend>
   </form>
 
   <action-group name="action-business-project-project-group-on-new">
     <action name="action-project-group-on-new-project"/>
     <action name="action-business-project-project-attrs-defaults"/>
+    <action name="action-project-attrs-set-time-unit-domain"/>
+  </action-group>
+
+  <action-group name="action-business-project-project-group-on-load">
+    <action name="action-project-on-load-group"/>
+    <action name="action-project-attrs-set-time-unit-domain"/>
   </action-group>
 
   <action-method name="action-project-method-generate-quotation">
@@ -78,8 +92,6 @@
       expr="eval: __config__.app.getApp('business-project')?.defaultHoursADay"/>
     <attribute name="value" for="projectTimeUnit"
       expr="eval: __config__.app.getApp('business-project')?.daysUnit"/>
-    <attribute name="domain" for="projectTimeUnit"
-      expr="eval: &quot; self.id = ${__config__.app.getApp('business-project')?.daysUnit?.id} OR self.id = ${__config__.app.getApp('business-project')?.hoursUnit?.id}&quot;"/>
   </action-attrs>
 
   <action-attrs name="action-project-attrs-set-invoicing-sequence">
@@ -604,6 +616,16 @@
   <action-method name="action-project-view-show-invoicing-projects">
     <call class="com.axelor.apps.businessproject.web.ProjectController"
       method="showInvoicingProjects"/>
+  </action-method>
+
+  <action-attrs name="action-project-attrs-set-time-unit-domain">
+    <attribute name="domain" for="projectTimeUnit"
+      expr="eval: &quot; self.id = ${__config__.app.getApp('business-project')?.daysUnit?.id} OR self.id = ${__config__.app.getApp('business-project')?.hoursUnit?.id}&quot;"/>
+  </action-attrs>
+
+  <action-method name="action-project-method-compute-project-totals">
+    <call class="com.axelor.apps.businessproject.web.ProjectController"
+      method="computeProjectTotals"/>
   </action-method>
 
 </object-views>

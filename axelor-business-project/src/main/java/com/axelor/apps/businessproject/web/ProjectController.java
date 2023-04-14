@@ -166,4 +166,11 @@ public class ProjectController {
               : null);
     }
   }
+
+  public void computeProjectTotals(ActionRequest request, ActionResponse response) {
+    Project project = request.getContext().asType(Project.class);
+
+    Beans.get(ProjectBusinessService.class).computeProjectTotals(project);
+    response.setNotify(I18n.get("Totals have been updated"));
+  }
 }
