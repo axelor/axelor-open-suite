@@ -97,6 +97,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
   protected InvoiceTermService invoiceTermService;
   protected CommonInvoiceService commonInvoiceService;
   protected InvoiceLineOrderService invoiceLineOrderService;
+  protected SaleInvoicingStateService saleInvoicingStateService;
 
   @Inject
   public SaleOrderInvoiceServiceImpl(
@@ -110,7 +111,8 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       InvoiceTermService invoiceTermService,
       SaleOrderWorkflowService saleOrderWorkflowService,
       CommonInvoiceService commonInvoiceService,
-      InvoiceLineOrderService invoiceLineOrderService) {
+      InvoiceLineOrderService invoiceLineOrderService,
+      SaleInvoicingStateService saleInvoicingStateService) {
 
     this.appBaseService = appBaseService;
     this.appSupplychainService = appSupplychainService;
@@ -123,6 +125,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     this.saleOrderWorkflowService = saleOrderWorkflowService;
     this.commonInvoiceService = commonInvoiceService;
     this.invoiceLineOrderService = invoiceLineOrderService;
+    this.saleInvoicingStateService = saleInvoicingStateService;
   }
 
   @Override
@@ -911,27 +914,11 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
   }
 
   @Override
-  public int getInvoicingState(SaleOrder saleOrder) {
-    int invoicingState = 0;
-    if (saleOrder.getAmountInvoiced().compareTo(BigDecimal.ZERO) > 0
-        && saleOrder.getAmountInvoiced().compareTo(saleOrder.getExTaxTotal()) < 0) {
-      invoicingState = SALE_ORDER_PARTIALLY_INVOICED;
-    }
-    if (saleOrder.getAmountInvoiced().compareTo(BigDecimal.ZERO) > 0
-            && (saleOrder.getAmountInvoiced().compareTo(saleOrder.getExTaxTotal()) == 0)
-        || saleOrder.getAmountInvoiced().compareTo(saleOrder.getExTaxTotal()) > 0) {
-      invoicingState = SALE_ORDER_INVOICED;
-    }
-    if (saleOrder.getAmountInvoiced().compareTo(BigDecimal.ZERO) == 0) {
-      if (atLeastOneInvoiceIsVentilated(saleOrder)
-          && saleOrder.getExTaxTotal().compareTo(BigDecimal.ZERO) == 0) {
-        invoicingState = SALE_ORDER_INVOICED;
-      } else {
-        invoicingState = SALE_ORDER_NOT_INVOICED;
-      }
-    }
-
-    return invoicingState;
+  public int getSaleOrderInvoicingState(SaleOrder saleOrder) {
+    return saleInvoicingStateService.getInvoicingState(
+        saleOrder.getAmountInvoiced(),
+        saleOrder.getExTaxTotal(),
+        atLeastOneInvoiceIsVentilated(saleOrder));
   }
 
   protected boolean atLeastOneInvoiceIsVentilated(SaleOrder saleOrder) {

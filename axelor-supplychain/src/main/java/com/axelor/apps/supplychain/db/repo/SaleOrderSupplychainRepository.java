@@ -78,7 +78,8 @@ public class SaleOrderSupplychainRepository extends SaleOrderManagementRepositor
     Long saleOrderId = (Long) json.get("id");
     SaleOrder saleOrder = find(saleOrderId);
     json.put(
-        "$invoicingState", Beans.get(SaleOrderInvoiceService.class).getInvoicingState(saleOrder));
+        "$invoicingState",
+        Beans.get(SaleOrderInvoiceService.class).getSaleOrderInvoicingState(saleOrder));
     return super.populate(json, context);
   }
 }

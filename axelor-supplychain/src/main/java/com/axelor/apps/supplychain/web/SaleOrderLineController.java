@@ -379,7 +379,8 @@ public class SaleOrderLineController {
       saleOrderLine = Beans.get(SaleOrderLineRepository.class).find(saleOrderLine.getId());
       response.setValue(
           "$invoicingState",
-          Beans.get(SaleOrderLineServiceSupplyChain.class).getInvoicingState(saleOrderLine));
+          Beans.get(SaleOrderLineServiceSupplyChain.class)
+              .getSaleOrderLineInvoicingState(saleOrderLine));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

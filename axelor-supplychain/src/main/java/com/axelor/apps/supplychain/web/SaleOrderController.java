@@ -809,7 +809,8 @@ public class SaleOrderController {
       SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
       saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
       response.setValue(
-          "$invoicingState", Beans.get(SaleOrderInvoiceService.class).getInvoicingState(saleOrder));
+          "$invoicingState",
+          Beans.get(SaleOrderInvoiceService.class).getSaleOrderInvoicingState(saleOrder));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

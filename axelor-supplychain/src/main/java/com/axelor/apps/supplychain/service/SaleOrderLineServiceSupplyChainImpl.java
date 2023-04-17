@@ -88,6 +88,7 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
   protected AppSupplychainService appSupplychainService;
   protected AccountConfigService accountConfigService;
   protected InvoiceLineRepository invoiceLineRepository;
+  protected SaleInvoicingStateService saleInvoicingStateService;
 
   @Inject
   public SaleOrderLineServiceSupplyChainImpl(
@@ -106,7 +107,8 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
       PricingService pricingService,
       TaxService taxService,
       SaleOrderMarginService saleOrderMarginService,
-      InvoiceLineRepository invoiceLineRepository) {
+      InvoiceLineRepository invoiceLineRepository,
+      SaleInvoicingStateService saleInvoicingStateService) {
     super(
         currencyService,
         priceListService,
@@ -124,6 +126,7 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
     this.appSupplychainService = appSupplychainService;
     this.accountConfigService = accountConfigService;
     this.invoiceLineRepository = invoiceLineRepository;
+    this.saleInvoicingStateService = saleInvoicingStateService;
   }
 
   @Override
@@ -214,11 +217,11 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
   }
 
   @Override
-  public int getInvoicingState(SaleOrderLine saleOrderLine) {
-    if (atLeastOneInvoiceVentilated(saleOrderLine)) {
-      return SALE_ORDER_LINE_INVOICED;
-    }
-    return SALE_ORDER_LINE_NOT_INVOICED;
+  public int getSaleOrderLineInvoicingState(SaleOrderLine saleOrderLine) {
+    return saleInvoicingStateService.getInvoicingState(
+        saleOrderLine.getAmountInvoiced(),
+        saleOrderLine.getExTaxTotal(),
+        atLeastOneInvoiceVentilated(saleOrderLine));
   }
 
   protected boolean atLeastOneInvoiceVentilated(SaleOrderLine saleOrderLine) {
