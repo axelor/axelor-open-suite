@@ -245,7 +245,6 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
 
       for (InvoiceTerm invoiceTerm : invoiceTermList) {
         offset++;
-
         if (paymentSession.getStatusSelect() == PaymentSessionRepository.STATUS_AWAITING_PAYMENT
             || this.shouldBeProcessed(invoiceTerm)) {
 
@@ -644,7 +643,9 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
 
   @Transactional
   protected InvoiceTerm releaseInvoiceTerm(InvoiceTerm invoiceTerm) {
-    invoiceTerm.setPaymentSession(null);
+    if (!invoiceTerm.getIsSelectedOnPaymentSession()) {
+      invoiceTerm.setPaymentSession(null);
+    }
     invoiceTerm.setPaymentAmount(BigDecimal.ZERO);
 
     return invoiceTermRepo.save(invoiceTerm);
