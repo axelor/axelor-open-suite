@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,11 +19,9 @@ package com.axelor.apps.hr.service.lunch.voucher;
 
 import com.axelor.apps.hr.db.LunchVoucherAdvance;
 import com.axelor.exception.AxelorException;
-import com.google.inject.persist.Transactional;
 
 public interface LunchVoucherAdvanceService {
 
-  @Transactional(rollbackOn = {Exception.class})
   public void onNewAdvance(LunchVoucherAdvance lunchVoucherAdvance) throws AxelorException;
 
   public int useAdvance(LunchVoucherAdvance lunchVoucherAdvance, int qty) throws AxelorException;

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -62,4 +62,7 @@ public final class AdminExceptionMessage {
 
   public static final String FAKER_METHOD_ERROR = /*$$(*/
       "An error occured while executing '%s'." /*)*/;
+
+  public static final String JSON_FIELD_CAN_NOT_BE_ANONYMIZED = /*$$(*/
+      "Json field can not be anonymized" /*)*/;
 }

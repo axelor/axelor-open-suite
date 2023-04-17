@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -24,13 +24,15 @@ import java.math.BigDecimal;
 
 public interface StockMoveUpdateService {
 
-  /** To update status of a stock move (API AOS) */
+  /** @deprecated To update status of a stock move (API AOS) */
+  @Deprecated
   void updateStatus(StockMove stockMove, Integer status) throws AxelorException;
 
   /**
-   * To update unit or qty of an internal stock move with one product, mostly for mobile app (API
-   * AOS)
+   * @deprecated To update unit or qty of an internal stock move with one product, mostly for mobile
+   *     app (API AOS)
    */
+  @Deprecated
   void updateStockMoveMobility(StockMove stockMove, BigDecimal movedQty, Unit unit)
       throws AxelorException;
 }

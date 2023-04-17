@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -27,12 +27,14 @@ import com.axelor.apps.account.db.repo.InvoiceTermAccountRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.PaymentSessionService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionService;
 import com.axelor.apps.tool.ContextTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
+import com.axelor.dms.db.DMSFile;
+import com.axelor.dms.db.repo.DMSFileRepository;
 import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -121,12 +123,15 @@ public class InvoiceTermController {
     try {
       InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
       InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
+      Move move = null;
 
       this.setParentContextFields(invoiceTerm, request, response);
 
       Invoice invoice = invoiceTerm.getInvoice();
       MoveLine moveLine = invoiceTerm.getMoveLine();
-      Move move = moveLine.getMove();
+      if (moveLine != null && moveLine.getMove() != null) {
+        move = moveLine.getMove();
+      }
 
       if (invoice == null && request.getContext().containsKey("_invoiceId")) {
         invoice =
@@ -390,14 +395,15 @@ public class InvoiceTermController {
       this.setParentContextFields(invoiceTerm, request, response);
 
       MoveLine moveLine = invoiceTerm.getMoveLine();
-
-      Beans.get(InvoiceTermService.class)
-          .computeFinancialDiscount(
-              invoiceTerm,
-              moveLine.getCredit().max(moveLine.getDebit()),
-              moveLine.getFinancialDiscount(),
-              moveLine.getFinancialDiscountTotalAmount(),
-              moveLine.getRemainingAmountAfterFinDiscount());
+      if (moveLine != null && moveLine.getFinancialDiscount() != null) {
+        Beans.get(InvoiceTermService.class)
+            .computeFinancialDiscount(
+                invoiceTerm,
+                moveLine.getCredit().max(moveLine.getDebit()),
+                moveLine.getFinancialDiscount(),
+                moveLine.getFinancialDiscountTotalAmount(),
+                moveLine.getRemainingAmountAfterFinDiscount());
+      }
 
       response.setValues(invoiceTerm);
     } catch (Exception e) {
@@ -466,6 +472,27 @@ public class InvoiceTermController {
         moveLine.setMove(move);
         response.setValue("move", move);
       }
+    }
+  }
+
+  public void addLinkedFiles(ActionRequest request, ActionResponse response) {
+    try {
+      InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
+      if (invoiceTerm.getMoveLine() != null
+          && invoiceTerm.getMoveLine().getMove() != null
+          && invoiceTerm.getMoveLine().getMove().getId() != null) {
+        List<DMSFile> dmsFileList =
+            Beans.get(DMSFileRepository.class)
+                .all()
+                .filter(
+                    "self.isDirectory = false AND self.relatedId = "
+                        + invoiceTerm.getMoveLine().getMove().getId()
+                        + " AND self.relatedModel = 'com.axelor.apps.account.db.Move'")
+                .fetch();
+        response.setValue("$invoiceTermMoveFile", dmsFileList);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }

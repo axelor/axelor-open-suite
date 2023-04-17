@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,7 +17,9 @@
  */
 package com.axelor.apps.stock.rest.dto;
 
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
+import com.axelor.apps.tool.api.ObjectFinder;
 import com.axelor.apps.tool.api.RequestStructure;
 import java.math.BigDecimal;
 import javax.validation.constraints.Max;
@@ -25,6 +27,8 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 public class StockMoveLinePutRequest extends RequestStructure {
+  @Min(0)
+  private Long unitId;
 
   @Min(0)
   @NotNull
@@ -35,6 +39,14 @@ public class StockMoveLinePutRequest extends RequestStructure {
   private Integer conformity;
 
   public StockMoveLinePutRequest() {}
+
+  public Long getUnitId() {
+    return unitId;
+  }
+
+  public void setUnitId(Long unitId) {
+    this.unitId = unitId;
+  }
 
   public BigDecimal getRealQty() {
     return realQty;
@@ -50,5 +62,13 @@ public class StockMoveLinePutRequest extends RequestStructure {
 
   public void setConformity(Integer conformity) {
     this.conformity = conformity;
+  }
+
+  public Unit fetchUnit() {
+    if (this.unitId != null) {
+      return ObjectFinder.find(Unit.class, unitId, ObjectFinder.NO_VERSION);
+    } else {
+      return null;
+    }
   }
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,10 +20,8 @@ package com.axelor.apps.crm.service.batch;
 import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.crm.db.EventReminder;
-import com.axelor.apps.crm.db.TargetConfiguration;
 import com.axelor.apps.crm.db.repo.EventReminderRepository;
 import com.axelor.apps.crm.message.MessageServiceCrmImpl;
-import com.axelor.apps.crm.service.TargetService;
 import com.axelor.apps.message.service.MailAccountService;
 import com.google.inject.Inject;
 
@@ -31,7 +29,6 @@ public abstract class BatchStrategy extends AbstractBatch {
 
   protected MessageServiceCrmImpl messageServiceCrmImpl;
   protected MailAccountService mailAccountService;
-  protected TargetService targetService;
 
   @Inject protected EventReminderRepository eventReminderRepo;
 
@@ -40,11 +37,6 @@ public abstract class BatchStrategy extends AbstractBatch {
     super();
     this.messageServiceCrmImpl = messageServiceCrmImpl;
     this.mailAccountService = mailAccountService;
-  }
-
-  protected BatchStrategy(TargetService targetService) {
-    super();
-    this.targetService = targetService;
   }
 
   protected void updateEventReminder(EventReminder eventReminder) {
@@ -61,13 +53,6 @@ public abstract class BatchStrategy extends AbstractBatch {
   //
   //		incrementDone();
   //	}
-
-  protected void updateTargetConfiguration(TargetConfiguration targetConfiguration) {
-
-    targetConfiguration.addBatchSetItem(batchRepo.find(batch.getId()));
-
-    incrementDone();
-  }
 
   protected void setBatchTypeSelect() {
     this.batch.setBatchTypeSelect(BatchRepository.BATCH_TYPE_CRM_BATCH);

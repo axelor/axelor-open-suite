@@ -115,10 +115,10 @@
             name="deleteNextVersionBtn" title="Delete next version"
             showIf="id &amp;&amp; nextVersion != null &amp;&amp; statusSelect != 3"
             onClick="save,action-contract-method-delete-next-version"/>
-          <button name="waitingBtn" title="Put on hold"
+          <button name="waitingBtn" title="Put on-hold"
             showIf="id &amp;&amp; currentContractVersion.statusSelect == 1"
             onClick="save,action-contract-method-waiting"/>
-          <button name="ongoingBtn" title="Activate"
+          <button name="ongoingBtn" title="Activate contract"
             showIf="id &amp;&amp; currentContractVersion.statusSelect == 2"
             onClick="save,action-contract-validate-on-going,action-contract-method-ongoing"/>
           <button if="__config__.app.getApp('contract')?.isRenewalManagement" name="renewBtn"
@@ -163,9 +163,11 @@
       <panel name="invoicingPanel" title="Invoicing" hidden="true"
         showIf="isInvoicingManagement &amp;&amp; statusSelect >= 2">
         <field name="invoicePeriodStartDate"
-          showIf="currentContractVersion.isPeriodicInvoicing" colSpan="4"/>
+          showIf="currentContractVersion.isPeriodicInvoicing" colSpan="4"
+          requiredIf="isInvoicingManagement &amp;&amp; statusSelect >= 2 &amp;&amp; currentContractVersion.isPeriodicInvoicing"/>
         <field name="invoicePeriodEndDate" showIf="currentContractVersion.isPeriodicInvoicing"
-          colSpan="4"/>
+          colSpan="4"
+          requiredIf="isInvoicingManagement &amp;&amp; statusSelect >= 2 &amp;&amp; currentContractVersion.isPeriodicInvoicing"/>
         <field name="invoicingDate" colSpan="4"/>
         <button name="invoicingBtn" title="Invoicing"
           showIf="id &amp;&amp; currentContractVersion.statusSelect == 3"
@@ -266,7 +268,8 @@
                     onSelect="action-contract-attrs-set-payment-mode-domain"/>
                   <field name="paymentCondition" colSpan="6" widget="SuggestBox"
                     canEdit="false" form-view="payment-condition-form"
-                    grid-view="payment-condition-grid"/>
+                    grid-view="payment-condition-grid"
+                    onSelect="action-contract-attrs-payment-condition-set-domain"/>
                 </panel>
                 <panel colSpan="6">
                   <field name="automaticInvoicing" colSpan="4" widget="boolean-switch"/>
@@ -549,6 +552,12 @@
       if="__parent__?.targetTypeSelect == 1"/>
     <attribute name="domain" for="paymentMode" expr="self.inOutSelect = 2"
       if="__parent__?.targetTypeSelect == 2"/>
+  </action-attrs>
+
+  <action-attrs name="action-contract-attrs-payment-condition-set-domain">
+    <attribute name="domain" for="paymentCondition"
+      expr="eval: &quot; SIZE(self.paymentConditionLineList) &lt; 2 &quot;"
+      if="!__config__.app.getApp('account').allowMultiInvoiceTerms"/>
   </action-attrs>
 
   <search-filters name="contract-filters"

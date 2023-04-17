@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -276,7 +276,7 @@ public class InventoryService {
   }
 
   protected InventoryLine copyAndEditInventoryLine(
-      InventoryLine inventoryLine, String description, BigDecimal realQty) {
+      InventoryLine inventoryLine, String description, BigDecimal realQty) throws AxelorException {
 
     // There is not one to many for inventoryLine, so true or false is the same.
     InventoryLine inventoryLineResult = inventoryLineRepository.copy(inventoryLine, true);
@@ -285,6 +285,7 @@ public class InventoryService {
     if (inventoryLineResult.getTrackingNumber() != null) {
       inventoryLineResult.getTrackingNumber().setCounter(realQty);
     }
+    inventoryLineService.compute(inventoryLineResult, inventoryLineResult.getInventory());
     return inventoryLineResult;
   }
 
@@ -560,7 +561,7 @@ public class InventoryService {
     inventory.setStatusSelect(InventoryRepository.STATUS_CANCELED);
   }
 
-  private void storeLastInventoryData(Inventory inventory) {
+  protected void storeLastInventoryData(Inventory inventory) {
     Map<Pair<Product, TrackingNumber>, BigDecimal> realQties = new HashMap<>();
     Map<Product, BigDecimal> consolidatedRealQties = new HashMap<>();
     Map<Product, String> realRacks = new HashMap<>();

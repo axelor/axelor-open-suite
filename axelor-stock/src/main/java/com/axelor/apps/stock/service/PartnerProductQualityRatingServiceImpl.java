@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -77,8 +77,8 @@ public class PartnerProductQualityRatingServiceImpl implements PartnerProductQua
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public void undoCalculation(StockMove stockMove) throws AxelorException {
+  @Transactional
+  public void undoCalculation(StockMove stockMove) {
     Partner partner = stockMove.getPartner();
 
     if (partner == null || !partner.getIsSupplier()) {
@@ -158,7 +158,7 @@ public class PartnerProductQualityRatingServiceImpl implements PartnerProductQua
    * @param partnerProductQualityRating
    * @param stockMoveLine
    */
-  private void updatePartnerProductQualityRating(
+  protected void updatePartnerProductQualityRating(
       PartnerProductQualityRating partnerProductQualityRating, StockMoveLine stockMoveLine) {
     updatePartnerProductQualityRating(partnerProductQualityRating, stockMoveLine, false);
   }
@@ -170,7 +170,7 @@ public class PartnerProductQualityRatingServiceImpl implements PartnerProductQua
    * @param stockMoveLine
    * @param undo
    */
-  private void updatePartnerProductQualityRating(
+  protected void updatePartnerProductQualityRating(
       PartnerProductQualityRating partnerProductQualityRating,
       StockMoveLine stockMoveLine,
       boolean undo) {
@@ -204,7 +204,7 @@ public class PartnerProductQualityRatingServiceImpl implements PartnerProductQua
    *
    * @param partner
    */
-  private void updateSupplier(Partner partner) {
+  protected void updateSupplier(Partner partner) {
     BigDecimal supplierQualityRating = BigDecimal.ZERO;
     BigDecimal supplierArrivalProductQty = BigDecimal.ZERO;
     List<PartnerProductQualityRating> partnerProductQualityRatingList =
@@ -240,7 +240,7 @@ public class PartnerProductQualityRatingServiceImpl implements PartnerProductQua
    * @param arrivalProductQty
    * @return
    */
-  private BigDecimal computeQualityRating(
+  protected BigDecimal computeQualityRating(
       BigDecimal compliantArrivalProductQty, BigDecimal arrivalProductQty) {
     return compliantArrivalProductQty
         .multiply(MAX_QUALITY_RATING)
@@ -253,7 +253,7 @@ public class PartnerProductQualityRatingServiceImpl implements PartnerProductQua
    * @param qualityRating
    * @return
    */
-  private BigDecimal computeQualityRatingSelect(BigDecimal qualityRating) {
+  protected BigDecimal computeQualityRatingSelect(BigDecimal qualityRating) {
     final BigDecimal two = new BigDecimal(2);
     return qualityRating
         .multiply(two)

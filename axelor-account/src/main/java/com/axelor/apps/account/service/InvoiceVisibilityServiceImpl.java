@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -35,12 +35,16 @@ import org.apache.commons.collections.CollectionUtils;
 public class InvoiceVisibilityServiceImpl implements InvoiceVisibilityService {
   protected InvoiceService invoiceService;
   protected AccountConfigService accountConfigService;
+  protected AppAccountService appAccountService;
 
   @Inject
   public InvoiceVisibilityServiceImpl(
-      InvoiceService invoiceService, AccountConfigService accountConfigService) {
+      InvoiceService invoiceService,
+      AccountConfigService accountConfigService,
+      AppAccountService appAccountService) {
     this.invoiceService = invoiceService;
     this.accountConfigService = accountConfigService;
+    this.appAccountService = appAccountService;
   }
 
   @Override
@@ -216,5 +220,12 @@ public class InvoiceVisibilityServiceImpl implements InvoiceVisibilityService {
 
   protected boolean _getDecisionDateCondition(Invoice invoice) {
     return invoice.getDecisionPfpTakenDate() != null;
+  }
+
+  @Override
+  public boolean getPfpCondition(Invoice invoice) throws AxelorException {
+    return appAccountService.getAppAccount().getActivatePassedForPayment()
+        && this.getManagePfpCondition(invoice)
+        && this.getOperationTypePurchaseCondition(invoice);
   }
 }

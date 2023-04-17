@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -131,17 +131,25 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
       where.add(userPermissionFilter.getQuery());
     }
 
-    where.add(
-        "((self.partner is not null AND self.partner.emailAddress is not null) OR (self.email is not null))");
+    String partnerEmailCondition =
+        "self.partner is not null AND self.partner.emailAddress is not null";
+
+    if (selectedWithoutNull != null && !selectedWithoutNull.isEmpty()) {
+      partnerEmailCondition =
+          String.format(
+              "%s AND self.partner.emailAddress.address not in (:selected)", partnerEmailCondition);
+      params.put("selected", selectedWithoutNull);
+    }
+
+    String mainEmailCondition =
+        String.format("((%s) OR (self.email is not null))", partnerEmailCondition);
+
+    where.add(mainEmailCondition);
 
     if (!isBlank(matching)) {
       where.add(
           "(LOWER(self.partner.emailAddress.address) like LOWER(:email) OR LOWER(self.partner.fullName) like LOWER(:email) OR LOWER(self.email) like LOWER(:email) OR LOWER(self.name) like LOWER(:email))");
       params.put("email", "%" + matching + "%");
-    }
-    if (selectedWithoutNull != null && !selectedWithoutNull.isEmpty()) {
-      where.add("self.partner.emailAddress.address not in (:selected)");
-      params.put("selected", selectedWithoutNull);
     }
 
     final String filter = Joiner.on(" AND ").join(where);
@@ -206,8 +214,8 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
     final Query<Partner> query2 = Query.of(Partner.class);
 
     if (!isBlank(filter2)) {
-      if (partnerPermissionFilter != null) {
-        query2.filter(filter2, partnerPermissionFilter.getParams());
+      if (partnerPermissionFilter != null && partnerPermissionFilter.getParams() != null) {
+        query2.filter(filter2, partnerPermissionFilter.getParams().toArray());
       } else {
         query2.filter(filter2);
       }
@@ -357,7 +365,9 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
       return super.getSubject(message, entity);
     }
 
-    return templates.fromText(messageTemplate.getSubject()).make(templatesContext).render();
+    String subject =
+        message.getSubject() != null ? message.getSubject() : messageTemplate.getSubject();
+    return templates.fromText(subject).make(templatesContext).render();
   }
 
   void updateTemplateAndContext(MailMessage message, Model entity) {
@@ -458,6 +468,9 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
   void updateRecipientsTemplatesContext(Set<String> recipients) {
     String contRecipients = String.join(", ", recipients);
 
+    if (templatesContext == null) {
+      templatesContext = Maps.newHashMap();
+    }
     // Creating 2 same keys as it could be useful for a future update
     templatesContext.put("toRecipients", contRecipients);
     templatesContext.put("ccRecipients", contRecipients);

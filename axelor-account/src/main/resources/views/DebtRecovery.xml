@@ -84,8 +84,6 @@
         </panel-related>
         <field name="accountingSituation.partner.fixedPhone" widget="phone" colSpan="6"
           hidden="true" showIf="accountingSituation != null" x-placeholder-number-type="FIXED_LINE"/>
-        <field name="accountingSituation.partner.fax" widget="phone" colSpan="6" hidden="true"
-          showIf="accountingSituation != null"/>
         <field name="accountingSituation.partner.emailAddress" colSpan="6" hidden="true"
           showIf="accountingSituation != null"/>
         <field name="accountingSituation.partner.webSite" colSpan="6" hidden="true"
@@ -93,8 +91,6 @@
         <field name="tradingNameAccountingSituation.partner.fixedPhone" widget="phone"
           colSpan="6" hidden="true" showIf="tradingNameAccountingSituation != null"
           x-placeholder-number-type="FIXED_LINE"/>
-        <field name="tradingNameAccountingSituation.partner.fax" widget="phone" colSpan="6"
-          hidden="true" showIf="tradingNameAccountingSituation != null"/>
         <field name="tradingNameAccountingSituation.partner.emailAddress" colSpan="6"
           hidden="true" showIf="tradingNameAccountingSituation != null"/>
         <field name="tradingNameAccountingSituation.partner.webSite" colSpan="6" hidden="true"

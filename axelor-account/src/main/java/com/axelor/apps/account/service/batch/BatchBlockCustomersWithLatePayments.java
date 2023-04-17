@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -135,7 +135,7 @@ public class BatchBlockCustomersWithLatePayments extends BatchStrategy {
     return result.toString();
   }
 
-  @Transactional(rollbackOn = Exception.class)
+  @Transactional
   protected void blockCustomers(List<Long> customersToBlock) {
     if (CollectionUtils.isNotEmpty(customersToBlock)) {
       Query.of(Partner.class)
@@ -145,7 +145,7 @@ public class BatchBlockCustomersWithLatePayments extends BatchStrategy {
     }
   }
 
-  @Transactional(rollbackOn = Exception.class)
+  @Transactional
   protected void unblockCustomers(List<Long> customersToUnblock) {
     if (CollectionUtils.isNotEmpty(customersToUnblock)) {
       Query.of(Partner.class)

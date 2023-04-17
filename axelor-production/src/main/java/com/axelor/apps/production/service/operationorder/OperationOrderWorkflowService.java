@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -86,7 +86,7 @@ public class OperationOrderWorkflowService {
     this.prodProcessLineService = prodProcessLineService;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void manageDurationWithMachinePlanning(
       OperationOrder operationOrder, WeeklyPlanning weeklyPlanning, Long duration)
       throws AxelorException {
@@ -479,7 +479,7 @@ public class OperationOrderWorkflowService {
    *
    * @param operationOrder An operation order
    */
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void cancel(OperationOrder operationOrder) throws AxelorException {
     int oldStatus = operationOrder.getStatusSelect();
     operationOrder.setStatusSelect(OperationOrderRepository.STATUS_CANCELED);
@@ -658,7 +658,7 @@ public class OperationOrderWorkflowService {
     return prodProcessLineService.computeEntireCycleDuration(prodProcessLine, qty);
   }
 
-  private void calculateHoursOfUse(OperationOrder operationOrder) {
+  protected void calculateHoursOfUse(OperationOrder operationOrder) {
 
     if (operationOrder.getMachineTool() == null) {
       return;

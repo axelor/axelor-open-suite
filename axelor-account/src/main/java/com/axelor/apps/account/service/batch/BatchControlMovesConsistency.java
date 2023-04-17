@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -51,7 +51,8 @@ public class BatchControlMovesConsistency extends BatchStrategy {
   protected void process() {
     AccountingBatch accountingBatch = batch.getAccountingBatch();
     if (!CollectionUtils.isEmpty(accountingBatch.getYearSet())) {
-      List<Move> moveList = moveToolService.findDaybookByYear(accountingBatch.getYearSet());
+      List<Move> moveList =
+          moveToolService.findDaybookAndAccountingByYear(accountingBatch.getYearSet());
       if (!CollectionUtils.isEmpty(moveList)) {
         for (Move move : moveList) {
           try {

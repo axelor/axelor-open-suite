@@ -13,11 +13,30 @@
     <view type="grid" name="lead-grid"/>
     <view type="form" name="lead-form"/>
     <view-param name="search-filters" value="lead-filters"/>
+    <domain>self.leadStatus.isOpen = true</domain>
     <context name="_myActiveTeam"
       expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
     <context name="todayDate" expr="eval:__config__.date"/>
     <context name="_internalUserId" expr="eval:__user__.id"/>
   </action-view>
+
+  <menuitem name="crm-root-prospects" parent="crm-root" title="Prospects"
+    action="crm.root.prospects" order="4"/>
+
+  <action-view name="crm.root.prospects" title="Prospects"
+    model="com.axelor.apps.base.db.Partner">
+    <view type="cards" name="partner-cards"/>
+    <view type="grid" name="partner-prospect-grid"/>
+    <view type="form" name="partner-customer-form"/>
+    <view-param name="limit" value="39"/>
+    <view-param name="search-filters" value="partner-filters"/>
+    <view-param name="forceTitle" value="true"/>
+    <domain>self.isContact = false AND self.isProspect = true</domain>
+    <context name="_isProspect" expr="true"/>
+    <context name="_domain" expr="self.isContact = false AND self.isProspect = true"/>
+    <context name="json-enhance" expr="eval:true"/>
+  </action-view>
+
 
   <menuitem name="crm-root-customers" parent="crm-root" title="Customers"
     action="crm.root.customers" order="5"/>
@@ -29,10 +48,9 @@
     <view type="form" name="partner-customer-form"/>
     <view-param name="limit" value="39"/>
     <view-param name="search-filters" value="partner-filters"/>
-    <domain>self.isContact = false AND (self.isCustomer = true OR self.isProspect = true)</domain>
+    <domain>self.isContact = false AND self.isCustomer = true</domain>
     <context name="_isCustomer" expr="true"/>
-    <context name="_domain"
-      expr="self.isContact = false AND (self.isCustomer = true OR self.isProspect = true)"/>
+    <context name="_domain" expr="self.isContact = false AND self.isCustomer = true"/>
     <context name="json-enhance" expr="eval:true"/>
   </action-view>
 
@@ -53,7 +71,7 @@
   </action-view>
 
   <menuitem name="crm-root-catalog" parent="crm-root" title="Catalogs"
-    action="crm.root.catalogs" order="11"/>
+    action="crm.root.catalogs" order="11" if="__config__.app.getApp('crm')?.getIsManageCatalogs()"/>
 
   <action-view name="crm.root.catalogs" title="Catalogs"
     model="com.axelor.apps.crm.db.Catalog">
@@ -94,15 +112,31 @@
     <context name="todayDate" expr="eval:__config__.date"/>
   </action-view>
 
+  <menuitem title="Leads historical" name="crm-root-leadHistorical" parent="crm-root"
+    action="crm.root.leadHistorical" order="26"/>
+  <action-view name="crm.root.leadHistorical" title="Leads historical"
+    model="com.axelor.apps.crm.db.Lead">
+    <view type="grid" name="lead-historical-grid"/>
+    <view type="form" name="lead-form"/>
+    <view-param name="search-filters" value="lead-filters"/>
+    <domain>self.leadStatus.id = :_convertedLeadStatusId OR self.leadStatus.id = :_lostLeadStatusId</domain>
+    <context name="_myActiveTeam"
+      expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
+    <context name="todayDate"
+      expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+    <context name="_internalUserId" expr="eval:__user__.id"/>
+    <context name="_convertedLeadStatusId"
+      expr="eval: __config__.app.getApp('crm')?.getConvertedLeadStatus()?.id"/>
+    <context name="_lostLeadStatusId"
+      expr="eval: __config__.app.getApp('crm')?.getLostLeadStatus()?.id"/>
+  </action-view>
+
   <menuitem name="crm-root-meeting-my-calendar" parent="menu-calendar"
     title="My CRM events" action="crm.root.meeting.my.calendar" order="2"/>
 
   <action-method name="crm.root.meeting.my.calendar">
     <call class="com.axelor.apps.crm.web.CalendarController" method="showMyEvents"/>
   </action-method>
-
-  <menuitem name="crm-conf-target" parent="crm-root" order="30" title="Objectives"
-    action="crm.conf.target"/>
 
   <menuitem name="crm-root-report" parent="crm-root" title="Reportings" order="45"
     icon="fa-bar-chart"/>
@@ -128,23 +162,6 @@
     <view type="form" name="event-category-form"/>
   </action-view>
 
-  <menuitem name="crm-conf-target-configuration" parent="crm-conf"
-    title="Objectives configurations" action="crm.conf.target.configuration"/>
-
-  <action-view name="crm.conf.target.configuration" title="Objectives Configurations"
-    model="com.axelor.apps.crm.db.TargetConfiguration">
-    <view type="grid" name="target-configuration-grid"/>
-    <view type="form" name="target-configuration-form"/>
-    <view-param name="search-filters" value="target-configuration-filters"/>
-  </action-view>
-
-  <action-view name="crm.conf.target" title="Objectives"
-    model="com.axelor.apps.crm.db.Target">
-    <view type="grid" name="target-grid"/>
-    <view type="form" name="target-form"/>
-    <view-param name="search-filters" value="target-filters"/>
-  </action-view>
-
   <menuitem name="crm-conf-lost-reason" parent="crm-conf" title="Lost reasons"
     action="crm.conf.lost.reason"/>
 
@@ -164,7 +181,7 @@
   </action-view>
 
   <menuitem name="crm-conf-catalog-type" parent="crm-conf" title="Catalogs type"
-    action="crm.conf.catalog.type"/>
+    action="crm.conf.catalog.type" if="__config__.app.getApp('crm')?.getIsManageCatalogs()"/>
 
   <action-view name="crm.conf.catalog.type" title="Catalogs type"
     model="com.axelor.apps.crm.db.CatalogType">
@@ -179,6 +196,15 @@
     model="com.axelor.apps.base.db.IndustrySector">
     <view type="grid" name="industry-sector-grid"/>
     <view type="form" name="industry-sector-form"/>
+  </action-view>
+
+  <menuitem name="crm-conf-opportunity-status" parent="crm-conf" title="Opportunity status"
+    action="crm.conf.opportunity.status" order="15"/>
+
+  <action-view name="crm.conf.opportunity.status" title="Opportunity status"
+    model="com.axelor.apps.crm.db.OpportunityStatus">
+    <view type="grid" name="opportunity-status-grid"/>
+    <view type="form" name="opportunity-status-form"/>
   </action-view>
 
   <menuitem name="admin-root-batch-crm" parent="admin-root-batch" title="CRM batches"
@@ -222,7 +248,7 @@
     <view type="form" name="event-form"/>
     <view type="calendar" name="event-calendar-color-by-calendar"/>
     <view-param name="search-filters" value="event-filters"/>
-    <domain>self.typeSelect = 1</domain>
+    <domain>self.typeSelect = 1 OR self.typeSelect = 6</domain>
     <context name="_internalUserId" expr="eval: __user__.id"/>
     <context name="_myActiveTeam"
       expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
@@ -325,28 +351,6 @@
     <view type="dashboard" name="crm.lead.salesman"/>
   </action-view>
 
-  <menuitem name="menu-target-dashboard" parent="crm-root-report" title="Objectives"/>
-
-  <menuitem name="menu-target-user-dashboard" parent="menu-target-dashboard"
-    title="Salesman" action="crm.target.user.dashboard.view"/>
-
-  <action-view name="crm.target.user.dashboard.view" title="Objectives monitoring">
-    <view type="dashboard" name="crm.target.user.dashboard"/>
-    <context name="date" expr="eval: __config__.date"/>
-    <context name="user" expr="eval:__user__"/>
-  </action-view>
-
-  <menuitem name="menu-target-team-dashboard" parent="menu-target-dashboard"
-    title="Manager" action="crm.target.team.dashboard.view" order="-1"/>
-
-  <action-view name="crm.target.team.dashboard.view" title="Objectives monitoring">
-    <view type="dashboard" name="crm.target.team.dashboard"/>
-    <context name="team"
-      expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeamId()"/>
-    <context name="date" expr="eval:__config__.date"/>
-  </action-view>
-
-
   <menuitem name="menu-opportunities-dashboard" parent="crm-root-report"
     title="Opportunities" order="-20"/>
 
@@ -396,5 +400,46 @@
     <view type="form" name="partner-role-form"/>
   </action-view>
 
+  <menuitem title="Department" name="crm-conf-department" parent="crm-conf"
+    action="crm.conf.department"/>
+  <action-view name="crm.conf.department" title="Department"
+    model="com.axelor.apps.base.db.CompanyDepartment">
+    <view type="grid" name="company-department-grid"/>
+    <view type="form" name="company-department-form"/>
+  </action-view>
+
+  <menuitem title="Type" name="crm-conf-type" parent="crm-conf" action="crm.conf.type"/>
+  <action-view name="crm.conf.type" title="Type"
+    model="com.axelor.apps.base.db.PartnerCategory">
+    <view type="grid" name="partner-category-grid"/>
+    <view type="form" name="partner-category-form"/>
+  </action-view>
+
+  <menuitem title="Lead status" name="crm-conf-lead-status" parent="crm-conf"
+    action="crm.conf.lead.status"/>
+  <action-view name="crm.conf.lead.status" title="Lead status"
+    model="com.axelor.apps.crm.db.LeadStatus">
+    <view type="grid" name="lead-status-grid"/>
+    <view type="form" name="lead-status-form"/>
+  </action-view>
+
+  <menuitem title="Sales pipeline follow-up" name="crm-root-crm-reporting"
+    parent="crm-root" action="crm.root.crm.reporting" order="31"/>
+  <action-view name="crm.root.crm.reporting" title="Sales pipeline follow-up"
+    model="com.axelor.apps.crm.db.CrmReporting">
+    <view type="grid" name="crm-reporting-grid"/>
+    <view type="form" name="crm-reporting-form"/>
+    <view-param name="forceTitle" value="true"/>
+    <view-param name="reload-dotted" value="true"/>
+  </action-view>
+
+  <menuitem title="Agencies" name="admin-root-user-agency" parent="admin-root-user"
+    action="admin.root.user.agency" order="3"
+    if="__config__.app.isApp('crm') &amp;&amp; __config__.app.getApp('crm').getAgenciesManagement()"/>
+  <action-view name="admin.root.user.agency" title="Agencies"
+    model="com.axelor.apps.crm.db.Agency">
+    <view type="grid" name="agency-grid"/>
+    <view type="form" name="agency-form"/>
+  </action-view>
 
 </object-views>

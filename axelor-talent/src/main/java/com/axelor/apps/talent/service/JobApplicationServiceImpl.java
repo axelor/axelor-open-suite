@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -137,7 +137,7 @@ public class JobApplicationServiceImpl implements JobApplicationService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public void setDMSFile(JobApplication jobApplication) {
     if (jobApplication.getResume() == null) {
       DMSFile toDelete = dmsFileRepo.find(jobApplication.getResumeId());

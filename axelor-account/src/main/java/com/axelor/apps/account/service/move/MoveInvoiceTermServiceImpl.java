@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -72,7 +72,7 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
     if (CollectionUtils.isNotEmpty(move.getMoveLineList())) {
       for (MoveLine moveLine : move.getMoveLineList()) {
         if (moveLine.getAccount() != null
-            && moveLine.getAccount().getHasInvoiceTerm()
+            && moveLine.getAccount().getUseForPartnerBalance()
             && CollectionUtils.isEmpty(moveLine.getInvoiceTermList())) {
           moveLineInvoiceTermService.generateDefaultInvoiceTerm(moveLine, false);
         }
@@ -97,7 +97,7 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
             .filter(
                 it ->
                     it.getAmountRemaining().compareTo(it.getDebit().max(it.getCredit())) == 0
-                        && it.getAccount().getHasInvoiceTerm()
+                        && it.getAccount().getUseForPartnerBalance()
                         && CollectionUtils.isNotEmpty(it.getInvoiceTermList()))
             .map(MoveLine::getInvoiceTermList)
             .flatMap(Collection::stream)
@@ -117,7 +117,7 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
   public void recreateInvoiceTerms(Move move) throws AxelorException {
     if (CollectionUtils.isNotEmpty(move.getMoveLineList())) {
       for (MoveLine moveLine : move.getMoveLineList()) {
-        if (moveLine.getAccount().getHasInvoiceTerm()) {
+        if (moveLine.getAccount().getUseForPartnerBalance()) {
           moveLineInvoiceTermService.recreateInvoiceTerms(moveLine);
         }
       }
@@ -148,7 +148,7 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
     if (CollectionUtils.isNotEmpty(move.getMoveLineList())) {
       List<MoveLine> moveLinesWithInvoiceTerms =
           move.getMoveLineList().stream()
-              .filter(it -> it.getAccount() != null && it.getAccount().getHasInvoiceTerm())
+              .filter(it -> it.getAccount() != null && it.getAccount().getUseForPartnerBalance())
               .collect(Collectors.toList());
 
       return moveLinesWithInvoiceTerms.size() <= 1
@@ -180,7 +180,7 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public void updateSingleInvoiceTermDueDate(Move move, LocalDate dueDate) {
     if (CollectionUtils.isEmpty(move.getMoveLineList()) || dueDate == null) {
       return;
@@ -199,7 +199,7 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
 
   protected InvoiceTerm getSingleInvoiceTerm(Move move) {
     return move.getMoveLineList().stream()
-        .filter(it -> it.getAccount().getHasInvoiceTerm())
+        .filter(it -> it.getAccount().getUseForPartnerBalance())
         .map(MoveLine::getInvoiceTermList)
         .flatMap(Collection::stream)
         .findFirst()

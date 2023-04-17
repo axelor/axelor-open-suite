@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -46,7 +46,6 @@ import com.axelor.apps.base.db.PrintingSettings;
 import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.db.repo.LanguageRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
-import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.BankDetailsService;
@@ -563,7 +562,7 @@ public class InvoiceController {
     }
   }
 
-  private String buildMassMessage(int doneCount, int errorCount) {
+  protected String buildMassMessage(int doneCount, int errorCount) {
     StringBuilder sb = new StringBuilder();
     sb.append(
         String.format(
@@ -583,7 +582,7 @@ public class InvoiceController {
     return sb.toString();
   }
 
-  private void massProcess(
+  protected void massProcess(
       ActionRequest request,
       ActionResponse response,
       Function<Collection<? extends Number>, Pair<Integer, Integer>> function) {
@@ -919,9 +918,10 @@ public class InvoiceController {
           Beans.get(InvoiceDomainService.class)
               .getPartnerBaseDomain(company, invoice, invoiceTypeSelect);
 
-      if ((!(invoiceLineList == null || invoiceLineList.isEmpty()))
-          && (invoiceTypeSelect == PriceListRepository.TYPE_SALE)) {
-        domain = Beans.get(PricedOrderDomainService.class).getPartnerDomain(invoice, domain);
+      if (!(invoiceLineList == null || invoiceLineList.isEmpty())) {
+        domain =
+            Beans.get(PricedOrderDomainService.class)
+                .getPartnerDomain(invoice, domain, invoiceTypeSelect);
       }
 
       response.setAttr("partner", "domain", domain);
@@ -1173,6 +1173,24 @@ public class InvoiceController {
           .filter(invoiceTermService::isNotReadonly)
           .forEach(it -> it.setPaymentMode(invoice.getPaymentMode()));
 
+      response.setValue("invoiceTermList", invoice.getInvoiceTermList());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void updateInvoiceTermBankDetails(ActionRequest request, ActionResponse response) {
+    try {
+      Invoice invoice = request.getContext().asType(Invoice.class);
+
+      if (Beans.get(AppAccountService.class).getAppAccount().getAllowMultiInvoiceTerms()
+          || CollectionUtils.isEmpty(invoice.getInvoiceTermList())
+          || !Beans.get(InvoiceTermService.class)
+              .isNotReadonly(invoice.getInvoiceTermList().get(0))) {
+        return;
+      }
+
+      invoice.getInvoiceTermList().get(0).setBankDetails(invoice.getBankDetails());
       response.setValue("invoiceTermList", invoice.getInvoiceTermList());
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);

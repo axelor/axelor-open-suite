@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -142,31 +142,31 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
    */
   public void createDoubtFulCustomerMove(
       List<Move> moveList, Account doubtfulCustomerAccount, String debtPassReason) {
+    for (int i = 0; i < moveList.size(); i++) {
+      Move move = moveList.get(i);
 
-    int i = 0;
-    for (Move move : moveList) {
       try {
-
         doubtfulCustomerService.createDoubtFulCustomerMove(
             moveRepo.find(move.getId()),
             accountRepo.find(doubtfulCustomerAccount.getId()),
             debtPassReason);
+
         Move myMove = moveRepo.find(move.getId());
+
         if (myMove.getInvoice() != null) {
           updateInvoice(myMove.getInvoice());
-          i++;
+        } else {
+          updateAccountMove(myMove, true);
         }
 
       } catch (AxelorException e) {
-
         TraceBackService.trace(
             new AxelorException(e, e.getCategory(), I18n.get("Invoice") + " %s", move.getOrigin()),
             ExceptionOriginRepository.DOUBTFUL_CUSTOMER,
             batch.getId());
+
         incrementAnomaly();
-
       } catch (Exception e) {
-
         TraceBackService.trace(
             new Exception(String.format(I18n.get("Invoice") + " %s", move.getOrigin()), e),
             ExceptionOriginRepository.DOUBTFUL_CUSTOMER,
@@ -177,9 +177,7 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
         log.error(
             "Anomaly generated for the invoice {}",
             moveRepo.find(move.getId()).getInvoice().getInvoiceId());
-
       } finally {
-
         if (i % 10 == 0) {
           JPA.clear();
         }

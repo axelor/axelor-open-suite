@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -24,10 +24,19 @@ import com.axelor.apps.stock.rest.dto.StockCorrectionPostRequest;
 import com.axelor.apps.stock.rest.dto.StockCorrectionPutRequest;
 import com.axelor.apps.stock.rest.dto.StockCorrectionResponse;
 import com.axelor.apps.stock.service.StockCorrectionService;
-import com.axelor.apps.tool.api.*;
+import com.axelor.apps.tool.api.HttpExceptionHandler;
+import com.axelor.apps.tool.api.ObjectFinder;
+import com.axelor.apps.tool.api.RequestValidator;
+import com.axelor.apps.tool.api.ResponseConstructor;
+import com.axelor.apps.tool.api.SecurityCheck;
 import com.axelor.inject.Beans;
 import java.util.Arrays;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 

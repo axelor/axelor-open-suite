@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -96,7 +96,7 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
     return abcAnalysisClassList;
   }
 
-  private ABCAnalysisClass createAbcClass(
+  protected ABCAnalysisClass createAbcClass(
       String name, Integer sequence, BigDecimal worth, BigDecimal qty) {
     ABCAnalysisClass abcAnalysisClass = new ABCAnalysisClass();
 
@@ -145,7 +145,7 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
     abcAnalysisRepository.save(abcAnalysis);
   }
 
-  private void getAbcAnalysisClassList(ABCAnalysis abcAnalysis) {
+  protected void getAbcAnalysisClassList(ABCAnalysis abcAnalysis) {
     Query<ABCAnalysisClass> abcAnalysisClassQuery =
         abcAnalysisClassRepository
             .all()
@@ -281,7 +281,7 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
     abcAnalysisLineRepository.save(abcAnalysisLine);
   }
 
-  private void computePercentage(ABCAnalysisLine abcAnalysisLine) {
+  protected void computePercentage(ABCAnalysisLine abcAnalysisLine) {
     BigDecimal qty = BigDecimal.ZERO;
     if (totalQty.compareTo(BigDecimal.ZERO) > 0) {
       qty =
@@ -336,11 +336,11 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
     this.totalWorth = this.totalWorth.add(totalWorth);
   }
 
-  private void incCumulatedQty(BigDecimal cumulatedQty) {
+  protected void incCumulatedQty(BigDecimal cumulatedQty) {
     this.cumulatedQty = this.cumulatedQty.add(cumulatedQty);
   }
 
-  private void incCumulatedWorth(BigDecimal cumulatedWorth) {
+  protected void incCumulatedWorth(BigDecimal cumulatedWorth) {
     this.cumulatedWorth = this.cumulatedWorth.add(cumulatedWorth);
   }
 

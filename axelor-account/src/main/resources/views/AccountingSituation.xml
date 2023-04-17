@@ -113,10 +113,6 @@
         grid-view="debt-recovery-grid" form-view="debt-recovery-form" colSpan="12"/>
     </panel>
 
-    <panel-related name="reportedBalanceLineListPanel" field="reportedBalanceLineList"
-      hideIf="reportedBalanceLineList.length == 0" colSpan="12"
-      form-view="reported-balance-line-custom-form" grid-view="reported-balance-line-custom-grid"/>
-
     <panel name="customerCreditPanel" title="Customer Credit" if-module="axelor-supplychain">
       <field name="acceptedCredit"/>
       <field name="usedCredit"/>
@@ -183,10 +179,6 @@
     <panel name="debtRecoveryProcessPanel" title="Debt recovery process">
       <field name="debtRecovery" form-view="debt-recovery-form" grid-view="debt-recovery-grid"/>
     </panel>
-
-    <panel-related name="reportedBalanceLineListPanel" field="reportedBalanceLineList"
-      colSpan="12" form-view="reported-balance-line-custom-form"
-      grid-view="reported-balance-line-custom-grid"/>
 
     <panel name="customerCreditPanel" title="Customer Credit" if-module="axelor-supplychain">
       <field name="acceptedCredit"/>

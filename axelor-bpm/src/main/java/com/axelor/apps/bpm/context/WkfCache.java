@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -41,7 +41,11 @@ public class WkfCache {
     Map<Long, String> modelMap = new HashMap<Long, String>();
     modelMap.put(0L, "");
     for (WkfProcessConfig config : wkfProcessConfigs) {
-      modelMap.put(config.getId(), config.getModel());
+      String model = config.getModel();
+      if (config.getMetaJsonModel() != null) {
+        model = config.getMetaJsonModel().getName();
+      }
+      modelMap.put(config.getId(), model);
     }
     WKF_MODEL_CACHE.put(BpmTools.getCurentTenant(), modelMap);
   }

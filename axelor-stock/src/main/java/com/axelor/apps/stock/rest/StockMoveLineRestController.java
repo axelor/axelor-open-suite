@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -59,7 +59,11 @@ public class StockMoveLineRestController {
         ObjectFinder.find(StockMoveLine.class, stockMoveLineId, requestBody.getVersion());
 
     Beans.get(StockMoveLineService.class)
-        .updateStockMoveLine(stockmoveLine, requestBody.getRealQty(), requestBody.getConformity());
+        .updateStockMoveLine(
+            stockmoveLine,
+            requestBody.getRealQty(),
+            requestBody.getConformity(),
+            requestBody.fetchUnit());
 
     return ResponseConstructor.build(
         Response.Status.OK, "Line successfully updated.", new StockMoveLineResponse(stockmoveLine));

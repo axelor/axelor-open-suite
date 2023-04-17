@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -206,7 +206,7 @@ public class StockRulesServiceSupplychainImpl extends StockRulesServiceImpl {
    * @param product
    * @return
    */
-  private BigDecimal getDefaultSupplierMinQty(Product product) {
+  protected BigDecimal getDefaultSupplierMinQty(Product product) {
     Partner defaultSupplierPartner = product.getDefaultSupplierPartner();
     if (Beans.get(AppPurchaseService.class).getAppPurchase().getManageSupplierCatalog()) {
       List<SupplierCatalog> supplierCatalogList = product.getSupplierCatalogList();

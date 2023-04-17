@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -37,7 +37,11 @@ public class WkfProcessConfigListener {
       WkfCache.WKF_MODEL_CACHE.put(tenantId, new HashMap<Long, String>());
     }
 
-    WkfCache.WKF_MODEL_CACHE.get(tenantId).put(config.getId(), config.getModel());
+    String modelName = config.getModel();
+    if (config.getMetaJsonModel() != null) {
+      modelName = config.getMetaJsonModel().getName();
+    }
+    WkfCache.WKF_MODEL_CACHE.get(tenantId).put(config.getId(), modelName);
   }
 
   @PostRemove

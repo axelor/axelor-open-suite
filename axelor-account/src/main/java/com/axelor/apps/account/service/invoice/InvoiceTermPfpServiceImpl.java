@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -53,7 +53,7 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public void validatePfp(InvoiceTerm invoiceTerm, User currentUser) {
     Company company = invoiceTerm.getCompany();
 
@@ -61,13 +61,19 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
     invoiceTerm.setInitialPfpAmount(invoiceTerm.getAmount());
     invoiceTerm.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_VALIDATED);
     invoiceTerm.setPfpValidatorUser(currentUser);
+
+    if (!ObjectUtils.isEmpty(invoiceTerm.getReasonOfRefusalToPay())
+        && !ObjectUtils.isEmpty(invoiceTerm.getReasonOfRefusalToPayStr())) {
+      invoiceTerm.setReasonOfRefusalToPay(null);
+      invoiceTerm.setReasonOfRefusalToPayStr(null);
+    }
     invoiceTermRepo.save(invoiceTerm);
 
     this.checkOtherInvoiceTerms(invoiceTerm);
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public Integer massValidatePfp(List<Long> invoiceTermIds) {
     List<InvoiceTerm> invoiceTermList = this.getInvoiceTerms(invoiceTermIds);
     User currentUser = AuthUtils.getUser();
@@ -163,7 +169,7 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public void refusalToPay(
       InvoiceTerm invoiceTerm, CancelReason reasonOfRefusalToPay, String reasonOfRefusalToPayStr) {
     invoiceTerm.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_LITIGATION);
@@ -239,7 +245,7 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
     return invoiceTerm;
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   protected void updateOriginalTerm(
       InvoiceTerm originalInvoiceTerm,
       InvoiceTerm newInvoiceTerm,
@@ -274,7 +280,7 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
             .subtract(newInvoiceTerm.getCompanyAmountRemaining()));
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   protected void checkOtherInvoiceTerms(InvoiceTerm invoiceTerm) {
     Invoice invoice = invoiceTerm.getInvoice();
     if (invoice == null) {

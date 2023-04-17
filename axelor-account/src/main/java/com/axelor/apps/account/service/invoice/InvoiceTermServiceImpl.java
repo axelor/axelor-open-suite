@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -155,7 +155,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       for (MoveLine moveLineIt : move.getMoveLineList()) {
         if (!moveLineIt.equals(moveLine)
             && moveLineIt.getAccount() != null
-            && moveLineIt.getAccount().getHasInvoiceTerm()
+            && moveLineIt.getAccount().getUseForPartnerBalance()
             && moveLineIt.getInvoiceTermList() != null) {
           for (InvoiceTerm invoiceTerm : moveLineIt.getInvoiceTermList()) {
             sum = sum.add(this.computeCustomizedPercentageUnscaled(invoiceTerm.getAmount(), total));
@@ -376,6 +376,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED) {
       findInvoiceTermsInInvoice(invoice.getMove().getMoveLineList(), invoiceTerm, invoice);
     }
+    invoiceTerm.setSequence(initInvoiceTermsSequence(invoice, invoiceTerm));
 
     return invoiceTerm;
   }
@@ -527,7 +528,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   }
 
   protected int initInvoiceTermsSequence(MoveLine moveLine) {
-    if (CollectionUtils.isEmpty(moveLine.getInvoiceTermList())) {
+    if (moveLine == null || CollectionUtils.isEmpty(moveLine.getInvoiceTermList())) {
       return 1;
     }
     return moveLine.getInvoiceTermList().stream()
@@ -537,14 +538,26 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
         + 1;
   }
 
+  protected int initInvoiceTermsSequence(Invoice invoice, InvoiceTerm invoiceTerm) {
+
+    if (invoiceTerm == null
+        || invoice == null
+        || CollectionUtils.isEmpty(invoice.getInvoiceTermList())) {
+      return 1;
+    } else {
+      return invoice.getInvoiceTermList().stream()
+              .max(Comparator.comparing(InvoiceTerm::getSequence))
+              .get()
+              .getSequence()
+          + 1;
+    }
+  }
+
   @Override
   public List<InvoiceTerm> getUnpaidInvoiceTerms(Invoice invoice) throws AxelorException {
     String queryStr =
         "self.invoice = :invoice AND (self.isPaid IS NOT TRUE OR self.amountRemaining > 0)";
-    boolean pfpCondition =
-        appAccountService.getAppAccount().getActivatePassedForPayment()
-            && invoiceVisibilityService.getManagePfpCondition(invoice)
-            && invoiceVisibilityService.getOperationTypePurchaseCondition(invoice);
+    boolean pfpCondition = invoiceVisibilityService.getPfpCondition(invoice);
 
     if (pfpCondition) {
       queryStr =
@@ -1244,7 +1257,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public void roundPercentages(List<InvoiceTerm> invoiceTermList, BigDecimal total) {
     boolean isSubtract = true;
 
@@ -1336,7 +1349,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     MoveLine moveLine = getExistingInvoiceTermMoveLine(invoice);
     if (moveLine == null && !CollectionUtils.isEmpty(moveLineList)) {
       for (MoveLine ml : moveLineList) {
-        if (ml.getAccount().getHasInvoiceTerm()) {
+        if (ml.getAccount().getUseForPartnerBalance()) {
           ml.addInvoiceTermListItem(invoiceTerm);
           return;
         }
@@ -1360,7 +1373,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
         if (!moveLineIt.equals(moveLine)
             && moveLineIt.getCredit().signum() == moveLine.getCredit().signum()
             && moveLineIt.getAccount() != null
-            && moveLineIt.getAccount().getHasInvoiceTerm()
+            && moveLineIt.getAccount().getUseForPartnerBalance()
             && (holdback
                 || (holdbackAccount != null && !moveLineIt.getAccount().equals(holdbackAccount)))) {
           total = total.add(moveLineIt.getCurrencyAmount());
@@ -1461,5 +1474,24 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   @Override
   public boolean isMultiCurrency(InvoiceTerm invoiceTerm) {
     return !Objects.equals(this.getCurrency(invoiceTerm), this.getCompanyCurrency(invoiceTerm));
+  }
+
+  @Override
+  public List<InvoiceTerm> recomputeInvoiceTermsPercentage(
+      List<InvoiceTerm> invoiceTermList, BigDecimal total) {
+    InvoiceTerm lastInvoiceTerm = invoiceTermList.remove(invoiceTermList.size() - 1);
+    BigDecimal percentageTotal = BigDecimal.ZERO;
+
+    for (InvoiceTerm invoiceTerm : invoiceTermList) {
+      BigDecimal percentage = this.computeCustomizedPercentage(invoiceTerm.getAmount(), total);
+
+      invoiceTerm.setPercentage(percentage);
+      percentageTotal = percentageTotal.add(percentage);
+    }
+
+    lastInvoiceTerm.setPercentage(BigDecimal.valueOf(100).subtract(percentageTotal));
+    invoiceTermList.add(lastInvoiceTerm);
+
+    return invoiceTermList;
   }
 }

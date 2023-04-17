@@ -70,7 +70,7 @@
       </panel>
       <button name="timeSpentBtn" title="Log time"
         onClick="save,action-project-task-validate-check-employee,action-project-task-view-time-spent"
-        colSpan="2" showIf="project.isShowTimeSpent"/>
+        colSpan="2" hidden="true"/>
       <field name="project.isShowTimeSpent" hidden="true"/>
       <field name="$provider" hidden="true" type="string"/>
       <panel name="projectDetailsPanel" colSpan="12">
@@ -98,7 +98,8 @@
           <field name="assignedTo" readonlyIf="project == null" colSpan="6" canNew="false"
             canView="false" canEdit="false"
             onSelect="action-project-task-attrs-project-assigned-to-configurations" required="true"
-            form-view="user-form" grid-view="user-grid"/>
+            form-view="user-form" grid-view="user-grid"
+            onChange="action-project-task-attrs-hide-time-spent-button"/>
           <field name="customerReferral"
             onSelect="action-project-task-attrs-customer-referral-domain" hidden="true"
             showIf="typeSelect == 'ticket'" if="__config__.app.isApp('business-project')"/>
@@ -158,6 +159,7 @@
         <field name="progressSelect" widget="SelectProgress"
           onChange="action-project-task-update-planned-progress" showIf="project.isShowProgress"
           colSpan="4"/>
+        <field name="description" colSpan="12" widget="html"/>
         <field name="project.isShowProgress" hidden="true"/>
         <field name="project.isShowSection" hidden="true"/>
         <field name="project.isShowStatus" hidden="true"/>
@@ -168,10 +170,6 @@
       <field name="typeSelect" hidden="true"/>
     </panel>
     <panel-tabs name="mainPanelTab">
-      <panel name="contentPanel" title="Description" colSpan="12">
-        <field name="description" showTitle="false" colSpan="12" widget="html"/>
-      </panel>
-
       <panel name="internalDescriptionPanel" title="Internal Description"
         if="__config__.app.isApp('business-support')" if-module="axelor-business-support">
         <field name="internalDescription" colSpan="12" widget="html"/>
@@ -250,7 +248,8 @@
                      </h4>
 					]]></viewer>
         </field>
-        <field name="project.invoicingSequenceSelect" hidden="true"/>
+        <field name="project.invoicingSequenceSelect" hidden="true"
+          if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
         <field name="saleOrderLine" readonly="true" showIf="saleOrderLine"
           form-view="sale-order-line-form" grid-view="sale-order-line-grid"/>
         <field name="invoiceLine" readonly="true" showIf="invoiceLine"
@@ -502,6 +501,7 @@
     <action name="action-project-task-business-support-provider"
       if="__config__.app.isApp('business-support')"/>
     <action name="action-project-task-attrs-project-filter-status"/>
+    <action name="action-project-task-attrs-hide-time-spent-button"/>
   </action-group>
 
   <action-group name="action-project-task-group-project-onchange">
@@ -511,6 +511,7 @@
       if="__config__.app.isApp('business-project')"/>
     <action name="action-project-task-method-compute"
       if="__config__.app.isApp('business-project')"/>
+    <action name="action-project-task-attrs-hide-time-spent-button"/>
   </action-group>
 
   <action-group name="action-project-task-group-product-onchange">
@@ -597,7 +598,8 @@
       if="project?.synchronize &amp;&amp; project.team != null"/>
     <field name="team" expr="eval: __repo__(Project).find(project?.parentProject?.id)?.team"
       if="(!project?.synchronize || project.team == null) &amp;&amp; project?.extendsMembersFromParent &amp;&amp; __repo__(Project).find(project?.parentProject?.id)?.synchronize"/>
-    <field name="invoicingType" expr="eval: 2" if="project?.invoicingSequenceSelect == 1"/>
+    <field name="invoicingType" expr="eval: 2"
+      if="__config__.app.isApp('business-project') &amp;&amp; project?.invoicingSequenceSelect == 1"/>
     <field name="priority"
       expr="call: com.axelor.apps.project.service.ProjectTaskService:getPriority(project)"
       if="project?.isShowPriority"/>
@@ -760,6 +762,7 @@
     <action name="action-project-task-business-support-provider"
       if="__config__.app.isApp('business-support')"/>
     <action name="action-project-attrs-project-planning-time-cancel-remove"/>
+    <action name="action-project-task-attrs-hide-time-spent-button"/>
   </action-group>
 
   <action-method name="action-project-task-method-start-timer">
@@ -877,6 +880,11 @@
       if="project?.projectTaskStatusSet"/>
     <attribute name="selection-in" for="status" expr="eval: [-1]"
       if="!project?.projectTaskStatusSet"/>
+  </action-attrs>
+
+  <action-attrs name="action-project-task-attrs-hide-time-spent-button">
+    <attribute name="hidden" for="timeSpentBtn"
+      expr="!(project?.isShowTimeSpent &amp;&amp; assignedTo?.employee == __user__.employee)"/>
   </action-attrs>
 
   <search-filters name="project-task-filters"

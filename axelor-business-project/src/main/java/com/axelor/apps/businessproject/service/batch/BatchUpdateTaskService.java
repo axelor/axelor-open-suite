@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -83,7 +83,7 @@ public class BatchUpdateTaskService extends AbstractBatch {
     }
   }
 
-  private void updateTasks() {
+  protected void updateTasks() {
     QueryBuilder<ProjectTask> taskQueryBuilder =
         projectTaskBusinessProjectService.getTaskInvoicingFilter();
 
@@ -96,7 +96,7 @@ public class BatchUpdateTaskService extends AbstractBatch {
       findBatch();
       for (ProjectTask projectTask : taskList) {
         try {
-          projectTask = projectTaskBusinessProjectService.updateTaskFinancialInfo(projectTask);
+          projectTask = projectTaskBusinessProjectService.setProjectTaskValues(projectTask);
         } catch (Exception e) {
           incrementAnomaly();
           TraceBackService.trace(
@@ -114,7 +114,7 @@ public class BatchUpdateTaskService extends AbstractBatch {
     }
   }
 
-  private void updateTaskToInvoice(
+  protected void updateTaskToInvoice(
       Map<String, Object> contextValues, AppBusinessProject appBusinessProject) {
 
     QueryBuilder<ProjectTask> taskQueryBuilder =
@@ -163,7 +163,7 @@ public class BatchUpdateTaskService extends AbstractBatch {
         batch, updatedTaskList, "updatedTaskSet", contextValues);
   }
 
-  private void updateTimesheetLines(Map<String, Object> contextValues) {
+  protected void updateTimesheetLines(Map<String, Object> contextValues) {
 
     List<Object> updatedTimesheetLineList = new ArrayList<Object>();
 

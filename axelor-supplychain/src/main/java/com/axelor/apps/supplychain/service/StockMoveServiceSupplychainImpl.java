@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -133,7 +133,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public String realize(StockMove stockMove, boolean check) throws AxelorException {
+  public String realizeStockMove(StockMove stockMove, boolean check) throws AxelorException {
 
     if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
         && (stockMove.getPartner() != null
@@ -144,11 +144,11 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
     }
 
     if (!appSupplyChainService.isApp("supplychain")) {
-      return super.realize(stockMove, check);
+      return super.realizeStockMove(stockMove, check);
     }
 
     LOG.debug("Stock move realization: {} ", stockMove.getStockMoveSeq());
-    String newStockSeq = super.realize(stockMove, check);
+    String newStockSeq = super.realizeStockMove(stockMove, check);
     AppSupplychain appSupplychain = appSupplyChainService.getAppSupplychain();
 
     if (StockMoveRepository.ORIGIN_SALE_ORDER.equals(stockMove.getOriginTypeSelect())) {
@@ -244,11 +244,14 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void plan(StockMove stockMove) throws AxelorException {
-    super.plan(stockMove);
+  public void planStockMove(StockMove stockMove) throws AxelorException {
+    super.planStockMove(stockMove);
+    updateReservedQuantity(stockMove);
+  }
 
-    if (appSupplyChainService.getAppSupplychain().getManageStockReservation()
-        && appSupplyChainService.isApp("supplychain")) {
+  protected void updateReservedQuantity(StockMove stockMove) throws AxelorException {
+    if (appSupplyChainService.isApp("supplychain")
+        && appSupplyChainService.getAppSupplychain().getManageStockReservation()) {
       reservedQtyService.updateReservedQuantity(stockMove, StockMoveRepository.STATUS_PLANNED);
     }
   }
@@ -386,8 +389,8 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       throws AxelorException {
     StockMoveLine newStockMoveLine = super.copySplittedStockMoveLine(stockMoveLine);
 
-    if (appSupplyChainService.getAppSupplychain().getManageStockReservation()
-        && appSupplyChainService.isApp("supplychain")) {
+    if (appSupplyChainService.isApp("supplychain")
+        && appSupplyChainService.getAppSupplychain().getManageStockReservation()) {
       BigDecimal requestedReservedQty =
           stockMoveLine
               .getRequestedReservedQty()

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -60,23 +60,27 @@ public class PeriodController {
             "temporarilyCloseBtn",
             "hidden",
             period.getStatusSelect() == PeriodRepository.STATUS_TEMPORARILY_CLOSED
-                || period.getStatusSelect() == PeriodRepository.STATUS_CLOSED);
+                || period.getStatusSelect() == PeriodRepository.STATUS_CLOSED
+                || period.getStatusSelect() == PeriodRepository.STATUS_CLOSURE_IN_PROGRESS);
         response.setAttr(
             "openBtn",
             "hidden",
             !(period.getStatusSelect() == PeriodRepository.STATUS_CLOSED
                     || period.getStatusSelect() == PeriodRepository.STATUS_TEMPORARILY_CLOSED)
-                && period.getYear().getStatusSelect() == YearRepository.STATUS_OPENED);
+                || period.getYear().getStatusSelect() != YearRepository.STATUS_OPENED);
       }
       if (periodServiceAccount.isManageClosedPeriod(period, user)) {
         response.setAttr(
-            "closeBtn", "hidden", period.getStatusSelect() == PeriodRepository.STATUS_CLOSED);
+            "closeBtn",
+            "hidden",
+            period.getStatusSelect() == PeriodRepository.STATUS_CLOSED
+                || period.getStatusSelect() == PeriodRepository.STATUS_CLOSURE_IN_PROGRESS);
         response.setAttr(
             "openBtn",
             "hidden",
             !(period.getStatusSelect() == PeriodRepository.STATUS_CLOSED
                     || period.getStatusSelect() == PeriodRepository.STATUS_TEMPORARILY_CLOSED)
-                && period.getYear().getStatusSelect() == YearRepository.STATUS_OPENED);
+                || period.getYear().getStatusSelect() != YearRepository.STATUS_OPENED);
         response.setAttr(
             "adjustBtn",
             "hidden",
@@ -103,7 +107,8 @@ public class PeriodController {
       if (period != null) {
         boolean isReadOnly =
             period.getStatusSelect() == PeriodRepository.STATUS_CLOSED
-                || period.getStatusSelect() == PeriodRepository.STATUS_TEMPORARILY_CLOSED;
+                || period.getStatusSelect() == PeriodRepository.STATUS_TEMPORARILY_CLOSED
+                || period.getStatusSelect() == PeriodRepository.STATUS_CLOSURE_IN_PROGRESS;
 
         Boolean isInMove =
             (Beans.get(PeriodControlService.class).isLinkedToMove(period)

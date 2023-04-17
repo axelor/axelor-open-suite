@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -45,6 +45,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineServiceImpl;
+import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
@@ -104,6 +105,7 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
       AccountConfigService accountConfigService,
       PricingService pricingService,
       TaxService taxService,
+      SaleOrderMarginService saleOrderMarginService,
       InvoiceLineRepository invoiceLineRepository) {
     super(
         currencyService,
@@ -115,7 +117,8 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
         saleOrderLineRepo,
         saleOrderService,
         pricingService,
-        taxService);
+        taxService,
+        saleOrderMarginService);
     this.appAccountService = appAccountService;
     this.analyticMoveLineService = analyticMoveLineService;
     this.appSupplychainService = appSupplychainService;
@@ -394,7 +397,7 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
         .forEach(
             stockMoveLine ->
                 stockMoveLine.setReservationDateTime(
-                    saleOrderLine.getEstimatedDelivDate().atStartOfDay()));
+                    saleOrderLine.getEstimatedShippingDate().atStartOfDay()));
   }
 
   @Override

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -65,7 +65,7 @@ public class ImportMove {
 
   private String lastImportDate;
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Object importFECMove(Object bean, Map<String, Object> values) throws AxelorException {
     assert bean instanceof MoveLine;
     MoveLine moveLine = (MoveLine) bean;
@@ -226,7 +226,7 @@ public class ImportMove {
     return moveLine;
   }
 
-  private Company getCompany(Map<String, Object> values) {
+  protected Company getCompany(Map<String, Object> values) {
     final Path path = (Path) values.get("__path__");
     String fileName = path.getFileName().toString();
     String registrationCode = fileName.substring(0, fileName.indexOf('F'));
@@ -247,8 +247,8 @@ public class ImportMove {
     }
   }
 
-  @Transactional(rollbackOn = Exception.class)
-  public Object validateMove(Object bean, Map<String, Object> values) throws AxelorException {
+  @Transactional
+  public Object validateMove(Object bean, Map<String, Object> values) {
     assert bean instanceof Move;
     Move move = (Move) bean;
     try {

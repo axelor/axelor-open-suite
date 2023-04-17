@@ -106,10 +106,11 @@
             <camunda:property name="modelType" value="metaModel" />
             <camunda:property name="view" value="sale-order-form" />
             <camunda:property name="viewLabel" value="Sale order" />
-            <camunda:property name="item" value="cancelBtn" />
-            <camunda:property name="hidden" value="false" />
+            <camunda:property name="itemType" value="button" />
             <camunda:property name="itemLabel" value="Cancel" />
             <camunda:property name="permanent" value="false" />
+            <camunda:property name="item" value="cancelBtn" />
+            <camunda:property name="hidden" value="false" />
           </camunda:properties>
         </bpmn2:extensionElements>
         <bpmn2:incoming>Flow_0bzrr6n</bpmn2:incoming>

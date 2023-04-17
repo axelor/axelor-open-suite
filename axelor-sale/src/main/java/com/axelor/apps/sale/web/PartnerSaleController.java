@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -65,18 +65,19 @@ public class PartnerSaleController {
 
       for (Product product : productList) {
         qtyAndPrice = partnerSaleService.getTotalSaleQuantityAndPrice(customer, product);
+        BigDecimal qty = qtyAndPrice.get("qty");
+        BigDecimal averagePrice = BigDecimal.ZERO;
+        if (qty.signum() != 0) {
+          averagePrice =
+              qtyAndPrice
+                  .get("price")
+                  .divide(qty, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
+        }
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("name", product.getName());
-        map.put("$quantitySold", qtyAndPrice.get("qty"));
+        map.put("$quantitySold", qty);
         map.put("$totalPrice", qtyAndPrice.get("price"));
-        map.put(
-            "$averagePrice",
-            qtyAndPrice
-                .get("price")
-                .divide(
-                    qtyAndPrice.get("qty"),
-                    AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
-                    RoundingMode.HALF_EVEN));
+        map.put("$averagePrice", averagePrice);
         saleDetailsByProduct.add(map);
       }
 

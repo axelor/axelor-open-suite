@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -146,7 +146,7 @@ public class BatchBillOfExchangeSendBilling extends AbstractBatch {
     }
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   protected void generateNoteBillsAndSend(Entry<Partner, List<Invoice>> entry) {
     Objects.requireNonNull(entry);
     Company company = null;
@@ -214,7 +214,7 @@ public class BatchBillOfExchangeSendBilling extends AbstractBatch {
     ;
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   protected void addBatchSet(Batch batch, Invoice invoice) {
     Objects.requireNonNull(batch);
     Objects.requireNonNull(invoice);

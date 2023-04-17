@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -146,7 +146,7 @@ public class SelectionBuilderService {
     return name;
   }
 
-  private MetaSelect updateSelectItems(String selectionText, String name, String xmlId) {
+  protected MetaSelect updateSelectItems(String selectionText, String name, String xmlId) {
 
     MetaSelect metaSelect = xmlId != null ? findMetaSelectById(xmlId) : findMetaSelectByName(name);
 
@@ -172,7 +172,7 @@ public class SelectionBuilderService {
     return metaSelect;
   }
 
-  private MetaSelectItem updateItem(
+  protected MetaSelectItem updateItem(
       Map<String, MetaSelectItem> itemMap, int order, Map<String, String> optionMap) {
 
     String title = null;
@@ -201,7 +201,7 @@ public class SelectionBuilderService {
     return metaSelectItem;
   }
 
-  private MetaSelect findMetaSelectByName(String name) {
+  protected MetaSelect findMetaSelectByName(String name) {
 
     return metaSelectRepository
         .all()
@@ -209,7 +209,7 @@ public class SelectionBuilderService {
         .fetchOne();
   }
 
-  private MetaSelect findMetaSelectById(String xmlId) {
+  protected MetaSelect findMetaSelectById(String xmlId) {
 
     return metaSelectRepository
         .all()
@@ -217,7 +217,7 @@ public class SelectionBuilderService {
         .fetchOne();
   }
 
-  private Integer getPriority(String name, String xmlId) {
+  protected Integer getPriority(String name, String xmlId) {
 
     MetaSelect metaSelect =
         metaSelectRepository

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -144,21 +144,18 @@ public class PaymentServiceImpl implements PaymentService {
       }
 
       for (MoveLine creditMoveLine : creditMoveLines) {
-
-        if (creditMoveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
-
-          for (MoveLine debitMoveLine : debitMoveLines) {
-            if (debitMoveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
-              try {
-                createReconcile(
-                    debitMoveLine, creditMoveLine, debitTotalRemaining, creditTotalRemaining);
-              } catch (Exception e) {
-                if (dontThrow) {
-                  TraceBackService.trace(e);
-                  log.debug(e.getMessage());
-                } else {
-                  throw e;
-                }
+        for (MoveLine debitMoveLine : debitMoveLines) {
+          if (creditMoveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0
+              && debitMoveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
+            try {
+              createReconcile(
+                  debitMoveLine, creditMoveLine, debitTotalRemaining, creditTotalRemaining);
+            } catch (Exception e) {
+              if (dontThrow) {
+                TraceBackService.trace(e);
+                log.debug(e.getMessage());
+              } else {
+                throw e;
               }
             }
           }
@@ -177,8 +174,8 @@ public class PaymentServiceImpl implements PaymentService {
    * @param creditTotalRemaining
    * @throws AxelorException
    */
-  @Transactional
-  private void createReconcile(
+  @Transactional(rollbackOn = {Exception.class})
+  protected void createReconcile(
       MoveLine debitMoveLine,
       MoveLine creditMoveLine,
       BigDecimal debitTotalRemaining,

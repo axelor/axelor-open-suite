@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -77,7 +77,7 @@ public class TimesheetTimerServiceImpl implements TimesheetTimerService {
     timer.setDuration(secondes);
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public TimesheetLine generateTimesheetLine(TSTimer timer) throws AxelorException {
 
     BigDecimal durationHours = this.convertSecondDurationInHours(timer.getDuration());

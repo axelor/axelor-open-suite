@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -51,7 +51,7 @@ public class BaseBatchController {
     response.setData(mapData);
   }
 
-  public void actionSynchronizeCalendars(ActionRequest request, ActionResponse response) {
+  public void runBatch(ActionRequest request, ActionResponse response) {
     try {
       BaseBatch baseBatch = request.getContext().asType(BaseBatch.class);
       baseBatch = Beans.get(BaseBatchRepository.class).find(baseBatch.getId());

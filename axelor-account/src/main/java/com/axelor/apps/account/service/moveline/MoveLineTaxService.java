@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service.moveline;
 
+import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
@@ -24,7 +25,7 @@ import com.axelor.exception.AxelorException;
 
 public interface MoveLineTaxService {
 
-  void autoTaxLineGenerate(Move move) throws AxelorException;
+  void autoTaxLineGenerate(Move move, Account account) throws AxelorException;
 
   MoveLine computeTaxAmount(MoveLine moveLine) throws AxelorException;
 

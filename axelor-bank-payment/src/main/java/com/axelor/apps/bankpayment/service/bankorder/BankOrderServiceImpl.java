@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,9 +23,9 @@ import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
-import com.axelor.apps.account.service.PaymentSessionCancelService;
-import com.axelor.apps.account.service.PaymentSessionValidateService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
+import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionCancelService;
+import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionValidateService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderFileFormat;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
@@ -261,7 +261,7 @@ public class BankOrderServiceImpl implements BankOrderService {
       bankOrderLineService.checkPreconditions(bankOrderLine);
       totalAmount = totalAmount.add(bankOrderLine.getBankOrderAmount());
       bankOrderLineService.checkBankDetails(
-          bankOrderLine.getReceiverBankDetails(), bankOrderLine.getBankOrder());
+          bankOrderLine.getReceiverBankDetails(), bankOrderLine.getBankOrder(), bankOrderLine);
     }
     if (!totalAmount.equals(arithmeticTotal)) {
       throw new AxelorException(
@@ -280,6 +280,7 @@ public class BankOrderServiceImpl implements BankOrderService {
         Beans.get(InvoicePaymentValidateServiceBankPayImpl.class);
 
     for (InvoicePayment invoicePayment : invoicePaymentList) {
+
       if (invoicePayment != null
           && invoicePayment.getStatusSelect() != InvoicePaymentRepository.STATUS_VALIDATED
           && invoicePayment.getInvoice() != null) {
@@ -316,21 +317,22 @@ public class BankOrderServiceImpl implements BankOrderService {
   }
 
   protected BankOrder generateMoves(BankOrder bankOrder) throws AxelorException {
-    switch (bankOrder.getFunctionalOriginSelect()) {
-      case BankOrderRepository.FUNCTIONAL_ORIGIN_PAYMENT_SESSION:
-        PaymentSession paymentSession =
-            paymentSessionRepo.all().filter("self.bankOrder = ?", bankOrder).fetchOne();
 
-        if (paymentSession != null) {
-          Beans.get(PaymentSessionValidateService.class).processPaymentSession(paymentSession);
-          break;
-        }
-        // TODO other cases
-      default:
-        bankOrderMoveService.generateMoves(bankOrder);
-        bankOrder.setAreMovesGenerated(true);
-        validatePayment(bankOrder);
+    if (bankOrder
+        .getFunctionalOriginSelect()
+        .equals(BankOrderRepository.FUNCTIONAL_ORIGIN_PAYMENT_SESSION)) {
+      PaymentSession paymentSession =
+          paymentSessionRepo.all().filter("self.bankOrder = ?", bankOrder).fetchOne();
+
+      if (paymentSession != null) {
+        Beans.get(PaymentSessionValidateService.class).processPaymentSession(paymentSession);
+        bankOrder = bankOrderRepo.find(bankOrder.getId());
+      }
     }
+
+    bankOrderMoveService.generateMoves(bankOrder);
+    bankOrder.setAreMovesGenerated(true);
+    validatePayment(bankOrder);
 
     return bankOrderRepo.find(bankOrder.getId());
   }
@@ -384,7 +386,6 @@ public class BankOrderServiceImpl implements BankOrderService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void validate(BankOrder bankOrder) throws AxelorException {
-
     bankOrder.setValidationDateTime(LocalDateTime.now());
 
     bankOrder.setStatusSelect(BankOrderRepository.STATUS_VALIDATED);
@@ -444,7 +445,7 @@ public class BankOrderServiceImpl implements BankOrderService {
     markAsSent(bankOrder);
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   protected void markAsSent(BankOrder bankOrder) {
     bankOrder.setHasBeenSentToBank(true);
   }
@@ -507,7 +508,7 @@ public class BankOrderServiceImpl implements BankOrderService {
     }
   }
 
-  private void setNbOfLines(BankOrder bankOrder) {
+  protected void setNbOfLines(BankOrder bankOrder) {
 
     if (bankOrder.getBankOrderLineList() == null) {
       return;
@@ -818,7 +819,7 @@ public class BankOrderServiceImpl implements BankOrderService {
     resetBankDetails(bankOrder);
   }
 
-  private void resetPartners(BankOrder bankOrder) {
+  protected void resetPartners(BankOrder bankOrder) {
     if (bankOrder.getPartnerTypeSelect() == BankOrderRepository.PARTNER_TYPE_COMPANY) {
       for (BankOrderLine bankOrderLine : bankOrder.getBankOrderLineList()) {
         bankOrderLine.setPartner(null);
@@ -857,7 +858,7 @@ public class BankOrderServiceImpl implements BankOrderService {
     }
   }
 
-  private void resetBankDetails(BankOrder bankOrder) {
+  protected void resetBankDetails(BankOrder bankOrder) {
     for (BankOrderLine bankOrderLine : bankOrder.getBankOrderLineList()) {
       if (bankOrderLine.getReceiverBankDetails() == null) {
         continue;

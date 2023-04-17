@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -28,12 +28,14 @@ import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.factory.CancelFactory;
 import com.axelor.apps.account.service.invoice.factory.ValidateFactory;
 import com.axelor.apps.account.service.invoice.factory.VentilateFactory;
+import com.axelor.apps.account.service.invoice.print.InvoiceProductStatementService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.businessproject.service.InvoiceServiceProjectImpl;
+import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.service.IntercoService;
 import com.axelor.exception.AxelorException;
@@ -56,12 +58,14 @@ public class InvoiceServiceManagementImpl extends InvoiceServiceProjectImpl {
       InvoiceLineService invoiceLineService,
       AccountConfigService accountConfigService,
       MoveToolService moveToolService,
-      InvoiceLineRepository invoiceLineRepo,
       InvoiceTermService invoiceTermService,
       InvoiceTermPfpService invoiceTermPfpService,
       AppBaseService appBaseService,
-      IntercoService intercoService,
       TaxService taxService,
+      InvoiceProductStatementService invoiceProductStatementService,
+      TemplateMessageService templateMessageService,
+      InvoiceLineRepository invoiceLineRepo,
+      IntercoService intercoService,
       StockMoveRepository stockMoveRepository,
       InvoiceEstimatedPaymentService invoiceEstimatedPaymentService) {
     super(
@@ -75,12 +79,14 @@ public class InvoiceServiceManagementImpl extends InvoiceServiceProjectImpl {
         invoiceLineService,
         accountConfigService,
         moveToolService,
-        invoiceLineRepo,
         invoiceTermService,
         invoiceTermPfpService,
         appBaseService,
-        intercoService,
         taxService,
+        invoiceProductStatementService,
+        templateMessageService,
+        invoiceLineRepo,
+        intercoService,
         stockMoveRepository);
     this.invoiceEstimatedPaymentService = invoiceEstimatedPaymentService;
   }

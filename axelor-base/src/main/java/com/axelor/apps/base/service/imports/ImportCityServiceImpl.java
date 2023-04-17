@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -567,7 +567,7 @@ public class ImportCityServiceImpl implements ImportCityService {
           if (extension.equals("zip")) {
             dataFile = this.extractCityZip(dataFile);
           }
-          importHistoryList.add(this.importCity(typeSelect + "-dump", dataFile));
+          importHistoryList.add(this.importCity(typeSelect + "-zip", dataFile));
         } else {
           printWriter.append(I18n.get(BaseExceptionMessage.INVALID_DATA_FILE_EXTENSION) + "\n");
         }

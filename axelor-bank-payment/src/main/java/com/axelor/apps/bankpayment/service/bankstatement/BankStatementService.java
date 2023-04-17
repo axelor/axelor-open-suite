@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -166,7 +166,7 @@ public class BankStatementService {
         .getFileLink();
   }
 
-  private String getTimezone(BankStatement bankStatement) {
+  protected String getTimezone(BankStatement bankStatement) {
     if (bankStatement.getEbicsPartner() == null
         || bankStatement.getEbicsPartner().getDefaultSignatoryEbicsUser() == null
         || bankStatement.getEbicsPartner().getDefaultSignatoryEbicsUser().getAssociatedUser()
@@ -313,15 +313,13 @@ public class BankStatementService {
           bankPaymentBankStatementLineAFB120Repository
               .findByBankStatementBankDetailsAndLineType(
                   bankStatement, bd, BankStatementLineAFB120Repository.LINE_TYPE_INITIAL_BALANCE)
-              .order("operationDate")
               .order("sequence")
               .fetch();
       List<BankStatementLineAFB120> finalBankStatementLineAFB120 =
           bankPaymentBankStatementLineAFB120Repository
               .findByBankStatementBankDetailsAndLineType(
                   bankStatement, bd, BankStatementLineAFB120Repository.LINE_TYPE_FINAL_BALANCE)
-              .order("-operationDate")
-              .order("-sequence")
+              .order("sequence")
               .fetch();
       initialBankStatementLineAFB120.remove(0);
       finalBankStatementLineAFB120.remove(finalBankStatementLineAFB120.size() - 1);

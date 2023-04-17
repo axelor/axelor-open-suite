@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -60,6 +60,13 @@ public class CancelState extends WorkflowInvoice {
         && invoice.getCompany().getAccountConfig().getAllowCancelVentilatedInvoice()) {
       cancelMove();
     }
+
+    updateInvoiceFromCancellation();
+
+    workflowService.afterCancel(invoice);
+  }
+
+  protected void updateInvoiceFromCancellation() throws AxelorException {
     setStatus();
     if (Beans.get(AccountConfigService.class)
         .getAccountConfig(invoice.getCompany())
@@ -72,8 +79,6 @@ public class CancelState extends WorkflowInvoice {
     for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
       invoiceLine.clearBudgetDistributionList();
     }
-
-    workflowService.afterCancel(invoice);
   }
 
   @Transactional

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -61,6 +61,7 @@ public class StockMoveUpdateServiceImpl implements StockMoveUpdateService {
     this.productRepository = productRepository;
   }
 
+  @Deprecated
   @Override
   public void updateStatus(StockMove stockMove, Integer targetStatus) throws AxelorException {
     if (targetStatus == StockMoveRepository.STATUS_PLANNED) {
@@ -78,9 +79,10 @@ public class StockMoveUpdateServiceImpl implements StockMoveUpdateService {
   }
 
   /**
-   * To update unit or qty of an internal stock move with one product, mostly for mobile app (API
-   * AOS) *
+   * @deprecated To update unit or qty of an internal stock move with one product, mostly for mobile
+   *     app (API AOS) *
    */
+  @Deprecated
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void updateStockMoveMobility(StockMove stockMove, BigDecimal movedQty, Unit unit)

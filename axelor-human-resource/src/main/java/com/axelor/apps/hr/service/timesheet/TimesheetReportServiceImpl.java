@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -146,7 +146,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
     return employeeSet;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public List<Message> sendReminders(TimesheetReport timesheetReport) throws AxelorException {
 
     Template reminderTemplate =
@@ -172,7 +172,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
     return timesheetReminders;
   }
 
-  private void addTimesheetReminder(
+  protected void addTimesheetReminder(
       TimesheetReport timesheetReport,
       List<Employee> employees,
       List<TimesheetReminder> timesheetReminders)
@@ -257,7 +257,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
     return messages;
   }
 
-  private TimesheetReminderLine createTimesheetReminderLine(
+  protected TimesheetReminderLine createTimesheetReminderLine(
       LocalDate fromDate,
       LocalDate toDate,
       BigDecimal worksHour,
@@ -353,7 +353,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
     return map;
   }
 
-  private BigDecimal getTotalWorksHours(
+  protected BigDecimal getTotalWorksHours(
       Employee employee, LocalDate date, boolean isPublicHoliday, BigDecimal dailyWorkingHours)
       throws AxelorException {
     BigDecimal worksHour =
@@ -380,7 +380,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
     return worksHour.setScale(2, RoundingMode.HALF_UP);
   }
 
-  private BigDecimal getTotalWeekWorksHours(
+  protected BigDecimal getTotalWeekWorksHours(
       Employee employee, LocalDate fromDate, LocalDate toDate, BigDecimal publicHolidays)
       throws AxelorException {
     BigDecimal worksHour =
@@ -406,7 +406,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
     return worksHour.setScale(2, RoundingMode.HALF_UP);
   }
 
-  private BigDecimal getTotalWorkedHours(
+  protected BigDecimal getTotalWorkedHours(
       Employee employee, LocalDate date, boolean isPublicHoliday, BigDecimal dailyWorkingHours)
       throws AxelorException {
     BigDecimal totalHours = BigDecimal.ZERO;
@@ -437,7 +437,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
     return totalHours.setScale(2, RoundingMode.HALF_UP);
   }
 
-  private BigDecimal getTotalWeekWorkedHours(
+  protected BigDecimal getTotalWeekWorkedHours(
       Employee employee, LocalDate fromDate, LocalDate toDate, BigDecimal publicHolidays)
       throws AxelorException {
     BigDecimal totalHours = BigDecimal.ZERO;
@@ -466,8 +466,8 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
     return totalHours.setScale(2, RoundingMode.HALF_UP);
   }
 
-  private BigDecimal getLeaveHours(Employee employee, LocalDate date, BigDecimal dailyWorkingHours)
-      throws AxelorException {
+  protected BigDecimal getLeaveHours(
+      Employee employee, LocalDate date, BigDecimal dailyWorkingHours) throws AxelorException {
     List<LeaveRequest> leavesList = leaveService.getLeaves(employee, date);
     BigDecimal totalLeaveHours = BigDecimal.ZERO;
     for (LeaveRequest leave : leavesList) {
@@ -480,7 +480,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
     return totalLeaveHours;
   }
 
-  private BigDecimal getWeekLeaveHours(
+  protected BigDecimal getWeekLeaveHours(
       Employee employee, LocalDate fromDate, LocalDate toDate, BigDecimal dailyWorkingHours)
       throws AxelorException {
     BigDecimal leaveHours = BigDecimal.ZERO;
