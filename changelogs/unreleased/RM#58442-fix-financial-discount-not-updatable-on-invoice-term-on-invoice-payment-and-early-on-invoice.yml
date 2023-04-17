@@ -1,0 +1,3 @@
+---
+title: "INVOICE / INVOICE PAYMENT / INVOICE TERM: corrected financial discount not updatable on invoice term, on invoice payment and early on invoice."
+type: fix

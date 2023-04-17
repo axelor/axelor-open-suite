@@ -314,4 +314,6 @@ public interface InvoiceTermService {
 
   List<InvoiceTerm> recomputeInvoiceTermsPercentage(
       List<InvoiceTerm> invoiceTermList, BigDecimal total);
+
+  void updateFinancialDiscount(InvoiceTerm invoiceTerm);
 }

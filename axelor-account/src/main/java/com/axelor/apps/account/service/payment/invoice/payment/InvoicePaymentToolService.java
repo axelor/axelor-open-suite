@@ -70,4 +70,6 @@ public interface InvoicePaymentToolService {
   boolean applyFinancialDiscount(InvoicePayment invoicePayment);
 
   void computeFromInvoiceTermPayments(InvoicePayment invoicePayment);
+
+  public void updateFinancialDiscount(InvoicePayment invoicePayment);
 }
