@@ -20,15 +20,12 @@ package com.axelor.apps.account.service.payment.paymentsession;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
-import com.axelor.apps.account.db.InvoiceTermPayment;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
-import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
@@ -56,7 +53,6 @@ import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -314,26 +310,9 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
   }
 
   public List<InvoiceTerm> filterNotAwaitingPayment(List<InvoiceTerm> invoiceTermList) {
-    return invoiceTermList.stream().filter(this::isNotAwaitingPayment).collect(Collectors.toList());
-  }
-
-  public boolean isNotAwaitingPayment(InvoiceTerm invoiceTerm) {
-    if (invoiceTerm == null) {
-      return false;
-    } else if (invoiceTerm.getInvoice() != null) {
-      Invoice invoice = invoiceTerm.getInvoice();
-
-      if (CollectionUtils.isNotEmpty(invoice.getInvoicePaymentList())) {
-        return invoice.getInvoicePaymentList().stream()
-            .filter(it -> it.getStatusSelect() == InvoicePaymentRepository.STATUS_PENDING)
-            .map(InvoicePayment::getInvoiceTermPaymentList)
-            .flatMap(Collection::stream)
-            .map(InvoiceTermPayment::getInvoiceTerm)
-            .noneMatch(it -> it.getId().equals(invoiceTerm.getId()));
-      }
-    }
-
-    return true;
+    return invoiceTermList.stream()
+        .filter(invoiceTerm -> invoiceTermService.isNotAwaitingPayment(invoiceTerm))
+        .collect(Collectors.toList());
   }
 
   protected List<InvoiceTerm> filterBlocking(

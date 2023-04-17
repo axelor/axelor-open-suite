@@ -51,7 +51,7 @@ public class BaseBatchController {
     response.setData(mapData);
   }
 
-  public void actionSynchronizeCalendars(ActionRequest request, ActionResponse response) {
+  public void runBatch(ActionRequest request, ActionResponse response) {
     try {
       BaseBatch baseBatch = request.getContext().asType(BaseBatch.class);
       baseBatch = Beans.get(BaseBatchRepository.class).find(baseBatch.getId());

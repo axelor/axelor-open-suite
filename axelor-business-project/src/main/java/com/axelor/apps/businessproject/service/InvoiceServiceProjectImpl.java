@@ -50,6 +50,7 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.message.service.TemplateMessageService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.Arrays;
@@ -76,6 +77,7 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl
       AppBaseService appBaseService,
       TaxService taxService,
       InvoiceProductStatementService invoiceProductStatementService,
+      TemplateMessageService templateMessageService,
       InvoiceLineRepository invoiceLineRepo,
       IntercoService intercoService,
       StockMoveRepository stockMoveRepository) {
@@ -95,6 +97,7 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl
         appBaseService,
         taxService,
         invoiceProductStatementService,
+        templateMessageService,
         invoiceLineRepo,
         intercoService,
         stockMoveRepository);
