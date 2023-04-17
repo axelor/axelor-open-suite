@@ -132,34 +132,38 @@ public class ManufOrderWorkFlowMaintenanceService extends ManufOrderWorkflowServ
         .collect(Collectors.toList());
   }
 
-  @Transactional(rollbackOn = {Exception.class})
   @Override
   public boolean finish(ManufOrder manufOrder) throws AxelorException {
     if (manufOrder.getTypeSelect() != ManufOrderRepository.TYPE_MAINTENANCE) {
       return super.finish(manufOrder);
     } else {
-      if (manufOrder.getOperationOrderList() != null) {
-        for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
-          if (operationOrder.getStatusSelect() != OperationOrderRepository.STATUS_FINISHED) {
-            if (operationOrder.getStatusSelect() != OperationOrderRepository.STATUS_IN_PROGRESS
-                && operationOrder.getStatusSelect() != OperationOrderRepository.STATUS_STANDBY) {
-              operationOrderWorkflowService.start(operationOrder);
-            }
-            operationOrderWorkflowService.finish(operationOrder);
+      return maintenanceFinishManufOrder(manufOrder);
+    }
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected boolean maintenanceFinishManufOrder(ManufOrder manufOrder) throws AxelorException {
+    if (manufOrder.getOperationOrderList() != null) {
+      for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
+        if (operationOrder.getStatusSelect() != OperationOrderRepository.STATUS_FINISHED) {
+          if (operationOrder.getStatusSelect() != OperationOrderRepository.STATUS_IN_PROGRESS
+              && operationOrder.getStatusSelect() != OperationOrderRepository.STATUS_STANDBY) {
+            operationOrderWorkflowService.start(operationOrder);
           }
+          operationOrderWorkflowService.finish(operationOrder);
         }
       }
-
-      manufOrder.setRealEndDateT(
-          Beans.get(AppProductionService.class).getTodayDateTime().toLocalDateTime());
-      manufOrder.setStatusSelect(ManufOrderRepository.STATUS_FINISHED);
-      manufOrder.setEndTimeDifference(
-          new BigDecimal(
-              ChronoUnit.MINUTES.between(
-                  manufOrder.getPlannedEndDateT(), manufOrder.getRealEndDateT())));
-      manufOrderRepo.save(manufOrder);
-      return true;
     }
+
+    manufOrder.setRealEndDateT(
+        Beans.get(AppProductionService.class).getTodayDateTime().toLocalDateTime());
+    manufOrder.setStatusSelect(ManufOrderRepository.STATUS_FINISHED);
+    manufOrder.setEndTimeDifference(
+        new BigDecimal(
+            ChronoUnit.MINUTES.between(
+                manufOrder.getPlannedEndDateT(), manufOrder.getRealEndDateT())));
+    manufOrderRepo.save(manufOrder);
+    return true;
   }
 
   @Override

@@ -65,6 +65,9 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
+import com.axelor.apps.message.db.Template;
+import com.axelor.apps.message.exception.AxelorMessageException;
+import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.tool.ModelTool;
 import com.axelor.apps.tool.StringTool;
@@ -73,6 +76,7 @@ import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
@@ -112,6 +116,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   protected AccountConfigService accountConfigService;
   protected MoveToolService moveToolService;
   protected TaxService taxService;
+  protected TemplateMessageService templateMessageService;
 
   private final int RETURN_SCALE = 2;
   private final int CALCULATION_SCALE = 10;
@@ -128,7 +133,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       InvoiceLineService invoiceLineService,
       AccountConfigService accountConfigService,
       MoveToolService moveToolService,
-      TaxService taxService) {
+      TaxService taxService,
+      TemplateMessageService templateMessageService) {
 
     this.validateFactory = validateFactory;
     this.ventilateFactory = ventilateFactory;
@@ -141,6 +147,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     this.accountConfigService = accountConfigService;
     this.moveToolService = moveToolService;
     this.taxService = taxService;
+    this.templateMessageService = templateMessageService;
   }
 
   // WKF
@@ -268,9 +275,16 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
    * @throws AxelorException
    */
   @Override
-  @Transactional(rollbackOn = {Exception.class})
   public void validate(Invoice invoice) throws AxelorException {
+    validateProcess(invoice);
+    if (invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE
+        && invoice.getInvoiceAutomaticMailOnValidate()) {
+      sendMail(invoice, invoice.getInvoiceMessageTemplateOnValidate());
+    }
+  }
 
+  @Transactional(rollbackOn = {Exception.class})
+  protected void validateProcess(Invoice invoice) throws AxelorException {
     log.debug("Invoice validation");
 
     compute(invoice);
@@ -291,8 +305,15 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
    * @throws AxelorException
    */
   @Override
-  @Transactional(rollbackOn = {Exception.class})
   public void ventilate(Invoice invoice) throws AxelorException {
+    ventilateProcess(invoice);
+    if (invoice.getInvoiceAutomaticMail()) {
+      sendMail(invoice, invoice.getInvoiceMessageTemplate());
+    }
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected void ventilateProcess(Invoice invoice) throws AxelorException {
     if (invoice.getPaymentCondition() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
@@ -350,15 +371,24 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
    * @param invoice Une facture.
    * @throws AxelorException
    */
-  @Override
   @Transactional(rollbackOn = {Exception.class})
+  @Override
   public void cancel(Invoice invoice) throws AxelorException {
-
     log.debug("Canceling invoice {}", invoice.getInvoiceId());
 
     cancelFactory.getCanceller(invoice).process();
 
     invoiceRepo.save(invoice);
+  }
+
+  protected void sendMail(Invoice invoice, Template template) {
+    // send message
+    try {
+      templateMessageService.generateAndSendMessage(invoice, template);
+    } catch (Exception e) {
+      TraceBackService.trace(
+          new AxelorMessageException(e, invoice, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR));
+    }
   }
 
   /**
