@@ -251,8 +251,20 @@ public class ManufOrderWorkflowService {
     manufOrderRepo.save(manufOrder);
   }
 
-  @Transactional(rollbackOn = {Exception.class})
   public boolean finish(ManufOrder manufOrder) throws AxelorException {
+    finishManufOrder(manufOrder);
+    ProductionConfig productionConfig =
+        manufOrder.getCompany() != null
+            ? productionConfigRepo.findByCompany(manufOrder.getCompany())
+            : null;
+    if (productionConfig != null && productionConfig.getFinishMoAutomaticEmail()) {
+      return this.sendMail(manufOrder, productionConfig.getFinishMoMessageTemplate());
+    }
+    return true;
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected void finishManufOrder(ManufOrder manufOrder) throws AxelorException {
     if (manufOrder.getOperationOrderList() != null) {
       for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
         if (operationOrder.getStatusSelect() != OperationOrderRepository.STATUS_FINISHED) {
@@ -317,14 +329,6 @@ public class ManufOrderWorkflowService {
                 manufOrder.getPlannedEndDateT(), manufOrder.getRealEndDateT())));
     manufOrderRepo.save(manufOrder);
     Beans.get(ProductionOrderService.class).updateStatus(manufOrder.getProductionOrderSet());
-    ProductionConfig productionConfig =
-        manufOrder.getCompany() != null
-            ? productionConfigRepo.findByCompany(manufOrder.getCompany())
-            : null;
-    if (productionConfig != null && productionConfig.getFinishMoAutomaticEmail()) {
-      return this.sendMail(manufOrder, productionConfig.getFinishMoMessageTemplate());
-    }
-    return true;
   }
 
   /** Return the cost price for one unit in a manufacturing order. */

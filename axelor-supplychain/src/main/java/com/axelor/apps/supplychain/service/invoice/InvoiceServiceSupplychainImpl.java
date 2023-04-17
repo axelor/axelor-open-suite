@@ -38,6 +38,7 @@ import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
+import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.AdvancePayment;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -86,6 +87,7 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
       InvoiceTermService invoiceTermService,
       InvoiceTermPfpService invoiceTermPfpService,
       AppBaseService appBaseService,
+      TemplateMessageService templateMessageService,
       IntercoService intercoService,
       TaxService taxService,
       StockMoveRepository stockMoveRepository) {
@@ -103,7 +105,8 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
         invoiceTermService,
         invoiceTermPfpService,
         appBaseService,
-        taxService);
+        taxService,
+        templateMessageService);
     this.invoiceLineRepo = invoiceLineRepo;
     this.intercoService = intercoService;
     this.stockMoveRepository = stockMoveRepository;

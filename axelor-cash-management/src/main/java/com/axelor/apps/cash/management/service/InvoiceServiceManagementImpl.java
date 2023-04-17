@@ -34,6 +34,7 @@ import com.axelor.apps.base.service.alarm.AlarmEngineService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.businessproject.service.InvoiceServiceProjectImpl;
+import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.service.IntercoService;
 import com.axelor.exception.AxelorException;
@@ -60,6 +61,7 @@ public class InvoiceServiceManagementImpl extends InvoiceServiceProjectImpl {
       InvoiceTermService invoiceTermService,
       InvoiceTermPfpService invoiceTermPfpService,
       AppBaseService appBaseService,
+      TemplateMessageService templateMessageService,
       IntercoService intercoService,
       TaxService taxService,
       StockMoveRepository stockMoveRepository,
@@ -79,6 +81,7 @@ public class InvoiceServiceManagementImpl extends InvoiceServiceProjectImpl {
         invoiceTermService,
         invoiceTermPfpService,
         appBaseService,
+        templateMessageService,
         intercoService,
         taxService,
         stockMoveRepository);
