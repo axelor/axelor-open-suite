@@ -386,7 +386,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       origin = invoice.getSupplierInvoiceNb();
     }
 
-    if (partnerAccount != null && partnerAccount.getHasInvoiceTerm()) {
+    if (partnerAccount.getUseForPartnerBalance()) {
       moveLines.addAll(
           addInvoiceTermMoveLines(invoice, partnerAccount, move, partner, isDebitCustomer, origin));
     } else {
@@ -740,14 +740,14 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       Map<String, MoveLine> newMap,
       MoveLine moveLine,
       TaxLine taxLine,
-      String accountType)
+      String accountType,
+      Account newAccount)
       throws AxelorException {
     BigDecimal debit = moveLine.getDebit();
     BigDecimal credit = moveLine.getCredit();
     LocalDate date = moveLine.getDate();
     Company company = move.getCompany();
     Partner partner = move.getPartner();
-    Account newAccount = null;
     TaxEquiv taxEquiv = null;
     TaxLine taxLineRC = null;
     TaxLine taxLineBeforeReverse = null;
@@ -756,7 +756,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
 
     FiscalPosition fiscalPosition = move.getFiscalPosition();
 
-    if (fiscalPosition != null) {
+    if (newAccount == null && fiscalPosition != null) {
       newAccount = fiscalPositionAccountService.getAccount(fiscalPosition, newAccount);
       taxEquiv = moveLine.getTaxEquiv();
       if (taxEquiv != null && taxEquiv.getReverseCharge()) {

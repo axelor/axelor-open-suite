@@ -20,15 +20,12 @@ package com.axelor.apps.account.service.payment.paymentsession;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
-import com.axelor.apps.account.db.InvoiceTermPayment;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
-import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
@@ -55,7 +52,6 @@ import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -227,9 +223,16 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
     return invoiceTermRepository
         .all()
         .filter(
-            "self.paymentSession = :paymentSession AND self.isSelectedOnPaymentSession IS :isSelectedOnPaymentSession")
+            "self.paymentSession = :paymentSession AND (self.isSelectedOnPaymentSession IS :isSelectedOnPaymentSession )")
         .bind("paymentSession", paymentSession.getId())
         .bind("isSelectedOnPaymentSession", isSelectedOnPaymentSession);
+  }
+
+  protected Query<InvoiceTerm> getTermsBySession(PaymentSession paymentSession) {
+    return invoiceTermRepository
+        .all()
+        .filter("self.paymentSession = :paymentSession ")
+        .bind("paymentSession", paymentSession.getId());
   }
 
   @Override
@@ -240,7 +243,8 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
             .all()
             .filter(retrieveEligibleTermsQuery(paymentSession.getCompany()))
             .bind("company", paymentSession.getCompany())
-            .bind("paymentModeTypeSelect", paymentSession.getPaymentMode().getTypeSelect())
+            .bind("paymentMode", paymentSession.getPaymentMode())
+            .bind("paymentModeInOutSelect", paymentSession.getPaymentMode().getInOutSelect())
             .bind(
                 "paymentDatePlusMargin",
                 paymentSession
@@ -277,13 +281,12 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
             + " AND self.dueDate <= :paymentDatePlusMargin "
             + " AND self.moveLine.move.currency = :currency "
             + " AND self.bankDetails IS NOT NULL "
-            + " AND self.paymentMode.typeSelect = :paymentModeTypeSelect"
+            + " AND (self.paymentMode = :paymentMode OR self.paymentMode.inOutSelect != :paymentModeInOutSelect)"
             + " AND self.moveLine.account.isRetrievedOnPaymentSession = TRUE ";
     AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
-    if (company != null
-        && accountConfig != null
-        && accountConfig.getRetrieveDaybookMovesInPaymentSession()) {
-      generalCondition += " AND self.moveLine.move.statusSelect != 2 ";
+    if (!accountConfig.getRetrieveDaybookMovesInPaymentSession()) {
+      generalCondition +=
+          " AND self.moveLine.move.statusSelect != " + MoveRepository.STATUS_DAYBOOK + " ";
     }
 
     String termsMoveLineCondition =
@@ -305,26 +308,9 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
   }
 
   public List<InvoiceTerm> filterNotAwaitingPayment(List<InvoiceTerm> invoiceTermList) {
-    return invoiceTermList.stream().filter(this::isNotAwaitingPayment).collect(Collectors.toList());
-  }
-
-  public boolean isNotAwaitingPayment(InvoiceTerm invoiceTerm) {
-    if (invoiceTerm == null) {
-      return false;
-    } else if (invoiceTerm.getInvoice() != null) {
-      Invoice invoice = invoiceTerm.getInvoice();
-
-      if (CollectionUtils.isNotEmpty(invoice.getInvoicePaymentList())) {
-        return invoice.getInvoicePaymentList().stream()
-            .filter(it -> it.getStatusSelect() == InvoicePaymentRepository.STATUS_PENDING)
-            .map(InvoicePayment::getInvoiceTermPaymentList)
-            .flatMap(Collection::stream)
-            .map(InvoiceTermPayment::getInvoiceTerm)
-            .noneMatch(it -> it.getId().equals(invoiceTerm.getId()));
-      }
-    }
-
-    return true;
+    return invoiceTermList.stream()
+        .filter(invoiceTerm -> invoiceTermService.isNotAwaitingPayment(invoiceTerm))
+        .collect(Collectors.toList());
   }
 
   protected List<InvoiceTerm> filterBlocking(
@@ -433,5 +419,10 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
       }
     }
     return isSignedNegative;
+  }
+
+  @Override
+  public boolean hasInvoiceTerm(PaymentSession paymentSession) {
+    return getTermsBySession(paymentSession).count() > 0;
   }
 }
