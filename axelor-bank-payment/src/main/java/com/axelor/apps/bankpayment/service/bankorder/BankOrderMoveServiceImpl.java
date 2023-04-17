@@ -62,6 +62,8 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+  public static final int FETCH_LIMIT = 20;
+
   protected MoveCreateService moveCreateService;
   protected MoveValidateService moveValidateService;
   protected PaymentModeService paymentModeService;
@@ -159,19 +161,23 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
             .filter("self.bankOrder = :bankOrder")
             .bind("bankOrder", bankOrder)
             .order("id");
-    List<BankOrderLine> bankOrderLines = null;
-    int fetchSize = 20;
-    int offSet = 0;
 
-    while (!(bankOrderLines = query.fetch(fetchSize, offSet)).isEmpty()) {
+    List<BankOrderLine> bankOrderLines = query.fetch(FETCH_LIMIT, 0);
+    if (bankOrderLines.size() == 1) {
+      generateMoves(bankOrderLines.get(0));
+    } else {
+      int offSet = FETCH_LIMIT;
 
-      for (BankOrderLine bankOrderLine : bankOrderLines) {
-        generateMoves(bankOrderLine);
+      while (!bankOrderLines.isEmpty()) {
+        for (BankOrderLine bankOrderLine : bankOrderLines) {
+          generateMoves(bankOrderLine);
+        }
+
+        JPA.clear();
+        fetchDetachedEntities();
+        bankOrderLines = query.fetch(FETCH_LIMIT, offSet);
+        offSet += FETCH_LIMIT;
       }
-      offSet += fetchSize;
-
-      JPA.clear();
-      fetchDetachedEntities();
     }
   }
 
