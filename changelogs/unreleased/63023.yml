@@ -1,4 +1,4 @@
 ---
-title : "Move: re-added '$' for dummy field dueDate which was removed in RM#61528 (Did not re-added the onSave)"
+title : "Move: fixed an issue where the form view is marked as dirty even when opening a form view in readonly."
 type : fix
 
