@@ -41,6 +41,7 @@ import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentValidateService;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
@@ -374,7 +375,12 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     if (paymentSession.getAccountingMethodSelect()
             == PaymentSessionRepository.ACCOUNTING_METHOD_BY_INVOICE_TERM
         || !moveMap.containsKey(partner)) {
-      move = this.createMove(paymentSession, partner, accountingDate);
+      BankDetails partnerBankDetails = null;
+      if (paymentSession.getAccountingMethodSelect()
+          == PaymentSessionRepository.ACCOUNTING_METHOD_BY_INVOICE_TERM) {
+        partnerBankDetails = invoiceTerm.getBankDetails();
+      }
+      move = this.createMove(paymentSession, partner, accountingDate, partnerBankDetails);
 
       if (!moveMap.containsKey(partner)) {
         moveMap.put(partner, new ArrayList<>());
@@ -392,7 +398,10 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
   }
 
   protected Move createMove(
-      PaymentSession paymentSession, Partner partner, LocalDate accountingDate)
+      PaymentSession paymentSession,
+      Partner partner,
+      LocalDate accountingDate,
+      BankDetails partnerBankDetails)
       throws AxelorException {
     Move move =
         moveCreateService.createMove(
@@ -411,6 +420,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
             paymentSession.getBankDetails());
 
     move.setPaymentSession(paymentSession);
+    move.setPartnerBankDetails(partnerBankDetails);
 
     return move;
   }
@@ -553,7 +563,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       boolean out)
       throws AxelorException {
     paymentSession = paymentSessionRepo.find(paymentSession.getId());
-    Move move = this.createMove(paymentSession, null, accountingDate);
+    Move move = this.createMove(paymentSession, null, accountingDate, null);
     String description = this.getMoveLineDescription(paymentSession);
 
     this.generateCashMoveLine(
