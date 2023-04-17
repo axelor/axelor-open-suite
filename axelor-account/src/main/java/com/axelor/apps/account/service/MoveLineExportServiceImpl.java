@@ -471,9 +471,8 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
       items[13] = reconcileGroup.getCode();
       items[14] =
           reconcileGroup
-              .getDateOfLettering()
-              .format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDD))
-              .toString();
+              .getLetteringDateTime()
+              .format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDD));
     } else {
       items[13] = "";
       items[14] = "";

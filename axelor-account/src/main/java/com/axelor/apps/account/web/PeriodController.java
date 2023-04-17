@@ -67,7 +67,7 @@ public class PeriodController {
             "hidden",
             !(period.getStatusSelect() == PeriodRepository.STATUS_CLOSED
                     || period.getStatusSelect() == PeriodRepository.STATUS_TEMPORARILY_CLOSED)
-                && period.getYear().getStatusSelect() == YearRepository.STATUS_OPENED);
+                || period.getYear().getStatusSelect() != YearRepository.STATUS_OPENED);
       }
       if (periodServiceAccount.isManageClosedPeriod(period, user)) {
         response.setAttr(
@@ -80,7 +80,7 @@ public class PeriodController {
             "hidden",
             !(period.getStatusSelect() == PeriodRepository.STATUS_CLOSED
                     || period.getStatusSelect() == PeriodRepository.STATUS_TEMPORARILY_CLOSED)
-                && period.getYear().getStatusSelect() == YearRepository.STATUS_OPENED);
+                || period.getYear().getStatusSelect() != YearRepository.STATUS_OPENED);
         response.setAttr(
             "adjustBtn",
             "hidden",

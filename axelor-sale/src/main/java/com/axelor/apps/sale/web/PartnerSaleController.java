@@ -65,18 +65,19 @@ public class PartnerSaleController {
 
       for (Product product : productList) {
         qtyAndPrice = partnerSaleService.getTotalSaleQuantityAndPrice(customer, product);
+        BigDecimal qty = qtyAndPrice.get("qty");
+        BigDecimal averagePrice = BigDecimal.ZERO;
+        if (qty.signum() != 0) {
+          averagePrice =
+              qtyAndPrice
+                  .get("price")
+                  .divide(qty, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
+        }
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("name", product.getName());
-        map.put("$quantitySold", qtyAndPrice.get("qty"));
+        map.put("$quantitySold", qty);
         map.put("$totalPrice", qtyAndPrice.get("price"));
-        map.put(
-            "$averagePrice",
-            qtyAndPrice
-                .get("price")
-                .divide(
-                    qtyAndPrice.get("qty"),
-                    AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
-                    RoundingMode.HALF_EVEN));
+        map.put("$averagePrice", averagePrice);
         saleDetailsByProduct.add(map);
       }
 

@@ -22,6 +22,7 @@ import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractVersion;
 import com.axelor.utils.date.DateTool;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public interface ContractVersionService {
 
@@ -53,7 +54,7 @@ public interface ContractVersionService {
    * @param version of the contract will be ongoing.
    * @param date of activation.
    */
-  void ongoing(ContractVersion version, LocalDate date) throws AxelorException;
+  void ongoing(ContractVersion version, LocalDateTime dateTime) throws AxelorException;
 
   /**
    * Terminate version at the today date.
@@ -68,7 +69,7 @@ public interface ContractVersionService {
    * @param version of the contract will be terminate.
    * @param date of terminate.
    */
-  void terminate(ContractVersion version, LocalDate date) throws AxelorException;
+  void terminate(ContractVersion version, LocalDateTime dateTime) throws AxelorException;
 
   /**
    * Create new version from contract but don't save it. There will be use for set values from form
@@ -81,15 +82,21 @@ public interface ContractVersionService {
 
   default ContractVersion getContractVersion(Contract contract, LocalDate date) {
     for (ContractVersion version : contract.getVersionHistory()) {
-      if (version.getActivationDate() == null || version.getEndDate() == null) {
+      if (version.getActivationDateTime() == null || version.getEndDateTime() == null) {
         continue;
       }
-      if (DateTool.isBetween(version.getActivationDate(), version.getEndDate(), date)) {
+      if (DateTool.isBetween(
+          version.getActivationDateTime().toLocalDate(),
+          version.getEndDateTime().toLocalDate(),
+          date)) {
         return version;
       }
     }
     ContractVersion version = contract.getCurrentContractVersion();
-    if (DateTool.isBetween(version.getActivationDate(), version.getEndDate(), date)) {
+    if (DateTool.isBetween(
+        version.getActivationDateTime().toLocalDate(),
+        version.getEndDateTime().toLocalDate(),
+        date)) {
       return version;
     }
     return null;

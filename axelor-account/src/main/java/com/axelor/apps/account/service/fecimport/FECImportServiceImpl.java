@@ -128,8 +128,10 @@ public class FECImportServiceImpl implements FECImportService {
       } else {
         if (CollectionUtils.isEmpty(reconcileList)) {
           reconcileGroup.setStatusSelect(ReconcileGroupRepository.STATUS_UNLETTERED);
-          reconcileGroup.setUnletteringDate(
-              Beans.get(AppBaseService.class).getTodayDate(reconcileGroup.getCompany()));
+          reconcileGroup.setUnletteringDateTime(
+              Beans.get(AppBaseService.class)
+                  .getTodayDateTime(reconcileGroup.getCompany())
+                  .toLocalDateTime());
         } else {
           reconcileGroup.setStatusSelect(ReconcileGroupRepository.STATUS_PARTIAL);
         }

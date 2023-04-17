@@ -19,8 +19,8 @@ public class AppMobileSettingsServiceImpl implements AppMobileSettingsService {
   public void updateMobileConfig(Boolean isAppActivated, String sequence) {
     MobileConfig mobileConfig =
         mobileConfigRepository.all().filter("self.sequence = ?", sequence).fetchOne();
-    if (!isAppActivated.equals(mobileConfig.getIsAppEnable())) {
-      mobileConfig.setIsAppEnable(isAppActivated);
+    if (!isAppActivated.equals(mobileConfig.getIsAppEnabled())) {
+      mobileConfig.setIsAppEnabled(isAppActivated);
       mobileConfigRepository.save(mobileConfig);
     }
   }
@@ -29,11 +29,11 @@ public class AppMobileSettingsServiceImpl implements AppMobileSettingsService {
   @Transactional(rollbackOn = {Exception.class})
   public void updateAllMobileConfig(AppMobileSettings appMobileSettings) {
     updateMobileConfig(
-        appMobileSettings.getIsStockAppEnable(), MobileConfigRepository.APP_SEQUENCE_STOCK);
+        appMobileSettings.getIsStockAppEnabled(), MobileConfigRepository.APP_SEQUENCE_STOCK);
     updateMobileConfig(
-        appMobileSettings.getIsProductionAppEnable(),
+        appMobileSettings.getIsProductionAppEnabled(),
         MobileConfigRepository.APP_SEQUENCE_MANUFACTURING);
     updateMobileConfig(
-        appMobileSettings.getIsCrmAppEnable(), MobileConfigRepository.APP_SEQUENCE_CRM);
+        appMobileSettings.getIsCrmAppEnabled(), MobileConfigRepository.APP_SEQUENCE_CRM);
   }
 }

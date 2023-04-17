@@ -147,11 +147,11 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
       activeContract(contract, date);
     }
 
-    versionService.ongoing(currentVersion, date);
+    versionService.ongoing(currentVersion, date.atStartOfDay());
 
     contract.setVersionNumber(contract.getVersionNumber() + 1);
     if (currentVersion.getIsPeriodicInvoicing() && contract.getVersionNumber() == 0) {
-      contract.setInvoicePeriodStartDate(currentVersion.getActivationDate());
+      contract.setInvoicePeriodStartDate(currentVersion.getActivationDateTime().toLocalDate());
       contract.setInvoicePeriodEndDate(contract.getFirstPeriodEndDate());
     }
     if (contract.getCurrentContractVersion().getAutomaticInvoicing()) {
@@ -273,7 +273,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     ContractVersion currentVersion = contract.getCurrentContractVersion();
 
     // Terminate currentVersion
-    versionService.terminate(currentVersion, date.minusDays(1));
+    versionService.terminate(currentVersion, date.minusDays(1).atStartOfDay());
 
     // Archive current version
     archiveVersion(contract, date);
@@ -316,7 +316,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     }
     ContractVersion version = contract.getCurrentContractVersion();
 
-    if (contract.getTerminatedDate().isBefore(version.getActivationDate())) {
+    if (contract.getTerminatedDate().isBefore(version.getActivationDateTime().toLocalDate())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(ContractExceptionMessage.CONTRACT_UNVALIDE_TERMINATE_DATE));
@@ -384,7 +384,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     ContractVersion currentVersion = contract.getCurrentContractVersion();
 
     if (terminationDate.isBefore(today) || terminationDate.equals(today)) {
-      versionService.terminate(currentVersion, terminationDate);
+      versionService.terminate(currentVersion, terminationDate.atStartOfDay());
       contract.setStatusSelect(CLOSED_CONTRACT);
     }
 
@@ -423,20 +423,27 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
             && !DateTool.isProrata(
                 contract.getInvoicePeriodStartDate(),
                 contract.getInvoicePeriodEndDate(),
-                version.getActivationDate(),
-                version.getEndDate())) {
+                version.getActivationDateTime().toLocalDate(),
+                (version.getEndDateTime() != null)
+                    ? version.getEndDateTime().toLocalDate()
+                    : null)) {
           continue;
         }
         LocalDate start =
-            version.getActivationDate().isBefore(contract.getInvoicePeriodStartDate())
+            version
+                    .getActivationDateTime()
+                    .toLocalDate()
+                    .isBefore(contract.getInvoicePeriodStartDate())
                 ? contract.getInvoicePeriodStartDate()
-                : version.getActivationDate();
+                : version.getActivationDateTime().toLocalDate();
         LocalDate end =
-            version.getEndDate() == null
-                    || (version.getEndDate() != null
-                        && contract.getInvoicePeriodEndDate().isBefore(version.getEndDate()))
+            version.getEndDateTime() == null
+                    || (version.getEndDateTime() != null
+                        && contract
+                            .getInvoicePeriodEndDate()
+                            .isBefore(version.getEndDateTime().toLocalDate()))
                 ? contract.getInvoicePeriodEndDate()
-                : version.getEndDate();
+                : version.getEndDateTime().toLocalDate();
         ratio =
             durationService.computeRatio(
                 start, end, contract.getCurrentContractVersion().getInvoicingDuration());
@@ -634,7 +641,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     ContractVersion nextVersion =
         Beans.get(ContractVersionRepository.class).copy(currentVersion, true);
 
-    versionService.terminate(currentVersion, date.minusDays(1));
+    versionService.terminate(currentVersion, date.minusDays(1).atStartOfDay());
 
     contract.addVersionHistory(currentVersion);
     currentVersion.setContract(null);
@@ -647,7 +654,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
           durationService.computeDuration(nextVersion.getRenewalDuration(), date));
     }
     if (nextVersion.getIsAutoEnableVersionOnRenew()) {
-      versionService.ongoing(nextVersion, date);
+      versionService.ongoing(nextVersion, date.atStartOfDay());
     } else {
       versionService.waiting(nextVersion, date);
     }

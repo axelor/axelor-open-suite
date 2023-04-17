@@ -55,6 +55,7 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -274,15 +275,15 @@ public class AccountingReportServiceImpl implements AccountingReportService {
       if (journalType != null) {
         this.addParams("self.move.journal.journalType = ?%d", journalType);
       }
-      String dateFromStr = "'" + accountingReport.getDateFrom().toString() + "'";
-      String dateToStr = "'" + accountingReport.getDateTo().toString() + "'";
+      String dateFromStr = "'" + accountingReport.getDateFrom().atStartOfDay().toString() + "'";
+      String dateToStr = "'" + accountingReport.getDateTo().atTime(LocalTime.MAX).toString() + "'";
       String selfReconciledQuery =
           String.format(
-              "(self.reconcileGroup is not null AND self.reconcileGroup.dateOfLettering >= %s AND self.reconcileGroup.dateOfLettering <= %s)",
+              "(self.reconcileGroup is not null AND self.reconcileGroup.letteringDateTime >= %s AND self.reconcileGroup.letteringDateTime <= %s)",
               dateFromStr, dateToStr);
       String otherLinedReconciledQuery =
           String.format(
-              "exists (select 1 from MoveLine as ml where ml.reconcileGroup is not null AND ml.reconcileGroup.dateOfLettering >= %s AND ml.reconcileGroup.dateOfLettering <= %s AND ml.move.id = self.move.id)",
+              "exists (select 1 from MoveLine as ml where ml.reconcileGroup is not null AND ml.reconcileGroup.letteringDateTime >= %s AND ml.reconcileGroup.letteringDateTime <= %s AND ml.move.id = self.move.id)",
               dateFromStr, dateToStr);
       String reconcileQuery =
           String.format("(%s OR %s)", selfReconciledQuery, otherLinedReconciledQuery);

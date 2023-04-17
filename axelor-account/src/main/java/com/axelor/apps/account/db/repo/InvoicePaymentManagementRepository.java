@@ -30,7 +30,6 @@ public class InvoicePaymentManagementRepository extends InvoicePaymentRepository
     try {
       if (invoicePayment.getStatusSelect() == InvoicePaymentRepository.STATUS_DRAFT) {
         Beans.get(InvoicePaymentValidateService.class).validate(invoicePayment);
-        return invoicePayment;
       }
       return super.save(invoicePayment);
     } catch (Exception e) {
