@@ -147,6 +147,11 @@ public class GdprProcessingRegisterService implements Callable<List<GDPRProcessi
           idsMap.stream().map(map -> (Long) map.get("id")).collect(Collectors.toList());
 
       for (Long id : ids) {
+        if (anonymizer != null) {
+          // Need to find if there are more than 10 entities
+          anonymizer = JPA.find(Anonymizer.class, anonymizer.getId());
+          metaModel = JPA.find(MetaModel.class, metaModel.getId());
+        }
         model = Query.of(entityKlass).filter("id = :id").bind("id", id).fetchOne();
         model.setArchived(true);
         anonymize(metaModel, model, anonymizer);
@@ -191,9 +196,6 @@ public class GdprProcessingRegisterService implements Callable<List<GDPRProcessi
     if (anonymizer == null) {
       return;
     }
-
-    // Need to find if there are more than 10 entities
-    anonymizer = JPA.find(Anonymizer.class, anonymizer.getId());
 
     // get list of anonymizer lines for metaModel
     List<AnonymizerLine> anonymizerLines =
