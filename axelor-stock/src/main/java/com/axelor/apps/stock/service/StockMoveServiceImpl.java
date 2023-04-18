@@ -327,6 +327,8 @@ public class StockMoveServiceImpl implements StockMoveService {
     updateLocations(stockMove, fromStockLocation, toStockLocation, initialStatus);
 
     stockMove.setCancelReason(null);
+
+    stockMoveRepo.save(stockMove);
   }
 
   /**
@@ -468,6 +470,8 @@ public class StockMoveServiceImpl implements StockMoveService {
       }
     }
     computeMasses(stockMove);
+
+    stockMoveRepo.save(stockMove);
 
     if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING
         && !stockMove.getIsReversion()) {
