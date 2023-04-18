@@ -13,13 +13,13 @@
     <many-to-one name="contact" ref="com.axelor.apps.base.db.Partner" title="Contact"/>
     <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
     <date name="expectedCloseDate" title="Expected close date"/>
-    <decimal name="amount" title="Amount"/>
+    <decimal name="amount" title="Amount" min="0"/>
     <string name="opportunityType" title="Type of need"/>
-    <decimal name="bestCase" title="Best case"/>
-    <decimal name="worstCase" title="Worst case"/>
+    <decimal name="bestCase" title="Best case" min="0"/>
+    <decimal name="worstCase" title="Worst case" min="0"/>
     <many-to-one name="opportunityStatus" title="Sales stage"
       ref="com.axelor.apps.crm.db.OpportunityStatus"/>
-    <decimal name="probability" title="Probability (%)"/>
+    <decimal name="probability" title="Probability (%)" min="0" max="100"/>
     <string name="description" large="true" title="Description"/>
     <string name="customerDescription" large="true" title="Customer Description"/>
     <many-to-one name="source" ref="com.axelor.apps.base.db.Source" title="Source"/>
