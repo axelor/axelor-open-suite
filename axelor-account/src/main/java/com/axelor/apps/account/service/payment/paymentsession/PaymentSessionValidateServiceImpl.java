@@ -367,12 +367,10 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       }
     }
 
-    Partner partner = null;
-    if (!isGlobal) {
-      partner = invoiceTerm.getMoveLine().getPartner();
-    }
+    Partner partner = invoiceTerm.getMoveLine().getPartner();
 
-    Move move = this.getMove(paymentSession, partner, invoiceTerm, moveDateMap, paymentAmountMap);
+    Move move =
+        this.getMove(paymentSession, partner, invoiceTerm, moveDateMap, paymentAmountMap, isGlobal);
 
     BigDecimal reconciledAmount = BigDecimal.ZERO;
     if (!CollectionUtils.isEmpty(invoiceTermLinkWithRefundList)) {
@@ -416,7 +414,8 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       Partner partner,
       InvoiceTerm invoiceTerm,
       Map<LocalDate, Map<Partner, List<Move>>> moveDateMap,
-      Map<Move, BigDecimal> paymentAmountMap)
+      Map<Move, BigDecimal> paymentAmountMap,
+      boolean isGlobal)
       throws AxelorException {
     LocalDate accountingDate = this.getAccountingDate(paymentSession, invoiceTerm);
     Move move;
@@ -429,7 +428,8 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
 
     if (paymentSession.getAccountingMethodSelect()
             == PaymentSessionRepository.ACCOUNTING_METHOD_BY_INVOICE_TERM
-        || !moveMap.containsKey(partner)) {
+        || !moveMap.containsKey(partner)
+        || (isGlobal && !partner.getIsCompensation())) {
       BankDetails partnerBankDetails = null;
       if (paymentSession.getAccountingMethodSelect()
           == PaymentSessionRepository.ACCOUNTING_METHOD_BY_INVOICE_TERM) {
@@ -618,12 +618,11 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       if (!moveMapIt.isEmpty()) {
         this.generateCashMoveLines(paymentSession, moveMapIt, paymentAmountMap, out, isGlobal);
 
-        if (isGlobal
-            && moveDateMap != null
-            && moveDateMap.get(accountingDate) != null
-            && moveDateMap.get(accountingDate).get(null) != null) {
-          BigDecimal paymentAmount =
-              paymentAmountMap.get(moveDateMap.get(accountingDate).get(null).get(0));
+        if (isGlobal && moveDateMap != null && moveDateMap.get(accountingDate) != null) {
+          BigDecimal paymentAmount = BigDecimal.ZERO;
+          for (Move move : paymentAmountMap.keySet()) {
+            paymentAmount = paymentAmount.add(paymentAmountMap.get(move));
+          }
           this.generateCashMove(paymentSession, accountingDate, paymentAmount, out);
         }
       }
