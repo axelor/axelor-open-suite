@@ -148,8 +148,8 @@
   <grid name="invoice-term-payment-session-grid" title="Invoice terms"
     model="com.axelor.apps.account.db.InvoiceTerm" orderBy="moveLine.partner.name,dueDate"
     groupBy="moveLine.partner" edit-icon="true">
-    <hilite color="primary" if="isSelectedOnPaymentSession &amp;&amp; !financialDiscount"/>
-    <hilite color="warning" if="financialDiscount"/>
+    <hilite color="primary" if="isSelectedOnPaymentSession"/>
+    <hilite color="warning" if="financialDiscount &amp;&amp; !isSelectedOnPaymentSession"/>
     <button name="selectBtn" title="Select"
       onClick="action-invoice-term-method-select-terms-btn,action-invoice-term-method-compute-total-payment-session"
       icon="fa-plus-circle"
