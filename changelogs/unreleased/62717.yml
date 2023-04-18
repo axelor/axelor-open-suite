@@ -1,0 +1,5 @@
+---
+title: "GDPR: admin user is now excluded from the processing register"
+type: fix
+description: |
+  When anonymizing users, Admin user is not included in the process.

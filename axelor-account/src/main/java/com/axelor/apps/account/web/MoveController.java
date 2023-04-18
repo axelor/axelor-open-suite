@@ -789,7 +789,7 @@ public class MoveController {
 
         if (moveInvoiceTermService.displayDueDate(move)) {
           response.setAttr(
-              "dueDate", "value", moveInvoiceTermService.computeDueDate(move, true, false));
+              "$dueDate", "value", moveInvoiceTermService.computeDueDate(move, true, false));
         }
       } else if (request.getContext().containsKey("headerChange")
           && (boolean) request.getContext().get("headerChange")) {
@@ -832,7 +832,7 @@ public class MoveController {
       MoveInvoiceTermService moveInvoiceTermService = Beans.get(MoveInvoiceTermService.class);
       boolean displayDueDate = moveInvoiceTermService.displayDueDate(move);
 
-      response.setAttr("dueDate", "hidden", !displayDueDate);
+      response.setAttr("$dueDate", "hidden", !displayDueDate);
 
       if (displayDueDate) {
         boolean paymentConditionChange =
@@ -846,11 +846,11 @@ public class MoveController {
                   || paymentConditionChange;
 
           response.setAttr(
-              "dueDate", "value", moveInvoiceTermService.computeDueDate(move, true, isDateChange));
+              "$dueDate", "value", moveInvoiceTermService.computeDueDate(move, true, isDateChange));
           response.setAttr("$dateChange", "value", false);
         }
       } else {
-        response.setAttr("dueDate", "value", null);
+        response.setAttr("$dueDate", "value", null);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
