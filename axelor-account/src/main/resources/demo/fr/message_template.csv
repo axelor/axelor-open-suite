@@ -11,7 +11,7 @@ Nous sommes heureux de vous compter parmi nos meilleur(e)s client(e)s. Cependant
 </tr>
 $DebtRecoveryHistory.debtRecovery.invoiceDebtRecoverySet:{list |
 <tr>
-<td>$list.id$</td>
+<td>$list.invoiceId$</td>
 <td>$list.amountRemaining; format=""%,10.2f""$ $list.currency.symbol$ ($list.currency.name$)</td>
 <td>$list.invoiceDate; format=""dd/MM/yyy""$</td>
 <td>$list.dueDate; format=""dd/MM/yyy""$</td>
@@ -35,7 +35,7 @@ Nous sommes heureux de vous compter parmi nos meilleur(e)s client(e)s. Cependant
 </tr>
 $DebtRecoveryHistory.debtRecovery.invoiceDebtRecoverySet:{list |
 <tr>
-<td>$list.id$</td>
+<td>$list.invoiceId$</td>
 <td>$list.amountRemaining; format=""%,10.2f""$ $list.currency.symbol$ ($list.currency.name$)</td>
 <td>$list.invoiceDate; format=""dd/MM/yyy""$</td>
 <td>$list.dueDate; format=""dd/MM/yyy""$</td>
