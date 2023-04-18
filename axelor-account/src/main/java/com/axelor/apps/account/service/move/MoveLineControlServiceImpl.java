@@ -112,7 +112,7 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
 
     if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
       List<InvoiceTerm> invoiceTermList = moveLine.getInvoiceTermList();
-      Invoice invoiceAttached = invoiceTermList.get(0).getInvoice();
+      Invoice invoiceAttached = moveLine.getMove().getInvoice();
       BigDecimal total = moveLine.getCredit().max(moveLine.getDebit());
 
       if (invoiceAttached != null) {

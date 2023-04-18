@@ -25,6 +25,8 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -57,10 +59,14 @@ public interface InvoicePaymentToolService {
    */
   List<MoveLine> getMoveLinesFromPayments(List<InvoicePayment> payments, boolean getCreditLine);
 
-  public void checkConditionBeforeSave(InvoicePayment invoicePayment) throws AxelorException;
+  void checkConditionBeforeSave(InvoicePayment invoicePayment) throws AxelorException;
 
   BigDecimal getPayableAmount(
-      List<InvoiceTerm> invoiceTermList, LocalDate date, boolean manualChange);
+      List<InvoiceTerm> invoiceTermList,
+      LocalDate date,
+      boolean manualChange,
+      Currency targetCurrency)
+      throws AxelorException;
 
   void computeFinancialDiscount(InvoicePayment invoicePayment);
 
