@@ -77,18 +77,20 @@ public class InvoiceProductStatementServiceImpl implements InvoiceProductStateme
       return "";
     }
 
-    Optional<String> statement =
-        getCorrespondingStatement(productTypes, invoiceProductStatementList);
+    return getCorrespondingStatement(productTypes, invoiceProductStatementList)
+        .orElseGet(
+            () ->
+                getMinSizeCorrespondingInvoiceProductStatement(
+                    productTypes, invoiceProductStatementList));
+  }
 
-    if (!statement.isPresent()) {
-      List<InvoiceProductStatement> minSizeCorrespondingInvoiceProductStatements =
-          getCorrectInvoiceProductStatements(productTypes, invoiceProductStatementList);
-      return minSizeCorrespondingInvoiceProductStatements.stream()
-          .findFirst()
-          .map(InvoiceProductStatement::getStatement)
-          .orElse("");
-    }
-    return statement.get();
+  protected String getMinSizeCorrespondingInvoiceProductStatement(
+      Set<String> productTypes, List<InvoiceProductStatement> invoiceProductStatementList) {
+
+    return getCorrectInvoiceProductStatements(productTypes, invoiceProductStatementList).stream()
+        .findFirst()
+        .map(InvoiceProductStatement::getStatement)
+        .orElse("");
   }
 
   protected List<InvoiceProductStatement> getCorrectInvoiceProductStatements(
