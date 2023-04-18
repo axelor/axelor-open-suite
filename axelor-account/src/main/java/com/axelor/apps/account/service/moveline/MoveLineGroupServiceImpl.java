@@ -106,15 +106,19 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
   @Override
   public Map<String, Map<String, Object>> getOnLoadAttrsMap(MoveLine moveLine, Move move)
       throws AxelorException {
+
     Map<String, Map<String, Object>> attrsMap =
         new HashMap<>(this.getAnalyticDistributionTemplateOnChangeAttrsMap(moveLine, move));
 
-    moveLineAttrsService.addAnalyticDistributionTypeSelect(move, attrsMap);
-    moveLineAttrsService.addInvoiceTermListPercentageWarningText(moveLine, attrsMap);
-    moveLineAttrsService.addReadonly(move, attrsMap);
     moveLineAttrsService.addShowTaxAmount(moveLine, attrsMap);
-    moveLineAttrsService.addDescriptionRequired(move, attrsMap);
-    moveLineAttrsService.addAnalyticAxisAttrs(move, attrsMap);
+    moveLineAttrsService.addInvoiceTermListPercentageWarningText(moveLine, attrsMap);
+
+    if (move != null) {
+      moveLineAttrsService.addAnalyticDistributionTypeSelect(move, attrsMap);
+      moveLineAttrsService.addReadonly(move, attrsMap);
+      moveLineAttrsService.addDescriptionRequired(move, attrsMap);
+      moveLineAttrsService.addAnalyticAxisAttrs(move, attrsMap);
+    }
 
     return attrsMap;
   }
@@ -126,13 +130,16 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
         new HashMap<>(this.getAnalyticDistributionTemplateOnChangeAttrsMap(moveLine, move));
 
     moveLineAttrsService.addInvoiceTermListPercentageWarningText(moveLine, attrsMap);
-    moveLineAttrsService.addReadonly(move, attrsMap);
     moveLineAttrsService.addShowTaxAmount(moveLine, attrsMap);
-    moveLineAttrsService.addDescriptionRequired(move, attrsMap);
-    moveLineAttrsService.addAnalyticAxisAttrs(move, attrsMap);
-    moveLineAttrsService.addValidatePeriod(move, attrsMap);
-    moveLineAttrsService.addAnalyticDistributionTypeSelect(move, attrsMap);
-    moveLineAttrsService.addShowAnalyticDistributionPanel(move, moveLine, attrsMap);
+
+    if (move != null) {
+      moveLineAttrsService.addReadonly(move, attrsMap);
+      moveLineAttrsService.addDescriptionRequired(move, attrsMap);
+      moveLineAttrsService.addAnalyticAxisAttrs(move, attrsMap);
+      moveLineAttrsService.addValidatePeriod(move, attrsMap);
+      moveLineAttrsService.addAnalyticDistributionTypeSelect(move, attrsMap);
+      moveLineAttrsService.addShowAnalyticDistributionPanel(move, moveLine, attrsMap);
+    }
 
     return attrsMap;
   }

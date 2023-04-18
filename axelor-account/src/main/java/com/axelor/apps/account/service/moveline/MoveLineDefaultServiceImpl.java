@@ -72,9 +72,7 @@ public class MoveLineDefaultServiceImpl implements MoveLineDefaultService {
 
   @Override
   public void setFieldsFromFirstMoveLine(MoveLine moveLine, Move move) {
-    if (move == null
-        || !move.getGetInfoFromFirstMoveLineOk()
-        || CollectionUtils.isEmpty(move.getMoveLineList())) {
+    if (move == null || CollectionUtils.isEmpty(move.getMoveLineList())) {
       return;
     }
 

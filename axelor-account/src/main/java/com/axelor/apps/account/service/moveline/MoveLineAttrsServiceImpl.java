@@ -151,7 +151,7 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
   @Override
   public void addReadonly(Move move, Map<String, Map<String, Object>> attrsMap) {
     boolean statusCondition =
-        move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK
+        move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED
             || move.getStatusSelect() == MoveRepository.STATUS_CANCELED;
     boolean singleStatusCondition = move.getStatusSelect() == MoveRepository.STATUS_CANCELED;
 
@@ -162,7 +162,7 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
     this.addAttr("otherPanel", "readonly", singleStatusCondition, attrsMap);
 
     if (move.getPaymentCondition() != null) {
-      this.addAttr("dueDate", "readonly", move.getPaymentCondition().getIsFree(), attrsMap);
+      this.addAttr("dueDate", "readonly", !move.getPaymentCondition().getIsFree(), attrsMap);
     }
   }
 
@@ -231,7 +231,7 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
             .collect(Collectors.joining(","));
 
     if (StringUtils.isEmpty(validAccounts)) {
-      validAccountTypes = "0";
+      validAccounts = "0";
     }
 
     String domain =
