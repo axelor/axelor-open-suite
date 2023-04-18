@@ -272,7 +272,7 @@ public class MoveTemplateService {
           }
         }
 
-        moveLineTaxService.autoTaxLineGenerate(move);
+        moveLineTaxService.autoTaxLineGenerate(move, null);
         manageAccounting(moveTemplate, move);
 
         moveList.add(move.getId());
@@ -400,7 +400,7 @@ public class MoveTemplateService {
         }
 
         move.setDescription(taxLineDescription);
-        moveLineTaxService.autoTaxLineGenerate(move);
+        moveLineTaxService.autoTaxLineGenerate(move, null);
         manageAccounting(moveTemplate, move);
 
         move.setDescription(moveTemplate.getDescription());

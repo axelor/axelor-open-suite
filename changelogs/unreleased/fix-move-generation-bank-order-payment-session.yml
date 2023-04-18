@@ -1,0 +1,3 @@
+---
+title: "PaymentSession/BankOrder : Move generation when auto bank order confirmation configured in payment mode"
+type: fix

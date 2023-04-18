@@ -86,7 +86,7 @@
               onChange="action-group-move-date-onchange"/>
             <field name="originDate" onChange="action-move-group-origin-date-onchange"
               readonlyIf="$validatePeriod || moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"/>
-            <field name="dueDate" type="date" title="Due date" hidden="true"
+            <field name="$dueDate" type="date" title="Due date" hidden="true"
               readonlyIf="!paymentCondition.isFree"
               help="This field allows to modify directly the move line due date which is by default calculated based on the payment condition."/>
           </panel>
@@ -216,7 +216,7 @@
           readonlyIf="$validatePeriod" onClick="action-account-move-group-generate-tax-lines"
           colSpan="12" showIf="statusSelect == 1 || statusSelect == 5"/>
         <button
-          showIf="journal != null &amp;&amp; statusSelect != 3 &amp;&amp; ($journalTechnicalTypeSelect == 1 || $journalTechnicalTypeSelect == 2 || $journalTechnicalTypeSelect == 4)"
+          showIf="journal != null &amp;&amp; statusSelect != 3 &amp;&amp; ([1,2,4].includes($journalTechnicalTypeSelect) &amp;&amp; functionalOriginSelect &amp;&amp; [3,4,7].includes(functionalOriginSelect))"
           name="counterpartGenerateBtn" title="Generate counterpart" readonlyIf="$validatePeriod"
           onClick="action-account-move-group-generate-counterpart" colSpan="12"/>
       </panel>
@@ -436,7 +436,7 @@
           readonlyIf="$validatePeriod" onClick="action-account-move-group-generate-tax-lines"
           colSpan="12" showIf="statusSelect == 1 || statusSelect == 5"/>
         <button
-          showIf="journal != null &amp;&amp; statusSelect != 3 &amp;&amp; ($journalTechnicalTypeSelect == 1 || $journalTechnicalTypeSelect == 2 || $journalTechnicalTypeSelect == 4)"
+          showIf="journal != null &amp;&amp; statusSelect != 3 &amp;&amp; ([1,2,4].includes($journalTechnicalTypeSelect) &amp;&amp; functionalOriginSelect != null &amp;&amp; [3,4,7].includes($journalTechnicalTypeSelect))"
           name="counterpartGenerateBtn" title="Generate counterpart" readonlyIf="$validatePeriod"
           onClick="action-account-move-group-generate-counterpart" colSpan="12"/>
         <field name="$validatePeriod" hidden="true" type="boolean"/>
@@ -1107,7 +1107,7 @@
 
   <action-attrs name="action-move-attrs-date-change">
     <attribute name="value" for="$dateChange" expr="eval: true"/>
-    <attribute name="value" for="dueDate" expr="eval: null"/>
+    <attribute name="value" for="$dueDate" expr="eval: null"/>
   </action-attrs>
 
   <action-attrs name="action-move-attrs-manage-bank-details">
