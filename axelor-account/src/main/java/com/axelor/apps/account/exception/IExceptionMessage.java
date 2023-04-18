@@ -725,6 +725,9 @@ public interface IExceptionMessage {
       INVOICE_CAN_NOT_GO_BACK_TO_VALIDATE_STATUS_OR_CANCEL_VENTILATED_INVOICE = /*$$(*/
           "It is not possible to go back to validate status or cancel a ventilated invoice." /*)*/;
 
+  static final String INVOICE_CAN_NOT_DELETE = /*$$(*/
+      "Invoices can only be deleted if they are canceled. %s can not be deleted." /*)*/;
+
   /** Move template controller */
   static final String MOVE_TEMPLATE_1 = /*$$(*/ "Template move is not balanced" /*)*/;
 
