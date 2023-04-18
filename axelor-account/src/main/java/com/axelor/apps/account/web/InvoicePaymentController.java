@@ -234,7 +234,8 @@ public class InvoicePaymentController {
                 .getPayableAmount(
                     invoiceTerms,
                     invoicePayment.getPaymentDate(),
-                    invoicePayment.getManualChange());
+                    invoicePayment.getManualChange(),
+                    invoicePayment.getCurrency());
 
         if (!invoicePayment.getManualChange()
             || invoicePayment.getAmount().compareTo(payableAmount) > 0) {
