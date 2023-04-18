@@ -15,8 +15,6 @@
           action="action-lead-method-assign-to-me-multiple"/>
         <item name="checkDuplicateItem" title="Check duplicate"
           action="action-general-check-duplicate-records"/>
-        <item name="importLeadsItem" title="Import leads"
-          action="action-crm-method-lead-import-leads"/>
       </menu>
     </menubar>
     <hilite color="warning"
@@ -52,8 +50,6 @@
           action="action-lead-method-assign-to-me-multiple"/>
         <item name="checkDuplicateItem" title="Check duplicate"
           action="action-general-check-duplicate-records"/>
-        <item name="importLeadsItem" title="Import leads"
-          action="action-crm-method-lead-import-leads"/>
       </menu>
     </menubar>
     <hilite color="warning"
@@ -521,10 +517,6 @@
 
   <action-method name="action-lead-method-set-social-network-url">
     <call class="com.axelor.apps.crm.web.LeadController" method="setSocialNetworkUrl"/>
-  </action-method>
-
-  <action-method name="action-crm-method-lead-import-leads">
-    <call class="com.axelor.apps.crm.web.LeadController" method="getLeadImportConfig"/>
   </action-method>
 
   <search-filters name="lead-filters" model="com.axelor.apps.crm.db.Lead"
