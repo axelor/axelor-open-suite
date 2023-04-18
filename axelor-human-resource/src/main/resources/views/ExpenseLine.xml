@@ -22,6 +22,7 @@
       aggregate="sum" readonlyIf="expenseProduct.blockExpenseTax" width="80"
       onChange="action-expense-on-change-tax-untaxt-amount,action-expense-line-method-compute-analytic-distribution"/>
     <field name="toInvoice"/>
+    <field name="justificationMetaFile" widget="binary-link"/>
     <field name="comments" width="400"/>
     <field name="untaxedAmount" hidden="true"/>
     <field name="expenseProduct.blockExpenseTax" hidden="true"/>
