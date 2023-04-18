@@ -248,15 +248,29 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
 
   @Override
   public BigDecimal getPayableAmount(
-      List<InvoiceTerm> invoiceTermList, LocalDate date, boolean manualChange) {
-    return invoiceTermList.stream()
-        .map(
-            it ->
-                manualChange
-                    ? invoiceTermService.getAmountRemaining(it, date)
-                    : it.getAmountRemaining())
-        .reduce(BigDecimal::add)
-        .orElse(BigDecimal.ZERO);
+      List<InvoiceTerm> invoiceTermList,
+      LocalDate date,
+      boolean manualChange,
+      Currency targetCurrency)
+      throws AxelorException {
+    Currency startCurrency = invoiceTermList.get(0).getCurrency();
+    BigDecimal amount =
+        invoiceTermList.stream()
+            .map(
+                it ->
+                    manualChange
+                        ? invoiceTermService.getAmountRemaining(it, date)
+                        : it.getAmountRemaining())
+            .reduce(BigDecimal::add)
+            .orElse(BigDecimal.ZERO);
+    if (CollectionUtils.isNotEmpty(invoiceTermList)) {
+      if (!startCurrency.equals(targetCurrency)) {
+        amount =
+            currencyService.getAmountCurrencyConvertedAtDate(
+                startCurrency, targetCurrency, amount, date);
+      }
+    }
+    return amount;
   }
 
   @Override

@@ -466,6 +466,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
         move.addMoveLineListItem(financialDiscountVatMoveLine);
       }
     }
+    move.setInvoice(invoice);
     return move;
   }
 
