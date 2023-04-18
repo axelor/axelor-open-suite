@@ -19,13 +19,15 @@
     <field name="productCode"/>
     <field name="qty" aggregate="sum" x-scale="2"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
-    <field name="priceDiscounted" title="Unit price W.T." x-scale="2"/>
-    <field name="inTaxPrice" x-scale="2"/>
+    <field name="priceDiscounted" title="Unit price W.T."
+      x-scale="purchaseOrder.currency.numberOfDecimals"/>
+    <field name="inTaxPrice" x-scale="purchaseOrder.currency.numberOfDecimals"/>
     <field name="exTaxTotal" aggregate="sum"/>
     <field name="inTaxTotal" aggregate="sum"/>
     <field name="isTitleLine" hidden="true"/>
     <field name="desiredReceiptDate"/>
     <field name="estimatedReceiptDate"/>
+    <field name="purchaseOrder.currency.numberOfDecimals" hidden="true"/>
   </grid>
 
   <grid name="purchase-order-line-invoicing-project-grid" title="PO lines"
@@ -37,13 +39,15 @@
     <field name="productName"/>
     <field name="qty" aggregate="sum" x-scale="2"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
-    <field name="priceDiscounted" title="Unit price W.T."/>
-    <field name="inTaxPrice" x-scale="2"/>
+    <field name="priceDiscounted" title="Unit price W.T."
+      x-scale="purchaseOrder.currency.numberOfDecimals"/>
+    <field name="inTaxPrice" x-scale="purchaseOrder.currency.numberOfDecimals"/>
     <field name="exTaxTotal" aggregate="sum"/>
     <field name="inTaxTotal" aggregate="sum"/>
     <field name="purchaseOrder.currency"/>
     <field name="toInvoice"/>
     <field name="invoiced"/>
+    <field name="purchaseOrder.currency.numberOfDecimals" hidden="true"/>
   </grid>
 
   <grid model="com.axelor.apps.purchase.db.PurchaseOrderLine" title="PO lines"
@@ -56,12 +60,14 @@
     <field name="productName"/>
     <field name="qty" aggregate="sum" x-scale="2"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
-    <field name="priceDiscounted" title="Unit price W.T." x-scale="2"/>
-    <field name="inTaxPrice" x-scale="2"/>
+    <field name="priceDiscounted" title="Unit price W.T."
+      x-scale="purchaseOrder.currency.numberOfDecimals"/>
+    <field name="inTaxPrice" x-scale="purchaseOrder.currency.numberOfDecimals"/>
     <field name="purchaseOrder.currency"/>
     <field name="purchaseOrder.buyerUser"/>
     <field name="desiredReceiptDate"/>
     <field name="estimatedReceiptDate"/>
+    <field name="purchaseOrder.currency.numberOfDecimals" hidden="true"/>
   </grid>
 
   <grid name="purchase-order-line-menu-grid" title="PO lines"
@@ -76,10 +82,11 @@
     <field name="qty" aggregate="sum" x-scale="2"/>
     <field name="receivedQty" aggregate="sum" x-scale="2"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
-    <field name="price" x-scale="2"/>
-    <field name="inTaxPrice" x-scale="2"/>
+    <field name="price" x-scale="purchaseOrder.currency.numberOfDecimals"/>
+    <field name="inTaxPrice" x-scale="purchaseOrder.currency.numberOfDecimals"/>
     <field name="desiredReceiptDate"/>
     <field name="estimatedReceiptDate"/>
+    <field name="purchaseOrder.currency.numberOfDecimals" hidden="true"/>
   </grid>
 
   <form name="purchase-order-line-project-form" title="PO line"
@@ -562,6 +569,27 @@
       expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
     <attribute name="scale" for="maxPurchasePrice"
       expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+    <attribute name="scale" for="exTaxTotal"
+      expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+
+    <attribute name="scale" for="price"
+      expr="eval: __parent__?.currency?.numberOfDecimals"
+      if="eval: __config__.app.getNbDecimalDigitForUnitPrice() &lt; __parent__?.currency?.numberOfDecimals"/>
+    <attribute name="scale" for="inTaxPrice"
+      expr="eval: __parent__?.currency?.numberOfDecimals"
+      if="eval: __config__.app.getNbDecimalDigitForUnitPrice() &lt; __parent__?.currency?.numberOfDecimals"/>
+    <attribute name="scale" for="priceDiscounted"
+      expr="eval: __parent__?.currency?.numberOfDecimals"
+      if="eval: __config__.app.getNbDecimalDigitForUnitPrice() &lt; __parent__?.currency?.numberOfDecimals"/>
+    <attribute name="scale" for="discountAmount"
+      expr="eval: __parent__?.currency?.numberOfDecimals"
+      if="eval: __config__.app.getNbDecimalDigitForUnitPrice() &lt; __parent__?.currency?.numberOfDecimals"/>
+    <attribute name="scale" for="maxPurchasePrice"
+      expr="eval: __parent__?.currency?.numberOfDecimals"
+      if="eval: __config__.app.getNbDecimalDigitForUnitPrice() &lt; __parent__?.currency?.numberOfDecimals"/>
+    <attribute name="scale" for="exTaxTotal"
+      expr="eval: __parent__?.currency?.numberOfDecimals"
+      if="eval: __config__.app.getNbDecimalDigitForUnitPrice() &lt; __parent__?.currency?.numberOfDecimals"/>
 
     <attribute name="scale" for="qty"
       expr="eval: __config__.app.getNbDecimalDigitForQty()"/>

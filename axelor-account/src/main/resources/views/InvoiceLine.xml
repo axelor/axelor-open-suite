@@ -9,12 +9,14 @@
     <field name="product.code" width="120"/>
     <field name="productName"/>
     <field name="qty" aggregate="sum" x-scale="2"/>
-    <field name="priceDiscounted" title="Unit price W.T." x-scale="2"/>
-    <field name="inTaxPrice" x-scale="2"/>
+    <field name="priceDiscounted" title="Unit price W.T."
+      x-scale="invoice.currency.numberOfDecimals"/>
+    <field name="inTaxPrice" x-scale="invoice.currency.numberOfDecimals"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
     <field name="exTaxTotal" aggregate="sum"/>
     <field name="inTaxTotal" aggregate="sum"/>
     <field name="typeSelect" hidden="true"/>
+    <field name="invoice.currency.numberOfDecimals" hidden="true"/>
   </grid>
 
   <grid name="invoice-line-menu-grid" title="Invoice lines"
@@ -655,8 +657,29 @@
       expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
     <attribute name="scale" for="priceDiscounted"
       expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
-    <attribute name="scale" for="discountAmount"
+    <attribute name="scale" for="exTaxTotal"
       expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+    <attribute name="scale" for="inTaxTotal"
+      expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+
+    <attribute name="scale" for="price"
+      expr="eval: __parent__?.currency?.numberOfDecimals"
+      if="eval: __config__.app.getNbDecimalDigitForUnitPrice() &lt; __parent__?.currency?.numberOfDecimals"/>
+    <attribute name="scale" for="inTaxPrice"
+      expr="eval: __parent__?.currency?.numberOfDecimals"
+      if="eval: __config__.app.getNbDecimalDigitForUnitPrice() &lt; __parent__?.currency?.numberOfDecimals"/>
+    <attribute name="scale" for="priceDiscounted"
+      expr="eval: __parent__?.currency?.numberOfDecimals"
+      if="eval: __config__.app.getNbDecimalDigitForUnitPrice() &lt; __parent__?.currency?.numberOfDecimals"/>
+    <attribute name="scale" for="discountAmount"
+      expr="eval: __parent__?.currency?.numberOfDecimals"
+      if="eval: __config__.app.getNbDecimalDigitForUnitPrice() &lt; __parent__?.currency?.numberOfDecimals"/>
+    <attribute name="scale" for="exTaxTotal"
+      expr="eval: __parent__?.currency?.numberOfDecimals"
+      if="eval: __config__.app.getNbDecimalDigitForUnitPrice() &lt; __parent__?.currency?.numberOfDecimals"/>
+    <attribute name="scale" for="inTaxTotal"
+      expr="eval: __parent__?.currency?.numberOfDecimals"
+      if="eval: __config__.app.getNbDecimalDigitForUnitPrice() &lt; __parent__?.currency?.numberOfDecimals"/>
 
     <attribute name="scale" for="qty"
       expr="eval: __config__.app.getNbDecimalDigitForQty()"/>

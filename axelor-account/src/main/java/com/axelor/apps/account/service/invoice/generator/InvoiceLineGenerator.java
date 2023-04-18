@@ -32,20 +32,17 @@ import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Alarm;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
-import com.axelor.apps.base.db.UnitConversion;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.db.repo.UnitConversionRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
-import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import java.lang.invoke.MethodHandles;
@@ -265,13 +262,15 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     if (taxLine != null) {
       taxRate = taxLine.getValue().divide(new BigDecimal(100));
     }
-
+    int scale = currencyService.computeScaleForView(invoice.getCurrency());
+    BigDecimal price = qty.multiply(priceDiscounted).setScale(scale, RoundingMode.HALF_UP);
     if (!invoice.getInAti()) {
-      exTaxTotal = computeAmount(this.qty, this.priceDiscounted, 2);
-      inTaxTotal = exTaxTotal.add(exTaxTotal.multiply(taxRate)).setScale(2, RoundingMode.HALF_UP);
+      exTaxTotal = price;
+      inTaxTotal =
+          exTaxTotal.add(exTaxTotal.multiply(taxRate)).setScale(scale, RoundingMode.HALF_UP);
     } else {
-      inTaxTotal = computeAmount(this.qty, this.priceDiscounted, 2);
-      exTaxTotal = inTaxTotal.divide(taxRate.add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
+      inTaxTotal = price;
+      exTaxTotal = inTaxTotal.divide(taxRate.add(BigDecimal.ONE), scale, RoundingMode.HALF_UP);
     }
   }
 
@@ -285,6 +284,8 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 
     Currency companyCurrency = company.getCurrency();
 
+    int scale = currencyService.computeScaleForView(companyCurrency);
+
     if (companyCurrency == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -296,144 +297,12 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
         currencyService
             .getAmountCurrencyConvertedAtDate(
                 invoice.getCurrency(), companyCurrency, exTaxTotal, today)
-            .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
+            .setScale(scale, RoundingMode.HALF_UP));
 
     invoiceLine.setCompanyInTaxTotal(
         currencyService
             .getAmountCurrencyConvertedAtDate(
                 invoice.getCurrency(), companyCurrency, inTaxTotal, today)
-            .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
-  }
-
-  /**
-   * Rembourser une ligne de facture.
-   *
-   * @param invoice La facture concernée.
-   * @param invoiceLine La ligne de facture.
-   * @return La ligne de facture de remboursement.
-   */
-  protected InvoiceLine refundInvoiceLine(InvoiceLine invoiceLine, boolean daysQty) {
-
-    LOG.debug("Reimbursement of an invoice line (quantity = number of day ? {}).", daysQty);
-
-    InvoiceLine refundInvoiceLine = JPA.copy(invoiceLine, true);
-
-    refundInvoiceLine.setInvoice(invoice);
-
-    BigDecimal quantity = invoiceLine.getQty();
-
-    refundInvoiceLine.setQty(quantity.negate());
-
-    LOG.debug("Quantity reimbursed : {}", refundInvoiceLine.getQty());
-
-    refundInvoiceLine.setExTaxTotal(
-        computeAmount(refundInvoiceLine.getQty(), refundInvoiceLine.getPrice()));
-
-    LOG.debug(
-        "Reimbursement of the invoice line {} => amount W.T : {}",
-        new Object[] {invoiceLine.getId(), refundInvoiceLine.getExTaxTotal()});
-
-    return refundInvoiceLine;
-  }
-
-  protected InvoiceLine substractInvoiceLine(InvoiceLine invoiceLine1, InvoiceLine invoiceLine2) {
-
-    InvoiceLine substract = JPA.copy(invoiceLine1, false);
-
-    substract.setQty(invoiceLine1.getQty().add(invoiceLine2.getQty()));
-    substract.setExTaxTotal(computeAmount(substract.getQty(), substract.getPrice()));
-
-    LOG.debug("Subtraction of two invoice lines: {}", substract);
-
-    return substract;
-  }
-
-  /**
-   * Convertir le prix d'une unité de départ vers une unité d'arrivée.
-   *
-   * @param price
-   * @param startUnit
-   * @param endUnit
-   * @return Le prix converti
-   */
-  protected BigDecimal convertPrice(BigDecimal price, Unit startUnit, Unit endUnit) {
-
-    BigDecimal convertPrice = convert(startUnit, endUnit, price);
-
-    LOG.debug(
-        "Price conversion {} {} : {} {}", new Object[] {price, startUnit, convertPrice, endUnit});
-
-    return convertPrice;
-  }
-
-  /**
-   * Récupérer la bonne unité.
-   *
-   * @param unit Unité de base.
-   * @param displayUnit Unité à afficher.
-   * @return L'unité à utiliser.
-   */
-  protected Unit unit(Unit unit, Unit displayUnit) {
-
-    Unit resUnit = unit;
-
-    if (displayUnit != null) {
-      resUnit = displayUnit;
-    }
-
-    LOG.debug(
-        "Get unit : Unit {}, Unit displayed {} : {}", new Object[] {unit, displayUnit, resUnit});
-
-    return resUnit;
-  }
-
-  // HELPER
-
-  /**
-   * Convertir le prix d'une unité de départ version une unité d'arrivée.
-   *
-   * @param price
-   * @param startUnit
-   * @param endUnit
-   * @return Le prix converti
-   */
-  protected BigDecimal convert(Unit startUnit, Unit endUnit, BigDecimal value) {
-
-    if (value == null || startUnit == null || endUnit == null || startUnit.equals(endUnit)) {
-      return value;
-    } else {
-      return value.multiply(convertCoef(startUnit, endUnit)).setScale(6, RoundingMode.HALF_UP);
-    }
-  }
-
-  /**
-   * Obtenir le coefficient de conversion d'une unité de départ vers une unité d'arrivée.
-   *
-   * @param startUnit
-   * @param endUnit
-   * @return Le coefficient de conversion.
-   */
-  protected BigDecimal convertCoef(Unit startUnit, Unit endUnit) {
-
-    UnitConversion unitConversion =
-        unitConversionRepo
-            .all()
-            .filter("self.startUnit = ?1 AND self.endUnit = ?2", startUnit, endUnit)
-            .fetchOne();
-
-    if (unitConversion != null) {
-      return unitConversion.getCoef();
-    } else {
-      return BigDecimal.ONE;
-    }
-  }
-
-  protected void addAlarm(Alarm alarm, Partner partner) {
-
-    if (alarm != null) {
-
-      alarm.setInvoice(invoice);
-      alarm.setPartner(partner);
-    }
+            .setScale(scale, RoundingMode.HALF_UP));
   }
 }

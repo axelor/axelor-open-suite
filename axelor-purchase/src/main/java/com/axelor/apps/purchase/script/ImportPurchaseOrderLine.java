@@ -22,6 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.inject.Beans;
+import java.math.RoundingMode;
 import java.util.Map;
 
 public class ImportPurchaseOrderLine {
@@ -34,6 +35,10 @@ public class ImportPurchaseOrderLine {
     PurchaseOrderLineService purchaseOrderLineService = Beans.get(PurchaseOrderLineService.class);
 
     purchaseOrderLineService.compute(purchaseOrderLine, purchaseOrderLine.getPurchaseOrder());
+    purchaseOrderLine.setCompanyInTaxTotal(
+        purchaseOrderLine.getCompanyInTaxTotal().setScale(3, RoundingMode.HALF_UP));
+    purchaseOrderLine.setInTaxTotal(
+        purchaseOrderLine.getInTaxTotal().setScale(3, RoundingMode.HALF_UP));
     return purchaseOrderLine;
   }
 }

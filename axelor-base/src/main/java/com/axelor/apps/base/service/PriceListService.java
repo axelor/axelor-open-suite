@@ -207,31 +207,31 @@ public class PriceListService {
   }
 
   public BigDecimal computeDiscount(
-      BigDecimal unitPrice, int discountTypeSelect, BigDecimal discountAmount) {
+      BigDecimal unitPrice, int discountTypeSelect, BigDecimal discountAmount, int scale) {
+    int maxScale = Math.max(appBaseService.getNbDecimalDigitForUnitPrice(), scale);
+    return computeUnitPrice(unitPrice, discountTypeSelect, discountAmount, maxScale);
+  }
+
+  protected BigDecimal computeUnitPrice(
+      BigDecimal unitPrice, int discountTypeSelect, BigDecimal discountAmount, int scale) {
     if (discountTypeSelect == PriceListLineRepository.AMOUNT_TYPE_FIXED) {
-      return unitPrice
-          .subtract(discountAmount)
-          .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+      return unitPrice.subtract(discountAmount).setScale(scale, RoundingMode.HALF_UP);
     } else if (discountTypeSelect == PriceListLineRepository.AMOUNT_TYPE_PERCENT) {
       return unitPrice
           .multiply(new BigDecimal(100).subtract(discountAmount))
-          .divide(
-              new BigDecimal(100),
-              appBaseService.getNbDecimalDigitForUnitPrice(),
-              RoundingMode.HALF_UP);
+          .divide(new BigDecimal(100), scale, RoundingMode.HALF_UP);
     }
-
     return unitPrice;
   }
 
   public Map<String, Object> getReplacedPriceAndDiscounts(
-      PriceList priceList, PriceListLine priceListLine, BigDecimal price) {
+      PriceList priceList, PriceListLine priceListLine, BigDecimal price, int scale) {
     int discountTypeSelect = 0;
 
     if (priceListLine != null) {
       discountTypeSelect = priceListLine.getTypeSelect();
     }
-    Map<String, Object> discounts = getDiscounts(priceList, priceListLine, price);
+    Map<String, Object> discounts = getDiscounts(priceList, priceListLine, price, scale);
     if (discounts != null) {
       int computeMethodDiscountSelect =
           appBaseService.getAppBase().getComputeMethodDiscountSelect();
@@ -243,7 +243,8 @@ public class PriceListService {
             computeDiscount(
                 price,
                 (int) discounts.get("discountTypeSelect"),
-                (BigDecimal) discounts.get("discountAmount"));
+                (BigDecimal) discounts.get("discountAmount"),
+                scale);
         discounts.put("price", price);
         discounts.put("discountTypeSelect", PriceListLineRepository.AMOUNT_TYPE_NONE);
         discounts.put("discountAmount", BigDecimal.ZERO);
@@ -253,22 +254,24 @@ public class PriceListService {
   }
 
   public Map<String, Object> getDiscounts(
-      PriceList priceList, PriceListLine priceListLine, BigDecimal price) {
+      PriceList priceList, PriceListLine priceListLine, BigDecimal price, int scale) {
+    int maxScale = Math.max(appBaseService.getNbDecimalDigitForUnitPrice(), scale);
+    return computeDiscounts(priceList, priceListLine, price, maxScale);
+  }
 
+  protected Map<String, Object> computeDiscounts(
+      PriceList priceList, PriceListLine priceListLine, BigDecimal price, int scale) {
     Map<String, Object> discounts = new HashMap<>();
 
     if (priceListLine != null) {
       discounts.put(
           "discountAmount",
-          this.getDiscountAmount(priceListLine, price)
-              .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP));
+          this.getDiscountAmount(priceListLine, price).setScale(scale, RoundingMode.HALF_UP));
       discounts.put("discountTypeSelect", this.getDiscountTypeSelect(priceListLine));
 
     } else {
       BigDecimal discountAmount =
-          priceList
-              .getGeneralDiscount()
-              .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+          priceList.getGeneralDiscount().setScale(scale, RoundingMode.HALF_UP);
       discounts.put("discountAmount", discountAmount);
       if (discountAmount.compareTo(BigDecimal.ZERO) == 0) {
         discounts.put("discountTypeSelect", PriceListLineRepository.AMOUNT_TYPE_NONE);

@@ -94,8 +94,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     if (purchaseOrder.getPurchaseOrderLineList() != null) {
       PurchaseOrderLineService purchaseOrderLineService = Beans.get(PurchaseOrderLineService.class);
       for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
-        purchaseOrderLine.setExTaxTotal(
-            purchaseOrderLineService.computePurchaseOrderLine(purchaseOrderLine));
+        purchaseOrderLine.setExTaxTotal(purchaseOrderLine.getExTaxTotal());
         purchaseOrderLine.setCompanyExTaxTotal(
             purchaseOrderLineService.getCompanyExTaxTotal(
                 purchaseOrderLine.getExTaxTotal(), purchaseOrder));

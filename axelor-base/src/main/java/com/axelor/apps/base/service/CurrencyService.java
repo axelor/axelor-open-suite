@@ -255,4 +255,14 @@ public class CurrencyService {
       }
     }
   }
+
+  /**
+   * Returns max between the numbers of decimals of the app base config and the currency.
+   *
+   * @param currency
+   * @return
+   */
+  public int computeScaleForView(Currency currency) {
+    return Math.max(appBaseService.getNbDecimalDigitForUnitPrice(), currency.getNumberOfDecimals());
+  }
 }

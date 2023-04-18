@@ -900,6 +900,7 @@
     <action name="action-invoice-term-method-is-multi-currency"/>
     <action name="action-invoice-term-record-set-show-financial-discount"
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
+    <action name="action-invoice-term-attrs-set-scale"/>
   </action-group>
 
   <action-group name="action-invoice-term-move-group-onload">
@@ -1207,5 +1208,23 @@
     <attribute name="hidden" for="pfpPanel"
       expr="eval: pfpValidateStatusSelect == 0 || ![2,3,4].contains(moveLine?.move?.statusSelect)"
       if="invoice == null &amp;&amp; moveLine != null"/>
+  </action-attrs>
+
+  <action-attrs name="action-invoice-term-attrs-set-scale">
+    <attribute for="amount" name="scale" expr="eval: currency?.numberOfDecimals"/>
+    <attribute for="amountRemaining" name="scale" expr="eval: currency?.numberOfDecimals"/>
+    <attribute for="companyAmount" name="scale"
+      expr="eval: company?.currency?.numberOfDecimals"/>
+    <attribute for="companyAmountRemaining" name="scale"
+      expr="eval: company?.currency?.numberOfDecimals"/>
+    <attribute for="remainingPfpAmount" name="scale"
+      expr="eval: currency?.numberOfDecimals"/>
+    <attribute for="initialPfpAmount" name="scale" expr="eval: currency?.numberOfDecimals"/>
+    <attribute for="financialDiscountAmount" name="scale"
+      expr="eval: currency?.numberOfDecimals"/>
+    <attribute for="remainingAmountAfterFinDiscount" name="scale"
+      expr="eval: currency?.numberOfDecimals"/>
+    <attribute for="amountRemainingAfterFinDiscount" name="scale"
+      expr="eval: currency?.numberOfDecimals"/>
   </action-attrs>
 </object-views>

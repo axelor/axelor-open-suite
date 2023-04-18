@@ -32,8 +32,9 @@
       readonlyIf="$get('saleOrder.statusSelect') != 3 || $get('saleOrder.orderBeingEdited') || $number(reservedQty) == 0 || deliveryState == 3"
       onClick="save,action-supplychain-sale-order-line-deallocate-all"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
-    <field name="priceDiscounted" title="Unit price W.T." x-scale="2"/>
-    <field name="inTaxPrice" x-scale="2"/>
+    <field name="priceDiscounted" title="Unit price W.T."
+      x-scale="saleOrder.currency.numberOfDecimals"/>
+    <field name="inTaxPrice" x-scale="saleOrder.currency.numberOfDecimals"/>
     <field name="exTaxTotal" aggregate="sum"/>
     <field name="inTaxTotal" aggregate="sum"/>
     <field name="estimatedShippingDate"/>
@@ -45,6 +46,7 @@
     <field name="saleOrder.statusSelect" hidden="true"/>
     <field name="saleOrder.orderBeingEdited" hidden="true"/>
     <field name="product.productTypeSelect" hidden="true"/>
+    <field name="saleOrder.currency.numberOfDecimals" hidden="true"/>
   </grid>
 
   <grid name="sale-order-line-menu-grid" title="SO lines"
@@ -60,11 +62,13 @@
     <field name="reservedQty"
       if="__config__.app.getApp('supplychain')?.manageStockReservation" aggregate="sum" x-scale="2"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
-    <field name="priceDiscounted" title="Unit price W.T." x-scale="2"/>
+    <field name="priceDiscounted" title="Unit price W.T."
+      x-scale="saleOrder.currency.numberOfDecimals"/>
     <field name="exTaxTotal" aggregate="sum"/>
     <field name="estimatedShippingDate"/>
     <field name="estimatedDeliveryDate"/>
     <field name="saleOrder.confirmationDateTime"/>
+    <field name="saleOrder.currency.numberOfDecimals" hidden="true"/>
   </grid>
 
   <grid name="sale-order-line-invoice-grid" title="SO lines"
@@ -75,10 +79,12 @@
     <field name="productName"/>
     <field name="qty" aggregate="sum"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
-    <field name="priceDiscounted" title="Unit price W.T." x-scale="2"/>
-    <field name="inTaxPrice" x-scale="2"/>
+    <field name="priceDiscounted" title="Unit price W.T."
+      x-scale="saleOrder.currency.numberOfDecimals"/>
+    <field name="inTaxPrice" x-scale="saleOrder.currency.numberOfDecimals"/>
     <field name="exTaxTotal" aggregate="sum"/>
     <field name="inTaxTotal" aggregate="sum"/>
+    <field name="saleOrder.currency.numberOfDecimals" hidden="true"/>
   </grid>
 
   <form name="sale-order-line-project-form" title="SO line"
@@ -958,6 +964,24 @@
       expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
     <attribute name="scale" for="discountAmount"
       expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+    <attribute name="scale" for="exTaxTotal"
+      expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+
+    <attribute name="scale" for="price"
+      expr="eval: __parent__?.currency?.numberOfDecimals"
+      if="eval: __config__.app.getNbDecimalDigitForUnitPrice() &lt; __parent__?.currency?.numberOfDecimals"/>
+    <attribute name="scale" for="inTaxPrice"
+      expr="eval: __parent__?.currency?.numberOfDecimals"
+      if="eval: __config__.app.getNbDecimalDigitForUnitPrice() &lt; __parent__?.currency?.numberOfDecimals"/>
+    <attribute name="scale" for="priceDiscounted"
+      expr="eval: __parent__?.currency?.numberOfDecimals"
+      if="eval: __config__.app.getNbDecimalDigitForUnitPrice() &lt; __parent__?.currency?.numberOfDecimals"/>
+    <attribute name="scale" for="discountAmount"
+      expr="eval: __parent__?.currency?.numberOfDecimals"
+      if="eval: __config__.app.getNbDecimalDigitForUnitPrice() &lt; __parent__?.currency?.numberOfDecimals"/>
+    <attribute name="scale" for="exTaxTotal"
+      expr="eval: __parent__?.currency?.numberOfDecimals"
+      if="eval: __config__.app.getNbDecimalDigitForUnitPrice() &lt; __parent__?.currency?.numberOfDecimals"/>
 
     <attribute name="scale" for="oldQty"
       expr="eval: __config__.app.getNbDecimalDigitForQty()"/>

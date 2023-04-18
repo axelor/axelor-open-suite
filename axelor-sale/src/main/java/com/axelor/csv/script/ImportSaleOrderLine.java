@@ -22,6 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.inject.Beans;
+import java.math.RoundingMode;
 import java.util.Map;
 
 public class ImportSaleOrderLine {
@@ -35,7 +36,7 @@ public class ImportSaleOrderLine {
     saleOrderLine.setTaxLine(
         saleOrderLineService.getTaxLine(saleOrderLine.getSaleOrder(), saleOrderLine));
     saleOrderLineService.computeValues(saleOrderLine.getSaleOrder(), saleOrderLine);
-
+    saleOrderLine.setInTaxTotal(saleOrderLine.getExTaxTotal().setScale(3, RoundingMode.HALF_UP));
     return saleOrderLine;
   }
 }

@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
@@ -50,7 +51,7 @@ public interface InvoiceLineService {
 
   PriceListLine getPriceListLine(InvoiceLine invoiceLine, PriceList priceList, BigDecimal price);
 
-  BigDecimal computeDiscount(InvoiceLine invoiceLine, Boolean inAti);
+  BigDecimal computeDiscount(InvoiceLine invoiceLine, Boolean inAti, Currency currency);
 
   Map<String, Object> getDiscount(Invoice invoice, InvoiceLine invoiceLine, BigDecimal price)
       throws AxelorException;

@@ -632,6 +632,8 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
                 AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
                 product);
 
+    int currencyScale = invoice.getCurrency().getNumberOfDecimals();
+
     if (priceList != null) {
       PriceListLine priceListLine =
           priceListService.getPriceListLine(product, qtyConverted, priceList, price);
@@ -640,12 +642,13 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
       }
 
       Map<String, Object> discounts =
-          priceListService.getDiscounts(priceList, priceListLine, price);
+          priceListService.getDiscounts(priceList, priceListLine, price, currencyScale);
       if (discounts != null) {
         discountAmount = (BigDecimal) discounts.get("discountAmount");
         discountTypeSelect = (int) discounts.get("discountTypeSelect");
         priceDiscounted =
-            priceListService.computeDiscount(price, discountTypeSelect, discountAmount);
+            priceListService.computeDiscount(
+                price, discountTypeSelect, discountAmount, currencyScale);
       }
 
       if ((appHumanResourceService.getAppBase().getComputeMethodDiscountSelect()

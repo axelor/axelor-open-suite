@@ -272,7 +272,8 @@ public class IntercoServiceImpl implements IntercoService {
     // compute price discounted
     BigDecimal priceDiscounted =
         Beans.get(PurchaseOrderLineService.class)
-            .computeDiscount(purchaseOrderLine, purchaseOrder.getInAti());
+            .computeDiscount(
+                purchaseOrderLine, purchaseOrder.getInAti(), purchaseOrder.getCurrency());
     purchaseOrderLine.setPriceDiscounted(priceDiscounted);
 
     // tax
@@ -314,7 +315,8 @@ public class IntercoServiceImpl implements IntercoService {
 
     // compute price discounted
     BigDecimal priceDiscounted =
-        Beans.get(SaleOrderLineService.class).computeDiscount(saleOrderLine, saleOrder.getInAti());
+        Beans.get(SaleOrderLineService.class)
+            .computeDiscount(saleOrderLine, saleOrder.getInAti(), saleOrder.getCurrency());
     saleOrderLine.setPriceDiscounted(priceDiscounted);
 
     // delivery

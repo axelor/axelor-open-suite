@@ -40,7 +40,7 @@
     <string name="internalReference" title="Internal Ref."/>
     <integer name="receiptState" title="Receipt State"
       selection="purchase.order.receipt.state" readonly="true" default="1"/>
-    <decimal name="advanceTotal" title="Advance payment total" scale="2" precision="20"
+    <decimal name="advanceTotal" title="Advance payment total" scale="3" precision="20"
       readonly="true"/>
 
     <!-- Tax Number and FiscalPosition -->
@@ -58,13 +58,13 @@
     <many-to-one name="validatedByUser" ref="com.axelor.auth.db.User" readonly="true"
       title="Validated by"/>
     <datetime name="validationDateTime" title="Validation date" readonly="true"/>
-    <decimal name="exTaxTotal" title="Total W.T." scale="2" precision="20" readonly="true"/>
-    <decimal name="taxTotal" title="Total Tax" scale="2" precision="20" readonly="true"/>
-    <decimal name="inTaxTotal" title="Total A.T.I." scale="2" precision="20" readonly="true"/>
+    <decimal name="exTaxTotal" title="Total W.T." scale="3" precision="20" readonly="true"/>
+    <decimal name="taxTotal" title="Total Tax" scale="3" precision="20" readonly="true"/>
+    <decimal name="inTaxTotal" title="Total A.T.I." scale="3" precision="20" readonly="true"/>
     <decimal name="amountToBeSpreadOverTheTimetable"
-      title="Amount to be spread over the timetable" scale="2" precision="20" readonly="true"/>
+      title="Amount to be spread over the timetable" scale="3" precision="20" readonly="true"/>
 
-    <decimal name="companyExTaxTotal" title="Total W.T." scale="2" precision="20"
+    <decimal name="companyExTaxTotal" title="Total W.T." scale="3" precision="20"
       readonly="true"/>
 
     <!-- Notes -->

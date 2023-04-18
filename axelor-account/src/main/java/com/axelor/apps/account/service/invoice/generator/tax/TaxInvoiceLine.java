@@ -148,8 +148,7 @@ public class TaxInvoiceLine extends TaxGenerator {
       InvoiceLine invoiceLine,
       TaxLine taxLine,
       int vatSystem,
-      Map<TaxLineByVatSystem, InvoiceLineTax> map)
-      throws AxelorException {
+      Map<TaxLineByVatSystem, InvoiceLineTax> map) {
     LOG.debug("ax {}", taxLine);
 
     TaxLineByVatSystem taxLineByVatSystem = new TaxLineByVatSystem(taxLine, vatSystem);
@@ -169,8 +168,7 @@ public class TaxInvoiceLine extends TaxGenerator {
       TaxLine taxLineRC,
       TaxEquiv taxEquiv,
       int vatSystem,
-      Map<TaxLineByVatSystem, InvoiceLineTax> map)
-      throws AxelorException {
+      Map<TaxLineByVatSystem, InvoiceLineTax> map) {
     TaxLineByVatSystem taxLineByVatSystem = new TaxLineByVatSystem(taxLineRC, vatSystem);
     if (map.containsKey(taxLineByVatSystem)) {
       TaxLineByVatSystem taxLineByVatSystemEquiv =
@@ -186,8 +184,7 @@ public class TaxInvoiceLine extends TaxGenerator {
   }
 
   protected void updateInvoiceLineTax(
-      InvoiceLine invoiceLine, InvoiceLineTax invoiceLineTax, int vatSystem)
-      throws AxelorException {
+      InvoiceLine invoiceLine, InvoiceLineTax invoiceLineTax, int vatSystem) {
 
     // Dans la devise de la facture
     invoiceLineTax.setExTaxBase(invoiceLineTax.getExTaxBase().add(invoiceLine.getExTaxTotal()));
@@ -214,24 +211,25 @@ public class TaxInvoiceLine extends TaxGenerator {
   }
 
   protected InvoiceLineTax createInvoiceLineTax(
-      InvoiceLine invoiceLine, TaxLine taxLine, int vatSystem) throws AxelorException {
+      InvoiceLine invoiceLine, TaxLine taxLine, int vatSystem) {
     InvoiceLineTax invoiceLineTax = new InvoiceLineTax();
     invoiceLineTax.setInvoice(invoice);
+    int scale = invoice.getCurrency().getNumberOfDecimals();
 
     // Dans la devise de la facture
     invoiceLineTax.setExTaxBase(invoiceLine.getExTaxTotal());
     // Dans la devise de la comptabilité du tiers
     invoiceLineTax.setCompanyExTaxBase(
-        invoiceLine.getCompanyExTaxTotal().setScale(2, RoundingMode.HALF_UP));
+        invoiceLine.getCompanyExTaxTotal().setScale(scale, RoundingMode.HALF_UP));
 
     if (!invoiceLine.getFixedAssets()) {
       invoiceLineTax.setSubTotalExcludingFixedAssets(
-          invoiceLine.getExTaxTotal().setScale(2, RoundingMode.HALF_UP));
+          invoiceLine.getExTaxTotal().setScale(scale, RoundingMode.HALF_UP));
       invoiceLineTax.setCompanySubTotalExcludingFixedAssets(
           invoiceLineTax
               .getCompanySubTotalExcludingFixedAssets()
               .add(invoiceLine.getCompanyExTaxTotal())
-              .setScale(2, RoundingMode.HALF_UP));
+              .setScale(scale, RoundingMode.HALF_UP));
     }
     invoiceLineTax.setVatSystemSelect(vatSystem);
     invoiceLineTax.setTaxLine(taxLine);
@@ -245,13 +243,18 @@ public class TaxInvoiceLine extends TaxGenerator {
 
     for (InvoiceLineTax invoiceLineTax : map.values()) {
 
-      BigDecimal taxValue = invoiceLineTax.getTaxLine().getValue().divide(new BigDecimal(100));
+      int scale = invoiceLineTax.getInvoice().getCurrency().getNumberOfDecimals();
+      BigDecimal taxValue =
+          invoiceLineTax
+              .getTaxLine()
+              .getValue()
+              .divide(new BigDecimal(100), scale, RoundingMode.HALF_UP);
       // Dans la devise de la facture
       BigDecimal exTaxBase =
           (invoiceLineTax.getReverseCharged())
               ? invoiceLineTax.getExTaxBase().negate()
               : invoiceLineTax.getExTaxBase();
-      BigDecimal taxTotal = computeAmount(exTaxBase, taxValue);
+      BigDecimal taxTotal = computeAmount(exTaxBase, taxValue, scale);
 
       invoiceLineTax.setTaxTotal(taxTotal);
       invoiceLineTax.setInTaxTotal(invoiceLineTax.getExTaxBase().add(taxTotal));
@@ -261,7 +264,7 @@ public class TaxInvoiceLine extends TaxGenerator {
           (invoiceLineTax.getReverseCharged())
               ? invoiceLineTax.getCompanyExTaxBase().negate()
               : invoiceLineTax.getCompanyExTaxBase();
-      BigDecimal companyTaxTotal = computeAmount(companyExTaxBase, taxValue);
+      BigDecimal companyTaxTotal = computeAmount(companyExTaxBase, taxValue, scale);
 
       invoiceLineTax.setCompanyTaxTotal(companyTaxTotal);
       invoiceLineTax.setCompanyInTaxTotal(
@@ -272,23 +275,23 @@ public class TaxInvoiceLine extends TaxGenerator {
               ? invoiceLineTax.getSubTotalExcludingFixedAssets().negate()
               : invoiceLineTax.getSubTotalExcludingFixedAssets();
       invoiceLineTax.setSubTotalExcludingFixedAssets(
-          computeAmount(subTotalExcludingFixedAssets, taxValue));
+          computeAmount(subTotalExcludingFixedAssets, taxValue, scale));
 
       invoiceLineTax.setSubTotalOfFixedAssets(
           taxTotal
               .subtract(invoiceLineTax.getSubTotalExcludingFixedAssets())
-              .setScale(2, RoundingMode.HALF_UP));
+              .setScale(scale, RoundingMode.HALF_UP));
 
       BigDecimal companySubTotalExcludingFixedAssets =
           invoiceLineTax.getReverseCharged()
               ? invoiceLineTax.getCompanySubTotalExcludingFixedAssets().negate()
               : invoiceLineTax.getCompanySubTotalExcludingFixedAssets();
       invoiceLineTax.setCompanySubTotalExcludingFixedAssets(
-          computeAmount(companySubTotalExcludingFixedAssets, taxValue));
+          computeAmount(companySubTotalExcludingFixedAssets, taxValue, scale));
       invoiceLineTax.setCompanySubTotalOfFixedAssets(
           companyTaxTotal
               .subtract(invoiceLineTax.getCompanySubTotalExcludingFixedAssets())
-              .setScale(2, RoundingMode.HALF_UP));
+              .setScale(scale, RoundingMode.HALF_UP));
       invoiceLineTaxList.add(invoiceLineTax);
 
       LOG.debug(

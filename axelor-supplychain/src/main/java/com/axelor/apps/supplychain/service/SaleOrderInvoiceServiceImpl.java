@@ -697,7 +697,8 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
         invoicedAmount,
         saleOrder.getSaleOrderSeq());
 
-    return invoicedAmount;
+    return invoicedAmount.setScale(
+        saleOrder.getCurrency().getNumberOfDecimals(), RoundingMode.HALF_UP);
   }
 
   @Override

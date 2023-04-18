@@ -33,8 +33,8 @@
     <decimal name="inTaxPrice" title="Unit price A.T.I." precision="20" scale="10"/>
     <decimal name="priceDiscounted" title="Unit price discounted" precision="20" scale="10"/>
     <many-to-one name="taxLine" ref="com.axelor.apps.account.db.TaxLine" title="Tax"/>
-    <decimal name="exTaxTotal" title="Total W.T."/>
-    <decimal name="inTaxTotal" title="Total A.T.I."/>
+    <decimal name="exTaxTotal" title="Total W.T." scale="3" precision="20"/>
+    <decimal name="inTaxTotal" title="Total A.T.I." scale="3" precision="20"/>
     <many-to-one name="taxEquiv" ref="com.axelor.apps.account.db.TaxEquiv"
       title="Tax Equiv"/>
 
@@ -57,8 +57,10 @@
     <string name="supplierComment" title="Supplier Comment"/>
     <boolean name="fixedAssets" title="Fixed Assets"/>
     <!-- Champ technique non affiché, utilisé pour les reportings -->
-    <decimal name="companyExTaxTotal" title="Total W.T. in company currency" hidden="true"/>
-    <decimal name="companyInTaxTotal" title="Total A.T.I. in company currency" hidden="true"/>
+    <decimal name="companyExTaxTotal" title="Total W.T. in company currency" hidden="true"
+      scale="3" precision="20"/>
+    <decimal name="companyInTaxTotal" title="Total A.T.I. in company currency" hidden="true"
+      scale="3" precision="20"/>
 
     <boolean name="isTitleLine" title="Title Line"/>
 

@@ -21,6 +21,7 @@ package com.axelor.apps.purchase.service;
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.PurchaseOrderLineTax;
@@ -28,6 +29,7 @@ import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -41,7 +43,12 @@ public class PurchaseOrderLineTaxService {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  @Inject private PurchaseOrderToolService purchaseOrderToolService;
+  protected CurrencyService currencyService;
+
+  @Inject
+  public PurchaseOrderLineTaxService(CurrencyService currencyService) {
+    this.currencyService = currencyService;
+  }
 
   /**
    * Créer les lignes de TVA de la commande. La création des lignes de TVA se basent sur les lignes
@@ -64,12 +71,62 @@ public class PurchaseOrderLineTaxService {
       customerSpecificNote = fiscalPosition.getCustomerSpecificNote();
     }
 
+    createTaxLines(purchaseOrder, purchaseOrderLineList, map, specificNotes, customerSpecificNote);
+    computeLinesTax(purchaseOrder, purchaseOrderLineTaxList, map);
+    setSpecificNotes(purchaseOrder, specificNotes, customerSpecificNote);
+
+    return purchaseOrderLineTaxList;
+  }
+
+  protected void setSpecificNotes(
+      PurchaseOrder purchaseOrder, Set<String> specificNotes, boolean customerSpecificNote) {
+    if (!customerSpecificNote) {
+      purchaseOrder.setSpecificNotes(Joiner.on('\n').join(specificNotes));
+    } else {
+      purchaseOrder.setSpecificNotes(purchaseOrder.getSupplierPartner().getSpecificTaxNote());
+    }
+  }
+
+  protected void computeLinesTax(
+      PurchaseOrder purchaseOrder,
+      List<PurchaseOrderLineTax> purchaseOrderLineTaxList,
+      Map<TaxLine, PurchaseOrderLineTax> map) {
+    for (PurchaseOrderLineTax purchaseOrderLineTax : map.values()) {
+      // Dans la devise de la commande
+      BigDecimal exTaxBase =
+          (purchaseOrderLineTax.getReverseCharged())
+              ? purchaseOrderLineTax.getExTaxBase().negate()
+              : purchaseOrderLineTax.getExTaxBase();
+      BigDecimal taxTotal = BigDecimal.ZERO;
+      TaxLine taxLine = purchaseOrderLineTax.getTaxLine();
+      int scale = currencyService.computeScaleForView(purchaseOrder.getCurrency());
+
+      if (taxLine != null) {
+        taxTotal =
+            exTaxBase.multiply(
+                taxLine.getValue().divide(new BigDecimal(100), scale, RoundingMode.HALF_UP));
+      }
+
+      purchaseOrderLineTax.setTaxTotal(taxTotal.setScale(scale, RoundingMode.HALF_UP));
+      purchaseOrderLineTax.setInTaxTotal(
+          purchaseOrderLineTax.getExTaxBase().add(taxTotal).setScale(scale, RoundingMode.HALF_UP));
+      purchaseOrderLineTaxList.add(purchaseOrderLineTax);
+
+      LOG.debug(
+          "Tax line : Tax total => {}, Total W.T. => {}",
+          new Object[] {purchaseOrderLineTax.getTaxTotal(), purchaseOrderLineTax.getInTaxTotal()});
+    }
+  }
+
+  protected void createTaxLines(
+      PurchaseOrder purchaseOrder,
+      List<PurchaseOrderLine> purchaseOrderLineList,
+      Map<TaxLine, PurchaseOrderLineTax> map,
+      Set<String> specificNotes,
+      boolean customerSpecificNote) {
     if (purchaseOrderLineList != null && !purchaseOrderLineList.isEmpty()) {
-
       LOG.debug("Creation of tax lines for purchase order lines.");
-
       for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
-
         TaxLine taxLine = purchaseOrderLine.getTaxLine();
         TaxEquiv taxEquiv = purchaseOrderLine.getTaxEquiv();
         TaxLine taxLineRC =
@@ -79,95 +136,76 @@ public class PurchaseOrderLineTaxService {
                 ? taxEquiv.getReverseChargeTax().getActiveTaxLine()
                 : null;
 
-        if (taxLine != null) {
-          LOG.debug("VAT {}", taxLine);
-
-          if (map.containsKey(taxLine)) {
-
-            PurchaseOrderLineTax purchaseOrderLineVat = map.get(taxLine);
-
-            purchaseOrderLineVat.setExTaxBase(
-                purchaseOrderLineVat.getExTaxBase().add(purchaseOrderLine.getExTaxTotal()));
-
-            purchaseOrderLineVat.setReverseCharged(false);
-
-          } else {
-
-            PurchaseOrderLineTax purchaseOrderLineTax = new PurchaseOrderLineTax();
-            purchaseOrderLineTax.setPurchaseOrder(purchaseOrder);
-
-            purchaseOrderLineTax.setExTaxBase(purchaseOrderLine.getExTaxTotal());
-
-            purchaseOrderLineTax.setReverseCharged(false);
-
-            purchaseOrderLineTax.setTaxLine(taxLine);
-            map.put(taxLine, purchaseOrderLineTax);
-          }
-        }
-
-        if (taxLineRC != null) {
-          LOG.debug("VAT {}", taxLineRC);
-
-          if (map.containsKey(taxLineRC)) {
-
-            PurchaseOrderLineTax purchaseOrderLineRC =
-                map.get(taxEquiv.getReverseChargeTax().getActiveTaxLine());
-
-            purchaseOrderLineRC.setExTaxBase(
-                purchaseOrderLineRC.getExTaxBase().add(purchaseOrderLine.getExTaxTotal()));
-
-            purchaseOrderLineRC.setReverseCharged(true);
-
-          } else {
-
-            PurchaseOrderLineTax purchaseOrderLineTaxRC = new PurchaseOrderLineTax();
-            purchaseOrderLineTaxRC.setPurchaseOrder(purchaseOrder);
-
-            purchaseOrderLineTaxRC.setExTaxBase(purchaseOrderLine.getExTaxTotal());
-
-            purchaseOrderLineTaxRC.setReverseCharged(true);
-
-            purchaseOrderLineTaxRC.setTaxLine(taxLineRC);
-            map.put(taxLineRC, purchaseOrderLineTaxRC);
-          }
-        }
-        if (!customerSpecificNote) {
-          if (taxEquiv != null && taxEquiv.getSpecificNote() != null) {
-            specificNotes.add(taxEquiv.getSpecificNote());
-          }
-        }
+        createLineTax(purchaseOrder, map, purchaseOrderLine, taxLine);
+        createLineTaxRC(purchaseOrder, map, purchaseOrderLine, taxEquiv, taxLineRC);
+        setSpecificNotes(specificNotes, customerSpecificNote, taxEquiv);
       }
     }
+  }
 
-    for (PurchaseOrderLineTax purchaseOrderLineTax : map.values()) {
-
-      // Dans la devise de la commande
-      BigDecimal exTaxBase =
-          (purchaseOrderLineTax.getReverseCharged())
-              ? purchaseOrderLineTax.getExTaxBase().negate()
-              : purchaseOrderLineTax.getExTaxBase();
-      BigDecimal taxTotal = BigDecimal.ZERO;
-      if (purchaseOrderLineTax.getTaxLine() != null)
-        taxTotal =
-            purchaseOrderToolService.computeAmount(
-                exTaxBase,
-                purchaseOrderLineTax.getTaxLine().getValue().divide(new BigDecimal(100)));
-      purchaseOrderLineTax.setTaxTotal(taxTotal);
-      purchaseOrderLineTax.setInTaxTotal(purchaseOrderLineTax.getExTaxBase().add(taxTotal));
-
-      purchaseOrderLineTaxList.add(purchaseOrderLineTax);
-
-      LOG.debug(
-          "Tax line : Tax total => {}, Total W.T. => {}",
-          new Object[] {purchaseOrderLineTax.getTaxTotal(), purchaseOrderLineTax.getInTaxTotal()});
-    }
-
+  protected void setSpecificNotes(
+      Set<String> specificNotes, boolean customerSpecificNote, TaxEquiv taxEquiv) {
     if (!customerSpecificNote) {
-      purchaseOrder.setSpecificNotes(Joiner.on('\n').join(specificNotes));
-    } else {
-      purchaseOrder.setSpecificNotes(purchaseOrder.getSupplierPartner().getSpecificTaxNote());
+      if (taxEquiv != null && taxEquiv.getSpecificNote() != null) {
+        specificNotes.add(taxEquiv.getSpecificNote());
+      }
     }
+  }
 
-    return purchaseOrderLineTaxList;
+  protected void createLineTaxRC(
+      PurchaseOrder purchaseOrder,
+      Map<TaxLine, PurchaseOrderLineTax> map,
+      PurchaseOrderLine purchaseOrderLine,
+      TaxEquiv taxEquiv,
+      TaxLine taxLineRC) {
+    if (taxLineRC != null) {
+      LOG.debug("VAT {}", taxLineRC);
+      if (map.containsKey(taxLineRC)) {
+        setPurchaseOrderLineTax(
+            map, taxEquiv.getReverseChargeTax().getActiveTaxLine(), purchaseOrderLine, true);
+      } else {
+        map.put(
+            taxLineRC, getPurchaseOrderLineTax(purchaseOrder, purchaseOrderLine, true, taxLineRC));
+      }
+    }
+  }
+
+  protected void createLineTax(
+      PurchaseOrder purchaseOrder,
+      Map<TaxLine, PurchaseOrderLineTax> map,
+      PurchaseOrderLine purchaseOrderLine,
+      TaxLine taxLine) {
+    if (taxLine != null) {
+      LOG.debug("VAT {}", taxLine);
+      if (map.containsKey(taxLine)) {
+        setPurchaseOrderLineTax(map, taxLine, purchaseOrderLine, false);
+      } else {
+        map.put(taxLine, getPurchaseOrderLineTax(purchaseOrder, purchaseOrderLine, false, taxLine));
+      }
+    }
+  }
+
+  protected void setPurchaseOrderLineTax(
+      Map<TaxLine, PurchaseOrderLineTax> map,
+      TaxLine taxLine,
+      PurchaseOrderLine purchaseOrderLine,
+      boolean reversedCharged) {
+    PurchaseOrderLineTax purchaseOrderLineVat = map.get(taxLine);
+    purchaseOrderLineVat.setExTaxBase(
+        purchaseOrderLineVat.getExTaxBase().add(purchaseOrderLine.getExTaxTotal()));
+    purchaseOrderLineVat.setReverseCharged(reversedCharged);
+  }
+
+  protected PurchaseOrderLineTax getPurchaseOrderLineTax(
+      PurchaseOrder purchaseOrder,
+      PurchaseOrderLine purchaseOrderLine,
+      boolean reversedCharged,
+      TaxLine taxLine) {
+    PurchaseOrderLineTax purchaseOrderLineTax = new PurchaseOrderLineTax();
+    purchaseOrderLineTax.setPurchaseOrder(purchaseOrder);
+    purchaseOrderLineTax.setExTaxBase(purchaseOrderLine.getExTaxTotal());
+    purchaseOrderLineTax.setReverseCharged(reversedCharged);
+    purchaseOrderLineTax.setTaxLine(taxLine);
+    return purchaseOrderLineTax;
   }
 }

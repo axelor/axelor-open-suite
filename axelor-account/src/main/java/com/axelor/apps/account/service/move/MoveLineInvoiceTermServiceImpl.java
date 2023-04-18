@@ -307,7 +307,7 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
                 .multiply(percentage)
                 .divide(
                     BigDecimal.valueOf(100),
-                    AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+                    move.getCurrency().getNumberOfDecimals(),
                     RoundingMode.HALF_UP);
 
     User pfpUser = null;
