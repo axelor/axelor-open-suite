@@ -1,0 +1,8 @@
+---
+title : "BPM Editor : Fix issues"
+type : fix
+description: |
+  Fix unable to save script on listener
+  Fix unique participant id generation
+  Fix issue on delete the bpm process
+
