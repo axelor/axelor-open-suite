@@ -310,7 +310,6 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
     List<InvoiceTerm> invoiceTermList;
 
     while (!(invoiceTermList = eligibleInvoiceTermQuery.fetch(jpaLimit)).isEmpty()) {
-      paymentSession = paymentSessionRepository.find(paymentSession.getId());
       for (InvoiceTerm invoiceTerm : invoiceTermList) {
         if (this.isNotAwaitingPayment(invoiceTerm)
             && !this.isBlocking(invoiceTerm, paymentSession)) {
@@ -318,6 +317,7 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
         }
       }
       JPA.clear();
+      paymentSession = paymentSessionRepository.find(paymentSession.getId());
     }
   }
 
