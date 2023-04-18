@@ -76,17 +76,19 @@ public class InvoiceProductStatementServiceImpl implements InvoiceProductStateme
     if (invoiceProductStatementList.isEmpty()) {
       return "";
     }
-    String statement = getCorrespondingStatement(productTypes, invoiceProductStatementList);
-    if (statement.isEmpty()) {
+
+    Optional<String> statement =
+        getCorrespondingStatement(productTypes, invoiceProductStatementList);
+
+    if (!statement.isPresent()) {
       List<InvoiceProductStatement> minSizeCorrespondingInvoiceProductStatements =
           getCorrectInvoiceProductStatements(productTypes, invoiceProductStatementList);
-      statement =
-          minSizeCorrespondingInvoiceProductStatements.stream()
-              .findFirst()
-              .map(InvoiceProductStatement::getStatement)
-              .orElse("");
+      return minSizeCorrespondingInvoiceProductStatements.stream()
+          .findFirst()
+          .map(InvoiceProductStatement::getStatement)
+          .orElse("");
     }
-    return statement;
+    return statement.get();
   }
 
   protected List<InvoiceProductStatement> getCorrectInvoiceProductStatements(
@@ -137,16 +139,16 @@ public class InvoiceProductStatementServiceImpl implements InvoiceProductStateme
     return correspondingStatements;
   }
 
-  protected String getCorrespondingStatement(
+  protected Optional<String> getCorrespondingStatement(
       Set<String> productTypes, List<InvoiceProductStatement> invoiceProductStatementList) {
-    String statement = "";
+    String statement = null;
     for (InvoiceProductStatement invoiceProductStatement : invoiceProductStatementList) {
       Set<String> result = getTypesList(invoiceProductStatement);
       if (result.equals(productTypes)) {
         statement = invoiceProductStatement.getStatement();
       }
     }
-    return Optional.ofNullable(statement).orElse("");
+    return Optional.ofNullable(statement);
   }
 
   protected Set<String> getTypesList(InvoiceProductStatement invoiceProductStatement) {
