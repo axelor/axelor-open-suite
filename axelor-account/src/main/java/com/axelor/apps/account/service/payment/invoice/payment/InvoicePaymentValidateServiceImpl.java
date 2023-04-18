@@ -135,7 +135,6 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
 
     setInvoicePaymentStatus(invoicePayment);
     createInvoicePaymentMove(invoicePayment);
-    invoicePayment = invoicePaymentRepository.find(invoicePayment.getId());
     invoicePaymentToolService.updateAmountPaid(invoicePayment.getInvoice());
 
     if (invoicePayment.getInvoice() != null
