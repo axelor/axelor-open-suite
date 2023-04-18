@@ -20,9 +20,13 @@ package com.axelor.apps.account.db.repo;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.SubrogationRelease;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import java.time.LocalDate;
 import java.util.List;
@@ -91,5 +95,20 @@ public class InvoiceManagementRepository extends InvoiceRepository {
     }
 
     return super.populate(json, context);
+  }
+
+  @Override
+  public void remove(Invoice entity) {
+    if (!entity.getStatusSelect().equals(InvoiceRepository.STATUS_CANCELED)) {
+      try {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.INVOICE_CAN_NOT_DELETE),
+            entity.getInvoiceId());
+      } catch (AxelorException e) {
+        throw new PersistenceException(e.getMessage(), e);
+      }
+    }
+    super.remove(entity);
   }
 }

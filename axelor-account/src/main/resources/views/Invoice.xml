@@ -276,7 +276,8 @@
   </grid>
 
   <form name="invoice-form" title="Invoice" model="com.axelor.apps.account.db.Invoice"
-    onNew="action-account-invoice-onnew-group" onLoad="action-account-invoice-onload-group">
+    onNew="action-account-invoice-onnew-group" onLoad="action-account-invoice-onload-group"
+    canDelete="statusSelect == 4">
 
     <toolbar>
       <button name="reportsBtn" title="Reports" icon="fa-print" showIf="statusSelect != 4"
@@ -853,7 +854,8 @@ InvoiceSet.length > 0))"
   </form>
 
   <form name="invoice-client-form" title="Invoice" model="com.axelor.apps.account.db.Invoice"
-    onNew="action-account-invoice-onnew-group" onLoad="action-account-invoice-onload-group">
+    onNew="action-account-invoice-onnew-group" onLoad="action-account-invoice-onload-group"
+    canDelete="statusSelect == 4">
 
     <toolbar>
       <button name="showInvoiceBtn" title="Print" icon="fa-print"
