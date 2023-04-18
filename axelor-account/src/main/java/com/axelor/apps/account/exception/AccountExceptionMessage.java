@@ -1014,6 +1014,9 @@ public final class AccountExceptionMessage {
       INVOICE_CAN_NOT_GO_BACK_TO_VALIDATE_STATUS_OR_CANCEL_VENTILATED_INVOICE = /*$$(*/
           "It is not possible to go back to validate status or cancel a ventilated invoice." /*)*/;
 
+  public static final String INVOICE_CAN_NOT_DELETE = /*$$(*/
+      "Invoices can only be deleted if they are canceled. %s can not be deleted." /*)*/;
+
   public static final String INVOICE_WRONG_ANALYTIC_DISTRIBUTION = /*$$(*/
       "Some invoice lines analytic distributions are not correct, please correct them." /*)*/;
 
