@@ -12,7 +12,6 @@ import com.axelor.exception.AxelorException;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.time.LocalDate;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -71,7 +70,7 @@ public class MoveRecordServiceImpl implements MoveRecordService {
     moveRecordUpdateService.updatePartner(move);
     result.merge(
         moveRecordUpdateService.updateInvoiceTerms(move, paymentConditionChange, headerChange));
-    moveRecordUpdateService.updateInvoiceTermDueDate(move, this.extractDueDate(context));
+    moveRecordUpdateService.updateInvoiceTermDueDate(move, move.getDueDate());
 
     return result;
   }
@@ -299,19 +298,6 @@ public class MoveRecordServiceImpl implements MoveRecordService {
     }
   }
 
-  protected LocalDate extractDueDate(Context context) {
-    if (!context.containsKey("dueDate") || context.get("dueDate") == null) {
-      return null;
-    }
-
-    Object dueDateObj = context.get("dueDate");
-    if (dueDateObj.getClass() == LocalDate.class) {
-      return (LocalDate) dueDateObj;
-    } else {
-      return LocalDate.parse((String) dueDateObj);
-    }
-  }
-
   @Override
   public MoveContext onChangePaymentCondition(Move move, Context context) throws AxelorException {
 
@@ -336,7 +322,7 @@ public class MoveRecordServiceImpl implements MoveRecordService {
     paymentConditionChange = true;
     result.merge(
         moveRecordUpdateService.updateInvoiceTerms(move, paymentConditionChange, headerChange));
-    moveRecordUpdateService.updateInvoiceTermDueDate(move, this.extractDueDate(context));
+    moveRecordUpdateService.updateInvoiceTermDueDate(move, move.getDueDate());
     result.merge(moveRecordUpdateService.updateDueDate(move, paymentConditionChange, dateChange));
 
     return result;
