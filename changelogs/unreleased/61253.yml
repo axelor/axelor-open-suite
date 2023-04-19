@@ -1,0 +1,8 @@
+---
+title: "Studio Editor : Fix issues and changes"
+type: fix
+description: |
+  Fix default panels for custom fields in real view on refresh
+  Retain menu builder data on refresh
+  Restore custom field selection on undo/Redo
+  Restore default panel on save when there is no panel in custom view (attrs) of real view
