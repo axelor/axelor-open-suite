@@ -1,0 +1,3 @@
+---
+title: "Sale order: sale orders with a 0 total amount are now correctly displayed as invoiced if they have an ventilated invoice"
+type: fix
