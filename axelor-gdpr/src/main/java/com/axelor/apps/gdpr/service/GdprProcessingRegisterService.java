@@ -128,6 +128,8 @@ public class GdprProcessingRegisterService implements Callable<List<GDPRProcessi
     int count = 0;
 
     for (GDPRProcessingRegisterRule gdprProcessingRegisterRule : gdprProcessingRegisterRuleList) {
+      gdprProcessingRegisterRule =
+          JPA.find(GDPRProcessingRegisterRule.class, gdprProcessingRegisterRule.getId());
       MetaModel metaModel = gdprProcessingRegisterRule.getMetaModel();
       String filter = computeFilter(gdprProcessingRegisterRule.getRule());
       Class<? extends AuditableModel> entityKlass =
