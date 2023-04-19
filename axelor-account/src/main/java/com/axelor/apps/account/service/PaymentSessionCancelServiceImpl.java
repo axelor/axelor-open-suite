@@ -49,8 +49,9 @@ public class PaymentSessionCancelServiceImpl implements PaymentSessionCancelServ
     this.cancelInvoiceTerms(paymentSession);
   }
 
+  @Override
   @Transactional
-  protected void cancelInvoiceTerms(PaymentSession paymentSession) {
+  public void cancelInvoiceTerms(PaymentSession paymentSession) {
     List<InvoiceTerm> invoiceTermList;
     Query<InvoiceTerm> invoiceTermQuery =
         invoiceTermRepo.all().filter("self.paymentSession = ?", paymentSession).order("id");
