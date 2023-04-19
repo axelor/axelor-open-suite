@@ -35,9 +35,10 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowServiceImpl;
+import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.service.CommonInvoiceService;
+import com.axelor.apps.supplychain.service.SaleInvoicingStateService;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychainImpl;
@@ -59,11 +60,12 @@ public class SaleOrderInvoiceProjectServiceImpl extends SaleOrderInvoiceServiceI
       SaleOrderRepository saleOrderRepo,
       InvoiceRepository invoiceRepo,
       InvoiceServiceSupplychainImpl invoiceService,
-      AppBusinessProjectService appBusinessProjectService,
-      StockMoveRepository stockMoveRepository,
       SaleOrderLineService saleOrderLineService,
-      SaleOrderWorkflowServiceImpl saleOrderWorkflowServiceImpl,
-      CommonInvoiceService commonInvoiceService) {
+      StockMoveRepository stockMoveRepository,
+      SaleOrderWorkflowService saleOrderWorkflowService,
+      CommonInvoiceService commonInvoiceService,
+      SaleInvoicingStateService saleInvoicingStateService,
+      AppBusinessProjectService appBusinessProjectService) {
     super(
         appBaseService,
         appSupplychainService,
@@ -72,8 +74,9 @@ public class SaleOrderInvoiceProjectServiceImpl extends SaleOrderInvoiceServiceI
         invoiceService,
         saleOrderLineService,
         stockMoveRepository,
-        saleOrderWorkflowServiceImpl,
-        commonInvoiceService);
+        saleOrderWorkflowService,
+        commonInvoiceService,
+        saleInvoicingStateService);
     this.appBusinessProjectService = appBusinessProjectService;
   }
 
