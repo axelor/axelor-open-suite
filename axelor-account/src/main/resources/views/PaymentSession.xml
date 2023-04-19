@@ -107,7 +107,8 @@
       </panel>
 
     </panel>
-    <panel name="mainPanel" itemSpan="4" readonlyIf="statusSelect > 1 || $hasInvoiceTerm">
+    <panel name="mainPanel" itemSpan="4"
+      readonlyIf="statusSelect > 1 || sessionTotalAmount > 0">
       <field name="createdOn"/>
       <field name="sequence"/>
       <field name="company" form-view="company-form" grid-view="company-grid"

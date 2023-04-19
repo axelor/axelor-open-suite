@@ -310,9 +310,10 @@ public class PaymentSessionController {
   public void searchEligibleTerms(ActionRequest request, ActionResponse response) {
     try {
       PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
-      paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
+      PaymentSessionRepository paymentSessionRepository = Beans.get(PaymentSessionRepository.class);
+      paymentSession = paymentSessionRepository.find(paymentSession.getId());
       Beans.get(PaymentSessionCancelService.class).cancelInvoiceTerms(paymentSession);
-      paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
+      paymentSession = paymentSessionRepository.find(paymentSession.getId());
       Beans.get(PaymentSessionService.class).retrieveEligibleTerms(paymentSession);
       response.setReload(true);
     } catch (Exception e) {
