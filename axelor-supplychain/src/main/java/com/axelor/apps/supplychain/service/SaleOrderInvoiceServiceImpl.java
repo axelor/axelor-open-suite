@@ -95,6 +95,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
   protected SaleOrderWorkflowService saleOrderWorkflowService;
 
   protected CommonInvoiceService commonInvoiceService;
+  protected SaleInvoicingStateService saleInvoicingStateService;
 
   @Inject
   public SaleOrderInvoiceServiceImpl(
@@ -106,7 +107,8 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       SaleOrderLineService saleOrderLineService,
       StockMoveRepository stockMoveRepository,
       SaleOrderWorkflowService saleOrderWorkflowService,
-      CommonInvoiceService commonInvoiceService) {
+      CommonInvoiceService commonInvoiceService,
+      SaleInvoicingStateService saleInvoicingStateService) {
 
     this.appBaseService = appBaseService;
     this.appSupplychainService = appSupplychainService;
@@ -117,6 +119,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     this.saleOrderLineService = saleOrderLineService;
     this.saleOrderWorkflowService = saleOrderWorkflowService;
     this.commonInvoiceService = commonInvoiceService;
+    this.saleInvoicingStateService = saleInvoicingStateService;
   }
 
   @Override
@@ -982,6 +985,30 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.SO_INVOICE_GENERATE_ALL_INVOICES));
     }
+  }
+
+  @Override
+  public int getSaleOrderInvoicingState(SaleOrder saleOrder) {
+    return saleInvoicingStateService.getInvoicingState(
+        saleOrder.getAmountInvoiced(),
+        saleOrder.getExTaxTotal(),
+        atLeastOneInvoiceIsVentilated(saleOrder));
+  }
+
+  protected boolean atLeastOneInvoiceIsVentilated(SaleOrder saleOrder) {
+    return invoiceRepo
+            .all()
+            .filter(
+                "self.statusSelect = :statusSelect AND self.saleOrder.id = :saleOrder OR (self.saleOrder.id IS NULL AND EXISTS(SELECT 1 FROM self.invoiceLineList inli WHERE inli.saleOrderLine.id IN (:saleOrderLineList)))")
+            .bind("statusSelect", InvoiceRepository.STATUS_VENTILATED)
+            .bind("saleOrder", saleOrder.getId())
+            .bind(
+                "saleOrderLineList",
+                saleOrder.getSaleOrderLineList().stream()
+                    .map(SaleOrderLine::getId)
+                    .collect(Collectors.toList()))
+            .count()
+        > 0;
   }
 
   public BigDecimal computeSumInvoices(List<Invoice> invoices) {
