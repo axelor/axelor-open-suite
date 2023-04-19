@@ -1540,4 +1540,23 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
     return invoiceTermList;
   }
+
+  @Override
+  public boolean isThresholdNotOnLastInvoiceTerm(
+      MoveLine moveLine, BigDecimal thresholdDistanceFromRegulation) {
+    if (!CollectionUtils.isEmpty(moveLine.getInvoiceTermList())) {
+      InvoiceTerm lastInvoiceTerm =
+          moveLine.getInvoiceTermList().stream()
+              .filter(it -> it.getSequence() == moveLine.getInvoiceTermList().size())
+              .findFirst()
+              .orElse(null);
+
+      if (lastInvoiceTerm != null
+          && moveLine.getAmountRemaining().compareTo(lastInvoiceTerm.getAmountRemaining()) >= 0
+          && lastInvoiceTerm.getAmountRemaining().compareTo(thresholdDistanceFromRegulation) <= 0) {
+        return true;
+      }
+    }
+    return false;
+  }
 }
