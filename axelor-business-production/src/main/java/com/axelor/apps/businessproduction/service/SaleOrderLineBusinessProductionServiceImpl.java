@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.businessproduction.service;
 
+import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -35,6 +36,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
+import com.axelor.apps.supplychain.service.SaleInvoicingStateService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
@@ -58,7 +60,9 @@ public class SaleOrderLineBusinessProductionServiceImpl extends SaleOrderLinePro
       AccountConfigService accountConfigService,
       PricingService pricingService,
       TaxService taxService,
-      SaleOrderMarginService saleOrderMarginService) {
+      SaleOrderMarginService saleOrderMarginService,
+      InvoiceLineRepository invoiceLineRepository,
+      SaleInvoicingStateService saleInvoicingStateService) {
     super(
         currencyService,
         priceListService,
@@ -67,14 +71,16 @@ public class SaleOrderLineBusinessProductionServiceImpl extends SaleOrderLinePro
         appSaleService,
         accountManagementService,
         saleOrderLineRepo,
+        saleOrderService,
         appAccountService,
         analyticMoveLineService,
         appSupplychainService,
         accountConfigService,
-        saleOrderService,
         pricingService,
         taxService,
-        saleOrderMarginService);
+        saleOrderMarginService,
+        invoiceLineRepository,
+        saleInvoicingStateService);
   }
 
   @Override
