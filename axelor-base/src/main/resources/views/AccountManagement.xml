@@ -116,11 +116,11 @@
       </panel>
 
       <!-- PAYMENT -->
-      <panel name="paymentConfigPanel" title="Payment" colSpan="12" showIf="typeSelect == 3">
+      <panel name="paymentConfigPanel" title="Payment" colSpan="12" showIf="typeSelect == 3"
+        if="__config__.app.isApp('account')" if-module="axelor-account">
         <field name="cashAccount"
           domain="self.company = :company AND self.accountType.technicalTypeSelect = 'cash'"
-          if-module="axelor-account" form-view="account-form" grid-view="account-grid"
-          if="__config__.app.isApp('account')" canEdit="false"/>
+          form-view="account-form" grid-view="account-grid" canEdit="false"/>
         <field name="paymentMode" form-view="payment-mode-form" grid-view="payment-mode-grid"
           canEdit="false"/>
         <field name="journal" domain="self.company = :company AND self.statusSelect = 1"
@@ -185,11 +185,6 @@
       if="eval: __parent__?._model == 'com.axelor.apps.account.db.PaymentMode'"/>
     <attribute name="hidden" for="typeSelect" expr="eval: true"
       if="eval: __parent__?._model == 'com.axelor.apps.account.db.Tax' || __parent__?._model == 'com.axelor.apps.base.db.Product' || __parent__?._model == 'com.axelor.apps.base.db.ProductFamily' || __parent__?._model == 'com.axelor.apps.account.db.PaymentMode'"/>
-  </action-attrs>
-
-  <action-attrs name="action-account-management-attrs-bank-details-on-change">
-    <attribute name="value" for="cashAccount" expr="eval: bankDetails?.bankAccount"/>
-    <attribute name="value" for="journal" expr="eval: bankDetails?.journal"/>
   </action-attrs>
 
   <search-filters name="account-management-filters"

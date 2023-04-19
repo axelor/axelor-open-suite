@@ -259,8 +259,8 @@
           onChange="action-partner-record-unset-factor"/>
         <field name="isFactor" colSpan="2" widget="InlineCheckbox"
           hideIf="isContact || $readonly() || isEmployee"
-          if="__config__.app.getApp('account')?.manageFactors"
-          onChange="action-partner-record-set-factor"/>
+          if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.manageFactors"
+          if-module="axelor-account" onChange="action-partner-record-set-factor"/>
         <field name="$viewerPartnerType" showTitle="false" hideIf="isContact || !$readonly()"
           colSpan="12">
           <viewer depends="isProspect,isEmployee,isCustomer,isSupplier,isFactor,isCarrier">
@@ -397,7 +397,8 @@
               domain="self.isContact = false AND self.partnerTypeSelect = 1 AND self in (SELECT p FROM Partner p join p.companySet c where c in :companySet)"
               form-view="partner-form" grid-view="partner-grid"/>
             <field name="sellerCode" showIf="isFactor"
-              if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageFactors()"/>
+              if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageFactors()"
+              if-module="axelor-account"/>
           </panel>
         </panel>
 
@@ -1337,7 +1338,7 @@
 
   <action-record name="action-partner-record-unset-factor"
     model="com.axelor.apps.base.db.Partner">
-    <field name="isFactor" expr="eval: false"/>
+    <field name="isFactor" expr="eval: false" if="__config__.app.isApp('account')"/>
   </action-record>
 
   <action-record name="action-partner-record-set-factor"
