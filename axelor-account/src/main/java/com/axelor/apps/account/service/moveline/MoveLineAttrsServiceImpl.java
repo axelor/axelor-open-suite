@@ -192,7 +192,7 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
     this.addAttr(
         "$validatePeriod",
         "value",
-        periodServiceAccount.isAuthorizedToAccountOnPeriod(move.getPeriod(), AuthUtils.getUser()),
+        !periodServiceAccount.isAuthorizedToAccountOnPeriod(move.getPeriod(), AuthUtils.getUser()),
         attrsMap);
   }
 
