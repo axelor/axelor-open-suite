@@ -266,7 +266,8 @@
           onChange="action-partner-record-unset-factor"/>
         <field name="isFactor" colSpan="2" widget="InlineCheckbox"
           hideIf="isContact || $readonly() || isEmployee"
-          if="__config__.app.getApp('account')?.manageFactors"
+          if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.manageFactors"
+          if-module="axelor-account"
           onChange="action-partner-group-check-can-change-factor,action-partner-record-set-factor"/>
         <field name="$viewerPartnerType" showTitle="false" hideIf="isContact || !$readonly()"
           colSpan="12">
@@ -345,7 +346,8 @@
           domain="self.isContact = false AND self.partnerTypeSelect = 1 AND self in (SELECT p FROM Partner p join p.companySet c where c in :companySet)"
           form-view="partner-form" grid-view="partner-grid"/>
         <field name="sellerCode" showIf="isFactor"
-          if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageFactors()"/>
+          if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageFactors()"
+          if-module="axelor-account"/>
       </panel>
     </panel>
     <panel colSpan="12" itemSpan="6" name="partnerSupplyChainLinkListPanel"
@@ -770,7 +772,7 @@
     <field name="isCustomer"/>
     <field name="isSupplier"/>
     <field name="isSubcontractor"/>
-    <field name="isFactor"/>
+    <field name="isFactor" if-module="axelor-account" if="__config__.app.isApp('account')"/>
     <field name="isCarrier"/>
     <template><![CDATA[
 			<div>
@@ -1229,7 +1231,7 @@
 
   <action-record name="action-partner-record-reset-factor-true"
     model="com.axelor.apps.base.db.Partner">
-    <field name="isFactor" expr="eval:true"/>
+    <field name="isFactor" expr="eval:true" if="__config__.app.isApp('account')"/>
     <field name="factorCantBeRemoved" expr="eval:false"/>
   </action-record>
 
@@ -1600,7 +1602,7 @@
 
   <action-record name="action-partner-record-unset-factor"
     model="com.axelor.apps.base.db.Partner">
-    <field name="isFactor" expr="eval: false"/>
+    <field name="isFactor" expr="eval: false" if="__config__.app.isApp('account')"/>
   </action-record>
 
   <action-record name="action-partner-record-set-factor"
