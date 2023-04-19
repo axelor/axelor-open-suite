@@ -148,4 +148,10 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
     }
     return resultMap;
   }
+
+  @Override
+  public boolean isHiddenDueDate(Move move) {
+
+    return !moveInvoiceTermService.displayDueDate(move);
+  }
 }

@@ -30,4 +30,6 @@ public interface MoveAttrsService {
   boolean isHiddenMoveLineListViewer(Move move);
 
   Map<String, Map<String, Object>> getMoveLineAnalyticAttrs(Move move) throws AxelorException;
+
+  boolean isHiddenDueDate(Move move);
 }

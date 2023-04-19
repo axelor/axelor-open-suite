@@ -124,13 +124,6 @@ public class MoveRecordServiceImpl implements MoveRecordService {
 
     MoveContext result = new MoveContext();
 
-    boolean paymentConditionChange =
-        Optional.ofNullable(context.get("paymentConditionChange"))
-            .map(value -> (Boolean) value)
-            .orElse(false);
-    boolean dateChange =
-        Optional.ofNullable(context.get("dateChange")).map(value -> (Boolean) value).orElse(false);
-
     result.putInAttrs(moveAttrsService.getHiddenAttributeValues(move));
     result.putInValues(moveComputeService.computeTotals(move));
     result.putInAttrs(
@@ -142,8 +135,8 @@ public class MoveRecordServiceImpl implements MoveRecordService {
         "$isThereRelatedCutOffMoves", moveCheckService.checkRelatedCutoffMoves(move));
     result.putInValues(moveCheckService.checkPeriodAndStatus(move));
     result.putInAttrs(moveAttrsService.getFunctionalOriginSelectDomain(move));
-    result.merge(moveRecordUpdateService.updateDueDate(move, paymentConditionChange, dateChange));
     result.putInAttrs(moveAttrsService.getMoveLineAnalyticAttrs(move));
+    result.putInAttrs("dueDate", "hidden", moveAttrsService.isHiddenDueDate(move));
 
     return result;
   }
@@ -344,7 +337,7 @@ public class MoveRecordServiceImpl implements MoveRecordService {
     result.merge(
         moveRecordUpdateService.updateInvoiceTerms(move, paymentConditionChange, headerChange));
     moveRecordUpdateService.updateInvoiceTermDueDate(move, this.extractDueDate(context));
-    moveRecordUpdateService.updateDueDate(move, paymentConditionChange, dateChange);
+    result.merge(moveRecordUpdateService.updateDueDate(move, paymentConditionChange, dateChange));
 
     return result;
   }
