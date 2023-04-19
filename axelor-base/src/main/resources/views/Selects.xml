@@ -36,8 +36,7 @@
   <selection name="partner.title.type.select">
     <option value="1">M.</option>
     <option value="2">Ms.</option>
-    <option value="3">Dr</option>
-    <option value="4">Prof.</option>
+    <option value="3">Mx.</option>
   </selection>
 
   <selection name="partner.partner.type.select">
