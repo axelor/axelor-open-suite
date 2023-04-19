@@ -1599,4 +1599,10 @@ public final class AccountExceptionMessage {
 
   public static final String MASS_ENTRY_DIFFERENT_MOVE_LINE_ORIGIN_DATE = /*$$(*/
       "The same move can't have different origin dates" /*)*/;
+
+  public static final String NO_DEBT_RECOVERY_HISTORY_SELECTED = /*$$(*/
+      "Please select debt recovery history." /*)*/;
+
+  public static final String NO_DEBT_RECOVERY_HISTORY_FILE = /*$$(*/
+      "No debt recovery history attachments found." /*)*/;
 }
