@@ -1,3 +1,3 @@
 ---
-title: "RM63149 PAYMENTSESSION : highlight in orange the InvoiceTerms with a financial discount"
-type: fix
+title: "Payment session: highlight in orange invoice terms with a financial discount."
+type: change
