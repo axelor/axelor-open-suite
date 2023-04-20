@@ -99,7 +99,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       SupplychainBatchRepository supplychainBatchRepo,
       SupplyChainConfigService supplychainConfigService,
       StockLocationLineHistoryService stockLocationLineHistoryService,
-      InvoiceLineRepository invoiceLinerepository) {
+      InvoiceLineRepository invoiceLineRepository) {
     super(
         trackingNumberService,
         appBaseService,
@@ -117,7 +117,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
     this.priceListService = priceListService;
     this.supplychainBatchRepo = supplychainBatchRepo;
     this.supplychainConfigService = supplychainConfigService;
-    this.invoiceLineRepository = invoiceLinerepository;
+    this.invoiceLineRepository = invoiceLineRepository;
   }
 
   @Override
