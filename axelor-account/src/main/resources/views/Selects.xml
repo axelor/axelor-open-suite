@@ -150,18 +150,18 @@
   </selection>
 
   <selection name='iaccount.move.status.select'>
-    <option value='1' order="10">Move.New</option>
-    <option value='2' order="30">DayBook</option>
-    <option value='3' order="40">Move.Accounted</option>
-    <option value='4' order="50">Move.Canceled</option>
-    <option value='5' order="20">Simulated</option>
+    <option value='1' order="10" color="lightblue">Move.New</option>
+    <option value='2' order="30" color="deeporange">DayBook</option>
+    <option value='3' order="40" color="green">Move.Accounted</option>
+    <option value='4' order="50" color="red">Move.Canceled</option>
+    <option value='5' order="20" color="blue">Simulated</option>
   </selection>
 
   <selection name='iaccount.move.technical.origin.select'>
-    <option value='1'>Entry</option>
-    <option value='2'>Automatic</option>
-    <option value='3'>Template</option>
-    <option value='4'>Import</option>
+    <option value='1' color="blue">Entry</option>
+    <option value='2' color="blue">Automatic</option>
+    <option value='3' color="blue">Template</option>
+    <option value='4' color="blue">Import</option>
   </selection>
 
   <selection name='payer.quality.config.line.incident.type.select'>

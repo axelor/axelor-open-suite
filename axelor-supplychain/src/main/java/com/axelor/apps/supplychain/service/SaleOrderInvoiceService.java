@@ -300,4 +300,6 @@ public interface SaleOrderInvoiceService {
    * @throws AxelorException
    */
   void displayErrorMessageBtnGenerateInvoice(SaleOrder saleOrder) throws AxelorException;
+
+  int getSaleOrderInvoicingState(SaleOrder saleOrder);
 }

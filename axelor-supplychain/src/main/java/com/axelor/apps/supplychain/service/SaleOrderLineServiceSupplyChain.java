@@ -24,6 +24,11 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public interface SaleOrderLineServiceSupplyChain extends SaleOrderLineService {
+
+  int SALE_ORDER_LINE_NOT_INVOICED = 1;
+  int SALE_ORDER_LINE_PARTIALLY_INVOICED = 2;
+  int SALE_ORDER_LINE_INVOICED = 3;
+
   /**
    * Compute undelivered quantity.
    *
@@ -89,4 +94,6 @@ public interface SaleOrderLineServiceSupplyChain extends SaleOrderLineService {
   void updateStockMoveReservationDateTime(SaleOrderLine saleOrderLine) throws AxelorException;
 
   public SaleOrderLine createAnalyticDistributionWithTemplate(SaleOrderLine saleOrderLine);
+
+  int getSaleOrderLineInvoicingState(SaleOrderLine saleOrderLine);
 }

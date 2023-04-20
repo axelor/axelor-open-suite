@@ -107,7 +107,8 @@
       </panel>
 
     </panel>
-    <panel name="mainPanel" itemSpan="4" readonlyIf="statusSelect > 1 || $hasInvoiceTerm">
+    <panel name="mainPanel" itemSpan="4"
+      readonlyIf="statusSelect > 1 || sessionTotalAmount > 0">
       <field name="createdOn"/>
       <field name="sequence"/>
       <field name="company" form-view="company-form" grid-view="company-grid"
@@ -157,7 +158,7 @@
         hideIf="statusSelect > 1 || $hasInvoiceTerm"/>
       <button name="refreshEligibleTermsBtn" title="Refresh terms list"
         showIf="id &amp;&amp; $hasInvoiceTerm &amp;&amp; statusSelect == 1"
-        onClick="action-method-payment-session-search-eligible-terms"/>
+        onClick="action-group-payment-session-search-eligible-terms"/>
       <button name="selectAllBtn" title="Select all"
         onClick="action-payment-session-method-select-all" colSpan="3" hidden="true"/>
       <button name="unselectAllBtn" title="Unselect all"

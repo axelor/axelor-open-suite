@@ -15,12 +15,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.account.service.payment.paymentsession;
+package com.axelor.apps.supplychain.service;
 
-import com.axelor.apps.account.db.PaymentSession;
+import java.math.BigDecimal;
 
-public interface PaymentSessionCancelService {
-  public void cancelPaymentSession(PaymentSession paymentSession);
+public interface SaleInvoicingStateService {
+  int SALE_ORDER_INVOICE_NOT_INVOICED = 1;
+  int SALE_ORDER_INVOICE_PARTIALLY_INVOICED = 2;
+  int SALE_ORDER_INVOICE_INVOICED = 3;
 
-  void cancelInvoiceTerms(PaymentSession paymentSession);
+  int getInvoicingState(
+      BigDecimal amountInvoiced, BigDecimal exTaxTotal, boolean atLeastOneInvoiceIsVentilated);
 }

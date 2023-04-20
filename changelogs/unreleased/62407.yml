@@ -1,3 +1,0 @@
----
-title: "Move/Invoice term: Skip invoice term with holdback computation, if the functional origin select of the move is not fixed asset, sale, or purchase"
-type: fix
