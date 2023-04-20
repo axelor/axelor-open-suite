@@ -75,20 +75,30 @@ public class MoveRecordUpdateServiceImpl implements MoveRecordUpdateService {
 
     result.putInAttrs("$paymentConditionChange", "value", false);
     result.putInAttrs("$headerChange", "value", false);
+    result.putInValues("moveLineList", move.getMoveLineList());
     return result;
   }
 
   @Override
-  public void updateRoundInvoiceTermPercentages(Move move) {
+  public MoveContext updateRoundInvoiceTermPercentages(Move move) {
+
+    MoveContext result = new MoveContext();
     moveInvoiceTermService.roundInvoiceTermPercentages(move);
+    result.putInValues("moveLineList", move.getMoveLineList());
+
+    return result;
   }
 
   @Override
-  public void updateInvoiceTermDueDate(Move move, LocalDate dueDate) {
+  public MoveContext updateInvoiceTermDueDate(Move move, LocalDate dueDate) {
+    MoveContext result = new MoveContext();
     if (dueDate != null) {
 
       moveInvoiceTermService.updateSingleInvoiceTermDueDate(move, dueDate);
+      result.putInValues("moveLineList", move.getMoveLineList());
     }
+
+    return result;
   }
 
   @Override
