@@ -1,3 +1,25 @@
+## [6.2.24] (2023-04-20)
+
+#### Fixed
+
+* Sale order: sale orders with a 0 total amount are now correctly displayed as invoiced if they have an ventilated invoice.
+* Partner: fixed script error when opening partner contact form (issue happening only when axelor-base was installed without axelor-account).
+* Operation order calendar: display operation orders with all status except operations in draft, cancelled or merged manufacturing orders.
+* Customer/Prospect reporting: fixed an error occuring if we only have axelor-base installed when opening the dashboard.
+* Move: fixed analytic move lines copy when reversing a move.
+* Partner: fixed an error preventing the display of partner sale history when a product was sold with a quantity equals to 0.
+* Operation order: fix UI issues when the user was modifying date time fields used for the planification.
+* Base batch: fixed an issue when clicking the button to run manually the "synchronize calendar" batch.
+* Partner: fixed an error preventing the display of partner sale history when a product was sold with a quantity equals to 0.
+* BPM: fixed view attribute issue for a sub-process.
+* Stock move: fixed an issue when opening stock move line form from the invoicing wizard.
+* Message: fixed an issue where emails automatically sent were not updated.
+* Invoice: fixed filter on company bank details for factorized customer so we are able to select the bank details of the factor.
+* Sale order: generating a purchase order from a sale order now correctly takes into account supplier catalog product code and name.
+* Stock move: now prevent splitting action on stock move line that are associated with a invoice line.
+* Invoice: to avoid inconsistencies, now only canceled invoices can be deleted.
+* Bank details: fixed script error when opening bank details form (issue happening only when axelor-base was installed without axelor-account).
+
 ## [6.2.23] (2023-04-06)
 
 #### Changes
@@ -991,6 +1013,7 @@ will be equal to the reason for manual forecasts.
 * Territory: Remove object
 
 
+[6.2.24]: https://github.com/axelor/axelor-open-suite/compare/v6.2.23...v6.2.24
 [6.2.23]: https://github.com/axelor/axelor-open-suite/compare/v6.2.22...v6.2.23
 [6.2.22]: https://github.com/axelor/axelor-open-suite/compare/v6.2.21...v6.2.22
 [6.2.21]: https://github.com/axelor/axelor-open-suite/compare/v6.2.20...v6.2.21
