@@ -1,3 +1,20 @@
+## [6.1.36] (2023-04-20)
+
+#### Fixed
+
+* Partner: fixed script error when opening partner contact form (issue happening only when axelor-base was installed without axelor-account).
+* Customer/Prospect reporting: fixed an error occuring if we only have axelor-base installed when opening the dashboard.
+* Partner: fixed an issue where the tax number computed from other information was incorrect.
+* Operation order: fix UI issues when the user was modifying datetimes used for the planification.
+* Partner: fixed an error preventing the display of partner sale history when a product was sold with a quantity equals to 0.
+* BPM: fixed view attribute issue for a sub-process.
+* Stock move: fixed an issue when opening stock move line form from the invoicing wizard.
+* Invoice: fixed filter on company bank details for factorized customer so we are able to select the bank details of the factor.
+* Sale order: generating a purchase order from a sale order now correctly takes into account supplier catalog product code and name.
+* Stock move: now prevent splitting action on stock move line that are associated with a invoice line.
+* Invoice: to avoid inconsistencies, now only canceled invoices can be deleted.
+* Bank details: fixed script error when opening bank details form (issue happening only when axelor-base was installed without axelor-account).
+
 ## [6.1.35] (2023-04-06)
 
 #### Changes
@@ -1064,6 +1081,7 @@ In price list, we fix the display to exclude list that are defined on an exclusi
 * Moved axelor docusign module from Axelor Open Suite to Axelor Addons repository.
 
 
+[6.1.36]: https://github.com/axelor/axelor-open-suite/compare/v6.1.35...v6.1.36
 [6.1.35]: https://github.com/axelor/axelor-open-suite/compare/v6.1.34...v6.1.35
 [6.1.34]: https://github.com/axelor/axelor-open-suite/compare/v6.1.33...v6.1.34
 [6.1.33]: https://github.com/axelor/axelor-open-suite/compare/v6.1.32...v6.1.33

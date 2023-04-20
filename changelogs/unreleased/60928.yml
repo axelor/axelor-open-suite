@@ -1,3 +1,0 @@
----
-title: "Stock move: Now prevent splitting action on stock move line that are associated with a invoice line"
-type: fix
