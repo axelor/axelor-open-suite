@@ -1,0 +1,5 @@
+---
+title: "Payment condition: added English demo data for payment condition line"
+type: fix
+description: |
+  Fix Invoice ventilation when importing English demo data.
