@@ -10,4 +10,8 @@ public interface ResearchRequestService {
 
   public List<ResearchResultLine> searchObject(
       Map<String, Object> searchParams, ResearchRequest researchRequest) throws AxelorException;
+
+  public String getStringResearchKeyDomain(ResearchRequest researchRequest);
+
+  public String getDateResearchKeyDomain(ResearchRequest researchRequest);
 }

@@ -13,7 +13,8 @@
     model="com.axelor.apps.base.db.ResearchParameterConfig" width="large">
     <panel name="mainPanel">
       <field name="model"
-        onChange="action-base-research-parameter-config-set-meta-model-method" colSpan="3"/>
+        onChange="action-base-research-parameter-config-set-meta-model-method" colSpan="3"
+        readonlyIf="researchParameterList != null &amp;&amp; researchParameterList.length &gt; 0"/>
       <field name="metaModel" hidden="true" readonly="true"/>
       <help>
         <![CDATA[
@@ -21,12 +22,16 @@
         ]]>
       </help>
 
-      <field name="researchParameterList" colSpan="12" showTitle="false">
+      <field name="researchParameterList" showIf="model" colSpan="12" showTitle="false">
         <editor colSpan="12">
           <field name="researchPrimaryKey" colSpan="3" required="true"/>
+          <field name="mapping" onChange="ation-base-research-parameter-method-set-query"
+            colSpan="3" readonlyIf="researchPrimaryKey == null"
+            onSelect="action-research-parameter-method-mapping-domain" required="true"/>
+          <field name="binding" onChange="ation-base-research-parameter-method-set-query"
+            colSpan="3" required="true"/>
           <field name="query" colSpan="3" required="true"/>
-          <field name="mapping" colSpan="3" required="true"/>
-          <field name="binding" colSpan="3" required="true"/>
+
         </editor>
       </field>
     </panel>

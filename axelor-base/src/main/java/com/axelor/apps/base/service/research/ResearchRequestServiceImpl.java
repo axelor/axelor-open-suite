@@ -6,6 +6,7 @@ import com.axelor.apps.base.db.ResearchParameterConfig;
 import com.axelor.apps.base.db.ResearchRequest;
 import com.axelor.apps.base.db.ResearchResultLine;
 import com.axelor.apps.base.db.repo.ResearchParameterConfigRepository;
+import com.axelor.apps.base.db.repo.ResearchPrimaryKeyRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.auth.db.AuditableModel;
@@ -18,6 +19,7 @@ import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.rpc.Context;
 import com.axelor.script.GroovyScriptHelper;
+import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import java.sql.Date;
 import java.util.ArrayList;
@@ -25,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 
 public class ResearchRequestServiceImpl implements ResearchRequestService {
@@ -139,19 +142,24 @@ public class ResearchRequestServiceImpl implements ResearchRequestService {
       ResearchParameterConfig searchConfig) {
     StringBuilder query = new StringBuilder();
     List<ResearchParameter> searchConfigLines = searchConfig.getResearchParameterList();
-
+    boolean isSearchConfigLineForModel = false;
     for (ResearchParameter searchConfigLine : searchConfigLines) {
       String researchPrimaryKeyCode = searchConfigLine.getResearchPrimaryKey().getCode();
       Object param = Optional.ofNullable(searchParams.get(researchPrimaryKeyCode)).orElse(null);
       if (ObjectUtils.isEmpty(param)) {
         continue;
       }
+      isSearchConfigLineForModel = true;
       searchParamsQuery.put(searchConfigLine.getBinding(), param);
       query.append(searchConfigLine.getQuery());
       query.append(" AND ");
     }
 
-    query.append(" 1 = 1");
+    if (isSearchConfigLineForModel) {
+      query.append(" 1 = 1");
+    } else {
+      query.append(" 1 = 0");
+    }
 
     if (searchConfig.getModel().contains("Contact")) {
       query.append(" AND self.isContact is true ");
@@ -176,7 +184,7 @@ public class ResearchRequestServiceImpl implements ResearchRequestService {
     for (ResearchParameter searchConfigLine : searchConfig.getResearchParameterList()) {
       mappedObject.put(
           searchConfigLine.getResearchPrimaryKey().getCode(),
-          evalField(scriptContext, searchConfigLine.getMapping()));
+          evalField(scriptContext, searchConfigLine.getMapping().getName()));
     }
 
     return mappedObject;
@@ -249,5 +257,73 @@ public class ResearchRequestServiceImpl implements ResearchRequestService {
 
       return getFieldValue(subMetaModel, subMapper, model, fields[1]);
     }
+  }
+
+  @Override
+  public String getStringResearchKeyDomain(ResearchRequest researchRequest) {
+    String domain =
+        String.format(
+            "self.typeSelect = %s ",
+            "'" + ResearchPrimaryKeyRepository.RESEARCH_PRIMARY_TYPE_SELECT_TEXT + "'");
+    String models = researchRequest.getModels();
+    List<Long> primarykeyIdList = new ArrayList<>();
+    String[] modelList = models.split(",");
+    for (String modelStr : modelList) {
+      modelStr = modelStr.trim();
+      ResearchParameterConfig researchParameterConfig =
+          researchParameterConfigRepository.all().filter("self.model = ?1 ", modelStr).fetchOne();
+      if (researchParameterConfig != null
+          && ObjectUtils.notEmpty(researchParameterConfig.getResearchParameterList())) {
+        primarykeyIdList.addAll(
+            researchParameterConfig.getResearchParameterList().stream()
+                .map(researchParameter -> researchParameter.getResearchPrimaryKey().getId())
+                .collect(Collectors.toList()));
+      }
+    }
+    domain += " AND " + String.format("self.id in (%s) ", Joiner.on(",").join(primarykeyIdList));
+
+    if (researchRequest.getResearch1() != null) {
+      domain += " AND self.id != " + researchRequest.getResearch1().getId();
+    }
+    if (researchRequest.getResearch2() != null) {
+      domain += " AND self.id != " + researchRequest.getResearch2().getId();
+    }
+    if (researchRequest.getResearch3() != null) {
+      domain += " AND self.id != " + researchRequest.getResearch3().getId();
+    }
+    if (researchRequest.getResearch4() != null) {
+      domain += " AND self.id != " + researchRequest.getResearch4().getId();
+    }
+    return domain;
+  }
+
+  @Override
+  public String getDateResearchKeyDomain(ResearchRequest researchRequest) {
+    String domain =
+        String.format(
+            "self.typeSelect = %s ",
+            "'" + ResearchPrimaryKeyRepository.RESEARCH_PRIMARY_TYPE_SELECT_LOCAL_DATE + "'");
+    String models = researchRequest.getModels();
+    List<Long> primarykeyIdList = new ArrayList<>();
+    String[] modelList = models.split(",");
+    for (String modelStr : modelList) {
+      modelStr = modelStr.trim();
+      ResearchParameterConfig researchParameterConfig =
+          researchParameterConfigRepository.all().filter("self.model = ?1 ", modelStr).fetchOne();
+      if (researchParameterConfig != null
+          && ObjectUtils.notEmpty(researchParameterConfig.getResearchParameterList())) {
+        primarykeyIdList.addAll(
+            researchParameterConfig.getResearchParameterList().stream()
+                .map(researchParameter -> researchParameter.getResearchPrimaryKey().getId())
+                .collect(Collectors.toList()));
+      }
+    }
+    domain += " AND " + String.format("self.id in (%s) ", Joiner.on(",").join(primarykeyIdList));
+
+    if (researchRequest.getDateResearch1() != null) {
+      domain += " AND self.id != " + researchRequest.getDateResearch1().getId();
+    }
+
+    return domain;
   }
 }

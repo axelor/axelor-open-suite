@@ -724,8 +724,8 @@
   </selection>
 
   <selection name="research.primary.key.type.select">
-    <option value="0">String</option>
-    <option value="1">Date</option>
+    <option value="String">String</option>
+    <option value="LocalDate">Date</option>
   </selection>
 
 </object-views>

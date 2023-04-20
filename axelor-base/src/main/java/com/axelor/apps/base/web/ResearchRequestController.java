@@ -1,6 +1,7 @@
 package com.axelor.apps.base.web;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.ResearchRequest;
 import com.axelor.apps.base.db.ResearchResultLine;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -24,19 +25,23 @@ public class ResearchRequestController {
     Map<String, Object> searchParams = new HashMap<>();
     if (researchRequest.getResearch1() != null) {
       searchParams.put(
-          researchRequest.getResearch1().getCode(), researchRequest.getResearch1Value());
+          researchRequest.getResearch1().getCode(),
+          "%" + researchRequest.getResearch1Value() + "%");
     }
     if (researchRequest.getResearch2() != null) {
       searchParams.put(
-          researchRequest.getResearch2().getCode(), researchRequest.getResearch2Value());
+          researchRequest.getResearch2().getCode(),
+          "%" + researchRequest.getResearch2Value() + "%");
     }
     if (researchRequest.getResearch3() != null) {
       searchParams.put(
-          researchRequest.getResearch3().getCode(), researchRequest.getResearch3Value());
+          researchRequest.getResearch3().getCode(),
+          "%" + researchRequest.getResearch3Value() + "%");
     }
     if (researchRequest.getResearch4() != null) {
       searchParams.put(
-          researchRequest.getResearch4().getCode(), researchRequest.getResearch4Value());
+          researchRequest.getResearch4().getCode(),
+          "%" + researchRequest.getResearch4Value() + "%");
     }
     if (researchRequest.getDateResearch1() != null) {
       searchParams.put(
@@ -50,12 +55,76 @@ public class ResearchRequestController {
       try {
         resultList =
             Beans.get(ResearchRequestService.class).searchObject(searchParams, researchRequest);
+        response.setValue("researchResultLineList", resultList);
+        response.setValue("searchDate", Beans.get(AppBaseService.class).getTodayDate(null));
       } catch (AxelorException e) {
-        TraceBackService.trace(e);
-        response.setError(e.getMessage());
+        TraceBackService.trace(response, e, ResponseMessageType.ERROR);
       }
-      response.setValue("researchResultLineList", resultList);
-      response.setValue("searchDate", Beans.get(AppBaseService.class).getTodayDate(null));
+    }
+  }
+
+  public void getResearch1PrimaryKeyDomain(ActionRequest request, ActionResponse response) {
+    ResearchRequest researchRequest = request.getContext().asType(ResearchRequest.class);
+    try {
+
+      String domain =
+          Beans.get(ResearchRequestService.class).getStringResearchKeyDomain(researchRequest);
+      response.setAttr("research1", "domain", domain);
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void getResearch2PrimaryKeyDomain(ActionRequest request, ActionResponse response) {
+    ResearchRequest researchRequest = request.getContext().asType(ResearchRequest.class);
+    try {
+
+      String domain =
+          Beans.get(ResearchRequestService.class).getStringResearchKeyDomain(researchRequest);
+      response.setAttr("research2", "domain", domain);
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void getResearch3PrimaryKeyDomain(ActionRequest request, ActionResponse response) {
+    ResearchRequest researchRequest = request.getContext().asType(ResearchRequest.class);
+    try {
+
+      String domain =
+          Beans.get(ResearchRequestService.class).getStringResearchKeyDomain(researchRequest);
+      response.setAttr("research3", "domain", domain);
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void getResearch4PrimaryKeyDomain(ActionRequest request, ActionResponse response) {
+    ResearchRequest researchRequest = request.getContext().asType(ResearchRequest.class);
+    try {
+
+      String domain =
+          Beans.get(ResearchRequestService.class).getStringResearchKeyDomain(researchRequest);
+      response.setAttr("research4", "domain", domain);
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void getDateResearch1PrimaryKeyDomain(ActionRequest request, ActionResponse response) {
+    ResearchRequest researchRequest = request.getContext().asType(ResearchRequest.class);
+    try {
+
+      String domain =
+          Beans.get(ResearchRequestService.class).getDateResearchKeyDomain(researchRequest);
+      response.setAttr("dateResearch1", "domain", domain);
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 }
