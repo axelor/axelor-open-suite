@@ -328,17 +328,22 @@ public class MoveValidateServiceImpl implements MoveValidateService {
         "Well-balanced move line invoice terms validation on account move {}", move.getReference());
 
     if (move.getMoveLineList() != null) {
+      boolean isCompanyCurrency = move.getCurrency().equals(move.getCompanyCurrency());
 
       for (MoveLine moveLine : move.getMoveLineList()) {
         if (ObjectUtils.notEmpty(moveLine.getInvoiceTermList())
             && moveLine.getAccount().getUseForPartnerBalance()) {
           BigDecimal totalMoveLineInvoiceTerm =
               moveLine.getInvoiceTermList().stream()
-                  .map(InvoiceTerm::getAmount)
+                  .map(InvoiceTerm::getCompanyAmount)
                   .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-          if (totalMoveLineInvoiceTerm.compareTo(moveLine.getDebit().max(moveLine.getCredit()))
-              != 0) {
+          BigDecimal moveLineAmount =
+              isCompanyCurrency
+                  ? moveLine.getCurrencyAmount()
+                  : moveLine.getDebit().max(moveLine.getCredit());
+
+          if (totalMoveLineInvoiceTerm.compareTo(moveLineAmount) != 0) {
             throw new AxelorException(
                 move,
                 TraceBackRepository.CATEGORY_INCONSISTENCY,

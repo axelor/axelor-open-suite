@@ -58,14 +58,21 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
   @Override
   public InvoicePayment initInvoiceTermPayments(
       InvoicePayment invoicePayment, List<InvoiceTerm> invoiceTermsToPay) {
-
     invoicePayment.clearInvoiceTermPaymentList();
+
+    if (CollectionUtils.isEmpty(invoiceTermsToPay)) {
+      return invoicePayment;
+    }
+
+    boolean isCompanyCurrency =
+        invoicePayment.getCurrency().equals(invoiceTermsToPay.get(0).getCompany().getCurrency());
     for (InvoiceTerm invoiceTerm : invoiceTermsToPay) {
       invoicePayment.addInvoiceTermPaymentListItem(
           createInvoiceTermPayment(
               invoicePayment,
               invoiceTerm,
-              invoiceTermService.getAmountRemaining(invoiceTerm, invoicePayment.getPaymentDate())));
+              invoiceTermService.getAmountRemaining(
+                  invoiceTerm, invoicePayment.getPaymentDate(), isCompanyCurrency)));
     }
 
     return invoicePayment;
@@ -226,14 +233,21 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
     invoiceTermPayment.setPaidAmount(paidAmount);
     manageInvoiceTermFinancialDiscount(
         invoiceTermPayment, invoiceTermToPay, applyFinancialDiscount);
+
+    boolean isCompanyCurrency =
+        invoicePayment == null
+            || invoicePayment.getCurrency().equals(invoiceTermToPay.getCompany().getCurrency());
     invoiceTermPayment.setCompanyPaidAmount(
-        this.computeCompanyPaidAmount(invoiceTermToPay, invoiceTermPayment.getPaidAmount()));
+        isCompanyCurrency
+            ? paidAmount
+            : this.computeCompanyPaidAmount(invoiceTermToPay, paidAmount));
+
     return invoiceTermPayment;
   }
 
   protected BigDecimal computeCompanyPaidAmount(InvoiceTerm invoiceTerm, BigDecimal paidAmount) {
     BigDecimal ratio =
-        invoiceTerm.getAmount().divide(invoiceTerm.getCompanyAmount(), 10, RoundingMode.HALF_UP);
+        invoiceTerm.getCompanyAmount().divide(invoiceTerm.getAmount(), 10, RoundingMode.HALF_UP);
 
     return paidAmount
         .multiply(ratio)

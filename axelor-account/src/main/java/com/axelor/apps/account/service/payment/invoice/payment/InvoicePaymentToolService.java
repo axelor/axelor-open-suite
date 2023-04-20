@@ -63,7 +63,7 @@ public interface InvoicePaymentToolService {
       List<InvoiceTerm> invoiceTermList,
       LocalDate date,
       boolean manualChange,
-      Currency targetCurrency)
+      Currency paymentCurrency)
       throws AxelorException;
 
   void computeFinancialDiscount(InvoicePayment invoicePayment);
