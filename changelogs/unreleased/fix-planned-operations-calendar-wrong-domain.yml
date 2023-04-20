@@ -1,0 +1,3 @@
+---
+title: "change domain to display operationOrder with all status except draft, cancelled or merged ManufOrder"
+type: fix
