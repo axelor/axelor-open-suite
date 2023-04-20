@@ -113,7 +113,8 @@
           <field name="paymentMode"
             readonlyIf="period.statusSelect == 2 || period.statusSelect == 5 || $validatePeriod"
             colSpan="3" onChange="action-move-group-payment-mode-onchange"
-            form-view="payment-mode-form" grid-view="payment-mode-grid"/>
+            form-view="payment-mode-form" grid-view="payment-mode-grid"
+            onSelect="action-move-attrs-set-domain-payment-mode"/>
           <field name="partnerBankDetails"
             showIf="[2,3,9,10].includes(paymentMode.typeSelect)" colSpan="3"
             onChange="action-move-attrs-header-change"
@@ -270,8 +271,7 @@
             form-view="invoice-form" grid-view="invoice-grid"/>
           <field name="paymentVoucher"
             hideIf="!functionOriginSelect || functionalOriginSelect != 5 || !paymentVoucher"
-            readonlyIf="$validatePeriod" canNew="false" domain="self.company = :company"
-            form-view="payment-voucher-form" grid-view="payment-voucher-grid"/>
+            canNew="false" domain="self.company = :company" form-view="payment-voucher-form" grid-view="payment-voucher-grid"/>
           <field name="paymentSession" readonly="true"
             hideIf="!functionOriginSelect || functionalOriginSelect !=  5 || !paymentSession"
             form-view="payment-session-form" grid-view="payment-session-grid"/>
