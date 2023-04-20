@@ -311,7 +311,6 @@
           <field name="$journalTechnicalTypeSelect" hidden="true" type="integer"/>
           <field name="$headerChange" hidden="true" type="boolean"/>
           <field name="$paymentConditionChange" hidden="true" type="boolean"/>
-          <field name="$paymentConditionChangeError" hidden="true"/>
           <field name="$dateChange" hidden="true" type="boolean"/>
           <field name="paymentCondition.isFree" hidden="true"/>
           <field name="$validatePeriod" hidden="true" type="boolean"/>
