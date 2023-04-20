@@ -281,7 +281,7 @@ public interface IExceptionMessage {
       "Stock move %s has already been invoiced." /*)*/;
 
   static final String STOCK_MOVE_INVOICE_QTY_MAX = /*$$(*/
-      "The quantity to invoice is greater than the quantity in the stock move" /*)*/;
+      "It is not allowed to invoice a greater quantity %s than the delivered quantity %s. Pls check the invoice line with this product %s." /*)*/;
 
   static final String SALE_ORDER_COMPLETE_MANUALLY = /*$$(*/
       "There is at least one draft or planned stock move for this sale order." /*)*/;
