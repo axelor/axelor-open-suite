@@ -312,9 +312,7 @@ public class PaymentSessionController {
       PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
       PaymentSessionRepository paymentSessionRepository = Beans.get(PaymentSessionRepository.class);
       paymentSession = paymentSessionRepository.find(paymentSession.getId());
-      Beans.get(PaymentSessionCancelService.class).cancelInvoiceTerms(paymentSession);
-      paymentSession = paymentSessionRepository.find(paymentSession.getId());
-      Beans.get(PaymentSessionService.class).retrieveEligibleTerms(paymentSession);
+      Beans.get(PaymentSessionService.class).searchEligibleTerms(paymentSession);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

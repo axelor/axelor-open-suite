@@ -42,13 +42,20 @@ public class PaymentSessionCancelServiceImpl implements PaymentSessionCancelServ
 
   @Override
   public void cancelPaymentSession(PaymentSession paymentSession) {
-    this.saveCanceledPaymentSession(paymentSession);
     this.cancelInvoiceTerms(paymentSession);
+    this.saveCanceledPaymentSession(paymentSession);
   }
 
   @Transactional
   protected void saveCanceledPaymentSession(PaymentSession paymentSession) {
-    paymentSession.setStatusSelect(PaymentSessionRepository.STATUS_CANCELLED);
+    paymentSession = paymentSessionRepo.find(paymentSession.getId());
+    Query<InvoiceTerm> invoiceTermQuery =
+        invoiceTermRepo.all().filter("self.paymentSession = ?", paymentSession).order("id");
+
+    if (invoiceTermQuery.fetch().isEmpty()) {
+      paymentSession.setStatusSelect(PaymentSessionRepository.STATUS_CANCELLED);
+      paymentSessionRepo.save(paymentSession);
+    }
   }
 
   @Override
@@ -62,6 +69,7 @@ public class PaymentSessionCancelServiceImpl implements PaymentSessionCancelServ
         this.cancelInvoiceTerm(invoiceTerm);
       }
       JPA.clear();
+      paymentSession = paymentSessionRepo.find(paymentSession.getId());
     }
   }
 

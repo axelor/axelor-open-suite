@@ -69,6 +69,7 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
   protected InvoiceTermService invoiceTermService;
   protected PaymentSessionValidateService paymentSessionValidateService;
   protected AccountConfigService accountConfigService;
+  protected PaymentSessionCancelService paymentSessionCancelService;
   protected int jpaLimit = 4;
 
   @Inject
@@ -77,12 +78,14 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
       InvoiceTermRepository invoiceTermRepository,
       InvoiceTermService invoiceTermService,
       PaymentSessionValidateService paymentSessionValidateService,
-      AccountConfigService accountConfigService) {
+      AccountConfigService accountConfigService,
+      PaymentSessionCancelService paymentSessionCancelService) {
     this.paymentSessionRepository = paymentSessionRepository;
     this.invoiceTermRepository = invoiceTermRepository;
     this.invoiceTermService = invoiceTermService;
     this.paymentSessionValidateService = paymentSessionValidateService;
     this.accountConfigService = accountConfigService;
+    this.paymentSessionCancelService = paymentSessionCancelService;
   }
 
   @Override
@@ -240,8 +243,7 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
         .bind("paymentSession", paymentSession.getId());
   }
 
-  @Override
-  public void retrieveEligibleTerms(PaymentSession paymentSession) throws AxelorException {
+  protected void retrieveEligibleTerms(PaymentSession paymentSession) throws AxelorException {
     Query<InvoiceTerm> eligibleInvoiceTermQuery =
         invoiceTermRepository
             .all()
@@ -269,7 +271,7 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
             .order("id");
 
     this.filterInvoiceTerms(eligibleInvoiceTermQuery, paymentSession);
-    paymentSessionRepository.find(paymentSession.getId());
+    paymentSession = paymentSessionRepository.find(paymentSession.getId());
     computeTotalPaymentSession(paymentSession);
   }
 
@@ -451,5 +453,12 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
       PaymentSession paymentSession, InvoiceTerm invoiceTerm) {
     fillEligibleTerm(paymentSession, invoiceTerm);
     invoiceTermRepository.save(invoiceTerm);
+  }
+
+  @Override
+  public void searchEligibleTerms(PaymentSession paymentSession) throws AxelorException {
+    paymentSessionCancelService.cancelInvoiceTerms(paymentSession);
+    paymentSession = paymentSessionRepository.find(paymentSession.getId());
+    retrieveEligibleTerms(paymentSession);
   }
 }
