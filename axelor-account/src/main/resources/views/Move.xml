@@ -271,7 +271,8 @@
             form-view="invoice-form" grid-view="invoice-grid"/>
           <field name="paymentVoucher"
             hideIf="!functionOriginSelect || functionalOriginSelect != 5 || !paymentVoucher"
-            canNew="false" domain="self.company = :company" form-view="payment-voucher-form" grid-view="payment-voucher-grid"/>
+            canNew="false" domain="self.company = :company" form-view="payment-voucher-form"
+            grid-view="payment-voucher-grid"/>
           <field name="paymentSession" readonly="true"
             hideIf="!functionOriginSelect || functionalOriginSelect !=  5 || !paymentSession"
             form-view="payment-session-form" grid-view="payment-session-grid"/>
@@ -356,7 +357,9 @@
             onChange="action-move-group-journal-on-change"
             domain="self.statusSelect = 1 AND self.company = :company" form-view="journal-form"
             grid-view="journal-grid"/>
-          <field name="functionalOriginSelect" readonlyIf="statusSelect > 2" colSpan="3"
+          <field name="functionalOriginSelect"
+            readonlyIf="statusSelect != 1 &amp;&amp; statusSelect != 2 &amp;&amp; statusSelect != 5"
+            colSpan="3"
             hideIf="journal.authorizedFunctionalOriginSelect.split(',').length == 1 &amp;&amp; journal.authorizedFunctionalOriginSelect == functionalOriginSelect || journal.authorizedFunctionalOriginSelect == null &amp;&amp; functionalOriginSelect == null"/>
           <field name="date" colSpan="3" onChange="action-group-move-date-onchange"/>
           <field hidden="true" name="period" canView="false" canEdit="false"
