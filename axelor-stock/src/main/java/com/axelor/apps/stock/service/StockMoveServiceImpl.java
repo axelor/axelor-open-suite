@@ -849,7 +849,8 @@ public class StockMoveServiceImpl implements StockMoveService {
   @Override
   @Transactional
   public boolean splitStockMoveLines(
-      StockMove stockMove, List<StockMoveLine> stockMoveLines, BigDecimal splitQty) {
+      StockMove stockMove, List<StockMoveLine> stockMoveLines, BigDecimal splitQty)
+      throws AxelorException {
 
     Boolean selected = false;
 
