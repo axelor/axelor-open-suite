@@ -38,8 +38,10 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class ProjectTaskServiceImpl implements ProjectTaskService {
 
@@ -251,5 +253,25 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
 
     String result = buffer.toString();
     return StringUtils.isEmpty(result) ? value : result;
+  }
+
+  @Override
+  public List<Integer> getProjectStatusIdList(ProjectTask projectTask) {
+    Project project = projectTask.getProject();
+    List<Integer> projectStatusIdList = new ArrayList<>();
+    if (project != null) {
+      Set<ProjectStatus> projectTaskSet = project.getProjectTaskStatusSet();
+      if (projectTaskSet != null && !projectTaskSet.isEmpty()) {
+        projectStatusIdList =
+            projectTaskSet.stream()
+                .sorted(Comparator.comparing(ProjectStatus::getSequence))
+                .map(ProjectStatus::getId)
+                .map(Long::intValue)
+                .collect(Collectors.toList());
+      }
+    } else {
+      projectStatusIdList.add(-1);
+    }
+    return projectStatusIdList;
   }
 }
