@@ -115,9 +115,10 @@
     <field name="taxLine" readonlyIf="!account.isTaxAuthorizedOnMoveLine"
       requiredIf="account.isTaxRequiredOnMoveLine"
       domain="self.endDate > :date OR self.endDate IS NULL"
-      onChange="account-move-line-update-tax-equiv"/>
+      onChange="account-move-line-update-tax-equiv" width="80"/>
     <field name="vatSystemSelect"
-      readonlyIf="(move.statusSelect != 1 &amp;&amp; move.statusSelect != 5) || account.accountType.technicalTypeSelect != 'tax'"/>
+      readonlyIf="(move.statusSelect != 1 &amp;&amp; move.statusSelect != 5) || account.accountType.technicalTypeSelect != 'tax'"
+      width="80"/>
     <field name="analyticDistributionTemplate"
       if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"
       grid-view="analytic-distribution-template-grid"
@@ -125,7 +126,8 @@
       onChange="action-move-line-method-analytic-distribution-template-onchange"
       onSelect="action-move-line-group-set-analytic-distribution-template-onselect"
       readonlyIf="!account || !account.analyticDistributionAuthorized"
-      requiredIf="(!analyticMoveLineList || !analyticMoveLineList.length) &amp;&amp; account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines &amp;&amp; (axis1AnalyticAccount == null &amp;&amp; axis2AnalyticAccount == null &amp;&amp; axis3AnalyticAccount == null &amp;&amp; axis4AnalyticAccount == null &amp;&amp; axis5AnalyticAccount == null)"/>
+      requiredIf="(!analyticMoveLineList || !analyticMoveLineList.length) &amp;&amp; account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines &amp;&amp; (axis1AnalyticAccount == null &amp;&amp; axis2AnalyticAccount == null &amp;&amp; axis3AnalyticAccount == null &amp;&amp; axis4AnalyticAccount == null &amp;&amp; axis5AnalyticAccount == null)"
+      width="80"/>
     <field name="axis1AnalyticAccount" grid-view="analytic-account-grid"
       form-view="analytic-account-form"
       readonlyIf="account.analyticDistributionAuthorized == false || !account"

@@ -21,4 +21,6 @@ import com.axelor.apps.account.db.PaymentSession;
 
 public interface PaymentSessionCancelService {
   public void cancelPaymentSession(PaymentSession paymentSession);
+
+  void cancelInvoiceTerms(PaymentSession paymentSession);
 }

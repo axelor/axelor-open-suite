@@ -432,7 +432,7 @@ public class MoveController {
           && !move.getMoveLineList().isEmpty()
           && (move.getStatusSelect().equals(MoveRepository.STATUS_NEW)
               || move.getStatusSelect().equals(MoveRepository.STATUS_SIMULATED))) {
-        Beans.get(MoveLineTaxService.class).autoTaxLineGenerateNoSave(move);
+        Beans.get(MoveLineTaxService.class).autoTaxLineGenerateNoSave(move, null);
 
         response.setValue("moveLineList", move.getMoveLineList());
       }
@@ -757,24 +757,26 @@ public class MoveController {
       if (request.getContext().containsKey("paymentConditionChange")
           && (boolean) request.getContext().get("paymentConditionChange")) {
         Move move = request.getContext().asType(Move.class);
-        move = Beans.get(MoveRepository.class).find(move.getId());
 
         moveInvoiceTermService.recreateInvoiceTerms(move);
 
         if (moveInvoiceTermService.displayDueDate(move)) {
           response.setAttr(
-              "dueDate", "value", moveInvoiceTermService.computeDueDate(move, true, false));
+              "$dueDate", "value", moveInvoiceTermService.computeDueDate(move, true, false));
         }
+
+        response.setValues(move);
       } else if (request.getContext().containsKey("headerChange")
           && (boolean) request.getContext().get("headerChange")) {
         Move move = request.getContext().asType(Move.class);
-        move = Beans.get(MoveRepository.class).find(move.getId());
 
         boolean isAllUpdated = moveInvoiceTermService.updateInvoiceTerms(move);
 
         if (!isAllUpdated) {
           response.setFlash(I18n.get(AccountExceptionMessage.MOVE_INVOICE_TERM_CANNOT_UPDATE));
         }
+
+        response.setValues(move);
       }
 
       response.setValue("$paymentConditionChange", false);
@@ -806,7 +808,7 @@ public class MoveController {
       MoveInvoiceTermService moveInvoiceTermService = Beans.get(MoveInvoiceTermService.class);
       boolean displayDueDate = moveInvoiceTermService.displayDueDate(move);
 
-      response.setAttr("dueDate", "hidden", !displayDueDate);
+      response.setAttr("$dueDate", "hidden", !displayDueDate);
 
       if (displayDueDate) {
         boolean paymentConditionChange =
@@ -820,11 +822,11 @@ public class MoveController {
                   || paymentConditionChange;
 
           response.setAttr(
-              "dueDate", "value", moveInvoiceTermService.computeDueDate(move, true, isDateChange));
+              "$dueDate", "value", moveInvoiceTermService.computeDueDate(move, true, isDateChange));
           response.setAttr("$dateChange", "value", false);
         }
       } else {
-        response.setAttr("dueDate", "value", null);
+        response.setAttr("$dueDate", "value", null);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
@@ -850,10 +852,11 @@ public class MoveController {
       if (request.getContext().containsKey("dueDate")
           && request.getContext().get("dueDate") != null) {
         Move move = request.getContext().asType(Move.class);
-        move = Beans.get(MoveRepository.class).find(move.getId());
 
         Beans.get(MoveInvoiceTermService.class)
             .updateSingleInvoiceTermDueDate(move, this.extractDueDate(request));
+
+        response.setValues(move);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
@@ -865,12 +868,16 @@ public class MoveController {
       Move move = request.getContext().asType(Move.class);
       String errorMessage =
           Beans.get(MoveInvoiceTermService.class).checkIfInvoiceTermInPayment(move);
-      if (move.getId() != null && !StringUtils.isEmpty(errorMessage)) {
-        response.setValue(
-            "paymentCondition",
-            Beans.get(MoveRepository.class).find(move.getId()).getPaymentCondition());
+
+      if (StringUtils.notEmpty(errorMessage)) {
+        if (move.getId() != null) {
+          response.setValue(
+              "paymentCondition",
+              Beans.get(MoveRepository.class).find(move.getId()).getPaymentCondition());
+        }
+
+        response.setError(errorMessage);
       }
-      response.setValue("$paymentConditionChangeError", errorMessage);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
