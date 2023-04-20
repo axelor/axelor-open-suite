@@ -73,7 +73,7 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
         if (moveLine.getAccount() != null
             && moveLine.getAccount().getUseForPartnerBalance()
             && CollectionUtils.isEmpty(moveLine.getInvoiceTermList())) {
-          moveLineInvoiceTermService.generateDefaultInvoiceTerm(moveLine, false);
+          moveLineInvoiceTermService.generateDefaultInvoiceTerm(move, moveLine, false);
         }
       }
     }
@@ -117,8 +117,7 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
     if (CollectionUtils.isNotEmpty(move.getMoveLineList())) {
       for (MoveLine moveLine : move.getMoveLineList()) {
         if (moveLine.getAccount().getUseForPartnerBalance()) {
-          moveLine.setMove(move);
-          moveLineInvoiceTermService.recreateInvoiceTerms(moveLine);
+          moveLineInvoiceTermService.recreateInvoiceTerms(move, moveLine);
         }
       }
     }

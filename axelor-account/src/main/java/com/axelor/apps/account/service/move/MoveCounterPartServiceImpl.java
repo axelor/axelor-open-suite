@@ -75,7 +75,7 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
     }
     move.addMoveLineListItem(counterPartMoveLine);
     moveLineInvoiceTermService.generateDefaultInvoiceTerm(
-        counterPartMoveLine, singleTermDueDate, true);
+        counterPartMoveLine.getMove(), counterPartMoveLine, singleTermDueDate, true);
   }
 
   @Override

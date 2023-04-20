@@ -762,7 +762,7 @@ public class MoveLineController {
         LocalDate dueDate = this.extractDueDate(request);
         moveLine.clearInvoiceTermList();
         Beans.get(MoveLineInvoiceTermService.class)
-            .generateDefaultInvoiceTerm(moveLine, dueDate, false);
+            .generateDefaultInvoiceTerm(moveLine.getMove(), moveLine, dueDate, false);
       }
       response.setValues(moveLine);
       response.setValue("invoiceTermList", moveLine.getInvoiceTermList());
