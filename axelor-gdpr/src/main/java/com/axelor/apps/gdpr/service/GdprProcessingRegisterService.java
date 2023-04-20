@@ -29,6 +29,7 @@ import com.axelor.apps.gdpr.db.repo.GDPRProcessingRegisterRepository;
 import com.axelor.apps.message.service.MailMessageService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.AuditableModel;
+import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.db.mapper.Mapper;
@@ -129,9 +130,10 @@ public class GdprProcessingRegisterService implements Callable<List<GDPRProcessi
 
     for (GDPRProcessingRegisterRule gdprProcessingRegisterRule : gdprProcessingRegisterRuleList) {
       MetaModel metaModel = gdprProcessingRegisterRule.getMetaModel();
-      String filter = computeFilter(gdprProcessingRegisterRule.getRule());
+
       Class<? extends AuditableModel> entityKlass =
           (Class<? extends AuditableModel>) Class.forName(metaModel.getFullName());
+      String filter = computeFilter(gdprProcessingRegisterRule.getRule(), metaModel);
 
       AuditableModel model;
 
@@ -167,7 +169,7 @@ public class GdprProcessingRegisterService implements Callable<List<GDPRProcessi
     }
   }
 
-  protected String computeFilter(String rule) {
+  protected String computeFilter(String rule, MetaModel metaModel) {
     StringBuilder stringBuilder = new StringBuilder();
     String fields = rule.replaceAll("\\s", "");
     List<String> fieldList = Arrays.asList(fields.split(","));
@@ -181,6 +183,12 @@ public class GdprProcessingRegisterService implements Callable<List<GDPRProcessi
         stringBuilder.append(" AND ");
       }
     }
+
+    // Exclude admin user
+    if (User.class.getName().equals(metaModel.getFullName())) {
+      stringBuilder.append(" AND self.code != 'admin'");
+    }
+
     return stringBuilder.toString();
   }
 
