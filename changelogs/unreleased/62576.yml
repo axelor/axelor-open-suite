@@ -1,0 +1,3 @@
+---
+title: "Processing register: fix an error occurring sometimes when more than 10 objects were anonymized"
+type: fix
