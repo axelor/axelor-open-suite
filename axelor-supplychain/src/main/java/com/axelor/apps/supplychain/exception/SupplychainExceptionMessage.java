@@ -358,4 +358,7 @@ public final class SupplychainExceptionMessage {
 
   public static final String MRP_STOCK_HISTORY_FIELD_SELECT_MISSING = /*$$(*/
       "Field fieldSelect is null for %s" /*)*/;
+
+  public static final String STOCK_MOVE_LINES_ASSOCIATED_WITH_INVOICE_LINES_CANNOT_SPLIT = /*$$(*/
+      "The following stock move lines are already associated with invoice lines and can not be splitted: %s" /*)*/;
 }
