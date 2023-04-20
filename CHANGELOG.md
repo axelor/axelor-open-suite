@@ -1,3 +1,16 @@
+## [5.4.40] (2023-04-20)
+
+#### Fixed
+
+* Partner: fixed script error when opening partner contact form (issue happening only when axelor-base was installed without axelor-account).
+* Customer/Prospect reporting: fixed an error occuring if we only have axelor-base installed when opening the dashboard.
+* Stock move: fixed an issue when opening stock move line form from the invoicing wizard.
+* Stock move: now prevent splitting action on stock move line that are associated with a invoice line.
+* Invoice: fixed filter on company bank details for factorized customer so we are able to select the bank details of the factor.
+* Invoice: to avoid inconsistencies, now only canceled invoices can be deleted.
+* Bank details: fixed script error when opening bank details form (issue happening only when axelor-base was installed without axelor-account).
+
+
 ## [5.4.39] (2023-04-06)
 
 #### Fixed
@@ -901,6 +914,7 @@ password only if user type is signatory and ebics partner mode is ebics TS,
 - Bank reconciliation: add management of case of several account management for account domain, journal domain, auto change of journal and cash account fields and now account and journal from bank details are prioritized.
 - Invoice: Fix NullPointerException when the product is not filled in invoice line.
 
+[5.4.40]: https://github.com/axelor/axelor-open-suite/compare/v5.4.39...v5.4.40
 [5.4.39]: https://github.com/axelor/axelor-open-suite/compare/v5.4.38...v5.4.39
 [5.4.38]: https://github.com/axelor/axelor-open-suite/compare/v5.4.37...v5.4.38
 [5.4.37]: https://github.com/axelor/axelor-open-suite/compare/v5.4.36...v5.4.37
