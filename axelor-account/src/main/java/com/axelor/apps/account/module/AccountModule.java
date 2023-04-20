@@ -179,6 +179,8 @@ import com.axelor.apps.account.service.custom.AccountingReportValuePercentageSer
 import com.axelor.apps.account.service.custom.AccountingReportValuePercentageServiceImpl;
 import com.axelor.apps.account.service.custom.AccountingReportValueService;
 import com.axelor.apps.account.service.custom.AccountingReportValueServiceImpl;
+import com.axelor.apps.account.service.debtrecovery.DebtRecoveryHistoryService;
+import com.axelor.apps.account.service.debtrecovery.DebtRecoveryHistoryServiceImpl;
 import com.axelor.apps.account.service.debtrecovery.DoubtfulCustomerInvoiceTermService;
 import com.axelor.apps.account.service.debtrecovery.DoubtfulCustomerInvoiceTermServiceImpl;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
@@ -263,6 +265,8 @@ import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveLineInvoiceTermServiceImpl;
 import com.axelor.apps.account.service.move.MoveLoadDefaultConfigService;
 import com.axelor.apps.account.service.move.MoveLoadDefaultConfigServiceImpl;
+import com.axelor.apps.account.service.move.MovePfpService;
+import com.axelor.apps.account.service.move.MovePfpServiceImpl;
 import com.axelor.apps.account.service.move.MoveRemoveService;
 import com.axelor.apps.account.service.move.MoveRemoveServiceImpl;
 import com.axelor.apps.account.service.move.MoveReverseService;
@@ -279,6 +283,14 @@ import com.axelor.apps.account.service.move.PaymentMoveLineDistributionService;
 import com.axelor.apps.account.service.move.PaymentMoveLineDistributionServiceImpl;
 import com.axelor.apps.account.service.move.SimulatedMoveService;
 import com.axelor.apps.account.service.move.SimulatedMoveServiceImpl;
+import com.axelor.apps.account.service.move.massentry.MassEntryMoveCreateService;
+import com.axelor.apps.account.service.move.massentry.MassEntryMoveCreateServiceImpl;
+import com.axelor.apps.account.service.move.massentry.MassEntryService;
+import com.axelor.apps.account.service.move.massentry.MassEntryServiceImpl;
+import com.axelor.apps.account.service.move.massentry.MassEntryToolService;
+import com.axelor.apps.account.service.move.massentry.MassEntryToolServiceImpl;
+import com.axelor.apps.account.service.move.massentry.MassEntryVerificationService;
+import com.axelor.apps.account.service.move.massentry.MassEntryVerificationServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineConsolidateService;
@@ -293,6 +305,10 @@ import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.account.service.moveline.MoveLineToolServiceImpl;
+import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryService;
+import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryServiceImpl;
+import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryToolService;
+import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryToolServiceImpl;
 import com.axelor.apps.account.service.notebills.NoteBillsCreateService;
 import com.axelor.apps.account.service.notebills.NoteBillsCreateServiceImpl;
 import com.axelor.apps.account.service.payment.PaymentModeService;
@@ -479,6 +495,8 @@ public class AccountModule extends AxelorModule {
     bind(MoveLineControlService.class).to(MoveLineControlServiceImpl.class);
 
     bind(DebtRecoveryRepository.class).to(DebtRecoveryAccountRepository.class);
+
+    bind(DebtRecoveryHistoryService.class).to(DebtRecoveryHistoryServiceImpl.class);
 
     bind(InvoiceTermService.class).to(InvoiceTermServiceImpl.class);
 
@@ -672,5 +690,19 @@ public class AccountModule extends AxelorModule {
     bind(InvoiceProductStatementService.class).to(InvoiceProductStatementServiceImpl.class);
 
     bind(MoveLineCurrencyService.class).to(MoveLineCurrencyServiceImpl.class);
+
+    bind(MovePfpService.class).to(MovePfpServiceImpl.class);
+
+    bind(MassEntryService.class).to(MassEntryServiceImpl.class);
+
+    bind(MassEntryToolService.class).to(MassEntryToolServiceImpl.class);
+
+    bind(MassEntryVerificationService.class).to(MassEntryVerificationServiceImpl.class);
+
+    bind(MassEntryMoveCreateService.class).to(MassEntryMoveCreateServiceImpl.class);
+
+    bind(MoveLineMassEntryService.class).to(MoveLineMassEntryServiceImpl.class);
+
+    bind(MoveLineMassEntryToolService.class).to(MoveLineMassEntryToolServiceImpl.class);
   }
 }

@@ -49,6 +49,27 @@
     <field name="statusSelect" width="90"/>
   </grid>
 
+  <grid name="move-mass-entry-grid" orderBy="-date" canArchive="false" title="Account moves"
+    model="com.axelor.apps.account.db.Move" canDelete="false">
+    <toolbar>
+      <button name="deleteMovesBtn" title="Delete" icon="fa-trash"
+        onClick="action-move-method-delete-multiple-moves"/>
+    </toolbar>
+    <hilite color="info" if="statusSelect == 1"/>
+    <hilite color="danger" if="statusSelect == 4"/>
+    <field name="reference" width="200"/>
+    <field name="journal" form-view="journal-form" grid-view="journal-grid" width="200"/>
+    <field name="functionalOriginSelect"/>
+    <field name="company" form-view="company-form" grid-view="company-grid" width="140"
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
+    <field name="tradingName"
+      if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"
+      form-view="trading-name-form" grid-view="trading-name-grid" width="140"/>
+    <field name="massEntryStatusSelect" title="Status"/>
+    <field name="createdOn" title="Created on"/>
+    <field name="createdBy" title="Created by"/>
+  </grid>
+
   <form name="move-form" title="Account move" canArchive="false"
     model="com.axelor.apps.account.db.Move" canDelete="false" width="large"
     onNew="action-account-move-onnew-group" onLoad="action-account-move-group-onload"
@@ -324,11 +345,87 @@
           <field name="company.accountConfig.accountingDaybook" hidden="true"/>
         </panel>
       </panel>
+
+      <panel name="hiddenPanel" hidden="true">
+        <field name="journal.journalType"/>
+        <field name="journal.journalType.technicalTypeSelect"/>
+      </panel>
     </panel-tabs>
     <panel-mail name="mailPanel">
       <mail-messages limit="4"/>
       <mail-followers/>
     </panel-mail>
+  </form>
+
+  <form name="move-mass-entry-form" title="Mass entry" canArchive="false"
+    model="com.axelor.apps.account.db.Move" canDelete="false" width="large"
+    onNew="action-account-move-onnew-group" onLoad="action-account-move-group-onload"
+    onSave="action-account-move-group-onsave" readonlyIf="massEntryStatusSelect == 2">
+    <toolbar>
+      <button name="controlMassEntryMoves" title="Control moves consistency"
+        onClick="action-move-method-control-mass-entry-moves" colSpan="12" hidden="false"
+        css="btn-primary"/>
+      <button name="validateMassEntryMoves" title="Validate" hidden="true"
+        onClick="action-move-method-validate-mass-entry-moves" colSpan="12" css="btn-success"/>
+    </toolbar>
+
+    <panel name="mainPanel" colSpan="12">
+      <panel name="moveDetailsPanel" colSpan="12">
+        <field name="reference" colSpan="8" showIf="id != null"/>
+        <field name="massEntryStatusSelect" showTitle="false" readonly="true" colSpan="4">
+          <viewer depends="massEntryStatusSelect">
+            <![CDATA[
+                      <h4 class="text-right">
+	                      <span class="label label-success" style="margin: 0 !important; display: inline-table; line-height: initial;" ng-show="record.massEntryStatusSelect == 1" x-translate>Ongoing</span>
+	                      <span class="label label-warning" style="margin: 0 !important; display: inline-table; line-height: initial;" ng-show="record.massEntryStatusSelect == 2" x-translate>Closed</span>
+                      </h4>
+                    ]]>
+          </viewer>
+        </field>
+        <panel name="moveContentPanel" colSpan="12">
+          <field name="company" canEdit="false" widget="SuggestBox"
+            readonlyIf="$validatePeriod || moveLineMassEntryList.length &gt; 0 || statusSelect == 3"
+            onChange="action-group-move-company-onchange" form-view="company-form"
+            grid-view="company-grid" colSpan="3"/>
+          <field name="journal" domain="self.statusSelect = 1 AND self.company = :company"
+            readonlyIf="$validatePeriod || moveLineMassEntryList.length &gt; 0 || statusSelect == 3"
+            canNew="false" form-view="journal-form" grid-view="journal-grid" canEdit="false"
+            onChange="action-move-group-journal-on-change" colSpan="3"/>
+          <field name="functionalOriginSelect" readonlyIf="statusSelect > 2" colSpan="3"
+            hideIf="journal.authorizedFunctionalOriginSelect.split(',').length == 1 &amp;&amp; journal.authorizedFunctionalOriginSelect == functionalOriginSelect || journal.authorizedFunctionalOriginSelect == null &amp;&amp; functionalOriginSelect == null"
+            onChange="action-move-attrs-set-hidden-mass-entry-buttons"/>
+          <field name="currency"
+            readonlyIf="$validatePeriod || moveLineMassEntryList.length &gt; 0 || statusSelect == 3 || (companyBankDetails == null &amp;&amp; $journalTechnicalTypeSelect == 1)"
+            colSpan="3" onChange="action-move-currency-onchange" required="true" hidden="true"/>
+          <field name="createdOn" title="Created on" readonly="true" colSpan="3"
+            if="createdOn != null"/>
+          <field name="createdBy" title="Created by" readonly="true" colSpan="3"
+            if="createdBy != null"/>
+          <field name="updatedBy" title="Updated by" readonly="true" colSpan="3"
+            if="updatedBy != null"/>
+          <field name="manageCutOffDummy" colSpan="3" title="Manage Cut off period"
+            readonlyIf="$validatePeriod || moveLineMassEntryList.length &gt; 0 || statusSelect == 3"
+            widget="boolean-switch" onChange="action-move-attrs-set-hidden-and-required-fields"
+            if="__config__.app.getApp('account').manageCutOffPeriod"/>
+        </panel>
+      </panel>
+
+      <panel name="hiddenPanel" hidden="true">
+        <field name="$journalTechnicalTypeSelect" type="integer"/>
+        <field name="journal.authorizedFunctionalOriginSelect"/>
+      </panel>
+    </panel>
+
+    <panel>
+      <panel-related name="moveLineMassEntryListPanel" field="moveLineMassEntryList"
+        editable="true" colSpan="12" height="20" canNew="true" canRemove="true"
+        grid-view="move-line-mass-entry-move-grid"
+        onChange="action-move-group-move-line-list-onchange"/>
+    </panel>
+
+    <panel name="errorPanel" colSpan="12">
+      <field name="massEntryErrors" readonly="true" widget="Text" colSpan="12"/>
+    </panel>
   </form>
 
   <form name="move-simplified-form" title="Account move"
@@ -364,9 +461,11 @@
           <field if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"
             name="tradingName" canNew="false" onSelect="action-move-set-trading-name-domain"
             form-view="trading-name-form" grid-view="trading-name-grid"/>
-          <field name="paymentMode" colSpan="3"/>
+          <field name="paymentMode" colSpan="3"
+            onSelect="action-move-attrs-set-domain-payment-mode"/>
           <field name="$journalTechnicalTypeSelect" hidden="true" type="integer"/>
           <field name="journal.authorizeSimulatedMove" hidden="true"/>
+          <field name="originDate" hidden="true"/>
         </panel>
         <field name="description" colSpan="6"
           onChange="action-account-move-group-set-description-on-lines"/>
@@ -537,6 +636,20 @@
     </panel>
   </form>
 
+  <form name="move-refusal-to-pay-wizard-form" model="com.axelor.apps.account.db.Move"
+    title="Move.refuseToPayWizard">
+    <panel name="mainPanel">
+      <field name="reasonOfRefusalToPay"
+        domain="self.applicationType = 'com.axelor.apps.account.db.Invoice'" colOffset="4"
+        colSpan="4" widget="SuggestBox" canNew="false" canEdit="false"
+        onChange="action-attrs-move-other-reason"/>
+      <field name="reasonOfRefusalToPayStr" colOffset="4" colSpan="4" hidden="true"/>
+      <button name="cancelConfirmBtn" title="Move.refuseToPayBtn"
+        onClick="action-move-refusal-to-pay-cancel-reason-check,action-move-method-refusal-to-pay"
+        colOffset="4" colSpan="4"/>
+    </panel>
+  </form>
+
   <action-record name="action-move-record-set-date-of-revision"
     model="com.axelor.apps.account.db.Move">
     <field name="dateOfReversion" expr="eval: __config__.date" if="dateOfReversionSelect == 1"/>
@@ -550,8 +663,12 @@
     <action name="default-move-record"/>
     <action name="default-move-record-currency"/>
     <action name="action-move-record-journal"/>
+    <action name="action-move-mass-entry-method-verify-mass-entry-status-select"/>
     <action name="action-move-account-record-set-journal-technical-type-select"/>
+    <action name="action-move-attrs-set-hidden-and-required-fields"
+      if="massEntryStatusSelect != 0"/>
     <action name="action-move-method-get-period"/>
+    <action name="action-move-attrs-set-origin-date" if="journal?.isFillOriginDate"/>
     <action name="action-move-attrs-adjusting-move"/>
     <action name="action-move-attrs-hide-move-line-name-in-draft-status"/>
     <action name="action-move-attrs-validate-button-title"/>
@@ -565,12 +682,20 @@
     <action name="action-move-attrs-manage-bank-details"/>
     <action name="action-move-method-check-period-permissions"/>
     <action name="action-method-hide-axis-analytic-account-move-line"/>
+    <action name="action-move-method-set-pfp-visibility"
+      if="__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
+    <action name="action-move-record-set-pfp-status"
+      if="__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
+    <action name="action-move-method-fill-company-bank-details"/>
+    <action name="action-move-mass-entry-method-verify-company-bank-details"/>
   </action-group>
 
   <action-group name="action-account-move-group-onload">
     <action name="action-move-attrs-set-company-currency-code-iso"/>
     <action name="action-move-attrs-adjusting-move"/>
     <action name="action-move-attrs-hide-move-line-name-in-draft-status"/>
+    <action name="action-move-attrs-set-hidden-and-required-fields"
+      if="massEntryStatusSelect != 0"/>
     <action name="action-move-attrs-validate-button-title"/>
     <action name="action-account-move-method-compute-totals"/>
     <action name="action-move-is-hidden-move-line-list-viewer-attrs-method"/>
@@ -587,6 +712,8 @@
     <action name="action-move-attrs-hide-move-line-partner"/>
     <action name="action-move-attrs-manage-bank-details"/>
     <action name="action-method-hide-axis-analytic-account-move-line"/>
+    <action name="action-move-method-set-pfp-visibility"
+      if="__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
   </action-group>
 
   <action-group name="action-account-move-group-onsave">
@@ -604,7 +731,6 @@
   </action-group>
 
   <action-group name="action-account-move-group-generate-counterpart">
-    <action name="action-account-move-group-onsave"/>
     <action name="action-account-move-method-exception-counterpart"/>
     <action name="action-account-move-method-automatic-taxline-generation"/>
     <action name="action-account-move-method-generate-counterpart"/>
@@ -612,7 +738,6 @@
   </action-group>
 
   <action-group name="action-account-move-group-generate-tax-lines">
-    <action name="action-account-move-group-onsave"/>
     <action name="action-account-move-method-automatic-taxline-generation"/>
     <action name="action-account-move-method-compute-totals"/>
   </action-group>
@@ -620,6 +745,8 @@
   <action-group name="action-account-move-group-accounting-click">
     <action name="action-account-accounting-prompt"
       if="statusSelect == 2 || ((!company?.accountConfig?.accountingDaybook || !journal?.allowAccountingDaybook) &amp;&amp; (statusSelect == 1 || statusSelect == 5))"/>
+    <action name="action-move-validate-check-pfp-validator-user"/>
+    <action name="action-move-method-apply-cut-off-dates-in-empty-lines"/>
     <action name="action-account-move-group-onsave"/>
     <action name="action-move-method-accounting"/>
   </action-group>
@@ -636,7 +763,13 @@
     <action name="action-account-move-method-set-origin-on-lines"/>
   </action-group>
 
+  <action-group name="action-move-group-pfp-validate">
+    <action name="save"/>
+    <action name="action-method-account-move-validate-pfp"/>
+  </action-group>
+
   <action-group name="action-move-account-group-simulate">
+    <action name="action-move-method-apply-cut-off-dates-in-empty-lines"/>
     <action name="action-account-move-group-onsave"/>
     <action name="action-move-method-set-status-simulate"/>
   </action-group>
@@ -648,6 +781,9 @@
     <action name="action-move-method-fill-company-bank-details"/>
     <action name="action-method-hide-axis-analytic-account-move-line"/>
     <action name="default-move-record-currency"/>
+    <action name="action-move-mass-entry-method-verify-company-bank-details"/>
+    <action name="action-move-attrs-set-hidden-mass-entry-buttons"
+      if="massEntryStatusSelect != 0"/>
   </action-group>
 
   <action-group name="action-group-move-date-onchange">
@@ -657,20 +793,35 @@
     <action name="action-move-method-set-moveline-dates"/>
     <action name="action-move-method-update-currency-rate"/>
     <action name="action-account-move-method-compute-totals"/>
-    <action name="action-move-attrs-date-change"/>
+    <action name="action-move-attrs-set-origin-date" if="journal?.isFillOriginDate"/>
+    <action name="action-move-group-origin-date-onchange" if="journal?.isFillOriginDate"/>
+    <!-- Save() removed with the ticket 60213 -->
+    <action name="action-move-method-check-dates"/>
+    <action name="action-move-method-check-period-permissions"/>
+    <action name="action-move-method-check-remove-lines"/>
+    <action name="action-move-method-update-partner" if="id != null"/>
+    <action name="action-move-method-update-invoice-terms"/>
+    <action name="action-move-method-round-invoice-term-percentages" if="id != null"/>
+    <action name="action-move-method-update-due-date"/>
     <action name="action-move-method-display-and-compute-due-date"/>
-    <action name="action-account-move-group-onsave"/>
   </action-group>
 
   <action-group name="action-move-group-journal-on-change">
     <action name="action-move-account-record-set-journal-technical-type-select"/>
     <action name="action-move-attrs-set-functional-origin-select-domain"/>
     <action name="action-move-attrs-set-functional-origin-select"/>
+    <action name="action-move-attrs-set-hidden-and-required-fields"
+      if="massEntryStatusSelect != 0"/>
     <action name="action-move-attrs-validate-button-title"/>
     <action name="action-move-method-journal-on-change"/>
     <action name="action-move-record-set-payment-mode"/>
     <action name="action-move-record-set-payment-condition"/>
     <action name="action-move-record-set-bank-details"/>
+    <action name="action-move-attrs-set-origin-date" if="journal?.isFillOriginDate"/>
+    <action name="action-move-record-set-pfp-status"/>
+    <action name="action-move-mass-entry-method-verify-company-bank-details"/>
+    <action name="action-move-attrs-set-hidden-mass-entry-buttons"
+      if="massEntryStatusSelect != 0"/>
   </action-group>
 
   <action-group name="action-move-group-partner-onchange">
@@ -681,12 +832,17 @@
     <action name="action-move-method-display-and-compute-due-date"/>
     <action name="action-move-attrs-hide-move-line-partner"/>
     <action name="action-move-method-fill-company-bank-details"/>
+    <action name="action-move-method-set-pfp-validator-user"
+      if="__config__.app.getApp('account')?.getActivatePassedForPayment() &amp;&amp; pfpValidateStatusSelect > 0"/>
   </action-group>
 
   <action-group name="action-move-group-move-line-list-onchange">
     <action name="action-account-move-method-compute-totals"/>
     <action name="action-move-method-display-and-compute-due-date"/>
     <action name="action-method-hide-axis-analytic-account-move-line"/>
+    <action
+      name="action-move-line-mass-entry-method-verify-fields-and-generate-taxline-and-counterpart"
+      if="massEntryStatusSelect != 0"/>
   </action-group>
 
   <action-group name="action-move-group-payment-condition-onchange">
@@ -738,6 +894,12 @@
   <action-validate name="action-move-validate-check-term-in-payment">
     <error message="$paymentConditionChangeError"
       if="!com.google.common.base.Strings.isNullOrEmpty(paymentConditionChangeError)"/>
+  </action-validate>
+
+  <action-validate name="action-move-validate-check-pfp-validator-user">
+    <alert message="At least one pfp validator is missing, do you wish to continue ?"
+      if="moveLineList.any{ml -> com.axelor.inject.Beans.get(com.axelor.apps.account.service.invoice.InvoiceTermService.class).getPfpValidatorUserCondition(ml.move?.invoice, ml)
+          &amp;&amp; ml.invoiceTermList.any{it -> !it.pfpValidatorUser}}"/>
   </action-validate>
 
   <!-- ACTION RECORD -->
@@ -807,6 +969,12 @@
     <field name="partnerBankDetails" expr="eval: null"/>
     <field name="partnerBankDetails" if="partner"
       expr="eval: partner?.bankDetailsList.find{ it -> it.isDefault &amp;&amp; it.active }"/>
+  </action-record>
+
+  <action-record name="action-move-record-set-pfp-status"
+    model="com.axelor.apps.account.db.Move">
+    <field name="pfpValidateStatusSelect" expr="eval: __repo__(Move).PFP_STATUS_AWAITING"
+      if="company?.accountConfig?.isManagePassedForPayment &amp;&amp; (journal.journalType.technicalTypeSelect == __repo__(JournalType).TECHNICAL_TYPE_SELECT_EXPENSE || (journal.journalType.technicalTypeSelect == __repo__(JournalType).TECHNICAL_TYPE_SELECT_CREDIT_NOTE &amp;&amp; company?.accountConfig?.isManagePFPInRefund))"/>
   </action-record>
 
   <!-- ACTION ATTRS -->
@@ -879,6 +1047,32 @@
   <action-attrs name="action-move-attrs-set-functional-origin-select">
     <attribute name="value" for="functionalOriginSelect"
       expr="eval: (journal?.authorizedFunctionalOriginSelect?.split(',')?.length == 1) ? (journal?.authorizedFunctionalOriginSelect) : null"/>
+    <attribute name="value" for="functionalOriginSelect"
+      expr="eval: journal?.authorizedFunctionalOriginSelect ? journal?.authorizedFunctionalOriginSelect?.split(',')[0] : null"
+      if="massEntryStatusSelect != 0"/>
+  </action-attrs>
+
+  <action-attrs name="action-move-attrs-set-hidden-and-required-fields">
+    <attribute name="hidden" for="moveLineMassEntryList.originDate"
+      expr="eval: ![1,2,3].contains(journal?.journalType?.technicalTypeSelect)"/>
+    <attribute name="hidden" for="moveLineMassEntryList.origin"
+      expr="eval: ![1,2,3].contains(journal?.journalType?.technicalTypeSelect)"/>
+    <attribute name="hidden" for="moveLineMassEntryList.movePaymentMode"
+      expr="eval: ![1,2,3,4].contains(journal?.journalType?.technicalTypeSelect)"/>
+    <attribute name="required" for="moveLineMassEntryList.movePaymentCondition"
+      expr="eval: [1,2,3,4].contains(journal?.journalType?.technicalTypeSelect)"/>
+    <attribute name="hidden" for="moveLineMassEntryList.currencyRate"
+      expr="eval: company.currency == currency"/>
+    <attribute name="hidden" for="moveLineMassEntryList.currencyAmount"
+      expr="eval: company.currency == currency"/>
+    <attribute name="hidden" for="moveLineMassEntryList.pfpValidatorUser"
+      expr="eval: journal?.journalType?.technicalTypeSelect != 1"/>
+    <attribute name="hidden" for="moveLineMassEntryList.cutOffStartDate"
+      expr="eval: !manageCutOffDummy"/>
+    <attribute name="hidden" for="moveLineMassEntryList.cutOffEndDate"
+      expr="eval: !manageCutOffDummy"/>
+    <attribute name="hidden" for="moveLineMassEntryList.deliveryDate"
+      expr="eval: !manageCutOffDummy || ![1,2,3].contains(journal?.journalType?.technicalTypeSelect)"/>
   </action-attrs>
 
   <action-attrs name="action-move-attrs-payment-condition-set-domain">
@@ -985,6 +1179,11 @@
     <call class="com.axelor.apps.account.web.MoveController" method="applyCutOffDates"/>
   </action-method>
 
+  <action-method name="action-move-method-apply-cut-off-dates-in-empty-lines">
+    <call class="com.axelor.apps.account.web.MoveController"
+      method="applyCutOffDatesInEmptyLines"/>
+  </action-method>
+
   <action-method name="action-move-method-round-invoice-term-percentages">
     <call class="com.axelor.apps.account.web.MoveController"
       method="roundInvoiceTermPercentages"/>
@@ -1005,6 +1204,22 @@
   <action-method name="action-move-method-update-currency-rate">
     <call class="com.axelor.apps.account.web.MoveController"
       method="updateMoveLinesCurrencyRate"/>
+  </action-method>
+
+  <action-method name="action-method-account-move-validate-pfp">
+    <call class="com.axelor.apps.account.web.MoveController" method="validatePfp"/>
+  </action-method>
+
+  <action-method name="action-move-method-refusal-to-pay">
+    <call class="com.axelor.apps.account.web.MoveController" method="refusalToPay"/>
+  </action-method>
+
+  <action-method name="action-move-method-set-pfp-validator-user">
+    <call class="com.axelor.apps.account.web.MoveController" method="setPfpValidatorUser"/>
+  </action-method>
+
+  <action-method name="action-move-method-domain-pfp-validator-user-on-select">
+    <call class="com.axelor.apps.account.web.MoveController" method="setPfpValidatorUserDomain"/>
   </action-method>
 
   <action-record name="action-record-initialize-permission-validation-move"
@@ -1035,6 +1250,10 @@
 
   <action-method name="action-move-method-update-partner">
     <call class="com.axelor.apps.account.web.MoveController" method="updatePartner"/>
+  </action-method>
+
+  <action-method name="action-move-method-set-pfp-visibility">
+    <call class="com.axelor.apps.account.web.MoveController" method="setPfpVisibility"/>
   </action-method>
 
   <!-- ACTION VIEW -->
@@ -1070,6 +1289,18 @@
     <domain>self.cutOffOriginMove = :id</domain>
   </action-view>
 
+  <action-view name="action-move-view-refusal-to-pay" title="Cancellation"
+    model="com.axelor.apps.account.db.Move">
+    <view type="form" name="move-refusal-to-pay-wizard-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="popup-save" value="false"/>
+    <view-param name="forceEdit" value="true"/>
+    <context name="_showRecord" expr="eval: __this__.id"/>
+    <context name="_xApplicationType" expr="eval: _model"/>
+  </action-view>
+
   <action-attrs name="action-move-set-trading-name-domain">
     <attribute name="domain" for="tradingName"
       expr="eval: &quot;self.id IN (${(company?.tradingNameSet?.collect{it.id}+[0]).join(',')})&quot;"/>
@@ -1094,6 +1325,10 @@
     <attribute name="value" for="$dueDate" expr="eval: null"/>
   </action-attrs>
 
+  <action-attrs name="action-move-attrs-set-origin-date">
+    <attribute name="value" for="originDate" expr="eval: date" if="date != null"/>
+  </action-attrs>
+
   <action-attrs name="action-move-attrs-manage-bank-details">
     <attribute for="companyBankDetails" name="hidden"
       expr="eval: !__config__.app.getApp('base')?.getManageMultiBanks()"/>
@@ -1101,10 +1336,27 @@
       expr="eval: __config__.app.getApp('base')?.getManageMultiBanks() &amp;&amp; [1,2].contains(journal?.journalType?.technicalTypeSelect)"/>
   </action-attrs>
 
+  <action-attrs name="action-attrs-move-other-reason">
+    <attribute for="reasonOfRefusalToPayStr" name="hidden"
+      expr="reasonOfRefusalToPay?.freeText == false"/>
+  </action-attrs>
+
   <search-filters name="move-filters" model="com.axelor.apps.account.db.Move"
     title="Move filters">
     <field name="company" hidden="true"
       if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
+    <field name="pfpValidateStatusSelect" hidden="true"
+      if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
+    <field name="pfpValidatorUser" hidden="true"
+      if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
+    <field name="company.accountConfig" hidden="true"
+      if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
+    <field name="company.accountConfig.isManagePassedForPayment" hidden="true"
+      if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
+    <field name="reasonOfRefusalToPay" hidden="true"
+      if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
+    <field name="company.accountConfig.isManagePFPInRefund" hidden="true"
+      if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <filter title="Current Period Entries">
       <domain>self.period IS NULL OR (CURRENT_DATE &gt;= self.period.fromDate and CURRENT_DATE &lt;=
         self.period.toDate)</domain>
@@ -1160,4 +1412,40 @@
   <action-attrs name="action-move-attrs-hide-move-line-partner">
     <attribute for="moveLineList.partner" name="hidden" expr="partner != null"/>
   </action-attrs>
+
+  <action-condition name="action-move-refusal-to-pay-cancel-reason-check">
+    <check error="A cancel reason must be selected" field="reasonOfRefusalToPay"
+      if="reasonOfRefusalToPay == null || reasonOfRefusalToPay == 0"/>
+  </action-condition>
+
+  <action-method name="action-move-mass-entry-method-verify-mass-entry-status-select">
+    <call class="com.axelor.apps.account.web.MassEntryMoveController"
+      method="verifyMassEntryStatusSelect"/>
+  </action-method>
+
+  <action-method name="action-move-mass-entry-method-verify-company-bank-details">
+    <call class="com.axelor.apps.account.web.MassEntryMoveController"
+      method="verifyCompanyBankDetails"/>
+  </action-method>
+
+  <action-method name="action-move-method-control-mass-entry-moves">
+    <call class="com.axelor.apps.account.web.MassEntryMoveController"
+      method="controlMassEntryMoves"/>
+  </action-method>
+
+  <action-method name="action-move-method-validate-mass-entry-moves">
+    <call class="com.axelor.apps.account.web.MassEntryMoveController"
+      method="validateMassEntryMoves"/>
+  </action-method>
+
+  <action-attrs name="action-move-attrs-set-hidden-mass-entry-buttons">
+    <attribute for="controlMassEntryMoves" name="hidden" expr="false"/>
+    <attribute for="validateMassEntryMoves" name="hidden" expr="true"/>
+  </action-attrs>
+
+  <action-group name="action-move-currency-onchange">
+    <action name="action-move-record-set-currency-code"/>
+    <action name="action-move-attrs-set-hidden-and-required-fields"/>
+    <action name="action-move-attrs-set-hidden-mass-entry-buttons"/>
+  </action-group>
 </object-views>

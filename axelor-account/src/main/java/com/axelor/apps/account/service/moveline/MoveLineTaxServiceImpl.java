@@ -158,7 +158,7 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
             reconcile,
             vatRate,
             detailPaymentAmount,
-            appBaseService.getTodayDate(reconcile.getCompany()));
+            reconcile.getEffectiveDate());
 
     taxPaymentMoveLine.setFiscalPosition(invoiceMove.getFiscalPosition());
 
@@ -209,6 +209,13 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
   @Transactional(rollbackOn = {Exception.class})
   public void autoTaxLineGenerate(Move move, Account account) throws AxelorException {
 
+    autoTaxLineGenerateNoSave(move, account);
+    moveRepository.save(move);
+  }
+
+  @Override
+  public void autoTaxLineGenerateNoSave(Move move, Account account) throws AxelorException {
+
     List<MoveLine> moveLineList = move.getMoveLineList();
 
     moveLineList.sort(
@@ -255,7 +262,6 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
     }
 
     moveLineList.addAll(newMap.values());
-    moveRepository.save(move);
   }
 
   protected boolean isGenerateMoveLineForAutoTax(String accountType) {

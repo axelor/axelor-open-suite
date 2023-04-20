@@ -29,6 +29,7 @@ import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
+import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -41,6 +42,7 @@ import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
+import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.account.util.TaxAccountToolService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -67,6 +69,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
   protected MoveLineCreateService moveLineCreateService;
   protected MoveLineComputeAnalyticService moveLineComputeAnalyticService;
   protected MoveToolService moveToolService;
+  protected MoveLineToolService moveLineToolService;
   protected AccountManagementAccountService accountManagementAccountService;
   protected TaxAccountService taxAccountService;
   protected AppAccountService appAccountService;
@@ -81,12 +84,14 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
   protected MoveLineService moveLineService;
   protected CurrencyService currencyService;
   protected TaxAccountToolService taxAccountToolService;
+  protected MoveLineRepository moveLineRepository;
   protected int counter = 0;
 
   @Inject
   public AccountingCutOffServiceImpl(
       MoveCreateService moveCreateService,
       MoveToolService moveToolService,
+      MoveLineToolService moveLineToolService,
       AccountManagementAccountService accountManagementAccountService,
       TaxAccountService taxAccountService,
       AppAccountService appAccountService,
@@ -102,10 +107,12 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
       MoveSimulateService moveSimulateService,
       MoveLineService moveLineService,
       CurrencyService currencyService,
-      TaxAccountToolService taxAccountToolService) {
+      TaxAccountToolService taxAccountToolService,
+      MoveLineRepository moveLineRepository) {
 
     this.moveCreateService = moveCreateService;
     this.moveToolService = moveToolService;
+    this.moveLineToolService = moveLineToolService;
     this.accountManagementAccountService = accountManagementAccountService;
     this.taxAccountService = taxAccountService;
     this.appAccountService = appAccountService;
@@ -122,6 +129,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
     this.moveLineService = moveLineService;
     this.currencyService = currencyService;
     this.taxAccountToolService = taxAccountToolService;
+    this.moveLineRepository = moveLineRepository;
   }
 
   @Override
@@ -163,6 +171,45 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
     }
 
     return moveQuery.order("id");
+  }
+
+  @Override
+  public Query<MoveLine> getMoveLines(
+      Company company,
+      Journal researchJournal,
+      LocalDate moveDate,
+      int accountingCutOffTypeSelect) {
+    String queryStr =
+        "((:researchJournal > 0 AND self.move.journal.id = :researchJournal) "
+            + "  OR (:researchJournal = 0 AND self.move.journal.journalType.technicalTypeSelect = :journalType))"
+            + "AND self.move.date <= :date "
+            + "AND self.move.statusSelect IN (2, 3, 5) "
+            + "AND self.account.manageCutOffPeriod IS TRUE "
+            + "AND self.cutOffStartDate != null AND self.cutOffEndDate != null "
+            + "AND self.cutOffEndDate > :date";
+
+    if (company != null) {
+      queryStr += " AND self.move.company = :company ";
+    }
+
+    Query<MoveLine> moveLineQuery =
+        moveLineRepository
+            .all()
+            .filter(queryStr)
+            .bind("researchJournal", researchJournal == null ? 0 : researchJournal.getId())
+            .bind(
+                "journalType",
+                accountingCutOffTypeSelect
+                        == AccountingBatchRepository.ACCOUNTING_CUT_OFF_TYPE_PREPAID_EXPENSES
+                    ? JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE
+                    : JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE)
+            .bind("date", moveDate);
+
+    if (company != null) {
+      moveLineQuery.bind("company", company);
+    }
+
+    return moveLineQuery.order("id");
   }
 
   @Override
@@ -348,8 +395,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
 
     for (MoveLine moveLine : sortedMoveLineList) {
       if (moveLine.getAccount().getManageCutOffPeriod()
-          && moveLine.getCutOffStartDate() != null
-          && moveLine.getCutOffEndDate() != null
+          && moveLineToolService.isCutOffActive(moveLine)
           && (moveLine.getCutOffEndDate().isAfter(moveDate) || isReverse)) {
         moveLineAccount = moveLine.getAccount();
         amountInCurrency = moveLineService.getCutOffProrataAmount(moveLine, originMoveDate);

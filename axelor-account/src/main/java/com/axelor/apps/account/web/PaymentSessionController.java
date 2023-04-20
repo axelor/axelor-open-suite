@@ -364,4 +364,18 @@ public class PaymentSessionController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void removeNegativeLines(ActionRequest request, ActionResponse response) {
+    try {
+      PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
+      paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
+
+      Beans.get(PaymentSessionService.class).removeNegativeLines(paymentSession);
+
+      response.setFlash(I18n.get(AccountExceptionMessage.PAYMENT_SESSION_NEGATIVE_LINES_REMOVED));
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

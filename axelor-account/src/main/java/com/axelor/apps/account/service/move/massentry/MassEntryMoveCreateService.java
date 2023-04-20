@@ -1,0 +1,17 @@
+package com.axelor.apps.account.service.move.massentry;
+
+import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.MoveLineMassEntry;
+import com.axelor.exception.AxelorException;
+import java.util.List;
+
+public interface MassEntryMoveCreateService {
+
+  Move generateMassEntryMove(Move move) throws AxelorException;
+
+  List<Move> createMoveListFromMassEntryList(Move parentMove);
+
+  Move createMoveFromMassEntryList(Move parentMove, int temporaryMoveNumber);
+
+  Integer getMaxTemporaryMoveNumber(List<MoveLineMassEntry> moveLineList);
+}

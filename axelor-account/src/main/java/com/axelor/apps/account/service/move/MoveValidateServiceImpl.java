@@ -64,6 +64,7 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -157,7 +158,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
       if (moveLine.getOriginDate() == null) {
         if (ObjectUtils.notEmpty(move.getOriginDate())) {
           moveLine.setOriginDate(move.getOriginDate());
-        } else {
+        } else if (move.getJournal() != null && move.getJournal().getIsFillOriginDate()) {
           moveLine.setOriginDate(date);
         }
       }
@@ -217,7 +218,11 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     }
 
     if (appAccountService.getAppAccount().getManageCutOffPeriod()
-        && move.getFunctionalOriginSelect() != MoveRepository.FUNCTIONAL_ORIGIN_CUT_OFF
+        && !Arrays.asList(
+                MoveRepository.FUNCTIONAL_ORIGIN_CUT_OFF,
+                MoveRepository.FUNCTIONAL_ORIGIN_OPENING,
+                MoveRepository.FUNCTIONAL_ORIGIN_CLOSURE)
+            .contains(move.getFunctionalOriginSelect())
         && !moveToolService.checkMoveLinesCutOffDates(move)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
@@ -269,30 +274,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
               account.getName(),
               moveLine.getName());
         }
-
-        if (moveLine.getAnalyticDistributionTemplate() == null
-            && ObjectUtils.isEmpty(moveLine.getAnalyticMoveLineList())
-            && account.getAnalyticDistributionAuthorized()
-            && account.getAnalyticDistributionRequiredOnMoveLines()) {
-          throw new AxelorException(
-              TraceBackRepository.CATEGORY_MISSING_FIELD,
-              I18n.get(AccountExceptionMessage.MOVE_10),
-              account.getName(),
-              moveLine.getName());
-        }
-
-        if (account != null
-            && !account.getAnalyticDistributionAuthorized()
-            && (moveLine.getAnalyticDistributionTemplate() != null
-                || (moveLine.getAnalyticMoveLineList() != null
-                    && !moveLine.getAnalyticMoveLineList().isEmpty()))) {
-          throw new AxelorException(
-              move,
-              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(AccountExceptionMessage.MOVE_11),
-              moveLine.getName());
-        }
-
+        moveLineControlService.checkAccountAnalytic(move, moveLine, account);
         moveLineControlService.validateMoveLine(moveLine);
         moveLineControlService.checkAccountCompany(moveLine);
         moveLineControlService.checkJournalCompany(moveLine);
@@ -305,20 +287,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
       this.validateWellBalancedMove(move);
       this.checkMoveLineInvoiceTermBalance(move);
 
-      if (move.getJournal() != null
-          && move.getPartner() != null
-          && move.getJournal().getHasDuplicateDetectionOnOrigin()) {
-        List<Move> moveList = moveToolService.getMovesWithDuplicatedOrigin(move);
-        if (ObjectUtils.notEmpty(moveList)) {
-          throw new AxelorException(
-              move,
-              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(AccountExceptionMessage.MOVE_DUPLICATE_ORIGIN_BLOCKING_MESSAGE),
-              moveList.stream().map(Move::getReference).collect(Collectors.joining(",")),
-              move.getPartner().getFullName(),
-              move.getPeriod().getYear().getName());
-        }
-      }
+      moveControlService.checkDuplicateOrigin(move);
     }
   }
 

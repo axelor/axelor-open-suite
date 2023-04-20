@@ -31,11 +31,13 @@ import com.axelor.apps.account.service.PeriodServiceAccount;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
+import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.journal.JournalCheckPartnerTypeService;
 import com.axelor.apps.account.service.move.MoveComputeService;
 import com.axelor.apps.account.service.move.MoveCounterPartService;
 import com.axelor.apps.account.service.move.MoveInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveLineControlService;
+import com.axelor.apps.account.service.move.MovePfpService;
 import com.axelor.apps.account.service.move.MoveRemoveService;
 import com.axelor.apps.account.service.move.MoveReverseService;
 import com.axelor.apps.account.service.move.MoveSimulateService;
@@ -426,18 +428,15 @@ public class MoveController {
   }
 
   public void autoTaxLineGenerate(ActionRequest request, ActionResponse response) {
-    Move move =
-        Beans.get(MoveRepository.class).find(request.getContext().asType(Move.class).getId());
+    Move move = request.getContext().asType(Move.class);
     try {
       if (move.getMoveLineList() != null
           && !move.getMoveLineList().isEmpty()
           && (move.getStatusSelect().equals(MoveRepository.STATUS_NEW)
               || move.getStatusSelect().equals(MoveRepository.STATUS_SIMULATED))) {
-        Beans.get(MoveLineTaxService.class).autoTaxLineGenerate(move, null);
+        Beans.get(MoveLineTaxService.class).autoTaxLineGenerateNoSave(move, null);
 
-        if (request.getContext().get("_source").equals("autoTaxLineGenerateBtn")) {
-          response.setReload(true);
-        }
+        response.setValue("moveLineList", move.getMoveLineList());
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
@@ -548,11 +547,10 @@ public class MoveController {
 
   public void generateCounterpart(ActionRequest request, ActionResponse response) {
     try {
-      Move move =
-          Beans.get(MoveRepository.class).find(request.getContext().asType(Move.class).getId());
+      Move move = request.getContext().asType(Move.class);
       Beans.get(MoveCounterPartService.class)
           .generateCounterpartMoveLine(move, this.extractDueDate(request));
-      response.setReload(true);
+      response.setValue("moveLineList", move.getMoveLineList());
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
@@ -560,8 +558,7 @@ public class MoveController {
 
   public void exceptionCounterpart(ActionRequest request, ActionResponse response) {
     try {
-      Move move =
-          Beans.get(MoveRepository.class).find(request.getContext().asType(Move.class).getId());
+      Move move = request.getContext().asType(Move.class);
       Beans.get(MoveToolService.class).exceptionOnGenerateCounterpart(move);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
@@ -652,6 +649,30 @@ public class MoveController {
       } else {
         response.setFlash(I18n.get(AccountExceptionMessage.NO_CUT_OFF_TO_APPLY));
       }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void applyCutOffDatesInEmptyLines(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      MoveComputeService moveComputeService = Beans.get(MoveComputeService.class);
+
+      if (request.getContext().get("cutOffStartDate") != null
+          && request.getContext().get("cutOffEndDate") != null) {
+        LocalDate cutOffStartDate =
+            LocalDate.parse((String) request.getContext().get("cutOffStartDate"));
+        LocalDate cutOffEndDate =
+            LocalDate.parse((String) request.getContext().get("cutOffEndDate"));
+
+        if (moveComputeService.checkManageCutOffDates(move)) {
+          moveComputeService.applyCutOffDatesInEmptyLines(move, cutOffStartDate, cutOffEndDate);
+
+          response.setValue("moveLineList", move.getMoveLineList());
+        }
+      }
+
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -887,25 +908,27 @@ public class MoveController {
    *
    * @param request
    * @param response
-   * @throws AxelorException
    */
-  public void fillCompanyBankDetails(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-    Move move = request.getContext().asType(Move.class);
-    PaymentMode paymentMode = move.getPaymentMode();
-    Company company = move.getCompany();
-    Partner partner = move.getPartner();
-    if (company == null) {
-      response.setValue("companyBankDetails", null);
-      return;
+  public void fillCompanyBankDetails(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      PaymentMode paymentMode = move.getPaymentMode();
+      Company company = move.getCompany();
+      Partner partner = move.getPartner();
+      if (company == null) {
+        response.setValue("companyBankDetails", null);
+        return;
+      }
+      if (partner != null) {
+        partner = Beans.get(PartnerRepository.class).find(partner.getId());
+      }
+      BankDetails defaultBankDetails =
+          Beans.get(BankDetailsService.class)
+              .getDefaultCompanyBankDetails(company, paymentMode, partner, null);
+      response.setValue("companyBankDetails", defaultBankDetails);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
-    if (partner != null) {
-      partner = Beans.get(PartnerRepository.class).find(partner.getId());
-    }
-    BankDetails defaultBankDetails =
-        Beans.get(BankDetailsService.class)
-            .getDefaultCompanyBankDetails(company, paymentMode, partner, null);
-    response.setValue("companyBankDetails", defaultBankDetails);
   }
 
   public void updateMoveLinesCurrencyRate(ActionRequest request, ActionResponse response) {
@@ -922,6 +945,75 @@ public class MoveController {
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setPfpVisibility(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      User user = request.getUser();
+      MovePfpService movePfpService = Beans.get(MovePfpService.class);
+
+      response.setAttr(
+          "passedForPaymentValidationBtn",
+          "hidden",
+          !movePfpService.isPfpButtonVisible(move, user, true));
+
+      response.setAttr(
+          "refusalToPayBtn", "hidden", !movePfpService.isPfpButtonVisible(move, user, false));
+
+      response.setAttr("pfpValidatorUser", "hidden", !movePfpService.isValidatorUserVisible(move));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void validatePfp(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      Beans.get(MovePfpService.class).validatePfp(move.getId());
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void refusalToPay(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      Beans.get(MovePfpService.class)
+          .refusalToPay(
+              Beans.get(MoveRepository.class).find(move.getId()),
+              move.getReasonOfRefusalToPay(),
+              move.getReasonOfRefusalToPayStr());
+      response.setCanClose(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void setPfpValidatorUser(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      response.setValue(
+          "pfpValidatorUser",
+          Beans.get(InvoiceTermService.class)
+              .getPfpValidatorUser(move.getPartner(), move.getCompany()));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void setPfpValidatorUserDomain(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      response.setAttr(
+          "pfpValidatorUser",
+          "domain",
+          Beans.get(InvoiceTermService.class)
+              .getPfpValidatorUserDomain(move.getPartner(), move.getCompany()));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 }

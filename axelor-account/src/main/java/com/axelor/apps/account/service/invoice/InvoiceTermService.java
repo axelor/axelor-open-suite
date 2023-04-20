@@ -27,6 +27,8 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentConditionLine;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.PaymentSession;
+import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -37,6 +39,7 @@ import com.axelor.rpc.Context;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import org.apache.commons.lang3.tuple.Pair;
 
 public interface InvoiceTermService {
 
@@ -61,6 +64,9 @@ public interface InvoiceTermService {
       FinancialDiscount financialDiscount,
       BigDecimal financialDiscountAmount,
       BigDecimal remainingAmountAfterFinDiscount);
+
+  @CallMethod
+  boolean getPfpValidatorUserCondition(Invoice invoice, MoveLine moveLine);
 
   /**
    * Method that creates a customized invoiceTerm
@@ -268,10 +274,9 @@ public interface InvoiceTermService {
   BigDecimal getCustomizedAmount(InvoiceTerm invoiceTerm, BigDecimal total);
 
   public List<InvoiceTerm> reconcileMoveLineInvoiceTermsWithFullRollBack(
-      List<InvoiceTerm> invoiceTermList) throws AxelorException;
-
-  void reconcileAndUpdateInvoiceTermsAmounts(
-      InvoiceTerm invoiceTermFromInvoice, InvoiceTerm invoiceTermFromRefund) throws AxelorException;
+      List<InvoiceTerm> invoiceTermList,
+      List<Pair<InvoiceTerm, Pair<InvoiceTerm, BigDecimal>>> invoiceTermLinkWithRefund)
+      throws AxelorException;
 
   List<InvoiceTerm> filterNotAwaitingPayment(List<InvoiceTerm> invoiceTermList);
 
@@ -309,6 +314,18 @@ public interface InvoiceTermService {
   @CallMethod
   boolean isMultiCurrency(InvoiceTerm invoiceTerm);
 
+  InvoiceTerm updateInvoiceTermsAmounts(
+      InvoiceTerm invoiceTerm,
+      BigDecimal amount,
+      Reconcile reconcile,
+      Move move,
+      PaymentSession paymentSession,
+      boolean isRefund)
+      throws AxelorException;
+
   List<InvoiceTerm> recomputeInvoiceTermsPercentage(
       List<InvoiceTerm> invoiceTermList, BigDecimal total);
+
+  boolean isThresholdNotOnLastInvoiceTerm(
+      MoveLine moveLine, BigDecimal thresholdDistanceFromRegulation);
 }
