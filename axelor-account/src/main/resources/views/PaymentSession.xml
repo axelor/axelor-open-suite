@@ -107,7 +107,8 @@
       </panel>
 
     </panel>
-    <panel name="mainPanel" itemSpan="4" readonlyIf="statusSelect > 1 || $hasInvoiceTerm">
+    <panel name="mainPanel" itemSpan="4"
+      readonlyIf="statusSelect > 1 || sessionTotalAmount > 0">
       <field name="createdOn"/>
       <field name="sequence"/>
       <field name="company" form-view="company-form" grid-view="company-grid"
@@ -165,7 +166,7 @@
         onClick="action-payment-session-method-unselect-all" colSpan="3" hidden="true"/>
       <button name="refreshEligibleTermsBtn" title="Refresh terms list"
         showIf="id &amp;&amp; $hasInvoiceTerm &amp;&amp; statusSelect == 1"
-        onClick="action-method-payment-session-search-eligible-terms"/>
+        onClick="action-group-payment-session-search-eligible-terms"/>
       <button name="removeNegativeLinesBtn" title="Remove all negative lines"
         onClick="save,action-payment-session-method-remove-negative-lines"
         showIf="id &amp;&amp; statusSelect == 1"/>
