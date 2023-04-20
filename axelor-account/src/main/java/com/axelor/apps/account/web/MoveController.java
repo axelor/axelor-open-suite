@@ -887,8 +887,7 @@ public class MoveController {
       Move move = request.getContext().asType(Move.class);
       MoveContext result =
           Beans.get(MoveRecordService.class).onChangePaymentCondition(move, request.getContext());
-      // As this method will make a update in the invoiceTerms set values move
-      response.setValues(move);
+      response.setValues(result.getValues());
       response.setAttrs(result.getAttrs());
       if (!result.getFlash().isEmpty()) {
         response.setFlash(result.getFlash());

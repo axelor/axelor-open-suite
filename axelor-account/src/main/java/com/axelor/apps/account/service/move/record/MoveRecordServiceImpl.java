@@ -325,6 +325,7 @@ public class MoveRecordServiceImpl implements MoveRecordService {
     moveRecordUpdateService.updateInvoiceTermDueDate(move, move.getDueDate());
     result.merge(moveRecordUpdateService.updateDueDate(move, paymentConditionChange, dateChange));
 
+    result.putInValues("moveLineList", move.getMoveLineList());
     return result;
   }
 }
