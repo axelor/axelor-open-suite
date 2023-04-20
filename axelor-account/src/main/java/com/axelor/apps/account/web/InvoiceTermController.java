@@ -310,7 +310,7 @@ public class InvoiceTermController {
       InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
       invoiceTerm = Beans.get(InvoiceTermRepository.class).find(invoiceTerm.getId());
       Beans.get(InvoiceTermService.class).toggle(invoiceTerm, true);
-      response.setReload(true);
+      response.setValues(invoiceTerm);
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -346,7 +346,7 @@ public class InvoiceTermController {
       InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
       invoiceTerm = Beans.get(InvoiceTermRepository.class).find(invoiceTerm.getId());
       Beans.get(InvoiceTermService.class).toggle(invoiceTerm, false);
-      response.setReload(true);
+      response.setValues(invoiceTerm);
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);
