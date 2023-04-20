@@ -51,7 +51,8 @@ public class PaymentSessionCancelServiceImpl implements PaymentSessionCancelServ
     paymentSession.setStatusSelect(PaymentSessionRepository.STATUS_CANCELLED);
   }
 
-  protected void cancelInvoiceTerms(PaymentSession paymentSession) {
+  @Override
+  public void cancelInvoiceTerms(PaymentSession paymentSession) {
     List<InvoiceTerm> invoiceTermList;
     Query<InvoiceTerm> invoiceTermQuery =
         invoiceTermRepo.all().filter("self.paymentSession = ?", paymentSession).order("id");
