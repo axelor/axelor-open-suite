@@ -251,24 +251,35 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
       List<InvoiceTerm> invoiceTermList,
       LocalDate date,
       boolean manualChange,
-      Currency targetCurrency)
-      throws AxelorException {
-    Currency startCurrency = invoiceTermList.get(0).getCurrency();
+      Currency paymentCurrency) {
+    if (CollectionUtils.isEmpty(invoiceTermList)) {
+      return BigDecimal.ZERO;
+    }
+
+    InvoiceTerm firstInvoiceTerm = invoiceTermList.get(0);
+    boolean isCompanyCurrency = paymentCurrency.equals(firstInvoiceTerm.getCompany().getCurrency());
+
     BigDecimal amount =
         invoiceTermList.stream()
             .map(
                 it ->
                     manualChange
-                        ? invoiceTermService.getAmountRemaining(it, date)
-                        : it.getAmountRemaining())
+                        ? invoiceTermService.getAmountRemaining(it, date, isCompanyCurrency)
+                        : isCompanyCurrency
+                            ? it.getCompanyAmountRemaining()
+                            : it.getAmountRemaining())
             .reduce(BigDecimal::add)
             .orElse(BigDecimal.ZERO);
-    if (CollectionUtils.isNotEmpty(invoiceTermList)) {
-      if (!startCurrency.equals(targetCurrency)) {
-        amount =
-            currencyService.getAmountCurrencyConvertedAtDate(
-                startCurrency, targetCurrency, amount, date);
+
+    Invoice invoice = firstInvoiceTerm.getInvoice();
+    if (invoice != null) {
+      BigDecimal invoiceAmountRemaining;
+      if (isCompanyCurrency) {
+        invoiceAmountRemaining = invoice.getCompanyInTaxTotalRemaining();
+      } else {
+        invoiceAmountRemaining = invoice.getAmountRemaining();
       }
+      amount = amount.min(invoiceAmountRemaining);
     }
     return amount;
   }
@@ -381,7 +392,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
           .map(Invoice::getInvoiceTermList)
           .flatMap(Collection::stream)
           .filter(invoiceTermService::isNotAwaitingPayment)
-          .map(it -> invoiceTermService.getAmountRemaining(it, date))
+          .map(it -> invoiceTermService.getAmountRemaining(it, date, false))
           .reduce(BigDecimal::add)
           .orElse(BigDecimal.ZERO);
     } else {
