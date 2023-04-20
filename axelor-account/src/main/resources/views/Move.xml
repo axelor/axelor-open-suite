@@ -131,7 +131,7 @@
         <panel name="originDescriptionPanel" colSpan="12">
           <field name="origin" readonlyIf="$validatePeriod" colSpan="4"
             onChange="action-account-move-group-set-origin" requiredIf="journal.hasRequiredOrigin"/>
-          <field name="originDate" title="Date pièce justificative"
+          <field name="originDate" title="Origin date"
             readonlyIf="$validatePeriod || moveLineList.length  &gt; 0 &amp;&amp; statusSelect == 3"
             onChange="action-move-group-origin-date-onchange" colSpan="2"/>
           <field name="description" readonlyIf="$validatePeriod"
@@ -262,7 +262,7 @@
         ]]></viewer>
         </field>
       </panel>
-      <panel name="detailsPanel" title="Détails">
+      <panel name="detailsPanel" title="Details">
         <panel name="relatedToPanel" title="Related to" readonly="true" colSpan="12"
           itemSpan="4" stacked="true"
           hideIf="!invoice &amp;&amp; !paymentVoucher &amp;&amp; !paymentSession &amp;&amp; !stockMove &amp;&amp; !cutOffOriginMove &amp;&amp; !$isThereRelatedCutOffMoves">
