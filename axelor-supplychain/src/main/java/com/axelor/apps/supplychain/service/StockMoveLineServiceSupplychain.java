@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
@@ -29,6 +30,8 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public interface StockMoveLineServiceSupplychain {
+
+  List<InvoiceLine> getInvoiceLines(StockMoveLine stockMoveLine);
 
   /**
    * Compared to the method in module stock, it adds the requested reserved qty. Allows to create
