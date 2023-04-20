@@ -102,7 +102,8 @@
             <field name="accountingDate" readonly="true" showIf="statusSelect == 3"/>
           </panel>
           <field name="partner" readonlyIf="$validatePeriod || moveLineList.length &gt; 0"
-            colSpan="2" canNew="false" canEdit="false" onChange="action-move-group-partner-onchange"
+            colSpan="2" canNew="false" canEdit="false"
+            onChange="action-account-move-method-partner-onchange"
             onSelect="action-account-move-method-filter-partner" form-view="partner-form"
             grid-view="partner-grid"/>
           <field name="fiscalPosition" colSpan="2" canNew="false" canEdit="false"
@@ -120,21 +121,22 @@
             onChange="action-move-attrs-header-change"
             onSelect="action-move-attrs-bank-details-from-partner-domain"
             form-view="bank-details-form" grid-view="bank-details-grid"/>
-          <field name="paymentCondition" showIf="$journalTechnicalTypeSelect != 4"
+          <field name="paymentCondition" showIf="journal.journalType.technicalTypeSelect != 4"
             readonlyIf="$validatePeriod &amp;&amp; statusSelect == 3" colSpan="4"
-            onChange="action-move-group-payment-condition-onchange"
+            onChange="action-account-move-method-payment-condition-onchange"
             form-view="payment-condition-form" grid-view="payment-condition-grid"/>
-          <field name="$dueDate" title="Due date"
+          <field name="dueDate" title="Due date"
             help="This field allows to modify directly the move line due date which is by default calculated based on the payment condition."
             hidden="true" readonlyIf="!paymentCondition.isFree" type="date" colSpan="2"/>
           <spacer/>
         </panel>
         <panel name="originDescriptionPanel" colSpan="12">
           <field name="origin" readonlyIf="$validatePeriod" colSpan="4"
-            onChange="action-account-move-group-set-origin" requiredIf="journal.hasRequiredOrigin"/>
+            onChange="action-account-move-method-origin-onchange"
+            requiredIf="journal.hasRequiredOrigin"/>
           <field name="originDate" title="Origin date"
             readonlyIf="$validatePeriod || moveLineList.length  &gt; 0 &amp;&amp; statusSelect == 3"
-            onChange="action-move-group-origin-date-onchange" colSpan="2"/>
+            onChange="action-account-move-method-origin-date-onchange" colSpan="2"/>
           <field name="description" readonlyIf="$validatePeriod"
             onChange="action-account-move-group-set-description-on-lines" colSpan="6"/>
         </panel>
@@ -207,7 +209,7 @@
       <panel title="Move Lines" readonlyIf="$validatePeriod">
         <button colSpan="3" name="counterpartGenerateBtn" css="btn-custom text-left"
           icon="fa-plus" title="Generate counterpart"
-          showIf="journal != null &amp;&amp; statusSelect != 3 &amp;&amp; ([1,2,4].includes($journalTechnicalTypeSelect) &amp;&amp; functionalOriginSelect &amp;&amp; (functionalOriginSelect == 3 || functionalOriginSelect == 4 || functionalOriginSelect == 7))"
+          showIf="journal != null &amp;&amp; statusSelect != 3 &amp;&amp; ([1,2,4].includes(journal.journalType.technicalTypeSelect) &amp;&amp; functionalOriginSelect &amp;&amp; (functionalOriginSelect == 3 || functionalOriginSelect == 4 || functionalOriginSelect == 7))"
           onClick="action-account-move-group-generate-counterpart"/>
         <button colSpan="3" name="autoTaxLineGenerateBtn" css="btn-custom text-left"
           icon="fa-plus" title="Generate tax lines" showIf="statusSelect == 1 || statusSelect == 5"
@@ -216,12 +218,14 @@
           showIf="(statusSelect == 1 || statusSelect == 2 || statusSelect == 5) &amp;&amp; journal &amp;&amp; currency &amp;&amp; company &amp;&amp; date &amp;&amp; period"
           colSpan="12" height="20" field="moveLineList" form-view="move-line-move-form"
           grid-view="move-line-move-grid" editable="true"
-          onChange="action-move-group-move-line-list-onchange" canNew="true" canRemove="true"/>
+          onChange="action-account-move-method-move-line-list-onchange" canNew="true"
+          canRemove="true"/>
         <panel-related name="moveLineListPanel"
           showIf="(statusSelect == 3 || statusSelect == 4) &amp;&amp; journal &amp;&amp; currency &amp;&amp; company &amp;&amp; date &amp;&amp; period"
           colSpan="12" height="20" field="moveLineList" form-view="move-line-move-form"
           grid-view="move-line-move-grid" editable="false"
-          onChange="action-move-group-move-line-list-onchange" canNew="false" canRemove="false"/>
+          onChange="action-account-move-method-move-line-list-onchange" canNew="false"
+          canRemove="false"/>
         <field name="$reconcileTags" showTitle="false" hidden="true" readonly="true"
           colSpan="12">
           <viewer depends="moveLineList"><![CDATA[
@@ -308,7 +312,6 @@
           <field name="$simulatedPeriodClosed" hidden="true"/>
           <field name="period.statusSelect" hidden="true"/>
           <field name="paymentMode.typeSelect" hidden="true"/>
-          <field name="$journalTechnicalTypeSelect" hidden="true" type="integer"/>
           <field name="$headerChange" hidden="true" type="boolean"/>
           <field name="$paymentConditionChange" hidden="true" type="boolean"/>
           <field name="$dateChange" hidden="true" type="boolean"/>
@@ -320,6 +323,8 @@
           <field name="journal.authorizeSimulatedMove" hidden="true"/>
           <field name="journal.authorizedFunctionalOriginSelect" hidden="true"/>
           <field name="journal.allowAccountingDaybook" hidden="true"/>
+          <field name="journal.journalType" hidden="true"/>
+          <field name="journal.journalType.technicalTypeSelect" hidden="true" type="integer"/>
           <field name="company.accountConfig" hidden="true"/>
           <field name="company.accountConfig.accountingDaybook" hidden="true"/>
         </panel>
@@ -369,7 +374,7 @@
           <field name="paymentMode" colSpan="3"
             onSelect="action-move-attrs-set-domain-payment-mode"/>
           <field name="journal.journalType" hidden="true"/>
-          <field name="journal.journalType.technicalTypeSelect" type="integer"/>
+          <field name="journal.journalType.technicalTypeSelect" hidden="true" type="integer"/>
           <field name="journal.authorizeSimulatedMove" hidden="true"/>
         </panel>
         <field name="description" colSpan="6"
@@ -431,7 +436,7 @@
             onClick="action-account-move-group-generate-tax-lines" colSpan="12"
             showIf="statusSelect == 1 || statusSelect == 5"/>
           <button
-            showIf="journal != null &amp;&amp; statusSelect != 3 &amp;&amp; ([1,2,4].includes($journalTechnicalTypeSelect) &amp;&amp; functionalOriginSelect &amp;&amp; (functionalOriginSelect == 3 || functionalOriginSelect == 4 || functionalOriginSelect == 7))"
+            showIf="journal != null &amp;&amp; statusSelect != 3 &amp;&amp; ([1,2,4].includes(journal.journalType.technicalTypeSelect) &amp;&amp; functionalOriginSelect &amp;&amp; (functionalOriginSelect == 3 || functionalOriginSelect == 4 || functionalOriginSelect == 7))"
             name="counterpartGenerateBtn" title="Generate counterpart"
             onClick="action-account-move-group-generate-counterpart" colSpan="12"/>
         </panel>
