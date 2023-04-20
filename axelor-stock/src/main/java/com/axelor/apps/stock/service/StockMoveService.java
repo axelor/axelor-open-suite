@@ -137,7 +137,8 @@ public interface StockMoveService {
   void cancel(StockMove stockMove, CancelReason cancelReason) throws AxelorException;
 
   public boolean splitStockMoveLines(
-      StockMove stockMove, List<StockMoveLine> stockMoveLines, BigDecimal splitQty);
+      StockMove stockMove, List<StockMoveLine> stockMoveLines, BigDecimal splitQty)
+      throws AxelorException;
 
   public void copyQtyToRealQty(StockMove stockMove);
 

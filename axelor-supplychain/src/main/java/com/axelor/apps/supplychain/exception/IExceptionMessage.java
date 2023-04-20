@@ -296,4 +296,7 @@ public interface IExceptionMessage {
 
   static final String SALE_ORDER_BACK_TO_CONFIRMED_WRONG_STATUS = /*$$(*/
       "Can only go back to confirmed if completed." /*)*/;
+
+  static final String STOCK_MOVE_LINES_ASSOCIATED_WITH_INVOICE_LINES_CANNOT_SPLIT = /*$$(*/
+      "The following stock move lines are already associated with invoice lines and can not be splitted: %s" /*)*/;
 }

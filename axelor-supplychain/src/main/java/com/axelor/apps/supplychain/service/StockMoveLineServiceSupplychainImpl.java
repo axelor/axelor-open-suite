@@ -17,6 +17,8 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
@@ -59,6 +61,7 @@ import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RequestScoped
@@ -68,6 +71,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
   protected AccountManagementService accountManagementService;
   protected PriceListService priceListService;
   protected SupplyChainConfigService supplychainConfigService;
+  protected InvoiceLineRepository invoiceLineRepository;
 
   @Inject
   public StockMoveLineServiceSupplychainImpl(
@@ -84,7 +88,8 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       AccountManagementService accountManagementService,
       PriceListService priceListService,
       ProductCompanyService productCompanyService,
-      SupplyChainConfigService supplychainConfigService) {
+      SupplyChainConfigService supplychainConfigService,
+      InvoiceLineRepository invoiceLineRepository) {
     super(
         trackingNumberService,
         appBaseService,
@@ -100,6 +105,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
     this.accountManagementService = accountManagementService;
     this.priceListService = priceListService;
     this.supplychainConfigService = supplychainConfigService;
+    this.invoiceLineRepository = invoiceLineRepository;
   }
 
   @Override
@@ -537,5 +543,18 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       return " self.productTypeSelect = '" + ProductRepository.PRODUCT_TYPE_SERVICE + "'";
     }
     return "";
+  }
+
+  @Override
+  public List<InvoiceLine> getInvoiceLines(StockMoveLine stockMoveLine) {
+    Objects.requireNonNull(stockMoveLine);
+    if (stockMoveLine.getId() != null) {
+      return invoiceLineRepository
+          .all()
+          .filter("self.stockMoveLine = :stockMoveLine")
+          .bind("stockMoveLine", stockMoveLine)
+          .fetch();
+    }
+    return new ArrayList<>();
   }
 }
