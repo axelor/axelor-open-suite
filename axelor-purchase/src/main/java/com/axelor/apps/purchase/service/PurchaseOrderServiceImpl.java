@@ -246,6 +246,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     purchaseOrder.setPurchaseOrderSeq(this.getSequence(company));
     purchaseOrder.setStatusSelect(PurchaseOrderRepository.STATUS_DRAFT);
     purchaseOrder.setSupplierPartner(supplierPartner);
+    purchaseOrder.setFiscalPosition(supplierPartner.getFiscalPosition());
     purchaseOrder.setDisplayPriceOnQuotationRequest(
         purchaseConfigService.getPurchaseConfig(company).getDisplayPriceOnQuotationRequest());
     return purchaseOrder;
