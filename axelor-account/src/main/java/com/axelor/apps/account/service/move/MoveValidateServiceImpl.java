@@ -327,30 +327,22 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     log.debug(
         "Well-balanced move line invoice terms validation on account move {}", move.getReference());
 
-    if (move.getMoveLineList() != null) {
-      boolean isCompanyCurrency = move.getCurrency().equals(move.getCompanyCurrency());
+    for (MoveLine moveLine : move.getMoveLineList()) {
+      if (CollectionUtils.isEmpty(moveLine.getInvoiceTermList())
+          || !moveLine.getAccount().getUseForPartnerBalance()) {
+        return;
+      }
+      BigDecimal totalMoveLineInvoiceTerm =
+          moveLine.getInvoiceTermList().stream()
+              .map(InvoiceTerm::getCompanyAmount)
+              .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-      for (MoveLine moveLine : move.getMoveLineList()) {
-        if (ObjectUtils.notEmpty(moveLine.getInvoiceTermList())
-            && moveLine.getAccount().getUseForPartnerBalance()) {
-          BigDecimal totalMoveLineInvoiceTerm =
-              moveLine.getInvoiceTermList().stream()
-                  .map(InvoiceTerm::getCompanyAmount)
-                  .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-          BigDecimal moveLineAmount =
-              isCompanyCurrency
-                  ? moveLine.getCurrencyAmount()
-                  : moveLine.getDebit().max(moveLine.getCredit());
-
-          if (totalMoveLineInvoiceTerm.compareTo(moveLineAmount) != 0) {
-            throw new AxelorException(
-                move,
-                TraceBackRepository.CATEGORY_INCONSISTENCY,
-                I18n.get(AccountExceptionMessage.MOVE_LINE_INVOICE_TERM_SUM_COMPANY_AMOUNT),
-                moveLine.getName());
-          }
-        }
+      if (totalMoveLineInvoiceTerm.compareTo(moveLine.getDebit().max(moveLine.getCredit())) != 0) {
+        throw new AxelorException(
+            move,
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(AccountExceptionMessage.MOVE_LINE_INVOICE_TERM_SUM_COMPANY_AMOUNT),
+            moveLine.getName());
       }
     }
   }
