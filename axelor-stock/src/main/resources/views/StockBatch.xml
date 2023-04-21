@@ -54,7 +54,7 @@
 
   <action-validate name="action-validate-stock-batch-validate-run">
     <alert
-      message="This batch will recompute stock location quantities and reset all WAP history lines, are you sure you want to continue ?"/>
+      message="This batch will recompute stock location quantities and reset all stock location history lines, are you sure you want to continue ?"/>
   </action-validate>
 
 </object-views>

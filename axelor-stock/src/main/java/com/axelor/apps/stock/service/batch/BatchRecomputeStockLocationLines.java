@@ -67,7 +67,7 @@ public class BatchRecomputeStockLocationLines extends AbstractBatch {
 
   @Override
   protected void process() {
-    clearWapHistoryLines();
+    clearStockLocationsHistoryLines();
     resetStockLocations();
     List<StockMoveGroup> groups = fetchStockMoveGroup();
 
@@ -110,7 +110,7 @@ public class BatchRecomputeStockLocationLines extends AbstractBatch {
 
   protected void resetStockLocations() {
 
-    javax.persistence.Query clearWapHistoryLinesQuery =
+    javax.persistence.Query clearStockLocationLinesQuery =
         JPA.em()
             .createNativeQuery(
                 "UPDATE stock_stock_location_line SET "
@@ -118,7 +118,7 @@ public class BatchRecomputeStockLocationLines extends AbstractBatch {
                     + " current_qty = 0, "
                     + " future_qty = 0 ");
 
-    JPA.runInTransaction(clearWapHistoryLinesQuery::executeUpdate);
+    JPA.runInTransaction(clearStockLocationLinesQuery::executeUpdate);
   }
 
   protected void updatePlannedQty(StockMoveGroup stockMoveGroup) throws AxelorException {
@@ -199,7 +199,7 @@ public class BatchRecomputeStockLocationLines extends AbstractBatch {
     return sml1.merge(sml2);
   }
 
-  protected void clearWapHistoryLines() {
+  protected void clearStockLocationsHistoryLines() {
 
     javax.persistence.Query clearWapHistoryLinesQuery =
         JPA.em().createNativeQuery("Delete FROM stock_wap_history");
