@@ -36,6 +36,7 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -196,6 +197,9 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
     addToReconcileGroup(reconcileGroup, reconcile);
     if (isBalanced(reconcileList)) {
       validate(reconcileGroup, reconcileList);
+    } else if (reconcileGroup.getStatusSelect() == ReconcileGroupRepository.STATUS_TEMPORARY) {
+      reconcileGroup.setLetteringDateTime(
+          appBaseService.getTodayDateTime(reconcileGroup.getCompany()).toLocalDateTime());
     }
   }
 
@@ -242,14 +246,16 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
         && status == ReconcileGroupRepository.STATUS_TEMPORARY) {
       validate(reconcileGroup, reconcileList);
     } else if (status == ReconcileGroupRepository.STATUS_FINAL) {
+      LocalDateTime todayDateTime =
+          appBaseService.getTodayDateTime(reconcileGroup.getCompany()).toLocalDateTime();
       // it is not balanced or the collection is empty.
       if (CollectionUtils.isEmpty(reconcileList)) {
         reconcileGroup.setStatusSelect(ReconcileGroupRepository.STATUS_UNLETTERED);
-        reconcileGroup.setUnletteringDateTime(
-            appBaseService.getTodayDateTime(reconcileGroup.getCompany()).toLocalDateTime());
+        reconcileGroup.setUnletteringDateTime(todayDateTime);
         reconcileGroupRepository.save(reconcileGroup);
       } else {
         reconcileGroup.setStatusSelect(ReconcileGroupRepository.STATUS_TEMPORARY);
+        reconcileGroup.setLetteringDateTime(todayDateTime);
         reconcileGroupSequenceService.fillCodeFromSequence(reconcileGroup);
       }
     }
