@@ -257,32 +257,16 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
       return BigDecimal.ZERO;
     }
 
-    InvoiceTerm firstInvoiceTerm = invoiceTermList.get(0);
-    boolean isCompanyCurrency = paymentCurrency.equals(firstInvoiceTerm.getCompany().getCurrency());
-
-    BigDecimal amount =
-        invoiceTermList.stream()
-            .map(
-                it ->
-                    manualChange
-                        ? invoiceTermService.getAmountRemaining(it, date, isCompanyCurrency)
-                        : isCompanyCurrency
-                            ? it.getCompanyAmountRemaining()
-                            : it.getAmountRemaining())
-            .reduce(BigDecimal::add)
-            .orElse(BigDecimal.ZERO);
-
-    Invoice invoice = firstInvoiceTerm.getInvoice();
-    if (invoice != null) {
-      BigDecimal invoiceAmountRemaining;
-      if (isCompanyCurrency) {
-        invoiceAmountRemaining = invoice.getCompanyInTaxTotalRemaining();
-      } else {
-        invoiceAmountRemaining = invoice.getAmountRemaining();
-      }
-      amount = amount.min(invoiceAmountRemaining);
-    }
-    return amount;
+    boolean isCompanyCurrency =
+        paymentCurrency.equals(invoiceTermList.get(0).getCompany().getCurrency());
+    return invoiceTermList.stream()
+        .map(
+            it ->
+                manualChange
+                    ? invoiceTermService.getAmountRemaining(it, date, isCompanyCurrency)
+                    : isCompanyCurrency ? it.getCompanyAmountRemaining() : it.getAmountRemaining())
+        .reduce(BigDecimal::add)
+        .orElse(BigDecimal.ZERO);
   }
 
   @Override
