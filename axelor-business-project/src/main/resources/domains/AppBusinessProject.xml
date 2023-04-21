@@ -31,17 +31,13 @@
     <boolean name="generateProjectOrder" title="Generate/Select Project for Order"/>
     <boolean name="automaticProject" title="Automatic Project"/>
 
-    <integer name="generatedElementTypeSelect" title="Generated element type" default="3"
-      selection="business.project.config.generated.element.type"/>
-
     <boolean name="projectSaleOrderLines" title="Project in Sale order lines"/>
     <boolean name="projectPurchaseOrderLines" title="Project in Purchase order lines"/>
 
     <boolean name="projectInvoiceLines" title="Project in Invoice Lines"/>
 
-    <boolean name="enableTaskTemplatesByProduct" title="Enable task templates by product"/>
-
-    <boolean name="generateProjectSequence" title="Generate sequence for project"/>
+    <boolean name="enableTaskTemplatesByProduct" title="Enable task templates by product"
+      help="When activated, this will add a new tab to the product form where you can select a task template that will be used when a task is generated in relation to the given product."/>
 
     <boolean name="automaticInvoicing" title="Automatic invoicing"
       help="On creation of an Invoicing project, attached Timesheet Lines and Teamtasks will be automatically set as to invoice regarding Status for invoice pre task tasks, Status for invoice post task tasks and Exclude tasks for invoicing field"/>
@@ -72,7 +68,6 @@
       <field name="enableToInvoiceExpense" on="UPDATE"/>
       <field name="generateProjectOrder" on="UPDATE"/>
       <field name="automaticProject" on="UPDATE"/>
-      <field name="generatedElementTypeSelect" on="UPDATE"/>
       <field name="projectSaleOrderLines" on="UPDATE"/>
       <field name="projectPurchaseOrderLines" on="UPDATE"/>
       <field name="projectInvoiceLines" on="UPDATE"/>
