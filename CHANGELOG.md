@@ -1,3 +1,9 @@
+## [6.2.25] (2023-04-21)
+
+#### Fixed
+
+* Sale order: fixed an issue where opening or saving a sale order without lines was impossible due to an SQL error.
+
 ## [6.2.24] (2023-04-20)
 
 #### Fixed
@@ -1013,6 +1019,7 @@ will be equal to the reason for manual forecasts.
 * Territory: Remove object
 
 
+[6.2.25]: https://github.com/axelor/axelor-open-suite/compare/v6.2.24...v6.2.25
 [6.2.24]: https://github.com/axelor/axelor-open-suite/compare/v6.2.23...v6.2.24
 [6.2.23]: https://github.com/axelor/axelor-open-suite/compare/v6.2.22...v6.2.23
 [6.2.22]: https://github.com/axelor/axelor-open-suite/compare/v6.2.21...v6.2.22
