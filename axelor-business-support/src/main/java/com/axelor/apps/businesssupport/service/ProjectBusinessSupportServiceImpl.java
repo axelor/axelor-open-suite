@@ -20,6 +20,7 @@ package com.axelor.apps.businesssupport.service;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.businessproject.service.ProjectBusinessServiceImpl;
+import com.axelor.apps.businessproject.service.ProjectTaskBusinessProjectService;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
@@ -41,7 +42,8 @@ public class ProjectBusinessSupportServiceImpl extends ProjectBusinessServiceImp
       AppProjectService appProjectService,
       PartnerService partnerService,
       AddressService addressService,
-      AppBusinessProjectService appBusinessProjectService) {
+      AppBusinessProjectService appBusinessProjectService,
+      ProjectTaskBusinessProjectService projectTaskBusinessProjectService) {
     super(
         projectRepository,
         projectStatusRepository,
@@ -49,7 +51,8 @@ public class ProjectBusinessSupportServiceImpl extends ProjectBusinessServiceImp
         appProjectService,
         partnerService,
         addressService,
-        appBusinessProjectService);
+        appBusinessProjectService,
+        projectTaskBusinessProjectService);
   }
 
   @Override

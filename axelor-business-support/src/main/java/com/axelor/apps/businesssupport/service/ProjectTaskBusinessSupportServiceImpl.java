@@ -25,6 +25,8 @@ import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.businessproject.service.ProjectTaskBusinessProjectServiceImpl;
+import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
+import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.TaskTemplate;
@@ -45,7 +47,9 @@ public class ProjectTaskBusinessSupportServiceImpl extends ProjectTaskBusinessPr
       PriceListLineRepository priceListLineRepo,
       PriceListService priceListService,
       PartnerPriceListService partnerPriceListService,
-      ProductCompanyService productCompanyService) {
+      ProductCompanyService productCompanyService,
+      TimesheetLineRepository timesheetLineRepository,
+      AppBusinessProjectService appBusinessProjectService) {
     super(
         projectTaskRepo,
         frequencyRepo,
@@ -54,7 +58,9 @@ public class ProjectTaskBusinessSupportServiceImpl extends ProjectTaskBusinessPr
         priceListLineRepo,
         priceListService,
         productCompanyService,
-        partnerPriceListService);
+        partnerPriceListService,
+        timesheetLineRepository,
+        appBusinessProjectService);
   }
 
   @Override
