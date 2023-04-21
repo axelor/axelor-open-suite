@@ -1,3 +1,9 @@
+## [6.5.6] (2023-04-21)
+
+#### Fixed
+
+* Sale order: fixed an issue where opening or saving a sale order without lines was impossible due to an SQL error.
+
 ## [6.5.5] (2023-04-20)
 
 #### Features
@@ -437,6 +443,7 @@ Opportunity Status: add label-help on some opportunities status in form
 * Opportunity : Remove lead field
 * CRM : remove Target and TargetConfiguration from CRM
 
+[6.5.6]: https://github.com/axelor/axelor-open-suite/compare/v6.5.5...v6.5.6
 [6.5.5]: https://github.com/axelor/axelor-open-suite/compare/v6.5.4...v6.5.5
 [6.5.4]: https://github.com/axelor/axelor-open-suite/compare/v6.5.3...v6.5.4
 [6.5.3]: https://github.com/axelor/axelor-open-suite/compare/v6.5.2...v6.5.3
