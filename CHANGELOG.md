@@ -1,3 +1,9 @@
+## [6.3.17] (2023-04-21)
+
+#### Fixed
+
+* Sale order: fixed an issue where opening or saving a sale order without lines was impossible due to an SQL error.
+
 ## [6.3.16] (2023-04-20)
 
 #### Fixed
@@ -610,6 +616,7 @@ If you had modules calling these methods, you will need to update them so they c
 * Account Config: Remove Invoices button and associate action from account config
 * Stock correction: Removed unused future and reserved quantity from database.
 
+[6.3.17]: https://github.com/axelor/axelor-open-suite/compare/v6.3.16...v6.3.17
 [6.3.16]: https://github.com/axelor/axelor-open-suite/compare/v6.3.15...v6.3.16
 [6.3.15]: https://github.com/axelor/axelor-open-suite/compare/v6.3.14...v6.3.15
 [6.3.14]: https://github.com/axelor/axelor-open-suite/compare/v6.3.13...v6.3.14
