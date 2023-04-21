@@ -1,3 +1,9 @@
+## [6.4.12] (2023-04-21)
+
+#### Fixed
+
+* Sale order: fixed an issue where opening or saving a sale order without lines was impossible due to an SQL error.
+
 ## [6.4.11] (2023-04-20)
 
 #### Changes
@@ -672,6 +678,7 @@ A new mobile application for stock and production modules are now available, the
 * Account budget: Remove checkAvailableBudget in budget, which was unused.
 * Accounting report: removed old specific export format for Sale, Purchase, Treasury, Refund (1006 to 1009 accounting report type). Already replaced per the generic Journal entry export with a filter on the journal.
 
+[6.4.12]: https://github.com/axelor/axelor-open-suite/compare/v6.4.11...v6.4.12
 [6.4.11]: https://github.com/axelor/axelor-open-suite/compare/v6.4.10...v6.4.11
 [6.4.10]: https://github.com/axelor/axelor-open-suite/compare/v6.4.9...v6.4.10
 [6.4.9]: https://github.com/axelor/axelor-open-suite/compare/v6.4.8...v6.4.9
