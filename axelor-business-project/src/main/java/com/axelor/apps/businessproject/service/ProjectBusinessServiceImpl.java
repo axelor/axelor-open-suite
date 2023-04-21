@@ -56,7 +56,6 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
   protected PartnerService partnerService;
   protected AddressService addressService;
   protected AppBusinessProjectService appBusinessProjectService;
-  protected ProjectTemplateRepository projTemplateRepo;
   protected ProjectTaskBusinessProjectService projectTaskBusinessProjectService;
 
   @Inject
@@ -73,7 +72,6 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     this.partnerService = partnerService;
     this.addressService = addressService;
     this.appBusinessProjectService = appBusinessProjectService;
-    this.projTemplateRepo = projTemplateRepo;
     this.projectTaskBusinessProjectService = projectTaskBusinessProjectService;
   }
 
