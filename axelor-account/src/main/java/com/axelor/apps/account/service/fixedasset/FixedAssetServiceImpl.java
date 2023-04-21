@@ -175,7 +175,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     fixedAssetRepo.save(fixedAsset);
   }
 
-  private void setDisposalFields(
+  protected void setDisposalFields(
       FixedAsset fixedAsset,
       LocalDate disposalDate,
       BigDecimal disposalAmount,
@@ -209,8 +209,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
   @Override
   @Transactional
   public void createAnalyticOnMoveLine(
-      AnalyticDistributionTemplate analyticDistributionTemplate, MoveLine moveLine)
-      throws AxelorException {
+      AnalyticDistributionTemplate analyticDistributionTemplate, MoveLine moveLine) {
     if (analyticDistributionTemplate != null
         && moveLine.getAccount().getAnalyticDistributionAuthorized()) {
       moveLine.setAnalyticDistributionTemplate(analyticDistributionTemplate);
@@ -240,7 +239,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void updateDepreciation(FixedAsset fixedAsset) throws AxelorException {
     Objects.requireNonNull(fixedAsset);
     Optional<FixedAssetLine> optFixedAssetLine = Optional.empty();
@@ -351,7 +350,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     return newFixedAsset;
   }
 
-  private void multiplyFieldsToSplit(FixedAsset fixedAsset, BigDecimal prorata) {
+  protected void multiplyFieldsToSplit(FixedAsset fixedAsset, BigDecimal prorata) {
 
     if (fixedAsset.getGrossValue() != null) {
       fixedAsset.setGrossValue(
@@ -540,7 +539,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public FixedAsset splitAndSaveFixedAsset(
       FixedAsset fixedAsset,
       int splitType,

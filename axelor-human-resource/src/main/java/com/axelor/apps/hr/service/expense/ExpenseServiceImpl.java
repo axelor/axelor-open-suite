@@ -96,6 +96,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import javax.mail.MessagingException;
+import org.apache.commons.collections.CollectionUtils;
 import wslite.json.JSONException;
 
 @Singleton
@@ -510,6 +511,11 @@ public class ExpenseServiceImpl implements ExpenseService {
                 ? expenseLine.getComments().replaceAll("(\r\n|\n\r|\r|\n)", " ")
                 : "");
     moveLine.setAnalyticDistributionTemplate(expenseLine.getAnalyticDistributionTemplate());
+    List<AnalyticMoveLine> analyticMoveLineList =
+        CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())
+            ? new ArrayList<>()
+            : new ArrayList<>(moveLine.getAnalyticMoveLineList());
+    moveLine.clearAnalyticMoveLineList();
     expenseLine
         .getAnalyticMoveLineList()
         .forEach(
@@ -517,6 +523,9 @@ public class ExpenseServiceImpl implements ExpenseService {
                 moveLine.addAnalyticMoveLineListItem(
                     analyticMoveLineGenerateRealService.createFromForecast(
                         analyticMoveLine, moveLine)));
+    if (CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())) {
+      moveLine.setAnalyticMoveLineList(analyticMoveLineList);
+    }
     return moveLine;
   }
 
@@ -735,7 +744,7 @@ public class ExpenseServiceImpl implements ExpenseService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public void resetExpensePaymentAfterCancellation(Expense expense) {
     expense.setPaymentStatusSelect(InvoicePaymentRepository.STATUS_CANCELED);
     expense.setStatusSelect(ExpenseRepository.STATUS_VALIDATED);
@@ -919,7 +928,7 @@ public class ExpenseServiceImpl implements ExpenseService {
     }
   }
 
-  private void setExpenseSeq(Expense expense) throws AxelorException {
+  protected void setExpenseSeq(Expense expense) throws AxelorException {
     if (!Beans.get(SequenceService.class).isEmptyOrDraftSequenceNumber(expense.getExpenseSeq())) {
       return;
     }

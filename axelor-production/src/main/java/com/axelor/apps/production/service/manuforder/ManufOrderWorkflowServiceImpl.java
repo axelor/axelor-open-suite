@@ -114,13 +114,13 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public List<ManufOrder> plan(List<ManufOrder> manufOrderList) throws AxelorException {
     return plan(manufOrderList, true);
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public List<ManufOrder> plan(List<ManufOrder> manufOrderList, boolean quickSolve)
       throws AxelorException {
     ManufOrderService manufOrderService = Beans.get(ManufOrderService.class);
@@ -261,8 +261,20 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
   public boolean finish(ManufOrder manufOrder) throws AxelorException {
+    finishManufOrder(manufOrder);
+    ProductionConfig productionConfig =
+        manufOrder.getCompany() != null
+            ? productionConfigRepo.findByCompany(manufOrder.getCompany())
+            : null;
+    if (productionConfig != null && productionConfig.getFinishMoAutomaticEmail()) {
+      return this.sendMail(manufOrder, productionConfig.getFinishMoMessageTemplate());
+    }
+    return true;
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected void finishManufOrder(ManufOrder manufOrder) throws AxelorException {
     if (manufOrder.getOperationOrderList() != null) {
       for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
         if (operationOrder.getStatusSelect() != OperationOrderRepository.STATUS_FINISHED) {
@@ -327,14 +339,6 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
                 manufOrder.getPlannedEndDateT(), manufOrder.getRealEndDateT())));
     manufOrderRepo.save(manufOrder);
     Beans.get(ProductionOrderService.class).updateStatus(manufOrder.getProductionOrderSet());
-    ProductionConfig productionConfig =
-        manufOrder.getCompany() != null
-            ? productionConfigRepo.findByCompany(manufOrder.getCompany())
-            : null;
-    if (productionConfig != null && productionConfig.getFinishMoAutomaticEmail()) {
-      return this.sendMail(manufOrder, productionConfig.getFinishMoMessageTemplate());
-    }
-    return true;
   }
 
   /** Return the cost price for one unit in a manufacturing order. */
@@ -664,7 +668,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void createPurchaseOrder(ManufOrder manufOrder) throws AxelorException {
 
     PurchaseOrder purchaseOrder =

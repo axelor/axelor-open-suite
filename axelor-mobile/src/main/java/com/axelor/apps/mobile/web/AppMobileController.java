@@ -64,7 +64,7 @@ public class AppMobileController {
     response.setData(data);
   }
 
-  private Object convertToData(Set<? extends AuditableModel> modelSet) {
+  protected Object convertToData(Set<? extends AuditableModel> modelSet) {
 
     return modelSet.stream()
         .map(

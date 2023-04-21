@@ -53,7 +53,7 @@ public class ExpenseLineProjectController {
     }
   }
 
-  private void setProject(ActionRequest request, ActionResponse response, Project project) {
+  protected void setProject(ActionRequest request, ActionResponse response, Project project) {
 
     List<Map<String, Object>> expenseLineSet =
         (List<Map<String, Object>>) request.getContext().get("expenseLineSet");

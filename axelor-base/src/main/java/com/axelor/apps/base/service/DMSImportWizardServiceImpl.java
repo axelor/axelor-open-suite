@@ -68,7 +68,7 @@ public class DMSImportWizardServiceImpl implements DMSImportWizardService {
     }
   }
 
-  private ZipInputStream validateZip(File file) throws AxelorException {
+  protected ZipInputStream validateZip(File file) throws AxelorException {
     try (AutoDetectReader autoDetectReader = new AutoDetectReader(new FileInputStream(file));
         ZipInputStream zis =
             new ZipInputStream(new FileInputStream(file), autoDetectReader.getCharset())) {
@@ -80,7 +80,7 @@ public class DMSImportWizardServiceImpl implements DMSImportWizardService {
     }
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void createDmsTree(ZipInputStream zipInputStream, ZipFile zipfile) throws IOException {
     ZipEntry zipEntry = zipInputStream.getNextEntry();
     Map<String, DMSFile> dmsMap = new HashMap<>();
@@ -116,13 +116,13 @@ public class DMSImportWizardServiceImpl implements DMSImportWizardService {
     }
   }
 
-  private String getFileName(ZipEntry zipEntry) {
+  protected String getFileName(ZipEntry zipEntry) {
     String entryName = zipEntry.getName();
     String[] names = entryName.split(File.separator);
     return names[names.length - 1];
   }
 
-  private String getParentName(ZipEntry zipEntry, String fileName) {
+  protected String getParentName(ZipEntry zipEntry, String fileName) {
     String entryName = zipEntry.getName();
     return entryName.substring(0, entryName.lastIndexOf(File.separator + fileName) + 1);
   }

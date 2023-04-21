@@ -231,8 +231,9 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
                   trackingNumberConfiguration,
                   product,
                   trackingNumberConfiguration.getSaleQtyByTracking());
+            }
 
-            } else {
+            if (trackingNumberConfiguration.getHasSaleAutoSelectTrackingNbr()) {
               // Rechercher le numéro de suivi d'apèrs FIFO/LIFO
               this.assignTrackingNumber(stockMoveLine, product, stockMove.getFromStockLocation());
             }
@@ -636,8 +637,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
       newPrice =
           unitConversionService.convert(
-              stockMoveLineUnit,
               stockLocationLineUnit,
+              stockMoveLineUnit,
               newPrice,
               newPrice.scale(),
               stockMoveLine.getProduct());
@@ -1064,7 +1065,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
         stockMoveLine, updatedLogisticalFormLineList);
   }
 
-  private BigDecimal computeSpreadableQtyOverLogisticalFormLines(
+  protected BigDecimal computeSpreadableQtyOverLogisticalFormLines(
       StockMoveLine stockMoveLine, List<LogisticalFormLine> logisticalFormLineList) {
 
     if (stockMoveLine == null) {
@@ -1337,6 +1338,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
   protected String getFilterForStorables(StockMoveLine stockMoveLine, StockMove stockMove)
       throws AxelorException {
     if (stockMoveLine.getFilterOnAvailableProducts()
+        && stockMove.getFromStockLocation() != null
         && stockMove.getFromStockLocation().getTypeSelect() != 3) {
       return " AND self.id in (select sll.product.id from StockLocation sl inner join sl.stockLocationLineList sll WHERE sl.id = "
           + stockMove.getFromStockLocation().getId()
@@ -1440,7 +1442,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void updateStockMoveLine(
-      StockMoveLine stockMoveLine, BigDecimal realQty, Integer conformity) throws AxelorException {
+      StockMoveLine stockMoveLine, BigDecimal realQty, Integer conformity, Unit unit)
+      throws AxelorException {
     if (stockMoveLine.getStockMove() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY, "Error: missing parent stock move.");
@@ -1450,7 +1453,23 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
               != StockMoveRepository.STATUS_CANCELED) {
         stockMoveLine.setRealQty(realQty);
         stockMoveLine.setConformitySelect(conformity);
+
+        updateUnit(stockMoveLine, unit);
       }
+    }
+  }
+
+  protected void updateUnit(StockMoveLine stockMoveLine, Unit unit) throws AxelorException {
+    if (unit != null) {
+      BigDecimal convertQty =
+          unitConversionService.convert(
+              stockMoveLine.getUnit(),
+              unit,
+              stockMoveLine.getQty(),
+              stockMoveLine.getQty().scale(),
+              stockMoveLine.getProduct());
+      stockMoveLine.setUnit(unit);
+      stockMoveLine.setQty(convertQty);
     }
   }
 }

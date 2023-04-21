@@ -28,7 +28,6 @@ import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.KilometricAllowParam;
 import com.axelor.apps.message.db.Message;
 import com.axelor.exception.AxelorException;
-import com.google.inject.persist.Transactional;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
@@ -44,38 +43,32 @@ public interface ExpenseService {
 
   public Expense compute(Expense expense);
 
-  @Transactional(rollbackOn = {Exception.class})
   public void confirm(Expense expense) throws AxelorException;
 
   public Message sendConfirmationEmail(Expense expense)
       throws AxelorException, ClassNotFoundException, InstantiationException,
           IllegalAccessException, MessagingException, IOException, JSONException;
 
-  @Transactional(rollbackOn = {Exception.class})
   public void validate(Expense expense) throws AxelorException;
 
   public Message sendValidationEmail(Expense expense)
       throws AxelorException, ClassNotFoundException, InstantiationException,
           IllegalAccessException, MessagingException, IOException, JSONException;
 
-  @Transactional(rollbackOn = {Exception.class})
   public void refuse(Expense expense) throws AxelorException;
 
   public Message sendRefusalEmail(Expense expense)
       throws AxelorException, ClassNotFoundException, InstantiationException,
           IllegalAccessException, MessagingException, IOException, JSONException;
 
-  @Transactional(rollbackOn = {Exception.class})
   public Move ventilate(Expense expense) throws AxelorException;
 
-  @Transactional(rollbackOn = {Exception.class})
   public void cancel(Expense expense) throws AxelorException;
 
   public Message sendCancellationEmail(Expense expense)
       throws AxelorException, ClassNotFoundException, InstantiationException,
           IllegalAccessException, MessagingException, IOException, JSONException;
 
-  @Transactional(rollbackOn = {Exception.class})
   public void addPayment(Expense expense, BankDetails bankDetails) throws AxelorException;
 
   public void addPayment(Expense expense) throws AxelorException;

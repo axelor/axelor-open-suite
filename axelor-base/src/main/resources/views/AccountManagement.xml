@@ -136,11 +136,8 @@
       </panel>
 
       <!-- PAYMENT -->
-      <panel name="paymentConfigPanel" title="Payment" colSpan="12" showIf="typeSelect == 3">
-        <field if="__config__.app.isApp('account')" if-module="axelor-account"
-          name="globalAccountingCashAccount" canEdit="false"
-          domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'cash'"
-          requiredIf="typeSelect == 3" form-view="account-form" grid-view="account-grid"/>
+      <panel name="paymentConfigPanel" title="Payment" colSpan="12" showIf="typeSelect == 3"
+        if="__config__.app.isApp('account')" if-module="axelor-account">
         <field name="bankDetails" form-view="bank-details-form" grid-view="bank-details-grid"
           onSelect="action-account-management-attrs-bank-details-domain"
           onChange="action-account-management-attrs-bank-details-on-change"
@@ -150,8 +147,11 @@
           requiredIf="typeSelect == 3"/>
         <field name="cashAccount"
           domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'cash'"
-          if-module="axelor-account" form-view="account-form" grid-view="account-grid"
-          if="__config__.app.isApp('account')" canEdit="false" requiredIf="typeSelect == 3"/>
+          form-view="account-form" grid-view="account-grid" canEdit="false"
+          requiredIf="typeSelect == 3"/>
+        <field name="globalAccountingCashAccount" canEdit="false"
+          domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'cash'"
+          requiredIf="typeSelect == 3" form-view="account-form" grid-view="account-grid"/>
         <field name="sequence"
           domain="self.company = :company  AND self.codeSelect='paymentVoucher'" canNew="true"
           form-view="sequence-form" grid-view="sequence-grid" requiredIf="typeSelect == 3"/>
@@ -160,7 +160,7 @@
         <field name="interbankCodeLine" domain="self.interbankCode.typeSelect = 1"
           form-view="interbank-code-line-form" grid-view="interbank-code-line-grid"/>
         <field name="pmtNotificationTemplate" showIf="paymentMode"
-          if="__config__.app.isApp('account')"/>
+          domain="self.metaModel.name = 'PaymentSession'"/>
         <field name="paymentMode.accountingMethodSelect" hidden="true"/>
       </panel>
 
@@ -246,10 +246,6 @@
       expr="eval: __parent__?._model == 'com.axelor.apps.account.db.Tax' || __parent__?._model == 'com.axelor.apps.base.db.Product' || __parent__?._model == 'com.axelor.apps.base.db.ProductFamily' || __parent__?._model == 'com.axelor.apps.account.db.PaymentMode'"/>
   </action-attrs>
 
-  <action-attrs name="action-account-management-attrs-bank-details-on-change">
-    <attribute name="value" for="cashAccount" expr="eval: bankDetails?.bankAccount"/>
-    <attribute name="value" for="journal" expr="eval: bankDetails?.journal"/>
-  </action-attrs>
   <search-filters name="account-management-filters"
     model="com.axelor.apps.account.db.AccountManagement" title="Account management filters">
     <field name="company" hidden="true"

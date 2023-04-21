@@ -23,8 +23,8 @@ import com.axelor.apps.hr.db.LeaveReason;
 import com.axelor.apps.hr.db.repo.EmployeeHRRepository;
 import com.axelor.apps.hr.db.repo.LeaveLineRepository;
 import com.axelor.apps.hr.db.repo.LeaveManagementRepository;
+import com.axelor.apps.hr.service.employee.EmployeeService;
 import com.axelor.apps.hr.service.leave.management.LeaveManagementService;
-import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.ExceptionOriginRepository;
@@ -42,8 +42,9 @@ public class BatchLeaveManagementReset extends BatchLeaveManagement {
   public BatchLeaveManagementReset(
       LeaveManagementService leaveManagementService,
       LeaveLineRepository leaveLineRepository,
-      LeaveManagementRepository leaveManagementRepository) {
-    super(leaveManagementService, leaveLineRepository, leaveManagementRepository);
+      LeaveManagementRepository leaveManagementRepository,
+      EmployeeService employeeService) {
+    super(leaveManagementService, leaveLineRepository, leaveManagementRepository, employeeService);
   }
 
   @Override
@@ -87,7 +88,7 @@ public class BatchLeaveManagementReset extends BatchLeaveManagement {
       if (leaveReason.equals(leaveLine.getLeaveReason())) {
         leaveManagementService.reset(
             leaveLine,
-            AuthUtils.getUser(),
+            employeeService.getUser(employee),
             batch.getHrBatch().getComments(),
             null,
             batch.getHrBatch().getStartDate(),

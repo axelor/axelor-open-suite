@@ -62,7 +62,7 @@ public class CostSheetController {
     }
   }
 
-  private String getTimezone(CostSheet costSheet) {
+  protected String getTimezone(CostSheet costSheet) {
     if (costSheet.getManufOrder() == null || costSheet.getManufOrder().getCompany() == null) {
       return null;
     }

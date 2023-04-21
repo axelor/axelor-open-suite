@@ -63,7 +63,10 @@
     </panel>
     <panel name="contentPanel" title="Content" readonlyIf="statusSelect != 1">
       <field name="subject" title="Subject" colSpan="12" required="true"/>
-      <field name="content" colSpan="12" showTitle="false" widget="html"/>
+      <field name="content" colSpan="12" showTitle="false" widget="html"
+        showIf="mediaTypeSelect != 5"/>
+      <field name="content" colSpan="12" showTitle="false" widget="html" x-lite="true"
+        showIf="mediaTypeSelect == 5"/>
     </panel>
     <panel name="relatedToPanel" title="Related to" sidebar="true" colSpan="12"
       readonlyIf="statusSelect == 4">

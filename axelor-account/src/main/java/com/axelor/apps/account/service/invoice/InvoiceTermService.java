@@ -34,7 +34,6 @@ import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.CallMethod;
 import com.axelor.rpc.Context;
-import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -135,11 +134,9 @@ public interface InvoiceTermService {
    *
    * @param invoicePayment
    */
-  @Transactional(rollbackOn = {Exception.class})
   public void updateInvoiceTermsAmountRemaining(InvoicePayment invoicePayment)
       throws AxelorException;
 
-  @Transactional(rollbackOn = {Exception.class})
   public void updateInvoiceTermsAmountRemaining(List<InvoiceTermPayment> invoiceTermPaymentList)
       throws AxelorException;
 
@@ -311,4 +308,7 @@ public interface InvoiceTermService {
 
   @CallMethod
   boolean isMultiCurrency(InvoiceTerm invoiceTerm);
+
+  List<InvoiceTerm> recomputeInvoiceTermsPercentage(
+      List<InvoiceTerm> invoiceTermList, BigDecimal total);
 }

@@ -45,7 +45,7 @@ public interface PurchaseOrderService {
    * @param purchaseOrder
    * @throws AxelorException
    */
-  void _populatePurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException;
+  void _populatePurchaseOrder(PurchaseOrder purchaseOrder);
 
   /**
    * Calculer le montant d'une commande.

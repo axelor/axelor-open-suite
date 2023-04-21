@@ -375,7 +375,7 @@ public class PartnerServiceImpl implements PartnerService {
     return q.getResultList();
   }
 
-  private PartnerAddress createPartnerAddress(Address address, Boolean isDefault) {
+  protected PartnerAddress createPartnerAddress(Address address, Boolean isDefault) {
 
     PartnerAddress partnerAddress = new PartnerAddress();
     partnerAddress.setAddress(address);
@@ -697,7 +697,7 @@ public class PartnerServiceImpl implements PartnerService {
     int siren = Integer.parseInt(sirenStr);
     int taxKey = Math.floorMod(siren, 97);
     taxKey = Math.floorMod(12 + 3 * taxKey, 97);
-    return Integer.toString(taxKey);
+    return String.format("%02d", taxKey);
   }
 
   public Partner isThereDuplicatePartnerInArchive(Partner partner) {

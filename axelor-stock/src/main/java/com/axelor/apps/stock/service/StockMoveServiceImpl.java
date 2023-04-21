@@ -36,7 +36,15 @@ import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.exception.AxelorMessageException;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.apps.stock.db.*;
+import com.axelor.apps.stock.db.FreightCarrierMode;
+import com.axelor.apps.stock.db.Incoterm;
+import com.axelor.apps.stock.db.InventoryLine;
+import com.axelor.apps.stock.db.ShipmentMode;
+import com.axelor.apps.stock.db.StockConfig;
+import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.repo.InventoryLineRepository;
 import com.axelor.apps.stock.db.repo.InventoryRepository;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
@@ -298,8 +306,17 @@ public class StockMoveServiceImpl implements StockMoveService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
   public void plan(StockMove stockMove) throws AxelorException {
+    planStockMove(stockMove);
+    if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
+        && stockMove.getPlannedStockMoveAutomaticMail() != null
+        && stockMove.getPlannedStockMoveAutomaticMail()) {
+      sendMailForStockMove(stockMove, stockMove.getPlannedStockMoveMessageTemplate());
+    }
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected void planStockMove(StockMove stockMove) throws AxelorException {
     if (stockMove.getStatusSelect() == null
         || stockMove.getStatusSelect() != StockMoveRepository.STATUS_DRAFT) {
       throw new AxelorException(
@@ -365,11 +382,6 @@ public class StockMoveServiceImpl implements StockMoveService {
     stockMove.setCancelReason(null);
 
     stockMoveRepo.save(stockMove);
-    if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
-        && stockMove.getPlannedStockMoveAutomaticMail() != null
-        && stockMove.getPlannedStockMoveAutomaticMail()) {
-      sendMailForStockMove(stockMove, stockMove.getPlannedStockMoveMessageTemplate());
-    }
   }
 
   /**
@@ -379,7 +391,6 @@ public class StockMoveServiceImpl implements StockMoveService {
    */
   protected void setPlannedStatus(StockMove stockMove) {
     stockMove.setStatusSelect(StockMoveRepository.STATUS_PLANNED);
-    stockMoveRepo.save(stockMove);
   }
 
   /**
@@ -430,8 +441,21 @@ public class StockMoveServiceImpl implements StockMoveService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
   public String realize(StockMove stockMove, boolean checkOngoingInventoryFlag)
+      throws AxelorException {
+    String newStockSeq = realizeStockMove(stockMove, checkOngoingInventoryFlag);
+
+    if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
+        && stockMove.getRealStockMoveAutomaticMail() != null
+        && stockMove.getRealStockMoveAutomaticMail()) {
+      sendMailForStockMove(stockMove, stockMove.getRealStockMoveMessageTemplate());
+    }
+
+    return newStockSeq;
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected String realizeStockMove(StockMove stockMove, boolean checkOngoingInventoryFlag)
       throws AxelorException {
     if (stockMove.getStatusSelect() == null
         || stockMove.getStatusSelect() != StockMoveRepository.STATUS_PLANNED) {
@@ -500,15 +524,12 @@ public class StockMoveServiceImpl implements StockMoveService {
       }
     }
     computeMasses(stockMove);
+
     stockMoveRepo.save(stockMove);
 
     if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING
         && !stockMove.getIsReversion()) {
       partnerProductQualityRatingService.calculate(stockMove);
-    } else if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
-        && stockMove.getRealStockMoveAutomaticMail() != null
-        && stockMove.getRealStockMoveAutomaticMail()) {
-      sendMailForStockMove(stockMove, stockMove.getRealStockMoveMessageTemplate());
     }
 
     return newStockSeq;
@@ -521,7 +542,6 @@ public class StockMoveServiceImpl implements StockMoveService {
    */
   protected void setRealizedStatus(StockMove stockMove) {
     stockMove.setStatusSelect(StockMoveRepository.STATUS_REALIZED);
-    stockMoveRepo.save(stockMove);
   }
 
   /**
@@ -551,7 +571,7 @@ public class StockMoveServiceImpl implements StockMoveService {
    * @param stockMove
    * @throws AxelorException
    */
-  private void checkOngoingInventory(StockMove stockMove) throws AxelorException {
+  protected void checkOngoingInventory(StockMove stockMove) throws AxelorException {
     List<StockLocation> stockLocationList = new ArrayList<>();
 
     if (stockMove.getFromStockLocation().getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
@@ -600,7 +620,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     }
   }
 
-  private void resetMasses(StockMove stockMove) {
+  protected void resetMasses(StockMove stockMove) {
     List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
 
     if (stockMoveLineList == null) {
@@ -850,7 +870,7 @@ public class StockMoveServiceImpl implements StockMoveService {
       newStockMove.setCarrierPartner(stockMove.getPartner().getCarrierPartner());
     }
     newStockMove.setReversionOriginStockMove(stockMove);
-    newStockMove.setFromAddressStr(stockMove.getFromAddressStr());
+    newStockMove.setFromAddressStr(stockMove.getToAddressStr());
     newStockMove.setNote(stockMove.getNote());
     newStockMove.setNumOfPackages(stockMove.getNumOfPackages());
     newStockMove.setNumOfPalettes(stockMove.getNumOfPalettes());
@@ -928,7 +948,8 @@ public class StockMoveServiceImpl implements StockMoveService {
   @Override
   @Transactional
   public boolean splitStockMoveLines(
-      StockMove stockMove, List<StockMoveLine> stockMoveLines, BigDecimal splitQty) {
+      StockMove stockMove, List<StockMoveLine> stockMoveLines, BigDecimal splitQty)
+      throws AxelorException {
 
     boolean selected = false;
 
@@ -1090,7 +1111,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     return stock;
   }
 
-  private Double getStock(Long locationId, Long productId, LocalDate date) {
+  protected Double getStock(Long locationId, Long productId, LocalDate date) {
 
     List<StockMoveLine> inLines =
         stockMoveLineRepo
@@ -1397,7 +1418,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 
   @Override
   @Transactional
-  public void updateProductNetMass(StockMove stockMove) throws AxelorException {
+  public void updateProductNetMass(StockMove stockMove) {
     if (stockMove.getStockMoveLineList() != null) {
       for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
         if (stockMoveLine.getProduct() != null) {

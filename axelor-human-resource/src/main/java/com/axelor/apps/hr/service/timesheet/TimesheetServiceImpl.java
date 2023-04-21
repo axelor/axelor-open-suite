@@ -464,21 +464,6 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
   }
 
   @Override
-  public LocalDate getFromPeriodDate() {
-    Timesheet timesheet =
-        timeSheetRepository
-            .all()
-            .filter(
-                "self.employee.user.id = ?1 ORDER BY self.toDate DESC", AuthUtils.getUser().getId())
-            .fetchOne();
-    if (timesheet != null) {
-      return timesheet.getToDate();
-    } else {
-      return null;
-    }
-  }
-
-  @Override
   public Timesheet getCurrentTimesheet() {
     Timesheet timesheet =
         timeSheetRepository
@@ -773,7 +758,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
     this.setProjectTaskTotalRealHrs(timesheet.getTimesheetLineList(), true);
   }
 
-  private Project findProject(Long projectId) {
+  protected Project findProject(Long projectId) {
     Project project;
     final long startTime = System.currentTimeMillis();
     while ((project = projectRepo.find(projectId)) == null
@@ -786,7 +771,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
     return project;
   }
 
-  private void sleep() {
+  protected void sleep() {
     try {
       Thread.sleep(ENTITY_FIND_INTERVAL);
     } catch (InterruptedException e) {

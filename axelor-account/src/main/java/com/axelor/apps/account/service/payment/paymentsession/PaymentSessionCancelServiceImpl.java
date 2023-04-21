@@ -41,7 +41,7 @@ public class PaymentSessionCancelServiceImpl implements PaymentSessionCancelServ
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public void cancelPaymentSession(PaymentSession paymentSession) {
     paymentSession.setStatusSelect(PaymentSessionRepository.STATUS_CANCELLED);
     paymentSessionRepo.save(paymentSession);
@@ -49,8 +49,9 @@ public class PaymentSessionCancelServiceImpl implements PaymentSessionCancelServ
     this.cancelInvoiceTerms(paymentSession);
   }
 
-  @Transactional(rollbackOn = {Exception.class})
-  protected void cancelInvoiceTerms(PaymentSession paymentSession) {
+  @Override
+  @Transactional
+  public void cancelInvoiceTerms(PaymentSession paymentSession) {
     List<InvoiceTerm> invoiceTermList;
     Query<InvoiceTerm> invoiceTermQuery =
         invoiceTermRepo.all().filter("self.paymentSession = ?", paymentSession).order("id");
