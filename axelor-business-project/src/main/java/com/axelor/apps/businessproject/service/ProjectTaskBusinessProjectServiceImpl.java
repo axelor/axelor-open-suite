@@ -41,6 +41,7 @@ import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
+import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanningTime;
@@ -74,6 +75,7 @@ import java.util.Set;
 public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImpl
     implements ProjectTaskBusinessProjectService {
 
+  public static final int DURATION_SCALE = 2;
   private PriceListLineRepository priceListLineRepo;
   private PriceListService priceListService;
   private PartnerPriceListService partnerPriceListService;
@@ -470,7 +472,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void computeProjectTaskTotals(ProjectTask projectTask) throws AxelorException {
 
     BigDecimal plannedTime;
@@ -486,7 +488,8 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     List<TimesheetLine> timeSheetLines =
         timesheetLineRepository
             .all()
-            .filter("self.timesheet.statusSelect = 3 AND self.projectTask = :projectTask")
+            .filter("self.timesheet.statusSelect = :status AND self.projectTask = :projectTask")
+            .bind("status", TimesheetRepository.STATUS_VALIDATED)
             .bind("projectTask", projectTask)
             .fetch();
 
@@ -538,14 +541,17 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
           convertedDuration = duration;
         }
         if (timeUnit.equals(daysUnit)) {
-          convertedDuration = duration.divide(defaultHoursADay, 2, RoundingMode.HALF_UP);
+          convertedDuration =
+              duration.divide(defaultHoursADay, DURATION_SCALE, RoundingMode.HALF_UP);
         }
         break;
       case EmployeeRepository.TIME_PREFERENCE_MINUTES:
         // convert to hours
-        convertedDuration = duration.divide(new BigDecimal(60), 2, RoundingMode.HALF_UP);
+        convertedDuration =
+            duration.divide(new BigDecimal(60), DURATION_SCALE, RoundingMode.HALF_UP);
         if (timeUnit.equals(daysUnit)) {
-          convertedDuration = duration.divide(defaultHoursADay, 2, RoundingMode.HALF_UP);
+          convertedDuration =
+              duration.divide(defaultHoursADay, DURATION_SCALE, RoundingMode.HALF_UP);
         }
         break;
       default:

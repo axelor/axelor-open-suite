@@ -31,5 +31,5 @@ public interface ProjectBusinessService extends ProjectService {
 
   Project generatePhaseProject(SaleOrderLine saleOrderLine, Project parent);
 
-  void computeProjectTotals(Project project);
+  void computeProjectTotals(Project project) throws AxelorException;
 }

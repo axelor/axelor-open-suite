@@ -49,7 +49,6 @@
     model="com.axelor.apps.project.db.ProjectTask" extension="true">
     <extend target="/">
       <attribute name="onNew" value="action-business-project-project-task-group-on-new"/>
-      <attribute name="onLoad" value="action-business-project-project-task-group-on-load"/>
     </extend>
     <extend target="//field[@name='parentTask']">
       <attribute name="onChange" value="action-project-task-record-get-parent-timeunit"/>
@@ -57,6 +56,7 @@
     <extend target="//field[@name='description']">
       <insert position="before">
         <field name="timeUnit" colSpan="4" readonlyIf="saleOrderLine || parentTask"
+          onSelect="action-project-task-attrs-set-time-unit-domain"
           if="__config__.app.isApp('business-project')"/>
       </insert>
     </extend>
@@ -98,12 +98,6 @@
   <action-group name="action-business-project-project-task-group-on-new">
     <action name="action-project-task-group-onnew"/>
     <action name="action-project-task-attrs-set-time-unit-default"/>
-    <action name="action-project-task-attrs-set-time-unit-domain"/>
-  </action-group>
-
-  <action-group name="action-business-project-project-task-group-on-load">
-    <action name="action-project-task-group-timer-process"/>
-    <action name="action-project-task-attrs-set-time-unit-domain"/>
   </action-group>
 
   <!-- get timeUnit value from configuration -->

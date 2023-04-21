@@ -56,7 +56,7 @@
     <!-- planification fields -->
     <many-to-one name="daysUnit" ref="com.axelor.apps.base.db.Unit" title="Days unit"/>
     <many-to-one name="hoursUnit" ref="com.axelor.apps.base.db.Unit" title="Hours unit"/>
-    <decimal name="defaultHoursADay" title="Default hours in a day"/>
+    <decimal name="defaultHoursADay" title="Default hours in a day" min="0"/>
 
     <track>
       <field name="productInvoicingProject" on="UPDATE"/>

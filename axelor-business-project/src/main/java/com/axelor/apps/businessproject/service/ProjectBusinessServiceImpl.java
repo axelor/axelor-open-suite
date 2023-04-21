@@ -292,18 +292,14 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
   }
 
   @Override
-  public void computeProjectTotals(Project project) {
+  public void computeProjectTotals(Project project) throws AxelorException {
 
     List<ProjectTask> projectTaskList =
         project.getProjectTaskList().stream()
             .filter(projectTask -> projectTask.getParentTask() == null)
             .collect(Collectors.toList());
-    try {
-      for (ProjectTask projectTask : projectTaskList) {
-        projectTaskBusinessProjectService.computeProjectTaskTotals(projectTask);
-      }
-    } catch (AxelorException e) {
-      throw new RuntimeException(e);
+    for (ProjectTask projectTask : projectTaskList) {
+      projectTaskBusinessProjectService.computeProjectTaskTotals(projectTask);
     }
   }
 }

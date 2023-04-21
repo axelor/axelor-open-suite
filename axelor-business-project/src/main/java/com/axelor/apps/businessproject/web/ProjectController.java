@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.businessproject.db.InvoicingProject;
+import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.report.IReport;
 import com.axelor.apps.businessproject.service.InvoicingProjectService;
 import com.axelor.apps.businessproject.service.ProjectBusinessService;
@@ -167,10 +168,11 @@ public class ProjectController {
     }
   }
 
-  public void computeProjectTotals(ActionRequest request, ActionResponse response) {
+  public void computeProjectTotals(ActionRequest request, ActionResponse response)
+      throws AxelorException {
     Project project = request.getContext().asType(Project.class);
 
     Beans.get(ProjectBusinessService.class).computeProjectTotals(project);
-    response.setNotify(I18n.get("Totals have been updated"));
+    response.setNotify(I18n.get(BusinessProjectExceptionMessage.PROJECT_UPDATE_TOTALS_SUCCESS));
   }
 }
