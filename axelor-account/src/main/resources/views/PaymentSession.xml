@@ -163,8 +163,10 @@
         onClick="action-payment-session-method-select-all" colSpan="3" hidden="true"/>
       <button name="unselectAllBtn" title="Unselect all"
         onClick="action-payment-session-method-unselect-all" colSpan="3" hidden="true"/>
-      <panel-dashlet action="action-invoice-term-view-payment-session-dashlet"
-        showIf="id" colSpan="12" canSearch="true" height="600" readonlyIf="statusSelect > 1"/>
+      <panel-dashlet name="invoiceTermPanelDashlet" action="action-invoice-term-view-payment-session-dashlet"
+        hidden="true" colSpan="12" canSearch="true" height="600" readonlyIf="statusSelect > 1"/>
+      <panel-dashlet name="invoiceTermShorterPanelDashlet" action="action-invoice-term-view-payment-session-dashlet"
+        hidden="true" colSpan="12" canSearch="true" height="380" readonlyIf="statusSelect > 1"/>
       <panel-dashlet
         action="action-invoice-term-view-payment-session-group-by-partner-dashlet" showIf="id"
         colSpan="12" canSearch="true" height="380" readonlyIf="statusSelect > 1"/>
@@ -214,6 +216,7 @@
   </action-group>
 
   <action-group name="action-group-payment-session-on-load">
+    <action name="action-method-payment-session-show-invoice-term-dashlet"/>
     <action name="action-payment-session-method-set-has-invoice-term-selected"/>
     <action name="action-payment-session-method-set-has-invoice-term"/>
     <action name="action-payment-session-record-set-session-total-amount-btn"/>
@@ -224,7 +227,11 @@
       expr="eval: &quot;self.id IN (${__user__?.companySet?.collect{it.id}.join(',')}) &quot;"
       for="company"/>
   </action-attrs>
-
+  
+  <action-method name="action-method-payment-session-show-invoice-term-dashlet">
+  	<call class="com.axelor.apps.account.web.PaymentSessionController"
+      method="showInvoiceTermDashlet"/>
+  </action-method>
   <action-attrs name="action-attrs-payment-session-reset-on-company-change">
     <attribute name="value" expr="eval: null" for="journal"/>
     <attribute name="value" expr="eval: null" for="bankDetails"/>

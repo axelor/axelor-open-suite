@@ -364,4 +364,23 @@ public class PaymentSessionController {
       TraceBackService.trace(response, e);
     }
   }
+  
+  public void showInvoiceTermDashlet(ActionRequest request, ActionResponse response) {
+	  try {
+	      PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
+	      paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
+
+	      List<InvoiceTerm> invoiceTermList =
+	          Beans.get(InvoiceTermRepository.class).findByPaymentSession(paymentSession).fetch();
+	      int partnerCount = (int) invoiceTermList.stream().map(it -> it.getPartner()).distinct().count();
+	      int lineCount = 2*partnerCount + invoiceTermList.size();
+	      if(lineCount > 10) {
+	    	  response.setAttr("invoiceTermPanelDashlet", "hidden", false);
+	      } else {
+	          response.setAttr("invoiceTermShorterPanelDashlet", "hidden", false);
+	      }
+	  } catch (Exception e) {
+	      TraceBackService.trace(response, e);
+	    }
+  }
 }
