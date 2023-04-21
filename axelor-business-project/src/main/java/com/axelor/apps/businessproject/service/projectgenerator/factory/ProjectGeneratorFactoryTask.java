@@ -104,10 +104,10 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
       // check on product unit
       AppBusinessProject appBusinessProject = appBusinessProjectService.getAppBusinessProject();
       if (!Objects.equals(saleOrderLine.getUnit(), appBusinessProject.getDaysUnit())
-              && !Objects.equals(saleOrderLine.getUnit(), appBusinessProject.getHoursUnit())) {
+          && !Objects.equals(saleOrderLine.getUnit(), appBusinessProject.getHoursUnit())) {
         throw new AxelorException(
-                TraceBackRepository.CATEGORY_NO_VALUE,
-                I18n.get(BusinessProjectExceptionMessage.SALE_ORDER_GENERATE_FILL_PRODUCT_UNIT_ERROR));
+            TraceBackRepository.CATEGORY_NO_VALUE,
+            I18n.get(BusinessProjectExceptionMessage.SALE_ORDER_GENERATE_FILL_PRODUCT_UNIT_ERROR));
       }
       if (product != null
           && ProductRepository.PRODUCT_TYPE_SERVICE.equals(
