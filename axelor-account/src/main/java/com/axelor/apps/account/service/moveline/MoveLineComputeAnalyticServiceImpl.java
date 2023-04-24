@@ -19,6 +19,7 @@ package com.axelor.apps.account.service.moveline;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountAnalyticRulesRepository;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
@@ -88,6 +89,13 @@ public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyt
   }
 
   @Override
+  public void computeAnalyticDistribution(MoveLine moveLine, Move move) throws AxelorException {
+    if (move != null && this.checkManageAnalytic(move.getCompany())) {
+      this.computeAnalyticDistribution(moveLine);
+    }
+  }
+
+  @Override
   public void updateAccountTypeOnAnalytic(
       MoveLine moveLine, List<AnalyticMoveLine> analyticMoveLineList) {
 
@@ -134,6 +142,16 @@ public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyt
     for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
       moveLine.addAnalyticMoveLineListItem(analyticMoveLine);
     }
+    return moveLine;
+  }
+
+  @Override
+  public MoveLine createAnalyticDistributionWithTemplate(MoveLine moveLine, Move move)
+      throws AxelorException {
+    if (this.checkManageAnalytic(move.getCompany())) {
+      this.createAnalyticDistributionWithTemplate(moveLine);
+    }
+
     return moveLine;
   }
 
@@ -217,13 +235,32 @@ public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyt
     moveLine.setAxis3AnalyticAccount(null);
     moveLine.setAxis4AnalyticAccount(null);
     moveLine.setAxis5AnalyticAccount(null);
+
+    this.clearAnalyticMoveLineList(moveLine);
+
+    return moveLine;
+  }
+
+  @Override
+  public MoveLine clearAnalyticAccountingIfEmpty(MoveLine moveLine) {
+    if (moveLine.getAxis1AnalyticAccount() == null
+        && moveLine.getAxis2AnalyticAccount() == null
+        && moveLine.getAxis3AnalyticAccount() == null
+        && moveLine.getAxis4AnalyticAccount() == null
+        && moveLine.getAxis5AnalyticAccount() == null) {
+      this.clearAnalyticMoveLineList(moveLine);
+    }
+
+    return moveLine;
+  }
+
+  protected void clearAnalyticMoveLineList(MoveLine moveLine) {
     if (!CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())) {
       moveLine
           .getAnalyticMoveLineList()
           .forEach(analyticMoveLine -> analyticMoveLine.setMoveLine(null));
       moveLine.getAnalyticMoveLineList().clear();
     }
-    return moveLine;
   }
 
   @Override

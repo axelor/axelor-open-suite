@@ -18,6 +18,7 @@
 package com.axelor.apps.account.service.moveline;
 
 import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
@@ -28,7 +29,12 @@ public interface MoveLineComputeAnalyticService {
 
   MoveLine computeAnalyticDistribution(MoveLine moveLine);
 
+  void computeAnalyticDistribution(MoveLine moveLine, Move move) throws AxelorException;
+
   MoveLine createAnalyticDistributionWithTemplate(MoveLine moveLine);
+
+  MoveLine createAnalyticDistributionWithTemplate(MoveLine moveLine, Move move)
+      throws AxelorException;
 
   void updateAccountTypeOnAnalytic(MoveLine moveLine, List<AnalyticMoveLine> analyticMoveLineList);
 
@@ -41,6 +47,8 @@ public interface MoveLineComputeAnalyticService {
   public BigDecimal getAnalyticAmount(MoveLine moveLine, AnalyticMoveLine analyticMoveLine);
 
   MoveLine clearAnalyticAccounting(MoveLine moveLine);
+
+  MoveLine clearAnalyticAccountingIfEmpty(MoveLine moveLine);
 
   boolean checkManageAnalytic(Company company) throws AxelorException;
 }

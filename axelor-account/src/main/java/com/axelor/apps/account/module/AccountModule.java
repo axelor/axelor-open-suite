@@ -279,6 +279,10 @@ import com.axelor.apps.account.service.move.PaymentMoveLineDistributionService;
 import com.axelor.apps.account.service.move.PaymentMoveLineDistributionServiceImpl;
 import com.axelor.apps.account.service.move.SimulatedMoveService;
 import com.axelor.apps.account.service.move.SimulatedMoveServiceImpl;
+import com.axelor.apps.account.service.moveline.MoveLineAttrsService;
+import com.axelor.apps.account.service.moveline.MoveLineAttrsServiceImpl;
+import com.axelor.apps.account.service.moveline.MoveLineCheckService;
+import com.axelor.apps.account.service.moveline.MoveLineCheckServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineConsolidateService;
@@ -287,6 +291,12 @@ import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineCurrencyService;
 import com.axelor.apps.account.service.moveline.MoveLineCurrencyServiceImpl;
+import com.axelor.apps.account.service.moveline.MoveLineDefaultService;
+import com.axelor.apps.account.service.moveline.MoveLineDefaultServiceImpl;
+import com.axelor.apps.account.service.moveline.MoveLineGroupService;
+import com.axelor.apps.account.service.moveline.MoveLineGroupServiceImpl;
+import com.axelor.apps.account.service.moveline.MoveLineRecordService;
+import com.axelor.apps.account.service.moveline.MoveLineRecordServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
@@ -670,6 +680,16 @@ public class AccountModule extends AxelorModule {
     bind(AccountCustomerService.class).to(AccountCustomerServiceImpl.class);
 
     bind(InvoiceProductStatementService.class).to(InvoiceProductStatementServiceImpl.class);
+
+    bind(MoveLineAttrsService.class).to(MoveLineAttrsServiceImpl.class);
+
+    bind(MoveLineCheckService.class).to(MoveLineCheckServiceImpl.class);
+
+    bind(MoveLineDefaultService.class).to(MoveLineDefaultServiceImpl.class);
+
+    bind(MoveLineGroupService.class).to(MoveLineGroupServiceImpl.class);
+
+    bind(MoveLineRecordService.class).to(MoveLineRecordServiceImpl.class);
 
     bind(MoveLineCurrencyService.class).to(MoveLineCurrencyServiceImpl.class);
   }

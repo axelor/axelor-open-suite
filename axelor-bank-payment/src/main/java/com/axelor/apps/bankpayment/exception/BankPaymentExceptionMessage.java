@@ -324,4 +324,7 @@ public final class BankPaymentExceptionMessage {
 
   public static final String VALIDATION_BANK_ORDER_MOVE_INV_PAYMENT_FAIL = /*$$(*/
       "Failed to create a move for the invoice payment." /*)*/;
+
+  public static final String MOVE_LINE_CHECK_BANK_RECONCILED_AMOUNT = /*$$(*/
+      "Bank reconcile amount must be inferior or equal to credit or debit." /*)*/;
 }
