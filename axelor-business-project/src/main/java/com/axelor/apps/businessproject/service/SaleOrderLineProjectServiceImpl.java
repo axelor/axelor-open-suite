@@ -18,6 +18,7 @@
 package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -34,6 +35,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
+import com.axelor.apps.supplychain.service.SaleInvoicingStateService;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChainImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.google.inject.Inject;
@@ -52,14 +54,16 @@ public class SaleOrderLineProjectServiceImpl extends SaleOrderLineServiceSupplyC
       AppSaleService appSaleService,
       AccountManagementService accountManagementService,
       SaleOrderLineRepository saleOrderLineRepo,
+      SaleOrderService saleOrderService,
       AppAccountService appAccountService,
       AnalyticMoveLineService analyticMoveLineService,
       AppSupplychainService appSupplychainService,
       AccountConfigService accountConfigService,
-      SaleOrderService saleOrderService,
       PricingService pricingService,
       TaxService taxService,
-      SaleOrderMarginService saleOrderMarginService) {
+      SaleOrderMarginService saleOrderMarginService,
+      InvoiceLineRepository invoiceLineRepository,
+      SaleInvoicingStateService saleInvoicingStateService) {
     super(
         currencyService,
         priceListService,
@@ -75,7 +79,9 @@ public class SaleOrderLineProjectServiceImpl extends SaleOrderLineServiceSupplyC
         accountConfigService,
         pricingService,
         taxService,
-        saleOrderMarginService);
+        saleOrderMarginService,
+        invoiceLineRepository,
+        saleInvoicingStateService);
   }
 
   @Transactional

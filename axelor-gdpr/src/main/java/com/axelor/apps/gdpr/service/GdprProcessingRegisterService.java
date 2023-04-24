@@ -29,6 +29,7 @@ import com.axelor.apps.gdpr.db.repo.GDPRProcessingRegisterRepository;
 import com.axelor.apps.message.service.MailMessageService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.AuditableModel;
+import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.db.mapper.Mapper;
@@ -128,10 +129,13 @@ public class GdprProcessingRegisterService implements Callable<List<GDPRProcessi
     int count = 0;
 
     for (GDPRProcessingRegisterRule gdprProcessingRegisterRule : gdprProcessingRegisterRuleList) {
+      gdprProcessingRegisterRule =
+          JPA.find(GDPRProcessingRegisterRule.class, gdprProcessingRegisterRule.getId());
       MetaModel metaModel = gdprProcessingRegisterRule.getMetaModel();
-      String filter = computeFilter(gdprProcessingRegisterRule.getRule());
+
       Class<? extends AuditableModel> entityKlass =
           (Class<? extends AuditableModel>) Class.forName(metaModel.getFullName());
+      String filter = computeFilter(gdprProcessingRegisterRule.getRule(), metaModel);
 
       AuditableModel model;
 
@@ -158,16 +162,20 @@ public class GdprProcessingRegisterService implements Callable<List<GDPRProcessi
 
         if (count % 10 == 0) {
           JPA.clear();
+          // Need to find if there are more than 10 entities
+          if (anonymizer != null) {
+            anonymizer = JPA.find(Anonymizer.class, anonymizer.getId());
+          }
+          metaModel = JPA.find(MetaModel.class, metaModel.getId());
         }
       }
-      JPA.clear();
     }
     if (count > 0) {
       addProcessingLog(gdprProcessingRegister, count);
     }
   }
 
-  protected String computeFilter(String rule) {
+  protected String computeFilter(String rule, MetaModel metaModel) {
     StringBuilder stringBuilder = new StringBuilder();
     String fields = rule.replaceAll("\\s", "");
     List<String> fieldList = Arrays.asList(fields.split(","));
@@ -181,12 +189,18 @@ public class GdprProcessingRegisterService implements Callable<List<GDPRProcessi
         stringBuilder.append(" AND ");
       }
     }
+
+    // Exclude admin user
+    if (User.class.getName().equals(metaModel.getFullName())) {
+      stringBuilder.append(" AND self.code != 'admin'");
+    }
+
     return stringBuilder.toString();
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   protected void anonymize(MetaModel metaModel, AuditableModel model, Anonymizer anonymizer)
-      throws AxelorException, IOException {
+      throws AxelorException {
 
     if (anonymizer == null) {
       return;
@@ -199,7 +213,7 @@ public class GdprProcessingRegisterService implements Callable<List<GDPRProcessi
             .collect(Collectors.toList());
 
     Mapper mapper = Mapper.of(model.getClass());
-    Object newValue = null;
+    Object newValue;
 
     for (AnonymizerLine anonymizerLine : anonymizerLines) {
       Object currentValue = mapper.get(model, anonymizerLine.getMetaField().getName());
@@ -219,7 +233,7 @@ public class GdprProcessingRegisterService implements Callable<List<GDPRProcessi
     JPA.merge(model);
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional
   protected void addProcessingLog(GDPRProcessingRegister gdprProcessingRegister, int nbProcessed) {
 
     GDPRProcessingRegisterLog processingLog = new GDPRProcessingRegisterLog();
