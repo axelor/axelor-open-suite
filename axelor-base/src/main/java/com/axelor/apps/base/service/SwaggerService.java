@@ -8,7 +8,7 @@ public class SwaggerService {
     String resourcePackages = appSettings.get("aos.swagger.resource.packages");
     boolean resourcesEmpty = resourcePackages == null || resourcePackages.isEmpty();
     return Boolean.parseBoolean(appSettings.get("aos.swagger.enable"))
-        && Boolean.parseBoolean(appSettings.get("aos.api.enable"))
+        && Boolean.parseBoolean(appSettings.get("utils.api.enable"))
         && !resourcesEmpty;
   }
 }
