@@ -1,3 +1,0 @@
----
-title: "Invoice: fix an error occurring when validating an invoice if invoice statements were not correctly configured."
-type: fix
