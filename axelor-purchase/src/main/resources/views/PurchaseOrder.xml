@@ -866,7 +866,9 @@
   </action-view>
 
   <action-validate name="action-purchase-order-validate-stock-location">
-    <error message="The field 'Stock Location' must be filled." if="stockLocation == null"/>
+    <error message="The field 'Stock Location' must be filled."
+      if="__config__.app.isApp('supplychain')
+          &amp;&amp; purchaseOrderLineList?.any{it?.product?.stockManaged} &amp;&amp; stockLocation == null"/>
   </action-validate>
 
   <action-validate name="action-purchase-order-validate-purchase-order-line">
