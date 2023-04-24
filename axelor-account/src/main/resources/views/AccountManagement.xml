@@ -10,7 +10,7 @@
     <field name="company" form-view="company-form" grid-view="company-grid"
       onChange="action-group-account-account-management-onchange-common" canEdit="false"
       if="__config__.app.getApp('base')?.getEnableMultiCompany()"
-      readonlyIf="cashAccount || journal"/>
+      readonlyIf="cashAccount || journal || sequence"/>
     <field name="bankDetails" form-view="bank-details-form" grid-view="bank-details-grid"
       canEdit="false" onSelect="action-account-management-attrs-bank-details-domain"
       onChange="action-account-management-attrs-bank-details-on-change"/>
@@ -59,7 +59,7 @@
   <grid name="account-management-editable-grid" title="Account management list"
     model="com.axelor.apps.account.db.AccountManagement" editable="true"
     groupBy="company,bankDetails" onNew="action-record-account-management-new-account-management">
-    <field name="company"/>
+    <field name="company" readonlyIf="journal"/>
     <field name="bankDetails"/>
     <field name="journal"
       domain="self.statusSelect = 1 AND (:company IS NULL OR self.company = :company)"
@@ -141,7 +141,7 @@
           if="__config__.app.isApp('account')" canEdit="false" showIf="tax != null" colSpan="6"/>
       </insert>
     </extend>
-    <extend target="//panel[@name='mainAccountManagementPanel']/field[@name='company']">
+    <extend target="//field[@name='company']">
       <attribute name="readonlyIf"
         value="purchaseAccount || fixedAssetCategory || purchFixedAssetsAccount || saleAccount || purchaseAccount || purchFixedAssetsAccount || saleAccount || purchVatRegulationAccount || saleVatRegulationAccount || globalAccountingCashAccount || journal || cashAccount || sequence || allowedFinDiscountTaxVatSystem1Account || allowedFinDiscountTaxVatSystem2Account || obtainedFinDiscountTaxVatSystem1Account || obtainedFinDiscountTaxVatSystem2Account || chequeDepositJournal || purchaseTaxVatSystem1Account || purchaseTaxVatSystem2Account || purchFixedAssetsTaxVatSystem1Account || purchFixedAssetsTaxVatSystem2Account || saleTaxVatSystem1Account || saleTaxVatSystem2Account"/>
     </extend>
