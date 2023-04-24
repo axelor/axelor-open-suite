@@ -77,4 +77,7 @@ public final class BusinessProjectExceptionMessage {
 
   public static final String PROJECT_UPDATE_TOTALS_SUCCESS = /*$$(*/
       "Totals have been updated" /*)*/;
+
+  public static final String PROJECT_TASK_UPDATE_REPORTING_VALUES_ERROR = /*$$(*/
+      "Sold time and updated time must be greater than 0 for task %s" /*)*/;
 }

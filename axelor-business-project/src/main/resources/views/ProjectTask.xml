@@ -72,6 +72,16 @@
         </panel>
       </insert>
     </extend>
+    <extend target="//panel[@name='financialDataPanel']">
+      <insert position="before">
+        <panel name="reportingPanel" title="Reporting" showIf="!parentTask"
+          if="__config__.app.isApp('business-project')">
+          <field name="percentageOfProgress"/>
+          <field name="percentageOfConsumption"/>
+          <field name="remainingAmountToDo"/>
+        </panel>
+      </insert>
+    </extend>
   </form>
 
   <action-method name="action-project-task-method-update-to-invoice">

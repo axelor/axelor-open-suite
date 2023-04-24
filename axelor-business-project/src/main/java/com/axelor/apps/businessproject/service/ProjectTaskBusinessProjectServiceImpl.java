@@ -38,6 +38,7 @@ import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
@@ -508,6 +509,10 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
 
     projectTask.setPlannedTime(plannedTime);
     projectTask.setSpentTime(spentTime);
+
+    if (projectTask.getParentTask() == null) {
+      computeProjectTaskReporting(projectTask);
+    }
     projectTaskRepo.save(projectTask);
   }
 
@@ -560,5 +565,32 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     }
 
     return convertedDuration;
+  }
+
+  /**
+   * update project task values for reporting
+   *
+   * @param projectTask
+   * @throws AxelorException
+   */
+  protected void computeProjectTaskReporting(ProjectTask projectTask) throws AxelorException {
+    if (projectTask.getUpdatedTime().signum() != 1 || projectTask.getSoldTime().signum() != 1) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          String.format(
+              I18n.get(BusinessProjectExceptionMessage.PROJECT_TASK_UPDATE_REPORTING_VALUES_ERROR),
+              projectTask.getFullName()));
+    }
+
+    BigDecimal percentageOfProgression =
+        projectTask.getSpentTime().divide(projectTask.getUpdatedTime(), RoundingMode.HALF_UP);
+    BigDecimal percentageOfConsumption =
+        projectTask.getSpentTime().divide(projectTask.getSoldTime(), RoundingMode.HALF_UP);
+    BigDecimal remainingAmountToDo =
+        projectTask.getUpdatedTime().subtract(projectTask.getSpentTime());
+
+    projectTask.setPercentageOfProgress(percentageOfProgression.multiply(new BigDecimal("100")));
+    projectTask.setPercentageOfConsumption(percentageOfConsumption.multiply(new BigDecimal("100")));
+    projectTask.setRemainingAmountToDo(remainingAmountToDo);
   }
 }
