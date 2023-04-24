@@ -211,6 +211,15 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
         && (move.getStatusSelect().equals(MoveRepository.STATUS_DAYBOOK)
             || move.getStatusSelect().equals(MoveRepository.STATUS_ACCOUNTED))
         && CollectionUtils.isNotEmpty(move.getMoveLineList())) {
+
+      // No check if not persisted
+      if (move.getMoveLineList().stream()
+          .map(MoveLine::getInvoiceTermList)
+          .flatMap(Collection::stream)
+          .anyMatch(it -> it.getId() == null)) {
+        return "";
+      }
+
       List<InvoiceTerm> invoiceTermList =
           move.getMoveLineList().stream()
               .map(MoveLine::getInvoiceTermList)

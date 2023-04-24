@@ -321,6 +321,9 @@ public class MoveRecordServiceImpl implements MoveRecordService {
     MoveContext result = new MoveContext();
 
     result.merge(moveCheckService.checkTermsInPayment(move));
+    if (!result.getError().isEmpty()) {
+      return result;
+    }
     result.putInAttrs("$paymentConditionChange", "value", true);
     paymentConditionChange = true;
     result.merge(

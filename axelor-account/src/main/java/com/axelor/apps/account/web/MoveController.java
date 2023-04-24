@@ -899,6 +899,8 @@ public class MoveController {
         response.setAlert(result.getAlert());
       }
       if (!result.getError().isEmpty()) {
+        // We have to setValue because setValues does not work when setError is called (bug aop ?)
+        response.setValue("paymentCondition", move.getPaymentCondition());
         response.setError(result.getError());
       }
 

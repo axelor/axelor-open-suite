@@ -340,10 +340,9 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
 
     if (Lists.newArrayList(
             MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE, MoveRepository.FUNCTIONAL_ORIGIN_FIXED_ASSET)
-        .contains(moveLine.getMove().getFunctionalOriginSelect())) {
+        .contains(move.getFunctionalOriginSelect())) {
       return accountingSituationService.getHoldBackSupplierAccount(partner, move.getCompany());
-    } else if (moveLine.getMove().getFunctionalOriginSelect()
-        == MoveRepository.FUNCTIONAL_ORIGIN_SALE) {
+    } else if (move.getFunctionalOriginSelect() == MoveRepository.FUNCTIONAL_ORIGIN_SALE) {
       return accountingSituationService.getHoldBackCustomerAccount(partner, move.getCompany());
     } else {
       return null;
