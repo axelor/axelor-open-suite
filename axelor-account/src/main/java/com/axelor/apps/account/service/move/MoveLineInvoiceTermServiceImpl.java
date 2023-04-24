@@ -79,7 +79,9 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
   public void generateDefaultInvoiceTerm(
       MoveLine moveLine, LocalDate singleTermDueDate, boolean canCreateHolbackMoveLine)
       throws AxelorException {
-    if (moveLine == null || !moveLine.getAccount().getUseForPartnerBalance()) {
+    if (moveLine == null
+        || moveLine.getAccount() == null
+        || !moveLine.getAccount().getUseForPartnerBalance()) {
       return;
     }
 
