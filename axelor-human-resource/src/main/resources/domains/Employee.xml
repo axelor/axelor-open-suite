@@ -87,6 +87,9 @@
 	       ]]>
 
     </string>
+    <many-to-one name="analyticDistributionTemplate"
+      title="Analytic distribution template"
+      ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"/>
 
     <!-- New employee wizard -->
     <integer name="stepByStepSelect" title="Step by step"
