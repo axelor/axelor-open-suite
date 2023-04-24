@@ -57,7 +57,7 @@ public class AosSwagger {
   }
 
   protected Set<String> getResourcePackagesForSwaggerConfig(AppSettings appSettings) {
-    String resourcePackages = appSettings.get("aos.swagger.resource.packages");
+    String resourcePackages = appSettings.get("aos.swagger.resource-packages");
     if (resourcePackages == null || StringUtils.isBlank(resourcePackages)) {
       LOG.info(I18n.get(BaseExceptionMessage.SWAGGER_NO_RESOURCE_PACKAGES));
       return Collections.emptySet();
