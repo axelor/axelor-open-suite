@@ -101,20 +101,23 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
 
       saleOrderLine.setProject(project);
 
-      // check on product unit
-      AppBusinessProject appBusinessProject = appBusinessProjectService.getAppBusinessProject();
-      if (!Objects.equals(saleOrderLine.getUnit(), appBusinessProject.getDaysUnit())
-          && !Objects.equals(saleOrderLine.getUnit(), appBusinessProject.getHoursUnit())) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_NO_VALUE,
-            I18n.get(BusinessProjectExceptionMessage.SALE_ORDER_GENERATE_FILL_PRODUCT_UNIT_ERROR));
-      }
       if (product != null
           && ProductRepository.PRODUCT_TYPE_SERVICE.equals(
               (String)
                   productCompanyService.get(product, "productTypeSelect", saleOrder.getCompany()))
           && saleOrderLine.getSaleSupplySelect() == SaleOrderLineRepository.SALE_SUPPLY_PRODUCE
           && !(isTaskGenerated)) {
+
+        // check on product unit
+        AppBusinessProject appBusinessProject = appBusinessProjectService.getAppBusinessProject();
+        if (!Objects.equals(saleOrderLine.getUnit(), appBusinessProject.getDaysUnit())
+            && !Objects.equals(saleOrderLine.getUnit(), appBusinessProject.getHoursUnit())) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_NO_VALUE,
+              I18n.get(
+                  BusinessProjectExceptionMessage.SALE_ORDER_GENERATE_FILL_PRODUCT_UNIT_ERROR));
+        }
+
         ProjectTask task =
             projectTaskBusinessProjectService.create(
                 saleOrderLine, project, project.getAssignedTo());
@@ -136,7 +139,7 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
         tasks.add(task);
       }
     }
-    if (tasks == null || tasks.isEmpty()) {
+    if (tasks.isEmpty()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_NO_VALUE,
           I18n.get(BusinessProjectExceptionMessage.SALE_ORDER_GENERATE_FILL_PROJECT_ERROR_1));
