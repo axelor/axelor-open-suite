@@ -1595,6 +1595,7 @@ InvoiceSet.length > 0))"
 
   <action-group name="action-invoice-group-ventilate-button">
     <action name="action-invoice-method-validate-invoice-terms-before-save"/>
+    <action name="action-invoice-line-check-distribution-template-account"/>
     <action name="save"/>
     <action name="action-invoice-method-generate-invoice-terms"/>
     <action name="action-invoice-method-compute-invoice-terms-due-dates"/>
@@ -1637,6 +1638,7 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-method-generate-invoice-terms"/>
     <action name="action-invoice-method-compute-invoice-terms-due-dates"/>
     <action name="save"/>
+    <action name="action-invoice-line-check-distribution-template-account"/>
     <action name="action-invoice-method-validate"/>
     <action name="action-record-invoice-set-discount-values"
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
