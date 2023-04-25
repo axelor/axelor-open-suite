@@ -1,0 +1,3 @@
+---
+title: "Payment Voucher : fix excess on payment amount, generate an unreconciled moveline with the difference"
+type: fix
