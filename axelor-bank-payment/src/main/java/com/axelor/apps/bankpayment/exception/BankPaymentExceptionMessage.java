@@ -327,4 +327,10 @@ public final class BankPaymentExceptionMessage {
 
   public static final String MOVE_LINE_CHECK_BANK_RECONCILED_AMOUNT = /*$$(*/
       "Bank reconcile amount must be inferior or equal to credit or debit." /*)*/;
+
+  public static final String BATCH_BILL_OF_EXCHANGE_BANK_DETAILS_IS_MISSING_ON_INVOICE = /*$$(*/
+      "Bank details is missing on invoice %s." /*)*/;
+
+  public static final String BATCH_BILL_OF_EXCHANGE_BANK_DETAILS_IS_INACTIVE_ON_INVOICE = /*$$(*/
+      "The bank details %s attached to the invoice/ invoice term %s and to the partner %s is inactive. Only invoices with active bank details can be processed." /*)*/;
 }
