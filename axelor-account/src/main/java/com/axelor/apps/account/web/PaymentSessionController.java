@@ -312,9 +312,7 @@ public class PaymentSessionController {
       PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
       PaymentSessionRepository paymentSessionRepository = Beans.get(PaymentSessionRepository.class);
       paymentSession = paymentSessionRepository.find(paymentSession.getId());
-      Beans.get(PaymentSessionCancelService.class).cancelInvoiceTerms(paymentSession);
-      paymentSession = paymentSessionRepository.find(paymentSession.getId());
-      Beans.get(PaymentSessionService.class).retrieveEligibleTerms(paymentSession);
+      Beans.get(PaymentSessionService.class).searchEligibleTerms(paymentSession);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -360,6 +358,26 @@ public class PaymentSessionController {
       response.setAttr("selectAllBtn", "readonly", isSelectedReadonly);
       response.setAttr("unselectAllBtn", "readonly", isUnSelectedReadonly);
 
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void showInvoiceTermDashlet(ActionRequest request, ActionResponse response) {
+    try {
+      PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
+      paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
+
+      List<InvoiceTerm> invoiceTermList =
+          Beans.get(InvoiceTermRepository.class).findByPaymentSession(paymentSession).fetch();
+      int partnerCount =
+          (int) invoiceTermList.stream().map(it -> it.getPartner()).distinct().count();
+      int lineCount = partnerCount + invoiceTermList.size() - 1;
+      if (lineCount > 10) {
+        response.setAttr("invoiceTermPanelDashlet", "hidden", false);
+      } else {
+        response.setAttr("invoiceTermShorterPanelDashlet", "hidden", false);
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
