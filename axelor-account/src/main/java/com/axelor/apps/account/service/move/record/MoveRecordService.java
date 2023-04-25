@@ -46,6 +46,8 @@ public interface MoveRecordService {
    */
   MoveContext onSaveAfter(Move move, Context context) throws AxelorException;
 
+  MoveContext onSaveCheck(Move move, Context context) throws AxelorException;
+
   MoveContext onChangeDate(Move move, Context context) throws AxelorException;
 
   MoveContext onChangeJournal(Move move, Context context) throws AxelorException;

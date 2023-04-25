@@ -575,12 +575,18 @@
     <call class="com.axelor.apps.account.web.MoveController" method="onSaveBefore"/>
   </action-method>
 
+  <action-method name="action-account-move-method-onSave-check">
+    <call class="com.axelor.apps.account.web.MoveController" method="onSaveCheck"/>
+  </action-method>
+
   <action-method name="action-account-move-method-onSave-after">
     <call class="com.axelor.apps.account.web.MoveController" method="onSaveAfter"/>
   </action-method>
 
 
   <action-group name="action-account-move-group-onsave">
+    <action name="action-account-move-method-onSave-check"/>
+    <action name="save"/>
     <action name="action-account-move-method-onSave-before"/>
     <action name="save"/>
     <action name="action-account-move-method-onSave-after"/>
@@ -633,7 +639,6 @@
 
   <action-group name="action-group-move-date-onchange">
     <action name="action-account-move-method-date-onchange"/>
-    <action name="action-account-move-group-onsave"/>
   </action-group>
 
   <action-method name="action-account-move-method-journal-onchange">

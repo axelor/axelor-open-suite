@@ -680,6 +680,32 @@ public class MoveController {
     }
   }
 
+  public void onSaveCheck(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      MoveContext result =
+          Beans.get(MoveRecordService.class).onSaveCheck(move, request.getContext());
+      // As this method will make a update in the invoiceTerms set values move
+      response.setValues(move);
+      response.setAttrs(result.getAttrs());
+      if (!result.getFlash().isEmpty()) {
+        response.setFlash(result.getFlash());
+      }
+      if (!result.getNotify().isEmpty()) {
+        response.setNotify(result.getNotify());
+      }
+      if (!result.getAlert().isEmpty()) {
+        response.setAlert(result.getAlert());
+      }
+      if (!result.getError().isEmpty()) {
+        response.setError(result.getError());
+      }
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
   public void onSaveBefore(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
@@ -899,9 +925,10 @@ public class MoveController {
         response.setAlert(result.getAlert());
       }
       if (!result.getError().isEmpty()) {
-        // We have to setValue because setValues does not work when setError is called (bug aop ?)
-        response.setValue("paymentCondition", move.getPaymentCondition());
-        response.setError(result.getError());
+        // Specific to this case because paymentCondition need to be changed to its former value.
+        // And setError or setAlert does not make setValue work
+        response.setFlash(result.getError());
+        ;
       }
 
     } catch (Exception e) {

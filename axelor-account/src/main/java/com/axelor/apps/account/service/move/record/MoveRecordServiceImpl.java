@@ -63,14 +63,26 @@ public class MoveRecordServiceImpl implements MoveRecordService {
             .map(value -> (Boolean) value)
             .orElse(false);
 
-    moveCheckService.checkDates(move);
-    moveCheckService.checkPeriodPermission(move);
-    moveCheckService.checkRemovedLines(move);
-    moveCheckService.checkAnalyticAccount(move);
     moveRecordUpdateService.updatePartner(move);
     result.merge(
         moveRecordUpdateService.updateInvoiceTerms(move, paymentConditionChange, headerChange));
     result.merge(moveRecordUpdateService.updateInvoiceTermDueDate(move, move.getDueDate()));
+
+    return result;
+  }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public MoveContext onSaveCheck(Move move, Context context) throws AxelorException {
+    Objects.requireNonNull(move);
+    Objects.requireNonNull(context);
+
+    MoveContext result = new MoveContext();
+
+    moveCheckService.checkDates(move);
+    moveCheckService.checkPeriodPermission(move);
+    moveCheckService.checkRemovedLines(move);
+    moveCheckService.checkAnalyticAccount(move);
 
     return result;
   }
