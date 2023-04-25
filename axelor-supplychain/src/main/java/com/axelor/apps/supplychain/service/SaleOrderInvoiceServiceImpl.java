@@ -922,6 +922,9 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
   }
 
   protected boolean atLeastOneInvoiceIsVentilated(SaleOrder saleOrder) {
+    if (saleOrder.getSaleOrderLineList() == null || saleOrder.getSaleOrderLineList().isEmpty()) {
+      return false;
+    }
     return invoiceRepo
             .all()
             .filter(
