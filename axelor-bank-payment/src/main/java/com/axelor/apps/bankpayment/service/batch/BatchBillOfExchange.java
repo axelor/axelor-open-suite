@@ -37,6 +37,7 @@ import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
+import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.AbstractBatch;
@@ -124,14 +125,15 @@ public class BatchBillOfExchange extends AbstractBatch {
   protected void createLCRAccountingMovesForInvoices(
       Query<Invoice> query, List<Long> anomalyList, AccountingBatch accountingBatch) {
     List<Invoice> invoicesList = null;
-    while (!(invoicesList = query.fetch(FETCH_LIMIT)).isEmpty()) {
+    while (!(invoicesList = query.bind("anomalyList", anomalyList).fetch(FETCH_LIMIT)).isEmpty()) {
+      findBatch();
+      accountingBatch = accountingBatchRepository.find(accountingBatch.getId());
       for (Invoice invoice : invoicesList) {
         try {
           createMoveAndUpdateInvoice(accountingBatch, invoice);
           incrementDone();
         } catch (Exception e) {
           anomalyList.add(invoice.getId());
-          query.bind("anomalyList", anomalyList);
           incrementAnomaly();
           TraceBackService.trace(
               e, "billOfExchangeBatch: create lcr accounting move", batch.getId());
@@ -142,9 +144,28 @@ public class BatchBillOfExchange extends AbstractBatch {
     }
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional(rollbackOn = Exception.class)
   protected void createMoveAndUpdateInvoice(AccountingBatch accountingBatch, Invoice invoice)
       throws AxelorException {
+
+    if (invoice.getBankDetails() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(
+              BankPaymentExceptionMessage
+                  .BATCH_BILL_OF_EXCHANGE_BANK_DETAILS_IS_MISSING_ON_INVOICE),
+          invoice.getInvoiceId());
+    }
+    if (!invoice.getBankDetails().getActive()) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(
+              BankPaymentExceptionMessage
+                  .BATCH_BILL_OF_EXCHANGE_BANK_DETAILS_IS_INACTIVE_ON_INVOICE),
+          invoice.getBankDetails().getFullName(),
+          invoice.getInvoiceId(),
+          invoice.getPartner().getPartnerSeq());
+    }
     AccountConfig accountConfig =
         accountConfigService.getAccountConfig(accountingBatch.getCompany());
     Move move = createLCRAccountMove(invoice, accountConfig, accountingBatch);
