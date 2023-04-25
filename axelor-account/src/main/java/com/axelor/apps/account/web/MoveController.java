@@ -55,6 +55,7 @@ import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.StringUtils;
+import com.axelor.db.EntityHelper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -545,7 +546,7 @@ public class MoveController {
     }
 
     Object dueDateObj = request.getContext().get("dueDate");
-    if (dueDateObj.getClass() == LocalDate.class) {
+    if (LocalDate.class.equals(EntityHelper.getEntityClass(dueDateObj))) {
       return (LocalDate) dueDateObj;
     } else {
       return LocalDate.parse((String) dueDateObj);
@@ -626,7 +627,6 @@ public class MoveController {
       Move move = request.getContext().asType(Move.class);
       Map<String, Object> resultMap = Beans.get(MoveRecordSetService.class).setJournal(move);
 
-      response.setValue("journal", move.getJournal());
       response.setValues(resultMap);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

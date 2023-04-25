@@ -18,7 +18,6 @@ import com.axelor.common.StringUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -87,7 +86,7 @@ public class MoveCheckServiceImpl implements MoveCheckService {
 
   @Override
   public void checkPeriodPermission(Move move) throws AxelorException {
-    if (Beans.get(PeriodService.class).isClosedPeriod(move.getPeriod())) {
+    if (periodService.isClosedPeriod(move.getPeriod())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(BaseExceptionMessage.PERIOD_CLOSED_AND_NO_PERMISSIONS));
