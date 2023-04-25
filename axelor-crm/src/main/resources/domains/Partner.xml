@@ -12,6 +12,7 @@
       selection="gold.rating.icon.select"/>
     <boolean name="isPartner" title="crm.Partner"/>
     <boolean name="isKeyAccount" title="Key account" default="false"/>
+    <boolean name="isInConversionFromLead" title="Is in conversionFromLead" default="false"/>
     <many-to-one name="companyDepartment"
       ref="com.axelor.apps.base.db.CompanyDepartment" title="Department"/>
     <boolean name="isDoNotCall" title="Do not call"/>

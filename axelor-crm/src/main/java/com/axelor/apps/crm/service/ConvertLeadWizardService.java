@@ -31,7 +31,6 @@ public interface ConvertLeadWizardService {
       Partner partner,
       Map<String, Object> partnerMap,
       Partner contactPartner,
-      Map<String, Object> contactPartnerMap,
-      Map<String, Object> opportunityMap)
+      Map<String, Object> contactPartnerMap)
       throws AxelorException;
 }

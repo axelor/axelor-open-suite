@@ -251,8 +251,7 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
       Partner partner,
       Map<String, Object> partnerMap,
       Partner contactPartner,
-      Map<String, Object> contactPartnerMap,
-      Map<String, Object> opportunityMap)
+      Map<String, Object> contactPartnerMap)
       throws AxelorException {
 
     partner = createPartnerData(leadToPartnerSelect, partner, partnerMap, lead);
@@ -270,9 +269,7 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(CrmExceptionMessage.CONVERT_LEAD_ERROR));
     }
-    if (opportunityMap != null) {
-      convertWizardOpportunityService.createOpportunity(opportunityMap, partner);
-    }
+
     return lead;
   }
 
