@@ -225,7 +225,7 @@
         if-module="axelor-business-project" if="__config__.app.isApp('business-project')">
         <field name="invoicingType" colspan="6" if="__config__.app.isApp('business-project')"
           if-module="axelor-business-project"
-          onChange="action-project-task-attrs-invoice-type-on-change"/>
+          onChange="action-project-task-attrs-onchange-invoice-type"/>
         <field name="toInvoice" colSpan="2" readonly="true"
           if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').automaticInvoicing"
           if-module="axelor-business-project"/>
@@ -503,6 +503,7 @@
     <action name="action-project-task-business-support-provider"
       if="__config__.app.isApp('business-support')"/>
     <action name="action-project-task-attrs-project-filter-status"/>
+    <action name="action-project-task-attrs-onchange-invoice-type"/>
   </action-group>
 
   <action-group name="action-project-task-group-project-onchange">
@@ -512,6 +513,7 @@
       if="__config__.app.isApp('business-project')"/>
     <action name="action-project-task-method-compute"
       if="__config__.app.isApp('business-project')"/>
+    <action name="action-project-task-attrs-onchange-invoice-type"/>
   </action-group>
 
   <action-group name="action-project-task-group-product-onchange">
@@ -785,7 +787,7 @@
     <call class="com.axelor.apps.project.web.ProjectTaskController" method="deleteProjectTask"/>
   </action-method>
 
-  <action-attrs name="action-project-task-attrs-invoice-type-on-change">
+  <action-attrs name="action-project-task-attrs-onchange-invoice-type">
     <attribute name="value" for="toInvoice" expr="eval: true"
       if="invoicingType == 1 || invoicingType == 2"/>
     <attribute name="value" for="toInvoice" expr="eval: false" if="invoicingType == 3"/>
