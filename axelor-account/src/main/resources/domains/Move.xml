@@ -26,8 +26,6 @@
     <integer name="statusSelect" title="Status" default="1" readonly="true"
       selection="iaccount.move.status.select"/>
     <boolean name="rejectOk" title="Rejection" default="false"/>
-    <boolean name="getInfoFromFirstMoveLineOk" title="Get information from 1st Move line"
-      default="true"/>
     <string name="exportNumber" title="Accounting Export N°"/>
     <date name="exportDate" title="Export Date"/>
     <date name="dueDate" title="Due date"/>
