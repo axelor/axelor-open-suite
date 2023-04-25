@@ -24,13 +24,9 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.message.exception.AxelorMessageException;
-import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -62,18 +58,6 @@ public class WorkflowVentilationServiceImpl implements WorkflowVentilationServic
     if (!accountConfigService.getAccountConfig(company).getGenerateMoveForInvoicePayment()) {
 
       copyAdvancePaymentToInvoice(invoice);
-    }
-
-    // send message
-    if (invoice.getInvoiceAutomaticMail()) {
-      try {
-        Beans.get(TemplateMessageService.class)
-            .generateAndSendMessage(invoice, invoice.getInvoiceMessageTemplate());
-      } catch (Exception e) {
-        TraceBackService.trace(
-            new AxelorMessageException(
-                e, invoice, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR));
-      }
     }
   }
 
