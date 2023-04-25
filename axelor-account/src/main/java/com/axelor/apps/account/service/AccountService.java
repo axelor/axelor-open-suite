@@ -180,8 +180,9 @@ public class AccountService {
             .createQuery(
                 "SELECT analyticAccount.id FROM AnalyticRules "
                     + "self JOIN self.analyticAccountSet analyticAccount "
-                    + "WHERE self.fromAccount.code <= :account AND self.toAccount.code >= :account");
+                    + "WHERE self.fromAccount.code <= :account AND self.toAccount.code >= :account AND self.company = :company");
     query.setParameter("account", account.getCode());
+    query.setParameter("company", account.getCompany());
     return query.getResultList();
   }
 }
