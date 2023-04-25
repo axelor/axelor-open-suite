@@ -374,7 +374,7 @@ public class PaymentSessionController {
           Beans.get(InvoiceTermRepository.class).findByPaymentSession(paymentSession).fetch();
       int partnerCount =
           (int) invoiceTermList.stream().map(it -> it.getPartner()).distinct().count();
-      int lineCount = 2 * partnerCount + invoiceTermList.size();
+      int lineCount = partnerCount + invoiceTermList.size() - 1;
       if (lineCount > 10) {
         response.setAttr("invoiceTermPanelDashlet", "hidden", false);
       } else {
