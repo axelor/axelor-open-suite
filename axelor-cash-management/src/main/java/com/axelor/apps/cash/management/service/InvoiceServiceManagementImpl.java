@@ -30,6 +30,7 @@ import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
 import com.axelor.apps.businessproject.service.InvoiceServiceProjectImpl;
+import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -51,6 +52,7 @@ public class InvoiceServiceManagementImpl extends InvoiceServiceProjectImpl {
       InvoiceLineService invoiceLineService,
       AccountConfigService accountConfigService,
       MoveToolService moveToolService,
+      TemplateMessageService templateMessageService,
       InvoiceLineRepository invoiceLineRepo,
       InvoiceEstimatedPaymentService invoiceEstimatedPaymentService) {
     super(
@@ -64,6 +66,7 @@ public class InvoiceServiceManagementImpl extends InvoiceServiceProjectImpl {
         invoiceLineService,
         accountConfigService,
         moveToolService,
+        templateMessageService,
         invoiceLineRepo);
     this.invoiceEstimatedPaymentService = invoiceEstimatedPaymentService;
   }
