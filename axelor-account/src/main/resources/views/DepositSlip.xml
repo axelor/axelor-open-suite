@@ -37,11 +37,9 @@
             readonlyIf="valueForCollectionAccount" canEdit="false" canNew="false"
             onChange="action-deposit-slip-group-bank-details-account-onchange"
             onSelect="action-deposit-slip-company-bank-details-domain" canSelect="true" colSpan="4"/>
-          <panel name="subCompanyBankDetailsPanel" hidden="true" showIf="companyBankDetails"
-            colSpan="8">
-            <field name="companyBankDetails.bank.bankName" title="Bank name"/>
-            <field name="companyBankDetails.accountNbr"/>
-          </panel>
+          <field name="companyBankDetails.bank.bankName" title="Bank name"
+            showIf="companyBankDetails" colSpan="4"/>
+          <field name="companyBankDetails.accountNbr" showIf="companyBankDetails" colSpan="4"/>
         </panel>
         <field name="valueForCollectionAccount"
           domain="self.accountType.technicalTypeSelect = 'cash' AND self.company = :company"
@@ -205,7 +203,7 @@
 
   <grid title="Payment vouchers" name="selector-payment-voucher-deposit-slip-grid"
     model="com.axelor.apps.account.db.PaymentVoucher" orderBy="paymentDate" x-selector="checkbox"
-    edit-icon="false">
+    edit-icon="true">
     <field name="ref"/>
     <field name="valueForCollectionMove.journal" hidden="true"/>
     <field name="valueForCollectionMove.date" hidden="true"/>
