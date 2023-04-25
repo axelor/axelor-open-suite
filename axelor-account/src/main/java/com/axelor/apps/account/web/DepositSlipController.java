@@ -30,6 +30,7 @@ import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Singleton
 public class DepositSlipController {
@@ -39,7 +40,10 @@ public class DepositSlipController {
     DepositSlip depositSlip = request.getContext().asType(DepositSlip.class);
     DepositSlipService depositSlipService = Beans.get(DepositSlipService.class);
     response.setValue(
-        "__paymentVoucherDueList", depositSlipService.fetchPaymentVouchers(depositSlip));
+        "__paymentVoucherDueList",
+        depositSlipService.fetchPaymentVouchers(depositSlip).stream()
+            .map(PaymentVoucher::getId)
+            .collect(Collectors.toList()));
   }
 
   public void updateDepositChequeDate(ActionRequest request, ActionResponse response) {
