@@ -380,7 +380,8 @@
       <field name="doubtfulCustomerAccount" on="UPDATE"/>
       <field name="employeeAccount" on="UPDATE"/>
       <field name="irrecoverableAccount" on="UPDATE"/>
-      <field name="cashPositionVariationAccount" on="UPDATE"/>
+      <field name="cashPositionVariationDebitAccount" on="UPDATE"/>
+      <field name="cashPositionVariationCreditAccount" on="UPDATE"/>
       <field name="advancePaymentAccount" on="UPDATE"/>
       <field name="factorDebitAccount" on="UPDATE"/>
       <field name="factorCreditAccount" on="UPDATE"/>
