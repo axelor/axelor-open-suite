@@ -49,6 +49,7 @@
     model="com.axelor.apps.project.db.ProjectTask" extension="true">
     <extend target="/">
       <attribute name="onNew" value="action-business-project-project-task-group-on-new"/>
+      <attribute name="onLoad" value="action-business-project-project-task-group-on-load"/>
     </extend>
     <extend target="//field[@name='parentTask']">
       <attribute name="onChange" value="action-project-task-record-get-parent-timeunit"/>
@@ -76,13 +77,74 @@
       <insert position="before">
         <panel name="reportingPanel" title="Reporting" showIf="!parentTask"
           if="__config__.app.isApp('business-project')">
-          <field name="percentageOfProgress"/>
-          <field name="percentageOfConsumption"/>
-          <field name="remainingAmountToDo"/>
+          <panel-dashlet action="action-project-task-view-percentage-progress-custom"
+            colSpan="4" showTitle="false"/>
+          <panel-dashlet
+            action="action-project-task-view-percentage-consumption-custom" colSpan="4"
+            showTitle="false"/>
+          <panel-dashlet action="action-project-task-view-remaining-to-do-custom"
+            colSpan="4" showTitle="false"/>
+          <field name="$displayProgress" hidden="true"/>
+          <field name="$displayConsumption" hidden="true"/>
+          <field name="$displayRemaining" hidden="true"/>
         </panel>
       </insert>
     </extend>
   </form>
+
+  <action-view name="action-project-task-view-percentage-progress-custom"
+    title="% of progress">
+    <view type="custom" name="project-task-percentage-progress-custom"/>
+  </action-view>
+
+  <action-view name="action-project-task-view-percentage-consumption-custom"
+    title="% of consumption">
+    <view type="custom" name="project-task-percentage-consumption-custom"/>
+  </action-view>
+
+  <action-view name="action-project-task-view-remaining-to-do-custom"
+    title="Remaining amount to do">
+    <view type="custom" name="project-task-remaining-to-do-custom"/>
+  </action-view>
+
+  <custom title="% of progress" name="project-task-percentage-progress-custom"
+    css="report-box">
+    <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectTaskController:getPercentageOfProgress</dataset>
+    <template>
+      <![CDATA[
+        <i class='report-icon fa fa-line-chart' style='font-size:30px;top:40px;'></i>
+        <div style='display:inline-block;'>
+          <h1>{{first.progress}}</h1>
+        </div>
+      ]]>
+    </template>
+  </custom>
+
+  <custom title="% of consumption" name="project-task-percentage-consumption-custom"
+    css="report-box">
+    <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectTaskController:getPercentageOfConsumption</dataset>
+    <template>
+      <![CDATA[
+        <i class='report-icon fa fa-hourglass-half' style='font-size:30px;top:40px;'></i>
+        <div style='display:inline-block;'>
+          <h1>{{first.consumption}}</h1>
+        </div>
+      ]]>
+    </template>
+  </custom>
+
+  <custom title="Remaining amount to do" name="project-task-remaining-to-do-custom"
+    css="report-box">
+    <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectTaskController:getRemainingToDo</dataset>
+    <template>
+      <![CDATA[
+        <i class='report-icon fa fa-tasks' style='font-size:30px;top:40px;'></i>
+        <div style='display:inline-block;'>
+          <h1>{{first.remaining}}</h1>
+        </div>
+      ]]>
+    </template>
+  </custom>
 
   <action-method name="action-project-task-method-update-to-invoice">
     <call class="com.axelor.apps.businessproject.web.ProjectTaskController"
@@ -108,6 +170,12 @@
   <action-group name="action-business-project-project-task-group-on-new">
     <action name="action-project-task-group-onnew"/>
     <action name="action-project-task-attrs-set-time-unit-default"/>
+    <action name="action-project-task-attrs-set-reporting-values-display"/>
+  </action-group>
+
+  <action-group name="action-business-project-project-task-group-on-load">
+    <action name="action-project-task-group-timer-process"/>
+    <action name="action-project-task-attrs-set-reporting-values-display"/>
   </action-group>
 
   <!-- get timeUnit value from configuration -->
@@ -133,5 +201,14 @@
     model="com.axelor.apps.project.db.ProjectTask">
     <field name="timeUnit" expr="eval: parentTask?.timeUnit" if="parentTask"/>
   </action-record>
+
+  <action-attrs name="action-project-task-attrs-set-reporting-values-display">
+    <attribute for="$displayProgress" name="value"
+      expr="eval: percentageOfProgress + ' %'"/>
+    <attribute for="$displayConsumption" name="value"
+      expr="eval: percentageOfConsumption + ' %'"/>
+    <attribute for="$displayRemaining" name="value"
+      expr="eval: remainingAmountToDo + ' ' + timeUnit.name + '(s)'"/>
+  </action-attrs>
 
 </object-views>
