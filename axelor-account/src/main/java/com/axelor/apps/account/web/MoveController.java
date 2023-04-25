@@ -928,7 +928,6 @@ public class MoveController {
         // Specific to this case because paymentCondition need to be changed to its former value.
         // And setError or setAlert does not make setValue work
         response.setFlash(result.getError());
-        ;
       }
 
     } catch (Exception e) {
