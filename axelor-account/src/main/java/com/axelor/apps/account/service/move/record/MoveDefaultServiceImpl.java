@@ -34,7 +34,6 @@ public class MoveDefaultServiceImpl implements MoveDefaultService {
     setDefaultValues(move);
 
     resultMap.put("company", move.getCompany());
-    resultMap.put("getInfoFromFirstMoveLineOk", move.getGetInfoFromFirstMoveLineOk());
     resultMap.put("date", move.getDate());
     resultMap.put("technicalOriginSelect", move.getTechnicalOriginSelect());
     resultMap.put("tradingName", move.getTradingName());
@@ -46,7 +45,6 @@ public class MoveDefaultServiceImpl implements MoveDefaultService {
     Company activeCompany = userService.getUserActiveCompany();
 
     setCompany(move, activeCompany);
-    move.setGetInfoFromFirstMoveLineOk(true);
     setDate(move);
     move.setTechnicalOriginSelect(MoveRepository.TECHNICAL_ORIGIN_ENTRY);
     move.setTradingName(userService.getTradingName());
