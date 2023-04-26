@@ -50,6 +50,11 @@
       title="Analytic distribution template"
       ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"/>
 
+    <decimal name="initialUnitPrice" title="Initial unit price" required="true"/>
+    <boolean name="isToRevaluate" title="To revaluate"/>
+    <decimal name="initialPricePerYear" title="Initial price per year"/>
+    <decimal name="priceRevaluedYearly" title="Price revalued yearly"/>
+
     <finder-method name="findOneBy"
       using="contractVersion, product, productName,
 					   isConsumptionLine"/>

@@ -87,6 +87,8 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
   protected ConsumptionLineRepository consumptionLineRepo;
   protected ContractRepository contractRepository;
   protected TaxService taxService;
+  protected RevaluationFormulaService revaluationFormulaService;
+  protected ContractVersionRepository contractVersionRepository;
 
   @Inject
   public ContractServiceImpl(
@@ -97,7 +99,9 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
       ContractLineRepository contractLineRepo,
       ConsumptionLineRepository consumptionLineRepo,
       ContractRepository contractRepository,
-      TaxService taxService) {
+      TaxService taxService,
+      RevaluationFormulaService revaluationFormulaService,
+      ContractVersionRepository contractVersionRepository) {
     this.appBaseService = appBaseService;
     this.versionService = versionService;
     this.contractLineService = contractLineService;
@@ -106,6 +110,8 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     this.consumptionLineRepo = consumptionLineRepo;
     this.contractRepository = contractRepository;
     this.taxService = taxService;
+    this.revaluationFormulaService = revaluationFormulaService;
+    this.contractVersionRepository = contractVersionRepository;
   }
 
   @Override
@@ -162,6 +168,8 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
         fillInvoicingDateByInvoicingMoment(contract);
       }
     }
+
+    setInitialPriceOnContractLines(contract);
 
     return invoice;
   }
@@ -761,5 +769,28 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     } else {
       return Collections.singletonList(contract.getCurrentContractVersion());
     }
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  public Contract getNextContract(Contract contract) throws AxelorException {
+    ContractVersion newVersion = versionService.newDraft(contract);
+    Contract nextContract = newVersion.getNextContract();
+    LocalDate todayDate = appBaseService.getTodayDate(contract.getCompany());
+    waitingNextVersion(nextContract, todayDate);
+    activeNextVersion(nextContract, todayDate);
+    return newVersion.getContract();
+  }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public void setInitialPriceOnContractLines(Contract contract) {
+    ContractVersion contractVersion = contract.getCurrentContractVersion();
+    if (CollectionUtils.isNotEmpty(contractVersion.getContractLineList())) {
+      for (ContractLine contractLine : contractVersion.getContractLineList()) {
+        contractLine.setInitialUnitPrice(contractLine.getPrice());
+        contractLineRepo.save(contractLine);
+      }
+    }
+    contractRepository.save(contract);
   }
 }

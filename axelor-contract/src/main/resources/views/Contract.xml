@@ -326,6 +326,24 @@
           </editor>
         </field>
       </panel>
+
+      <panel name="commercialConditionPanel" title="Commercial condition" hidden="true"
+        showIf="targetTypeSelect == 1">
+        <field name="isToRevaluate" widget="boolean-switch" colSpan="12"/>
+        <field name="revaluationPeriod"
+          requiredIf="targetTypeSelect == 1 &amp;&amp; isToRevaluate"
+          domain="self.applicationTypeSelect = 2"/>
+        <field name="revaluationFormula"
+          requiredIf="targetTypeSelect == 1 &amp;&amp; isToRevaluate"/>
+        <field name="index1" requiredIf="targetTypeSelect == 1 &amp;&amp; isToRevaluate"/>
+        <field name="index1Date" requiredIf="targetTypeSelect == 1 &amp;&amp; isToRevaluate"/>
+        <field name="index2"/>
+        <field name="index2Date"/>
+        <field name="endOfApplicationDate"/>
+        <field name="lastRevaluationDate" readonly="true"/>
+        <field name="nextRevaluationDate"/>
+      </panel>
+
       <panel-related name="versionHistoryPanel" hidden="true" readonly="true"
         showIf="versionHistory &amp;&amp; versionHistory.length > 0" field="versionHistory"
         form-view="contract-archived-version-form">

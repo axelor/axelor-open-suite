@@ -25,14 +25,20 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.Duration;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.db.repo.DurationRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
+import com.axelor.apps.contract.db.ContractVersion;
 import com.axelor.apps.contract.exception.ContractExceptionMessage;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -155,6 +161,14 @@ public class ContractLineServiceImpl implements ContractLineService {
       taxRate = contractLine.getTaxLine().getValue().divide(new BigDecimal(100));
     }
 
+    if (contractLine.getContractVersion() != null) {
+      try {
+        contractLine = computePricesPerYear(contractLine, contractLine.getContractVersion());
+      } catch (Exception e) {
+        TraceBackService.trace(e);
+      }
+    }
+
     BigDecimal exTaxTotal =
         contractLine.getQty().multiply(contractLine.getPrice()).setScale(2, RoundingMode.HALF_UP);
     contractLine.setExTaxTotal(exTaxTotal);
@@ -180,5 +194,46 @@ public class ContractLineServiceImpl implements ContractLineService {
 
     contractLine.setAnalyticMoveLineList(analyticMoveLineList);
     return contractLine;
+  }
+
+  @Override
+  public ContractLine computePricesPerYear(
+      ContractLine contractLine, ContractVersion contractVersion) throws AxelorException {
+    Duration duration = contractVersion.getInvoicingDuration();
+
+    if (duration != null) {
+      BigDecimal initialUnitPrice = contractLine.getInitialUnitPrice();
+      BigDecimal qty = contractLine.getQty();
+      BigDecimal exTaxTotal = contractLine.getExTaxTotal();
+      int durationType = duration.getTypeSelect();
+      Integer durationValue = duration.getValue();
+      if (initialUnitPrice != null && qty != null && durationValue != null) {
+        contractLine.setInitialPricePerYear(
+            initialUnitPrice
+                .multiply(qty)
+                .multiply(BigDecimal.valueOf(getFactor(durationType) / durationValue.doubleValue()))
+                .setScale(2, RoundingMode.HALF_UP));
+      }
+      if (exTaxTotal != null && durationValue != null) {
+        contractLine.setPriceRevaluedYearly(
+            exTaxTotal
+                .multiply(BigDecimal.valueOf(getFactor(durationType) / durationValue.doubleValue()))
+                .setScale(2, RoundingMode.HALF_UP));
+      }
+    }
+
+    return contractLine;
+  }
+
+  protected double getFactor(int durationType) throws AxelorException {
+    if (durationType == DurationRepository.TYPE_MONTH) {
+      return 12.0;
+    } else if (durationType == DurationRepository.TYPE_DAY) {
+      return 365.0;
+    } else {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          String.format(I18n.get(BaseExceptionMessage.UNKNOWN_DURATION), durationType));
+    }
   }
 }

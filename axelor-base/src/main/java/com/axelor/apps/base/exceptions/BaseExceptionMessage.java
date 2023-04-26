@@ -538,4 +538,7 @@ public final class BaseExceptionMessage {
 
   public static final String SWAGGER_NO_RESOURCE_PACKAGES = /*$$(*/
       "Swagger is enabled but not resource packages is specified." /*)*/;
+
+  public static final String UNKNOWN_DURATION = /*$$(*/
+      "The duration '%s' is unknown. Valid durations are in months or years." /*)*/;
 }

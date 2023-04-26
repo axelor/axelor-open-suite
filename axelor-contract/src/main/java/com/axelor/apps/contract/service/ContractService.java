@@ -160,4 +160,8 @@ public interface ContractService {
         && (contract.getCurrentContractVersion().getIsTimeProratedInvoice()
             && contract.getCurrentContractVersion().getIsVersionProratedInvoice());
   }
+
+  Contract getNextContract(Contract contract) throws AxelorException;
+
+  void setInitialPriceOnContractLines(Contract contract);
 }

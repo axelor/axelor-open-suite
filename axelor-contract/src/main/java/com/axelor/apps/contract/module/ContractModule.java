@@ -29,10 +29,14 @@ import com.axelor.apps.contract.service.ConsumptionLineService;
 import com.axelor.apps.contract.service.ConsumptionLineServiceImpl;
 import com.axelor.apps.contract.service.ContractLineService;
 import com.axelor.apps.contract.service.ContractLineServiceImpl;
+import com.axelor.apps.contract.service.ContractRevaluationService;
+import com.axelor.apps.contract.service.ContractRevaluationServiceImpl;
 import com.axelor.apps.contract.service.ContractService;
 import com.axelor.apps.contract.service.ContractServiceImpl;
 import com.axelor.apps.contract.service.ContractVersionService;
 import com.axelor.apps.contract.service.ContractVersionServiceImpl;
+import com.axelor.apps.contract.service.IndexRevaluationService;
+import com.axelor.apps.contract.service.IndexRevaluationServiceImpl;
 import com.axelor.apps.contract.service.InvoiceLineAnalyticContractServiceImpl;
 import com.axelor.apps.contract.service.WorkflowCancelServiceContractImpl;
 import com.axelor.apps.supplychain.service.AnalyticMoveLineSupplychainServiceImpl;
@@ -55,5 +59,7 @@ public class ContractModule extends AxelorModule {
         .to(InvoiceLineAnalyticContractServiceImpl.class);
     bind(WorkflowCancelServiceSupplychainImpl.class).to(WorkflowCancelServiceContractImpl.class);
     bind(ContractLineRepository.class).to(ContractLineManagementRepository.class);
+    bind(IndexRevaluationService.class).to(IndexRevaluationServiceImpl.class);
+    bind(ContractRevaluationService.class).to(ContractRevaluationServiceImpl.class);
   }
 }
