@@ -1011,7 +1011,7 @@
   <action-record name="action-move-record-set-pfp-status"
     model="com.axelor.apps.account.db.Move">
     <field name="pfpValidateStatusSelect" expr="eval: __repo__(Move).PFP_STATUS_AWAITING"
-      if="company?.accountConfig?.isManagePassedForPayment &amp;&amp; (journal.journalType.technicalTypeSelect == __repo__(JournalType).TECHNICAL_TYPE_SELECT_EXPENSE || (journal.journalType.technicalTypeSelect == __repo__(JournalType).TECHNICAL_TYPE_SELECT_CREDIT_NOTE &amp;&amp; company?.accountConfig?.isManagePFPInRefund))"/>
+      if="company?.accountConfig?.isManagePassedForPayment &amp;&amp; (journal?.journalType?.technicalTypeSelect == __repo__(JournalType).TECHNICAL_TYPE_SELECT_EXPENSE || (journal?.journalType?.technicalTypeSelect == __repo__(JournalType).TECHNICAL_TYPE_SELECT_CREDIT_NOTE &amp;&amp; company?.accountConfig?.isManagePFPInRefund))"/>
   </action-record>
 
   <!-- ACTION ATTRS -->
