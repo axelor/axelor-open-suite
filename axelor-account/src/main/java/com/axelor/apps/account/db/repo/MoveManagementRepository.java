@@ -150,7 +150,7 @@ public class MoveManagementRepository extends MoveRepository {
     invoiceTerm.setDecisionPfpTakenDateTime(null);
     invoiceTerm.setInvoice(null);
 
-    invoiceTermService.setPfpStatus(invoiceTerm);
+    invoiceTermService.setPfpStatus(invoiceTerm, null);
   }
 
   @Override

@@ -28,6 +28,7 @@
     <boolean name="rejectOk" title="Rejection" default="false"/>
     <string name="exportNumber" title="Accounting Export N°"/>
     <date name="exportDate" title="Export Date"/>
+    <date name="dueDate" title="Due date"/>
     <boolean name="accountingOk" title="Exported" default="false"/>
     <many-to-one name="accountingReport"
       ref="com.axelor.apps.account.db.AccountingReport" title="Accounting Export"/>

@@ -210,7 +210,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
     Map<String, Object> valuesMap =
         new HashMap<>(this.getDebitCreditOnChangeValuesMap(moveLine, move));
 
-    moveLineInvoiceTermService.generateDefaultInvoiceTerm(moveLine, dueDate, false);
+    moveLineInvoiceTermService.generateDefaultInvoiceTerm(move, moveLine, dueDate, false);
 
     valuesMap.put("invoiceTermList", moveLine.getInvoiceTermList());
 
@@ -235,7 +235,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
         new HashMap<>(this.getAnalyticDistributionTemplateOnChangeValuesMap(moveLine, move));
 
     moveLineRecordService.setParentFromMove(moveLine, move);
-    moveLineInvoiceTermService.generateDefaultInvoiceTerm(moveLine, dueDate, false);
+    moveLineInvoiceTermService.generateDefaultInvoiceTerm(move, moveLine, dueDate, false);
 
     valuesMap.put("partner", moveLine.getPartner());
     valuesMap.put("cutOffStartDate", moveLine.getCutOffStartDate());
@@ -305,7 +305,8 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
   public Map<String, Object> getCurrencyAmountRateOnChangeValuesMap(
       MoveLine moveLine, LocalDate dueDate) throws AxelorException {
     moveLineRecordService.setDebitCredit(moveLine);
-    moveLineInvoiceTermService.generateDefaultInvoiceTerm(moveLine, dueDate, false);
+    moveLineInvoiceTermService.generateDefaultInvoiceTerm(
+        moveLine.getMove(), moveLine, dueDate, false);
 
     Map<String, Object> valuesMap = new HashMap<>();
 
@@ -378,7 +379,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
     Map<String, Object> valuesMap =
         new HashMap<>(this.getDebitCreditOnChangeValuesMap(moveLine, move));
 
-    moveLineInvoiceTermService.generateDefaultInvoiceTerm(moveLine, dueDate, false);
+    moveLineInvoiceTermService.generateDefaultInvoiceTerm(move, moveLine, dueDate, false);
 
     valuesMap.put("invoiceTermList", moveLine.getInvoiceTermList());
 
@@ -393,7 +394,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
     Map<String, Object> valuesMap =
         new HashMap<>(this.getDebitCreditOnChangeValuesMap(moveLine, move));
 
-    moveLineInvoiceTermService.generateDefaultInvoiceTerm(moveLine, dueDate, false);
+    moveLineInvoiceTermService.generateDefaultInvoiceTerm(move, moveLine, dueDate, false);
 
     valuesMap.put("invoiceTermList", moveLine.getInvoiceTermList());
 

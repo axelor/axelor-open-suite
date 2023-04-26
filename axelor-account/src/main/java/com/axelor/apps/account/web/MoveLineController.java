@@ -50,6 +50,7 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.common.ObjectUtils;
+import com.axelor.db.EntityHelper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -456,7 +457,7 @@ public class MoveLineController {
     }
 
     Object dueDateObj = parentContext.get("dueDate");
-    if (dueDateObj.getClass() == LocalDate.class) {
+    if (LocalDate.class.equals(EntityHelper.getEntityClass(dueDateObj))) {
       return (LocalDate) dueDateObj;
     } else {
       return LocalDate.parse((String) dueDateObj);
