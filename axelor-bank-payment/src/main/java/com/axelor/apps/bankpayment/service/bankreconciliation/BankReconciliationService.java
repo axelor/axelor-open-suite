@@ -407,7 +407,6 @@ public class BankReconciliationService {
     String description = move.getDescription();
     String origin = move.getOrigin();
     TaxLine taxLine = null;
-    BigDecimal taxAmount = BigDecimal.ZERO;
     if (isCounterpartLine) {
       debit = bankReconciliationLine.getDebit();
       credit = bankReconciliationLine.getCredit();
@@ -435,25 +434,15 @@ public class BankReconciliationService {
             I18n.get(BankPaymentExceptionMessage.BANK_STATEMENT_RULE_CASH_ACCOUNT_MISSING),
             bankStatementRule.getSearchLabel());
       }
-      MoveLine taxMoveLine =
-          move.getMoveLineList().stream()
-              .filter(
-                  moveLine1 ->
-                      moveLine1
-                          .getAccount()
-                          .getAccountType()
-                          .getTechnicalTypeSelect()
-                          .equals(AccountTypeRepository.TYPE_TAX))
-              .findFirst()
-              .orElse(null);
-      if (taxMoveLine != null) {
-        taxAmount = taxMoveLine.getDebit().add(taxMoveLine.getCredit());
-      }
     }
 
     boolean isDebit = debit.compareTo(credit) > 0;
 
-    BigDecimal amount = debit.add(credit).add(taxAmount);
+    BigDecimal amount = debit.add(credit);
+    if (taxLine != null) {
+      BigDecimal taxRate = taxLine.getValue().divide(BigDecimal.valueOf(100));
+      amount = amount.divide(BigDecimal.ONE.add(taxRate), RETURNED_SCALE, RoundingMode.HALF_UP);
+    }
 
     moveLine =
         moveLineCreateService.createMoveLine(
