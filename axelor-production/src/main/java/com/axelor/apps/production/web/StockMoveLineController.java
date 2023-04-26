@@ -103,6 +103,7 @@ public class StockMoveLineController {
 
       if (stockMoveLine.getProduct() == null) {
         stockMoveLine = new StockMoveLine();
+        stockMoveLine.setStockMove(stockMove);
         response.setValues(Mapper.toMap(stockMoveLine));
         return;
       }

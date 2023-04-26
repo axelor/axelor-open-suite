@@ -101,6 +101,12 @@ public class MetaGroupMenuAssistantService {
     return "GroupMenu" + "-" + userCode + "-" + dateString + ".csv";
   }
 
+  protected MetaFile getMetaFile(String fileName, File groupMenuFile) throws IOException {
+    MetaFile metaFile = new MetaFile();
+    metaFile.setFileName(fileName);
+    return metaFiles.upload(groupMenuFile, metaFile);
+  }
+
   protected void setBundle(Locale locale) {
     bundle = I18n.getBundle(locale);
   }
@@ -131,10 +137,7 @@ public class MetaGroupMenuAssistantService {
         printer.printRecords(rows);
       }
 
-      MetaFile metaFile = new MetaFile();
-      metaFile.setFileName(getFileName(groupMenuAssistant));
-
-      groupMenuAssistant.setMetaFile(metaFiles.upload(groupMenuFile, metaFile));
+      groupMenuAssistant.setMetaFile(getMetaFile(getFileName(groupMenuAssistant), groupMenuFile));
       menuAssistantRepository.save(groupMenuAssistant);
     } catch (Exception e) {
       TraceBackService.trace(e);

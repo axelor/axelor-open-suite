@@ -1,0 +1,4 @@
+---
+title : "Purchase order : Generate Purchase order from Sale order doesn't fill fiscalPosition"
+type : fix
+
