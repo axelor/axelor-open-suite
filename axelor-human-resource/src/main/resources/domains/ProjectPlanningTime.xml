@@ -24,6 +24,10 @@
     <time name="startTime" title="Start time"/>
     <time name="endTime" title="End time"/>
 
+    <datetime name="startDateTime" title="Start date time" required="true"/>
+    <datetime name="endDateTime" title="End date time" required="true"/>
+    <many-to-one name="timeUnit" title="Time unit" ref="com.axelor.apps.base.db.Unit"/>
+
     <string name="fullName" namecolumn="true">
 		 <![CDATA[
       		return Beans.get(ProjectPlanningTimeComputeNameService.class).computeProjectPlanningTimeFullname(this.getEmployee(),this.getProject(),this.getDate());

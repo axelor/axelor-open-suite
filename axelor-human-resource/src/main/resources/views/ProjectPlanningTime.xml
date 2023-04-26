@@ -35,7 +35,8 @@
       <field name="project" readonly="true"/>
       <field name="projectTask" domain="self.project = :project" canEdit="false"/>
       <field name="employee" onSelect="action-project-planning-time-attrs-project-domain"
-        canEdit="false" onChange="action-project-planning-time-attrs-employee-change"/>
+        canEdit="false" onChange="action-project-planning-time-attrs-employee-change"
+        form-view="employee-form"/>
       <field name="date"/>
       <spacer name="dateSpacer" colSpan="6"/>
       <field name="startTime" requiredIf="endTime"
