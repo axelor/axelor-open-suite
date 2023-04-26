@@ -343,6 +343,10 @@
       if="invoiceBlocking &amp;&amp; (!invoiceBlockedToDate || invoiceBlockedToDate &gt;  __date__)"/>
   </action-validate>
 
+  <action-method name="action-supplychain-stock-move-method-check-invoice-status">
+    <call class="com.axelor.apps.supplychain.web.StockMoveController"
+      method="checkInvoiceStatus"/>
+  </action-method>
 
   <search-filters id="supplychain-customer-deliveries-filter"
     name="customer-deliveries-filters" model="com.axelor.apps.stock.db.StockMove"
