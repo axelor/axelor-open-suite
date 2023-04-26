@@ -31,7 +31,6 @@ import com.axelor.apps.account.service.PeriodServiceAccount;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
-import com.axelor.apps.account.service.journal.JournalCheckPartnerTypeService;
 import com.axelor.apps.account.service.move.MoveComputeService;
 import com.axelor.apps.account.service.move.MoveCounterPartService;
 import com.axelor.apps.account.service.move.MoveInvoiceTermService;
@@ -42,24 +41,21 @@ import com.axelor.apps.account.service.move.MoveSimulateService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.move.MoveViewHelperService;
-import com.axelor.apps.account.service.moveline.MoveLineCurrencyService;
-import com.axelor.apps.account.service.moveline.MoveLineService;
+import com.axelor.apps.account.service.move.record.MoveDefaultService;
+import com.axelor.apps.account.service.move.record.MoveRecordService;
+import com.axelor.apps.account.service.move.record.MoveRecordSetService;
+import com.axelor.apps.account.service.move.record.model.MoveContext;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
-import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.PartnerRepository;
-import com.axelor.apps.base.db.repo.YearRepository;
-import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.BankDetailsService;
-import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
+import com.axelor.db.EntityHelper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -72,9 +68,7 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
-import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -110,24 +104,6 @@ public class MoveController {
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);
-    }
-  }
-
-  public void getPeriod(ActionRequest request, ActionResponse response) {
-
-    Move move = request.getContext().asType(Move.class);
-
-    Period period = null;
-    try {
-      if (move.getDate() != null && move.getCompany() != null) {
-        period =
-            Beans.get(PeriodService.class)
-                .getActivePeriod(move.getDate(), move.getCompany(), YearRepository.TYPE_FISCAL);
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    } finally {
-      response.setValue("period", period);
     }
   }
 
@@ -398,22 +374,6 @@ public class MoveController {
     }
   }
 
-  public void updateInDayBookMode(ActionRequest request, ActionResponse response) {
-
-    Move move = request.getContext().asType(Move.class);
-    move = Beans.get(MoveRepository.class).find(move.getId());
-
-    try {
-      if (move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK
-          || move.getStatusSelect() == MoveRepository.STATUS_SIMULATED) {
-        Beans.get(MoveValidateService.class).updateInDayBookMode(move);
-        response.setReload(true);
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
   public void computeTotals(ActionRequest request, ActionResponse response) {
     Move move = request.getContext().asType(Move.class);
 
@@ -452,53 +412,6 @@ public class MoveController {
       } catch (Exception e) {
         TraceBackService.trace(response, e);
       }
-    }
-  }
-
-  public void isHiddenMoveLineListViewer(ActionRequest request, ActionResponse response) {
-
-    Move move = request.getContext().asType(Move.class);
-    boolean isHidden = true;
-    try {
-      if (move.getMoveLineList() != null
-          && move.getStatusSelect() < MoveRepository.STATUS_ACCOUNTED) {
-        for (MoveLine moveLine : move.getMoveLineList()) {
-          if (moveLine.getAmountPaid().compareTo(BigDecimal.ZERO) > 0
-              || moveLine.getReconcileGroup() != null) {
-            isHidden = false;
-          }
-        }
-      }
-      response.setAttr("$reconcileTags", "hidden", isHidden);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void checkRemoveLines(ActionRequest request, ActionResponse response) {
-    try {
-      Move moveView = request.getContext().asType(Move.class);
-      if (moveView.getId() == null) {
-        return;
-      }
-      Move moveBD = Beans.get(MoveRepository.class).find(moveView.getId());
-      List<String> moveLineReconciledAndRemovedNameList = new ArrayList<>();
-      for (MoveLine moveLineBD : moveBD.getMoveLineList()) {
-        if (!moveView.getMoveLineList().contains(moveLineBD)) {
-          if (moveLineBD.getReconcileGroup() != null) {
-            moveLineReconciledAndRemovedNameList.add(moveLineBD.getName());
-          }
-        }
-      }
-      if (moveLineReconciledAndRemovedNameList != null
-          && !moveLineReconciledAndRemovedNameList.isEmpty()) {
-        response.setError(
-            String.format(
-                I18n.get(AccountExceptionMessage.MOVE_LINE_RECONCILE_LINE_CANNOT_BE_REMOVED),
-                moveLineReconciledAndRemovedNameList.toString()));
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
     }
   }
 
@@ -563,16 +476,6 @@ public class MoveController {
     }
   }
 
-  public void setOriginOnLines(ActionRequest request, ActionResponse response) {
-    try {
-      Move move = request.getContext().asType(Move.class);
-      Beans.get(MoveToolService.class).setOriginOnMoveLineList(move);
-      response.setValue("moveLineList", move.getMoveLineList());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
   public void setDescriptionOnLines(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
@@ -594,37 +497,11 @@ public class MoveController {
     }
   }
 
-  public void validateOrigin(ActionRequest request, ActionResponse response) {
-    try {
-      Move move = request.getContext().asType(Move.class);
-      if (move.getOrigin() == null) {
-        response.setAlert(I18n.get(AccountExceptionMessage.MOVE_CHECK_ORIGIN));
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-    }
-  }
-
   public void validateDescription(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
       if (move.getDescription() == null) {
         response.setAlert(I18n.get(AccountExceptionMessage.MOVE_CHECK_DESCRIPTION));
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-    }
-  }
-
-  public void validatePeriodPermission(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-    try {
-      Move move = request.getContext().asType(Move.class);
-
-      if (Beans.get(PeriodService.class).isClosedPeriod(move.getPeriod())) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(BaseExceptionMessage.PERIOD_CLOSED_AND_NO_PERMISSIONS));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
@@ -662,177 +539,6 @@ public class MoveController {
     }
   }
 
-  public void setMoveLineOriginDates(ActionRequest request, ActionResponse response) {
-    try {
-      Move move = request.getContext().asType(Move.class);
-      move = Beans.get(MoveLineControlService.class).setMoveLineOriginDates(move);
-      response.setValue("moveLineList", move.getMoveLineList());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-    }
-  }
-
-  public void checkDates(ActionRequest request, ActionResponse response) {
-    try {
-      Move move = request.getContext().asType(Move.class);
-      MoveLineToolService moveLineService = Beans.get(MoveLineToolService.class);
-      if (!CollectionUtils.isEmpty(move.getMoveLineList())) {
-        for (MoveLine moveline : move.getMoveLineList()) {
-          moveLineService.checkDateInPeriod(move, moveline);
-        }
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-    }
-  }
-
-  public void onChangeJournal(ActionRequest request, ActionResponse response) {
-    try {
-      Move move = request.getContext().asType(Move.class);
-      if (move.getPartner() != null) {
-        boolean isPartnerCompatible =
-            Beans.get(JournalCheckPartnerTypeService.class)
-                .isPartnerCompatible(move.getJournal(), move.getPartner());
-        if (!isPartnerCompatible) {
-          response.setValue("partner", null);
-          response.setNotify(
-              I18n.get(
-                  AccountExceptionMessage.MOVE_PARTNER_IS_NOT_COMPATIBLE_WITH_SELECTED_JOURNAL));
-        }
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-    }
-  }
-
-  public void roundInvoiceTermPercentages(ActionRequest request, ActionResponse response) {
-    try {
-      Move move = request.getContext().asType(Move.class);
-      move = Beans.get(MoveRepository.class).find(move.getId());
-      Beans.get(MoveInvoiceTermService.class).roundInvoiceTermPercentages(move);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-    }
-  }
-
-  public void isAuthorizedOnPeriod(ActionRequest request, ActionResponse response) {
-    try {
-      Move move = request.getContext().asType(Move.class);
-      User user = AuthUtils.getUser();
-      response.setValue(
-          "$validatePeriod",
-          !Beans.get(PeriodServiceAccount.class).isAuthorizedToAccountOnPeriod(move, user));
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-    }
-  }
-
-  public void checkDuplicatedMoveOrigin(ActionRequest request, ActionResponse response) {
-    try {
-      Move move = request.getContext().asType(Move.class);
-
-      if (move.getJournal() != null
-          && move.getPartner() != null
-          && move.getJournal().getHasDuplicateDetectionOnOrigin()) {
-        List<Move> moveList = Beans.get(MoveToolService.class).getMovesWithDuplicatedOrigin(move);
-        if (ObjectUtils.notEmpty(moveList)) {
-          response.setAlert(
-              String.format(
-                  I18n.get(AccountExceptionMessage.MOVE_DUPLICATE_ORIGIN_NON_BLOCKING_MESSAGE),
-                  moveList.stream().map(Move::getReference).collect(Collectors.joining(",")),
-                  move.getPartner().getFullName(),
-                  move.getPeriod().getYear().getName()));
-        }
-      }
-
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-    }
-  }
-
-  public void updateInvoiceTerms(ActionRequest request, ActionResponse response) {
-    try {
-      MoveInvoiceTermService moveInvoiceTermService = Beans.get(MoveInvoiceTermService.class);
-
-      if (request.getContext().containsKey("paymentConditionChange")
-          && (boolean) request.getContext().get("paymentConditionChange")) {
-        Move move = request.getContext().asType(Move.class);
-
-        moveInvoiceTermService.recreateInvoiceTerms(move);
-
-        if (moveInvoiceTermService.displayDueDate(move)) {
-          response.setAttr(
-              "$dueDate", "value", moveInvoiceTermService.computeDueDate(move, true, false));
-        }
-
-        response.setValues(move);
-      } else if (request.getContext().containsKey("headerChange")
-          && (boolean) request.getContext().get("headerChange")) {
-        Move move = request.getContext().asType(Move.class);
-
-        boolean isAllUpdated = moveInvoiceTermService.updateInvoiceTerms(move);
-
-        if (!isAllUpdated) {
-          response.setFlash(I18n.get(AccountExceptionMessage.MOVE_INVOICE_TERM_CANNOT_UPDATE));
-        }
-
-        response.setValues(move);
-      }
-
-      response.setValue("$paymentConditionChange", false);
-      response.setValue("$headerChange", false);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-    }
-  }
-
-  public void updatePartner(ActionRequest request, ActionResponse response) {
-    try {
-      Move move = request.getContext().asType(Move.class);
-      Move previousMove = Beans.get(MoveRepository.class).find(move.getId());
-
-      if (previousMove != null && !Objects.equals(move.getPartner(), previousMove.getPartner())) {
-        Beans.get(MoveLineService.class)
-            .updatePartner(move.getMoveLineList(), move.getPartner(), previousMove.getPartner());
-
-        response.setValue("moveLineList", move.getMoveLineList());
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-    }
-  }
-
-  public void displayAndComputeDueDate(ActionRequest request, ActionResponse response) {
-    try {
-      Move move = request.getContext().asType(Move.class);
-      MoveInvoiceTermService moveInvoiceTermService = Beans.get(MoveInvoiceTermService.class);
-      boolean displayDueDate = moveInvoiceTermService.displayDueDate(move);
-
-      response.setAttr("$dueDate", "hidden", !displayDueDate);
-
-      if (displayDueDate) {
-        boolean paymentConditionChange =
-            request.getContext().containsKey("paymentConditionChange")
-                && (boolean) request.getContext().get("paymentConditionChange");
-
-        if (request.getContext().get("dueDate") == null || paymentConditionChange) {
-          boolean isDateChange =
-              (request.getContext().containsKey("dateChange")
-                      && (boolean) request.getContext().get("dateChange"))
-                  || paymentConditionChange;
-
-          response.setAttr(
-              "$dueDate", "value", moveInvoiceTermService.computeDueDate(move, true, isDateChange));
-          response.setAttr("$dateChange", "value", false);
-        }
-      } else {
-        response.setAttr("$dueDate", "value", null);
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-    }
-  }
-
   protected LocalDate extractDueDate(ActionRequest request) {
     if (!request.getContext().containsKey("dueDate")
         || request.getContext().get("dueDate") == null) {
@@ -840,26 +546,10 @@ public class MoveController {
     }
 
     Object dueDateObj = request.getContext().get("dueDate");
-    if (dueDateObj.getClass() == LocalDate.class) {
+    if (LocalDate.class.equals(EntityHelper.getEntityClass(dueDateObj))) {
       return (LocalDate) dueDateObj;
     } else {
       return LocalDate.parse((String) dueDateObj);
-    }
-  }
-
-  public void updateDueDate(ActionRequest request, ActionResponse response) {
-    try {
-      if (request.getContext().containsKey("dueDate")
-          && request.getContext().get("dueDate") != null) {
-        Move move = request.getContext().asType(Move.class);
-
-        Beans.get(MoveInvoiceTermService.class)
-            .updateSingleInvoiceTermDueDate(move, this.extractDueDate(request));
-
-        response.setValues(move);
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 
@@ -910,20 +600,338 @@ public class MoveController {
     response.setValue("companyBankDetails", defaultBankDetails);
   }
 
-  public void updateMoveLinesCurrencyRate(ActionRequest request, ActionResponse response) {
+  public void setDefaultCurrency(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
-      LocalDate dueDate = this.extractDueDate(request);
+      Map<String, Object> resultMap = Beans.get(MoveDefaultService.class).setDefaultCurrency(move);
 
-      if (move != null
-          && ObjectUtils.notEmpty(move.getMoveLineList())
-          && move.getCurrency() != null
-          && move.getCompanyCurrency() != null) {
-        Beans.get(MoveLineCurrencyService.class)
-            .computeNewCurrencyRateOnMoveLineList(move, dueDate);
-      }
+      response.setValues(resultMap);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setCurrencyCode(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      Map<String, Object> resultMap = Beans.get(MoveRecordSetService.class).setCurrencyCode(move);
+
+      response.setValues(resultMap);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setJournal(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      Map<String, Object> resultMap = Beans.get(MoveRecordSetService.class).setJournal(move);
+
+      response.setValues(resultMap);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void onNew(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      MoveContext result = Beans.get(MoveRecordService.class).onNew(move);
+
+      response.setValues(result.getValues());
+      response.setAttrs(result.getAttrs());
+      if (!result.getFlash().isEmpty()) {
+        response.setFlash(result.getFlash());
+      }
+      if (!result.getNotify().isEmpty()) {
+        response.setNotify(result.getNotify());
+      }
+      if (!result.getAlert().isEmpty()) {
+        response.setAlert(result.getAlert());
+      }
+      if (!result.getError().isEmpty()) {
+        response.setError(result.getError());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void onLoad(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      MoveContext result = Beans.get(MoveRecordService.class).onLoad(move, request.getContext());
+      response.setValues(result.getValues());
+      response.setAttrs(result.getAttrs());
+      if (!result.getFlash().isEmpty()) {
+        response.setFlash(result.getFlash());
+      }
+      if (!result.getNotify().isEmpty()) {
+        response.setNotify(result.getNotify());
+      }
+      if (!result.getAlert().isEmpty()) {
+        response.setAlert(result.getAlert());
+      }
+      if (!result.getError().isEmpty()) {
+        response.setError(result.getError());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void onSaveCheck(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      MoveContext result =
+          Beans.get(MoveRecordService.class).onSaveCheck(move, request.getContext());
+      // As this method will make a update in the invoiceTerms set values move
+      response.setValues(move);
+      response.setAttrs(result.getAttrs());
+      if (!result.getFlash().isEmpty()) {
+        response.setFlash(result.getFlash());
+      }
+      if (!result.getNotify().isEmpty()) {
+        response.setNotify(result.getNotify());
+      }
+      if (!result.getAlert().isEmpty()) {
+        response.setAlert(result.getAlert());
+      }
+      if (!result.getError().isEmpty()) {
+        response.setError(result.getError());
+      }
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void onSaveBefore(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      MoveContext result =
+          Beans.get(MoveRecordService.class).onSaveBefore(move, request.getContext());
+      // As this method will make a update in the invoiceTerms set values move
+      response.setValues(move);
+      response.setAttrs(result.getAttrs());
+      if (!result.getFlash().isEmpty()) {
+        response.setFlash(result.getFlash());
+      }
+      if (!result.getNotify().isEmpty()) {
+        response.setNotify(result.getNotify());
+      }
+      if (!result.getAlert().isEmpty()) {
+        response.setAlert(result.getAlert());
+      }
+      if (!result.getError().isEmpty()) {
+        response.setError(result.getError());
+      }
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void onSaveAfter(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      MoveContext result =
+          Beans.get(MoveRecordService.class).onSaveAfter(move, request.getContext());
+      // As this method will make a update in the invoiceTerms set values move
+      response.setValues(move);
+      response.setAttrs(result.getAttrs());
+      if (!result.getFlash().isEmpty()) {
+        response.setFlash(result.getFlash());
+      }
+      if (!result.getNotify().isEmpty()) {
+        response.setNotify(result.getNotify());
+      }
+      if (!result.getAlert().isEmpty()) {
+        response.setAlert(result.getAlert());
+      }
+      if (!result.getError().isEmpty()) {
+        response.setError(result.getError());
+      }
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void onChangeDate(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      MoveContext result =
+          Beans.get(MoveRecordService.class).onChangeDate(move, request.getContext());
+      response.setValues(result.getValues());
+      response.setAttrs(result.getAttrs());
+      if (!result.getFlash().isEmpty()) {
+        response.setFlash(result.getFlash());
+      }
+      if (!result.getNotify().isEmpty()) {
+        response.setNotify(result.getNotify());
+      }
+      if (!result.getAlert().isEmpty()) {
+        response.setAlert(result.getAlert());
+      }
+      if (!result.getError().isEmpty()) {
+        response.setError(result.getError());
+      }
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void onChangeJournal(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      MoveContext result =
+          Beans.get(MoveRecordService.class).onChangeJournal(move, request.getContext());
+      response.setValues(result.getValues());
+      response.setAttrs(result.getAttrs());
+      if (!result.getFlash().isEmpty()) {
+        response.setFlash(result.getFlash());
+      }
+      if (!result.getNotify().isEmpty()) {
+        response.setNotify(result.getNotify());
+      }
+      if (!result.getAlert().isEmpty()) {
+        response.setAlert(result.getAlert());
+      }
+      if (!result.getError().isEmpty()) {
+        response.setError(result.getError());
+      }
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void onChangePartner(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      MoveContext result =
+          Beans.get(MoveRecordService.class).onChangePartner(move, request.getContext());
+      response.setValues(result.getValues());
+      response.setAttrs(result.getAttrs());
+      if (!result.getFlash().isEmpty()) {
+        response.setFlash(result.getFlash());
+      }
+      if (!result.getNotify().isEmpty()) {
+        response.setNotify(result.getNotify());
+      }
+      if (!result.getAlert().isEmpty()) {
+        response.setAlert(result.getAlert());
+      }
+      if (!result.getError().isEmpty()) {
+        response.setError(result.getError());
+      }
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void onChangeMoveLineList(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      MoveContext result =
+          Beans.get(MoveRecordService.class).onChangeMoveLineList(move, request.getContext());
+      response.setValues(result.getValues());
+      response.setAttrs(result.getAttrs());
+      if (!result.getFlash().isEmpty()) {
+        response.setFlash(result.getFlash());
+      }
+      if (!result.getNotify().isEmpty()) {
+        response.setNotify(result.getNotify());
+      }
+      if (!result.getAlert().isEmpty()) {
+        response.setAlert(result.getAlert());
+      }
+      if (!result.getError().isEmpty()) {
+        response.setError(result.getError());
+      }
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void onChangeOriginDate(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      MoveContext result =
+          Beans.get(MoveRecordService.class).onChangeOriginDate(move, request.getContext());
+      response.setValues(result.getValues());
+      response.setAttrs(result.getAttrs());
+      if (!result.getFlash().isEmpty()) {
+        response.setFlash(result.getFlash());
+      }
+      if (!result.getNotify().isEmpty()) {
+        response.setNotify(result.getNotify());
+      }
+      if (!result.getAlert().isEmpty()) {
+        response.setAlert(result.getAlert());
+      }
+      if (!result.getError().isEmpty()) {
+        response.setError(result.getError());
+      }
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void onChangeOrigin(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      MoveContext result =
+          Beans.get(MoveRecordService.class).onChangeOrigin(move, request.getContext());
+      response.setValues(result.getValues());
+      response.setAttrs(result.getAttrs());
+      if (!result.getFlash().isEmpty()) {
+        response.setFlash(result.getFlash());
+      }
+      if (!result.getNotify().isEmpty()) {
+        response.setNotify(result.getNotify());
+      }
+      if (!result.getAlert().isEmpty()) {
+        response.setAlert(result.getAlert());
+      }
+      if (!result.getError().isEmpty()) {
+        response.setError(result.getError());
+      }
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void onChangePaymentCondition(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      MoveContext result =
+          Beans.get(MoveRecordService.class).onChangePaymentCondition(move, request.getContext());
+      response.setValues(result.getValues());
+      response.setAttrs(result.getAttrs());
+      if (!result.getFlash().isEmpty()) {
+        response.setFlash(result.getFlash());
+      }
+      if (!result.getNotify().isEmpty()) {
+        response.setNotify(result.getNotify());
+      }
+      if (!result.getAlert().isEmpty()) {
+        response.setAlert(result.getAlert());
+      }
+      if (!result.getError().isEmpty()) {
+        // Specific to this case because paymentCondition need to be changed to its former value.
+        // And setError or setAlert does not make setValue work
+        response.setFlash(result.getError());
+      }
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 }

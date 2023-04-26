@@ -70,22 +70,20 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
   }
 
   @Override
-  public void generateDefaultInvoiceTerm(MoveLine moveLine, boolean canCreateHolbackMoveLine)
-      throws AxelorException {
-    this.generateDefaultInvoiceTerm(moveLine, null, canCreateHolbackMoveLine);
+  public void generateDefaultInvoiceTerm(
+      Move move, MoveLine moveLine, boolean canCreateHolbackMoveLine) throws AxelorException {
+    this.generateDefaultInvoiceTerm(move, moveLine, null, canCreateHolbackMoveLine);
   }
 
   @Override
   public void generateDefaultInvoiceTerm(
-      MoveLine moveLine, LocalDate singleTermDueDate, boolean canCreateHolbackMoveLine)
+      Move move, MoveLine moveLine, LocalDate singleTermDueDate, boolean canCreateHolbackMoveLine)
       throws AxelorException {
     if (moveLine == null
         || moveLine.getAccount() == null
         || !moveLine.getAccount().getUseForPartnerBalance()) {
       return;
     }
-
-    Move move = moveLine.getMove();
 
     PaymentCondition paymentCondition = move.getPaymentCondition();
 
@@ -99,7 +97,7 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
                 MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE,
                 MoveRepository.FUNCTIONAL_ORIGIN_FIXED_ASSET,
                 MoveRepository.FUNCTIONAL_ORIGIN_SALE)
-            .contains(moveLine.getMove().getFunctionalOriginSelect());
+            .contains(move.getFunctionalOriginSelect());
 
     if (move == null) {
       return;
@@ -191,7 +189,10 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
     if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
       moveLine
           .getInvoiceTermList()
-          .forEach(it -> invoiceTermService.setParentFields(it, moveLine, it.getInvoice()));
+          .forEach(
+              it ->
+                  invoiceTermService.setParentFields(
+                      it, moveLine.getMove(), moveLine, it.getInvoice()));
     }
   }
 
@@ -307,6 +308,7 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
 
     return invoiceTermService.createInvoiceTerm(
         null,
+        move,
         moveLine,
         move.getPartnerBankDetails(),
         null,
@@ -343,10 +345,9 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
 
     if (Lists.newArrayList(
             MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE, MoveRepository.FUNCTIONAL_ORIGIN_FIXED_ASSET)
-        .contains(moveLine.getMove().getFunctionalOriginSelect())) {
+        .contains(move.getFunctionalOriginSelect())) {
       return accountingSituationService.getHoldBackSupplierAccount(partner, move.getCompany());
-    } else if (moveLine.getMove().getFunctionalOriginSelect()
-        == MoveRepository.FUNCTIONAL_ORIGIN_SALE) {
+    } else if (move.getFunctionalOriginSelect() == MoveRepository.FUNCTIONAL_ORIGIN_SALE) {
       return accountingSituationService.getHoldBackCustomerAccount(partner, move.getCompany());
     } else {
       return null;
@@ -366,7 +367,7 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
   }
 
   @Override
-  public void recreateInvoiceTerms(MoveLine moveLine) throws AxelorException {
+  public void recreateInvoiceTerms(Move move, MoveLine moveLine) throws AxelorException {
     if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
       if (!moveLine.getInvoiceTermList().stream().allMatch(invoiceTermService::isNotReadonly)) {
         throw new AxelorException(
@@ -377,9 +378,8 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
       moveLine.clearInvoiceTermList();
     }
 
-    Move move = moveLine.getMove();
     if (move.getPaymentCondition() != null) {
-      this.generateDefaultInvoiceTerm(moveLine, false);
+      this.generateDefaultInvoiceTerm(move, moveLine, false);
     }
   }
 

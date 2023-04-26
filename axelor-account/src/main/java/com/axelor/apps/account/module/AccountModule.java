@@ -279,6 +279,18 @@ import com.axelor.apps.account.service.move.PaymentMoveLineDistributionService;
 import com.axelor.apps.account.service.move.PaymentMoveLineDistributionServiceImpl;
 import com.axelor.apps.account.service.move.SimulatedMoveService;
 import com.axelor.apps.account.service.move.SimulatedMoveServiceImpl;
+import com.axelor.apps.account.service.move.attributes.MoveAttrsService;
+import com.axelor.apps.account.service.move.attributes.MoveAttrsServiceImpl;
+import com.axelor.apps.account.service.move.control.MoveCheckService;
+import com.axelor.apps.account.service.move.control.MoveCheckServiceImpl;
+import com.axelor.apps.account.service.move.record.MoveDefaultService;
+import com.axelor.apps.account.service.move.record.MoveDefaultServiceImpl;
+import com.axelor.apps.account.service.move.record.MoveRecordService;
+import com.axelor.apps.account.service.move.record.MoveRecordServiceImpl;
+import com.axelor.apps.account.service.move.record.MoveRecordSetService;
+import com.axelor.apps.account.service.move.record.MoveRecordSetServiceImpl;
+import com.axelor.apps.account.service.move.record.MoveRecordUpdateService;
+import com.axelor.apps.account.service.move.record.MoveRecordUpdateServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineAttrsService;
 import com.axelor.apps.account.service.moveline.MoveLineAttrsServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineCheckService;
@@ -692,5 +704,19 @@ public class AccountModule extends AxelorModule {
     bind(MoveLineRecordService.class).to(MoveLineRecordServiceImpl.class);
 
     bind(MoveLineCurrencyService.class).to(MoveLineCurrencyServiceImpl.class);
+
+    bind(MoveDefaultService.class).to(MoveDefaultServiceImpl.class);
+
+    bind(MoveRecordService.class).to(MoveRecordServiceImpl.class);
+
+    bind(MoveCheckService.class).to(MoveCheckServiceImpl.class);
+
+    bind(MoveAttrsService.class).to(MoveAttrsServiceImpl.class);
+
+    bind(MoveLineCheckService.class).to(MoveLineCheckServiceImpl.class);
+
+    bind(MoveRecordUpdateService.class).to(MoveRecordUpdateServiceImpl.class);
+
+    bind(MoveRecordSetService.class).to(MoveRecordSetServiceImpl.class);
   }
 }

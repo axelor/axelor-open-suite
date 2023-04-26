@@ -20,6 +20,7 @@ package com.axelor.apps.base.service.user;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.TradingName;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.CallMethod;
@@ -57,6 +58,13 @@ public interface UserService {
    */
   @CallMethod
   public Company getUserActiveCompany();
+
+  /**
+   * Method that return the Trading name of the current connected user
+   *
+   * @return Company the active company
+   */
+  public TradingName getTradingName();
 
   /**
    * Method that return the active company id of the current connected user

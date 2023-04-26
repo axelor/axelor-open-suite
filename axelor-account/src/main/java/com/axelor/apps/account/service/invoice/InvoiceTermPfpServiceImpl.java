@@ -228,6 +228,7 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
     InvoiceTerm invoiceTerm =
         invoiceTermService.createInvoiceTerm(
             invoice,
+            originalInvoiceTerm.getMoveLine().getMove(),
             originalInvoiceTerm.getMoveLine(),
             originalInvoiceTerm.getBankDetails(),
             originalInvoiceTerm.getPfpValidatorUser(),
