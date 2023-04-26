@@ -450,7 +450,6 @@ public class ReconcileServiceImpl implements ReconcileService {
       BigDecimal amount,
       boolean updateInvoiceTerms)
       throws AxelorException {
-    amount = this.getTotal(moveLine, amount);
 
     InvoicePayment invoicePayment = null;
     if (invoice != null
@@ -462,6 +461,12 @@ public class ReconcileServiceImpl implements ReconcileService {
                 .map(Reconcile::getInvoicePayment)
                 .filter(invPayment -> invoice.equals(invPayment.getInvoice()))
                 .orElse(this.getExistingInvoicePayment(invoice, otherMove));
+      }
+
+      boolean isCompanyCurrency =
+          invoicePayment.getCurrency().equals(reconcile.getCompany().getCurrency());
+      if (!isCompanyCurrency) {
+        amount = this.getTotal(moveLine, amount);
       }
 
       if (invoicePayment == null) {

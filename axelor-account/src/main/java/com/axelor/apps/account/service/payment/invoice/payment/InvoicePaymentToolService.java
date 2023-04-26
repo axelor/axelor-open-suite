@@ -26,7 +26,6 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
