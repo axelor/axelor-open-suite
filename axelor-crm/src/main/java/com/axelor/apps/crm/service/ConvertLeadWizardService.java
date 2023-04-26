@@ -20,6 +20,8 @@ package com.axelor.apps.crm.service;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.crm.db.Lead;
+
+import java.util.List;
 import java.util.Map;
 
 public interface ConvertLeadWizardService {
@@ -30,7 +32,7 @@ public interface ConvertLeadWizardService {
       Integer leadToContactSelect,
       Partner partner,
       Map<String, Object> partnerMap,
-      Partner contactPartner,
+      List<Partner> contactPartnerList,
       Map<String, Object> contactPartnerMap)
       throws AxelorException;
 }
