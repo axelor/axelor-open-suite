@@ -1436,6 +1436,8 @@
   <action-group name="action-group-stock-stockmove-cancel-click">
     <action name="save"/>
     <action name="action-validate-stock-move-validate-cancel"/>
+    <action name="action-supplychain-stock-move-method-check-invoice-status"
+      if="__config__.app.isApp('supplychain')"/>
     <action name="action.stock.move.view.cancel"/>
   </action-group>
 
