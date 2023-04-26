@@ -69,6 +69,7 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
   protected AppBaseService appBaseService;
 
   protected static int lineOffset = 0;
+  protected static int groupOffset = -1;
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Inject
@@ -93,6 +94,14 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
 
   public static synchronized int getLineOffset() {
     return lineOffset;
+  }
+
+  public static synchronized void incrementGroupOffset() {
+    groupOffset++;
+  }
+
+  public static synchronized int getGroupOffset() {
+    return groupOffset;
   }
 
   @Override

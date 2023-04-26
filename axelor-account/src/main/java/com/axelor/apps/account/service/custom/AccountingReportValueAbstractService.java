@@ -92,7 +92,7 @@ public abstract class AccountingReportValueAbstractService {
       int analyticCounter) {
     DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     String period = String.format("%s - %s", startDate.format(format), endDate.format(format));
-    int groupNumber = groupColumn == null ? 0 : groupColumn.getSequence();
+    int groupNumber = this.getGroupNb(groupColumn, parentTitle);
     int columnNumber = column.getSequence();
     int lineNumber = line.getSequence();
 
@@ -129,6 +129,22 @@ public abstract class AccountingReportValueAbstractService {
     if (valuesMapByLine.containsKey(lineCode)) {
       valuesMapByLine.get(lineCode).put(columnCode, accountingReportValue);
     }
+  }
+
+  protected int getGroupNb(AccountingReportConfigLine groupColumn, String parentTitle) {
+    if (groupColumn == null) {
+      if (StringUtils.isEmpty(parentTitle)) {
+        return 0;
+      } else {
+        AccountingReportValueServiceImpl.incrementGroupOffset();
+
+        return AccountingReportValueServiceImpl.getGroupOffset();
+      }
+    } else if (groupColumn.getTypeSelect() == AccountingReportConfigLineRepository.TYPE_GROUP) {
+      return groupColumn.getSequence();
+    }
+
+    return 0;
   }
 
   protected String getColumnCode(
