@@ -27,7 +27,7 @@
     model="com.axelor.apps.base.db.Partner">
     <view type="cards" name="partner-cards"/>
     <view type="grid" name="partner-prospect-grid"/>
-    <view type="form" name="partner-customer-form"/>
+    <view type="form" name="partner-crm-customer-form"/>
     <view-param name="limit" value="39"/>
     <view-param name="search-filters" value="partner-filters"/>
     <view-param name="forceTitle" value="true"/>
@@ -45,7 +45,7 @@
     model="com.axelor.apps.base.db.Partner">
     <view type="cards" name="partner-cards"/>
     <view type="grid" name="partner-customer-grid"/>
-    <view type="form" name="partner-customer-form"/>
+    <view type="form" name="partner-crm-customer-form"/>
     <view-param name="limit" value="39"/>
     <view-param name="search-filters" value="partner-filters"/>
     <domain>self.isContact = false AND self.isCustomer = true</domain>

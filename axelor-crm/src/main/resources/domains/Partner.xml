@@ -47,6 +47,10 @@
 		public static final int PARTNER_SIZE_OVER_TWO_THOUSAND = 6;
 	]]>
     </extra-code>
+
+    <track>
+      <field name="partnerStatus"/>
+    </track>
   </entity>
 
 </domain-models>
