@@ -27,6 +27,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.gdpr.db.GDPRErasureLog;
 import com.axelor.apps.gdpr.db.GDPRRequest;
 import com.axelor.apps.gdpr.db.GDPRResponse;
+import com.axelor.apps.gdpr.db.RelationshipAnonymizer;
 import com.axelor.apps.gdpr.db.repo.GDPRRequestRepository;
 import com.axelor.apps.gdpr.db.repo.GDPRResponseRepository;
 import com.axelor.apps.gdpr.exception.GdprExceptionMessage;
@@ -198,6 +199,10 @@ public class GdprResponseErasureServiceImpl implements GdprResponseErasureServic
       return;
     }
 
+    List<RelationshipAnonymizer> relationshipAnonymizers =
+        appGDPRService.getAppGDPR().getRelationsShipAnonymizer();
+
+    Property property = mapper.getProperty(metaField.getName());
     // no relationship field
     if (Objects.isNull(metaField.getRelationship())) {
 
@@ -209,7 +214,7 @@ public class GdprResponseErasureServiceImpl implements GdprResponseErasureServic
       if (!anonymizerLine.isPresent()) return;
 
       // handle selection fields
-      Property property = mapper.getProperty(metaField.getName());
+
       if (StringUtils.isEmpty(property.getSelection())) {
         newValue =
             anonymizeService.anonymizeValue(
@@ -225,13 +230,56 @@ public class GdprResponseErasureServiceImpl implements GdprResponseErasureServic
     } else if (metaField.getRelationship().equals("OneToOne")
         && Strings.isNullOrEmpty(metaField.getMappedBy())) {
 
+      if (property.isRequired()) {
+        System.out.println(property.getName());
+      }
       anonymizeRelatedObject(gdprResponse, metaField, currentValue);
 
     } else if (metaField.getRelationship().equals("OneToMany")) {
       List<Object> relatedObjects = (List<Object>) currentValue;
 
+      String mappedBy = metaField.getMappedBy();
+      Optional<RelationshipAnonymizer> relationshipAnonymizer1 =
+          relationshipAnonymizers.stream()
+              .filter(
+                  relationshipAnonymizer ->
+                      relationshipAnonymizer
+                          .getModel()
+                          .equals(
+                              getMetaModelFromFullName(
+                                  metaField.getPackageName() + "." + metaField.getTypeName())))
+              .findFirst();
+      if (relationshipAnonymizer1.isPresent()) {
+        if (property.isRequired()) {
+          System.out.println(property.getName());
+        } else {
+          for (Object relatedObject : relatedObjects) {
+            Mapper o2mMapper = Mapper.of(relatedObject.getClass());
+            o2mMapper.set(relatedObject, mappedBy, null);
+          }
+        }
+      }
       for (Object relatedObject : relatedObjects) {
         anonymizeRelatedObject(gdprResponse, metaField, relatedObject);
+      }
+    } else if (metaField.getRelationship().equals("ManyToOne")) {
+      Optional<RelationshipAnonymizer> relationshipAnonymizer1 =
+          relationshipAnonymizers.stream()
+              .filter(
+                  relationshipAnonymizer ->
+                      relationshipAnonymizer
+                          .getModel()
+                          .equals(
+                              getMetaModelFromFullName(
+                                  metaField.getPackageName() + "." + metaField.getTypeName())))
+              .findFirst();
+
+      if (relationshipAnonymizer1.isPresent()) {
+        if (property.isRequired()) {
+          System.out.println(property.getName());
+        } else {
+          mapper.set(reference, metaField.getName(), null);
+        }
       }
     }
   }

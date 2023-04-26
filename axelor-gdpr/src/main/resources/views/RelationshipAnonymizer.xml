@@ -6,6 +6,7 @@
   <grid title="Relationship anonymizer" name="gdpr-relationship-anonymizer-grid"
     model="com.axelor.apps.gdpr.db.RelationshipAnonymizer">
     <field name="model"/>
+    <field name="modelId"/>
   </grid>
   <form model="com.axelor.apps.gdpr.db.RelationshipAnonymizer" title="Relationship Anonymizer"
     name="gdpr-relationship-anonymizer-form">
