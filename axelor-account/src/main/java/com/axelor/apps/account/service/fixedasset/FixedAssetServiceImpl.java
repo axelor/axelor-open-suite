@@ -421,7 +421,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       if (fixedAsset
           .getDepreciationPlanSelect()
           .contains(FixedAssetRepository.DEPRECIATION_PLAN_DEROGATION)) {
-        generateDerogatoryCessionMove(fixedAsset);
+        generateDerogatoryCessionMove(fixedAsset, disposalDate);
       }
       fixedAssetLineMoveService.realize(correspondingFixedAssetLine, false, false, true);
     }
@@ -432,7 +432,8 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     return fixedAsset;
   }
 
-  protected void generateDerogatoryCessionMove(FixedAsset fixedAsset) throws AxelorException {
+  protected void generateDerogatoryCessionMove(FixedAsset fixedAsset, LocalDate disposalDate)
+      throws AxelorException {
 
     List<FixedAssetDerogatoryLine> fixedAssetDerogatoryLineList =
         fixedAsset.getFixedAssetDerogatoryLineList();
@@ -456,7 +457,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
           I18n.get(AccountExceptionMessage.IMMO_FIXED_ASSET_MISSING_DEROGATORY_LINE));
     }
     fixedAssetDerogatoryLineService.generateDerogatoryCessionMove(
-        firstPlannedDerogatoryLine, lastRealizedDerogatoryLine);
+        firstPlannedDerogatoryLine, lastRealizedDerogatoryLine, disposalDate);
   }
 
   @Override

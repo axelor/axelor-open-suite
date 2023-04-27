@@ -859,7 +859,9 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
       moveLines.add(debitMoveLine);
 
       List<AnalyticMoveLine> analyticDebitMoveLineList =
-          new ArrayList<>(debitMoveLine.getAnalyticMoveLineList());
+          CollectionUtils.isEmpty(debitMoveLine.getAnalyticMoveLineList())
+              ? new ArrayList<>()
+              : new ArrayList<>(debitMoveLine.getAnalyticMoveLineList());
       debitMoveLine.clearAnalyticMoveLineList();
       this.addAnalyticToMoveLine(fixedAsset.getAnalyticDistributionTemplate(), debitMoveLine);
       if (CollectionUtils.isEmpty(debitMoveLine.getAnalyticMoveLineList())) {

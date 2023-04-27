@@ -132,7 +132,8 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
               computeDebitAccount(fixedAssetDerogatoryLine),
               amount,
               false,
-              false);
+              false,
+              null);
       if (fixedAssetDerogatoryLine.getIsSimulated() && deragotaryDepreciationMove != null) {
         this.moveValidateService.accounting(deragotaryDepreciationMove);
       }
@@ -213,7 +214,8 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
       Account debitLineAccount,
       BigDecimal amount,
       Boolean isSimulated,
-      Boolean isDisposal)
+      Boolean isDisposal,
+      LocalDate disposalDate)
       throws AxelorException {
     FixedAsset fixedAsset = fixedAssetDerogatoryLine.getFixedAsset();
 
@@ -230,7 +232,7 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
             fixedAssetDateService.computeLastDayOfFiscalYear(company, date, periodicityTypeSelect);
       }
     } else {
-      date = fixedAsset.getDisposalDate();
+      date = disposalDate;
     }
 
     String origin =
@@ -346,7 +348,8 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
               computeDebitAccount(fixedAssetDerogatoryLine),
               amount,
               true,
-              false));
+              false,
+              null));
     }
 
     fixedAssetDerogatoryLine.setIsSimulated(true);
