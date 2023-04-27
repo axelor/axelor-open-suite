@@ -16,7 +16,13 @@
       <field name="name"/>
     </panel>
     <panel-related name="indexValueListPanel" field="indexValueList"
-      form-view="index-value-form" grid-view="index-value-grid"/>
+      form-view="index-value-form" grid-view="index-value-grid"
+      onChange="action-index-revaluation-method-set-index-values-end-date"/>
   </form>
+
+  <action-method name="action-index-revaluation-method-set-index-values-end-date">
+    <call class="com.axelor.apps.contract.web.IndexRevaluationController"
+      method="setIndexValuesEndDate"/>
+  </action-method>
 
 </object-views>

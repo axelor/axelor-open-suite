@@ -11,4 +11,6 @@ public interface IndexRevaluationService {
   IndexValue getMostRecentIndexValue(IndexRevaluation index) throws AxelorException;
 
   IndexValue getLastYearIndexValue(IndexRevaluation index) throws AxelorException;
+
+  void setIndexValueEndDate(IndexRevaluation indexRevaluation);
 }
