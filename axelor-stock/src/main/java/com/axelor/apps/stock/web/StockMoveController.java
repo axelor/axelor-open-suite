@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.stock.web;
 
-import com.axelor.apps.base.db.PrintingSettings;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.message.exception.MessageExceptionMessage;
@@ -35,7 +34,6 @@ import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.stock.service.stockmove.print.ConformityCertificatePrintService;
 import com.axelor.apps.stock.service.stockmove.print.PickingStockMovePrintService;
 import com.axelor.apps.stock.service.stockmove.print.StockMovePrintService;
-import com.axelor.apps.tool.StringTool;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.mapper.Mapper;
@@ -561,32 +559,6 @@ public class StockMoveController {
       Beans.get(StockMoveToolService.class).computeAddressStr(stockMove);
 
       response.setValues(stockMove);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  /**
-   * Called on printing settings select. Set the the domain for {@link StockMove#printingSettings}
-   *
-   * @param request
-   * @param response
-   */
-  public void filterPrintingSettings(ActionRequest request, ActionResponse response) {
-    try {
-      StockMove stockMove = request.getContext().asType(StockMove.class);
-
-      List<PrintingSettings> printingSettingsList =
-          Beans.get(TradingNameService.class)
-              .getPrintingSettingsList(stockMove.getTradingName(), stockMove.getCompany());
-      String domain =
-          String.format(
-              "self.id IN (%s)",
-              !printingSettingsList.isEmpty()
-                  ? StringTool.getIdListString(printingSettingsList)
-                  : "0");
-
-      response.setAttr("printingSettings", "domain", domain);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

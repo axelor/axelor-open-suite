@@ -653,8 +653,7 @@
 
       <panel name="configPanel" title="Configuration" itemSpan="6">
         <field name="isWithBackorder" colSpan="12"/>
-        <field name="printingSettings"
-          onSelect="action-stock-move-method-filter-printing-settings" canEdit="false"/>
+        <field name="printingSettings" canEdit="false"/>
         <field name="groupProductsOnPrintings"
           if="__config__.app.getApp('base')?.getIsRegroupProductsOnPrintings() &amp;&amp; typeSelect == 2"
           colSpan="6"/>
@@ -1420,10 +1419,6 @@
   <action-method name="action-stock-move-method-printing-settings-default-value">
     <call class="com.axelor.apps.stock.web.StockMoveController"
       method="fillDefaultPrintingSettings"/>
-  </action-method>
-
-  <action-method name="action-stock-move-method-filter-printing-settings">
-    <call class="com.axelor.apps.stock.web.StockMoveController" method="filterPrintingSettings"/>
   </action-method>
 
   <action-method name="action-method-print-conformity-certificate">
