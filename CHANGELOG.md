@@ -1,3 +1,10 @@
+## [5.4.41] (2023-04-27)
+
+#### Fixed
+
+* Stock move: fixed an error occurring when emptying the product in a line.
+* Group Menu Assistant: fixed an issue where an empty file was generated.
+
 ## [5.4.40] (2023-04-20)
 
 #### Fixed
@@ -914,6 +921,7 @@ password only if user type is signatory and ebics partner mode is ebics TS,
 - Bank reconciliation: add management of case of several account management for account domain, journal domain, auto change of journal and cash account fields and now account and journal from bank details are prioritized.
 - Invoice: Fix NullPointerException when the product is not filled in invoice line.
 
+[5.4.41]: https://github.com/axelor/axelor-open-suite/compare/v5.4.40...v5.4.41
 [5.4.40]: https://github.com/axelor/axelor-open-suite/compare/v5.4.39...v5.4.40
 [5.4.39]: https://github.com/axelor/axelor-open-suite/compare/v5.4.38...v5.4.39
 [5.4.38]: https://github.com/axelor/axelor-open-suite/compare/v5.4.37...v5.4.38
