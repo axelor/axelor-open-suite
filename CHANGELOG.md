@@ -1,3 +1,11 @@
+## [6.1.37] (2023-04-27)
+
+#### Fixed
+
+* Message: fixed an issue where emails automatically sent were not updated.
+* Stock move: fixed an error occurring when emptying the product in a line.
+* Group Menu Assistant: fixed an issue where an empty file was generated.
+
 ## [6.1.36] (2023-04-20)
 
 #### Fixed
@@ -1081,6 +1089,7 @@ In price list, we fix the display to exclude list that are defined on an exclusi
 * Moved axelor docusign module from Axelor Open Suite to Axelor Addons repository.
 
 
+[6.1.37]: https://github.com/axelor/axelor-open-suite/compare/v6.1.36...v6.1.37
 [6.1.36]: https://github.com/axelor/axelor-open-suite/compare/v6.1.35...v6.1.36
 [6.1.35]: https://github.com/axelor/axelor-open-suite/compare/v6.1.34...v6.1.35
 [6.1.34]: https://github.com/axelor/axelor-open-suite/compare/v6.1.33...v6.1.34
