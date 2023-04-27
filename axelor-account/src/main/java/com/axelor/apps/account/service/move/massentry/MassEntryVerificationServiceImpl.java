@@ -156,6 +156,13 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
         && !moveLine.getPartner().equals(newMoveLine.getPartner())) {
       moveLineMassEntryToolService.setPartnerChanges(moveLine, newMoveLine);
     }
+
+    // Check move line mass entry partner bank details
+    BankDetails newPartnerBankDetails = newMoveLine.getMovePartnerBankDetails();
+    if (moveLine.getMovePartnerBankDetails() != null
+        && !moveLine.getMovePartnerBankDetails().equals(newPartnerBankDetails)) {
+      moveLine.setMovePartnerBankDetails(newPartnerBankDetails);
+    }
   }
 
   @Override

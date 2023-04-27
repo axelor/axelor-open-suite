@@ -877,6 +877,8 @@
     <action name="action-move-line-method-get-account-informations"/>
     <action name="action-move-line-mass-entry-attrs-set-hidden-and-readonly"
       if="__parent__.massEntryStatusSelect != 0"/>
+    <action name="action-move-line-mass-entry-attrs-set-partner-bank-details-readonly"
+      if="__parent__.massEntryStatusSelect != 0"/>
     <action name="action-move-line-method-compute-analytic-distribution"/>
     <action name="action-move-line-method-hide-axis-analytic-account"/>
     <action name="action-move-line-group-analytic-distribution-template-onchange"/>
