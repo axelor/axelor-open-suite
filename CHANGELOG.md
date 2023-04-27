@@ -1,3 +1,12 @@
+## [6.2.26] (2023-04-27)
+
+#### Fixed
+
+* Purchase order: fixed fiscal position on a purchase order generated from a sale order.
+* Stock move: fixed an error occurring when emptying the product in a line.
+* Analytic Rules: added a company filter on analytic account verification.
+* Group Menu Assistant: fixed an issue where an empty file was generated.
+
 ## [6.2.25] (2023-04-21)
 
 #### Fixed
@@ -1019,6 +1028,7 @@ will be equal to the reason for manual forecasts.
 * Territory: Remove object
 
 
+[6.2.26]: https://github.com/axelor/axelor-open-suite/compare/v6.2.25...v6.2.26
 [6.2.25]: https://github.com/axelor/axelor-open-suite/compare/v6.2.24...v6.2.25
 [6.2.24]: https://github.com/axelor/axelor-open-suite/compare/v6.2.23...v6.2.24
 [6.2.23]: https://github.com/axelor/axelor-open-suite/compare/v6.2.22...v6.2.23
