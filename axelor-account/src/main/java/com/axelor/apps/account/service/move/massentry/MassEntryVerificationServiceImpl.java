@@ -1,10 +1,6 @@
 package com.axelor.apps.account.service.move.massentry;
 
-import com.axelor.apps.account.db.Move;
-import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.MoveLineMassEntry;
-import com.axelor.apps.account.db.PaymentCondition;
-import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.*;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineMassEntryRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
@@ -14,6 +10,7 @@ import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryToolService;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.PeriodRepository;
@@ -388,5 +385,35 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
       }
     }
     this.setMassEntryErrorMessage(move, errorMessage, errorAdded, temporaryMoveNumber);
+  }
+
+  @Override
+  public BankDetails verifyCompanyBankDetails(
+      Company company, BankDetails companyBankDetails, Journal journal) throws AxelorException {
+    int technicalTypeSelect = journal.getJournalType().getTechnicalTypeSelect();
+
+    if (company.getDefaultBankDetails() == null
+        && (technicalTypeSelect == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE
+            || technicalTypeSelect == JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          String.format(
+              I18n.get(AccountExceptionMessage.COMPANY_BANK_DETAILS_MISSING), company.getName()));
+
+    } else if (company.getDefaultBankDetails() != null) {
+      BankDetails newCompanyBankDetails = companyBankDetails;
+
+      if (newCompanyBankDetails == null
+          && technicalTypeSelect != JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY) {
+        newCompanyBankDetails = company.getDefaultBankDetails();
+      } else if (newCompanyBankDetails != null
+          && technicalTypeSelect == JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY
+          && newCompanyBankDetails.getJournal() != journal) {
+        newCompanyBankDetails = null;
+      }
+      return newCompanyBankDetails;
+    }
+
+    return companyBankDetails;
   }
 }
