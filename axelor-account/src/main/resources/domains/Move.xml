@@ -85,6 +85,7 @@
     <integer name="massEntryStatusSelect" title="Status" default="0"
       selection="iaccount.move.mass.entry.status.select"/>
     <string name="massEntryErrors" title="Error list"/>
+    <boolean name="massEntryManageCutOff" title="Manage Cut off period"/>
     <unique-constraint columns="reference,company"/>
 
     <finder-method name="findByPaymentVoucher" using="paymentVoucher" all="true"/>

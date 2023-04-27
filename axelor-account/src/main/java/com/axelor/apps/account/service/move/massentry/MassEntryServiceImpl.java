@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineMassEntryRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryService;
 import com.axelor.apps.base.service.administration.AbstractBatch;
@@ -54,6 +55,7 @@ public class MassEntryServiceImpl implements MassEntryService {
   protected MoveToolService moveToolService;
   protected MoveLineMassEntryService moveLineMassEntryService;
   protected MassEntryMoveCreateService massEntryMoveCreateService;
+  protected AppAccountService appAccountService;
 
   @Inject
   public MassEntryServiceImpl(
@@ -61,17 +63,19 @@ public class MassEntryServiceImpl implements MassEntryService {
       MassEntryVerificationService massEntryVerificationService,
       MoveToolService moveToolService,
       MoveLineMassEntryService moveLineMassEntryService,
-      MassEntryMoveCreateService massEntryMoveCreateService) {
+      MassEntryMoveCreateService massEntryMoveCreateService,
+      AppAccountService appAccountService) {
     this.massEntryToolService = massEntryToolService;
     this.massEntryVerificationService = massEntryVerificationService;
     this.moveToolService = moveToolService;
     this.moveLineMassEntryService = moveLineMassEntryService;
     this.massEntryMoveCreateService = massEntryMoveCreateService;
+    this.appAccountService = appAccountService;
   }
 
   @Override
   public MoveLineMassEntry getFirstMoveLineMassEntryInformations(
-      List<MoveLineMassEntry> moveLineList, MoveLineMassEntry inputLine, boolean manageCutOff) {
+      List<MoveLineMassEntry> moveLineList, MoveLineMassEntry inputLine) {
     if (ObjectUtils.notEmpty(moveLineList)) {
       for (MoveLineMassEntry moveLine : moveLineList) {
         if (moveLine.getTemporaryMoveNumber().equals(inputLine.getTemporaryMoveNumber())) {
@@ -100,13 +104,13 @@ public class MassEntryServiceImpl implements MassEntryService {
         }
       }
     } else {
-      resetMoveLineMassEntry(inputLine, manageCutOff);
+      resetMoveLineMassEntry(inputLine);
     }
     return inputLine;
   }
 
   @Override
-  public void resetMoveLineMassEntry(MoveLineMassEntry moveLine, boolean manageCutOff) {
+  public void resetMoveLineMassEntry(MoveLineMassEntry moveLine) {
     moveLine.setDate(LocalDate.now());
     moveLine.setOrigin(null);
     moveLine.setOriginDate(LocalDate.now());
@@ -141,16 +145,16 @@ public class MassEntryServiceImpl implements MassEntryService {
     moveLine.setAxis5AnalyticAccount(null);
     moveLine.setAnalyticMoveLineList(null);
 
-    if (!manageCutOff) {
+    if (!appAccountService.getAppAccount().getManageCutOffPeriod()) {
       moveLine.setCutOffStartDate(null);
       moveLine.setCutOffEndDate(null);
     }
   }
 
   @Override
-  public void verifyFieldsAndGenerateTaxLineAndCounterpart(
-      Move parentMove, boolean manageCutOff, LocalDate dueDate) throws AxelorException {
-    this.verifyFieldsChangeOnMoveLineMassEntry(parentMove, manageCutOff);
+  public void verifyFieldsAndGenerateTaxLineAndCounterpart(Move parentMove, LocalDate dueDate)
+      throws AxelorException {
+    this.verifyFieldsChangeOnMoveLineMassEntry(parentMove, parentMove.getMassEntryManageCutOff());
 
     MoveLineMassEntry lastLine =
         parentMove.getMoveLineMassEntryList().get(parentMove.getMoveLineMassEntryList().size() - 1);
