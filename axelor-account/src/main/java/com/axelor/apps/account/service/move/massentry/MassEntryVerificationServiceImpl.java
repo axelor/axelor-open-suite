@@ -14,6 +14,7 @@ import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryToolService;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.PeriodRepository;
@@ -158,6 +159,13 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
             == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE
         && !moveLine.getPartner().equals(newMoveLine.getPartner())) {
       moveLineMassEntryToolService.setPartnerChanges(moveLine, newMoveLine);
+    }
+
+    // Check move line mass entry partner bank details
+    BankDetails newPartnerBankDetails = newMoveLine.getMovePartnerBankDetails();
+    if (moveLine.getMovePartnerBankDetails() != null
+        && !moveLine.getMovePartnerBankDetails().equals(newPartnerBankDetails)) {
+      moveLine.setMovePartnerBankDetails(newPartnerBankDetails);
     }
   }
 
