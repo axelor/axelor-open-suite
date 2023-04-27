@@ -48,9 +48,6 @@ public class MoveLineMassEntryController {
           && parentContext != null
           && Move.class.equals(parentContext.getContextClass())) {
         Move move = parentContext.asType(Move.class);
-        boolean manageCutOff =
-            parentContext.get("manageCutOffDummy") != null
-                && (boolean) parentContext.get("manageCutOffDummy");
 
         if (move != null) {
           line.setInputAction(MoveLineMassEntryRepository.MASS_ENTRY_INPUT_ACTION_LINE);
@@ -67,8 +64,7 @@ public class MoveLineMassEntryController {
           }
           response.setValues(
               Beans.get(MassEntryService.class)
-                  .getFirstMoveLineMassEntryInformations(
-                      move.getMoveLineMassEntryList(), line, manageCutOff));
+                  .getFirstMoveLineMassEntryInformations(move.getMoveLineMassEntryList(), line));
           if (move.getMoveLineMassEntryList() != null
               && move.getMoveLineMassEntryList().size() != 0) {
             response.setAttr("inputAction", "readonly", false);
@@ -93,16 +89,13 @@ public class MoveLineMassEntryController {
           && moveLine != null
           && moveLine.getInputAction() != null) {
         Move move = parentContext.asType(Move.class);
-        boolean manageCutOff =
-            parentContext.get("manageCutOffDummy") != null
-                && (boolean) parentContext.get("manageCutOffDummy");
 
         switch (moveLine.getInputAction()) {
           case MoveLineMassEntryRepository.MASS_ENTRY_INPUT_ACTION_COUNTERPART:
             isCounterpartLine = true;
             break;
           case MoveLineMassEntryRepository.MASS_ENTRY_INPUT_ACTION_MOVE:
-            Beans.get(MassEntryService.class).resetMoveLineMassEntry(moveLine, manageCutOff);
+            Beans.get(MassEntryService.class).resetMoveLineMassEntry(moveLine);
             moveLine.setInputAction(MoveLineMassEntryRepository.MASS_ENTRY_INPUT_ACTION_LINE);
             moveLine.setTemporaryMoveNumber(
                 Beans.get(MassEntryMoveCreateService.class)

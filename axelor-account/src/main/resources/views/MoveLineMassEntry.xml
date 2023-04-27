@@ -190,7 +190,9 @@
 
   <action-attrs name="action-move-line-mass-entry-attrs-set-cut-off-dates">
     <attribute for="cutOffStartDate" name="value" expr="eval: originDate"
-      if="manageCutOffDummy"/>
+      if="__config__.app.getApp('account').manageCutOffPeriod"/>
+    <attribute for="cutOffEndDate" name="value" expr="eval: originDate"
+      if="__config__.app.getApp('account').manageCutOffPeriod"/>
   </action-attrs>
 
   <action-attrs name="action-move-line-mass-entry-attrs-set-input-action-selection">

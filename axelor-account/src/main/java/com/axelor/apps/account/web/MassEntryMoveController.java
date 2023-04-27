@@ -59,13 +59,9 @@ public class MassEntryMoveController {
     Move move = request.getContext().asType(Move.class);
 
     try {
-      boolean manageCutOff =
-          request.getContext().get("manageCutOffDummy") != null
-              && (boolean) request.getContext().get("manageCutOffDummy");
       if (move != null && ObjectUtils.notEmpty(move.getMoveLineMassEntryList())) {
         Beans.get(MassEntryService.class)
-            .verifyFieldsAndGenerateTaxLineAndCounterpart(
-                move, manageCutOff, this.extractDueDate(request));
+            .verifyFieldsAndGenerateTaxLineAndCounterpart(move, this.extractDueDate(request));
 
         response.setValues(move);
         response.setAttr("controlMassEntryMoves", "hidden", false);
