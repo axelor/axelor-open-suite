@@ -1,3 +1,21 @@
+## [6.4.13] (2023-04-27)
+
+#### Fixed
+
+* Move: removed save action when we change the move date.
+* Purchase order: fixed fiscal position on a purchase order generated from a sale order.
+* FEC import: fixed an error occuring when importing FEC using the format without taxes.
+* Debt recovery: fixed a a regression on demo data, the demo data should now have existing email templates.
+* Batch bill of exchange: raise an anomaly when invoices are ready to be processed but bank details is inactive.
+* Invoice: added a verification for analytics account on validate and ventilate button.
+* Stock move: fixed an error occurring when emptying the product in a line.
+* Move: fixed an error happening when regenerating invoice terms while the move is not saved.
+* Analytic Rules: added a company filter on analytic account verification.
+* Payment session: optimization done to improve performance of invoice term search process.
+* Payment session: improved form view by removing blank spaces by adding a smaller dashlet.
+* Group Menu Assistant: fixed an issue where an empty file was generated.
+* Move line/Fixed asset: corrected wrong journal on fixed asset generated from move line.
+
 ## [6.4.12] (2023-04-21)
 
 #### Fixed
@@ -678,6 +696,7 @@ A new mobile application for stock and production modules are now available, the
 * Account budget: Remove checkAvailableBudget in budget, which was unused.
 * Accounting report: removed old specific export format for Sale, Purchase, Treasury, Refund (1006 to 1009 accounting report type). Already replaced per the generic Journal entry export with a filter on the journal.
 
+[6.4.13]: https://github.com/axelor/axelor-open-suite/compare/v6.4.12...v6.4.13
 [6.4.12]: https://github.com/axelor/axelor-open-suite/compare/v6.4.11...v6.4.12
 [6.4.11]: https://github.com/axelor/axelor-open-suite/compare/v6.4.10...v6.4.11
 [6.4.10]: https://github.com/axelor/axelor-open-suite/compare/v6.4.9...v6.4.10
