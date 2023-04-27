@@ -250,7 +250,7 @@ public class BankReconciliationService {
                               .getBankStatementQuery()
                               .getQuery()
                               .replaceAll(
-                                  "%s", "\"" + bankStatementRule.getSearchLabel() + "\"")))) {;
+                                  "%s", "\"" + bankStatementRule.getSearchLabel() + "\"")))) {
 
             checkAccountBeforeAutoAccounting(bankStatementRule, bankReconciliation);
 
