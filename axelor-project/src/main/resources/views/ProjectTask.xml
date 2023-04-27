@@ -502,11 +502,11 @@
     <action name="action-project-task-record-project-configurations" if="project != null"/>
     <action name="action-project-task-business-support-provider"
       if="__config__.app.isApp('business-support')"/>
-    <action name="action-project-task-method-fill-selection-in"/>
+    <action name="action-project-task-attrs-project-filter-status"/>
   </action-group>
 
   <action-group name="action-project-task-group-project-onchange">
-    <action name="action-project-task-method-fill-selection-in" if="project?.isShowStatus"/>
+    <action name="action-project-task-attrs-project-filter-status" if="project?.isShowStatus"/>
     <action name="action-project-task-record-project-configurations"/>
     <action name="action-project-task-method-update-discount"
       if="__config__.app.isApp('business-project')"/>
@@ -752,7 +752,7 @@
   </action-attrs>
 
   <action-group name="action-project-task-group-timer-process">
-    <action name="action-project-task-method-fill-selection-in" if="project?.isShowStatus"/>
+    <action name="action-project-task-attrs-project-filter-status" if="project?.isShowStatus"/>
     <action name="action-project-task-method-manage-timer-buttons"
       if="timerList != null &amp;&amp; !timerList.isEmpty()"/>
     <action name="action-project-task-method-compute-total-timer-duration"
@@ -873,9 +873,13 @@
     <context name="_typeSelect" expr="eval: __repo__(ProjectTask).TYPE_TASK"/>
   </action-view>
 
-  <action-method name="action-project-task-method-fill-selection-in">
-    <call class="com.axelor.apps.project.web.ProjectTaskController" method="fillSelection"/>
-  </action-method>
+  <action-attrs name="action-project-task-attrs-project-filter-status">
+    <attribute name="selection-in" for="status"
+      expr="eval: project?.projectTaskStatusSet?.collect{it.id}?.join(',')"
+      if="project?.projectTaskStatusSet"/>
+    <attribute name="selection-in" for="status" expr="eval: [-1]"
+      if="!project?.projectTaskStatusSet"/>
+  </action-attrs>
 
   <search-filters name="project-task-filters"
     model="com.axelor.apps.project.db.ProjectTask" title="Project task filters">
