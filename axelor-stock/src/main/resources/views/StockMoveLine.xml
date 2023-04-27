@@ -79,7 +79,9 @@
       if="__config__.app.isApp('supplychain')"/>
     <button name="trackNumberWizardBtn" title="Split by tracking numbers" icon="fa-barcode"
       onClick="save,action-stock-move-line-method-open-wizard"
-      readonlyIf="lineTypeSelect == 1 || ($get('stockMove.statusSelect') > 1 || !$get('product.trackingNumberConfiguration.isPurchaseTrackingManaged') &amp;&amp; !$get('product.trackingNumberConfiguration.isProductionTrackingManaged') &amp;&amp; (!$get('product.trackingNumberConfiguration.isSaleTrackingManaged') || $get('stockMove.typeSelect') != 2))"/>
+      readonlyIf="lineTypeSelect == 1 || $get('stockMove.statusSelect') > 2 || (!$get('product.trackingNumberConfiguration.isPurchaseTrackingManaged') &amp;&amp; !$get('product.trackingNumberConfiguration.isProductionTrackingManaged') &amp;&amp; !$get('product.trackingNumberConfiguration.isSaleTrackingManaged')) || !($get('product.trackingNumberConfiguration.isSaleTrackingManaged') &amp;&amp; !$get('product.trackingNumberConfiguration.hasSaleAutoSelectTrackingNbr') &amp;&amp; $get('stockMove.typeSelect') == 2)"/>
+    <field name="product.trackingNumberConfiguration.hasSaleAutoSelectTrackingNbr"
+      hidden="true"/>
   </grid>
 
   <form name="stock-move-line-form" title="Stock move line"
