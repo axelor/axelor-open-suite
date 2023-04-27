@@ -51,7 +51,8 @@ public interface FixedAssetDerogatoryLineService {
 
   void generateDerogatoryCessionMove(
       FixedAssetDerogatoryLine firstPlannedDerogatoryLine,
-      FixedAssetDerogatoryLine lastRealizedDerogatoryLine)
+      FixedAssetDerogatoryLine lastRealizedDerogatoryLine,
+      LocalDate disposalDate)
       throws AxelorException;
 
   void copyFixedAssetDerogatoryLineList(FixedAsset fixedAsset, FixedAsset newFixedAsset);

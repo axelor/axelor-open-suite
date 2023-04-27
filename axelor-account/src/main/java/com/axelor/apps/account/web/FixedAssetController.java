@@ -165,7 +165,7 @@ public class FixedAssetController {
       }
 
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 

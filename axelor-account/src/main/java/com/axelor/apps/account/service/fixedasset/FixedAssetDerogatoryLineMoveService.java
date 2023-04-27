@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Batch;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 public interface FixedAssetDerogatoryLineMoveService {
 
@@ -36,7 +37,8 @@ public interface FixedAssetDerogatoryLineMoveService {
       Account debitLineAccount,
       BigDecimal amount,
       Boolean isSimulated,
-      Boolean isDisposal)
+      Boolean isDisposal,
+      LocalDate disposalDate)
       throws AxelorException;
 
   void simulate(FixedAssetDerogatoryLine fixedAssetDerogatoryLine) throws AxelorException;

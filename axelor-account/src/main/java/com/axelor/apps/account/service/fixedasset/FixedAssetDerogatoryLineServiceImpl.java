@@ -242,7 +242,8 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
   @Override
   public void generateDerogatoryCessionMove(
       FixedAssetDerogatoryLine firstPlannedDerogatoryLine,
-      FixedAssetDerogatoryLine lastRealizedDerogatoryLine)
+      FixedAssetDerogatoryLine lastRealizedDerogatoryLine,
+      LocalDate disposalDate)
       throws AxelorException {
     Objects.requireNonNull(firstPlannedDerogatoryLine);
     Account creditAccount;
@@ -269,7 +270,13 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
     }
     firstPlannedDerogatoryLine.setDerogatoryDepreciationMove(
         fixedAssetDerogatoryLineMoveService.generateMove(
-            firstPlannedDerogatoryLine, creditAccount, debitAccount, amount, false, true));
+            firstPlannedDerogatoryLine,
+            creditAccount,
+            debitAccount,
+            amount,
+            false,
+            true,
+            disposalDate));
     firstPlannedDerogatoryLine.setStatusSelect(FixedAssetLineRepository.STATUS_REALIZED);
   }
 
