@@ -660,7 +660,7 @@ public class MoveController {
   public void onLoad(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
-      MoveContext result = Beans.get(MoveRecordService.class).onLoad(move, request.getContext());
+      MoveContext result = Beans.get(MoveRecordService.class).onLoad(move);
       response.setValues(result.getValues());
       response.setAttrs(result.getAttrs());
       if (!result.getFlash().isEmpty()) {
@@ -683,8 +683,7 @@ public class MoveController {
   public void onSaveCheck(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
-      MoveContext result =
-          Beans.get(MoveRecordService.class).onSaveCheck(move, request.getContext());
+      MoveContext result = Beans.get(MoveRecordService.class).onSaveCheck(move);
       // As this method will make a update in the invoiceTerms set values move
       response.setValues(move);
       response.setAttrs(result.getAttrs());
@@ -708,9 +707,21 @@ public class MoveController {
 
   public void onSaveBefore(ActionRequest request, ActionResponse response) {
     try {
-      Move move = request.getContext().asType(Move.class);
+      Context context = request.getContext();
+      Move move = context.asType(Move.class);
+
+      boolean paymentConditionChange =
+          Optional.ofNullable(context.get("paymentConditionChange"))
+              .map(value -> (Boolean) value)
+              .orElse(false);
+      boolean headerChange =
+          Optional.ofNullable(context.get("headerChange"))
+              .map(value -> (Boolean) value)
+              .orElse(false);
+
       MoveContext result =
-          Beans.get(MoveRecordService.class).onSaveBefore(move, request.getContext());
+          Beans.get(MoveRecordService.class)
+              .onSaveBefore(move, paymentConditionChange, headerChange);
       // As this method will make a update in the invoiceTerms set values move
       response.setValues(move);
       response.setAttrs(result.getAttrs());
@@ -735,8 +746,7 @@ public class MoveController {
   public void onSaveAfter(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
-      MoveContext result =
-          Beans.get(MoveRecordService.class).onSaveAfter(move, request.getContext());
+      MoveContext result = Beans.get(MoveRecordService.class).onSaveAfter(move);
       // As this method will make a update in the invoiceTerms set values move
       response.setValues(move);
       response.setAttrs(result.getAttrs());
@@ -760,9 +770,20 @@ public class MoveController {
 
   public void onChangeDate(ActionRequest request, ActionResponse response) {
     try {
-      Move move = request.getContext().asType(Move.class);
+      Context context = request.getContext();
+      Move move = context.asType(Move.class);
+
+      boolean paymentConditionChange =
+          Optional.ofNullable(context.get("paymentConditionChange"))
+              .map(value -> (Boolean) value)
+              .orElse(false);
+      boolean dateChange =
+          Optional.ofNullable(context.get("dateChange"))
+              .map(value -> (Boolean) value)
+              .orElse(false);
+
       MoveContext result =
-          Beans.get(MoveRecordService.class).onChangeDate(move, request.getContext());
+          Beans.get(MoveRecordService.class).onChangeDate(move, paymentConditionChange, dateChange);
       response.setValues(result.getValues());
       response.setAttrs(result.getAttrs());
       if (!result.getFlash().isEmpty()) {
@@ -786,8 +807,8 @@ public class MoveController {
   public void onChangeJournal(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
-      MoveContext result =
-          Beans.get(MoveRecordService.class).onChangeJournal(move, request.getContext());
+
+      MoveContext result = Beans.get(MoveRecordService.class).onChangeJournal(move);
       response.setValues(result.getValues());
       response.setAttrs(result.getAttrs());
       if (!result.getFlash().isEmpty()) {
@@ -810,9 +831,21 @@ public class MoveController {
 
   public void onChangePartner(ActionRequest request, ActionResponse response) {
     try {
-      Move move = request.getContext().asType(Move.class);
+      Context context = request.getContext();
+      Move move = context.asType(Move.class);
+
+      boolean paymentConditionChange =
+          Optional.ofNullable(context.get("paymentConditionChange"))
+              .map(value -> (Boolean) value)
+              .orElse(false);
+      boolean dateChange =
+          Optional.ofNullable(context.get("dateChange"))
+              .map(value -> (Boolean) value)
+              .orElse(false);
+
       MoveContext result =
-          Beans.get(MoveRecordService.class).onChangePartner(move, request.getContext());
+          Beans.get(MoveRecordService.class)
+              .onChangePartner(move, paymentConditionChange, dateChange);
       response.setValues(result.getValues());
       response.setAttrs(result.getAttrs());
       if (!result.getFlash().isEmpty()) {
@@ -835,9 +868,20 @@ public class MoveController {
 
   public void onChangeMoveLineList(ActionRequest request, ActionResponse response) {
     try {
-      Move move = request.getContext().asType(Move.class);
+      Context context = request.getContext();
+      Move move = context.asType(Move.class);
+
+      boolean paymentConditionChange =
+          Optional.ofNullable(context.get("paymentConditionChange"))
+              .map(value -> (Boolean) value)
+              .orElse(false);
+      boolean dateChange =
+          Optional.ofNullable(context.get("dateChange"))
+              .map(value -> (Boolean) value)
+              .orElse(false);
       MoveContext result =
-          Beans.get(MoveRecordService.class).onChangeMoveLineList(move, request.getContext());
+          Beans.get(MoveRecordService.class)
+              .onChangeMoveLineList(move, paymentConditionChange, dateChange);
       response.setValues(result.getValues());
       response.setAttrs(result.getAttrs());
       if (!result.getFlash().isEmpty()) {
@@ -860,9 +904,21 @@ public class MoveController {
 
   public void onChangeOriginDate(ActionRequest request, ActionResponse response) {
     try {
-      Move move = request.getContext().asType(Move.class);
+      Context context = request.getContext();
+      Move move = context.asType(Move.class);
+
+      boolean paymentConditionChange =
+          Optional.ofNullable(context.get("paymentConditionChange"))
+              .map(value -> (Boolean) value)
+              .orElse(false);
+      boolean dateChange =
+          Optional.ofNullable(context.get("dateChange"))
+              .map(value -> (Boolean) value)
+              .orElse(false);
+
       MoveContext result =
-          Beans.get(MoveRecordService.class).onChangeOriginDate(move, request.getContext());
+          Beans.get(MoveRecordService.class)
+              .onChangeOriginDate(move, paymentConditionChange, dateChange);
       response.setValues(result.getValues());
       response.setAttrs(result.getAttrs());
       if (!result.getFlash().isEmpty()) {
@@ -886,8 +942,7 @@ public class MoveController {
   public void onChangeOrigin(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
-      MoveContext result =
-          Beans.get(MoveRecordService.class).onChangeOrigin(move, request.getContext());
+      MoveContext result = Beans.get(MoveRecordService.class).onChangeOrigin(move);
       response.setValues(result.getValues());
       response.setAttrs(result.getAttrs());
       if (!result.getFlash().isEmpty()) {
@@ -910,9 +965,25 @@ public class MoveController {
 
   public void onChangePaymentCondition(ActionRequest request, ActionResponse response) {
     try {
-      Move move = request.getContext().asType(Move.class);
+      Context context = request.getContext();
+      Move move = context.asType(Move.class);
+
+      boolean paymentConditionChange =
+          Optional.ofNullable(context.get("paymentConditionChange"))
+              .map(value -> (Boolean) value)
+              .orElse(false);
+      boolean headerChange =
+          Optional.ofNullable(context.get("headerChange"))
+              .map(value -> (Boolean) value)
+              .orElse(false);
+      boolean dateChange =
+          Optional.ofNullable(context.get("dateChange"))
+              .map(value -> (Boolean) value)
+              .orElse(false);
+
       MoveContext result =
-          Beans.get(MoveRecordService.class).onChangePaymentCondition(move, request.getContext());
+          Beans.get(MoveRecordService.class)
+              .onChangePaymentCondition(move, paymentConditionChange, dateChange, headerChange);
       response.setValues(result.getValues());
       response.setAttrs(result.getAttrs());
       if (!result.getFlash().isEmpty()) {
