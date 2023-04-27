@@ -1,7 +1,10 @@
 package com.axelor.apps.account.service.move.massentry;
 
+import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLineMassEntry;
+import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.Company;
 import com.axelor.exception.AxelorException;
 
 public interface MassEntryVerificationService {
@@ -33,4 +36,7 @@ public interface MassEntryVerificationService {
 
   void setErrorOnMoveLineMassEntry(
       Move move, int temporaryMoveNumber, String fieldName, String errorMessage);
+
+  BankDetails verifyCompanyBankDetails(
+      Company company, BankDetails companyBankDetails, Journal journal) throws AxelorException;
 }

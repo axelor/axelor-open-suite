@@ -426,6 +426,10 @@
             readonlyIf="$validatePeriod || moveLineMassEntryList.length &gt; 0 || statusSelect == 3"
             canNew="false" form-view="journal-form" grid-view="journal-grid" canEdit="false"
             onChange="action-move-group-journal-on-change" colSpan="3"/>
+          <field if="__config__.app.getApp('base')?.getManageMultiBanks()"
+            name="companyBankDetails" colSpan="3" canEdit="false"
+            onSelect="action-move-mass-entry-attrs-set-company-bank-details-domain"
+            form-view="bank-details-form" grid-view="bank-details-grid"/>
           <field name="functionalOriginSelect" readonlyIf="statusSelect > 2" colSpan="3"
             hideIf="journal.authorizedFunctionalOriginSelect.split(',').length == 1 &amp;&amp; journal.authorizedFunctionalOriginSelect == functionalOriginSelect || journal.authorizedFunctionalOriginSelect == null &amp;&amp; functionalOriginSelect == null"
             onChange="action-move-attrs-set-hidden-mass-entry-buttons"/>
@@ -1485,4 +1489,17 @@
     <action name="action-move-attrs-set-hidden-and-required-fields"/>
     <action name="action-move-attrs-set-hidden-mass-entry-buttons"/>
   </action-group>
+
+  <action-attrs name="action-move-mass-entry-attrs-set-company-bank-details-domain">
+    <attribute name="domain"
+      expr="eval: &quot;self.id IN (${company?.bankDetailsList?.collect{it.id}.join(',')},${company?.defaultBankDetails?.id}) AND self.active = true&quot;"
+      for="companyBankDetails" if="!company?.bankDetailsList?.isEmpty()"/>
+    <attribute name="domain"
+      expr="eval: &quot;self.id IN (${company?.bankDetailsList?.collect{it.id}.join(',')},${company?.defaultBankDetails?.id}) AND self.active = true AND self.journal = :journal&quot;"
+      for="companyBankDetails"
+      if="!company?.bankDetailsList?.isEmpty() &amp;&amp; journal?.journalType?.technicalTypeSelect == 4"/>
+    <attribute name="domain"
+      expr="eval: &quot;self.id = ${company?.defaultBankDetails?.id} AND self.active = true&quot;"
+      for="companyBankDetails" if="company?.bankDetailsList?.isEmpty()"/>
+  </action-attrs>
 </object-views>

@@ -18,10 +18,10 @@
 package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.Move;
-import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.move.massentry.MassEntryService;
+import com.axelor.apps.account.service.move.massentry.MassEntryVerificationService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
@@ -149,19 +149,16 @@ public class MassEntryMoveController {
       Move move = request.getContext().asType(Move.class);
       if (move != null
           && move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL
-          && move.getCompany().getDefaultBankDetails() == null
           && move.getJournal() != null
-          && (move.getJournal().getJournalType().getTechnicalTypeSelect()
-                  == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE
-              || move.getJournal().getJournalType().getTechnicalTypeSelect()
-                  == JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE)) {
-        response.setError(
-            String.format(
-                I18n.get(AccountExceptionMessage.COMPANY_BANK_DETAILS_MISSING),
-                move.getCompany().getName()));
+          && move.getCompany() != null) {
+        response.setValue(
+            "companyBankDetails",
+            Beans.get(MassEntryVerificationService.class)
+                .verifyCompanyBankDetails(
+                    move.getCompany(), move.getCompanyBankDetails(), move.getJournal()));
       }
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 
