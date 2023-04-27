@@ -1,3 +1,16 @@
+## [6.3.18] (2023-04-27)
+
+#### Fixed
+
+* Purchase order: fixed fiscal position on a purchase order generated from a sale order.
+* FEC import: fixed an error occuring when importing FEC using the format without taxes.
+* Debt recovery: fixed a a regression on demo data, the demo data should now have existing email templates.
+* Batch bill of exchange: raise anomaly when invoices are ready to be processed but bank details is inactive.
+* Stock move: fixed an error occurring when emptying the product in a line.
+* Analytic Rules: added a company filter on analytic account verification.
+* Group Menu Assistant: fixed an issue where an empty file was generated.
+* Move line/Fixed asset: corrected wrong journal on fixed asset generated from move line.
+
 ## [6.3.17] (2023-04-21)
 
 #### Fixed
@@ -616,6 +629,7 @@ If you had modules calling these methods, you will need to update them so they c
 * Account Config: Remove Invoices button and associate action from account config
 * Stock correction: Removed unused future and reserved quantity from database.
 
+[6.3.18]: https://github.com/axelor/axelor-open-suite/compare/v6.3.17...v6.3.18
 [6.3.17]: https://github.com/axelor/axelor-open-suite/compare/v6.3.16...v6.3.17
 [6.3.16]: https://github.com/axelor/axelor-open-suite/compare/v6.3.15...v6.3.16
 [6.3.15]: https://github.com/axelor/axelor-open-suite/compare/v6.3.14...v6.3.15
