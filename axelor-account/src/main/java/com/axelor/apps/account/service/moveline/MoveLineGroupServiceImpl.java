@@ -292,7 +292,9 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
   @Override
   public Map<String, Object> getDateOnChangeValuesMap(MoveLine moveLine, Move move)
       throws AxelorException {
-    moveLineRecordService.setOriginDate(moveLine);
+    if (move != null && move.getJournal() != null && move.getJournal().getIsFillOriginDate()) {
+      moveLineRecordService.setOriginDate(moveLine);
+    }
     moveLineComputeAnalyticService.computeAnalyticDistribution(moveLine, move);
     moveLineToolService.checkDateInPeriod(move, moveLine);
 

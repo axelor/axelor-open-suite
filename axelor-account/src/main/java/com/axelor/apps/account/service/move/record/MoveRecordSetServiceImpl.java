@@ -255,7 +255,9 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
   public Map<String, Object> setOriginDate(Move move) {
     Objects.requireNonNull(move);
     HashMap<String, Object> resultMap = new HashMap<>();
-    if (move.getDate() != null) {
+    if (move.getDate() != null
+        && move.getJournal() != null
+        && move.getJournal().getIsFillOriginDate()) {
       resultMap.put("originDate", move.getDate());
     }
     return resultMap;
