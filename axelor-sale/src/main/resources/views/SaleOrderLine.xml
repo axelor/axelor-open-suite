@@ -396,7 +396,7 @@
         <field name="billOfMaterial"
           onSelect="action-sale-order-line-attrs-bill-of-material-domain"
           if-module="axelor-production" form-view="bill-of-material-form"
-          grid-view="bill-of-material-grid" if="__config__.app.isApp('production')"/>
+          grid-view="bill-of-material-grid" if="__config__.app.isApp('production')" canEdit="true"/>
         <button name="customizeBOMBtn" title="Customize BOM"
           onClick="action-production-method-customize-bill-of-material"
           if-module="axelor-production" if="__config__.app.isApp('production')"/>
@@ -939,7 +939,7 @@
 
   <action-attrs name="action-sale-order-line-attrs-bill-of-material-domain">
     <attribute name="domain" for="billOfMaterial"
-      expr="eval: &quot;(self.product.id = ${product?.parentProduct?.id} OR self.product.id = ${product?.id}) AND self.defineSubBillOfMaterial = true AND self.personalized = false &quot;"/>
+      expr="eval: &quot;(self.product.id = ${product?.parentProduct?.id} OR self.product.id = ${product?.id}) AND self.defineSubBillOfMaterial = true &quot;"/>
   </action-attrs>
 
   <action-attrs name="action-sale-order-line-attrs-discountamount-title">
