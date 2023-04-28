@@ -1,5 +1,6 @@
 "key","message","comment","context"
 "<br>Mapping for the query :<br>First Name -> :firstName <br>Last Name -> :lastName <br>Email -> :email <br>Phone -> :phone <br>","<br>Correspondance pour la requête :<br>Prénom -> :firstName <br>Nom -> :lastName <br>Email -> :email <br>Téléphone -> :phone <br>",,
+"A replacement object is missing for model %s.","Un objet de remplacement est manquant pour le modèle %s.",,
 "Access","Accès",,
 "Activate","Activer",,
 "Active","Actif",,
@@ -47,6 +48,7 @@
 "GDPR search configuration lines","Lignes de configuration pour la recherche RGPD",,
 "Gdpr processing register log list","Journaux du registre de traitement",,
 "Gdpr processing register rule list","Liste de règles du registre de traitement",,
+"Impossible to link with the children meta field %s, no mappedBy field found.","Impossible de relier avec le meta champ enfant %s, champ mappedBy inconnu.",,
 "Indicate which date should be verified. If one of the date is after the retention date, the data will not be archived.","Indiquer quelle date devrait être vérifiée. Si une des dates est supérieure à la date de rétention, la donnée ne sera pas archivée.",,
 "JPQL filter to add to the query","Filtre JPQL à ajouter à la requête",,
 "Key","Clé",,
@@ -85,6 +87,8 @@
 "Received","Reçue",,
 "Reference","Référence",,
 "Register created","Registre créé",,
+"Relationship Anonymizer","Anonymiseur de relation",,
+"Relationship anonymizer","Anonymiseur de relation",,
 "Request","Requête",,
 "Request date","Date de la demande",,
 "Request origin","Origine de la demande",,
