@@ -159,7 +159,7 @@
   <!-- Action record -->
   <action-record name="action-move-line-mass-entry-record-set-is-edited"
     model="com.axelor.apps.account.db.MoveLineMassEntry">
-    <field name="isEdited" expr="1" if="isEdited == 0"/>
+    <field name="isEdited" expr="1" if="isEdited != 2"/>
   </action-record>
 
   <action-record name="action-move-line-mass-entry-record-set-is-edited-vat-system"
