@@ -331,6 +331,9 @@
     <boolean name="retrieveDaybookMovesInPaymentSession"
       title="Include terms attached to 'Daybook' accounting move"/>
 
+    <!-- Tax accounts -->
+    <decimal name="allowedTaxGap" title="Allowed tax gap" default="0.00" initParam="true"
+      help="Field allowing a tax gap during the accounting of a move. Its value specifies the tolerance applied during the tax values control and the move balance control."/>
 
     <finder-method name="findByCompany" using="company"/>
 
