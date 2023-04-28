@@ -77,4 +77,6 @@ public interface MoveRecordSetService {
   Map<String, Object> setMoveLineOriginDates(Move move) throws AxelorException;
 
   Map<String, Object> setOriginOnMoveLineList(Move move) throws AxelorException;
+
+  Map<String, Object> setOriginDate(Move move) throws AxelorException;
 }

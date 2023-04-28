@@ -1105,10 +1105,6 @@
     <attribute name="value" for="$dueDate" expr="eval: null"/>
   </action-attrs>
 
-  <action-attrs name="action-move-attrs-set-origin-date">
-    <attribute name="value" for="originDate" expr="eval: date" if="date != null"/>
-  </action-attrs>
-
   <action-attrs name="action-move-attrs-manage-bank-details">
     <attribute for="companyBankDetails" name="hidden"
       expr="eval: !__config__.app.getApp('base')?.getManageMultiBanks()"/>

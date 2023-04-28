@@ -116,6 +116,7 @@ public class MoveRecordServiceImpl implements MoveRecordService {
     result.putInValues(moveRecordSetService.setJournal(move));
     moveRecordSetService.setPeriod(move);
     result.putInValues("period", move.getPeriod());
+    result.putInValues(moveRecordSetService.setOriginDate(move));
     result.putInAttrs(moveAttrsService.getHiddenAttributeValues(move));
     result.putInAttrs(
         "$reconcileTags", "hidden", moveAttrsService.isHiddenMoveLineListViewer(move));
@@ -175,6 +176,8 @@ public class MoveRecordServiceImpl implements MoveRecordService {
         !periodAccountService.isAuthorizedToAccountOnPeriod(move, AuthUtils.getUser()));
     moveCheckService.checkPeriodPermission(move);
     result.putInValues(moveRecordSetService.setMoveLineDates(move));
+    result.putInValues(moveRecordSetService.setOriginDate(move));
+    onChangeOriginDate(move, context);
     result.merge(moveRecordUpdateService.updateMoveLinesCurrencyRate(move, move.getDueDate()));
     result.putInValues(moveComputeService.computeTotals(move));
     updateDummiesDateConText(move, context);
