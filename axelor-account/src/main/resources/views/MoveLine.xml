@@ -86,6 +86,43 @@
     <field name="taxLineBeforeReverse" hidden="true"/>
   </grid>
 
+  <grid name="move-line-account-batch-auto-move-lettering-grid" title="Move lines reconciled"
+    model="com.axelor.apps.account.db.MoveLine" orderBy="reconcileGroup.id" groupBy="reconcileGroup">
+    <toolbar>
+      <button name="validateAllReconcileGroupsBtn" title="Validate all reconcile groups"
+        onClick="action-method-batch-auto-lettering-validate-all-reconcile-groups"
+        showIf="batch != null"/>
+      <button name="validateSelectedReconcileGroupsBtn"
+        title="Validate selected reconcile groups"
+        onClick="action-method-batch-auto-lettering-validate-selected-reconcile-groups"/>
+      <button name="cancelSelectedReconcileGroupsBtn"
+        title="Cancel selected reconcile groups"
+        onClick="action-method-batch-auto-lettering-cancel-selected-reconcile-groups"/>
+      <button name="partiallyValidateSelectedReconcileGroupsBtn"
+        title="Temporarily reconcile selected lines"
+        onClick="action-method-batch-auto-lettering-partially-validate-selected-reconcile-groups"/>
+    </toolbar>
+    <field name="name"/>
+    <field name="date"/>
+    <field name="dueDate"/>
+    <field name="move.paymentMode"/>
+    <field name="origin"/>
+    <field name="partner"/>
+    <field name="account"/>
+    <field name="debit"/>
+    <field name="credit"/>
+    <field name="reconcileGroup"/>
+    <field name="reconcileGroup.statusSelect"/>
+    <field name="externalOrigin"/>
+    <field name="reconcileGroup.isProposal" hidden="true"/>
+    <button name="validateReconcileGroupBtn" title="Validate reconcile group"
+      onClick="action-reconcile-group-method-validate-proposal" icon="fa-check-circle"
+      readonlyIf="!$get('reconcileGroup.isProposal')" help="Validate reconcile group"/>
+    <button name="cancelReconcileGroupBtn" title="Cancel reconcile group"
+      readonlyIf="!$get('reconcileGroup.isProposal')" icon="fa-minus-circle"
+      onClick="action-reconcile-group-method-cancel-proposal" help="Cancel reconcile group"/>
+  </grid>
+
   <grid name="move-line-move-grid" model="com.axelor.apps.account.db.MoveLine"
     title="Move lines" canArchive="false" onNew="action-move-line-method-onnew">
     <field name="counter" hidden="true" width="50" readonly="true"/>
@@ -291,7 +328,9 @@
     <field name="account"/>
     <field name="description"/>
     <field name="move.statusSelect"/>
-    <field name="$cutOffProrataAmount" title="Prorata amount" type="decimal" x-scale="2"/>
+    <field name="amountBeforeCutOffProrata"/>
+    <field name="durationCutOffProrata"/>
+    <field name="cutOffProrataAmount"/>
     <field name="cutOffStartDate"/>
     <field name="cutOffEndDate"/>
     <field name="move.cutOffMoveGenerated" hidden="true"/>
@@ -526,13 +565,14 @@
           form-view="tax-equiv-form"/>
         <field name="taxLineBeforeReverse" hidden="true"/>
       </panel>
-      <panel name="cutOffPanel" title="Cut off period" showIf="account.manageCutOffPeriod"
+      <panel name="cutOffPanel" title="Cut off period"
+        showIf="account.manageCutOffPeriod &amp;&amp; ![1,2,6].includes(functionalOriginSelect)"
         if="__config__.app.getApp('account').manageCutOffPeriod">
         <field name="cutOffStartDate" requiredIf="account.manageCutOffPeriod"
-          validIf="!cutOffEndDate || cutOffStartDate &lt;= cutOffEndDate"
+          validIf="[1,2,6].includes(functionalOriginSelect) || !cutOffEndDate || cutOffStartDate &lt;= cutOffEndDate"
           onChange="action-move-line-method-set-is-cut-off-generated-false"/>
         <field name="cutOffEndDate" requiredIf="account.manageCutOffPeriod"
-          validIf="!cutOffStartDate || cutOffEndDate &gt;= cutOffStartDate"
+          validIf="[1,2,6].includes(functionalOriginSelect) || !cutOffStartDate || cutOffEndDate &gt;= cutOffStartDate"
           onChange="action-move-line-method-set-is-cut-off-generated-false"/>
         <field name="move.statusSelect" hidden="true"/>
         <field name="move.technicalOriginSelect" hidden="true"/>
@@ -774,13 +814,14 @@
           form-view="tax-equiv-form"/>
         <field name="taxLineBeforeReverse" hidden="true"/>
       </panel>
-      <panel name="cutOffPanel" title="Cut off period" showIf="account.manageCutOffPeriod"
+      <panel name="cutOffPanel" title="Cut off period"
+        showIf="account.manageCutOffPeriod &amp;&amp; ![1,2,6].includes(functionalOriginSelect)"
         if="__config__.app.getApp('account').manageCutOffPeriod">
         <field name="cutOffStartDate" requiredIf="account.manageCutOffPeriod"
-          validIf="!cutOffEndDate || cutOffStartDate &lt;= cutOffEndDate"
+          validIf="[1,2,6].includes(functionalOriginSelect) || !cutOffEndDate || cutOffStartDate &lt;= cutOffEndDate"
           onChange="action-move-line-method-set-is-cut-off-generated-false"/>
         <field name="cutOffEndDate" requiredIf="account.manageCutOffPeriod"
-          validIf="!cutOffStartDate || cutOffEndDate &gt;= cutOffStartDate"
+          validIf="[1,2,6].includes(functionalOriginSelect) || !cutOffStartDate || cutOffEndDate &gt;= cutOffStartDate"
           onChange="action-move-line-method-set-is-cut-off-generated-false"/>
         <field name="move.statusSelect" hidden="true"/>
         <field name="move.technicalOriginSelect" hidden="true"/>
@@ -906,6 +947,10 @@
     <call class="com.axelor.apps.account.web.MoveLineController" method="debitOnChange"/>
   </action-method>
 
+  <action-method name="action-account-move-line-method-filter-partner">
+    <call class="com.axelor.apps.account.web.MoveLineController" method="filterPartner"/>
+  </action-method>
+
   <action-method name="action-move-line-method-credit-onchange">
     <call class="com.axelor.apps.account.web.MoveLineController" method="creditOnChange"/>
   </action-method>
@@ -966,6 +1011,30 @@
     <field name="$balance" expr="eval: _balance" if="_balance != null"/>
   </action-record>
 
+  <action-method
+    name="action-method-batch-auto-lettering-validate-all-reconcile-groups">
+    <call class="com.axelor.apps.account.web.BatchAccountController"
+      method="validateAllReconcileGroups"/>
+  </action-method>
+
+  <action-method
+    name="action-method-batch-auto-lettering-validate-selected-reconcile-groups">
+    <call class="com.axelor.apps.account.web.BatchAccountController"
+      method="validateSelectedReconcileGroups"/>
+  </action-method>
+
+  <action-method
+    name="action-method-batch-auto-lettering-cancel-selected-reconcile-groups">
+    <call class="com.axelor.apps.account.web.BatchAccountController"
+      method="cancelSelectedReconcileGroups"/>
+  </action-method>
+
+  <action-method
+    name="action-method-batch-auto-lettering-partially-validate-selected-reconcile-groups">
+    <call class="com.axelor.apps.account.web.BatchAccountController"
+      method="partialReconcileSelectedMoveLines"/>
+  </action-method>
+
   <action-view name="action-move-line-view-open-move" title="Account move"
     model="com.axelor.apps.account.db.Move">
     <view type="form" name="move-form"/>
@@ -988,6 +1057,16 @@
     <domain>self.moveLine.id = :_moveLineId</domain>
     <context name="_moveLineId" expr="eval: id"/>
   </action-view>
+
+  <action-attrs name="action-attrs-move-line-set-required-partner">
+    <attribute for="partner" name="required"
+      expr="eval: [1,2].contains(__parent__?.journal?.journalType?.technicalTypeSelect)"/>
+  </action-attrs>
+
+  <action-attrs name="action-move-line-attrs-set-hidden-analytic-distribution-panel">
+    <attribute for="analyticDistributionPanel" name="hidden"
+      expr="eval: !__config__.app.getApp('account')?.getManageAnalyticAccounting() || !__parent__?.company?.accountConfig?.getManageAnalyticAccounting() || !account?.analyticDistributionAuthorized"/>
+  </action-attrs>
 
   <action-view name="action-account-view-show-move-lines" title="${label} move lines"
     model="com.axelor.apps.account.db.MoveLine">

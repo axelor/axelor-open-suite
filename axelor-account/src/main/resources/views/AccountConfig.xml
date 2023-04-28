@@ -146,11 +146,15 @@
           <field name="moveOnTempClosureAuthorizedRoleList" colSpan="6" widget="TagSelect"/>
           <field name="closureAuthorizedRoleList" colSpan="6" widget="TagSelect"/>
         </panel>
-        <panel name="paymentDifferencesPanel" title="Payment differences" colSpan="12">
+        <panel name="reconcileDifferencesPanel" title="Reconcile differences" colSpan="12">
           <field name="thresholdDistanceFromRegulation"/>
-          <field name="cashPositionVariationAccount"
+          <spacer colSpan="6"/>
+          <field name="cashPositionVariationDebitAccount"
             domain="self.statusSelect = 1 AND self.company = :company" grid-view="account-grid"
-            form-view="account-form"/>
+            form-view="account-form" requiredIf="thresholdDistanceFromRegulation != 0"/>
+          <field name="cashPositionVariationCreditAccount"
+            domain="self.statusSelect = 1 AND self.company = :company" grid-view="account-grid"
+            form-view="account-form" requiredIf="thresholdDistanceFromRegulation != 0"/>
         </panel>
         <panel name="authorizeAutoReconcilePanel" title="Authorize auto reconcile"
           colSpan="12">

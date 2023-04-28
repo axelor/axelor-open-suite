@@ -31,6 +31,7 @@ import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.apps.account.service.move.MoveComputeService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
@@ -71,6 +72,7 @@ import java.util.Optional;
 import javax.persistence.TypedQuery;
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class PaymentSessionValidateBankPaymentServiceImpl
     extends PaymentSessionValidateServiceImpl {
@@ -87,6 +89,7 @@ public class PaymentSessionValidateBankPaymentServiceImpl
       AppBaseService appBaseService,
       MoveCreateService moveCreateService,
       MoveValidateService moveValidateService,
+      MoveComputeService moveComputeService,
       MoveLineCreateService moveLineCreateService,
       ReconcileService reconcileService,
       InvoiceTermService invoiceTermService,
@@ -112,6 +115,7 @@ public class PaymentSessionValidateBankPaymentServiceImpl
         appBaseService,
         moveCreateService,
         moveValidateService,
+        moveComputeService,
         moveLineCreateService,
         reconcileService,
         invoiceTermService,
@@ -137,14 +141,17 @@ public class PaymentSessionValidateBankPaymentServiceImpl
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public int processPaymentSession(PaymentSession paymentSession) throws AxelorException {
+  public int processPaymentSession(
+      PaymentSession paymentSession,
+      List<Pair<InvoiceTerm, Pair<InvoiceTerm, BigDecimal>>> invoiceTermLinkWithRefundList)
+      throws AxelorException {
     if (paymentSession.getPaymentMode() != null
         && paymentSession.getPaymentMode().getGenerateBankOrder()
         && paymentSession.getBankOrder() == null) {
       this.generateBankOrderFromPaymentSession(paymentSession);
     }
 
-    return super.processPaymentSession(paymentSession);
+    return super.processPaymentSession(paymentSession, invoiceTermLinkWithRefundList);
   }
 
   @Override
@@ -227,12 +234,19 @@ public class PaymentSessionValidateBankPaymentServiceImpl
       InvoiceTerm invoiceTerm,
       Map<LocalDate, Map<Partner, List<Move>>> moveDateMap,
       Map<Move, BigDecimal> paymentAmountMap,
+      List<Pair<InvoiceTerm, Pair<InvoiceTerm, BigDecimal>>> invoiceTermLinkWithRefundList,
       boolean out,
       boolean isGlobal)
       throws AxelorException {
     paymentSession =
         super.processInvoiceTerm(
-            paymentSession, invoiceTerm, moveDateMap, paymentAmountMap, out, isGlobal);
+            paymentSession,
+            invoiceTerm,
+            moveDateMap,
+            paymentAmountMap,
+            invoiceTermLinkWithRefundList,
+            out,
+            isGlobal);
     if (paymentSession.getBankOrder() != null
         && paymentSession.getStatusSelect() != PaymentSessionRepository.STATUS_AWAITING_PAYMENT) {
       this.createOrUpdateBankOrderLineFromInvoiceTerm(

@@ -124,14 +124,14 @@ public class FECImportServiceImpl implements FECImportService {
 
       if (CollectionUtils.isNotEmpty(reconcileList)
           && reconcileGroupService.isBalanced(reconcileList)) {
-        reconcileGroup.setStatusSelect(ReconcileGroupRepository.STATUS_FINAL);
+        reconcileGroup.setStatusSelect(ReconcileGroupRepository.STATUS_BALANCED);
       } else {
         if (CollectionUtils.isEmpty(reconcileList)) {
           reconcileGroup.setStatusSelect(ReconcileGroupRepository.STATUS_UNLETTERED);
           reconcileGroup.setUnletteringDate(
               Beans.get(AppBaseService.class).getTodayDate(reconcileGroup.getCompany()));
         } else {
-          reconcileGroup.setStatusSelect(ReconcileGroupRepository.STATUS_TEMPORARY);
+          reconcileGroup.setStatusSelect(ReconcileGroupRepository.STATUS_PARTIAL);
         }
       }
       reconcileGroupRepo.save(reconcileGroup);

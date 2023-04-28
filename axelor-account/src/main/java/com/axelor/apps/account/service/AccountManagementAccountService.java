@@ -29,6 +29,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.exception.AxelorException;
+import java.util.List;
 
 public interface AccountManagementAccountService extends AccountManagementService {
 
@@ -92,4 +93,8 @@ public interface AccountManagementAccountService extends AccountManagementServic
       boolean isFixedAssets,
       boolean isFinancialDiscount)
       throws AxelorException;
+
+  boolean areAllAccountsOfType(List<Account> accountList, String type);
+
+  List<Account> getAccountsBetween(Account accountFrom, Account accountTo);
 }
