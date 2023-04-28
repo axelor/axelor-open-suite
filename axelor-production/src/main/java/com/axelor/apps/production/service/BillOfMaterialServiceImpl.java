@@ -136,15 +136,23 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
     }
 
     if (billOfMaterial != null) {
+      long noOfPersonalizedBOM =
+          billOfMaterialRepo
+                  .all()
+                  .filter(
+                      "self.product = ?1 AND self.personalized = true", billOfMaterial.getProduct())
+                  .count()
+              + 1;
       BillOfMaterial personalizedBOM = JPA.copy(billOfMaterial, true);
-      billOfMaterialRepo.save(personalizedBOM);
-      personalizedBOM.setName(
+      String name =
           personalizedBOM.getName()
               + " ("
               + I18n.get(ProductionExceptionMessage.BOM_1)
               + " "
-              + personalizedBOM.getId()
-              + ")");
+              + noOfPersonalizedBOM
+              + ")";
+      personalizedBOM.setName(name);
+      personalizedBOM.setFullName(name);
       personalizedBOM.setPersonalized(true);
       Set<BillOfMaterial> personalizedBOMSet = new HashSet<BillOfMaterial>();
       for (BillOfMaterial childBillOfMaterial : billOfMaterial.getBillOfMaterialSet()) {
@@ -152,7 +160,7 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
       }
       personalizedBOM.setBillOfMaterialSet(personalizedBOMSet);
 
-      return personalizedBOM;
+      return billOfMaterialRepo.save(personalizedBOM);
     }
 
     return null;

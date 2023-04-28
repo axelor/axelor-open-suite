@@ -18,12 +18,12 @@
 package com.axelor.apps.production.web;
 
 import com.axelor.apps.production.db.BillOfMaterial;
-import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
@@ -39,9 +39,19 @@ public class SaleOrderLineController {
           Beans.get(BillOfMaterialService.class).customizeBillOfMaterial(saleOrderLine);
 
       if (copyBillOfMaterial != null) {
-
         response.setValue("billOfMaterial", copyBillOfMaterial);
-        response.setFlash(I18n.get(ProductionExceptionMessage.SALE_ORDER_LINE_1));
+        response.setView(
+            ActionView.define(I18n.get("Personalized BoM"))
+                .model(BillOfMaterial.class.getName())
+                .add("form", "bill-of-material-form")
+                .add("grid", "personalized-bill-of-material-grid")
+                .param("popup", "true")
+                .param("forceEdit", "true")
+                .param("show-toolbar", "false")
+                .param("show-confirm", "false")
+                .param("popup-save", "true")
+                .context("_showRecord", copyBillOfMaterial.getId())
+                .map());
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
