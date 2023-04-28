@@ -21,11 +21,14 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLineMassEntry;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineMassEntryRepository;
+import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.massentry.MassEntryMoveCreateService;
 import com.axelor.apps.account.service.move.massentry.MassEntryService;
 import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryService;
+import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -127,6 +130,14 @@ public class MoveLineMassEntryController {
         Move move = parentContext.asType(Move.class);
         Beans.get(MoveLineMassEntryService.class).setPartnerAndRelatedFields(move, line);
         line.setIsEdited(MoveLineMassEntryRepository.MASS_ENTRY_IS_EDITED_ALL);
+        line.setMovePfpValidatorUser(
+            Beans.get(MoveLineMassEntryService.class)
+                .getPfpValidatorUserForInTaxAccount(
+                    line.getAccount(), move.getCompany(), line.getPartner()));
+        response.setAttr(
+            "movePfpValidatorUser",
+            "readonly",
+            ObjectUtils.isEmpty(line.getMovePfpValidatorUser()));
       }
       response.setValues(line);
     } catch (Exception e) {
@@ -171,6 +182,42 @@ public class MoveLineMassEntryController {
           "isEdited", MoveLineMassEntryRepository.MASS_ENTRY_IS_EDITED_EXCEPT_VAT_SYSTEM);
     } catch (AxelorException e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setMovePfpValidatorUserDomain(ActionRequest request, ActionResponse response) {
+    try {
+      MoveLineMassEntry line = request.getContext().asType(MoveLineMassEntry.class);
+      Context parentContext = request.getContext().getParent();
+      if (parentContext != null && Move.class.equals(parentContext.getContextClass())) {
+        Move move = parentContext.asType(Move.class);
+
+        response.setAttr(
+            "movePfpValidatorUser",
+            "domain",
+            Beans.get(InvoiceTermService.class)
+                .getPfpValidatorUserDomain(line.getPartner(), move.getCompany()));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void setMovePfpValidatorUser(ActionRequest request, ActionResponse response) {
+    try {
+      MoveLineMassEntry line = request.getContext().asType(MoveLineMassEntry.class);
+      Context parentContext = request.getContext().getParent();
+      if (parentContext != null && Move.class.equals(parentContext.getContextClass())) {
+        Move move = parentContext.asType(Move.class);
+        User pfpValidatorUser =
+            Beans.get(MoveLineMassEntryService.class)
+                .getPfpValidatorUserForInTaxAccount(
+                    line.getAccount(), move.getCompany(), line.getPartner());
+        response.setValue("movePfpValidatorUser", pfpValidatorUser);
+        response.setAttr("movePfpValidatorUser", "readonly", ObjectUtils.isEmpty(pfpValidatorUser));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 }

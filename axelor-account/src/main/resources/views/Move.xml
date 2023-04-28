@@ -1111,7 +1111,7 @@
       expr="eval: company.currency == currency"/>
     <attribute name="hidden" for="moveLineMassEntryList.currencyAmount"
       expr="eval: company.currency == currency"/>
-    <attribute name="hidden" for="moveLineMassEntryList.pfpValidatorUser"
+    <attribute name="hidden" for="moveLineMassEntryList.movePfpValidatorUser"
       expr="eval: journal?.journalType?.technicalTypeSelect != 1"/>
     <attribute name="hidden" for="moveLineMassEntryList.cutOffStartDate"
       expr="eval: !massEntryManageCutOff"/>

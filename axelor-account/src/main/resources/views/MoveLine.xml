@@ -955,6 +955,8 @@
   <action-group name="action-account-move-line-account-group-on-change">
     <action name="action-move-line-mass-entry-attrs-set-hidden-and-readonly"
       if="__parent__.massEntryStatusSelect != 0"/>
+    <action name="action-move-line-mass-entry-method-set-pfp-validator-user"
+      if="__parent__.massEntryStatusSelect != 0"/>
     <action name="action-move-line-record-set-cut-off-dates"
       if="__config__.app.getApp('account').manageCutOffPeriod &amp;&amp; __parent__.massEntryStatusSelect == 0"/>
     <action name="action-move-line-record-set-cut-off-generated-false"/>
@@ -969,6 +971,8 @@
       if="__parent__.massEntryStatusSelect == 0"/>
     <action name="action-move-line-method-generate-invoice-terms"/>
     <action name="action-move-line-attrs-set-debit-credit-focus"
+      if="__parent__.massEntryStatusSelect != 0"/>
+    <action name="action-move-line-mass-entry-attrs-set-required-move-pfp-validator-user"
       if="__parent__.massEntryStatusSelect != 0"/>
   </action-group>
 

@@ -101,6 +101,8 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
               move.getDescription(),
               move.getCompanyBankDetails());
       newMove.setPaymentCondition(move.getPaymentCondition());
+      newMove.setPfpValidatorUser(move.getPfpValidatorUser());
+      newMove.setPfpValidateStatusSelect(move.getPfpValidateStatusSelect());
 
       int counter = 1;
 
@@ -179,6 +181,7 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
     moveResult.setCompany(parentMove.getCompany());
     moveResult.setCurrency(parentMove.getCurrency());
     moveResult.setCompanyBankDetails(parentMove.getCompanyBankDetails());
+    moveResult.setPfpValidateStatusSelect(MoveRepository.PFP_STATUS_AWAITING);
 
     fillMoveWithMoveLineMassEntry(
         moveResult, parentMove.getMoveLineMassEntryList(), temporaryMoveNumber);
@@ -212,6 +215,10 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
           move.setPaymentCondition(massEntryLine.getMovePaymentCondition());
           move.setPartnerBankDetails(massEntryLine.getMovePartnerBankDetails());
           firstMoveLine = false;
+        }
+
+        if (ObjectUtils.notEmpty(massEntryLine.getMovePfpValidatorUser())) {
+          move.setPfpValidatorUser(massEntryLine.getMovePfpValidatorUser());
         }
         massEntryLine.setFieldsErrorList(null);
         MoveLineMassEntry copy = moveLineMassEntryRepository.copy(massEntryLine, false);
