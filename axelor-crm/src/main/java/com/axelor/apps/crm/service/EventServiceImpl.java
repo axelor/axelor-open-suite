@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,13 +14,16 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.crm.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.DateService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.Lead;
@@ -28,12 +32,10 @@ import com.axelor.apps.crm.db.repo.EventRepository;
 import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.apps.crm.db.repo.RecurrenceConfigurationRepository;
 import com.axelor.apps.crm.exception.CrmExceptionMessage;
-import com.axelor.apps.message.db.EmailAddress;
-import com.axelor.apps.message.db.repo.EmailAddressRepository;
 import com.axelor.auth.db.User;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.message.db.EmailAddress;
+import com.axelor.message.db.repo.EmailAddressRepository;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -55,8 +57,6 @@ import org.apache.commons.math3.exception.TooManyIterationsException;
 
 public class EventServiceImpl implements EventService {
 
-  private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-
   private static final DateTimeFormatter MONTH_FORMAT = DateTimeFormatter.ofPattern("dd/MM");
 
   protected PartnerService partnerService;
@@ -69,6 +69,8 @@ public class EventServiceImpl implements EventService {
 
   protected LeadRepository leadRepo;
 
+  protected DateService dateService;
+
   private static final int ITERATION_LIMIT = 1000;
 
   @Inject
@@ -77,12 +79,14 @@ public class EventServiceImpl implements EventService {
       EventRepository eventRepo,
       EmailAddressRepository emailAddressRepo,
       PartnerRepository partnerRepo,
-      LeadRepository leadRepo) {
+      LeadRepository leadRepo,
+      DateService dateService) {
     this.partnerService = partnerService;
     this.eventRepo = eventRepo;
     this.emailAddressRepo = emailAddressRepo;
     this.partnerRepo = partnerRepo;
     this.leadRepo = leadRepo;
+    this.dateService = dateService;
   }
 
   @Override
@@ -326,7 +330,7 @@ public class EventServiceImpl implements EventService {
       child.setDescription(event.getDescription());
       child.setPartner(event.getPartner());
       child.setContactPartner(event.getContactPartner());
-      child.setLead(event.getLead());
+      child.setEventLead(event.getEventLead());
       child.setTypeSelect(event.getTypeSelect());
       child.setLocation(event.getLocation());
       eventRepo.save(child);
@@ -351,7 +355,7 @@ public class EventServiceImpl implements EventService {
       parent.setDescription(event.getDescription());
       parent.setPartner(event.getPartner());
       parent.setContactPartner(event.getContactPartner());
-      parent.setLead(event.getLead());
+      parent.setEventLead(event.getEventLead());
       parent.setTypeSelect(event.getTypeSelect());
       parent.setLocation(event.getLocation());
       eventRepo.save(parent);
@@ -360,8 +364,10 @@ public class EventServiceImpl implements EventService {
   }
 
   @Override
-  public String computeRecurrenceName(RecurrenceConfiguration recurrConf) {
+  public String computeRecurrenceName(RecurrenceConfiguration recurrConf) throws AxelorException {
     String recurrName = "";
+    final DateTimeFormatter dateFormat = dateService.getDateFormat();
+
     switch (recurrConf.getRecurrenceType()) {
       case RecurrenceConfigurationRepository.TYPE_DAY:
         if (recurrConf.getPeriodicity() == 1) {
@@ -375,7 +381,7 @@ public class EventServiceImpl implements EventService {
               String.format(", " + I18n.get("%d times"), recurrConf.getRepetitionsNumber());
         } else if (recurrConf.getEndDate() != null) {
           recurrName +=
-              ", " + I18n.get("until the") + " " + recurrConf.getEndDate().format(DATE_FORMAT);
+              ", " + I18n.get("until the") + " " + recurrConf.getEndDate().format(dateFormat);
         }
         break;
 
@@ -432,7 +438,7 @@ public class EventServiceImpl implements EventService {
               String.format(" " + I18n.get("%d times"), recurrConf.getRepetitionsNumber());
         } else if (recurrConf.getEndDate() != null) {
           recurrName +=
-              " " + I18n.get("until the") + " " + recurrConf.getEndDate().format(DATE_FORMAT);
+              " " + I18n.get("until the") + " " + recurrConf.getEndDate().format(dateFormat);
         }
         break;
 
@@ -453,13 +459,14 @@ public class EventServiceImpl implements EventService {
               String.format(", " + I18n.get("%d times"), recurrConf.getRepetitionsNumber());
         } else if (recurrConf.getEndDate() != null) {
           recurrName +=
-              ", " + I18n.get("until the") + " " + recurrConf.getEndDate().format(DATE_FORMAT);
+              ", " + I18n.get("until the") + " " + recurrConf.getEndDate().format(dateFormat);
         }
         break;
 
       case RecurrenceConfigurationRepository.TYPE_YEAR:
         if (recurrConf.getPeriodicity() == 1) {
-          recurrName += I18n.get("Every year the") + recurrConf.getStartDate().format(MONTH_FORMAT);
+          recurrName +=
+              I18n.get("Every year the ") + recurrConf.getStartDate().format(MONTH_FORMAT);
         } else {
           recurrName +=
               String.format(
@@ -473,7 +480,7 @@ public class EventServiceImpl implements EventService {
               String.format(", " + I18n.get("%d times"), recurrConf.getRepetitionsNumber());
         } else if (recurrConf.getEndDate() != null) {
           recurrName +=
-              ", " + I18n.get("until the") + " " + recurrConf.getEndDate().format(DATE_FORMAT);
+              ", " + I18n.get("until the") + " " + recurrConf.getEndDate().format(dateFormat);
         }
         break;
 
@@ -620,9 +627,9 @@ public class EventServiceImpl implements EventService {
 
     } else if (event.getPartner() == null
         && event.getContactPartner() == null
-        && event.getLead() != null) {
+        && event.getEventLead() != null) {
 
-      Lead lead = leadRepo.find(event.getLead().getId());
+      Lead lead = leadRepo.find(event.getEventLead().getId());
       if (lead.getEmailAddress() != null) {
         emailAddress = emailAddressRepo.find(lead.getEmailAddress().getId());
       }
@@ -689,7 +696,7 @@ public class EventServiceImpl implements EventService {
   protected void afterCanceled(Event event) {
     LocalDateTime eventDateTime = event.getEndDateTime();
 
-    Lead lead = event.getLead();
+    Lead lead = event.getEventLead();
     if (lead != null
         && lead.getLastEventDateT() != null
         && lead.getLastEventDateT().equals(eventDateTime)) {
@@ -722,7 +729,7 @@ public class EventServiceImpl implements EventService {
 
   @Transactional
   protected void updateLeadLastEventDate(Event event) {
-    Lead lead = event.getLead();
+    Lead lead = event.getEventLead();
     if (lead != null
         && event.getEndDateTime() != null
         && (lead.getLastEventDateT() == null
@@ -757,7 +764,7 @@ public class EventServiceImpl implements EventService {
 
   @Transactional
   protected void updateLeadScheduledEventDate(Event event) {
-    Lead lead = event.getLead();
+    Lead lead = event.getEventLead();
     LocalDateTime startDateTime = event.getStartDateTime();
     if (lead != null
         && startDateTime != null
@@ -780,7 +787,7 @@ public class EventServiceImpl implements EventService {
 
   @Transactional
   protected void updateLeadScheduledEventDateAfterRealized(Event event) {
-    Lead lead = event.getLead();
+    Lead lead = event.getEventLead();
     if (lead != null && event.getStartDateTime() != null && !lead.getEventList().isEmpty()) {
       this.fetchNextEventStartDateT(event, lead.getEventList())
           .ifPresent(lead::setNextScheduledEventDateT);

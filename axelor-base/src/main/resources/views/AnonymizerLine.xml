@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid model="com.axelor.apps.base.db.AnonymizerLine" title="Pseudonymizer lines"
+    name="anonymizer-line-grid">
+    <field name="metaModel"/>
+    <field name="metaField"/>
+    <field name="metaJsonField"/>
+    <field name="fakerApiField"/>
+  </grid>
+
+  <form model="com.axelor.apps.base.db.AnonymizerLine" title="Pseudonymizer line"
+    name="anonymizer-line-form"
+    onLoad="action-data-backup-config-anonymize-line-attr-display-meta-json-field">
+    <panel name="mainPanel" itemSpan="4">
+      <field name="metaModel" grid-view="meta-model-grid" form-view="meta-model-form"
+        onChange="action-anonymizer-line-attrs-empty-fields, action-anonymizer-line-attrs-meta-json-field-hidden-onchange-meta-model"/>
+      <field name="metaField" grid-view="meta-field-details-grid" canNew="false"
+        canEdit="false"
+        domain="self.typeName in ('String','Integer','LocalDateTime','Long','Double','LocalTime','ZonedDateTime','BigDecimal','LocalDate')
+        and self.metaModel = :metaModel and not (self.metaModel.name = 'User' and self.name='password')"
+        onChange="action-anonymizer-line-attrs-empty-faker-api-field, action-anonymizer-line-attrs-display-meta-json-field"
+        readonlyIf="metaModel == null" hideIf="metaModel == null"/>
+      <field name="metaJsonField" hidden="true"
+        onSelect="action-anonymizer-line-attr-on-select-meta-json-field"/>
+      <field name="useFakeData" widget="boolean-switch"
+        onChange="action-anonymizer-line-attrs-clear-faker-api-field"/>
+      <field name="fakerApiField" grid-view="faker-api-field-grid"
+        form-view="faker-api-field-form" hidden="true" showIf="useFakeData" requiredIf="useFakeData"/>
+    </panel>
+  </form>
+
+  <action-attrs name="action-anonymizer-line-attrs-clear-faker-api-field">
+    <attribute for="fakerApiField" name="value" expr="eval: null" if="!useFakeData"/>
+  </action-attrs>
+
+  <action-attrs name="action-anonymizer-line-attrs-empty-fields">
+    <attribute for="metaField, fakerApiField, metaJsonField" name="value"
+      expr="eval: null"/>
+  </action-attrs>
+
+  <action-attrs name="action-anonymizer-line-attrs-empty-meta-json-field">
+    <attribute for="metaJsonField" name="value" expr="eval: null"/>
+  </action-attrs>
+
+  <action-attrs name="action-anonymizer-line-attrs-empty-faker-api-field">
+    <attribute for="fakerApiField, metaJsonField" name="value" expr="eval: null"/>
+  </action-attrs>
+
+  <action-attrs name="action-anonymizer-line-attrs-faker-api-field-required">
+    <attribute for="fakerApiField" name="required" expr="true" if="useFakeData"/>
+    <attribute for="fakerApiField" name="required" expr="false" if="!useFakeData"/>
+  </action-attrs>
+
+  <action-attrs name="action-anonymizer-line-attrs-display-meta-json-field">
+    <attribute name="hidden" for="metaJsonField"
+      expr="eval:__this__?.metaField.json == false" if="eval:__this__?.metaField != null"/>
+    <attribute name="value" for="metaJsonField" expr="eval:null"
+      if="eval:__this__?.metaField == null || __this__?.metaField.json == false"/>
+  </action-attrs>
+
+  <action-attrs
+    name="action-anonymizer-line-attrs-meta-json-field-hidden-onchange-meta-model">
+    <attribute for="metaJsonField" name="hidden" expr="true"/>
+  </action-attrs>
+
+  <action-attrs name="action-anonymizer-line-attr-on-select-meta-json-field">
+    <attribute name="domain" for="metaJsonField"
+      expr="eval:&quot; self.type NOT IN ('panel', 'button', 'label', 'spacer', 'separator') AND self.model = '${metaModel?.fullName}' AND self.modelField = '${metaField?.name}' &quot;"/>
+  </action-attrs>
+</object-views>

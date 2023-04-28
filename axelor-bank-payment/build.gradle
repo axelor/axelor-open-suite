@@ -1,4 +1,6 @@
-apply plugin: "com.axelor.app-module"
+plugins {
+	id 'com.axelor.app'
+}
 
 apply from: "../libs.gradle"
 apply from: "../version.gradle"
@@ -22,6 +24,7 @@ dependencies {
     jaxb libs.jaxb_xjc
 	jaxb libs.jaxb_impl
 	jaxb libs.jaxb_api
+	implementation libs.jakarta_api
 
 	api files("src/main/lib/ebics-1.0.2.jar")
 

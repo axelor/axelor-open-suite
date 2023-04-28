@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="CurrencyConversionLine" lang="java">
+  <entity name="CurrencyConversionLine">
 
-    <many-to-one name="appBase" ref="com.axelor.apps.base.db.AppBase"
+    <many-to-one name="appBase" ref="com.axelor.studio.db.AppBase"
       title="Administration"/>
     <many-to-one name="startCurrency" ref="com.axelor.apps.base.db.Currency"
       title="Source Currency" required="true"/>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="invoice-term-grid" title="Invoice terms" orderBy="sequence"
     model="com.axelor.apps.account.db.InvoiceTerm" canNew="false" canDelete="false">
@@ -264,7 +264,7 @@
         </panel>
         <panel name="pfpDecisionFullPfp" showIf="pfpValidateStatusSelect == 2" readonly="true"
           colSpan="12" itemSpan="4">
-          <field name="decisionPfpTakenDate"/>
+          <field name="decisionPfpTakenDateTime"/>
           <field name="initialPfpAmount"/>
           <field name="pfpValidatorUser" canEdit="false"
             onSelect="action-invoice-term-method-domain-pfp-validator-user-on-select"
@@ -272,7 +272,7 @@
         </panel>
         <panel name="pfpDecisionPartialPfp" readonly="true"
           showIf="pfpValidateStatusSelect == 4" itemSpan="4">
-          <field name="decisionPfpTakenDate"/>
+          <field name="decisionPfpTakenDateTime"/>
           <field name="pfpPartialReason"/>
           <field name="pfpValidatorUser" canEdit="false"
             onSelect="action-invoice-term-method-domain-pfp-validator-user-on-select"
@@ -282,7 +282,7 @@
         </panel>
         <panel name="pfpDecisionDetailsReject" readonly="true"
           showIf="pfpValidateStatusSelect == 3" itemSpan="4">
-          <field name="decisionPfpTakenDate"/>
+          <field name="decisionPfpTakenDateTime"/>
           <field name="reasonOfRefusalToPayStr"/>
           <field name="pfpValidatorUser" canEdit="false"
             onSelect="action-invoice-term-method-domain-pfp-validator-user-on-select"
@@ -433,7 +433,7 @@
             selection-in="[1,2,3,4]"/>
         </panel>
         <panel name="pfpDecisionFullPfp" showIf="pfpValidateStatusSelect == 2" itemSpan="4">
-          <field name="decisionPfpTakenDate" readonly="true"/>
+          <field name="decisionPfpTakenDateTime" readonly="true"/>
           <field name="initialPfpAmount" readonly="true"/>
           <field name="pfpValidatorUser" readonlyIf="pfpValidateStatusSelect != 1"
             canEdit="false"
@@ -441,7 +441,7 @@
             onChange="action-invoice-term-group-check-pfp-validator-user"/>
         </panel>
         <panel name="pfpDecisionPartialPfp" showIf="pfpValidateStatusSelect == 4" itemSpan="4">
-          <field name="decisionPfpTakenDate" readonly="true"/>
+          <field name="decisionPfpTakenDateTime" readonly="true"/>
           <field name="pfpPartialReason" readonly="true"/>
           <field name="pfpValidatorUser" readonlyIf="pfpValidateStatusSelect != 1"
             canEdit="false"
@@ -452,7 +452,7 @@
         </panel>
         <panel name="pfpDecisionDetailsReject" showIf="pfpValidateStatusSelect == 3"
           itemSpan="4">
-          <field name="decisionPfpTakenDate" readonly="true"/>
+          <field name="decisionPfpTakenDateTime" readonly="true"/>
           <field name="reasonOfRefusalToPayStr" readonly="true"/>
           <field name="pfpValidatorUser" readonlyIf="pfpValidateStatusSelect != 1"
             canEdit="false"
@@ -611,7 +611,7 @@
             selection-in="[1,2,3,4]"/>
         </panel>
         <panel name="pfpDecisionFullPfp" showIf="pfpValidateStatusSelect == 2" itemSpan="4">
-          <field name="decisionPfpTakenDate" readonly="true"/>
+          <field name="decisionPfpTakenDateTime" readonly="true"/>
           <field name="initialPfpAmount" readonly="true"/>
           <field name="pfpValidatorUser" readonlyIf="pfpValidateStatusSelect != 1"
             canEdit="false"
@@ -619,7 +619,7 @@
             onChange="action-invoice-term-group-check-pfp-validator-user"/>
         </panel>
         <panel name="pfpDecisionPartialPfp" showIf="pfpValidateStatusSelect == 4" itemSpan="4">
-          <field name="decisionPfpTakenDate" readonly="true"/>
+          <field name="decisionPfpTakenDateTime" readonly="true"/>
           <field name="pfpPartialReason" readonly="true"/>
           <field name="pfpValidatorUser" readonlyIf="pfpValidateStatusSelect != 1"
             canEdit="false"
@@ -631,7 +631,7 @@
         </panel>
         <panel name="pfpDecisionDetailsReject" showIf="pfpValidateStatusSelect == 3"
           itemSpan="4">
-          <field name="decisionPfpTakenDate" readonly="true"/>
+          <field name="decisionPfpTakenDateTime" readonly="true"/>
           <field name="reasonOfRefusalToPayStr" readonly="true"/>
           <field name="pfpValidatorUser" readonlyIf="pfpValidateStatusSelect != 1"
             canEdit="false"
@@ -782,7 +782,7 @@
         </panel>
         <panel name="pfpDecisionFullPfp" showIf="pfpValidateStatusSelect == 2" readonly="true"
           colSpan="12" itemSpan="4">
-          <field name="decisionPfpTakenDate"/>
+          <field name="decisionPfpTakenDateTime"/>
           <field name="initialPfpAmount"/>
           <field name="pfpValidatorUser" canEdit="false"
             onSelect="action-invoice-term-method-domain-pfp-validator-user-on-select"
@@ -790,7 +790,7 @@
         </panel>
         <panel name="pfpDecisionPartialPfp" readonly="true"
           showIf="pfpValidateStatusSelect == 4" itemSpan="4">
-          <field name="decisionPfpTakenDate"/>
+          <field name="decisionPfpTakenDateTime"/>
           <field name="pfpPartialReason"/>
           <field name="pfpValidatorUser" canEdit="false"
             onSelect="action-invoice-term-method-domain-pfp-validator-user-on-select"
@@ -800,7 +800,7 @@
         </panel>
         <panel name="pfpDecisionDetailsReject" readonly="true"
           showIf="pfpValidateStatusSelect == 3" itemSpan="4">
-          <field name="decisionPfpTakenDate"/>
+          <field name="decisionPfpTakenDateTime"/>
           <field name="reasonOfRefusalToPayStr"/>
           <field name="pfpValidatorUser" canEdit="false"
             onSelect="action-invoice-term-method-domain-pfp-validator-user-on-select"

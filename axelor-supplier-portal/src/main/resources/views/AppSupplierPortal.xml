@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <form name="app-supplier-portal-config-form" title="App Supplier Portal"
-    model="com.axelor.apps.base.db.AppSupplierPortal" canDelete="false" canNew="false" width="large">
+    model="com.axelor.studio.db.AppSupplierPortal" canDelete="false" canNew="false" width="large">
     <panel title="Displaying module portal" name="appPortalConfigPanel" colSpan="12"
       itemSpan="4" showTitle="false">
       <field name="managePurchaseOrders" widget="boolean-switch"/>

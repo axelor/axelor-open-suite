@@ -1,2 +1,0 @@
-"name";"code";"installOrder";"description";"initDataLoaded";"active";"imagePath";"modules";"importId";"currencyWsURL";"sequence";"passwordChangedTemplate.name";"geoNamesDumpUrl";"geoNamesZipUrl";"nbDecimalDigitForTaxRate"
-"Base";"base";1;"Basic configuration";"false";"false";"app-base.png";"axelor-exception,axelor-tool,axelor-message,axelor-admin,axelor-studio,axelor-base";1;"com.axelor.apps.base.service.currency.ECBCurrencyConversionService";1;"Changed password";"https://download.geonames.org/export/dump/";"http://download.geonames.org/export/zip/";2
