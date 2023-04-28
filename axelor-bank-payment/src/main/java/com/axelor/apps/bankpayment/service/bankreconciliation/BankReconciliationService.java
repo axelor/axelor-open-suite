@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.bankpayment.service.bankreconciliation;
 
@@ -65,27 +66,28 @@ import com.axelor.apps.bankpayment.service.bankreconciliation.load.BankReconcili
 import com.axelor.apps.bankpayment.service.bankreconciliation.load.afb120.BankReconciliationLoadAFB120Service;
 import com.axelor.apps.bankpayment.service.bankstatementrule.BankStatementRuleService;
 import com.axelor.apps.bankpayment.service.config.BankPaymentConfigService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PrintingSettings;
 import com.axelor.apps.base.db.repo.PeriodRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.BankDetailsService;
+import com.axelor.apps.base.service.DateService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.apps.tool.StringTool;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.rpc.Context;
 import com.axelor.script.GroovyScriptHelper;
+import com.axelor.utils.StringTool;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -95,7 +97,6 @@ import java.math.RoundingMode;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -137,6 +138,7 @@ public class BankReconciliationService {
   protected ReconcileService reconcileService;
   protected TaxService taxService;
   protected MoveLineTaxService moveLineTaxService;
+  protected DateService dateService;
   protected TaxAccountService taxAccountService;
 
   @Inject
@@ -168,7 +170,8 @@ public class BankReconciliationService {
       TaxService taxService,
       MoveLineTaxService moveLineTaxService,
       AccountingSituationRepository accountingSituationRepository,
-      TaxAccountService taxAccountService) {
+      TaxAccountService taxAccountService,
+      DateService dateService) {
 
     this.bankReconciliationRepository = bankReconciliationRepository;
     this.accountService = accountService;
@@ -198,6 +201,7 @@ public class BankReconciliationService {
     this.moveLineTaxService = moveLineTaxService;
     this.accountingSituationRepository = accountingSituationRepository;
     this.taxAccountService = taxAccountService;
+    this.dateService = dateService;
   }
 
   public void generateMovesAutoAccounting(BankReconciliation bankReconciliation)
@@ -1437,13 +1441,13 @@ public class BankReconciliationService {
         || haveMoveLineOnClosedPeriod;
   }
 
-  public String getCorrectedLabel(LocalDateTime correctedDateTime, User correctedUser) {
+  public String getCorrectedLabel(LocalDateTime correctedDateTime, User correctedUser)
+      throws AxelorException {
     String space = " ";
     StringBuilder correctedLabel = new StringBuilder();
     correctedLabel.append(I18n.get("Reconciliation corrected at"));
     correctedLabel.append(space);
-    correctedLabel.append(
-        correctedDateTime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")));
+    correctedLabel.append(correctedDateTime.format(dateService.getDateTimeFormat()));
     correctedLabel.append(space);
     correctedLabel.append(I18n.get("by"));
     correctedLabel.append(space);

@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="contract-version-next-grid" title="Versions"
     model="com.axelor.apps.contract.db.ContractVersion">
     <field name="contract.contractId"/>
     <field name="contract.name"/>
     <field name="contract.partner"/>
-    <field name="activationDate"/>
+    <field name="activationDateTime"/>
     <field name="statusSelect"/>
   </grid>
 
@@ -63,12 +63,12 @@
             <panel name="activationDatesPanel" hidden="true" readonly="true"
               showIf="statusSelect >= 3" colSpan="12">
               <field name="activatedByUser" colSpan="4"/>
-              <field name="activationDate" colSpan="4"/>
+              <field name="activationDateTime" colSpan="4"/>
               <panel colSpan="4" name="endDatesPanel">
                 <field name="supposedEndDate" hidden="true" readonly="true"
                   showIf="statusSelect == 3" colSpan="12"/>
-                <field name="endDate" hidden="true" readonly="true" showIf="statusSelect == 4"
-                  colSpan="12"/>
+                <field name="endDateTime" hidden="true" readonly="true"
+                  showIf="statusSelect == 4" colSpan="12"/>
               </panel>
             </panel>
           </panel>

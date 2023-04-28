@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="quality-control-grid" title="Quality controls"
     model="com.axelor.apps.quality.db.QualityControl">
@@ -91,7 +91,7 @@
   </form>
 
   <form name="wizard-quality-process-form" title="Choose quality process"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.utils.db.Wizard">
     <panel name="wizardPanel">
       <field name="qualityProcess" title="Quality process" type="many-to-one"
         target="com.axelor.apps.quality.db.QualityProcess"/>
@@ -102,7 +102,7 @@
   </form>
 
   <form name="wizard-optional-control-points-form" title="Add optional control points"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.utils.db.Wizard">
     <panel name="wizardPanel">
       <field name="optionalControlPointSet" title="Optional control points"
         type="many-to-many" target="com.axelor.apps.quality.db.ControlPoint"
@@ -192,7 +192,7 @@
   </action-attrs>
 
   <action-view name="action-quality-control-view-quality-process"
-    title="Choose quality process" model="com.axelor.apps.base.db.Wizard">
+    title="Choose quality process" model="com.axelor.utils.db.Wizard">
     <view type="form" name="wizard-quality-process-form"/>
     <view-param name="show-toolbar" value="false"/>
     <view-param name="width" value="800"/>
@@ -204,7 +204,7 @@
   </action-view>
 
   <action-view name="action-quality-control-view-optional-control-points"
-    title="Add optional control points" model="com.axelor.apps.base.db.Wizard">
+    title="Add optional control points" model="com.axelor.utils.db.Wizard">
     <view type="form" name="wizard-optional-control-points-form"/>
     <view-param name="show-toolbar" value="false"/>
     <view-param name="width" value="800"/>

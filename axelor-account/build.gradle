@@ -1,4 +1,6 @@
-apply plugin: "com.axelor.app-module"
+plugins {
+	id 'com.axelor.app'
+}
 
 apply from: "../libs.gradle"
 apply from: "../version.gradle"

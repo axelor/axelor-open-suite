@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="reconcile-group-grid" title="Reconcile group"
     model="com.axelor.apps.account.db.ReconcileGroup" canNew="false" canDelete="false">
     <field name="code" width="120"/>
-    <field name="dateOfLettering"/>
+    <field name="letteringDateTime"/>
     <field name="statusSelect"/>
     <field name="company" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
   </grid>
@@ -27,8 +27,8 @@
     </panel>
     <panel name="companyPanel" showTitle="false" readonly="true">
       <field name="company"/>
-      <field name="dateOfLettering" showIf="statusSelect==2" readonly="true"/>
-      <field name="unletteringDate" showIf="unletteringDate != null"/>
+      <field name="letteringDateTime" showIf="statusSelect==2" readonly="true"/>
+      <field name="unletteringDateTime" showIf="unletteringDateTime != null"/>
     </panel>
     <panel name="mainPanel" showIf="company">
       <panel-dashlet name="viewReconcilePanel"
@@ -40,7 +40,7 @@
       <button name="letterBtn" title="Letter" colSpan="12"
         onClick="action-reconcile-group-method-letter"
         showIf="statusSelect == 1 || statusSelect == 3"/>
-      <button name="unletterBtn" title="Unletter" hideIf="unletteringDate"
+      <button name="unletterBtn" title="Unletter" hideIf="unletteringDateTime"
         onClick="action-reconcile-group-method-unletter" colSpan="12"/>
     </panel>
   </form>

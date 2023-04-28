@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<csv-inputs xmlns="http://axelor.com/xml/ns/data-import"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_6.1.xsd">
+
+  <input file="marketing_targetList.csv" separator=";"
+    type="com.axelor.apps.marketing.db.TargetList" search="self.importId = :importId"/>
+
+  <input file="message_template.csv" separator=";" type="com.axelor.message.db.Template"/>
+
+  <input file="marketing_campaignType.csv" separator=";"
+    type="com.axelor.apps.marketing.db.CampaignType" search="self.importId = :importId"/>
+
+  <input file="marketing_campaign.csv" separator=";"
+    type="com.axelor.apps.marketing.db.Campaign" search="self.importId = :importId"/>
+
+  <input file="marketing_anonymizer.csv" type="com.axelor.apps.base.db.Anonymizer"
+    separator=";"/>
+
+  <input file="marketing_anonymizerLine.csv" type="com.axelor.apps.base.db.AnonymizerLine"
+    separator=";">
+    <bind to="metaModel" column="metaModel" search="self.name = :metaModel"/>
+    <bind to="metaField" column="metaField"
+      search="self.name = :metaField AND self.metaModel.name = :metaModel"/>
+    <bind to="anonymizer" column="anonymizer_importId"
+      search="self.importId = :anonymizer_importId"/>
+    <bind to="useFakeData" column="useFakeData"/>
+  </input>
+
+</csv-inputs>

@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service.moveline;
 
@@ -41,19 +42,19 @@ import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineGenerateRealService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.config.CompanyConfigService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.base.service.tax.TaxService;
-import com.axelor.apps.tool.StringTool;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.utils.StringTool;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
@@ -773,7 +774,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
 
     if (newAccount == null) {
       newAccount =
-          this.getTaxAccount(taxLine, company, accountType, move.getJournal(), partner, moveLine);
+          this.getTaxAccount(
+              taxLine, company, accountType, move.getJournal(), partner, moveLine, move);
     }
 
     if (newAccount == null) {
@@ -799,7 +801,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     String newSourceTaxLineKey = newAccount.getCode() + taxLine.getId() + " " + vatSystem;
     if (taxLineRC != null) {
       newAccountRC =
-          this.getTaxAccount(taxLineRC, company, accountType, move.getJournal(), partner, moveLine);
+          this.getTaxAccount(
+              taxLineRC, company, accountType, move.getJournal(), partner, moveLine, move);
       if (newAccountRC != null) {
         newSourceTaxLineRCKey = newAccountRC.getCode() + taxLineRC.getId();
       }
@@ -897,7 +900,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       String accountType,
       Journal journal,
       Partner partner,
-      MoveLine moveLine)
+      MoveLine moveLine,
+      Move move)
       throws AxelorException {
     Account newAccount = null;
     if (accountType.equals(AccountTypeRepository.TYPE_DEBT)
@@ -916,7 +920,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
               journal,
               vatSystemSelect,
               false,
-              moveLine.getMove().getFunctionalOriginSelect());
+              move.getFunctionalOriginSelect());
 
     } else if (accountType.equals(AccountTypeRepository.TYPE_INCOME)) {
       AccountingSituation accountingSituation =
@@ -932,7 +936,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
               journal,
               vatSystemSelect,
               false,
-              moveLine.getMove().getFunctionalOriginSelect());
+              move.getFunctionalOriginSelect());
     } else if (accountType.equals(AccountTypeRepository.TYPE_IMMOBILISATION)) {
 
       AccountingSituation accountingSituation =
@@ -955,7 +959,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
               journal,
               vatSystemSelect,
               true,
-              moveLine.getMove().getFunctionalOriginSelect());
+              move.getFunctionalOriginSelect());
     }
     return newAccount;
   }

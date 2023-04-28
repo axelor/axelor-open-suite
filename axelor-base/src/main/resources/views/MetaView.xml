@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="meta-view-grid" model="com.axelor.meta.db.MetaView" title="All Views"
+    id="admin-meta-view-grid" extension="true">
+    <extend target="//field[@name='priority']">
+      <attribute name="massUpdate" value="true"/>
+    </extend>
+
+    <extend target="//field[@name='module']">
+      <attribute name="massUpdate" value="true"/>
+    </extend>
+  </grid>
+</object-views>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="payroll-leave-grid" title="Payroll Leaves"
     model="com.axelor.apps.hr.db.PayrollLeave" canNew="false">
@@ -13,8 +13,8 @@
   </grid>
 
   <form name="payroll-leave-form" title="Payroll Leave"
-    model="com.axelor.apps.hr.db.PayrollLeave" cols="12" width="large">
-    <panel name="mainPanel" readonly="true">
+    model="com.axelor.apps.hr.db.PayrollLeave" width="large">
+    <panel name="mainPanel" readonly="true" colSpan="12">
       <field name="fromDate" colSpan="4"/>
       <field name="toDate" colSpan="4"/>
       <field name="duration" colSpan="4"/>

@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,12 +14,14 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.production.service.operationorder;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BarcodeTypeConfig;
 import com.axelor.apps.base.db.DayPlanning;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.BarcodeGeneratorService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.production.db.Machine;
@@ -38,9 +41,8 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.i18n.L10n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
@@ -67,9 +69,6 @@ public class OperationOrderServiceImpl implements OperationOrderService {
 
   @Inject protected AppProductionService appProductionService;
 
-  private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-  private static final DateTimeFormatter DATE_TIME_FORMAT =
-      DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Transactional(rollbackOn = {Exception.class})
@@ -278,16 +277,17 @@ public class OperationOrderServiceImpl implements OperationOrderService {
         }
       }
       Set<String> keyList = map.keySet();
+      String dateTime = L10n.getInstance().format(itDateTime);
       for (String key : machineNameList) {
         if (keyList.contains(key)) {
           Map<String, Object> dataMap = new HashMap<String, Object>();
-          dataMap.put("dateTime", (Object) itDateTime.format(DATE_TIME_FORMAT));
+          dataMap.put("dateTime", (Object) dateTime);
           dataMap.put("charge", (Object) map.get(key));
           dataMap.put("machine", (Object) key);
           dataList.add(dataMap);
         } else {
           Map<String, Object> dataMap = new HashMap<String, Object>();
-          dataMap.put("dateTime", (Object) itDateTime.format(DATE_TIME_FORMAT));
+          dataMap.put("dateTime", (Object) dateTime);
           dataMap.put("charge", (Object) BigDecimal.ZERO);
           dataMap.put("machine", (Object) key);
           dataList.add(dataMap);
@@ -301,7 +301,6 @@ public class OperationOrderServiceImpl implements OperationOrderService {
 
   public List<Map<String, Object>> chargeByMachineDays(
       LocalDateTime fromDateTime, LocalDateTime toDateTime) throws AxelorException {
-
     List<Map<String, Object>> dataList = new ArrayList<Map<String, Object>>();
     fromDateTime = fromDateTime.withHour(0).withMinute(0);
     toDateTime = toDateTime.withHour(23).withMinute(59);
@@ -411,11 +410,12 @@ public class OperationOrderServiceImpl implements OperationOrderService {
         }
       }
       Set<String> keyList = map.keySet();
+      String itDate = L10n.getInstance().format(itDateTime.toLocalDate());
       for (String key : machineNameList) {
         if (keyList.contains(key)) {
           int found = 0;
           for (Map<String, Object> mapIt : dataList) {
-            if (mapIt.get("dateTime").equals((Object) itDateTime.format(DATE_FORMAT))
+            if (mapIt.get("dateTime").equals((Object) itDate)
                 && mapIt.get("machine").equals((Object) key)) {
               mapIt.put("charge", new BigDecimal(mapIt.get("charge").toString()).add(map.get(key)));
               found = 1;
@@ -425,7 +425,7 @@ public class OperationOrderServiceImpl implements OperationOrderService {
           if (found == 0) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
 
-            dataMap.put("dateTime", (Object) itDateTime.format(DATE_FORMAT));
+            dataMap.put("dateTime", (Object) itDate);
             dataMap.put("charge", (Object) map.get(key));
             dataMap.put("machine", (Object) key);
             dataList.add(dataMap);

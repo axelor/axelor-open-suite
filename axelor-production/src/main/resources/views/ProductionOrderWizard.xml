@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
 
   <form name="production-order-wizard-form" title="Production order wizard"
-    model="com.axelor.apps.base.db.Wizard"
+    model="com.axelor.utils.db.Wizard"
     onNew="action-production-order-wizard-record-default,action-production-order-wizard-record-default-bom,action-production-order-wizard-attrs-scale">
     <panel name="mainPanel">
       <field name="product" widget="ManyToOne" target="com.axelor.apps.base.db.Product"
@@ -25,7 +25,7 @@
   </form>
 
   <action-record name="action-production-order-wizard-record-default"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.utils.db.Wizard">
     <field name="product_id" expr="eval: _productId"/>
     <field name="product" expr="eval: __repo__(Product).find(_productId)" if="_productId"/>
     <field name="business_id" expr="eval: _businessId?.id"/>
@@ -34,7 +34,7 @@
   </action-record>
 
   <action-record name="action-production-order-wizard-record-default-bom"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.utils.db.Wizard">
     <field name="billOfMaterial"
       expr="eval: __repo__(BillOfMaterial).find(product.parentProduct.defaultBillOfMaterial.id)"
       if="product?.parentProduct?.defaultBillOfMaterial?.id"/>
@@ -44,13 +44,13 @@
   </action-record>
 
   <action-record name="action-production-order-wizard-record-product"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.utils.db.Wizard">
     <field if="billOfMaterial != null &amp;&amp; product == null" name="$product"
       expr="eval:__repo__(BillOfMaterial).find(billOfMaterial.id).product"/>
   </action-record>
 
   <action-record name="action-production-order-wizard-record-bill-of-materials"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.utils.db.Wizard">
     <field name="$billOfMaterial" expr="eval: product?.defaultBillOfMaterial"/>
   </action-record>
 

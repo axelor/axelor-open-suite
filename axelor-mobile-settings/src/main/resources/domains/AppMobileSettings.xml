@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="studio" package="com.axelor.studio.db"/>
+
+  <entity name="AppMobileSettings" cacheable="true">
+
+    <one-to-one ref="com.axelor.studio.db.App" name="app"/>
+
+    <boolean name="isStockAppEnabled" title="Stock" default="false"/>
+    <boolean name="isProductionAppEnabled" title="Manufacturing" default="false"/>
+    <boolean name="isCrmAppEnabled" title="CRM" default="false"/>
+
+    <many-to-one name="qrCode" title="Barcode" ref="com.axelor.meta.db.MetaFile"/>
+
+    <boolean name="isLoginUserQrcodeEnabled" title="Use qrCode for user connection"
+      default="false"
+      help="Allows users to fill in the username field on the login page with the qr code present on the user's form view."/>
+
+    <boolean name="manageCarrierOption" title="Manage carrier option" default="false"
+      help="Allow users to manage carrier option for customer deliveries."/>
+
+    <boolean name="isInventoryValidationEnabled" title="Enable inventory validation."
+      default="false"/>
+    <boolean name="isStockCorrectionValidationEnabled"
+      title="Enable stock correction validation." default="false"/>
+    <boolean name="isCustomerDeliveryLineAdditionEnabled"
+      title="Enable addition of new lines in customer delivery." default="false"/>
+    <boolean name="isSupplierArrivalLineAdditionEnabled"
+      title="Enable addition of new lines in supplier arrival." default="false"/>
+
+    <string name="minimalRequiredMobileAppVersion"
+      title="Minimal required version of the mobile application."
+      help="Indicates the minimal required version of the mobile application. If the user's version is different than the one indicated, the mobile app will require the user to update to have access to the app."/>
+
+    <boolean name="isTrackerMessageEnabled" title="Enable tracker messages." default="false"
+      help="Enabling this setting, allows you to see on the mobile application the comments and changes that are tracked on the web application."/>
+
+    <!-- Stock line verification config -->
+    <boolean name="isVerifyCustomerDeliveryLineEnabled"
+      title="Enable line verification on customer deliveries" default="false"/>
+    <boolean name="isVerifySupplierArrivalLineEnabled"
+      title="Enable line verification on supplier arrivals" default="false"/>
+    <boolean name="isVerifyInternalMoveLineEnabled"
+      title="Enable line verification on internal moves" default="false"/>
+    <boolean name="isVerifyInventoryLineEnabled"
+      title="Enable line verification on inventories" default="false"/>
+
+    <track>
+      <field name="isStockAppEnabled" on="UPDATE"/>
+      <field name="isProductionAppEnabled" on="UPDATE"/>
+      <field name="isCrmAppEnabled" on="UPDATE"/>
+      <field name="isLoginUserQrcodeEnabled" on="UPDATE"/>
+      <field name="isTrackerMessageEnabled" on="UPDATE"/>
+      <field name="manageCarrierOption" on="UPDATE"/>
+      <field name="qrCode" on="UPDATE"/>
+      <field name="isInventoryValidationEnabled" on="UPDATE"/>
+      <field name="isStockCorrectionValidationEnabled" on="UPDATE"/>
+      <field name="isVerifyCustomerDeliveryLineEnabled" on="UPDATE"/>
+      <field name="isVerifySupplierArrivalLineEnabled" on="UPDATE"/>
+      <field name="isVerifyInternalMoveLineEnabled" on="UPDATE"/>
+      <field name="isVerifyInventoryLineEnabled" on="UPDATE"/>
+      <field name="isCustomerDeliveryLineAdditionEnabled" on="UPDATE"/>
+      <field name="isSupplierArrivalLineAdditionEnabled" on="UPDATE"/>
+      <field name="minimalRequiredMobileAppVersion" on="UPDATE"/>
+    </track>
+  </entity>
+</domain-models>

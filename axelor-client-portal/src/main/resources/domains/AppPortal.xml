@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
-  <module name="base" package="com.axelor.apps.base.db"/>
+  <module name="studio" package="com.axelor.studio.db"/>
 
-  <entity name="AppPortal" lang="java">
+  <entity name="AppPortal" cacheable="true">
 
-    <one-to-one ref="com.axelor.apps.base.db.App" name="app"/>
+    <one-to-one ref="com.axelor.studio.db.App" name="app"/>
 
     <boolean name="manageSaleOrders" title="Manage sale orders" default="true"/>
     <boolean name="manageInvoices" title="Manage invoices" default="true"/>
@@ -39,6 +39,7 @@
       <field name="canConfirmOnline" on="UPDATE"/>
       <field name="canPayOnline" on="UPDATE"/>
       <field name="portalSelect" on="UPDATE"/>
+      <field name="showCatalog" on="UPDATE"/>
     </track>
   </entity>
 

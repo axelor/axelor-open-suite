@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service;
 
@@ -37,15 +38,15 @@ import com.axelor.apps.account.db.repo.TaxPaymentMoveLineRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.SequenceRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
@@ -55,6 +56,7 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -274,15 +276,15 @@ public class AccountingReportServiceImpl implements AccountingReportService {
       if (journalType != null) {
         this.addParams("self.move.journal.journalType = ?%d", journalType);
       }
-      String dateFromStr = "'" + accountingReport.getDateFrom().toString() + "'";
-      String dateToStr = "'" + accountingReport.getDateTo().toString() + "'";
+      String dateFromStr = "'" + accountingReport.getDateFrom().atStartOfDay().toString() + "'";
+      String dateToStr = "'" + accountingReport.getDateTo().atTime(LocalTime.MAX).toString() + "'";
       String selfReconciledQuery =
           String.format(
-              "(self.reconcileGroup is not null AND self.reconcileGroup.dateOfLettering >= %s AND self.reconcileGroup.dateOfLettering <= %s)",
+              "(self.reconcileGroup is not null AND self.reconcileGroup.letteringDateTime >= %s AND self.reconcileGroup.letteringDateTime <= %s)",
               dateFromStr, dateToStr);
       String otherLinedReconciledQuery =
           String.format(
-              "exists (select 1 from MoveLine as ml where ml.reconcileGroup is not null AND ml.reconcileGroup.dateOfLettering >= %s AND ml.reconcileGroup.dateOfLettering <= %s AND ml.move.id = self.move.id)",
+              "exists (select 1 from MoveLine as ml where ml.reconcileGroup is not null AND ml.reconcileGroup.letteringDateTime >= %s AND ml.reconcileGroup.letteringDateTime <= %s AND ml.move.id = self.move.id)",
               dateFromStr, dateToStr);
       String reconcileQuery =
           String.format("(%s OR %s)", selfReconciledQuery, otherLinedReconciledQuery);

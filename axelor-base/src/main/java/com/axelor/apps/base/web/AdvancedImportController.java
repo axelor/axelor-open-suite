@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,10 +14,11 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.base.web;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.AdvancedImport;
 import com.axelor.apps.base.db.ImportHistory;
 import com.axelor.apps.base.db.repo.AdvancedImportRepository;
@@ -24,8 +26,7 @@ import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.advanced.imports.AdvancedImportService;
 import com.axelor.apps.base.service.advanced.imports.DataImportService;
 import com.axelor.apps.base.service.advanced.imports.ValidatorService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -44,7 +45,7 @@ public class AdvancedImportController {
       if (isValid) {
         response.setReload(true);
       } else {
-        response.setFlash(I18n.get(BaseExceptionMessage.ADVANCED_IMPORT_FILE_FORMAT_INVALID));
+        response.setInfo(I18n.get(BaseExceptionMessage.ADVANCED_IMPORT_FILE_FORMAT_INVALID));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -60,7 +61,7 @@ public class AdvancedImportController {
 
       boolean isLog = Beans.get(ValidatorService.class).validate(advancedImport);
       if (isLog) {
-        response.setFlash(I18n.get(BaseExceptionMessage.ADVANCED_IMPORT_CHECK_LOG));
+        response.setInfo(I18n.get(BaseExceptionMessage.ADVANCED_IMPORT_CHECK_LOG));
         response.setReload(true);
       } else {
         response.setValue("statusSelect", 1);
@@ -82,7 +83,7 @@ public class AdvancedImportController {
       if (importHistory != null) {
         response.setAttr("importHistoryList", "value:add", importHistory);
       } else {
-        response.setFlash(I18n.get(BaseExceptionMessage.ADVANCED_IMPORT_IMPORT_DATA));
+        response.setInfo(I18n.get(BaseExceptionMessage.ADVANCED_IMPORT_IMPORT_DATA));
         response.setSignal("refresh-app", true);
       }
 
@@ -100,10 +101,10 @@ public class AdvancedImportController {
 
       boolean isReset = Beans.get(AdvancedImportService.class).resetImport(advancedImport);
       if (isReset) {
-        response.setFlash(I18n.get(BaseExceptionMessage.ADVANCED_IMPORT_RESET));
+        response.setInfo(I18n.get(BaseExceptionMessage.ADVANCED_IMPORT_RESET));
         response.setSignal("refresh-app", true);
       } else {
-        response.setFlash(I18n.get(BaseExceptionMessage.ADVANCED_IMPORT_NO_RESET));
+        response.setInfo(I18n.get(BaseExceptionMessage.ADVANCED_IMPORT_NO_RESET));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
