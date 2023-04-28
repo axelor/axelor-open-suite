@@ -187,7 +187,7 @@ public class MassEntryServiceImpl implements MassEntryService {
       if (categoryError == 0) {
         massEntryToolService.sortMoveLinesMassEntryByTemporaryNumber(parentMove);
       } else {
-        massEntryVerificationService.setErrorOnMoveLineMassEntry(
+        massEntryVerificationService.setErrorMassEntryMoveLines(
             parentMove,
             temporaryMoveNumber,
             "paymentMode",
@@ -210,7 +210,7 @@ public class MassEntryServiceImpl implements MassEntryService {
           if (Objects.equals(
               moveLine.getTemporaryMoveNumber(), moveLineEdited.getTemporaryMoveNumber())) {
             moveLine.setMoveStatusSelect(MoveRepository.STATUS_NEW);
-            massEntryVerificationService.checkAndReplaceFieldsInMoveLineMassEntry(
+            massEntryVerificationService.checkChangesMassEntryMoveLine(
                 moveLine, parentMove, moveLineEdited, manageCutOff);
             moveLine.setIsEdited(MoveLineMassEntryRepository.MASS_ENTRY_IS_EDITED_NULL);
           }
@@ -233,7 +233,8 @@ public class MassEntryServiceImpl implements MassEntryService {
         element.setMassEntryErrors("");
         int temporaryMoveNumber =
             element.getMoveLineMassEntryList().get(0).getTemporaryMoveNumber();
-        massEntryVerificationService.checkPreconditionsMassEntry(element, temporaryMoveNumber);
+        massEntryVerificationService.checkPreconditionsMassEntry(
+            element, temporaryMoveNumber, moveList, move.getMassEntryManageCutOff());
         if (ObjectUtils.notEmpty(element.getMassEntryErrors())) {
           move.setMassEntryErrors(move.getMassEntryErrors() + element.getMassEntryErrors() + '\n');
           newMoveStatus = MoveRepository.STATUS_NEW;
