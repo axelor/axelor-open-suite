@@ -400,11 +400,6 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
   }
 
   @Override
-  public void setPfpValidatorOnInTaxLines(Move move, int temporaryMoveNumber) {
-    // TODO set pfp validator inTax lines using partner.pfpValidatorUser
-  }
-
-  @Override
   public void checkWellBalancedMove(Move move, int temporaryMoveNumber) {
     try {
       moveValidateService.validateWellBalancedMove(move);

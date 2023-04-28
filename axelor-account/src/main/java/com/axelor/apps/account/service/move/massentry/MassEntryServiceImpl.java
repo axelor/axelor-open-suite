@@ -107,6 +107,7 @@ public class MassEntryServiceImpl implements MassEntryService {
           inputLine.setDeliveryDate(moveLine.getDeliveryDate());
           inputLine.setVatSystemSelect(moveLine.getVatSystemSelect());
           inputLine.setIsEdited(MoveLineMassEntryRepository.MASS_ENTRY_IS_EDITED_NULL);
+          moveLineMassEntryToolService.setAnalyticsFields(inputLine, moveLine);
           break;
         }
       }
@@ -138,7 +139,7 @@ public class MassEntryServiceImpl implements MassEntryService {
     moveLine.setCurrencyAmount(BigDecimal.ZERO);
     moveLine.setMoveStatusSelect(null);
     moveLine.setVatSystemSelect(0);
-    moveLine.setPfpValidatorUser(null);
+    moveLine.setMovePfpValidatorUser(null);
     moveLine.setDeliveryDate(LocalDate.now());
     moveLine.setCutOffStartDate(LocalDate.now());
     moveLine.setCutOffEndDate(LocalDate.now());
@@ -320,6 +321,8 @@ public class MassEntryServiceImpl implements MassEntryService {
       moveToolService.exceptionOnGenerateCounterpart(workingMove);
       moveLineMassEntryService.generateTaxLineAndCounterpart(
           parentMove, workingMove, dueDate, temporaryMoveNumber);
+      moveLineMassEntryService.setPfpValidatorUserForInTaxAccount(
+          parentMove.getMoveLineMassEntryList(), parentMove.getCompany(), temporaryMoveNumber);
     } catch (AxelorException e) {
       TraceBackService.trace(e);
       return e.getCategory();
