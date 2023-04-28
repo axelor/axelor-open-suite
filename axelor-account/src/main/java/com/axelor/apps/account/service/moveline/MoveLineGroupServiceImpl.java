@@ -98,6 +98,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
         new HashMap<>(this.getAnalyticDistributionTemplateOnChangeAttrsMap(moveLine, move));
 
     moveLineAttrsService.addAnalyticAxisAttrs(move, attrsMap);
+    moveLineAttrsService.addPartnerRequired(move, attrsMap);
     moveLineAttrsService.addDescriptionRequired(move, attrsMap);
 
     return attrsMap;
@@ -110,6 +111,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
     Map<String, Map<String, Object>> attrsMap =
         new HashMap<>(this.getAnalyticDistributionTemplateOnChangeAttrsMap(moveLine, move));
 
+    moveLineAttrsService.addPartnerRequired(move, attrsMap);
     moveLineAttrsService.addShowTaxAmount(moveLine, attrsMap);
     moveLineAttrsService.addInvoiceTermListPercentageWarningText(moveLine, attrsMap);
 
@@ -131,6 +133,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
 
     moveLineAttrsService.addInvoiceTermListPercentageWarningText(moveLine, attrsMap);
     moveLineAttrsService.addShowTaxAmount(moveLine, attrsMap);
+    moveLineAttrsService.addPartnerRequired(move, attrsMap);
 
     if (move != null) {
       moveLineAttrsService.addReadonly(move, attrsMap);

@@ -385,11 +385,6 @@
           <field name="company.accountConfig.accountingDaybook" hidden="true"/>
         </panel>
       </panel>
-
-      <panel name="hiddenPanel" hidden="true">
-        <field name="journal.journalType"/>
-        <field name="journal.journalType.technicalTypeSelect"/>
-      </panel>
     </panel-tabs>
     <panel-mail name="mailPanel">
       <mail-messages limit="4"/>

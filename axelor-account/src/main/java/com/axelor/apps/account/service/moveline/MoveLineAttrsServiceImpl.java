@@ -1,13 +1,8 @@
 package com.axelor.apps.account.service.moveline;
 
-import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.AccountConfig;
-import com.axelor.apps.account.db.AccountType;
-import com.axelor.apps.account.db.AnalyticAxis;
-import com.axelor.apps.account.db.AnalyticAxisByCompany;
-import com.axelor.apps.account.db.Move;
-import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.*;
 import com.axelor.apps.account.db.repo.AccountRepository;
+import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.PeriodServiceAccount;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
@@ -270,5 +265,19 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
             "self.isSpecific IS FALSE AND self.company.id = %d", move.getCompany().getId());
 
     this.addAttr("account", "domain", domain, attrsMap);
+  }
+
+  @Override
+  public void addPartnerRequired(Move move, Map<String, Map<String, Object>> attrsMap) {
+    Objects.requireNonNull(move);
+    boolean required =
+        move.getJournal() != null
+                && move.getJournal().getJournalType() != null
+                && move.getJournal().getJournalType().getTechnicalTypeSelect()
+                    == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE
+            || move.getJournal().getJournalType().getTechnicalTypeSelect()
+                == JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE;
+
+    this.addAttr("partner", "required", required, attrsMap);
   }
 }
