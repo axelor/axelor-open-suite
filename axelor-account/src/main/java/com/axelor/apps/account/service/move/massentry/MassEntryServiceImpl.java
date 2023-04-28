@@ -26,6 +26,7 @@ import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryService;
+import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryToolService;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
@@ -56,6 +57,8 @@ public class MassEntryServiceImpl implements MassEntryService {
   protected MoveLineMassEntryService moveLineMassEntryService;
   protected MassEntryMoveCreateService massEntryMoveCreateService;
   protected AppAccountService appAccountService;
+  protected MoveRepository moveRepository;
+  protected MoveLineMassEntryToolService moveLineMassEntryToolService;
 
   @Inject
   public MassEntryServiceImpl(
@@ -64,13 +67,17 @@ public class MassEntryServiceImpl implements MassEntryService {
       MoveToolService moveToolService,
       MoveLineMassEntryService moveLineMassEntryService,
       MassEntryMoveCreateService massEntryMoveCreateService,
-      AppAccountService appAccountService) {
+      AppAccountService appAccountService,
+      MoveRepository moveRepository,
+      MoveLineMassEntryToolService moveLineMassEntryToolService) {
     this.massEntryToolService = massEntryToolService;
     this.massEntryVerificationService = massEntryVerificationService;
     this.moveToolService = moveToolService;
     this.moveLineMassEntryService = moveLineMassEntryService;
     this.massEntryMoveCreateService = massEntryMoveCreateService;
     this.appAccountService = appAccountService;
+    this.moveRepository = moveRepository;
+    this.moveLineMassEntryToolService = moveLineMassEntryToolService;
   }
 
   @Override
@@ -148,6 +155,7 @@ public class MassEntryServiceImpl implements MassEntryService {
     if (!appAccountService.getAppAccount().getManageCutOffPeriod()) {
       moveLine.setCutOffStartDate(null);
       moveLine.setCutOffEndDate(null);
+      moveLine.setDeliveryDate(null);
     }
   }
 
@@ -222,12 +230,12 @@ public class MassEntryServiceImpl implements MassEntryService {
   @Override
   public void checkMassEntryMoveGeneration(Move move) {
     List<Move> moveList;
-    int newMoveStatus = MoveRepository.STATUS_DAYBOOK;
 
     moveList = massEntryMoveCreateService.createMoveListFromMassEntryList(move);
     move.setMassEntryErrors("");
 
     for (Move element : moveList) {
+      int newMoveStatus = MoveRepository.STATUS_DAYBOOK;
       if (ObjectUtils.notEmpty(element.getMoveLineMassEntryList())
           && ObjectUtils.notEmpty(element.getMoveLineList())) {
         element.setMassEntryErrors("");
@@ -238,7 +246,7 @@ public class MassEntryServiceImpl implements MassEntryService {
           move.setMassEntryErrors(move.getMassEntryErrors() + element.getMassEntryErrors() + '\n');
           newMoveStatus = MoveRepository.STATUS_NEW;
         }
-        massEntryToolService.setNewStatusSelectOnMassEntryLines(element, newMoveStatus);
+        massEntryToolService.fillMassEntryLinesFields(move, element, newMoveStatus);
       }
     }
   }
