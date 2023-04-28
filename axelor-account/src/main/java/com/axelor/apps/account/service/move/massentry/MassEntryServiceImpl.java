@@ -231,12 +231,14 @@ public class MassEntryServiceImpl implements MassEntryService {
   @Override
   public void checkMassEntryMoveGeneration(Move move) {
     List<Move> moveList;
+    boolean authorizeSimulatedMove = move.getJournal().getAuthorizeSimulatedMove();
+    boolean allowAccountingDaybook = move.getJournal().getAllowAccountingDaybook();
 
     moveList = massEntryMoveCreateService.createMoveListFromMassEntryList(move);
     move.setMassEntryErrors("");
 
     for (Move element : moveList) {
-      int newMoveStatus = MoveRepository.STATUS_DAYBOOK;
+      int newMoveStatus = MoveRepository.STATUS_ACCOUNTED;
       if (ObjectUtils.notEmpty(element.getMoveLineMassEntryList())
           && ObjectUtils.notEmpty(element.getMoveLineList())) {
         element.setMassEntryErrors("");
@@ -247,6 +249,13 @@ public class MassEntryServiceImpl implements MassEntryService {
         if (ObjectUtils.notEmpty(element.getMassEntryErrors())) {
           move.setMassEntryErrors(move.getMassEntryErrors() + element.getMassEntryErrors() + '\n');
           newMoveStatus = MoveRepository.STATUS_NEW;
+        } else {
+          if (allowAccountingDaybook) {
+            newMoveStatus = MoveRepository.STATUS_DAYBOOK;
+          }
+          if (authorizeSimulatedMove) {
+            newMoveStatus = MoveRepository.STATUS_SIMULATED;
+          }
         }
         massEntryToolService.fillMassEntryLinesFields(move, element, newMoveStatus);
       }

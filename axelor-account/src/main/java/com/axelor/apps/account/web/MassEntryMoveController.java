@@ -81,7 +81,6 @@ public class MassEntryMoveController {
 
       if (move != null && ObjectUtils.notEmpty(move.getMoveLineMassEntryList())) {
         Beans.get(MassEntryService.class).checkMassEntryMoveGeneration(move);
-
         if (ObjectUtils.isEmpty(move.getMassEntryErrors())) {
           response.setNotify(I18n.get(AccountExceptionMessage.MASS_ENTRY_MOVE_CONTROL_SUCCESSFUL));
         } else {
