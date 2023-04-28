@@ -208,6 +208,9 @@
         <panel name="moveLinesPanel" title="Move lines" colSpan="12">
           <field name="isDescriptionRequired" widget="boolean-switch"/>
         </panel>
+        <panel name="taxPanel" title="Tax" colSpan="12">
+          <field name="allowedTaxGap"/>
+        </panel>
       </panel>
 
       <panel title="Invoicing" name="invoicingPanel">
