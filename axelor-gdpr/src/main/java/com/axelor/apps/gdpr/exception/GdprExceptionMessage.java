@@ -33,4 +33,10 @@ public final class GdprExceptionMessage {
       "Please configure a mail template for erasure request response." /*)*/;
 
   public static final String SENDING_MAIL_ERROR = /*$$(*/ "Error while sending the mail : %s" /*)*/;
+
+  public static final String RELATIONSHIP_ANONYMIZER_MISSING_REPLACEMENT = /*$$(*/
+      "A replacement object is missing for model %s." /*)*/;
+
+  public static final String MODEL_FIELD_NO_MAPPED_BY = /*$$(*/
+      "Impossible to link with the children meta field %s, no mappedBy field found." /*)*/;
 }

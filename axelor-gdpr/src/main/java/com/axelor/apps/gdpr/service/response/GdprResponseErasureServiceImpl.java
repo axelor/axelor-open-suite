@@ -114,7 +114,7 @@ public class GdprResponseErasureServiceImpl implements GdprResponseErasureServic
         .ifPresent(gdprResponse::setResponseEmailAddress);
 
     // anonymize datas
-    anonymizeEntity(gdprResponse, referenceEntity, entityMetaModel);
+    anonymizeEntity(gdprResponse, referenceEntity, entityMetaModel, 0);
 
     JPA.merge(referenceEntity);
 
@@ -134,7 +134,7 @@ public class GdprResponseErasureServiceImpl implements GdprResponseErasureServic
    * @throws AxelorException
    */
   protected void anonymizeEntity(
-      GDPRResponse gdprResponse, AuditableModel reference, MetaModel metaModel)
+      GDPRResponse gdprResponse, AuditableModel reference, MetaModel metaModel, int depth)
       throws ClassNotFoundException, AxelorException {
     Mapper mapper = Mapper.of(reference.getClass());
 
@@ -143,15 +143,22 @@ public class GdprResponseErasureServiceImpl implements GdprResponseErasureServic
 
     List<MetaField> metaFields =
         metaModel.getMetaFields().stream()
-            .filter(
-                metaField ->
-                    !GdprAnonymizeService.excludeFields.contains(metaField.getName())
-                        && !modelSelect.equals(
-                            metaField.getPackageName() + "." + metaField.getTypeName()))
+            .filter(metaField -> !GdprAnonymizeService.excludeFields.contains(metaField.getName()))
             .collect(Collectors.toList());
 
+    // filter on base object to avoid infinite loop
+    if (depth > 0) {
+      metaFields =
+          metaFields.stream()
+              .filter(
+                  metaField ->
+                      !modelSelect.equals(
+                          metaField.getPackageName() + "." + metaField.getTypeName()))
+              .collect(Collectors.toList());
+    }
+
     for (MetaField metaField : metaFields) {
-      anonymizeMetaField(gdprResponse, reference, mapper, metaField, anonymizerLines);
+      anonymizeMetaField(gdprResponse, reference, mapper, metaField, anonymizerLines, depth);
     }
 
     reference.setArchived(true);
@@ -190,7 +197,8 @@ public class GdprResponseErasureServiceImpl implements GdprResponseErasureServic
       AuditableModel reference,
       Mapper mapper,
       MetaField metaField,
-      List<AnonymizerLine> anonymizerLines)
+      List<AnonymizerLine> anonymizerLines,
+      int depth)
       throws AxelorException, ClassNotFoundException {
 
     Object currentValue = mapper.get(reference, metaField.getName());
@@ -214,7 +222,6 @@ public class GdprResponseErasureServiceImpl implements GdprResponseErasureServic
       if (!anonymizerLine.isPresent()) return;
 
       // handle selection fields
-
       if (StringUtils.isEmpty(property.getSelection())) {
         newValue =
             anonymizeService.anonymizeValue(
@@ -227,65 +234,123 @@ public class GdprResponseErasureServiceImpl implements GdprResponseErasureServic
       }
       mapper.set(reference, metaField.getName(), newValue);
 
-    } else if (metaField.getRelationship().equals("OneToOne")
+    } else if (depth < 1
+        && metaField.getRelationship().equals("OneToOne")
         && Strings.isNullOrEmpty(metaField.getMappedBy())) {
 
-      if (property.isRequired()) {
-        System.out.println(property.getName());
-      }
-      anonymizeRelatedObject(gdprResponse, metaField, currentValue);
+      anonymizeRelatedObject(gdprResponse, metaField, currentValue, depth);
 
-    } else if (metaField.getRelationship().equals("OneToMany")) {
+    } else if (depth < 1 && metaField.getRelationship().equals("OneToMany")) {
+      // o2m : break link if config, anonymization if config (if not breaking link)
       List<Object> relatedObjects = (List<Object>) currentValue;
 
       String mappedBy = metaField.getMappedBy();
-      Optional<RelationshipAnonymizer> relationshipAnonymizer1 =
+
+      if (StringUtils.isBlank(mappedBy)) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            String.format(
+                I18n.get(GdprExceptionMessage.MODEL_FIELD_NO_MAPPED_BY), metaField.getName()));
+      }
+
+      Optional<RelationshipAnonymizer> relationshipAnonymizer =
           relationshipAnonymizers.stream()
               .filter(
-                  relationshipAnonymizer ->
-                      relationshipAnonymizer
-                          .getModel()
-                          .equals(
-                              getMetaModelFromFullName(
-                                  metaField.getPackageName() + "." + metaField.getTypeName())))
-              .findFirst();
-      if (relationshipAnonymizer1.isPresent()) {
-        if (property.isRequired()) {
-          System.out.println(property.getName());
-        } else {
-          for (Object relatedObject : relatedObjects) {
-            Mapper o2mMapper = Mapper.of(relatedObject.getClass());
-            o2mMapper.set(relatedObject, mappedBy, null);
-          }
-        }
-      }
-      for (Object relatedObject : relatedObjects) {
-        anonymizeRelatedObject(gdprResponse, metaField, relatedObject);
-      }
-    } else if (metaField.getRelationship().equals("ManyToOne")) {
-      Optional<RelationshipAnonymizer> relationshipAnonymizer1 =
-          relationshipAnonymizers.stream()
-              .filter(
-                  relationshipAnonymizer ->
-                      relationshipAnonymizer
+                  anonymizer ->
+                      anonymizer
                           .getModel()
                           .equals(
                               getMetaModelFromFullName(
                                   metaField.getPackageName() + "." + metaField.getTypeName())))
               .findFirst();
 
-      if (relationshipAnonymizer1.isPresent()) {
-        if (property.isRequired()) {
-          System.out.println(property.getName());
+      for (Object relatedObject : relatedObjects) {
+        if (relationshipAnonymizer.isPresent()) {
+          breakO2MRelationship(metaField, relationshipAnonymizers, mappedBy, relatedObject);
         } else {
-          mapper.set(reference, metaField.getName(), null);
+          anonymizeRelatedObject(gdprResponse, metaField, relatedObject, depth);
         }
       }
+    } else if (depth < 1 && metaField.getRelationship().equals("ManyToOne")) {
+      // m2o, no anonymization, break link if config
+      breakM2ORelationship(property, reference, mapper, metaField, relationshipAnonymizers);
     }
   }
 
+  private void breakO2MRelationship(
+      MetaField metaField,
+      List<RelationshipAnonymizer> relationshipAnonymizers,
+      String mappedBy,
+      Object relatedObject)
+      throws ClassNotFoundException, AxelorException {
+    Mapper o2mMapper = Mapper.of(relatedObject.getClass());
+    Property mappedProperty = o2mMapper.getProperty(mappedBy);
+
+    AuditableModel newObject = null;
+    if (mappedProperty.isRequired()) {
+      // configuration needed if property is Required
+      RelationshipAnonymizer parentRelationshipAnonymizer =
+          getRelationshipAnonymizer(metaField.getMetaModel(), relationshipAnonymizers);
+
+      newObject =
+          gdprResponseService.extractReferenceFromModelAndId(
+              parentRelationshipAnonymizer.getModel().getFullName(),
+              (long) parentRelationshipAnonymizer.getModelId());
+
+      // check replacement object configuration
+      if (newObject == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            String.format(
+                I18n.get(GdprExceptionMessage.RELATIONSHIP_ANONYMIZER_MISSING_REPLACEMENT),
+                metaField.getMetaModel().getName()));
+      }
+    }
+    o2mMapper.set(relatedObject, mappedBy, newObject);
+  }
+
+  /**
+   * break relationship following configuration
+   *
+   * @param property
+   * @param reference
+   * @param mapper
+   * @param metaField
+   * @param relationshipAnonymizers
+   * @throws ClassNotFoundException
+   */
+  protected void breakM2ORelationship(
+      Property property,
+      AuditableModel reference,
+      Mapper mapper,
+      MetaField metaField,
+      List<RelationshipAnonymizer> relationshipAnonymizers)
+      throws ClassNotFoundException, AxelorException {
+
+    AuditableModel newObject = null;
+    if (property.isRequired()) {
+      MetaModel modelToSearch =
+          getMetaModelFromFullName(metaField.getPackageName() + "." + metaField.getTypeName());
+      RelationshipAnonymizer relationshipAnonymizer =
+          getRelationshipAnonymizer(modelToSearch, relationshipAnonymizers);
+      newObject =
+          gdprResponseService.extractReferenceFromModelAndId(
+              relationshipAnonymizer.getModel().getFullName(),
+              (long) relationshipAnonymizer.getModelId());
+
+      if (newObject == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            String.format(
+                I18n.get(GdprExceptionMessage.RELATIONSHIP_ANONYMIZER_MISSING_REPLACEMENT),
+                relationshipAnonymizer.getModel().getName()));
+      }
+    }
+    mapper.set(reference, metaField.getName(), newObject);
+  }
+
   protected void anonymizeRelatedObject(
-      GDPRResponse gdprResponse, MetaField metaField, Object currentValue)
+      GDPRResponse gdprResponse, MetaField metaField, Object currentValue, int depth)
       throws ClassNotFoundException, AxelorException {
 
     // choosed object
@@ -298,7 +363,7 @@ public class GdprResponseErasureServiceImpl implements GdprResponseErasureServic
     MetaModel relatedMetaModel =
         getMetaModelFromFullName(metaField.getPackageName() + "." + metaField.getTypeName());
 
-    anonymizeEntity(gdprResponse, relatedEntity, relatedMetaModel);
+    anonymizeEntity(gdprResponse, relatedEntity, relatedMetaModel, ++depth);
   }
 
   /**
@@ -313,6 +378,21 @@ public class GdprResponseErasureServiceImpl implements GdprResponseErasureServic
         .map(Anonymizer::getAnonymizerLineList).orElse(Collections.emptyList()).stream()
         .filter(anonymizerLine -> anonymizerLine.getMetaModel().equals(metaModel))
         .collect(Collectors.toList());
+  }
+
+  protected RelationshipAnonymizer getRelationshipAnonymizer(
+      MetaModel metaModel, List<RelationshipAnonymizer> relationshipAnonymizers)
+      throws AxelorException {
+    return relationshipAnonymizers.stream()
+        .filter(anonymizer -> anonymizer.getModel().equals(metaModel))
+        .findFirst()
+        .orElseThrow(
+            () ->
+                new AxelorException(
+                    TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+                    String.format(
+                        I18n.get(GdprExceptionMessage.RELATIONSHIP_ANONYMIZER_MISSING_REPLACEMENT),
+                        metaModel.getName())));
   }
 
   /**
