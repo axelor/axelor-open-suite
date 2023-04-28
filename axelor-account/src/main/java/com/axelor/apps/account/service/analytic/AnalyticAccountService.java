@@ -19,8 +19,7 @@ package com.axelor.apps.account.service.analytic;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AnalyticAccount;
-import com.axelor.apps.account.db.AnalyticDistributionLine;
-import com.axelor.apps.account.db.AnalyticDistributionTemplate;
+import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.base.db.Company;
 import com.axelor.exception.AxelorException;
 import java.util.List;
@@ -33,9 +32,6 @@ public interface AnalyticAccountService {
 
   String getParentDomain(AnalyticAccount analyticAccount);
 
-  String getAnalyticAccountDomain(
-      AnalyticDistributionTemplate analyticDistributionTemplate,
-      AnalyticDistributionLine analyticDistributionLine,
-      Account account)
+  String getAnalyticAccountDomain(Company company, AnalyticAxis analyticAxis, Account account)
       throws AxelorException;
 }

@@ -18,9 +18,12 @@
 package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticDistributionLine;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.AnalyticMoveLineQuery;
+import com.axelor.apps.account.db.AnalyticMoveLineQueryParameter;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.AnalyticLine;
 import com.axelor.apps.account.service.analytic.AnalyticAccountService;
@@ -123,30 +126,42 @@ public class AnalyticDistributionLineController {
 
   public void setAnalyticAccountDomain(ActionRequest request, ActionResponse response) {
     try {
-      AnalyticDistributionLine analyticDistributionLine =
-          request.getContext().asType(AnalyticDistributionLine.class);
+      AnalyticAxis analyticAxis = null;
+      Company company = null;
       Context parentContext = request.getContext().getParent();
       Context grandParentContext = null;
       Account account = null;
+      String domain = "";
+      if (AnalyticDistributionLine.class.equals(request.getContext().getContextClass())) {
+        analyticAxis =
+            request.getContext().asType(AnalyticDistributionLine.class).getAnalyticAxis();
 
-      if (parentContext != null
-          && AnalyticDistributionTemplate.class.equals(parentContext.getContextClass())) {
-        AnalyticDistributionTemplate analyticDistributionTemplate =
-            parentContext.asType(AnalyticDistributionTemplate.class);
+        if (parentContext != null
+            && AnalyticDistributionTemplate.class.equals(parentContext.getContextClass())) {
+          company = parentContext.asType(AnalyticDistributionTemplate.class).getCompany();
 
-        grandParentContext = parentContext.getParent();
-        if (grandParentContext != null
-            && Account.class.equals(grandParentContext.getContextClass())) {
-          account = grandParentContext.asType(Account.class);
+          grandParentContext = parentContext.getParent();
+          if (grandParentContext != null
+              && Account.class.equals(grandParentContext.getContextClass())) {
+            account = grandParentContext.asType(Account.class);
+          }
         }
-        String domain =
-            Beans.get(AnalyticAccountService.class)
-                .getAnalyticAccountDomain(
-                    analyticDistributionTemplate, analyticDistributionLine, account);
+      } else if (AnalyticMoveLineQueryParameter.class.equals(
+          request.getContext().getContextClass())) {
+        analyticAxis =
+            request.getContext().asType(AnalyticMoveLineQueryParameter.class).getAnalyticAxis();
 
-        response.setAttr("analyticAccount", "domain", domain);
-        response.setAttr("analyticAccountSet", "domain", domain);
+        if (parentContext != null
+            && AnalyticMoveLineQuery.class.equals(parentContext.getContextClass())) {
+          company = parentContext.asType(AnalyticMoveLineQuery.class).getCompany();
+        }
       }
+      domain =
+          Beans.get(AnalyticAccountService.class)
+              .getAnalyticAccountDomain(company, analyticAxis, account);
+
+      response.setAttr("analyticAccount", "domain", domain);
+      response.setAttr("analyticAccountSet", "domain", domain);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
