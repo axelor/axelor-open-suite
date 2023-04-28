@@ -2,6 +2,7 @@ package com.axelor.apps.account.service.move.record;
 
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.service.move.record.model.MoveContext;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.rpc.Context;
 
@@ -15,7 +16,7 @@ public interface MoveRecordService {
    * @return a Object {@link MoveContext} that containts attrs and values context
    * @throws AxelorException
    */
-  MoveContext onNew(Move move) throws AxelorException;
+  MoveContext onNew(Move move, User user) throws AxelorException;
 
   /**
    * Method called on action onLoad. The move will be modified but not persisted, a Map of 'field,
@@ -26,7 +27,7 @@ public interface MoveRecordService {
    * @return a Object {@link MoveContext} that containts attrs and values context
    * @throws AxelorException
    */
-  MoveContext onLoad(Move move, Context context) throws AxelorException;
+  MoveContext onLoad(Move move, Context context, User user) throws AxelorException;
 
   /**
    * Method called on action onSave

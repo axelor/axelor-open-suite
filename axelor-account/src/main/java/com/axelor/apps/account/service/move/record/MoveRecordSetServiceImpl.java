@@ -6,6 +6,8 @@ import com.axelor.apps.account.db.JournalType;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.base.db.BankDetails;
@@ -30,17 +32,20 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
   protected PartnerRepository partnerRepository;
   protected BankDetailsService bankDetailsService;
   protected MoveToolService moveToolService;
+  protected InvoiceTermService invoiceTermService;
 
   @Inject
   public MoveRecordSetServiceImpl(
       MoveLineControlService moveLineControlService,
       PartnerRepository partnerRepository,
       BankDetailsService bankDetailsService,
-      MoveToolService moveToolService) {
+      MoveToolService moveToolService,
+      InvoiceTermService invoiceTermService) {
     this.moveLineControlService = moveLineControlService;
     this.partnerRepository = partnerRepository;
     this.bankDetailsService = bankDetailsService;
     this.moveToolService = moveToolService;
+    this.invoiceTermService = invoiceTermService;
   }
 
   @Override
@@ -260,6 +265,41 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
         && move.getJournal().getIsFillOriginDate()) {
       resultMap.put("originDate", move.getDate());
     }
+    return resultMap;
+  }
+
+  public Map<String, Object> setPfpStatus(Move move) {
+    Objects.requireNonNull(move);
+    Objects.requireNonNull(move.getJournal());
+    HashMap<String, Object> resultMap = new HashMap<>();
+    JournalType journalType = move.getJournal().getJournalType();
+
+    if (move.getCompany() != null
+        && move.getCompany().getAccountConfig() != null
+        && move.getCompany().getAccountConfig().getIsManagePassedForPayment()
+        && move.getCompany().getAccountConfig().getIsManagePFPInRefund()
+        && (journalType.getTechnicalTypeSelect()
+                == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE
+            || journalType.getTechnicalTypeSelect()
+                == JournalTypeRepository.TECHNICAL_TYPE_SELECT_CREDIT_NOTE)) {
+      move.setPfpValidateStatusSelect(MoveRepository.PFP_STATUS_AWAITING);
+    }
+
+    resultMap.put("pfpValidateStatusSelect", move.getPfpValidateStatusSelect());
+
+    return resultMap;
+  }
+
+  public Map<String, Object> setPfpValidatorUser(Move move) {
+    Objects.requireNonNull(move);
+    HashMap<String, Object> resultMap = new HashMap<>();
+
+    move.setPfpValidatorUser(
+        Beans.get(InvoiceTermService.class)
+            .getPfpValidatorUser(move.getPartner(), move.getCompany()));
+
+    resultMap.put("pfpValidatorUser", move.getPfpValidatorUser());
+
     return resultMap;
   }
 }

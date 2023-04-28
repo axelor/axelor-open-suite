@@ -9,7 +9,9 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveInvoiceTermService;
+import com.axelor.apps.account.service.move.MovePfpService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
@@ -25,6 +27,7 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
   protected AppAccountService appAccountService;
   protected MoveInvoiceTermService moveInvoiceTermService;
   protected MoveRepository moveRepository;
+  protected MovePfpService movePfpService;
 
   @Inject
   public MoveAttrsServiceImpl(
@@ -32,12 +35,14 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
       AccountConfigService accountConfigService,
       AppAccountService appAccountService,
       MoveInvoiceTermService moveInvoiceTermService,
-      MoveRepository moveRepository) {
+      MoveRepository moveRepository,
+      MovePfpService movePfpService) {
     this.appBaseService = appBaseService;
     this.accountConfigService = accountConfigService;
     this.appAccountService = appAccountService;
     this.moveInvoiceTermService = moveInvoiceTermService;
     this.moveRepository = moveRepository;
+    this.movePfpService = movePfpService;
   }
 
   @Override
@@ -153,5 +158,25 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
   public boolean isHiddenDueDate(Move move) {
 
     return !moveInvoiceTermService.displayDueDate(move);
+  }
+
+  @Override
+  public Map<String, Map<String, Object>> getPfpAttrs(Move move, User user) throws AxelorException {
+    Objects.requireNonNull(move);
+    Map<String, Map<String, Object>> resultMap = new HashMap<>();
+
+    resultMap.put("passedForPaymentValidationBtn", new HashMap<>());
+    resultMap.put("refusalToPayBtn", new HashMap<>());
+    resultMap.put("pfpValidatorUser", new HashMap<>());
+
+    resultMap
+        .get("passedForPaymentValidationBtn")
+        .put("hidden", !movePfpService.isPfpButtonVisible(move, user, true));
+    resultMap
+        .get("refusalToPayBtn")
+        .put("hidden", !movePfpService.isPfpButtonVisible(move, user, false));
+    resultMap.get("pfpValidatorUser").put("hidden", !movePfpService.isValidatorUserVisible(move));
+
+    return resultMap;
   }
 }

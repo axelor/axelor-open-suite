@@ -3,11 +3,13 @@ package com.axelor.apps.account.service.move.record;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.PeriodServiceAccount;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveComputeService;
 import com.axelor.apps.account.service.move.attributes.MoveAttrsService;
 import com.axelor.apps.account.service.move.control.MoveCheckService;
 import com.axelor.apps.account.service.move.record.model.MoveContext;
 import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
@@ -25,6 +27,7 @@ public class MoveRecordServiceImpl implements MoveRecordService {
   protected MoveRecordUpdateService moveRecordUpdateService;
   protected MoveRecordSetService moveRecordSetService;
   protected MoveRepository moveRepository;
+  protected AppAccountService appAccountService;
 
   @Inject
   public MoveRecordServiceImpl(
@@ -35,7 +38,8 @@ public class MoveRecordServiceImpl implements MoveRecordService {
       MoveComputeService moveComputeService,
       MoveRecordUpdateService moveRecordUpdateService,
       MoveRecordSetService moveRecordSetService,
-      MoveRepository moveRepository) {
+      MoveRepository moveRepository,
+      AppAccountService appAccountService) {
     this.moveDefaultService = moveDefaultService;
     this.moveAttrsService = moveAttrsService;
     this.periodAccountService = periodAccountService;
@@ -44,6 +48,7 @@ public class MoveRecordServiceImpl implements MoveRecordService {
     this.moveRecordUpdateService = moveRecordUpdateService;
     this.moveRepository = moveRepository;
     this.moveRecordSetService = moveRecordSetService;
+    this.appAccountService = appAccountService;
   }
 
   @Override
@@ -106,7 +111,7 @@ public class MoveRecordServiceImpl implements MoveRecordService {
   }
 
   @Override
-  public MoveContext onNew(Move move) throws AxelorException {
+  public MoveContext onNew(Move move, User user) throws AxelorException {
     Objects.requireNonNull(move);
 
     MoveContext result = new MoveContext();
@@ -131,11 +136,16 @@ public class MoveRecordServiceImpl implements MoveRecordService {
     moveCheckService.checkPeriodPermission(move);
     result.putInAttrs(moveAttrsService.getMoveLineAnalyticAttrs(move));
 
+    if (appAccountService.getAppAccount().getActivatePassedForPayment()) {
+      result.putInAttrs(moveAttrsService.getPfpAttrs(move, user));
+      result.putInValues(moveRecordSetService.setPfpStatus(move));
+    }
+
     return result;
   }
 
   @Override
-  public MoveContext onLoad(Move move, Context context) throws AxelorException {
+  public MoveContext onLoad(Move move, Context context, User user) throws AxelorException {
     Objects.requireNonNull(move);
     Objects.requireNonNull(context);
 
@@ -154,6 +164,10 @@ public class MoveRecordServiceImpl implements MoveRecordService {
     result.putInAttrs(moveAttrsService.getFunctionalOriginSelectDomain(move));
     result.putInAttrs(moveAttrsService.getMoveLineAnalyticAttrs(move));
     result.putInAttrs("dueDate", "hidden", moveAttrsService.isHiddenDueDate(move));
+
+    if (appAccountService.getAppAccount().getActivatePassedForPayment()) {
+      result.putInAttrs(moveAttrsService.getPfpAttrs(move, user));
+    }
 
     return result;
   }
@@ -213,6 +227,10 @@ public class MoveRecordServiceImpl implements MoveRecordService {
       result.putInValues(moveRecordSetService.setOriginDate(move));
     }
 
+    if (appAccountService.getAppAccount().getActivatePassedForPayment()) {
+      result.putInValues(moveRecordSetService.setPfpStatus(move));
+    }
+
     return result;
   }
 
@@ -246,6 +264,11 @@ public class MoveRecordServiceImpl implements MoveRecordService {
     result.merge(moveRecordUpdateService.updateDueDate(move, paymentConditionChange, dateChange));
     result.putInAttrs(moveAttrsService.getHiddenAttributeValues(move));
     result.putInValues(moveRecordSetService.setCompanyBankDetails(move));
+
+    if (appAccountService.getAppAccount().getActivatePassedForPayment()
+        && move.getPfpValidateStatusSelect() > MoveRepository.PFP_NONE) {
+      result.putInValues(moveRecordSetService.setPfpValidatorUser(move));
+    }
 
     return result;
   }

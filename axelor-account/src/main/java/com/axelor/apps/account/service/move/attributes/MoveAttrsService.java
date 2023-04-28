@@ -1,6 +1,7 @@
 package com.axelor.apps.account.service.move.attributes;
 
 import com.axelor.apps.account.db.Move;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import java.util.Map;
 
@@ -32,4 +33,6 @@ public interface MoveAttrsService {
   Map<String, Map<String, Object>> getMoveLineAnalyticAttrs(Move move) throws AxelorException;
 
   boolean isHiddenDueDate(Move move);
+
+  Map<String, Map<String, Object>> getPfpAttrs(Move move, User user) throws AxelorException;
 }

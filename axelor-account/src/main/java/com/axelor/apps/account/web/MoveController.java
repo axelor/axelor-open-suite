@@ -43,6 +43,7 @@ import com.axelor.apps.account.service.move.MoveSimulateService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.move.MoveViewHelperService;
+import com.axelor.apps.account.service.move.attributes.MoveAttrsService;
 import com.axelor.apps.account.service.move.record.MoveDefaultService;
 import com.axelor.apps.account.service.move.record.MoveRecordService;
 import com.axelor.apps.account.service.move.record.MoveRecordSetService;
@@ -662,7 +663,8 @@ public class MoveController {
   public void onNew(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
-      MoveContext result = Beans.get(MoveRecordService.class).onNew(move);
+      User user = request.getUser();
+      MoveContext result = Beans.get(MoveRecordService.class).onNew(move, user);
 
       response.setValues(result.getValues());
       response.setAttrs(result.getAttrs());
@@ -686,7 +688,9 @@ public class MoveController {
   public void onLoad(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
-      MoveContext result = Beans.get(MoveRecordService.class).onLoad(move, request.getContext());
+      User user = request.getUser();
+      MoveContext result =
+          Beans.get(MoveRecordService.class).onLoad(move, request.getContext(), user);
       response.setValues(result.getValues());
       response.setAttrs(result.getAttrs());
       if (!result.getFlash().isEmpty()) {
@@ -965,17 +969,10 @@ public class MoveController {
     try {
       Move move = request.getContext().asType(Move.class);
       User user = request.getUser();
-      MovePfpService movePfpService = Beans.get(MovePfpService.class);
 
-      response.setAttr(
-          "passedForPaymentValidationBtn",
-          "hidden",
-          !movePfpService.isPfpButtonVisible(move, user, true));
-
-      response.setAttr(
-          "refusalToPayBtn", "hidden", !movePfpService.isPfpButtonVisible(move, user, false));
-
-      response.setAttr("pfpValidatorUser", "hidden", !movePfpService.isValidatorUserVisible(move));
+      if (move != null) {
+        response.setAttrs(Beans.get(MoveAttrsService.class).getPfpAttrs(move, user));
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -1008,10 +1005,10 @@ public class MoveController {
   public void setPfpValidatorUser(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
-      response.setValue(
-          "pfpValidatorUser",
-          Beans.get(InvoiceTermService.class)
-              .getPfpValidatorUser(move.getPartner(), move.getCompany()));
+      MoveContext result = new MoveContext();
+
+      result.putInValues(Beans.get(MoveRecordSetService.class).setPfpValidatorUser(move));
+      response.setValues(result.getValues());
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

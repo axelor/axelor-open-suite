@@ -79,4 +79,8 @@ public interface MoveRecordSetService {
   Map<String, Object> setOriginOnMoveLineList(Move move) throws AxelorException;
 
   Map<String, Object> setOriginDate(Move move) throws AxelorException;
+
+  Map<String, Object> setPfpStatus(Move move);
+
+  Map<String, Object> setPfpValidatorUser(Move move);
 }
