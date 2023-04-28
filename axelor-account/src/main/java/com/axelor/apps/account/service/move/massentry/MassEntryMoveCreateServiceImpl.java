@@ -8,6 +8,7 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.PeriodServiceAccount;
 import com.axelor.apps.account.service.move.MoveCreateService;
+import com.axelor.apps.account.service.move.MoveSimulateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
@@ -39,6 +40,8 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
   protected MassEntryToolService massEntryToolService;
   protected MoveLineMassEntryToolService moveLineMassEntryToolService;
   protected MoveLineMassEntryRepository moveLineMassEntryRepository;
+  protected MoveSimulateService moveSimulateService;
+  protected MoveRepository moveRepository;
 
   @Inject
   public MassEntryMoveCreateServiceImpl(
@@ -50,7 +53,9 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
       PeriodService periodService,
       MassEntryToolService massEntryToolService,
       MoveLineMassEntryToolService moveLineMassEntryToolService,
-      MoveLineMassEntryRepository moveLineMassEntryRepository) {
+      MoveLineMassEntryRepository moveLineMassEntryRepository,
+      MoveSimulateService moveSimulateService,
+      MoveRepository moveRepository) {
     this.moveCreateService = moveCreateService;
     this.moveLineCreateService = moveLineCreateService;
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
@@ -60,6 +65,8 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
     this.massEntryToolService = massEntryToolService;
     this.moveLineMassEntryToolService = moveLineMassEntryToolService;
     this.moveLineMassEntryRepository = moveLineMassEntryRepository;
+    this.moveSimulateService = moveSimulateService;
+    this.moveRepository = moveRepository;
   }
 
   @Override
@@ -67,6 +74,7 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
   public Move generateMassEntryMove(Move move) throws AxelorException {
     Move newMove = new Move();
     User user = AuthUtils.getUser();
+    boolean authorizeSimulatedMove = move.getJournal().getAuthorizeSimulatedMove();
 
     if (move.getJournal().getCompany() != null) {
       int[] functionalOriginTab = new int[0];
@@ -142,15 +150,14 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
                 newMove.getReference()));
       }
 
-      // Pass the move in STATUS_DAYBOOK
-      if (move.getStatusSelect().equals(MoveRepository.STATUS_DAYBOOK)
-          && newMove.getStatusSelect().equals(MoveRepository.STATUS_NEW)) {
-        moveValidateService.accounting(newMove);
-      }
-
-      // Pass the move in STATUS_ACCOUNTED
-      if (newMove.getStatusSelect().equals(MoveRepository.STATUS_DAYBOOK)) {
-        moveValidateService.accounting(newMove);
+      if (move.getStatusSelect() != MoveRepository.STATUS_NEW) {
+        if (authorizeSimulatedMove) {
+          moveSimulateService.simulate(newMove);
+        } else {
+          moveValidateService.accounting(newMove);
+        }
+      } else {
+        moveRepository.save(newMove);
       }
     }
 
