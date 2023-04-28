@@ -28,7 +28,6 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.rpc.Context;
 import java.time.Duration;
 
 public class ProjectTaskController {
@@ -111,19 +110,6 @@ public class ProjectTaskController {
       projectTask = Beans.get(ProjectTaskRepository.class).find(projectTask.getId());
       Beans.get(ProjectTaskService.class).deleteProjectTask(projectTask);
       response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void fillSelection(ActionRequest request, ActionResponse response) {
-    try {
-      Context context = request.getContext();
-      ProjectTask projectTask = context.asType(ProjectTask.class);
-      response.setAttr(
-          "status",
-          "selection-in",
-          Beans.get(ProjectTaskService.class).getProjectStatusIdList(projectTask));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

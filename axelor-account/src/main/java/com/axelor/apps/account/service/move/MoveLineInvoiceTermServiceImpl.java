@@ -81,6 +81,10 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
       throws AxelorException {
     Move move = moveLine.getMove();
 
+    if (move == null) {
+      return;
+    }
+
     PaymentCondition paymentCondition = move.getPaymentCondition();
 
     boolean containsHoldback =
@@ -93,11 +97,9 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
                 MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE,
                 MoveRepository.FUNCTIONAL_ORIGIN_FIXED_ASSET,
                 MoveRepository.FUNCTIONAL_ORIGIN_SALE)
-            .contains(moveLine.getMove().getFunctionalOriginSelect());
+            .contains(move.getFunctionalOriginSelect());
 
-    if (move == null) {
-      return;
-    } else if (paymentCondition == null
+    if (paymentCondition == null
         || CollectionUtils.isEmpty(paymentCondition.getPaymentConditionLineList())
         || (containsHoldback && !isHoldbackAllowed)) {
       this.computeInvoiceTerm(
