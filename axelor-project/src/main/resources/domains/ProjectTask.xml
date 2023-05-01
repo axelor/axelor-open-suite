@@ -11,7 +11,7 @@
     <many-to-one name="assignedTo" title="Assigned to" ref="com.axelor.auth.db.User"/>
     <date name="taskDate" title="Start date"/>
     <many-to-one name="status" title="Status"
-      ref="com.axelor.apps.project.db.ProjectStatus"/>
+      ref="com.axelor.apps.project.db.TaskStatus"/>
     <many-to-one name="priority" title="Priority"
       ref="com.axelor.apps.project.db.ProjectPriority"/>
     <date name="taskDeadline" title="Task deadline"/>
@@ -36,7 +36,7 @@
     <string name="fullName" namecolumn="true" title="Name" search="id,name"/>
 
     <many-to-one name="statusBeforeComplete" title="Last status"
-      ref="com.axelor.apps.project.db.ProjectStatus"/>
+      ref="com.axelor.apps.project.db.TaskStatus"/>
     <many-to-one name="parentTask" ref="com.axelor.apps.project.db.ProjectTask"
       title="Parent task"/>
     <many-to-one name="projectTaskCategory"

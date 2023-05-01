@@ -45,9 +45,9 @@ import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanningTime;
-import com.axelor.apps.project.db.ProjectStatus;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.ProjectTaskCategory;
+import com.axelor.apps.project.db.TaskStatus;
 import com.axelor.apps.project.db.TaskTemplate;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
@@ -361,14 +361,14 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
 
       switch (projectTask.getProject().getInvoicingSequenceSelect()) {
         case ProjectRepository.INVOICING_SEQ_INVOICE_PRE_TASK:
-          Set<ProjectStatus> preTaskStatusSet = appBusinessProject.getPreTaskStatusSet();
+          Set<TaskStatus> preTaskStatusSet = appBusinessProject.getPreTaskStatusSet();
           projectTask.setToInvoice(
               ObjectUtils.notEmpty(preTaskStatusSet)
                   && preTaskStatusSet.contains(projectTask.getStatus()));
           break;
 
         case ProjectRepository.INVOICING_SEQ_INVOICE_POST_TASK:
-          Set<ProjectStatus> postTaskStatusSet = appBusinessProject.getPostTaskStatusSet();
+          Set<TaskStatus> postTaskStatusSet = appBusinessProject.getPostTaskStatusSet();
           projectTask.setToInvoice(
               ObjectUtils.notEmpty(postTaskStatusSet)
                   && postTaskStatusSet.contains(projectTask.getStatus()));
