@@ -7,8 +7,8 @@
 
   <entity name="ProjectPlanningTime" cacheable="true">
 
-    <date name="date" column="date_val" title="Date" required="true"/>
-    <decimal name="plannedHours" title="Planned hours"/>
+    <date name="date" column="date_val" title="Date"/>
+    <decimal name="plannedTime" title="Planned time"/>
 
     <many-to-one name="employee" ref="com.axelor.apps.hr.db.Employee" title="Employee"
       required="true"/>

@@ -1205,10 +1205,10 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
       Timesheet timesheet, ProjectPlanningTime projectPlanningTime) throws AxelorException {
     TimesheetLine timesheetLine = new TimesheetLine();
     Project project = projectPlanningTime.getProject();
-    timesheetLine.setHoursDuration(projectPlanningTime.getPlannedHours());
+    timesheetLine.setHoursDuration(projectPlanningTime.getPlannedTime());
     timesheetLine.setDuration(
         timesheetLineService.computeHoursDuration(
-            timesheet, projectPlanningTime.getPlannedHours(), false));
+            timesheet, projectPlanningTime.getPlannedTime(), false));
     timesheetLine.setTimesheet(timesheet);
     timesheetLine.setEmployee(timesheet.getEmployee());
     timesheetLine.setProduct(projectPlanningTime.getProduct());

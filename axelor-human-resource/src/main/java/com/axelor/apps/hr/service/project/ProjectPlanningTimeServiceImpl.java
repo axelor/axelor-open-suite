@@ -89,7 +89,7 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
       if (plannings != null) {
         totalPlanned =
             plannings.stream()
-                .map(ProjectPlanningTime::getPlannedHours)
+                .map(ProjectPlanningTime::getPlannedTime)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
       }
     }
@@ -113,7 +113,7 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
       if (plannings != null) {
         totalPlanned =
             plannings.stream()
-                .map(ProjectPlanningTime::getPlannedHours)
+                .map(ProjectPlanningTime::getPlannedTime)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
       }
     }
@@ -196,7 +196,7 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
           totalHours =
               dailyWorkHrs.multiply(new BigDecimal(timePercent)).divide(new BigDecimal(100));
         }
-        planningTime.setPlannedHours(totalHours);
+        planningTime.setPlannedTime(totalHours);
         planningTimeRepo.save(planningTime);
       }
 
