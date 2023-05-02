@@ -141,168 +141,6 @@
     <panel-include view="partner-form"/>
   </form>
 
-  <form name="partner-contact-form" title="Contact" model="com.axelor.apps.base.db.Partner"
-    onNew="action-partner-contact-record-default,action-partner-attrs-partner-seq-editable"
-    onLoad="action-group-partner-contact-onload"
-    onSave="save,action-partner-method-set-user-partner,action-partner-method-add-contact-partner">
-    <toolbar>
-      <button name="convertToIndividualPartnerBtn" title="Convert into an individual partner"
-        icon="fa-user" onClick="action-convert-into-individual-partner,close"
-        showIf="id != null &amp;&amp; isContact == true &amp;&amp; mainPartner == null"/>
-    </toolbar>
-    <menubar>
-      <menu name="partnerReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
-        <item name="envelopeItem" title="Envelope"
-          action="save,action-partner-method-show-envelope" readonlyIf="id == null"/>
-        <item name="customerSituationItem" title="Customer Situation"
-          action="save,action-partner-method-show-client-situation" readonlyIf="id == null"
-          showIf="isContact == false" if-module="axelor-account"/>
-      </menu>
-    </menubar>
-    <panel-include view="incl-event-actions-partner-form"/>
-    <panel name="mainPanel">
-      <panel name="imagePanel" colSpan="3">
-        <field name="picture" widget="Image" showTitle="false" colSpan="12">
-          <viewer>
-						<![CDATA[
-					    <div>
-			    			<img width="80%" ng-show="record.picture" ng-src="{{$image('picture', 'content')}}" />
-          					<img width="80%" ng-show="!record.picture && record.titleSelect == 1" src="img/partner-m-default.png" />
-          					<img width="80%" ng-show="!record.picture && record.titleSelect == 2" src="img/partner-w-default.png" />
-        					<img width="80%" ng-show="!record.picture && (record.titleSelect > 2 || !record.titleSelect)" src="img/partner-default.png" />
-     					</div>
-					]]>
-          </viewer>
-        </field>
-        <panel name="socialNetworkPanel" colSpan="12">
-          <label name="googleLabel"
-            title="&lt;a class='fa fa-google' href='http://www.google.com' target='_blank' /&gt;"
-            colSpan="2"/>
-          <label name="facebookLabel"
-            title="&lt;a class='fa fa-facebook' href='http://www.facebook.com' target='_blank' /&gt;"
-            colSpan="2"/>
-          <label name="twitterLabel"
-            title="&lt;a class='fa fa-twitter' href='http://www.twitter.com' target='_blank' /&gt;"
-            colSpan="2"/>
-          <label name="linkedinLabel"
-            title="&lt;a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' /&gt;"
-            colSpan="2"/>
-          <label name="youtubeLabel"
-            title="&lt;a class='fa fa-youtube' href='http://www.youtube.com' target='_blank' /&gt;"
-            colSpan="2"/>
-        </panel>
-      </panel>
-      <panel name="namePanel" colSpan="9">
-        <field name="simpleFullName" css="bold" showTitle="false" colSpan="12">
-          <editor x-show-titles="false">
-            <field name="titleSelect" placeholder="Civility" colSpan="2"/>
-            <field name="name" css="highlight" placeholder="Name"
-              onChange="action-group-base-partner-contact-name-onchange" colSpan="5"/>
-            <field name="firstName" css="highlight" placeholder="First name"
-              onChange="action-group-base-partner-contact-name-onchange" colSpan="5"/>
-          </editor>
-        </field>
-        <static name="duplicatePartnerText" hidden="true" colSpan="12"><![CDATA[<span class='label label-warning'>There is already a contact with this name.</span>]]></static>
-        <field name="$duplicatePartnerInArchiveText" hidden="true" type="string"
-          showTitle="false" readonly="true">
-          <viewer depends="$duplicatePartnerInArchiveText">
-					<![CDATA[
-						<span class='label label-warning' style="margin: 5px 0 !important; display: inline-table; line-height: initial;"><span x-translate>There is an archived partner with this name.</span> ({{record.$duplicatePartnerInArchiveText}})</span>
-					]]>
-          </viewer>
-        </field>
-        <panel name="companyPanel" title="Company" colSpan="12">
-          <field name="mainPartner"
-            domain="self.isContact = false  AND self in (SELECT p FROM Partner p join p.companySet c where c in :companySet)"
-            form-view="partner-form" grid-view="partner-grid"/>
-        </panel>
-        <field name="isContact" hidden="true" colSpan="12"/>
-      </panel>
-    </panel>
-    <panel-related name="partnerRoleSetPanel" field="partnerRoleSet"
-      form-view="partner-role-form" grid-view="partner-role-grid" canNew="false"/>
-
-    <panel-tabs name="mainPanelTab">
-      <panel name="contactDetailsPanel" title="Contact details">
-        <field name="jobTitleFunction" onChange="action-record-base-partner-set-business-card"/>
-        <field name="functionBusinessCard"/>
-        <field name="reportsTo" domain="self.isContact = true"/>
-        <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
-        <field name="mobilePhone" widget="phone"/>
-        <field name="emailAddress" canSelect="false" form-view="email-address-simple-form"
-          x-show-icons="false">
-          <editor x-show-titles="false">
-            <field name="address" placeholder="whatever@example.com"
-              pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$"
-              colSpan="12"/>
-          </editor>
-        </field>
-        <field name="mainAddress" canNew="true" form-view="address-form"
-          grid-view="address-grid" colSpan="12"/>
-      </panel>
-      <panel name="eventPanel" title="Events" showIf="id != null" if-module="axelor-crm"
-        if="__config__.app.isApp('crm')">
-        <button name="meetingBtn" title="Create a meeting" icon="fa-pencil-square-o" link=""
-          onClick="save,action-partner-view-meeting-event" colSpan="3"/>
-        <button name="callBtn" title="Create a call" icon="fa-phone" link=""
-          onClick="save,action-partner-view-call-event" colSpan="3"/>
-        <button name="taskBtn" title="Create a task" icon="fa-tasks" link=""
-          onClick="save,action-partner-view-task-event" colSpan="3"/>
-        <button name="noteBtn" title="Create a note" icon="fa-sticky-note-o" link=""
-          onClick="save,action-partner-view-note-event" colSpan="3"/>
-        <button name="showAllEventsBtn" title="Show all events" css="btn-custom text-left"
-          icon="fa-tasks" onClick="action-contact-view-events" readonlyIf="id == null"/>
-        <panel-include view="incl-activities-contact-form"/>
-      </panel>
-      <panel-dashlet name="contactOpportunitiesPanel" title="Opportunity" colSpan="12"
-        action="action-contact-view-opportunities" height="550" showIf="id != null"
-        if-module="axelor-crm" hideIf="isEmployee" if="__config__.app.isApp('crm')"/>
-      <panel name="saleOrderContactPanel" title="Sales orders" showIf="id != null"
-        if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
-        <panel-include view="incl-sales-contact-form"/>
-      </panel>
-      <panel name="emailPanel" title="Emails" showIf="id != null" if-module="axelor-crm"
-        if="__config__.app.isApp('crm')">
-        <button name="emailBtn" title="Create an email" icon="fa-envelope-o" link=""
-          onClick="save,action-send-by-email-with-template" colSpan="3"/>
-        <panel-dashlet name="sentEmailsPanel" title="Sent emails"
-          action="action-partner-method-view-sent-emails" colSpan="12" height="550"/>
-        <panel-dashlet name="receivedEmailsPanel" title="Received emails"
-          action="action-partner-method-view-received-emails" colSpan="12" height="550"/>
-      </panel>
-      <panel-dashlet name="contactPartnerPanel"
-        action="action-contact-partner-dashlet" title="Partners"/>
-    </panel-tabs>
-
-    <panel name="employeePanel" hidden="true" sidebar="true">
-      <button name="openEmployeeFormBtn" title="Open employee form"
-        onClick="action-partner-view-open-employee-form"/>
-    </panel>
-
-    <panel name="settingsPanel" sidebar="true" title="Settings">
-      <field name="partnerSeq"/>
-      <field name="language" canEdit="false"/>
-      <panel name="assignedToPanel" title="Assigned to" canCollapse="true" colSpan="12">
-        <field name="user" colSpan="6" form-view="user-form" grid-view="user-grid"
-          canNew="false" canEdit="false" canView="false"/>
-        <field name="team" canEdit="false" colSpan="6" form-view="team-form"
-          grid-view="team-grid" if="__config__.app.getApp('base')?.getTeamManagement()"/>
-        <field name="companySet" colSpan="12" widget="TagSelect" canNew="false"
-          form-view="company-form" grid-view="company-grid"/>
-      </panel>
-    </panel>
-    <panel name="notesPanel" title="Notes" colSpan="12" sidebar="true">
-      <field name="description" showTitle="false" colSpan="12" height="6" widget="Html"/>
-    </panel>
-    <panel name="contactAttrsPanel">
-      <field name="contactAttrs" colSpan="12"/>
-    </panel>
-    <panel-mail name="mailsPanel">
-      <mail-messages limit="4"/>
-      <mail-followers/>
-    </panel-mail>
-  </form>
-
   <form name="partner-supplier-form" title="Supplier" model="com.axelor.apps.base.db.Partner"
     onNew="action-group-base-partner-onnew" onLoad="action-group-partner-onload" width="large">
     <panel-include view="partner-form"/>
@@ -780,6 +618,169 @@
     </panel-tabs>
     <panel name="partnerAttrsPanel">
       <field name="partnerAttrs" colSpan="12"/>
+    </panel>
+    <panel-mail name="mailsPanel">
+      <mail-messages limit="4"/>
+      <mail-followers/>
+    </panel-mail>
+  </form>
+
+  <form name="partner-contact-form" title="Contact" model="com.axelor.apps.base.db.Partner"
+    onNew="action-partner-contact-record-default,action-partner-attrs-partner-seq-editable"
+    onLoad="action-group-partner-contact-onload"
+    onSave="save,action-partner-method-set-user-partner,action-partner-method-add-contact-partner">
+    <toolbar>
+      <button name="convertToIndividualPartnerBtn" title="Convert into an individual partner"
+        icon="fa-user" onClick="action-convert-into-individual-partner,close"
+        showIf="id != null &amp;&amp; isContact == true &amp;&amp; mainPartner == null"/>
+    </toolbar>
+    <menubar>
+      <menu name="partnerReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
+        <item name="envelopeItem" title="Envelope"
+          action="save,action-partner-method-show-envelope" readonlyIf="id == null"/>
+        <item name="customerSituationItem" title="Customer Situation"
+          action="save,action-partner-method-show-client-situation" readonlyIf="id == null"
+          showIf="isContact == false" if-module="axelor-account"/>
+      </menu>
+    </menubar>
+    <panel-include view="incl-event-actions-partner-form"/>
+    <panel name="mainPanel">
+      <panel name="imagePanel" colSpan="3">
+        <field name="picture" widget="Image" showTitle="false" colSpan="12">
+          <viewer>
+            <![CDATA[
+					    <div>
+			    			<img width="80%" ng-show="record.picture" ng-src="{{$image('picture', 'content')}}" />
+          					<img width="80%" ng-show="!record.picture && record.titleSelect == 1" src="img/partner-m-default.png" />
+          					<img width="80%" ng-show="!record.picture && record.titleSelect == 2" src="img/partner-w-default.png" />
+        					<img width="80%" ng-show="!record.picture && (record.titleSelect > 2 || !record.titleSelect)" src="img/partner-default.png" />
+     					</div>
+					]]>
+          </viewer>
+        </field>
+        <panel name="socialNetworkPanel" colSpan="12">
+          <label name="googleLabel"
+            title="&lt;a class='fa fa-google' href='http://www.google.com' target='_blank' /&gt;"
+            colSpan="2"/>
+          <label name="facebookLabel"
+            title="&lt;a class='fa fa-facebook' href='http://www.facebook.com' target='_blank' /&gt;"
+            colSpan="2"/>
+          <label name="twitterLabel"
+            title="&lt;a class='fa fa-twitter' href='http://www.twitter.com' target='_blank' /&gt;"
+            colSpan="2"/>
+          <label name="linkedinLabel"
+            title="&lt;a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' /&gt;"
+            colSpan="2"/>
+          <label name="youtubeLabel"
+            title="&lt;a class='fa fa-youtube' href='http://www.youtube.com' target='_blank' /&gt;"
+            colSpan="2"/>
+        </panel>
+      </panel>
+      <panel name="namePanel" colSpan="9">
+        <field name="simpleFullName" css="bold" showTitle="false" colSpan="12">
+          <editor x-show-titles="false">
+            <field name="titleSelect" placeholder="Civility" colSpan="2"/>
+            <field name="name" css="highlight" placeholder="Name"
+              onChange="action-group-base-partner-contact-name-onchange" colSpan="5"/>
+            <field name="firstName" css="highlight" placeholder="First name"
+              onChange="action-group-base-partner-contact-name-onchange" colSpan="5"/>
+          </editor>
+        </field>
+        <static name="duplicatePartnerText" hidden="true" colSpan="12">
+          <![CDATA[<span class='label label-warning'>There is already a contact with this name.</span>]]></static>
+        <field name="$duplicatePartnerInArchiveText" hidden="true" type="string"
+          showTitle="false" readonly="true">
+          <viewer depends="$duplicatePartnerInArchiveText">
+            <![CDATA[
+						<span class='label label-warning' style="margin: 5px 0 !important; display: inline-table; line-height: initial;"><span x-translate>There is an archived partner with this name.</span> ({{record.$duplicatePartnerInArchiveText}})</span>
+					]]>
+          </viewer>
+        </field>
+        <panel name="companyPanel" title="Company" colSpan="12">
+          <field name="mainPartner"
+            domain="self.isContact = false  AND self in (SELECT p FROM Partner p join p.companySet c where c in :companySet)"
+            form-view="partner-form" grid-view="partner-grid"/>
+        </panel>
+        <field name="isContact" hidden="true" colSpan="12"/>
+      </panel>
+    </panel>
+    <panel-related name="partnerRoleSetPanel" field="partnerRoleSet"
+      form-view="partner-role-form" grid-view="partner-role-grid" canNew="false"/>
+
+    <panel-tabs name="mainPanelTab">
+      <panel name="contactDetailsPanel" title="Contact details">
+        <field name="jobTitleFunction" onChange="action-record-base-partner-set-business-card"/>
+        <field name="functionBusinessCard"/>
+        <field name="reportsTo" domain="self.isContact = true"/>
+        <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
+        <field name="mobilePhone" widget="phone"/>
+        <field name="emailAddress" canSelect="false" form-view="email-address-simple-form"
+          x-show-icons="false">
+          <editor x-show-titles="false">
+            <field name="address" placeholder="whatever@example.com"
+              pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$"
+              colSpan="12"/>
+          </editor>
+        </field>
+        <field name="mainAddress" canNew="true" form-view="address-form"
+          grid-view="address-grid" colSpan="12"/>
+      </panel>
+      <panel name="eventPanel" title="Events" showIf="id != null" if-module="axelor-crm"
+        if="__config__.app.isApp('crm')">
+        <button name="meetingBtn" title="Create a meeting" icon="fa-pencil-square-o" link=""
+          onClick="save,action-partner-view-meeting-event" colSpan="3"/>
+        <button name="callBtn" title="Create a call" icon="fa-phone" link=""
+          onClick="save,action-partner-view-call-event" colSpan="3"/>
+        <button name="taskBtn" title="Create a task" icon="fa-tasks" link=""
+          onClick="save,action-partner-view-task-event" colSpan="3"/>
+        <button name="noteBtn" title="Create a note" icon="fa-sticky-note-o" link=""
+          onClick="save,action-partner-view-note-event" colSpan="3"/>
+        <button name="showAllEventsBtn" title="Show all events" css="btn-custom text-left"
+          icon="fa-tasks" onClick="action-contact-view-events" readonlyIf="id == null"/>
+        <panel-include view="incl-activities-contact-form"/>
+      </panel>
+      <panel-dashlet name="contactOpportunitiesPanel" title="Opportunity" colSpan="12"
+        action="action-contact-view-opportunities" height="550" showIf="id != null"
+        if-module="axelor-crm" hideIf="isEmployee" if="__config__.app.isApp('crm')"/>
+      <panel name="saleOrderContactPanel" title="Sales orders" showIf="id != null"
+        if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
+        <panel-include view="incl-sales-contact-form"/>
+      </panel>
+      <panel name="emailPanel" title="Emails" showIf="id != null" if-module="axelor-crm"
+        if="__config__.app.isApp('crm')">
+        <button name="emailBtn" title="Create an email" icon="fa-envelope-o" link=""
+          onClick="save,action-send-by-email-with-template" colSpan="3"/>
+        <panel-dashlet name="sentEmailsPanel" title="Sent emails"
+          action="action-partner-method-view-sent-emails" colSpan="12" height="550"/>
+        <panel-dashlet name="receivedEmailsPanel" title="Received emails"
+          action="action-partner-method-view-received-emails" colSpan="12" height="550"/>
+      </panel>
+      <panel-dashlet name="contactPartnerPanel"
+        action="action-contact-partner-dashlet" title="Partners"/>
+    </panel-tabs>
+
+    <panel name="employeePanel" hidden="true" sidebar="true">
+      <button name="openEmployeeFormBtn" title="Open employee form"
+        onClick="action-partner-view-open-employee-form"/>
+    </panel>
+
+    <panel name="settingsPanel" sidebar="true" title="Settings">
+      <field name="partnerSeq"/>
+      <field name="language" canEdit="false"/>
+      <panel name="assignedToPanel" title="Assigned to" canCollapse="true" colSpan="12">
+        <field name="user" colSpan="6" form-view="user-form" grid-view="user-grid"
+          canNew="false" canEdit="false" canView="false"/>
+        <field name="team" canEdit="false" colSpan="6" form-view="team-form"
+          grid-view="team-grid" if="__config__.app.getApp('base')?.getTeamManagement()"/>
+        <field name="companySet" colSpan="12" widget="TagSelect" canNew="false"
+          form-view="company-form" grid-view="company-grid"/>
+      </panel>
+    </panel>
+    <panel name="notesPanel" title="Notes" colSpan="12" sidebar="true">
+      <field name="description" showTitle="false" colSpan="12" height="6" widget="Html"/>
+    </panel>
+    <panel name="contactAttrsPanel">
+      <field name="contactAttrs" colSpan="12"/>
     </panel>
     <panel-mail name="mailsPanel">
       <mail-messages limit="4"/>
