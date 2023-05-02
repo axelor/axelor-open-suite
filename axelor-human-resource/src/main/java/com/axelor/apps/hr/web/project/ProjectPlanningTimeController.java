@@ -44,35 +44,6 @@ public class ProjectPlanningTimeController {
     response.setCanClose(true);
   }
 
-  /**
-   * Invert value of 'isIncludeInTuronverForecast' field and save the record.
-   *
-   * @param request
-   * @param response
-   * @throws AxelorException
-   */
-  @Transactional
-  public void updateIsIncludeInTuronverForecast(ActionRequest request, ActionResponse response) {
-
-    try {
-      ProjectPlanningTime projectPlanningTime =
-          request.getContext().asType(ProjectPlanningTime.class);
-
-      projectPlanningTime =
-          Beans.get(ProjectPlanningTimeRepository.class).find(projectPlanningTime.getId());
-
-      projectPlanningTime.setIsIncludeInTurnoverForecast(
-          !projectPlanningTime.getIsIncludeInTurnoverForecast());
-
-      Beans.get(ProjectPlanningTimeRepository.class).save(projectPlanningTime);
-
-      response.setValue(
-          "isIncludeInTurnoverForecast", projectPlanningTime.getIsIncludeInTurnoverForecast());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
   @SuppressWarnings("unchecked")
   public void removeProjectPlanningTime(ActionRequest request, ActionResponse response) {
 
