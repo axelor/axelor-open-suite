@@ -27,14 +27,11 @@
     </extend>
   </form>
 
-
   <form name="partner-customer-form" title="Customer" model="com.axelor.apps.base.db.Partner"
     extension="true" onLoad="" id="partner-customer-sales-form">
-
     <extend target="/">
       <attribute name="onLoad" value="sale-action-group-partner-onload"/>
     </extend>
-
   </form>
 
   <grid model="com.axelor.utils.db.Wizard" title="Sale details by product"

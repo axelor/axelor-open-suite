@@ -170,8 +170,6 @@
   <form id="crm-partner-customer-form" name="partner-customer-form" title="Customer"
     model="com.axelor.apps.base.db.Partner" extension="true">
     <extend target="/">
-      <attribute name="onLoad"
-        value="crm-action-group-partner-onload, action-partner-attrs-hide-customer-recovery"/>
       <attribute name="onNew" value="crm-action-group-partner-onnew"/>
     </extend>
   </form>
