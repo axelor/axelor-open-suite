@@ -1,6 +1,6 @@
 plugins {
 	id 'com.axelor.app'
-	id "com.github.node-gradle.node"
+	id "com.github.node-gradle.node" version "3.5.1"
 }
 
 apply from: "../libs.gradle"
