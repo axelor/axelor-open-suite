@@ -1303,13 +1303,18 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
   public List<TrackingNumber> getAvailableTrackingNumbers(
       StockMoveLine stockMoveLine, StockMove stockMove) {
     String domain =
-        "self.product.id = "
-            + stockMoveLine.getProduct().getId()
-            + " AND self.id in (select stockLocationLine.trackingNumber.id from StockLocationLine stockLocationLine"
-            + " join StockLocation sl on sl.id = stockLocationLine.detailsStockLocation.id WHERE sl.id = "
-            + stockMove.getFromStockLocation().getId()
-            + " AND coalesce(stockLocationLine.currentQty, 0) != 0)";
-    return trackingNumberRepo.all().filter(domain).fetch();
+        "self.product.id = :productId"
+            + " AND (self.id in (select stockLocationLine.trackingNumber.id from StockLocationLine stockLocationLine"
+            + " join StockLocation sl on sl.id = stockLocationLine.detailsStockLocation.id WHERE sl.id = :fromStockLocationId"
+            + " AND coalesce(stockLocationLine.currentQty, 0) != 0)"
+            + " OR self.id not in (select stockLocationLine.trackingNumber.id from StockLocationLine stockLocationLine"
+            + " join StockLocation sl on sl.id = stockLocationLine.detailsStockLocation.id))";
+    return trackingNumberRepo
+        .all()
+        .filter(domain)
+        .bind("productId", stockMoveLine.getProduct().getId())
+        .bind("fromStockLocationId", stockMove.getFromStockLocation().getId())
+        .fetch();
   }
 
   public void fillRealizeWapPrice(StockMoveLine stockMoveLine) {
