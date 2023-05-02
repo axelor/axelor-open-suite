@@ -19,8 +19,6 @@ package com.axelor.apps.crm.web;
 
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.ImportConfiguration;
-import com.axelor.apps.base.db.repo.ImportConfigurationRepository;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.crm.db.Lead;
@@ -29,7 +27,6 @@ import com.axelor.apps.crm.db.report.IReport;
 import com.axelor.apps.crm.exception.CrmExceptionMessage;
 import com.axelor.apps.crm.service.LeadService;
 import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.csv.script.ImportLeadConfiguration;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -136,32 +133,6 @@ public class LeadController {
             .getSocialNetworkUrl(lead.getName(), lead.getFirstName(), lead.getEnterpriseName());
     response.setAttr("googleLabel", "title", urlMap.get("google"));
     response.setAttr("linkedinLabel", "title", urlMap.get("linkedin"));
-  }
-
-  public void getLeadImportConfig(ActionRequest request, ActionResponse response) {
-
-    ImportConfiguration leadImportConfig =
-        Beans.get(ImportConfigurationRepository.class)
-            .all()
-            .filter("self.bindMetaFile.fileName = ?1", ImportLeadConfiguration.IMPORT_LEAD_CONFIG)
-            .fetchOne();
-
-    logger.debug("ImportConfig for lead: {}", leadImportConfig);
-
-    if (leadImportConfig == null) {
-      response.setInfo(I18n.get(CrmExceptionMessage.LEAD_4));
-    } else {
-      response.setView(
-          ActionView.define(I18n.get(CrmExceptionMessage.LEAD_5))
-              .model("com.axelor.apps.base.db.ImportConfiguration")
-              .add("form", "import-configuration-form")
-              .param("popup", "reload")
-              .param("forceEdit", "true")
-              .param("popup-save", "false")
-              .param("show-toolbar", "false")
-              .context("_showRecord", leadImportConfig.getId().toString())
-              .map());
-    }
   }
 
   /**
