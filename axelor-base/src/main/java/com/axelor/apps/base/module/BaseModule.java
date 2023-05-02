@@ -33,9 +33,13 @@ import com.axelor.apps.base.db.repo.AlarmEngineBatchRepository;
 import com.axelor.apps.base.db.repo.BankAddressBaseRepository;
 import com.axelor.apps.base.db.repo.BankAddressRepository;
 import com.axelor.apps.base.db.repo.BankBaseRepository;
+import com.axelor.apps.base.db.repo.BankDetailsBaseRepository;
+import com.axelor.apps.base.db.repo.BankDetailsRepository;
 import com.axelor.apps.base.db.repo.BankRepository;
 import com.axelor.apps.base.db.repo.BaseBatchBaseRepository;
 import com.axelor.apps.base.db.repo.BaseBatchRepository;
+import com.axelor.apps.base.db.repo.CompanyBaseRepository;
+import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.DataBackupManagementRepository;
 import com.axelor.apps.base.db.repo.DataBackupRepository;
 import com.axelor.apps.base.db.repo.DurationBaseRepository;
@@ -341,5 +345,7 @@ public class BaseModule extends AxelorModule {
     bind(BankDetailsFullNameComputeService.class).to(BankDetailsFullNameComputeServiceImpl.class);
     bind(BaseServerStartListener.class);
     bind(AosSwagger.class);
+    bind(CompanyRepository.class).to(CompanyBaseRepository.class);
+    bind(BankDetailsRepository.class).to(BankDetailsBaseRepository.class);
   }
 }

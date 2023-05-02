@@ -16,25 +16,24 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.base.service;
+package com.axelor.apps.base.db.repo;
 
-import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.service.CompanyService;
+import com.axelor.common.ObjectUtils;
+import com.google.inject.Inject;
 
-public interface CompanyService {
+public class BankDetailsBaseRepository extends BankDetailsRepository {
 
-  /**
-   * Check whether the provided company has more than one active bank details. In that case, enable
-   * the manageMultiBanks boolean in the general object.
-   *
-   * @param company the company to check for multiple active bank details
-   */
-  void checkMultiBanks(Company company);
+  @Inject CompanyService companyService;
 
-  void validateLocale(Company company) throws AxelorException;
-
-  public Boolean hasDefaultBankDetails(Company company);
-
-  public BankDetails getDefaultBankDetails(Company company);
+  @Override
+  public BankDetails save(BankDetails bankDetails) {
+    Company company = bankDetails.getCompany();
+    if (ObjectUtils.notEmpty(company)) {
+      company.setDefaultBankDetails(companyService.getDefaultBankDetails(company));
+    }
+    return super.save(bankDetails);
+  }
 }

@@ -24,12 +24,14 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.studio.db.AppBase;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import org.apache.commons.lang3.LocaleUtils;
 
 public class CompanyServiceImpl implements CompanyService {
@@ -83,5 +85,31 @@ public class CompanyServiceImpl implements CompanyService {
           I18n.get(BaseExceptionMessage.COMPANY_INVALID_LOCALE),
           localeStr);
     }
+  }
+
+  @Override
+  public Boolean hasDefaultBankDetails(Company company) {
+    List<BankDetails> bankDetailsList = company.getBankDetailsList();
+    BankDetails defaultBankDetails = company.getDefaultBankDetails();
+
+    if (defaultBankDetails == null || ObjectUtils.isEmpty(bankDetailsList)) {
+      return false;
+    }
+    return bankDetailsList.stream()
+        .map(BankDetails::getId)
+        .filter(Objects::nonNull)
+        .anyMatch(defaultBankDetails.getId()::equals);
+  }
+
+  @Override
+  public BankDetails getDefaultBankDetails(Company company) {
+    List<BankDetails> bankDetailsList = company.getBankDetailsList();
+    BankDetails bankDetails = company.getDefaultBankDetails();
+
+    if (bankDetails != null || ObjectUtils.isEmpty(bankDetailsList)) {
+      return bankDetails;
+    }
+
+    return bankDetailsList.stream().filter(BankDetails::getActive).findFirst().orElse(bankDetails);
   }
 }
