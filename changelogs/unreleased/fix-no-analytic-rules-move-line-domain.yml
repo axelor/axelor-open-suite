@@ -1,0 +1,3 @@
+---
+title: "MoveLine : fix analytic account domain when no analytic rules are based on this account"
+type: fix
