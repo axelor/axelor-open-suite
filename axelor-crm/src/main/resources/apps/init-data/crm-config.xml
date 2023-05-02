@@ -22,13 +22,6 @@
   <input file="crm_partnerStatus.csv" separator=";"
     type="com.axelor.apps.crm.db.PartnerStatus" search="self.importId = :importId"/>
 
-  <input file="base_appCrm_leadStatus.csv" separator=";" type="com.axelor.studio.db.AppCrm"
-    search="self.app.code = :code" update="true"/>
-
-
-  <input file="base_appCrm_partnerStatus.csv" separator=";"
-    type="com.axelor.apps.base.db.AppCrm" search="self.app.code = :code" update="true"/>
-
   <input file="studio_appCrm.csv" separator=";" type="com.axelor.studio.db.AppCrm"
     search="self.app.code = :code">
     <bind to="app" column="code" search="self.code = :code"/>
@@ -42,6 +35,10 @@
       search="self.importId = :convertedLeadStatus_importId"/>
     <bind to="lostLeadStatus" column="lostLeadStatus_importId"
       search="self.importId = :lostLeadStatus_importId"/>
+    <bind to="closedWinPartnerStatus" column="closedWinPartnerStatus_importId"
+      search="self.importId = :closedWinPartnerStatus_importId"/>
+    <bind to="closedLostPartnerStatus" column="closedLostPartnerStatus_importId"
+      search="self.importId = :closedLostPartnerStatus_importId"/>
   </input>
 
 </csv-inputs>
