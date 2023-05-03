@@ -125,6 +125,7 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
         new HashMap<>(moveLineGroupService.getOnNewAttrsMap(moveLine, move));
     moveLineMassEntryAttrsService.addCutOffReadOnly(moveLine.getAccount(), attrsMap);
     moveLineMassEntryAttrsService.addMovePaymentModeReadOnly(attrsMap);
+    moveLineMassEntryAttrsService.addPartnerBankDetailsReadOnly(moveLine, attrsMap);
     moveLineMassEntryAttrsService.addInputActionSelectionIn(move, attrsMap);
 
     return attrsMap;

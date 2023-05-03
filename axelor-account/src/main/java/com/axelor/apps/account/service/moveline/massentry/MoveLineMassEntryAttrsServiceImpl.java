@@ -2,7 +2,9 @@ package com.axelor.apps.account.service.moveline.massentry;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.MoveLineMassEntry;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
@@ -76,5 +78,22 @@ public class MoveLineMassEntryAttrsServiceImpl implements MoveLineMassEntryAttrs
         this.addAttr("credit", "focus", true, attrsMap);
       }
     }
+  }
+
+  @Override
+  public void addPartnerBankDetailsReadOnly(
+      MoveLineMassEntry moveLine, Map<String, Map<String, Object>> attrsMap) {
+    this.addAttr(
+        "credit",
+        "focus",
+        moveLine != null
+            && moveLine.getMovePaymentMode() != null
+            && moveLine.getMovePaymentMode().getTypeSelect() != null
+            && moveLine.getMovePaymentMode().getTypeSelect() != PaymentModeRepository.TYPE_DD
+            && moveLine.getMovePaymentMode().getTypeSelect() != PaymentModeRepository.TYPE_IPO
+            && moveLine.getMovePaymentMode().getTypeSelect() != PaymentModeRepository.TYPE_TRANSFER
+            && moveLine.getMovePaymentMode().getTypeSelect()
+                != PaymentModeRepository.TYPE_EXCHANGES,
+        attrsMap);
   }
 }
