@@ -248,11 +248,13 @@ public class MoveRecordServiceImpl implements MoveRecordService {
       result.putInAttrs(moveAttrsService.getMassEntryBtnHiddenAttributeValues(move));
     }
 
-    result.putInValues(
-        "companyBankDetails",
-        Beans.get(MassEntryVerificationService.class)
-            .verifyCompanyBankDetails(
-                move.getCompany(), move.getCompanyBankDetails(), move.getJournal()));
+    if (move.getJournal() != null) {
+      result.putInValues(
+          "companyBankDetails",
+          Beans.get(MassEntryVerificationService.class)
+              .verifyCompanyBankDetails(
+                  move.getCompany(), move.getCompanyBankDetails(), move.getJournal()));
+    }
     checkPartnerCompatible(move, result);
     result.putInValues(moveRecordSetService.setPaymentMode(move));
     result.putInValues(moveRecordSetService.setPaymentCondition(move));
@@ -262,7 +264,8 @@ public class MoveRecordServiceImpl implements MoveRecordService {
       result.putInValues(moveRecordSetService.setOriginDate(move));
     }
 
-    if (appAccountService.getAppAccount().getActivatePassedForPayment()) {
+    if (appAccountService.getAppAccount().getActivatePassedForPayment()
+        && move.getJournal() != null) {
       result.putInValues(moveRecordSetService.setPfpStatus(move));
     }
 

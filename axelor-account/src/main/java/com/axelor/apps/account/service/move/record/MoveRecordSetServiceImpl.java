@@ -282,7 +282,6 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
 
   public Map<String, Object> setPfpStatus(Move move) {
     Objects.requireNonNull(move);
-    Objects.requireNonNull(move.getJournal());
     HashMap<String, Object> resultMap = new HashMap<>();
     JournalType journalType = move.getJournal().getJournalType();
 
