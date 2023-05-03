@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.project.web;
 
@@ -28,7 +29,6 @@ import com.axelor.apps.project.service.TimerProjectTaskService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.rpc.Context;
 import java.time.Duration;
 
 public class ProjectTaskController {
@@ -111,19 +111,6 @@ public class ProjectTaskController {
       projectTask = Beans.get(ProjectTaskRepository.class).find(projectTask.getId());
       Beans.get(ProjectTaskService.class).deleteProjectTask(projectTask);
       response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void fillSelection(ActionRequest request, ActionResponse response) {
-    try {
-      Context context = request.getContext();
-      ProjectTask projectTask = context.asType(ProjectTask.class);
-      response.setAttr(
-          "status",
-          "selection-in",
-          Beans.get(ProjectTaskService.class).getProjectStatusIdList(projectTask));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

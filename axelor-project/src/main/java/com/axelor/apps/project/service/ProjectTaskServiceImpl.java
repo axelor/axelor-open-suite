@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.project.service;
 
@@ -38,10 +39,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 public class ProjectTaskServiceImpl implements ProjectTaskService {
 
@@ -253,25 +252,5 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
 
     String result = buffer.toString();
     return StringUtils.isEmpty(result) ? value : result;
-  }
-
-  @Override
-  public List<Integer> getProjectStatusIdList(ProjectTask projectTask) {
-    Project project = projectTask.getProject();
-    List<Integer> projectStatusIdList = new ArrayList<>();
-    if (project != null) {
-      Set<ProjectStatus> projectTaskSet = project.getProjectTaskStatusSet();
-      if (projectTaskSet != null && !projectTaskSet.isEmpty()) {
-        projectStatusIdList =
-            projectTaskSet.stream()
-                .sorted(Comparator.comparing(ProjectStatus::getSequence))
-                .map(ProjectStatus::getId)
-                .map(Long::intValue)
-                .collect(Collectors.toList());
-      }
-    } else {
-      projectStatusIdList.add(-1);
-    }
-    return projectStatusIdList;
   }
 }
