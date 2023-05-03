@@ -77,7 +77,7 @@ public class MoveLineCurrencyServiceImpl implements MoveLineCurrencyService {
       moveLine.setCurrencyRate(currencyRate);
 
       moveLine.clearInvoiceTermList();
-      moveLineInvoiceTermService.generateDefaultInvoiceTerm(moveLine, dueDate, false);
+      moveLineInvoiceTermService.generateDefaultInvoiceTerm(move, moveLine, dueDate, false);
       moveLineService.computeFinancialDiscount(moveLine);
     }
   }

@@ -161,48 +161,59 @@ public class MassEntryServiceImpl implements MassEntryService {
   }
 
   @Override
-  public void verifyFieldsAndGenerateTaxLineAndCounterpart(Move parentMove, LocalDate dueDate)
-      throws AxelorException {
-    this.verifyFieldsChangeOnMoveLineMassEntry(parentMove, parentMove.getMassEntryManageCutOff());
+  public Map<String, Object> verifyFieldsAndGenerateTaxLineAndCounterpart(
+      Move parentMove, LocalDate dueDate) throws AxelorException {
+    HashMap<String, Object> resultMap = new HashMap<>();
 
-    MoveLineMassEntry lastLine =
-        parentMove.getMoveLineMassEntryList().get(parentMove.getMoveLineMassEntryList().size() - 1);
-    int inputAction = lastLine.getInputAction();
-    String technicalTypeSelect =
-        lastLine.getAccount() != null
-            ? lastLine.getAccount().getAccountType().getTechnicalTypeSelect()
-            : null;
-    int journalTechnicalTypeSelect =
-        parentMove.getJournal() != null
-            ? parentMove.getJournal().getJournalType().getTechnicalTypeSelect()
-            : 0;
-    int temporaryMoveNumber = lastLine.getTemporaryMoveNumber();
-    int[] technicalTypeSelectArray = {
-      JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE,
-      JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE,
-      JournalTypeRepository.TECHNICAL_TYPE_SELECT_CREDIT_NOTE
-    };
+    if (ObjectUtils.notEmpty(parentMove.getMoveLineMassEntryList())) {
+      this.verifyFieldsChangeOnMoveLineMassEntry(parentMove, parentMove.getMassEntryManageCutOff());
 
-    if ((ObjectUtils.notEmpty(inputAction)
-        && inputAction == MoveLineMassEntryRepository.MASS_ENTRY_INPUT_ACTION_COUNTERPART)) {
-      parentMove
-          .getMoveLineMassEntryList()
-          .remove(parentMove.getMoveLineMassEntryList().size() - 1);
-      Move workingMove =
-          massEntryMoveCreateService.createMoveFromMassEntryList(parentMove, temporaryMoveNumber);
+      MoveLineMassEntry lastLine =
+          parentMove
+              .getMoveLineMassEntryList()
+              .get(parentMove.getMoveLineMassEntryList().size() - 1);
+      int inputAction = lastLine.getInputAction();
+      String technicalTypeSelect =
+          lastLine.getAccount() != null
+              ? lastLine.getAccount().getAccountType().getTechnicalTypeSelect()
+              : null;
+      int journalTechnicalTypeSelect =
+          parentMove.getJournal() != null
+              ? parentMove.getJournal().getJournalType().getTechnicalTypeSelect()
+              : 0;
+      int temporaryMoveNumber = lastLine.getTemporaryMoveNumber();
+      int[] technicalTypeSelectArray = {
+        JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE,
+        JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE,
+        JournalTypeRepository.TECHNICAL_TYPE_SELECT_CREDIT_NOTE
+      };
 
-      int categoryError =
-          this.generatedTaxeAndCounterPart(parentMove, workingMove, dueDate, temporaryMoveNumber);
-      if (categoryError == 0) {
-        massEntryToolService.sortMoveLinesMassEntryByTemporaryNumber(parentMove);
-      } else {
-        massEntryVerificationService.setErrorMassEntryMoveLines(
-            parentMove,
-            temporaryMoveNumber,
-            "paymentMode",
-            I18n.get(AccountExceptionMessage.EXCEPTION_GENERATE_COUNTERPART));
+      if ((ObjectUtils.notEmpty(inputAction)
+          && inputAction == MoveLineMassEntryRepository.MASS_ENTRY_INPUT_ACTION_COUNTERPART)) {
+        parentMove
+            .getMoveLineMassEntryList()
+            .remove(parentMove.getMoveLineMassEntryList().size() - 1);
+        Move workingMove =
+            massEntryMoveCreateService.createMoveFromMassEntryList(parentMove, temporaryMoveNumber);
+
+        int categoryError =
+            this.generatedTaxeAndCounterPart(parentMove, workingMove, dueDate, temporaryMoveNumber);
+        if (categoryError == 0) {
+          massEntryToolService.sortMoveLinesMassEntryByTemporaryNumber(parentMove);
+        } else {
+          massEntryVerificationService.setErrorMassEntryMoveLines(
+              parentMove,
+              temporaryMoveNumber,
+              "paymentMode",
+              I18n.get(AccountExceptionMessage.EXCEPTION_GENERATE_COUNTERPART));
+        }
+
+        resultMap.put("massEntryErrors", parentMove.getMassEntryErrors());
+        resultMap.put("moveLineMassEntryList", parentMove.getMoveLineMassEntryList());
       }
     }
+
+    return resultMap;
   }
 
   @Override

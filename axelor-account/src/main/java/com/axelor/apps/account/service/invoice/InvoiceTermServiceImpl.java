@@ -238,6 +238,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
         this.createInvoiceTerm(
             invoice,
             null,
+            null,
             invoice.getBankDetails(),
             pfpUser,
             invoice.getPaymentMode(),
@@ -912,6 +913,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       throws AxelorException {
     return this.createInvoiceTerm(
         null,
+        moveLine.getMove(),
         moveLine,
         bankDetails,
         pfpUser,
@@ -927,6 +929,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   @Override
   public InvoiceTerm createInvoiceTerm(
       Invoice invoice,
+      Move move,
       MoveLine moveLine,
       BankDetails bankDetails,
       User pfpUser,
@@ -956,20 +959,20 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     newInvoiceTerm.setRemainingPfpAmount(BigDecimal.ZERO);
     newInvoiceTerm.setPercentage(percentage);
 
-    this.setParentFields(newInvoiceTerm, moveLine, invoice);
+    this.setParentFields(newInvoiceTerm, move, moveLine, invoice);
 
     if (moveLine != null) {
       moveLine.addInvoiceTermListItem(newInvoiceTerm);
     }
 
-    this.setPfpStatus(newInvoiceTerm);
+    this.setPfpStatus(newInvoiceTerm, move);
     this.computeCompanyAmounts(newInvoiceTerm);
 
     return newInvoiceTerm;
   }
 
   @Override
-  public void setPfpStatus(InvoiceTerm invoiceTerm) throws AxelorException {
+  public void setPfpStatus(InvoiceTerm invoiceTerm, Move move) throws AxelorException {
     Company company;
     boolean isSupplierPurchase, isSupplierRefund;
 
@@ -982,7 +985,9 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       isSupplierRefund =
           invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND;
     } else {
-      Move move = invoiceTerm.getMoveLine().getMove();
+      if (move == null) {
+        move = invoiceTerm.getMoveLine().getMove();
+      }
 
       company = move.getCompany();
       isSupplierPurchase =
@@ -1003,7 +1008,9 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     }
   }
 
-  public void setParentFields(InvoiceTerm invoiceTerm, MoveLine moveLine, Invoice invoice) {
+  @Override
+  public void setParentFields(
+      InvoiceTerm invoiceTerm, Move move, MoveLine moveLine, Invoice invoice) {
     if (invoice != null) {
       invoiceTerm.setCompany(invoice.getCompany());
       invoiceTerm.setPartner(invoice.getPartner());
@@ -1019,19 +1026,20 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
         invoiceTerm.setOriginDate(invoice.getOriginDate());
       }
     } else if (moveLine != null) {
-      invoiceTerm.setCompany(moveLine.getMove().getCompany());
-      invoiceTerm.setCurrency(moveLine.getMove().getCurrency());
+
+      invoiceTerm.setCompany(move.getCompany());
+      invoiceTerm.setCurrency(move.getCurrency());
       invoiceTerm.setOrigin(moveLine.getOrigin());
 
       if (moveLine.getPartner() != null) {
         invoiceTerm.setPartner(moveLine.getPartner());
       } else {
-        invoiceTerm.setPartner(moveLine.getMove().getPartner());
+        invoiceTerm.setPartner(move.getPartner());
       }
     }
 
     if (moveLine != null && invoiceTerm.getOriginDate() == null) {
-      invoiceTerm.setOriginDate(moveLine.getMove().getOriginDate());
+      invoiceTerm.setOriginDate(move.getOriginDate());
     }
   }
 

@@ -22,6 +22,7 @@ import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.AppBase;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -433,5 +434,16 @@ public class UserServiceImpl implements UserService {
     user.setPartner(partner);
     userRepo.save(user);
     return partner;
+  }
+
+  @Override
+  public TradingName getTradingName() {
+    final User user = getUser();
+
+    if (user == null) {
+      return null;
+    }
+
+    return user.getTradingName();
   }
 }

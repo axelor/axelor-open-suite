@@ -1203,6 +1203,11 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       return;
     }
     invoiceTermList.forEach(
-        it -> invoiceTermService.setParentFields(it, it.getMoveLine(), invoice));
+        it ->
+            invoiceTermService.setParentFields(
+                it,
+                Optional.ofNullable(it.getMoveLine()).map(MoveLine::getMove).orElse(null),
+                it.getMoveLine(),
+                invoice));
   }
 }

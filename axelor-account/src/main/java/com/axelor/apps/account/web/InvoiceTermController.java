@@ -146,7 +146,7 @@ public class InvoiceTermController {
         invoiceTermService.initCustomizedInvoiceTerm(invoice, invoiceTerm);
       }
 
-      invoiceTermService.setParentFields(invoiceTerm, moveLine, invoice);
+      invoiceTermService.setParentFields(invoiceTerm, move, moveLine, invoice);
       response.setValues(invoiceTerm);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -425,7 +425,7 @@ public class InvoiceTermController {
                 .find(Long.valueOf((Integer) request.getContext().get("_moveLineId"))));
       }
 
-      Beans.get(InvoiceTermService.class).setPfpStatus(invoiceTerm);
+      Beans.get(InvoiceTermService.class).setPfpStatus(invoiceTerm, null);
       response.setValue("pfpValidateStatusSelect", invoiceTerm.getPfpValidateStatusSelect());
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
@@ -443,12 +443,12 @@ public class InvoiceTermController {
       response.setValue("$isMultiCurrency", isMultiCurrency);
       MoveLine moveLine = invoiceTerm.getMoveLine();
       Invoice invoice = invoiceTerm.getInvoice();
+      Move move = moveLine.getMove();
       if (invoice != null
               && !Objects.equals(invoice.getCurrency(), invoice.getCompany().getCurrency())
-          || invoice == null
-              && !Objects.equals(
-                  moveLine.getMove().getCurrency(),
-                  moveLine.getMove().getCompany().getCurrency())) {
+          || (invoice == null
+              && move != null
+              && !Objects.equals(move.getCurrency(), move.getCompany().getCurrency()))) {
         response.setAttr("amount", "title", I18n.get("Amount in currency"));
         response.setAttr("amountRemaining", "title", I18n.get("Amount remaining in currency"));
       }

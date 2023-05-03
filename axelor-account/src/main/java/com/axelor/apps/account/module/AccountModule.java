@@ -283,6 +283,10 @@ import com.axelor.apps.account.service.move.PaymentMoveLineDistributionService;
 import com.axelor.apps.account.service.move.PaymentMoveLineDistributionServiceImpl;
 import com.axelor.apps.account.service.move.SimulatedMoveService;
 import com.axelor.apps.account.service.move.SimulatedMoveServiceImpl;
+import com.axelor.apps.account.service.move.attributes.MoveAttrsService;
+import com.axelor.apps.account.service.move.attributes.MoveAttrsServiceImpl;
+import com.axelor.apps.account.service.move.control.MoveCheckService;
+import com.axelor.apps.account.service.move.control.MoveCheckServiceImpl;
 import com.axelor.apps.account.service.move.massentry.MassEntryMoveCreateService;
 import com.axelor.apps.account.service.move.massentry.MassEntryMoveCreateServiceImpl;
 import com.axelor.apps.account.service.move.massentry.MassEntryService;
@@ -291,6 +295,18 @@ import com.axelor.apps.account.service.move.massentry.MassEntryToolService;
 import com.axelor.apps.account.service.move.massentry.MassEntryToolServiceImpl;
 import com.axelor.apps.account.service.move.massentry.MassEntryVerificationService;
 import com.axelor.apps.account.service.move.massentry.MassEntryVerificationServiceImpl;
+import com.axelor.apps.account.service.move.record.MoveDefaultService;
+import com.axelor.apps.account.service.move.record.MoveDefaultServiceImpl;
+import com.axelor.apps.account.service.move.record.MoveRecordService;
+import com.axelor.apps.account.service.move.record.MoveRecordServiceImpl;
+import com.axelor.apps.account.service.move.record.MoveRecordSetService;
+import com.axelor.apps.account.service.move.record.MoveRecordSetServiceImpl;
+import com.axelor.apps.account.service.move.record.MoveRecordUpdateService;
+import com.axelor.apps.account.service.move.record.MoveRecordUpdateServiceImpl;
+import com.axelor.apps.account.service.moveline.MoveLineAttrsService;
+import com.axelor.apps.account.service.moveline.MoveLineAttrsServiceImpl;
+import com.axelor.apps.account.service.moveline.MoveLineCheckService;
+import com.axelor.apps.account.service.moveline.MoveLineCheckServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineConsolidateService;
@@ -299,12 +315,24 @@ import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineCurrencyService;
 import com.axelor.apps.account.service.moveline.MoveLineCurrencyServiceImpl;
+import com.axelor.apps.account.service.moveline.MoveLineDefaultService;
+import com.axelor.apps.account.service.moveline.MoveLineDefaultServiceImpl;
+import com.axelor.apps.account.service.moveline.MoveLineGroupService;
+import com.axelor.apps.account.service.moveline.MoveLineGroupServiceImpl;
+import com.axelor.apps.account.service.moveline.MoveLineRecordService;
+import com.axelor.apps.account.service.moveline.MoveLineRecordServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.account.service.moveline.MoveLineToolServiceImpl;
+import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryAttrsService;
+import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryAttrsServiceImpl;
+import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryGroupService;
+import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryGroupServiceImpl;
+import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryRecordService;
+import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryRecordServiceImpl;
 import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryService;
 import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryServiceImpl;
 import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryToolService;
@@ -689,7 +717,31 @@ public class AccountModule extends AxelorModule {
 
     bind(InvoiceProductStatementService.class).to(InvoiceProductStatementServiceImpl.class);
 
+    bind(MoveLineAttrsService.class).to(MoveLineAttrsServiceImpl.class);
+
+    bind(MoveLineCheckService.class).to(MoveLineCheckServiceImpl.class);
+
+    bind(MoveLineDefaultService.class).to(MoveLineDefaultServiceImpl.class);
+
+    bind(MoveLineGroupService.class).to(MoveLineGroupServiceImpl.class);
+
+    bind(MoveLineRecordService.class).to(MoveLineRecordServiceImpl.class);
+
     bind(MoveLineCurrencyService.class).to(MoveLineCurrencyServiceImpl.class);
+
+    bind(MoveDefaultService.class).to(MoveDefaultServiceImpl.class);
+
+    bind(MoveRecordService.class).to(MoveRecordServiceImpl.class);
+
+    bind(MoveCheckService.class).to(MoveCheckServiceImpl.class);
+
+    bind(MoveAttrsService.class).to(MoveAttrsServiceImpl.class);
+
+    bind(MoveLineCheckService.class).to(MoveLineCheckServiceImpl.class);
+
+    bind(MoveRecordUpdateService.class).to(MoveRecordUpdateServiceImpl.class);
+
+    bind(MoveRecordSetService.class).to(MoveRecordSetServiceImpl.class);
 
     bind(MovePfpService.class).to(MovePfpServiceImpl.class);
 
@@ -704,5 +756,11 @@ public class AccountModule extends AxelorModule {
     bind(MoveLineMassEntryService.class).to(MoveLineMassEntryServiceImpl.class);
 
     bind(MoveLineMassEntryToolService.class).to(MoveLineMassEntryToolServiceImpl.class);
+
+    bind(MoveLineMassEntryGroupService.class).to(MoveLineMassEntryGroupServiceImpl.class);
+
+    bind(MoveLineMassEntryAttrsService.class).to(MoveLineMassEntryAttrsServiceImpl.class);
+
+    bind(MoveLineMassEntryRecordService.class).to(MoveLineMassEntryRecordServiceImpl.class);
   }
 }
