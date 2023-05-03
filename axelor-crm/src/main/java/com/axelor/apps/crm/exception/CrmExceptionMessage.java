@@ -121,4 +121,13 @@ public final class CrmExceptionMessage {
 
   public static final String CRM_SALES_PROPOSITION_STATUS_MISSING = /*$$(*/
       "Please fill sales proposition status in App CRM configuration." /*)*/;
+
+  public static final String CRM_CLOSED_LOST_PARTNER_STATUS_MISSING = /*$$(*/
+      "Please fill closed lost partner status in App CRM configuration." /*)*/;
+
+  public static final String CRM_CLOSED_WIN_PARTNER_STATUS_MISSING = /*$$(*/
+      "Please fill closed win partner status in App CRM configuration." /*)*/;
+
+  public static final String PARTNER_LOSE_WRONG_STATUS = /*$$(*/
+      "Can not mark as lost an already lost partner." /*)*/;
 }

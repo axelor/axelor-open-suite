@@ -165,6 +165,21 @@
         <field name="scheduledEventDateT" colSpan="3" readonly="true"/>
       </insert>
     </extend>
+    <extend target="//panel[@name='imagePanel']">
+      <insert position="before">
+        <field name="partnerStatus" showTitle="false" colSpan="12" widget="NavSelect"
+          x-order="sequence" onChange="action-partner-group-partner-status-onchange"
+          showIf="$isFromCrm " if=" __config__.app.getApp('crm')?.getCrmProcessOnPartner()"/>
+      </insert>
+    </extend>
+    <extend target="//field[@name='sellerCode']">
+      <insert position="after">
+        <field name="lostReason" hidden="true" colSpan="6"/>
+        <field name="lostReasonStr" showIf="lostReason.freeText" colSpan="6"/>
+        <field name="lostReason.freeText" hidden="true"/>
+        <field name="$isFromCrm" hidden="true" readonly="true"/>
+      </insert>
+    </extend>
   </form>
 
   <form id="crm-partner-customer-form" name="partner-customer-form" title="Customer"
@@ -415,6 +430,18 @@
     </template>
   </cards>
 
+  <form name="partner-form-lost-popup" model="com.axelor.apps.base.db.Partner"
+    title="Lost reason" width="large" onSave="action-crm-group-close-lost-partner">
+    <panel name="mainPanel">
+      <field name="lostReason" canEdit="false" colOffset="4" colSpan="4"/>
+      <field name="lostReasonStr" hideIf="!lostReason.freeText" colOffset="4" colSpan="4"/>
+      <button name="lostReasonConfirmBtn" title="Confirm lost reason"
+        onClick="action-partner-lost-reason-check,action-partner-method-confirm-lost-reason"
+        colOffset="4" colSpan="4"/>
+      <field name="lostReason.freeText" hidden="true"/>
+    </panel>
+  </form>
+
   <!-- CREATE CRM OBJECT FROM PARTNER -->
 
   <action-view name="action-partner-view-schedule-event"
@@ -555,6 +582,7 @@
   <action-group name="crm-action-group-partner-onload">
     <action name="action-group-partner-onload" if="__config__.app.isApp('base')"/>
     <action name="action-partner-method-get-subsidiary-partners-count"/>
+    <action name="action-partner-record-set-from-crm"/>
   </action-group>
 
   <action-group name="action-group-partner-contact-onNew">
@@ -569,8 +597,56 @@
       if="_isProspect || (__user__?.activeCompany?.defaultPartnerCategorySelect == 1 &amp;&amp; !_isSupplier &amp;&amp; !_isCarrier &amp;&amp; !_isSubcontractor)"/>
   </action-record>
 
+  <action-record name="action-partner-record-set-partner-status"
+    model="com.axelor.apps.base.db.Partner">
+    <field name="partnerStatus" expr="eval: __repo__(PartnerStatus).getDefaultStatus()"/>
+  </action-record>
+
+  <action-record name="action-partner-record-set-from-crm"
+    model="com.axelor.apps.base.db.Partner">
+    <field name="$isFromCrm" expr="eval: _isFromCrm"/>
+  </action-record>
+
   <action-group name="crm-action-group-partner-onnew">
     <action name="action-group-base-partner-onnew"/>
     <action name="action-partner-record-set-is-prospect"/>
+    <action name="action-partner-record-set-partner-status"/>
+    <action name="action-partner-record-set-from-crm"/>
   </action-group>
+
+  <action-group name="action-partner-group-partner-status-onchange">
+    <action name="save"
+      if="eval: __this__?.partnerStatus?.id != __config__.app.getApp('crm')?.closedWinPartnerStatus?.id || __this__?.partnerStatus?.id != __config__.app.getApp('crm')?.closedLostPartnerStatus?.id"/>
+    <action name="action-partner-view-partner-popup-view"
+      if="eval: __this__?.partnerStatus?.id
+      == __config__.app.getApp('crm')?.closedLostPartnerStatus?.id"/>
+    <action name="action-partner-record-win"
+      if="eval: __this__?.partnerStatus?.id == __config__.app.getApp('crm')?.closedWinPartnerStatus?.id"/>
+  </action-group>
+
+  <action-view name="action-partner-view-partner-popup-view"
+    model="com.axelor.apps.base.db.Partner" title="Lost reason">
+    <view type="form" name="partner-form-lost-popup"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="popup-save" value="true"/>
+    <view-param name="forceEdit" value="true"/>
+    <context name="_showRecord" expr="eval: id"/>
+  </action-view>
+
+  <action-record name="action-partner-record-win"
+    model="com.axelor.apps.base.db.Partner">
+    <field name="isCustomer" expr="eval: true"/>
+    <field name="isProspect" expr="eval: false"/>
+  </action-record>
+
+  <action-condition name="action-partner-lost-reason-check">
+    <check error="A lost reason must be selected" field="lostReason"
+      if="lostReason == null || lostReason == 0"/>
+  </action-condition>
+
+  <action-method name="action-partner-method-confirm-lost-reason">
+    <call class="com.axelor.apps.crm.web.PartnerCrmController" method="loseLead"/>
+  </action-method>
 </object-views>
