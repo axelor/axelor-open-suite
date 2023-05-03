@@ -290,7 +290,8 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
       String lineCode,
       LocalDate startDate,
       LocalDate endDate,
-      int analyticCounter) {
+      int analyticCounter)
+      throws AxelorException {
     Set<Account> lineAccountSet = line.getAccountSet();
     Set<AccountType> lineAccountTypeSet = line.getAccountTypeSet();
     Set<AnalyticAccount> lineAnalyticAccountSet = line.getAnalyticAccountSet();
