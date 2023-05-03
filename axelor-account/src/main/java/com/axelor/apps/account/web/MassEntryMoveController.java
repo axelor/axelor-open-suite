@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.move.massentry.MassEntryService;
 import com.axelor.apps.account.service.move.massentry.MassEntryVerificationService;
+import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryToolService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
@@ -71,7 +72,8 @@ public class MassEntryMoveController {
           response.setAttr("controlMassEntryMoves", "hidden", true);
           response.setAttr("validateMassEntryMoves", "hidden", false);
         }
-        response.setValues(move);
+        response.setValue("moveLineMassEntryList", move.getMoveLineMassEntryList());
+        response.setValue("massEntryErrors", move.getMassEntryErrors());
       } else {
         response.setError(I18n.get(AccountExceptionMessage.MASS_ENTRY_MOVE_NO_LINE));
       }
@@ -97,12 +99,14 @@ public class MassEntryMoveController {
         moveIdList = entryMap.getKey();
         error = entryMap.getValue();
 
-        response.setValues(move);
+        response.setValue("moveLineMassEntryList", move.getMoveLineMassEntryList());
+        response.setValue("massEntryErrors", move.getMassEntryErrors());
+        response.setValue("massEntryStatusSelect", move.getMassEntryStatusSelect());
+
         if (error.length() > 0) {
           response.setFlash(
               String.format(I18n.get(AccountExceptionMessage.MOVE_ACCOUNTING_NOT_OK), error));
           response.setAttr("controlMassEntryMoves", "hidden", false);
-          response.setAttr("validateMassEntryMoves", "hidden", true);
         } else {
           response.setFlash(I18n.get(AccountExceptionMessage.MOVE_ACCOUNTING_OK));
           if (!CollectionUtils.isEmpty(moveIdList)) {
@@ -116,6 +120,7 @@ public class MassEntryMoveController {
                     .map());
           }
         }
+        response.setAttr("validateMassEntryMoves", "hidden", true);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
@@ -134,6 +139,21 @@ public class MassEntryMoveController {
             Beans.get(MassEntryVerificationService.class)
                 .verifyCompanyBankDetails(
                     move.getCompany(), move.getCompanyBankDetails(), move.getJournal()));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void setMassEntryLinesMoveStatus(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+
+      if (move != null) {
+        Beans.get(MoveLineMassEntryToolService.class)
+            .setNewMoveStatusSelectMassEntryLines(
+                move.getMoveLineMassEntryList(), MoveRepository.STATUS_NEW);
+        response.setValue("moveLineMassEntryList", move.getMoveLineMassEntryList());
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);

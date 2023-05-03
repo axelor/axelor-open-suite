@@ -107,7 +107,7 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
     valuesMap.put("currencyRate", moveLine.getCurrencyRate());
     valuesMap.put("currencyAmount", moveLine.getCurrencyAmount());
     valuesMap.put("vatSystemSelect", moveLine.getVatSystemSelect());
-    valuesMap.put("pfpValidatorUser", moveLine.getPfpValidatorUser());
+    valuesMap.put("pfpValidatorUser", moveLine.getMovePfpValidatorUser());
     valuesMap.put("cutOffStartDate", moveLine.getCutOffStartDate());
     valuesMap.put("cutOffEndDate", moveLine.getCutOffEndDate());
     valuesMap.put("fieldsErrorList", moveLine.getFieldsErrorList());

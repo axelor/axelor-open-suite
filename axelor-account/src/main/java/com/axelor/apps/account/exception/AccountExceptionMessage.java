@@ -1614,4 +1614,7 @@ public final class AccountExceptionMessage {
 
   public static final String NO_DEBT_RECOVERY_HISTORY_FILE = /*$$(*/
       "No debt recovery history attachments found." /*)*/;
+
+  public static final String MOVE_TAX_NOT_EQUALS = /*$$(*/
+      "Sum of tax amounts in charge and income lines is not the same as sum of tax lines." /*)*/;
 }

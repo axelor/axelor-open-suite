@@ -396,10 +396,14 @@ public class MoveController {
     }
   }
 
-  public void manageMoveLineAxis(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+  public void manageMoveLineAxis(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
+      String fieldNameToSet = "moveLineList";
+      if (move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL) {
+        fieldNameToSet = "moveLineMassEntryList";
+      }
+
       if (move.getCompany() != null) {
         AccountConfig accountConfig =
             Beans.get(AccountConfigService.class).getAccountConfig(move.getCompany());
@@ -409,7 +413,7 @@ public class MoveController {
           AnalyticAxis analyticAxis = null;
           for (int i = 1; i <= 5; i++) {
             response.setAttr(
-                "moveLineList.axis" + i + "AnalyticAccount",
+                fieldNameToSet + ".axis" + i + "AnalyticAccount",
                 "hidden",
                 !(i <= accountConfig.getNbrOfAnalyticAxisSelect()));
             for (AnalyticAxisByCompany analyticAxisByCompany :
@@ -420,15 +424,17 @@ public class MoveController {
             }
             if (analyticAxis != null) {
               response.setAttr(
-                  "moveLineList.axis" + i + "AnalyticAccount", "title", analyticAxis.getName());
+                  fieldNameToSet + ".axis" + i + "AnalyticAccount",
+                  "title",
+                  analyticAxis.getName());
               analyticAxis = null;
             }
           }
         } else {
-          response.setAttr("moveLineList.analyticDistributionTemplate", "hidden", true);
-          response.setAttr("moveLineList.analyticMoveLineList", "hidden", true);
+          response.setAttr(fieldNameToSet + ".analyticDistributionTemplate", "hidden", true);
+          response.setAttr(fieldNameToSet + ".analyticMoveLineList", "hidden", true);
           for (int i = 1; i <= 5; i++) {
-            response.setAttr("moveLineList.axis" + i + "AnalyticAccount", "hidden", true);
+            response.setAttr(fieldNameToSet + ".axis" + i + "AnalyticAccount", "hidden", true);
           }
         }
       }
