@@ -123,6 +123,7 @@
 
   <selection name='ibase.batch.action.select'>
     <option value='2'>Calendar synchronization</option>
+    <option value='3'>Password change</option>
   </selection>
 
   <selection name="base.routing.rule.type.select">

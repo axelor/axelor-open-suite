@@ -22,9 +22,20 @@
     <integer name="synchronizationDuration" min="0" title="Synchronization duration (week)"/>
     <boolean name="allEvents" title="All events"/>
 
+    <!-- PASSWORD CHANGE BATCH -->
+    <boolean name="generateNewRandomPasswords" title="Generate a new random passwords"/>
+    <boolean name="updatePasswordNextLogin"
+      title="Force the users to update password the next login"/>
+    <boolean name="allUsers" title="All users"/>
+    <many-to-many name="userSet" title="Users" ref="com.axelor.auth.db.User"/>
+    <many-to-many name="groupSet" title="Groups" ref="com.axelor.auth.db.Group"/>
+    <integer name="nbOfDaySinceLastUpdate" title="Number of days since last update" min="0"
+      help="Only the users for which the password has not been updated since this number of days will be taken into account."/>
+
     <extra-code>
 		<![CDATA[
 		public static final int ACTION_SYNCHRONIZE_CALENDARS = 2;
+		public static final int ACTION_PASSWORD_CHANGE = 3;
 		]]>
     </extra-code>
   </entity>
