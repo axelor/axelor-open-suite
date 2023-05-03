@@ -1216,7 +1216,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
       timesheetLine.setProjectTask(projectPlanningTime.getProjectTask());
       timesheetLine.setProject(projectPlanningTime.getProject());
     }
-    timesheetLine.setDate(projectPlanningTime.getDate());
+    timesheetLine.setDate(projectPlanningTime.getStartDateTime().toLocalDate());
     timesheetLine.setProjectPlanningTime(projectPlanningTime);
     return timesheetLine;
   }

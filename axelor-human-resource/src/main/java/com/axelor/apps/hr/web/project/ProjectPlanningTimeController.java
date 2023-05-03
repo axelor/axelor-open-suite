@@ -19,16 +19,12 @@
 package com.axelor.apps.hr.web.project;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeService;
-import com.axelor.apps.project.db.ProjectPlanningTime;
-import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
-import com.google.inject.persist.Transactional;
 import java.util.List;
 import java.util.Map;
 

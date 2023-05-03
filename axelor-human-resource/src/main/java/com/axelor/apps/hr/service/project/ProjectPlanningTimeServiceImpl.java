@@ -34,12 +34,12 @@ import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.db.JPA;
+import com.axelor.db.mapper.Adapter;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
@@ -132,10 +132,12 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
       return;
     }
 
-    DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
-
-    LocalDateTime fromDate = LocalDateTime.parse(datas.get("fromDate").toString(), formatter);
-    LocalDateTime toDate = LocalDateTime.parse(datas.get("toDate").toString(), formatter);
+    LocalDateTime fromDate =
+        (LocalDateTime)
+            Adapter.adapt(datas.get("fromDate"), LocalDateTime.class, LocalDateTime.class, null);
+    LocalDateTime toDate =
+        (LocalDateTime)
+            Adapter.adapt(datas.get("toDate"), LocalDateTime.class, LocalDateTime.class, null);
 
     ProjectTask projectTask = null;
 
@@ -170,6 +172,8 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
     while (fromDate.isBefore(toDate)) {
 
       LocalDate date = fromDate.toLocalDate();
+      LocalDateTime taskEndDateTime =
+          fromDate.withHour(toDate.getHour()).withMinute(toDate.getMinute());
 
       LOG.debug("Create Planning for the date: {}", date);
 
@@ -186,7 +190,8 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
         planningTime.setProduct(activity);
         planningTime.setTimepercent(timePercent);
         planningTime.setEmployee(employee);
-        planningTime.setDate(date);
+        planningTime.setStartDateTime(fromDate);
+        planningTime.setEndDateTime(taskEndDateTime);
         planningTime.setProject(project);
 
         BigDecimal totalHours = BigDecimal.ZERO;

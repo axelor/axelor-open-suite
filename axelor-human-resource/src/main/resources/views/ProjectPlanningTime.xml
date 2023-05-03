@@ -22,13 +22,11 @@
 
   <form name="project-planning-time-form" title="Planned time"
     model="com.axelor.apps.project.db.ProjectPlanningTime"
-    onNew="action-project-planning-time-attrs-default"
-    onSave="action-project-planning-time-validate-check-start-time-end-time">
+    onNew="action-project-planning-time-attrs-default">
     <panel name="mainPanel">
       <field name="projectTask" domain="self.project = :project" canEdit="false"
         onChange="action-project-planning-time-attrs-project-task-onChange"/>
-      <field name="plannedTime" colSpan="3"
-        onChange="action-project-planning-time-record-planned-time-onchange,action-project-planning-time-validate-check-start-time-end-time"/>
+      <field name="plannedTime" colSpan="3"/>
       <field name="timeUnit" colSpan="3" readonlyIf="_projectTask"
         onSelect="action-project-task-attrs-set-time-unit-domain"
         if="__config__.app.isApp('business-project')"/>
@@ -44,9 +42,6 @@
         onChange="action-project-planning-time-record-start-time-onchange"/>
       <field name="endDateTime"/>
       <field name="project" hidden="true"/>
-      <!--<field name="date"/> <spacer name="dateSpacer" colSpan="6"/> <field name="startTime" requiredIf="endTime"
-        onChange="action-project-planning-time-record-start-time-onchange,action-project-planning-time-validate-check-start-time-end-time"/>
-        <field name="endTime" requiredIf="startTime" onChange="action-project-planning-time-record-end-time-onchange,action-project-planning-time-validate-check-start-time-end-time"/> -->
       <field name="description" colSpan="12" widget="html"/>
     </panel>
   </form>
@@ -151,7 +146,7 @@
     <attribute name="value" for="product" expr="eval: __user__.employee.product"
       if="_project &amp;&amp; __user__ in __repo__(Project).find(_project.id).membersUserSet &amp;&amp; __user__.employee"/>
 
-    <attribute name="value" for="date" expr="#{__config__.date}"/>
+    <attribute name="value" for="startDateTime" expr="eval: __datetime__"/>
     <attribute name="value" for="employee" expr="eval: _employee" if="_employee"/>
     <attribute name="value" for="project" expr="eval:__parent__?.project"
       if="__parent__?._model == 'com.axelor.apps.project.db.ProjectTask'"/>
@@ -201,38 +196,10 @@
     <alert message="Are you sure wants to remove selected lines?"/>
   </action-validate>
 
-  <action-record name="action-project-planning-time-record-planned-time-onchange"
-    model="com.axelor.apps.project.db.ProjectPlanningTime">
-    <field name="startTime"
-      expr="eval: endTime.minusMinutes((long)(plannedTime.doubleValue()*60))"
-      if="!startTime &amp;&amp; endTime &amp;&amp; plannedTime"/>
-    <field name="endTime"
-      expr="eval: startTime.plusMinutes((long)(plannedTime.doubleValue()*60))"
-      if="startTime &amp;&amp; plannedTime &amp;&amp; plannedTime.add(new BigDecimal(startTime.getHour()+(startTime.getMinute()/60))).compareTo(new BigDecimal(24)) &lt; 1"/>
-  </action-record>
-
   <action-record name="action-project-planning-time-record-start-time-onchange"
     model="com.axelor.apps.project.db.ProjectPlanningTime">
-    <!--<field name="plannedTime" expr="eval: java.time.Duration.between(startTime , endTime).toMinutes()/60l"
-      if="startTime &amp;&amp; endTime &amp;&amp; !plannedTime"/> -->
     <field name="endDateTime" expr="eval: startDateTime.plusMinutes(60)" if="startDateTime"/>
   </action-record>
-
-  <action-record name="action-project-planning-time-record-end-time-onchange"
-    model="com.axelor.apps.project.db.ProjectPlanningTime">
-    <field name="plannedTime"
-      expr="eval: java.time.Duration.between(startTime , endTime).toMinutes()/60l"
-      if="startTime &amp;&amp; endTime &amp;&amp; !plannedTime"/>
-    <field name="startTime"
-      expr="eval: endTime.minusMinutes((long)(plannedTime.doubleValue()*60))"
-      if="endTime &amp;&amp; plannedTime"/>
-  </action-record>
-
-  <action-validate
-    name="action-project-planning-time-validate-check-start-time-end-time">
-    <error message="Planning line cannot be in two different days"
-      if="eval: startTime &amp;&amp; plannedTime &amp;&amp; (plannedTime.add(new BigDecimal(startTime.getHour()+(startTime.getMinute()/60))).compareTo(new BigDecimal(24)) ==1  || (endTime &amp;&amp; endTime.isBefore(startTime)) || plannedTime &gt; 24)"/>
-  </action-validate>
 
   <action-attrs name="action-project-planning-time-attrs-project-task-onChange">
     <attribute for="timeUnit" name="value" expr="eval: projectTask.timeUnit"
