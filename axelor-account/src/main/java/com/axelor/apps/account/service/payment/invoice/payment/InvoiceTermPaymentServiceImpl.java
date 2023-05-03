@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.InvoiceTermPayment;
+import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PayVoucherElementToPay;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
@@ -237,18 +238,18 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
       InvoiceTerm invoiceTermToPay,
       BigDecimal paidAmount,
       boolean applyFinancialDiscount) {
+    boolean isCompanyCurrency =
+        invoicePayment == null
+            || invoicePayment.getCurrency().equals(invoiceTermToPay.getCompany().getCurrency());
+
     InvoiceTermPayment invoiceTermPayment = new InvoiceTermPayment();
 
     invoiceTermPayment.setInvoicePayment(invoicePayment);
     invoiceTermPayment.setInvoiceTerm(invoiceTermToPay);
-    manageInvoiceTermFinancialDiscount(
-        invoiceTermPayment, invoiceTermToPay, applyFinancialDiscount);
-
-    boolean isCompanyCurrency =
-        invoicePayment == null
-            || invoicePayment.getCurrency().equals(invoiceTermToPay.getCompany().getCurrency());
     invoiceTermPayment.setPaidAmount(
         isCompanyCurrency ? this.computePaidAmount(invoiceTermToPay, paidAmount) : paidAmount);
+    manageInvoiceTermFinancialDiscount(
+        invoiceTermPayment, invoiceTermToPay, applyFinancialDiscount);
     invoiceTermPayment.setCompanyPaidAmount(
         isCompanyCurrency
             ? paidAmount
@@ -258,8 +259,14 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
   }
 
   protected BigDecimal computeCompanyPaidAmount(InvoiceTerm invoiceTerm, BigDecimal paidAmount) {
-    BigDecimal ratio =
-        invoiceTerm.getCompanyAmount().divide(invoiceTerm.getAmount(), 10, RoundingMode.HALF_UP);
+    BigDecimal ratio;
+    MoveLine moveLine = invoiceTerm.getMoveLine();
+    if (moveLine != null) {
+      ratio = moveLine.getCurrencyRate();
+    } else {
+      ratio =
+          invoiceTerm.getCompanyAmount().divide(invoiceTerm.getAmount(), 10, RoundingMode.HALF_UP);
+    }
 
     return paidAmount
         .multiply(ratio)
@@ -267,8 +274,14 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
   }
 
   protected BigDecimal computePaidAmount(InvoiceTerm invoiceTerm, BigDecimal companyPaidAmount) {
-    BigDecimal ratio =
-        invoiceTerm.getAmount().divide(invoiceTerm.getCompanyAmount(), 10, RoundingMode.HALF_UP);
+    BigDecimal ratio;
+    MoveLine moveLine = invoiceTerm.getMoveLine();
+    if (moveLine != null) {
+      ratio = BigDecimal.ONE.divide(moveLine.getCurrencyRate(), 10, RoundingMode.HALF_UP);
+    } else {
+      ratio =
+          invoiceTerm.getAmount().divide(invoiceTerm.getCompanyAmount(), 10, RoundingMode.HALF_UP);
+    }
 
     return companyPaidAmount
         .multiply(ratio)
