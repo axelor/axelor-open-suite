@@ -18,4 +18,9 @@ public interface MoveLineMassEntryAttrsService {
 
   void addPartnerBankDetailsReadOnly(
       MoveLineMassEntry moveLine, Map<String, Map<String, Object>> attrsMap);
+
+  void addMovePfpValidatorUserReadOnly(
+      MoveLineMassEntry moveLine, Map<String, Map<String, Object>> attrsMap);
+
+  void addMovePfpValidatorUserRequired(Account account, Map<String, Map<String, Object>> attrsMap);
 }

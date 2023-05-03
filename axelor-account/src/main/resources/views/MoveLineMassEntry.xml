@@ -248,9 +248,4 @@
       method="setMovePfpValidatorUserDomain"/>
   </action-method>
 
-  <action-method name="action-move-line-mass-entry-method-set-pfp-validator-user">
-    <call class="com.axelor.apps.account.web.MoveLineMassEntryController"
-      method="setMovePfpValidatorUser"/>
-  </action-method>
-
 </object-views>

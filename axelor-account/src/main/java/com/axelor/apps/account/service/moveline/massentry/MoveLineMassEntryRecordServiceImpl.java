@@ -2,7 +2,9 @@ package com.axelor.apps.account.service.moveline.massentry;
 
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLineMassEntry;
+import com.axelor.apps.base.db.Company;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 
@@ -36,5 +38,13 @@ public class MoveLineMassEntryRecordServiceImpl implements MoveLineMassEntryReco
     if (moveLine.getCredit().signum() != 0 && moveLine.getDebit().signum() != 0) {
       moveLine.setDebit(BigDecimal.ZERO);
     }
+  }
+
+  @Override
+  public void setMovePfpValidatorUser(MoveLineMassEntry moveLine, Company company) {
+    moveLine.setMovePfpValidatorUser(
+        Beans.get(MoveLineMassEntryService.class)
+            .getPfpValidatorUserForInTaxAccount(
+                moveLine.getAccount(), company, moveLine.getPartner()));
   }
 }

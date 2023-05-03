@@ -96,4 +96,24 @@ public class MoveLineMassEntryAttrsServiceImpl implements MoveLineMassEntryAttrs
                 != PaymentModeRepository.TYPE_EXCHANGES,
         attrsMap);
   }
+
+  @Override
+  public void addMovePfpValidatorUserReadOnly(
+      MoveLineMassEntry moveLine, Map<String, Map<String, Object>> attrsMap) {
+    this.addAttr(
+        "movePfpValidatorUser",
+        "readonly",
+        ObjectUtils.isEmpty(moveLine.getMovePfpValidatorUser()),
+        attrsMap);
+  }
+
+  @Override
+  public void addMovePfpValidatorUserRequired(
+      Account account, Map<String, Map<String, Object>> attrsMap) {
+    if (appAccountService.getAppAccount().getActivatePassedForPayment()
+        && account != null
+        && account.getUseForPartnerBalance()) {
+      this.addAttr("movePfpValidatorUser", "required", true, attrsMap);
+    }
+  }
 }

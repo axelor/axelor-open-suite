@@ -27,7 +27,6 @@ import com.axelor.apps.account.service.move.massentry.MassEntryMoveCreateService
 import com.axelor.apps.account.service.move.massentry.MassEntryService;
 import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryGroupService;
 import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryService;
-import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.exception.AxelorException;
@@ -296,24 +295,6 @@ public class MoveLineMassEntryController {
             "domain",
             Beans.get(InvoiceTermService.class)
                 .getPfpValidatorUserDomain(line.getPartner(), move.getCompany()));
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-    }
-  }
-
-  public void setMovePfpValidatorUser(ActionRequest request, ActionResponse response) {
-    try {
-      MoveLineMassEntry line = request.getContext().asType(MoveLineMassEntry.class);
-      Context parentContext = request.getContext().getParent();
-      if (parentContext != null && Move.class.equals(parentContext.getContextClass())) {
-        Move move = parentContext.asType(Move.class);
-        User pfpValidatorUser =
-            Beans.get(MoveLineMassEntryService.class)
-                .getPfpValidatorUserForInTaxAccount(
-                    line.getAccount(), move.getCompany(), line.getPartner());
-        response.setValue("movePfpValidatorUser", pfpValidatorUser);
-        response.setAttr("movePfpValidatorUser", "readonly", ObjectUtils.isEmpty(pfpValidatorUser));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);

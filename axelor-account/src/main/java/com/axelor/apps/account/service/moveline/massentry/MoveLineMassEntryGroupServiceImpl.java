@@ -192,6 +192,8 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
     moveLineRecordService.setIsCutOffGeneratedFalse(moveLine);
     moveLineRecordService.refreshAccountInformation(moveLine, move);
     moveLineDefaultService.setDefaultDistributionTemplate(moveLine, move);
+    moveLineMassEntryRecordService.setMovePfpValidatorUser(moveLine, move.getCompany());
+
     Map<String, Object> valuesMap =
         new HashMap<>(
             moveLineGroupService.getAnalyticDistributionTemplateOnChangeValuesMap(moveLine, move));
@@ -206,6 +208,7 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
     valuesMap.put("taxEquiv", moveLine.getTaxEquiv());
     valuesMap.put("analyticDistributionTemplate", moveLine.getAnalyticDistributionTemplate());
     valuesMap.put("invoiceTermList", moveLine.getInvoiceTermList());
+    valuesMap.put("movePfpValidatorUser", moveLine.getMovePfpValidatorUser());
 
     return valuesMap;
   }
@@ -220,6 +223,8 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
     moveLineAttrsService.addAnalyticAxisAttrs(move, attrsMap);
     moveLineMassEntryAttrsService.addDebitCreditFocus(
         moveLine.getAccount(), moveLine.getIsOtherCurrency(), attrsMap);
+    moveLineMassEntryAttrsService.addMovePfpValidatorUserReadOnly(moveLine, attrsMap);
+    moveLineMassEntryAttrsService.addMovePfpValidatorUserRequired(moveLine.getAccount(), attrsMap);
 
     return attrsMap;
   }
