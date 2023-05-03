@@ -22,7 +22,6 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.move.massentry.MassEntryService;
 import com.axelor.apps.account.service.move.massentry.MassEntryVerificationService;
-import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryToolService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
@@ -139,21 +138,6 @@ public class MassEntryMoveController {
             Beans.get(MassEntryVerificationService.class)
                 .verifyCompanyBankDetails(
                     move.getCompany(), move.getCompanyBankDetails(), move.getJournal()));
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-    }
-  }
-
-  public void setMassEntryLinesMoveStatus(ActionRequest request, ActionResponse response) {
-    try {
-      Move move = request.getContext().asType(Move.class);
-
-      if (move != null) {
-        Beans.get(MoveLineMassEntryToolService.class)
-            .setNewMoveStatusSelectMassEntryLines(
-                move.getMoveLineMassEntryList(), MoveRepository.STATUS_NEW);
-        response.setValue("moveLineMassEntryList", move.getMoveLineMassEntryList());
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);

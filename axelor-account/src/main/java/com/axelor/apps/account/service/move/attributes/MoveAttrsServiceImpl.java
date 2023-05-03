@@ -278,12 +278,17 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
   @Override
   public Map<String, Map<String, Object>> getMassEntryBtnHiddenAttributeValues(Move move) {
     Objects.requireNonNull(move);
+    boolean controlMassEntryMoves = false;
     Map<String, Map<String, Object>> mapResult = new HashMap<>();
 
     mapResult.put("controlMassEntryMoves", new HashMap<>());
     mapResult.put("validateMassEntryMoves", new HashMap<>());
 
-    mapResult.get("controlMassEntryMoves").put("hidden", false);
+    if (move.getMassEntryStatusSelect() == MoveRepository.MASS_ENTRY_STATUS_VALIDATED) {
+      controlMassEntryMoves = true;
+    }
+
+    mapResult.get("controlMassEntryMoves").put("hidden", controlMassEntryMoves);
     mapResult.get("validateMassEntryMoves").put("hidden", true);
 
     return mapResult;

@@ -10,6 +10,7 @@ import com.axelor.apps.account.service.move.control.MoveCheckService;
 import com.axelor.apps.account.service.move.massentry.MassEntryService;
 import com.axelor.apps.account.service.move.massentry.MassEntryVerificationService;
 import com.axelor.apps.account.service.move.record.model.MoveContext;
+import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryToolService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -33,6 +34,7 @@ public class MoveRecordServiceImpl implements MoveRecordService {
   protected MoveRepository moveRepository;
   protected AppAccountService appAccountService;
   protected MassEntryService massEntryService;
+  protected MoveLineMassEntryToolService moveLineMassEntryToolService;
 
   @Inject
   public MoveRecordServiceImpl(
@@ -45,7 +47,8 @@ public class MoveRecordServiceImpl implements MoveRecordService {
       MoveRecordSetService moveRecordSetService,
       MoveRepository moveRepository,
       AppAccountService appAccountService,
-      MassEntryService massEntryService) {
+      MassEntryService massEntryService,
+      MoveLineMassEntryToolService moveLineMassEntryToolService) {
     this.moveDefaultService = moveDefaultService;
     this.moveAttrsService = moveAttrsService;
     this.periodAccountService = periodAccountService;
@@ -56,6 +59,7 @@ public class MoveRecordServiceImpl implements MoveRecordService {
     this.moveRecordSetService = moveRecordSetService;
     this.appAccountService = appAccountService;
     this.massEntryService = massEntryService;
+    this.moveLineMassEntryToolService = moveLineMassEntryToolService;
   }
 
   @Override
@@ -76,6 +80,16 @@ public class MoveRecordServiceImpl implements MoveRecordService {
             .orElse(false);
 
     moveRecordUpdateService.updatePartner(move);
+
+    if (move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL) {
+      result.putInValues("massEntryErrors", "");
+      result.putInAttrs(moveAttrsService.getMassEntryBtnHiddenAttributeValues(move));
+    } else if (move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_ON_GOING) {
+      moveLineMassEntryToolService.setNewMoveStatusSelectMassEntryLines(
+          move.getMoveLineMassEntryList(), MoveRepository.STATUS_NEW);
+      result.putInValues("moveLineMassEntryList", move.getMoveLineMassEntryList());
+    }
+
     result.merge(
         moveRecordUpdateService.updateInvoiceTerms(move, paymentConditionChange, headerChange));
     result.merge(moveRecordUpdateService.updateInvoiceTermDueDate(move, move.getDueDate()));
@@ -174,6 +188,7 @@ public class MoveRecordServiceImpl implements MoveRecordService {
     if (move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL) {
       result.putInAttrs(moveAttrsService.getMassEntryHiddenAttributeValues(move));
       result.putInAttrs(moveAttrsService.getMassEntryRequiredAttributeValues(move));
+      result.putInAttrs(moveAttrsService.getMassEntryBtnHiddenAttributeValues(move));
     }
 
     result.putInValues(moveComputeService.computeTotals(move));

@@ -1136,13 +1136,4 @@
       expr="eval: &quot;self.id = ${company?.defaultBankDetails?.id} AND self.active = true&quot;"
       for="companyBankDetails" if="company?.bankDetailsList?.isEmpty()"/>
   </action-attrs>
-
-  <action-attrs name="action-move-attrs-empty-mass-entry-errors">
-    <attribute for="massEntryErrors" name="value" expr=""/>
-  </action-attrs>
-
-  <action-method name="action-move-method-set-mass-entry-line-status">
-    <call class="com.axelor.apps.account.web.MassEntryMoveController"
-      method="setMassEntryLinesMoveStatus"/>
-  </action-method>
 </object-views>
