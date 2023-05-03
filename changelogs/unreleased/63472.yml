@@ -1,3 +1,0 @@
----
-title : "Project generation blocked on SaleOrder when it contains a sale order line with a service-type product that is *not* Produce (supply method)"
-type : fix
