@@ -54,24 +54,6 @@ public class MassEntryMoveController {
     }
   }
 
-  public void verifyFieldsAndGenerateTaxLineAndCounterpart(
-      ActionRequest request, ActionResponse response) {
-    Move move = request.getContext().asType(Move.class);
-
-    try {
-      if (move != null && ObjectUtils.notEmpty(move.getMoveLineMassEntryList())) {
-        Beans.get(MassEntryService.class)
-            .verifyFieldsAndGenerateTaxLineAndCounterpart(move, this.extractDueDate(request));
-
-        response.setValues(move);
-        response.setAttr("controlMassEntryMoves", "hidden", false);
-        response.setAttr("validateMassEntryMoves", "hidden", true);
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-    }
-  }
-
   public void controlMassEntryMoves(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
@@ -155,17 +137,6 @@ public class MassEntryMoveController {
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-    }
-  }
-
-  public void verifyMassEntryStatusSelect(ActionRequest request, ActionResponse response) {
-    try {
-      String viewName = request.getContext().get("_viewName").toString();
-      if ("move-mass-entry-form".equals(viewName)) {
-        response.setValue("massEntryStatusSelect", MoveRepository.MASS_ENTRY_STATUS_ON_GOING);
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
     }
   }
 }

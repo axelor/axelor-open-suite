@@ -1563,7 +1563,7 @@
 "Error on uploading printed invoice:","Erreur lors de l'enregistrement de l'impression de la facture :",,
 "Error or anomaly detected making it impossible to proceed for the following move accounting operation : %s . Please check the logs.","Erreur ou anomalie détectée rendant impossible de continuer le processus de comptabilisation des écritures suivantes : %s. Veuillez vérifier les logs.",,
 "Error(s) during moves control","Erreur(s) durant le contrôle des écritures",,
-"Errors in move : %s\n","Erreurs sur l'écriture : %s\n",,
+"Errors in move : %s","Erreurs sur l'écriture : %s",,
 "Estimated payment date","Date de paiement estimée",,
 "Every invoice term from the payment session cannot be considered so it is not possible to continue.","Aucune échéance ne peut être prise en compte donc il n'est pas possible de continuer.",,
 "Excel","Excel",,

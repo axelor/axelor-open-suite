@@ -5,13 +5,13 @@
 
   <grid name="move-line-mass-entry-move-grid"
     model="com.axelor.apps.account.db.MoveLineMassEntry" title="Move lines" canArchive="false"
-    onNew="action-account-move-line-onnew-group">
+    onNew="action-move-line-mass-entry-method-onnew">
     <field name="temporaryMoveNumber" width="50"
       onChange="action-move-line-mass-entry-method-get-first-move-line-informations"/>
     <field name="inputAction" selection="iaccount.move.line.mass.entry.input.action.select"
       onChange="action-move-line-mass-entry-method-input-action-onchange" readonly="true"
       required="true" width="50" selection-in="[1,2,3]"/>
-    <field name="date" onChange="account-move-line-group-date-onchange">
+    <field name="date" onChange="account-move-line-method-date-onchange">
       <hilite if="$contains(fieldsErrorList,'date:'+date.toString())" background="danger"/>
     </field>
     <field name="originDate"
@@ -26,7 +26,7 @@
       onChange="action-account-move-line-mass-entry-attrs-set-description,action-move-line-mass-entry-record-set-is-edited"
       readonly="false" required="true"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid"
-      onSelect="action-account-move-line-partner-group"
+      onSelect="action-move-line-method-partner-onselect"
       onChange="action-move-line-mass-entry-group-on-change-partner" width="120" canEdit="false"
       readonly="false">
       <hilite if="$contains(fieldsErrorList,'partner:'+partner.name)" background="danger"/>
@@ -39,29 +39,27 @@
       <hilite if="$contains(fieldsErrorList,'paymentMode:')" background="danger"/>
     </field>
     <field name="account" form-view="account-form" grid-view="account-grid"
-      onSelect="action-move-line-attrs-domain-account" width="200" canEdit="false"
-      onChange="action-account-move-line-account-group-on-change"/>
+      onSelect="action-move-line-method-account-onselect" width="200" canEdit="false"
+      onChange="action-move-line-mass-entry-method-account-onchange"/>
     <field name="taxLine" readonlyIf="!account.isTaxAuthorizedOnMoveLine"
       requiredIf="account.isTaxRequiredOnMoveLine"
       domain="self.endDate > :date OR self.endDate IS NULL"
       onChange="account-move-line-update-tax-equiv"/>
     <field name="currencyRate"
-      onChange="action-move-line-group-currency-amount-rate-onchange,action-move-line-mass-entry-record-set-is-edited"
+      onChange="action-move-line-method-currency-amount-rate-onchange,action-move-line-mass-entry-record-set-is-edited"
       readonlyIf="!isOtherCurrency">
       <hilite if="$contains(fieldsErrorList,'currencyRate:'+currencyRate.toString())"
         background="danger"/>
     </field>
     <field name="currencyAmount"
-      onChange="action-move-line-group-currency-amount-rate-onchange" readonlyIf="!isOtherCurrency">
+      onChange="action-move-line-method-currency-amount-rate-onchange" readonlyIf="!isOtherCurrency">
       <hilite if="$contains(fieldsErrorList,'balance:')" background="danger"/>
     </field>
-    <field name="debit"
-      onChange="action-record-account-moveline-debit-onchange,action-group-account-moveline-debitcredit-onchange,action-move-line-method-generate-invoice-terms"
+    <field name="debit" onChange="action-move-line-mass-entry-method-debit-onchange"
       width="90" readonlyIf="isOtherCurrency">
       <hilite if="$contains(fieldsErrorList,'balance:')" background="danger"/>
     </field>
-    <field name="credit"
-      onChange="action-record-account-moveline-credit-onchange,action-group-account-moveline-debitcredit-onchange,action-move-line-method-generate-invoice-terms"
+    <field name="credit" onChange="action-move-line-mass-entry-method-credit-onchange"
       width="90" readonlyIf="isOtherCurrency">
       <hilite if="$contains(fieldsErrorList,'balance:')" background="danger"/>
     </field>
@@ -69,11 +67,11 @@
       requiredIf="$isDescriptionRequired || move.company.accountConfig.isDescriptionRequired"/>
     <field name="cutOffStartDate" requiredIf="account.manageCutOffPeriod"
       validIf="!cutOffEndDate || cutOffStartDate &lt;= cutOffEndDate"
-      onChange="action-move-line-record-set-cut-off-generated-false"
+      onChange="action-move-line-method-set-is-cut-off-generated-false"
       if="__config__.app.getApp('account').manageCutOffPeriod"/>
     <field name="cutOffEndDate" requiredIf="account.manageCutOffPeriod"
       validIf="!cutOffStartDate || cutOffEndDate &gt;= cutOffStartDate"
-      onChange="action-move-line-record-set-cut-off-generated-false"
+      onChange="action-move-line-method-set-is-cut-off-generated-false"
       if="__config__.app.getApp('account').manageCutOffPeriod"/>
     <field name="movePartnerBankDetails"
       onSelect="action-move-line-mass-entry-attrs-bank-details-from-partner-domain"
@@ -86,7 +84,7 @@
       if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"
       grid-view="analytic-distribution-template-grid"
       form-view="analytic-distribution-template-form"
-      onChange="action-move-line-group-analytic-distribution-template-onchange"
+      onChange="action-move-line-method-analytic-distribution-template-onchange"
       onSelect="action-move-line-group-set-analytic-distribution-template-onselect"
       readonlyIf="!account || !account.analyticDistributionAuthorized"
       requiredIf="(!analyticMoveLineList || !analyticMoveLineList.length) &amp;&amp; account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines &amp;&amp; (axis1AnalyticAccount == null &amp;&amp; axis2AnalyticAccount == null &amp;&amp; axis3AnalyticAccount == null &amp;&amp; axis4AnalyticAccount == null &amp;&amp; axis5AnalyticAccount == null)">
@@ -97,7 +95,7 @@
       if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"
       readonlyIf="account.analyticDistributionAuthorized == false || !account"
       onSelect="action-move-line-attrs-set-domain-axis"
-      onChange="action-move-line-group-analytic-axis-onchange">
+      onChange="action-move-line-method-analytic-axis-onchange">
       <hilite if="$contains(fieldsErrorList,'analytic:')" background="danger"/>
     </field>
     <field name="axis2AnalyticAccount" grid-view="analytic-account-grid"
@@ -105,7 +103,7 @@
       if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"
       readonlyIf="account.analyticDistributionAuthorized == false || !account"
       onSelect="action-move-line-attrs-set-domain-axis"
-      onChange="action-move-line-group-analytic-axis-onchange">
+      onChange="action-move-line-method-analytic-axis-onchange">
       <hilite if="$contains(fieldsErrorList,'analytic:')" background="danger"/>
     </field>
     <field name="axis3AnalyticAccount" grid-view="analytic-account-grid"
@@ -113,7 +111,7 @@
       if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"
       readonlyIf="account.analyticDistributionAuthorized == false || !account"
       onSelect="action-move-line-attrs-set-domain-axis"
-      onChange="action-move-line-group-analytic-axis-onchange">
+      onChange="action-move-line-method-analytic-axis-onchange">
       <hilite if="$contains(fieldsErrorList,'analytic:')" background="danger"/>
     </field>
     <field name="axis4AnalyticAccount" grid-view="analytic-account-grid"
@@ -121,7 +119,7 @@
       if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"
       readonlyIf="account.analyticDistributionAuthorized == false || !account"
       onSelect="action-move-line-attrs-set-domain-axis"
-      onChange="action-move-line-group-analytic-axis-onchange">
+      onChange="action-move-line-method-analytic-axis-onchange">
       <hilite if="$contains(fieldsErrorList,'analytic:')" background="danger"/>
     </field>
     <field name="axis5AnalyticAccount" grid-view="analytic-account-grid"
@@ -129,13 +127,13 @@
       if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"
       readonlyIf="account.analyticDistributionAuthorized == false || !account"
       onSelect="action-move-line-attrs-set-domain-axis"
-      onChange="action-move-line-group-analytic-axis-onchange">
+      onChange="action-move-line-method-analytic-axis-onchange">
       <hilite if="$contains(fieldsErrorList,'analytic:')" background="danger"/>
     </field>
     <field name="analyticMoveLineList" grid-view="analytic-move-line-move-line-grid"
       form-view="analytic-move-line-move-line-form"
       if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"
-      onChange="action-move-line-method-check-analytic-account-on-move-line,action-move-line-method-set-required-analytic-accounts">
+      onChange="action-move-line-method-analytic-distribution-template-onchange-light,action-move-line-method-set-required-analytic-accounts">
       <hilite if="$contains(fieldsErrorList,'analytic:')" background="danger"/>
     </field>
     <field name="vatSystemSelect"
@@ -168,23 +166,6 @@
   </action-record>
 
   <!-- Action attrs -->
-  <action-attrs name="action-move-line-mass-entry-attrs-set-hidden-and-readonly">
-    <attribute for="cutOffStartDate" name="readonly"
-      expr="eval: !account.manageCutOffPeriod" if="account != null"/>
-    <attribute for="cutOffEndDate" name="readonly"
-      expr="eval: !account.manageCutOffPeriod" if="account != null"/>
-    <attribute for="movePaymentMode" name="readonly"
-      expr="eval: !__config__.app.getApp('account').allowMultiInvoiceTerms"/>
-  </action-attrs>
-
-  <action-attrs name="action-move-line-attrs-set-debit-credit-focus">
-    <attribute for="debit" name="focus" expr="true"
-      if="eval: (account?.commonPosition == 2 || account?.commonPosition == 0) &amp;&amp; !isOtherCurrency"/>
-    <attribute for="credit" name="focus" expr="true"
-      if="eval: account?.commonPosition == 1 &amp;&amp; !isOtherCurrency"/>
-    <attribute for="currencyAmount" name="focus" expr="true" if="eval: isOtherCurrency"/>
-  </action-attrs>
-
   <action-attrs
     name="action-move-line-mass-entry-attrs-bank-details-from-partner-domain">
     <attribute name="domain" for="movePartnerBankDetails"
@@ -206,11 +187,6 @@
       if="__config__.app.getApp('account').manageCutOffPeriod"/>
   </action-attrs>
 
-  <action-attrs name="action-move-line-mass-entry-attrs-set-input-action-selection">
-    <attribute name="selection-in" for="inputAction"
-      expr="eval: __parent__?.functionalOriginSelect == 3 || __parent__?.functionalOriginSelect == 4 || __parent__?.functionalOriginSelect == 7 ? [1,2,3] : [1,3]"/>
-  </action-attrs>
-
   <action-attrs
     name="action-move-line-mass-entry-attrs-set-partner-bank-details-readonly">
     <attribute for="movePartnerBankDetails" name="readonly"
@@ -222,12 +198,6 @@
     name="action-move-line-mass-entry-method-get-first-move-line-informations">
     <call class="com.axelor.apps.account.web.MoveLineMassEntryController"
       method="getFirstMoveLineMassEntryInformations"/>
-  </action-method>
-
-  <action-method
-    name="action-move-line-mass-entry-method-verify-fields-and-generate-taxline-and-counterpart">
-    <call class="com.axelor.apps.account.web.MassEntryMoveController"
-      method="verifyFieldsAndGenerateTaxLineAndCounterpart"/>
   </action-method>
 
   <action-method name="action-move-line-mass-entry-method-on-change-partner">
@@ -246,11 +216,18 @@
       method="setAttrsAndFieldsOnInputActionChanges"/>
   </action-method>
 
-  <!-- Need to be dev and used -->
-  <action-method
-    name="action-move-line-mass-entry-method-verify-mass-entry-move-balance">
+  <action-method name="action-move-line-mass-entry-method-onnew">
+    <call class="com.axelor.apps.account.web.MoveLineMassEntryController" method="onNew"/>
+  </action-method>
+
+  <action-method name="action-move-line-mass-entry-method-debit-onchange">
     <call class="com.axelor.apps.account.web.MoveLineMassEntryController"
-      method="verifyMassEntryMoveBalance"/>
+      method="debitOnChange"/>
+  </action-method>
+
+  <action-method name="action-move-line-mass-entry-method-credit-onchange">
+    <call class="com.axelor.apps.account.web.MoveLineMassEntryController"
+      method="creditOnChange"/>
   </action-method>
 
 </object-views>

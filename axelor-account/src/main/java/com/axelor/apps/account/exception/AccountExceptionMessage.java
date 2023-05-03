@@ -1599,7 +1599,7 @@ public final class AccountExceptionMessage {
 
   /** Mass entry move control message */
   public static final String MASS_ENTRY_MOVE_IDENTIFICATION_MESSAGE = /*$$(*/
-      "Errors in move : %s\n" /*)*/;
+      "Errors in move : %s" /*)*/;
 
   public static final String MASS_ENTRY_DIFFERENT_MOVE_LINE_DATE = /*$$(*/
       "The same move can't have different dates" /*)*/;

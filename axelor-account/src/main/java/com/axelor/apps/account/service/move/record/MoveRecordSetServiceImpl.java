@@ -21,6 +21,7 @@ import com.axelor.apps.base.service.PeriodService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -192,7 +193,18 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
         move.setFunctionalOriginSelect(
             Integer.valueOf(move.getJournal().getAuthorizedFunctionalOriginSelect()));
       } else {
-        move.setFunctionalOriginSelect(null);
+        if (move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL
+            && Arrays.stream(move.getJournal().getAuthorizedFunctionalOriginSelect().split(","))
+                .findFirst()
+                .isPresent()) {
+          move.setFunctionalOriginSelect(
+              Integer.valueOf(
+                  Arrays.stream(move.getJournal().getAuthorizedFunctionalOriginSelect().split(","))
+                      .findFirst()
+                      .get()));
+        } else {
+          move.setFunctionalOriginSelect(null);
+        }
       }
     }
     resultMap.put("functionalOriginSelect", move.getFunctionalOriginSelect());

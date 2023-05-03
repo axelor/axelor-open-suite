@@ -35,4 +35,10 @@ public interface MoveAttrsService {
   boolean isHiddenDueDate(Move move);
 
   Map<String, Map<String, Object>> getPfpAttrs(Move move, User user) throws AxelorException;
+
+  Map<String, Map<String, Object>> getMassEntryHiddenAttributeValues(Move move);
+
+  Map<String, Map<String, Object>> getMassEntryRequiredAttributeValues(Move move);
+
+  Map<String, Map<String, Object>> getMassEntryBtnHiddenAttributeValues(Move move);
 }

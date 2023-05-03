@@ -5,6 +5,7 @@ import com.axelor.apps.account.service.move.record.model.MoveContext;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.rpc.Context;
+import java.time.LocalDate;
 
 public interface MoveRecordService {
 
@@ -16,7 +17,7 @@ public interface MoveRecordService {
    * @return a Object {@link MoveContext} that containts attrs and values context
    * @throws AxelorException
    */
-  MoveContext onNew(Move move, User user) throws AxelorException;
+  MoveContext onNew(Move move, User user, boolean isMassEntryMove) throws AxelorException;
 
   /**
    * Method called on action onLoad. The move will be modified but not persisted, a Map of 'field,
@@ -55,11 +56,14 @@ public interface MoveRecordService {
 
   MoveContext onChangePartner(Move move, Context context) throws AxelorException;
 
-  MoveContext onChangeMoveLineList(Move move, Context context) throws AxelorException;
+  MoveContext onChangeMoveLineList(Move move, Context context, LocalDate dueDate)
+      throws AxelorException;
 
   MoveContext onChangeOriginDate(Move move, Context context) throws AxelorException;
 
   MoveContext onChangeOrigin(Move move, Context context) throws AxelorException;
 
   MoveContext onChangePaymentCondition(Move move, Context context) throws AxelorException;
+
+  MoveContext onChangeCurrency(Move move, Context context);
 }

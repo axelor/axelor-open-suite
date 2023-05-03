@@ -877,6 +877,11 @@
     <call class="com.axelor.apps.account.web.MoveLineController" method="accountOnChange"/>
   </action-method>
 
+  <action-method name="action-move-line-mass-entry-method-account-onchange">
+    <call class="com.axelor.apps.account.web.MoveLineMassEntryController"
+      method="accountOnChange"/>
+  </action-method>
+
   <action-method name="action-move-line-method-analytic-axis-onchange">
     <call class="com.axelor.apps.account.web.MoveLineController" method="analyticAxisOnChange"/>
   </action-method>
@@ -947,10 +952,6 @@
     <call class="com.axelor.apps.account.web.MoveLineController" method="debitOnChange"/>
   </action-method>
 
-  <action-method name="action-account-move-line-method-filter-partner">
-    <call class="com.axelor.apps.account.web.MoveLineController" method="filterPartner"/>
-  </action-method>
-
   <action-method name="action-move-line-method-credit-onchange">
     <call class="com.axelor.apps.account.web.MoveLineController" method="creditOnChange"/>
   </action-method>
@@ -962,10 +963,6 @@
   <action-method name="action-move-line-method-set-is-cut-off-generated-false">
     <call class="com.axelor.apps.account.web.MoveLineController"
       method="setIsCutOffGeneratedFalse"/>
-  </action-method>
-
-  <action-method name="action-move-line-validate-check-date-in-period">
-    <call class="com.axelor.apps.account.web.MoveLineController" method="checkDateInPeriod"/>
   </action-method>
 
   <action-method name="action-move-line-attrs-set-domain-axis">
@@ -1057,16 +1054,6 @@
     <domain>self.moveLine.id = :_moveLineId</domain>
     <context name="_moveLineId" expr="eval: id"/>
   </action-view>
-
-  <action-attrs name="action-attrs-move-line-set-required-partner">
-    <attribute for="partner" name="required"
-      expr="eval: [1,2].contains(__parent__?.journal?.journalType?.technicalTypeSelect)"/>
-  </action-attrs>
-
-  <action-attrs name="action-move-line-attrs-set-hidden-analytic-distribution-panel">
-    <attribute for="analyticDistributionPanel" name="hidden"
-      expr="eval: !__config__.app.getApp('account')?.getManageAnalyticAccounting() || !__parent__?.company?.accountConfig?.getManageAnalyticAccounting() || !account?.analyticDistributionAuthorized"/>
-  </action-attrs>
 
   <action-view name="action-account-view-show-move-lines" title="${label} move lines"
     model="com.axelor.apps.account.db.MoveLine">

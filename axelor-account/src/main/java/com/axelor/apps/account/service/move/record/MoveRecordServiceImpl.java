@@ -7,13 +7,17 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveComputeService;
 import com.axelor.apps.account.service.move.attributes.MoveAttrsService;
 import com.axelor.apps.account.service.move.control.MoveCheckService;
+import com.axelor.apps.account.service.move.massentry.MassEntryService;
+import com.axelor.apps.account.service.move.massentry.MassEntryVerificationService;
 import com.axelor.apps.account.service.move.record.model.MoveContext;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.time.LocalDate;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -28,6 +32,7 @@ public class MoveRecordServiceImpl implements MoveRecordService {
   protected MoveRecordSetService moveRecordSetService;
   protected MoveRepository moveRepository;
   protected AppAccountService appAccountService;
+  protected MassEntryService massEntryService;
 
   @Inject
   public MoveRecordServiceImpl(
@@ -39,7 +44,8 @@ public class MoveRecordServiceImpl implements MoveRecordService {
       MoveRecordUpdateService moveRecordUpdateService,
       MoveRecordSetService moveRecordSetService,
       MoveRepository moveRepository,
-      AppAccountService appAccountService) {
+      AppAccountService appAccountService,
+      MassEntryService massEntryService) {
     this.moveDefaultService = moveDefaultService;
     this.moveAttrsService = moveAttrsService;
     this.periodAccountService = periodAccountService;
@@ -49,6 +55,7 @@ public class MoveRecordServiceImpl implements MoveRecordService {
     this.moveRepository = moveRepository;
     this.moveRecordSetService = moveRecordSetService;
     this.appAccountService = appAccountService;
+    this.massEntryService = massEntryService;
   }
 
   @Override
@@ -111,7 +118,7 @@ public class MoveRecordServiceImpl implements MoveRecordService {
   }
 
   @Override
-  public MoveContext onNew(Move move, User user) throws AxelorException {
+  public MoveContext onNew(Move move, User user, boolean isMassEntryMove) throws AxelorException {
     Objects.requireNonNull(move);
 
     MoveContext result = new MoveContext();
@@ -119,6 +126,12 @@ public class MoveRecordServiceImpl implements MoveRecordService {
     result.putInValues(moveDefaultService.setDefaultMoveValues(move));
     result.putInValues(moveDefaultService.setDefaultCurrency(move));
     result.putInValues(moveRecordSetService.setJournal(move));
+    if (isMassEntryMove) {
+      result.putInValues("massEntryStatusSelect", MoveRepository.MASS_ENTRY_STATUS_ON_GOING);
+      result.putInAttrs(moveAttrsService.getMassEntryHiddenAttributeValues(move));
+      result.putInAttrs(moveAttrsService.getMassEntryRequiredAttributeValues(move));
+    }
+
     moveRecordSetService.setPeriod(move);
     result.putInValues("period", move.getPeriod());
     if (move.getJournal() != null && move.getJournal().getIsFillOriginDate()) {
@@ -140,6 +153,12 @@ public class MoveRecordServiceImpl implements MoveRecordService {
       result.putInAttrs(moveAttrsService.getPfpAttrs(move, user));
       result.putInValues(moveRecordSetService.setPfpStatus(move));
     }
+    result.putInValues(moveRecordSetService.setCompanyBankDetails(move));
+    result.putInValues(
+        "companyBankDetails",
+        Beans.get(MassEntryVerificationService.class)
+            .verifyCompanyBankDetails(
+                move.getCompany(), move.getCompanyBankDetails(), move.getJournal()));
 
     return result;
   }
@@ -152,6 +171,11 @@ public class MoveRecordServiceImpl implements MoveRecordService {
     MoveContext result = new MoveContext();
 
     result.putInAttrs(moveAttrsService.getHiddenAttributeValues(move));
+    if (move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL) {
+      result.putInAttrs(moveAttrsService.getMassEntryHiddenAttributeValues(move));
+      result.putInAttrs(moveAttrsService.getMassEntryRequiredAttributeValues(move));
+    }
+
     result.putInValues(moveComputeService.computeTotals(move));
     result.putInAttrs(
         "$reconcileTags", "hidden", moveAttrsService.isHiddenMoveLineListViewer(move));
@@ -218,6 +242,17 @@ public class MoveRecordServiceImpl implements MoveRecordService {
 
     result.putInAttrs(moveAttrsService.getFunctionalOriginSelectDomain(move));
     result.putInValues(moveRecordSetService.setFunctionalOriginSelect(move));
+    if (move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL) {
+      result.putInAttrs(moveAttrsService.getMassEntryHiddenAttributeValues(move));
+      result.putInAttrs(moveAttrsService.getMassEntryRequiredAttributeValues(move));
+      result.putInAttrs(moveAttrsService.getMassEntryBtnHiddenAttributeValues(move));
+    }
+
+    result.putInValues(
+        "companyBankDetails",
+        Beans.get(MassEntryVerificationService.class)
+            .verifyCompanyBankDetails(
+                move.getCompany(), move.getCompanyBankDetails(), move.getJournal()));
     checkPartnerCompatible(move, result);
     result.putInValues(moveRecordSetService.setPaymentMode(move));
     result.putInValues(moveRecordSetService.setPaymentCondition(move));
@@ -274,7 +309,8 @@ public class MoveRecordServiceImpl implements MoveRecordService {
   }
 
   @Override
-  public MoveContext onChangeMoveLineList(Move move, Context context) throws AxelorException {
+  public MoveContext onChangeMoveLineList(Move move, Context context, LocalDate dueDate)
+      throws AxelorException {
     Objects.requireNonNull(move);
     Objects.requireNonNull(context);
 
@@ -290,6 +326,11 @@ public class MoveRecordServiceImpl implements MoveRecordService {
     result.putInValues(moveComputeService.computeTotals(move));
     result.merge(moveRecordUpdateService.updateDueDate(move, paymentConditionChange, dateChange));
     result.putInAttrs(moveAttrsService.getMoveLineAnalyticAttrs(move));
+    if (move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL) {
+      result.putInValues(
+          massEntryService.verifyFieldsAndGenerateTaxLineAndCounterpart(move, dueDate));
+      result.putInAttrs(moveAttrsService.getMassEntryBtnHiddenAttributeValues(move));
+    }
 
     return result;
   }
@@ -376,6 +417,21 @@ public class MoveRecordServiceImpl implements MoveRecordService {
         moveRecordUpdateService.updateInvoiceTerms(move, paymentConditionChange, headerChange));
     result.merge(moveRecordUpdateService.updateInvoiceTermDueDate(move, move.getDueDate()));
     result.merge(moveRecordUpdateService.updateDueDate(move, paymentConditionChange, dateChange));
+
+    return result;
+  }
+
+  @Override
+  public MoveContext onChangeCurrency(Move move, Context context) {
+    Objects.requireNonNull(move);
+    Objects.requireNonNull(context);
+
+    MoveContext result = new MoveContext();
+
+    result.putInValues(moveDefaultService.setDefaultCurrency(move));
+    result.putInAttrs(moveAttrsService.getMassEntryHiddenAttributeValues(move));
+    result.putInAttrs(moveAttrsService.getMassEntryRequiredAttributeValues(move));
+    result.putInAttrs(moveAttrsService.getMassEntryBtnHiddenAttributeValues(move));
 
     return result;
   }

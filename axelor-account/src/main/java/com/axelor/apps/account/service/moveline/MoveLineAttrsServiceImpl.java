@@ -198,7 +198,8 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
         moveLine.getAmountPaid().signum() != 0
             || (moveLine.getAccount() != null
                 && move.getPartner() != null
-                && moveLine.getAccount().getUseForPartnerBalance());
+                && moveLine.getAccount().getUseForPartnerBalance()
+                && move.getMassEntryStatusSelect() == MoveRepository.MASS_ENTRY_STATUS_NULL);
 
     this.addAttr("partner", "readonly", readonly, attrsMap);
   }

@@ -299,10 +299,12 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
 
     if (toSet) {
       if (ObjectUtils.isEmpty(massEntryErrors)) {
-        finalMessage.append(
-            String.format(
-                I18n.get(AccountExceptionMessage.MASS_ENTRY_MOVE_IDENTIFICATION_MESSAGE),
-                temporaryMoveNumber));
+        finalMessage
+            .append(
+                String.format(
+                    I18n.get(AccountExceptionMessage.MASS_ENTRY_MOVE_IDENTIFICATION_MESSAGE),
+                    temporaryMoveNumber))
+            .append('\n');
         massEntryErrors = "";
       }
       finalMessage.append(message).append('\n');
