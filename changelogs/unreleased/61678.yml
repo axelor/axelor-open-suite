@@ -1,0 +1,7 @@
+---
+title: "Use the account config of the company in actions"
+type: fix
+description: |
+  We were comparing the value of the field "activate simulated move?" in the context with the value of the first account config in database.
+  Instead of comparing it with the one corresponding to the company we are working on.
+  After the changes we made, the value of activate simulated move is now compared to the right value.
