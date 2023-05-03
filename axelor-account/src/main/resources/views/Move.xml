@@ -798,12 +798,6 @@
     <call class="com.axelor.apps.account.web.MoveController" method="massReverseMove"/>
   </action-method>
 
-  <action-record name="action-record-initialize-permission-validation-move"
-    model="com.axelor.apps.account.db.Move">
-    <field name="$validatePeriod"
-      expr="call:com.axelor.apps.account.service.PeriodServiceAccount:isAuthorizedToAccountOnPeriod(__this__.period,__user__)"/>
-  </action-record>
-
   <action-method name="action-account-move-method-exception-counterpart">
     <call class="com.axelor.apps.account.web.MoveController" method="exceptionCounterpart"/>
   </action-method>

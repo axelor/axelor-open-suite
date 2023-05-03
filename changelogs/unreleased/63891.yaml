@@ -1,0 +1,6 @@
+title: Some text
+type: remove
+description:
+  Because of a refactor, action-record-initialize-permission-validation-move is not used anymore and is now deleted.
+
+  script - DELETE FROM meta_action WHERE name='action-record-initialize-permission-validation-move';
