@@ -21,9 +21,7 @@ public interface MassEntryToolService {
 
   List<MoveLineMassEntry> getEditedMoveLineMassEntry(List<MoveLineMassEntry> moveLineList);
 
-  void setNewStatusSelectOnMassEntryLines(Move move, Integer newStatusSelect);
+  void fillMassEntryLinesFields(Move parentMove, Move move, Integer newStatusSelect);
 
   boolean verifyJournalAuthorizeNewMove(List<MoveLineMassEntry> moveLineList, Journal journal);
-
-  void setAnalyticsFields(MoveLine newMoveLine, MoveLine moveLine);
 }

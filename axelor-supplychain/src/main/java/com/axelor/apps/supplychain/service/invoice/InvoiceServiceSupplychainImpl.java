@@ -53,6 +53,7 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.Query;
 import com.axelor.inject.Beans;
+import com.axelor.message.service.TemplateMessageService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -88,6 +89,7 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
       AppBaseService appBaseService,
       TaxService taxService,
       InvoiceProductStatementService invoiceProductStatementService,
+      TemplateMessageService templateMessageService,
       InvoiceLineRepository invoiceLineRepo,
       IntercoService intercoService,
       StockMoveRepository stockMoveRepository) {
@@ -106,7 +108,8 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
         invoiceTermPfpService,
         appBaseService,
         taxService,
-        invoiceProductStatementService);
+        invoiceProductStatementService,
+        templateMessageService);
     this.invoiceLineRepo = invoiceLineRepo;
     this.intercoService = intercoService;
     this.stockMoveRepository = stockMoveRepository;

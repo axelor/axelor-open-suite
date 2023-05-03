@@ -100,4 +100,7 @@ public interface PaymentService {
       BigDecimal debitTotalRemaining,
       BigDecimal creditTotalRemaining)
       throws AxelorException;
+
+  boolean reconcileMoveLinesWithCompatibleAccounts(List<MoveLine> moveLineList)
+      throws AxelorException;
 }

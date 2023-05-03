@@ -1,3 +1,61 @@
+## [6.5.6] (2023-04-21)
+
+#### Fixed
+
+* Sale order: fixed an issue where opening or saving a sale order without lines was impossible due to an SQL error.
+
+## [6.5.5] (2023-04-20)
+
+#### Features
+
+* Accounting move: redesigned form view.
+
+#### Changes
+
+* Payment session: highlight in orange invoice terms with a financial discount.
+
+#### Fixed
+
+* Sale order: sale orders with a 0 total amount are now correctly displayed as invoiced if they have an ventilated invoice.
+* Account management: fixed an issue where global accounting cash account was not displayed.
+* GDPR: fixed an error occurring when anonymizing objects with mail message or comment.
+* GDPR: fix demo data - add faker for AOS data.
+* GDPR: admin user is now excluded from the processing register
+* GDPR: improve default configuration.
+* Processing register: fixed an error blocking the process occurring sometimes when more than 10 objects were anonymized.
+* Partner: fixed script error when opening partner contact form (issue happening only when axelor-base was installed without axelor-account).
+* Invoice: fixed invoice payment when bank order confirmation is automatic.
+* Operation order calendar: display operation orders with all status except operations in draft, cancelled or merged manufacturing orders.
+* Payment session: removed sidebar in form view.
+* Move/Simplified Move: hide counterpart generate button when functional origin is not sale, expense, fixed asset or empty.
+* Customer/Prospect reporting: fixed an error occuring if we only have axelor-base installed when opening the dashboard.
+* Move: fixed analytic move lines copy when reversing a move.
+* Partner: fixed an error preventing the display of partner sale history when a product was sold with a quantity equals to 0.
+* Operation order: fix UI issues when the user was modifying date time fields used for the planification.
+* Invoice: fixed unbalanced move generation when we create an invoice with holdback.
+* Payment session: keep linked invoice terms when invoice terms needs to be released from payment session, when refund or bank order process for example.
+* Payment session: allow to update parameters and refresh invoice terms.
+* Base batch: fixed an issue when clicking the button to run manually the "synchronize calendar" batch.
+* Move/Invoice term: Skip invoice term with holdback computation, if the functional origin select of the move is not fixed asset, sale, or purchase.
+* Payment session/bank order: fixed issue where payments on invoices remains in pending state when autoConfirmBankOrder on payment mode is true.
+* Partner: fixed an error preventing the display of partner sale history when a product was sold with a quantity equals to 0.
+* Move: fixed an issue where the form view is marked as dirty even when opening a form view in readonly.
+* BPM: fixed view attribute issue for a sub-process.
+* Invoice: fixed an error occurring when validating an invoice if invoice statements were not correctly configured.
+* Stock move: fixed an issue when opening stock move line form from the invoicing wizard.
+* Payment session: remove reload on invoice term dashlet for select/unselect buttons.
+* Payment condition: added missing english demo data for payment condition line.
+* Message: fixed an issue where emails automatically sent were not updated.
+* Invoice: fixed filter on company bank details for factorized customer so we are able to select the bank details of the factor.
+* Sale order: generating a purchase order from a sale order now correctly takes into account supplier catalog product code and name.
+* Accounting report DAS2: fixed balance panel computation.
+* Stock move: now prevent splitting action on stock move line that are associated with a invoice line.
+* Bank reconciliation: fixed tax account retrieval given bank statement rule.
+* Invoice: to avoid inconsistencies, now only canceled invoices can be deleted.
+* Accounting period: fixed an issue where the user was able to reopen a closed period on a closed year.
+* Bank details: fixed script error when opening bank details form (issue happening only when axelor-base was installed without axelor-account).
+* Payment session: fill partner bank details on move generation accounted by invoice terms.
+
 ## [6.5.4] (2023-04-06)
 
 #### Database change
@@ -385,6 +443,8 @@ Opportunity Status: add label-help on some opportunities status in form
 * Opportunity : Remove lead field
 * CRM : remove Target and TargetConfiguration from CRM
 
+[6.5.6]: https://github.com/axelor/axelor-open-suite/compare/v6.5.5...v6.5.6
+[6.5.5]: https://github.com/axelor/axelor-open-suite/compare/v6.5.4...v6.5.5
 [6.5.4]: https://github.com/axelor/axelor-open-suite/compare/v6.5.3...v6.5.4
 [6.5.3]: https://github.com/axelor/axelor-open-suite/compare/v6.5.2...v6.5.3
 [6.5.2]: https://github.com/axelor/axelor-open-suite/compare/v6.5.1...v6.5.2

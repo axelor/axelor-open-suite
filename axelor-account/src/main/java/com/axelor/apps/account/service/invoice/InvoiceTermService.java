@@ -243,6 +243,7 @@ public interface InvoiceTermService {
 
   InvoiceTerm createInvoiceTerm(
       Invoice invoice,
+      Move move,
       MoveLine moveLine,
       BankDetails bankDetails,
       User pfpUser,
@@ -255,9 +256,9 @@ public interface InvoiceTermService {
       boolean isHoldBack)
       throws AxelorException;
 
-  void setPfpStatus(InvoiceTerm invoiceTerm) throws AxelorException;
+  void setPfpStatus(InvoiceTerm invoiceTerm, Move move) throws AxelorException;
 
-  void setParentFields(InvoiceTerm invoiceTerm, MoveLine moveLine, Invoice invoice);
+  void setParentFields(InvoiceTerm invoiceTerm, Move move, MoveLine moveLine, Invoice invoice);
 
   public void toggle(InvoiceTerm invoiceTerm, boolean value) throws AxelorException;
 
@@ -325,4 +326,7 @@ public interface InvoiceTermService {
 
   List<InvoiceTerm> recomputeInvoiceTermsPercentage(
       List<InvoiceTerm> invoiceTermList, BigDecimal total);
+
+  boolean isThresholdNotOnLastInvoiceTerm(
+      MoveLine moveLine, BigDecimal thresholdDistanceFromRegulation);
 }

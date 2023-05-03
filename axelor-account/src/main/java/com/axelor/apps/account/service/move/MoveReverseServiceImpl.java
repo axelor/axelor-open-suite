@@ -129,7 +129,10 @@ public class MoveReverseServiceImpl implements MoveReverseService {
       List<AnalyticMoveLine> analyticMoveLineList = Lists.newArrayList();
       if (!CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())) {
         for (AnalyticMoveLine analyticMoveLine : moveLine.getAnalyticMoveLineList()) {
-          analyticMoveLineList.add(analyticMoveLineRepository.copy(analyticMoveLine, true));
+          AnalyticMoveLine newAnalyticMoveLine =
+              analyticMoveLineRepository.copy(analyticMoveLine, true);
+          newAnalyticMoveLine.setDate(newMoveLine.getDate());
+          analyticMoveLineList.add(newAnalyticMoveLine);
         }
       } else if (moveLine.getAnalyticDistributionTemplate() != null) {
         analyticMoveLineList =
@@ -141,6 +144,7 @@ public class MoveReverseServiceImpl implements MoveReverseService {
                     dateOfReversion);
       }
       if (CollectionUtils.isNotEmpty(analyticMoveLineList)) {
+        newMoveLine.clearAnalyticMoveLineList();
         analyticMoveLineList.forEach(newMoveLine::addAnalyticMoveLineListItem);
       }
 

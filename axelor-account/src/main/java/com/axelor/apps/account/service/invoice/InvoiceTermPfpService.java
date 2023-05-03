@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service.invoice;
 
+import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.PfpPartialReason;
 import com.axelor.apps.base.AxelorException;
@@ -49,4 +50,9 @@ public interface InvoiceTermPfpService {
   boolean getUserCondition(User pfpValidatorUser, User user);
 
   boolean getInvoiceTermsCondition(List<InvoiceTerm> invoiceTermList);
+
+  void initPftPartialValidation(
+      InvoiceTerm originalInvoiceTerm, BigDecimal grantedAmount, PfpPartialReason partialReason);
+
+  void generateInvoiceTermsAfterPfpPartial(Invoice originalInvoice) throws AxelorException;
 }

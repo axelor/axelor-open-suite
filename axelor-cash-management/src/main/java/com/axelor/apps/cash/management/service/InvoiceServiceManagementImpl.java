@@ -38,6 +38,7 @@ import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.businessproject.service.InvoiceServiceProjectImpl;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.service.IntercoService;
+import com.axelor.message.service.TemplateMessageService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -62,6 +63,7 @@ public class InvoiceServiceManagementImpl extends InvoiceServiceProjectImpl {
       AppBaseService appBaseService,
       TaxService taxService,
       InvoiceProductStatementService invoiceProductStatementService,
+      TemplateMessageService templateMessageService,
       InvoiceLineRepository invoiceLineRepo,
       IntercoService intercoService,
       StockMoveRepository stockMoveRepository,
@@ -82,6 +84,7 @@ public class InvoiceServiceManagementImpl extends InvoiceServiceProjectImpl {
         appBaseService,
         taxService,
         invoiceProductStatementService,
+        templateMessageService,
         invoiceLineRepo,
         intercoService,
         stockMoveRepository);

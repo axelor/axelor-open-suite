@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
+import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -86,6 +87,8 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
   protected AnalyticMoveLineService analyticMoveLineService;
   protected AppSupplychainService appSupplychainService;
   protected AccountConfigService accountConfigService;
+  protected InvoiceLineRepository invoiceLineRepository;
+  protected SaleInvoicingStateService saleInvoicingStateService;
 
   @Inject
   public SaleOrderLineServiceSupplyChainImpl(
@@ -103,7 +106,9 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
       AccountConfigService accountConfigService,
       PricingService pricingService,
       TaxService taxService,
-      SaleOrderMarginService saleOrderMarginService) {
+      SaleOrderMarginService saleOrderMarginService,
+      InvoiceLineRepository invoiceLineRepository,
+      SaleInvoicingStateService saleInvoicingStateService) {
     super(
         currencyService,
         priceListService,
@@ -120,6 +125,8 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
     this.analyticMoveLineService = analyticMoveLineService;
     this.appSupplychainService = appSupplychainService;
     this.accountConfigService = accountConfigService;
+    this.invoiceLineRepository = invoiceLineRepository;
+    this.saleInvoicingStateService = saleInvoicingStateService;
   }
 
   @Override
@@ -207,6 +214,25 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
       saleOrderLine.setAnalyticMoveLineList(analyticMoveLineList);
     }
     return saleOrderLine;
+  }
+
+  @Override
+  public int getSaleOrderLineInvoicingState(SaleOrderLine saleOrderLine) {
+    return saleInvoicingStateService.getInvoicingState(
+        saleOrderLine.getAmountInvoiced(),
+        saleOrderLine.getExTaxTotal(),
+        atLeastOneInvoiceVentilated(saleOrderLine));
+  }
+
+  protected boolean atLeastOneInvoiceVentilated(SaleOrderLine saleOrderLine) {
+    return invoiceLineRepository
+            .all()
+            .filter(
+                "self.saleOrderLine = :saleOrderLine AND self.invoice.statusSelect = :statusSelect")
+            .bind("saleOrderLine", saleOrderLine.getId())
+            .bind("statusSelect", InvoiceRepository.STATUS_VENTILATED)
+            .count()
+        > 0;
   }
 
   @Override

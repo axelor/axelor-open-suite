@@ -18,6 +18,7 @@
 package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -133,7 +134,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public String realize(StockMove stockMove, boolean check) throws AxelorException {
+  public String realizeStockMove(StockMove stockMove, boolean check) throws AxelorException {
 
     if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
         && (stockMove.getPartner() != null
@@ -144,11 +145,11 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
     }
 
     if (!appSupplyChainService.isApp("supplychain")) {
-      return super.realize(stockMove, check);
+      return super.realizeStockMove(stockMove, check);
     }
 
     LOG.debug("Stock move realization: {} ", stockMove.getStockMoveSeq());
-    String newStockSeq = super.realize(stockMove, check);
+    String newStockSeq = super.realizeStockMove(stockMove, check);
     AppSupplychain appSupplychain = appSupplyChainService.getAppSupplychain();
 
     if (StockMoveRepository.ORIGIN_SALE_ORDER.equals(stockMove.getOriginTypeSelect())) {
@@ -244,9 +245,12 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void plan(StockMove stockMove) throws AxelorException {
-    super.plan(stockMove);
+  public void planStockMove(StockMove stockMove) throws AxelorException {
+    super.planStockMove(stockMove);
+    updateReservedQuantity(stockMove);
+  }
 
+  protected void updateReservedQuantity(StockMove stockMove) throws AxelorException {
     if (appSupplyChainService.isApp("supplychain")
         && appSupplyChainService.getAppSupplychain().getManageStockReservation()) {
       reservedQtyService.updateReservedQuantity(stockMove, StockMoveRepository.STATUS_PLANNED);
@@ -409,11 +413,62 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
   public StockMove splitInto2(
       StockMove originalStockMove, List<StockMoveLine> modifiedStockMoveLines)
       throws AxelorException {
+
+    checkAssociatedInvoiceLine(modifiedStockMoveLines);
     StockMove newStockMove = super.splitInto2(originalStockMove, modifiedStockMoveLines);
     newStockMove.setOrigin(originalStockMove.getOrigin());
     newStockMove.setOriginTypeSelect(originalStockMove.getOriginTypeSelect());
     newStockMove.setOriginId(originalStockMove.getOriginId());
     return newStockMove;
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public boolean splitStockMoveLines(
+      StockMove stockMove, List<StockMoveLine> stockMoveLines, BigDecimal splitQty)
+      throws AxelorException {
+    checkAssociatedInvoiceLine(stockMoveLines);
+    return super.splitStockMoveLines(stockMove, stockMoveLines, splitQty);
+  }
+
+  /**
+   * Methods that checks if any of the stock move lines are associated with a invoice line. Will
+   * throws a exception if it is the case
+   *
+   * @throws AxelorException if any stock move line is associated with invoice line.
+   * @param modifiedStockMoveLines
+   */
+  protected void checkAssociatedInvoiceLine(List<StockMoveLine> stockMoveLines)
+      throws AxelorException {
+    StringJoiner pairSMLInvoiceLineSj = new StringJoiner(" / ");
+    boolean isAssociated = false;
+    for (StockMoveLine stockMoveLine : stockMoveLines) {
+      if (stockMoveLine.getId() != null) {
+        List<InvoiceLine> associatedInvoiceLines =
+            stockMoveLineServiceSupplychain.getInvoiceLines(stockMoveLine);
+        if (!associatedInvoiceLines.isEmpty()) {
+          associatedInvoiceLines.stream()
+              .forEach(
+                  invoiceLine -> {
+                    pairSMLInvoiceLineSj.add(
+                        String.format(
+                            "%s -> %s (%s)",
+                            stockMoveLine.getName(),
+                            invoiceLine.getInvoice().getInvoiceId(),
+                            invoiceLine.getName()));
+                  });
+          isAssociated = true;
+        }
+      }
+    }
+    if (isAssociated) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(
+              SupplychainExceptionMessage
+                  .STOCK_MOVE_LINES_ASSOCIATED_WITH_INVOICE_LINES_CANNOT_SPLIT),
+          pairSMLInvoiceLineSj.toString());
+    }
   }
 
   @Override

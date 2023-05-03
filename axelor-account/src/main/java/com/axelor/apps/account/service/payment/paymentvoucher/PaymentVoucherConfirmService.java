@@ -317,6 +317,7 @@ public class PaymentVoucherConfirmService {
 
     MoveLine valueForCollectionMoveLine = optionalValueForCollectionMoveLine.get();
     Reconcile reconcile;
+
     if (isDebitToPay) {
       reconcile =
           reconcileService.createReconcile(
@@ -566,7 +567,8 @@ public class PaymentVoucherConfirmService {
         move.getMoveLineList().add(moveLine);
 
         if (isDebitToPay) {
-          reconcileService.balanceCredit(moveLine);
+          reconcileService.canBeZeroBalance(null, moveLine);
+          // reconcileService.balanceCredit(moveLine);
         }
       }
       moveComputeService.autoApplyCutOffDates(move);
@@ -840,7 +842,7 @@ public class PaymentVoucherConfirmService {
 
     paymentMove.addMoveLineListItem(moveLine);
     payVoucherElementToPay.setMoveLineGenerated(moveLine);
-    moveLineInvoiceTermService.generateDefaultInvoiceTerm(moveLine, false);
+    moveLineInvoiceTermService.generateDefaultInvoiceTerm(paymentMove, moveLine, false);
 
     BigDecimal amountInCompanyCurrency = moveLine.getDebit().add(moveLine.getCredit());
 

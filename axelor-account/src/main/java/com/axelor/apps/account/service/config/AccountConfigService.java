@@ -341,17 +341,30 @@ public class AccountConfigService {
     return accountConfig.getSupplierAdvancePaymentAccount();
   }
 
-  public Account getCashPositionVariationAccount(AccountConfig accountConfig)
+  public Account getCashPositionVariationDebitAccount(AccountConfig accountConfig)
       throws AxelorException {
 
-    if (accountConfig.getCashPositionVariationAccount() == null) {
+    if (accountConfig.getCashPositionVariationDebitAccount() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_27),
           I18n.get(BaseExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
-    return accountConfig.getCashPositionVariationAccount();
+    return accountConfig.getCashPositionVariationDebitAccount();
+  }
+
+  public Account getCashPositionVariationCreditAccount(AccountConfig accountConfig)
+      throws AxelorException {
+
+    if (accountConfig.getCashPositionVariationCreditAccount() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(AccountExceptionMessage.ACCOUNT_CONFIG_51),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
+          accountConfig.getCompany().getName());
+    }
+    return accountConfig.getCashPositionVariationCreditAccount();
   }
 
   public Account getReimbursementAccount(AccountConfig accountConfig) throws AxelorException {

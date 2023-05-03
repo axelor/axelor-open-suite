@@ -48,6 +48,7 @@ import com.axelor.apps.account.service.invoice.print.InvoiceProductStatementServ
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.AxelorMessageException;
 import com.axelor.apps.base.db.Alarm;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.CancelReason;
@@ -64,6 +65,7 @@ import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
@@ -71,6 +73,8 @@ import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.message.db.Template;
+import com.axelor.message.service.TemplateMessageService;
 import com.axelor.utils.ModelTool;
 import com.axelor.utils.StringTool;
 import com.axelor.utils.ThrowConsumer;
@@ -114,6 +118,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   protected InvoiceTermPfpService invoiceTermPfpService;
   protected TaxService taxService;
   protected InvoiceProductStatementService invoiceProductStatementService;
+  protected TemplateMessageService templateMessageService;
 
   @Inject
   public InvoiceServiceImpl(
@@ -131,7 +136,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       InvoiceTermPfpService invoiceTermPfpService,
       AppBaseService appBaseService,
       TaxService taxService,
-      InvoiceProductStatementService invoiceProductStatementService) {
+      InvoiceProductStatementService invoiceProductStatementService,
+      TemplateMessageService templateMessageService) {
 
     this.validateFactory = validateFactory;
     this.ventilateFactory = ventilateFactory;
@@ -148,6 +154,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     this.appBaseService = appBaseService;
     this.taxService = taxService;
     this.invoiceProductStatementService = invoiceProductStatementService;
+    this.templateMessageService = templateMessageService;
   }
 
   // WKF
@@ -265,9 +272,16 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
    * @throws AxelorException
    */
   @Override
-  @Transactional(rollbackOn = {Exception.class})
   public void validate(Invoice invoice) throws AxelorException {
+    validateProcess(invoice);
+    if (invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE
+        && invoice.getInvoiceAutomaticMailOnValidate()) {
+      sendMail(invoice, invoice.getInvoiceMessageTemplateOnValidate());
+    }
+  }
 
+  @Transactional(rollbackOn = {Exception.class})
+  protected void validateProcess(Invoice invoice) throws AxelorException {
     log.debug("Invoice validation");
 
     compute(invoice);
@@ -288,8 +302,15 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
    * @throws AxelorException
    */
   @Override
-  @Transactional(rollbackOn = {Exception.class})
   public void ventilate(Invoice invoice) throws AxelorException {
+    ventilateProcess(invoice);
+    if (invoice.getInvoiceAutomaticMail()) {
+      sendMail(invoice, invoice.getInvoiceMessageTemplate());
+    }
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected void ventilateProcess(Invoice invoice) throws AxelorException {
     if (invoice.getPaymentCondition() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
@@ -369,15 +390,24 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
    * @param invoice Une facture.
    * @throws AxelorException
    */
-  @Override
   @Transactional(rollbackOn = {Exception.class})
+  @Override
   public void cancel(Invoice invoice) throws AxelorException {
-
     log.debug("Canceling invoice {}", invoice.getInvoiceId());
 
     cancelFactory.getCanceller(invoice).process();
 
     invoiceRepo.save(invoice);
+  }
+
+  protected void sendMail(Invoice invoice, Template template) {
+    // send message
+    try {
+      templateMessageService.generateAndSendMessage(invoice, template);
+    } catch (Exception e) {
+      TraceBackService.trace(
+          new AxelorMessageException(e, invoice, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR));
+    }
   }
 
   /**
@@ -1177,6 +1207,11 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       return;
     }
     invoiceTermList.forEach(
-        it -> invoiceTermService.setParentFields(it, it.getMoveLine(), invoice));
+        it ->
+            invoiceTermService.setParentFields(
+                it,
+                Optional.ofNullable(it.getMoveLine()).map(MoveLine::getMove).orElse(null),
+                it.getMoveLine(),
+                invoice));
   }
 }

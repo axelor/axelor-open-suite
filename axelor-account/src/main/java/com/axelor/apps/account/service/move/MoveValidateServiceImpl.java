@@ -18,9 +18,11 @@
 package com.axelor.apps.account.service.move;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticJournal;
 import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
@@ -61,8 +63,10 @@ import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -216,7 +220,11 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     }
 
     if (appAccountService.getAppAccount().getManageCutOffPeriod()
-        && move.getFunctionalOriginSelect() != MoveRepository.FUNCTIONAL_ORIGIN_CUT_OFF
+        && !Arrays.asList(
+                MoveRepository.FUNCTIONAL_ORIGIN_CUT_OFF,
+                MoveRepository.FUNCTIONAL_ORIGIN_OPENING,
+                MoveRepository.FUNCTIONAL_ORIGIN_CLOSURE)
+            .contains(move.getFunctionalOriginSelect())
         && !moveToolService.checkMoveLinesCutOffDates(move)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
@@ -277,10 +285,39 @@ public class MoveValidateServiceImpl implements MoveValidateService {
       }
 
       moveLineTaxService.checkTaxMoveLines(move);
-
+      this.checkTaxAmount(move);
       this.validateWellBalancedMove(move);
+      this.checkMoveLineInvoiceTermBalance(move);
 
       moveControlService.checkDuplicateOrigin(move);
+    }
+  }
+
+  protected void checkMoveLineInvoiceTermBalance(Move move) throws AxelorException {
+
+    log.debug(
+        "Well-balanced move line invoice terms validation on account move {}", move.getReference());
+
+    if (move.getMoveLineList() != null) {
+
+      for (MoveLine moveLine : move.getMoveLineList()) {
+        if (ObjectUtils.notEmpty(moveLine.getInvoiceTermList())
+            && moveLine.getAccount().getUseForPartnerBalance()) {
+          BigDecimal totalMoveLineInvoiceTerm =
+              moveLine.getInvoiceTermList().stream()
+                  .map(InvoiceTerm::getAmount)
+                  .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+          if (totalMoveLineInvoiceTerm.compareTo(moveLine.getDebit().max(moveLine.getCredit()))
+              != 0) {
+            throw new AxelorException(
+                move,
+                TraceBackRepository.CATEGORY_INCONSISTENCY,
+                I18n.get(AccountExceptionMessage.MOVE_LINE_INVOICE_TERM_SUM_COMPANY_AMOUNT),
+                moveLine.getName());
+          }
+        }
+      }
     }
   }
 
@@ -767,5 +804,59 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     for (MoveLine moveLine : move.getMoveLineList()) {
       moveLineControlService.checkPartner(moveLine);
     }
+  }
+
+  protected void checkTaxAmount(Move move) throws AxelorException {
+    AccountConfig accountConfig = accountConfigService.getAccountConfig(move.getCompany());
+    List<MoveLine> moveLineList = move.getMoveLineList();
+
+    BigDecimal linesTaxAmount =
+        moveLineList.stream()
+            .filter(
+                moveLine -> {
+                  String accountType =
+                      moveLine.getAccount().getAccountType().getTechnicalTypeSelect();
+                  return accountType.equals(AccountTypeRepository.TYPE_INCOME)
+                      || accountType.equals(AccountTypeRepository.TYPE_CHARGE);
+                })
+            .map(this::getTaxAmount)
+            .reduce(BigDecimal::add)
+            .orElse(BigDecimal.ZERO);
+
+    BigDecimal taxLinesAmount =
+        moveLineList.stream()
+            .filter(
+                moveLine ->
+                    moveLine
+                        .getAccount()
+                        .getAccountType()
+                        .getTechnicalTypeSelect()
+                        .equals(AccountTypeRepository.TYPE_TAX))
+            .map(it -> it.getDebit().add(it.getCredit()))
+            .reduce(BigDecimal::add)
+            .orElse(BigDecimal.ZERO);
+
+    if (linesTaxAmount.compareTo(taxLinesAmount) != 0
+        && accountConfig.getAllowedTaxGap().compareTo(linesTaxAmount.subtract(taxLinesAmount).abs())
+            < 0) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(AccountExceptionMessage.MOVE_TAX_NOT_EQUALS));
+    }
+  }
+
+  protected BigDecimal getTaxAmount(MoveLine moveLine) {
+    if (moveLine.getTaxLine() == null) {
+      return BigDecimal.ZERO;
+    }
+
+    BigDecimal lineTotal = moveLine.getCredit().add(moveLine.getDebit());
+
+    return lineTotal
+        .multiply(moveLine.getTaxLine().getValue())
+        .divide(
+            BigDecimal.valueOf(100),
+            AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+            RoundingMode.HALF_UP);
   }
 }

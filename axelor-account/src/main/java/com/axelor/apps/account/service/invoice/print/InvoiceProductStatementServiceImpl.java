@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -75,17 +76,21 @@ public class InvoiceProductStatementServiceImpl implements InvoiceProductStateme
     if (invoiceProductStatementList.isEmpty()) {
       return "";
     }
-    String statement = getCorrespondingStatement(productTypes, invoiceProductStatementList);
-    if (statement.isEmpty()) {
-      List<InvoiceProductStatement> minSizeCorrespondingInvoiceProductStatements =
-          getCorrectInvoiceProductStatements(productTypes, invoiceProductStatementList);
-      statement =
-          minSizeCorrespondingInvoiceProductStatements.stream()
-              .findFirst()
-              .map(InvoiceProductStatement::getStatement)
-              .orElse("");
-    }
-    return statement;
+
+    return getCorrespondingStatement(productTypes, invoiceProductStatementList)
+        .orElseGet(
+            () ->
+                getMinSizeCorrespondingInvoiceProductStatement(
+                    productTypes, invoiceProductStatementList));
+  }
+
+  protected String getMinSizeCorrespondingInvoiceProductStatement(
+      Set<String> productTypes, List<InvoiceProductStatement> invoiceProductStatementList) {
+
+    return getCorrectInvoiceProductStatements(productTypes, invoiceProductStatementList).stream()
+        .findFirst()
+        .map(InvoiceProductStatement::getStatement)
+        .orElse("");
   }
 
   protected List<InvoiceProductStatement> getCorrectInvoiceProductStatements(
@@ -136,16 +141,16 @@ public class InvoiceProductStatementServiceImpl implements InvoiceProductStateme
     return correspondingStatements;
   }
 
-  protected String getCorrespondingStatement(
+  protected Optional<String> getCorrespondingStatement(
       Set<String> productTypes, List<InvoiceProductStatement> invoiceProductStatementList) {
-    String statement = "";
+    String statement = null;
     for (InvoiceProductStatement invoiceProductStatement : invoiceProductStatementList) {
       Set<String> result = getTypesList(invoiceProductStatement);
       if (result.equals(productTypes)) {
         statement = invoiceProductStatement.getStatement();
       }
     }
-    return statement;
+    return Optional.ofNullable(statement);
   }
 
   protected Set<String> getTypesList(InvoiceProductStatement invoiceProductStatement) {

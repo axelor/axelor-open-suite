@@ -18,10 +18,10 @@
 package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.Move;
-import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.move.massentry.MassEntryService;
+import com.axelor.apps.account.service.move.massentry.MassEntryVerificationService;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.ObjectUtils;
@@ -54,28 +54,6 @@ public class MassEntryMoveController {
     }
   }
 
-  public void verifyFieldsAndGenerateTaxLineAndCounterpart(
-      ActionRequest request, ActionResponse response) {
-    Move move = request.getContext().asType(Move.class);
-
-    try {
-      boolean manageCutOff =
-          request.getContext().get("manageCutOffDummy") != null
-              && (boolean) request.getContext().get("manageCutOffDummy");
-      if (move != null && ObjectUtils.notEmpty(move.getMoveLineMassEntryList())) {
-        Beans.get(MassEntryService.class)
-            .verifyFieldsAndGenerateTaxLineAndCounterpart(
-                move, manageCutOff, this.extractDueDate(request));
-
-        response.setValues(move);
-        response.setAttr("controlMassEntryMoves", "hidden", false);
-        response.setAttr("validateMassEntryMoves", "hidden", true);
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-    }
-  }
-
   public void controlMassEntryMoves(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
@@ -93,7 +71,8 @@ public class MassEntryMoveController {
           response.setAttr("controlMassEntryMoves", "hidden", true);
           response.setAttr("validateMassEntryMoves", "hidden", false);
         }
-        response.setValues(move);
+        response.setValue("moveLineMassEntryList", move.getMoveLineMassEntryList());
+        response.setValue("massEntryErrors", move.getMassEntryErrors());
       } else {
         response.setError(I18n.get(AccountExceptionMessage.MASS_ENTRY_MOVE_NO_LINE));
       }
@@ -119,12 +98,14 @@ public class MassEntryMoveController {
         moveIdList = entryMap.getKey();
         error = entryMap.getValue();
 
-        response.setValues(move);
+        response.setValue("moveLineMassEntryList", move.getMoveLineMassEntryList());
+        response.setValue("massEntryErrors", move.getMassEntryErrors());
+        response.setValue("massEntryStatusSelect", move.getMassEntryStatusSelect());
+
         if (error.length() > 0) {
           response.setInfo(
               String.format(I18n.get(AccountExceptionMessage.MOVE_ACCOUNTING_NOT_OK), error));
           response.setAttr("controlMassEntryMoves", "hidden", false);
-          response.setAttr("validateMassEntryMoves", "hidden", true);
         } else {
           response.setInfo(I18n.get(AccountExceptionMessage.MOVE_ACCOUNTING_OK));
           if (!CollectionUtils.isEmpty(moveIdList)) {
@@ -138,6 +119,7 @@ public class MassEntryMoveController {
                     .map());
           }
         }
+        response.setAttr("validateMassEntryMoves", "hidden", true);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
@@ -149,30 +131,16 @@ public class MassEntryMoveController {
       Move move = request.getContext().asType(Move.class);
       if (move != null
           && move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL
-          && move.getCompany().getDefaultBankDetails() == null
           && move.getJournal() != null
-          && (move.getJournal().getJournalType().getTechnicalTypeSelect()
-                  == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE
-              || move.getJournal().getJournalType().getTechnicalTypeSelect()
-                  == JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE)) {
-        response.setError(
-            String.format(
-                I18n.get(AccountExceptionMessage.COMPANY_BANK_DETAILS_MISSING),
-                move.getCompany().getName()));
+          && move.getCompany() != null) {
+        response.setValue(
+            "companyBankDetails",
+            Beans.get(MassEntryVerificationService.class)
+                .verifyCompanyBankDetails(
+                    move.getCompany(), move.getCompanyBankDetails(), move.getJournal()));
       }
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void verifyMassEntryStatusSelect(ActionRequest request, ActionResponse response) {
-    try {
-      String viewName = request.getContext().get("_viewName").toString();
-      if ("move-mass-entry-form".equals(viewName)) {
-        response.setValue("massEntryStatusSelect", MoveRepository.MASS_ENTRY_STATUS_ON_GOING);
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 }
