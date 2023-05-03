@@ -193,7 +193,7 @@
     <action name="action-group-sale-saleorderline-onload"/>
     <action name="action-sale-order-line-attrs-hidden-fields-for-client"/>
     <action name="action-sale-order-line-attrs-fill-ctx"/>
-    <action name="action-sale-order-line-supplychain-method-get-invoicing-state"/>
+    <action name="action-sale-order-line-supplychain-method-get-invoicing-state" if="id"/>
   </action-group>
 
 </object-views>
