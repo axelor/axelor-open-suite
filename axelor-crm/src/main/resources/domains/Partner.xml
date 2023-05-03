@@ -27,7 +27,7 @@
     <many-to-one name="reportsTo" ref="com.axelor.apps.base.db.Partner"
       title="partner.manager" massUpdate="true" index="false"/>
     <many-to-one name="agency" ref="com.axelor.apps.crm.db.Agency" title="Agency"/>
-    
+
     <many-to-one ref="com.axelor.apps.crm.db.PartnerStatus" name="partnerStatus"
       title="Partner status"/>
 
