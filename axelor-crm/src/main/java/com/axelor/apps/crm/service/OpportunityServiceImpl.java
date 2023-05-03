@@ -83,24 +83,23 @@ public class OpportunityServiceImpl implements OpportunityService {
   }
 
   @Override
-  public void setOpportunityStatus(Opportunity opportunity, boolean isStagedClosedWon)
-      throws AxelorException {
-
-    if (isStagedClosedWon) {
-      opportunity.setOpportunityStatus(appCrmService.getClosedWinOpportunityStatus());
-    } else {
-      opportunity.setOpportunityStatus(appCrmService.getClosedLostOpportunityStatus());
-    }
-
-    saveOpportunity(opportunity);
+  @Transactional(rollbackOn = {Exception.class})
+  public void setOpportunityStatusStagedClosedWon(Opportunity opportunity) throws AxelorException {
+    opportunity.setOpportunityStatus(appCrmService.getClosedWinOpportunityStatus());
   }
 
   @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void setOpportunityStatusStagedClosedLost(Opportunity opportunity) throws AxelorException {
+    opportunity.setOpportunityStatus(appCrmService.getClosedLostOpportunityStatus());
+  }
+
+  @Override
+  @Transactional
   public void setOpportunityStatusNextStage(Opportunity opportunity) {
     OpportunityStatus status = opportunity.getOpportunityStatus();
     status = Beans.get(OpportunityStatusRepository.class).findByNextSequence(status.getSequence());
     opportunity.setOpportunityStatus(status);
-    saveOpportunity(opportunity);
   }
 
   @Override

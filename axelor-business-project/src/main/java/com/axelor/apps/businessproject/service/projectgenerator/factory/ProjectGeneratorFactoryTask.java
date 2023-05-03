@@ -90,53 +90,9 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
       if (SaleOrderLineRepository.TYPE_NORMAL != saleOrderLine.getTypeSelect()) {
         continue;
       }
-
-      Product product = saleOrderLine.getProduct();
-      boolean isTaskGenerated =
-          !projectTaskRepo
-              .all()
-              .filter("self.saleOrderLine = ? AND self.project = ?", saleOrderLine, project)
-              .fetch()
-              .isEmpty();
-
-      saleOrderLine.setProject(project);
-
-      // check on product unit
-      AppBusinessProject appBusinessProject = appBusinessProjectService.getAppBusinessProject();
-      if (!Objects.equals(saleOrderLine.getUnit(), appBusinessProject.getDaysUnit())
-          && !Objects.equals(saleOrderLine.getUnit(), appBusinessProject.getHoursUnit())) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_NO_VALUE,
-            I18n.get(BusinessProjectExceptionMessage.SALE_ORDER_GENERATE_FILL_PRODUCT_UNIT_ERROR));
-      }
-      if (product != null
-          && ProductRepository.PRODUCT_TYPE_SERVICE.equals(
-              (String)
-                  productCompanyService.get(product, "productTypeSelect", saleOrder.getCompany()))
-          && saleOrderLine.getSaleSupplySelect() == SaleOrderLineRepository.SALE_SUPPLY_PRODUCE
-          && !(isTaskGenerated)) {
-        ProjectTask task =
-            projectTaskBusinessProjectService.create(
-                saleOrderLine, project, project.getAssignedTo());
-
-        if (saleOrder.getToInvoiceViaTask()) {
-          task.setInvoicingType(ProjectTaskRepository.INVOICING_TYPE_PACKAGE);
-        }
-
-        task.setTaskDate(startDate.toLocalDate());
-        task.setUnitPrice(
-            (BigDecimal) productCompanyService.get(product, "salePrice", saleOrder.getCompany()));
-        task.setExTaxTotal(saleOrderLine.getExTaxTotal());
-        if (project.getIsInvoicingTimesheet()) {
-          task.setToInvoice(true);
-        } else {
-          task.setToInvoice(false);
-        }
-        projectTaskRepo.save(task);
-        tasks.add(task);
-      }
+      processSaleOrderLine(project, saleOrder, startDate, tasks, saleOrderLine);
     }
-    if (tasks == null || tasks.isEmpty()) {
+    if (tasks.isEmpty()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_NO_VALUE,
           I18n.get(BusinessProjectExceptionMessage.SALE_ORDER_GENERATE_FILL_PROJECT_ERROR_1));
@@ -148,5 +104,59 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
         .add("form", "project-task-form")
         .param("search-filters", "project-task-filters")
         .domain(String.format("self.id in (%s)", StringTool.getIdListString(tasks)));
+  }
+
+  protected void processSaleOrderLine(
+      Project project,
+      SaleOrder saleOrder,
+      LocalDateTime startDate,
+      List<ProjectTask> tasks,
+      SaleOrderLine saleOrderLine)
+      throws AxelorException {
+    Product product = saleOrderLine.getProduct();
+    boolean isTaskGenerated =
+        !projectTaskRepo
+            .all()
+            .filter("self.saleOrderLine = ? AND self.project = ?", saleOrderLine, project)
+            .fetch()
+            .isEmpty();
+
+    saleOrderLine.setProject(project);
+
+    if (product != null
+        && ProductRepository.PRODUCT_TYPE_SERVICE.equals(
+            (String)
+                productCompanyService.get(product, "productTypeSelect", saleOrder.getCompany()))
+        && saleOrderLine.getSaleSupplySelect() == SaleOrderLineRepository.SALE_SUPPLY_PRODUCE
+        && !(isTaskGenerated)) {
+
+      // check on product unit
+      AppBusinessProject appBusinessProject = appBusinessProjectService.getAppBusinessProject();
+      if (!Objects.equals(saleOrderLine.getUnit(), appBusinessProject.getDaysUnit())
+          && !Objects.equals(saleOrderLine.getUnit(), appBusinessProject.getHoursUnit())) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_NO_VALUE,
+            I18n.get(BusinessProjectExceptionMessage.SALE_ORDER_GENERATE_FILL_PRODUCT_UNIT_ERROR));
+      }
+
+      ProjectTask task =
+          projectTaskBusinessProjectService.create(saleOrderLine, project, project.getAssignedTo());
+
+      if (saleOrder.getToInvoiceViaTask()) {
+        task.setInvoicingType(ProjectTaskRepository.INVOICING_TYPE_PACKAGE);
+      }
+
+      task.setTaskDate(startDate.toLocalDate());
+      task.setUnitPrice(
+          (BigDecimal) productCompanyService.get(product, "salePrice", saleOrder.getCompany()));
+      task.setExTaxTotal(saleOrderLine.getExTaxTotal());
+      if (project.getIsInvoicingTimesheet()) {
+        task.setToInvoice(true);
+      } else {
+        task.setToInvoice(false);
+      }
+      projectTaskRepo.save(task);
+      tasks.add(task);
+    }
   }
 }

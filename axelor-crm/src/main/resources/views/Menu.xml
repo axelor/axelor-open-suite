@@ -10,6 +10,7 @@
     order="100"/>
 
   <action-view name="crm.root.lead" title="Leads" model="com.axelor.apps.crm.db.Lead">
+    <view type="kanban" name="lead-kanban"/>
     <view type="grid" name="lead-grid"/>
     <view type="form" name="lead-form"/>
     <view-param name="search-filters" value="lead-filters"/>
@@ -25,6 +26,7 @@
 
   <action-view name="crm.root.prospects" title="Prospects"
     model="com.axelor.apps.base.db.Partner">
+    <view type="kanban" name="partner-prospect-kanban"/>
     <view type="cards" name="partner-cards"/>
     <view type="grid" name="partner-prospect-grid"/>
     <view type="form" name="partner-customer-form"/>

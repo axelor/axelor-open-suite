@@ -27,7 +27,7 @@
     <many-to-one name="reportsTo" ref="com.axelor.apps.base.db.Partner"
       title="partner.manager" massUpdate="true" index="false"/>
     <many-to-one name="agency" ref="com.axelor.apps.crm.db.Agency" title="Agency"/>
-
+    
     <many-to-one ref="com.axelor.apps.crm.db.PartnerStatus" name="partnerStatus"
       title="Partner status"/>
 
@@ -35,6 +35,9 @@
       title="Lost reason"/>
 
     <string name="lostReasonStr" title="Lost reason" large="true"/>
+
+
+    <integer name="sequence" title="Sequence"/>
 
     <extra-code>
     <![CDATA[
