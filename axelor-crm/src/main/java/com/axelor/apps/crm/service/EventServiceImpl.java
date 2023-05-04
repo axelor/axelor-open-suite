@@ -27,9 +27,11 @@ import com.axelor.apps.base.service.DateService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.Lead;
+import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.db.RecurrenceConfiguration;
 import com.axelor.apps.crm.db.repo.EventRepository;
 import com.axelor.apps.crm.db.repo.LeadRepository;
+import com.axelor.apps.crm.db.repo.OpportunityRepository;
 import com.axelor.apps.crm.db.repo.RecurrenceConfigurationRepository;
 import com.axelor.apps.crm.exception.CrmExceptionMessage;
 import com.axelor.auth.db.User;
@@ -71,6 +73,7 @@ public class EventServiceImpl implements EventService {
 
   protected DateService dateService;
 
+  protected OpportunityRepository opportunityRepo;
   private static final int ITERATION_LIMIT = 1000;
 
   @Inject
@@ -80,13 +83,15 @@ public class EventServiceImpl implements EventService {
       EmailAddressRepository emailAddressRepo,
       PartnerRepository partnerRepo,
       LeadRepository leadRepo,
-      DateService dateService) {
+      DateService dateService,
+      OpportunityRepository opportunityRepo) {
     this.partnerService = partnerService;
     this.eventRepo = eventRepo;
     this.emailAddressRepo = emailAddressRepo;
     this.partnerRepo = partnerRepo;
     this.leadRepo = leadRepo;
     this.dateService = dateService;
+    this.opportunityRepo = opportunityRepo;
   }
 
   @Override
@@ -666,14 +671,13 @@ public class EventServiceImpl implements EventService {
   protected void afterPlanned(Event event) {
     this.updateLeadScheduledEventDate(event);
     this.updatePartnerScheduledEventDate(event);
+    this.updateOpportunityScheduledEventDate(event);
   }
 
   @Override
+  @Transactional(rollbackOn = {Exception.class})
   public void realizeEvent(Event event) {
     event.setStatusSelect(EventRepository.STATUS_REALIZED);
-
-    saveEvent(event);
-
     this.afterRealized(event);
   }
 
@@ -682,20 +686,20 @@ public class EventServiceImpl implements EventService {
     this.updateLeadScheduledEventDateAfterRealized(event);
     this.updatePartnerLastEventDate(event);
     this.updatePartnerScheduledEventDateAfterRealized(event);
+    this.updateOpportunityLastEventDate(event);
+    this.updateOpportunityScheduledEventDateAfterRealized(event);
   }
 
   @Override
+  @Transactional(rollbackOn = {Exception.class})
   public void cancelEvent(Event event) {
     event.setStatusSelect(EventRepository.STATUS_CANCELED);
-
-    saveEvent(event);
-
     this.afterCanceled(event);
   }
 
+  @Transactional
   protected void afterCanceled(Event event) {
     LocalDateTime eventDateTime = event.getEndDateTime();
-
     Lead lead = event.getEventLead();
     if (lead != null
         && lead.getLastEventDateT() != null
@@ -725,6 +729,13 @@ public class EventServiceImpl implements EventService {
               event, eventRepo.all().filter("self.partner.id = ?", partner.getId()).fetch())
           .ifPresent(partner::setLastEventDateT);
     }
+
+    Opportunity opportunity = event.getOpportunity();
+    if (opportunity != null) {
+      this.fetchLatestEventEndDateT(
+              event, eventRepo.all().filter("self.opportunity.id = ?", opportunity.getId()).fetch())
+          .ifPresent(opportunity::setLastEventDateT);
+    }
   }
 
   @Transactional
@@ -735,6 +746,17 @@ public class EventServiceImpl implements EventService {
         && (lead.getLastEventDateT() == null
             || !lead.getLastEventDateT().isAfter(event.getEndDateTime()))) {
       lead.setLastEventDateT(event.getEndDateTime());
+    }
+  }
+
+  @Transactional
+  protected void updateOpportunityLastEventDate(Event event) {
+    Opportunity opportunity = event.getOpportunity();
+    if (opportunity != null
+        && event.getEndDateTime() != null
+        && (opportunity.getLastEventDateT() == null
+            || !opportunity.getLastEventDateT().isAfter(event.getEndDateTime()))) {
+      opportunity.setLastEventDateT(event.getEndDateTime());
     }
   }
 
@@ -776,6 +798,19 @@ public class EventServiceImpl implements EventService {
   }
 
   @Transactional
+  protected void updateOpportunityScheduledEventDate(Event event) {
+    Opportunity opportunity = event.getOpportunity();
+    LocalDateTime startDateTime = event.getStartDateTime();
+    if (opportunity != null
+        && startDateTime != null
+        && event.getStatusSelect() == EventRepository.STATUS_PLANNED
+        && (opportunity.getNextScheduledEventDateT() == null
+            || opportunity.getNextScheduledEventDateT().isAfter(event.getEndDateTime()))) {
+      opportunity.setNextScheduledEventDateT(startDateTime);
+    }
+  }
+
+  @Transactional
   protected void updatePartnerScheduledEventDateAfterRealized(Event event) {
     Partner partner = event.getPartner();
     if (partner != null && event.getStartDateTime() != null) {
@@ -792,6 +827,18 @@ public class EventServiceImpl implements EventService {
       this.fetchNextEventStartDateT(event, lead.getEventList())
           .ifPresent(lead::setNextScheduledEventDateT);
       leadRepo.save(lead);
+    }
+  }
+
+  @Transactional
+  protected void updateOpportunityScheduledEventDateAfterRealized(Event event) {
+    Opportunity opportunity = event.getOpportunity();
+    if (opportunity != null
+        && event.getStartDateTime() != null
+        && !opportunity.getEventList().isEmpty()) {
+      this.fetchNextEventStartDateT(event, opportunity.getEventList())
+          .ifPresent(opportunity::setNextScheduledEventDateT);
+      opportunityRepo.save(opportunity);
     }
   }
 

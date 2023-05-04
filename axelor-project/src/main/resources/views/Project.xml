@@ -14,6 +14,8 @@
       </menu>
     </menubar>
     <field name="name"/>
+    <field name="company" form-view="company-form" grid-view="company-grid"
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="code"/>
     <field name="parentProject"/>
     <field name="clientPartner"/>
@@ -103,11 +105,10 @@
           <editor x-show-titles="false">
             <panel name="seq" colSpan="3">
               <field name="code" showTitle="false" colSpan="12" readonly="true"
-                if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project')?.generateProjectSequence"
-                css="label-bold bold large" x-bind="{{code|unaccent|uppercase}}"
-                if-module="axelor-business-project"/>
+                if="__config__.app.getApp('project')?.generateProjectSequence"
+                css="label-bold bold large" x-bind="{{code|unaccent|uppercase}}"/>
               <field name="code" showTitle="false" colSpan="12" required="true"
-                if="!(__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project')?.generateProjectSequence)"
+                if="!__config__.app.getApp('project')?.generateProjectSequence"
                 css="label-bold bold large" x-bind="{{code|unaccent|uppercase}}"/>
             </panel>
             <field name="name" showTitle="false" colSpan="6" required="true"
@@ -119,8 +120,7 @@
     <panel name="detailsPanel">
       <panel name="generalInfoPanel" colSpan="12">
         <field name="company" form-view="company-form" grid-view="company-grid" colSpan="3"
-          canEdit="false" if="__config__.app.isApp('business-project')"
-          if-module="axelor-business-project"/>
+          canEdit="false" if-module="axelor-business-project"/>
         <field name="clientPartner"
           domain="self.isCustomer = true AND :company member of self.companySet"
           onChange="action-project-method-get-partner-data" requiredIf="isBusinessProject"
@@ -1107,7 +1107,7 @@
   <search-filters name="project-filters" model="com.axelor.apps.project.db.Project"
     title="Project filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base')?.getEnableMultiCompany() || !__config__.app.isApp('business-project')"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="resourceBookingList" hidden="true"
       if="!__config__.app.getApp('project')?.resourceManagement"/>
     <field name="productionOrderList" hidden="true"

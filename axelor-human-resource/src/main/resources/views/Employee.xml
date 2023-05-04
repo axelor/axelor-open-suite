@@ -108,6 +108,7 @@
         onSelect="action-employee-attrs-city-of-birth-on-select"/>
       <field name="citizenship" colSpan="4"/>
       <field name="maritalName" colSpan="4"/>
+      <field name="dependentChildren" colSpan="4"/>
       <field name="maidenName" colSpan="4" hideIf="sexSelect!='F'"/>
       <field name="socialSecurityNumber" colSpan="4" max="15" min="12"/>
     </panel>
@@ -309,6 +310,7 @@
             onSelect="action-employee-attrs-city-of-birth-on-select"/>
           <field name="citizenship" colSpan="4"/>
           <field name="maritalName" colSpan="4"/>
+          <field name="dependentChildren" colSpan="4"/>
           <field name="maidenName" colSpan="4" hideIf="sexSelect!='F'"/>
           <field name="socialSecurityNumber" colSpan="4" max="15" min="12"/>
         </panel>

@@ -77,10 +77,10 @@ public class OpportunityController {
   public void setStageClosedWon(ActionRequest request, ActionResponse response) {
     try {
       Opportunity opportunity = request.getContext().asType(Opportunity.class);
+      opportunity = Beans.get(OpportunityRepository.class).find(opportunity.getId());
 
-      Beans.get(OpportunityService.class)
-          .setOpportunityStatus(
-              Beans.get(OpportunityRepository.class).find(opportunity.getId()), true);
+      Beans.get(OpportunityService.class).setOpportunityStatusStagedClosedWon(opportunity);
+
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
@@ -90,10 +90,10 @@ public class OpportunityController {
   public void setStageClosedLost(ActionRequest request, ActionResponse response) {
     try {
       Opportunity opportunity = request.getContext().asType(Opportunity.class);
+      opportunity = Beans.get(OpportunityRepository.class).find(opportunity.getId());
 
-      Beans.get(OpportunityService.class)
-          .setOpportunityStatus(
-              Beans.get(OpportunityRepository.class).find(opportunity.getId()), false);
+      Beans.get(OpportunityService.class).setOpportunityStatusStagedClosedLost(opportunity);
+
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
@@ -101,11 +101,16 @@ public class OpportunityController {
   }
 
   public void setNextStage(ActionRequest request, ActionResponse response) {
-    Opportunity opportunity = request.getContext().asType(Opportunity.class);
-    Beans.get(OpportunityService.class)
-        .setOpportunityStatusNextStage(
-            Beans.get(OpportunityRepository.class).find(opportunity.getId()));
-    response.setReload(true);
+    try {
+      Opportunity opportunity = request.getContext().asType(Opportunity.class);
+      opportunity = Beans.get(OpportunityRepository.class).find(opportunity.getId());
+
+      Beans.get(OpportunityService.class).setOpportunityStatusNextStage(opportunity);
+
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void fillEndDate(ActionRequest request, ActionResponse response) {
