@@ -1,1 +1,0 @@
-{"version":3,"file":"static/js/231.c4973cff.chunk.js","mappings":"6KAKA,EAFmB,WAAH,OAAS,SAAC,WAAc,GAAmB,C","sources":["BPMN/Modeler/TimerEvent.js"],"sourcesContent":["import React from \"react\";\nimport \"../css/timer-style.css\";\n\nconst TimerEvent = () => <React.Fragment></React.Fragment>;\n\nexport default TimerEvent;\n"],"names":[],"sourceRoot":""}

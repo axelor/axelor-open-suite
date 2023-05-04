@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.contract.service;
 
@@ -32,8 +33,10 @@ import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
@@ -49,12 +52,10 @@ import com.axelor.apps.contract.db.repo.ContractRepository;
 import com.axelor.apps.contract.db.repo.ContractVersionRepository;
 import com.axelor.apps.contract.exception.ContractExceptionMessage;
 import com.axelor.apps.contract.generator.InvoiceGeneratorContract;
-import com.axelor.apps.tool.date.DateTool;
 import com.axelor.auth.AuthUtils;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.utils.date.DateTool;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.inject.Inject;
@@ -147,11 +148,11 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
       activeContract(contract, date);
     }
 
-    versionService.ongoing(currentVersion, date);
+    versionService.ongoing(currentVersion, date.atStartOfDay());
 
     contract.setVersionNumber(contract.getVersionNumber() + 1);
     if (currentVersion.getIsPeriodicInvoicing() && contract.getVersionNumber() == 0) {
-      contract.setInvoicePeriodStartDate(currentVersion.getActivationDate());
+      contract.setInvoicePeriodStartDate(currentVersion.getActivationDateTime().toLocalDate());
       contract.setInvoicePeriodEndDate(contract.getFirstPeriodEndDate());
     }
     if (contract.getCurrentContractVersion().getAutomaticInvoicing()) {
@@ -273,7 +274,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     ContractVersion currentVersion = contract.getCurrentContractVersion();
 
     // Terminate currentVersion
-    versionService.terminate(currentVersion, date.minusDays(1));
+    versionService.terminate(currentVersion, date.minusDays(1).atStartOfDay());
 
     // Archive current version
     archiveVersion(contract, date);
@@ -316,7 +317,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     }
     ContractVersion version = contract.getCurrentContractVersion();
 
-    if (contract.getTerminatedDate().isBefore(version.getActivationDate())) {
+    if (contract.getTerminatedDate().isBefore(version.getActivationDateTime().toLocalDate())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(ContractExceptionMessage.CONTRACT_UNVALIDE_TERMINATE_DATE));
@@ -384,7 +385,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     ContractVersion currentVersion = contract.getCurrentContractVersion();
 
     if (terminationDate.isBefore(today) || terminationDate.equals(today)) {
-      versionService.terminate(currentVersion, terminationDate);
+      versionService.terminate(currentVersion, terminationDate.atStartOfDay());
       contract.setStatusSelect(CLOSED_CONTRACT);
     }
 
@@ -423,20 +424,27 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
             && !DateTool.isProrata(
                 contract.getInvoicePeriodStartDate(),
                 contract.getInvoicePeriodEndDate(),
-                version.getActivationDate(),
-                version.getEndDate())) {
+                version.getActivationDateTime().toLocalDate(),
+                (version.getEndDateTime() != null)
+                    ? version.getEndDateTime().toLocalDate()
+                    : null)) {
           continue;
         }
         LocalDate start =
-            version.getActivationDate().isBefore(contract.getInvoicePeriodStartDate())
+            version
+                    .getActivationDateTime()
+                    .toLocalDate()
+                    .isBefore(contract.getInvoicePeriodStartDate())
                 ? contract.getInvoicePeriodStartDate()
-                : version.getActivationDate();
+                : version.getActivationDateTime().toLocalDate();
         LocalDate end =
-            version.getEndDate() == null
-                    || (version.getEndDate() != null
-                        && contract.getInvoicePeriodEndDate().isBefore(version.getEndDate()))
+            version.getEndDateTime() == null
+                    || (version.getEndDateTime() != null
+                        && contract
+                            .getInvoicePeriodEndDate()
+                            .isBefore(version.getEndDateTime().toLocalDate()))
                 ? contract.getInvoicePeriodEndDate()
-                : version.getEndDate();
+                : version.getEndDateTime().toLocalDate();
         ratio =
             durationService.computeRatio(
                 start, end, contract.getCurrentContractVersion().getInvoicingDuration());
@@ -634,7 +642,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     ContractVersion nextVersion =
         Beans.get(ContractVersionRepository.class).copy(currentVersion, true);
 
-    versionService.terminate(currentVersion, date.minusDays(1));
+    versionService.terminate(currentVersion, date.minusDays(1).atStartOfDay());
 
     contract.addVersionHistory(currentVersion);
     currentVersion.setContract(null);
@@ -647,7 +655,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
           durationService.computeDuration(nextVersion.getRenewalDuration(), date));
     }
     if (nextVersion.getIsAutoEnableVersionOnRenew()) {
-      versionService.ongoing(nextVersion, date);
+      versionService.ongoing(nextVersion, date.atStartOfDay());
     } else {
       versionService.waiting(nextVersion, date);
     }

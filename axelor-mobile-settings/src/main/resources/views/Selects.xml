@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
+
+  <selection name="mobilesettings.mobile.config.sequence.select">
+    <option value="app-stock">Stock</option>
+    <option value="app-manufacturing">Manufacturing</option>
+    <option value="app-crm">CRM</option>
+  </selection>
+
+  <selection name='trace.back.origin.select' id="trace.back.origin.select.mobilesettings">
+    <option value="mobile app">Mobile app</option>
+  </selection>
+
+</object-views>

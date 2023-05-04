@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="sale" package="com.axelor.apps.sale.db"/>
 
-  <entity name="SaleOrder" lang="java"
-    implements="com.axelor.apps.base.interfaces.PricedOrder">
+  <entity name="SaleOrder" implements="com.axelor.apps.base.interfaces.PricedOrder">
 
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true"
       title="Company"/>
@@ -90,10 +89,6 @@
     <!-- Onglet Commande Client -->
     <date name="orderDate" title="Order Date"/>
     <string name="orderNumber" title="Order Number"/>
-
-    <!-- Onglet scheduler -->
-    <date name="invoicedFirstDate" title="Invoiced first date"/>
-    <date name="nextInvPeriodStartDate" title="Next invoiced period start date" readonly="true"/>
 
     <many-to-one name="confirmedByUser" ref="com.axelor.auth.db.User" readonly="true"
       title="Confirmed by"/>

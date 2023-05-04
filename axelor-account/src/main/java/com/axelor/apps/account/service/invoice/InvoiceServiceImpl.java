@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service.invoice;
 
@@ -47,6 +48,8 @@ import com.axelor.apps.account.service.invoice.print.InvoicePrintService;
 import com.axelor.apps.account.service.invoice.print.InvoiceProductStatementService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.AxelorMessageException;
 import com.axelor.apps.base.db.Alarm;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.CancelReason;
@@ -57,27 +60,25 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.BankDetailsRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.tax.TaxService;
-import com.axelor.apps.message.db.Template;
-import com.axelor.apps.message.exception.AxelorMessageException;
-import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.apps.tool.ModelTool;
-import com.axelor.apps.tool.StringTool;
-import com.axelor.apps.tool.ThrowConsumer;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.message.db.Template;
+import com.axelor.message.service.TemplateMessageService;
+import com.axelor.utils.ModelTool;
+import com.axelor.utils.StringTool;
+import com.axelor.utils.ThrowConsumer;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -968,14 +969,16 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   }
 
   private Pair<Integer, Integer> massProcess(
-      Collection<? extends Number> invoiceIds, ThrowConsumer<Invoice> consumer, int statusSelect) {
+      Collection<? extends Number> invoiceIds,
+      ThrowConsumer<Invoice, Exception> consumer,
+      int statusSelect) {
     IntCounter doneCounter = new IntCounter();
 
     int errorCount =
         ModelTool.apply(
             Invoice.class,
             invoiceIds,
-            new ThrowConsumer<Invoice>() {
+            new ThrowConsumer<Invoice, Exception>() {
               @Override
               public void accept(Invoice invoice) throws Exception {
                 if (invoice.getStatusSelect() == statusSelect) {
@@ -1053,7 +1056,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     }
     invoice.setPfpValidatorUser(currentUser);
     invoice.setPfpValidateStatusSelect(InvoiceRepository.PFP_STATUS_LITIGATION);
-    invoice.setDecisionPfpTakenDate(appBaseService.getTodayDate(invoice.getCompany()));
+    invoice.setDecisionPfpTakenDateTime(
+        appBaseService.getTodayDateTime(invoice.getCompany()).toLocalDateTime());
     invoice.setReasonOfRefusalToPay(reasonOfRefusalToPay);
     invoice.setReasonOfRefusalToPayStr(
         reasonOfRefusalToPayStr != null ? reasonOfRefusalToPayStr : reasonOfRefusalToPay.getName());
@@ -1164,7 +1168,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
     invoice.setPfpValidatorUser(currentUser);
     invoice.setPfpValidateStatusSelect(InvoiceRepository.PFP_STATUS_VALIDATED);
-    invoice.setDecisionPfpTakenDate(appBaseService.getTodayDate(invoice.getCompany()));
+    invoice.setDecisionPfpTakenDateTime(
+        appBaseService.getTodayDateTime(invoice.getCompany()).toLocalDateTime());
   }
 
   @Override
@@ -1203,6 +1208,11 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       return;
     }
     invoiceTermList.forEach(
-        it -> invoiceTermService.setParentFields(it, it.getMoveLine(), invoice));
+        it ->
+            invoiceTermService.setParentFields(
+                it,
+                Optional.ofNullable(it.getMoveLine()).map(MoveLine::getMove).orElse(null),
+                it.getMoveLine(),
+                invoice));
   }
 }

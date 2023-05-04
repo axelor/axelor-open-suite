@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202071616</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -1592,7 +1592,7 @@ group by me_title,me_date,me.currency,project.currency,me.turnover,me.cost;]]></
                     <structure>
                         <property name="position">3</property>
                         <property name="name">exp_validation_date</property>
-                        <property name="dataType">date</property>
+                        <property name="dataType">date-time</property>
                     </structure>
                     <structure>
                         <property name="position">4</property>
@@ -1621,20 +1621,18 @@ group by me_title,me_date,me.currency,project.currency,me.turnover,me.cost;]]></
                     <property name="position">3</property>
                     <property name="name">exp_validation_date</property>
                     <property name="nativeName">exp_validation_date</property>
-                    <property name="dataType">date</property>
-                    <property name="nativeDataType">91</property>
+                    <property name="dataType">date-time</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
                     <property name="name">exp_amt</property>
                     <property name="nativeName">exp_amt</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select emp.id as emp_id,
        emp.name as emp_name,
-       expense.validation_date as exp_validation_date,
+       expense.validation_date_time as exp_validation_date,
        sum(expl.untaxed_amount) as exp_amt
 from hr_expense_line expl
 left join hr_expense expense on (expense.id = expl.expense)
@@ -1872,10 +1870,10 @@ group by emp.id,emp.name,tm_validation_date,emp.hourly_rate]]></xml-property>
             <xml-property name="queryText"><![CDATA[select prod.full_name as ppt_activity,
 	sum(planned_hours) as total_hours,
 	case
-		when prod.unit = (select unit_hours from base_app_base) then
+		when prod.unit = (select unit_hours from studio_app_base) then
 			sum((planned_hours / NULLIF(planned_hours,0)) * prod.sale_price)
 		else	
-			sum(COALESCE((planned_hours / NULLIF((select coef from base_unit_conversion where start_unit = prod.unit and end_unit = (select unit_hours from base_app_base)), 0)) * prod.sale_price, 0))
+			sum(COALESCE((planned_hours / NULLIF((select coef from base_unit_conversion where start_unit = prod.unit and end_unit = (select unit_hours from studio_app_base)), 0)) * prod.sale_price, 0))
 	end as revenue
 from project_project_planning_time as ppt
 left join base_product prod on (prod.id = ppt.product)
@@ -2298,10 +2296,10 @@ group by month,partner.charge_back_purchase_select
 union
 select to_char(ppt.date_val, 'YYYY-MM') as month, 0 as costs, 
 case
-	when prod.unit = (select unit_hours from base_app_base) then
+	when prod.unit = (select unit_hours from studio_app_base) then
 		sum((planned_hours / NULLIF(planned_hours,0)) * prod.sale_price)
 	else	
-		sum(COALESCE((planned_hours / NULLIF((select coef from base_unit_conversion where start_unit = prod.unit and end_unit = (select unit_hours from base_app_base)), 0)) * prod.sale_price, 0))
+		sum(COALESCE((planned_hours / NULLIF((select coef from base_unit_conversion where start_unit = prod.unit and end_unit = (select unit_hours from studio_app_base)), 0)) * prod.sale_price, 0))
 end as turnover
 from project_project_planning_time as ppt
 left join base_product prod on (prod.id = ppt.product)
@@ -2318,14 +2316,14 @@ group by month,prod.unit
 union
 select to_char(tml.date_val, 'YYYY-MM') as month, 0 as costs, 
 case
-	when prod.unit = (select unit_hours from base_app_base) then
+	when prod.unit = (select unit_hours from studio_app_base) then
 		sum(hours_duration * prod.sale_price)
 	else	
 		case
-			when (select count(*) from base_unit_conversion where start_unit = (select unit_hours from base_app_base) and end_unit = prod.unit) > 0 then
-				sum(COALESCE((hours_duration / NULLIF((select coef from base_unit_conversion where start_unit = (select unit_hours from base_app_base) and end_unit = prod.unit), 0)) * prod.sale_price, 0))
+			when (select count(*) from base_unit_conversion where start_unit = (select unit_hours from studio_app_base) and end_unit = prod.unit) > 0 then
+				sum(COALESCE((hours_duration / NULLIF((select coef from base_unit_conversion where start_unit = (select unit_hours from studio_app_base) and end_unit = prod.unit), 0)) * prod.sale_price, 0))
 			else
-				sum(COALESCE((hours_duration / NULLIF((select coef from base_unit_conversion where start_unit = prod.unit and end_unit = (select unit_hours from base_app_base)), 0)) * prod.sale_price, 0))		
+				sum(COALESCE((hours_duration / NULLIF((select coef from base_unit_conversion where start_unit = prod.unit and end_unit = (select unit_hours from studio_app_base)), 0)) * prod.sale_price, 0))		
 		end
 end as turnover
 from hr_timesheet_line as tml
@@ -2718,7 +2716,7 @@ where tm.status_select = 3
 and (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
 group by month
 union
-select to_char(expense.validation_date,'YYYY-MM') as month,sum(expl.untaxed_amount) as cost
+select to_char(expense.validation_date_time,'YYYY-MM') as month,sum(expl.untaxed_amount) as cost
 from hr_expense_line expl
 left join project_project project on (project.id = expl.project)
 left join project_project parent_project on (parent_project.id = project.parent_project)
@@ -2904,14 +2902,14 @@ group by month,me.currency,project.currency) CostData group by month)) ChartData
             <xml-property name="queryText"><![CDATA[select prod.full_name as tml_activity,
 	sum(hours_duration) as total_hours,
 	case
-		when prod.unit = (select unit_hours from base_app_base) then
+		when prod.unit = (select unit_hours from studio_app_base) then
 			sum(hours_duration * prod.sale_price)
 		else
 			case
-				when (select count(*) from base_unit_conversion where start_unit = (select unit_hours from base_app_base) and end_unit = prod.unit) > 0 then
-					sum(COALESCE((hours_duration / NULLIF((select coef from base_unit_conversion where start_unit = (select unit_hours from base_app_base) and end_unit = prod.unit), 0)) * prod.sale_price, 0))
+				when (select count(*) from base_unit_conversion where start_unit = (select unit_hours from studio_app_base) and end_unit = prod.unit) > 0 then
+					sum(COALESCE((hours_duration / NULLIF((select coef from base_unit_conversion where start_unit = (select unit_hours from studio_app_base) and end_unit = prod.unit), 0)) * prod.sale_price, 0))
 				else
-					sum(COALESCE((hours_duration / NULLIF((select coef from base_unit_conversion where start_unit = prod.unit and end_unit = (select unit_hours from base_app_base)), 0)) * prod.sale_price, 0))		
+					sum(COALESCE((hours_duration / NULLIF((select coef from base_unit_conversion where start_unit = prod.unit and end_unit = (select unit_hours from studio_app_base)), 0)) * prod.sale_price, 0))		
 			end
 	end as revenue
 from hr_timesheet_line as tml
@@ -6936,7 +6934,7 @@ order by task_end_date]]></xml-property>
                                 <property name="name">exp_validation_date</property>
                                 <text-property name="displayName">exp_validation_date</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["exp_validation_date"]</expression>
-                                <property name="dataType">date</property>
+                                <property name="dataType">date-time</property>
                             </structure>
                             <structure>
                                 <property name="name">exp_amt</property>

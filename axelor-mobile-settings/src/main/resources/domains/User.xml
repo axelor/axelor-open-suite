@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="auth" package="com.axelor.auth.db"/>
+
+  <entity name="User" sequential="true">
+    <many-to-one name="qrCode" title="Barcode" ref="com.axelor.meta.db.MetaFile"/>
+
+    <track>
+      <field name="qrCode" on="UPDATE"/>
+    </track>
+  </entity>
+
+</domain-models>

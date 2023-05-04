@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service.custom;
 
@@ -27,6 +28,8 @@ import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountingReportConfigLineRepository;
 import com.axelor.apps.account.db.repo.AccountingReportValueRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.DateService;
 import com.axelor.common.StringUtils;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
@@ -48,15 +51,18 @@ public abstract class AccountingReportValueAbstractService {
   protected AccountRepository accountRepo;
   protected AccountingReportValueRepository accountingReportValueRepo;
   protected AnalyticAccountRepository analyticAccountRepo;
+  protected DateService dateService;
 
   @Inject
   public AccountingReportValueAbstractService(
       AccountRepository accountRepo,
       AccountingReportValueRepository accountingReportValueRepo,
-      AnalyticAccountRepository analyticAccountRepo) {
+      AnalyticAccountRepository analyticAccountRepo,
+      DateService dateService) {
     this.accountRepo = accountRepo;
     this.accountingReportValueRepo = accountingReportValueRepo;
     this.analyticAccountRepo = analyticAccountRepo;
+    this.dateService = dateService;
   }
 
   protected void addNullValue(
@@ -89,8 +95,9 @@ public abstract class AccountingReportValueAbstractService {
       Map<String, Map<String, AccountingReportValue>> valuesMapByLine,
       AnalyticAccount configAnalyticAccount,
       String lineCode,
-      int analyticCounter) {
-    DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+      int analyticCounter)
+      throws AxelorException {
+    DateTimeFormatter format = dateService.getDateFormat();
     String period = String.format("%s - %s", startDate.format(format), endDate.format(format));
     int groupNumber = this.getGroupNb(groupColumn, parentTitle);
     int columnNumber = column.getSequence();

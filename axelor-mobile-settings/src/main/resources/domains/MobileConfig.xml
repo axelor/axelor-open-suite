@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="mobile-settings" package="com.axelor.apps.mobilesettings.db"/>
+
+  <entity name="MobileConfig">
+    <string name="sequence" selection="mobilesettings.mobile.config.sequence.select"
+      required="true" unique="true" readonly="true" title="App"/>
+    <boolean name="isAppEnabled" title="Enable app" default="false"
+      help="Allows you to enable this package on the mobile application."/>
+    <boolean name="isCustomizeMenuEnabled" title="Customize menus" default="false"
+      help="Allows you to customize the active menus for this application. If the menus are not configured then all the menus of the application are available."/>
+    <one-to-many name="menus" ref="com.axelor.apps.mobilesettings.db.MobileMenu"
+      title="Restricted menus"
+      help="List of restricted menus for this application. If this field is empty then all menus are displayed on the mobile application. If a menu is added to the list then its display is restricted to the associated roles. Menus that are not in the list will be visible to all users."/>
+    <many-to-many name="authorizedRoles" ref="com.axelor.auth.db.Role"
+      title="Authorized roles"
+      help="List of roles that have access to this application. If the field is empty then everyone has access to the application. If it contains at least one role then only users with one of the roles present have access to the application."/>
+
+    <extra-code><![CDATA[
+
+		// APP SEQUENCE
+		public static final String APP_SEQUENCE_STOCK = "app-stock";
+		public static final String APP_SEQUENCE_MANUFACTURING = "app-manufacturing";
+		public static final String APP_SEQUENCE_CRM = "app-crm";
+
+	]]></extra-code>
+
+    <track>
+      <field name="sequence" on="UPDATE"/>
+      <field name="isCustomizeMenuEnabled" on="UPDATE"/>
+      <field name="isAppEnabled" on="UPDATE"/>
+    </track>
+  </entity>
+
+
+
+</domain-models>

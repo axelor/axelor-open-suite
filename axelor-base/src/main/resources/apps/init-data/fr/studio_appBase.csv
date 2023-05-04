@@ -1,0 +1,2 @@
+"code";"currencyWsURL";"passwordChangedTemplate.name";"geoNamesDumpUrl";"geoNamesZipUrl";"nbDecimalDigitForTaxRate"
+"base";"com.axelor.apps.base.service.currency.ECBCurrencyConversionService";"Changed password";"https://download.geonames.org/export/dump/";"http://download.geonames.org/export/zip/";2

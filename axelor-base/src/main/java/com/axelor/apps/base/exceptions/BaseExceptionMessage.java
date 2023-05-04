@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.base.exceptions;
 
@@ -181,13 +182,6 @@ public final class BaseExceptionMessage {
 
   public static final String TEMPLATE_MESSAGE_BASE_2 = /*$$(*/
       "Unable to generate Birt report file" /*)*/;
-
-  /** Querie Service and controller */
-  public static final String QUERIE_1 = /*$$(*/
-      "Error : There is no query set for the querie %s" /*)*/;
-
-  public static final String QUERIE_2 = /*$$(*/ "Error : Incorrect query for the querie %s" /*)*/;
-  public static final String QUERIE_3 = /*$$(*/ "Valid query." /*)*/;
 
   /** Tax service */
   public static final String TAX_1 = /*$$(*/ "Please enter a tax version for the tax %s" /*)*/;
@@ -478,8 +472,6 @@ public final class BaseExceptionMessage {
       "Geoname's URL to access Geoname Dump files is missing to complete this operation. In the configuration of the App. Base, please fill in the field GeoNames Dump URL in tab Interfaces and in the panel GeoNames." /*)*/;
   public static final String GEONAMES_ZIP_URL_NOT_SPECIFIED = /*$$(*/
       "Geoname's URL to access Zip files is missing to complete this operation. In the configuration of the App. Base, please fill in the field GeoNames Zip URL in tab Interfaces and in the panel GeoNames." /*)*/;
-  public static final String GEONAMES_URL_NOT_SPECIFIED = /*$$(*/
-      "Please fill in GeoNames URL in Base application configuration." /*)*/;
   public static final String INVALID_GEONAMES_IMPORT_FILE = /*$$(*/
       "The geonames file type is invalid." /*)*/;
   public static final String INVALID_DATA_FILE_EXTENSION = /*$$(*/
@@ -518,4 +510,33 @@ public final class BaseExceptionMessage {
       "The start date cannot be later than the end date." /*)*/;
 
   public static final String NO_ACTIVE_COMPANY = /*$$(*/ "Please set an active company." /*)*/;
+
+  public static final String FILE_SOURCE_CONNECTOR_CONNECTION_TYPE_NULL = /*$$(*/
+      "You must select a connection type in order to create a session" /*)*/;
+
+  public static final String FILE_SOURCE_CONNECTOR_CONNECTION_MISSING_FIELDS = /*$$(*/
+      "File source connector is missing mandatory field(s) in order to create a session." /*)*/;
+
+  public static final String FILE_TRANSFERT_SESSION_NOT_STARTED = /*$$(*/
+      "The file transfert session is not started" /*)*/;
+  public static final String FILE_TRANSFERT_SESSION_NOT_CONFIGURED = /*$$(*/
+      "The file transfert session is not configured" /*)*/;
+  public static final String FILE_TRANSFERT_SESSION_DOWNLOAD_FAILED = /*$$(*/
+      "Download failed: %s" /*)*/;
+  public static final String FILE_TRANSFERT_SESSION_UPLOAD_FAILED = /*$$(*/
+      "Upload failed: %s" /*)*/;
+
+  public static final String ADVANCED_IMPORT_NOT_VALIDATED = /*$$(*/
+      "Advanced import is not validated" /*)*/;
+
+  public static final String COMPANY_INVALID_LOCALE = /*$$(*/
+      "Warning: locale %s is invalid, please enter a valid locale." /*)*/;
+
+  public static final String COMPANY_LOCALE_MISSING = /*$$(*/
+      "Please fill locale for the company %s" /*)*/;
+
+  public static final String SWAGGER_DISABLED = /*$$(*/ "Swagger is not enabled." /*)*/;
+
+  public static final String SWAGGER_NO_RESOURCE_PACKAGES = /*$$(*/
+      "Swagger is enabled but not resource packages is specified." /*)*/;
 }
