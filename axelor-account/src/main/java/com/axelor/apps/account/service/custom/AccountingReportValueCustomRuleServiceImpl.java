@@ -298,6 +298,7 @@ public class AccountingReportValueCustomRuleServiceImpl extends AccountingReport
                 && tokens[0].equals(column.getCode())) {
               contextMap.put(tokens[1], valuesMap.get(code).getResult());
             } else if ((groupColumn != null && tokens[1].equals(groupColumn.getCode()))
+                || tokens[1].equals(parentTitle)
                 || (configAnalyticAccount != null
                     && Arrays.asList(tokens).contains(configAnalyticAccount.getCode()))) {
               contextMap.put(tokens[0], valuesMap.get(code).getResult());

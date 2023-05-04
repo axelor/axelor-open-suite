@@ -136,8 +136,6 @@ public abstract class AccountingReportValueAbstractService {
       if (StringUtils.isEmpty(parentTitle)) {
         return 0;
       } else {
-        AccountingReportValueServiceImpl.incrementGroupOffset();
-
         return AccountingReportValueServiceImpl.getGroupOffset();
       }
     } else if (groupColumn.getTypeSelect() == AccountingReportConfigLineRepository.TYPE_GROUP) {

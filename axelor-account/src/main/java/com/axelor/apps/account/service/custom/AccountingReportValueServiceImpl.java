@@ -357,6 +357,8 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
             startDate,
             endDate,
             analyticCounter);
+
+        AccountingReportValueServiceImpl.incrementGroupOffset();
       }
     } else if (CollectionUtils.isNotEmpty(groupColumnList)) {
       columnList.removeAll(groupColumnList);
