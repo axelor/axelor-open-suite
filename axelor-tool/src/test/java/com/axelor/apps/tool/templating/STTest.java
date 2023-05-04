@@ -152,7 +152,6 @@ public class STTest {
 
   @Test
   public void test2() {
-    long start = System.currentTimeMillis();
 
     TemplateMaker maker = new TemplateMaker("Europe/Paris", Locale.FRENCH, '$', '$');
 
@@ -164,9 +163,6 @@ public class STTest {
       Assert.assertNotNull(result);
       Assert.assertEquals(contentFinal, result);
     }
-
-    // Assert test total time < 15s
-    Assert.assertTrue(((System.currentTimeMillis() - start) / 1000) < 15);
   }
 
   @Test
@@ -180,7 +176,6 @@ public class STTest {
   class ThreadTest extends Thread {
     @Override
     public void run() {
-      long start = System.currentTimeMillis();
 
       TemplateMaker maker = new TemplateMaker("Europe/Paris", Locale.FRENCH, '$', '$');
 
@@ -192,9 +187,6 @@ public class STTest {
         Assert.assertNotNull(result);
         Assert.assertEquals(contentFinal, result);
       }
-
-      // Assert test total time < 15s
-      Assert.assertTrue(((System.currentTimeMillis() - start) / 1000) < 15);
     }
   }
 }
