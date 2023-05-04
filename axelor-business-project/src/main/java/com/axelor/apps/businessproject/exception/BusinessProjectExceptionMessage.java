@@ -67,6 +67,11 @@ public final class BusinessProjectExceptionMessage {
   public static final String BATCH_INVOICING_PROJECT_2 = /*$$(*/
       "Generated invoicing project" /*)*/;
 
+  public static final String BATCH_COMPUTE_PROJECT_TOTALS_1 = /*$$(*/ "Project %s" /*)*/;
+
+  public static final String BATCH_COMPUTE_PROJECT_TOTALS_2 = /*$$(*/
+      "Generated invoicing project" /*)*/;
+
   public static final String SALE_ORDER_GENERATE_FILL_PRODUCT_UNIT_ERROR = /*$$(*/
       "Service sale order lines that generate a project task should be in days or hours as they are defined in Business Project module configuration" /*)*/;
 

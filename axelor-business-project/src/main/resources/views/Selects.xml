@@ -52,6 +52,7 @@
   <selection name="business.project.batch.action.select">
     <option value="1">Update Tasks</option>
     <option value="2">Generate invoicing projects</option>
+    <option value="3">Compute project totals</option>
   </selection>
 
   <selection name="business.project.batch.consolidate.phase.select">

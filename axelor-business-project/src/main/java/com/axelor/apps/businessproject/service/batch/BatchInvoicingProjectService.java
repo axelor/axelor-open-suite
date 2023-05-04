@@ -120,6 +120,6 @@ public class BatchInvoicingProjectService extends AbstractBatch {
   }
 
   protected void setBatchTypeSelect() {
-    this.batch.setBatchTypeSelect(BatchRepository.BATCH_TYPE_PROJECT_INVOICING_ASSISTANT_BATCH);
+    this.batch.setBatchTypeSelect(BatchRepository.BATCH_TYPE_BUSINESS_PROJECT_BATCH);
   }
 }

@@ -40,6 +40,8 @@
         onClick="save,action-business-project-batch-method-run-batch" showIf="actionSelect == 1"/>
       <button name="generateInvoicingProjectBtn" title="Generate invoicing projects"
         onClick="save,action-business-project-batch-method-run-batch" showIf="actionSelect == 2"/>
+      <button name="computeProjectTotalsBtn" title="Compute project totals"
+        onClick="save,action-business-project-batch-method-run-batch" showIf="actionSelect == 3"/>
     </panel>
   </form>
 
