@@ -38,6 +38,7 @@
 
 
     <integer name="sequence" title="Sequence"/>
+    <boolean name="isMainContact" title="Main Contact"/>
 
     <extra-code>
     <![CDATA[
