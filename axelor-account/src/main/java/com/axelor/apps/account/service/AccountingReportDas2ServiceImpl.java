@@ -152,7 +152,7 @@ public class AccountingReportDas2ServiceImpl implements AccountingReportDas2Serv
             + "AND account NOT IN (:supplierAccount, :customerAccount) "
             + "AND journalType = :journalType "
             + "AND company = :company "
-            + "AND currency = :currency "
+            + "AND (:currency is null OR currency = :currency) "
             + "AND move.ignoreInAccountingOk != true "
             + "AND pmvld NOT IN (SELECT pmvld "
             + "FROM AccountingReportMoveLine history "

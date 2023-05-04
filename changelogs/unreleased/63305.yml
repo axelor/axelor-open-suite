@@ -1,0 +1,3 @@
+---
+title: "PAYMENTSESSION : select/unselect buttons are now hidden when status is not in progress"
+type: fix
