@@ -215,9 +215,9 @@
           <field name="mobilePhone" widget="phone" colSpan="4"/>
           <field name="emailAddress" colSpan="4" canSelect="false"
             form-view="email-address-simple-form" x-show-icons="false">
-            <editor x-show-titles="false">
+            <editor x-show-titles="false" x-viewer="true">
               <field name="address" colSpan="12" placeholder="whatever@example.com"
-                pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$"/>
+                widget="email"/>
             </editor>
           </field>
           <field name="webSite" colSpan="6" placehosetLeadStatuslder="http://www.url.com"
