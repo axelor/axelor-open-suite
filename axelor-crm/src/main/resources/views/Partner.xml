@@ -261,7 +261,7 @@
     </extend>
   </form>
 
-  <kanban columnBy="partnerCategory" model="com.axelor.apps.base.db.Partner"
+  <kanban columnBy="partnerStatus" model="com.axelor.apps.base.db.Partner"
     sequenceBy="sequence" title="Prospects" name="partner-prospect-kanban" limit="10"
     draggable="true">
     <field name="name"/>
