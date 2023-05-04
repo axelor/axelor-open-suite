@@ -354,8 +354,14 @@ public class PaymentSessionController {
         isUnSelectedReadonly = false;
       }
 
-      response.setAttr("selectAllBtn", "hidden", false);
-      response.setAttr("unselectAllBtn", "hidden", false);
+      response.setAttr(
+          "selectAllBtn",
+          "hidden",
+          paymentSession.getStatusSelect() > PaymentSessionRepository.STATUS_ONGOING);
+      response.setAttr(
+          "unselectAllBtn",
+          "hidden",
+          paymentSession.getStatusSelect() > PaymentSessionRepository.STATUS_ONGOING);
       response.setAttr("selectAllBtn", "readonly", isSelectedReadonly);
       response.setAttr("unselectAllBtn", "readonly", isUnSelectedReadonly);
 
