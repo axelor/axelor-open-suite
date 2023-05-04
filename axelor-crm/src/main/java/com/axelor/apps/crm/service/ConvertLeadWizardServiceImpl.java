@@ -172,12 +172,10 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
     return address;
   }
 
-  protected EmailAddress createEmailAddress(String address,  Partner partner) {
+  protected EmailAddress createEmailAddress(String address, Partner partner) {
     EmailAddress emailAddress = new EmailAddress();
 
     emailAddress.setAddress(address);
-
-
 
     emailAddress.setPartner(partner);
 
