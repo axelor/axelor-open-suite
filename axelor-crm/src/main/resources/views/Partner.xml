@@ -3,6 +3,15 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
+  <grid name="partner-related-contact-grid" model="com.axelor.apps.base.db.Partner"
+    title="Contacts">
+    <field name="partnerSeq"/>
+    <field name="simpleFullName"/>
+    <field name="mainPartner.simpleFullName" title="Main company"/>
+    <field name="jobTitleFunction"/>
+    <field name="isMainContact"/>
+  </grid>
+
   <form name="incl-activities-partner-form" title="Partner"
     model="com.axelor.apps.base.db.Partner">
     <panel-dashlet name="partnerEventsPanel" colSpan="12"
@@ -239,6 +248,7 @@
       <insert position="before">
         <field name="isDoNotCall" colSpan="4" hideIf="$readonly()"/>
         <field name="isDoNotEmail" colSpan="4" hideIf="$readonly()"/>
+        <field name="isMainContact" colSpan="4"/>
         <field name="$viewerCallAndEmail" showTitle="false" showIf="$readonly()" colSpan="12">
           <viewer><![CDATA[
 			<h4>
@@ -257,6 +267,13 @@
     <extend target="//field[@name='language']">
       <insert position="after">
         <field name="createdOn" readonly="true"/>
+      </insert>
+    </extend>
+    <extend target="//panel[@name='companyPanel']">
+      <insert position="after">
+        <panel-dashlet name="relatedContactPanel"
+          action="action-contact-view-related-contacts" title="Related Contacts" colSpan="12"
+          height="150" showIf="id"/>
       </insert>
     </extend>
   </form>
@@ -649,4 +666,15 @@
   <action-method name="action-partner-method-confirm-lost-reason">
     <call class="com.axelor.apps.crm.web.PartnerCrmController" method="loseLead"/>
   </action-method>
+
+  <action-view name="action-contact-view-related-contacts" title="Contacts"
+    model="com.axelor.apps.base.db.Partner">
+    <view type="grid" name="partner-related-contact-grid"/>
+    <view type="form" name="partner-contact-form"/>
+    <domain>SUBSTRING(self.emailAddress.address, LOCATE('@',self.emailAddress.address)+1) =
+      :_emailAddress AND self.id != :id AND self.isContact = true</domain>
+    <context name="_emailAddress" expr="eval: emailAddress?.address?.split('@')[1]"
+      if="emailAddress?.address"/>
+  </action-view>
+
 </object-views>
