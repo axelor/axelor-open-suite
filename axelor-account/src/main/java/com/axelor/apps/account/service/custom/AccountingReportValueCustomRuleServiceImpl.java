@@ -177,7 +177,7 @@ public class AccountingReportValueCustomRuleServiceImpl extends AccountingReport
     if ((column.getRuleTypeSelect() == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE
             && (line.getRuleTypeSelect()
                     != AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE
-                || column.getPriority() > line.getPriority()))
+                || column.getPriority() <= line.getPriority()))
         || (groupColumn != null
             && groupColumn.getRuleTypeSelect()
                 == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE)) {
@@ -227,7 +227,7 @@ public class AccountingReportValueCustomRuleServiceImpl extends AccountingReport
     } else if (column.getRuleTypeSelect()
             == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE
         && line.getRuleTypeSelect() == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE) {
-      if (column.getPriority() > line.getPriority()) {
+      if (column.getPriority() <= line.getPriority()) {
         return lineValues;
       } else {
         return columnValues;
@@ -335,7 +335,7 @@ public class AccountingReportValueCustomRuleServiceImpl extends AccountingReport
     } else if (column.getRuleTypeSelect()
             == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE
         && line.getRuleTypeSelect() == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE) {
-      return column.getPriority() > line.getPriority() ? column.getRule() : line.getRule();
+      return column.getPriority() <= line.getPriority() ? column.getRule() : line.getRule();
     } else if (column.getRuleTypeSelect()
         == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE) {
       return column.getRule();
