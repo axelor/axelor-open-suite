@@ -1,4 +1,4 @@
-title: Replaced lost action by a an existing
+title: Replaced lost action by a an existing one
 type: fix
 description:
   Replaced on field 'currency' in 'onChange' attribute "action-move-record-set-currency-code" by "action-move-method-set-default-move-currency".
