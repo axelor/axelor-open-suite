@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.supplychain.exception;
 
@@ -359,11 +360,6 @@ public final class SupplychainExceptionMessage {
   public static final String MRP_STOCK_HISTORY_FIELD_SELECT_MISSING = /*$$(*/
       "Field fieldSelect is null for %s" /*)*/;
 
-  public static final String CUT_OFF_BATCH_NO_LINE = /*$$(*/
-      "You must select at least one line to validate" /*)*/;
-
-  public static final String CUT_OFF_BATCH_NO_PARTNER_ACCOUNT = /*$$(*/
-      "No partner account was found for company %s." /*)*/;
   public static final String SALE_ORDER_MERGE_ERROR_INVOICED_PARTNER = /*$$(*/
       "The invoiced partner must be the same for all sale orders" /*)*/;
   public static final String SALE_ORDER_MERGE_ERROR_DELIVERED_PARTNER = /*$$(*/
@@ -375,4 +371,6 @@ public final class SupplychainExceptionMessage {
       "Please select a forecasted invoice customer account in the accounting batch" /*)*/;
   public static final String MISSING_FORECASTED_INV_SUPP_ACCOUNT = /*$$(*/
       "Please select a forecasted invoice supplier account in the accounting batch" /*)*/;
+  public static final String STOCK_MOVE_LINES_ASSOCIATED_WITH_INVOICE_LINES_CANNOT_SPLIT = /*$$(*/
+      "The following stock move lines are already associated with invoice lines and can not be splitted: %s" /*)*/;
 }

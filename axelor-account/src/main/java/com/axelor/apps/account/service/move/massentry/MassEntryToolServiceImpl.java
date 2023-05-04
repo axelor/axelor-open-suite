@@ -6,6 +6,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.MoveLineMassEntry;
 import com.axelor.apps.account.db.repo.MoveLineMassEntryRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryToolService;
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
@@ -20,25 +21,31 @@ public class MassEntryToolServiceImpl implements MassEntryToolService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+  protected MoveLineMassEntryToolService moveLineMassEntryToolService;
+
   @Inject
-  public MassEntryToolServiceImpl() {}
+  public MassEntryToolServiceImpl(MoveLineMassEntryToolService moveLineMassEntryToolService) {
+    this.moveLineMassEntryToolService = moveLineMassEntryToolService;
+  }
 
   @Override
   public void clearMoveLineMassEntryListAndAddNewLines(
       Move parentMove, Move childMove, Integer temporaryMoveNumber) {
     List<MoveLineMassEntry> moveLineList = new ArrayList<>(parentMove.getMoveLineMassEntryList());
+    List<MoveLine> newMoveLineList = new ArrayList<>(childMove.getMoveLineList());
+    List<MoveLineMassEntry> newLinesList;
+
     for (MoveLineMassEntry moveLine : moveLineList) {
       if (Objects.equals(moveLine.getTemporaryMoveNumber(), temporaryMoveNumber)) {
         parentMove.removeMoveLineMassEntryListItem(moveLine);
       }
     }
     this.sortMoveLinesMassEntryByTemporaryNumber(parentMove);
+    newLinesList =
+        convertMoveLinesIntoMoveLineMassEntry(childMove, newMoveLineList, temporaryMoveNumber);
 
-    moveLineList =
-        convertMoveLinesIntoMoveLineMassEntry(
-            childMove, childMove.getMoveLineList(), temporaryMoveNumber);
-    if (moveLineList.size() > 0) {
-      for (MoveLineMassEntry moveLine : moveLineList) {
+    if (newMoveLineList.size() > 0) {
+      for (MoveLineMassEntry moveLine : newLinesList) {
         parentMove.addMoveLineMassEntryListItem(moveLine);
       }
     }
@@ -102,7 +109,8 @@ public class MassEntryToolServiceImpl implements MassEntryToolService {
       moveLineResult.setCurrencyRate(moveLine.getCurrencyRate());
       moveLineResult.setSourceTaxLine(moveLine.getSourceTaxLine());
       moveLineResult.setVatSystemSelect(moveLine.getVatSystemSelect());
-      setAnalyticsFields(moveLineResult, moveLine);
+
+      moveLineMassEntryToolService.setAnalyticsFields(moveLineResult, moveLine);
     }
 
     return moveLineResult;
@@ -121,10 +129,16 @@ public class MassEntryToolServiceImpl implements MassEntryToolService {
   }
 
   @Override
-  public void setNewStatusSelectOnMassEntryLines(Move move, Integer newStatusSelect) {
+  public void fillMassEntryLinesFields(Move parentMove, Move move, Integer newStatusSelect) {
     if (ObjectUtils.notEmpty(move.getMoveLineMassEntryList())) {
-      for (MoveLineMassEntry moveLine : move.getMoveLineMassEntryList()) {
-        moveLine.setMoveStatusSelect(newStatusSelect);
+      for (MoveLineMassEntry line : move.getMoveLineMassEntryList()) {
+        for (MoveLineMassEntry parentLine : parentMove.getMoveLineMassEntryList()) {
+          if (Objects.equals(line.getTemporaryMoveNumber(), parentLine.getTemporaryMoveNumber())
+              && Objects.equals(line.getCounter(), parentLine.getCounter())) {
+            parentLine.setFieldsErrorList(line.getFieldsErrorList());
+            parentLine.setMoveStatusSelect(newStatusSelect);
+          }
+        }
       }
     }
   }
@@ -140,15 +154,5 @@ public class MassEntryToolServiceImpl implements MassEntryToolService {
       }
     }
     return true;
-  }
-
-  public void setAnalyticsFields(MoveLine newMoveLine, MoveLine moveLine) {
-    newMoveLine.setAnalyticDistributionTemplate(moveLine.getAnalyticDistributionTemplate());
-    newMoveLine.setAxis1AnalyticAccount(moveLine.getAxis1AnalyticAccount());
-    newMoveLine.setAxis2AnalyticAccount(moveLine.getAxis2AnalyticAccount());
-    newMoveLine.setAxis3AnalyticAccount(moveLine.getAxis3AnalyticAccount());
-    newMoveLine.setAxis4AnalyticAccount(moveLine.getAxis4AnalyticAccount());
-    newMoveLine.setAxis5AnalyticAccount(moveLine.getAxis5AnalyticAccount());
-    newMoveLine.setAnalyticMoveLineList(moveLine.getAnalyticMoveLineList());
   }
 }

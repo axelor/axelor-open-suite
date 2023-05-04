@@ -1,2 +1,0 @@
-title: "PaymentSession: keep invoice terms link when invoice terms needs to be released from payment session, when refund or bank order process for example"
-type: fix

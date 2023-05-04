@@ -23,7 +23,7 @@
     <integer name="isEdited" selection="iaccount.move.line.mass.entry.edited.field.select"
       default="0"/>
     <string name="fieldsErrorList"/>
-    <many-to-one name="pfpValidatorUser" ref="com.axelor.auth.db.User"
+    <many-to-one name="movePfpValidatorUser" ref="com.axelor.auth.db.User"
       title="PFP Validator"/>
     <date name="deliveryDate" title="Delivery date"/>
 

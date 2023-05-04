@@ -1,8 +1,12 @@
 package com.axelor.apps.account.service.moveline.massentry;
 
+import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.MoveLineMassEntry;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.base.db.Partner;
 import java.lang.invoke.MethodHandles;
+import java.util.List;
+import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,6 +53,26 @@ public class MoveLineMassEntryToolServiceImpl implements MoveLineMassEntryToolSe
       moveLine.setTaxLine(newMoveLine.getTaxLine());
       moveLine.setAnalyticDistributionTemplate(newMoveLine.getAnalyticDistributionTemplate());
       moveLine.setCurrencyCode(newMoveLine.getCurrencyCode());
+    }
+  }
+
+  @Override
+  public void setAnalyticsFields(MoveLine newMoveLine, MoveLine moveLine) {
+    newMoveLine.setAnalyticDistributionTemplate(moveLine.getAnalyticDistributionTemplate());
+    newMoveLine.setAxis1AnalyticAccount(moveLine.getAxis1AnalyticAccount());
+    newMoveLine.setAxis2AnalyticAccount(moveLine.getAxis2AnalyticAccount());
+    newMoveLine.setAxis3AnalyticAccount(moveLine.getAxis3AnalyticAccount());
+    newMoveLine.setAxis4AnalyticAccount(moveLine.getAxis4AnalyticAccount());
+    newMoveLine.setAxis5AnalyticAccount(moveLine.getAxis5AnalyticAccount());
+    newMoveLine.setAnalyticMoveLineList(moveLine.getAnalyticMoveLineList());
+  }
+
+  public void setNewMoveStatusSelectMassEntryLines(
+      List<MoveLineMassEntry> massEntryLines, Integer newStatusSelect) {
+    for (MoveLineMassEntry line : massEntryLines) {
+      if (!Objects.equals(MoveRepository.STATUS_ACCOUNTED, line.getMoveStatusSelect())) {
+        line.setMoveStatusSelect(newStatusSelect);
+      }
     }
   }
 }
