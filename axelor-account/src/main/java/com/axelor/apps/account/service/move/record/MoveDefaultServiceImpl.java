@@ -25,6 +25,7 @@ import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.user.UserService;
 import com.google.inject.Inject;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -97,7 +98,7 @@ public class MoveDefaultServiceImpl implements MoveDefaultService {
 
     Company company = move.getCompany();
 
-    if (company != null && company.getCurrency() != null) {
+    if (move.getPartner() == null && company != null && company.getCurrency() != null) {
       move.setCompanyCurrency(company.getCurrency());
       move.setCurrency(company.getCurrency());
       move.setCurrencyCode(company.getCurrency().getCodeISO());
