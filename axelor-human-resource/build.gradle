@@ -39,6 +39,7 @@ task buildFront(type: YarnTask) {
     inputs.dir('src/main/axelor-react-timesheet/src')
     inputs.dir('src/main/axelor-react-timesheet/public')
     inputs.dir(fileTree("src/main/axelor-react-timesheet/.yarn"))
+    outputs.dir('src/main/axelor-react-timesheet/build')
 
 	dependsOn 'installFrontDeps'
     args = ["run", "build"]
