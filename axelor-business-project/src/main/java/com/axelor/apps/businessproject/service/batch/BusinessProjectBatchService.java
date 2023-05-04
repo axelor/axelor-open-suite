@@ -23,8 +23,8 @@ import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.AbstractBatchService;
-import com.axelor.apps.businessproject.db.ProjectInvoicingAssistantBatch;
-import com.axelor.apps.businessproject.db.repo.ProjectInvoicingAssistantBatchRepository;
+import com.axelor.apps.businessproject.db.BusinessProjectBatch;
+import com.axelor.apps.businessproject.db.repo.BusinessProjectBatchRepository;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
@@ -38,46 +38,44 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
-public class ProjectInvoicingAssistantBatchService extends AbstractBatchService {
+public class BusinessProjectBatchService extends AbstractBatchService {
 
   @Override
   protected Class<? extends Model> getModelClass() {
-    return ProjectInvoicingAssistantBatch.class;
+    return BusinessProjectBatch.class;
   }
 
   @Override
   public Batch run(Model model) throws AxelorException {
 
     Batch batch;
-    ProjectInvoicingAssistantBatch projectInvoicingAssistantBatch =
-        (ProjectInvoicingAssistantBatch) model;
+    BusinessProjectBatch BusinessProjectBatch = (BusinessProjectBatch) model;
 
-    switch (projectInvoicingAssistantBatch.getActionSelect()) {
-      case ProjectInvoicingAssistantBatchRepository.ACTION_UPDATE_TASKS:
-        batch = updateTask(projectInvoicingAssistantBatch);
+    switch (BusinessProjectBatch.getActionSelect()) {
+      case BusinessProjectBatchRepository.ACTION_UPDATE_TASKS:
+        batch = updateTask(BusinessProjectBatch);
         break;
 
-      case ProjectInvoicingAssistantBatchRepository.ACTION_GENERATE_INVOICING_PROJECT:
-        batch = generateInvoicingProject(projectInvoicingAssistantBatch);
+      case BusinessProjectBatchRepository.ACTION_GENERATE_INVOICING_PROJECT:
+        batch = generateInvoicingProject(BusinessProjectBatch);
         break;
 
       default:
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(BaseExceptionMessage.BASE_BATCH_1),
-            projectInvoicingAssistantBatch.getActionSelect(),
-            projectInvoicingAssistantBatch.getCode());
+            BusinessProjectBatch.getActionSelect(),
+            BusinessProjectBatch.getCode());
     }
     return batch;
   }
 
-  public Batch updateTask(ProjectInvoicingAssistantBatch projectInvoicingAssistantBatch) {
-    return Beans.get(BatchUpdateTaskService.class).run(projectInvoicingAssistantBatch);
+  public Batch updateTask(BusinessProjectBatch businessProjectBatch) {
+    return Beans.get(BatchUpdateTaskService.class).run(businessProjectBatch);
   }
 
-  public Batch generateInvoicingProject(
-      ProjectInvoicingAssistantBatch projectInvoicingAssistantBatch) {
-    return Beans.get(BatchInvoicingProjectService.class).run(projectInvoicingAssistantBatch);
+  public Batch generateInvoicingProject(BusinessProjectBatch businessProjectBatch) {
+    return Beans.get(BatchInvoicingProjectService.class).run(businessProjectBatch);
   }
 
   @SuppressWarnings("unchecked")
