@@ -616,7 +616,8 @@
 
   <action-record name="action-partner-record-set-partner-status"
     model="com.axelor.apps.base.db.Partner">
-    <field name="partnerStatus" expr="eval: __repo__(PartnerStatus).getDefaultStatus()"/>
+    <field name="partnerStatus"
+      expr="eval: __config__.app.getApp('crm')?.partnerDefaultStatus"/>
   </action-record>
 
   <action-record name="action-partner-record-set-from-crm"
@@ -625,6 +626,7 @@
   </action-record>
 
   <action-group name="crm-action-group-partner-onnew">
+    <action name="action-partner-validate-default-status"/>
     <action name="action-group-base-partner-onnew"/>
     <action name="action-partner-record-set-is-prospect"/>
     <action name="action-partner-record-set-partner-status"/>
@@ -677,4 +679,8 @@
       if="emailAddress?.address"/>
   </action-view>
 
+  <action-validate name="action-partner-validate-default-status">
+    <error message="Please fill default partner status in App CRM configuration."
+      if="!__config__.app.getApp('crm')?.partnerDefaultStatus"/>
+  </action-validate>
 </object-views>

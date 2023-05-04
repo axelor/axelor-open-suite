@@ -386,6 +386,7 @@
   </action-group>
 
   <action-group name="action-group-crm-lead-onnew">
+    <action name="action-lead-validate-default-status"/>
     <action name="action-account-record-new"/>
     <action name="action-lead-default-record-new"/>
   </action-group>
@@ -438,7 +439,7 @@
     <field name="user" expr="eval:__user__"/>
     <field name="team"
       expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
-    <field name="leadStatus" expr="eval: __repo__(LeadStatus).getDefaultStatus()"/>
+    <field name="leadStatus" expr="eval: __config__.app.getApp('crm')?.leadDefaultStatus"/>
     <field name="agency" expr="eval:__user__.activeAgency"/>
   </action-record>
 
@@ -581,4 +582,8 @@
     </filter>
   </search-filters>
 
+  <action-validate name="action-lead-validate-default-status">
+    <error message="Please fill default lead status in App CRM configuration."
+      if="!__config__.app.getApp('crm')?.leadDefaultStatus"/>
+  </action-validate>
 </object-views>

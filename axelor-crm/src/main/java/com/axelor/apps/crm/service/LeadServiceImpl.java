@@ -248,7 +248,7 @@ public class LeadServiceImpl implements LeadService {
   }
 
   @Override
-  public LeadStatus getDefaultLeadStatus() {
-    return leadStatusRepo.getDefaultStatus();
+  public LeadStatus getDefaultLeadStatus() throws AxelorException {
+    return appCrmService.getLeadDefaultStatus();
   }
 }

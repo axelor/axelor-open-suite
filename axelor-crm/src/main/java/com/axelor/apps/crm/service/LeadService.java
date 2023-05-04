@@ -84,5 +84,5 @@ public interface LeadService {
 
   public String processFullName(String enterpriseName, String name, String firstName);
 
-  public LeadStatus getDefaultLeadStatus();
+  public LeadStatus getDefaultLeadStatus() throws AxelorException;
 }

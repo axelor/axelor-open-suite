@@ -415,6 +415,7 @@
   </action-view>
 
   <action-group name="action-opportunity-group-new">
+    <action name="action-opportunity-validate-default-status"/>
     <action name="action-opportunity-record-new"/>
     <action name="action-opportunity-record-currency"/>
     <action name="action-opportunity-record-default" if="_partner == null"/>
@@ -451,7 +452,7 @@
       if="__config__.app.getApp('crm').isManageRecurrent &amp;&amp; __config__.app.getApp('crm').defaultRecurringDuration
       != null"/>
     <field name="opportunityStatus"
-      expr="eval: __repo__(OpportunityStatus).getDefaultStatus()"/>
+      expr="eval: __config__.app.getApp('crm')?.opportunityDefaultStatus"/>
   </action-record>
 
   <action-record name="action-opportunity-record-currency"
@@ -567,5 +568,10 @@
     <action name="action-opportunity-record-set-closed-lost-status"/>
     <action name="action-opportunity-method-cancel-saleorders"/>
   </action-group>
+
+  <action-validate name="action-opportunity-validate-default-status">
+    <error message="Please fill default opportunity status in App CRM configuration."
+      if="!__config__.app.getApp('crm')?.opportunityDefaultStatus"/>
+  </action-validate>
 
 </object-views>
