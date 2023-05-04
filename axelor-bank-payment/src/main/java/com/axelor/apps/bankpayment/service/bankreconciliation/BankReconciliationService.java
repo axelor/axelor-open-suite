@@ -342,28 +342,30 @@ public class BankReconciliationService {
             description,
             bankReconciliationLine.getBankReconciliation().getBankDetails());
 
-    MoveLine moveLine = generateMoveLine(bankReconciliationLine, bankStatementRule, move, true);
+    MoveLine counterPartMoveLine =
+        generateMoveLine(bankReconciliationLine, bankStatementRule, move, true);
 
-    generateTaxMoveLine(moveLine, bankStatementRule);
+    MoveLine moveLine = generateMoveLine(bankReconciliationLine, bankStatementRule, move, false);
 
-    moveLine = generateMoveLine(bankReconciliationLine, bankStatementRule, move, false);
+    generateTaxMoveLine(counterPartMoveLine, moveLine, bankStatementRule);
 
     bankReconciliationLineService.reconcileBRLAndMoveLine(bankReconciliationLine, moveLine);
 
     return moveRepository.save(move);
   }
 
-  protected void generateTaxMoveLine(MoveLine moveLine, BankStatementRule bankStatementRule)
+  protected void generateTaxMoveLine(
+      MoveLine counterPartMoveLine, MoveLine moveLine, BankStatementRule bankStatementRule)
       throws AxelorException {
     int vatSystemSelect = AccountRepository.VAT_SYSTEM_DEFAULT;
-    Move move = moveLine.getMove();
+    Move move = counterPartMoveLine.getMove();
     Journal journal = move.getJournal();
     int journalTechnicalType = journal.getJournalType().getTechnicalTypeSelect();
-    Company company = moveLine.getMove().getCompany();
+    Company company = counterPartMoveLine.getMove().getCompany();
     Partner partner = null;
 
     if (journalTechnicalType == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE) {
-      partner = moveLine.getPartner();
+      partner = counterPartMoveLine.getPartner();
     } else if (journalTechnicalType == JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE) {
       partner = company.getPartner();
     }
@@ -381,7 +383,7 @@ public class BankReconciliationService {
       vatSystemSelect = counterPartAccount.getVatSystemSelect();
     }
 
-    TaxLine taxLine = moveLine.getTaxLine();
+    TaxLine taxLine = counterPartMoveLine.getTaxLine();
     Account account =
         taxAccountService.getAccount(
             taxLine != null ? taxLine.getTax() : null,
@@ -391,6 +393,35 @@ public class BankReconciliationService {
             false,
             move.getFunctionalOriginSelect());
     moveLineTaxService.autoTaxLineGenerate(move, account);
+
+    fixTaxAmountRounding(move, counterPartMoveLine, moveLine);
+  }
+
+  protected void fixTaxAmountRounding(Move move, MoveLine counterPartMoveLine, MoveLine moveLine) {
+    MoveLine taxMoveLine =
+        move.getMoveLineList().stream()
+            .filter(
+                ml ->
+                    ml.getAccount()
+                        .getAccountType()
+                        .getTechnicalTypeSelect()
+                        .equals(AccountTypeRepository.TYPE_TAX))
+            .findFirst()
+            .orElse(null);
+    if (taxMoveLine == null) {
+      return;
+    }
+    BigDecimal taxAmount =
+        moveLine
+            .getDebit()
+            .max(moveLine.getCredit())
+            .subtract(counterPartMoveLine.getDebit().max(counterPartMoveLine.getCredit()))
+            .abs();
+    if (taxMoveLine.getDebit().signum() > 0) {
+      taxMoveLine.setDebit(taxAmount);
+    } else {
+      taxMoveLine.setCredit(taxAmount);
+    }
   }
 
   protected MoveLine generateMoveLine(
