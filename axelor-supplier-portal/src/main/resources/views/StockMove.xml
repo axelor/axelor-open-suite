@@ -9,7 +9,7 @@
     canDelete="false">
     <field name="stockMoveSeq"/>
     <field name="estimatedDate"/>
-    <field name="realDate"/>
+    <field name="realDateTime"/>
     <field name="toAddress"/>
     <field name="company" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="partner"/>
@@ -31,7 +31,7 @@
       </panel>
       <panel name="stockMoveInformationsPanel" title="Stock move information">
         <field name="estimatedDate" colSpan="12"/>
-        <field name="realDate" title="Receipt date" colSpan="12"/>
+        <field name="realDateTime" title="Receipt date" colSpan="12"/>
         <field name="fromAddress" showIf="typeSelect == 3" colSpan="12"/>
       </panel>
     </panel>

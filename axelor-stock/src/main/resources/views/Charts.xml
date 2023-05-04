@@ -28,7 +28,9 @@
       self.toAddress = address AND
       address.addressL7Country =
       country AND
-      self.realDate BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * 30 AND
+      DATE(self.realDateTime) BETWEEN DATE(:todayDate) - (CAST(:monthSelect as
+      int)) * 30
+      AND
       DATE(:todayDate)
       GROUP BY
       country.name
@@ -60,13 +62,15 @@
       stockMove.statusSelect = 3 AND
       stockMove.company = :activeCompany
       AND
-      stockMove.realDate BETWEEN DATE(:fromDate) AND DATE(:toDate) AND
-      self.stockMove = stockMove
+      DATE(stockMove.realDateTime) BETWEEN DATE(:fromDate) AND DATE(:toDate) AND
+      self.stockMove =
+      stockMove
       AND
       stockMove.toStockLocation = stockLocation AND
       stockLocation.typeSelect = 2 AND
       stockMove.toAddress = address AND
-      address.addressL7Country = country
+      address.addressL7Country =
+      country
       GROUP BY
       country.name
     </dataset>
@@ -99,13 +103,15 @@
       stockMove.statusSelect = 3 AND
       stockMove.company = :activeCompany
       AND
-      stockMove.realDate BETWEEN DATE(:fromDate) AND DATE(:toDate) AND
-      self.stockMove = stockMove
+      DATE(stockMove.realDateTime) BETWEEN DATE(:fromDate) AND DATE(:toDate) AND
+      self.stockMove =
+      stockMove
       AND
       stockMove.toStockLocation = stockLocation AND
       stockLocation.typeSelect = 2 AND
       stockMove.toAddress = address AND
-      address.addressL7Country = country AND
+      address.addressL7Country =
+      country AND
       self.product.productFamily = productFamily
       GROUP BY
       country.name, productFamily.name
@@ -127,41 +133,54 @@
       translation.message_value = '') THEN label
       ELSE translation.message_value
       END) AS status
-
       FROM (
       SELECT
       COUNT(self.id) AS moves,
       (CASE
-      when self.estimated_date >= self.real_date then 'OnTime
+      when self.estimated_date >= DATE(self.real_date_time)
+      then
+      'OnTime
       Deliveries'
-      when self.estimated_date &lt; self.real_date then 'Late Deliveries'
+      when self.estimated_date &lt; DATE(self.real_date_time)
+      then 'Late
+      Deliveries'
       END) AS label
       FROM
       stock_stock_move AS self
       JOIN
       auth_user AS _user
-      ON _user.id = :__user__
-      AND self.company =
+      ON
+      _user.id =
+      :__user__
+      AND
+      self.company =
       _user.active_company
       JOIN
       stock_stock_location AS _location
-      ON _location.type_select = 2
+      ON
+      _location.type_select = 2
       AND
       self.to_stock_location = _location.id
       WHERE
-      self.type_select = 2 AND
+      self.type_select = 2
+      AND
       self.status_select = 3 AND
       self.estimated_date IS NOT NULL AND
-      self.real_date BETWEEN DATE(:todayDate) -
-      (CAST(:monthSelect as int)) * INTERVAL '1 month' AND DATE(:todayDate)
-      GROUP BY
+      DATE(self.real_date_time)
+      BETWEEN
+      DATE(:todayDate) -
+      (CAST(:monthSelect as int)) * INTERVAL '1 month' AND
+      DATE(:todayDate)
+      GROUP
+      BY
       label
       ) situation
-
       LEFT JOIN
       meta_translation as translation
       ON
-      translation.message_key = label AND
+      translation.message_key =
+      label
+      AND
       translation.language = :_language
     </dataset>
     <category key="status" type="text" title="Status"/>
@@ -176,16 +195,20 @@
     </search-fields>
     <dataset type="sql">
       SELECT
-      ROUND(AVG((self.estimated_date - self.real_date)*-1)) AS days,
+      ROUND(AVG((self.estimated_date - DATE(self.real_date_time))*-1)) AS
+      days,
       (CASE
-      WHEN (translation.message_value IS NULL OR translation.message_value = '') THEN 'Delay'
+      WHEN (translation.message_value IS NULL OR translation.message_value
+      = '') THEN
+      'Delay'
       ELSE
       translation.message_value
       END) AS label
       FROM
       stock_stock_move AS self
       JOIN
-      auth_user AS _user
+      auth_user AS
+      _user
       ON
       _user.id = :__user__
       AND self.company = _user.active_company
@@ -193,16 +216,20 @@
       stock_stock_location AS
       _location
       ON self.to_stock_location = _location.id
-      AND _location.type_select = 2
+      AND
+      _location.type_select = 2
       LEFT JOIN
       meta_translation as translation
       ON
-      translation.message_key = 'Delay' AND translation.language =
+      translation.message_key =
+      'Delay' AND translation.language =
       :_language
       WHERE
       self.type_select = 2 AND
-      self.status_select = 3 AND
-      self.real_date BETWEEN
+      self.status_select =
+      3 AND
+      DATE(self.real_date_time)
+      BETWEEN
       DATE(:fromDate) AND DATE(:toDate)
       GROUP BY
       label
@@ -228,7 +255,7 @@
 	                    		stock_stock_move move,
 	                    		stock_stock_location loc
 	               		WHERE line.stock_move = move.id
-							AND move.real_date <= DATE(:todayDate)
+							AND DATE(move.real_date_time) <= DATE(:todayDate)
 							AND move.status_select in (2,3)
 							AND line.product = :id
 							AND loc.id = location.id
@@ -267,9 +294,9 @@
     <dataset type="sql">
 		 <![CDATA[
 		    SELECT
-		         real_date,locat,SUM(qty) OVER (PARTITION BY locat ORDER BY locat,real_date) AS qty
+		         real_date_time,locat,SUM(qty) OVER (PARTITION BY locat ORDER BY locat,real_date_time) AS qty
 			FROM
-				 ((SELECT DATE(:fromDate) AS real_date,location.name AS locat,
+				 ((SELECT DATE(:fromDate) AS real_date_time,location.name AS locat,
 			     (SELECT SUM(CASE WHEN move.from_stock_location = loc.id THEN -1*qty WHEN move.to_stock_location = loc.id THEN qty END) AS qty
        		FROM
        			stock_stock_move_line line,
@@ -277,7 +304,7 @@
        			stock_stock_location loc
       		WHERE
       		    line.stock_move = move.id
-			    AND move.real_date <= DATE(:fromDate)
+			    AND DATE(move.real_date_time) <= DATE(:fromDate)
 				AND move.status_select in (2,3)
 				AND line.product = :id
 				AND loc.id = location.id
@@ -292,9 +319,9 @@
 		    GROUP BY
 		   		location.id)
 		    UNION ALL
-		   	    (SELECT real_date AS dt,locat,sum(qty)
+		   	    (SELECT real_date_time AS dt,locat,sum(qty)
 		    FROM
-		        (SELECT location.name AS locat,move.real_date AS real_date,
+		        (SELECT location.name AS locat,DATE(move.real_date_time) AS real_date_time,
      	           	CASE WHEN move.from_stock_location = location.id THEN -1*line.qty
                     	 WHEN move.to_stock_location = location.id THEN line.qty
                     END AS qty
@@ -306,16 +333,16 @@
              	stock_stock_location location ON (move.from_stock_location = location.id OR move.to_stock_location = location.id)
 		    WHERE
 		    	line.product = :id
-	            AND move.real_date > DATE(:fromDate)
-			    AND move.real_date <= DATE(:toDate)
+	            AND DATE(move.real_date_time)> DATE(:fromDate)
+			    AND DATE(move.real_date_time) <= DATE(:toDate)
 	            AND location.type_select = 1) location
       	     GROUP BY
-      	          real_date,locat)
+      	          real_date_time,locat)
       	     ORDER BY
-      	          locat,real_date) location_stock;
+      	          locat,real_date_time) location_stock;
       	    ]]>
     </dataset>
-    <category key="real_date" type="date" title="Date"/>
+    <category key="real_date_time" type="date" title="Date"/>
     <series key="qty" groupBy="locat" type="line" aggregate="sum" title="Quantity"/>
   </chart>
 
@@ -368,7 +395,7 @@
 			                    		stock_stock_location loc,
 			                    		base_product prod
 			               		WHERE line.stock_move = move.id
-									AND move.real_date <= DATE(:todayDate)
+									AND DATE(move.real_date_time) <= DATE(:todayDate)
 									AND move.status_select in (2,3)
 									AND line.product = prod.id
 									AND prod.parent_product = :id
@@ -420,9 +447,9 @@
     <dataset type="sql">
 		 <![CDATA[
 		    SELECT
-		         real_date,locat,SUM(qty) OVER (PARTITION BY locat ORDER BY locat,real_date) AS qty
+		         real_date_time,locat,SUM(qty) OVER (PARTITION BY locat ORDER BY locat,real_date_time) AS qty
 			FROM
-				 ((SELECT DATE(:fromDate) AS real_date,location.name AS locat,
+				 ((SELECT DATE(:fromDate) AS real_date_time,location.name AS locat,
 			     (SELECT SUM(CASE WHEN move.from_stock_location = loc.id THEN -1*qty WHEN move.to_stock_location = loc.id THEN qty END) AS qty
        		FROM
        			stock_stock_move_line line,
@@ -431,7 +458,7 @@
        			base_product prod
       		WHERE
       		    line.stock_move = move.id
-			    AND move.real_date <= DATE(:fromDate)
+			    AND DATE(move.real_date_time) <= DATE(:fromDate)
 				AND move.status_select in (2,3)
 				AND line.product = prod.id
 				AND prod.parent_product = :id
@@ -450,9 +477,9 @@
 		    GROUP BY
 		   		location.id)
 		    UNION ALL
-		   	    (SELECT real_date AS dt,locat,sum(qty)
+		   	    (SELECT real_date_time AS dt,locat,sum(qty)
 		    FROM
-		        (SELECT location.name AS locat,move.real_date AS real_date,
+		        (SELECT location.name AS locat,DATE(move.real_date_time) AS real_date_time,
      	           	CASE WHEN move.from_stock_location = location.id THEN -1*line.qty
                     	 WHEN move.to_stock_location = location.id THEN line.qty
                     END AS qty
@@ -464,16 +491,16 @@
              	stock_stock_location location ON (move.from_stock_location = location.id OR move.to_stock_location = location.id)
 		    WHERE
 		    	line.product = :id
-	            AND move.real_date > DATE(:fromDate)
-			    AND move.real_date <= DATE(:toDate)
+	            AND DATE(move.real_date_time) > DATE(:fromDate)
+			    AND DATE(move.real_date_time) <= DATE(:toDate)
 	            AND location.type_select = 1) location
       	     GROUP BY
-      	          real_date,locat)
+      	          real_date_time,locat)
       	     ORDER BY
-      	          locat,real_date) location_stock;
+      	          locat,real_date_time) location_stock;
       	    ]]>
     </dataset>
-    <category key="real_date" type="date" title="Date"/>
+    <category key="real_date_time" type="date" title="Date"/>
     <series key="qty" groupBy="locat" type="line" aggregate="sum" title="Quantity"/>
   </chart>
 

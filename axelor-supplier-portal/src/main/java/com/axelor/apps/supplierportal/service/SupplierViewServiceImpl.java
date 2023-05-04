@@ -67,7 +67,7 @@ public class SupplierViewServiceImpl implements SupplierViewService {
     map.put(
         "$lastDelivery",
         stockMoveLastDelivery != null
-            ? dateFormat.format(stockMoveLastDelivery.getRealDate())
+            ? dateFormat.format(stockMoveLastDelivery.getRealDateTime())
             : I18n.get(SUPPLIER_PORTAL_NO_DATE));
 
     StockMove stockMoveNextDelivery = getData(StockMove.class, getNextDeliveryOfSupplier(user));
@@ -130,7 +130,7 @@ public class SupplierViewServiceImpl implements SupplierViewService {
         + StockMoveRepository.TYPE_INCOMING
         + " AND self.statusSelect = "
         + StockMoveRepository.STATUS_REALIZED
-        + " ORDER BY self.realDate DESC";
+        + " ORDER BY self.realDateTime DESC";
   }
 
   @Override

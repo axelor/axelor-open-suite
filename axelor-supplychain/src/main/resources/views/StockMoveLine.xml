@@ -7,7 +7,7 @@
     model="com.axelor.apps.stock.db.StockMoveLine"
     orderBy="stockMove.statusSelect,-stockMove.estimatedDate" canNew="false" canDelete="false">
     <field name="name" width="120"/>
-    <field name="stockMove.realDate"/>
+    <field name="stockMove.realDateTime"/>
     <field name="realQty" aggregate="sum"
       onChange="action-stock-move-line-group-real-qty-onchange" x-scale="2"/>
     <field name="qtyInvoiced" x-scale="2"/>
@@ -31,7 +31,7 @@
     canDelete="false">
     <field name="producedManufOrder"/>
     <field name="stockMove.stockMoveSeq"/>
-    <field name="stockMove.realDate"/>
+    <field name="stockMove.realDateTime"/>
     <field name="realQty" aggregate="sum"
       onChange="action-stock-move-line-group-real-qty-onchange" x-scale="2"/>
     <field name="qtyInvoiced" x-scale="2"/>
@@ -56,7 +56,7 @@
     <field name="consumedManufOrder"/>
     <field name="consumedOperationOrder"/>
     <field name="stockMove.stockMoveSeq"/>
-    <field name="stockMove.realDate"/>
+    <field name="stockMove.realDateTime"/>
     <field name="realQty" aggregate="sum"
       onChange="action-stock-move-line-group-real-qty-onchange" x-scale="2"/>
     <field name="qtyInvoiced" x-scale="2"/>
@@ -78,7 +78,7 @@
     model="com.axelor.apps.stock.db.StockMoveLine"
     orderBy="stockMove.statusSelect,-stockMove.estimatedDate" canNew="false" canDelete="false">
     <field name="name" width="120"/>
-    <field name="stockMove.realDate"/>
+    <field name="stockMove.realDateTime"/>
     <field name="stockMove.typeSelect"/>
     <field name="stockMove.fromStockLocation"/>
     <field name="stockMove.toStockLocation"/>
@@ -114,7 +114,7 @@
     <hilite color="danger" if="$get('stockMove.cutOffMoveGenerated')"/>
     <field name="stockMove.stockMoveSeq"/>
     <field name="stockMove.typeSelect"/>
-    <field name="stockMove.realDate"/>
+    <field name="stockMove.realDateTime"/>
     <field name="stockMove.statusSelect"/>
     <field name="productName"/>
     <field name="realQty" x-scale="2"/>

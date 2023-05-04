@@ -43,8 +43,8 @@ public class StockMoveManagementRepository extends StockMoveRepository {
     copy.setStatusSelect(STATUS_DRAFT);
     copy.setStockMoveSeq(null);
     copy.setName(null);
-    copy.setRealDate(null);
-    copy.setPickingEditDate(null);
+    copy.setRealDateTime(null);
+    copy.setPickingEditDateTime(null);
     copy.setPickingIsEdited(false);
     copy.setAvailabilityRequest(false);
     copy.setSupplierShipmentDate(null);
