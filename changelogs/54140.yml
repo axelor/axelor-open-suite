@@ -1,0 +1,4 @@
+title: "delete a not used field"
+type: fix
+description: |
+  We remove the unused field "lead" from EmailAddress.
