@@ -25,7 +25,6 @@ import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.user.UserService;
 import com.google.inject.Inject;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;

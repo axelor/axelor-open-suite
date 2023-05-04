@@ -1,6 +1,5 @@
-title: Replaced lost action by a an existing one
+title: Replaced deleted action by a an existing one
 type: fix
 description:
-  Replaced on field 'currency' in 'onChange' attribute "action-move-record-set-currency-code" by "action-move-method-set-default-move-currency".
-  Modify 'setDefaultCurrency' in 'MoveDefaultServiceImpl' by adding 'move.getPartner() == null' in if condition, so now when a company is chosen and a partner exist, we don't override
-  the partner currency by the company currency.
+  On move form when we select a currency automatically chose the one from partner,
+  if the partner is null then select the currency from the company.
