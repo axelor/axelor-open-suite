@@ -25,6 +25,13 @@
       ref="com.axelor.apps.account.db.InvoiceLine"/>
     <boolean name="isTaskRefused" title="Refused"/>
 
+    <!-- planification fields -->
+    <many-to-one name="timeUnit" ref="com.axelor.apps.base.db.Unit" title="Time unit"/>
+    <decimal name="soldTime" title="Sold time"/>
+    <decimal name="updatedTime" title="Updated time"/>
+    <decimal name="plannedTime" title="Planned time"/>
+    <decimal name="spentTime" title="Spent time"/>
+
     <extra-code>
 			<![CDATA[
 				public static final Integer INVOICING_TYPE_TIME_SPENT= 1;

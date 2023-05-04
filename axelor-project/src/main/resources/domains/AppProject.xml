@@ -22,6 +22,7 @@
       ref="com.axelor.apps.project.db.ProjectStatus"/>
     <many-to-many name="defaultPrioritySet" title="Default priorities"
       ref="com.axelor.apps.project.db.ProjectPriority"/>
+    <boolean name="generateProjectSequence" title="Generate sequence for project"/>
 
     <track>
       <field name="projectLabel" on="UPDATE"/>

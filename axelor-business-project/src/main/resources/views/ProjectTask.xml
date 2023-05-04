@@ -45,6 +45,35 @@
       onClick="action-team-task-method-update-to-invoice"/>
   </grid>
 
+  <form id="business-project-project-task-form" name="project-task-form" title="Task"
+    model="com.axelor.apps.project.db.ProjectTask" extension="true">
+    <extend target="/">
+      <attribute name="onNew" value="action-business-project-project-task-group-on-new"/>
+    </extend>
+    <extend target="//field[@name='parentTask']">
+      <attribute name="onChange" value="action-project-task-record-get-parent-timeunit"/>
+    </extend>
+    <extend target="//field[@name='description']">
+      <insert position="before">
+        <field name="timeUnit" colSpan="4" readonlyIf="saleOrderLine || parentTask"
+          onSelect="action-project-task-attrs-set-time-unit-domain"
+          if="__config__.app.isApp('business-project')"/>
+      </insert>
+    </extend>
+    <extend target="//panel[@name='internalDescriptionPanel']">
+      <insert position="before">
+        <panel name="timeFollowUpPanel" title="Time follow-up"
+          if="__config__.app.isApp('business-project')">
+          <field name="soldTime" readonlyIf="saleOrderLine" hidden="true" showIf="!parentTask"
+            onChange="action-project-task-record-fill-updated-time"/>
+          <field name="updatedTime" hidden="true" showIf="!parentTask"/>
+          <field name="plannedTime" readonly="true"/>
+          <field name="spentTime" readonly="true"/>
+        </panel>
+      </insert>
+    </extend>
+  </form>
+
   <action-method name="action-project-task-method-update-to-invoice">
     <call class="com.axelor.apps.businessproject.web.ProjectTaskController"
       method="updateToInvoice"/>
@@ -65,5 +94,34 @@
     <attribute name="scale" for="discountAmount"
       expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
   </action-attrs>
+
+  <action-group name="action-business-project-project-task-group-on-new">
+    <action name="action-project-task-group-onnew"/>
+    <action name="action-project-task-attrs-set-time-unit-default"/>
+  </action-group>
+
+  <!-- get timeUnit value from configuration -->
+  <action-attrs name="action-project-task-attrs-set-time-unit-default">
+    <attribute for="timeUnit" name="value"
+      expr="eval: __config__.app.getApp('business-project')?.daysUnit"/>
+  </action-attrs>
+
+  <!-- set timeUnit domain -->
+  <action-attrs name="action-project-task-attrs-set-time-unit-domain">
+    <attribute for="timeUnit" name="domain"
+      expr="eval: &quot; self.id = ${__config__.app.getApp('business-project')?.daysUnit?.id} OR self.id = ${__config__.app.getApp('business-project')?.hoursUnit?.id}&quot;"/>
+  </action-attrs>
+
+  <!-- fill updatedTime from soldTime -->
+  <action-record name="action-project-task-record-fill-updated-time"
+    model="com.axelor.apps.project.db.ProjectTask">
+    <field name="updatedTime" expr="eval: soldTime" if="soldTime"/>
+  </action-record>
+
+  <!-- fill timeUnit from parentTask -->
+  <action-record name="action-project-task-record-get-parent-timeunit"
+    model="com.axelor.apps.project.db.ProjectTask">
+    <field name="timeUnit" expr="eval: parentTask?.timeUnit" if="parentTask"/>
+  </action-record>
 
 </object-views>

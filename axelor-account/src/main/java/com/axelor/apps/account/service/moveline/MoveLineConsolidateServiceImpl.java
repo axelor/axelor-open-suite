@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentConditionLine;
 import com.axelor.common.ObjectUtils;
+import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -33,6 +34,13 @@ import org.slf4j.LoggerFactory;
 
 public class MoveLineConsolidateServiceImpl implements MoveLineConsolidateService {
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+  protected MoveLineToolService moveLineToolService;
+
+  @Inject
+  public MoveLineConsolidateServiceImpl(MoveLineToolService moveLineToolService) {
+    this.moveLineToolService = moveLineToolService;
+  }
 
   @Override
   public MoveLine findConsolidateMoveLine(
@@ -47,8 +55,7 @@ public class MoveLineConsolidateServiceImpl implements MoveLineConsolidateServic
           MoveLine moveLineIt = map.get(keys);
 
           // Check cut off dates
-          if (moveLine.getCutOffStartDate() != null
-              && moveLine.getCutOffEndDate() != null
+          if (moveLineToolService.isCutOffActive(moveLine)
               && (!moveLine.getCutOffStartDate().equals(moveLineIt.getCutOffStartDate())
                   || !moveLine.getCutOffEndDate().equals(moveLineIt.getCutOffEndDate()))) {
             return null;

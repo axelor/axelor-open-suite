@@ -22,6 +22,7 @@ import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.crm.service.PartnerCrmService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -42,6 +43,20 @@ public class PartnerCrmController {
       response.setValue("$subsidiaryCount", count);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void loseLead(ActionRequest request, ActionResponse response) {
+    try {
+      Partner partner = request.getContext().asType(Partner.class);
+      Beans.get(PartnerCrmService.class)
+          .loseLead(
+              Beans.get(PartnerRepository.class).find(partner.getId()),
+              partner.getLostReason(),
+              partner.getLostReasonStr());
+      response.setCanClose(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }

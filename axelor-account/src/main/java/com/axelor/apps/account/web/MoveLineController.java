@@ -42,7 +42,6 @@ import com.axelor.apps.account.service.moveline.MoveLineGroupService;
 import com.axelor.apps.account.service.moveline.MoveLineRecordService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
-import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Batch;
@@ -341,18 +340,6 @@ public class MoveLineController {
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
-    }
-  }
-
-  public void checkDateInPeriod(ActionRequest request, ActionResponse response) {
-    try {
-      if (request.getContext().getParent() != null) {
-        MoveLine moveLine = request.getContext().asType(MoveLine.class);
-        Move move = request.getContext().getParent().asType(Move.class);
-        Beans.get(MoveLineToolService.class).checkDateInPeriod(move, moveLine);
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 

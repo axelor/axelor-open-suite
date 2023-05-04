@@ -37,6 +37,7 @@ public class PurchaseOrderWorkflowServiceSupplychainImpl extends PurchaseOrderWo
   protected AppAccountService appAccountService;
   protected BudgetSupplychainService budgetSupplychainService;
   protected PurchaseOrderSupplychainService purchaseOrderSupplychainService;
+  protected PurchaseOrderBudgetService purchaseOrderBudgetService;
 
   @Inject
   public PurchaseOrderWorkflowServiceSupplychainImpl(
@@ -47,13 +48,15 @@ public class PurchaseOrderWorkflowServiceSupplychainImpl extends PurchaseOrderWo
       PurchaseOrderStockService purchaseOrderStockService,
       AppAccountService appAccountService,
       BudgetSupplychainService budgetSupplychainService,
-      PurchaseOrderSupplychainService purchaseOrderSupplychainService) {
+      PurchaseOrderSupplychainService purchaseOrderSupplychainService,
+      PurchaseOrderBudgetService purchaseOrderBudgetService) {
     super(purchaseOrderService, purchaseOrderRepo, appPurchaseService);
     this.appSupplychainService = appSupplychainService;
     this.purchaseOrderStockService = purchaseOrderStockService;
     this.appAccountService = appAccountService;
     this.budgetSupplychainService = budgetSupplychainService;
     this.purchaseOrderSupplychainService = purchaseOrderSupplychainService;
+    this.purchaseOrderBudgetService = purchaseOrderBudgetService;
   }
 
   @Override
@@ -74,7 +77,7 @@ public class PurchaseOrderWorkflowServiceSupplychainImpl extends PurchaseOrderWo
 
     if (appAccountService.getAppBudget().getApp().getActive()
         && !appAccountService.getAppBudget().getManageMultiBudget()) {
-      purchaseOrderSupplychainService.generateBudgetDistribution(purchaseOrder);
+      purchaseOrderBudgetService.generateBudgetDistribution(purchaseOrder);
     }
     int intercoPurchaseCreatingStatus =
         appSupplychainService.getAppSupplychain().getIntercoPurchaseCreatingStatusSelect();
@@ -84,7 +87,7 @@ public class PurchaseOrderWorkflowServiceSupplychainImpl extends PurchaseOrderWo
     }
 
     if (!appAccountService.getAppBudget().getManageMultiBudget()) {
-      purchaseOrderSupplychainService.updateBudgetDistributionAmountAvailable(purchaseOrder);
+      purchaseOrderBudgetService.updateBudgetDistributionAmountAvailable(purchaseOrder);
     }
   }
 

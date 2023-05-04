@@ -67,6 +67,9 @@ public final class BusinessProjectExceptionMessage {
   public static final String BATCH_INVOICING_PROJECT_2 = /*$$(*/
       "Generated invoicing project" /*)*/;
 
-  public static final String PROJECT_SEQUENCE_ERROR = /*$$(*/
-      "The company %s doesn't have any configured sequence for Project" /*)*/;
+  public static final String SALE_ORDER_GENERATE_FILL_PRODUCT_UNIT_ERROR = /*$$(*/
+      "Service sale order lines that generate a project task should be in days or hours as they are defined in Business Project module configuration" /*)*/;
+
+  public static final String PROJECT_UPDATE_TOTALS_SUCCESS = /*$$(*/
+      "Totals have been updated" /*)*/;
 }

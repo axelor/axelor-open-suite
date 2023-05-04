@@ -34,10 +34,11 @@ public interface OpportunityService {
 
   public OpportunityStatus getDefaultOpportunityStatus();
 
-  public void setOpportunityStatus(Opportunity opportunity, boolean isStagedClosedWon)
-      throws AxelorException;
+  void setOpportunityStatusStagedClosedWon(Opportunity opportunity) throws AxelorException;
 
-  public void setOpportunityStatusNextStage(Opportunity opportunity);
+  void setOpportunityStatusStagedClosedLost(Opportunity opportunity) throws AxelorException;
+
+  void setOpportunityStatusNextStage(Opportunity opportunity);
 
   @CallMethod
   public List<Long> getClosedOpportunityStatusIdList();

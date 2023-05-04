@@ -75,6 +75,7 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -326,7 +327,8 @@ public class BankOrderServiceImpl implements BankOrderService {
           paymentSessionRepo.all().filter("self.bankOrder = ?", bankOrder).fetchOne();
 
       if (paymentSession != null) {
-        Beans.get(PaymentSessionValidateService.class).processPaymentSession(paymentSession);
+        Beans.get(PaymentSessionValidateService.class)
+            .processPaymentSession(paymentSession, new ArrayList());
         bankOrder = bankOrderRepo.find(bankOrder.getId());
       }
     }

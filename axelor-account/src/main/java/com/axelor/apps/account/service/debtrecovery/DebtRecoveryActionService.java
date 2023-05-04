@@ -31,12 +31,16 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.user.UserService;
+import com.axelor.db.Query;
+import com.axelor.dms.db.DMSFile;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.Message;
 import com.axelor.message.db.Template;
 import com.axelor.message.db.repo.MessageRepository;
 import com.axelor.message.service.MessageService;
+import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
@@ -270,6 +274,8 @@ public class DebtRecoveryActionService {
       }
 
       Beans.get(MessageService.class).sendMessage(message);
+
+      linkMetaFile(message, debtRecovery);
     }
   }
 
@@ -329,5 +335,29 @@ public class DebtRecoveryActionService {
     debtRecoveryHistory.setUserDebtRecovery(userService.getUser());
     debtRecovery.addDebtRecoveryHistoryListItem(debtRecoveryHistory);
     debtRecoveryHistoryRepository.save(debtRecoveryHistory);
+  }
+
+  public void linkMetaFile(Message message, DebtRecovery debtRecovery) {
+    MetaFile metaFile =
+        Query.of(DMSFile.class)
+            .filter(
+                "self.relatedId = :id AND self.relatedModel = :model and self.isDirectory = false")
+            .bind("id", message.getId())
+            .bind("model", message.getClass().getName())
+            .fetchOne()
+            .getMetaFile();
+
+    MetaFiles metaFiles = Beans.get(MetaFiles.class);
+
+    metaFiles.attach(metaFile, metaFile.getFileName(), debtRecovery);
+
+    if (!CollectionUtils.isEmpty(debtRecovery.getDebtRecoveryHistoryList())) {
+      metaFiles.attach(
+          metaFile,
+          metaFile.getFileName(),
+          debtRecovery
+              .getDebtRecoveryHistoryList()
+              .get(debtRecovery.getDebtRecoveryHistoryList().size() - 1));
+    }
   }
 }

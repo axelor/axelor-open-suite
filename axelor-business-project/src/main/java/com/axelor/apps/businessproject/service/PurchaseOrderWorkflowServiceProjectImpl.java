@@ -28,6 +28,7 @@ import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.apps.supplychain.service.BudgetSupplychainService;
+import com.axelor.apps.supplychain.service.PurchaseOrderBudgetService;
 import com.axelor.apps.supplychain.service.PurchaseOrderStockService;
 import com.axelor.apps.supplychain.service.PurchaseOrderSupplychainService;
 import com.axelor.apps.supplychain.service.PurchaseOrderWorkflowServiceSupplychainImpl;
@@ -50,6 +51,7 @@ public class PurchaseOrderWorkflowServiceProjectImpl
       AppAccountService appAccountService,
       BudgetSupplychainService budgetSupplychainService,
       PurchaseOrderSupplychainService purchaseOrderSupplychainService,
+      PurchaseOrderBudgetService purchaseOrderBudgetService,
       AnalyticMoveLineRepository analyticMoveLineRepository) {
     super(
         purchaseOrderService,
@@ -59,7 +61,8 @@ public class PurchaseOrderWorkflowServiceProjectImpl
         purchaseOrderStockService,
         appAccountService,
         budgetSupplychainService,
-        purchaseOrderSupplychainService);
+        purchaseOrderSupplychainService,
+        purchaseOrderBudgetService);
     this.analyticMoveLineRepository = analyticMoveLineRepository;
   }
 
