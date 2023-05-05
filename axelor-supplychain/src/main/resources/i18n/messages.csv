@@ -289,7 +289,7 @@
 "Is certificate of conformity required",,,
 "Is merged stock move line",,,
 "Is out day nb between purchase and proposal",,,
-"It is not allowed to invoice a greater quantity %s than the delivered quantity %s. Pls check the invoice line with this product %s.",,,
+"It is not allowed to invoice a greater quantity %s than the delivered quantity %s. Please check the invoice line with this product %s.",,,
 "It is not possible to delete a stock move line with allocated or reserved quantity.",,,
 "Label",,,
 "Late Deliveries",,,
