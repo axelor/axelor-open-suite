@@ -1,0 +1,3 @@
+---
+title: "BankReconciliation/BankStatementRule : Raise anomaly in auto accounting process when bank detail bank account and bank statement rule cash account are different."
+type: fix
