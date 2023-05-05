@@ -1,2 +1,4 @@
-title: "remove a useless override"
+title: "Remove a useless override of getSortedOperationOrderList"
 type: remove
+description: |
+  Remove the useless override of getSortedOperationOrderList in ManufOrderWorkFlowMaintenanceService
