@@ -234,6 +234,9 @@ public class BankReconciliationService {
                               .getQuery()
                               .replaceAll(
                                   "%s", "\"" + bankStatementRule.getSearchLabel() + "\"")))) {
+
+            checkAccountBeforeAutoAccounting(bankStatementRule, bankReconciliation);
+
             if (bankStatementRule.getAccountManagement().getJournal() == null) {
               continue;
             }
@@ -1270,5 +1273,26 @@ public class BankReconciliationService {
       }
     }
     return selectedMoveLineTotal;
+  }
+
+  public void checkAccountBeforeAutoAccounting(
+      BankStatementRule bankStatementRule, BankReconciliation bankReconciliation)
+      throws AxelorException {
+    if (bankStatementRule.getAccountManagement() != null
+        && bankStatementRule.getAccountManagement().getCashAccount() != null
+        && bankReconciliation.getBankDetails() != null
+        && bankReconciliation.getBankDetails().getBankAccount() != null
+        && !bankStatementRule
+            .getAccountManagement()
+            .getCashAccount()
+            .equals(bankReconciliation.getBankDetails().getBankAccount())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BankPaymentExceptionMessage.BANK_ACCOUNT_DIFFERENT_THAN_CASH_ACCOUNT),
+          bankReconciliation.getBankDetails().getIbanBic(),
+          bankReconciliation.getBankDetails().getBankAccount().getCode(),
+          bankStatementRule.getAccountManagement().getName(),
+          bankStatementRule.getAccountManagement().getCashAccount().getCode());
+    }
   }
 }
