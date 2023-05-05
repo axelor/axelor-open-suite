@@ -13,17 +13,15 @@
         requiredIf="$leadToPartnerSelect == 2" title="Select Partner" widget="ManyToOne"
         domain="self.isContact = 'false'" form-view="partner-form" grid-view="partner-grid"
         target="com.axelor.apps.base.db.Partner"/>
-      <spacer name="leadContactSelectSpacer" showIf="$leadToPartnerSelect == 1"/>
-      <field name="$leadToContactSelect"
-        showIf="$selectPartner.partnerTypeSelect != 2"
+      <spacer name="leadContactSelectSpacer" showIf="$selectPartner.partnerTypeSelect != 2 &amp;&amp; !__config__.app.getApp('crm')?.crmProcessOnPartner"/>
+      <field name="$leadToContactSelect" showIf="$selectPartner.partnerTypeSelect != 2 &amp;&amp; !__config__.app.getApp('crm')?.crmProcessOnPartner"
         title="Convert lead into contact" type="integer"
         selection="crm.convert.lead.wizard.lead.to.contact.select"/>
       <field name="$selectContactSet"
-        showIf="$leadToContactSelect == 2 &amp;&amp; $selectPartner.partnerTypeSelect != 2"
-        requiredIf="$leadToContactSelect == 2"
-        title="Select Contact" widget="ManyToMany" domain="self.isContact = 'true'"
-        grid-view="partner-contact-grid" form-view="partner-contact-form"
-        target="com.axelor.apps.base.db.Partner"/>
+        showIf="$leadToContactSelect == 2 &amp;&amp; $selectPartner.partnerTypeSelect != 2 &amp;&amp; !__config__.app.getApp('crm')?.crmProcessOnPartner"
+        requiredIf="$leadToContactSelect == 2" title="Select Contact" widget="ManyToMany"
+        domain="self.isContact = 'true'" grid-view="partner-contact-grid"
+        form-view="partner-contact-form" target="com.axelor.apps.base.db.Partner"/>
       <button name="validateBtn"
         hideIf="!$leadToPartnerSelect || $leadToPartnerSelect == 2 &amp;&amp; $selectPartner == null || $leadToContactSelect == 2 &amp;&amp; ($selectContactSet == null || $selectContactSet.length == 0)"
         title="Validate"
@@ -42,5 +40,8 @@
     <alert message="Are you sure you want to convert the lead?"/>
   </action-validate>
 
+  <action-method name="action-lead-method-convert-lead">
+    <call class="com.axelor.apps.crm.web.ConvertLeadWizardController" method="convertLead"/>
+  </action-method>
 
 </object-views>

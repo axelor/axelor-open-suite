@@ -165,6 +165,12 @@
         <field name="scheduledEventDateT" colSpan="3" readonly="true"/>
       </insert>
     </extend>
+    <extend target="//panel[@name='mainPanel']">
+    	<insert position="before">
+    		<button name="validateConversionFromLeadBtn" title="Validate" onClick="save,action-partner-method-convert-from-lead"  showIf="_isInConversionFromLead"/>
+    		<button name="cancelConversionFromLeadBtn" title="Cancel" onClick="close"  showIf="_isInConversionFromLead"/>
+    	</insert>
+    </extend>
   </form>
 
   <form id="crm-partner-customer-form" name="partner-customer-form" title="Customer"
@@ -499,6 +505,7 @@
   <action-group name="crm-action-group-partner-onload">
     <action name="action-group-partner-onload" if="__config__.app.isApp('base')"/>
     <action name="action-partner-method-get-subsidiary-partners-count"/>
+    <action name="action-partner-method-set-fields-for-conversion-from-lead" if="__isInConversionFromLead"/>
   </action-group>
 
   <action-group name="action-group-partner-contact-onNew">
@@ -516,5 +523,15 @@
   <action-group name="crm-action-group-partner-onnew">
     <action name="action-group-base-partner-onnew"/>
     <action name="action-partner-record-set-is-prospect"/>
+    <action name="action-partner-method-set-fields-for-conversion-from-lead" if="__isInConversionFromLead"/>
   </action-group>
+  
+  <action-method name="action-partner-method-set-fields-for-conversion-from-lead">
+  	<call class="com.axelor.apps.crm.web.ConvertLeadWizardController" method="setFieldsForConversionFromLeads"/>
+  </action-method>
+  
+  <action-method name="action-partner-method-convert-from-lead">
+  	<call class="com.axelor.apps.crm.web.ConvertLeadWizardController" method="convertLeadFromPartner"/>
+  </action-method>
+  
 </object-views>
