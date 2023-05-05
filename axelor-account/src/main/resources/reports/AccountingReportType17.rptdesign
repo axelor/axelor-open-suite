@@ -2752,9 +2752,6 @@ ORDER BY Account.code
                                     <property name="borderLeftWidth">thin</property>
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
-                                    <label id="5916">
-                                        <text-property name="text">accounting_value</text-property>
-                                    </label>
                                 </cell>
                             </row>
                             <row id="5780">
@@ -3355,6 +3352,11 @@ else {
                                     <cell id="5836">
                                         <data id="5921">
                                             <property name="fontSize">9pt</property>
+                                            <structure name="numberFormat">
+                                                <property name="category">Custom</property>
+                                                <property name="pattern">#,##0.00</property>
+                                            </structure>
+                                            <property name="textAlign">right</property>
                                             <property name="resultSetColumn">accounting_value_sum1</property>
                                         </data>
                                     </cell>
@@ -3564,6 +3566,11 @@ else {
                                     <cell id="5865">
                                         <data id="5919">
                                             <property name="fontSize">9pt</property>
+                                            <structure name="numberFormat">
+                                                <property name="category">Custom</property>
+                                                <property name="pattern">#,##0.00</property>
+                                            </structure>
+                                            <property name="textAlign">right</property>
                                             <property name="resultSetColumn">accounting_value_sum2</property>
                                         </data>
                                     </cell>
@@ -3719,6 +3726,10 @@ else {
                                 <cell id="5603">
                                     <data id="5917">
                                         <property name="fontSize">9pt</property>
+                                        <structure name="numberFormat">
+                                            <property name="category">Custom</property>
+                                            <property name="pattern">#,##0.00</property>
+                                        </structure>
                                         <property name="textAlign">right</property>
                                         <property name="resultSetColumn">accounting_value</property>
                                     </data>
@@ -3851,6 +3862,11 @@ else {
                                 <cell id="5879">
                                     <data id="5922">
                                         <property name="fontSize">9pt</property>
+                                        <structure name="numberFormat">
+                                            <property name="category">Custom</property>
+                                            <property name="pattern">#,##0.00</property>
+                                        </structure>
+                                        <property name="textAlign">right</property>
                                         <property name="resultSetColumn">accounting_value_sum</property>
                                     </data>
                                 </cell>
