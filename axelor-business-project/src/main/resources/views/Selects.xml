@@ -77,4 +77,10 @@
     <option value="1000">Business project batch</option>
   </selection>
 
+  <selection name="business.project.spent.time.computation.method.select">
+    <option value="1">Sale order (if existing)</option>
+    <option value="2">Product</option>
+    <option value="3">Employee</option>
+  </selection>
+
 </object-views>
