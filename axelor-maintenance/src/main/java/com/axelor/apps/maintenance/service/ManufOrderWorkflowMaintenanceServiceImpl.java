@@ -120,21 +120,8 @@ public class ManufOrderWorkflowMaintenanceServiceImpl extends ManufOrderWorkflow
    * @param manufOrder
    * @return
    */
-  @Override
-  protected List<OperationOrder> getSortedOperationOrderList(ManufOrder manufOrder) {
-    List<OperationOrder> operationOrderList =
-        MoreObjects.firstNonNull(manufOrder.getOperationOrderList(), Collections.emptyList());
-    Comparator<OperationOrder> byPriority =
-        Comparator.comparing(
-            OperationOrder::getPriority, Comparator.nullsFirst(Comparator.naturalOrder()));
-    Comparator<OperationOrder> byId =
-        Comparator.comparing(
-            OperationOrder::getId, Comparator.nullsFirst(Comparator.naturalOrder()));
 
-    return operationOrderList.stream()
-        .sorted(byPriority.thenComparing(byId))
-        .collect(Collectors.toList());
-  }
+
 
   @Override
   public boolean finish(ManufOrder manufOrder) throws AxelorException {
