@@ -189,6 +189,28 @@
         <field name="$isFromCrm" hidden="true" readonly="true"/>
       </insert>
     </extend>
+    <extend target="//panel[@name='marketingCampaignPanel']">
+      <insert position="after">
+        <panel name="mainInformationPanel" title="General information" showIf="isCollaborator">
+          <panel-related name="collaboratorDomainListPanel"
+            field="collaboratorDomainList" form-view="collaborator-domain-form"
+            grid-view="collaborator-domain-grid"/>
+          <panel-related name="workAreaSetPanel" field="workAreaSet"
+            form-view="country-form" grid-view="country-grid" canNew="false" canEdit="false"/>
+          <field name="fidelity" form-view="fidelity-form" grid-view="fidelity-grid"/>
+          <field name="collaboratorSince"/>
+        </panel>
+      </insert>
+    </extend>
+    <extend target="/">
+      <insert position="after">
+        <panel name="followUpPanel" title="Collaborator monitoring" showIf="isCollaborator"
+          sidebar="true" colSpan="12">
+          <field name="takenOpportunities"/>
+          <field name="wonOpportunities"/>
+        </panel>
+      </insert>
+    </extend>
   </form>
 
   <form id="crm-partner-customer-form" name="partner-customer-form" title="Customer"
