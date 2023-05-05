@@ -152,6 +152,7 @@
       <panel name="moveConsistencyControl" title="Move Consistency Control"
         hideIf="actionSelect != 25">
         <panel-related field="yearSet" widget="TagSelect" canSelect="true"
+          domain="self.typeSelect = 1 AND self.company = :company AND (self.statusSelect = 1 OR :closeYear is false)"
           canNew="false" canEdit="false" grid-view="year-account-grid" form-view="year-account-form"
           colSpan="12"/>
       </panel>
