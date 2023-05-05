@@ -311,7 +311,15 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
         } else {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_INCONSISTENCY,
-              I18n.get(IExceptionMessage.STOCK_MOVE_INVOICE_QTY_MAX));
+              String.format(
+                  I18n.get(IExceptionMessage.STOCK_MOVE_INVOICE_QTY_MAX),
+                  qty.setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP)
+                      .toString(),
+                  stockMoveLine
+                      .getRealQty()
+                      .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP)
+                      .toString(),
+                  stockMoveLine.getProductName()));
         }
       } else {
         // set qty invoiced to the maximum (or emptying it if refund) for all stock move lines
