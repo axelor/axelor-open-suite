@@ -52,7 +52,9 @@ public class BatchComputeProjectTotalsService extends AbstractBatch {
     Query<Project> projectQuery =
         projectRepository
             .all()
-            .filter("self.isBusinessProject = true " + "self.projectStatus.isCompleted = false");
+            .order("id")
+            .filter(
+                "self.isBusinessProject = true " + "AND self.projectStatus.isCompleted = false");
     while (!(projectList = projectQuery.fetch(FETCH_LIMIT, offset)).isEmpty()) {
       findBatch();
       for (Project project : projectList) {
@@ -79,9 +81,7 @@ public class BatchComputeProjectTotalsService extends AbstractBatch {
 
     String comment =
         String.format(
-            "\t* %s "
-                + I18n.get(BusinessProjectExceptionMessage.BATCH_COMPUTE_PROJECT_TOTALS_2)
-                + "\n",
+            "\t " + I18n.get(BusinessProjectExceptionMessage.BATCH_COMPUTE_PROJECT_TOTALS_2) + "\n",
             batch.getDone());
 
     comment +=
