@@ -266,9 +266,8 @@ public class MoveCreateServiceImpl implements MoveCreateService {
     }
 
     move.setDate(date);
-    if (journal.getIsFillOriginDate()) {
-      move.setOriginDate(originDate);
-    }
+    move.setOriginDate(originDate);
+
     move.setMoveLineList(new ArrayList<MoveLine>());
 
     Currency companyCurrency = companyConfigService.getCompanyCurrency(company);
