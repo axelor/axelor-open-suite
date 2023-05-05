@@ -18,6 +18,7 @@
 package com.axelor.apps.account.service.invoice;
 
 import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentConditionLine;
@@ -26,6 +27,7 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentConditionLineRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -341,13 +343,19 @@ public class InvoiceToolService {
   }
 
   public static void setPfpStatus(Invoice invoice) throws AxelorException {
-    AccountConfig accountConfig =
-        Beans.get(AccountConfigService.class).getAccountConfig(invoice.getCompany());
+    Company company = invoice.getCompany();
+    AccountConfig accountConfig = Beans.get(AccountConfigService.class).getAccountConfig(company);
 
     if (accountConfig.getIsManagePassedForPayment()
         && (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
             || (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND
                 && accountConfig.getIsManagePFPInRefund()))) {
+      AccountingSituation accountingSituation =
+          Beans.get(AccountingSituationService.class)
+              .getAccountingSituation(invoice.getPartner(), company);
+      if (accountingSituation != null) {
+        invoice.setPfpValidatorUser(accountingSituation.getPfpValidatorUser());
+      }
       invoice.setPfpValidateStatusSelect(InvoiceRepository.PFP_STATUS_AWAITING);
     } else {
       invoice.setPfpValidateStatusSelect(InvoiceRepository.PFP_NONE);

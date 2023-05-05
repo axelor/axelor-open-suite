@@ -19,10 +19,13 @@ package com.axelor.apps.account.service.invoice;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceTerm;
+import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PfpPartialReason;
 import com.axelor.apps.account.db.SubstitutePfpValidator;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Company;
@@ -36,6 +39,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
@@ -45,17 +49,20 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
   protected AccountConfigService accountConfigService;
   protected InvoiceTermRepository invoiceTermRepo;
   protected InvoiceRepository invoiceRepo;
+  protected MoveRepository moveRepo;
 
   @Inject
   public InvoiceTermPfpServiceImpl(
       InvoiceTermService invoiceTermService,
       AccountConfigService accountConfigService,
       InvoiceTermRepository invoiceTermRepo,
-      InvoiceRepository invoiceRepo) {
+      InvoiceRepository invoiceRepo,
+      MoveRepository moveRepo) {
     this.invoiceTermService = invoiceTermService;
     this.accountConfigService = accountConfigService;
     this.invoiceTermRepo = invoiceTermRepo;
     this.invoiceRepo = invoiceRepo;
+    this.moveRepo = moveRepo;
   }
 
   @Override
@@ -290,16 +297,26 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
             .subtract(newInvoiceTerm.getCompanyAmountRemaining()));
   }
 
-  @Transactional
   protected void checkOtherInvoiceTerms(InvoiceTerm invoiceTerm) {
     Invoice invoice = invoiceTerm.getInvoice();
-    if (invoice == null) {
+    checkOtherInvoiceTerms(invoice);
+    MoveLine moveLine = invoiceTerm.getMoveLine();
+    if (moveLine == null) {
       return;
     }
-    int pfpStatus = this.getPfpValidateStatusSelect(invoiceTerm);
+    checkOtherInvoiceTerms(moveLine.getMove());
+  }
+
+  @Transactional
+  protected void checkOtherInvoiceTerms(Invoice invoice) {
+    if (invoice == null || CollectionUtils.isEmpty(invoice.getInvoiceTermList())) {
+      return;
+    }
+    InvoiceTerm firstInviceTerm = invoice.getInvoiceTermList().get(0);
+    int pfpStatus = this.getPfpValidateStatusSelect(firstInviceTerm);
     int otherPfpStatus;
     for (InvoiceTerm otherInvoiceTerm : invoice.getInvoiceTermList()) {
-      if (!otherInvoiceTerm.getId().equals(invoiceTerm.getId())) {
+      if (!otherInvoiceTerm.getId().equals(firstInviceTerm.getId())) {
         otherPfpStatus = this.getPfpValidateStatusSelect(otherInvoiceTerm);
 
         if (otherPfpStatus != pfpStatus) {
@@ -311,6 +328,37 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
 
     invoice.setPfpValidateStatusSelect(pfpStatus);
     invoiceRepo.save(invoice);
+  }
+
+  @Transactional
+  protected void checkOtherInvoiceTerms(Move move) {
+    if (move == null) {
+      return;
+    }
+    List<InvoiceTerm> invoiceTermList =
+        move.getMoveLineList().stream()
+            .map(MoveLine::getInvoiceTermList)
+            .flatMap(Collection::stream)
+            .collect(Collectors.toList());
+    if (CollectionUtils.isEmpty(invoiceTermList)) {
+      return;
+    }
+    InvoiceTerm firstInvoiceTerm = invoiceTermList.get(0);
+    int pfpStatus = this.getPfpValidateStatusSelect(firstInvoiceTerm);
+    int otherPfpStatus;
+    for (InvoiceTerm otherInvoiceTerm : invoiceTermList) {
+      if (!otherInvoiceTerm.getId().equals(firstInvoiceTerm.getId())) {
+        otherPfpStatus = this.getPfpValidateStatusSelect(otherInvoiceTerm);
+
+        if (otherPfpStatus != pfpStatus) {
+          pfpStatus = InvoiceTermRepository.PFP_STATUS_AWAITING;
+          break;
+        }
+      }
+    }
+
+    move.setPfpValidateStatusSelect(pfpStatus);
+    moveRepo.save(move);
   }
 
   protected int getPfpValidateStatusSelect(InvoiceTerm invoiceTerm) {
