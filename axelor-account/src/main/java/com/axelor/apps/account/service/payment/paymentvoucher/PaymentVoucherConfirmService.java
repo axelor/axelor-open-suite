@@ -52,6 +52,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.BankDetailsService;
+import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -89,6 +90,7 @@ public class PaymentVoucherConfirmService {
   protected PayVoucherElementToPayRepository payVoucherElementToPayRepo;
   protected PaymentVoucherRepository paymentVoucherRepository;
   protected AccountManagementAccountService accountManagementAccountService;
+  protected CurrencyService currencyService;
 
   @Inject
   public PaymentVoucherConfirmService(
@@ -106,7 +108,8 @@ public class PaymentVoucherConfirmService {
       MoveLineInvoiceTermService moveLineInvoiceTermService,
       PayVoucherElementToPayRepository payVoucherElementToPayRepo,
       PaymentVoucherRepository paymentVoucherRepository,
-      AccountManagementAccountService accountManagementAccountService) {
+      AccountManagementAccountService accountManagementAccountService,
+      CurrencyService currencyService) {
 
     this.reconcileService = reconcileService;
     this.moveCreateService = moveCreateService;
@@ -123,6 +126,7 @@ public class PaymentVoucherConfirmService {
     this.payVoucherElementToPayRepo = payVoucherElementToPayRepo;
     this.paymentVoucherRepository = paymentVoucherRepository;
     this.accountManagementAccountService = accountManagementAccountService;
+    this.currencyService = currencyService;
   }
 
   /**
@@ -475,19 +479,16 @@ public class PaymentVoucherConfirmService {
       // Create move line for the payment amount
       MoveLine moveLine = null;
 
+      BigDecimal currencyRate = move.getMoveLineList().get(0).getCurrencyRate();
+
       // cancelling the moveLine (excess payment) by creating the balance of all the
       // payments
       // on the same account as the moveLine (excess payment)
       // in the else case we create a classical balance on the bank account of the
       // payment mode
       BigDecimal companyPaidAmount =
-          move.getMoveLineList().stream()
-              .map(it -> isDebitToPay ? it.getCredit() : it.getDebit())
-              .reduce(BigDecimal::add)
-              .orElse(paymentVoucher.getPaidAmount());
-      companyPaidAmount = companyPaidAmount.subtract(financialDiscountAmount);
-
-      BigDecimal currencyRate = move.getMoveLineList().get(0).getCurrencyRate();
+          currencyService.getAmountCurrencyConvertedUsingExchangeRate(
+              paymentVoucher.getPaidAmount(), currencyRate);
 
       if (paymentVoucher.getMoveLine() != null) {
         moveLine =

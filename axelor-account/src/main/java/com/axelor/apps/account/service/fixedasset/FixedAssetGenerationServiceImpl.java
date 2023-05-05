@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetCategory;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.FixedAssetCategoryRepository;
@@ -246,15 +247,21 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
           I18n.get(AccountExceptionMessage.MOVE_LINE_GENERATION_FIXED_ASSET_MISSING_DESCRIPTION),
           moveLine.getName());
     }
+    Journal journal = null;
     fixedAsset.setName(moveLine.getDescription());
     if (moveLine.getMove() != null) {
       fixedAsset.setCompany(moveLine.getMove().getCompany());
-      fixedAsset.setJournal(moveLine.getMove().getJournal());
+      journal = moveLine.getMove().getJournal();
     }
     FixedAssetCategory fixedAssetCategory = moveLine.getFixedAssetCategory();
     fixedAsset.setFixedAssetCategory(fixedAssetCategory);
     fixedAsset.setPartner(moveLine.getPartner());
     fixedAsset.setPurchaseAccount(moveLine.getAccount());
+
+    if (fixedAssetCategory.getJournal() != null) {
+      journal = fixedAssetCategory.getJournal();
+    }
+    fixedAsset.setJournal(journal);
     if (fixedAssetCategory != null) {
       copyInfos(fixedAssetCategory, fixedAsset);
     }

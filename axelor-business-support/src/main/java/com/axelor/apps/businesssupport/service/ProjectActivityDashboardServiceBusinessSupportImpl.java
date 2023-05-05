@@ -70,9 +70,9 @@ public class ProjectActivityDashboardServiceBusinessSupportImpl
   }
 
   @Override
-  protected Map<String, Object> getModelWithUtilityClass(String model) {
-    Map<String, Object> dataMap = super.getModelWithUtilityClass(model);
-    if (ProjectAnnouncement.class.getName().equals(model)) {
+  protected Map<String, Object> getModelWithUtilityClass(MailMessage message) {
+    Map<String, Object> dataMap = super.getModelWithUtilityClass(message);
+    if (ProjectAnnouncement.class.getName().equals(message.getRelatedModel())) {
       dataMap.put("modelName", "Project announcement");
       dataMap.put("utilityClass", "label-info");
     }

@@ -86,6 +86,10 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
       return;
     }
 
+    if (move == null) {
+      return;
+    }
+
     PaymentCondition paymentCondition = move.getPaymentCondition();
 
     boolean containsHoldback =
@@ -100,9 +104,7 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
                 MoveRepository.FUNCTIONAL_ORIGIN_SALE)
             .contains(move.getFunctionalOriginSelect());
 
-    if (move == null) {
-      return;
-    } else if (paymentCondition == null
+    if (paymentCondition == null
         || CollectionUtils.isEmpty(paymentCondition.getPaymentConditionLineList())
         || (containsHoldback && !isHoldbackAllowed)) {
       this.computeInvoiceTerm(

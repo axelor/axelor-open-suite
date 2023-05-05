@@ -1,3 +1,22 @@
+## [6.5.7] (2023-04-27)
+
+#### Fixed
+
+* Move: removed save action when we change the move date.
+* Purchase order: fixed fiscal position on a purchase order generated from a sale order.
+* FEC import: fixed an error occuring when importing FEC using the format without taxes.
+* Fixed asset: corrected JNPE error on disposal fixed asset with sale option and date error on disposal fixed asset with derogatory line.
+* Debt recovery: fixed a a regression on demo data, the demo data should now have existing email templates.
+* Batch bill of exchange: raise an anomaly when invoices are ready to be processed but bank details is inactive.
+* Invoice: added a verification for analytics account on validate and ventilate button.
+* Stock move: fixed an error occurring when emptying the product in a line.
+* Move: fixed an error happening when regenerating invoice terms while the move is not saved.
+* Analytic Rules: added a company filter on analytic account verification.
+* Payment session: optimization done to improve performance of invoice term search process.
+* Payment session: improved form view by removing blank spaces by adding a smaller dashlet.
+* Group Menu Assistant: fixed an issue where an empty file was generated.
+* Move line/Fixed asset: corrected wrong journal on fixed asset generated from move line.
+
 ## [6.5.6] (2023-04-21)
 
 #### Fixed
@@ -443,6 +462,7 @@ Opportunity Status: add label-help on some opportunities status in form
 * Opportunity : Remove lead field
 * CRM : remove Target and TargetConfiguration from CRM
 
+[6.5.7]: https://github.com/axelor/axelor-open-suite/compare/v6.5.6...v6.5.7
 [6.5.6]: https://github.com/axelor/axelor-open-suite/compare/v6.5.5...v6.5.6
 [6.5.5]: https://github.com/axelor/axelor-open-suite/compare/v6.5.4...v6.5.5
 [6.5.4]: https://github.com/axelor/axelor-open-suite/compare/v6.5.3...v6.5.4
