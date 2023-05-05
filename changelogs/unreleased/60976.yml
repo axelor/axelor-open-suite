@@ -1,0 +1,3 @@
+---
+title: "Supplychain: stock location is not required anymore if there is no purchase order lines with stock managed product"
+type: fix

@@ -80,32 +80,29 @@ public class BankReconciliationLoadService {
    * @return the filter.
    */
   protected String getBankStatementLinesFilter(
-      boolean includeOtherBankStatements, boolean includeBankStatement) {
+      boolean includeOtherBankStatements,
+      boolean includeBankStatement,
+      boolean isLineTypeMovement) {
 
-    String filter;
+    String filter =
+        "self.bankDetails = :bankDetails"
+            + " and self.currency = :currency"
+            + " and self.bankStatement.statusSelect = :statusImported";
+
     if (!includeOtherBankStatements && includeBankStatement) {
-      filter =
-          "self.bankDetails = :bankDetails"
-              + " and self.currency = :currency"
-              + " and self.amountRemainToReconcile > 0"
-              + " and self.bankStatement.statusSelect = :statusImported"
-              + " and self.bankStatement = :bankStatement";
+      filter += " and self.bankStatement = :bankStatement";
     } else if (includeOtherBankStatements && includeBankStatement) {
-      filter =
-          "self.bankDetails = :bankDetails"
-              + " and self.currency = :currency"
-              + " and self.amountRemainToReconcile > 0"
-              + " and self.bankStatement.statusSelect = :statusImported"
-              + " and self.bankStatement.bankStatementFileFormat = :bankStatementFileFormat";
+      filter += " and self.bankStatement.bankStatementFileFormat = :bankStatementFileFormat";
     } else {
-      filter =
-          "self.bankDetails = :bankDetails"
-              + " and self.currency = :currency"
-              + " and self.amountRemainToReconcile > 0"
-              + " and self.bankStatement.statusSelect = :statusImported"
-              + " and self.bankStatement.bankStatementFileFormat = :bankStatementFileFormat"
+      filter +=
+          " and self.bankStatement.bankStatementFileFormat = :bankStatementFileFormat"
               + " and self.bankStatement != :bankStatement";
     }
+
+    if (isLineTypeMovement) {
+      filter += " and self.amountRemainToReconcile > 0";
+    }
+
     return filter;
   }
 
@@ -115,7 +112,7 @@ public class BankReconciliationLoadService {
     BankStatement bankStatement = bankReconciliation.getBankStatement();
     String queryFilter =
         getBankStatementLinesFilter(
-            bankReconciliation.getIncludeOtherBankStatements(), includeBankStatement);
+            bankReconciliation.getIncludeOtherBankStatements(), includeBankStatement, true);
     Query<BankStatementLine> bankStatementLinesQuery =
         JPA.all(BankStatementLine.class)
             .bind("bankDetails", bankReconciliation.getBankDetails())
