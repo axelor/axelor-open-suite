@@ -25,7 +25,8 @@
     <panel name="overridePanel" title="Company-specific information">
       <field name="sellable"/>
       <field name="purchasable"/>
-      <field name="procurementMethodSelect"/>
+      <field name="procurementMethodSelect"
+        onChange="action-product-company-record-update-default-bom"/>
       <spacer/>
       <field name="salePrice"/>
       <field name="saleCurrency"/>
@@ -45,6 +46,12 @@
         if-module="axelor-production"/>
     </panel>
   </form>
+
+  <action-record name="action-product-company-record-update-default-bom"
+    model="com.axelor.apps.base.db.ProductCompany">
+    <field name="defaultBillOfMaterial" expr="eval: null"
+      if="procurementMethodSelect == 'buy'"/>
+  </action-record>
 
   <action-record name="action-product-company-record-init-product"
     model="com.axelor.apps.base.db.ProductCompany">
