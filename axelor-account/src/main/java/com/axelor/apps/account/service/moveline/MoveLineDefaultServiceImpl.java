@@ -99,7 +99,6 @@ public class MoveLineDefaultServiceImpl implements MoveLineDefaultService {
     moveLine.setPartner(firstMoveLine.getPartner());
     moveLine.setOrigin(firstMoveLine.getOrigin());
     moveLine.setDescription(firstMoveLine.getDescription());
-    moveLine.setInterbankCodeLine(firstMoveLine.getInterbankCodeLine());
     moveLine.setExportedDirectDebitOk(firstMoveLine.getExportedDirectDebitOk());
   }
 

@@ -129,12 +129,7 @@ public class CfonbImportService {
 
     this.importFile = FileTool.reader(fileName);
 
-    if (appAccountService.getAppAccount().getTransferAndDirectDebitInterbankCode() == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(AccountExceptionMessage.CFONB_IMPORT_1),
-          I18n.get(BaseExceptionMessage.EXCEPTION));
-    }
+    checkTransferAndDirectDebitInterBankCode();
 
     String headerCFONB = null;
     List<String> multiDetailsCFONB = null;
@@ -213,12 +208,7 @@ public class CfonbImportService {
 
     this.importFile = FileTool.reader(fileName);
 
-    if (appAccountService.getAppAccount().getTransferAndDirectDebitInterbankCode() == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(AccountExceptionMessage.CFONB_IMPORT_1),
-          I18n.get(BaseExceptionMessage.EXCEPTION));
-    }
+    checkTransferAndDirectDebitInterBankCode();
 
     String headerCFONB = null;
     List<String> multiDetailsCFONB = null;
@@ -269,6 +259,19 @@ public class CfonbImportService {
           this.getHeaderDate(headerCFONB));
     }
     return importDataList;
+  }
+
+  protected void checkTransferAndDirectDebitInterBankCode() throws AxelorException {
+    if (getTransferAndDirectDebitInterbankCode()) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(AccountExceptionMessage.CFONB_IMPORT_1),
+          I18n.get(BaseExceptionMessage.EXCEPTION));
+    }
+  }
+
+  protected boolean getTransferAndDirectDebitInterbankCode() {
+    return false;
   }
 
   private List<String[]> getDetailDataAndCheckAmount(

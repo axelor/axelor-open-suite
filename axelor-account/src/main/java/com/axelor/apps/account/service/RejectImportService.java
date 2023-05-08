@@ -18,8 +18,6 @@
  */
 package com.axelor.apps.account.service;
 
-import com.axelor.apps.account.db.InterbankCodeLine;
-import com.axelor.apps.account.db.repo.InterbankCodeLineRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.bankorder.file.cfonb.CfonbImportService;
 import com.axelor.apps.base.AxelorException;
@@ -42,17 +40,13 @@ public class RejectImportService {
 
   protected AppAccountService appAccountService;
   protected CfonbImportService cfonbImportService;
-  protected InterbankCodeLineRepository interbankCodeLineRepo;
 
   @Inject
   public RejectImportService(
-      AppAccountService appAccountService,
-      CfonbImportService cfonbImportService,
-      InterbankCodeLineRepository interbankCodeLineRepo) {
+      AppAccountService appAccountService, CfonbImportService cfonbImportService) {
 
     this.appAccountService = appAccountService;
     this.cfonbImportService = cfonbImportService;
-    this.interbankCodeLineRepo = interbankCodeLineRepo;
   }
 
   public String getDestFilename(String src, String dest) {
@@ -131,68 +125,6 @@ public class RejectImportService {
     String dest = this.getDestCFONBFile(src, temp);
 
     return cfonbImportService.importCFONBByLot(dest, company, operation);
-  }
-
-  /**
-   * Fonction permettant de récupérer le motif de rejet/retour
-   *
-   * @param reasonCode Un code motifs de rejet/retour
-   * @param interbankCodeOperation Le type d'opération :
-   *     <ul>
-   *       <li>0 = Virement
-   *       <li>1 = Prélèvement/TIP/Télérèglement
-   *       <li>2 = Prélèvement SEPA
-   *       <li>3 = LCR/BOR
-   *       <li>4 = Cheque
-   *     </ul>
-   *
-   * @return Un motif de rejet/retour
-   */
-  public InterbankCodeLine getInterbankCodeLine(String reasonCode, int interbankCodeOperation) {
-    switch (interbankCodeOperation) {
-      case 0:
-        return interbankCodeLineRepo
-            .all()
-            .filter(
-                "self.code = ?1 AND self.interbankCode = ?2 AND self.transferCfonbOk = 'true'",
-                reasonCode,
-                appAccountService.getAppAccount().getTransferAndDirectDebitInterbankCode())
-            .fetchOne();
-      case 1:
-        return interbankCodeLineRepo
-            .all()
-            .filter(
-                "self.code = ?1 AND self.interbankCode = ?2 AND self.directDebitAndTipCfonbOk = 'true'",
-                reasonCode,
-                appAccountService.getAppAccount().getTransferAndDirectDebitInterbankCode())
-            .fetchOne();
-      case 2:
-        return interbankCodeLineRepo
-            .all()
-            .filter(
-                "self.code = ?1 AND self.interbankCode = ?2 AND self.directDebitSepaOk = 'true'",
-                reasonCode,
-                appAccountService.getAppAccount().getTransferAndDirectDebitInterbankCode())
-            .fetchOne();
-      case 3:
-        return interbankCodeLineRepo
-            .all()
-            .filter(
-                "self.code = ?1 AND self.interbankCode = ?2 AND self.lcrBorOk = 'true'",
-                reasonCode,
-                appAccountService.getAppAccount().getTransferAndDirectDebitInterbankCode())
-            .fetchOne();
-      case 4:
-        return interbankCodeLineRepo
-            .all()
-            .filter(
-                "self.code = ?1 AND self.interbankCode = ?2 AND self.chequeOk = 'true'",
-                reasonCode,
-                appAccountService.getAppAccount().getChequeInterbankCode())
-            .fetchOne();
-      default:
-        return null;
-    }
   }
 
   /**

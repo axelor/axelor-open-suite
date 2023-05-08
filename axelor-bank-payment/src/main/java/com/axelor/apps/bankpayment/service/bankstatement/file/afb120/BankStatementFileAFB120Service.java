@@ -18,11 +18,11 @@
  */
 package com.axelor.apps.bankpayment.service.bankstatement.file.afb120;
 
-import com.axelor.apps.account.db.InterbankCodeLine;
-import com.axelor.apps.account.db.repo.InterbankCodeLineRepository;
-import com.axelor.apps.account.db.repo.InterbankCodeRepository;
 import com.axelor.apps.bankpayment.db.BankStatementLineAFB120;
+import com.axelor.apps.bankpayment.db.InterbankCodeLine;
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineAFB120Repository;
+import com.axelor.apps.bankpayment.db.repo.InterbankCodeLineRepository;
+import com.axelor.apps.bankpayment.db.repo.InterbankCodeRepository;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementService;
 import com.axelor.apps.bankpayment.service.bankstatement.file.BankStatementFileService;
 import com.axelor.apps.bankpayment.service.cfonb.CfonbToolService;

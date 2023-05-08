@@ -36,8 +36,6 @@
     <many-to-one name="invoiceReject" ref="com.axelor.apps.account.db.Invoice"
       title="Invoice rejected"/>
     <boolean name="exportedDirectDebitOk" title="Exported Direct Debit" default="false"/>
-    <many-to-one name="interbankCodeLine"
-      ref="com.axelor.apps.account.db.InterbankCodeLine" title="Rejection reason"/>
 
     <integer name="reimbursementStatusSelect" title="Reimbursement status" default="0"
       selection="move.line.reimbursement.status.select"/>
@@ -56,7 +54,6 @@
       initParam="true"/>
     <decimal name="currencyAmount" title="Amount in move currency" initParam="true"/>
 
-    <string name="postedNbr" title="Posted number"/>
     <!-- Fixed asset fields -->
     <many-to-one name="fixedAssetCategory"
       ref="com.axelor.apps.account.db.FixedAssetCategory" title="Fixed asset category"
@@ -97,8 +94,6 @@
 
     <decimal name="taxRate" scale="10" precision="20" readonly="true"/>
     <string name="taxCode" readonly="true"/>
-
-    <boolean name="isSelectedBankReconciliation" title="Selected" default="false"/>
 
     <decimal name="taxAmount" scale="2" precision="20" title="Tax amount" readonly="true"/>
     <one-to-many name="taxPaymentMoveLineList" mappedBy="moveLine"
@@ -188,7 +183,6 @@
 
     <finder-method name="findByReconcileGroup" all="true" using="reconcileGroup"/>
     <finder-method name="findByAccount" all="true" using="account"/>
-    <finder-method name="findByPostedNbr" all="true" using="postedNbr"/>
 
     <extra-code><![CDATA[
 

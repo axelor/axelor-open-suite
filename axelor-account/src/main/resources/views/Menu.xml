@@ -494,15 +494,6 @@
     <view type="form" name="import-fec-type-form"/>
   </action-view>
 
-  <menuitem name="account-conf-reporting-interbank-code" parent="account-conf-reporting"
-    title="Interbank codes" action="account.conf.reporting.interbank.code" order="200"/>
-
-  <action-view name="account.conf.reporting.interbank.code" title="Interbank codes"
-    model="com.axelor.apps.account.db.InterbankCode">
-    <view type="grid" name="interbank-code-grid"/>
-    <view type="form" name="interbank-code-form"/>
-  </action-view>
-
   <menuitem name="account-root-accounting-conf-report-types-report"
     action="account.conf.reporting.accounting.report.types.report" parent="account-conf-reporting"
     title="Report types" order="300"/>

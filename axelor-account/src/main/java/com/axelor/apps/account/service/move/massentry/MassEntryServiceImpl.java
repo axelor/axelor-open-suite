@@ -86,27 +86,7 @@ public class MassEntryServiceImpl implements MassEntryService {
     if (ObjectUtils.notEmpty(moveLineList)) {
       for (MoveLineMassEntry moveLine : moveLineList) {
         if (moveLine.getTemporaryMoveNumber().equals(inputLine.getTemporaryMoveNumber())) {
-          inputLine.setPartner(moveLine.getPartner());
-          inputLine.setPartnerId(moveLine.getPartnerId());
-          inputLine.setPartnerSeq(moveLine.getPartnerSeq());
-          inputLine.setPartnerFullName(moveLine.getPartnerFullName());
-          inputLine.setDate(moveLine.getDate());
-          inputLine.setDueDate(moveLine.getDueDate());
-          inputLine.setOriginDate(moveLine.getOriginDate());
-          inputLine.setOrigin(moveLine.getOrigin());
-          inputLine.setMoveStatusSelect(moveLine.getMoveStatusSelect());
-          inputLine.setInterbankCodeLine(moveLine.getInterbankCodeLine());
-          inputLine.setMoveDescription(moveLine.getMoveDescription());
-          inputLine.setDescription(moveLine.getMoveDescription());
-          inputLine.setExportedDirectDebitOk(moveLine.getExportedDirectDebitOk());
-          inputLine.setMovePaymentCondition(moveLine.getMovePaymentCondition());
-          inputLine.setMovePaymentMode(moveLine.getMovePaymentMode());
-          inputLine.setMovePartnerBankDetails(moveLine.getMovePartnerBankDetails());
-          inputLine.setCutOffStartDate(moveLine.getCutOffStartDate());
-          inputLine.setCutOffEndDate(moveLine.getCutOffEndDate());
-          inputLine.setDeliveryDate(moveLine.getDeliveryDate());
-          inputLine.setVatSystemSelect(moveLine.getVatSystemSelect());
-          inputLine.setIsEdited(MoveLineMassEntryRepository.MASS_ENTRY_IS_EDITED_NULL);
+          setMoveLineMassEntry(inputLine, moveLine);
           moveLineMassEntryToolService.setAnalyticsFields(inputLine, moveLine);
           break;
         }
@@ -115,6 +95,29 @@ public class MassEntryServiceImpl implements MassEntryService {
       resetMoveLineMassEntry(inputLine);
     }
     return inputLine;
+  }
+
+  protected void setMoveLineMassEntry(MoveLineMassEntry inputLine, MoveLineMassEntry moveLine) {
+    inputLine.setPartner(moveLine.getPartner());
+    inputLine.setPartnerId(moveLine.getPartnerId());
+    inputLine.setPartnerSeq(moveLine.getPartnerSeq());
+    inputLine.setPartnerFullName(moveLine.getPartnerFullName());
+    inputLine.setDate(moveLine.getDate());
+    inputLine.setDueDate(moveLine.getDueDate());
+    inputLine.setOriginDate(moveLine.getOriginDate());
+    inputLine.setOrigin(moveLine.getOrigin());
+    inputLine.setMoveStatusSelect(moveLine.getMoveStatusSelect());
+    inputLine.setMoveDescription(moveLine.getMoveDescription());
+    inputLine.setDescription(moveLine.getMoveDescription());
+    inputLine.setExportedDirectDebitOk(moveLine.getExportedDirectDebitOk());
+    inputLine.setMovePaymentCondition(moveLine.getMovePaymentCondition());
+    inputLine.setMovePaymentMode(moveLine.getMovePaymentMode());
+    inputLine.setMovePartnerBankDetails(moveLine.getMovePartnerBankDetails());
+    inputLine.setCutOffStartDate(moveLine.getCutOffStartDate());
+    inputLine.setCutOffEndDate(moveLine.getCutOffEndDate());
+    inputLine.setDeliveryDate(moveLine.getDeliveryDate());
+    inputLine.setVatSystemSelect(moveLine.getVatSystemSelect());
+    inputLine.setIsEdited(MoveLineMassEntryRepository.MASS_ENTRY_IS_EDITED_NULL);
   }
 
   @Override

@@ -1,0 +1,3 @@
+---
+title: "MOVELINE : move postedNbr from Account module to BankPayment module"
+type: fix

@@ -19,7 +19,6 @@
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.AccountConfig;
-import com.axelor.apps.account.db.InterbankCodeLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reimbursement;
@@ -140,7 +139,6 @@ public class ReimbursementImportService {
 
     String refReject = reject[1];
     //	String amountReject = reject[2];
-    InterbankCodeLine causeReject = rejectImportService.getInterbankCodeLine(reject[3], 0);
     MoveLineRepository moveLineRepo = Beans.get(MoveLineRepository.class);
 
     Reimbursement reimbursement =
@@ -156,35 +154,43 @@ public class ReimbursementImportService {
           company.getName());
     }
 
-    Partner partner = reimbursement.getPartner();
-    BigDecimal amount = reimbursement.getAmountReimbursed();
-
     // Création de la ligne au crédit
-    MoveLine creditMoveLine =
-        moveLineCreateService.createMoveLine(
-            move,
-            partner,
-            accountConfigService.getCustomerAccount(accountConfigService.getAccountConfig(company)),
-            amount,
-            false,
-            rejectDate,
-            seq,
-            refReject,
-            null);
+    MoveLine creditMoveLine = createMoveLine(reject, company, seq, move, rejectDate, reimbursement);
     move.getMoveLineList().add(creditMoveLine);
-
     moveLineRepo.save(creditMoveLine);
 
     moveRepo.save(move);
-    creditMoveLine.setInterbankCodeLine(causeReject);
 
     reimbursement.setRejectedOk(true);
     reimbursement.setRejectDate(rejectDate);
     reimbursement.setRejectMoveLine(creditMoveLine);
-    reimbursement.setInterbankCodeLine(causeReject);
     reimbursementRepo.save(reimbursement);
 
     return reimbursement;
+  }
+
+  protected MoveLine createMoveLine(
+      String[] reject,
+      Company company,
+      int seq,
+      Move move,
+      LocalDate rejectDate,
+      Reimbursement reimbursement)
+      throws AxelorException {
+    String refReject = reject[1];
+    Partner partner = reimbursement.getPartner();
+    BigDecimal amount = reimbursement.getAmountReimbursed();
+
+    return moveLineCreateService.createMoveLine(
+        move,
+        partner,
+        accountConfigService.getCustomerAccount(accountConfigService.getAccountConfig(company)),
+        amount,
+        false,
+        rejectDate,
+        seq,
+        refReject,
+        null);
   }
 
   @Transactional(rollbackOn = {Exception.class})

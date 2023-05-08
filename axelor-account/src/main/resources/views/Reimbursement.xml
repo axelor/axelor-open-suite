@@ -33,8 +33,6 @@
 
     <panel name="rejectInformationPanel" title="Reject Information" showIf="rejectedOk">
       <field name="rejectedOk"/>
-      <field name="interbankCodeLine" grid-view="interbank-code-grid"
-        form-view="interbank-code-form"/>
       <field name="rejectDate"/>
       <field name="rejectMoveLine" grid-view="move-line-grid" form-view="move-line-form"/>
     </panel>

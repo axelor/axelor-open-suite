@@ -513,9 +513,6 @@
             title="Doubtful Shift Reason"/>
           <field name="usherPassageOk"
             onChange="action-group-account-moveline-usher-process-onchange" colSpan="6"/>
-          <field name="interbankCodeLine" showIf="interbankCodeLine"
-            form-view="interbank-code-line-form" grid-view="interbank-code-line-grid"
-            canEdit="false" colSpan="12"/>
           <field name="irrecoverableStatusSelect" colSpan="6"/>
           <field name="managementObject" form-view="management-object-form"
             grid-view="management-object-grid" colSpan="6"/>
@@ -759,9 +756,6 @@
             title="Doubtful Shift Reason"/>
           <field name="usherPassageOk"
             onChange="action-group-account-moveline-usher-process-onchange" colSpan="6"/>
-          <field name="interbankCodeLine" showIf="interbankCodeLine"
-            form-view="interbank-code-line-form" grid-view="interbank-code-line-grid"
-            canEdit="false" colSpan="12"/>
           <field name="irrecoverableStatusSelect" colSpan="6"/>
           <field name="managementObject" form-view="management-object-form"
             grid-view="management-object-grid" colSpan="6"/>

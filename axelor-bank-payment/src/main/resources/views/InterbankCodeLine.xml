@@ -2,8 +2,9 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
   <grid name="interbank-code-line-grid" title="Interbank codes list"
-    model="com.axelor.apps.account.db.InterbankCodeLine" orderBy="code">
+    model="com.axelor.apps.bankpayment.db.InterbankCodeLine" orderBy="code">
     <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
     <field name="name"/>
     <field name="description"/>
@@ -12,8 +13,16 @@
       grid-view="interbank-code-grid"/>
   </grid>
 
+  <grid name="interbank-code-line-custom-grid" title="Interbank codes lists"
+    model="com.axelor.apps.bankpayment.db.InterbankCodeLine">
+    <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+    <field name="name"/>
+    <field name="description"/>
+    <field name="technicalRejectOk"/>
+  </grid>
+
   <form name="interbank-code-line-form" title="Interbank codes list"
-    model="com.axelor.apps.account.db.InterbankCodeLine" width="large">
+    model="com.axelor.apps.bankpayment.db.InterbankCodeLine" width="large">
     <panel name="mainPanel">
       <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
       <field name="name"/>
@@ -34,7 +43,7 @@
   </form>
 
   <form name="interbank-code-line-custom-form" title="Interbank codes list"
-    model="com.axelor.apps.account.db.InterbankCodeLine" width="large">
+    model="com.axelor.apps.bankpayment.db.InterbankCodeLine" width="large">
     <panel name="mainPanel">
       <field name="name"/>
       <field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="3"/>
@@ -51,6 +60,5 @@
       <field name="chequeOk"/>
     </panel>
   </form>
-
 
 </object-views>

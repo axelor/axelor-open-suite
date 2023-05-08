@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <form name="cheque-rejection-form" title="Cheque Rejection"
+    model="com.axelor.apps.account.db.ChequeRejection" id="bank-payment-cheque-rejection-form"
+    extension="true">
+    <extend target="//field[@name='rejectionDate']">
+      <insert position="after">
+        <field name="interbankCodeLine" domain="self.chequeOk = 't'"
+          form-view="interbank-code-line-form" grid-view="interbank-code-line-grid"/>
+      </insert>
+    </extend>
+  </form>
+
+</object-views>

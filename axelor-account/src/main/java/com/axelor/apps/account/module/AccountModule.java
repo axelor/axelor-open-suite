@@ -228,6 +228,8 @@ import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceLineServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceMergingService;
 import com.axelor.apps.account.service.invoice.InvoiceMergingServiceImpl;
+import com.axelor.apps.account.service.invoice.InvoiceResetService;
+import com.axelor.apps.account.service.invoice.InvoiceResetServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
@@ -763,5 +765,7 @@ public class AccountModule extends AxelorModule {
     bind(MoveLineMassEntryAttrsService.class).to(MoveLineMassEntryAttrsServiceImpl.class);
 
     bind(MoveLineMassEntryRecordService.class).to(MoveLineMassEntryRecordServiceImpl.class);
+
+    bind(InvoiceResetService.class).to(InvoiceResetServiceImpl.class);
   }
 }

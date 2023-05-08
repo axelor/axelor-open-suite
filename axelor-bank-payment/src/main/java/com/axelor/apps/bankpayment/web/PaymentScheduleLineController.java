@@ -18,8 +18,8 @@
  */
 package com.axelor.apps.bankpayment.web;
 
-import com.axelor.apps.account.db.InterbankCodeLine;
-import com.axelor.apps.account.db.repo.InterbankCodeLineRepository;
+import com.axelor.apps.bankpayment.db.InterbankCodeLine;
+import com.axelor.apps.bankpayment.db.repo.InterbankCodeLineRepository;
 import com.axelor.apps.bankpayment.service.PaymentScheduleLineBankPaymentService;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.exception.TraceBackService;

@@ -116,7 +116,6 @@ public class MoveManagementRepository extends MoveRepository {
     moveLine.setAmountPaid(BigDecimal.ZERO);
     moveLine.setTaxPaymentMoveLineList(null);
     moveLine.setTaxAmount(BigDecimal.ZERO);
-    moveLine.setPostedNbr(null);
     moveLine.setOrigin(move.getOrigin());
     moveLine.setOriginDate(move.getOriginDate());
 

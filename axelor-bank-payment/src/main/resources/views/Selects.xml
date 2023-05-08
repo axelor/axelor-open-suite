@@ -348,4 +348,9 @@
     <option value="300">Bank payment batch</option>
   </selection>
 
+  <selection name="bankpayment.interbankcode.type.select">
+    <option value="1">Operation code</option>
+    <option value="2">Reject/Return code</option>
+  </selection>
+
 </object-views>

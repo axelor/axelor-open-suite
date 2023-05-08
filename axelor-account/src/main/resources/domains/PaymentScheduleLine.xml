@@ -18,8 +18,6 @@
     <integer name="statusSelect" title="Status" readonly="true"
       selection="iaccount.payment.schedule.line.status.select" default="1"/>
     <date name="rejectDate" title="Rejection date"/>
-    <many-to-one name="interbankCodeLine"
-      ref="com.axelor.apps.account.db.InterbankCodeLine" title="Rejection reason"/>
     <many-to-one name="advanceMoveLine" ref="com.axelor.apps.account.db.MoveLine"
       title="Advance move line"/>
     <string name="debitNumber" title="Direct debit Nbr"/>

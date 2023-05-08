@@ -13,7 +13,8 @@
     <field name="move"/>
     <field name="rejectionDate"/>
     <field name="interbankCodeLine" form-view="interbank-code-line-form"
-      grid-view="interbank-code-line-form"/>
+      grid-view="interbank-code-line-form" if-module="axelor-bank-payment"
+      if="__config__.app.isApp('bank-payment')"/>
     <field name="statusSelect"/>
   </grid>
 
@@ -29,8 +30,6 @@
       readonlyIf="statusSelect == 2">
       <field name="rejectionDate"
         onChange="action-account-chaque-rejection-validate-if-rejection-date-is-not-from-the-future"/>
-      <field name="interbankCodeLine" domain="self.chequeOk = 't'"
-        form-view="interbank-code-line-form" grid-view="interbank-code-line-grid"/>
       <field name="description"/>
       <field name="amountRejected"/>
     </panel>

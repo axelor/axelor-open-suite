@@ -42,10 +42,6 @@ public interface MoveLineService {
 
   public void reconcileMoveLines(List<MoveLine> moveLineList);
 
-  public void setIsSelectedBankReconciliation(MoveLine moveLine);
-
-  public MoveLine removePostedNbr(MoveLine moveLine, String postedNbr);
-
   boolean checkManageCutOffDates(MoveLine moveLine);
 
   void applyCutOffDates(

@@ -93,7 +93,6 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
     valuesMap.put("originDate", moveLine.getOriginDate());
     valuesMap.put("origin", moveLine.getOrigin());
     valuesMap.put("moveStatusSelect", moveLine.getMoveStatusSelect());
-    valuesMap.put("interbankCodeLine", moveLine.getInterbankCodeLine());
     valuesMap.put("moveDescription", moveLine.getMoveDescription());
     valuesMap.put("description", moveLine.getDescription());
     valuesMap.put("exportedDirectDebitOk", moveLine.getExportedDirectDebitOk());
