@@ -249,13 +249,22 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
 
   @Override
   public BigDecimal getPayableAmount(
-      List<InvoiceTerm> invoiceTermList, LocalDate date, boolean manualChange) {
+      List<InvoiceTerm> invoiceTermList,
+      LocalDate date,
+      boolean manualChange,
+      Currency paymentCurrency) {
+    if (CollectionUtils.isEmpty(invoiceTermList)) {
+      return BigDecimal.ZERO;
+    }
+
+    boolean isCompanyCurrency =
+        paymentCurrency.equals(invoiceTermList.get(0).getCompany().getCurrency());
     return invoiceTermList.stream()
         .map(
             it ->
                 manualChange
-                    ? invoiceTermService.getAmountRemaining(it, date)
-                    : it.getAmountRemaining())
+                    ? invoiceTermService.getAmountRemaining(it, date, isCompanyCurrency)
+                    : isCompanyCurrency ? it.getCompanyAmountRemaining() : it.getAmountRemaining())
         .reduce(BigDecimal::add)
         .orElse(BigDecimal.ZERO);
   }
@@ -368,7 +377,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
           .map(Invoice::getInvoiceTermList)
           .flatMap(Collection::stream)
           .filter(invoiceTermService::isNotAwaitingPayment)
-          .map(it -> invoiceTermService.getAmountRemaining(it, date))
+          .map(it -> invoiceTermService.getAmountRemaining(it, date, false))
           .reduce(BigDecimal::add)
           .orElse(BigDecimal.ZERO);
     } else {

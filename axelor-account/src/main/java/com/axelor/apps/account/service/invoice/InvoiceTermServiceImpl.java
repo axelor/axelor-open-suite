@@ -865,15 +865,23 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   }
 
   @Override
-  public BigDecimal getAmountRemaining(InvoiceTerm invoiceTerm, LocalDate date) {
-    return Optional.of(
-            invoiceTerm.getApplyFinancialDiscount()
-                    && invoiceTerm.getFinancialDiscountDeadlineDate() != null
-                    && date != null
-                    && !invoiceTerm.getFinancialDiscountDeadlineDate().isBefore(date)
-                ? invoiceTerm.getAmountRemainingAfterFinDiscount()
-                : invoiceTerm.getAmountRemaining())
-        .orElse(BigDecimal.ZERO);
+  public BigDecimal getAmountRemaining(
+      InvoiceTerm invoiceTerm, LocalDate date, boolean isCompanyCurrency) {
+    BigDecimal amountRemaining;
+
+    boolean applyFinancialDiscount =
+        invoiceTerm.getApplyFinancialDiscount()
+            && invoiceTerm.getFinancialDiscountDeadlineDate() != null
+            && date != null
+            && !invoiceTerm.getFinancialDiscountDeadlineDate().isBefore(date);
+    if (applyFinancialDiscount) {
+      amountRemaining = invoiceTerm.getAmountRemainingAfterFinDiscount();
+    } else if (isCompanyCurrency) {
+      amountRemaining = invoiceTerm.getCompanyAmountRemaining();
+    } else {
+      amountRemaining = invoiceTerm.getAmountRemaining();
+    }
+    return amountRemaining;
   }
 
   @Override
@@ -1290,7 +1298,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     BigDecimal amountToPay =
         invoiceTermList.stream()
             .filter(this::isNotReadonly)
-            .map(it -> this.getAmountRemaining(it, date))
+            .map(it -> this.getAmountRemaining(it, date, false))
             .reduce(BigDecimal::add)
             .orElse(BigDecimal.ZERO);
 

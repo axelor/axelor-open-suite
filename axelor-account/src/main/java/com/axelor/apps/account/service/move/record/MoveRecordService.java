@@ -42,46 +42,52 @@ public interface MoveRecordService {
    * value' will be returned that contains every modified value.
    *
    * @param move: can not be null
-   * @param context: can not be null
    * @return a Object {@link MoveContext} that containts attrs and values context
    * @throws AxelorException
    */
-  MoveContext onLoad(Move move, Context context, User user) throws AxelorException;
+  MoveContext onLoad(Move move, User user) throws AxelorException;
 
   /**
    * Method called on action onSave
    *
    * @param move: can not be null
-   * @param context: can not be null
+   * @param paymentConditionChange
+   * @param headerChange
    * @throws AxelorException
    */
-  MoveContext onSaveBefore(Move move, Context context) throws AxelorException;
-
-  /**
-   * Method called on action onSave
-   *
-   * @param move: can not be null
-   * @param context: can not be null
-   * @throws AxelorException
-   */
-  MoveContext onSaveAfter(Move move, Context context) throws AxelorException;
-
-  MoveContext onSaveCheck(Move move, Context context) throws AxelorException;
-
-  MoveContext onChangeDate(Move move, Context context) throws AxelorException;
-
-  MoveContext onChangeJournal(Move move, Context context) throws AxelorException;
-
-  MoveContext onChangePartner(Move move, Context context) throws AxelorException;
-
-  MoveContext onChangeMoveLineList(Move move, Context context, LocalDate dueDate)
+  MoveContext onSaveBefore(Move move, boolean paymentConditionChange, boolean headerChange)
       throws AxelorException;
 
-  MoveContext onChangeOriginDate(Move move, Context context) throws AxelorException;
+  /**
+   * Method called on action onSave
+   *
+   * @param move: can not be null
+   * @throws AxelorException
+   */
+  MoveContext onSaveAfter(Move move) throws AxelorException;
 
-  MoveContext onChangeOrigin(Move move, Context context) throws AxelorException;
+  MoveContext onSaveCheck(Move move) throws AxelorException;
 
-  MoveContext onChangePaymentCondition(Move move, Context context) throws AxelorException;
+  MoveContext onChangeDate(Move move, boolean paymentConditionChange, boolean dateChange)
+      throws AxelorException;
+
+  MoveContext onChangeJournal(Move move) throws AxelorException;
+
+  MoveContext onChangePartner(Move move, boolean paymentConditionChange, boolean dateChange)
+      throws AxelorException;
+
+  MoveContext onChangeMoveLineList(
+      Move move, LocalDate dueDate, boolean paymentConditionChange, boolean dateChange)
+      throws AxelorException;
+
+  MoveContext onChangeOriginDate(Move move, boolean paymentConditionChange, boolean dateChange)
+      throws AxelorException;
+
+  MoveContext onChangeOrigin(Move move) throws AxelorException;
+
+  MoveContext onChangePaymentCondition(
+      Move move, boolean paymentConditionChange, boolean dateChange, boolean headerChange)
+      throws AxelorException;
 
   MoveContext onChangeCurrency(Move move, Context context);
 }
