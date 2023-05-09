@@ -98,7 +98,6 @@ public class ProductBaseRepository extends ProductRepository {
         copy.setCode(Beans.get(ProductService.class).getSequence(product));
       }
     } catch (Exception e) {
-      TraceBackService.traceExceptionFromSaveMethod(e);
       throw new PersistenceException(e.getMessage(), e);
     }
     return copy;
