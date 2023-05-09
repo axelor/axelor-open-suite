@@ -29,6 +29,10 @@
       title="Converted lead status"/>
     <many-to-one name="lostLeadStatus" ref="com.axelor.apps.crm.db.LeadStatus"
       title="Lost lead status"/>
+    <many-to-one name="closedWinPartnerStatus"
+      ref="com.axelor.apps.crm.db.PartnerStatus" title="Closed win partner status"/>
+    <many-to-one name="closedLostPartnerStatus"
+      ref="com.axelor.apps.crm.db.PartnerStatus" title="Closed lost partner status"/>
 
     <track>
       <field name="assignableUsers" on="UPDATE"/>

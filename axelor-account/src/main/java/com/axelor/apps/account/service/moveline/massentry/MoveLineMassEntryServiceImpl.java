@@ -8,13 +8,17 @@ import com.axelor.apps.account.db.MoveLineMassEntry;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.AccountingSituationService;
+import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveCounterPartService;
 import com.axelor.apps.account.service.move.MoveLoadDefaultConfigService;
 import com.axelor.apps.account.service.move.massentry.MassEntryToolService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
@@ -38,6 +42,7 @@ public class MoveLineMassEntryServiceImpl implements MoveLineMassEntryService {
   protected CurrencyService currencyService;
   protected MoveLineMassEntryToolService moveLineMassEntryToolService;
   protected AccountingSituationService accountingSituationService;
+  protected InvoiceTermService invoiceTermService;
 
   @Inject
   public MoveLineMassEntryServiceImpl(
@@ -47,7 +52,8 @@ public class MoveLineMassEntryServiceImpl implements MoveLineMassEntryService {
       MoveLoadDefaultConfigService moveLoadDefaultConfigService,
       CurrencyService currencyService,
       MoveLineMassEntryToolService moveLineMassEntryToolService,
-      AccountingSituationService accountingSituationService) {
+      AccountingSituationService accountingSituationService,
+      InvoiceTermService invoiceTermService) {
     this.moveLineTaxService = moveLineTaxService;
     this.moveCounterPartService = moveCounterPartService;
     this.massEntryToolService = massEntryToolService;
@@ -55,6 +61,7 @@ public class MoveLineMassEntryServiceImpl implements MoveLineMassEntryService {
     this.currencyService = currencyService;
     this.moveLineMassEntryToolService = moveLineMassEntryToolService;
     this.accountingSituationService = accountingSituationService;
+    this.invoiceTermService = invoiceTermService;
   }
 
   @Override
@@ -200,6 +207,28 @@ public class MoveLineMassEntryServiceImpl implements MoveLineMassEntryService {
           moveLine.getPartner().getCurrency() != null
               ? moveLine.getPartner().getCurrency().getCodeISO()
               : null);
+    }
+  }
+
+  @Override
+  public User getPfpValidatorUserForInTaxAccount(
+      Account account, Company company, Partner partner) {
+    if (ObjectUtils.notEmpty(account) && account.getUseForPartnerBalance()) {
+      return invoiceTermService.getPfpValidatorUser(partner, company);
+    }
+    return null;
+  }
+
+  @Override
+  public void setPfpValidatorUserForInTaxAccount(
+      List<MoveLineMassEntry> moveLineMassEntryList, Company company, int temporaryMoveNumber) {
+    for (MoveLineMassEntry moveLine : moveLineMassEntryList) {
+      if (moveLine.getTemporaryMoveNumber() == temporaryMoveNumber
+          && ObjectUtils.isEmpty(moveLine.getMovePfpValidatorUser())) {
+        moveLine.setMovePfpValidatorUser(
+            getPfpValidatorUserForInTaxAccount(
+                moveLine.getAccount(), company, moveLine.getPartner()));
+      }
     }
   }
 }

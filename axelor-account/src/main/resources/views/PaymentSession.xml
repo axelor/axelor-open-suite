@@ -107,7 +107,8 @@
       </panel>
 
     </panel>
-    <panel name="mainPanel" itemSpan="4" readonlyIf="statusSelect > 1 || $hasInvoiceTerm">
+    <panel name="mainPanel" itemSpan="4"
+      readonlyIf="statusSelect > 1 || sessionTotalAmount > 0">
       <field name="createdOn"/>
       <field name="sequence"/>
       <field name="company" form-view="company-form" grid-view="company-grid"
@@ -165,12 +166,16 @@
         onClick="action-payment-session-method-unselect-all" colSpan="3" hidden="true"/>
       <button name="refreshEligibleTermsBtn" title="Refresh terms list"
         showIf="id &amp;&amp; $hasInvoiceTerm &amp;&amp; statusSelect == 1"
-        onClick="action-method-payment-session-search-eligible-terms"/>
+        onClick="action-group-payment-session-search-eligible-terms"/>
       <button name="removeNegativeLinesBtn" title="Remove all negative lines"
         onClick="save,action-payment-session-method-remove-negative-lines"
         showIf="id &amp;&amp; statusSelect == 1"/>
-      <panel-dashlet action="action-invoice-term-view-payment-session-dashlet"
-        showIf="id" colSpan="12" canSearch="true" height="600" readonlyIf="statusSelect > 1"/>
+      <panel-dashlet name="invoiceTermPanelDashlet"
+        action="action-invoice-term-view-payment-session-dashlet" hidden="true" colSpan="12"
+        canSearch="true" height="600" readonlyIf="statusSelect > 1"/>
+      <panel-dashlet name="invoiceTermShorterPanelDashlet"
+        action="action-invoice-term-view-payment-session-dashlet" hidden="true" colSpan="12"
+        canSearch="true" height="380" readonlyIf="statusSelect > 1"/>
       <panel-dashlet
         action="action-invoice-term-view-payment-session-group-by-partner-dashlet" showIf="id"
         colSpan="12" canSearch="true" height="380" readonlyIf="statusSelect > 1"/>
@@ -220,6 +225,7 @@
   </action-group>
 
   <action-group name="action-group-payment-session-on-load">
+    <action name="action-method-payment-session-show-invoice-term-dashlet"/>
     <action name="action-payment-session-method-set-has-invoice-term-selected"/>
     <action name="action-payment-session-method-set-has-invoice-term"/>
     <action name="action-payment-session-record-set-session-total-amount-btn"/>
@@ -232,6 +238,10 @@
       for="company"/>
   </action-attrs>
 
+  <action-method name="action-method-payment-session-show-invoice-term-dashlet">
+    <call class="com.axelor.apps.account.web.PaymentSessionController"
+      method="showInvoiceTermDashlet"/>
+  </action-method>
   <action-attrs name="action-attrs-payment-session-reset-on-company-change">
     <attribute name="value" expr="eval: null" for="journal"/>
     <attribute name="value" expr="eval: null" for="bankDetails"/>

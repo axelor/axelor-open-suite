@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service.invoice;
 
@@ -38,6 +39,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
@@ -237,6 +239,7 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
     InvoiceTerm invoiceTerm =
         invoiceTermService.createInvoiceTerm(
             invoice,
+            originalInvoiceTerm.getMoveLine().getMove(),
             originalInvoiceTerm.getMoveLine(),
             originalInvoiceTerm.getBankDetails(),
             originalInvoiceTerm.getPfpValidatorUser(),
@@ -247,6 +250,10 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
             percentage,
             sequence,
             originalInvoiceTerm.getIsHoldBack());
+
+    if (originalInvoiceTerm.getApplyFinancialDiscount()) {
+      invoiceTermService.computeFinancialDiscount(invoiceTerm, invoice);
+    }
 
     invoiceTerm.setOriginInvoiceTerm(originalInvoiceTerm);
     invoiceTerm.setIsCustomized(true);
@@ -338,5 +345,57 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
         && invoiceTermList.stream()
             .allMatch(
                 it -> it.getPfpValidateStatusSelect() == InvoiceTermRepository.PFP_STATUS_AWAITING);
+  }
+
+  @Override
+  @Transactional
+  public void initPftPartialValidation(
+      InvoiceTerm originalInvoiceTerm, BigDecimal grantedAmount, PfpPartialReason partialReason) {
+    originalInvoiceTerm.setPfpfPartialValidationOk(true);
+    originalInvoiceTerm.setPfpPartialValidationAmount(originalInvoiceTerm.getAmount());
+    originalInvoiceTerm.setAmount(grantedAmount);
+    originalInvoiceTerm.setPfpPartialReason(partialReason);
+    originalInvoiceTerm.setPfpValidateStatusSelect(
+        InvoiceTermRepository.PFP_STATUS_PARTIALLY_VALIDATED);
+    originalInvoiceTerm.setInitialPfpAmount(originalInvoiceTerm.getAmountRemaining());
+    originalInvoiceTerm.setAmountRemaining(grantedAmount);
+    originalInvoiceTerm.setRemainingPfpAmount(
+        originalInvoiceTerm.getInitialPfpAmount().subtract(grantedAmount));
+    originalInvoiceTerm.setPercentage(
+        invoiceTermService.computeCustomizedPercentage(
+            grantedAmount,
+            originalInvoiceTerm.getInvoice() != null
+                ? originalInvoiceTerm.getInvoice().getInTaxTotal()
+                : originalInvoiceTerm
+                    .getMoveLine()
+                    .getCredit()
+                    .max(originalInvoiceTerm.getMoveLine().getDebit())));
+
+    if (originalInvoiceTerm.getApplyFinancialDiscount()) {
+      invoiceTermService.computeFinancialDiscount(
+          originalInvoiceTerm, originalInvoiceTerm.getInvoice());
+    }
+
+    invoiceTermRepo.save(originalInvoiceTerm);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void generateInvoiceTermsAfterPfpPartial(Invoice originalInvoice) throws AxelorException {
+    List<InvoiceTerm> itList =
+        originalInvoice.getInvoiceTermList().stream()
+            .filter(InvoiceTerm::getPfpfPartialValidationOk)
+            .collect(Collectors.toList());
+    if (!CollectionUtils.isEmpty(itList)) {
+      for (InvoiceTerm it : itList) {
+        it = invoiceTermRepo.find(it.getId());
+        BigDecimal amount = it.getAmount();
+        it.setAmount(it.getPfpPartialValidationAmount());
+        generateInvoiceTerm(it, it.getAmount(), amount, it.getPfpPartialReason());
+        it.setPfpfPartialValidationOk(false);
+        it.setPfpPartialValidationAmount(BigDecimal.ZERO);
+        invoiceTermRepo.save(it);
+      }
+    }
   }
 }

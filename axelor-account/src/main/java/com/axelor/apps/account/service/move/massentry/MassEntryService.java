@@ -27,19 +27,17 @@ import java.util.Map;
 public interface MassEntryService {
 
   MoveLineMassEntry getFirstMoveLineMassEntryInformations(
-      List<MoveLineMassEntry> moveLineMassEntryList,
-      MoveLineMassEntry moveLineMassEntry,
-      boolean manageCutOff);
+      List<MoveLineMassEntry> moveLineMassEntryList, MoveLineMassEntry moveLineMassEntry);
 
-  void resetMoveLineMassEntry(MoveLineMassEntry moveLineMassEntry, boolean manageCutOff);
+  void resetMoveLineMassEntry(MoveLineMassEntry moveLineMassEntry);
 
-  void verifyFieldsAndGenerateTaxLineAndCounterpart(
-      Move parentMove, boolean manageCutOff, LocalDate dueDate) throws AxelorException;
+  Map<String, Object> verifyFieldsAndGenerateTaxLineAndCounterpart(
+      Move parentMove, LocalDate dueDate) throws AxelorException;
 
   void verifyFieldsChangeOnMoveLineMassEntry(Move move, boolean manageCutOff)
       throws AxelorException;
 
-  void checkMassEntryMoveGeneration(Move move) throws AxelorException;
+  void checkMassEntryMoveGeneration(Move move);
 
   Map<List<Long>, String> validateMassEntryMove(Move move);
 

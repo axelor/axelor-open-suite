@@ -23,8 +23,10 @@ import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineMassEntryRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryService;
+import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -54,6 +56,9 @@ public class MassEntryServiceImpl implements MassEntryService {
   protected MoveToolService moveToolService;
   protected MoveLineMassEntryService moveLineMassEntryService;
   protected MassEntryMoveCreateService massEntryMoveCreateService;
+  protected AppAccountService appAccountService;
+  protected MoveRepository moveRepository;
+  protected MoveLineMassEntryToolService moveLineMassEntryToolService;
 
   @Inject
   public MassEntryServiceImpl(
@@ -61,17 +66,23 @@ public class MassEntryServiceImpl implements MassEntryService {
       MassEntryVerificationService massEntryVerificationService,
       MoveToolService moveToolService,
       MoveLineMassEntryService moveLineMassEntryService,
-      MassEntryMoveCreateService massEntryMoveCreateService) {
+      MassEntryMoveCreateService massEntryMoveCreateService,
+      AppAccountService appAccountService,
+      MoveRepository moveRepository,
+      MoveLineMassEntryToolService moveLineMassEntryToolService) {
     this.massEntryToolService = massEntryToolService;
     this.massEntryVerificationService = massEntryVerificationService;
     this.moveToolService = moveToolService;
     this.moveLineMassEntryService = moveLineMassEntryService;
     this.massEntryMoveCreateService = massEntryMoveCreateService;
+    this.appAccountService = appAccountService;
+    this.moveRepository = moveRepository;
+    this.moveLineMassEntryToolService = moveLineMassEntryToolService;
   }
 
   @Override
   public MoveLineMassEntry getFirstMoveLineMassEntryInformations(
-      List<MoveLineMassEntry> moveLineList, MoveLineMassEntry inputLine, boolean manageCutOff) {
+      List<MoveLineMassEntry> moveLineList, MoveLineMassEntry inputLine) {
     if (ObjectUtils.notEmpty(moveLineList)) {
       for (MoveLineMassEntry moveLine : moveLineList) {
         if (moveLine.getTemporaryMoveNumber().equals(inputLine.getTemporaryMoveNumber())) {
@@ -96,17 +107,18 @@ public class MassEntryServiceImpl implements MassEntryService {
           inputLine.setDeliveryDate(moveLine.getDeliveryDate());
           inputLine.setVatSystemSelect(moveLine.getVatSystemSelect());
           inputLine.setIsEdited(MoveLineMassEntryRepository.MASS_ENTRY_IS_EDITED_NULL);
+          moveLineMassEntryToolService.setAnalyticsFields(inputLine, moveLine);
           break;
         }
       }
     } else {
-      resetMoveLineMassEntry(inputLine, manageCutOff);
+      resetMoveLineMassEntry(inputLine);
     }
     return inputLine;
   }
 
   @Override
-  public void resetMoveLineMassEntry(MoveLineMassEntry moveLine, boolean manageCutOff) {
+  public void resetMoveLineMassEntry(MoveLineMassEntry moveLine) {
     moveLine.setDate(LocalDate.now());
     moveLine.setOrigin(null);
     moveLine.setOriginDate(LocalDate.now());
@@ -127,7 +139,7 @@ public class MassEntryServiceImpl implements MassEntryService {
     moveLine.setCurrencyAmount(BigDecimal.ZERO);
     moveLine.setMoveStatusSelect(null);
     moveLine.setVatSystemSelect(0);
-    moveLine.setPfpValidatorUser(null);
+    moveLine.setMovePfpValidatorUser(null);
     moveLine.setDeliveryDate(LocalDate.now());
     moveLine.setCutOffStartDate(LocalDate.now());
     moveLine.setCutOffEndDate(LocalDate.now());
@@ -141,55 +153,67 @@ public class MassEntryServiceImpl implements MassEntryService {
     moveLine.setAxis5AnalyticAccount(null);
     moveLine.setAnalyticMoveLineList(null);
 
-    if (!manageCutOff) {
+    if (!appAccountService.getAppAccount().getManageCutOffPeriod()) {
       moveLine.setCutOffStartDate(null);
       moveLine.setCutOffEndDate(null);
+      moveLine.setDeliveryDate(null);
     }
   }
 
   @Override
-  public void verifyFieldsAndGenerateTaxLineAndCounterpart(
-      Move parentMove, boolean manageCutOff, LocalDate dueDate) throws AxelorException {
-    this.verifyFieldsChangeOnMoveLineMassEntry(parentMove, manageCutOff);
+  public Map<String, Object> verifyFieldsAndGenerateTaxLineAndCounterpart(
+      Move parentMove, LocalDate dueDate) throws AxelorException {
+    HashMap<String, Object> resultMap = new HashMap<>();
 
-    MoveLineMassEntry lastLine =
-        parentMove.getMoveLineMassEntryList().get(parentMove.getMoveLineMassEntryList().size() - 1);
-    int inputAction = lastLine.getInputAction();
-    String technicalTypeSelect =
-        lastLine.getAccount() != null
-            ? lastLine.getAccount().getAccountType().getTechnicalTypeSelect()
-            : null;
-    int journalTechnicalTypeSelect =
-        parentMove.getJournal() != null
-            ? parentMove.getJournal().getJournalType().getTechnicalTypeSelect()
-            : 0;
-    int temporaryMoveNumber = lastLine.getTemporaryMoveNumber();
-    int[] technicalTypeSelectArray = {
-      JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE,
-      JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE,
-      JournalTypeRepository.TECHNICAL_TYPE_SELECT_CREDIT_NOTE
-    };
+    if (ObjectUtils.notEmpty(parentMove.getMoveLineMassEntryList())) {
+      this.verifyFieldsChangeOnMoveLineMassEntry(parentMove, parentMove.getMassEntryManageCutOff());
 
-    if ((ObjectUtils.notEmpty(inputAction)
-        && inputAction == MoveLineMassEntryRepository.MASS_ENTRY_INPUT_ACTION_COUNTERPART)) {
-      parentMove
-          .getMoveLineMassEntryList()
-          .remove(parentMove.getMoveLineMassEntryList().size() - 1);
-      Move workingMove =
-          massEntryMoveCreateService.createMoveFromMassEntryList(parentMove, temporaryMoveNumber);
+      MoveLineMassEntry lastLine =
+          parentMove
+              .getMoveLineMassEntryList()
+              .get(parentMove.getMoveLineMassEntryList().size() - 1);
+      int inputAction = lastLine.getInputAction();
+      String technicalTypeSelect =
+          lastLine.getAccount() != null
+              ? lastLine.getAccount().getAccountType().getTechnicalTypeSelect()
+              : null;
+      int journalTechnicalTypeSelect =
+          parentMove.getJournal() != null
+              ? parentMove.getJournal().getJournalType().getTechnicalTypeSelect()
+              : 0;
+      int temporaryMoveNumber = lastLine.getTemporaryMoveNumber();
+      int[] technicalTypeSelectArray = {
+        JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE,
+        JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE,
+        JournalTypeRepository.TECHNICAL_TYPE_SELECT_CREDIT_NOTE
+      };
 
-      int categoryError =
-          this.generatedTaxeAndCounterPart(parentMove, workingMove, dueDate, temporaryMoveNumber);
-      if (categoryError == 0) {
-        massEntryToolService.sortMoveLinesMassEntryByTemporaryNumber(parentMove);
-      } else {
-        massEntryVerificationService.setErrorOnMoveLineMassEntry(
-            parentMove,
-            temporaryMoveNumber,
-            "paymentMode",
-            I18n.get(AccountExceptionMessage.EXCEPTION_GENERATE_COUNTERPART));
+      if ((ObjectUtils.notEmpty(inputAction)
+          && inputAction == MoveLineMassEntryRepository.MASS_ENTRY_INPUT_ACTION_COUNTERPART)) {
+        parentMove
+            .getMoveLineMassEntryList()
+            .remove(parentMove.getMoveLineMassEntryList().size() - 1);
+        Move workingMove =
+            massEntryMoveCreateService.createMoveFromMassEntryList(parentMove, temporaryMoveNumber);
+
+        int categoryError =
+            this.generatedTaxeAndCounterPart(parentMove, workingMove, dueDate, temporaryMoveNumber);
+        if (categoryError == 0) {
+          massEntryToolService.sortMoveLinesMassEntryByTemporaryNumber(parentMove);
+        } else {
+          massEntryVerificationService.setErrorMassEntryMoveLines(
+              parentMove,
+              temporaryMoveNumber,
+              "paymentMode",
+              I18n.get(AccountExceptionMessage.EXCEPTION_GENERATE_COUNTERPART));
+        }
+
+        resultMap.put("massEntryErrors", parentMove.getMassEntryErrors());
+        resultMap.put("moveLineMassEntryList", parentMove.getMoveLineMassEntryList());
       }
     }
+
+    return resultMap;
   }
 
   @Override
@@ -206,7 +230,7 @@ public class MassEntryServiceImpl implements MassEntryService {
           if (Objects.equals(
               moveLine.getTemporaryMoveNumber(), moveLineEdited.getTemporaryMoveNumber())) {
             moveLine.setMoveStatusSelect(MoveRepository.STATUS_NEW);
-            massEntryVerificationService.checkAndReplaceFieldsInMoveLineMassEntry(
+            massEntryVerificationService.checkChangesMassEntryMoveLine(
                 moveLine, parentMove, moveLineEdited, manageCutOff);
             moveLine.setIsEdited(MoveLineMassEntryRepository.MASS_ENTRY_IS_EDITED_NULL);
           }
@@ -218,23 +242,33 @@ public class MassEntryServiceImpl implements MassEntryService {
   @Override
   public void checkMassEntryMoveGeneration(Move move) {
     List<Move> moveList;
-    int newMoveStatus = MoveRepository.STATUS_DAYBOOK;
+    boolean authorizeSimulatedMove = move.getJournal().getAuthorizeSimulatedMove();
+    boolean allowAccountingDaybook = move.getJournal().getAllowAccountingDaybook();
 
     moveList = massEntryMoveCreateService.createMoveListFromMassEntryList(move);
     move.setMassEntryErrors("");
 
     for (Move element : moveList) {
+      int newMoveStatus = MoveRepository.STATUS_ACCOUNTED;
       if (ObjectUtils.notEmpty(element.getMoveLineMassEntryList())
           && ObjectUtils.notEmpty(element.getMoveLineList())) {
         element.setMassEntryErrors("");
         int temporaryMoveNumber =
             element.getMoveLineMassEntryList().get(0).getTemporaryMoveNumber();
-        massEntryVerificationService.checkPreconditionsMassEntry(element, temporaryMoveNumber);
+        massEntryVerificationService.checkPreconditionsMassEntry(
+            element, temporaryMoveNumber, moveList, move.getMassEntryManageCutOff());
         if (ObjectUtils.notEmpty(element.getMassEntryErrors())) {
           move.setMassEntryErrors(move.getMassEntryErrors() + element.getMassEntryErrors() + '\n');
           newMoveStatus = MoveRepository.STATUS_NEW;
+        } else {
+          if (allowAccountingDaybook) {
+            newMoveStatus = MoveRepository.STATUS_DAYBOOK;
+          }
+          if (authorizeSimulatedMove) {
+            newMoveStatus = MoveRepository.STATUS_SIMULATED;
+          }
         }
-        massEntryToolService.setNewStatusSelectOnMassEntryLines(element, newMoveStatus);
+        massEntryToolService.fillMassEntryLinesFields(move, element, newMoveStatus);
       }
     }
   }
@@ -307,6 +341,8 @@ public class MassEntryServiceImpl implements MassEntryService {
       moveToolService.exceptionOnGenerateCounterpart(workingMove);
       moveLineMassEntryService.generateTaxLineAndCounterpart(
           parentMove, workingMove, dueDate, temporaryMoveNumber);
+      moveLineMassEntryService.setPfpValidatorUserForInTaxAccount(
+          parentMove.getMoveLineMassEntryList(), parentMove.getCompany(), temporaryMoveNumber);
     } catch (AxelorException e) {
       TraceBackService.trace(e);
       return e.getCategory();

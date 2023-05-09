@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service.custom;
 
@@ -293,8 +294,9 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
       throws AxelorException {
     List<Integer> basicResultSelectList =
         Arrays.asList(
-            AccountingReportConfigLineRepository.RESULT_CREDIT_MINUS_DEBIT,
-            AccountingReportConfigLineRepository.RESULT_DEBIT_MINUS_CREDIT);
+            AccountingReportConfigLineRepository.RESULT_DEBIT_MINUS_CREDIT,
+            AccountingReportConfigLineRepository.RESULT_DEBIT,
+            AccountingReportConfigLineRepository.RESULT_CREDIT);
 
     boolean isBasicResultSelect =
         basicResultSelectList.contains(column.getResultSelect())
@@ -707,11 +709,21 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
       return this.getAnalyticAmount(moveLine, analyticAccountSet);
     }
 
-    BigDecimal value = moveLine.getDebit().subtract(moveLine.getCredit());
+    BigDecimal value = moveLine.getDebit();
 
-    return resultSelect == AccountingReportConfigLineRepository.RESULT_DEBIT_MINUS_CREDIT
-        ? value
-        : value.negate();
+    if (resultSelect == AccountingReportConfigLineRepository.RESULT_CREDIT) {
+      value = moveLine.getCredit();
+    } else if (resultSelect == AccountingReportConfigLineRepository.RESULT_DEBIT_MINUS_CREDIT) {
+      value = value.subtract(moveLine.getCredit());
+    }
+
+    if ((groupColumn != null && groupColumn.getNegateValue())
+        || column.getNegateValue()
+        || line.getNegateValue()) {
+      value = value.negate();
+    }
+
+    return value;
   }
 
   protected BigDecimal getAnalyticAmount(

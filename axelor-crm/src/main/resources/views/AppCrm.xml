@@ -21,6 +21,8 @@
       <field name="salesPropositionStatus"/>
       <field name="convertedLeadStatus"/>
       <field name="lostLeadStatus"/>
+      <field name="closedWinPartnerStatus"/>
+      <field name="closedLostPartnerStatus"/>
     </panel>
     <panel name="actionPanel">
       <button name="generateCRMConfigurationsBtn" title="Generate CRM configurations"
