@@ -167,14 +167,19 @@ public class OperationOrderServiceImpl implements OperationOrderService {
   }
 
   @Override
-  public void createToConsumeProdProductList(OperationOrder operationOrder) {
+  public void createToConsumeProdProductList(OperationOrder operationOrder) throws AxelorException {
 
     BigDecimal manufOrderQty = operationOrder.getManufOrder().getQty();
     BigDecimal bomQty = operationOrder.getManufOrder().getBillOfMaterial().getQty();
     ProdProcessLine prodProcessLine = operationOrder.getProdProcessLine();
 
-    if (prodProcessLine.getToConsumeProdProductList() != null) {
+    if (prodProcessLine == null) {
 
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          I18n.get(ProductionExceptionMessage.PRODUCTION_PROCESS_IS_EMPTY));
+    }
+    if (prodProcessLine.getToConsumeProdProductList() != null) {
       for (ProdProduct prodProduct : prodProcessLine.getToConsumeProdProductList()) {
 
         BigDecimal qty =
