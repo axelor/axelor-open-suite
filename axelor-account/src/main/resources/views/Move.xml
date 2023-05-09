@@ -110,7 +110,7 @@
             form-view="fiscal-position-form" grid-view="fiscal-position-grid"/>
           <field name="currency"
             readonlyIf="$validatePeriod || moveLineList.length &gt; 0 || statusSelect == 3"
-            colSpan="2" onChange="action-move-record-set-currency-code" required="true"/>
+            colSpan="2" onChange="action-move-method-set-default-move-currency" required="true"/>
           <field name="paymentMode"
             readonlyIf="period.statusSelect == 2 || period.statusSelect == 5 || $validatePeriod"
             colSpan="3" onChange="action-move-group-payment-mode-onchange"
