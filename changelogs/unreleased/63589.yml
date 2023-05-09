@@ -1,0 +1,3 @@
+---
+title: "BankReconciliation: Set null when we unreconcile a bank reconciliation line"
+type: fix
