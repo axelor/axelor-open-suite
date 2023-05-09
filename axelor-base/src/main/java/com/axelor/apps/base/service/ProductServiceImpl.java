@@ -95,8 +95,7 @@ public class ProductServiceImpl implements ProductService {
       ProductCategory productCategory = product.getProductCategory();
       if (productCategory.getSequence() != null) {
         seq =
-            sequenceService.getSequenceNumber(
-                productCategory.getSequence(), ProductCategory.class, "sequence");
+            sequenceService.getSequenceNumber(productCategory.getSequence(), Product.class, "code");
       }
       if (seq == null) {
         throw new AxelorException(
@@ -562,5 +561,6 @@ public class ProductServiceImpl implements ProductService {
     copy.setPurchasePrice(BigDecimal.ZERO);
     copy.setProductCompanyList(null);
     copy.setLastPurchaseDate(null);
+    copy.setCode(null);
   }
 }
