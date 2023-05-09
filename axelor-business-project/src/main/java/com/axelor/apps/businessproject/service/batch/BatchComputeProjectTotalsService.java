@@ -61,6 +61,7 @@ public class BatchComputeProjectTotalsService extends AbstractBatch {
         ++offset;
         try {
           projectBusinessService.computeProjectTotals(project);
+          incrementDone();
         } catch (Exception e) {
           incrementAnomaly();
           TraceBackService.trace(
