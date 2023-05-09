@@ -24,7 +24,6 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.apps.crm.exception.CrmExceptionMessage;
@@ -57,7 +56,7 @@ public class ConvertLeadWizardController {
     try {
       Context context = request.getContext();
       AppCrm appCrm = Beans.get(AppCrmService.class).getAppCrm();
-      boolean crmProcessOnPartner =  appCrm.getCrmProcessOnPartner();
+      boolean crmProcessOnPartner = appCrm.getCrmProcessOnPartner();
       Map<String, Object> leadMap = (Map<String, Object>) context.get("_lead");
       Map<String, Object> partnerMap = null;
       Map<String, Object> contactPartnerMap = null;
@@ -91,24 +90,29 @@ public class ConvertLeadWizardController {
         }
       }
       if (!appCrm.getCrmProcessOnPartner()) {
-      partner =
-          Beans.get(ConvertLeadWizardService.class)
-              .generateDataAndConvertLead(
-                  lead,
-                  leadToPartnerSelect,
-                  leadToContactSelect,
-                  partner,
-                  partnerMap,
-                  contactPartnerList,
-                  contactPartnerMap);
+        partner =
+            Beans.get(ConvertLeadWizardService.class)
+                .generateDataAndConvertLead(
+                    lead,
+                    leadToPartnerSelect,
+                    leadToContactSelect,
+                    partner,
+                    partnerMap,
+                    contactPartnerList,
+                    contactPartnerMap);
       }
-        openPartner(response, partner,crmProcessOnPartner,leadToPartnerSelect,lead);
+      openPartner(response, partner, crmProcessOnPartner, leadToPartnerSelect, lead);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
   }
 
-  protected void openPartner(ActionResponse response, Partner partner, boolean crmProcessOnPartner, Integer leadToPartnerSelect, Lead lead) {
+  protected void openPartner(
+      ActionResponse response,
+      Partner partner,
+      boolean crmProcessOnPartner,
+      Integer leadToPartnerSelect,
+      Lead lead) {
 
     String form = "partner-customer-form";
     String grid = "partner-customer-grid";
@@ -120,38 +124,38 @@ public class ConvertLeadWizardController {
 
     response.setInfo(I18n.get(CrmExceptionMessage.CONVERT_LEAD_1));
     response.setCanClose(true);
-    if(!crmProcessOnPartner) {
-    response.setView(
-        ActionView.define(I18n.get(CrmExceptionMessage.CONVERT_LEAD_1))
-            .model(Partner.class.getName())
-            .add("form", form)
-            .add("grid", grid)
-            .param("search-filters", "partner-filters")
-            .context("_showRecord", partner.getId())
-            .map());
-    }else {
-    	if(leadToPartnerSelect == LeadRepository.CONVERT_LEAD_CREATE_PARTNER) {
-    	    response.setView(
-    	            ActionView.define(I18n.get(CrmExceptionMessage.CONVERT_LEAD_1))
-    	                .model(Partner.class.getName())
-    	                .add("form", form)
-    	                .add("grid", grid)
-    	                .param("search-filters", "partner-filters")
-    	                .context("_isInConversionFromLead", true)
-    	                .context("_lead", lead)
-    	                .map());
-    	}else if(leadToPartnerSelect == LeadRepository.CONVERT_LEAD_SELECT_PARTNER) {
-    	    response.setView(
-    	            ActionView.define(I18n.get(CrmExceptionMessage.CONVERT_LEAD_1))
-    	                .model(Partner.class.getName())
-    	                .add("form", form)
-    	                .add("grid", grid)
-    	                .param("search-filters", "partner-filters")
-    	                .context("_showRecord", partner.getId())
-    	                .context("_isInConversionFromLead", true)
-    	                .context("_lead", lead)
-    	                .map());
-    	}
+    if (!crmProcessOnPartner) {
+      response.setView(
+          ActionView.define(I18n.get(CrmExceptionMessage.CONVERT_LEAD_1))
+              .model(Partner.class.getName())
+              .add("form", form)
+              .add("grid", grid)
+              .param("search-filters", "partner-filters")
+              .context("_showRecord", partner.getId())
+              .map());
+    } else {
+      if (leadToPartnerSelect == LeadRepository.CONVERT_LEAD_CREATE_PARTNER) {
+        response.setView(
+            ActionView.define(I18n.get(CrmExceptionMessage.CONVERT_LEAD_1))
+                .model(Partner.class.getName())
+                .add("form", form)
+                .add("grid", grid)
+                .param("search-filters", "partner-filters")
+                .context("_isInConversionFromLead", true)
+                .context("_lead", lead)
+                .map());
+      } else if (leadToPartnerSelect == LeadRepository.CONVERT_LEAD_SELECT_PARTNER) {
+        response.setView(
+            ActionView.define(I18n.get(CrmExceptionMessage.CONVERT_LEAD_1))
+                .model(Partner.class.getName())
+                .add("form", form)
+                .add("grid", grid)
+                .param("search-filters", "partner-filters")
+                .context("_showRecord", partner.getId())
+                .context("_isInConversionFromLead", true)
+                .context("_lead", lead)
+                .map());
+      }
     }
   }
 
@@ -264,41 +268,43 @@ public class ConvertLeadWizardController {
 
     return lead;
   }
-  
+
   public void setFieldsForConversionFromLeads(ActionRequest request, ActionResponse response) {
-	  try {
-		  Context context = request.getContext();
-		Partner partner = context.asType(Partner.class);
-	      
-		if(partner.getId() == null) { 
-			Map<String, Object> partnerMap = this.getPartnerMap(request, response);
-			for (Map.Entry partnerField : partnerMap.entrySet()) {
-				response.setValue((String) partnerField.getKey(), partnerField.getValue());
-			}
-		}
-	    } catch (Exception e) {
-	        TraceBackService.trace(response, e);
-	      }
+    try {
+      Context context = request.getContext();
+      Partner partner = context.asType(Partner.class);
+
+      if (partner.getId() == null) {
+        Map<String, Object> partnerMap = this.getPartnerMap(request, response);
+        for (Map.Entry partnerField : partnerMap.entrySet()) {
+          response.setValue((String) partnerField.getKey(), partnerField.getValue());
+        }
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
-  
+
   public void convertLeadFromPartner(ActionRequest request, ActionResponse response) {
-	  try {
-		  Context context = request.getContext();
-		Partner partner = context.asType(Partner.class);
-		Lead lead = this.findLead(request);
-		partner =
-		          Beans.get(ConvertLeadWizardService.class)
-		              .generateDataAndConvertLead(
-		                  lead,
-		                  LeadRepository.CONVERT_LEAD_SELECT_PARTNER,
-		                  LeadRepository.CONVERT_LEAD_SELECT_CONTACT,
-		                  partner,
-		                  null,
-		                  null,
-		                  null);
-		response.setReload(true);
-	    } catch (Exception e) {
-	        TraceBackService.trace(response, e);
-	      }
+    try {
+      Context context = request.getContext();
+      Partner partner = context.asType(Partner.class);
+      Lead lead = this.findLead(request);
+      partner =
+          Beans.get(ConvertLeadWizardService.class)
+              .generateDataAndConvertLead(
+                  lead,
+                  LeadRepository.CONVERT_LEAD_SELECT_PARTNER,
+                  LeadRepository.CONVERT_LEAD_SELECT_CONTACT,
+                  partner,
+                  null,
+                  null,
+                  null);
+      if(partner.getId() != null) {
+    	  response.setReload(true);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

@@ -342,8 +342,9 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
   }
 
   @Override
-	public List<Partner> generateContactList(Lead lead, List<Partner> contactPartnerList,
-		Map<String, Object> contactPartnerMap) throws AxelorException {
-	return this.createContactData(null, lead, null, contactPartnerList, contactPartnerMap);
+  public List<Partner> generateContactList(
+      Lead lead, List<Partner> contactPartnerList, Map<String, Object> contactPartnerMap)
+      throws AxelorException {
+    return this.createContactData(null, lead, null, contactPartnerList, contactPartnerMap);
   }
 }

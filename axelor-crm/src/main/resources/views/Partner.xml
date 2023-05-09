@@ -166,10 +166,12 @@
       </insert>
     </extend>
     <extend target="//panel[@name='mainPanel']">
-    	<insert position="before">
-    		<button name="validateConversionFromLeadBtn" title="Validate" onClick="save,action-partner-method-convert-from-lead"  showIf="_isInConversionFromLead"/>
-    		<button name="cancelConversionFromLeadBtn" title="Cancel" onClick="close"  showIf="_isInConversionFromLead"/>
-    	</insert>
+      <insert position="before">
+        <button name="validateConversionFromLeadBtn" title="Validate"
+          onClick="save,action-partner-method-convert-from-lead" showIf="_isInConversionFromLead"/>
+        <button name="cancelConversionFromLeadBtn" title="Cancel" onClick="close"
+          showIf="_isInConversionFromLead"/>
+      </insert>
     </extend>
   </form>
 
@@ -179,6 +181,7 @@
       <attribute name="onLoad"
         value="crm-action-group-partner-onload, action-partner-attrs-hide-customer-recovery"/>
       <attribute name="onNew" value="crm-action-group-partner-onnew"/>
+      <attribute name="onSave" value="crm-action-partner-group-onsave"/>
     </extend>
   </form>
 
@@ -187,6 +190,7 @@
     <extend target="/">
       <attribute name="onLoad" value="crm-action-group-partner-onload"/>
       <attribute name="onNew" value="crm-action-group-partner-onnew"/>
+      <attribute name="onSave" value="crm-action-partner-group-onsave"/>
     </extend>
   </form>
 
@@ -505,7 +509,8 @@
   <action-group name="crm-action-group-partner-onload">
     <action name="action-group-partner-onload" if="__config__.app.isApp('base')"/>
     <action name="action-partner-method-get-subsidiary-partners-count"/>
-    <action name="action-partner-method-set-fields-for-conversion-from-lead" if="__isInConversionFromLead"/>
+    <action name="action-partner-method-set-fields-for-conversion-from-lead"
+      if="__isInConversionFromLead"/>
   </action-group>
 
   <action-group name="action-group-partner-contact-onNew">
@@ -523,15 +528,28 @@
   <action-group name="crm-action-group-partner-onnew">
     <action name="action-group-base-partner-onnew"/>
     <action name="action-partner-record-set-is-prospect"/>
-    <action name="action-partner-method-set-fields-for-conversion-from-lead" if="__isInConversionFromLead"/>
+    <action name="action-partner-method-set-fields-for-conversion-from-lead"
+      if="__isInConversionFromLead"/>
   </action-group>
   
+   <action-group name="crm-action-partner-group-onsave">
+    <action name="action-partner-group-onsave"/>
+    <action name="action-partner-validate-alert-convert-lead" if="_isInConversionFromLead"/>
+    <action name="action-partner-method-convert-from-lead" if="_isInConversionFromLead"/>
+  </action-group>
+
   <action-method name="action-partner-method-set-fields-for-conversion-from-lead">
-  	<call class="com.axelor.apps.crm.web.ConvertLeadWizardController" method="setFieldsForConversionFromLeads"/>
+    <call class="com.axelor.apps.crm.web.ConvertLeadWizardController"
+      method="setFieldsForConversionFromLeads"/>
   </action-method>
-  
+
   <action-method name="action-partner-method-convert-from-lead">
-  	<call class="com.axelor.apps.crm.web.ConvertLeadWizardController" method="convertLeadFromPartner"/>
+    <call class="com.axelor.apps.crm.web.ConvertLeadWizardController"
+      method="convertLeadFromPartner"/>
   </action-method>
   
+  <action-validate name="action-partner-validate-alert-convert-lead">
+  	<alert message="Saving this partner will convert the lead"/>
+  </action-validate>
+
 </object-views>

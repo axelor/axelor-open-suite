@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface ConvertLeadWizardService {
-	
+
   public Partner generateDataAndConvertLead(
       Lead lead,
       Integer leadToPartnerSelect,
@@ -34,7 +34,8 @@ public interface ConvertLeadWizardService {
       List<Partner> contactPartnerList,
       Map<String, Object> contactPartnerMap)
       throws AxelorException;
-  
-  public List<Partner> generateContactList(Lead lead,List<Partner> contactPartnerList,
-	      Map<String, Object> contactPartnerMap) throws AxelorException;
+
+  public List<Partner> generateContactList(
+      Lead lead, List<Partner> contactPartnerList, Map<String, Object> contactPartnerMap)
+      throws AxelorException;
 }
