@@ -51,7 +51,7 @@ public interface OperationOrderService {
    *
    * @param operationOrder
    */
-  void createToConsumeProdProductList(OperationOrder operationOrder);
+  void createToConsumeProdProductList(OperationOrder operationOrder) throws AxelorException;
 
   /**
    * Updates the diff prod product list.
