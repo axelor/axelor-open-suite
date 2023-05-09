@@ -1055,6 +1055,7 @@
 "Depreciation information","Informations d'amortissement",,
 "Depreciation method","Méthode d'amortissement",,
 "Description","Description",,
+"Description is required in moves for company %s but description of moves that are being generated will be empty. Please make sure a journal is set and fill a default description or enable document number to be used as such.","La description est requise sur les écritures de la société %s mais celles qui sont en train d'être générées ne vont pas en avoir. Veuillez vérifier que la facture comporte bien un journal et que celui-ci contient une description par défaut ou que le numéro de la pièce est utilisé dans celle-ci.",,
 "Description required","Description obligatoire",,
 "Designated account %s in move line %s is not allowed on the journal %s. Please modify journal settings or designated account to proceed.","Le compte désigné %s dans la ligne d'écriture %s n'est pas autorisé sur le journal %s. Veuillez modifier les paramètres du journal ou le compte désigné pour continuer.",,
 "Detail",,,
