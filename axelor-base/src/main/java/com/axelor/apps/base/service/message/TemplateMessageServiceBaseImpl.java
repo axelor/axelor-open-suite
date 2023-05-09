@@ -100,13 +100,16 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
         birtTemplate.getName()
             + "-"
             + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+
+    MetaFile templateMetaFile = birtTemplate.getTemplateMetaFile();
+
     File file =
         generateBirtTemplate(
             maker,
             templates,
             templatesContext,
             fileName,
-            birtTemplate.getTemplateLink(),
+            MetaFiles.getPath(templateMetaFile).toString(),
             birtTemplate.getFormat(),
             birtTemplate.getBirtTemplateParameterList());
 
