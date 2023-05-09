@@ -126,7 +126,7 @@
   </action-record>
 
   <action-validate name="action-job-position-validate-check-responsible">
-    <error message="Set a responsible to create a job application." if="!employee"/>
+    <error message="Set a hiring manager to create a job application." if="!employee"/>
   </action-validate>
 
   <action-group name="action-job-position-group-create-job-application">
