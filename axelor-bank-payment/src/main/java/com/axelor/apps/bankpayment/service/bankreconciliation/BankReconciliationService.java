@@ -1092,7 +1092,7 @@ public class BankReconciliationService {
     }
     bankReconciliationLine.setMoveLine(null);
     bankReconciliationLine.setConfidenceIndex(0);
-    bankReconciliationLine.setPostedNbr("");
+    bankReconciliationLine.setPostedNbr(null);
   }
 
   @Transactional
