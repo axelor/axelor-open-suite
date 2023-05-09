@@ -44,7 +44,7 @@ public class MoveLineController {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
 
-      Beans.get(MoveLineService.class).setIsSelectedBankReconciliation(moveLine);
+      moveLine = Beans.get(MoveLineService.class).setIsSelectedBankReconciliation(moveLine);
 
       response.setValue("isSelectedBankReconciliation", moveLine.getIsSelectedBankReconciliation());
     } catch (Exception e) {
