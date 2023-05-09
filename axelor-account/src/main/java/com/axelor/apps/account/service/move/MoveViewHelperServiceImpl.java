@@ -31,7 +31,6 @@ public class MoveViewHelperServiceImpl implements MoveViewHelperService {
   public String filterPartner(Company company, Journal journal) {
     String domain = "self.isContact = false";
     if (company != null) {
-      Long companyId = company.getId();
       domain += " AND " + company.getId() + " member of self.companySet";
       if (journal != null && !Strings.isNullOrEmpty(journal.getCompatiblePartnerTypeSelect())) {
         domain += " AND (";
