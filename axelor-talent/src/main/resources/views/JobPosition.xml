@@ -17,7 +17,7 @@
     model="com.axelor.apps.talent.db.JobPosition" width="large">
     <toolbar>
       <button name="createJobApplicationBtn" title="Create a job application" colSpan="3"
-        onClick="save,action-job-position-create-application"/>
+        onClick="action-job-position-group-create-job-application"/>
     </toolbar>
 
     <panel name="mainPanel" readonlyIf="statusSelect == 4">
@@ -124,6 +124,16 @@
     model="com.axelor.apps.talent.db.JobPosition">
     <field name="statusSelect" expr="eval: 4"/>
   </action-record>
+
+  <action-validate name="action-job-position-validate-check-responsible">
+    <error message="Set a hiring manager to create a job application." if="!employee"/>
+  </action-validate>
+
+  <action-group name="action-job-position-group-create-job-application">
+    <action name="action-job-position-validate-check-responsible"/>
+    <action name="save"/>
+    <action name="action-job-position-create-application"/>
+  </action-group>
 
   <search-filters name="job-position-filters"
     model="com.axelor.apps.talent.db.JobPosition" title="Job Position Filters">
