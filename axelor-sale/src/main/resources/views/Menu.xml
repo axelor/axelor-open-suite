@@ -134,7 +134,7 @@
     <view type="calendar" name="sale-order-calendar"/>
     <view type="form" name="sale-order-form"/>
     <view-param name="search-filters" value="sale-order-filters"/>
-    <domain>self.template = false </domain>
+    <domain>self.template = false</domain>
     <context name="_internalUser" expr="eval: __user__.id"/>
     <context name="_myActiveTeam"
       expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
