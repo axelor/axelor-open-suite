@@ -910,8 +910,6 @@ public class BankReconciliationService {
     }
     if (bankReconciliation.getCashAccount() != null) {
       query = query + " AND self.account = :cashAccount";
-    } else {
-      query = query + " AND self.account.accountType.technicalTypeSelect = :accountType";
     }
 
     return query;
