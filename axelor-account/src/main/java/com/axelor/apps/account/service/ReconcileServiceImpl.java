@@ -463,8 +463,16 @@ public class ReconcileServiceImpl implements ReconcileService {
                 .orElse(this.getExistingInvoicePayment(invoice, otherMove));
       }
 
-      boolean isCompanyCurrency =
-          invoicePayment.getCurrency().equals(reconcile.getCompany().getCurrency());
+      Currency currency;
+      if (invoicePayment != null) {
+        currency = invoicePayment.getCurrency();
+      } else {
+        currency = otherMove.getCurrency();
+        if (currency == null) {
+          currency = otherMove.getCompanyCurrency();
+        }
+      }
+      boolean isCompanyCurrency = currency.equals(reconcile.getCompany().getCurrency());
       if (!isCompanyCurrency) {
         amount = this.getTotal(moveLine, amount);
       }
