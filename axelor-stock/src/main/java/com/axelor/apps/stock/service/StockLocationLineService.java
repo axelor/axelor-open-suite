@@ -41,7 +41,8 @@ public interface StockLocationLineService {
       boolean future,
       boolean isIncrement,
       LocalDate lastFutureStockMoveDate,
-      TrackingNumber trackingNumber)
+      TrackingNumber trackingNumber,
+      boolean generateOrder)
       throws AxelorException;
 
   public void updateLocation(
@@ -52,7 +53,8 @@ public interface StockLocationLineService {
       boolean current,
       boolean future,
       boolean isIncrement,
-      LocalDate lastFutureStockMoveDate)
+      LocalDate lastFutureStockMoveDate,
+      boolean generateOrder)
       throws AxelorException;
 
   public void minStockRules(
