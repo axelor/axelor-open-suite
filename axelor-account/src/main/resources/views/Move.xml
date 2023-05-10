@@ -110,7 +110,7 @@
             form-view="fiscal-position-form" grid-view="fiscal-position-grid"/>
           <field name="currency"
             readonlyIf="$validatePeriod || moveLineList.length &gt; 0 || statusSelect == 3"
-            colSpan="2" onChange="action-move-record-set-currency-code" required="true"/>
+            colSpan="2" onChange="action-move-method-set-default-move-currency" required="true"/>
           <field name="paymentMode"
             readonlyIf="period.statusSelect == 2 || period.statusSelect == 5 || $validatePeriod"
             colSpan="3" onChange="action-move-group-payment-mode-onchange"
@@ -797,12 +797,6 @@
   <action-method name="action-move-method-mass-reverse-move">
     <call class="com.axelor.apps.account.web.MoveController" method="massReverseMove"/>
   </action-method>
-
-  <action-record name="action-record-initialize-permission-validation-move"
-    model="com.axelor.apps.account.db.Move">
-    <field name="$validatePeriod"
-      expr="call:com.axelor.apps.account.service.PeriodServiceAccount:isAuthorizedToAccountOnPeriod(__this__.period,__user__)"/>
-  </action-record>
 
   <action-method name="action-account-move-method-exception-counterpart">
     <call class="com.axelor.apps.account.web.MoveController" method="exceptionCounterpart"/>
