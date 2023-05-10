@@ -131,7 +131,8 @@ public interface StockMoveLineService {
       int toStatus,
       List<StockMoveLine> stockMoveLineList,
       LocalDate lastFutureStockMoveDate,
-      boolean realQty)
+      boolean realQty,
+      boolean generateOrder)
       throws AxelorException;
 
   public void updateLocations(
@@ -143,7 +144,8 @@ public interface StockMoveLineService {
       int fromStatus,
       int toStatus,
       LocalDate lastFutureStockMoveDate,
-      TrackingNumber trackingNumber)
+      TrackingNumber trackingNumber,
+      boolean generateOrder)
       throws AxelorException;
 
   public void updateAveragePriceLocationLine(
@@ -312,6 +314,7 @@ public interface StockMoveLineService {
       LocalDate lastFutureStockMoveDate,
       boolean realQty,
       LocalDate date,
-      String origin)
+      String origin,
+      boolean generateOrder)
       throws AxelorException;
 }

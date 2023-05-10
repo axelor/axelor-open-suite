@@ -449,7 +449,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       int toStatus,
       List<StockMoveLine> stockMoveLineList,
       LocalDate lastFutureStockMoveDate,
-      boolean realQty)
+      boolean realQty,
+      boolean generateOrder)
       throws AxelorException {
 
     updateLocations(
@@ -461,7 +462,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
         lastFutureStockMoveDate,
         realQty,
         null,
-        null);
+        null,
+        generateOrder);
   }
 
   @Override
@@ -474,7 +476,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       LocalDate lastFutureStockMoveDate,
       boolean realQty,
       LocalDate date,
-      String origin)
+      String origin,
+      boolean generateOrder)
       throws AxelorException {
 
     stockMoveLineList = MoreObjects.firstNonNull(stockMoveLineList, Collections.emptyList());
@@ -502,7 +505,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
             fromStatus,
             toStatus,
             lastFutureStockMoveDate,
-            stockMoveLine.getTrackingNumber());
+            stockMoveLine.getTrackingNumber(),
+            generateOrder);
         if (toStatus == StockMoveRepository.STATUS_REALIZED) {
 
           if (fromStockLocation.getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
@@ -766,7 +770,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       int fromStatus,
       int toStatus,
       LocalDate lastFutureStockMoveDate,
-      TrackingNumber trackingNumber)
+      TrackingNumber trackingNumber,
+      boolean generateOrder)
       throws AxelorException {
     Unit stockMoveLineUnit = stockMoveLine.getUnit();
 
@@ -781,7 +786,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
             true,
             true,
             null,
-            trackingNumber);
+            trackingNumber,
+            generateOrder);
         stockLocationLineService.updateLocation(
             toStockLocation,
             product,
@@ -791,7 +797,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
             true,
             false,
             null,
-            trackingNumber);
+            trackingNumber,
+            generateOrder);
         break;
 
       case StockMoveRepository.STATUS_REALIZED:
@@ -804,7 +811,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
             true,
             true,
             null,
-            trackingNumber);
+            trackingNumber,
+            generateOrder);
         stockLocationLineService.updateLocation(
             toStockLocation,
             product,
@@ -814,7 +822,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
             true,
             false,
             null,
-            trackingNumber);
+            trackingNumber,
+            generateOrder);
         break;
 
       default:
@@ -832,7 +841,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
             true,
             false,
             lastFutureStockMoveDate,
-            trackingNumber);
+            trackingNumber,
+            generateOrder);
         stockLocationLineService.updateLocation(
             toStockLocation,
             product,
@@ -842,7 +852,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
             true,
             true,
             lastFutureStockMoveDate,
-            trackingNumber);
+            trackingNumber,
+            generateOrder);
         break;
 
       case StockMoveRepository.STATUS_REALIZED:
@@ -855,7 +866,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
             true,
             false,
             null,
-            trackingNumber);
+            trackingNumber,
+            generateOrder);
         stockLocationLineService.updateLocation(
             toStockLocation,
             product,
@@ -865,7 +877,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
             true,
             true,
             null,
-            trackingNumber);
+            trackingNumber,
+            generateOrder);
         break;
 
       default:
