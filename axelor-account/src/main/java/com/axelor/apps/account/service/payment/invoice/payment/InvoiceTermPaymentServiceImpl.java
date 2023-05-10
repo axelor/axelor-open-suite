@@ -18,11 +18,8 @@
  */
 package com.axelor.apps.account.service.payment.invoice.payment;
 
-import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.InvoicePayment;
-import com.axelor.apps.account.db.InvoiceTerm;
-import com.axelor.apps.account.db.InvoiceTermPayment;
-import com.axelor.apps.account.db.PayVoucherElementToPay;
+import com.axelor.apps.account.db.*;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.base.AxelorException;
@@ -200,13 +197,24 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
   }
 
   protected void toggleFinancialDiscount(InvoicePayment invoicePayment, InvoiceTerm invoiceTerm) {
+    boolean isLinkedToPayment = true;
+    if (!CollectionUtils.isEmpty(invoicePayment.getReconcileList())
+        && invoicePayment.getReconcileList().size() == 1) {
+      Reconcile reconcile = invoicePayment.getReconcileList().get(0);
+      isLinkedToPayment =
+          reconcile.getDebitMoveLine().getMove().getFunctionalOriginSelect()
+                  == MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT
+              || reconcile.getCreditMoveLine().getMove().getFunctionalOriginSelect()
+                  == MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT;
+    }
     if (!invoicePayment.getApplyFinancialDiscount()) {
       invoicePayment.setApplyFinancialDiscount(
           invoiceTerm.getFinancialDiscountDeadlineDate() != null
               && invoiceTerm.getApplyFinancialDiscount()
               && !invoicePayment
                   .getPaymentDate()
-                  .isAfter(invoiceTerm.getFinancialDiscountDeadlineDate()));
+                  .isAfter(invoiceTerm.getFinancialDiscountDeadlineDate())
+              && isLinkedToPayment);
     }
   }
 
