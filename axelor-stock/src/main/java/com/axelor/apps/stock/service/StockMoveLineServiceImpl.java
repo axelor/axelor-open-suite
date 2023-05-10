@@ -1471,6 +1471,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
               != StockMoveRepository.STATUS_CANCELED) {
         stockMoveLine.setRealQty(realQty);
         stockMoveLine.setConformitySelect(conformity);
+        stockMoveLine.setIsRealQtyModifiedByUser(true);
 
         updateUnit(stockMoveLine, unit);
       }

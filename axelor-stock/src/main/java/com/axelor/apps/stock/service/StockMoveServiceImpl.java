@@ -265,6 +265,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     }
     line.setQty(movedQty);
     line.setRealQty(movedQty);
+    line.setIsRealQtyModifiedByUser(true);
     line.setUnitPriceUntaxed(product.getLastPurchasePrice());
     line.setUnit(unit);
     stockMoveLineRepo.save(line);
