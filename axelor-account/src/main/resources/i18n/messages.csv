@@ -206,6 +206,7 @@
 "A previous result can be used with the following syntax : rules[""code""] where code is the ""code"" field of a previous config line.",,,
 "A sequence already exists on this code for this company and this sequence have to be unique",,,
 "A tax line is missing",,,
+"A technical type is required on the journal type %s.",,,
 "A transmitted or a accounted subrogation release already exist for the invoices %s.",,,
 "A.T.I.",,,
 "AND",,,
