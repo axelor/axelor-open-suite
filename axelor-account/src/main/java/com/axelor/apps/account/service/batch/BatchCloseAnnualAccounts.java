@@ -32,6 +32,7 @@ import com.axelor.apps.account.service.AccountingCloseAnnualService;
 import com.axelor.apps.account.service.AccountingReportService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveCreateService;
+import com.axelor.apps.account.service.move.MoveSimulateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
@@ -74,6 +75,8 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
   protected AccountConfigService accountConfigService;
   protected MoveCreateService moveCreateService;
   protected MoveValidateService moveValidateService;
+  protected MoveSimulateService moveSimulateService;
+
   protected boolean end = false;
   protected AccountingBatch accountingBatch;
 
@@ -105,6 +108,11 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
       Beans.get(AccountingReportService.class)
           .testReportedDateField(accountingBatch.getYear().getReportedBalanceDate());
       BigDecimal resultMoveAmount = getResultMoveAmount();
+
+      if (resultMoveAmount.signum() == 0) {
+        return;
+      }
+
       this.testCloseAnnualBatchFields(resultMoveAmount);
       if (accountingBatch.getGenerateResultMove()) {
         this.generateResultMove(resultMoveAmount);
@@ -404,9 +412,10 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
     AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
     LocalDate date = accountingBatch.getYear().getReportedBalanceDate();
     String description = accountingBatch.getResultMoveDescription();
+    Journal journal = accountConfigService.getReportedBalanceJournal(accountConfig);
     Move move =
         moveCreateService.createMove(
-            accountConfigService.getReportedBalanceJournal(accountConfig),
+            journal,
             company,
             company.getCurrency(),
             null,
@@ -468,7 +477,13 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
 
     moveRepo.save(move);
 
-    moveValidateService.accounting(move);
+    if (accountConfig.getIsActivateSimulatedMove()
+        && accountingBatch.getSimulateGeneratedMoves()
+        && journal.getAuthorizeSimulatedMove()) {
+      moveSimulateService.simulate(move);
+    } else {
+      moveValidateService.accounting(move);
+    }
   }
 
   class AccountByPartner {
