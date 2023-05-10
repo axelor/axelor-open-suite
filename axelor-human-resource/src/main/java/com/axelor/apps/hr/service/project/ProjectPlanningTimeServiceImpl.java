@@ -184,27 +184,48 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
 
       if (dayHrs > 0 && !holidayService.checkPublicHolidayDay(date, employee)) {
 
-        ProjectPlanningTime planningTime = new ProjectPlanningTime();
-
-        planningTime.setProjectTask(projectTask);
-        planningTime.setProduct(activity);
-        planningTime.setTimepercent(timePercent);
-        planningTime.setEmployee(employee);
-        planningTime.setStartDateTime(fromDate);
-        planningTime.setEndDateTime(taskEndDateTime);
-        planningTime.setProject(project);
-
-        BigDecimal totalHours = BigDecimal.ZERO;
-        if (timePercent > 0) {
-          totalHours =
-              dailyWorkHrs.multiply(new BigDecimal(timePercent)).divide(new BigDecimal(100));
-        }
-        planningTime.setPlannedTime(totalHours);
+        ProjectPlanningTime planningTime =
+            createProjectPlaningTime(
+                fromDate,
+                projectTask,
+                project,
+                timePercent,
+                employee,
+                activity,
+                dailyWorkHrs,
+                taskEndDateTime);
         planningTimeRepo.save(planningTime);
       }
 
       fromDate = fromDate.plusDays(1);
     }
+  }
+
+  protected ProjectPlanningTime createProjectPlaningTime(
+      LocalDateTime fromDate,
+      ProjectTask projectTask,
+      Project project,
+      Integer timePercent,
+      Employee employee,
+      Product activity,
+      BigDecimal dailyWorkHrs,
+      LocalDateTime taskEndDateTime) {
+    ProjectPlanningTime planningTime = new ProjectPlanningTime();
+
+    planningTime.setProjectTask(projectTask);
+    planningTime.setProduct(activity);
+    planningTime.setTimepercent(timePercent);
+    planningTime.setEmployee(employee);
+    planningTime.setStartDateTime(fromDate);
+    planningTime.setEndDateTime(taskEndDateTime);
+    planningTime.setProject(project);
+
+    BigDecimal totalHours = BigDecimal.ZERO;
+    if (timePercent > 0) {
+      totalHours = dailyWorkHrs.multiply(new BigDecimal(timePercent)).divide(new BigDecimal(100));
+    }
+    planningTime.setPlannedTime(totalHours);
+    return planningTime;
   }
 
   @Override

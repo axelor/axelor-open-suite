@@ -27,7 +27,7 @@
       <field name="projectTask" domain="self.project = :project" canEdit="false"
         onChange="action-project-planning-time-attrs-project-task-onChange"/>
       <field name="plannedTime" colSpan="3"/>
-      <field name="timeUnit" colSpan="3" readonlyIf="_projectTask"
+      <field name="timeUnit" colSpan="3"
         onSelect="action-project-task-attrs-set-time-unit-domain"
         if="__config__.app.isApp('business-project')"/>
 
@@ -138,6 +138,7 @@
     <attribute name="value" for="projectTask" expr="eval:_projectTask"/>
     <attribute name="value" for="timeUnit" expr="eval:_projectTask.timeUnit"
       if="_projectTask"/>
+    <attribute for="timeUnit" name="readonly" expr="eval: true" if="_projectTask"/>
     <attribute name="value" for="project" expr="eval:_project"/>
     <attribute name="value" for="userSet" expr="eval:_project.membersUserSet"
       if="_project != null"/>
@@ -147,6 +148,7 @@
       if="_project &amp;&amp; __user__ in __repo__(Project).find(_project.id).membersUserSet &amp;&amp; __user__.employee"/>
 
     <attribute name="value" for="startDateTime" expr="eval: __datetime__"/>
+    <attribute name="value" for="endDateTime" expr="eval: __datetime__.plusMinutes(60)"/>
     <attribute name="value" for="employee" expr="eval: _employee" if="_employee"/>
     <attribute name="value" for="project" expr="eval:__parent__?.project"
       if="__parent__?._model == 'com.axelor.apps.project.db.ProjectTask'"/>
