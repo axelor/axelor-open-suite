@@ -271,7 +271,7 @@ public interface InvoiceTermService {
 
   public BigDecimal getFinancialDiscountTaxAmount(InvoiceTerm invoiceTerm) throws AxelorException;
 
-  BigDecimal getAmountRemaining(InvoiceTerm invoiceTerm, LocalDate date);
+  BigDecimal getAmountRemaining(InvoiceTerm invoiceTerm, LocalDate date, boolean isCompanyCurrency);
 
   BigDecimal getCustomizedAmount(InvoiceTerm invoiceTerm, BigDecimal total);
 
