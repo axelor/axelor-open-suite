@@ -225,6 +225,15 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
         atLeastOneInvoiceVentilated(saleOrderLine));
   }
 
+  @Override
+  public Partner getFirstSupplierPartner(List<SaleOrderLine> saleOrderLineList) {
+    return saleOrderLineList.stream()
+        .map(SaleOrderLine::getSupplierPartner)
+        .filter(Objects::nonNull)
+        .findFirst()
+        .orElse(null);
+  }
+
   protected boolean atLeastOneInvoiceVentilated(SaleOrderLine saleOrderLine) {
     return invoiceLineRepository
             .all()

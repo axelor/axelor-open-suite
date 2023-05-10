@@ -19,6 +19,7 @@
 package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import java.math.BigDecimal;
@@ -97,4 +98,6 @@ public interface SaleOrderLineServiceSupplyChain extends SaleOrderLineService {
   public SaleOrderLine createAnalyticDistributionWithTemplate(SaleOrderLine saleOrderLine);
 
   int getSaleOrderLineInvoicingState(SaleOrderLine saleOrderLine);
+
+  Partner getFirstSupplierPartner(List<SaleOrderLine> saleOrderLineList);
 }
