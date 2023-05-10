@@ -294,6 +294,10 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
         && move.getJournal() != null
         && move.getJournal().getIsFillOriginDate()) {
       resultMap.put("originDate", move.getDate());
+    } else if (move.getDate() == null
+        || (move.getJournal() == null
+            || (move.getJournal() != null && !move.getJournal().getIsFillOriginDate()))) {
+      resultMap.put("originDate", null);
     }
     return resultMap;
   }

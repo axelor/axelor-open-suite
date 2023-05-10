@@ -154,9 +154,9 @@ public class MoveRecordServiceImpl implements MoveRecordService {
 
     moveRecordSetService.setPeriod(move);
     result.putInValues("period", move.getPeriod());
-    if (move.getJournal() != null && move.getJournal().getIsFillOriginDate()) {
-      result.putInValues(moveRecordSetService.setOriginDate(move));
-    }
+
+    result.putInValues(moveRecordSetService.setOriginDate(move));
+
     result.putInAttrs(moveAttrsService.getHiddenAttributeValues(move));
     result.putInAttrs(
         "$reconcileTags", "hidden", moveAttrsService.isHiddenMoveLineListViewer(move));
@@ -272,9 +272,7 @@ public class MoveRecordServiceImpl implements MoveRecordService {
     result.putInValues(moveRecordSetService.setPaymentCondition(move));
     result.putInValues(moveRecordSetService.setPartnerBankDetails(move));
 
-    if (move.getJournal() != null && move.getJournal().getIsFillOriginDate()) {
-      result.putInValues(moveRecordSetService.setOriginDate(move));
-    }
+    result.putInValues(moveRecordSetService.setOriginDate(move));
 
     if (appAccountService.getAppAccount().getActivatePassedForPayment()
         && move.getJournal() != null) {
