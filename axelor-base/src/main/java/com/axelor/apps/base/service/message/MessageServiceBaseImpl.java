@@ -40,6 +40,7 @@ import com.axelor.message.db.repo.MessageRepository;
 import com.axelor.message.service.AppSettingsMessageService;
 import com.axelor.message.service.MessageServiceImpl;
 import com.axelor.message.service.SendMailQueueService;
+import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.repo.MetaAttachmentRepository;
 import com.axelor.studio.db.AppBase;
@@ -209,11 +210,14 @@ public class MessageServiceBaseImpl extends MessageServiceImpl implements Messag
     }
 
     PrintingSettings printSettings = company.getPrintingSettings();
-    if (printSettings == null || printSettings.getDefaultMailBirtTemplate() == null) {
+    if (printSettings == null
+        || printSettings.getDefaultMailBirtTemplate() == null
+        || printSettings.getDefaultMailBirtTemplate().getTemplateMetaFile() == null) {
       return null;
     }
 
     BirtTemplate birtTemplate = printSettings.getDefaultMailBirtTemplate();
+    MetaFile templateMetaFile = birtTemplate.getTemplateMetaFile();
 
     logger.debug("Default BirtTemplate : {}", birtTemplate);
 
@@ -239,7 +243,7 @@ public class MessageServiceBaseImpl extends MessageServiceImpl implements Messag
               templates,
               templatesContext,
               fileName,
-              birtTemplate.getTemplateLink(),
+              MetaFiles.getPath(templateMetaFile).toString(),
               birtTemplate.getFormat(),
               birtTemplate.getBirtTemplateParameterList());
 

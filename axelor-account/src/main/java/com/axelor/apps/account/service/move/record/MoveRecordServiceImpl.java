@@ -38,7 +38,6 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
 import java.util.Objects;
-import java.util.Optional;
 
 public class MoveRecordServiceImpl implements MoveRecordService {
 
@@ -82,20 +81,11 @@ public class MoveRecordServiceImpl implements MoveRecordService {
 
   @Override
   @Transactional(rollbackOn = Exception.class)
-  public MoveContext onSaveBefore(Move move, Context context) throws AxelorException {
+  public MoveContext onSaveBefore(Move move, boolean paymentConditionChange, boolean headerChange)
+      throws AxelorException {
     Objects.requireNonNull(move);
-    Objects.requireNonNull(context);
 
     MoveContext result = new MoveContext();
-
-    boolean paymentConditionChange =
-        Optional.ofNullable(context.get("paymentConditionChange"))
-            .map(value -> (Boolean) value)
-            .orElse(false);
-    boolean headerChange =
-        Optional.ofNullable(context.get("headerChange"))
-            .map(value -> (Boolean) value)
-            .orElse(false);
 
     moveRecordUpdateService.updatePartner(move);
 
@@ -117,9 +107,8 @@ public class MoveRecordServiceImpl implements MoveRecordService {
 
   @Override
   @Transactional(rollbackOn = Exception.class)
-  public MoveContext onSaveCheck(Move move, Context context) throws AxelorException {
+  public MoveContext onSaveCheck(Move move) throws AxelorException {
     Objects.requireNonNull(move);
-    Objects.requireNonNull(context);
 
     MoveContext result = new MoveContext();
 
@@ -133,9 +122,8 @@ public class MoveRecordServiceImpl implements MoveRecordService {
 
   @Override
   @Transactional(rollbackOn = Exception.class)
-  public MoveContext onSaveAfter(Move move, Context context) throws AxelorException {
+  public MoveContext onSaveAfter(Move move) throws AxelorException {
     Objects.requireNonNull(move);
-    Objects.requireNonNull(context);
 
     move = moveRepository.find(move.getId());
     MoveContext result = new MoveContext();
@@ -196,9 +184,8 @@ public class MoveRecordServiceImpl implements MoveRecordService {
   }
 
   @Override
-  public MoveContext onLoad(Move move, Context context, User user) throws AxelorException {
+  public MoveContext onLoad(Move move, User user) throws AxelorException {
     Objects.requireNonNull(move);
-    Objects.requireNonNull(context);
 
     MoveContext result = new MoveContext();
 
@@ -230,18 +217,11 @@ public class MoveRecordServiceImpl implements MoveRecordService {
   }
 
   @Override
-  public MoveContext onChangeDate(Move move, Context context) throws AxelorException {
+  public MoveContext onChangeDate(Move move, boolean paymentConditionChange, boolean dateChange)
+      throws AxelorException {
     Objects.requireNonNull(move);
-    Objects.requireNonNull(context);
 
     MoveContext result = new MoveContext();
-
-    boolean paymentConditionChange =
-        Optional.ofNullable(context.get("paymentConditionChange"))
-            .map(value -> (Boolean) value)
-            .orElse(false);
-    boolean dateChange =
-        Optional.ofNullable(context.get("dateChange")).map(value -> (Boolean) value).orElse(false);
 
     result.putInValues(moveRecordSetService.setPeriod(move));
     result.putInValues(
@@ -249,27 +229,26 @@ public class MoveRecordServiceImpl implements MoveRecordService {
         !periodAccountService.isAuthorizedToAccountOnPeriod(move, AuthUtils.getUser()));
     moveCheckService.checkPeriodPermission(move);
     result.putInValues(moveRecordSetService.setMoveLineDates(move));
-
-    result.putInValues(moveRecordSetService.setOriginDate(move));
-    onChangeOriginDate(move, context);
-
+    if (move.getJournal() != null && move.getJournal().getIsFillOriginDate()) {
+      result.putInValues(moveRecordSetService.setOriginDate(move));
+      onChangeOriginDate(move, paymentConditionChange, dateChange);
+    }
     result.merge(moveRecordUpdateService.updateMoveLinesCurrencyRate(move, move.getDueDate()));
     result.putInValues(moveComputeService.computeTotals(move));
-    updateDummiesDateConText(move, context);
+    dateChange = true;
+    result.putInAttrs("$dateChange", "value", true);
     result.merge(moveRecordUpdateService.updateDueDate(move, paymentConditionChange, dateChange));
 
     return result;
   }
 
-  protected void updateDummiesDateConText(Move move, Context context) {
+  protected void updateDummiesDateConText(Move move) {
     move.setDueDate(null);
-    context.put("$dateChange", true);
   }
 
   @Override
-  public MoveContext onChangeJournal(Move move, Context context) throws AxelorException {
+  public MoveContext onChangeJournal(Move move) throws AxelorException {
     Objects.requireNonNull(move);
-    Objects.requireNonNull(context);
 
     MoveContext result = new MoveContext();
 
@@ -313,18 +292,11 @@ public class MoveRecordServiceImpl implements MoveRecordService {
   }
 
   @Override
-  public MoveContext onChangePartner(Move move, Context context) throws AxelorException {
+  public MoveContext onChangePartner(Move move, boolean paymentConditionChange, boolean dateChange)
+      throws AxelorException {
     Objects.requireNonNull(move);
-    Objects.requireNonNull(context);
 
     MoveContext result = new MoveContext();
-
-    boolean paymentConditionChange =
-        Optional.ofNullable(context.get("paymentConditionChange"))
-            .map(value -> (Boolean) value)
-            .orElse(false);
-    boolean dateChange =
-        Optional.ofNullable(context.get("dateChange")).map(value -> (Boolean) value).orElse(false);
 
     result.putInValues(moveRecordSetService.setCurrencyByPartner(move));
     result.putInValues(moveRecordSetService.setPaymentMode(move));
@@ -343,19 +315,12 @@ public class MoveRecordServiceImpl implements MoveRecordService {
   }
 
   @Override
-  public MoveContext onChangeMoveLineList(Move move, Context context, LocalDate dueDate)
+  public MoveContext onChangeMoveLineList(
+      Move move, LocalDate dueDate, boolean paymentConditionChange, boolean dateChange)
       throws AxelorException {
     Objects.requireNonNull(move);
-    Objects.requireNonNull(context);
 
     MoveContext result = new MoveContext();
-
-    boolean paymentConditionChange =
-        Optional.ofNullable(context.get("paymentConditionChange"))
-            .map(value -> (Boolean) value)
-            .orElse(false);
-    boolean dateChange =
-        Optional.ofNullable(context.get("dateChange")).map(value -> (Boolean) value).orElse(false);
 
     result.putInValues(moveComputeService.computeTotals(move));
     result.merge(moveRecordUpdateService.updateDueDate(move, paymentConditionChange, dateChange));
@@ -370,22 +335,17 @@ public class MoveRecordServiceImpl implements MoveRecordService {
   }
 
   @Override
-  public MoveContext onChangeOriginDate(Move move, Context context) throws AxelorException {
+  public MoveContext onChangeOriginDate(
+      Move move, boolean paymentConditionChange, boolean dateChange) throws AxelorException {
     Objects.requireNonNull(move);
-    Objects.requireNonNull(context);
 
     MoveContext result = new MoveContext();
 
-    boolean paymentConditionChange =
-        Optional.ofNullable(context.get("paymentConditionChange"))
-            .map(value -> (Boolean) value)
-            .orElse(false);
-    boolean dateChange =
-        Optional.ofNullable(context.get("dateChange")).map(value -> (Boolean) value).orElse(false);
-
     checkDuplicateOriginMove(move, result);
     result.putInValues(moveRecordSetService.setMoveLineOriginDates(move));
-    updateDummiesDateConText(move, context);
+    updateDummiesDateConText(move);
+    dateChange = true;
+    result.putInAttrs("$dateChange", "value", true);
     result.merge(moveRecordUpdateService.updateDueDate(move, paymentConditionChange, dateChange));
     result.putInAttrs("$paymentConditionChange", "value", true);
 
@@ -401,9 +361,8 @@ public class MoveRecordServiceImpl implements MoveRecordService {
   }
 
   @Override
-  public MoveContext onChangeOrigin(Move move, Context context) throws AxelorException {
+  public MoveContext onChangeOrigin(Move move) throws AxelorException {
     Objects.requireNonNull(move);
-    Objects.requireNonNull(context);
 
     MoveContext result = new MoveContext();
 
@@ -423,21 +382,11 @@ public class MoveRecordServiceImpl implements MoveRecordService {
   }
 
   @Override
-  public MoveContext onChangePaymentCondition(Move move, Context context) throws AxelorException {
+  public MoveContext onChangePaymentCondition(
+      Move move, boolean paymentConditionChange, boolean dateChange, boolean headerChange)
+      throws AxelorException {
 
     Objects.requireNonNull(move);
-    Objects.requireNonNull(context);
-
-    boolean paymentConditionChange =
-        Optional.ofNullable(context.get("paymentConditionChange"))
-            .map(value -> (Boolean) value)
-            .orElse(false);
-    boolean headerChange =
-        Optional.ofNullable(context.get("headerChange"))
-            .map(value -> (Boolean) value)
-            .orElse(false);
-    boolean dateChange =
-        Optional.ofNullable(context.get("dateChange")).map(value -> (Boolean) value).orElse(false);
 
     MoveContext result = new MoveContext();
 

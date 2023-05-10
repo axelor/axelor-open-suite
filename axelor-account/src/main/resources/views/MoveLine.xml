@@ -397,12 +397,6 @@
     </panel>
   </form>
 
-  <action-record name="action-record-analytic-distribution-type-select"
-    model="com.axelor.apps.account.db.MoveLine">
-    <field name="$analyticDistributionTypeSelect"
-      expr="eval: __repo__(AccountConfig).all().filter('self.company = ?', move?.company ? move.company : __parent__.company)?.fetchOne().analyticDistributionTypeSelect"/>
-  </action-record>
-
   <form name="move-line-form" title="Move line" model="com.axelor.apps.account.db.MoveLine"
     onNew="action-move-line-method-onnew" canNew="false" canDelete="false"
     onLoad="action-move-line-method-onload" canArchive="false">
