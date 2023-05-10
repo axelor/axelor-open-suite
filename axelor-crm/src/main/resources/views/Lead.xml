@@ -186,6 +186,7 @@
               onChange="action-lead-method-set-social-network-url"/>
             <field name="industrySector" colSpan="6" form-view="industry-sector-form"
               grid-view="industry-sector-grid" canEdit="false"/>
+            <field name="isPartner" showTitle="true"/>
             <field name="partner" colSpan="12" domain="self.isContact = false"
               form-view="partner-form" grid-view="partner-grid"/>
           </editor>
@@ -266,6 +267,8 @@
         <panel-dashlet name="eventPanelDashlet" action="action-lead-view-events"
           title="Events" height="550" colSpan="12"/>
       </panel>
+      <panel name="partnerPanel" title="Partner.title" showIf="isPartner">
+      </panel>
       <panel name="emailPanel" title="Emails">
         <button name="emailBtn" title="Create an email" link="" icon="fa-envelope-o"
           onClick="save,action-send-by-email-with-template" colSpan="3"/>
@@ -316,6 +319,7 @@
         colSpan="6"/>
       <field name="leadTagSet" widget="TagSelect" x-color-field="colorSelect"
         grid-view="lead-tag-grid" form-view="lead-tag-form"/>
+      <field name="event"/>
     </panel>
 
     <panel-mail name="mailPanel">
