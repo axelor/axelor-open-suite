@@ -22,16 +22,20 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.PeriodServiceAccount;
 import com.axelor.apps.account.service.move.MoveComputeService;
+import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.attributes.MoveAttrsService;
 import com.axelor.apps.account.service.move.control.MoveCheckService;
 import com.axelor.apps.account.service.move.record.model.MoveContext;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.PeriodService;
 import com.axelor.auth.AuthUtils;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
-public class MoveRecordServiceImpl implements MoveRecordService {
+public class MoveGroupServiceImpl implements MoveGroupService {
 
   protected MoveDefaultService moveDefaultService;
   protected MoveAttrsService moveAttrsService;
@@ -40,10 +44,12 @@ public class MoveRecordServiceImpl implements MoveRecordService {
   protected MoveComputeService moveComputeService;
   protected MoveRecordUpdateService moveRecordUpdateService;
   protected MoveRecordSetService moveRecordSetService;
+  protected MoveToolService moveToolService;
+  protected PeriodService periodService;
   protected MoveRepository moveRepository;
 
   @Inject
-  public MoveRecordServiceImpl(
+  public MoveGroupServiceImpl(
       MoveDefaultService moveDefaultService,
       MoveAttrsService moveAttrsService,
       PeriodServiceAccount periodAccountService,
@@ -51,6 +57,8 @@ public class MoveRecordServiceImpl implements MoveRecordService {
       MoveComputeService moveComputeService,
       MoveRecordUpdateService moveRecordUpdateService,
       MoveRecordSetService moveRecordSetService,
+      MoveToolService moveToolService,
+      PeriodService periodService,
       MoveRepository moveRepository) {
     this.moveDefaultService = moveDefaultService;
     this.moveAttrsService = moveAttrsService;
@@ -58,8 +66,10 @@ public class MoveRecordServiceImpl implements MoveRecordService {
     this.moveCheckService = moveCheckService;
     this.moveComputeService = moveComputeService;
     this.moveRecordUpdateService = moveRecordUpdateService;
-    this.moveRepository = moveRepository;
     this.moveRecordSetService = moveRecordSetService;
+    this.moveToolService = moveToolService;
+    this.periodService = periodService;
+    this.moveRepository = moveRepository;
   }
 
   @Override
@@ -111,29 +121,46 @@ public class MoveRecordServiceImpl implements MoveRecordService {
   }
 
   @Override
-  public MoveContext onNew(Move move) throws AxelorException {
-    Objects.requireNonNull(move);
+  public Map<String, Object> getOnNewValuesMap(Move move) throws AxelorException {
+    Map<String, Object> valuesMap = new HashMap<>();
 
-    MoveContext result = new MoveContext();
-
-    result.putInValues(moveDefaultService.setDefaultMoveValues(move));
-    result.putInValues(moveDefaultService.setDefaultCurrency(move));
-    result.putInValues(moveRecordSetService.setJournal(move));
+    moveCheckService.checkPeriodPermission(move);
+    moveDefaultService.setDefaultValues(move);
+    moveRecordSetService.setJournal(move);
     moveRecordSetService.setPeriod(move);
-    result.putInValues("period", move.getPeriod());
-    result.putInAttrs(moveAttrsService.getHiddenAttributeValues(move));
-    result.putInAttrs(
-        "$reconcileTags", "hidden", moveAttrsService.isHiddenMoveLineListViewer(move));
-    result.putInValues(
+    moveRecordSetService.setFunctionalOriginSelect(move);
+
+    valuesMap.put("company", move.getCompany());
+    valuesMap.put("date", move.getDate());
+    valuesMap.put("currency", move.getCurrency());
+    valuesMap.put("companyCurrency", move.getCompanyCurrency());
+    valuesMap.put("currencyCode", move.getCurrencyCode());
+    valuesMap.put("companyCurrencyCode", move.getCompanyCurrencyCode());
+    valuesMap.put("technicalOriginSelect", move.getTechnicalOriginSelect());
+    valuesMap.put("functionalOriginSelect", move.getFunctionalOriginSelect());
+    valuesMap.put("tradingName", move.getTradingName());
+    valuesMap.put("journal", move.getJournal());
+    valuesMap.put("period", move.getPeriod());
+
+    valuesMap.put(
         "$validatePeriod",
         !periodAccountService.isAuthorizedToAccountOnPeriod(move, AuthUtils.getUser()));
-    result.putInValues(moveCheckService.checkPeriodAndStatus(move));
-    result.putInAttrs(moveAttrsService.getFunctionalOriginSelectDomain(move));
-    result.putInValues(moveRecordSetService.setFunctionalOriginSelect(move));
-    moveCheckService.checkPeriodPermission(move);
-    result.putInAttrs(moveAttrsService.getMoveLineAnalyticAttrs(move));
+    valuesMap.put("$simulatedPeriodClosed", moveToolService.isSimulatedMovePeriodClosed(move));
+    valuesMap.put("$periodClosed", periodService.isClosedPeriod(move.getPeriod()));
 
-    return result;
+    return valuesMap;
+  }
+
+  @Override
+  public Map<String, Map<String, Object>> getOnNewAttrsMap(Move move) throws AxelorException {
+    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+
+    moveAttrsService.addHidden(move, attrsMap);
+    moveAttrsService.addMoveLineListViewerHidden(move, attrsMap);
+    moveAttrsService.addFunctionalOriginSelectDomain(move, attrsMap);
+    moveAttrsService.addMoveLineAnalyticAttrs(move, attrsMap);
+
+    return attrsMap;
   }
 
   @Override

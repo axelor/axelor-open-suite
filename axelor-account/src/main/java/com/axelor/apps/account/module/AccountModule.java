@@ -286,8 +286,8 @@ import com.axelor.apps.account.service.move.control.MoveCheckService;
 import com.axelor.apps.account.service.move.control.MoveCheckServiceImpl;
 import com.axelor.apps.account.service.move.record.MoveDefaultService;
 import com.axelor.apps.account.service.move.record.MoveDefaultServiceImpl;
-import com.axelor.apps.account.service.move.record.MoveRecordService;
-import com.axelor.apps.account.service.move.record.MoveRecordServiceImpl;
+import com.axelor.apps.account.service.move.record.MoveGroupService;
+import com.axelor.apps.account.service.move.record.MoveGroupServiceImpl;
 import com.axelor.apps.account.service.move.record.MoveRecordSetService;
 import com.axelor.apps.account.service.move.record.MoveRecordSetServiceImpl;
 import com.axelor.apps.account.service.move.record.MoveRecordUpdateService;
@@ -708,7 +708,7 @@ public class AccountModule extends AxelorModule {
 
     bind(MoveDefaultService.class).to(MoveDefaultServiceImpl.class);
 
-    bind(MoveRecordService.class).to(MoveRecordServiceImpl.class);
+    bind(MoveGroupService.class).to(MoveGroupServiceImpl.class);
 
     bind(MoveCheckService.class).to(MoveCheckServiceImpl.class);
 

@@ -43,7 +43,7 @@ import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.move.MoveViewHelperService;
 import com.axelor.apps.account.service.move.record.MoveDefaultService;
-import com.axelor.apps.account.service.move.record.MoveRecordService;
+import com.axelor.apps.account.service.move.record.MoveGroupService;
 import com.axelor.apps.account.service.move.record.MoveRecordSetService;
 import com.axelor.apps.account.service.move.record.model.MoveContext;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
@@ -637,22 +637,10 @@ public class MoveController {
   public void onNew(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
-      MoveContext result = Beans.get(MoveRecordService.class).onNew(move);
+      MoveGroupService moveGroupService = Beans.get(MoveGroupService.class);
 
-      response.setValues(result.getValues());
-      response.setAttrs(result.getAttrs());
-      if (!result.getFlash().isEmpty()) {
-        response.setInfo(result.getFlash());
-      }
-      if (!result.getNotify().isEmpty()) {
-        response.setNotify(result.getNotify());
-      }
-      if (!result.getAlert().isEmpty()) {
-        response.setAlert(result.getAlert());
-      }
-      if (!result.getError().isEmpty()) {
-        response.setError(result.getError());
-      }
+      response.setValues(moveGroupService.getOnNewValuesMap(move));
+      response.setAttrs(moveGroupService.getOnNewAttrsMap(move));
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
@@ -661,7 +649,7 @@ public class MoveController {
   public void onLoad(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
-      MoveContext result = Beans.get(MoveRecordService.class).onLoad(move);
+      MoveContext result = Beans.get(MoveGroupService.class).onLoad(move);
       response.setValues(result.getValues());
       response.setAttrs(result.getAttrs());
       if (!result.getFlash().isEmpty()) {
@@ -684,7 +672,7 @@ public class MoveController {
   public void onSaveCheck(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
-      MoveContext result = Beans.get(MoveRecordService.class).onSaveCheck(move);
+      MoveContext result = Beans.get(MoveGroupService.class).onSaveCheck(move);
       // As this method will make a update in the invoiceTerms set values move
       response.setValues(move);
       response.setAttrs(result.getAttrs());
@@ -721,7 +709,7 @@ public class MoveController {
               .orElse(false);
 
       MoveContext result =
-          Beans.get(MoveRecordService.class)
+          Beans.get(MoveGroupService.class)
               .onSaveBefore(move, paymentConditionChange, headerChange);
       // As this method will make a update in the invoiceTerms set values move
       response.setValues(move);
@@ -747,7 +735,7 @@ public class MoveController {
   public void onSaveAfter(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
-      MoveContext result = Beans.get(MoveRecordService.class).onSaveAfter(move);
+      MoveContext result = Beans.get(MoveGroupService.class).onSaveAfter(move);
       // As this method will make a update in the invoiceTerms set values move
       response.setValues(move);
       response.setAttrs(result.getAttrs());
@@ -784,7 +772,7 @@ public class MoveController {
               .orElse(false);
 
       MoveContext result =
-          Beans.get(MoveRecordService.class).onChangeDate(move, paymentConditionChange, dateChange);
+          Beans.get(MoveGroupService.class).onChangeDate(move, paymentConditionChange, dateChange);
       response.setValues(result.getValues());
       response.setAttrs(result.getAttrs());
       if (!result.getFlash().isEmpty()) {
@@ -809,7 +797,7 @@ public class MoveController {
     try {
       Move move = request.getContext().asType(Move.class);
 
-      MoveContext result = Beans.get(MoveRecordService.class).onChangeJournal(move);
+      MoveContext result = Beans.get(MoveGroupService.class).onChangeJournal(move);
       response.setValues(result.getValues());
       response.setAttrs(result.getAttrs());
       if (!result.getFlash().isEmpty()) {
@@ -845,7 +833,7 @@ public class MoveController {
               .orElse(false);
 
       MoveContext result =
-          Beans.get(MoveRecordService.class)
+          Beans.get(MoveGroupService.class)
               .onChangePartner(move, paymentConditionChange, dateChange);
       response.setValues(result.getValues());
       response.setAttrs(result.getAttrs());
@@ -881,7 +869,7 @@ public class MoveController {
               .map(value -> (Boolean) value)
               .orElse(false);
       MoveContext result =
-          Beans.get(MoveRecordService.class)
+          Beans.get(MoveGroupService.class)
               .onChangeMoveLineList(move, paymentConditionChange, dateChange);
       response.setValues(result.getValues());
       response.setAttrs(result.getAttrs());
@@ -918,7 +906,7 @@ public class MoveController {
               .orElse(false);
 
       MoveContext result =
-          Beans.get(MoveRecordService.class)
+          Beans.get(MoveGroupService.class)
               .onChangeOriginDate(move, paymentConditionChange, dateChange);
       response.setValues(result.getValues());
       response.setAttrs(result.getAttrs());
@@ -943,7 +931,7 @@ public class MoveController {
   public void onChangeOrigin(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
-      MoveContext result = Beans.get(MoveRecordService.class).onChangeOrigin(move);
+      MoveContext result = Beans.get(MoveGroupService.class).onChangeOrigin(move);
       response.setValues(result.getValues());
       response.setAttrs(result.getAttrs());
       if (!result.getFlash().isEmpty()) {
@@ -983,7 +971,7 @@ public class MoveController {
               .orElse(false);
 
       MoveContext result =
-          Beans.get(MoveRecordService.class)
+          Beans.get(MoveGroupService.class)
               .onChangePaymentCondition(move, paymentConditionChange, dateChange, headerChange);
       response.setValues(result.getValues());
       response.setAttrs(result.getAttrs());

@@ -76,17 +76,11 @@ public interface MoveRecordSetService {
    * @param move
    * @return a map of modified fields
    */
-  Map<String, Object> setJournal(Move move);
+  void setJournal(Move move);
 
-  /**
-   * Set the functionOriginSelect of the move
-   *
-   * @param move
-   * @return a map of modified fields
-   */
-  Map<String, Object> setFunctionalOriginSelect(Move move);
+  void setFunctionalOriginSelect(Move move);
 
-  Map<String, Object> setPeriod(Move move) throws AxelorException;
+  void setPeriod(Move move) throws AxelorException;
 
   Map<String, Object> setMoveLineDates(Move move) throws AxelorException;
 

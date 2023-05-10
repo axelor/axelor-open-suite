@@ -21,18 +21,13 @@ package com.axelor.apps.account.service.move.record;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.service.move.record.model.MoveContext;
 import com.axelor.apps.base.AxelorException;
+import java.util.Map;
 
-public interface MoveRecordService {
+public interface MoveGroupService {
 
-  /**
-   * Method called on action onNew. The move will be modified but not persisted, a Map of 'field,
-   * value' will be returned that contains every modified value.
-   *
-   * @param move
-   * @return a Object {@link MoveContext} that containts attrs and values context
-   * @throws AxelorException
-   */
-  MoveContext onNew(Move move) throws AxelorException;
+  Map<String, Object> getOnNewValuesMap(Move move) throws AxelorException;
+
+  Map<String, Map<String, Object>> getOnNewAttrsMap(Move move) throws AxelorException;
 
   /**
    * Method called on action onLoad. The move will be modified but not persisted, a Map of 'field,

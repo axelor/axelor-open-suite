@@ -22,7 +22,6 @@ import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticAxisByCompany;
 import com.axelor.apps.account.db.Move;
-import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -30,10 +29,8 @@ import com.axelor.apps.account.service.move.MoveInvoiceTermService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.google.inject.Inject;
-import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 
 public class MoveAttrsServiceImpl implements MoveAttrsService {
@@ -58,113 +55,107 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
     this.moveRepository = moveRepository;
   }
 
-  @Override
-  public Map<String, Map<String, Object>> getHiddenAttributeValues(Move move) {
-    Objects.requireNonNull(move);
-    Map<String, Map<String, Object>> mapResult = new HashMap<>();
-
-    mapResult.put("moveLineList.counter", new HashMap<>());
-    mapResult.put("moveLineList.amountRemaining", new HashMap<>());
-    mapResult.put("moveLineList.reconcileGroup", new HashMap<>());
-    mapResult.put("moveLineList.partner", new HashMap<>());
-
-    mapResult.get("moveLineList.partner").put("hidden", move.getPartner() != null);
-    mapResult
-        .get("moveLineList.counter")
-        .put(
-            "hidden",
-            move.getStatusSelect() == null || move.getStatusSelect() == MoveRepository.STATUS_NEW);
-    mapResult
-        .get("moveLineList.amountRemaining")
-        .put(
-            "hidden",
-            move.getStatusSelect() == null
-                || move.getStatusSelect() == MoveRepository.STATUS_NEW
-                || move.getStatusSelect() == MoveRepository.STATUS_CANCELED
-                || move.getStatusSelect() == MoveRepository.STATUS_SIMULATED);
-    mapResult
-        .get("moveLineList.reconcileGroup")
-        .put(
-            "hidden",
-            move.getStatusSelect() == MoveRepository.STATUS_NEW
-                || move.getStatusSelect() == MoveRepository.STATUS_CANCELED);
-    return mapResult;
-  }
-
-  @Override
-  public boolean isHiddenMoveLineListViewer(Move move) {
-    boolean isHidden = true;
-    if (move.getMoveLineList() != null
-        && move.getStatusSelect() < MoveRepository.STATUS_ACCOUNTED) {
-      for (MoveLine moveLine : move.getMoveLineList()) {
-        if (moveLine.getAmountPaid().compareTo(BigDecimal.ZERO) > 0
-            || moveLine.getReconcileGroup() != null) {
-          isHidden = false;
-        }
-      }
+  protected void addAttr(
+      String field, String attr, Object value, Map<String, Map<String, Object>> attrsMap) {
+    if (!attrsMap.containsKey(field)) {
+      attrsMap.put(field, new HashMap<>());
     }
-    return isHidden;
+
+    attrsMap.get(field).put(attr, value);
   }
 
   @Override
-  public Map<String, Map<String, Object>> getFunctionalOriginSelectDomain(Move move) {
-    Objects.requireNonNull(move);
-    Map<String, Map<String, Object>> mapResult = new HashMap<>();
-    mapResult.put("functionalOriginSelect", new HashMap<>());
+  public void addHidden(Move move, Map<String, Map<String, Object>> attrsMap) {
+    this.addAttr("moveLineList.partner", "hidden", move.getPartner() != null, attrsMap);
 
+    this.addAttr(
+        "moveLineList.counter",
+        "hidden",
+        move.getStatusSelect() == null || move.getStatusSelect() == MoveRepository.STATUS_NEW,
+        attrsMap);
+
+    this.addAttr(
+        "moveLineList.amountRemaining",
+        "hidden",
+        move.getStatusSelect() == null
+            || move.getStatusSelect() == MoveRepository.STATUS_NEW
+            || move.getStatusSelect() == MoveRepository.STATUS_CANCELED
+            || move.getStatusSelect() == MoveRepository.STATUS_SIMULATED,
+        attrsMap);
+
+    this.addAttr(
+        "moveLineList.reconcileGroup",
+        "hidden",
+        move.getStatusSelect() == MoveRepository.STATUS_NEW
+            || move.getStatusSelect() == MoveRepository.STATUS_CANCELED,
+        attrsMap);
+  }
+
+  @Override
+  public void addMoveLineListViewerHidden(Move move, Map<String, Map<String, Object>> attrsMap) {
+    boolean isNotHidden =
+        move.getMoveLineList() != null
+            && move.getStatusSelect() < MoveRepository.STATUS_ACCOUNTED
+            && move.getMoveLineList().stream()
+                .anyMatch(it -> it.getAmountPaid().signum() > 0 || it.getReconcileGroup() != null);
+
+    this.addAttr("$reconcileTags", "hidden", !isNotHidden, attrsMap);
+  }
+
+  @Override
+  public void addFunctionalOriginSelectDomain(
+      Move move, Map<String, Map<String, Object>> attrsMap) {
     String selectionValue = null;
 
     if (move.getJournal() != null) {
       selectionValue =
           Optional.ofNullable(move.getJournal().getAuthorizedFunctionalOriginSelect()).orElse("0");
     }
-    mapResult.get("functionalOriginSelect").put("selection-in", selectionValue);
 
-    return mapResult;
+    this.addAttr("functionalOriginSelect", "selection-in", selectionValue, attrsMap);
   }
 
   @Override
-  public Map<String, Map<String, Object>> getMoveLineAnalyticAttrs(Move move)
+  public void addMoveLineAnalyticAttrs(Move move, Map<String, Map<String, Object>> attrsMap)
       throws AxelorException {
-    Objects.requireNonNull(move);
-    Map<String, Map<String, Object>> resultMap = new HashMap<>();
-
     if (move.getCompany() != null) {
       AccountConfig accountConfig = accountConfigService.getAccountConfig(move.getCompany());
+
       if (accountConfig != null
           && appAccountService.getAppAccount().getManageAnalyticAccounting()
           && accountConfig.getManageAnalyticAccounting()) {
         AnalyticAxis analyticAxis = null;
+
         for (int i = 1; i <= 5; i++) {
           String analyticAxisKey = "moveLineList.axis" + i + "AnalyticAccount";
-          resultMap.put(analyticAxisKey, new HashMap<>());
-          resultMap
-              .get(analyticAxisKey)
-              .put("hidden", !(i <= accountConfig.getNbrOfAnalyticAxisSelect()));
+          this.addAttr(
+              analyticAxisKey,
+              "hidden",
+              !(i <= accountConfig.getNbrOfAnalyticAxisSelect()),
+              attrsMap);
+
           for (AnalyticAxisByCompany analyticAxisByCompany :
               accountConfig.getAnalyticAxisByCompanyList()) {
             if (analyticAxisByCompany.getSequence() + 1 == i) {
               analyticAxis = analyticAxisByCompany.getAnalyticAxis();
             }
           }
+
           if (analyticAxis != null) {
-            resultMap.get(analyticAxisKey).put("title", analyticAxis.getName());
+            this.addAttr(analyticAxisKey, "title", analyticAxis.getName(), attrsMap);
             analyticAxis = null;
           }
         }
       } else {
-        resultMap.put("moveLineList.analyticDistributionTemplate", new HashMap<>());
-        resultMap.get("moveLineList.analyticDistributionTemplate").put("hidden", true);
-        resultMap.put("moveLineList.analyticMoveLineList", new HashMap<>());
-        resultMap.get("moveLineList.analyticMoveLineList").put("hidden", true);
+        this.addAttr("moveLineList.analyticDistributionTemplate", "hidden", true, attrsMap);
+        this.addAttr("moveLineList.analyticMoveLineList", "hidden", true, attrsMap);
+
         for (int i = 1; i <= 5; i++) {
           String analyticAxisKey = "moveLineList.axis" + i + "AnalyticAccount";
-          resultMap.put(analyticAxisKey, new HashMap<>());
-          resultMap.get(analyticAxisKey).put("hidden", true);
+          this.addAttr(analyticAxisKey, "hidden", true, attrsMap);
         }
       }
     }
-    return resultMap;
   }
 
   @Override

@@ -38,9 +38,7 @@ import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
@@ -89,17 +87,6 @@ public class MoveCheckServiceImpl implements MoveCheckService {
     }
 
     return false;
-  }
-
-  @Override
-  public Map<String, Object> checkPeriodAndStatus(Move move) throws AxelorException {
-
-    Objects.requireNonNull(move);
-    HashMap<String, Object> resultMap = new HashMap<>();
-
-    resultMap.put("$simulatedPeriodClosed", moveToolService.isSimulatedMovePeriodClosed(move));
-    resultMap.put("$periodClosed", periodService.isClosedPeriod(move.getPeriod()));
-    return resultMap;
   }
 
   @Override
