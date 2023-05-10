@@ -39,7 +39,7 @@ public class ConvertWizardOpportunityServiceImpl implements ConvertWizardOpportu
   }
 
   @Override
-  public void createOpportunity(Map<String, Object> opportunityMap, Partner partner)
+  public Opportunity createOpportunity(Map<String, Object> opportunityMap, Partner partner)
       throws AxelorException {
     Opportunity opportunity =
         (Opportunity)
@@ -49,5 +49,6 @@ public class ConvertWizardOpportunityServiceImpl implements ConvertWizardOpportu
                 Mapper.of(Opportunity.class));
     opportunity.setPartner(partner);
     opportunityService.saveOpportunity(opportunity);
+    return opportunity;
   }
 }

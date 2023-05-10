@@ -26,9 +26,11 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.crm.db.Lead;
+import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.apps.crm.exception.CrmExceptionMessage;
 import com.axelor.apps.crm.service.ConvertLeadWizardService;
+import com.axelor.apps.crm.service.ConvertWizardOpportunityService;
 import com.axelor.apps.crm.service.app.AppCrmService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
@@ -301,11 +303,51 @@ public class ConvertLeadWizardController {
                   null,
                   null,
                   null);
-      if(partner.getId() != null) {
-    	  response.setReload(true);
+      if (partner.getId() != null) {
+        response.setReload(true);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void generateOpportunityFromLeadAndPartner(
+      ActionRequest request, ActionResponse response) {
+    try {
+      Context context = request.getContext();
+      Partner partner = context.asType(Partner.class);
+      Opportunity opporunity = this.createOpportunity(request, partner);
+      this.openOpportunity(response, opporunity);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  protected void openOpportunity(ActionResponse response, Opportunity opporunity) {
+    String form = "opportunity-form";
+    String grid = "opportunity-grid";
+
+    response.setView(
+        ActionView.define(I18n.get(CrmExceptionMessage.CONVERT_LEAD_1))
+            .model(Partner.class.getName())
+            .add("form", form)
+            .add("grid", grid)
+            .context("_showRecord", opporunity.getId())
+            .map());
+  }
+
+  protected Map<String, Object> getOpportunityMap(ActionRequest request) throws AxelorException {
+    Map<String, Object> opportunityMap = new HashMap<String, Object>();
+    Lead lead = findLead(request);
+    opportunityMap.put("source", lead.getSource());
+    opportunityMap.put("user", lead.getUser());
+    return opportunityMap;
+  }
+
+  @SuppressWarnings("unchecked")
+  protected Opportunity createOpportunity(ActionRequest request, Partner partner)
+      throws AxelorException {
+    return Beans.get(ConvertWizardOpportunityService.class)
+        .createOpportunity(getOpportunityMap(request), partner);
   }
 }
