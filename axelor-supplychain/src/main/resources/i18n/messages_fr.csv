@@ -284,6 +284,7 @@
 "Invoices","Factures",,
 "Invoicing","Facturation",,
 "Invoicing Blocking",,,
+"Invoicing State","État de facturation",,
 "Invoicing batch","Batch Facturation",,
 "Invoicing blocked customer deliveries","Livraisons bloquées en facturation",,
 "Invoicing of this stock move is blocked.","La facturation de ce BL est bloquée.",,
