@@ -146,6 +146,7 @@
     <field name="isOtherCurrency" hidden="true"/>
     <field name="fieldsErrorList" hidden="true"/>
     <field name="account.useForPartnerBalance" hidden="true"/>
+    <field name="account.analyticDistributionAuthorized"/>
   </grid>
 
   <!-- Action group -->

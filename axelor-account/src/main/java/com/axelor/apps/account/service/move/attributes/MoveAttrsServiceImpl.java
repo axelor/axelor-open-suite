@@ -134,6 +134,11 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
       throws AxelorException {
     Objects.requireNonNull(move);
     Map<String, Map<String, Object>> resultMap = new HashMap<>();
+    String fieldNameToSet = "moveLineList";
+
+    if (move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL) {
+      fieldNameToSet = "moveLineMassEntryList";
+    }
 
     if (move.getCompany() != null) {
       AccountConfig accountConfig = accountConfigService.getAccountConfig(move.getCompany());
@@ -142,7 +147,7 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
           && accountConfig.getManageAnalyticAccounting()) {
         AnalyticAxis analyticAxis = null;
         for (int i = 1; i <= 5; i++) {
-          String analyticAxisKey = "moveLineList.axis" + i + "AnalyticAccount";
+          String analyticAxisKey = fieldNameToSet + ".axis" + i + "AnalyticAccount";
           resultMap.put(analyticAxisKey, new HashMap<>());
           resultMap
               .get(analyticAxisKey)
@@ -159,12 +164,12 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
           }
         }
       } else {
-        resultMap.put("moveLineList.analyticDistributionTemplate", new HashMap<>());
-        resultMap.get("moveLineList.analyticDistributionTemplate").put("hidden", true);
-        resultMap.put("moveLineList.analyticMoveLineList", new HashMap<>());
-        resultMap.get("moveLineList.analyticMoveLineList").put("hidden", true);
+        resultMap.put(fieldNameToSet + ".analyticDistributionTemplate", new HashMap<>());
+        resultMap.get(fieldNameToSet + ".analyticDistributionTemplate").put("hidden", true);
+        resultMap.put(fieldNameToSet + ".analyticMoveLineList", new HashMap<>());
+        resultMap.get(fieldNameToSet + ".analyticMoveLineList").put("hidden", true);
         for (int i = 1; i <= 5; i++) {
-          String analyticAxisKey = "moveLineList.axis" + i + "AnalyticAccount";
+          String analyticAxisKey = fieldNameToSet + ".axis" + i + "AnalyticAccount";
           resultMap.put(analyticAxisKey, new HashMap<>());
           resultMap.get(analyticAxisKey).put("hidden", true);
         }

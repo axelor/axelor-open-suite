@@ -147,7 +147,9 @@ public class MoveRecordServiceImpl implements MoveRecordService {
     result.putInValues(moveDefaultService.setDefaultCurrency(move));
     result.putInValues(moveRecordSetService.setJournal(move));
     if (isMassEntryMove) {
-      result.putInValues("massEntryStatusSelect", MoveRepository.MASS_ENTRY_STATUS_ON_GOING);
+      move.setMassEntryStatusSelect(MoveRepository.MASS_ENTRY_STATUS_ON_GOING);
+      result.putInValues("massEntryStatusSelect", move.getMassEntryStatusSelect());
+      result.putInAttrs(moveAttrsService.getMoveLineAnalyticAttrs(move));
       result.putInAttrs(moveAttrsService.getMassEntryHiddenAttributeValues(move));
       result.putInAttrs(moveAttrsService.getMassEntryRequiredAttributeValues(move));
     }
@@ -191,6 +193,7 @@ public class MoveRecordServiceImpl implements MoveRecordService {
 
     result.putInAttrs(moveAttrsService.getHiddenAttributeValues(move));
     if (move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL) {
+      result.putInAttrs(moveAttrsService.getMoveLineAnalyticAttrs(move));
       result.putInAttrs(moveAttrsService.getMassEntryHiddenAttributeValues(move));
       result.putInAttrs(moveAttrsService.getMassEntryRequiredAttributeValues(move));
       result.putInAttrs(moveAttrsService.getMassEntryBtnHiddenAttributeValues(move));

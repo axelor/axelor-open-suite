@@ -1110,6 +1110,7 @@ public class MoveController {
       MoveContext result = new MoveContext();
 
       if (move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL) {
+        result.putInAttrs(Beans.get(MoveAttrsService.class).getMoveLineAnalyticAttrs(move));
         result.putInAttrs(
             Beans.get(MoveAttrsService.class).getMassEntryHiddenAttributeValues(move));
         result.putInAttrs(
