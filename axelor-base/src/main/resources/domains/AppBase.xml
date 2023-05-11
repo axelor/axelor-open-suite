@@ -20,6 +20,9 @@
     <!-- Interfaces QAS et SVI -->
     <string name="qasWsdlUrl" title="URL to QAS WSDL"/>
 
+
+    <string name="draftPrefix" title="Draft prefix" default="#"/>
+
     <!-- Mapping API -->
     <integer name="mapApiSelect" title="Mapping service provider"
       selection="base.app.base.map.api.select" default="2"/>
