@@ -60,7 +60,9 @@ public interface MoveGroupService {
   Map<String, Map<String, Object>> getDateOnChangeAttrsMap(
       Move move, boolean paymentConditionChange);
 
-  MoveContext onChangeJournal(Move move) throws AxelorException;
+  Map<String, Object> getJournalOnChangeValuesMap(Move move);
+
+  Map<String, Map<String, Object>> getJournalOnChangeAttrsMap(Move move);
 
   MoveContext onChangePartner(Move move, boolean paymentConditionChange, boolean dateChange)
       throws AxelorException;

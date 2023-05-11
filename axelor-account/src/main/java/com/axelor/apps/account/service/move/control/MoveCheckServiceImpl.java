@@ -135,16 +135,9 @@ public class MoveCheckServiceImpl implements MoveCheckService {
   }
 
   @Override
-  public void checkPartnerCompatible(Move move) throws AxelorException {
-    if (move.getPartner() != null) {
-      boolean isPartnerCompatible =
-          journalCheckPartnerTypeService.isPartnerCompatible(move.getJournal(), move.getPartner());
-      if (!isPartnerCompatible) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(AccountExceptionMessage.MOVE_PARTNER_IS_NOT_COMPATIBLE_WITH_SELECTED_JOURNAL));
-      }
-    }
+  public boolean isPartnerCompatible(Move move) {
+    return move.getPartner() != null
+        && journalCheckPartnerTypeService.isPartnerCompatible(move.getJournal(), move.getPartner());
   }
 
   @Override

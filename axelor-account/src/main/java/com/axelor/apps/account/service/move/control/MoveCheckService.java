@@ -40,7 +40,7 @@ public interface MoveCheckService {
 
   void checkAnalyticAccount(Move move) throws AxelorException;
 
-  void checkPartnerCompatible(Move move) throws AxelorException;
+  boolean isPartnerCompatible(Move move);
 
   void checkDuplicatedMoveOrigin(Move move) throws AxelorException;
 

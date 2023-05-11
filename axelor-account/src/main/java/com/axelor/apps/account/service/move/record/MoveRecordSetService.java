@@ -24,35 +24,11 @@ import java.util.Map;
 
 public interface MoveRecordSetService {
 
-  /**
-   * Set the payment mode of move.
-   *
-   * <p>Note: This method can set paymentMode to null even if it was not before.
-   *
-   * @param move
-   * @return a map of modified fields
-   */
-  Map<String, Object> setPaymentMode(Move move);
+  void setPaymentMode(Move move);
 
-  /**
-   * Set the paymentCondition of move.
-   *
-   * <p>Note: This method can set paymentCondition to null even if it was not before.
-   *
-   * @param move
-   * @return a map of modified fields
-   */
-  Map<String, Object> setPaymentCondition(Move move);
+  void setPaymentCondition(Move move);
 
-  /**
-   * Set the partnerBankDetails of move.
-   *
-   * <p>Note: This method can set partnerBankDetails to null even if it was not before.
-   *
-   * @param move
-   * @return a map of modified fields
-   */
-  Map<String, Object> setPartnerBankDetails(Move move);
+  void setPartnerBankDetails(Move move);
 
   /**
    * Set the currency of move by using the move.partner.

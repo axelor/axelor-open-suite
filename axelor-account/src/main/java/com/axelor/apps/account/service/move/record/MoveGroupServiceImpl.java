@@ -231,33 +231,29 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     return attrsMap;
   }
 
-  protected void updateDummiesDateConText(Move move) {
-    move.setDueDate(null);
+  @Override
+  public Map<String, Object> getJournalOnChangeValuesMap(Move move) {
+    Map<String, Object> valuesMap = new HashMap<>();
+
+    moveRecordSetService.setFunctionalOriginSelect(move);
+    moveRecordSetService.setPaymentMode(move);
+    moveRecordSetService.setPaymentCondition(move);
+    moveRecordSetService.setPartnerBankDetails(move);
+
+    valuesMap.put("functionalOriginSelect", move.getFunctionalOriginSelect());
+    valuesMap.put("paymentMode", move.getPaymentMode());
+    valuesMap.put("paymentCondition", move.getPaymentCondition());
+
+    return valuesMap;
   }
 
   @Override
-  public MoveContext onChangeJournal(Move move) throws AxelorException {
-    Objects.requireNonNull(move);
+  public Map<String, Map<String, Object>> getJournalOnChangeAttrsMap(Move move) {
+    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
-    MoveContext result = new MoveContext();
+    moveAttrsService.addFunctionalOriginSelectDomain(move, attrsMap);
 
-    result.putInAttrs(moveAttrsService.getFunctionalOriginSelectDomain(move));
-    result.putInValues(moveRecordSetService.setFunctionalOriginSelect(move));
-    checkPartnerCompatible(move, result);
-    result.putInValues(moveRecordSetService.setPaymentMode(move));
-    result.putInValues(moveRecordSetService.setPaymentCondition(move));
-    result.putInValues(moveRecordSetService.setPartnerBankDetails(move));
-
-    return result;
-  }
-
-  protected void checkPartnerCompatible(Move move, MoveContext result) {
-    try {
-      moveCheckService.checkPartnerCompatible(move);
-    } catch (AxelorException e) {
-      result.putInValues("partner", null);
-      result.putInNotify(e.getMessage());
-    }
+    return attrsMap;
   }
 
   @Override
@@ -308,6 +304,10 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     result.putInAttrs("$paymentConditionChange", "value", true);
 
     return result;
+  }
+
+  protected void updateDummiesDateConText(Move move) {
+    move.setDueDate(null);
   }
 
   protected void checkDuplicateOriginMove(Move move, MoveContext result) {

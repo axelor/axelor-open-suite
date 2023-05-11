@@ -42,6 +42,7 @@ import com.axelor.apps.account.service.move.MoveSimulateService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.move.MoveViewHelperService;
+import com.axelor.apps.account.service.move.control.MoveCheckService;
 import com.axelor.apps.account.service.move.record.MoveDefaultService;
 import com.axelor.apps.account.service.move.record.MoveGroupService;
 import com.axelor.apps.account.service.move.record.MoveRecordSetService;
@@ -750,13 +751,12 @@ public class MoveController {
     try {
       Context context = request.getContext();
       Move move = context.asType(Move.class);
+      MoveGroupService moveGroupService = Beans.get(MoveGroupService.class);
 
       boolean paymentConditionChange =
           Optional.ofNullable(context.get("paymentConditionChange"))
               .map(value -> (Boolean) value)
               .orElse(false);
-
-      MoveGroupService moveGroupService = Beans.get(MoveGroupService.class);
 
       response.setValues(moveGroupService.getDateOnChangeValuesMap(move, paymentConditionChange));
       response.setAttrs(moveGroupService.getDateOnChangeAttrsMap(move, paymentConditionChange));
@@ -769,22 +769,15 @@ public class MoveController {
     try {
       Move move = request.getContext().asType(Move.class);
 
-      MoveContext result = Beans.get(MoveGroupService.class).onChangeJournal(move);
-      response.setValues(result.getValues());
-      response.setAttrs(result.getAttrs());
-      if (!result.getFlash().isEmpty()) {
-        response.setInfo(result.getFlash());
-      }
-      if (!result.getNotify().isEmpty()) {
-        response.setNotify(result.getNotify());
-      }
-      if (!result.getAlert().isEmpty()) {
-        response.setAlert(result.getAlert());
-      }
-      if (!result.getError().isEmpty()) {
-        response.setError(result.getError());
-      }
+      MoveGroupService moveGroupService = Beans.get(MoveGroupService.class);
 
+      response.setValues(moveGroupService.getJournalOnChangeValuesMap(move));
+      response.setAttrs(moveGroupService.getJournalOnChangeAttrsMap(move));
+
+      if (!Beans.get(MoveCheckService.class).isPartnerCompatible(move)) {
+        response.setNotify(
+            I18n.get(AccountExceptionMessage.MOVE_PARTNER_IS_NOT_COMPATIBLE_WITH_SELECTED_JOURNAL));
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

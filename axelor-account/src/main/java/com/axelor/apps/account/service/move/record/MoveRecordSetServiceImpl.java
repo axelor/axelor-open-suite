@@ -73,11 +73,7 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
   }
 
   @Override
-  public Map<String, Object> setPaymentMode(Move move) {
-    Objects.requireNonNull(move);
-
-    HashMap<String, Object> resultMap = new HashMap<>();
-
+  public void setPaymentMode(Move move) {
     Partner partner = move.getPartner();
     JournalType journalType =
         Optional.ofNullable(move.getJournal()).map(Journal::getJournalType).orElse(null);
@@ -97,16 +93,10 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
     } else {
       move.setPaymentMode(null);
     }
-    resultMap.put("paymentMode", move.getPaymentMode());
-    return resultMap;
   }
 
   @Override
-  public Map<String, Object> setPaymentCondition(Move move) {
-    Objects.requireNonNull(move);
-
-    HashMap<String, Object> resultMap = new HashMap<>();
-
+  public void setPaymentCondition(Move move) {
     Partner partner = move.getPartner();
     JournalType journalType =
         Optional.ofNullable(move.getJournal()).map(Journal::getJournalType).orElse(null);
@@ -120,15 +110,10 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
     } else {
       move.setPaymentCondition(null);
     }
-
-    resultMap.put("paymentCondition", move.getPaymentCondition());
-    return resultMap;
   }
 
   @Override
-  public Map<String, Object> setPartnerBankDetails(Move move) {
-    Objects.requireNonNull(move);
-    HashMap<String, Object> resultMap = new HashMap<>();
+  public void setPartnerBankDetails(Move move) {
     Partner partner = move.getPartner();
 
     if (partner != null) {
@@ -140,8 +125,6 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
     } else {
       move.setPartnerBankDetails(null);
     }
-    resultMap.put("partnerBankDetails", move.getPartnerBankDetails());
-    return resultMap;
   }
 
   @Override
