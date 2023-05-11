@@ -80,6 +80,12 @@ public final class BusinessProjectExceptionMessage {
   public static final String PROJECT_UPDATE_TOTALS_SUCCESS = /*$$(*/
       "Totals have been updated" /*)*/;
 
+  public static final String PROJECT_TASK_PRODUCT_STOCK_UNIT_ERROR = /*$$(*/
+      "The storage unit of the product %s is not compatible with the configuration." /*)*/;
+
+  public static final String PROJECT_TASK_SOLD_TIME_ERROR = /*$$(*/
+      "Sold time value error for project task %s." /*)*/;
+
   public static final String PROJECT_CONFIG_DEFAULT_HOURS_PER_DAY_MISSING = /*$$(*/
       "Please set the default number of hours per day in the configuration of app Business Project." /*)*/;
 

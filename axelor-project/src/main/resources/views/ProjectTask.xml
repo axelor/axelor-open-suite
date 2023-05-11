@@ -646,7 +646,7 @@
   <action-record name="action-project-task-record-product-selected"
     model="com.axelor.apps.project.db.ProjectTask">
     <field name="quantity" expr="1"/>
-    <field name="unit"
+    <field name="invoicingUnit"
       expr="eval: (Unit) com.axelor.inject.Beans.get(com.axelor.apps.base.service.ProductCompanyService.class).get(product, 'salesUnit', project?.company) ?: (Unit) com.axelor.inject.Beans.get(com.axelor.apps.base.service.ProductCompanyService.class).get(product, 'unit', project?.company)"/>
     <field name="unitPrice"
       expr="call: com.axelor.apps.base.service.ProductCompanyServiceImpl:get(product, 'salePrice', project.company)"/>
@@ -852,7 +852,7 @@
     <field name="invoiceLine" hidden="true" if="!__config__.app.isApp('business-project')"/>
     <field name="product" hidden="true" if="!__config__.app.isApp('business-project')"/>
     <field name="quantity" hidden="true" if="!__config__.app.isApp('business-project')"/>
-    <field name="unit" hidden="true" if="!__config__.app.isApp('business-project')"/>
+    <field name="invoicingUnit" hidden="true" if="!__config__.app.isApp('business-project')"/>
     <field name="unitPrice" hidden="true" if="!__config__.app.isApp('business-project')"/>
     <field name="currency" hidden="true" if="!__config__.app.isApp('business-project')"/>
     <field name="discountTypeSelect" hidden="true"

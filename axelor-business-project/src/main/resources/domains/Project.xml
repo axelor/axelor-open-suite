@@ -83,6 +83,10 @@
    			public static final int TASK_PER_LINE_ALONE = 1;
    			public static final int TASK_PER_LINE_PHASE = 2;
    			public static final int TASK_PER_LINE_TASK = 3;
+
+   			public static final int COMPUTATION_METHOD_SALE_ORDER = 1;
+   			public static final int COMPUTATION_METHOD_PRODUCT = 2;
+   			public static final int COMPUTATION_METHOD_EMPLOYEE = 3;
 		]]></extra-code>
 
 
