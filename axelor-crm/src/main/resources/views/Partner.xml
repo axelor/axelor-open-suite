@@ -59,6 +59,7 @@
     <extend target="/">
       <attribute name="onLoad" value="crm-action-group-partner-onload"/>
       <attribute name="onNew" value="crm-action-group-partner-onnew"/>
+      <attribute name="onSave" value="crm-action-partner-group-onsave"/>
     </extend>
     <extend target="//label[@name='facebookLabel']">
       <replace/>
@@ -174,17 +175,13 @@
         <field name="scheduledEventDateT" colSpan="3" readonly="true"/>
       </insert>
     </extend>
-    <extend target="//panel[@name='mainPanel']">
-      <insert position="before">
-        <button name="validateConversionFromLeadBtn" title="Validate"
-          onClick="save,action-partner-method-convert-from-lead,action-partner-view-generate-opporunity-popup"
-          showIf="_isInConversionFromLead"/>
-        <button name="cancelConversionFromLeadBtn" title="Cancel" onClick="close"
-          showIf="_isInConversionFromLead"/>
-      </insert>
-    </extend>
     <extend target="//panel[@name='imagePanel']">
       <insert position="before">
+        <button name="validateConversionFromLeadBtn" title="Validate"
+          onClick="action-partner-group-validate-conversion-from-lead"
+          showIf="!isAlreadyConvertFromLead &amp;&amp; _isInConversionFromLead"/>
+        <button name="cancelConversionFromLeadBtn" title="Cancel" onClick="close"
+          showIf="!isAlreadyConvertFromLead &amp;&amp; _isInConversionFromLead"/>
         <field name="partnerStatus" showTitle="false" colSpan="12" widget="NavSelect"
           x-order="sequence" onChange="action-partner-group-partner-status-onchange"
           showIf="$isFromCrm " if=" __config__.app.getApp('crm')?.getCrmProcessOnPartner()"/>
@@ -196,7 +193,7 @@
         <field name="lostReasonStr" showIf="lostReason.freeText" colSpan="6"/>
         <field name="lostReason.freeText" hidden="true"/>
         <field name="$isFromCrm" hidden="true" readonly="true"/>
-
+        <field name="isAlreadyConvertFromLead" hidden="true" readonly="true"/>
       </insert>
     </extend>
   </form>
@@ -216,7 +213,6 @@
     <extend target="/">
       <attribute name="onLoad" value="crm-action-group-partner-onload"/>
       <attribute name="onNew" value="crm-action-group-partner-onnew"/>
-      <attribute name="onSave" value="crm-action-partner-group-onsave"/>
     </extend>
   </form>
 
@@ -473,10 +469,10 @@
 
   <form name="partner-form-generate-opporunity-popup" model="com.axelor.apps.base.db.Partner"
     title="Generate opportunity ?">
-    <panel name="mainPanel">
-      <button name="generateOpporunityConfirmBtn" title="Confirm generate opportunity"
-        onClick="action-partner-method-generate-opportunity-from-lead-and-partner" colOffset="4"
-        colSpan="4"/>
+    <panel name="mainPanel" colSpan="12" itemSpan="6">
+      <button name="generateOpporunityConfirmBtn" title="Yes"
+        onClick="action-partner-method-generate-opportunity-from-lead-and-partner"/>
+      <button name="cancelmBtn" title="No" onClick="close"/>
     </panel>
   </form>
 
@@ -620,8 +616,7 @@
   <action-group name="crm-action-group-partner-onload">
     <action name="action-group-partner-onload" if="__config__.app.isApp('base')"/>
     <action name="action-partner-method-get-subsidiary-partners-count"/>
-    <action name="action-partner-method-set-fields-for-conversion-from-lead"
-      if="__isInConversionFromLead"/>
+    <action name="action-partner-record-set-is-in-conversion-from-lead"/>
     <action name="action-partner-record-set-from-crm"/>
   </action-group>
 
@@ -647,20 +642,46 @@
     <field name="$isFromCrm" expr="eval: _isFromCrm"/>
   </action-record>
 
+  <action-record name="action-partner-record-set-is-in-conversion-from-lead"
+    model="com.axelor.apps.base.db.Partner">
+    <field name="isAlreadyConvertFromLead" expr="eval: false"
+      if="!isAlreadyConvertFromLead &amp;&amp; _isInConversionFromLead"/>
+  </action-record>
+
+
   <action-group name="crm-action-group-partner-onnew">
     <action name="action-group-base-partner-onnew"/>
     <action name="action-partner-record-set-is-prospect"/>
     <action name="action-partner-method-set-fields-for-conversion-from-lead"
-      if="__isInConversionFromLead"/>
+      if="_isInConversionFromLead"/>
+    <action name="action-partner-record-set-is-in-conversion-from-lead"/>
     <action name="action-partner-record-set-partner-status"/>
     <action name="action-partner-record-set-from-crm"/>
   </action-group>
 
   <action-group name="crm-action-partner-group-onsave">
     <action name="action-partner-group-onsave"/>
-    <action name="action-partner-validate-alert-convert-lead" if="_isInConversionFromLead"/>
-    <action name="action-partner-method-convert-from-lead" if="_isInConversionFromLead"/>
-    <action name="action-partner-view-generate-opporunity-popup" if="_isInConversionFromLead"/>
+    <action name="action-partner-validate-alert-convert-lead"
+      if="!isAlreadyConvertFromLead &amp;&amp; _isInConversionFromLead"/>
+    <action name="action-partner-method-convert-from-lead"
+      if="!isAlreadyConvertFromLead &amp;&amp; _isInConversionFromLead"/>
+    <action name="action-partner-view-generate-opporunity-popup"
+      if="!isAlreadyConvertFromLead &amp;&amp; _isInConversionFromLead"/>
+    <action name="action-partner-record-remove-is-in-conversion-from-lead"
+      if="!isAlreadyConvertFromLead &amp;&amp; _isInConversionFromLead"/>
+  </action-group>
+
+  <action-record name="action-partner-record-remove-is-in-conversion-from-lead"
+    model="com.axelor.apps.base.db.Partner">
+    <field name="isAlreadyConvertFromLead" expr="eval: true"/>
+  </action-record>
+
+  <action-group name="action-partner-group-validate-conversion-from-lead">
+    <action name="save"/>
+    <action name="action-partner-method-convert-from-lead"/>
+    <action name="action-partner-view-generate-opporunity-popup"/>
+    <action name="action-partner-record-remove-is-in-conversion-from-lead"/>
+    <action name="save"/>
   </action-group>
 
   <action-method name="action-partner-method-set-fields-for-conversion-from-lead">
@@ -675,12 +696,11 @@
 
   <action-method
     name="action-partner-method-generate-opportunity-from-lead-and-partner">
-    <call class="com.axelor.apps.crm.web.ConvertLeadWizardController"
-      method="generateOpportunityFromLeadAndPartner"/>
+    <call class="com.axelor.apps.crm.web.ConvertLeadWizardController" method="openOpportunity"/>
   </action-method>
 
   <action-validate name="action-partner-validate-alert-convert-lead">
-    <alert message="Saving this partner will convert the lead"/>
+    <alert message="Saving this partner will convert the lead!"/>
   </action-validate>
 
   <action-group name="action-partner-group-partner-status-onchange">
@@ -692,17 +712,6 @@
     <action name="action-partner-record-win"
       if="eval: __this__?.partnerStatus?.id == __config__.app.getApp('crm')?.closedWinPartnerStatus?.id"/>
   </action-group>
-
-  <action-view name="action-partner-view-partner-popup-view"
-    model="com.axelor.apps.base.db.Partner" title="Lost reason">
-    <view type="form" name="partner-form-lost-popup"/>
-    <view-param name="popup" value="reload"/>
-    <view-param name="show-toolbar" value="false"/>
-    <view-param name="show-confirm" value="false"/>
-    <view-param name="popup-save" value="true"/>
-    <view-param name="forceEdit" value="true"/>
-    <context name="_showRecord" expr="eval: id"/>
-  </action-view>
 
   <action-view name="action-partner-view-partner-popup-view"
     model="com.axelor.apps.base.db.Partner" title="Lost reason">
@@ -741,14 +750,15 @@
   </action-view>
 
   <action-view name="action-partner-view-generate-opporunity-popup"
-    title="Generate opportunity ?">
+    title="Generate opportunity ?" model="com.axelor.apps.base.db.Partner">
     <view type="form" name="partner-form-generate-opporunity-popup"/>
-    <view-param name="popup" value="reload"/>
+    <view-param name="popup" value="true"/>
     <view-param name="show-toolbar" value="false"/>
     <view-param name="show-confirm" value="false"/>
-    <view-param name="popup-save" value="true"/>
-    <view-param name="forceEdit" value="true"/>
+    <view-param name="popup-save" value="false"/>
+    <view-param name="forceEdit" value="false"/>
     <context name="_showRecord" expr="eval: id"/>
+    <context name="_lead" expr="eval: _lead"/>
   </action-view>
 
 </object-views>

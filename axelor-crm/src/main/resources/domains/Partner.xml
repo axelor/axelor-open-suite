@@ -39,6 +39,7 @@
 
     <integer name="sequence" title="Sequence"/>
     <boolean name="isMainContact" title="Main Contact"/>
+    <boolean name="isAlreadyConvertFromLead"/>
 
     <extra-code>
     <![CDATA[

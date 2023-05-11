@@ -421,6 +421,8 @@
     <action name="action-opportunity-record-from-partner" if="_partner != null"/>
     <action name="action-opportunity-record-set-name" if="_partner != null"/>
     <action name="action-opportunity-attrs-set-attrs-on-load"/>
+    <action name="action-opportunity-method-set-fields-from-partner"
+      if="_isGeneratedFromPartner"/>
   </action-group>
 
   <action-view name="action-opportunity-view-schedule-event"
@@ -548,6 +550,11 @@
 
   <action-method name="action-method-opportunity-set-stage-closed-won">
     <call method="setStageClosedWon" class="com.axelor.apps.crm.web.OpportunityController"/>
+  </action-method>
+
+  <action-method name="action-opportunity-method-set-fields-from-partner">
+    <call class="com.axelor.apps.crm.web.ConvertLeadWizardController"
+      method="setFieldsForOpportunityGenerationFromPartner"/>
   </action-method>
 
   <action-group name="action-opportunity-group-status-onchange">

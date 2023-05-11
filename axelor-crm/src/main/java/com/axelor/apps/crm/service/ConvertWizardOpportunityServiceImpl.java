@@ -48,6 +48,7 @@ public class ConvertWizardOpportunityServiceImpl implements ConvertWizardOpportu
                 Mapper.toBean(Opportunity.class, null),
                 Mapper.of(Opportunity.class));
     opportunity.setPartner(partner);
+    opportunity.setName(partner.getFullName());
     opportunityService.saveOpportunity(opportunity);
     return opportunity;
   }

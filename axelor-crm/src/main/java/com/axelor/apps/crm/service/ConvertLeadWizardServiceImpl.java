@@ -147,6 +147,7 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
   }
 
   @SuppressWarnings("unchecked")
+  @Override
   public Address createPrimaryAddress(Lead lead) {
 
     String addressL4 = lead.getPrimaryAddress();
@@ -164,7 +165,11 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
     Address address =
         addressService.getAddress(null, null, addressL4, addressL5, addressL6, addressL7Country);
 
-    if (address == null) {
+    if (address == null
+        && (addressL4 != null
+            || addressL5 != null
+            || addressL6 != null
+            || addressL7Country != null)) {
       address =
           addressService.createAddress(
               null, null, addressL4, addressL5, addressL6, addressL7Country);

@@ -19,19 +19,24 @@
 package com.axelor.apps.crm.web;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.PartnerAddress;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.AddressService;
+import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.apps.crm.exception.CrmExceptionMessage;
 import com.axelor.apps.crm.service.ConvertLeadWizardService;
-import com.axelor.apps.crm.service.ConvertWizardOpportunityService;
 import com.axelor.apps.crm.service.app.AppCrmService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -117,17 +122,12 @@ public class ConvertLeadWizardController {
       Integer leadToPartnerSelect,
       Lead lead) {
 
-    String form = "partner-customer-form";
-    String grid = "partner-customer-grid";
+    String form = "partner-form";
+    String grid = "partner-grid";
 
-    if (partner.getIsSupplier() && !partner.getIsCustomer() && !partner.getIsProspect()) {
-      form = "partner-supplier-form";
-      grid = "partner-supplier-grid";
-    }
-
-    response.setInfo(I18n.get(CrmExceptionMessage.CONVERT_LEAD_1));
     response.setCanClose(true);
     if (!crmProcessOnPartner) {
+      response.setInfo(I18n.get(CrmExceptionMessage.CONVERT_LEAD_1));
       response.setView(
           ActionView.define(I18n.get(CrmExceptionMessage.CONVERT_LEAD_1))
               .model(Partner.class.getName())
@@ -135,6 +135,7 @@ public class ConvertLeadWizardController {
               .add("grid", grid)
               .param("search-filters", "partner-filters")
               .context("_showRecord", partner.getId())
+              .context("_isFromCrm", true)
               .map());
     } else {
       if (leadToPartnerSelect == LeadRepository.CONVERT_LEAD_CREATE_PARTNER) {
@@ -146,6 +147,7 @@ public class ConvertLeadWizardController {
                 .param("search-filters", "partner-filters")
                 .context("_isInConversionFromLead", true)
                 .context("_lead", lead)
+                .context("_isFromCrm", true)
                 .map());
       } else if (leadToPartnerSelect == LeadRepository.CONVERT_LEAD_SELECT_PARTNER) {
         response.setView(
@@ -157,6 +159,7 @@ public class ConvertLeadWizardController {
                 .context("_showRecord", partner.getId())
                 .context("_isInConversionFromLead", true)
                 .context("_lead", lead)
+                .context("_isFromCrm", true)
                 .map());
       }
     }
@@ -167,11 +170,6 @@ public class ConvertLeadWizardController {
     Lead lead = findLead(request);
     AppBase appBase = Beans.get(AppBaseService.class).getAppBase();
     Map<String, Object> partnerMap = new HashMap<String, Object>();
-    partnerMap.put("primaryAddress", lead.getPrimaryAddress());
-    partnerMap.put("primaryCity", lead.getPrimaryCity());
-    partnerMap.put("primaryState", lead.getPrimaryState());
-    partnerMap.put("primaryPostalCode", lead.getPrimaryPostalCode());
-    partnerMap.put("primaryCountry", lead.getPrimaryCountry());
     partnerMap.put("industrySector", lead.getIndustrySector());
     partnerMap.put("emailAddress", lead.getEmailAddress());
     partnerMap.put("mobilePhone", lead.getMobilePhone());
@@ -195,14 +193,13 @@ public class ConvertLeadWizardController {
           == CompanyRepository.CATEGORY_SUPPLIER) {
         partnerMap.put("isSupplier", true);
       } else {
-        partnerMap.put("primaryAddress", lead.getPrimaryAddress());
         response.setAttr("isProspect", "value", true);
       }
     } else {
       partnerMap.put("isProspect", true);
     }
 
-    if (ObjectUtils.isEmpty(lead.getEnterpriseName())) {
+    if (ObjectUtils.notEmpty(lead.getName())) {
       partnerMap.put("firstName", lead.getFirstName());
       partnerMap.put("name", lead.getName());
       partnerMap.put("titleSelect", lead.getTitleSelect());
@@ -283,6 +280,32 @@ public class ConvertLeadWizardController {
           response.setValue((String) partnerField.getKey(), partnerField.getValue());
         }
       }
+      List<PartnerAddress> partnerAddressList = this.generateAddress(request, partner);
+      response.setValue("partnerAddressList", partnerAddressList);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  protected List<PartnerAddress> generateAddress(ActionRequest request, Partner partner)
+      throws AxelorException {
+    Lead lead = this.findLead(request);
+    Address primaryAddress = Beans.get(ConvertLeadWizardService.class).createPrimaryAddress(lead);
+    if (primaryAddress != null) {
+      primaryAddress.setFullName(Beans.get(AddressService.class).computeFullName(primaryAddress));
+      Beans.get(PartnerService.class).addPartnerAddress(partner, primaryAddress, true, true, true);
+    }
+    return partner.getPartnerAddressList();
+  }
+
+  public void setFieldsForOpportunityGenerationFromPartner(
+      ActionRequest request, ActionResponse response) {
+    try {
+      Map<String, Object> opportunityMap = this.getOpportunityMap(request);
+      for (Map.Entry opportunityField : opportunityMap.entrySet()) {
+        response.setValue((String) opportunityField.getKey(), opportunityField.getValue());
+      }
+
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -292,6 +315,7 @@ public class ConvertLeadWizardController {
     try {
       Context context = request.getContext();
       Partner partner = context.asType(Partner.class);
+      partner = Beans.get(PartnerRepository.class).find(partner.getId());
       Lead lead = this.findLead(request);
       partner =
           Beans.get(ConvertLeadWizardService.class)
@@ -303,37 +327,43 @@ public class ConvertLeadWizardController {
                   null,
                   null,
                   null);
-      if (partner.getId() != null) {
-        response.setReload(true);
-      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
   }
 
-  public void generateOpportunityFromLeadAndPartner(
-      ActionRequest request, ActionResponse response) {
+  public void openOpportunity(ActionRequest request, ActionResponse response) {
+
     try {
+
       Context context = request.getContext();
       Partner partner = context.asType(Partner.class);
-      Opportunity opporunity = this.createOpportunity(request, partner);
-      this.openOpportunity(response, opporunity);
+      partner = Beans.get(PartnerRepository.class).find(partner.getId());
+
+      Lead lead;
+      Map<String, Object> leadContext = (Map<String, Object>) context.get("_lead");
+      lead = Beans.get(LeadRepository.class).find(((Integer) leadContext.get("id")).longValue());
+
+      String form = "opportunity-form";
+      String grid = "opportunity-grid";
+      response.setCanClose(true);
+      response.setView(
+          ActionView.define(I18n.get(CrmExceptionMessage.CONVERT_LEAD_1))
+              .model(Opportunity.class.getName())
+              .add("form", form)
+              .add("grid", grid)
+              .param("search-filters", "opportunity-filters")
+              .context("_isGeneratedFromPartner", true)
+              .context("_partner", partner)
+              .context("_lead", lead)
+              .context("_internalUserId", AuthUtils.getUser().getId())
+              .context("_myActiveTeam", Beans.get(UserService.class).getUserActiveTeam())
+              .context("todayDate", Beans.get(AppBaseService.class).getTodayDate(null))
+              .map());
+
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
-  }
-
-  protected void openOpportunity(ActionResponse response, Opportunity opporunity) {
-    String form = "opportunity-form";
-    String grid = "opportunity-grid";
-
-    response.setView(
-        ActionView.define(I18n.get(CrmExceptionMessage.CONVERT_LEAD_1))
-            .model(Partner.class.getName())
-            .add("form", form)
-            .add("grid", grid)
-            .context("_showRecord", opporunity.getId())
-            .map());
   }
 
   protected Map<String, Object> getOpportunityMap(ActionRequest request) throws AxelorException {
@@ -342,12 +372,5 @@ public class ConvertLeadWizardController {
     opportunityMap.put("source", lead.getSource());
     opportunityMap.put("user", lead.getUser());
     return opportunityMap;
-  }
-
-  @SuppressWarnings("unchecked")
-  protected Opportunity createOpportunity(ActionRequest request, Partner partner)
-      throws AxelorException {
-    return Beans.get(ConvertWizardOpportunityService.class)
-        .createOpportunity(getOpportunityMap(request), partner);
   }
 }
