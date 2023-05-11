@@ -243,6 +243,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     valuesMap.put("functionalOriginSelect", move.getFunctionalOriginSelect());
     valuesMap.put("paymentMode", move.getPaymentMode());
     valuesMap.put("paymentCondition", move.getPaymentCondition());
+    valuesMap.put("partnerBankDetails", move.getPartnerBankDetails());
 
     return valuesMap;
   }
