@@ -177,11 +177,6 @@
 
       <panel name="planningPanel" title="Planning" if="__config__.app.isApp('employee')"
         if-module="axelor-human-resource" showIf="project.isShowPlanning">
-        <field name="totalPlannedHrs" readonly="true" colSpan="4">
-          <viewer><![CDATA[
-                   	<span>{{$fmt('totalPlannedHrs')}} </span><span x-translate>hours</span>
-       			]]></viewer>
-        </field>
         <field name="budgetedTime" colSpan="4">
           <viewer><![CDATA[
                    	<span>{{$fmt('budgetedTime')}} </span><span x-translate>hours</span>

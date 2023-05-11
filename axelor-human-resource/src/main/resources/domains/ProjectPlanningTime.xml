@@ -22,7 +22,8 @@
 
     <datetime name="startDateTime" title="Start date time" required="true"/>
     <datetime name="endDateTime" title="End date time" required="true"/>
-    <many-to-one name="timeUnit" title="Time unit" ref="com.axelor.apps.base.db.Unit"/>
+    <many-to-one name="timeUnit" title="Time unit" ref="com.axelor.apps.base.db.Unit"
+      required="true"/>
 
     <string name="fullName" namecolumn="true">
 		 <![CDATA[

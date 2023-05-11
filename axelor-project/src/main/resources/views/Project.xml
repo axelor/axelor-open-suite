@@ -167,12 +167,6 @@
       </panel>
       <panel title="Planning" name="planningPanel" colSpan="12" hideIf="!isShowPlanning"
         if="__config__.app.isApp('employee')" if-module="axelor-human-resource">
-        <field name="totalPlannedHrs" readonly="true">
-          <viewer><![CDATA[
-		                   	<span>{{$fmt('totalPlannedHrs')}} </span><span x-translate>hours</span>
-		       			]]></viewer>
-        </field>
-        <spacer name="totalPlannedHrsSpacer" colSpan="6"/>
         <button name="addMultipleLinesBtn" title="Add multiple lines"
           css="btn-custom text-left"
           onClick="save,action-project-view-add-multiple-project-planning-time" colSpan="4"

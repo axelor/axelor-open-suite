@@ -6,6 +6,7 @@
   <grid name="project-planning-time-grid" title="Planned time"
     model="com.axelor.apps.project.db.ProjectPlanningTime">
     <field name="plannedTime"/>
+    <field name="timeUnit"/>
     <field name="project"/>
     <field name="projectTask"/>
     <field name="employee"/>
@@ -136,8 +137,7 @@
 
   <action-attrs name="action-project-planning-time-attrs-default">
     <attribute name="value" for="projectTask" expr="eval:_projectTask"/>
-    <attribute name="value" for="timeUnit" expr="eval:_timeUnit"
-      if="_projectTask"/>
+    <attribute name="value" for="timeUnit" expr="eval:_timeUnit" if="_projectTask"/>
     <attribute for="timeUnit" name="readonly" expr="eval: true" if="_projectTask"/>
     <attribute name="value" for="project" expr="eval:_project"/>
     <attribute name="value" for="userSet" expr="eval:_project.membersUserSet"

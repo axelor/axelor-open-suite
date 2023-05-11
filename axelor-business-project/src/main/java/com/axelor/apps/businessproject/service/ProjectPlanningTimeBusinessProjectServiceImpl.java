@@ -83,8 +83,17 @@ public class ProjectPlanningTimeBusinessProjectServiceImpl extends ProjectPlanni
             activity,
             dailyWorkHrs,
             taskEndDateTime);
-    if (projectTask != null) planningTime.setTimeUnit(projectTask.getTimeUnit());
-    else planningTime.setTimeUnit(appBusinessProjectService.getAppBusinessProject().getHoursUnit());
+    if (projectTask != null) {
+      planningTime.setTimeUnit(projectTask.getTimeUnit());
+    } else {
+      planningTime.setTimeUnit(appBusinessProjectService.getAppBusinessProject().getHoursUnit());
+    }
+    if (planningTime
+        .getTimeUnit()
+        .equals(appBusinessProjectService.getAppBusinessProject().getDaysUnit())) {
+      planningTime.setPlannedTime(
+          planningTime.getPlannedTime().divide(project.getNumberHoursADay()));
+    }
     return planningTime;
   }
 }
