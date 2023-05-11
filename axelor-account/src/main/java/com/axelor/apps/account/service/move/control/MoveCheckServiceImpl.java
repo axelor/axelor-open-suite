@@ -160,12 +160,12 @@ public class MoveCheckServiceImpl implements MoveCheckService {
   }
 
   @Override
-  public void checkOrigin(Move move) throws AxelorException {
+  public String getOriginAlert(Move move) {
     if (move.getOrigin() == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(AccountExceptionMessage.MOVE_CHECK_ORIGIN));
+      return I18n.get(AccountExceptionMessage.MOVE_CHECK_ORIGIN);
     }
+
+    return null;
   }
 
   @Override

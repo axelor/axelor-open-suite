@@ -82,7 +82,7 @@ public interface MoveGroupService {
   Map<String, Map<String, Object>> getOriginDateOnChangeAttrsMap(
       Move move, boolean paymentConditionChange);
 
-  MoveContext onChangeOrigin(Move move) throws AxelorException;
+  Map<String, Object> getOriginOnChangeValuesMap(Move move) throws AxelorException;
 
   MoveContext onChangePaymentCondition(
       Move move, boolean paymentConditionChange, boolean dateChange, boolean headerChange)

@@ -196,15 +196,4 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
         bankDetailsService.getDefaultCompanyBankDetails(company, paymentMode, partner, null);
     move.setCompanyBankDetails(defaultBankDetails);
   }
-
-  @Override
-  public Map<String, Object> setOriginOnMoveLineList(Move move) throws AxelorException {
-    Objects.requireNonNull(move);
-    HashMap<String, Object> resultMap = new HashMap<>();
-
-    moveToolService.setOriginOnMoveLineList(move);
-    resultMap.put("moveLineList", move.getMoveLineList());
-
-    return resultMap;
-  }
 }

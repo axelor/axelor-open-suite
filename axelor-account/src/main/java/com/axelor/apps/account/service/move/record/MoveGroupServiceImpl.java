@@ -342,24 +342,14 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   }
 
   @Override
-  public MoveContext onChangeOrigin(Move move) throws AxelorException {
-    Objects.requireNonNull(move);
+  public Map<String, Object> getOriginOnChangeValuesMap(Move move) {
+    Map<String, Object> valuesMap = new HashMap<>();
 
-    MoveContext result = new MoveContext();
+    moveToolService.setOriginOnMoveLineList(move);
 
-    checkOrigin(move, result);
-    checkDuplicateOriginMove(move, result);
-    result.putInValues(moveRecordSetService.setOriginOnMoveLineList(move));
+    valuesMap.put("moveLineList", move.getMoveLineList());
 
-    return result;
-  }
-
-  protected void checkOrigin(Move move, MoveContext result) {
-    try {
-      moveCheckService.checkOrigin(move);
-    } catch (AxelorException e) {
-      result.putInAlert(e.getMessage());
-    }
+    return valuesMap;
   }
 
   @Override

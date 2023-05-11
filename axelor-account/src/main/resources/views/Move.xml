@@ -132,8 +132,7 @@
         </panel>
         <panel name="originDescriptionPanel" colSpan="12">
           <field name="origin" readonlyIf="$validatePeriod" colSpan="4"
-            onChange="action-account-move-method-origin-onchange"
-            requiredIf="journal.hasRequiredOrigin"/>
+            onChange="action-move-group-origin-onchange" requiredIf="journal.hasRequiredOrigin"/>
           <field name="originDate" title="Origin date"
             readonlyIf="$validatePeriod || moveLineList.length  &gt; 0 &amp;&amp; statusSelect == 3"
             onChange="action-move-group-origin-date-onchange" colSpan="2"/>
@@ -380,7 +379,7 @@
         <field name="description" colSpan="6"
           onChange="action-account-move-group-set-description-on-lines"/>
         <field name="origin" colSpan="3" requiredIf="journal.hasRequiredOrigin"
-          onChange="action-account-move-method-origin-onchange"/>
+          onChange="action-move-group-origin-onchange"/>
         <field name="journal.hasRequiredOrigin" readonly="true" hidden="true"/>
         <field name="journal.hasDuplicateDetectionOnOrigin" readonly="true" hidden="true"/>
         <field name="journal.authorizedFunctionalOriginSelect" hidden="true"/>
@@ -678,6 +677,12 @@
     <action name="action-account-move-method-origin-date-onchange"/>
   </action-group>
 
+  <action-group name="action-move-group-origin-onchange">
+    <action name="action-move-method-check-origin"/>
+    <action name="action-move-method-check-duplicate-origin-move"/>
+    <action name="action-account-move-method-origin-onchange"/>
+  </action-group>
+
   <!-- ACTION METHOD -->
   <action-method name="action-move-method-accounting">
     <call class="com.axelor.apps.account.web.MoveController" method="accounting"/>
@@ -829,6 +834,10 @@
 
   <action-method name="action-account-move-method-onSave-after">
     <call class="com.axelor.apps.account.web.MoveController" method="onSaveAfter"/>
+  </action-method>
+
+  <action-method name="action-move-method-check-origin">
+    <call class="com.axelor.apps.account.web.MoveController" method="checkOrigin"/>
   </action-method>
 
   <action-method name="action-account-move-method-origin-onchange">
