@@ -20,7 +20,6 @@
     <string name="suffixe" title="Suffix"/>
     <integer name="padding" title="Padding" required="true"/>
     <integer name="toBeAdded" title="Increment" required="true" min="1"/>
-
     <boolean name="yearlyResetOk" title="Yearly reset"/>
     <boolean name="monthlyResetOk" title="Monthly reset"/>
 

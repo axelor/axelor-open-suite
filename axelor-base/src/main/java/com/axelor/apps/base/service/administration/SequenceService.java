@@ -66,8 +66,10 @@ public class SequenceService {
   protected static final String PATTERN_FULL_MONTH = "%FM";
   protected static final String PATTERN_DAY = "%D";
   protected static final String PATTERN_WEEK = "%WY";
-  protected static final String PADDING_STRING = "0";
+  protected static final String PADDING_LETTER = "A";
+  protected static final String PADDING_DIGIT = "0";
   protected static final int SEQ_MAX_LENGTH = 14;
+  protected static final int NUMBER_OF_LETTERS = 26;
 
   protected final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -242,9 +244,10 @@ public class SequenceService {
     if (sequence.getSequenceTypeSelect() == SequenceTypeSelect.NUMBERS) {
       sequenceValue =
           StringUtils.leftPad(
-              sequenceVersion.getNextNum().toString(), sequence.getPadding(), PADDING_STRING);
+              sequenceVersion.getNextNum().toString(), sequence.getPadding(), PADDING_DIGIT);
     } else {
-      sequenceValue = findNextLetterSequence(sequenceVersion);
+      String letterSequence = findNextLetterSequence(sequenceVersion);
+      sequenceValue = StringUtils.leftPad(letterSequence, sequence.getPadding(), PADDING_LETTER);
     }
     String nextSeq =
         (seqPrefixe + sequenceValue + seqSuffixe)
@@ -276,12 +279,17 @@ public class SequenceService {
 
   protected String findNextLetterSequence(SequenceVersion sequenceVersion) {
     long n = sequenceVersion.getNextNum();
-    char[] buf = new char[(int) Math.floor(Math.log(25 * (n + 1)) / Math.log(26))];
+    char[] buf =
+        new char
+            [(int)
+                Math.floor(
+                    Math.log((NUMBER_OF_LETTERS - 1) * (n + 1)) / Math.log(NUMBER_OF_LETTERS))];
     for (int i = buf.length - 1; i >= 0; i--) {
       n--;
-      buf[i] = (char) ('A' + n % 26);
+      buf[i] = (char) ('A' + n % NUMBER_OF_LETTERS);
       n /= 26;
     }
+
     if (sequenceVersion.getSequence().getSequenceLettersTypeSelect()
         == SequenceLettersTypeSelect.UPPERCASE) {
       return new String(buf);
@@ -335,7 +343,7 @@ public class SequenceService {
    * Get draft sequence number with leading zeros.
    *
    * @param model
-   * @param padding
+   * @param zeroPadding
    * @return
    */
   public String getDraftSequenceNumber(Model model, int zeroPadding) throws AxelorException {
