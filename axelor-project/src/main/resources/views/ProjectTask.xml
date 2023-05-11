@@ -570,6 +570,8 @@
     <context name="_timePlannedPopup" expr="eval: true"/>
     <context name="_projectTask" expr="eval:__self__"
       if="_model == 'com.axelor.apps.project.db.ProjectTask'"/>
+    <context name="_timeUnit" expr="eval:__self__.timeUnit"
+      if="_model == 'com.axelor.apps.project.db.ProjectTask'"/>
     <context name="_employee" expr="eval:assignedTo.employee"
       if="_model == 'com.axelor.apps.project.db.ProjectTask'"/>
     <context name="_project" expr="eval:__self__.project"

@@ -136,7 +136,7 @@
 
   <action-attrs name="action-project-planning-time-attrs-default">
     <attribute name="value" for="projectTask" expr="eval:_projectTask"/>
-    <attribute name="value" for="timeUnit" expr="eval:_projectTask.timeUnit"
+    <attribute name="value" for="timeUnit" expr="eval:_timeUnit"
       if="_projectTask"/>
     <attribute for="timeUnit" name="readonly" expr="eval: true" if="_projectTask"/>
     <attribute name="value" for="project" expr="eval:_project"/>
