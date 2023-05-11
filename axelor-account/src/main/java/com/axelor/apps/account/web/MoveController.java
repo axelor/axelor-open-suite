@@ -787,6 +787,7 @@ public class MoveController {
     try {
       Context context = request.getContext();
       Move move = context.asType(Move.class);
+      MoveGroupService moveGroupService = Beans.get(MoveGroupService.class);
 
       boolean paymentConditionChange =
           Optional.ofNullable(context.get("paymentConditionChange"))
@@ -797,24 +798,9 @@ public class MoveController {
               .map(value -> (Boolean) value)
               .orElse(false);
 
-      MoveContext result =
-          Beans.get(MoveGroupService.class)
-              .onChangePartner(move, paymentConditionChange, dateChange);
-      response.setValues(result.getValues());
-      response.setAttrs(result.getAttrs());
-      if (!result.getFlash().isEmpty()) {
-        response.setInfo(result.getFlash());
-      }
-      if (!result.getNotify().isEmpty()) {
-        response.setNotify(result.getNotify());
-      }
-      if (!result.getAlert().isEmpty()) {
-        response.setAlert(result.getAlert());
-      }
-      if (!result.getError().isEmpty()) {
-        response.setError(result.getError());
-      }
-
+      response.setValues(
+          moveGroupService.getPartnerOnChangeValuesMap(move, paymentConditionChange, dateChange));
+      response.setAttrs(moveGroupService.getPartnerOnChangeAttrsMap(move, paymentConditionChange));
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

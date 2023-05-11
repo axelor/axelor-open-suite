@@ -128,10 +128,7 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
   }
 
   @Override
-  public Map<String, Object> setCurrencyByPartner(Move move) {
-    Objects.requireNonNull(move);
-    HashMap<String, Object> resultMap = new HashMap<>();
-
+  public void setCurrencyByPartner(Move move) {
     Partner partner = move.getPartner();
 
     if (partner != null) {
@@ -140,10 +137,6 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
           Optional.ofNullable(partner.getCurrency()).map(Currency::getCodeISO).orElse(null));
       move.setFiscalPosition(partner.getFiscalPosition());
     }
-    resultMap.put("currency", move.getCurrency());
-    resultMap.put("currencyCode", move.getCurrencyCode());
-    resultMap.put("fiscalPosition", move.getFiscalPosition());
-    return resultMap;
   }
 
   @Override
@@ -185,27 +178,23 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
   }
 
   @Override
-  public Map<String, Object> setCompanyBankDetails(Move move) throws AxelorException {
-    Objects.requireNonNull(move);
-    HashMap<String, Object> resultMap = new HashMap<>();
-
+  public void setCompanyBankDetails(Move move) throws AxelorException {
     PaymentMode paymentMode = move.getPaymentMode();
     Company company = move.getCompany();
     Partner partner = move.getPartner();
+
     if (company == null) {
       move.setCompanyBankDetails(null);
-      resultMap.put("companyBankDetails", null);
-      return resultMap;
+      return;
     }
+
     if (partner != null) {
       partner = partnerRepository.find(partner.getId());
     }
+
     BankDetails defaultBankDetails =
         bankDetailsService.getDefaultCompanyBankDetails(company, paymentMode, partner, null);
     move.setCompanyBankDetails(defaultBankDetails);
-    resultMap.put("companyBankDetails", defaultBankDetails);
-
-    return resultMap;
   }
 
   @Override

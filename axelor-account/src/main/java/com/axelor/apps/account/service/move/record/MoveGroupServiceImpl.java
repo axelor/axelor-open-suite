@@ -258,21 +258,37 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   }
 
   @Override
-  public MoveContext onChangePartner(Move move, boolean paymentConditionChange, boolean dateChange)
-      throws AxelorException {
-    Objects.requireNonNull(move);
+  public Map<String, Object> getPartnerOnChangeValuesMap(
+      Move move, boolean paymentConditionChange, boolean dateChange) throws AxelorException {
+    Map<String, Object> valuesMap = new HashMap<>();
 
-    MoveContext result = new MoveContext();
+    moveRecordSetService.setCurrencyByPartner(move);
+    moveRecordSetService.setPaymentMode(move);
+    moveRecordSetService.setPaymentCondition(move);
+    moveRecordSetService.setPartnerBankDetails(move);
+    moveRecordUpdateService.updateDueDate(move, paymentConditionChange, dateChange);
 
-    result.putInValues(moveRecordSetService.setCurrencyByPartner(move));
-    result.putInValues(moveRecordSetService.setPaymentMode(move));
-    result.putInValues(moveRecordSetService.setPaymentCondition(move));
-    result.putInValues(moveRecordSetService.setPartnerBankDetails(move));
-    result.merge(moveRecordUpdateService.updateDueDate(move, paymentConditionChange, dateChange));
-    result.putInAttrs(moveAttrsService.getHiddenAttributeValues(move));
-    result.putInValues(moveRecordSetService.setCompanyBankDetails(move));
+    valuesMap.put("currency", move.getCurrency());
+    valuesMap.put("currencyCode", move.getCurrencyCode());
+    valuesMap.put("fiscalPosition", move.getFiscalPosition());
+    valuesMap.put("paymentMode", move.getPaymentMode());
+    valuesMap.put("paymentCondition", move.getPaymentCondition());
+    valuesMap.put("partnerBankDetails", move.getPartnerBankDetails());
+    valuesMap.put("dueDate", move.getDueDate());
+    valuesMap.put("companyBankDetails", move.getCompanyBankDetails());
 
-    return result;
+    return valuesMap;
+  }
+
+  @Override
+  public Map<String, Map<String, Object>> getPartnerOnChangeAttrsMap(
+      Move move, boolean paymentConditionChange) {
+    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+
+    moveAttrsService.addHidden(move, attrsMap);
+    moveAttrsService.addDateChangeFalseValue(move, paymentConditionChange, attrsMap);
+
+    return attrsMap;
   }
 
   @Override

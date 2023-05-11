@@ -30,13 +30,7 @@ public interface MoveRecordSetService {
 
   void setPartnerBankDetails(Move move);
 
-  /**
-   * Set the currency of move by using the move.partner.
-   *
-   * @param move
-   * @return a map of modified fields
-   */
-  Map<String, Object> setCurrencyByPartner(Move move);
+  void setCurrencyByPartner(Move move);
 
   /**
    * Set the currencyCode of the move by using current currency
@@ -58,7 +52,7 @@ public interface MoveRecordSetService {
 
   void setPeriod(Move move) throws AxelorException;
 
-  Map<String, Object> setCompanyBankDetails(Move move) throws AxelorException;
+  void setCompanyBankDetails(Move move) throws AxelorException;
 
   Map<String, Object> setMoveLineOriginDates(Move move) throws AxelorException;
 
