@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <!-- VUE GENERALE -->
 
@@ -386,7 +386,7 @@
 
   <form name="invoice-form" title="Invoice" model="com.axelor.apps.account.db.Invoice"
     onNew="action-account-invoice-onnew-group" onLoad="action-account-invoice-onload-group"
-    onSave="action-invoice-onsave-group">
+    onSave="action-invoice-onsave-group" canDelete="statusSelect == 4">
 
     <toolbar>
       <button name="reportsBtn" title="Reports" icon="fa-print" showIf="statusSelect != 4"
@@ -489,7 +489,7 @@
         form-view="bank-details-form" grid-view="bank-details-grid"/>
       <field name="fiscalPosition" grid-view="fiscal-position-grid"
         form-view="fiscal-position-form" canNew="false" canEdit="false"
-        readonlyIf="statusSelect > 2 || invoiceLineList.length > 0"
+        readonlyIf="statusSelect > 1"
         onChange="action-invoice-method-fiscal-position-on-change,action-invoice-group-invoice-line-list-on-change"/>
       <field name="interco" hidden="true" if-module="axelor-supplychain"
         if="__config__.app.isApp('supplychain')"/>
@@ -500,8 +500,7 @@
     </panel>
 
     <panel name="invoicingInfoPanel" title="Invoicing information" hideIf="company == null">
-      <field name="partner" colSpan="3" canEdit="false"
-        readonlyIf="((operationTypeSelect == 3 || operationTypeSelect == 4) &amp;&amp; statusSelect != 1) || ((operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; (statusSelect != 1 || invoiceLineList.length > 0))"
+      <field name="partner" colSpan="3" canEdit="false" readonlyIf="statusSelect != 1"
         onChange="action-invoice-group-partner-onchange"
         onSelect="action-invoice-method-set-partner-domain" form-view="partner-form"
         grid-view="partner-grid"/>
@@ -517,6 +516,7 @@
       <field name="paymentCondition" colSpan="3" canEdit="false"
         readonlyIf="statusSelect == 3" widget="SuggestBox"
         onChange="action-invoice-group-payment-condition-onchange"
+        onSelect="action-invoice-attrs-payment-condition-set-domain"
         form-view="payment-condition-form" grid-view="payment-condition-grid"/>
       <field name="$partnerBankDetailsListWarning" showTitle="false" hidden="true"
         readonly="true" colSpan="12">
@@ -528,7 +528,8 @@
         onSelect="action-invoice-attrs-bank-details-from-partner-domain"
         form-view="bank-details-form" grid-view="bank-details-grid"
         requiredIf="([1,2].includes(operationTypeSelect) &amp;&amp; paymentMode.typeSelect == 9)
-             || ([3,4].includes(operationTypeSelect) &amp;&amp; [2,10].includes(paymentMode.typeSelect))"/>
+             || ([3,4].includes(operationTypeSelect) &amp;&amp; [2,10].includes(paymentMode.typeSelect))"
+        onChange="action-invoice-method-update-invoice-term-bank-details"/>
       <field name="partnerTaxNbr" readonlyIf="statusSelect != 1"
         hideIf="operationTypeSelect != 3 &amp;&amp; operationTypeSelect != 4"
         if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
@@ -593,6 +594,7 @@
           colSpan="12" form-view="invoice-line-tax-form" grid-view="invoice-line-tax-grid"/>
       </panel>
       <panel name="invoiceTermsPanel" title="Terms" showTitle="true"
+        if="__config__.app.getApp('account').allowMultiInvoiceTerms"
         showIf="invoiceTermList != null">
         <button name="showInvoiceTermsBtn" title="Show related invoice term(s)"
           onClick="save,action-invoice-view-show-related-invoice-terms"
@@ -883,7 +885,7 @@ InvoiceSet.length > 0))"
         <button name="registerPaymentBtn" title="Register payment" colSpan="12"
           onClick="save,action-invoice-view-register-payment-voucher" hidden="true"/>
         <field name="validatedByUser" showIf="validatedByUser" colSpan="6" canView="false"/>
-        <field name="validatedDate" hidden="true" showIf="validatedDate" colSpan="6"/>
+        <field name="validatedDateTime" hidden="true" showIf="validatedDateTime" colSpan="6"/>
         <field name="pfpValidatorUser" hidden="true"
           if="__config__.app.getApp('account')?.getActivatePassedForPayment()"
           readonlyIf="pfpValidateStatusSelect != 1" colSpan="6"
@@ -891,13 +893,13 @@ InvoiceSet.length > 0))"
           onChange="action-invoice-group-pfp-validator-user-onchange" canEdit="false"/>
         <panel name="pfpEmailPanel"
           if="__config__.app.getApp('account')?.getActivatePassedForPayment()" colSpan="6">
-          <field name="decisionPfpTakenDate" colSpan="12" hidden="true"/>
+          <field name="decisionPfpTakenDateTime" colSpan="12" hidden="true"/>
           <button name="sendPfpNotifyEmailBtn" colSpan="12" title="Send a notify email"
             hidden="true" onClick="save,action-send-by-email-with-template"/>
         </panel>
         <field name="ventilatedByUser" hidden="true" showIf="ventilatedByUser" colSpan="6"
           canView="false"/>
-        <field name="ventilatedDate" hidden="true" showIf="ventilatedDate" colSpan="6"/>
+        <field name="ventilatedDateTime" hidden="true" showIf="ventilatedDateTime" colSpan="6"/>
       </panel>
     </panel>
     <panel sidebar="true" name="totalsPanel" title="Totals" showTitle="false" itemSpan="6"
@@ -1025,7 +1027,7 @@ InvoiceSet.length > 0))"
       <panel name="datesPanel" title="Dates" readonlyIf="statusSelect == 3" canCollapse="true"
         collapseIf="true">
         <field name="invoiceDate" onChange="action-invoice-group-payment-condition-onchange"
-          readonlyIf="ventilatedByUser || ventilatedDate"/>
+          readonlyIf="ventilatedByUser || ventilatedDateTime"/>
         <spacer/>
         <field name="dueDate" readonlyIf="!paymentCondition.isFree"/>
         <field name="nextDueDate" showIf="invoiceTermList.length > 1"/>
@@ -1041,8 +1043,7 @@ InvoiceSet.length > 0))"
   </form>
 
 
-  <form name="invoice-reports-wizard-form" title="Reports"
-    model="com.axelor.apps.base.db.Wizard"
+  <form name="invoice-reports-wizard-form" title="Reports" model="com.axelor.utils.db.Wizard"
     onNew="action-invoice-reports-wizard-attrs-set-report-type-select">
     <panel name="mainPanel">
       <panel name="invoiceTypePanel" colSpan="6">
@@ -1074,7 +1075,7 @@ InvoiceSet.length > 0))"
 
   <form name="invoice-client-form" title="Invoice" model="com.axelor.apps.account.db.Invoice"
     onNew="action-account-invoice-onnew-group" onLoad="action-account-invoice-onload-group"
-    onSave="action-invoice-onsave-group">
+    onSave="action-invoice-onsave-group" canDelete="statusSelect == 4">
 
     <toolbar>
       <button name="showInvoiceBtn" title="Print" icon="fa-print"
@@ -1128,7 +1129,7 @@ InvoiceSet.length > 0))"
 
     <panel name="invoicingInfoPanel" title="Invoicing information">
       <field name="partner" canEdit="false" form-view="partner-form" grid-view="partner-grid"
-        readonlyIf="((operationTypeSelect == 3 || operationTypeSelect == 4) &amp;&amp; statusSelect != 1) || ((operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; (statusSelect !=1 || invoiceLineList.length > 0))"
+        readonlyIf="statusSelect != 1"
         onChange="action-group-account-invoice-partner-onchange-client"
         onSelect="action-invoice-method-set-partner-domain" canView="false"/>
       <field name="contactPartner" canEdit="false" onSelect="action-set-partner-domain"
@@ -1156,6 +1157,7 @@ InvoiceSet.length > 0))"
       <field name="paymentCondition" canEdit="false" readonlyIf="statusSelect == 3"
         widget="SuggestBox"
         onChange="action-invoice-method-generate-invoice-terms,action-invoice-method-compute-invoice-terms-due-dates,action-invoice-record-due-dates"
+        onSelect="action-invoice-attrs-payment-condition-set-domain"
         form-view="payment-condition-form" grid-view="payment-condition-grid"/>
       <field name="bankDetails" canEdit="false" widget="SuggestBox"
         onSelect="action-invoice-attrs-bank-details-from-partner-domain"
@@ -1216,10 +1218,10 @@ InvoiceSet.length > 0))"
         <field name="hasPendingPayments" hidden="true"/>
         <field name="validatedByUser" hidden="true" showIf="validatedByUser" colSpan="6"
           canView="false"/>
-        <field name="validatedDate" hidden="true" showIf="validatedDate" colSpan="6"/>
+        <field name="validatedDateTime" hidden="true" showIf="validatedDateTime" colSpan="6"/>
         <field name="ventilatedByUser" hidden="true" showIf="ventilatedByUser" colSpan="6"
           canView="false"/>
-        <field name="ventilatedDate" hidden="true" showIf="ventilatedDate" colSpan="6"/>
+        <field name="ventilatedDateTime" hidden="true" showIf="ventilatedDateTime" colSpan="6"/>
       </panel>
     </panel>
 
@@ -1357,7 +1359,7 @@ InvoiceSet.length > 0))"
   </grid>
 
   <!-- CUSTOMER INVOICES MERGE -->
-  <form name="customer-invoices-merge-form" model="com.axelor.apps.base.db.Wizard"
+  <form name="customer-invoices-merge-form" model="com.axelor.utils.db.Wizard"
     title="Merge Cust. Invoices" width="large">
     <panel-related name="$invoiceToMergePanel" field="$invoiceToMerge"
       form-view="invoice-form" grid-view="invoice-grid" title="Cust. Invoices to merge" colSpan="12"
@@ -1369,7 +1371,7 @@ InvoiceSet.length > 0))"
     </panel>
   </form>
 
-  <form name="customer-invoices-merge-confirm-form" model="com.axelor.apps.base.db.Wizard"
+  <form name="customer-invoices-merge-confirm-form" model="com.axelor.utils.db.Wizard"
     title="Management of merge conflicts"
     onNew="action-record-load-dummy-field-confirm-merge-invoice">
     <panel name="mainPanel" colSpan="12">
@@ -1409,7 +1411,7 @@ InvoiceSet.length > 0))"
   </form>
 
   <!-- SUPPLIER INVOICES MERGE -->
-  <form name="supplier-invoices-merge-form" model="com.axelor.apps.base.db.Wizard"
+  <form name="supplier-invoices-merge-form" model="com.axelor.utils.db.Wizard"
     title="Merge Suppl. Invoices" width="large">
     <panel-related name="$invoiceToMergePanel" field="$invoiceToMerge"
       form-view="invoice-form" grid-view="invoice-grid" title="Suppl. Invoices to merge"
@@ -1421,7 +1423,7 @@ InvoiceSet.length > 0))"
     </panel>
   </form>
 
-  <form name="supplier-invoices-merge-confirm-form" model="com.axelor.apps.base.db.Wizard"
+  <form name="supplier-invoices-merge-confirm-form" model="com.axelor.utils.db.Wizard"
     title="Management of merge conflicts"
     onNew="action-record-load-dummy-field-confirm-merge-invoice">
     <panel name="mainPanel" colSpan="12">
@@ -1503,6 +1505,7 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-attrs-selection-in-operation-type-select"/>
     <action name="action-invoice-record-set-pfp-status"
       if="__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
+    <action name="action-invoice-attrs-set-hidden-analytic-accounting-panel"/>
   </action-group>
 
   <action-group name="action-account-invoice-onload-group">
@@ -1525,6 +1528,7 @@ InvoiceSet.length > 0))"
       if="__config__.app.getApp('account')?.getActivatePassedForPayment() &amp;&amp; pfpValidateStatusSelect > 0"/>
     <action name="action-invoice-record-set-dummy-field-language"/>
     <action name="action-invoice-method-set-payment-visibility"/>
+    <action name="action-invoice-attrs-set-hidden-analytic-accounting-panel"/>
   </action-group>
 
   <action-group name="action-group-account-invoice-operationtype-onchange">
@@ -1539,6 +1543,7 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-record-set-dummy-field-language"/>
     <action name="action-invoice-attrs-in-ati"/>
     <action name="action-invoice-method-update-invoice-terms"/>
+    <action name="action-invoice-attrs-set-hidden-analytic-accounting-panel"/>
   </action-group>
 
   <action-group name="action-group-account-invoice-partner-onchange">
@@ -1572,6 +1577,8 @@ InvoiceSet.length > 0))"
     <action name="action-record-invoice-set-discount-values"
       if="__config__.app.getApp('account')?.getManageFinancialDiscount()"/>
     <action name="action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"/>
+    <action name="action-invoice-method-fiscal-position-on-change"/>
+    <action name="action-invoice-method-compute"/>
   </action-group>
 
   <action-group name="action-invoice-group-currency-onchange">
@@ -1597,6 +1604,7 @@ InvoiceSet.length > 0))"
 
   <action-group name="action-invoice-group-ventilate-button">
     <action name="action-invoice-method-validate-invoice-terms-before-save"/>
+    <action name="action-invoice-line-check-distribution-template-account"/>
     <action name="save"/>
     <action name="action-invoice-method-generate-invoice-terms"/>
     <action name="action-invoice-method-compute-invoice-terms-due-dates"/>
@@ -1639,6 +1647,7 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-method-generate-invoice-terms"/>
     <action name="action-invoice-method-compute-invoice-terms-due-dates"/>
     <action name="save"/>
+    <action name="action-invoice-line-check-distribution-template-account"/>
     <action name="action-invoice-method-validate"/>
     <action name="action-record-invoice-set-discount-values"
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
@@ -1798,8 +1807,7 @@ InvoiceSet.length > 0))"
   <action-record name="action-invoice-record-partner-change"
     model="com.axelor.apps.account.db.Invoice">
     <field name="paymentCondition" expr="eval: partner?.paymentCondition"/>
-    <field name="fiscalPosition" expr="eval: partner?.fiscalPosition"
-      if="eval: invoiceLineList?.isEmpty()"/>
+    <field name="fiscalPosition" expr="eval: partner?.fiscalPosition"/>
     <field name="address"
       expr="call:com.axelor.apps.base.service.PartnerService:getInvoicingAddress(partner)"/>
     <field name="currency" expr="eval: partner?.currency"
@@ -1828,7 +1836,7 @@ InvoiceSet.length > 0))"
   </action-record>
 
   <action-record name="action-record-load-dummy-field-confirm-merge-invoice"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.utils.db.Wizard">
     <field name="contactPartnerToCheck" expr="eval: contextContactPartnerToCheck"
       if="contextContactPartnerToCheck"/>
     <field name="partnerId" expr="eval: contextPartnerId" if="contextPartnerId"/>
@@ -1877,13 +1885,6 @@ InvoiceSet.length > 0))"
       expr="eval: (note ? note + &quot;&lt;br&gt;&quot; : '') + (partner?.invoiceComments ? partner.invoiceComments + &quot;&lt;br&gt;&quot; : '')"/>
   </action-record>
 
-  <action-record name="action-invoice-record-refusal-to-pay"
-    model="com.axelor.apps.account.db.Invoice">
-    <field name="pfpValidateStatusSelect" expr="eval: 3"/>
-    <field name="decisionPfpTakenDate" expr="eval: __config__.date"/>
-    <field name="reasonOfRefusalToPayStr" expr="eval: reasonOfRefusalToPay?.name"/>
-  </action-record>
-
   <action-record name="action-invoice-record-set-dummy-field-language"
     model="com.axelor.apps.account.db.Invoice">
     <field name="$language"
@@ -1920,7 +1921,7 @@ InvoiceSet.length > 0))"
 
   <action-attrs name="action-invoice-attrs-hide-cancel-button">
     <attribute name="hidden" for="cancelBtn"
-      expr="(operationSubTypeSelect == 2 &amp;&amp; statusSelect == 2) || statusSelect == 4 || (statusSelect == 3 &amp;&amp; !company?.accountConfig?.allowCancelVentilatedInvoice)"/>
+      expr="(operationSubTypeSelect == 2 &amp;&amp; statusSelect == 2) || statusSelect == 4 || statusSelect == 3"/>
   </action-attrs>
 
   <action-attrs name="action-set-partner-domain">
@@ -2039,6 +2040,11 @@ InvoiceSet.length > 0))"
       if="_operationTypeSelect == 3"/>
   </action-attrs>
 
+  <action-attrs name="action-invoice-attrs-set-hidden-analytic-accounting-panel">
+    <attribute for="analyticAccountingPanel" name="hidden"
+      expr="eval: !__config__.app.getApp('account')?.getManageAnalyticAccounting() || !company?.accountConfig?.getManageAnalyticAccounting()"/>
+  </action-attrs>
+
   <!-- DOMAIN -->
 
   <action-attrs name="action-invoice-partner-account-domain">
@@ -2056,6 +2062,12 @@ InvoiceSet.length > 0))"
     <attribute name="domain" for="deliveryAddress"
       expr="eval: &quot;self.id IN
          (${(partner?.partnerAddressList?.findAll{it.isDeliveryAddr}.collect{it.address.id}+[null]).join(',')})&quot;"/>
+  </action-attrs>
+
+  <action-attrs name="action-invoice-attrs-payment-condition-set-domain">
+    <attribute name="domain" for="paymentCondition"
+      expr="eval: &quot; SIZE(self.paymentConditionLineList) &lt; 2 &quot;"
+      if="!__config__.app.getApp('account').allowMultiInvoiceTerms"/>
   </action-attrs>
 
   <!-- ACTION VALIDATE -->
@@ -2314,6 +2326,11 @@ InvoiceSet.length > 0))"
       method="updateInvoiceTermPaymentMode"/>
   </action-method>
 
+  <action-method name="action-invoice-method-update-invoice-term-bank-details">
+    <call class="com.axelor.apps.account.web.InvoiceController"
+      method="updateInvoiceTermBankDetails"/>
+  </action-method>
+
   <action-method name="action-invoice-method-check-multi-currency">
     <call class="com.axelor.apps.account.web.InvoiceController" method="checkMultiCurrency"/>
   </action-method>
@@ -2341,12 +2358,12 @@ InvoiceSet.length > 0))"
   </action-view>
 
   <action-view name="action-invoice-mergecustinvoices" title="Merge Cust. Invoices"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.utils.db.Wizard">
     <view type="form" name="customer-invoices-merge-form"/>
   </action-view>
 
   <action-view name="action-invoice-mergesupplinvoices" title="Merge Suppl. Invoices"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.utils.db.Wizard">
     <view type="form" name="supplier-invoices-merge-form"/>
   </action-view>
 
@@ -2359,7 +2376,7 @@ InvoiceSet.length > 0))"
   </action-view>
 
   <action-view name="action-invoice-view-reports-wizard" title="Reports"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.utils.db.Wizard">
     <view type="form" name="invoice-reports-wizard-form"/>
     <view-param name="popup" value="reload"/>
     <view-param name="popup-save" value="false"/>
@@ -2397,7 +2414,7 @@ InvoiceSet.length > 0))"
       if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <field name="project" hidden="true"
       if="!(__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder())"/>
-    <field name="decisionPfpTakenDate" hidden="true"
+    <field name="decisionPfpTakenDateTime" hidden="true"
       if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <field name="company.accountConfig" hidden="true"
       if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
@@ -2461,7 +2478,7 @@ InvoiceSet.length > 0))"
       if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <field name="project" hidden="true"
       if="!(__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder())"/>
-    <field name="decisionPfpTakenDate" hidden="true"
+    <field name="decisionPfpTakenDateTime" hidden="true"
       if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <field name="company.accountConfig" hidden="true"
       if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
@@ -2516,7 +2533,7 @@ InvoiceSet.length > 0))"
       if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <field name="project" hidden="true"
       if="!(__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder())"/>
-    <field name="decisionPfpTakenDate" hidden="true"
+    <field name="decisionPfpTakenDateTime" hidden="true"
       if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <field name="company.accountConfig" hidden="true"
       if="__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
@@ -2574,7 +2591,7 @@ InvoiceSet.length > 0))"
       if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <field name="project" hidden="true"
       if="!(__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder())"/>
-    <field name="decisionPfpTakenDate" hidden="true"
+    <field name="decisionPfpTakenDateTime" hidden="true"
       if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <field name="company.accountConfig" hidden="true"
       if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>

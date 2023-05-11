@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,11 +14,11 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.base.web;
 
-import com.axelor.apps.base.db.AppBase;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.CurrencyConversionLine;
 import com.axelor.apps.base.db.repo.CurrencyConversionLineRepository;
@@ -29,12 +30,12 @@ import com.axelor.apps.base.service.currency.CurrencyConversionFactory;
 import com.axelor.apps.base.service.currency.CurrencyConversionService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.axelor.studio.db.AppBase;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -66,7 +67,7 @@ public class CurrencyConversionLineController {
         Beans.get(CurrencyService.class)
             .checkOverLappingPeriod(ccl, appBase.getCurrencyConversionLineList());
       } catch (AxelorException e) {
-        response.setFlash(e.getLocalizedMessage());
+        response.setInfo(e.getLocalizedMessage());
         response.setValue("fromDate", null);
         response.setValue("toDate", null);
       }
@@ -131,10 +132,10 @@ public class CurrencyConversionLineController {
             currencyConversionService.getRateWithDate(fromCurrency, toCurrency);
         rate = pair.getRight();
         if (rate.compareTo(new BigDecimal(-1)) == 0)
-          response.setFlash(I18n.get(BaseExceptionMessage.CURRENCY_6));
+          response.setInfo(I18n.get(BaseExceptionMessage.CURRENCY_6));
         else {
           response.setValue("variations", "0");
-          if (context.get("_model").equals("com.axelor.apps.base.db.Wizard"))
+          if (context.get("_model").equals("com.axelor.utils.db.Wizard"))
             response.setValue("newExchangeRate", rate);
           else response.setValue("exchangeRate", rate);
           LocalDate todayDate =
@@ -163,13 +164,13 @@ public class CurrencyConversionLineController {
                 currencyConversionService.getVariations(rate, prevLine.getExchangeRate()));
 
           if (!rateRetrieveDate.equals(todayDate)) {
-            response.setFlash(
+            response.setInfo(
                 String.format(
                     I18n.get(BaseExceptionMessage.CURRENCY_10), todayDate, rateRetrieveDate));
           }
         }
       } catch (AxelorException axelorException) {
-        response.setFlash(axelorException.getMessage());
+        response.setInfo(axelorException.getMessage());
         response.setValue("fromDate", null);
         response.setValue("toDate", null);
         response.setCanClose(true);

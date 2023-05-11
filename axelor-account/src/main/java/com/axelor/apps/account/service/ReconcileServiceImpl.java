@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service;
 
@@ -47,15 +48,15 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCan
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoiceTermPaymentService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.Query;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.collect.Lists;
@@ -66,6 +67,7 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -237,7 +239,8 @@ public class ReconcileServiceImpl implements ReconcileService {
       canBeZeroBalance(reconcile);
     }
 
-    reconcile.setReconciliationDate(appBaseService.getTodayDate(reconcile.getCompany()));
+    reconcile.setReconciliationDateTime(
+        appBaseService.getTodayDateTime(reconcile.getCompany()).toLocalDateTime());
 
     reconcileSequenceService.setSequence(reconcile);
 
@@ -447,7 +450,6 @@ public class ReconcileServiceImpl implements ReconcileService {
       BigDecimal amount,
       boolean updateInvoiceTerms)
       throws AxelorException {
-    amount = this.getTotal(moveLine, amount);
 
     InvoicePayment invoicePayment = null;
     if (invoice != null
@@ -457,7 +459,22 @@ public class ReconcileServiceImpl implements ReconcileService {
         invoicePayment =
             Optional.of(reconcile)
                 .map(Reconcile::getInvoicePayment)
+                .filter(invPayment -> invoice.equals(invPayment.getInvoice()))
                 .orElse(this.getExistingInvoicePayment(invoice, otherMove));
+      }
+
+      Currency currency;
+      if (invoicePayment != null) {
+        currency = invoicePayment.getCurrency();
+      } else {
+        currency = otherMove.getCurrency();
+        if (currency == null) {
+          currency = otherMove.getCompanyCurrency();
+        }
+      }
+      boolean isCompanyCurrency = currency.equals(reconcile.getCompany().getCurrency());
+      if (!isCompanyCurrency) {
+        amount = this.getTotal(moveLine, amount);
       }
 
       if (invoicePayment == null) {
@@ -467,7 +484,7 @@ public class ReconcileServiceImpl implements ReconcileService {
       }
     }
     List<InvoiceTermPayment> invoiceTermPaymentList = null;
-    if (moveLine.getAccount().getHasInvoiceTerm() && updateInvoiceTerms) {
+    if (moveLine.getAccount().getUseForPartnerBalance() && updateInvoiceTerms) {
       List<InvoiceTerm> invoiceTermList = this.getInvoiceTermsToPay(invoice, otherMove, moveLine);
       invoiceTermPaymentList =
           this.updateInvoiceTerms(invoiceTermList, invoicePayment, amount, reconcile);
@@ -518,11 +535,13 @@ public class ReconcileServiceImpl implements ReconcileService {
   }
 
   protected void checkMoveLine(Reconcile reconcile, MoveLine moveLine) throws AxelorException {
+    LocalDate reconciliationDateTime =
+        Optional.ofNullable(reconcile.getReconciliationDateTime())
+            .map(LocalDateTime::toLocalDate)
+            .orElse(null);
     if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())
         && !invoiceTermService.isEnoughAmountToPay(
-            moveLine.getInvoiceTermList(),
-            reconcile.getAmount(),
-            reconcile.getReconciliationDate())) {
+            moveLine.getInvoiceTermList(), reconcile.getAmount(), reconciliationDateTime)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(AccountExceptionMessage.RECONCILE_NOT_ENOUGH_AMOUNT));
@@ -697,7 +716,8 @@ public class ReconcileServiceImpl implements ReconcileService {
 
     // Change the state
     reconcile.setStatusSelect(ReconcileRepository.STATUS_CANCELED);
-    reconcile.setReconciliationCancelDate(appBaseService.getTodayDate(reconcile.getCompany()));
+    reconcile.setReconciliationCancelDateTime(
+        appBaseService.getTodayDateTime(reconcile.getCompany()).toLocalDateTime());
     // Add the reconciled amount to the reconciled amount in the move line
     creditMoveLine.setAmountPaid(creditMoveLine.getAmountPaid().subtract(reconcile.getAmount()));
     debitMoveLine.setAmountPaid(debitMoveLine.getAmountPaid().subtract(reconcile.getAmount()));

@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.exception;
 
@@ -116,6 +117,12 @@ public final class AccountExceptionMessage {
       "No move lines to reconcile." /*)*/;
   public static final String MOVE_LINE_GENERATION_FIXED_ASSET_MISSING_DESCRIPTION = /*$$(*/
       "The move line %s is missing description in order to create fixed asset" /*)*/;
+
+  public static final String MOVE_LINE_NO_DEBIT_CREDIT = /*$$(*/
+      "An accounting moveline must have either a credit value or a debit value." /*)*/;
+
+  public static final String MOVE_LINE_NEGATIVE_DEBIT_CREDIT = /*$$(*/
+      "Debit and credit value cannot be negative." /*)*/;
   public static final String MOVE_ARCHIVE_OR_REMOVE_NOT_OK_NB = /*$$(*/
       "%d moves couldn't be deleted or archived, please check the logs." /*)*/;
 
@@ -461,7 +468,7 @@ public final class AccountExceptionMessage {
   public static final String BATCH_DOUBTFUL_1 = /*$$(*/
       "Doubtful account's determination's reporting" /*)*/;
 
-  public static final String BATCH_DOUBTFUL_2 = /*$$(*/ "* %s Invoice(s) treated" /*)*/;
+  public static final String BATCH_DOUBTFUL_2 = /*$$(*/ "* %s Invoice(s)/Move(s) treated" /*)*/;
 
   /** Batch move line export */
   public static final String BATCH_MOVELINE_EXPORT_1 = /*$$(*/
@@ -1010,9 +1017,9 @@ public final class AccountExceptionMessage {
   public static final String INVOICE_4 = /*$$(*/ "Refunds from invoice %s" /*)*/;
 
   public static final String INVOICE_NO_INVOICE_TO_PAY = /*$$(*/ "No invoice to pay" /*)*/;
-  public static final String
-      INVOICE_CAN_NOT_GO_BACK_TO_VALIDATE_STATUS_OR_CANCEL_VENTILATED_INVOICE = /*$$(*/
-          "It is not possible to go back to validate status or cancel a ventilated invoice." /*)*/;
+
+  public static final String INVOICE_CAN_NOT_DELETE = /*$$(*/
+      "Invoices can only be deleted if they are canceled. %s can not be deleted." /*)*/;
 
   public static final String INVOICE_WRONG_ANALYTIC_DISTRIBUTION = /*$$(*/
       "Some invoice lines analytic distributions are not correct, please correct them." /*)*/;
@@ -1043,6 +1050,9 @@ public final class AccountExceptionMessage {
 
   public static final String INVOICE_INVOICE_TERM_ACCOUNT = /*$$(*/
       "The invoice's partner account doesn't have invoice terms activated. Ventilating an invoice is not possible with an account without invoice terms." /*)*/;
+
+  public static final String INVOICE_INVOICE_TERM_MULTIPLE_LINES_NO_MULTI = /*$$(*/
+      "Payment condition used for invoice term generation contains multiple lines but corresponding multi invoice term config is not enabled." /*)*/;
 
   public static final String RECONCILE_NO_AVAILABLE_INVOICE_TERM = /*$$(*/
       "Payment can't be processed at the moment on invoice as there is no invoice term available to pay. Please check current unpaid invoice term record(s) if they are already awaiting a payment or maybe, if activated, they didn't pass the PFP process." /*)*/;

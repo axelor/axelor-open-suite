@@ -1,0 +1,17 @@
+"importId";"debtRecoveryMethod.code";"sequence";"standardDeadline";"minThreshold";"messageTemplateSet";"manualValidationOk";"debtRecoveryLevelLabel";"printingMessage"
+1;"REL_PART";0;0;;"EM01|Email relance clients particuliers";;"Email";"Cher/Chère client(e),</br></br>
+Nous vous prions de bien vouloir trouver ci-dessous les factures en attente de règlement de votre part ou avec un montant restant dû. Dans le cas où ces factures auraient déjà été payées le temps de l'envoi de ce message, nous vous prions d'ignorer ce message."
+2;"REL_PART";1;10;;"LS01";;"Lettre simple";
+3;"REL_PART";2;10;50;"LRAR01";;"Lettre recommandée 1";
+4;"REL_PART";3;15;50;"LRAR02";;"Lettre recommandée 2";
+5;"REL_PART";4;10;;"LSH01";"true";"Menace huissier simple";
+6;"REL_PART";5;15;;"LRARH01";"true";"Menace huissier avec AR";
+7;"REL_PART";6;10;;"LHUISS";"true";"Passage à l'huissier";
+8;"REL_PRO";0;0;;"EM01|Email relance clients professionnels";;"Email";"Cher/Chère client(e),</br></br>
+Nous vous prions de bien vouloir trouver ci-dessous les factures en attente de règlement de votre part ou avec un montant restant dû. Dans le cas où ces factures auraient déjà été payées le temps de l'envoi de ce message, nous vous prions d'ignorer ce message."
+9;"REL_PRO";1;10;;"LS01";;"Lettre simple";
+10;"REL_PRO";2;15;50;"LRAR01";;"Lettre recommandée 1";
+11;"REL_PRO";3;15;50;"LRAR02";;"Lettre recommandée 2";
+12;"REL_PRO";4;15;;"LSH01";"true";"Menace huissier simple";
+13;"REL_PRO";5;15;;"LRARH01";"true";"Menace huissier avec AR";
+14;"REL_PRO";6;15;;"LHUISS";"true";"Passage à l'huissier";

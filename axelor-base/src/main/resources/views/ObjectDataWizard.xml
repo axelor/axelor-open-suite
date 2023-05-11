@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <form name="object-data-anonymize-wizard-form" title="Anonymize data"
+    model="com.axelor.utils.db.Wizard" onNew="action-object-data-anonymize-wizard-defaults">
+    <panel name="mainPanel">
+      <field name="modelSelect" title="Model" widget="RefSelect" x-related="modelSelectId"
+        selection="object.data.config.model.select" selection-in="null" type="string"
+        required="true"/>
+      <button name="anonymizeBtn" title="Anonymize data"
+        onClick="action-object-data-export-wizard-validate-anonymize,action-object-data-export-wizard-method-anonymyize"
+        readonlyIf="modelSelectId == 0"/>
+      <field name="modelSelectId" hidden="true"/>
+      <field name="objectDataConfigId" hidden="true"/>
+    </panel>
+  </form>
+
+  <action-attrs name="action-object-data-anonymize-wizard-defaults">
+    <attribute name="value" for="modelSelect" expr="eval: _modelSelect"/>
+    <attribute name="value" for="objectDataConfigId" expr="eval: _objectDataConfigId"/>
+    <attribute name="value" for="modelSelectId" expr="eval: 0"/>
+  </action-attrs>
+
+  <action-validate name="action-object-data-export-wizard-validate-anonymize">
+    <alert message="Are you sure to anonymize data?"/>
+  </action-validate>
+
+  <action-method name="action-object-data-export-wizard-method-anonymyize">
+    <call class="com.axelor.apps.base.web.ObjectDataExportController" method="anonymize"/>
+  </action-method>
+
+</object-views>

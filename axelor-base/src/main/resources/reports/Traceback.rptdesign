@@ -654,7 +654,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
 		Company.height as "logo_height",
 		Company.width as "logo_width",
 		Meta.select_title
-from exception_trace_back as TraceBack
+from base_trace_back as TraceBack
 left outer join auth_user as AuthUser
 on TraceBack.internal_user = AuthUser.id
 left outer join base_company as Company on (AuthUser.active_company = Company.id)

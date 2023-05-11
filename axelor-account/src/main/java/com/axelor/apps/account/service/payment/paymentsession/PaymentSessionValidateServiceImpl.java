@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service.payment.paymentsession;
 
@@ -42,9 +43,12 @@ import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentValidateService;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -52,8 +56,6 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -244,10 +246,9 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       paymentSession = paymentSessionRepo.find(paymentSession.getId());
 
       for (InvoiceTerm invoiceTerm : invoiceTermList) {
-
+        offset++;
         if (paymentSession.getStatusSelect() == PaymentSessionRepository.STATUS_AWAITING_PAYMENT
             || this.shouldBeProcessed(invoiceTerm)) {
-          offset++;
 
           if (invoiceTerm.getPaymentAmount().compareTo(BigDecimal.ZERO) > 0) {
             this.processInvoiceTerm(
@@ -293,7 +294,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     return false;
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   protected InvoicePayment generatePendingPaymentFromInvoiceTerm(
       PaymentSession paymentSession, InvoiceTerm invoiceTerm) {
     if (invoiceTerm.getInvoice() == null) {
@@ -375,7 +376,12 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     if (paymentSession.getAccountingMethodSelect()
             == PaymentSessionRepository.ACCOUNTING_METHOD_BY_INVOICE_TERM
         || !moveMap.containsKey(partner)) {
-      move = this.createMove(paymentSession, partner, accountingDate);
+      BankDetails partnerBankDetails = null;
+      if (paymentSession.getAccountingMethodSelect()
+          == PaymentSessionRepository.ACCOUNTING_METHOD_BY_INVOICE_TERM) {
+        partnerBankDetails = invoiceTerm.getBankDetails();
+      }
+      move = this.createMove(paymentSession, partner, accountingDate, partnerBankDetails);
 
       if (!moveMap.containsKey(partner)) {
         moveMap.put(partner, new ArrayList<>());
@@ -393,7 +399,10 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
   }
 
   protected Move createMove(
-      PaymentSession paymentSession, Partner partner, LocalDate accountingDate)
+      PaymentSession paymentSession,
+      Partner partner,
+      LocalDate accountingDate,
+      BankDetails partnerBankDetails)
       throws AxelorException {
     Move move =
         moveCreateService.createMove(
@@ -412,6 +421,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
             paymentSession.getBankDetails());
 
     move.setPaymentSession(paymentSession);
+    move.setPartnerBankDetails(partnerBankDetails);
 
     return move;
   }
@@ -554,7 +564,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       boolean out)
       throws AxelorException {
     paymentSession = paymentSessionRepo.find(paymentSession.getId());
-    Move move = this.createMove(paymentSession, null, accountingDate);
+    Move move = this.createMove(paymentSession, null, accountingDate, null);
     String description = this.getMoveLineDescription(paymentSession);
 
     this.generateCashMoveLine(
@@ -596,7 +606,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       for (Partner partner : moveMap.keySet()) {
         for (Move move : moveMap.get(partner)) {
           move = moveRepo.find(move.getId());
-          moveLineTaxService.autoTaxLineGenerate(move);
+          moveLineTaxService.autoTaxLineGenerate(move, null);
         }
       }
     }
@@ -633,15 +643,17 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
         isGlobal);
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   protected InvoiceTerm releaseInvoiceTerm(InvoiceTerm invoiceTerm) {
-    invoiceTerm.setPaymentSession(null);
+    if (!invoiceTerm.getIsSelectedOnPaymentSession()) {
+      invoiceTerm.setPaymentSession(null);
+    }
     invoiceTerm.setPaymentAmount(BigDecimal.ZERO);
 
     return invoiceTermRepo.save(invoiceTerm);
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   protected void updateStatus(PaymentSession paymentSession) {
     paymentSession = paymentSessionRepo.find(paymentSession.getId());
 
@@ -707,7 +719,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     return null;
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   protected void updatePaymentDescription(Move move) {
     for (InvoicePayment invoicePayment :
         invoicePaymentRepo.all().filter("self.move = ?", move).fetch()) {
@@ -718,6 +730,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
 
   protected int getMoveCount(
       Map<LocalDate, Map<Partner, List<Move>>> moveDateMap, boolean isGlobal) {
+
     return moveDateMap.values().stream()
             .map(Map::values)
             .flatMap(Collection::stream)

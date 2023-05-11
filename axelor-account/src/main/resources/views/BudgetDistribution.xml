@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="budget-distribution-grid" title="Budget distributions"
     model="com.axelor.apps.account.db.BudgetDistribution">
@@ -24,7 +24,7 @@
     <field name="invoiceLine.product"/>
     <field name="budgetAmountAvailable"/>
     <field name="invoiceLine.invoice"/>
-    <field name="invoiceLine.invoice.validatedDate"/>
+    <field name="invoiceLine.invoice.validatedDateTime"/>
     <field name="amount"/>
   </grid>
 
@@ -61,7 +61,7 @@
       <field name="budget" readonly="true"/>
       <field name="invoiceLine.product" readonly="true" domain="self.dtype = 'Product'"/>
       <field name="invoiceLine.invoice" readonly="true"/>
-      <field name="invoiceLine.invoice.validatedDate" readonly="true"/>
+      <field name="invoiceLine.invoice.validatedDateTime" readonly="true"/>
       <field name="budgetAmountAvailable" readonly="true"/>
       <field name="amount" readonly="true"/>
       <field name="purchaseOrderLine.purchaseOrder.statusSelect" hidden="true"/>

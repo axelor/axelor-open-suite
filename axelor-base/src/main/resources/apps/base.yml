@@ -1,0 +1,12 @@
+---
+importId: 1
+name: Base
+code: base
+typeSelect: standard
+installOrder: 2010
+description: |
+   Basic configuration
+image: app-base.png
+modules: 
+   axelor-admin,axelor-base
+sequence: 1
