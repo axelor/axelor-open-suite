@@ -72,21 +72,15 @@ public class MoveCheckServiceImpl implements MoveCheckService {
   }
 
   @Override
-  public boolean checkRelatedCutoffMoves(Move move) {
-    Objects.requireNonNull(move);
-
-    if (appAccountService.getAppAccount().getManageCutOffPeriod()) {
-      if (move.getId() != null) {
-        return moveRepository
+  public boolean isRelatedCutoffMoves(Move move) {
+    return appAccountService.getAppAccount().getManageCutOffPeriod()
+        && move.getId() != null
+        && moveRepository
                 .all()
                 .filter("self.cutOffOriginMove = :id")
                 .bind("id", move.getId())
                 .count()
             > 0;
-      }
-    }
-
-    return false;
   }
 
   @Override

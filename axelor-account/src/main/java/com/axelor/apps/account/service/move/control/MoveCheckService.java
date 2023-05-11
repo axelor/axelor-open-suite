@@ -30,7 +30,7 @@ public interface MoveCheckService {
    * @param move
    * @return true if there is any, else false
    */
-  boolean checkRelatedCutoffMoves(Move move);
+  boolean isRelatedCutoffMoves(Move move);
 
   void checkPeriodPermission(Move move) throws AxelorException;
 

@@ -29,15 +29,9 @@ public interface MoveGroupService {
 
   Map<String, Map<String, Object>> getOnNewAttrsMap(Move move) throws AxelorException;
 
-  /**
-   * Method called on action onLoad. The move will be modified but not persisted, a Map of 'field,
-   * value' will be returned that contains every modified value.
-   *
-   * @param move: can not be null
-   * @return a Object {@link MoveContext} that containts attrs and values context
-   * @throws AxelorException
-   */
-  MoveContext onLoad(Move move) throws AxelorException;
+  Map<String, Object> getOnLoadValuesMap(Move move) throws AxelorException;
+
+  Map<String, Map<String, Object>> getOnLoadAttrsMap(Move move) throws AxelorException;
 
   /**
    * Method called on action onSave

@@ -33,5 +33,5 @@ public interface MoveAttrsService {
   void addMoveLineAnalyticAttrs(Move move, Map<String, Map<String, Object>> attrsMap)
       throws AxelorException;
 
-  boolean isHiddenDueDate(Move move);
+  void addDueDateHidden(Move move, Map<String, Map<String, Object>> attrsMap);
 }

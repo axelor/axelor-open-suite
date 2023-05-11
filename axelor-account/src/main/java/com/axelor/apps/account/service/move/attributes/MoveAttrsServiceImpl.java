@@ -159,8 +159,7 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
   }
 
   @Override
-  public boolean isHiddenDueDate(Move move) {
-
-    return !moveInvoiceTermService.displayDueDate(move);
+  public void addDueDateHidden(Move move, Map<String, Map<String, Object>> attrsMap) {
+    this.addAttr("dueDate", "hidden", !moveInvoiceTermService.displayDueDate(move), attrsMap);
   }
 }

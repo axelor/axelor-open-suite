@@ -72,6 +72,12 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     this.moveRepository = moveRepository;
   }
 
+  protected void addPeriodDummyFields(Move move, Map<String, Object> valuesMap)
+      throws AxelorException {
+    valuesMap.put("$simulatedPeriodClosed", moveToolService.isSimulatedMovePeriodClosed(move));
+    valuesMap.put("$periodClosed", periodService.isClosedPeriod(move.getPeriod()));
+  }
+
   @Override
   @Transactional(rollbackOn = Exception.class)
   public MoveContext onSaveBefore(Move move, boolean paymentConditionChange, boolean headerChange)
@@ -145,8 +151,8 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     valuesMap.put(
         "$validatePeriod",
         !periodAccountService.isAuthorizedToAccountOnPeriod(move, AuthUtils.getUser()));
-    valuesMap.put("$simulatedPeriodClosed", moveToolService.isSimulatedMovePeriodClosed(move));
-    valuesMap.put("$periodClosed", periodService.isClosedPeriod(move.getPeriod()));
+
+    this.addPeriodDummyFields(move, valuesMap);
 
     return valuesMap;
   }
@@ -164,26 +170,26 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   }
 
   @Override
-  public MoveContext onLoad(Move move) throws AxelorException {
-    Objects.requireNonNull(move);
+  public Map<String, Object> getOnLoadValuesMap(Move move) throws AxelorException {
+    Map<String, Object> valuesMap = moveComputeService.computeTotals(move);
 
-    MoveContext result = new MoveContext();
-
-    result.putInAttrs(moveAttrsService.getHiddenAttributeValues(move));
-    result.putInValues(moveComputeService.computeTotals(move));
-    result.putInAttrs(
-        "$reconcileTags", "hidden", moveAttrsService.isHiddenMoveLineListViewer(move));
-    result.putInValues(
+    valuesMap.put(
         "$validatePeriod",
         !periodAccountService.isAuthorizedToAccountOnPeriod(move, AuthUtils.getUser()));
-    result.putInValues(
-        "$isThereRelatedCutOffMoves", moveCheckService.checkRelatedCutoffMoves(move));
-    result.putInValues(moveCheckService.checkPeriodAndStatus(move));
-    result.putInAttrs(moveAttrsService.getFunctionalOriginSelectDomain(move));
-    result.putInAttrs(moveAttrsService.getMoveLineAnalyticAttrs(move));
-    result.putInAttrs("dueDate", "hidden", moveAttrsService.isHiddenDueDate(move));
+    valuesMap.put("$isThereRelatedCutOffMoves", moveCheckService.isRelatedCutoffMoves(move));
 
-    return result;
+    this.addPeriodDummyFields(move, valuesMap);
+
+    return valuesMap;
+  }
+
+  @Override
+  public Map<String, Map<String, Object>> getOnLoadAttrsMap(Move move) throws AxelorException {
+    Map<String, Map<String, Object>> attrsMap = this.getOnNewAttrsMap(move);
+
+    moveAttrsService.addDueDateHidden(move, attrsMap);
+
+    return attrsMap;
   }
 
   @Override
