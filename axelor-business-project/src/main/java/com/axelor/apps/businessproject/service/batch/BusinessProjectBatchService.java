@@ -49,27 +49,27 @@ public class BusinessProjectBatchService extends AbstractBatchService {
   public Batch run(Model model) throws AxelorException {
 
     Batch batch;
-    BusinessProjectBatch BusinessProjectBatch = (BusinessProjectBatch) model;
+    BusinessProjectBatch businessProjectBatch = (BusinessProjectBatch) model;
 
-    switch (BusinessProjectBatch.getActionSelect()) {
+    switch (businessProjectBatch.getActionSelect()) {
       case BusinessProjectBatchRepository.ACTION_UPDATE_TASKS:
-        batch = updateTask(BusinessProjectBatch);
+        batch = updateTask(businessProjectBatch);
         break;
 
       case BusinessProjectBatchRepository.ACTION_GENERATE_INVOICING_PROJECT:
-        batch = generateInvoicingProject(BusinessProjectBatch);
+        batch = generateInvoicingProject(businessProjectBatch);
         break;
 
       case BusinessProjectBatchRepository.ACTION_COMPUTE_PROJECT_TOTALS:
-        batch = computeProjectTotals(BusinessProjectBatch);
+        batch = computeProjectTotals(businessProjectBatch);
         break;
 
       default:
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(BaseExceptionMessage.BASE_BATCH_1),
-            BusinessProjectBatch.getActionSelect(),
-            BusinessProjectBatch.getCode());
+            businessProjectBatch.getActionSelect(),
+            businessProjectBatch.getCode());
     }
     return batch;
   }

@@ -14,7 +14,6 @@
   </grid>
 
   <form name="business-project-batch-form" title="Business project batch"
-
     model="com.axelor.apps.businessproject.db.BusinessProjectBatch"
     onNew="action-business-project-batch-record-on-new">
     <panel name="mainPanel">

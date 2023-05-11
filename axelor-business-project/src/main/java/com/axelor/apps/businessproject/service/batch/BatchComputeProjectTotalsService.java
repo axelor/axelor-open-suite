@@ -53,8 +53,7 @@ public class BatchComputeProjectTotalsService extends AbstractBatch {
         projectRepository
             .all()
             .order("id")
-            .filter(
-                "self.isBusinessProject = true " + "AND self.projectStatus.isCompleted = false");
+            .filter("self.isBusinessProject = true AND self.projectStatus.isCompleted = false");
     while (!(projectList = projectQuery.fetch(FETCH_LIMIT, offset)).isEmpty()) {
       findBatch();
       for (Project project : projectList) {
