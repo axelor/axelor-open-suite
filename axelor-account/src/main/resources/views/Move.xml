@@ -136,7 +136,7 @@
             requiredIf="journal.hasRequiredOrigin"/>
           <field name="originDate" title="Origin date"
             readonlyIf="$validatePeriod || moveLineList.length  &gt; 0 &amp;&amp; statusSelect == 3"
-            onChange="action-account-move-method-origin-date-onchange" colSpan="2"/>
+            onChange="action-move-group-origin-date-onchange" colSpan="2"/>
           <field name="description" readonlyIf="$validatePeriod"
             onChange="action-account-move-group-set-description-on-lines" colSpan="6"/>
         </panel>
