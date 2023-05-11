@@ -279,7 +279,7 @@ public class MoveLineServiceImpl implements MoveLineService {
 
   @Override
   @Transactional
-  public MoveLine setIsSelectedBankReconciliation(MoveLine moveLine) {
+  public void setIsSelectedBankReconciliation(MoveLine moveLine) {
     moveLine = moveLineRepository.find(moveLine.getId());
 
     if (moveLine.getIsSelectedBankReconciliation() != null) {
@@ -287,7 +287,6 @@ public class MoveLineServiceImpl implements MoveLineService {
     } else {
       moveLine.setIsSelectedBankReconciliation(true);
     }
-    return moveLineRepository.save(moveLine);
   }
 
   @Override
