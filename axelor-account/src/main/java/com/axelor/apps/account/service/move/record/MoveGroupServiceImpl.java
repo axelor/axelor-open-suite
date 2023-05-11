@@ -315,33 +315,30 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   }
 
   @Override
-  public MoveContext onChangeOriginDate(
-      Move move, boolean paymentConditionChange, boolean dateChange) throws AxelorException {
-    Objects.requireNonNull(move);
+  public Map<String, Object> getOriginDateOnChangeValuesMap(
+      Move move, boolean paymentConditionChange) throws AxelorException {
+    Map<String, Object> valuesMap = new HashMap<>();
 
-    MoveContext result = new MoveContext();
-
-    checkDuplicateOriginMove(move, result);
-    result.putInValues(moveRecordSetService.setMoveLineOriginDates(move));
-    updateDummiesDateConText(move);
-    dateChange = true;
-    result.putInAttrs("$dateChange", "value", true);
-    result.merge(moveRecordUpdateService.updateDueDate(move, paymentConditionChange, dateChange));
-    result.putInAttrs("$paymentConditionChange", "value", true);
-
-    return result;
-  }
-
-  protected void updateDummiesDateConText(Move move) {
+    moveLineControlService.setMoveLineOriginDates(move);
     move.setDueDate(null);
+    moveRecordUpdateService.updateDueDate(move, paymentConditionChange, true);
+
+    valuesMap.put("moveLineList", move.getMoveLineList());
+    valuesMap.put("dueDate", move.getDueDate());
+
+    return valuesMap;
   }
 
-  protected void checkDuplicateOriginMove(Move move, MoveContext result) {
-    try {
-      moveCheckService.checkDuplicatedMoveOrigin(move);
-    } catch (AxelorException e) {
-      result.putInAlert(e.getMessage());
-    }
+  @Override
+  public Map<String, Map<String, Object>> getOriginDateOnChangeAttrsMap(
+      Move move, boolean paymentConditionChange) {
+    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+
+    moveAttrsService.addDateChangeTrueValue(attrsMap);
+    moveAttrsService.addDateChangeFalseValue(move, paymentConditionChange, attrsMap);
+    moveAttrsService.addPaymentConditionChangeChangeTrueValue(attrsMap);
+
+    return attrsMap;
   }
 
   @Override

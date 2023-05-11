@@ -198,17 +198,6 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
   }
 
   @Override
-  public Map<String, Object> setMoveLineOriginDates(Move move) throws AxelorException {
-    Objects.requireNonNull(move);
-    HashMap<String, Object> resultMap = new HashMap<>();
-
-    moveLineControlService.setMoveLineOriginDates(move);
-    resultMap.put("moveLineList", move.getMoveLineList());
-
-    return resultMap;
-  }
-
-  @Override
   public Map<String, Object> setOriginOnMoveLineList(Move move) throws AxelorException {
     Objects.requireNonNull(move);
     HashMap<String, Object> resultMap = new HashMap<>();

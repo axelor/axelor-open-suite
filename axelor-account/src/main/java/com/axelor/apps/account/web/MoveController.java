@@ -831,38 +831,35 @@ public class MoveController {
     }
   }
 
+  public void checkDuplicateOriginMove(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+
+      String alert = Beans.get(MoveCheckService.class).getDuplicatedMoveOriginAlert(move);
+
+      if (StringUtils.notEmpty(alert)) {
+        response.setAlert(alert);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
   public void onChangeOriginDate(ActionRequest request, ActionResponse response) {
     try {
       Context context = request.getContext();
       Move move = context.asType(Move.class);
+      MoveGroupService moveGroupService = Beans.get(MoveGroupService.class);
 
       boolean paymentConditionChange =
           Optional.ofNullable(context.get("paymentConditionChange"))
               .map(value -> (Boolean) value)
               .orElse(false);
-      boolean dateChange =
-          Optional.ofNullable(context.get("dateChange"))
-              .map(value -> (Boolean) value)
-              .orElse(false);
 
-      MoveContext result =
-          Beans.get(MoveGroupService.class)
-              .onChangeOriginDate(move, paymentConditionChange, dateChange);
-      response.setValues(result.getValues());
-      response.setAttrs(result.getAttrs());
-      if (!result.getFlash().isEmpty()) {
-        response.setInfo(result.getFlash());
-      }
-      if (!result.getNotify().isEmpty()) {
-        response.setNotify(result.getNotify());
-      }
-      if (!result.getAlert().isEmpty()) {
-        response.setAlert(result.getAlert());
-      }
-      if (!result.getError().isEmpty()) {
-        response.setError(result.getError());
-      }
-
+      response.setValues(
+          moveGroupService.getOriginDateOnChangeValuesMap(move, paymentConditionChange));
+      response.setAttrs(
+          moveGroupService.getOriginDateOnChangeAttrsMap(move, paymentConditionChange));
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

@@ -673,6 +673,11 @@
     <attribute name="value" for="$paymentConditionChange" expr="eval: true"/>
   </action-attrs>
 
+  <action-group name="action-move-group-origin-date-onchange">
+    <action name="action-move-method-check-duplicate-origin-move"/>
+    <action name="action-account-move-method-origin-date-onchange"/>
+  </action-group>
+
   <!-- ACTION METHOD -->
   <action-method name="action-move-method-accounting">
     <call class="com.axelor.apps.account.web.MoveController" method="accounting"/>
@@ -776,6 +781,10 @@
 
   <action-method name="action-account-move-method-payment-condition-onchange">
     <call class="com.axelor.apps.account.web.MoveController" method="onChangePaymentCondition"/>
+  </action-method>
+
+  <action-method name="action-move-method-check-duplicate-origin-move">
+    <call class="com.axelor.apps.account.web.MoveController" method="checkDuplicateOriginMove"/>
   </action-method>
 
   <action-method name="action-account-move-method-origin-date-onchange">

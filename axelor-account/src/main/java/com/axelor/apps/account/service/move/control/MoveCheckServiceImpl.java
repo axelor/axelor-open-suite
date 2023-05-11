@@ -141,21 +141,22 @@ public class MoveCheckServiceImpl implements MoveCheckService {
   }
 
   @Override
-  public void checkDuplicatedMoveOrigin(Move move) throws AxelorException {
+  public String getDuplicatedMoveOriginAlert(Move move) throws AxelorException {
     if (move.getJournal() != null
         && move.getPartner() != null
         && move.getJournal().getHasDuplicateDetectionOnOrigin()) {
       List<Move> moveList = moveToolService.getMovesWithDuplicatedOrigin(move);
+
       if (ObjectUtils.notEmpty(moveList)) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_INCONSISTENCY,
-            String.format(
-                I18n.get(AccountExceptionMessage.MOVE_DUPLICATE_ORIGIN_NON_BLOCKING_MESSAGE),
-                moveList.stream().map(Move::getReference).collect(Collectors.joining(",")),
-                move.getPartner().getFullName(),
-                move.getPeriod().getYear().getName()));
+        return String.format(
+            I18n.get(AccountExceptionMessage.MOVE_DUPLICATE_ORIGIN_NON_BLOCKING_MESSAGE),
+            moveList.stream().map(Move::getReference).collect(Collectors.joining(",")),
+            move.getPartner().getFullName(),
+            move.getPeriod().getYear().getName());
       }
     }
+
+    return null;
   }
 
   @Override

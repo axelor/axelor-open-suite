@@ -54,7 +54,5 @@ public interface MoveRecordSetService {
 
   void setCompanyBankDetails(Move move) throws AxelorException;
 
-  Map<String, Object> setMoveLineOriginDates(Move move) throws AxelorException;
-
   Map<String, Object> setOriginOnMoveLineList(Move move) throws AxelorException;
 }

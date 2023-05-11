@@ -39,4 +39,6 @@ public interface MoveAttrsService {
 
   void addDateChangeFalseValue(
       Move move, boolean paymentConditionChange, Map<String, Map<String, Object>> attrsMap);
+
+  void addPaymentConditionChangeChangeTrueValue(Map<String, Map<String, Object>> attrsMap);
 }

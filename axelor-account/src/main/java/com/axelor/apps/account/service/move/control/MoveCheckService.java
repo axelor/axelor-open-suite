@@ -42,7 +42,7 @@ public interface MoveCheckService {
 
   boolean isPartnerCompatible(Move move);
 
-  void checkDuplicatedMoveOrigin(Move move) throws AxelorException;
+  String getDuplicatedMoveOriginAlert(Move move) throws AxelorException;
 
   void checkOrigin(Move move) throws AxelorException;
 

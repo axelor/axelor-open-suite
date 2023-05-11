@@ -176,4 +176,9 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
       this.addAttr("$dateChange", "value", false, attrsMap);
     }
   }
+
+  @Override
+  public void addPaymentConditionChangeChangeTrueValue(Map<String, Map<String, Object>> attrsMap) {
+    this.addAttr("$paymentConditionChange", "value", true, attrsMap);
+  }
 }
