@@ -292,17 +292,26 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   }
 
   @Override
-  public MoveContext onChangeMoveLineList(
+  public Map<String, Object> getMoveLineListOnChangeValuesMap(
       Move move, boolean paymentConditionChange, boolean dateChange) throws AxelorException {
-    Objects.requireNonNull(move);
+    Map<String, Object> valuesMap = moveComputeService.computeTotals(move);
 
-    MoveContext result = new MoveContext();
+    moveRecordUpdateService.updateDueDate(move, paymentConditionChange, dateChange);
 
-    result.putInValues(moveComputeService.computeTotals(move));
-    result.merge(moveRecordUpdateService.updateDueDate(move, paymentConditionChange, dateChange));
-    result.putInAttrs(moveAttrsService.getMoveLineAnalyticAttrs(move));
+    valuesMap.put("dueDate", move.getDueDate());
 
-    return result;
+    return valuesMap;
+  }
+
+  @Override
+  public Map<String, Map<String, Object>> getMoveLineListOnChangeAttrsMap(
+      Move move, boolean paymentConditionChange) throws AxelorException {
+    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+
+    moveAttrsService.addMoveLineAnalyticAttrs(move, attrsMap);
+    moveAttrsService.addDateChangeFalseValue(move, paymentConditionChange, attrsMap);
+
+    return attrsMap;
   }
 
   @Override

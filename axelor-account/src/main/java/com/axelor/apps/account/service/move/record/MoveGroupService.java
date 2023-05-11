@@ -70,8 +70,11 @@ public interface MoveGroupService {
   Map<String, Map<String, Object>> getPartnerOnChangeAttrsMap(
       Move move, boolean paymentConditionChange);
 
-  MoveContext onChangeMoveLineList(Move move, boolean paymentConditinoChange, boolean dateChange)
-      throws AxelorException;
+  Map<String, Object> getMoveLineListOnChangeValuesMap(
+      Move move, boolean paymentConditionChange, boolean dateChange) throws AxelorException;
+
+  Map<String, Map<String, Object>> getMoveLineListOnChangeAttrsMap(
+      Move move, boolean paymentConditionChange) throws AxelorException;
 
   MoveContext onChangeOriginDate(Move move, boolean paymentConditionChange, boolean dateChange)
       throws AxelorException;
