@@ -1,0 +1,3 @@
+---
+title : "Invoice : Fix bank details being required for wrong payment modes"
+type: fix
