@@ -379,11 +379,13 @@ public class MoveLineServiceImpl implements MoveLineService {
                   ChronoUnit.DAYS.between(
                       moveLine.getCutOffStartDate(), moveLine.getCutOffEndDate()))
               .add(BigDecimal.ONE);
-      ;
 
       if (daysTotal.compareTo(BigDecimal.ZERO) != 0) {
+        BigDecimal prorata = BigDecimal.ONE;
+        if (moveDate.isAfter(moveLine.getCutOffStartDate())) {
+          prorata = daysProrata.divide(daysTotal, 10, RoundingMode.HALF_UP);
+        }
 
-        BigDecimal prorata = daysProrata.divide(daysTotal, 10, RoundingMode.HALF_UP);
         moveLine.setCutOffProrataAmount(
             prorata.multiply(moveLine.getCurrencyAmount()).setScale(2, RoundingMode.HALF_UP));
         moveLine.setAmountBeforeCutOffProrata(moveLine.getCredit().max(moveLine.getDebit()));
