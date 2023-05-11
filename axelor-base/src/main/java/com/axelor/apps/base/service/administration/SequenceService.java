@@ -46,6 +46,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
 import java.time.temporal.IsoFields;
 import java.util.List;
+import java.util.Optional;
 import javax.annotation.concurrent.ThreadSafe;
 import javax.persistence.FlushModeType;
 import javax.persistence.LockModeType;
@@ -315,6 +316,15 @@ public class SequenceService {
   }
 
   /**
+   * Get draft sequence number prefix.
+   *
+   * @return
+   */
+  protected String getDraftPrefix() {
+    return Optional.ofNullable(appBaseService.getAppBase().getDraftPrefix()).orElse(DRAFT_PREFIX);
+  }
+
+  /**
    * Get draft sequence number.
    *
    * @param model
@@ -328,7 +338,8 @@ public class SequenceService {
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(BaseExceptionMessage.SEQUENCE_NOT_SAVED_RECORD));
     }
-    return String.format("%s%d", DRAFT_PREFIX, model.getId());
+    String draftPrefix = getDraftPrefix();
+    return String.format("%s%d", draftPrefix, model.getId());
   }
 
   /**
@@ -338,16 +349,17 @@ public class SequenceService {
    * @param padding
    * @return
    */
-  public String getDraftSequenceNumber(Model model, int zeroPadding) throws AxelorException {
+  public String getDraftSequenceNumber(Model model, int padding) throws AxelorException {
     if (model.getId() == null) {
       throw new AxelorException(
           model,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(BaseExceptionMessage.SEQUENCE_NOT_SAVED_RECORD));
     }
+    String draftPrefix = getDraftPrefix();
     return String.format(
         "%s%s",
-        DRAFT_PREFIX, StringTool.fillStringLeft(String.valueOf(model.getId()), '0', zeroPadding));
+        draftPrefix, StringTool.fillStringLeft(String.valueOf(model.getId()), '0', padding));
   }
 
   /**

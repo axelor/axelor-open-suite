@@ -38,6 +38,7 @@
         <field name="teamManagement" widget="boolean-switch"/>
         <field name="manageSubsidiaryPartner" widget="boolean-switch"/>
         <field name="checkExistingSequenceOnGeneration" widget="boolean-switch"/>
+        <field name="draftPrefix"/>
         <panel name="productBarCodePanel" title="Product BarCode" colSpan="12">
           <field name="activateBarCodeGeneration" widget="Boolean-switch"/>
           <field name="editProductBarcodeType" showIf="activateBarCodeGeneration==true"
