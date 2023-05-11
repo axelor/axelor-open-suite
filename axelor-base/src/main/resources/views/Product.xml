@@ -205,7 +205,8 @@
             showIf="sellable" canNew="false" canSelect="true"/>
           <field name="productSynchronizedInPrestashop" colSpan="6"
             if="__config__.app.isApp('prestashop')" if-module="axelor-prestashop"/>
-          <field name="autoUpdateSalePrice" hideIf="!sellable" colSpan="12"/>
+          <field name="autoUpdateSalePrice" hideIf="!sellable" colSpan="12"
+            onChange="action-product-record-compute-sale-price"/>
           <field name="salePrice" readonlyIf="autoUpdateSalePrice" hideIf="!sellable"
             colSpan="12"/>
           <field name="saleCurrency" canEdit="false" hideIf="!sellable" colSpan="12"
