@@ -128,44 +128,26 @@ public class MoveRecordUpdateServiceImpl implements MoveRecordUpdateService {
   }
 
   @Override
-  public MoveContext updateMoveLinesCurrencyRate(Move move, LocalDate dueDate)
-      throws AxelorException {
-
-    MoveContext moveContext = new MoveContext();
+  public void updateMoveLinesCurrencyRate(Move move) throws AxelorException {
     if (move != null
         && ObjectUtils.notEmpty(move.getMoveLineList())
         && move.getCurrency() != null
         && move.getCompanyCurrency() != null) {
-      moveLineCurrencyService.computeNewCurrencyRateOnMoveLineList(move, dueDate);
-      moveContext.putInValues("moveLineList", move.getMoveLineList());
+      moveLineCurrencyService.computeNewCurrencyRateOnMoveLineList(move, move.getDueDate());
     }
-    return moveContext;
   }
 
   @Override
-  public MoveContext updateDueDate(Move move, boolean paymentConditionChange, boolean dateChange)
-      throws AxelorException {
-    Objects.requireNonNull(move);
-    MoveContext moveContext = new MoveContext();
-
-    boolean displayDueDate = moveInvoiceTermService.displayDueDate(move);
-
-    moveContext.putInAttrs("dueDate", "hidden", !displayDueDate);
-
-    if (displayDueDate) {
-
+  public void updateDueDate(Move move, boolean paymentConditionChange, boolean dateChange) {
+    if (moveInvoiceTermService.displayDueDate(move)) {
       if (move.getDueDate() == null || paymentConditionChange) {
         boolean isDateChange = dateChange || paymentConditionChange;
-
         LocalDate dueDate = moveInvoiceTermService.computeDueDate(move, true, isDateChange);
+
         move.setDueDate(dueDate);
-        moveContext.putInValues("dueDate", dueDate);
-        moveContext.putInAttrs("$dateChange", "value", false);
       }
     } else {
       move.setDueDate(null);
-      moveContext.putInValues("dueDate", null);
     }
-    return moveContext;
   }
 }

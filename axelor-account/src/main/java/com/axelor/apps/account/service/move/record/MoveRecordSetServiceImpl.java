@@ -202,17 +202,6 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
   }
 
   @Override
-  public Map<String, Object> setMoveLineDates(Move move) throws AxelorException {
-    Objects.requireNonNull(move);
-    HashMap<String, Object> resultMap = new HashMap<>();
-
-    moveLineControlService.setMoveLineDates(move);
-    resultMap.put("moveLineList", move.getMoveLineList());
-
-    return resultMap;
-  }
-
-  @Override
   public Map<String, Object> setCompanyBankDetails(Move move) throws AxelorException {
     Objects.requireNonNull(move);
     HashMap<String, Object> resultMap = new HashMap<>();

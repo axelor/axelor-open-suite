@@ -34,4 +34,9 @@ public interface MoveAttrsService {
       throws AxelorException;
 
   void addDueDateHidden(Move move, Map<String, Map<String, Object>> attrsMap);
+
+  void addDateChangeTrueValue(Map<String, Map<String, Object>> attrsMap);
+
+  void addDateChangeFalseValue(
+      Move move, boolean paymentConditionChange, Map<String, Map<String, Object>> attrsMap);
 }

@@ -162,4 +162,18 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
   public void addDueDateHidden(Move move, Map<String, Map<String, Object>> attrsMap) {
     this.addAttr("dueDate", "hidden", !moveInvoiceTermService.displayDueDate(move), attrsMap);
   }
+
+  @Override
+  public void addDateChangeTrueValue(Map<String, Map<String, Object>> attrsMap) {
+    this.addAttr("$dateChange", "value", true, attrsMap);
+  }
+
+  @Override
+  public void addDateChangeFalseValue(
+      Move move, boolean paymentConditionChange, Map<String, Map<String, Object>> attrsMap) {
+    if (moveInvoiceTermService.displayDueDate(move)
+        && (move.getDueDate() == null || paymentConditionChange)) {
+      this.addAttr("$dateChange", "value", false, attrsMap);
+    }
+  }
 }

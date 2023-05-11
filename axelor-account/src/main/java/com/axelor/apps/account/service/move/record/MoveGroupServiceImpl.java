@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.PeriodServiceAccount;
 import com.axelor.apps.account.service.move.MoveComputeService;
+import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.attributes.MoveAttrsService;
 import com.axelor.apps.account.service.move.control.MoveCheckService;
@@ -45,6 +46,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   protected MoveRecordUpdateService moveRecordUpdateService;
   protected MoveRecordSetService moveRecordSetService;
   protected MoveToolService moveToolService;
+  protected MoveLineControlService moveLineControlService;
   protected PeriodService periodService;
   protected MoveRepository moveRepository;
 
@@ -58,6 +60,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
       MoveRecordUpdateService moveRecordUpdateService,
       MoveRecordSetService moveRecordSetService,
       MoveToolService moveToolService,
+      MoveLineControlService moveLineControlService,
       PeriodService periodService,
       MoveRepository moveRepository) {
     this.moveDefaultService = moveDefaultService;
@@ -68,6 +71,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     this.moveRecordUpdateService = moveRecordUpdateService;
     this.moveRecordSetService = moveRecordSetService;
     this.moveToolService = moveToolService;
+    this.moveLineControlService = moveLineControlService;
     this.periodService = periodService;
     this.moveRepository = moveRepository;
   }
@@ -193,25 +197,38 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   }
 
   @Override
-  public MoveContext onChangeDate(Move move, boolean paymentConditionChange, boolean dateChange)
+  public Map<String, Object> getDateOnChangeValuesMap(Move move, boolean paymentConditionChange)
       throws AxelorException {
-    Objects.requireNonNull(move);
+    moveCheckService.checkPeriodPermission(move);
+    moveRecordSetService.setPeriod(move);
+    moveLineControlService.setMoveLineDates(move);
+    moveRecordUpdateService.updateMoveLinesCurrencyRate(move);
 
-    MoveContext result = new MoveContext();
+    Map<String, Object> valuesMap = moveComputeService.computeTotals(move);
 
-    result.putInValues(moveRecordSetService.setPeriod(move));
-    result.putInValues(
+    moveRecordUpdateService.updateDueDate(move, paymentConditionChange, true);
+
+    valuesMap.put("period", move.getPeriod());
+    valuesMap.put("dueDate", move.getDueDate());
+    valuesMap.put("moveLineList", move.getMoveLineList());
+
+    valuesMap.put(
         "$validatePeriod",
         !periodAccountService.isAuthorizedToAccountOnPeriod(move, AuthUtils.getUser()));
-    moveCheckService.checkPeriodPermission(move);
-    result.putInValues(moveRecordSetService.setMoveLineDates(move));
-    result.merge(moveRecordUpdateService.updateMoveLinesCurrencyRate(move, move.getDueDate()));
-    result.putInValues(moveComputeService.computeTotals(move));
-    dateChange = true;
-    result.putInAttrs("$dateChange", "value", true);
-    result.merge(moveRecordUpdateService.updateDueDate(move, paymentConditionChange, dateChange));
 
-    return result;
+    return valuesMap;
+  }
+
+  @Override
+  public Map<String, Map<String, Object>> getDateOnChangeAttrsMap(
+      Move move, boolean paymentConditionChange) {
+    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+
+    moveAttrsService.addDueDateHidden(move, attrsMap);
+    moveAttrsService.addDateChangeTrueValue(attrsMap);
+    moveAttrsService.addDateChangeFalseValue(move, paymentConditionChange, attrsMap);
+
+    return attrsMap;
   }
 
   protected void updateDummiesDateConText(Move move) {
