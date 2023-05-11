@@ -321,7 +321,7 @@
     <boolean name="hasAccountCodeFixedNbrChar" title="Has account code nbr. char"
       help="If this checkbox is ticked, a fixed code length will be compulsory for non-regulatory accounts code. Else the code length definition and structure will be free with minimum controls."/>
 
-    <boolean name="accountAtPayment" title="Account at payment"
+    <boolean name="accountAtPayment" title="Record daybook moves in payment session"
       help="If this checkbox is ticked, daybook moves will be accounted in payment session"
       default="false"/>
 
