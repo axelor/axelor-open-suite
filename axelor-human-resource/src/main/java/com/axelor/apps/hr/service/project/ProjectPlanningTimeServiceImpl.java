@@ -209,7 +209,8 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
       Employee employee,
       Product activity,
       BigDecimal dailyWorkHrs,
-      LocalDateTime taskEndDateTime) {
+      LocalDateTime taskEndDateTime)
+      throws AxelorException {
     ProjectPlanningTime planningTime = new ProjectPlanningTime();
 
     planningTime.setProjectTask(projectTask);

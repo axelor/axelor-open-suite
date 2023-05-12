@@ -17,9 +17,12 @@
  */
 package com.axelor.apps.businessproject.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
+import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
@@ -32,8 +35,10 @@ import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 
 public class ProjectPlanningTimeBusinessProjectServiceImpl extends ProjectPlanningTimeServiceImpl {
@@ -72,7 +77,8 @@ public class ProjectPlanningTimeBusinessProjectServiceImpl extends ProjectPlanni
       Employee employee,
       Product activity,
       BigDecimal dailyWorkHrs,
-      LocalDateTime taskEndDateTime) {
+      LocalDateTime taskEndDateTime)
+      throws AxelorException {
     ProjectPlanningTime planningTime =
         super.createProjectPlanningTime(
             fromDate,
@@ -91,8 +97,14 @@ public class ProjectPlanningTimeBusinessProjectServiceImpl extends ProjectPlanni
     if (planningTime
         .getTimeUnit()
         .equals(appBusinessProjectService.getAppBusinessProject().getDaysUnit())) {
+      BigDecimal numberHoursADay = project.getNumberHoursADay();
+      if (numberHoursADay.signum() <= 0) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(BusinessProjectExceptionMessage.PROJECT_CONFIG_DEFAULT_HOURS_PER_DAY_MISSING));
+      }
       planningTime.setPlannedTime(
-          planningTime.getPlannedTime().divide(project.getNumberHoursADay()));
+          planningTime.getPlannedTime().divide(numberHoursADay, RoundingMode.HALF_UP));
     }
     return planningTime;
   }
