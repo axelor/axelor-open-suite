@@ -192,14 +192,18 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
           accountingCloseAnnualService.assignPartner(
               openingAccountIdList, year, allocatePerPartner);
       Map<AccountByPartner, Map<Boolean, Boolean>> map = new HashMap<>();
-      openAndCloseProcess(
-          closureAccountAndPartnerPairList, accountingBatch.getCloseYear(), false, map);
-      openAndCloseProcess(
-          openingAccountAndPartnerPairList, false, accountingBatch.getOpenYear(), map);
+      map =
+          openAndCloseProcess(
+              closureAccountAndPartnerPairList, accountingBatch.getCloseYear(), false, map);
+      map =
+          openAndCloseProcess(
+              openingAccountAndPartnerPairList, false, accountingBatch.getOpenYear(), map);
+
+      generateMoves(map);
     }
   }
 
-  protected void openAndCloseProcess(
+  protected Map<AccountByPartner, Map<Boolean, Boolean>> openAndCloseProcess(
       List<Pair<Long, Long>> accountAndPartnerPairList,
       boolean close,
       boolean open,
@@ -226,8 +230,8 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
           map.put(accountByPartner, value);
         }
       }
-      generateMoves(map);
     }
+    return map;
   }
 
   protected void generateMoves(Map<AccountByPartner, Map<Boolean, Boolean>> map) {
