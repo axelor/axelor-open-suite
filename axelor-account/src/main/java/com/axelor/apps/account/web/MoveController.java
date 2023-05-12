@@ -913,6 +913,10 @@ public class MoveController {
         response.setInfo((String) valuesMap.get("info"));
       } else {
         response.setAttrs(moveGroupService.getPaymentConditionOnChangeAttrsMap(move));
+
+        if (valuesMap.containsKey("flash")) {
+          response.setNotify((String) valuesMap.get("flash"));
+        }
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
