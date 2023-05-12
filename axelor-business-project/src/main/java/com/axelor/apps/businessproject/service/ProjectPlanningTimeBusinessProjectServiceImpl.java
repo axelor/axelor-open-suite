@@ -64,7 +64,7 @@ public class ProjectPlanningTimeBusinessProjectServiceImpl extends ProjectPlanni
   }
 
   @Override
-  protected ProjectPlanningTime createProjectPlaningTime(
+  protected ProjectPlanningTime createProjectPlanningTime(
       LocalDateTime fromDate,
       ProjectTask projectTask,
       Project project,
@@ -74,7 +74,7 @@ public class ProjectPlanningTimeBusinessProjectServiceImpl extends ProjectPlanni
       BigDecimal dailyWorkHrs,
       LocalDateTime taskEndDateTime) {
     ProjectPlanningTime planningTime =
-        super.createProjectPlaningTime(
+        super.createProjectPlanningTime(
             fromDate,
             projectTask,
             project,

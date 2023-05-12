@@ -185,7 +185,7 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
       if (dayHrs > 0 && !holidayService.checkPublicHolidayDay(date, employee)) {
 
         ProjectPlanningTime planningTime =
-            createProjectPlaningTime(
+            createProjectPlanningTime(
                 fromDate,
                 projectTask,
                 project,
@@ -201,7 +201,7 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
     }
   }
 
-  protected ProjectPlanningTime createProjectPlaningTime(
+  protected ProjectPlanningTime createProjectPlanningTime(
       LocalDateTime fromDate,
       ProjectTask projectTask,
       Project project,
