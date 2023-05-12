@@ -246,6 +246,7 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
     boolean allocatePerPartner = accountingBatch.getAllocatePerPartner();
     boolean closeYear = accountingBatch.getCloseYear();
     boolean openYear = accountingBatch.getOpenYear();
+    boolean isSimulatedMove = accountingBatch.getSimulateGeneratedMoves();
     Year year = accountingBatch.getYear();
     LocalDate endOfYearDate = year.getToDate();
     LocalDate reportedBalanceDate = year.getReportedBalanceDate();
@@ -274,7 +275,8 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
                     origin,
                     moveDescription,
                     closeYear,
-                    allocatePerPartner);
+                    allocatePerPartner,
+                    isSimulatedMove);
 
           } else if (open && !close) {
             generatedMoves =
@@ -287,7 +289,8 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
                     origin,
                     moveDescription,
                     openYear,
-                    allocatePerPartner);
+                    allocatePerPartner,
+                    isSimulatedMove);
 
           } else if (open && close) {
             generatedMoves =
@@ -301,7 +304,8 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
                     moveDescription,
                     closeYear,
                     openYear,
-                    allocatePerPartner);
+                    allocatePerPartner,
+                    isSimulatedMove);
           }
           if (!CollectionUtils.isEmpty(generatedMoves)) {
             updateAccount(account);
