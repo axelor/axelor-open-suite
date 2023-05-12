@@ -191,7 +191,8 @@ public class BatchRecomputeStockLocationLines extends AbstractBatch {
           null,
           false,
           group.getRealDate(),
-          entry.getValue().getOrigin());
+          entry.getValue().getOrigin(),
+          true);
     }
   }
 

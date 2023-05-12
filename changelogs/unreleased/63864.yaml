@@ -1,5 +1,0 @@
-title: Replaced deleted action by a an existing one
-type: fix
-description:
-  On move form when we select a currency automatically chose the one from partner,
-  if the partner is null then select the currency from the company.
