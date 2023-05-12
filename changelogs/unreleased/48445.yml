@@ -1,5 +1,0 @@
-title: "Remove the Sale order templates from the Historical menu entry"
-type: fix
-description: |
-  Sale order templates were displayed in the Historical menu entry.
-  After the changes we made, only sale orders and  sale quotations are displayed.
