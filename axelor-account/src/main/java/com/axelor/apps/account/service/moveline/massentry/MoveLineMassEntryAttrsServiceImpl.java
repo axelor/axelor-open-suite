@@ -1,6 +1,7 @@
 package com.axelor.apps.account.service.moveline.massentry;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLineMassEntry;
 import com.axelor.apps.account.db.repo.MoveRepository;
@@ -115,5 +116,15 @@ public class MoveLineMassEntryAttrsServiceImpl implements MoveLineMassEntryAttrs
         && account.getUseForPartnerBalance()) {
       this.addAttr("movePfpValidatorUser", "required", true, attrsMap);
     }
+  }
+
+  @Override
+  public void addOriginRequired(
+      MoveLineMassEntry moveLine, Journal journal, Map<String, Map<String, Object>> attrsMap) {
+    this.addAttr(
+        "origin",
+        "required",
+        moveLine.getOriginDate() != null && journal != null && journal.getHasRequiredOrigin(),
+        attrsMap);
   }
 }
