@@ -323,7 +323,6 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
       } else {
         moveValidateService.accounting(move);
       }
-      moveValidateService.accounting(move);
     } else {
       moveRepository.remove(move);
       return null;
