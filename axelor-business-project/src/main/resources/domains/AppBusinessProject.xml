@@ -72,7 +72,6 @@
       <field name="projectPurchaseOrderLines" on="UPDATE"/>
       <field name="projectInvoiceLines" on="UPDATE"/>
       <field name="enableTaskTemplatesByProduct" on="UPDATE"/>
-      <field name="generateProjectSequence" on="UPDATE"/>
       <field name="automaticInvoicing" on="UPDATE"/>
       <field name="excludeTaskInvoicing" on="UPDATE"/>
     </track>

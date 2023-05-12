@@ -30,6 +30,7 @@
       <field name="checkResourceAvailibility" on="UPDATE"/>
       <field name="isEnableSignature" on="UPDATE"/>
       <field name="isEnablePerProjectTaskSequence" on="UPDATE"/>
+      <field name="generateProjectSequence" on="UPDATE"/>
     </track>
   </entity>
 
