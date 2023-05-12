@@ -19,7 +19,6 @@
 package com.axelor.apps.account.service.move.control;
 
 import com.axelor.apps.account.db.Move;
-import com.axelor.apps.account.service.move.record.model.MoveContext;
 import com.axelor.apps.base.AxelorException;
 
 public interface MoveCheckService {
@@ -46,5 +45,5 @@ public interface MoveCheckService {
 
   String getOriginAlert(Move move);
 
-  MoveContext checkTermsInPayment(Move move) throws AxelorException;
+  void checkTermsInPayment(Move move) throws AxelorException;
 }

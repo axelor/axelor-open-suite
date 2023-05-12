@@ -27,12 +27,12 @@ public interface MoveRecordUpdateService {
 
   void updatePartner(Move move);
 
-  MoveContext updateInvoiceTerms(Move move, boolean paymentConditionChange, boolean headerChange)
+  String updateInvoiceTerms(Move move, boolean paymentConditionChange, boolean headerChange)
       throws AxelorException;
 
   MoveContext updateRoundInvoiceTermPercentages(Move move);
 
-  MoveContext updateInvoiceTermDueDate(Move move, LocalDate dueDate);
+  void updateInvoiceTermDueDate(Move move, LocalDate dueDate);
 
   void updateInDayBookMode(Move move) throws AxelorException;
 

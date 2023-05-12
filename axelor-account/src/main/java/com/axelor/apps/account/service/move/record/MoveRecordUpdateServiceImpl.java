@@ -68,18 +68,15 @@ public class MoveRecordUpdateServiceImpl implements MoveRecordUpdateService {
   }
 
   @Override
-  public MoveContext updateInvoiceTerms(
-      Move move, boolean paymentConditionChange, boolean headerChange) throws AxelorException {
-    Objects.requireNonNull(move);
-    MoveContext result = new MoveContext();
+  public String updateInvoiceTerms(Move move, boolean paymentConditionChange, boolean headerChange)
+      throws AxelorException {
+    String flashMessage = null;
 
     if (paymentConditionChange) {
-
       moveInvoiceTermService.recreateInvoiceTerms(move);
 
       if (moveInvoiceTermService.displayDueDate(move)) {
         LocalDate dueDate = moveInvoiceTermService.computeDueDate(move, true, false);
-        result.putInAttrs("dueDate", "value", dueDate);
         move.setDueDate(dueDate);
       }
     } else if (headerChange) {
@@ -87,14 +84,11 @@ public class MoveRecordUpdateServiceImpl implements MoveRecordUpdateService {
       boolean isAllUpdated = moveInvoiceTermService.updateInvoiceTerms(move);
 
       if (!isAllUpdated) {
-        result.putInFlash(I18n.get(AccountExceptionMessage.MOVE_INVOICE_TERM_CANNOT_UPDATE));
+        flashMessage = I18n.get(AccountExceptionMessage.MOVE_INVOICE_TERM_CANNOT_UPDATE);
       }
     }
 
-    result.putInAttrs("$paymentConditionChange", "value", false);
-    result.putInAttrs("$headerChange", "value", false);
-    result.putInValues("moveLineList", move.getMoveLineList());
-    return result;
+    return flashMessage;
   }
 
   @Override
@@ -108,15 +102,10 @@ public class MoveRecordUpdateServiceImpl implements MoveRecordUpdateService {
   }
 
   @Override
-  public MoveContext updateInvoiceTermDueDate(Move move, LocalDate dueDate) {
-    MoveContext result = new MoveContext();
+  public void updateInvoiceTermDueDate(Move move, LocalDate dueDate) {
     if (dueDate != null) {
-
       moveInvoiceTermService.updateSingleInvoiceTermDueDate(move, dueDate);
-      result.putInValues("moveLineList", move.getMoveLineList());
     }
-
-    return result;
   }
 
   @Override

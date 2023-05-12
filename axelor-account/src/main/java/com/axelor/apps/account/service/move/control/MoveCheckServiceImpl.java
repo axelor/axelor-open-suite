@@ -27,7 +27,6 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.journal.JournalCheckPartnerTypeService;
 import com.axelor.apps.account.service.move.MoveInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveToolService;
-import com.axelor.apps.account.service.move.record.model.MoveContext;
 import com.axelor.apps.account.service.moveline.MoveLineCheckService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
@@ -169,9 +168,7 @@ public class MoveCheckServiceImpl implements MoveCheckService {
   }
 
   @Override
-  public MoveContext checkTermsInPayment(Move move) throws AxelorException {
-
-    MoveContext moveContext = new MoveContext();
+  public void checkTermsInPayment(Move move) throws AxelorException {
     String errorMessage = moveInvoiceTermService.checkIfInvoiceTermInPayment(move);
 
     if (StringUtils.notEmpty(errorMessage)) {
@@ -179,12 +176,9 @@ public class MoveCheckServiceImpl implements MoveCheckService {
         PaymentCondition formerPaymentCondition =
             moveRepository.find(move.getId()).getPaymentCondition();
         move.setPaymentCondition(formerPaymentCondition);
-        moveContext.putInValues("paymentCondition", formerPaymentCondition);
       }
 
-      moveContext.putInError(errorMessage);
+      throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, errorMessage);
     }
-
-    return moveContext;
   }
 }

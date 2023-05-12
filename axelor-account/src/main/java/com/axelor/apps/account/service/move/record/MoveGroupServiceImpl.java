@@ -353,25 +353,37 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   }
 
   @Override
-  public MoveContext onChangePaymentCondition(
-      Move move, boolean paymentConditionChange, boolean dateChange, boolean headerChange)
-      throws AxelorException {
+  public Map<String, Object> getPaymentConditionOnChangeValuesMap(
+      Move move, boolean dateChange, boolean headerChange) throws AxelorException {
+    Map<String, Object> valuesMap = new HashMap<>();
 
-    Objects.requireNonNull(move);
+    try {
+      moveCheckService.checkTermsInPayment(move);
+    } catch (AxelorException e) {
+      valuesMap.put("paymentCondition", move.getPaymentCondition());
+      valuesMap.put("info", e.getLocalizedMessage());
 
-    MoveContext result = new MoveContext();
-
-    result.merge(moveCheckService.checkTermsInPayment(move));
-    if (!result.getError().isEmpty()) {
-      return result;
+      return valuesMap;
     }
-    result.putInAttrs("$paymentConditionChange", "value", true);
-    paymentConditionChange = true;
-    result.merge(
-        moveRecordUpdateService.updateInvoiceTerms(move, paymentConditionChange, headerChange));
-    result.merge(moveRecordUpdateService.updateInvoiceTermDueDate(move, move.getDueDate()));
-    result.merge(moveRecordUpdateService.updateDueDate(move, paymentConditionChange, dateChange));
 
-    return result;
+    valuesMap.put("flash", moveRecordUpdateService.updateInvoiceTerms(move, true, headerChange));
+    moveRecordUpdateService.updateInvoiceTermDueDate(move, move.getDueDate());
+    moveRecordUpdateService.updateDueDate(move, true, dateChange);
+
+    valuesMap.put("dueDate", move.getDueDate());
+    valuesMap.put("moveLineList", move.getMoveLineList());
+
+    return valuesMap;
+  }
+
+  @Override
+  public Map<String, Map<String, Object>> getPaymentConditionOnChangeAttrsMap(Move move) {
+    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+
+    moveAttrsService.addPaymentConditionChangeChangeFalseValue(attrsMap);
+    moveAttrsService.addHeaderChangeChangeFalseValue(attrsMap);
+    moveAttrsService.addDateChangeFalseValue(move, true, attrsMap);
+
+    return attrsMap;
   }
 }
