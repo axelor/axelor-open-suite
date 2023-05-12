@@ -23,7 +23,6 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.move.MoveInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveValidateService;
-import com.axelor.apps.account.service.move.record.model.MoveContext;
 import com.axelor.apps.account.service.moveline.MoveLineCurrencyService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.base.AxelorException;
@@ -80,7 +79,6 @@ public class MoveRecordUpdateServiceImpl implements MoveRecordUpdateService {
         move.setDueDate(dueDate);
       }
     } else if (headerChange) {
-
       boolean isAllUpdated = moveInvoiceTermService.updateInvoiceTerms(move);
 
       if (!isAllUpdated) {
@@ -89,16 +87,6 @@ public class MoveRecordUpdateServiceImpl implements MoveRecordUpdateService {
     }
 
     return flashMessage;
-  }
-
-  @Override
-  public MoveContext updateRoundInvoiceTermPercentages(Move move) {
-
-    MoveContext result = new MoveContext();
-    moveInvoiceTermService.roundInvoiceTermPercentages(move);
-    result.putInValues("moveLineList", move.getMoveLineList());
-
-    return result;
   }
 
   @Override

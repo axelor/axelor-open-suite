@@ -19,7 +19,6 @@
 package com.axelor.apps.account.service.move.record;
 
 import com.axelor.apps.account.db.Move;
-import com.axelor.apps.account.service.move.record.model.MoveContext;
 import com.axelor.apps.base.AxelorException;
 import java.util.Map;
 
@@ -33,26 +32,10 @@ public interface MoveGroupService {
 
   Map<String, Map<String, Object>> getOnLoadAttrsMap(Move move) throws AxelorException;
 
-  /**
-   * Method called on action onSave
-   *
-   * @param move: can not be null
-   * @param paymentConditionChange
-   * @param headerChange
-   * @throws AxelorException
-   */
-  MoveContext onSaveBefore(Move move, boolean paymentConditionChange, boolean headerChange)
+  void checkBeforeSave(Move move) throws AxelorException;
+
+  void onSave(Move move, boolean paymentConditionChange, boolean headerChange)
       throws AxelorException;
-
-  /**
-   * Method called on action onSave
-   *
-   * @param move: can not be null
-   * @throws AxelorException
-   */
-  MoveContext onSaveAfter(Move move) throws AxelorException;
-
-  MoveContext onSaveCheck(Move move) throws AxelorException;
 
   Map<String, Object> getDateOnChangeValuesMap(Move move, boolean paymentConditionChange)
       throws AxelorException;

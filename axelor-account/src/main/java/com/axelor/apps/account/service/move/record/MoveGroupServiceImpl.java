@@ -22,11 +22,11 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.PeriodServiceAccount;
 import com.axelor.apps.account.service.move.MoveComputeService;
+import com.axelor.apps.account.service.move.MoveInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.attributes.MoveAttrsService;
 import com.axelor.apps.account.service.move.control.MoveCheckService;
-import com.axelor.apps.account.service.move.record.model.MoveContext;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.auth.AuthUtils;
@@ -34,7 +34,6 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 public class MoveGroupServiceImpl implements MoveGroupService {
 
@@ -46,6 +45,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   protected MoveRecordUpdateService moveRecordUpdateService;
   protected MoveRecordSetService moveRecordSetService;
   protected MoveToolService moveToolService;
+  protected MoveInvoiceTermService moveInvoiceTermService;
   protected MoveLineControlService moveLineControlService;
   protected PeriodService periodService;
   protected MoveRepository moveRepository;
@@ -60,6 +60,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
       MoveRecordUpdateService moveRecordUpdateService,
       MoveRecordSetService moveRecordSetService,
       MoveToolService moveToolService,
+      MoveInvoiceTermService moveInvoiceTermService,
       MoveLineControlService moveLineControlService,
       PeriodService periodService,
       MoveRepository moveRepository) {
@@ -71,6 +72,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     this.moveRecordUpdateService = moveRecordUpdateService;
     this.moveRecordSetService = moveRecordSetService;
     this.moveToolService = moveToolService;
+    this.moveInvoiceTermService = moveInvoiceTermService;
     this.moveLineControlService = moveLineControlService;
     this.periodService = periodService;
     this.moveRepository = moveRepository;
@@ -82,52 +84,25 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     valuesMap.put("$periodClosed", periodService.isClosedPeriod(move.getPeriod()));
   }
 
-  @Override
-  @Transactional(rollbackOn = Exception.class)
-  public MoveContext onSaveBefore(Move move, boolean paymentConditionChange, boolean headerChange)
-      throws AxelorException {
-    Objects.requireNonNull(move);
-
-    MoveContext result = new MoveContext();
-
-    moveRecordUpdateService.updatePartner(move);
-    result.merge(
-        moveRecordUpdateService.updateInvoiceTerms(move, paymentConditionChange, headerChange));
-    result.merge(moveRecordUpdateService.updateInvoiceTermDueDate(move, move.getDueDate()));
-
-    return result;
-  }
-
-  @Override
-  @Transactional(rollbackOn = Exception.class)
-  public MoveContext onSaveCheck(Move move) throws AxelorException {
-    Objects.requireNonNull(move);
-
-    MoveContext result = new MoveContext();
-
+  public void checkBeforeSave(Move move) throws AxelorException {
     moveCheckService.checkDates(move);
     moveCheckService.checkPeriodPermission(move);
     moveCheckService.checkRemovedLines(move);
     moveCheckService.checkAnalyticAccount(move);
-
-    return result;
   }
 
   @Override
   @Transactional(rollbackOn = Exception.class)
-  public MoveContext onSaveAfter(Move move) throws AxelorException {
-    Objects.requireNonNull(move);
+  public void onSave(Move move, boolean paymentConditionChange, boolean headerChange)
+      throws AxelorException {
+    moveRecordUpdateService.updatePartner(move);
+    moveRecordUpdateService.updateInvoiceTerms(move, paymentConditionChange, headerChange);
+    moveRecordUpdateService.updateInvoiceTermDueDate(move, move.getDueDate());
 
-    move = moveRepository.find(move.getId());
-    MoveContext result = new MoveContext();
+    moveRepository.save(move);
 
-    // No need to merge result
-    moveRecordUpdateService.updateRoundInvoiceTermPercentages(move);
-
-    // Move will be saved again in this method
+    moveInvoiceTermService.roundInvoiceTermPercentages(move);
     moveRecordUpdateService.updateInDayBookMode(move);
-
-    return result;
   }
 
   @Override

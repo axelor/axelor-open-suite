@@ -19,7 +19,6 @@
 package com.axelor.apps.account.service.move.record;
 
 import com.axelor.apps.account.db.Move;
-import com.axelor.apps.account.service.move.record.model.MoveContext;
 import com.axelor.apps.base.AxelorException;
 import java.time.LocalDate;
 
@@ -29,8 +28,6 @@ public interface MoveRecordUpdateService {
 
   String updateInvoiceTerms(Move move, boolean paymentConditionChange, boolean headerChange)
       throws AxelorException;
-
-  MoveContext updateRoundInvoiceTermPercentages(Move move);
 
   void updateInvoiceTermDueDate(Move move, LocalDate dueDate);
 

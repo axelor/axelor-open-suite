@@ -46,7 +46,6 @@ import com.axelor.apps.account.service.move.control.MoveCheckService;
 import com.axelor.apps.account.service.move.record.MoveDefaultService;
 import com.axelor.apps.account.service.move.record.MoveGroupService;
 import com.axelor.apps.account.service.move.record.MoveRecordSetService;
-import com.axelor.apps.account.service.move.record.model.MoveContext;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
@@ -662,29 +661,13 @@ public class MoveController {
   public void onSaveCheck(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
-      MoveContext result = Beans.get(MoveGroupService.class).onSaveCheck(move);
-      // As this method will make a update in the invoiceTerms set values move
-      response.setValues(move);
-      response.setAttrs(result.getAttrs());
-      if (!result.getFlash().isEmpty()) {
-        response.setInfo(result.getFlash());
-      }
-      if (!result.getNotify().isEmpty()) {
-        response.setNotify(result.getNotify());
-      }
-      if (!result.getAlert().isEmpty()) {
-        response.setAlert(result.getAlert());
-      }
-      if (!result.getError().isEmpty()) {
-        response.setError(result.getError());
-      }
-
+      Beans.get(MoveGroupService.class).checkBeforeSave(move);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 
-  public void onSaveBefore(ActionRequest request, ActionResponse response) {
+  public void onSave(ActionRequest request, ActionResponse response) {
     try {
       Context context = request.getContext();
       Move move = context.asType(Move.class);
@@ -698,49 +681,8 @@ public class MoveController {
               .map(value -> (Boolean) value)
               .orElse(false);
 
-      MoveContext result =
-          Beans.get(MoveGroupService.class)
-              .onSaveBefore(move, paymentConditionChange, headerChange);
-      // As this method will make a update in the invoiceTerms set values move
-      response.setValues(move);
-      response.setAttrs(result.getAttrs());
-      if (!result.getFlash().isEmpty()) {
-        response.setInfo(result.getFlash());
-      }
-      if (!result.getNotify().isEmpty()) {
-        response.setNotify(result.getNotify());
-      }
-      if (!result.getAlert().isEmpty()) {
-        response.setAlert(result.getAlert());
-      }
-      if (!result.getError().isEmpty()) {
-        response.setError(result.getError());
-      }
+      Beans.get(MoveGroupService.class).onSave(move, paymentConditionChange, headerChange);
 
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-    }
-  }
-
-  public void onSaveAfter(ActionRequest request, ActionResponse response) {
-    try {
-      Move move = request.getContext().asType(Move.class);
-      MoveContext result = Beans.get(MoveGroupService.class).onSaveAfter(move);
-      // As this method will make a update in the invoiceTerms set values move
-      response.setValues(move);
-      response.setAttrs(result.getAttrs());
-      if (!result.getFlash().isEmpty()) {
-        response.setInfo(result.getFlash());
-      }
-      if (!result.getNotify().isEmpty()) {
-        response.setNotify(result.getNotify());
-      }
-      if (!result.getAlert().isEmpty()) {
-        response.setAlert(result.getAlert());
-      }
-      if (!result.getError().isEmpty()) {
-        response.setError(result.getError());
-      }
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);

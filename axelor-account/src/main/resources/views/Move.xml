@@ -563,11 +563,9 @@
   </action-record>
 
   <action-group name="action-account-move-group-onsave">
-    <action name="action-account-move-method-onSave-check"/>
+    <action name="action-move-method-check-before-save"/>
     <action name="save"/>
-    <action name="action-account-move-method-onSave-before"/>
-    <action name="save"/>
-    <action name="action-account-move-method-onSave-after"/>
+    <action name="action-move-method-onsave"/>
   </action-group>
 
   <action-group name="action-account-move-group-generate-counterpart">
@@ -824,16 +822,12 @@
     <call class="com.axelor.apps.account.web.MoveController" method="onLoad"/>
   </action-method>
 
-  <action-method name="action-account-move-method-onSave-before">
-    <call class="com.axelor.apps.account.web.MoveController" method="onSaveBefore"/>
+  <action-method name="action-move-method-check-before-save">
+    <call class="com.axelor.apps.account.web.MoveController" method="checkBeforeSave"/>
   </action-method>
 
-  <action-method name="action-account-move-method-onSave-check">
-    <call class="com.axelor.apps.account.web.MoveController" method="onSaveCheck"/>
-  </action-method>
-
-  <action-method name="action-account-move-method-onSave-after">
-    <call class="com.axelor.apps.account.web.MoveController" method="onSaveAfter"/>
+  <action-method name="action-move-method-onsave">
+    <call class="com.axelor.apps.account.web.MoveController" method="onSave"/>
   </action-method>
 
   <action-method name="action-move-method-check-origin">
