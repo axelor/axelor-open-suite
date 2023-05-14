@@ -488,6 +488,7 @@
       </panel>
 
       <field name="supplierInvoiceNb"
+        readonlyIf="statusSelect != 1 &amp;&amp; statusSelect != 2"
         showIf="operationTypeSelect == 1 || operationTypeSelect == 2"
         requiredIf="((operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; statusSelect == 2) || (operationSubTypeSelect == 2 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 2))"
         onChange="action-account-invoice-method-show-duplicate-invoice-nbr-warning"/>
@@ -501,7 +502,8 @@
               	]]>
         </viewer>
       </field>
-      <field name="originDate" showIf="operationTypeSelect == 1 || operationTypeSelect == 2"
+      <field name="originDate" readonlyIf="statusSelect != 1 &amp;&amp; statusSelect != 2"
+        showIf="operationTypeSelect == 1 || operationTypeSelect == 2"
         requiredIf="((operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; statusSelect == 2) || (operationSubTypeSelect == 2 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 2))"
         onChange="action-invoice-record-due-date"/>
     </panel>
