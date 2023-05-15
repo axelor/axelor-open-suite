@@ -100,17 +100,7 @@ public class SaleInvoicingStateServiceImpl implements SaleInvoicingStateService 
       return SaleOrderRepository.INVOICING_STATE_INVOICED;
     }
 
-    if (saleOrderLineList.stream()
-        .anyMatch(
-            saleOrderLine ->
-                saleOrderLine.getInvoicingState()
-                        == SaleOrderLineRepository.INVOICING_STATE_PARTIALLY_INVOICED
-                    || saleOrderLine.getInvoicingState()
-                        == SaleOrderLineRepository.INVOICING_STATE_INVOICED)) {
-      return SaleOrderRepository.INVOICING_STATE_PARTIALLY_INVOICED;
-    }
-
-    return -1;
+    return SaleOrderRepository.INVOICING_STATE_PARTIALLY_INVOICED;
   }
 
   @Transactional
