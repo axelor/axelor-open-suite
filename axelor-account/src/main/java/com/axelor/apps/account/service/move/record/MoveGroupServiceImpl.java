@@ -384,4 +384,15 @@ public class MoveGroupServiceImpl implements MoveGroupService {
 
     return valuesMap;
   }
+
+  @Override
+  public Map<String, Object> getGenerateTaxLinesOnClickValuesMap(Move move) throws AxelorException {
+    moveLineTaxService.autoTaxLineGenerateNoSave(move);
+
+    Map<String, Object> valuesMap = moveComputeService.computeTotals(move);
+
+    valuesMap.put("moveLineList", move.getMoveLineList());
+
+    return valuesMap;
+  }
 }

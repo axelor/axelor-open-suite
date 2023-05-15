@@ -45,7 +45,6 @@ import com.axelor.apps.account.service.move.control.MoveCheckService;
 import com.axelor.apps.account.service.move.record.MoveDefaultService;
 import com.axelor.apps.account.service.move.record.MoveGroupService;
 import com.axelor.apps.account.service.move.record.MoveRecordSetService;
-import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.BankDetails;
@@ -371,33 +370,6 @@ public class MoveController {
       response.setView(actionViewBuilder.map());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
-    }
-  }
-
-  public void computeTotals(ActionRequest request, ActionResponse response) {
-    Move move = request.getContext().asType(Move.class);
-
-    try {
-      Map<String, Object> values = Beans.get(MoveComputeService.class).computeTotals(move);
-      response.setValues(values);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void autoTaxLineGenerate(ActionRequest request, ActionResponse response) {
-    Move move = request.getContext().asType(Move.class);
-    try {
-      if (move.getMoveLineList() != null
-          && !move.getMoveLineList().isEmpty()
-          && (move.getStatusSelect().equals(MoveRepository.STATUS_NEW)
-              || move.getStatusSelect().equals(MoveRepository.STATUS_SIMULATED))) {
-        Beans.get(MoveLineTaxService.class).autoTaxLineGenerateNoSave(move, null);
-
-        response.setValue("moveLineList", move.getMoveLineList());
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 
@@ -851,6 +823,17 @@ public class MoveController {
 
       response.setValues(
           Beans.get(MoveGroupService.class).getGenerateCounterpartOnClickValuesMap(move, dueDate));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void onClickGenerateTaxLines(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+
+      response.setValues(
+          Beans.get(MoveGroupService.class).getGenerateTaxLinesOnClickValuesMap(move));
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

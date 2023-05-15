@@ -75,4 +75,6 @@ public interface MoveGroupService {
 
   Map<String, Object> getGenerateCounterpartOnClickValuesMap(Move move, LocalDate dueDate)
       throws AxelorException;
+
+  Map<String, Object> getGenerateTaxLinesOnClickValuesMap(Move move) throws AxelorException;
 }
