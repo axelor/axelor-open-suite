@@ -139,25 +139,10 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
           I18n.get(BaseExceptionMessage.EXCEPTION),
           accountingBatch.getCode());
     }
-    if (accountingBatch.getSimulateGeneratedMoves() && accountingBatch.getCompany() != null) {
-      Journal journal =
-          accountConfigService
-              .getAccountConfig(accountingBatch.getCompany())
-              .getReportedBalanceJournal();
-      if (journal == null) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(AccountExceptionMessage.BATCH_CLOSE_ANNUAL_ACCOUNT_3),
-            I18n.get(BaseExceptionMessage.EXCEPTION),
-            accountingBatch.getCode());
-      }
-      if (!journal.getAuthorizeSimulatedMove()) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(AccountExceptionMessage.BATCH_CLOSE_ANNUAL_ACCOUNT_4),
-            journal.getCode());
-      }
-    }
+
+    validateSimulatedConfiguration(
+        accountingBatch.getSimulateGeneratedMoves(), accountingBatch.getCompany());
+
     if (accountingBatch.getGenerateResultMove() && accountingBatch.getCompany() != null) {
       AccountConfig accountConfig =
           accountConfigService.getAccountConfig(accountingBatch.getCompany());
@@ -180,8 +165,29 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
     }
   }
 
+  protected void validateSimulatedConfiguration(boolean simulateGeneratedMoves, Company company)
+      throws AxelorException {
+    if (simulateGeneratedMoves && company != null) {
+      Journal journal = accountConfigService.getAccountConfig(company).getReportedBalanceJournal();
+      if (journal == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(AccountExceptionMessage.BATCH_CLOSE_ANNUAL_ACCOUNT_3),
+            I18n.get(BaseExceptionMessage.EXCEPTION),
+            accountingBatch.getCode());
+      }
+      if (!journal.getAuthorizeSimulatedMove()) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(AccountExceptionMessage.BATCH_CLOSE_ANNUAL_ACCOUNT_4),
+            journal.getCode());
+      }
+    }
+  }
+
   protected void process() {
     if (!end) {
+
       Year year = accountingBatch.getYear();
       boolean allocatePerPartner = accountingBatch.getAllocatePerPartner();
 
@@ -261,6 +267,9 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
         }
         value = map.get(accountByPartner);
         if (value != null) {
+
+          validateSimulatedConfiguration(isSimulatedMove, accountingBatch.getCompany());
+
           close = value.containsKey(true);
           open = value.containsValue(true);
           List<Move> generatedMoves = new ArrayList<Move>();

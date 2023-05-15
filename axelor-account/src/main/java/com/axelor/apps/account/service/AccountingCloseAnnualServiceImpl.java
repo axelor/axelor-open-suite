@@ -319,6 +319,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
           && accountConfig.getIsActivateSimulatedMove()
           && isSimulatedMove
           && move.getJournal().getAuthorizeSimulatedMove()) {
+
         moveSimulateService.simulate(move);
       } else {
         moveValidateService.accounting(move);
