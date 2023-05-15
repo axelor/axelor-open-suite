@@ -20,10 +20,11 @@ package com.axelor.apps.production.service.operationorder;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BarcodeTypeConfig;
-import com.axelor.apps.base.db.DayPlanning;
+import com.axelor.apps.base.db.ICalendarEvent;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.BarcodeGeneratorService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
+import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningServiceImp;
 import com.axelor.apps.production.db.Machine;
 import com.axelor.apps.production.db.MachineTool;
 import com.axelor.apps.production.db.ManufOrder;
@@ -363,31 +364,41 @@ public class OperationOrderServiceImpl implements OperationOrderService {
           }
           long numberOfMinutesPerDay = 0;
           if (operationOrder.getWorkCenter().getMachine().getWeeklyPlanning() != null) {
-            DayPlanning dayPlanning =
+            List<ICalendarEvent> dayPlanningList =
                 weeklyPlanningService.findDayPlanning(
                     operationOrder.getWorkCenter().getMachine().getWeeklyPlanning(),
                     LocalDateTime.parse(itDateTime.toString(), DateTimeFormatter.ISO_DATE_TIME)
                         .toLocalDate());
-            if (dayPlanning != null) {
-              if (dayPlanning.getMorningFrom() != null && dayPlanning.getMorningTo() != null) {
-                numberOfMinutesPerDay =
-                    Duration.between(dayPlanning.getMorningFrom(), dayPlanning.getMorningTo())
-                        .toMinutes();
-              }
-              if (dayPlanning.getAfternoonFrom() != null && dayPlanning.getAfternoonTo() != null) {
-                numberOfMinutesPerDay +=
-                    Duration.between(dayPlanning.getAfternoonFrom(), dayPlanning.getAfternoonTo())
-                        .toMinutes();
-              }
-              if (dayPlanning.getMorningFrom() != null
-                  && dayPlanning.getMorningTo() == null
-                  && dayPlanning.getAfternoonFrom() == null
-                  && dayPlanning.getAfternoonTo() != null) {
-                numberOfMinutesPerDay +=
-                    Duration.between(dayPlanning.getMorningFrom(), dayPlanning.getAfternoonTo())
-                        .toMinutes();
+            ICalendarEvent morningEvent = new ICalendarEvent();
+            ICalendarEvent afternoonEvent = new ICalendarEvent();
+            if (dayPlanningList != null && !dayPlanningList.isEmpty()) {
+              for (ICalendarEvent dayPlanning : dayPlanningList) {
+                if (dayPlanning.getStartDateTime().toLocalTime() != null
+                    && dayPlanning.getEndDateTime().toLocalTime() != null) {
+                  numberOfMinutesPerDay =
+                      Duration.between(
+                              dayPlanning.getStartDateTime().toLocalTime(),
+                              dayPlanning.getEndDateTime().toLocalTime())
+                          .toMinutes();
+                }
+                if (dayPlanning.getSubject().endsWith(WeeklyPlanningServiceImp.MORNING)) {
+                  morningEvent = dayPlanning;
+                }
+                if (dayPlanning.getSubject().endsWith(WeeklyPlanningServiceImp.AFTERNOON)) {
+                  afternoonEvent = dayPlanning;
+                }
               }
 
+              if (morningEvent.getStartDateTime().toLocalTime() != null
+                  && morningEvent.getEndDateTime().toLocalTime() == null
+                  && afternoonEvent.getStartDateTime().toLocalTime() == null
+                  && afternoonEvent.getEndDateTime().toLocalTime() != null) {
+                numberOfMinutesPerDay +=
+                    Duration.between(
+                            morningEvent.getStartDateTime().toLocalTime(),
+                            afternoonEvent.getEndDateTime().toLocalTime())
+                        .toMinutes();
+              }
             } else {
               numberOfMinutesPerDay = 0;
             }

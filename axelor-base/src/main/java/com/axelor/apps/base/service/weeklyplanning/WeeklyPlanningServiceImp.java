@@ -19,60 +19,60 @@
 package com.axelor.apps.base.service.weeklyplanning;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.DayPlanning;
+import com.axelor.apps.base.db.ICalendarEvent;
+import com.axelor.apps.base.db.RecurrenceConfiguration;
 import com.axelor.apps.base.db.WeeklyPlanning;
-import com.axelor.apps.base.db.repo.DayPlanningRepository;
+import com.axelor.apps.base.db.repo.ICalendarEventRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.db.repo.WeeklyPlanningRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
-import com.axelor.apps.base.service.user.UserService;
-import com.axelor.common.ObjectUtils;
+import com.axelor.db.EntityHelper;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Comparator;
+import java.time.temporal.TemporalField;
+import java.time.temporal.WeekFields;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class WeeklyPlanningServiceImp implements WeeklyPlanningService {
 
+  @Inject WeeklyPlanningRepository weeklyPlanningRepo;
+
+  public static final int END_TYPE = 2;
+  public static final int PERIODICITY = 1;
   public static final int DEFAULT_SCALE = 2;
+  public static final int RECURRENCE_TYPE = 2;
+  public static final String MORNING = "morning";
+  public static final String AFTERNOON = "afternoon";
+  public static final int YEARS_TO_ADD = 1;
 
-  public DayOfWeek getFirstDayOfWeek() {
-    WeeklyPlanning planning =
-        Beans.get(UserService.class).getUserActiveCompany().getWeeklyPlanning();
-
-    if (planning != null && ObjectUtils.notEmpty(planning.getWeekDays())) {
-      Optional<DayPlanning> min =
-          planning.getWeekDays().stream().min(Comparator.comparing(DayPlanning::getSequence));
-
-      if (min.isPresent()) {
-        return getDayOfWeek(min.get());
-      }
-    }
-
-    return DayOfWeek.MONDAY;
-  }
-
-  protected DayOfWeek getDayOfWeek(DayPlanning day) {
-    switch (day.getNameSelect()) {
-      case DayPlanningRepository.MONDAY:
+  public DayOfWeek getDayOfWeek(String day) {
+    switch (day) {
+      case ICalendarEventRepository.MONDAY:
         return DayOfWeek.MONDAY;
-      case DayPlanningRepository.TUESDAY:
+      case ICalendarEventRepository.TUESDAY:
         return DayOfWeek.TUESDAY;
-      case DayPlanningRepository.WEDNESDAY:
+      case ICalendarEventRepository.WEDNESDAY:
         return DayOfWeek.WEDNESDAY;
-      case DayPlanningRepository.THURSDAY:
+      case ICalendarEventRepository.THURSDAY:
         return DayOfWeek.THURSDAY;
-      case DayPlanningRepository.FRIDAY:
+      case ICalendarEventRepository.FRIDAY:
         return DayOfWeek.FRIDAY;
-      case DayPlanningRepository.SATURDAY:
+      case ICalendarEventRepository.SATURDAY:
         return DayOfWeek.SATURDAY;
-      case DayPlanningRepository.SUNDAY:
+      case ICalendarEventRepository.SUNDAY:
         return DayOfWeek.SUNDAY;
       default:
         return DayOfWeek.SUNDAY;
@@ -82,82 +82,151 @@ public class WeeklyPlanningServiceImp implements WeeklyPlanningService {
   @Override
   @Transactional
   public WeeklyPlanning initPlanning(WeeklyPlanning planning) {
-    String[] dayTab =
-        new String[] {
-          DayPlanningRepository.MONDAY,
-          DayPlanningRepository.TUESDAY,
-          DayPlanningRepository.WEDNESDAY,
-          DayPlanningRepository.THURSDAY,
-          DayPlanningRepository.FRIDAY,
-          DayPlanningRepository.SATURDAY,
-          DayPlanningRepository.SUNDAY
-        };
-    for (int i = 0; i < dayTab.length; i++) {
-      DayPlanning day = new DayPlanning();
-      day.setNameSelect(dayTab[i]);
+    List<String> dayTab = getAllDays();
+    LocalDateTime time = LocalDateTime.now().with(DayOfWeek.MONDAY).truncatedTo(ChronoUnit.DAYS);
+    for (int i = 0; i < dayTab.size(); i++) {
+      ICalendarEvent day = new ICalendarEvent();
+      day.setSubject(dayTab.get(i));
+      day.setStartDateTime(time);
+      day.setEndDateTime(time);
+      day.setVisibilitySelect(ICalendarEventRepository.VISIBILITY_PUBLIC);
+      day.setDisponibilitySelect(ICalendarEventRepository.DISPONIBILITY_BUSY);
+      day.setSequence(i);
       planning.addWeekDay(day);
+      if (i % 2 != 0) time = time.plusDays(1);
     }
     return planning;
   }
 
+  public List<String> getAllDays() {
+    return Arrays.asList(
+        ICalendarEventRepository.MONDAY_MORNING,
+        ICalendarEventRepository.MONDAY_AFTERNOON,
+        ICalendarEventRepository.TUESDAY_MORNING,
+        ICalendarEventRepository.TUESDAY_AFTERNOON,
+        ICalendarEventRepository.WEDNESDAY_MORNING,
+        ICalendarEventRepository.WEDNESDAY_AFTERNOON,
+        ICalendarEventRepository.THURSDAY_MORNING,
+        ICalendarEventRepository.THURSDAY_AFTERNOON,
+        ICalendarEventRepository.FRIDAY_MORNING,
+        ICalendarEventRepository.FRIDAY_AFTERNOON,
+        ICalendarEventRepository.SATURDAY_MORNING,
+        ICalendarEventRepository.SATURDAY_AFTERNOON,
+        ICalendarEventRepository.SUNDAY_MORNING,
+        ICalendarEventRepository.SUNDAY_AFTERNOON);
+  }
+
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public WeeklyPlanning checkPlanning(WeeklyPlanning planning) throws AxelorException {
+  public void checkPlanning(WeeklyPlanning planning) throws AxelorException {
 
-    List<DayPlanning> listDay = planning.getWeekDays();
-    for (DayPlanning dayPlanning : listDay) {
+    List<ICalendarEvent> listDay = planning.getWeekDays();
+    for (ICalendarEvent dayPlanning : listDay) {
+      List<ICalendarEvent> dayList = getDayList(listDay, dayPlanning);
+      ICalendarEvent morningEvent = new ICalendarEvent();
+      ICalendarEvent afternoonEvent = new ICalendarEvent();
+      for (ICalendarEvent icaleventPlanning : dayList) {
+        LocalTime startTime = dayPlanning.getStartDateTime().toLocalTime();
+        LocalTime endTime = dayPlanning.getEndDateTime().toLocalTime();
+        if (icaleventPlanning.getSubject().endsWith(MORNING)) {
+          morningEvent = icaleventPlanning;
+          if (startTime != null && endTime != null && startTime.isAfter(endTime)) {
+            String message =
+                messageInCheckPlanning(
+                    BaseExceptionMessage.WEEKLY_PLANNING_1, icaleventPlanning, null);
+            throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, message);
+          }
+        }
+        if (icaleventPlanning.getSubject().endsWith(AFTERNOON)) {
+          afternoonEvent = icaleventPlanning;
+          if (startTime != null && endTime != null && startTime.isAfter(endTime)) {
+            String message =
+                messageInCheckPlanning(
+                    BaseExceptionMessage.WEEKLY_PLANNING_3, icaleventPlanning, null);
+            throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, message);
+          }
+        }
+      }
 
-      if (dayPlanning.getMorningFrom() != null
-          && dayPlanning.getMorningTo() != null
-          && dayPlanning.getMorningFrom().isAfter(dayPlanning.getMorningTo())) {
+      if (validateTime(morningEvent.getEndDateTime())
+          && validateTime(afternoonEvent.getStartDateTime())
+          && morningEvent.getEndDateTime().isAfter(afternoonEvent.getStartDateTime())) {
 
         String message =
-            messageInCheckPlanning(BaseExceptionMessage.WEEKLY_PLANNING_1, dayPlanning);
+            messageInCheckPlanning(
+                BaseExceptionMessage.WEEKLY_PLANNING_2, morningEvent, afternoonEvent);
         throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, message);
       }
 
-      if (dayPlanning.getMorningTo() != null
-          && dayPlanning.getAfternoonFrom() != null
-          && dayPlanning.getMorningTo().isAfter(dayPlanning.getAfternoonFrom())) {
+      if (!validateTime(morningEvent.getStartDateTime())
+              && validateTime(morningEvent.getEndDateTime())
+          || !validateTime(morningEvent.getEndDateTime())
+              && validateTime(morningEvent.getStartDateTime())
+          || !validateTime(afternoonEvent.getStartDateTime())
+              && validateTime(afternoonEvent.getEndDateTime())
+          || !validateTime(afternoonEvent.getEndDateTime())
+              && validateTime(afternoonEvent.getStartDateTime())) {
 
         String message =
-            messageInCheckPlanning(BaseExceptionMessage.WEEKLY_PLANNING_2, dayPlanning);
-        throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, message);
-      }
-
-      if (dayPlanning.getAfternoonFrom() != null
-          && dayPlanning.getAfternoonTo() != null
-          && dayPlanning.getAfternoonFrom().isAfter(dayPlanning.getAfternoonTo())) {
-
-        String message =
-            messageInCheckPlanning(BaseExceptionMessage.WEEKLY_PLANNING_3, dayPlanning);
-        throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, message);
-      }
-
-      if ((dayPlanning.getMorningFrom() == null && dayPlanning.getMorningTo() != null)
-          || (dayPlanning.getMorningTo() == null && dayPlanning.getMorningFrom() != null)
-          || (dayPlanning.getAfternoonFrom() == null && dayPlanning.getAfternoonTo() != null)
-          || (dayPlanning.getAfternoonTo() == null && dayPlanning.getAfternoonFrom() != null)) {
-
-        String message =
-            messageInCheckPlanning(BaseExceptionMessage.WEEKLY_PLANNING_4, dayPlanning);
+            messageInCheckPlanning(
+                BaseExceptionMessage.WEEKLY_PLANNING_4, morningEvent, afternoonEvent);
         throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, message);
       }
     }
-    return planning;
+  }
+
+  @Override
+  public boolean validateTime(LocalDateTime time) {
+    return (time.toLocalTime() != null && time.toLocalTime() != LocalTime.of(0, 0));
+  }
+
+  public List<ICalendarEvent> getDayList(List<ICalendarEvent> listDay, ICalendarEvent dayPlanning) {
+    return listDay.stream()
+        .filter(t -> t.getSubject().contains(dayPlanning.getSubject().split("\\s")[0]))
+        .collect(Collectors.toList());
+  }
+
+  public String messageInCheckPlanning(
+      String message, ICalendarEvent morningPlanning, ICalendarEvent afternoonPlanning) {
+    String dayPlanningName = "";
+    dayPlanningName =
+        (afternoonPlanning != null)
+            ? String.format(
+                "%s AND %s", morningPlanning.getSubject(), afternoonPlanning.getSubject())
+            : String.format("%s", morningPlanning.getSubject());
+    return String.format(
+        I18n.get(message),
+        I18n.get(Character.toUpperCase(dayPlanningName.charAt(0)) + dayPlanningName.substring(1))
+            .toLowerCase()); // Because day of week are traduced with a upperCase at the firs letter
   }
 
   @Override
   public double getWorkingDayValueInDays(WeeklyPlanning planning, LocalDate date) {
     double value = 0;
-    DayPlanning dayPlanning = findDayPlanning(planning, date);
-    if (dayPlanning == null) {
+    List<ICalendarEvent> dayPlanningList = findDayPlanning(planning, date);
+    if (dayPlanningList == null || dayPlanningList.isEmpty()) {
       return value;
     }
-    if (dayPlanning.getMorningFrom() != null && dayPlanning.getMorningTo() != null) {
+    LocalDateTime morningStartDateTime = null;
+    LocalDateTime morningEndDateTime = null;
+    LocalDateTime afternoonStartDateTime = null;
+    LocalDateTime afternoonEndDateTime = null;
+
+    for (ICalendarEvent dayPlanning : dayPlanningList) {
+      if (dayPlanning.getSubject().endsWith(MORNING)) {
+        morningStartDateTime = dayPlanning.getStartDateTime();
+        morningEndDateTime = dayPlanning.getEndDateTime();
+      }
+      if (dayPlanning.getSubject().endsWith(AFTERNOON)) {
+        afternoonStartDateTime = dayPlanning.getStartDateTime();
+        afternoonEndDateTime = dayPlanning.getEndDateTime();
+      }
+    }
+
+    if (validateTime(morningStartDateTime) && validateTime(morningEndDateTime)) {
       value += 0.5;
     }
-    if (dayPlanning.getAfternoonFrom() != null && dayPlanning.getAfternoonTo() != null) {
+    if (validateTime(afternoonStartDateTime) && validateTime(afternoonEndDateTime)) {
       value += 0.5;
     }
     return value;
@@ -167,16 +236,30 @@ public class WeeklyPlanningServiceImp implements WeeklyPlanningService {
   public double getWorkingDayValueInDaysWithSelect(
       WeeklyPlanning planning, LocalDate date, boolean morning, boolean afternoon) {
     double value = 0;
-    DayPlanning dayPlanning = findDayPlanning(planning, date);
-    if (dayPlanning == null) {
+    LocalDateTime morningStartDateTime = null;
+    LocalDateTime morningEndDateTime = null;
+    LocalDateTime afternoonStartDateTime = null;
+    LocalDateTime afternoonEndDateTime = null;
+    List<ICalendarEvent> weekPlanningList = findDayPlanning(planning, date);
+
+    if (weekPlanningList == null || weekPlanningList.isEmpty()) {
       return value;
     }
-    if (morning && dayPlanning.getMorningFrom() != null && dayPlanning.getMorningTo() != null) {
+    for (ICalendarEvent dayPlanning : weekPlanningList) {
+      if (dayPlanning.getSubject().endsWith(MORNING)) {
+        morningStartDateTime = dayPlanning.getStartDateTime();
+        morningEndDateTime = dayPlanning.getEndDateTime();
+      }
+      if (dayPlanning.getSubject().endsWith(AFTERNOON)) {
+        afternoonStartDateTime = dayPlanning.getStartDateTime();
+        afternoonEndDateTime = dayPlanning.getEndDateTime();
+      }
+    }
+
+    if (morning && morningStartDateTime != null && morningEndDateTime != null) {
       value += 0.5;
     }
-    if (afternoon
-        && dayPlanning.getAfternoonFrom() != null
-        && dayPlanning.getAfternoonTo() != null) {
+    if (afternoon && afternoonStartDateTime != null && afternoonEndDateTime != null) {
       value += 0.5;
     }
     return value;
@@ -186,87 +269,168 @@ public class WeeklyPlanningServiceImp implements WeeklyPlanningService {
   public BigDecimal getWorkingDayValueInHours(
       WeeklyPlanning weeklyPlanning, LocalDate date, LocalTime from, LocalTime to) {
     double value = 0;
-    DayPlanning dayPlanning = this.findDayPlanning(weeklyPlanning, date);
+    List<ICalendarEvent> dayPlanningList = this.findDayPlanning(weeklyPlanning, date);
 
-    if (dayPlanning == null) {
+    if (dayPlanningList == null || dayPlanningList.isEmpty()) {
       return BigDecimal.valueOf(value);
     }
 
-    // Compute morning leave duration
-    LocalTime morningFrom = dayPlanning.getMorningFrom();
-    LocalTime morningTo = dayPlanning.getMorningTo();
-    if (morningFrom != null && morningTo != null) {
-      LocalTime morningBegin = from != null && from.isAfter(morningFrom) ? from : morningFrom;
-      LocalTime morningEnd = to != null && to.isBefore(morningTo) ? to : morningTo;
-      if (to != null && to.isBefore(morningBegin)) {
-        return BigDecimal.ZERO;
-      } else if (from == null || from.isBefore(morningEnd)) {
-        value += ChronoUnit.MINUTES.between(morningBegin, morningEnd);
+    for (ICalendarEvent dayplanning : dayPlanningList) {
+      // Compute morning leave duration
+      if (dayplanning.getSubject().endsWith(MORNING)) {
+        LocalTime morningFrom = dayplanning.getStartDateTime().toLocalTime();
+        LocalTime morningTo = dayplanning.getEndDateTime().toLocalTime();
+        if (morningFrom != null && morningTo != null) {
+          LocalTime morningBegin = from != null && from.isAfter(morningFrom) ? from : morningFrom;
+          LocalTime morningEnd = to != null && to.isBefore(morningTo) ? to : morningTo;
+          if (to != null && to.isBefore(morningBegin)) {
+            return BigDecimal.ZERO;
+          } else if (from == null || from.isBefore(morningEnd)) {
+            value += ChronoUnit.MINUTES.between(morningBegin, morningEnd);
+          }
+        }
       }
-    }
 
-    // Compute afternoon leave duration
-    LocalTime afternoonFrom = dayPlanning.getAfternoonFrom();
-    LocalTime afternoonTo = dayPlanning.getAfternoonTo();
-    if (afternoonFrom != null && afternoonTo != null) {
-      LocalTime afternoonBegin = from != null && from.isAfter(afternoonFrom) ? from : afternoonFrom;
-      LocalTime afternoonEnd = to != null && to.isBefore(afternoonTo) ? to : afternoonTo;
-      if (from != null && from.isAfter(afternoonEnd)) {
-        return BigDecimal.ZERO;
-      } else if (to == null || to.isAfter(afternoonBegin)) {
-        value += ChronoUnit.MINUTES.between(afternoonBegin, afternoonEnd);
+      // Compute afternoon leave duration
+      if (dayplanning.getSubject().endsWith(AFTERNOON)) {
+        LocalTime afternoonFrom = dayplanning.getStartDateTime().toLocalTime();
+        LocalTime afternoonTo = dayplanning.getEndDateTime().toLocalTime();
+        if (afternoonFrom != null && afternoonTo != null) {
+          LocalTime afternoonBegin =
+              from != null && from.isAfter(afternoonFrom) ? from : afternoonFrom;
+          LocalTime afternoonEnd = to != null && to.isBefore(afternoonTo) ? to : afternoonTo;
+          if (from != null && from.isAfter(afternoonEnd)) {
+            return BigDecimal.ZERO;
+          } else if (to == null || to.isAfter(afternoonBegin)) {
+            value += ChronoUnit.MINUTES.between(afternoonBegin, afternoonEnd);
+          }
+        }
       }
     }
 
     return BigDecimal.valueOf(value)
-        .divide(BigDecimal.valueOf(60), DEFAULT_SCALE, BigDecimal.ROUND_HALF_UP);
+        .divide(BigDecimal.valueOf(60), DEFAULT_SCALE, RoundingMode.HALF_UP);
   }
 
-  public DayPlanning findDayPlanning(WeeklyPlanning planning, LocalDate date) {
+  public List<ICalendarEvent> findDayPlanning(WeeklyPlanning planning, LocalDate date) {
     int dayOfWeek = date.getDayOfWeek().getValue();
     switch (dayOfWeek) {
       case 1:
-        return findDayWithName(planning, DayPlanningRepository.MONDAY);
+        return findDayWithName(planning, ICalendarEventRepository.MONDAY);
 
       case 2:
-        return findDayWithName(planning, DayPlanningRepository.TUESDAY);
+        return findDayWithName(planning, ICalendarEventRepository.TUESDAY);
 
       case 3:
-        return findDayWithName(planning, DayPlanningRepository.WEDNESDAY);
+        return findDayWithName(planning, ICalendarEventRepository.WEDNESDAY);
 
       case 4:
-        return findDayWithName(planning, DayPlanningRepository.THURSDAY);
+        return findDayWithName(planning, ICalendarEventRepository.THURSDAY);
 
       case 5:
-        return findDayWithName(planning, DayPlanningRepository.FRIDAY);
+        return findDayWithName(planning, ICalendarEventRepository.FRIDAY);
 
       case 6:
-        return findDayWithName(planning, DayPlanningRepository.SATURDAY);
+        return findDayWithName(planning, ICalendarEventRepository.SATURDAY);
 
       case 7:
-        return findDayWithName(planning, DayPlanningRepository.SUNDAY);
+        return findDayWithName(planning, ICalendarEventRepository.SUNDAY);
 
       default:
         return findDayWithName(planning, "null");
     }
   }
 
-  public DayPlanning findDayWithName(WeeklyPlanning planning, String name) {
-    List<DayPlanning> dayPlanningList = planning.getWeekDays();
-    for (DayPlanning dayPlanning : dayPlanningList) {
-      if (dayPlanning.getNameSelect().equals(name)) {
-        return dayPlanning;
+  public List<ICalendarEvent> findDayWithName(WeeklyPlanning planning, String name) {
+    List<ICalendarEvent> dayList = new ArrayList<>();
+    for (ICalendarEvent dayPlanning : planning.getWeekDays()) {
+      if (dayPlanning.getSubject().contains(name)) {
+        dayList.add(dayPlanning);
       }
     }
-    return null;
+    return dayList.stream()
+        .filter(Objects::nonNull)
+        .filter(plan -> plan.getParentEvent() == null)
+        .collect(Collectors.toList());
   }
 
-  public String messageInCheckPlanning(String message, DayPlanning dayPlanning) {
-    String dayPlanningName = dayPlanning.getNameSelect();
-    return String.format(
-        I18n.get(message),
-        I18n.get(Character.toUpperCase(dayPlanningName.charAt(0)) + dayPlanningName.substring(1))
-            .toLowerCase()); // Because day of week are traduced with a upperCase at the first
-    // letter
+  @Override
+  @Transactional
+  public WeeklyPlanning setICalEventValues(WeeklyPlanning planning) throws AxelorException {
+    planning = EntityHelper.getEntity(planning);
+    List<ICalendarEvent> weekDays = planning.getWeekDays();
+    for (ICalendarEvent iCalendarEvent : weekDays) {
+      if (iCalendarEvent.getRecurrenceConfiguration() == null
+          || iCalendarEvent.getStartDateTime().toLocalDate()
+              != iCalendarEvent.getRecurrenceConfiguration().getStartDate()) {
+        RecurrenceConfiguration config = setConfigDayValue(iCalendarEvent);
+        iCalendarEvent.setRecurrenceConfiguration(config);
+      }
+    }
+    return weeklyPlanningRepo.save(planning);
+  }
+
+  public RecurrenceConfiguration setConfigDayValue(ICalendarEvent iCalendarEvent) {
+    RecurrenceConfiguration config = iCalendarEvent.getRecurrenceConfiguration();
+    if (config == null) {
+      config = new RecurrenceConfiguration();
+      config.setRecurrenceType(RECURRENCE_TYPE);
+      config.setPeriodicity(PERIODICITY);
+      config.setEndType(END_TYPE);
+      config.setEndDate(LocalDate.now().plusYears(YEARS_TO_ADD));
+    }
+    LocalDate startDate = iCalendarEvent.getStartDateTime().toLocalDate();
+    config.setStartDate(startDate);
+    config = getDayName(config, startDate.getDayOfWeek().name().toLowerCase());
+    return config;
+  }
+
+  public RecurrenceConfiguration getDayName(RecurrenceConfiguration config, String dayName) {
+    switch (dayName) {
+      case ICalendarEventRepository.MONDAY:
+        config.setMonday(true);
+        break;
+      case ICalendarEventRepository.TUESDAY:
+        config.setTuesday(true);
+        break;
+      case ICalendarEventRepository.WEDNESDAY:
+        config.setWednesday(true);
+        break;
+      case ICalendarEventRepository.THURSDAY:
+        config.setThursday(true);
+        break;
+      case ICalendarEventRepository.FRIDAY:
+        config.setFriday(true);
+        break;
+      case ICalendarEventRepository.SATURDAY:
+        config.setSaturday(true);
+        break;
+      case ICalendarEventRepository.SUNDAY:
+        config.setSunday(true);
+        break;
+    }
+    return config;
+  }
+
+  @Override
+  public ICalendarEvent setDateTimeValues(ICalendarEvent event, String start, String end) {
+    if (start != null) {
+      LocalTime startTime = LocalTime.parse(start);
+      if (startTime != null)
+        event.setStartDateTime(LocalDateTime.of(event.getStartDateTime().toLocalDate(), startTime));
+    }
+    if (end != null) {
+      LocalTime endTime = LocalTime.parse(end);
+      if (endTime != null)
+        event.setEndDateTime(LocalDateTime.of(event.getEndDateTime().toLocalDate(), endTime));
+    }
+    return event;
+  }
+
+  @Override
+  public int getWeekNo(LocalDate date) {
+    WeekFields of = WeekFields.of(Locale.getDefault());
+    TemporalField weekNum = of.weekOfWeekBasedYear();
+    return Integer.parseInt(String.format("%02d", date.get(weekNum)));
   }
 }

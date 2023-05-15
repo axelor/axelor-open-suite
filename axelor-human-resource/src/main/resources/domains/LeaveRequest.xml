@@ -11,10 +11,8 @@
     <integer name="statusSelect" title="Status" selection="hrs.leave.request.status.select"
       default="1" readonly="true"/>
     <date name="requestDate" title="Request date" readonly="true"/>
-    <datetime name="fromDateT" title="From" required="true"/>
     <integer name="startOnSelect" title="Start On" selection="hr.start.on.select"
       required="true" default="1"/>
-    <datetime name="toDateT" title="To (included)"/>
     <integer name="endOnSelect" title="End On" selection="hr.start.on.select"
       required="true" default="2"/>
     <decimal name="duration" title="Duration" scale="1" precision="20"/>

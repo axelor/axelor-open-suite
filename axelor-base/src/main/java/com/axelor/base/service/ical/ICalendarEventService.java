@@ -21,11 +21,14 @@ package com.axelor.base.service.ical;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.ICalendarEvent;
 import com.axelor.apps.base.db.ICalendarUser;
+import com.axelor.apps.base.db.RecurrenceConfiguration;
 import com.axelor.apps.base.ical.ICalendarException;
 import com.axelor.message.db.EmailAddress;
 import java.io.IOException;
 import java.text.ParseException;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import javax.mail.MessagingException;
 
 public interface ICalendarEventService {
@@ -33,4 +36,51 @@ public interface ICalendarEventService {
   List<ICalendarUser> addEmailGuest(EmailAddress email, ICalendarEvent event)
       throws ClassNotFoundException, InstantiationException, IllegalAccessException,
           AxelorException, MessagingException, IOException, ICalendarException, ParseException;
+
+  void addRecurrentEventsByDays(
+      ICalendarEvent icevent,
+      int periodicity,
+      int endType,
+      int repetitionsNumber,
+      LocalDate endDate);
+
+  void addRecurrentEventsByWeeks(
+      ICalendarEvent icevent,
+      int periodicity,
+      int endType,
+      int repetitionsNumber,
+      LocalDate endDate,
+      Map<Integer, Boolean> daysCheckedMap);
+
+  void generateRecurrentEvents(ICalendarEvent icevent, RecurrenceConfiguration conf)
+      throws AxelorException;
+
+  void addRecurrentEventsByMonths(
+      ICalendarEvent icevent,
+      int periodicity,
+      int endType,
+      int repetitionsNumber,
+      LocalDate endDate,
+      int monthRepeatType);
+
+  void addRecurrentEventsByYears(
+      ICalendarEvent icevent,
+      int periodicity,
+      int endType,
+      int repetitionsNumber,
+      LocalDate endDate);
+
+  String computeRecurrenceName(RecurrenceConfiguration recurrConf);
+
+  void applyChangesToAll(ICalendarEvent event);
+
+  void deleteAll(Long eventId);
+
+  void changeAll(Long eventId, RecurrenceConfiguration config) throws AxelorException;
+
+  void deleteNext(Long eventId);
+
+  void deleteThis(Long eventId);
+
+  void deleteAllByParentId(Long eventId);
 }

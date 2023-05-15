@@ -183,6 +183,8 @@ import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.base.service.tax.FiscalPositionServiceImpl;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.base.service.user.UserServiceImpl;
+import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningGenerateEventService;
+import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningGenerateEventServiceImpl;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningServiceImp;
 import com.axelor.apps.base.tracking.ExportObserver;
@@ -193,6 +195,8 @@ import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.auth.pac4j.AuthPac4jUserService;
 import com.axelor.base.service.ical.ICalendarEventService;
 import com.axelor.base.service.ical.ICalendarEventServiceImpl;
+import com.axelor.base.service.ical.ICalendarGenerateEventService;
+import com.axelor.base.service.ical.ICalendarGenerateEventServiceImpl;
 import com.axelor.message.service.MailAccountServiceImpl;
 import com.axelor.message.service.MailServiceMessageImpl;
 import com.axelor.message.service.MessageServiceImpl;
@@ -341,5 +345,7 @@ public class BaseModule extends AxelorModule {
     bind(BankDetailsFullNameComputeService.class).to(BankDetailsFullNameComputeServiceImpl.class);
     bind(BaseServerStartListener.class);
     bind(AosSwagger.class);
+    bind(WeeklyPlanningGenerateEventService.class).to(WeeklyPlanningGenerateEventServiceImpl.class);
+    bind(ICalendarGenerateEventService.class).to(ICalendarGenerateEventServiceImpl.class);
   }
 }

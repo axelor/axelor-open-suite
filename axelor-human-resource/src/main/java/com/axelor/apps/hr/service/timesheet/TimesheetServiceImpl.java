@@ -23,8 +23,8 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.DayPlanning;
 import com.axelor.apps.base.db.EventsPlanning;
+import com.axelor.apps.base.db.ICalendarEvent;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
@@ -40,6 +40,7 @@ import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.publicHoliday.PublicHolidayService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
+import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningServiceImp;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.LeaveRequest;
@@ -84,6 +85,7 @@ import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -93,10 +95,12 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.LockModeType;
 import javax.persistence.PersistenceException;
@@ -205,7 +209,11 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
           I18n.get(HumanResourceExceptionMessage.TIMESHEET_EMPLOYEE_DAY_PLANNING),
           employee.getName());
     }
-    List<DayPlanning> dayPlanningList = planning.getWeekDays();
+    List<ICalendarEvent> dayPlanningList =
+        planning.getWeekDays().stream()
+            .filter(Objects::nonNull)
+            .filter(plan -> plan.getParentEvent() == null)
+            .collect(Collectors.toList());
     Map<Integer, String> correspMap = getCorresMap();
 
     List<TimesheetLine> timesheetLines = timesheet.getTimesheetLineList();
@@ -391,7 +399,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
           I18n.get(HumanResourceExceptionMessage.TIMESHEET_EMPLOYEE_DAY_PLANNING),
           employee.getUser().getName());
     }
-    List<DayPlanning> dayPlanningList = planning.getWeekDays();
+    List<ICalendarEvent> dayPlanningList = planning.getWeekDays();
     Map<Integer, String> correspMap = getCorresMap();
 
     LocalDate fromDate = fromGenerationDate;
@@ -443,19 +451,37 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
   }
 
   protected boolean isWorkedDay(
-      LocalDate date, Map<Integer, String> correspMap, List<DayPlanning> dayPlanningList) {
-    DayPlanning dayPlanningCurr = new DayPlanning();
-    for (DayPlanning dayPlanning : dayPlanningList) {
-      if (dayPlanning.getNameSelect().equals(correspMap.get(date.getDayOfWeek().getValue()))) {
-        dayPlanningCurr = dayPlanning;
+      LocalDate date, Map<Integer, String> correspMap, List<ICalendarEvent> dayPlanningList) {
+
+    LocalDateTime morningStartDateTime = null;
+    LocalDateTime morningEndDateTime = null;
+    LocalDateTime afternoonStartDateTime = null;
+    LocalDateTime afternoonEndDateTime = null;
+    List<ICalendarEvent> dayPlanningCurr = new ArrayList<>();
+    for (ICalendarEvent dayPlanning : dayPlanningList) {
+      if (dayPlanning.getSubject().startsWith(correspMap.get(date.getDayOfWeek().getValue()))) {
+        dayPlanningCurr.add(dayPlanning);
         break;
       }
     }
+    for (ICalendarEvent iCalendarEvent : dayPlanningCurr) {
+      if (iCalendarEvent.getSubject().endsWith(WeeklyPlanningServiceImp.MORNING)) {
+        morningStartDateTime = iCalendarEvent.getStartDateTime();
+        morningEndDateTime = iCalendarEvent.getEndDateTime();
+      }
+      if (iCalendarEvent.getSubject().endsWith(WeeklyPlanningServiceImp.AFTERNOON)) {
+        afternoonStartDateTime = iCalendarEvent.getStartDateTime();
+        afternoonEndDateTime = iCalendarEvent.getEndDateTime();
+      }
+    }
+    return validateTime(morningStartDateTime)
+        || validateTime(morningEndDateTime)
+        || validateTime(afternoonStartDateTime)
+        || validateTime(afternoonEndDateTime);
+  }
 
-    return dayPlanningCurr.getMorningFrom() != null
-        || dayPlanningCurr.getMorningTo() != null
-        || dayPlanningCurr.getAfternoonFrom() != null
-        || dayPlanningCurr.getAfternoonTo() != null;
+  public boolean validateTime(LocalDateTime time) {
+    return (time.toLocalTime() != null && time.toLocalTime() != LocalTime.of(0, 0));
   }
 
   @Override

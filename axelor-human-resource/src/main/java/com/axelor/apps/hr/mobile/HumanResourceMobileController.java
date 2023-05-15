@@ -484,6 +484,7 @@ public class HumanResourceMobileController {
    * 		"comment": "no"
    * } }
    */
+  @SuppressWarnings("unchecked")
   @Transactional(rollbackOn = {Exception.class})
   public void insertLeave(ActionRequest request, ActionResponse response) throws AxelorException {
     AppBaseService appBaseService = Beans.get(AppBaseService.class);
@@ -522,18 +523,38 @@ public class HumanResourceMobileController {
       }
       leave.setLeaveReason(leaveReason);
       leave.setRequestDate(appBaseService.getTodayDate(company));
-      if (requestData.get("fromDateT") != null) {
-        leave.setFromDateT(
-            LocalDateTime.parse(
-                requestData.get("fromDateT").toString(), DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+      Map<String, Object> event =
+          (Map<String, Object>) request.getRawContext().get("icalendarEvent");
+      if (requestData.get("icalendarEvent") != null
+          && requestData.get("icalendarEvent.startDateTime") != null) {
+        String startDate = (event != null) ? (String) event.get("startDateTime") : null;
+        leave
+            .getIcalendarEvent()
+            .setStartDateTime(
+                (!Strings.isNullOrEmpty(startDate))
+                    ? LocalDateTime.of(
+                        LocalDate.parse(startDate.split("T")[0]),
+                        leave.getIcalendarEvent().getStartDateTime().toLocalTime())
+                    : LocalDateTime.parse(
+                        requestData.get("icalendarEvent.startDateTime").toString(),
+                        DateTimeFormatter.ISO_LOCAL_DATE_TIME));
       }
-      leave.setStartOnSelect(new Integer(requestData.get("startOn").toString()));
-      if (requestData.get("toDateT") != null) {
-        leave.setToDateT(
-            LocalDateTime.parse(
-                requestData.get("toDateT").toString(), DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+      leave.setStartOnSelect(Integer.valueOf(requestData.get("startOn").toString()));
+      if (requestData.get("icalendarEvent") != null
+          && requestData.get("icalendarEvent.endDateTime") != null) {
+        String endDate = (event != null) ? (String) event.get("endDateTime") : null;
+        leave
+            .getIcalendarEvent()
+            .setEndDateTime(
+                (!Strings.isNullOrEmpty(endDate))
+                    ? LocalDateTime.of(
+                        LocalDate.parse(endDate.split("T")[0]),
+                        leave.getIcalendarEvent().getStartDateTime().toLocalTime())
+                    : LocalDateTime.parse(
+                        requestData.get("icalendarEvent.endDateTime").toString(),
+                        DateTimeFormatter.ISO_LOCAL_DATE_TIME));
       }
-      leave.setEndOnSelect(new Integer(requestData.get("endOn").toString()));
+      leave.setEndOnSelect(Integer.valueOf(requestData.get("endOn").toString()));
       leave.setDuration(Beans.get(LeaveService.class).computeDuration(leave));
       leave.setStatusSelect(LeaveRequestRepository.STATUS_AWAITING_VALIDATION);
       if (requestData.get("comments") != null) {

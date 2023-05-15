@@ -19,26 +19,19 @@
 package com.axelor.apps.base.service.weeklyplanning;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.DayPlanning;
+import com.axelor.apps.base.db.ICalendarEvent;
 import com.axelor.apps.base.db.WeeklyPlanning;
 import java.math.BigDecimal;
-import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 
 public interface WeeklyPlanningService {
 
-  /**
-   * Gets the first day of the week, according to the weekly planning of the active company of the
-   * user. If no day can be found, default value is MONDAY.
-   *
-   * @return
-   */
-  DayOfWeek getFirstDayOfWeek();
-
   public WeeklyPlanning initPlanning(WeeklyPlanning planning);
 
-  public WeeklyPlanning checkPlanning(WeeklyPlanning planning) throws AxelorException;
+  public void checkPlanning(WeeklyPlanning planning) throws AxelorException;
 
   /**
    * Computes the working value of the given day for the input date, according to the weekly
@@ -79,7 +72,15 @@ public interface WeeklyPlanningService {
   public BigDecimal getWorkingDayValueInHours(
       WeeklyPlanning weeklyPlanning, LocalDate date, LocalTime from, LocalTime to);
 
-  public DayPlanning findDayPlanning(WeeklyPlanning planning, LocalDate date);
+  public List<ICalendarEvent> findDayPlanning(WeeklyPlanning planning, LocalDate date);
 
-  public DayPlanning findDayWithName(WeeklyPlanning planning, String name);
+  public List<ICalendarEvent> findDayWithName(WeeklyPlanning planning, String name);
+
+  public WeeklyPlanning setICalEventValues(WeeklyPlanning planning) throws AxelorException;
+
+  public ICalendarEvent setDateTimeValues(ICalendarEvent event, String string, String string2);
+
+  public int getWeekNo(LocalDate date);
+
+  public boolean validateTime(LocalDateTime endDateTime);
 }

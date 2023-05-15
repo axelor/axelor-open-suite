@@ -19,7 +19,7 @@
 package com.axelor.apps.hr.service.timesheet;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.DayPlanning;
+import com.axelor.apps.base.db.ICalendarEvent;
 import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -298,8 +298,9 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
       int daysInWeek = 0;
       try {
         for (LocalDate date : daysRange) {
-          DayPlanning dayPlanning = weeklyPlanningService.findDayPlanning(weeklyPlanning, date);
-          if (dayPlanning == null) {
+          List<ICalendarEvent> dayPlanningList =
+              weeklyPlanningService.findDayPlanning(weeklyPlanning, date);
+          if (dayPlanningList == null || dayPlanningList.isEmpty()) {
             continue;
           }
           int dayIndex = date.get(weekFields.dayOfWeek()) - 1;

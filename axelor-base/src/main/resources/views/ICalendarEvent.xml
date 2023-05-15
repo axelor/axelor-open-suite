@@ -24,8 +24,25 @@
     <field name="allDay"/>
   </grid>
 
+  <grid name="icalendar-event-week-planning-grid" title="Day"
+    model="com.axelor.apps.base.db.ICalendarEvent" editable="true" orderBy="sequence" canMove="true">
+    <field name="subject" title="Days" readonly="true"/>
+    <field name="$startTime" title="From" widget="time" x-seconds="false" type="time"
+      onChange="action-ical-event-method-setDateTime-onchange"/>
+    <field name="startDateTime" hidden="true"/>
+    <field name="$endTime" title="To" widget="time" x-seconds="false" type="time"
+      onChange="action-ical-event-method-setDateTime-onchange"/>
+    <field name="endDateTime" hidden="true"/>
+    <field name="recurrenceConfiguration" hidden="true"/>
+    <field name="sequence" hidden="true"/>
+  </grid>
+
   <form name="calendar-event-form" title="Event" model="com.axelor.apps.base.db.ICalendarEvent"
-    onNew="action-icalendar-event-default-record">
+    onNew="action-icalendar-event-default-record" onSave="action-icalendar-event-group-on-save">
+    <toolbar>
+      <button name="leaveRequestBtn" title="Create Leave Request"
+        onClick="save,action-ical-event-method-create-leave-request"/>
+    </toolbar>
     <panel name="mainPanel">
       <field name="subject" showTitle="false" colSpan="12">
         <viewer depends="subject">
@@ -77,10 +94,41 @@
         </editor>
       </field>
     </panel>
+    <panel sidebar="true" title="Characteristics" name="meetingAttributesPanel"
+      canCollapse="true">
+      <field name="recurrenceConfiguration" title="Recurrence" canNew="true" canSelect="false"
+        onChange="save, action-event-method-generate-recurrence" colSpan="12"/>
+    </panel>
+  </form>
+
+  <form name="icalendar-event-week-planning-form" title="Day"
+    model="com.axelor.apps.base.db.ICalendarEvent">
+    <panel name="mainPanel">
+      <field name="subject" title="Days" readonly="true"/>
+      <field name="startDateTime" title="From" widget="date-time"/>
+      <field name="endDateTime" title="To" widget="date-time"/>
+      <field name="recurrenceConfiguration" hidden="true"/>
+    </panel>
+  </form>
+
+  <form model="com.axelor.utils.db.Wizard" title="Apply modifications"
+    name="modifications-assistant-form">
+    <panel name="wizardPanel">
+      <button name="applyToThisBtn" title="Apply changes to this event only" onClick="close"
+        colSpan="12"/>
+      <button name="applyToAllBtn" title="Apply changes to all recurrence's events"
+        onClick="action-icalendar-event-method-apply-changes-to-all" colSpan="12"/>
+    </panel>
   </form>
 
   <calendar name="calendar-event-all" model="com.axelor.apps.base.db.ICalendarEvent"
     title="Calendar" eventStart="startDateTime" eventStop="endDateTime" colorBy="calendar">
+    <field name="subject"/>
+  </calendar>
+
+  <calendar name="icalendar-event-week-planning-calendar"
+    model="com.axelor.apps.base.db.ICalendarEvent" title="Calendar" eventStart="startDateTime"
+    eventStop="endDateTime" colorBy="weeklyPlanning" editable="false">
     <field name="subject"/>
   </calendar>
 
@@ -96,6 +144,25 @@
     <call class="com.axelor.apps.base.web.ICalendarEventController" method="addEmailGuest"/>
   </action-method>
 
+  <action-method name="action-icalendar-event-method-apply-changes-to-all">
+    <call class="com.axelor.apps.base.web.ICalendarEventController" method="applyChangesToAll"/>
+  </action-method>
+
+  <action-method name="action-event-method-generate-recurrence">
+    <call class="com.axelor.apps.base.web.ICalendarEventController"
+      method="generateRecurrentEvents"/>
+  </action-method>
+
+  <action-method name="action-ical-event-method-create-leave-request">
+    <call class="com.axelor.apps.hr.web.leave.LeaveController" method="createLeaveRequest"/>
+  </action-method>
+
+  <action-method name="action-ical-event-method-setDateTime-onchange">
+    <call class="com.axelor.apps.base.web.weeklyplanning.WeeklyPlanningController"
+      method="setDateTime"/>
+  </action-method>
+
+
   <action-record name="action-icalendar-event-default-record"
     model="com.axelor.apps.base.db.ICalendarEvent">
     <field name="calendar"
@@ -107,5 +174,21 @@
       expr="eval: __config__.app.getTodayDateTime().truncatedTo(java.time.temporal.ChronoUnit.HOURS).plusHours(2)"
       if="!endDateTime"/>
   </action-record>
+
+  <action-group name="action-icalendar-event-group-on-save">
+    <action name="action-icalendar-event-view-modifications-recurrence"
+      if="recurrenceConfiguration &amp;&amp; id > 0"/>
+  </action-group>
+
+  <action-view name="action-icalendar-event-view-modifications-recurrence"
+    title="Apply modifications" model="com.axelor.utils.db.Wizard">
+    <view type="form" name="modifications-assistant-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="forceEdit" value="true"/>
+    <view-param name="width" value="800"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="popup-save" value="false"/>
+    <context name="_idEvent" expr="eval: id"/>
+  </action-view>
 
 </object-views>

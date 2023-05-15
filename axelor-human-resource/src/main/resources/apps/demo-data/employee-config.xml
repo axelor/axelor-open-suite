@@ -9,8 +9,9 @@
   <input file="hr_weeklyPlanning.csv" separator=";"
     type="com.axelor.apps.base.db.WeeklyPlanning" search="self.importId  = :importId"/>
 
-  <input file="hr_dayPlanning.csv" separator=";" type="com.axelor.apps.base.db.DayPlanning"
-    search="self.importId  = :importId"/>
+  <input file="hr_dayPlanning.csv" separator=";" type="com.axelor.apps.base.db.ICalendarEvent"
+    search="self.importId  = :importId" call="com.axelor.csv.script.ImportDayPlanning:importDates">
+  </input>
 
   <input file="hr_eventsPlanning.csv" type="com.axelor.apps.base.db.EventsPlanning"
     separator=";" search="self.importId = :importId"/>

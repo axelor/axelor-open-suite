@@ -20,6 +20,8 @@ package com.axelor.apps.hr.web.leave;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.ICalendarEvent;
+import com.axelor.apps.base.db.repo.ICalendarEventRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -38,6 +40,7 @@ import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.hr.service.leave.LeaveService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.db.EntityHelper;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -217,9 +220,14 @@ public class LeaveController {
     }
   }
 
+  @SuppressWarnings("unchecked")
   public void testDuration(ActionRequest request, ActionResponse response) {
     try {
       LeaveRequest leave = request.getContext().asType(LeaveRequest.class);
+      Map<String, Object> event =
+          (Map<String, Object>) request.getRawContext().get("icalendarEvent");
+
+      leave = Beans.get(LeaveService.class).setLeaveRequest(leave, event);
       double duration = leave.getDuration().doubleValue();
       if (duration % 0.5 != 0) {
         response.setError(I18n.get("Invalid duration (must be a 0.5's multiple)"));
@@ -229,9 +237,14 @@ public class LeaveController {
     }
   }
 
+  @SuppressWarnings("unchecked")
   public void computeDuration(ActionRequest request, ActionResponse response) {
     try {
       LeaveRequest leave = request.getContext().asType(LeaveRequest.class);
+      Map<String, Object> event =
+          (Map<String, Object>) request.getRawContext().get("icalendarEvent");
+      leave = Beans.get(LeaveService.class).setLeaveRequest(leave, event);
+
       Employee employee = leave.getEmployee();
       if (employee == null) {
         throw new AxelorException(
@@ -239,19 +252,27 @@ public class LeaveController {
             I18n.get(HumanResourceExceptionMessage.LEAVE_USER_EMPLOYEE),
             AuthUtils.getUser().getName());
       }
-      response.setValue("duration", Beans.get(LeaveService.class).computeDuration(leave));
+      if (leave.getIcalendarEvent() != null
+          && leave.getIcalendarEvent().getStartDateTime() != null) {
+        response.setValue("duration", Beans.get(LeaveService.class).computeDuration(leave));
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
   }
 
   // sending leave request and an email to the manager
+  @SuppressWarnings("unchecked")
   public void send(ActionRequest request, ActionResponse response) {
 
     try {
       LeaveService leaveService = Beans.get(LeaveService.class);
       LeaveRequest leaveRequest = request.getContext().asType(LeaveRequest.class);
       leaveRequest = Beans.get(LeaveRequestRepository.class).find(leaveRequest.getId());
+
+      Map<String, Object> event =
+          (Map<String, Object>) request.getRawContext().get("icalendarEvent");
+      leaveRequest = Beans.get(LeaveService.class).setLeaveRequest(leaveRequest, event);
 
       if (leaveRequest.getEmployee().getWeeklyPlanning() == null) {
         response.setAlert(
@@ -309,12 +330,17 @@ public class LeaveController {
    * @param response
    * @throws AxelorException
    */
+  @SuppressWarnings("unchecked")
   public void validate(ActionRequest request, ActionResponse response) {
 
     try {
       LeaveService leaveService = Beans.get(LeaveService.class);
       LeaveRequest leaveRequest = request.getContext().asType(LeaveRequest.class);
       leaveRequest = Beans.get(LeaveRequestRepository.class).find(leaveRequest.getId());
+
+      Map<String, Object> event =
+          (Map<String, Object>) request.getRawContext().get("icalendarEvent");
+      leaveRequest = Beans.get(LeaveService.class).setLeaveRequest(leaveRequest, event);
 
       leaveService.validate(leaveRequest);
 
@@ -328,8 +354,8 @@ public class LeaveController {
       Beans.get(PeriodService.class)
           .checkPeriod(
               leaveRequest.getCompany(),
-              leaveRequest.getToDateT().toLocalDate(),
-              leaveRequest.getFromDateT().toLocalDate());
+              leaveRequest.getIcalendarEvent().getEndDateTime().toLocalDate(),
+              leaveRequest.getIcalendarEvent().getStartDateTime().toLocalDate());
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -345,12 +371,17 @@ public class LeaveController {
    * @param response
    * @throws AxelorException
    */
+  @SuppressWarnings("unchecked")
   public void refuse(ActionRequest request, ActionResponse response) {
 
     try {
       LeaveService leaveService = Beans.get(LeaveService.class);
       LeaveRequest leaveRequest = request.getContext().asType(LeaveRequest.class);
       leaveRequest = Beans.get(LeaveRequestRepository.class).find(leaveRequest.getId());
+
+      Map<String, Object> event =
+          (Map<String, Object>) request.getRawContext().get("icalendarEvent");
+      leaveRequest = Beans.get(LeaveService.class).setLeaveRequest(leaveRequest, event);
 
       leaveService.refuse(leaveRequest);
 
@@ -369,11 +400,16 @@ public class LeaveController {
     }
   }
 
+  @SuppressWarnings("unchecked")
   public void cancel(ActionRequest request, ActionResponse response) {
     try {
       LeaveRequest leave = request.getContext().asType(LeaveRequest.class);
       leave = Beans.get(LeaveRequestRepository.class).find(leave.getId());
       LeaveService leaveService = Beans.get(LeaveService.class);
+
+      Map<String, Object> event =
+          (Map<String, Object>) request.getRawContext().get("icalendarEvent");
+      leave = Beans.get(LeaveService.class).setLeaveRequest(leave, event);
 
       leaveService.cancel(leave);
 
@@ -386,9 +422,8 @@ public class LeaveController {
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
-    } finally {
-      response.setReload(true);
     }
+    response.setReload(true);
   }
 
   /* Count Tags displayed on the menu items */
@@ -437,5 +472,24 @@ public class LeaveController {
 
     return Beans.get(HRMenuTagService.class)
         .countRecordsTag(LeaveRequest.class, LeaveRequestRepository.STATUS_AWAITING_VALIDATION);
+  }
+
+  @SuppressWarnings("unchecked")
+  public void setCalendarValues(ActionRequest request, ActionResponse response) {
+    LeaveRequest leave = request.getContext().asType(LeaveRequest.class);
+    Map<String, Object> event = (Map<String, Object>) request.getRawContext().get("icalendarEvent");
+    leave = Beans.get(LeaveService.class).setLeaveRequest(leave, event);
+    response.setValues(Beans.get(LeaveService.class).setCalendarValues(leave));
+  }
+
+  public void createLeaveRequest(ActionRequest request, ActionResponse response) {
+    ICalendarEvent event = request.getContext().asType(ICalendarEvent.class);
+    event = Beans.get(ICalendarEventRepository.class).find(event.getId());
+    response.setView(
+        ActionView.define(I18n.get("Leave Request"))
+            .model(LeaveRequest.class.getName())
+            .add("form", "leave-request-form")
+            .context("_icalendarEvent", EntityHelper.getEntity(event))
+            .map());
   }
 }
