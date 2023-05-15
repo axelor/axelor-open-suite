@@ -20,9 +20,13 @@ package com.axelor.apps.hr.db.repo;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
+import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.expense.ExpenseFetchPeriodService;
 import com.axelor.apps.hr.service.expense.ExpenseService;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import javax.persistence.PersistenceException;
@@ -76,5 +80,20 @@ public class ExpenseHRRepository extends ExpenseRepository {
     expense.setVentilated(false);
     expense.setPaymentStatusSelect(InvoicePaymentRepository.STATUS_DRAFT);
     return expense;
+  }
+
+  @Override
+  public void remove(Expense entity) {
+    if (entity.getVentilated()) {
+      try {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(HumanResourceExceptionMessage.EXPENSE_CAN_NOT_DELETE_VENTILATED),
+            entity.getExpenseSeq());
+      } catch (AxelorException e) {
+        throw new PersistenceException(e.getMessage(), e);
+      }
+    }
+    super.remove(entity);
   }
 }
