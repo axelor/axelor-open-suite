@@ -135,8 +135,6 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
         // This is needed as there is a constraint issue
         indicatorToRemove.setName(indicatorToRemove.getName() + "$AXELORTMP" + creator.getId());
       }
-      indicatorToRemove.setHidden(
-          true); // Adding this line to fix field still showing even when removed indictor
       creator.removeIndicator(indicatorToRemove);
     }
 
