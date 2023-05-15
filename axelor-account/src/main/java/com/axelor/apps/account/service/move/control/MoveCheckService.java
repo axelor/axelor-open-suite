@@ -46,4 +46,6 @@ public interface MoveCheckService {
   String getOriginAlert(Move move);
 
   void checkTermsInPayment(Move move) throws AxelorException;
+
+  String getDescriptionAlert(Move move);
 }

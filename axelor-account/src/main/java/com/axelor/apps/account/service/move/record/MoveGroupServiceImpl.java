@@ -372,6 +372,17 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   }
 
   @Override
+  public Map<String, Object> getDescriptionOnChangeValuesMap(Move move) {
+    Map<String, Object> valuesMap = new HashMap<>();
+
+    moveToolService.setDescriptionOnMoveLineList(move);
+
+    valuesMap.put("moveLineList", move.getMoveLineList());
+
+    return valuesMap;
+  }
+
+  @Override
   public Map<String, Object> getGenerateCounterpartOnClickValuesMap(Move move, LocalDate dueDate)
       throws AxelorException {
     moveToolService.exceptionOnGenerateCounterpart(move);

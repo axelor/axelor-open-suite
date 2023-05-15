@@ -137,7 +137,7 @@
             readonlyIf="$validatePeriod || moveLineList.length  &gt; 0 &amp;&amp; statusSelect == 3"
             onChange="action-move-group-origin-date-onchange" colSpan="2"/>
           <field name="description" readonlyIf="$validatePeriod"
-            onChange="action-account-move-group-set-description-on-lines" colSpan="6"/>
+            onChange="action-move-group-description-onchange" colSpan="6"/>
         </panel>
       </panel>
       <panel name="otherDetailsPanel" colSpan="3">
@@ -377,7 +377,7 @@
           <field name="journal.authorizeSimulatedMove" hidden="true"/>
         </panel>
         <field name="description" colSpan="6"
-          onChange="action-account-move-group-set-description-on-lines"/>
+          onChange="action-move-group-description-onchange"/>
         <field name="origin" colSpan="3" requiredIf="journal.hasRequiredOrigin"
           onChange="action-move-group-origin-onchange"/>
         <field name="journal.hasRequiredOrigin" readonly="true" hidden="true"/>
@@ -568,6 +568,22 @@
     <action name="action-move-method-onsave"/>
   </action-group>
 
+  <action-group name="action-move-group-description-onchange">
+    <action name="action-move-method-check-description"/>
+    <action name="action-move-method-description-onchange"/>
+  </action-group>
+
+  <action-group name="action-move-group-origin-date-onchange">
+    <action name="action-move-method-check-duplicate-origin-move"/>
+    <action name="action-account-move-method-origin-date-onchange"/>
+  </action-group>
+
+  <action-group name="action-move-group-origin-onchange">
+    <action name="action-move-method-check-origin"/>
+    <action name="action-move-method-check-duplicate-origin-move"/>
+    <action name="action-account-move-method-origin-onchange"/>
+  </action-group>
+
   <action-group name="action-account-move-group-accounting-click">
     <action name="action-account-accounting-prompt"
       if="statusSelect == 2 || ((!company?.accountConfig?.accountingDaybook || !journal?.allowAccountingDaybook) &amp;&amp; (statusSelect == 1 || statusSelect == 5))"/>
@@ -578,11 +594,6 @@
   <action-group name="action-move-account-group-simulate">
     <action name="action-account-move-group-onsave"/>
     <action name="action-move-method-set-status-simulate"/>
-  </action-group>
-
-  <action-group name="action-account-move-group-set-description-on-lines">
-    <action name="action-account-move-method-description-is-empty"/>
-    <action name="action-account-move-method-set-description-on-lines"/>
   </action-group>
 
   <action-group name="action-group-move-company-onchange">
@@ -654,17 +665,6 @@
     <attribute name="value" for="$paymentConditionChange" expr="eval: true"/>
   </action-attrs>
 
-  <action-group name="action-move-group-origin-date-onchange">
-    <action name="action-move-method-check-duplicate-origin-move"/>
-    <action name="action-account-move-method-origin-date-onchange"/>
-  </action-group>
-
-  <action-group name="action-move-group-origin-onchange">
-    <action name="action-move-method-check-origin"/>
-    <action name="action-move-method-check-duplicate-origin-move"/>
-    <action name="action-account-move-method-origin-onchange"/>
-  </action-group>
-
   <!-- ACTION METHOD -->
   <action-method name="action-move-method-accounting">
     <call class="com.axelor.apps.account.web.MoveController" method="accounting"/>
@@ -702,8 +702,8 @@
     <call class="com.axelor.apps.account.web.MoveController" method="filterPartner"/>
   </action-method>
 
-  <action-method name="action-account-move-method-set-description-on-lines">
-    <call class="com.axelor.apps.account.web.MoveController" method="setDescriptionOnLines"/>
+  <action-method name="action-move-method-description-onchange">
+    <call class="com.axelor.apps.account.web.MoveController" method="onChangeDescription"/>
   </action-method>
 
   <action-method name="action-move-method-set-moveline-dates">
@@ -762,8 +762,8 @@
     <call class="com.axelor.apps.account.web.MoveController" method="onChangeOriginDate"/>
   </action-method>
 
-  <action-method name="action-account-move-method-description-is-empty">
-    <call class="com.axelor.apps.account.web.MoveController" method="validateDescription"/>
+  <action-method name="action-move-method-check-description">
+    <call class="com.axelor.apps.account.web.MoveController" method="checkDescription"/>
   </action-method>
 
   <action-method name="action-move-method-check-term-in-payment">

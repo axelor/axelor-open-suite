@@ -181,4 +181,13 @@ public class MoveCheckServiceImpl implements MoveCheckService {
       throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, errorMessage);
     }
   }
+
+  @Override
+  public String getDescriptionAlert(Move move) {
+    if (move.getDescription() == null) {
+      return I18n.get(AccountExceptionMessage.MOVE_CHECK_DESCRIPTION);
+    }
+
+    return null;
+  }
 }
