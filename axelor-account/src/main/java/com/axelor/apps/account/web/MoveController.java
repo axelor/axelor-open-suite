@@ -33,7 +33,6 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
 import com.axelor.apps.account.service.move.MoveComputeService;
-import com.axelor.apps.account.service.move.MoveCounterPartService;
 import com.axelor.apps.account.service.move.MoveInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.move.MoveRemoveService;
@@ -457,26 +456,6 @@ public class MoveController {
     }
   }
 
-  public void generateCounterpart(ActionRequest request, ActionResponse response) {
-    try {
-      Move move = request.getContext().asType(Move.class);
-      Beans.get(MoveCounterPartService.class)
-          .generateCounterpartMoveLine(move, this.extractDueDate(request));
-      response.setValue("moveLineList", move.getMoveLineList());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-    }
-  }
-
-  public void exceptionCounterpart(ActionRequest request, ActionResponse response) {
-    try {
-      Move move = request.getContext().asType(Move.class);
-      Beans.get(MoveToolService.class).exceptionOnGenerateCounterpart(move);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-    }
-  }
-
   public void setDescriptionOnLines(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
@@ -860,6 +839,18 @@ public class MoveController {
           response.setNotify((String) valuesMap.get("flash"));
         }
       }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void onClickGenerateCounterpart(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      LocalDate dueDate = this.extractDueDate(request);
+
+      response.setValues(
+          Beans.get(MoveGroupService.class).getGenerateCounterpartOnClickValuesMap(move, dueDate));
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

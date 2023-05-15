@@ -209,7 +209,7 @@
         <button colSpan="3" name="counterpartGenerateBtn" css="btn-custom text-left"
           icon="fa-plus" title="Generate counterpart"
           showIf="journal != null &amp;&amp; statusSelect != 3 &amp;&amp; ([1,2,4].includes(journal.journalType.technicalTypeSelect) &amp;&amp; functionalOriginSelect &amp;&amp; (functionalOriginSelect == 3 || functionalOriginSelect == 4 || functionalOriginSelect == 7))"
-          onClick="action-account-move-group-generate-counterpart"/>
+          onClick="action-move-method-generate-counterpart"/>
         <button colSpan="3" name="autoTaxLineGenerateBtn" css="btn-custom text-left"
           icon="fa-plus" title="Generate tax lines" showIf="statusSelect == 1 || statusSelect == 5"
           onClick="action-account-move-group-generate-tax-lines"/>
@@ -437,7 +437,7 @@
           <button
             showIf="journal != null &amp;&amp; statusSelect != 3 &amp;&amp; ([1,2,4].includes(journal.journalType.technicalTypeSelect) &amp;&amp; functionalOriginSelect &amp;&amp; (functionalOriginSelect == 3 || functionalOriginSelect == 4 || functionalOriginSelect == 7))"
             name="counterpartGenerateBtn" title="Generate counterpart"
-            onClick="action-account-move-group-generate-counterpart" colSpan="12"/>
+            onClick="action-move-method-generate-counterpart" colSpan="12"/>
         </panel>
         <field name="$validatePeriod" hidden="true" type="boolean"/>
       </panel>
@@ -568,13 +568,6 @@
     <action name="action-move-method-onsave"/>
   </action-group>
 
-  <action-group name="action-account-move-group-generate-counterpart">
-    <action name="action-account-move-method-exception-counterpart"/>
-    <action name="action-account-move-method-automatic-taxline-generation"/>
-    <action name="action-account-move-method-generate-counterpart"/>
-    <action name="action-account-move-method-compute-totals"/>
-  </action-group>
-
   <action-group name="action-account-move-group-generate-tax-lines">
     <action name="action-account-move-method-automatic-taxline-generation"/>
     <action name="action-account-move-method-compute-totals"/>
@@ -609,10 +602,6 @@
     <action name="action-move-attrs-header-change"/>
     <action name="action-move-method-fill-company-bank-details"/>
   </action-group>
-
-  <action-method name="action-account-move-method-date-onchange">
-    <call class="com.axelor.apps.account.web.MoveController" method="onChangeDate"/>
-  </action-method>
 
   <action-group name="action-group-move-date-onchange">
     <action name="action-account-move-method-date-onchange"/>
@@ -722,10 +711,6 @@
     <call class="com.axelor.apps.account.web.MoveController" method="autoTaxLineGenerate"/>
   </action-method>
 
-  <action-method name="action-account-move-method-generate-counterpart">
-    <call class="com.axelor.apps.account.web.MoveController" method="generateCounterpart"/>
-  </action-method>
-
   <action-method name="action-account-move-method-filter-partner">
     <call class="com.axelor.apps.account.web.MoveController" method="filterPartner"/>
   </action-method>
@@ -752,10 +737,6 @@
 
   <action-method name="action-move-method-mass-reverse-move">
     <call class="com.axelor.apps.account.web.MoveController" method="massReverseMove"/>
-  </action-method>
-
-  <action-method name="action-account-move-method-exception-counterpart">
-    <call class="com.axelor.apps.account.web.MoveController" method="exceptionCounterpart"/>
   </action-method>
 
   <action-method name="action-method-hide-axis-analytic-account-move-line">
@@ -836,6 +817,15 @@
 
   <action-method name="action-account-move-method-origin-onchange">
     <call class="com.axelor.apps.account.web.MoveController" method="onChangeOrigin"/>
+  </action-method>
+
+  <action-method name="action-account-move-method-date-onchange">
+    <call class="com.axelor.apps.account.web.MoveController" method="onChangeDate"/>
+  </action-method>
+
+  <action-method name="action-move-method-generate-counterpart">
+    <call class="com.axelor.apps.account.web.MoveController"
+      method="onClickGenerateCounterpart"/>
   </action-method>
 
   <!-- ACTION VIEW -->

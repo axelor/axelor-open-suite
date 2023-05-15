@@ -22,16 +22,19 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.PeriodServiceAccount;
 import com.axelor.apps.account.service.move.MoveComputeService;
+import com.axelor.apps.account.service.move.MoveCounterPartService;
 import com.axelor.apps.account.service.move.MoveInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.attributes.MoveAttrsService;
 import com.axelor.apps.account.service.move.control.MoveCheckService;
+import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.auth.AuthUtils;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,7 +49,9 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   protected MoveRecordSetService moveRecordSetService;
   protected MoveToolService moveToolService;
   protected MoveInvoiceTermService moveInvoiceTermService;
+  protected MoveCounterPartService moveCounterPartService;
   protected MoveLineControlService moveLineControlService;
+  protected MoveLineTaxService moveLineTaxService;
   protected PeriodService periodService;
   protected MoveRepository moveRepository;
 
@@ -61,7 +66,9 @@ public class MoveGroupServiceImpl implements MoveGroupService {
       MoveRecordSetService moveRecordSetService,
       MoveToolService moveToolService,
       MoveInvoiceTermService moveInvoiceTermService,
+      MoveCounterPartService moveCounterPartService,
       MoveLineControlService moveLineControlService,
+      MoveLineTaxService moveLineTaxService,
       PeriodService periodService,
       MoveRepository moveRepository) {
     this.moveDefaultService = moveDefaultService;
@@ -73,7 +80,9 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     this.moveRecordSetService = moveRecordSetService;
     this.moveToolService = moveToolService;
     this.moveInvoiceTermService = moveInvoiceTermService;
+    this.moveCounterPartService = moveCounterPartService;
     this.moveLineControlService = moveLineControlService;
+    this.moveLineTaxService = moveLineTaxService;
     this.periodService = periodService;
     this.moveRepository = moveRepository;
   }
@@ -360,5 +369,19 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     moveAttrsService.addDateChangeFalseValue(move, true, attrsMap);
 
     return attrsMap;
+  }
+
+  @Override
+  public Map<String, Object> getGenerateCounterpartOnClickValuesMap(Move move, LocalDate dueDate)
+      throws AxelorException {
+    moveToolService.exceptionOnGenerateCounterpart(move);
+    moveLineTaxService.autoTaxLineGenerateNoSave(move);
+    moveCounterPartService.generateCounterpartMoveLine(move, dueDate);
+
+    Map<String, Object> valuesMap = moveComputeService.computeTotals(move);
+
+    valuesMap.put("moveLineList", move.getMoveLineList());
+
+    return valuesMap;
   }
 }

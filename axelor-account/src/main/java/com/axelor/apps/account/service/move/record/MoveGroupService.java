@@ -20,6 +20,7 @@ package com.axelor.apps.account.service.move.record;
 
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.base.AxelorException;
+import java.time.LocalDate;
 import java.util.Map;
 
 public interface MoveGroupService {
@@ -71,4 +72,7 @@ public interface MoveGroupService {
       Move move, boolean dateChange, boolean headerChange) throws AxelorException;
 
   Map<String, Map<String, Object>> getPaymentConditionOnChangeAttrsMap(Move move);
+
+  Map<String, Object> getGenerateCounterpartOnClickValuesMap(Move move, LocalDate dueDate)
+      throws AxelorException;
 }
