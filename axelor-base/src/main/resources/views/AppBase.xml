@@ -93,6 +93,9 @@
         </panel>
         <field name="emailLinkList" colSpan="12"
           onChange="action-base-method-model-email-link-onsave"/>
+        <panel-related name="birtTemplateConfigLineListPanel" colSpan="12"
+          field="birtTemplateConfigLineList" grid-view="birt-template-config-line-grid"
+          form-view="birt-template-config-line-form"/>
         <panel name="stylePanel" title="Style" colSpan="12">
           <field name="customAppStyle" colSpan="12" widget="CodeEditor" x-code-syntax="css"/>
         </panel>
