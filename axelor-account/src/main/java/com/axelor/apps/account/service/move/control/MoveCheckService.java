@@ -48,4 +48,6 @@ public interface MoveCheckService {
   void checkTermsInPayment(Move move) throws AxelorException;
 
   String getDescriptionAlert(Move move);
+
+  void checkManageCutOffDates(Move move) throws AxelorException;
 }

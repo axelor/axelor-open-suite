@@ -28,6 +28,7 @@ import com.axelor.apps.account.service.journal.JournalCheckPartnerTypeService;
 import com.axelor.apps.account.service.move.MoveInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.moveline.MoveLineCheckService;
+import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
@@ -49,6 +50,7 @@ public class MoveCheckServiceImpl implements MoveCheckService {
   protected PeriodService periodService;
   protected AppAccountService appAccountService;
   protected MoveLineCheckService moveLineCheckService;
+  protected MoveLineService moveLineService;
   protected JournalCheckPartnerTypeService journalCheckPartnerTypeService;
   protected MoveInvoiceTermService moveInvoiceTermService;
 
@@ -59,6 +61,7 @@ public class MoveCheckServiceImpl implements MoveCheckService {
       PeriodService periodService,
       AppAccountService appAccountService,
       MoveLineCheckService moveLineCheckService,
+      MoveLineService moveLineService,
       JournalCheckPartnerTypeService journalCheckPartnerTypeService,
       MoveInvoiceTermService moveInvoiceTermService) {
     this.moveRepository = moveRepository;
@@ -66,6 +69,7 @@ public class MoveCheckServiceImpl implements MoveCheckService {
     this.periodService = periodService;
     this.appAccountService = appAccountService;
     this.moveLineCheckService = moveLineCheckService;
+    this.moveLineService = moveLineService;
     this.journalCheckPartnerTypeService = journalCheckPartnerTypeService;
     this.moveInvoiceTermService = moveInvoiceTermService;
   }
@@ -189,5 +193,15 @@ public class MoveCheckServiceImpl implements MoveCheckService {
     }
 
     return null;
+  }
+
+  @Override
+  public void checkManageCutOffDates(Move move) throws AxelorException {
+    if (!(CollectionUtils.isNotEmpty(move.getMoveLineList())
+        && move.getMoveLineList().stream().anyMatch(moveLineService::checkManageCutOffDates))) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(AccountExceptionMessage.NO_CUT_OFF_TO_APPLY));
+    }
   }
 }

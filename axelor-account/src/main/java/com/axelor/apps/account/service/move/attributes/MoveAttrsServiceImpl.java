@@ -26,6 +26,7 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveInvoiceTermService;
+import com.axelor.apps.account.service.move.MoveViewHelperService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.google.inject.Inject;
@@ -39,6 +40,7 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
   protected AccountConfigService accountConfigService;
   protected AppAccountService appAccountService;
   protected MoveInvoiceTermService moveInvoiceTermService;
+  protected MoveViewHelperService moveViewHelperService;
   protected MoveRepository moveRepository;
 
   @Inject
@@ -47,11 +49,13 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
       AccountConfigService accountConfigService,
       AppAccountService appAccountService,
       MoveInvoiceTermService moveInvoiceTermService,
+      MoveViewHelperService moveViewHelperService,
       MoveRepository moveRepository) {
     this.appBaseService = appBaseService;
     this.accountConfigService = accountConfigService;
     this.appAccountService = appAccountService;
     this.moveInvoiceTermService = moveInvoiceTermService;
+    this.moveViewHelperService = moveViewHelperService;
     this.moveRepository = moveRepository;
   }
 
@@ -156,6 +160,17 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
         }
       }
     }
+  }
+
+  @Override
+  public void addPartnerDomain(Move move, Map<String, Map<String, Object>> attrsMap) {
+    if (move == null) {
+      return;
+    }
+
+    String domain = moveViewHelperService.filterPartner(move.getCompany(), move.getJournal());
+
+    this.addAttr("partner", "domain", domain, attrsMap);
   }
 
   @Override

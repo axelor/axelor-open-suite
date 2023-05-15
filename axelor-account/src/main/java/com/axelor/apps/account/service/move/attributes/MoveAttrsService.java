@@ -33,6 +33,8 @@ public interface MoveAttrsService {
   void addMoveLineAnalyticAttrs(Move move, Map<String, Map<String, Object>> attrsMap)
       throws AxelorException;
 
+  void addPartnerDomain(Move move, Map<String, Map<String, Object>> attrsMap);
+
   void addDueDateHidden(Move move, Map<String, Map<String, Object>> attrsMap);
 
   void addDateChangeTrueValue(Map<String, Map<String, Object>> attrsMap);

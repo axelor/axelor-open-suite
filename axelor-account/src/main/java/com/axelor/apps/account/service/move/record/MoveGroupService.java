@@ -88,4 +88,9 @@ public interface MoveGroupService {
       throws AxelorException;
 
   Map<String, Object> getGenerateTaxLinesOnClickValuesMap(Move move) throws AxelorException;
+
+  Map<String, Object> getApplyCutOffDatesOnClickValuesMap(
+      Move move, LocalDate cutOffStartDate, LocalDate cutOffEndDate) throws AxelorException;
+
+  Map<String, Map<String, Object>> getPartnerOnSelectAttrsMap(Move move);
 }

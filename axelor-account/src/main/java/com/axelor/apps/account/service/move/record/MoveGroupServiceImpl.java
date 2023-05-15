@@ -455,4 +455,26 @@ public class MoveGroupServiceImpl implements MoveGroupService {
 
     return valuesMap;
   }
+
+  @Override
+  public Map<String, Object> getApplyCutOffDatesOnClickValuesMap(
+      Move move, LocalDate cutOffStartDate, LocalDate cutOffEndDate) throws AxelorException {
+    moveCheckService.checkManageCutOffDates(move);
+    moveComputeService.applyCutOffDates(move, cutOffStartDate, cutOffEndDate);
+
+    Map<String, Object> valuesMap = new HashMap<>();
+
+    valuesMap.put("moveLineList", move.getMoveLineList());
+
+    return valuesMap;
+  }
+
+  @Override
+  public Map<String, Map<String, Object>> getPartnerOnSelectAttrsMap(Move move) {
+    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+
+    moveAttrsService.addPartnerDomain(move, attrsMap);
+
+    return attrsMap;
+  }
 }

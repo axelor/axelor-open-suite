@@ -27,14 +27,11 @@ import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.PeriodServiceAccount;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
-import com.axelor.apps.account.service.move.MoveComputeService;
 import com.axelor.apps.account.service.move.MoveInvoiceTermService;
-import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.move.MoveRemoveService;
 import com.axelor.apps.account.service.move.MoveReverseService;
 import com.axelor.apps.account.service.move.MoveSimulateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
-import com.axelor.apps.account.service.move.MoveViewHelperService;
 import com.axelor.apps.account.service.move.control.MoveCheckService;
 import com.axelor.apps.account.service.move.record.MoveDefaultService;
 import com.axelor.apps.account.service.move.record.MoveGroupService;
@@ -77,22 +74,6 @@ public class MoveController {
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-    }
-  }
-
-  public void updateLines(ActionRequest request, ActionResponse response) {
-
-    Move move = request.getContext().asType(Move.class);
-
-    try {
-
-      move =
-          Beans.get(MoveViewHelperService.class)
-              .updateMoveLinesDateExcludeFromPeriodOnlyWithoutSave(move);
-      response.setValue("moveLineList", move.getMoveLineList());
-
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
     }
   }
 
@@ -363,57 +344,12 @@ public class MoveController {
     }
   }
 
-  public void filterPartner(ActionRequest request, ActionResponse response) {
-    Move move = request.getContext().asType(Move.class);
-    if (move != null) {
-      try {
-        String domain =
-            Beans.get(MoveViewHelperService.class)
-                .filterPartner(move.getCompany(), move.getJournal());
-        response.setAttr("partner", "domain", domain);
-      } catch (Exception e) {
-        TraceBackService.trace(response, e);
-      }
-    }
-  }
-
   public void setSimulate(ActionRequest request, ActionResponse response) {
     try {
       Move move =
           Beans.get(MoveRepository.class).find(request.getContext().asType(Move.class).getId());
       Beans.get(MoveSimulateService.class).simulate(move);
       response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-    }
-  }
-
-  public void applyCutOffDates(ActionRequest request, ActionResponse response) {
-    try {
-      Move move = request.getContext().asType(Move.class);
-      MoveComputeService moveComputeService = Beans.get(MoveComputeService.class);
-
-      LocalDate cutOffStartDate =
-          LocalDate.parse((String) request.getContext().get("cutOffStartDate"));
-      LocalDate cutOffEndDate = LocalDate.parse((String) request.getContext().get("cutOffEndDate"));
-
-      if (moveComputeService.checkManageCutOffDates(move)) {
-        moveComputeService.applyCutOffDates(move, cutOffStartDate, cutOffEndDate);
-
-        response.setValue("moveLineList", move.getMoveLineList());
-      } else {
-        response.setInfo(I18n.get(AccountExceptionMessage.NO_CUT_OFF_TO_APPLY));
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void setMoveLineDates(ActionRequest request, ActionResponse response) {
-    try {
-      Move move = request.getContext().asType(Move.class);
-      move = Beans.get(MoveLineControlService.class).setMoveLineDates(move);
-      response.setValue("moveLineList", move.getMoveLineList());
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
@@ -710,6 +646,31 @@ public class MoveController {
       response.setAttrs(moveGroupService.getPaymentModeOnChangeAttrsMap());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void onSelectPartner(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+
+      response.setAttrs(Beans.get(MoveGroupService.class).getPartnerOnSelectAttrsMap(move));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void onClickApplyCutOffDates(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      LocalDate cutOffStartDate =
+          LocalDate.parse((String) request.getContext().get("cutOffStartDate"));
+      LocalDate cutOffEndDate = LocalDate.parse((String) request.getContext().get("cutOffEndDate"));
+
+      response.setValues(
+          Beans.get(MoveGroupService.class)
+              .getApplyCutOffDatesOnClickValuesMap(move, cutOffStartDate, cutOffEndDate));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 
