@@ -113,7 +113,7 @@
             colSpan="2" onChange="action-move-method-set-default-move-currency" required="true"/>
           <field name="paymentMode"
             readonlyIf="period.statusSelect == 2 || period.statusSelect == 5 || $validatePeriod"
-            colSpan="3" onChange="action-move-group-payment-mode-onchange"
+            colSpan="3" onChange="action-move-method-payment-mode-onchange"
             form-view="payment-mode-form" grid-view="payment-mode-grid"
             onSelect="action-move-attrs-set-domain-payment-mode"/>
           <field name="partnerBankDetails"
@@ -596,11 +596,6 @@
     <action name="action-move-method-set-status-simulate"/>
   </action-group>
 
-  <action-group name="action-move-group-payment-mode-onchange">
-    <action name="action-move-attrs-header-change"/>
-    <action name="action-move-method-fill-company-bank-details"/>
-  </action-group>
-
   <action-validate name="action-move-validate-check-term-in-payment">
     <error message="$paymentConditionChangeError"
       if="!com.google.common.base.Strings.isNullOrEmpty(paymentConditionChangeError)"/>
@@ -718,10 +713,6 @@
     <call class="com.axelor.apps.account.web.MoveController" method="onChangeJournal"/>
   </action-method>
 
-  <action-method name="action-move-method-fill-company-bank-details">
-    <call class="com.axelor.apps.account.web.MoveController" method="fillCompanyBankDetails"/>
-  </action-method>
-
   <action-method name="action-account-move-method-journal-onchange">
     <call class="com.axelor.apps.account.web.MoveController" method="onChangeJournal"/>
   </action-method>
@@ -801,6 +792,10 @@
 
   <action-method name="action-move-method-company-onchange">
     <call class="com.axelor.apps.account.web.MoveController" method="onChangeCompany"/>
+  </action-method>
+
+  <action-method name="action-move-method-payment-mode-onchange">
+    <call class="com.axelor.apps.account.web.MoveController" method="onChangePaymentMode"/>
   </action-method>
 
   <!-- ACTION VIEW -->

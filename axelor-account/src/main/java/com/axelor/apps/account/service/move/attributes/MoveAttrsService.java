@@ -44,5 +44,7 @@ public interface MoveAttrsService {
 
   void addPaymentConditionChangeChangeFalseValue(Map<String, Map<String, Object>> attrsMap);
 
-  void addHeaderChangeChangeFalseValue(Map<String, Map<String, Object>> attrsMap);
+  void addHeaderChangeTrueValue(Map<String, Map<String, Object>> attrsMap);
+
+  void addHeaderChangeFalseValue(Map<String, Map<String, Object>> attrsMap);
 }

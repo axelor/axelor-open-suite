@@ -365,7 +365,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
     moveAttrsService.addPaymentConditionChangeChangeFalseValue(attrsMap);
-    moveAttrsService.addHeaderChangeChangeFalseValue(attrsMap);
+    moveAttrsService.addHeaderChangeFalseValue(attrsMap);
     moveAttrsService.addDateChangeFalseValue(move, true, attrsMap);
 
     return attrsMap;
@@ -407,6 +407,26 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
     moveAttrsService.addMoveLineAnalyticAttrs(move, attrsMap);
+
+    return attrsMap;
+  }
+
+  @Override
+  public Map<String, Object> getPaymentModeOnChangeValuesMap(Move move) throws AxelorException {
+    Map<String, Object> valuesMap = new HashMap<>();
+
+    moveRecordSetService.setCompanyBankDetails(move);
+
+    valuesMap.put("companyBankDetails", move.getCompanyBankDetails());
+
+    return valuesMap;
+  }
+
+  @Override
+  public Map<String, Map<String, Object>> getPaymentModeOnChangeAttrsMap() {
+    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+
+    moveAttrsService.addHeaderChangeTrueValue(attrsMap);
 
     return attrsMap;
   }
