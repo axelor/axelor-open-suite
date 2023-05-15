@@ -228,4 +228,7 @@ public interface IExceptionMessage {
 
   static final String NO_TIMESHEET_FOUND_FOR_EMPLOYEE = /*$$(*/
       "No time sheet found for employee %s" /*)*/;
+
+  static final String EXPENSE_CAN_NOT_DELETE_VENTILATED = /*$$(*/
+      "Ventilated expense can not be deleted. %s can not be deleted." /*)*/;
 }

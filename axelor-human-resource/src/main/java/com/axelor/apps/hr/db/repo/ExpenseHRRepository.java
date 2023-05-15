@@ -18,8 +18,12 @@
 package com.axelor.apps.hr.db.repo;
 
 import com.axelor.apps.hr.db.Expense;
+import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.expense.ExpenseService;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import javax.persistence.PersistenceException;
 
@@ -38,5 +42,20 @@ public class ExpenseHRRepository extends ExpenseRepository {
       TraceBackService.traceExceptionFromSaveMethod(e);
       throw new PersistenceException(e.getMessage(), e);
     }
+  }
+
+  @Override
+  public void remove(Expense entity) {
+    if (entity.getVentilated()) {
+      try {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.EXPENSE_CAN_NOT_DELETE_VENTILATED),
+            entity.getExpenseSeq());
+      } catch (AxelorException e) {
+        throw new PersistenceException(e.getMessage(), e);
+      }
+    }
+    super.remove(entity);
   }
 }
