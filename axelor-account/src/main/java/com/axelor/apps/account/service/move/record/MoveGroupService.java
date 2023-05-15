@@ -75,6 +75,11 @@ public interface MoveGroupService {
 
   Map<String, Object> getDescriptionOnChangeValuesMap(Move move);
 
+  Map<String, Object> getCompanyOnChangeValuesMap(Move move, boolean paymentConditionChange)
+      throws AxelorException;
+
+  Map<String, Map<String, Object>> getCompanyOnChangeAttrsMap(Move move) throws AxelorException;
+
   Map<String, Object> getGenerateCounterpartOnClickValuesMap(Move move, LocalDate dueDate)
       throws AxelorException;
 

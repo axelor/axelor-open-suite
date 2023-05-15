@@ -20,8 +20,6 @@ package com.axelor.apps.account.web;
 
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.AccountConfig;
-import com.axelor.apps.account.db.AnalyticAxis;
-import com.axelor.apps.account.db.AnalyticAxisByCompany;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
@@ -29,8 +27,6 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.PeriodServiceAccount;
-import com.axelor.apps.account.service.app.AppAccountService;
-import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
 import com.axelor.apps.account.service.move.MoveComputeService;
 import com.axelor.apps.account.service.move.MoveInvoiceTermService;
@@ -386,47 +382,6 @@ public class MoveController {
     }
   }
 
-  public void manageMoveLineAxis(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-    try {
-      Move move = request.getContext().asType(Move.class);
-      if (move.getCompany() != null) {
-        AccountConfig accountConfig =
-            Beans.get(AccountConfigService.class).getAccountConfig(move.getCompany());
-        if (accountConfig != null
-            && Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()
-            && accountConfig.getManageAnalyticAccounting()) {
-          AnalyticAxis analyticAxis = null;
-          for (int i = 1; i <= 5; i++) {
-            response.setAttr(
-                "moveLineList.axis" + i + "AnalyticAccount",
-                "hidden",
-                !(i <= accountConfig.getNbrOfAnalyticAxisSelect()));
-            for (AnalyticAxisByCompany analyticAxisByCompany :
-                accountConfig.getAnalyticAxisByCompanyList()) {
-              if (analyticAxisByCompany.getSequence() + 1 == i) {
-                analyticAxis = analyticAxisByCompany.getAnalyticAxis();
-              }
-            }
-            if (analyticAxis != null) {
-              response.setAttr(
-                  "moveLineList.axis" + i + "AnalyticAccount", "title", analyticAxis.getName());
-              analyticAxis = null;
-            }
-          }
-        } else {
-          response.setAttr("moveLineList.analyticDistributionTemplate", "hidden", true);
-          response.setAttr("moveLineList.analyticMoveLineList", "hidden", true);
-          for (int i = 1; i <= 5; i++) {
-            response.setAttr("moveLineList.axis" + i + "AnalyticAccount", "hidden", true);
-          }
-        }
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
   public void setSimulate(ActionRequest request, ActionResponse response) {
     try {
       Move move =
@@ -552,17 +507,6 @@ public class MoveController {
     }
   }
 
-  public void setJournal(ActionRequest request, ActionResponse response) {
-    try {
-      Move move = request.getContext().asType(Move.class);
-      Map<String, Object> resultMap = Beans.get(MoveRecordSetService.class).setJournal(move);
-
-      response.setValues(resultMap);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
   public void onNew(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
@@ -602,13 +546,8 @@ public class MoveController {
       Move move = context.asType(Move.class);
 
       boolean paymentConditionChange =
-          Optional.ofNullable(context.get("paymentConditionChange"))
-              .map(value -> (Boolean) value)
-              .orElse(false);
-      boolean headerChange =
-          Optional.ofNullable(context.get("headerChange"))
-              .map(value -> (Boolean) value)
-              .orElse(false);
+          this.getChangeDummyBoolean(context, "paymentConditionChange");
+      boolean headerChange = this.getChangeDummyBoolean(context, "headerChange");
 
       Beans.get(MoveGroupService.class).onSave(move, paymentConditionChange, headerChange);
 
@@ -625,9 +564,7 @@ public class MoveController {
       MoveGroupService moveGroupService = Beans.get(MoveGroupService.class);
 
       boolean paymentConditionChange =
-          Optional.ofNullable(context.get("paymentConditionChange"))
-              .map(value -> (Boolean) value)
-              .orElse(false);
+          this.getChangeDummyBoolean(context, "paymentConditionChange");
 
       response.setValues(moveGroupService.getDateOnChangeValuesMap(move, paymentConditionChange));
       response.setAttrs(moveGroupService.getDateOnChangeAttrsMap(move, paymentConditionChange));
@@ -661,13 +598,8 @@ public class MoveController {
       MoveGroupService moveGroupService = Beans.get(MoveGroupService.class);
 
       boolean paymentConditionChange =
-          Optional.ofNullable(context.get("paymentConditionChange"))
-              .map(value -> (Boolean) value)
-              .orElse(false);
-      boolean dateChange =
-          Optional.ofNullable(context.get("dateChange"))
-              .map(value -> (Boolean) value)
-              .orElse(false);
+          this.getChangeDummyBoolean(context, "paymentConditionChange");
+      boolean dateChange = this.getChangeDummyBoolean(context, "dateChange");
 
       response.setValues(
           moveGroupService.getPartnerOnChangeValuesMap(move, paymentConditionChange, dateChange));
@@ -684,33 +616,14 @@ public class MoveController {
       MoveGroupService moveGroupService = Beans.get(MoveGroupService.class);
 
       boolean paymentConditionChange =
-          Optional.ofNullable(context.get("paymentConditionChange"))
-              .map(value -> (Boolean) value)
-              .orElse(false);
-      boolean dateChange =
-          Optional.ofNullable(context.get("dateChange"))
-              .map(value -> (Boolean) value)
-              .orElse(false);
+          this.getChangeDummyBoolean(context, "paymentConditionChange");
+      boolean dateChange = this.getChangeDummyBoolean(context, "dateChange");
 
       response.setValues(
           moveGroupService.getMoveLineListOnChangeValuesMap(
               move, paymentConditionChange, dateChange));
       response.setAttrs(
           moveGroupService.getMoveLineListOnChangeAttrsMap(move, paymentConditionChange));
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-    }
-  }
-
-  public void checkDuplicateOriginMove(ActionRequest request, ActionResponse response) {
-    try {
-      Move move = request.getContext().asType(Move.class);
-
-      String alert = Beans.get(MoveCheckService.class).getDuplicatedMoveOriginAlert(move);
-
-      if (StringUtils.notEmpty(alert)) {
-        response.setAlert(alert);
-      }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
@@ -723,28 +636,12 @@ public class MoveController {
       MoveGroupService moveGroupService = Beans.get(MoveGroupService.class);
 
       boolean paymentConditionChange =
-          Optional.ofNullable(context.get("paymentConditionChange"))
-              .map(value -> (Boolean) value)
-              .orElse(false);
+          this.getChangeDummyBoolean(context, "paymentConditionChange");
 
       response.setValues(
           moveGroupService.getOriginDateOnChangeValuesMap(move, paymentConditionChange));
       response.setAttrs(
           moveGroupService.getOriginDateOnChangeAttrsMap(move, paymentConditionChange));
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-    }
-  }
-
-  public void checkOrigin(ActionRequest request, ActionResponse response) {
-    try {
-      Move move = request.getContext().asType(Move.class);
-
-      String alert = Beans.get(MoveCheckService.class).getOriginAlert(move);
-
-      if (StringUtils.notEmpty(alert)) {
-        response.setAlert(alert);
-      }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
@@ -766,14 +663,8 @@ public class MoveController {
       Move move = context.asType(Move.class);
       MoveGroupService moveGroupService = Beans.get(MoveGroupService.class);
 
-      boolean dateChange =
-          Optional.ofNullable(context.get("dateChange"))
-              .map(value -> (Boolean) value)
-              .orElse(false);
-      boolean headerChange =
-          Optional.ofNullable(context.get("headerChange"))
-              .map(value -> (Boolean) value)
-              .orElse(false);
+      boolean dateChange = this.getChangeDummyBoolean(context, "dateChange");
+      boolean headerChange = this.getChangeDummyBoolean(context, "headerChange");
 
       Map<String, Object> valuesMap =
           moveGroupService.getPaymentConditionOnChangeValuesMap(move, dateChange, headerChange);
@@ -817,6 +708,59 @@ public class MoveController {
     }
   }
 
+  public void onChangeDescription(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+
+      response.setValues(Beans.get(MoveGroupService.class).getDescriptionOnChangeValuesMap(move));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void onChangeCompany(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      MoveGroupService moveGroupService = Beans.get(MoveGroupService.class);
+      boolean paymentConditionChange =
+          this.getChangeDummyBoolean(request.getContext(), "paymentConditionChange");
+
+      response.setValues(
+          moveGroupService.getCompanyOnChangeValuesMap(move, paymentConditionChange));
+      response.setAttrs(moveGroupService.getCompanyOnChangeAttrsMap(move));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void checkDuplicateOriginMove(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+
+      String alert = Beans.get(MoveCheckService.class).getDuplicatedMoveOriginAlert(move);
+
+      if (StringUtils.notEmpty(alert)) {
+        response.setAlert(alert);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void checkOrigin(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+
+      String alert = Beans.get(MoveCheckService.class).getOriginAlert(move);
+
+      if (StringUtils.notEmpty(alert)) {
+        response.setAlert(alert);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
   public void checkDescription(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
@@ -831,13 +775,7 @@ public class MoveController {
     }
   }
 
-  public void onChangeDescription(ActionRequest request, ActionResponse response) {
-    try {
-      Move move = request.getContext().asType(Move.class);
-
-      response.setValues(Beans.get(MoveGroupService.class).getDescriptionOnChangeValuesMap(move));
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+  protected boolean getChangeDummyBoolean(Context context, String name) {
+    return Optional.ofNullable(context.get(name)).map(value -> (Boolean) value).orElse(false);
   }
 }

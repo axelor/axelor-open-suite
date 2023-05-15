@@ -69,7 +69,7 @@
         <panel name="moveContentPanel" colSpan="12">
           <field name="company" canEdit="false" widget="SuggestBox"
             readonlyIf="$validatePeriod || moveLineList.length &gt; 0 || statusSelect == 3"
-            onChange="action-group-move-company-onchange" form-view="company-form"
+            onChange="action-move-method-company-onchange" form-view="company-form"
             grid-view="company-grid" colSpan="2"/>
           <field if="__config__.app.getApp('base')?.getManageMultiBanks()"
             name="companyBankDetails" colSpan="2" canEdit="false"
@@ -96,7 +96,7 @@
               canEdit="false" canView="false" readonly="true" colSpan="4"/>
             <field name="date"
               readonlyIf="moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"
-              onChange="action-group-move-date-onchange" colSpan="2"/>
+              onChange="action-account-move-method-date-onchange" colSpan="2"/>
 
 
             <field name="accountingDate" readonly="true" showIf="statusSelect == 3"/>
@@ -354,7 +354,7 @@
         <panel name="moveContentPanel"
           readonlyIf="moveLineList.length > 0 &amp;&amp; statusSelect == 3" colSpan="12">
           <field name="company" widget="SuggestBox" canEdit="false"
-            onChange="action-group-move-company-onchange" form-view="company-form"
+            onChange="action-move-method-company-onchange" form-view="company-form"
             grid-view="company-grid"/>
           <field name="journal" colSpan="3" canNew="false" canEdit="false"
             onChange="action-account-move-method-journal-onchange"
@@ -364,7 +364,7 @@
             readonlyIf="statusSelect != 1 &amp;&amp; statusSelect != 2 &amp;&amp; statusSelect != 5"
             colSpan="3"
             hideIf="journal.authorizedFunctionalOriginSelect.split(',').length == 1 &amp;&amp; journal.authorizedFunctionalOriginSelect == functionalOriginSelect || journal.authorizedFunctionalOriginSelect == null &amp;&amp; functionalOriginSelect == null"/>
-          <field name="date" colSpan="3" onChange="action-group-move-date-onchange"/>
+          <field name="date" colSpan="3" onChange="action-account-move-method-date-onchange"/>
           <field hidden="true" name="period" canView="false" canEdit="false"
             form-view="period-form" grid-view="period-grid"/>
           <field if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"
@@ -596,21 +596,9 @@
     <action name="action-move-method-set-status-simulate"/>
   </action-group>
 
-  <action-group name="action-group-move-company-onchange">
-    <action name="action-move-method-set-journal"/>
-    <action name="action-group-move-date-onchange"/>
-    <action name="action-move-method-fill-company-bank-details"/>
-    <action name="action-method-hide-axis-analytic-account-move-line"/>
-    <action name="action-move-method-set-default-move-currency"/>
-  </action-group>
-
   <action-group name="action-move-group-payment-mode-onchange">
     <action name="action-move-attrs-header-change"/>
     <action name="action-move-method-fill-company-bank-details"/>
-  </action-group>
-
-  <action-group name="action-group-move-date-onchange">
-    <action name="action-account-move-method-date-onchange"/>
   </action-group>
 
   <action-validate name="action-move-validate-check-term-in-payment">
@@ -726,10 +714,6 @@
     <call class="com.axelor.apps.account.web.MoveController" method="massReverseMove"/>
   </action-method>
 
-  <action-method name="action-method-hide-axis-analytic-account-move-line">
-    <call class="com.axelor.apps.account.web.MoveController" method="manageMoveLineAxis"/>
-  </action-method>
-
   <action-method name="action-move-method-journal-on-change">
     <call class="com.axelor.apps.account.web.MoveController" method="onChangeJournal"/>
   </action-method>
@@ -778,10 +762,6 @@
     <call class="com.axelor.apps.account.web.MoveController" method="setCurrencyCode"/>
   </action-method>
 
-  <action-method name="action-move-method-set-journal">
-    <call class="com.axelor.apps.account.web.MoveController" method="setJournal"/>
-  </action-method>
-
   <action-method name="action-account-move-method-onnew">
     <call class="com.axelor.apps.account.web.MoveController" method="onNew"/>
   </action-method>
@@ -817,6 +797,10 @@
 
   <action-method name="action-move-method-generate-tax-lines">
     <call class="com.axelor.apps.account.web.MoveController" method="onClickGenerateTaxLines"/>
+  </action-method>
+
+  <action-method name="action-move-method-company-onchange">
+    <call class="com.axelor.apps.account.web.MoveController" method="onChangeCompany"/>
   </action-method>
 
   <!-- ACTION VIEW -->
