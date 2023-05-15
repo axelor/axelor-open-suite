@@ -9,9 +9,9 @@
 
     <string name="name" title="Name" required="true"/>
     <one-to-many name="attributes" ref="com.axelor.meta.db.MetaJsonField"
-      title="Attributes"/>
+      title="Attributes" orphanRemoval="true"/>
     <one-to-many name="indicators" ref="com.axelor.meta.db.MetaJsonField"
-      title="Indicators"/>
+      title="Indicators" orphanRemoval="true"/>
     <one-to-many name="configuratorProductFormulaList" mappedBy="productCreator"
       title="Configurator formula list" ref="com.axelor.apps.sale.db.ConfiguratorProductFormula"/>
     <one-to-many name="configuratorSOLineFormulaList" mappedBy="soLineCreator"
