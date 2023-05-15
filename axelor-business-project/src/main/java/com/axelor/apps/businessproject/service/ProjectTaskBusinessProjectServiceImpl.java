@@ -589,8 +589,8 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     BigDecimal remainingAmountToDo =
         projectTask.getUpdatedTime().subtract(projectTask.getSpentTime());
 
-    projectTask.setPercentageOfProgress(percentageOfProgression.multiply(new BigDecimal("100")));
-    projectTask.setPercentageOfConsumption(percentageOfConsumption.multiply(new BigDecimal("100")));
-    projectTask.setRemainingAmountToDo(remainingAmountToDo);
+    projectTask.setPercentageOfProgress(percentageOfProgression.multiply(new BigDecimal("100")).setScale(2, RoundingMode.HALF_UP));
+    projectTask.setPercentageOfConsumption(percentageOfConsumption.multiply(new BigDecimal("100")).setScale(2, RoundingMode.HALF_UP));
+    projectTask.setRemainingAmountToDo(remainingAmountToDo.setScale(2, RoundingMode.HALF_UP));
   }
 }
