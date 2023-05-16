@@ -110,7 +110,7 @@
             form-view="fiscal-position-form" grid-view="fiscal-position-grid"/>
           <field name="currency"
             readonlyIf="$validatePeriod || moveLineList.length &gt; 0 || statusSelect == 3"
-            colSpan="2" onChange="action-move-method-set-default-move-currency" required="true"/>
+            colSpan="2" onChange="action-move-method-currency-onchange" required="true"/>
           <field name="paymentMode"
             readonlyIf="period.statusSelect == 2 || period.statusSelect == 5 || $validatePeriod"
             colSpan="3" onChange="action-move-method-payment-mode-onchange"
@@ -693,14 +693,6 @@
 
   <!-- END ON CLICK -->
 
-  <action-method name="action-move-method-check-term-in-payment">
-    <call class="com.axelor.apps.account.web.MoveController" method="checkTermsInPayment"/>
-  </action-method>
-
-  <action-method name="action-move-method-set-default-move-currency">
-    <call class="com.axelor.apps.account.web.MoveController" method="setDefaultCurrency"/>
-  </action-method>
-
   <action-method name="action-move-method-set-currency-code">
     <call class="com.axelor.apps.account.web.MoveController" method="setCurrencyCode"/>
   </action-method>
@@ -794,6 +786,10 @@
 
   <action-method name="action-move-method-payment-mode-onchange">
     <call class="com.axelor.apps.account.web.MoveController" method="onChangePaymentMode"/>
+  </action-method>
+
+  <action-method name="action-move-method-currency-onchange">
+    <call class="com.axelor.apps.account.web.MoveController" method="onChangeCurrency"/>
   </action-method>
 
   <!-- ACTION VIEW -->

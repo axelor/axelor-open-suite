@@ -432,6 +432,20 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   }
 
   @Override
+  public Map<String, Object> getCurrencyOnChangeValuesMap(Move move) {
+    Map<String, Object> valuesMap = new HashMap<>();
+
+    moveDefaultService.setDefaultCurrency(move);
+
+    valuesMap.put("currency", move.getCurrency());
+    valuesMap.put("companyCurrency", move.getCompanyCurrency());
+    valuesMap.put("currencyCode", move.getCurrencyCode());
+    valuesMap.put("companyCurrencyCode", move.getCompanyCurrencyCode());
+
+    return valuesMap;
+  }
+
+  @Override
   public Map<String, Object> getGenerateCounterpartOnClickValuesMap(Move move, LocalDate dueDate)
       throws AxelorException {
     moveToolService.exceptionOnGenerateCounterpart(move);

@@ -27,13 +27,11 @@ import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.PeriodServiceAccount;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
-import com.axelor.apps.account.service.move.MoveInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveRemoveService;
 import com.axelor.apps.account.service.move.MoveReverseService;
 import com.axelor.apps.account.service.move.MoveSimulateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.move.control.MoveCheckService;
-import com.axelor.apps.account.service.move.record.MoveDefaultService;
 import com.axelor.apps.account.service.move.record.MoveGroupService;
 import com.axelor.apps.account.service.move.record.MoveRecordSetService;
 import com.axelor.apps.base.AxelorException;
@@ -369,37 +367,6 @@ public class MoveController {
     }
   }
 
-  public void checkTermsInPayment(ActionRequest request, ActionResponse response) {
-    try {
-      Move move = request.getContext().asType(Move.class);
-      String errorMessage =
-          Beans.get(MoveInvoiceTermService.class).checkIfInvoiceTermInPayment(move);
-
-      if (StringUtils.notEmpty(errorMessage)) {
-        if (move.getId() != null) {
-          response.setValue(
-              "paymentCondition",
-              Beans.get(MoveRepository.class).find(move.getId()).getPaymentCondition());
-        }
-
-        response.setError(errorMessage);
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void setDefaultCurrency(ActionRequest request, ActionResponse response) {
-    try {
-      Move move = request.getContext().asType(Move.class);
-      Map<String, Object> resultMap = Beans.get(MoveDefaultService.class).setDefaultCurrency(move);
-
-      response.setValues(resultMap);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
   public void setCurrencyCode(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
@@ -671,6 +638,16 @@ public class MoveController {
               .getApplyCutOffDatesOnClickValuesMap(move, cutOffStartDate, cutOffEndDate));
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void onChangeCurrency(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+
+      response.setValues(Beans.get(MoveGroupService.class).getCurrencyOnChangeValuesMap(move));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 
