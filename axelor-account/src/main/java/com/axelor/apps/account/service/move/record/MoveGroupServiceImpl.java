@@ -458,6 +458,15 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   }
 
   @Override
+  public Map<String, Map<String, Object>> getPartnerBankDetailsOnChangeAttrsMap() {
+    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+
+    moveAttrsService.addHeaderChangeTrueValue(attrsMap);
+
+    return attrsMap;
+  }
+
+  @Override
   public Map<String, Object> getGenerateCounterpartOnClickValuesMap(Move move, LocalDate dueDate)
       throws AxelorException {
     moveToolService.exceptionOnGenerateCounterpart(move);

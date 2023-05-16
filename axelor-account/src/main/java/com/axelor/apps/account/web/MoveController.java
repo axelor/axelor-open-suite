@@ -683,6 +683,14 @@ public class MoveController {
     }
   }
 
+  public void onChangePartnerBankDetails(ActionRequest request, ActionResponse response) {
+    try {
+      response.setAttrs(Beans.get(MoveGroupService.class).getPartnerBankDetailsOnChangeAttrsMap());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   public void wizardDefault(ActionRequest request, ActionResponse response) {
     try {
       LocalDate moveDate = (LocalDate) request.getContext().get("_moveDate");

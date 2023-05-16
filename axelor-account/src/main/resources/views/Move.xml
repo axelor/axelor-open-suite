@@ -118,7 +118,7 @@
             onSelect="action-move-method-payment-mode-onselect"/>
           <field name="partnerBankDetails"
             showIf="[2,3,9,10].includes(paymentMode.typeSelect)" colSpan="3"
-            onChange="action-move-attrs-header-change"
+            onChange="action-move-method-partner-bank-details-onchange"
             onSelect="action-move-method-partner-bank-details-onselect"
             form-view="bank-details-form" grid-view="bank-details-grid"/>
           <field name="paymentCondition" showIf="journal.journalType.technicalTypeSelect != 4"
@@ -598,12 +598,6 @@
       message="By clicking on this button, move status will be updated to Accounted. Please be aware that accounting a move brings irrevocable integration of the move in its moves book. Do you wish to continue ?"/>
   </action-validate>
 
-  <!-- ACTION ATTRS -->
-
-  <action-attrs name="action-move-attrs-header-change">
-    <attribute name="value" for="$headerChange" expr="eval: true"/>
-  </action-attrs>
-
   <!-- ACTION METHOD -->
   <action-method name="action-move-method-accounting">
     <call class="com.axelor.apps.account.web.MoveController" method="accounting"/>
@@ -761,6 +755,11 @@
 
   <action-method name="action-move-method-trading-name-onselect">
     <call class="com.axelor.apps.account.web.MoveController" method="onSelectTradingName"/>
+  </action-method>
+
+  <action-method name="action-move-method-partner-bank-details-onchange">
+    <call class="com.axelor.apps.account.web.MoveController"
+      method="onChangePartnerBankDetails"/>
   </action-method>
 
   <!-- ACTION VIEW -->

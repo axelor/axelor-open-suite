@@ -89,6 +89,8 @@ public interface MoveGroupService {
   Map<String, Object> getDateOfReversionSelectOnChangeValuesMap(
       LocalDate moveDate, int dateOfReversionSelect);
 
+  Map<String, Map<String, Object>> getPartnerBankDetailsOnChangeAttrsMap();
+
   Map<String, Object> getGenerateCounterpartOnClickValuesMap(Move move, LocalDate dueDate)
       throws AxelorException;
 
