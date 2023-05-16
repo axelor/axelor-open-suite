@@ -77,11 +77,12 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
       FrequencyRepository frequencyRepo,
       FrequencyService frequencyService,
       AppBaseService appBaseService,
+      ProjectRepository projectRepository,
       PriceListLineRepository priceListLineRepo,
       PriceListService priceListService,
-      ProductCompanyService productCompanyService,
-      PartnerPriceListService partnerPriceListService) {
-    super(projectTaskRepo, frequencyRepo, frequencyService, appBaseService);
+      PartnerPriceListService partnerPriceListService,
+      ProductCompanyService productCompanyService) {
+    super(projectTaskRepo, frequencyRepo, frequencyService, appBaseService, projectRepository);
     this.priceListLineRepo = priceListLineRepo;
     this.priceListService = priceListService;
     this.partnerPriceListService = partnerPriceListService;
