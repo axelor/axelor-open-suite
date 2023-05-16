@@ -245,6 +245,7 @@
   <kanban columnBy="opportunityStatus" sequenceBy="orderByState" limit="10"
     name="opportunity-kanban" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity"
     onMove="action-opportunity-method-cancel-saleorders">
+    <field name="opportunitySeq"/>
     <field name="name"/>
     <field name="description"/>
     <field name="probability"/>
@@ -263,6 +264,7 @@
     <hilite color="warning" if="probability &lt; 50"/>
     <template>
             <![CDATA[
+            <h4>{{record.opportunitySeq}}</h4>
             <h4>{{record.name}}</h4>
             <img ng-if="user" ng-src="{{$image('user', 'image')}}">
             <div class="card-body">
@@ -299,6 +301,7 @@
 
   <cards name="opportunity-cards" model="com.axelor.apps.crm.db.Opportunity"
     title="Opportunities" css="rect-image" width="100%" orderBy="-expectedCloseDate">
+    <field name="opportunitySeq"/>
     <field name="name"/>
     <field name="opportunityStatus"/>
     <field name="amount"/>
@@ -319,6 +322,7 @@
 				</div>
 				<br/><br/>
 			  	<span>
+			  	    <strong>{{record.opportunitySeq}}</strong><br/>
 					<strong>{{name}}</strong><br/><br/>
 		        </span>
 		        <div>
