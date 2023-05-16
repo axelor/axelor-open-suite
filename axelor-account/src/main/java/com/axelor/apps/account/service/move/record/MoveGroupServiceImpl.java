@@ -514,6 +514,15 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   }
 
   @Override
+  public Map<String, Map<String, Object>> getPartnerBankDetailsOnSelectAttrsMap(Move move) {
+    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+
+    moveAttrsService.addPartnerBankDetailsDomain(move, attrsMap);
+
+    return attrsMap;
+  }
+
+  @Override
   public Map<String, Map<String, Object>> getWizardDefaultAttrsMap(LocalDate moveDate) {
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 

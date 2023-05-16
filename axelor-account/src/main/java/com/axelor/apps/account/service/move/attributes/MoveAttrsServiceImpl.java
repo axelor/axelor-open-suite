@@ -28,12 +28,16 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveViewHelperService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.google.inject.Inject;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class MoveAttrsServiceImpl implements MoveAttrsService {
 
@@ -184,6 +188,26 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
         String.format(
             "self.id IN (SELECT am.paymentMode FROM AccountManagement am WHERE am.company.id = %d)",
             move.getCompany().getId());
+
+    this.addAttr("partner", "domain", domain, attrsMap);
+  }
+
+  @Override
+  public void addPartnerBankDetailsDomain(Move move, Map<String, Map<String, Object>> attrsMap) {
+    Partner partner = move.getPartner();
+    String domain;
+
+    if (partner == null || CollectionUtils.isEmpty(partner.getBankDetailsList())) {
+      domain = "self = NULL";
+    } else {
+      String bankDetailsIds =
+          partner.getBankDetailsList().stream()
+              .map(BankDetails::getId)
+              .map(Object::toString)
+              .collect(Collectors.joining(","));
+
+      domain = String.format("self.id IN (%s) AND self.active IS TRUE", bankDetailsIds);
+    }
 
     this.addAttr("partner", "domain", domain, attrsMap);
   }

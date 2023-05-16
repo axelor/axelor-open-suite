@@ -38,6 +38,8 @@ public interface MoveAttrsService {
 
   void addPaymentModeDomain(Move move, Map<String, Map<String, Object>> attrsMap);
 
+  void addPartnerBankDetailsDomain(Move move, Map<String, Map<String, Object>> attrsMap);
+
   void addWizardDefault(LocalDate moveDate, Map<String, Map<String, Object>> attrsMap);
 
   void addDueDateHidden(Move move, Map<String, Map<String, Object>> attrsMap);

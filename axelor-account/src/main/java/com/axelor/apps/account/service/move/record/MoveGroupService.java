@@ -101,5 +101,7 @@ public interface MoveGroupService {
 
   Map<String, Map<String, Object>> getPaymentModeOnSelectAttrsMap(Move move);
 
+  Map<String, Map<String, Object>> getPartnerBankDetailsOnSelectAttrsMap(Move move);
+
   Map<String, Map<String, Object>> getWizardDefaultAttrsMap(LocalDate moveDate);
 }
