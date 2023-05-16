@@ -743,6 +743,20 @@ public class MoveController {
     }
   }
 
+  public void checkAccounting(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+
+      String alert = Beans.get(MoveCheckService.class).getAccountingAlert(move);
+
+      if (StringUtils.notEmpty(alert)) {
+        response.setAlert(alert);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   protected boolean getChangeDummyBoolean(Context context, String name) {
     return Optional.ofNullable(context.get(name)).map(value -> (Boolean) value).orElse(false);
   }

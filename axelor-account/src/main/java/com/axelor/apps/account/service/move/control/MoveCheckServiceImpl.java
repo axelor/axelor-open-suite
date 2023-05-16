@@ -196,6 +196,19 @@ public class MoveCheckServiceImpl implements MoveCheckService {
   }
 
   @Override
+  public String getAccountingAlert(Move move) {
+    if (move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK
+        || ((!move.getCompany().getAccountConfig().getAccountingDaybook()
+                || !move.getJournal().getAllowAccountingDaybook())
+            && (move.getStatusSelect() == MoveRepository.STATUS_NEW
+                || move.getStatusSelect() == MoveRepository.STATUS_SIMULATED))) {
+      return I18n.get(AccountExceptionMessage.MOVE_CHECK_ACCOUNTING);
+    }
+
+    return null;
+  }
+
+  @Override
   public void checkManageCutOffDates(Move move) throws AxelorException {
     if (!(CollectionUtils.isNotEmpty(move.getMoveLineList())
         && move.getMoveLineList().stream().anyMatch(moveLineService::checkManageCutOffDates))) {

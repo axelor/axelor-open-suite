@@ -561,8 +561,7 @@
   </action-group>
 
   <action-group name="action-account-move-group-accounting-click">
-    <action name="action-account-accounting-prompt"
-      if="statusSelect == 2 || ((!company?.accountConfig?.accountingDaybook || !journal?.allowAccountingDaybook) &amp;&amp; (statusSelect == 1 || statusSelect == 5))"/>
+    <action name="action-move-method-check-accounting" if=""/>
     <action name="action-account-move-group-onsave"/>
     <action name="action-move-method-accounting"/>
   </action-group>
@@ -589,13 +588,6 @@
     <action name="action-move-method-check-duplicate-origin-move"/>
     <action name="action-account-move-method-origin-onchange"/>
   </action-group>
-
-  <!-- ACTION VALIDATE -->
-
-  <action-validate name="action-account-accounting-prompt">
-    <alert
-      message="By clicking on this button, move status will be updated to Accounted. Please be aware that accounting a move brings irrevocable integration of the move in its moves book. Do you wish to continue ?"/>
-  </action-validate>
 
   <!-- ACTION METHOD ON CLICK -->
 
@@ -760,6 +752,10 @@
   <action-method name="action-move-method-partner-bank-details-onchange">
     <call class="com.axelor.apps.account.web.MoveController"
       method="onChangePartnerBankDetails"/>
+  </action-method>
+
+  <action-method name="action-move-method-check-accounting">
+    <call class="com.axelor.apps.account.web.MoveController" method="checkAccounting"/>
   </action-method>
 
   <!-- ACTION VIEW -->

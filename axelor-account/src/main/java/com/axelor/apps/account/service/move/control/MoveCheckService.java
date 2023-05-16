@@ -49,5 +49,7 @@ public interface MoveCheckService {
 
   String getDescriptionAlert(Move move);
 
+  String getAccountingAlert(Move move);
+
   void checkManageCutOffDates(Move move) throws AxelorException;
 }
