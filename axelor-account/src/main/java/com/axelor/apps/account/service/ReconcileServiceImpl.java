@@ -1126,7 +1126,8 @@ public class ReconcileServiceImpl implements ReconcileService {
       isDebit = true;
     }
 
-    if (debitMoveLine.getMove().getPartner().equals(creditMoveLine.getMove().getPartner())) {
+    if (debitMoveLine.getMove().getPartner() != null
+        && debitMoveLine.getMove().getPartner().equals(creditMoveLine.getMove().getPartner())) {
       partner = debitMoveLine.getMove().getPartner();
     }
 
