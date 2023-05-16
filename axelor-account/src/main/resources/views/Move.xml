@@ -518,7 +518,7 @@
       <field name="isAutomaticReconcile" title="Automatic reconcile" type="boolean"/>
       <field name="dateOfReversionSelect" title="Date of reversion" type="integer"
         selection="account.move.date.of.reversion.type.select"
-        onChange="action-move-record-set-date-of-revision"/>
+        onChange="action-move-method-date-of-reversion-select-onchange"/>
       <field name="isAutomaticAccounting" title="Automatic accounting" type="boolean"/>
       <field name="dateOfReversion" type="date" showTitle="false"
         requiredIf="dateOfReversionSelect == 4" readonlyIf="dateOfReversionSelect != 4"/>
@@ -553,14 +553,6 @@
         readonlyIf="dateOfReversionSelect == 4 &amp;&amp; !dateOfReversion"/>
     </panel>
   </form>
-
-  <action-record name="action-move-record-set-date-of-revision"
-    model="com.axelor.apps.account.db.Move">
-    <field name="dateOfReversion" expr="eval: __config__.date" if="dateOfReversionSelect == 1"/>
-    <field name="dateOfReversion" expr="eval: _moveDate" if="dateOfReversionSelect == 2"/>
-    <field name="dateOfReversion" expr="eval: __config__.date.plusDays(1)"
-      if="dateOfReversionSelect == 3"/>
-  </action-record>
 
   <!-- ACTION GROUP -->
   <action-group name="action-account-move-group-onsave">
@@ -784,6 +776,12 @@
 
   <action-method name="action-move-method-currency-onchange">
     <call class="com.axelor.apps.account.web.MoveController" method="onChangeCurrency"/>
+  </action-method>
+
+  <action-method name="action-move-method-date-of-reversion-select-onchange"
+    model="com.axelor.apps.account.db.Move">
+    <call class="com.axelor.apps.account.web.MoveController"
+      method="onChangeDateOfReversionSelect"/>
   </action-method>
 
   <!-- ACTION VIEW -->

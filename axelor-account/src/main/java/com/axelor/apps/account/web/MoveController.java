@@ -639,6 +639,19 @@ public class MoveController {
     }
   }
 
+  public void onChangeDateOfReversionSelect(ActionRequest request, ActionResponse response) {
+    try {
+      LocalDate moveDate = (LocalDate) request.getContext().get("_moveDate");
+      int dateOfReversionSelect = (int) request.getContext().get("dateOfReversionSelect");
+
+      response.setValues(
+          Beans.get(MoveGroupService.class)
+              .getDateOfReversionSelectOnChangeValuesMap(moveDate, dateOfReversionSelect));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   public void checkDuplicateOriginMove(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);

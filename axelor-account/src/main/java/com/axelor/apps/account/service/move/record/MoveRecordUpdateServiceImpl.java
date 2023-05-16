@@ -26,6 +26,7 @@ import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCurrencyService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
@@ -34,6 +35,7 @@ import java.util.Objects;
 
 public class MoveRecordUpdateServiceImpl implements MoveRecordUpdateService {
 
+  protected AppBaseService appBaseService;
   protected MoveLineService moveLineService;
   protected MoveRepository moveRepository;
   protected MoveInvoiceTermService moveInvoiceTermService;
@@ -42,11 +44,13 @@ public class MoveRecordUpdateServiceImpl implements MoveRecordUpdateService {
 
   @Inject
   public MoveRecordUpdateServiceImpl(
+      AppBaseService appBaseService,
       MoveLineService moveLineService,
       MoveRepository moveRepository,
       MoveInvoiceTermService moveInvoiceTermService,
       MoveValidateService moveValidateService,
       MoveLineCurrencyService moveLineCurrencyService) {
+    this.appBaseService = appBaseService;
     this.moveLineService = moveLineService;
     this.moveRepository = moveRepository;
     this.moveInvoiceTermService = moveInvoiceTermService;
@@ -125,6 +129,20 @@ public class MoveRecordUpdateServiceImpl implements MoveRecordUpdateService {
       }
     } else {
       move.setDueDate(null);
+    }
+  }
+
+  @Override
+  public LocalDate getDateOfReversion(LocalDate moveDate, int dateOfReversionSelect) {
+    switch (dateOfReversionSelect) {
+      case MoveRepository.DATE_OF_REVERSION_TODAY:
+        return appBaseService.getTodayDate(null);
+      case MoveRepository.DATE_OF_REVERSION_ORIGINAL_MOVE_DATE:
+        return moveDate;
+      case MoveRepository.DATE_OF_REVERSION_TOMORROW:
+        return appBaseService.getTodayDate(null).plusDays(1);
+      default:
+        return null;
     }
   }
 }

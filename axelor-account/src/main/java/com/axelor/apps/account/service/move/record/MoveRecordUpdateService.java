@@ -37,4 +37,6 @@ public interface MoveRecordUpdateService {
 
   void updateDueDate(Move move, boolean paymentConditionChange, boolean dateChange)
       throws AxelorException;
+
+  LocalDate getDateOfReversion(LocalDate moveDate, int dateOfReversionSelect);
 }
