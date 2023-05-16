@@ -652,6 +652,16 @@ public class MoveController {
     }
   }
 
+  public void onSelectPaymentMode(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+
+      response.setAttrs(Beans.get(MoveGroupService.class).getPaymentModeOnSelectAttrsMap(move));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   public void checkDuplicateOriginMove(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);

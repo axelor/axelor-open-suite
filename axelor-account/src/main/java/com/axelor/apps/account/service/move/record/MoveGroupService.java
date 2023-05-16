@@ -98,4 +98,6 @@ public interface MoveGroupService {
       Move move, LocalDate cutOffStartDate, LocalDate cutOffEndDate) throws AxelorException;
 
   Map<String, Map<String, Object>> getPartnerOnSelectAttrsMap(Move move);
+
+  Map<String, Map<String, Object>> getPaymentModeOnSelectAttrsMap(Move move);
 }

@@ -115,7 +115,7 @@
             readonlyIf="period.statusSelect == 2 || period.statusSelect == 5 || $validatePeriod"
             colSpan="3" onChange="action-move-method-payment-mode-onchange"
             form-view="payment-mode-form" grid-view="payment-mode-grid"
-            onSelect="action-move-attrs-set-domain-payment-mode"/>
+            onSelect="action-move-method-payment-mode-onselect"/>
           <field name="partnerBankDetails"
             showIf="[2,3,9,10].includes(paymentMode.typeSelect)" colSpan="3"
             onChange="action-move-attrs-header-change"
@@ -371,7 +371,7 @@
             name="tradingName" canNew="false" onSelect="action-move-set-trading-name-domain"
             form-view="trading-name-form" grid-view="trading-name-grid"/>
           <field name="paymentMode" colSpan="3"
-            onSelect="action-move-attrs-set-domain-payment-mode"/>
+            onSelect="action-move-method-payment-mode-onselect"/>
           <field name="journal.journalType" hidden="true"/>
           <field name="journal.journalType.technicalTypeSelect" hidden="true" type="integer"/>
           <field name="journal.authorizeSimulatedMove" hidden="true"/>
@@ -601,10 +601,6 @@
   </action-validate>
 
   <!-- ACTION ATTRS -->
-  <action-attrs name="action-move-attrs-set-domain-payment-mode">
-    <attribute name="domain" for="paymentMode"
-      expr="eval: &quot; self.id IN (SELECT am.paymentMode FROM AccountManagement am WHERE am.company = :company)  &quot;"/>
-  </action-attrs>
 
   <action-attrs name="action-move-attrs-set-generate-reverse-wizard-defaults">
     <attribute name="value" for="isAutomaticReconcile" expr="eval: true"/>
@@ -782,6 +778,10 @@
     model="com.axelor.apps.account.db.Move">
     <call class="com.axelor.apps.account.web.MoveController"
       method="onChangeDateOfReversionSelect"/>
+  </action-method>
+
+  <action-method name="action-move-method-payment-mode-onselect">
+    <call class="com.axelor.apps.account.web.MoveController" method="onSelectPaymentMode"/>
   </action-method>
 
   <!-- ACTION VIEW -->

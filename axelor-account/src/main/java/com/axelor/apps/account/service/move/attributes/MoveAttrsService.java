@@ -35,6 +35,8 @@ public interface MoveAttrsService {
 
   void addPartnerDomain(Move move, Map<String, Map<String, Object>> attrsMap);
 
+  void addPaymentModeDomain(Move move, Map<String, Map<String, Object>> attrsMap);
+
   void addDueDateHidden(Move move, Map<String, Map<String, Object>> attrsMap);
 
   void addDateChangeTrueValue(Map<String, Map<String, Object>> attrsMap);

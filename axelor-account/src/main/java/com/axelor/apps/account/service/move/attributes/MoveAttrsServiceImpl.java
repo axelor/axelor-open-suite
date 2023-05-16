@@ -174,6 +174,20 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
   }
 
   @Override
+  public void addPaymentModeDomain(Move move, Map<String, Map<String, Object>> attrsMap) {
+    if (move == null || move.getCompany() == null) {
+      return;
+    }
+
+    String domain =
+        String.format(
+            "self.id IN (SELECT am.paymentMode FROM AccountManagement am WHERE am.company.id = %d)",
+            move.getCompany().getId());
+
+    this.addAttr("partner", "domain", domain, attrsMap);
+  }
+
+  @Override
   public void addDueDateHidden(Move move, Map<String, Map<String, Object>> attrsMap) {
     this.addAttr("dueDate", "hidden", !moveInvoiceTermService.displayDueDate(move), attrsMap);
   }

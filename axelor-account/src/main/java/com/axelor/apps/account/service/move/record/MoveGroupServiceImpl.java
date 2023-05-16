@@ -503,4 +503,13 @@ public class MoveGroupServiceImpl implements MoveGroupService {
 
     return attrsMap;
   }
+
+  @Override
+  public Map<String, Map<String, Object>> getPaymentModeOnSelectAttrsMap(Move move) {
+    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+
+    moveAttrsService.addPaymentModeDomain(move, attrsMap);
+
+    return attrsMap;
+  }
 }
