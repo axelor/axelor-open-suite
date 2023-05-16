@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.PaymentConditionService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.journal.JournalCheckPartnerTypeService;
 import com.axelor.apps.account.service.move.MoveInvoiceTermService;
@@ -53,6 +54,7 @@ public class MoveCheckServiceImpl implements MoveCheckService {
   protected MoveLineService moveLineService;
   protected JournalCheckPartnerTypeService journalCheckPartnerTypeService;
   protected MoveInvoiceTermService moveInvoiceTermService;
+  protected PaymentConditionService paymentConditionService;
 
   @Inject
   public MoveCheckServiceImpl(
@@ -63,7 +65,8 @@ public class MoveCheckServiceImpl implements MoveCheckService {
       MoveLineCheckService moveLineCheckService,
       MoveLineService moveLineService,
       JournalCheckPartnerTypeService journalCheckPartnerTypeService,
-      MoveInvoiceTermService moveInvoiceTermService) {
+      MoveInvoiceTermService moveInvoiceTermService,
+      PaymentConditionService paymentConditionService) {
     this.moveRepository = moveRepository;
     this.moveToolService = moveToolService;
     this.periodService = periodService;
@@ -72,6 +75,7 @@ public class MoveCheckServiceImpl implements MoveCheckService {
     this.moveLineService = moveLineService;
     this.journalCheckPartnerTypeService = journalCheckPartnerTypeService;
     this.moveInvoiceTermService = moveInvoiceTermService;
+    this.paymentConditionService = paymentConditionService;
   }
 
   @Override
@@ -179,6 +183,7 @@ public class MoveCheckServiceImpl implements MoveCheckService {
       if (move.getId() != null) {
         PaymentCondition formerPaymentCondition =
             moveRepository.find(move.getId()).getPaymentCondition();
+        paymentConditionService.checkPaymentCondition(formerPaymentCondition);
         move.setPaymentCondition(formerPaymentCondition);
       }
 

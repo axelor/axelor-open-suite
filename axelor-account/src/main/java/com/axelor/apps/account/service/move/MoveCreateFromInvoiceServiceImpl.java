@@ -28,6 +28,7 @@ import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.PaymentConditionService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -66,6 +67,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
   protected MoveExcessPaymentService moveExcessPaymentService;
   protected JournalRepository journalRepository;
   protected AccountConfigService accountConfigService;
+  protected PaymentConditionService paymentConditionService;
 
   @Inject
   public MoveCreateFromInvoiceServiceImpl(
@@ -80,7 +82,8 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
       ReconcileService reconcileService,
       MoveExcessPaymentService moveExcessPaymentService,
       AccountConfigService accountConfigService,
-      JournalRepository journalRepository) {
+      JournalRepository journalRepository,
+      PaymentConditionService paymentConditionService) {
     this.appAccountService = appAccountService;
     this.moveCreateService = moveCreateService;
     this.moveLineCreateService = moveLineCreateService;
@@ -93,6 +96,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
     this.moveExcessPaymentService = moveExcessPaymentService;
     this.accountConfigService = accountConfigService;
     this.journalRepository = journalRepository;
+    this.paymentConditionService = paymentConditionService;
   }
 
   /**
@@ -169,6 +173,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
         move.setInvoice(invoice);
 
         move.setTradingName(invoice.getTradingName());
+        paymentConditionService.checkPaymentCondition(invoice.getPaymentCondition());
         move.setPaymentCondition(invoice.getPaymentCondition());
 
         boolean isDebitCustomer = moveToolService.isDebitCustomer(invoice, false);
