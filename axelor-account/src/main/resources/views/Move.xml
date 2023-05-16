@@ -80,7 +80,7 @@
             readonlyIf="$validatePeriod || moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"
             if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"
             form-view="trading-name-form" grid-view="trading-name-grid" canNew="false"
-            onSelect="action-move-set-trading-name-domain" colSpan="2"/>
+            onSelect="action-move-method-trading-name-onselect" colSpan="2"/>
           <spacer if="!__config__.app.getApp('base')?.getEnableTradingNamesManagement()"
             colSpan="2"/>
           <field name="journal" domain="self.statusSelect = 1 AND self.company = :company"
@@ -368,7 +368,7 @@
           <field hidden="true" name="period" canView="false" canEdit="false"
             form-view="period-form" grid-view="period-grid"/>
           <field if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"
-            name="tradingName" canNew="false" onSelect="action-move-set-trading-name-domain"
+            name="tradingName" canNew="false" onSelect="action-move-method-trading-name-onselect"
             form-view="trading-name-form" grid-view="trading-name-grid"/>
           <field name="paymentMode" colSpan="3"
             onSelect="action-move-method-payment-mode-onselect"/>
@@ -600,23 +600,8 @@
 
   <!-- ACTION ATTRS -->
 
-  <action-attrs name="action-move-attrs-payment-condition-set-domain">
-    <attribute name="domain" for="paymentCondition"
-      expr="eval: &quot; SIZE(self.paymentConditionLineList) &lt; 2 &quot;"
-      if="!__config__.app.getApp('account').allowMultiInvoiceTerms"/>
-  </action-attrs>
-
-  <action-attrs name="action-move-set-trading-name-domain">
-    <attribute name="domain" for="tradingName"
-      expr="eval: &quot;self.id IN (${(company?.tradingNameSet?.collect{it.id}+[0]).join(',')})&quot;"/>
-  </action-attrs>
-
   <action-attrs name="action-move-attrs-header-change">
     <attribute name="value" for="$headerChange" expr="eval: true"/>
-  </action-attrs>
-
-  <action-attrs name="action-move-attrs-payment-condition-change">
-    <attribute name="value" for="$paymentConditionChange" expr="eval: true"/>
   </action-attrs>
 
   <!-- ACTION METHOD -->
@@ -772,6 +757,10 @@
   <action-method name="action-move-method-partner-bank-details-onselect">
     <call class="com.axelor.apps.account.web.MoveController"
       method="onSelectPartnerBankDetails"/>
+  </action-method>
+
+  <action-method name="action-move-method-trading-name-onselect">
+    <call class="com.axelor.apps.account.web.MoveController" method="onSelectTradingName"/>
   </action-method>
 
   <!-- ACTION VIEW -->

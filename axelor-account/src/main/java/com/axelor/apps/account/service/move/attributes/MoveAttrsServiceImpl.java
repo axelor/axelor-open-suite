@@ -30,11 +30,13 @@ import com.axelor.apps.account.service.move.MoveViewHelperService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.google.inject.Inject;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
@@ -208,6 +210,25 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
 
       domain = String.format("self.id IN (%s) AND self.active IS TRUE", bankDetailsIds);
     }
+
+    this.addAttr("partner", "domain", domain, attrsMap);
+  }
+
+  @Override
+  public void addTradingNameDomain(Move move, Map<String, Map<String, Object>> attrsMap) {
+    if (move == null || move.getCompany() == null) {
+      return;
+    }
+
+    String tradingNameIds =
+        CollectionUtils.isEmpty(move.getCompany().getTradingNameSet())
+            ? "0"
+            : move.getCompany().getTradingNameSet().stream()
+                .map(TradingName::getId)
+                .map(Objects::toString)
+                .collect(Collectors.joining(","));
+
+    String domain = String.format("self.id IN (%s)", tradingNameIds);
 
     this.addAttr("partner", "domain", domain, attrsMap);
   }

@@ -673,6 +673,16 @@ public class MoveController {
     }
   }
 
+  public void onSelectTradingName(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+
+      response.setAttrs(Beans.get(MoveGroupService.class).getTradingNameOnSelectAttrsMap(move));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   public void wizardDefault(ActionRequest request, ActionResponse response) {
     try {
       LocalDate moveDate = (LocalDate) request.getContext().get("_moveDate");
