@@ -71,6 +71,7 @@ public class BatchAutoMoveLettering extends BatchStrategy {
   protected ReconcileGroupService reconcileGroupService;
 
   protected AccountingBatch accountingBatch;
+  protected Set<MoveLine> moveLineReconciledSet;
 
   @Inject
   public BatchAutoMoveLettering(
@@ -94,6 +95,7 @@ public class BatchAutoMoveLettering extends BatchStrategy {
   @Override
   protected void process() {
     accountingBatch = batch.getAccountingBatch();
+    moveLineReconciledSet = new HashSet<>();
 
     Map<List<Object>, Pair<List<MoveLine>, List<MoveLine>>> moveLineMap = getMoveLinesMap();
 
@@ -129,6 +131,9 @@ public class BatchAutoMoveLettering extends BatchStrategy {
             companyPartnerCreditMoveLineList,
             reconcileMethodSelect);
       }
+    }
+    for (MoveLine moveLine : moveLineReconciledSet) {
+      incrementDone();
     }
   }
 
@@ -197,7 +202,6 @@ public class BatchAutoMoveLettering extends BatchStrategy {
     for (MoveLine debitMoveLine : debitMoveLines) {
       debitRemaining.put(debitMoveLine, debitMoveLine.getAmountRemaining());
     }
-    Set<MoveLine> moveLineReconciledSet = new HashSet<>();
     for (MoveLine creditMoveLine : creditMoveLines) {
       BigDecimal creditRemaining = creditMoveLine.getAmountRemaining();
       for (MoveLine debitMoveLine : debitMoveLines) {
@@ -239,9 +243,6 @@ public class BatchAutoMoveLettering extends BatchStrategy {
           }
         }
       }
-    }
-    for (MoveLine moveLine : moveLineReconciledSet) {
-      incrementDone();
     }
   }
 
