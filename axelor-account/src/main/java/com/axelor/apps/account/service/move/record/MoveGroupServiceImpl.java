@@ -512,4 +512,13 @@ public class MoveGroupServiceImpl implements MoveGroupService {
 
     return attrsMap;
   }
+
+  @Override
+  public Map<String, Map<String, Object>> getWizardDefaultAttrsMap(LocalDate moveDate) {
+    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+
+    moveAttrsService.addWizardDefault(moveDate, attrsMap);
+
+    return attrsMap;
+  }
 }

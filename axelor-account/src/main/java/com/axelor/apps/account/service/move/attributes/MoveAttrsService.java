@@ -20,6 +20,7 @@ package com.axelor.apps.account.service.move.attributes;
 
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.base.AxelorException;
+import java.time.LocalDate;
 import java.util.Map;
 
 public interface MoveAttrsService {
@@ -36,6 +37,8 @@ public interface MoveAttrsService {
   void addPartnerDomain(Move move, Map<String, Map<String, Object>> attrsMap);
 
   void addPaymentModeDomain(Move move, Map<String, Map<String, Object>> attrsMap);
+
+  void addWizardDefault(LocalDate moveDate, Map<String, Map<String, Object>> attrsMap);
 
   void addDueDateHidden(Move move, Map<String, Map<String, Object>> attrsMap);
 

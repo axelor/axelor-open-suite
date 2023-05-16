@@ -512,8 +512,7 @@
   </form>
 
   <form name="move-wizard-generate-reverse-form" title="Generate Reverse Move"
-    onLoad="action-move-attrs-set-generate-reverse-wizard-defaults"
-    model="com.axelor.apps.account.db.Move">
+    onLoad="action-move-method-wizard-default" model="com.axelor.apps.account.db.Move">
     <panel name="mainPanel">
       <field name="isAutomaticReconcile" title="Automatic reconcile" type="boolean"/>
       <field name="dateOfReversionSelect" title="Date of reversion" type="integer"
@@ -533,8 +532,7 @@
   </form>
 
   <form name="move-wizard-mass-reverse-form" title="Mass Generate Reverse Move"
-    onNew="action-move-attrs-set-generate-reverse-wizard-defaults"
-    model="com.axelor.utils.db.Wizard">
+    onNew="action-move-method-wizard-default" model="com.axelor.utils.db.Wizard">
     <panel name="mainPanel">
       <field name="isAutomaticReconcile" title="Automatic reconcile" type="boolean"/>
       <field name="dateOfReversionSelect" title="Date of reversion" type="integer"
@@ -601,15 +599,6 @@
   </action-validate>
 
   <!-- ACTION ATTRS -->
-
-  <action-attrs name="action-move-attrs-set-generate-reverse-wizard-defaults">
-    <attribute name="value" for="isAutomaticReconcile" expr="eval: true"/>
-    <attribute name="value" for="dateOfReversionSelect" expr="eval: 2"/>
-    <attribute name="value" for="isAutomaticAccounting" expr="eval: true"/>
-    <attribute name="value" for="isUnreconcileOriginalMove" expr="eval: true"/>
-    <attribute name="value" for="isHiddenMoveLinesInBankReconciliation" expr="eval: true"/>
-    <attribute name="value" for="dateOfReversion" expr="eval: _moveDate"/>
-  </action-attrs>
 
   <action-attrs name="action-move-attrs-bank-details-from-partner-domain">
     <attribute name="domain" for="partnerBankDetails"
@@ -782,6 +771,10 @@
 
   <action-method name="action-move-method-payment-mode-onselect">
     <call class="com.axelor.apps.account.web.MoveController" method="onSelectPaymentMode"/>
+  </action-method>
+
+  <action-method name="action-move-method-wizard-default">
+    <call class="com.axelor.apps.account.web.MoveController" method="wizardDefault"/>
   </action-method>
 
   <!-- ACTION VIEW -->

@@ -662,6 +662,16 @@ public class MoveController {
     }
   }
 
+  public void wizardDefault(ActionRequest request, ActionResponse response) {
+    try {
+      LocalDate moveDate = (LocalDate) request.getContext().get("_moveDate");
+
+      response.setAttrs(Beans.get(MoveGroupService.class).getWizardDefaultAttrsMap(moveDate));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   public void checkDuplicateOriginMove(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);

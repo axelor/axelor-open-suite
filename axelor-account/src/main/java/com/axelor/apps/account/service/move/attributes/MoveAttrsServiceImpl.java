@@ -30,6 +30,7 @@ import com.axelor.apps.account.service.move.MoveViewHelperService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.google.inject.Inject;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -185,6 +186,20 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
             move.getCompany().getId());
 
     this.addAttr("partner", "domain", domain, attrsMap);
+  }
+
+  @Override
+  public void addWizardDefault(LocalDate moveDate, Map<String, Map<String, Object>> attrsMap) {
+    this.addAttr("isAutomaticReconcile", "value", true, attrsMap);
+    this.addAttr("isAutomaticAccounting", "value", true, attrsMap);
+    this.addAttr("isUnreconcileOriginalMove", "value", true, attrsMap);
+    this.addAttr("isHiddenMoveLinesInBankReconciliation", "value", true, attrsMap);
+    this.addAttr("dateOfReversion", "value", moveDate, attrsMap);
+    this.addAttr(
+        "dateOfReversionSelect",
+        "value",
+        MoveRepository.DATE_OF_REVERSION_ORIGINAL_MOVE_DATE,
+        attrsMap);
   }
 
   @Override
