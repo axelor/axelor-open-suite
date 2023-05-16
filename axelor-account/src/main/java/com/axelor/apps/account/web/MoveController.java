@@ -33,7 +33,6 @@ import com.axelor.apps.account.service.move.MoveSimulateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.move.control.MoveCheckService;
 import com.axelor.apps.account.service.move.record.MoveGroupService;
-import com.axelor.apps.account.service.move.record.MoveRecordSetService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Company;
@@ -364,17 +363,6 @@ public class MoveController {
       return (LocalDate) dueDateObj;
     } else {
       return LocalDate.parse((String) dueDateObj);
-    }
-  }
-
-  public void setCurrencyCode(ActionRequest request, ActionResponse response) {
-    try {
-      Move move = request.getContext().asType(Move.class);
-      Map<String, Object> resultMap = Beans.get(MoveRecordSetService.class).setCurrencyCode(move);
-
-      response.setValues(resultMap);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
     }
   }
 

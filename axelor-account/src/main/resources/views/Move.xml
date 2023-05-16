@@ -693,12 +693,6 @@
 
   <!-- END ON CLICK -->
 
-  <action-method name="action-move-method-set-currency-code">
-    <call class="com.axelor.apps.account.web.MoveController" method="setCurrencyCode"/>
-  </action-method>
-
-  <!-- END TODO -->
-
   <action-method name="action-move-partner-onselect">
     <call class="com.axelor.apps.account.web.MoveController" method="onSelectPartner"/>
   </action-method>
