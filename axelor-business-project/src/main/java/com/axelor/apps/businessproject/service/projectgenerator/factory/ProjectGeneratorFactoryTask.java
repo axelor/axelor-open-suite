@@ -146,16 +146,16 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
                           tasks.add(task);
                         });
       } else {
-        // check on product unit
-        AppBusinessProject appBusinessProject = appBusinessProjectService.getAppBusinessProject();
-        if (!Objects.equals(saleOrderLine.getUnit(), appBusinessProject.getDaysUnit())
-            && !Objects.equals(saleOrderLine.getUnit(), appBusinessProject.getHoursUnit())) {
-          throw new AxelorException(
-              TraceBackRepository.CATEGORY_NO_VALUE,
-              I18n.get(BusinessProjectExceptionMessage.SALE_ORDER_GENERATE_FILL_PRODUCT_UNIT_ERROR),
-              saleOrderLine.getFullName(),
-              saleOrderLine.getUnit().getName());
-        }
+      // check on product unit
+      AppBusinessProject appBusinessProject = appBusinessProjectService.getAppBusinessProject();
+      if (!Objects.equals(saleOrderLine.getUnit(), appBusinessProject.getDaysUnit())
+          && !Objects.equals(saleOrderLine.getUnit(), appBusinessProject.getHoursUnit())) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_NO_VALUE,
+            I18n.get(BusinessProjectExceptionMessage.SALE_ORDER_GENERATE_FILL_PRODUCT_UNIT_ERROR),
+            saleOrderLine.getFullName(),
+            saleOrderLine.getUnit().getName());
+      }
 
       ProjectTask task =
           projectTaskBusinessProjectService.create(saleOrderLine, project, project.getAssignedTo());
