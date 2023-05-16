@@ -47,6 +47,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
 
@@ -85,18 +86,25 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
   public ActionViewBuilder fill(Project project, SaleOrder saleOrder, LocalDateTime startDate)
       throws AxelorException {
     List<ProjectTask> tasks = new ArrayList<>();
+    AtomicBoolean isAlreadyGenerated = new AtomicBoolean(false);
     projectRepository.save(project);
     for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
 
       if (SaleOrderLineRepository.TYPE_NORMAL != saleOrderLine.getTypeSelect()) {
         continue;
       }
-      processSaleOrderLine(project, saleOrder, startDate, tasks, saleOrderLine);
+      processSaleOrderLine(project, saleOrder, startDate, tasks, saleOrderLine, isAlreadyGenerated);
     }
     if (tasks.isEmpty()) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_NO_VALUE,
-          I18n.get(BusinessProjectExceptionMessage.SALE_ORDER_GENERATE_FILL_PROJECT_ERROR_1));
+      if (!isAlreadyGenerated.get()) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_NO_VALUE,
+            I18n.get(BusinessProjectExceptionMessage.SALE_ORDER_GENERATE_FILL_PROJECT_ERROR_1));
+      } else {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_NO_VALUE,
+            I18n.get(BusinessProjectExceptionMessage.SALE_ORDER_GENERATE_FILL_PROJECT_ERROR_3));
+      }
     }
 
     return ActionView.define(String.format("Task%s generated", (tasks.size() > 1 ? "s" : "")))
@@ -112,7 +120,8 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
       SaleOrder saleOrder,
       LocalDateTime startDate,
       List<ProjectTask> tasks,
-      SaleOrderLine saleOrderLine)
+      SaleOrderLine saleOrderLine,
+      AtomicBoolean isAlreadyGenerated)
       throws AxelorException {
     Product product = saleOrderLine.getProduct();
     List<ProjectTask> taskGenerated =
@@ -130,22 +139,23 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
         && saleOrderLine.getSaleSupplySelect() == SaleOrderLineRepository.SALE_SUPPLY_PRODUCE) {
       if (!taskGenerated.isEmpty()) {
         taskGenerated.stream()
-            .filter(task -> task.getSoldTime().compareTo(saleOrderLine.getQty()) != 0)
-            .forEach(
-                task -> {
-                  updateSoldTime(task, saleOrderLine);
-                  tasks.add(task);
-                });
+                .filter(task -> task.getSoldTime().compareTo(saleOrderLine.getQty()) != 0)
+                .forEach(
+                        task -> {
+                          updateSoldTime(task, saleOrderLine);
+                          tasks.add(task);
+                        });
       } else {
-        // check on product unit
-        AppBusinessProject appBusinessProject = appBusinessProjectService.getAppBusinessProject();
-        if (!Objects.equals(saleOrderLine.getUnit(), appBusinessProject.getDaysUnit())
-            && !Objects.equals(saleOrderLine.getUnit(), appBusinessProject.getHoursUnit())) {
-          throw new AxelorException(
-              TraceBackRepository.CATEGORY_NO_VALUE,
-              I18n.get(
-                  BusinessProjectExceptionMessage.SALE_ORDER_GENERATE_FILL_PRODUCT_UNIT_ERROR));
-        }
+      // check on product unit
+      AppBusinessProject appBusinessProject = appBusinessProjectService.getAppBusinessProject();
+      if (!Objects.equals(saleOrderLine.getUnit(), appBusinessProject.getDaysUnit())
+          && !Objects.equals(saleOrderLine.getUnit(), appBusinessProject.getHoursUnit())) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_NO_VALUE,
+            I18n.get(BusinessProjectExceptionMessage.SALE_ORDER_GENERATE_FILL_PRODUCT_UNIT_ERROR),
+            saleOrderLine.getFullName(),
+            saleOrderLine.getUnit().getName());
+      }
 
         ProjectTask task =
             projectTaskBusinessProjectService.create(
