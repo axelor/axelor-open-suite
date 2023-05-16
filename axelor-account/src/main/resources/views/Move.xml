@@ -552,12 +552,27 @@
     </panel>
   </form>
 
-  <!-- ACTION GROUP -->
+  <!-- ACTION GROUP WITH SAVE -->
+
   <action-group name="action-account-move-group-onsave">
     <action name="action-move-method-check-before-save"/>
     <action name="save"/>
     <action name="action-move-method-onsave"/>
   </action-group>
+
+  <action-group name="action-account-move-group-accounting-click">
+    <action name="action-account-accounting-prompt"
+      if="statusSelect == 2 || ((!company?.accountConfig?.accountingDaybook || !journal?.allowAccountingDaybook) &amp;&amp; (statusSelect == 1 || statusSelect == 5))"/>
+    <action name="action-account-move-group-onsave"/>
+    <action name="action-move-method-accounting"/>
+  </action-group>
+
+  <action-group name="action-move-account-group-simulate">
+    <action name="action-account-move-group-onsave"/>
+    <action name="action-move-method-set-status-simulate"/>
+  </action-group>
+
+  <!-- ACTION GROUP WITH ALERT -->
 
   <action-group name="action-move-group-description-onchange">
     <action name="action-move-method-check-description"/>
@@ -575,30 +590,15 @@
     <action name="action-account-move-method-origin-onchange"/>
   </action-group>
 
-  <action-group name="action-account-move-group-accounting-click">
-    <action name="action-account-accounting-prompt"
-      if="statusSelect == 2 || ((!company?.accountConfig?.accountingDaybook || !journal?.allowAccountingDaybook) &amp;&amp; (statusSelect == 1 || statusSelect == 5))"/>
-    <action name="action-account-move-group-onsave"/>
-    <action name="action-move-method-accounting"/>
-  </action-group>
-
-  <action-group name="action-move-account-group-simulate">
-    <action name="action-account-move-group-onsave"/>
-    <action name="action-move-method-set-status-simulate"/>
-  </action-group>
-
   <!-- ACTION VALIDATE -->
-  <action-validate name="action-move-validate-check-term-in-payment">
-    <error message="$paymentConditionChangeError"
-      if="!com.google.common.base.Strings.isNullOrEmpty(paymentConditionChangeError)"/>
-  </action-validate>
 
   <action-validate name="action-account-accounting-prompt">
     <alert
       message="By clicking on this button, move status will be updated to Accounted. Please be aware that accounting a move brings irrevocable integration of the move in its moves book. Do you wish to continue ?"/>
   </action-validate>
 
-  <!-- ACTION METHOD -->
+  <!-- ACTION METHOD ON CLICK -->
+
   <action-method name="action-move-method-accounting">
     <call class="com.axelor.apps.account.web.MoveController" method="accounting"/>
   </action-method>
@@ -639,7 +639,7 @@
     <call class="com.axelor.apps.account.web.MoveController" method="massReverseMove"/>
   </action-method>
 
-  <!-- END ON CLICK -->
+  <!-- OTHER ACTION METHOD -->
 
   <action-method name="action-move-partner-onselect">
     <call class="com.axelor.apps.account.web.MoveController" method="onSelectPartner"/>
@@ -763,6 +763,7 @@
   </action-method>
 
   <!-- ACTION VIEW -->
+
   <action-view name="action-move-view-open-generate-reverse-wizard"
     title="Generate Reverse Move" model="com.axelor.apps.account.db.Move">
     <view type="form" name="move-wizard-generate-reverse-form"/>
