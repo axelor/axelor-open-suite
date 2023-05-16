@@ -46,6 +46,7 @@
     <decimal name="initialMargin" title="ProjectTask.Margin"/>
     <decimal name="initialMarkup" title="ProjectTask.Markup"/>
     <decimal name="unitCost" title="Unit cost"/>
+    <decimal name="realTurnover" title="Real turnover"/>
     <decimal name="realCosts" title="ProjectTask.Costs"/>
     <decimal name="realMargin" title="ProjectTask.Margin"/>
     <decimal name="realMarkup" title="ProjectTask.Markup"/>

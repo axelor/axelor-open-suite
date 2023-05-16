@@ -152,7 +152,10 @@ public class ProjectTaskReportingValuesComputingServiceImpl
     projectTask.setInitialMargin(projectTask.getTurnover().subtract(projectTask.getInitialCosts()));
 
     projectTask.setInitialMarkup(
-        projectTask.getInitialMargin().divide(projectTask.getInitialCosts(), RoundingMode.HALF_UP));
+        getPercentValue(
+            projectTask
+                .getInitialMargin()
+                .divide(projectTask.getInitialCosts(), RoundingMode.HALF_UP)));
 
     // unitCost to compute other values
     BigDecimal unitCost = computeUnitCost(projectTask);
@@ -165,16 +168,21 @@ public class ProjectTaskReportingValuesComputingServiceImpl
     } else {
       productUnitCost = projectTask.getUnitCost();
     }
+    BigDecimal progress =
+        projectTask.getSpentTime().divide(projectTask.getUpdatedTime(), RoundingMode.HALF_UP);
+    projectTask.setRealTurnover(progress.multiply(projectTask.getTurnover()));
     projectTask.setRealCosts(projectTask.getSpentTime().multiply(productUnitCost));
     projectTask.setRealMargin(
         projectTask
-            .getSpentTime()
-            .multiply(projectTask.getUnitPrice())
+            .getRealTurnover()
             .subtract(projectTask.getRealCosts()));
 
     if (projectTask.getRealCosts().signum() > 0) {
       projectTask.setRealMarkup(
-          projectTask.getRealMargin().divide(projectTask.getRealCosts(), RoundingMode.HALF_UP));
+          getPercentValue(
+              projectTask
+                  .getRealMargin()
+                  .divide(projectTask.getRealCosts(), RoundingMode.HALF_UP)));
     }
 
     // Forecast
@@ -189,9 +197,10 @@ public class ProjectTaskReportingValuesComputingServiceImpl
     projectTask.setForecastMargin(
         projectTask.getTurnover().subtract(projectTask.getForecastCosts()));
     projectTask.setForecastMarkup(
-        projectTask
-            .getForecastMargin()
-            .divide(projectTask.getForecastCosts(), RoundingMode.HALF_UP));
+        getPercentValue(
+            projectTask
+                .getForecastMargin()
+                .divide(projectTask.getForecastCosts(), RoundingMode.HALF_UP)));
   }
 
   /**
@@ -354,5 +363,14 @@ public class ProjectTaskReportingValuesComputingServiceImpl
         .bind("status", TimesheetRepository.STATUS_VALIDATED)
         .bind("projectTask", projectTask)
         .fetch();
+  }
+
+  /**
+   * get percent value for given bigDecimal value
+   * @param decimalValue
+   * @return
+   */
+  protected BigDecimal getPercentValue(BigDecimal decimalValue) {
+    return new BigDecimal("100").multiply(decimalValue).setScale(2, RoundingMode.HALF_UP);
   }
 }

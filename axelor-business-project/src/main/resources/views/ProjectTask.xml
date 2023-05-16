@@ -144,22 +144,45 @@
             width="120" widget="Image"/>
           <panel name="initialPanel" title="ProjectTask.Initial" colSpan="12"
             showIf="!parentTask">
-            <field name="turnover"/>
-            <field name="initialCosts"/>
-            <field name="initialMargin"/>
-            <field name="initialMarkup"/>
-            <field name="unitCost"/>
+            <panel-dashlet action="action-project-task-view-turnover-custom"
+              colSpan="3"/>
+            <panel-dashlet action="action-project-task-view-initial-costs-custom"
+              colSpan="3"/>
+            <panel-dashlet action="action-project-task-view-initial-margin-custom"
+              colSpan="3"/>
+            <panel-dashlet action="action-project-task-view-initial-markup-custom"
+              colSpan="3"/>
+            <field name="turnover" hidden="true"/>
+            <field name="initialCosts" hidden="true"/>
+            <field name="initialMargin" hidden="true"/>
+            <field name="initialMarkup" hidden="true"/>
+            <field name="unitCost" hidden="true"/>
           </panel>
           <panel name="realPanel" title="ProjectTask.Real" colSpan="12">
-            <field name="realCosts"/>
-            <field name="realMargin"/>
-            <field name="realMarkup"/>
-            <field name="forecastUnitCost"/>
+            <panel-dashlet action="action-project-task-view-real-turnover-custom"
+              colSpan="3"/>
+            <panel-dashlet action="action-project-task-view-real-costs-custom"
+              colSpan="3"/>
+            <panel-dashlet action="action-project-task-view-real-margin-custom"
+              colSpan="3"/>
+            <panel-dashlet action="action-project-task-view-real-markup-custom"
+              colSpan="3"/>
+            <field name="realTurnover" hidden="true"/>
+            <field name="realCosts" hidden="true"/>
+            <field name="realMargin" hidden="true"/>
+            <field name="realMarkup" hidden="true"/>
+            <field name="forecastUnitCost" hidden="true"/>
           </panel>
           <panel name="forecastPanel" title="ProjectTask.Forecast" colSpan="12">
-            <field name="forecastCosts"/>
-            <field name="forecastMargin"/>
-            <field name="forecastMarkup"/>
+            <panel-dashlet action="action-project-task-view-forecast-costs-custom"
+              colSpan="3"/>
+            <panel-dashlet action="action-project-task-view-forecast-margin-custom"
+              colSpan="3"/>
+            <panel-dashlet action="action-project-task-view-forecast-markup-custom"
+              colSpan="3"/>
+            <field name="forecastCosts" hidden="true"/>
+            <field name="forecastMargin" hidden="true"/>
+            <field name="forecastMarkup" hidden="true"/>
           </panel>
         </panel>
       </insert>
