@@ -172,10 +172,7 @@ public class ProjectTaskReportingValuesComputingServiceImpl
         projectTask.getSpentTime().divide(projectTask.getUpdatedTime(), RoundingMode.HALF_UP);
     projectTask.setRealTurnover(progress.multiply(projectTask.getTurnover()));
     projectTask.setRealCosts(projectTask.getSpentTime().multiply(productUnitCost));
-    projectTask.setRealMargin(
-        projectTask
-            .getRealTurnover()
-            .subtract(projectTask.getRealCosts()));
+    projectTask.setRealMargin(projectTask.getRealTurnover().subtract(projectTask.getRealCosts()));
 
     if (projectTask.getRealCosts().signum() > 0) {
       projectTask.setRealMarkup(
@@ -367,6 +364,7 @@ public class ProjectTaskReportingValuesComputingServiceImpl
 
   /**
    * get percent value for given bigDecimal value
+   *
    * @param decimalValue
    * @return
    */
