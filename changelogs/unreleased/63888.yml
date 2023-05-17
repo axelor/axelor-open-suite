@@ -1,7 +1,0 @@
-title: Deleted unused action
-type: fix
-description:
-
-  Delete action 'action-record-analytic-distribution-type-select' since its not used anymore.
-  
-  script - DELETE FROM meta_action WHERE name='action-record-analytic-distribution-type-select';
