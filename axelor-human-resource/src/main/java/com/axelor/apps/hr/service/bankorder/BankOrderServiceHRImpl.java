@@ -98,7 +98,6 @@ public class BankOrderServiceHRImpl extends BankOrderServiceImpl {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
   public BankOrder cancelPayment(BankOrder bankOrder) throws AxelorException {
     bankOrder = super.cancelPayment(bankOrder);
 
