@@ -728,6 +728,7 @@ public class ExpenseServiceImpl implements ExpenseService {
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(HumanResourceExceptionMessage.EXPENSE_PAYMENT_CANCEL));
       } else if (bankOrder.getStatusSelect() != BankOrderRepository.STATUS_CANCELED) {
+        bankOrder.setStatusSelect(BankOrderRepository.STATUS_CANCELED);
         Beans.get(BankOrderService.class).cancelBankOrder(bankOrder);
       }
     }

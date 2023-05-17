@@ -93,6 +93,7 @@ public class InvoicePaymentCancelServiceBankPayImpl extends InvoicePaymentCancel
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(AccountExceptionMessage.INVOICE_PAYMENT_CANCEL));
       } else if (paymentBankOrder.getStatusSelect() != BankOrderRepository.STATUS_CANCELED) {
+        paymentBankOrder.setStatusSelect(BankOrderRepository.STATUS_CANCELED);
         bankOrderService.cancelBankOrder(paymentBankOrder);
         this.updateCancelStatus(invoicePayment);
       }
