@@ -15,10 +15,10 @@
   </input>
 
   <input file="gdpr-anonymizer-lines.csv" separator=";"
-         type="com.axelor.apps.base.db.AnonymizerLine">
+    type="com.axelor.apps.base.db.AnonymizerLine">
     <bind column="metaModel" to="metaModel" search="self.name = :metaModel"/>
     <bind column="metaField" to="metaField"
-          search="self.metaModel.name = :metaModel AND self.name = :metaField"/>
+      search="self.metaModel.name = :metaModel AND self.name = :metaField"/>
   </input>
 
   <input file="base_appGdpr.csv" separator=";" type="com.axelor.apps.base.db.App"

@@ -68,6 +68,8 @@ import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.AddressServiceImpl;
 import com.axelor.apps.base.service.AnonymizeService;
 import com.axelor.apps.base.service.AnonymizeServiceImpl;
+import com.axelor.apps.base.service.AnonymizerLineService;
+import com.axelor.apps.base.service.AnonymizerLineServiceImpl;
 import com.axelor.apps.base.service.BankDetailsFullNameComputeService;
 import com.axelor.apps.base.service.BankDetailsFullNameComputeServiceImpl;
 import com.axelor.apps.base.service.BankDetailsService;
@@ -337,5 +339,6 @@ public class BaseModule extends AxelorModule {
     bind(AosSwagger.class);
     bind(BirtTemplateViewService.class).to(BirtTemplateViewServiceImpl.class);
     bind(DayPlanningService.class).to(DayPlanningServiceImpl.class);
+    bind(AnonymizerLineService.class).to(AnonymizerLineServiceImpl.class);
   }
 }
