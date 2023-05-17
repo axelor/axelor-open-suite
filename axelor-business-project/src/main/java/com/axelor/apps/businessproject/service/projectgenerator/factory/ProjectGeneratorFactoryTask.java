@@ -171,8 +171,10 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
   }
 
   protected void updateSoldTime(ProjectTask task, SaleOrderLine saleOrderLine) {
+    if(task.getSoldTime().compareTo(task.getUpdatedTime()) == 0) {
+      task.setUpdatedTime(saleOrderLine.getQty());
+    }
     task.setSoldTime(saleOrderLine.getQty());
-    task.setUpdatedTime(task.getSoldTime());
     projectTaskRepo.save(task);
   }
 }
