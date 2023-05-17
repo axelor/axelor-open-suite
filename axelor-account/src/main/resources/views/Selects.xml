@@ -507,12 +507,6 @@
     <option value="4" order="2">Partially validated</option>
   </selection>
 
-  <selection name="account.budget.status.select">
-    <option value="1">Draft</option>
-    <option value="2">Validated</option>
-  </selection>
-
-
   <selection name='move.line.reimbursement.status.select'>
     <option value='0'></option>
     <option value='1'>Reimbursement ongoing</option>

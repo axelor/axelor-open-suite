@@ -1,0 +1,1 @@
+ALTER TABLE account_analytic_distribution_line ALTER COLUMN analytic_journal DROP NOT NULL;

@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+
+  <grid id="budget-sale-order-line-grid" model="com.axelor.apps.sale.db.SaleOrderLine"
+    title="SO lines" name="sale-order-line-grid" extension="true">
+    <extend target="//field[@name='estimatedDeliveryDate']">
+      <insert position="after">
+        <field name="budgetStr"/>
+      </insert>
+    </extend>
+  </grid>
+
+  <form id="budget-sale-order-line-form" name="sale-order-line-form" title="SO line"
+    model="com.axelor.apps.sale.db.SaleOrderLine" extension="true">
+
+    <extend target="/">
+      <attribute name="onNew"
+        value="action-group-sale-saleorderline-onnew, action-record-sale-order-line-fill-request-qty, action-sale-order-line-group-manage-attrs, action-method-sale-order-line-budget-check-budget-key-roles"/>
+      <attribute name="onLoad"
+        value="action-group-sale-saleorderline-onload, action-sale-order-line-attrs-hidden-fields-for-client, action-sale-order-line-group-manage-attrs, action-method-sale-order-line-budget-check-budget-key-roles"/>
+
+    </extend>
+
+    <extend target="//field[@name='product']">
+      <attribute name="onChange"
+        value="action-budget-group-sale-sale-orderline-product-onchange"/>
+    </extend>
+
+    <extend target="//panel[@name='analyticDistributionPanel']">
+      <insert position="after">
+        <panel if="__config__.app.isApp('budget')" if-module="axelor-supplychain"
+          name="budgetDistributionPanel" title="Budget" showIf="product" colSpan="12">
+          <field if="__config__.app.getApp('budget')?.getManageMultiBudget()"
+            name="companyExTaxTotal" title="Total W.T." hidden="false" readonly="true" colSpan="6">
+            <viewer depends="companyExTaxTotal,$currencySymbol"><![CDATA[
+
+				<dd>{{$fmt('companyExTaxTotal') | currency: record.$currencySymbol}}</dd>
+
+	      ]]></viewer>
+          </field>
+          <field if="__config__.app.getApp('budget')?.getManageMultiBudget()"
+            name="budgetDistributionSumAmount" readonly="true" colSpan="6"/>
+          <field name="groupBudget" title="Group" colSpan="4"
+            onSelect="action-budget-sale-order-line-attrs-group-domain"
+            form-view="budget-group-budget-level-form" grid-view="budget-level-included-grid"/>
+          <field name="section" title="Section" colSpan="4"
+            onSelect="action-budget-sale-order-line-attrs-section-domain"
+            form-view="budget-section-budget-level-form" grid-view="budget-level-node-grid"/>
+          <field name="line" title="Line" colSpan="4"
+            onSelect="action-budget-sale-order-line-attrs-line-domain" form-view="budget-line-form"
+            grid-view="budget-line-grid"/>
+          <field name="$global" title="Global budget" hidden="true" readonly="true"
+            colSpan="12" type="many-to-one" target="com.axelor.apps.budget.db.BudgetLevel"/>
+          <field if="!__config__.app.getApp('budget')?.getManageMultiBudget()" name="budget"
+            onChange="action-budget-sale-order-line-method-set-account,action-budget-sale-order-line-method-fill-budget-str"
+            onSelect="action-budget-sale-order-line-attrs-budget-domain"
+            domain="self.statusSelect = 2 and self.budgetLineList IS NOT EMPTY"/>
+          <panel name="accountPanel" colSpan="12">
+            <field name="account" onSelect="action-budget-sale-order-line-set-account-domain"/>
+          </panel>
+          <panel-related if="__config__.app.getApp('budget')?.getManageMultiBudget()"
+            name="budgetDistributionListPanel" colSpan="12" field="budgetDistributionList"
+            form-view="sale-order-budget-distribution-form"
+            grid-view="reduce-budget-distribution-grid" editable="true"
+            onChange="action-group-budget-sale-order-line-budget-distribution-onchange"/>
+          <field name="$currencySymbol" hidden="true"/>
+        </panel>
+      </insert>
+    </extend>
+  </form>
+
+  <action-group name="action-budget-group-sale-sale-orderline-product-onchange">
+    <action name="action-group-sale-saleorderline-product-onchange"/>
+    <action name="action-method-budget-sale-orderline-set-product-account"/>
+  </action-group>
+
+  <action-attrs name="action-budget-sale-order-line-attrs-group-domain">
+    <attribute name="domain" for="groupBudget"
+      expr="eval:&quot;self.parentBudgetLevel IS NOT NULL AND self.parentBudgetLevel.budgetTypeSelect = 2 AND self.parentBudgetLevel.parentBudgetLevel IS NULL AND self.parentBudgetLevel.id = ${global?.id} AND self.statusSelect = 'valid'&quot;"
+      if="global"/>
+    <attribute name="domain" for="groupBudget"
+      expr="eval:&quot;self.parentBudgetLevel IS NOT NULL AND self.parentBudgetLevel.budgetTypeSelect = 2 AND self.parentBudgetLevel.parentBudgetLevel IS NULL AND self.statusSelect = 'valid' AND self.parentBudgetLevel.company.id = ${_parent?.company?.id}&quot;"
+      if="!global &amp;&amp; _parent?.company"/>
+    <attribute name="domain" for="groupBudget"
+      expr="eval:&quot;self.parentBudgetLevel IS NOT NULL AND self.parentBudgetLevel.budgetTypeSelect = 2 AND self.parentBudgetLevel.parentBudgetLevel IS NULL AND self.statusSelect = 'valid'&quot;"
+      if="!global &amp;&amp; !_parent?.company"/>
+  </action-attrs>
+
+  <action-attrs name="action-budget-sale-order-line-attrs-section-domain">
+    <attribute name="domain"
+      expr="eval: &quot;self.parentBudgetLevel IS NOT NULL AND self.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect = 2 AND self.parentBudgetLevel.id = ${groupBudget?.id} AND self.statusSelect = 'valid' &quot;"
+      for="section" if="groupBudget"/>
+    <attribute for="section" name="domain"
+      expr="eval: &quot;self.parentBudgetLevel IS NOT NULL AND self.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect = 2 AND self.parentBudgetLevel.parentBudgetLevel IS NOT NULL AND self.statusSelect = 'valid' AND self.parentBudgetLevel.parentBudgetLevel.company.id = ${_parent?.company?.id}&quot;"
+      if="!groupBudget &amp;&amp; __parent__?.company"/>
+    <attribute for="section" name="domain"
+      expr="eval: &quot;self.parentBudgetLevel IS NOT NULL AND self.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect = 2 AND self.parentBudgetLevel.parentBudgetLevel IS NOT NULL AND self.statusSelect = 'valid'&quot;"
+      if="!groupBudget &amp;&amp; !__parent__?.company"/>
+  </action-attrs>
+
+  <action-attrs name="action-budget-sale-order-line-attrs-line-domain">
+    <attribute name="domain"
+      expr="eval: &quot;self.budgetLevel IS NOT NULL AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect = 2 AND self.budgetLevel.id = ${section?.id} AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.statusSelect = 'valid' &quot;"
+      for="line" if="section"/>
+    <attribute name="domain"
+      expr="eval: &quot;self.budgetLevel IS NOT NULL AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect = 2 AND self.budgetLevel.parentBudgetLevel.id = ${groupBudget?.id} AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.statusSelect = 'valid' &quot;"
+      for="line" if="!section &amp;&amp; groupBudget"/>
+    <attribute name="domain"
+      expr="eval: &quot;self.budgetLevel IS NOT NULL AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect = 2 AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.statusSelect = 'valid' AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.company.id = ${_parent?.company?.id} &quot;"
+      for="line" if="!section &amp;&amp; !groupBudget &amp;&amp; __parent__?.company"/>
+    <attribute name="domain"
+      expr="eval: &quot;self.budgetLevel IS NOT NULL AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect = 2 AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.statusSelect = 'valid'&quot;"
+      for="line" if="!section &amp;&amp; !groupBudget &amp;&amp; !__parent__?.company"/>
+  </action-attrs>
+
+  <action-attrs name="action-budget-sale-order-line-attrs-budget-domain">
+    <attribute name="domain" for="budget"
+      expr="eval:&quot;self.budgetLevel.parentBudgetLevel.parentBudgetLevel IS NOT NULL AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect = 2 AND self.budgetLevel.id = ${section?.id}&quot;"
+      if="section"/>
+    <attribute name="domain" for="budget"
+      expr="eval:&quot;self.budgetLevel.parentBudgetLevel.parentBudgetLevel IS NOT NULL AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect = 2 AND self.budgetLevel.parentBudgetLevel.id = ${groupBudget?.id}&quot;"
+      if="!section &amp;&amp; groupBudget"/>
+    <attribute name="domain" for="budget"
+      expr="eval:&quot;self.budgetLevel.parentBudgetLevel.parentBudgetLevel IS NOT NULL AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect = 2 AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.id = ${global?.id}&quot;"
+      if="global &amp;&amp; !groupBudget &amp;&amp; !section"/>
+    <attribute name="domain" for="budget"
+      expr="eval: self.budgetLevel.parentBudgetLevel.parentBudgetLevel IS NOT NULL AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect = 2 AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.company.id = ${_parent?.company?.id} "
+      if="!global &amp;&amp; !groupBudget &amp;&amp; !section &amp;&amp; __parent__?.company"/>
+    <attribute name="domain" for="budget"
+      expr="eval: self.budgetLevel.parentBudgetLevel.parentBudgetLevel IS NOT NULL AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect = 2"
+      if="!global &amp;&amp; !groupBudget &amp;&amp; !section &amp;&amp; !__parent__?.company"/>
+  </action-attrs>
+
+  <action-method name="action-budget-sale-order-line-method-account-domain">
+    <call class="com.axelor.apps.budget.web.SaleOrderLineController" method="getAccountDomain"/>
+  </action-method>
+
+  <action-method name="action-budget-sale-order-line-method-set-account">
+    <call class="com.axelor.apps.budget.web.SaleOrderLineController" method="setAccount"/>
+  </action-method>
+
+  <action-method name="action-method-budget-sale-orderline-set-product-account">
+    <call class="com.axelor.apps.budget.web.SaleOrderLineController" method="setProductAccount"/>
+  </action-method>
+
+  <action-group name="action-group-budget-sale-order-line-budget-distribution-onchange">
+    <action name="action-method-sale-order-line-budget-distribution-validate-amount"/>
+    <action name="action-sale-order-method-compute-budget-distribution-sum-amount"/>
+    <action name="action-budget-sale-order-line-method-fill-budget-str"/>
+  </action-group>
+
+  <action-method
+    name="action-method-sale-order-line-budget-distribution-validate-amount">
+    <call class="com.axelor.apps.budget.web.SaleOrderLineController"
+      method="validateBudgetLinesAmount"/>
+  </action-method>
+
+  <action-method name="action-method-sale-order-line-budget-check-budget-key-roles">
+    <call class="com.axelor.apps.budget.web.SaleOrderLineController" method="checkBudget"/>
+  </action-method>
+
+  <action-method name="action-budget-sale-order-line-method-fill-budget-str">
+    <call class="com.axelor.apps.budget.web.SaleOrderLineController" method="fillBudgetStr"/>
+  </action-method>
+
+  <action-method name="action-budget-sale-order-line-set-account-domain">
+    <call class="com.axelor.apps.budget.web.SaleOrderLineController" method="setAccountDomain"/>
+  </action-method>
+
+</object-views>

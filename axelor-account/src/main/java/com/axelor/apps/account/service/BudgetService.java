@@ -53,16 +53,6 @@ public class BudgetService {
     this.budgetRepository = budgetRepository;
   }
 
-  public BigDecimal compute(Budget budget) {
-    BigDecimal total = BigDecimal.ZERO;
-    if (budget.getBudgetLineList() != null) {
-      for (BudgetLine budgetLine : budget.getBudgetLineList()) {
-        total = total.add(budgetLine.getAmountExpected());
-      }
-    }
-    return total;
-  }
-
   @Transactional
   public BigDecimal computeTotalAmountRealized(Budget budget) {
     List<BudgetLine> budgetLineList = budget.getBudgetLineList();
@@ -132,93 +122,6 @@ public class BudgetService {
     }
 
     return Optional.ofNullable(invoice.getValidatedDateTime()).map(LocalDateTime::toLocalDate);
-  }
-
-  public List<BudgetLine> generatePeriods(Budget budget) throws AxelorException {
-
-    if (budget.getBudgetLineList() != null && !budget.getBudgetLineList().isEmpty()) {
-      List<BudgetLine> budgetLineList = budget.getBudgetLineList();
-      budgetLineList.clear();
-    }
-
-    List<BudgetLine> budgetLineList = new ArrayList<BudgetLine>();
-    Integer duration = budget.getPeriodDurationSelect();
-    LocalDate fromDate = budget.getFromDate();
-    LocalDate toDate = budget.getToDate();
-    LocalDate budgetLineToDate = fromDate;
-    Integer budgetLineNumber = 1;
-
-    int c = 0;
-    int loopLimit = 1000;
-    while (budgetLineToDate.isBefore(toDate)) {
-      if (budgetLineNumber != 1 && duration != 0) fromDate = fromDate.plusMonths(duration);
-      if (c >= loopLimit) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(AccountExceptionMessage.BUDGET_1));
-      }
-      c += 1;
-      budgetLineToDate = duration == 0 ? toDate : fromDate.plusMonths(duration).minusDays(1);
-      if (budgetLineToDate.isAfter(toDate)) budgetLineToDate = toDate;
-      if (fromDate.isAfter(toDate)) continue;
-      BudgetLine budgetLine = new BudgetLine();
-      budgetLine.setFromDate(fromDate);
-      budgetLine.setToDate(budgetLineToDate);
-      budgetLine.setBudget(budget);
-      budgetLine.setAmountExpected(budget.getAmountForGeneration());
-      budgetLineList.add(budgetLine);
-      budgetLineNumber++;
-      if (duration == 0) break;
-    }
-    return budgetLineList;
-  }
-
-  public void checkSharedDates(Budget budget) throws AxelorException {
-
-    if (budget.getBudgetLineList() == null) {
-      return;
-    }
-
-    List<BudgetLine> budgetLineList = budget.getBudgetLineList();
-
-    for (int i = 0; i < budgetLineList.size() - 1; i++) {
-      BudgetLine budgetLineA = budgetLineList.get(i);
-      LocalDate fromDateA = budgetLineA.getFromDate();
-      LocalDate toDateA = budgetLineA.getToDate();
-
-      for (int j = i + 1; j < budgetLineList.size(); j++) {
-        BudgetLine budgetLineB = budgetLineList.get(j);
-        LocalDate fromDateB = budgetLineB.getFromDate();
-        LocalDate toDateB = budgetLineB.getToDate();
-
-        if (fromDateA.equals(fromDateB) || toDateA.equals(toDateB)) {
-          throw new AxelorException(
-              TraceBackRepository.CATEGORY_INCONSISTENCY,
-              I18n.get("Two or more budget lines share dates"));
-        }
-
-        if (fromDateA.isBefore(fromDateB) && (!toDateA.isBefore(fromDateB))) {
-          throw new AxelorException(
-              TraceBackRepository.CATEGORY_INCONSISTENCY,
-              I18n.get("Two or more budget lines share dates"));
-        }
-
-        if (fromDateA.isAfter(fromDateB) && (!fromDateA.isAfter(toDateB))) {
-          throw new AxelorException(
-              TraceBackRepository.CATEGORY_INCONSISTENCY,
-              I18n.get("Two or more budget lines share dates"));
-        }
-      }
-    }
-  }
-
-  @Transactional
-  public void validate(Budget budget) {
-    budget.setStatusSelect(BudgetRepository.STATUS_VALIDATED);
-  }
-
-  @Transactional
-  public void draft(Budget budget) {
-    budget.setStatusSelect(BudgetRepository.STATUS_DRAFT);
   }
 
   public void updateBudgetLinesFromInvoice(Invoice invoice) {
