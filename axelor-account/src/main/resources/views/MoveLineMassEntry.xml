@@ -146,6 +146,8 @@
     <field name="isOtherCurrency" hidden="true"/>
     <field name="fieldsErrorList" hidden="true"/>
     <field name="account.useForPartnerBalance" hidden="true"/>
+    <field name="account.isTaxRequiredOnMoveLine" hidden="true"/>
+    <field name="account.isTaxAuthorizedOnMoveLine" hidden="true"/>
   </grid>
 
   <!-- Action group -->
