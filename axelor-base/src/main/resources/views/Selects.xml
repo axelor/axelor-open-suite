@@ -739,6 +739,7 @@
     <option value="LocalDate">LocalDate</option>
     <option value="LocalDateTime">LocalDateTime</option>
     <option value="String">String</option>
+    <option value="Boolean">Boolean</option>
   </selection>
 
 </object-views>
