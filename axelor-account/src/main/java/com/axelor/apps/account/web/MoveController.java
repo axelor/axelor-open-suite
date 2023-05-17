@@ -403,6 +403,7 @@ public class MoveController {
     try {
       Context context = request.getContext();
       Move move = context.asType(Move.class);
+      move = Beans.get(MoveRepository.class).find(move.getId());
 
       boolean paymentConditionChange =
           this.getChangeDummyBoolean(context, "paymentConditionChange");
@@ -535,7 +536,7 @@ public class MoveController {
       } else {
         response.setAttrs(moveGroupService.getPaymentConditionOnChangeAttrsMap(move));
 
-        if (valuesMap.containsKey("flash")) {
+        if (valuesMap.containsKey("flash") && valuesMap.get("flash") != null) {
           response.setNotify((String) valuesMap.get("flash"));
         }
       }

@@ -51,11 +51,8 @@ public interface MoveAttrsService {
   void addDateChangeFalseValue(
       Move move, boolean paymentConditionChange, Map<String, Map<String, Object>> attrsMap);
 
-  void addPaymentConditionChangeChangeTrueValue(Map<String, Map<String, Object>> attrsMap);
+  void addPaymentConditionChangeChangeValue(
+      boolean value, Map<String, Map<String, Object>> attrsMap);
 
-  void addPaymentConditionChangeChangeFalseValue(Map<String, Map<String, Object>> attrsMap);
-
-  void addHeaderChangeTrueValue(Map<String, Map<String, Object>> attrsMap);
-
-  void addHeaderChangeFalseValue(Map<String, Map<String, Object>> attrsMap);
+  void addHeaderChangeValue(boolean value, Map<String, Map<String, Object>> attrsMap);
 }

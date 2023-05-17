@@ -267,22 +267,13 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
   }
 
   @Override
-  public void addPaymentConditionChangeChangeTrueValue(Map<String, Map<String, Object>> attrsMap) {
-    this.addAttr("$paymentConditionChange", "value", true, attrsMap);
+  public void addPaymentConditionChangeChangeValue(
+      boolean value, Map<String, Map<String, Object>> attrsMap) {
+    this.addAttr("$paymentConditionChange", "value", value, attrsMap);
   }
 
   @Override
-  public void addPaymentConditionChangeChangeFalseValue(Map<String, Map<String, Object>> attrsMap) {
-    this.addAttr("$paymentConditionChange", "value", false, attrsMap);
-  }
-
-  @Override
-  public void addHeaderChangeTrueValue(Map<String, Map<String, Object>> attrsMap) {
-    this.addAttr("$dateChange", "value", true, attrsMap);
-  }
-
-  @Override
-  public void addHeaderChangeFalseValue(Map<String, Map<String, Object>> attrsMap) {
-    this.addAttr("$headerChange", "value", false, attrsMap);
+  public void addHeaderChangeValue(boolean value, Map<String, Map<String, Object>> attrsMap) {
+    this.addAttr("$headerChange", "value", value, attrsMap);
   }
 }

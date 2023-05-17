@@ -320,7 +320,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
 
     moveAttrsService.addDateChangeTrueValue(attrsMap);
     moveAttrsService.addDateChangeFalseValue(move, paymentConditionChange, attrsMap);
-    moveAttrsService.addPaymentConditionChangeChangeTrueValue(attrsMap);
+    moveAttrsService.addPaymentConditionChangeChangeValue(true, attrsMap);
 
     return attrsMap;
   }
@@ -364,8 +364,8 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   public Map<String, Map<String, Object>> getPaymentConditionOnChangeAttrsMap(Move move) {
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
-    moveAttrsService.addPaymentConditionChangeChangeFalseValue(attrsMap);
-    moveAttrsService.addHeaderChangeFalseValue(attrsMap);
+    moveAttrsService.addPaymentConditionChangeChangeValue(false, attrsMap);
+    moveAttrsService.addHeaderChangeValue(false, attrsMap);
     moveAttrsService.addDateChangeFalseValue(move, true, attrsMap);
 
     return attrsMap;
@@ -426,7 +426,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   public Map<String, Map<String, Object>> getPaymentModeOnChangeAttrsMap() {
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
-    moveAttrsService.addHeaderChangeTrueValue(attrsMap);
+    moveAttrsService.addHeaderChangeValue(true, attrsMap);
 
     return attrsMap;
   }
@@ -461,7 +461,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   public Map<String, Map<String, Object>> getPartnerBankDetailsOnChangeAttrsMap() {
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
-    moveAttrsService.addHeaderChangeTrueValue(attrsMap);
+    moveAttrsService.addHeaderChangeValue(true, attrsMap);
 
     return attrsMap;
   }

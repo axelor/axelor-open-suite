@@ -686,7 +686,7 @@
   </action-method>
 
   <action-method name="action-move-method-check-before-save">
-    <call class="com.axelor.apps.account.web.MoveController" method="checkBeforeSave"/>
+    <call class="com.axelor.apps.account.web.MoveController" method="onSaveCheck"/>
   </action-method>
 
   <action-method name="action-move-method-onsave">
