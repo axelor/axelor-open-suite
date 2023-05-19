@@ -1116,7 +1116,7 @@ public class MoveController {
             Beans.get(MoveAttrsService.class).getMassEntryRequiredAttributeValues(move));
       }
 
-      response.setValues(result.getValues());
+      response.setAttrs(result.getAttrs());
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
@@ -1132,7 +1132,7 @@ public class MoveController {
             Beans.get(MoveAttrsService.class).getMassEntryBtnHiddenAttributeValues(move));
       }
 
-      response.setValues(result.getValues());
+      response.setAttrs(result.getAttrs());
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
