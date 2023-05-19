@@ -5,7 +5,7 @@
 
   <grid name="move-line-mass-entry-move-grid"
     model="com.axelor.apps.account.db.MoveLineMassEntry" title="Move lines" canArchive="false"
-    onNew="action-move-line-mass-entry-method-onnew">
+    edit-icon="false" onNew="action-move-line-mass-entry-method-onnew">
     <field name="temporaryMoveNumber" width="50"
       onChange="action-move-line-mass-entry-method-get-first-move-line-informations"/>
     <field name="inputAction" selection="iaccount.move.line.mass.entry.input.action.select"
