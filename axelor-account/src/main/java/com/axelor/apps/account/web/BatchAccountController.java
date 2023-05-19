@@ -29,7 +29,6 @@ import com.axelor.apps.account.service.batch.BatchControlMovesConsistency;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Batch;
-import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -66,7 +65,6 @@ public class BatchAccountController {
 
   public void validateAllReconcileGroups(ActionRequest request, ActionResponse response) {
     try {
-      BatchRepository batchRepository = Beans.get(BatchRepository.class);
       MoveLineRepository moveLineRepository = Beans.get(MoveLineRepository.class);
       ReconcileGroupRepository reconcileGroupRepo = Beans.get(ReconcileGroupRepository.class);
       ReconcileGroupService reconcileGroupService = Beans.get(ReconcileGroupService.class);
@@ -82,16 +80,10 @@ public class BatchAccountController {
       for (MoveLine moveLine : moveLineList) {
         ReconcileGroup reconcileGroup =
             reconcileGroupRepo.find(moveLine.getReconcileGroup().getId());
-        if (reconcileGroup != null && reconcileGroup.getIsProposal()) {
-          try {
-            reconcileGroupService.letter(reconcileGroup);
-            reconcileGroup = reconcileGroupRepo.find(reconcileGroup.getId());
-            reconcileGroup.setIsProposal(false);
-            reconcileGroupService.removeDraftReconciles(reconcileGroup);
-            reconcileGroupService.updateStatus(reconcileGroup);
-          } catch (AxelorException e) {
-            TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-          }
+        try {
+          reconcileGroupService.validateProposal(reconcileGroup);
+        } catch (AxelorException e) {
+          TraceBackService.trace(response, e, ResponseMessageType.ERROR);
         }
       }
       response.setReload(true);
@@ -106,20 +98,17 @@ public class BatchAccountController {
       ReconcileGroupRepository reconcileGroupRepo = Beans.get(ReconcileGroupRepository.class);
       ReconcileGroupService reconcileGroupService = Beans.get(ReconcileGroupService.class);
       List<Integer> idList = (List<Integer>) request.getContext().get("_ids");
+      if (CollectionUtils.isEmpty(idList)) {
+        return;
+      }
       for (Integer id : idList) {
         ReconcileGroup reconcileGroup =
             reconcileGroupRepo.find(
                 moveLineRepository.find(id.longValue()).getReconcileGroup().getId());
-        if (reconcileGroup != null && reconcileGroup.getIsProposal()) {
-          try {
-            reconcileGroupService.letter(reconcileGroup);
-            reconcileGroup = reconcileGroupRepo.find(reconcileGroup.getId());
-            reconcileGroup.setIsProposal(false);
-            reconcileGroupService.removeDraftReconciles(reconcileGroup);
-            reconcileGroupService.updateStatus(reconcileGroup);
-          } catch (AxelorException e) {
-            TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-          }
+        try {
+          reconcileGroupService.validateProposal(reconcileGroup);
+        } catch (AxelorException e) {
+          TraceBackService.trace(response, e, ResponseMessageType.ERROR);
         }
       }
       response.setReload(true);
@@ -133,6 +122,9 @@ public class BatchAccountController {
       MoveLineRepository moveLineRepository = Beans.get(MoveLineRepository.class);
       ReconcileGroupService reconcileGroupService = Beans.get(ReconcileGroupService.class);
       List<Integer> idList = (List<Integer>) request.getContext().get("_ids");
+      if (CollectionUtils.isEmpty(idList)) {
+        return;
+      }
       for (Integer id : idList) {
         MoveLine moveLine = moveLineRepository.find(id.longValue());
         reconcileGroupService.cancelProposal(moveLine.getReconcileGroup());
@@ -148,6 +140,9 @@ public class BatchAccountController {
       MoveLineRepository moveLineRepository = Beans.get(MoveLineRepository.class);
       ReconcileGroupService reconcileGroupService = Beans.get(ReconcileGroupService.class);
       List<Integer> idList = (List<Integer>) request.getContext().get("_ids");
+      if (CollectionUtils.isEmpty(idList)) {
+        return;
+      }
       List<MoveLine> moveLineList =
           idList.stream()
               .map(id -> moveLineRepository.find(id.longValue()))
