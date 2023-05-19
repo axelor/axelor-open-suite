@@ -717,7 +717,6 @@ public class ExpenseServiceImpl implements ExpenseService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
   public void cancelPayment(Expense expense) throws AxelorException {
     BankOrder bankOrder = expense.getBankOrder();
 

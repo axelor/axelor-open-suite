@@ -296,7 +296,6 @@ public class BankOrderServiceImpl implements BankOrderService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
   public BankOrder cancelPayment(BankOrder bankOrder) throws AxelorException {
     List<InvoicePayment> invoicePaymentList = invoicePaymentRepo.findByBankOrder(bankOrder).fetch();
 

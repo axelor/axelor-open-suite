@@ -35,7 +35,6 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,7 +74,6 @@ public class InvoicePaymentCancelServiceBankPayImpl extends InvoicePaymentCancel
    * @throws AxelorException
    */
   @Override
-  @Transactional(rollbackOn = {Exception.class})
   public void cancel(InvoicePayment invoicePayment) throws AxelorException {
 
     if (!Beans.get(AppBankPaymentService.class).isApp("bank-payment")) {
