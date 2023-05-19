@@ -161,26 +161,20 @@ public class ProjectTaskReportingValuesComputingServiceImpl
     BigDecimal unitCost = computeUnitCost(projectTask);
     projectTask.setUnitCost(unitCost);
 
-    BigDecimal productUnitCost;
     // Real
-    if (saleOrderLine != null) {
-      productUnitCost = saleOrderLine.getPrice();
-    } else {
-      productUnitCost = projectTask.getUnitCost();
-    }
     BigDecimal progress =
         projectTask.getSpentTime().divide(projectTask.getUpdatedTime(), RoundingMode.HALF_UP);
     projectTask.setRealTurnover(progress.multiply(projectTask.getTurnover()));
-    projectTask.setRealCosts(projectTask.getSpentTime().multiply(productUnitCost));
+    projectTask.setRealCosts(projectTask.getSpentTime().multiply(unitCost));
     projectTask.setRealMargin(projectTask.getRealTurnover().subtract(projectTask.getRealCosts()));
 
+    BigDecimal realMarkup = BigDecimal.ZERO;
     if (projectTask.getRealCosts().signum() > 0) {
-      projectTask.setRealMarkup(
+      realMarkup =
           getPercentValue(
-              projectTask
-                  .getRealMargin()
-                  .divide(projectTask.getRealCosts(), RoundingMode.HALF_UP)));
+              projectTask.getRealMargin().divide(projectTask.getRealCosts(), RoundingMode.HALF_UP));
     }
+    projectTask.setRealMarkup(realMarkup);
 
     // Forecast
     projectTask.setForecastCosts(
