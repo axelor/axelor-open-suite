@@ -25,5 +25,5 @@ import java.time.LocalDate;
 public interface DurationService {
   LocalDate computeDuration(Duration duration, LocalDate date);
 
-  BigDecimal computeRatio(LocalDate start, LocalDate end, Duration duration);
+  BigDecimal computeRatio(LocalDate start, LocalDate end, LocalDate totalStart, LocalDate totalEnd);
 }
