@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AssetDisposalReason;
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.TaxLine;
 import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -93,7 +94,12 @@ public interface FixedAssetService {
       throws AxelorException;
 
   void checkFixedAssetBeforeDisposal(
-      FixedAsset fixedAsset, LocalDate disposalDate, int disposalQtySelect, BigDecimal disposalQty)
+      FixedAsset fixedAsset,
+      LocalDate disposalDate,
+      int disposalQtySelect,
+      BigDecimal disposalQty,
+      Boolean generateSaleMove,
+      TaxLine saleTaxLine)
       throws AxelorException;
 
   int computeTransferredReason(
@@ -149,4 +155,17 @@ public interface FixedAssetService {
       throws AxelorException;
 
   public boolean checkDepreciationPlans(FixedAsset fixedAsset);
+
+  public FixedAsset fullDisposal(
+      FixedAsset fixedAsset,
+      LocalDate disposalDate,
+      int disposalQtySelect,
+      BigDecimal disposalQty,
+      Boolean generateSaleMove,
+      TaxLine saleTaxLine,
+      Integer disposalTypeSelect,
+      BigDecimal disposalAmount,
+      AssetDisposalReason assetDisposalReason,
+      String comments)
+      throws AxelorException;
 }
