@@ -521,7 +521,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
 
     return stockLocationLineRepo
         .all()
-        .filter("self.product.id = :_productId")
+        .filter("self.product.id = :_productId AND self.stockLocation != null")
         .bind("_productId", product.getId())
         .fetch();
   }
