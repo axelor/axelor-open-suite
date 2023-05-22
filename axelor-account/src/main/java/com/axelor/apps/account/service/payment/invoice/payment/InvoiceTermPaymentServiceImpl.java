@@ -259,8 +259,11 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
   }
 
   protected BigDecimal computeCompanyPaidAmount(InvoiceTerm invoiceTerm, BigDecimal paidAmount) {
-    BigDecimal ratio =
-        invoiceTerm.getCompanyAmount().divide(invoiceTerm.getAmount(), 10, RoundingMode.HALF_UP);
+    BigDecimal ratio = BigDecimal.ONE;
+    if (invoiceTerm.getAmount().signum() > 0) {
+      ratio =
+          invoiceTerm.getCompanyAmount().divide(invoiceTerm.getAmount(), 10, RoundingMode.HALF_UP);
+    }
 
     return paidAmount
         .multiply(ratio)
@@ -268,8 +271,11 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
   }
 
   protected BigDecimal computePaidAmount(InvoiceTerm invoiceTerm, BigDecimal companyPaidAmount) {
-    BigDecimal ratio =
-        invoiceTerm.getAmount().divide(invoiceTerm.getCompanyAmount(), 10, RoundingMode.HALF_UP);
+    BigDecimal ratio = BigDecimal.ONE;
+    if (invoiceTerm.getCompanyAmount().signum() > 0) {
+      ratio =
+          invoiceTerm.getAmount().divide(invoiceTerm.getCompanyAmount(), 10, RoundingMode.HALF_UP);
+    }
 
     return companyPaidAmount
         .multiply(ratio)
