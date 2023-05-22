@@ -139,8 +139,8 @@ public class MoveCheckServiceImpl implements MoveCheckService {
 
   @Override
   public boolean isPartnerCompatible(Move move) {
-    return move.getPartner() != null
-        && journalCheckPartnerTypeService.isPartnerCompatible(move.getJournal(), move.getPartner());
+    return move.getPartner() == null
+        || journalCheckPartnerTypeService.isPartnerCompatible(move.getJournal(), move.getPartner());
   }
 
   @Override
