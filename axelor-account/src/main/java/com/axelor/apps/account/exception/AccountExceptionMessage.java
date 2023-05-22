@@ -1170,4 +1170,8 @@ public final class AccountExceptionMessage {
 
   public static final String MOVE_INVOICE_DESCRIPTION_REQUIRED = /*$$(*/
       "Description is required in moves for company %s but description of moves that are being generated will be empty. Please make sure a journal is set and fill a default description or enable document number to be used as such." /*)*/;
+
+  public static final String
+      IMMO_FIXED_ASSET_DISPOSAL_COMPANY_ACCOUNT_CONFIG_CUSTOMER_SALES_JOURNAL_EMPTY = /*$$(*/
+          "The company account configuration customer sales journal is required." /*)*/;
 }
