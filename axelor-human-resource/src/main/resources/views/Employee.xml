@@ -206,7 +206,7 @@
     <panel name="userPanel" title="User" showIf="stepByStepSelect == 4">
       <field name="user" title="Attach to"/>
       <button name="createUserBtn" title="Create new user"
-        onClick="save,action-employee-view-open-user-creation-wizard"/>
+        onClick="save,action-employee-view-open-user-creation-form"/>
     </panel>
     <!-- END OF User creation -->
     <!-- END OF New employee wizard -->
