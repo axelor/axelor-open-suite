@@ -218,6 +218,18 @@ public class InvoicePaymentController {
     }
   }
 
+  public void updateFinancialDiscount(ActionRequest request, ActionResponse response) {
+    try {
+      InvoicePayment invoicePayment = request.getContext().asType(InvoicePayment.class);
+
+      Beans.get(InvoicePaymentToolService.class).updateFinancialDiscount(invoicePayment);
+
+      response.setValues(invoicePayment);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
   public void changeAmount(ActionRequest request, ActionResponse response) {
     try {
       InvoicePayment invoicePayment = request.getContext().asType(InvoicePayment.class);
