@@ -128,6 +128,11 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
     moveLineMassEntryAttrsService.addPartnerBankDetailsReadOnly(moveLine, attrsMap);
     moveLineMassEntryAttrsService.addInputActionSelectionIn(move, attrsMap);
 
+    if (move.getJournal() != null) {
+      moveLineMassEntryAttrsService.addMovePaymentConditionRequired(
+          move.getJournal().getJournalType(), attrsMap);
+    }
+
     return attrsMap;
   }
 
