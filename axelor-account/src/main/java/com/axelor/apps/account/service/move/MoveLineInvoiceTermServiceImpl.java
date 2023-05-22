@@ -212,8 +212,8 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
     MoveLine holdbackMoveLine = null;
 
     if (!moveLine.getAccount().equals(holdbackAccount)
-        || paymentConditionLine.getIsHoldback()
-        || this.isHoldbackAlreadyGenerated(move, holdbackAccount)) {
+        || !paymentConditionLine.getIsHoldback()
+        || !this.isHoldbackAlreadyGenerated(move, holdbackAccount)) {
       holdbackMoveLine = this.getHoldbackMoveLine(moveLine, move, holdbackAccount);
     }
 
