@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
-  <entity name="Inventory" lang="java">
+  <entity name="Inventory">
 
     <string name="inventorySeq" title="Inventory N°" readonly="true" namecolumn="true"/>
     <many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation"
@@ -34,7 +34,7 @@
     <string name="toRack" title="To rack"/>
     <many-to-one name="validatedBy" title="Validated By" ref="com.axelor.auth.db.User"/>
     <many-to-one name="completedBy" title="User" ref="com.axelor.auth.db.User"/>
-    <date name="validatedOn" title="Validated On"/>
+    <datetime name="validatedOn" title="Validated On"/>
     <integer name="typeSelect" title="Type" selection="product.inventory.type.select"
       required="true"/>
     <boolean name="includeSubStockLocation" title="Incl. sub location stock" default="true"/>

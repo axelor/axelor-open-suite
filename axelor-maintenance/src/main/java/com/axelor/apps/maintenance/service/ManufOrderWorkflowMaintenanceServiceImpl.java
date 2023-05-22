@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,10 +14,11 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.maintenance.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.production.db.ManufOrder;
@@ -30,7 +32,6 @@ import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowServiceImpl;
 import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
-import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.common.base.MoreObjects;
 import com.google.inject.Inject;
@@ -135,34 +136,38 @@ public class ManufOrderWorkflowMaintenanceServiceImpl extends ManufOrderWorkflow
         .collect(Collectors.toList());
   }
 
-  @Transactional(rollbackOn = {Exception.class})
   @Override
   public boolean finish(ManufOrder manufOrder) throws AxelorException {
     if (manufOrder.getTypeSelect() != ManufOrderRepository.TYPE_MAINTENANCE) {
       return super.finish(manufOrder);
     } else {
-      if (manufOrder.getOperationOrderList() != null) {
-        for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
-          if (operationOrder.getStatusSelect() != OperationOrderRepository.STATUS_FINISHED) {
-            if (operationOrder.getStatusSelect() != OperationOrderRepository.STATUS_IN_PROGRESS
-                && operationOrder.getStatusSelect() != OperationOrderRepository.STATUS_STANDBY) {
-              operationOrderWorkflowService.start(operationOrder);
-            }
-            operationOrderWorkflowService.finish(operationOrder);
+      return maintenanceFinishManufOrder(manufOrder);
+    }
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected boolean maintenanceFinishManufOrder(ManufOrder manufOrder) throws AxelorException {
+    if (manufOrder.getOperationOrderList() != null) {
+      for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
+        if (operationOrder.getStatusSelect() != OperationOrderRepository.STATUS_FINISHED) {
+          if (operationOrder.getStatusSelect() != OperationOrderRepository.STATUS_IN_PROGRESS
+              && operationOrder.getStatusSelect() != OperationOrderRepository.STATUS_STANDBY) {
+            operationOrderWorkflowService.start(operationOrder);
           }
+          operationOrderWorkflowService.finish(operationOrder);
         }
       }
-
-      manufOrder.setRealEndDateT(
-          Beans.get(AppProductionService.class).getTodayDateTime().toLocalDateTime());
-      manufOrder.setStatusSelect(ManufOrderRepository.STATUS_FINISHED);
-      manufOrder.setEndTimeDifference(
-          new BigDecimal(
-              ChronoUnit.MINUTES.between(
-                  manufOrder.getPlannedEndDateT(), manufOrder.getRealEndDateT())));
-      manufOrderRepo.save(manufOrder);
-      return true;
     }
+
+    manufOrder.setRealEndDateT(
+        Beans.get(AppProductionService.class).getTodayDateTime().toLocalDateTime());
+    manufOrder.setStatusSelect(ManufOrderRepository.STATUS_FINISHED);
+    manufOrder.setEndTimeDifference(
+        new BigDecimal(
+            ChronoUnit.MINUTES.between(
+                manufOrder.getPlannedEndDateT(), manufOrder.getRealEndDateT())));
+    manufOrderRepo.save(manufOrder);
+    return true;
   }
 
   @Override

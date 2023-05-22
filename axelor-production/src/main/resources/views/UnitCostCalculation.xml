@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="cost-calculations-grid" title="Cost price calculation"
     model="com.axelor.apps.production.db.UnitCostCalculation" orderBy="-statusSelect,-createdOn">
     <field name="unitCostCalcSeq"/>
     <field name="name"/>
-    <field name="calculationDate"/>
-    <field name="updateCostDate"/>
+    <field name="calculationDateTime"/>
+    <field name="updateCostDateTime"/>
     <field name="allBomLevels"/>
     <field name="statusSelect"/>
   </grid>
@@ -74,8 +74,8 @@
         onClick="save,action-unit-cost-calculation-view-import-csv" showIf="statusSelect == 2"/>
     </panel>
     <panel name="datePanel" sidebar="true" showIf="statusSelect != 1">
-      <field name="calculationDate" readonly="true"/>
-      <field name="updateCostDate" readonly="true"/>
+      <field name="calculationDateTime" readonly="true"/>
+      <field name="updateCostDateTime" readonly="true"/>
     </panel>
     <panel-mail name="mailPanel">
       <mail-messages limit="4"/>
@@ -84,7 +84,7 @@
   </form>
 
   <form name="wizard-unit-cost-calc-import-form" title="Import CSV"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.utils.db.Wizard">
     <panel name="wizardPanel">
       <field name="metaFile" title="Input file" type="many-to-one"
         target="com.axelor.meta.db.MetaFile" widget="binary-link"/>
@@ -119,7 +119,7 @@
   </action-method>
 
   <action-view name="action-unit-cost-calculation-view-import-csv" title="import.name"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.utils.db.Wizard">
     <view type="form" name="wizard-unit-cost-calc-import-form"/>
     <view-param name="show-toolbar" value="false"/>
     <view-param name="width" value="800"/>

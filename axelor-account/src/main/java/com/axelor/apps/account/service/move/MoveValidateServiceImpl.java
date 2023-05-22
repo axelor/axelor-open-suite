@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service.move;
 
@@ -21,6 +22,7 @@ import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticJournal;
 import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
@@ -39,19 +41,19 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.PeriodRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaStore;
 import com.axelor.meta.schema.views.Selection.Option;
@@ -223,6 +225,15 @@ public class MoveValidateServiceImpl implements MoveValidateService {
           I18n.get(AccountExceptionMessage.MOVE_MISSING_CUT_OFF_DATE));
     }
 
+    if (move.getPaymentCondition() != null
+        && CollectionUtils.isNotEmpty(move.getPaymentCondition().getPaymentConditionLineList())
+        && move.getPaymentCondition().getPaymentConditionLineList().size() > 1
+        && !appAccountService.getAppAccount().getAllowMultiInvoiceTerms()) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(AccountExceptionMessage.INVOICE_INVOICE_TERM_MULTIPLE_LINES_NO_MULTI));
+    }
+
     moveControlService.checkSameCompany(move);
 
     if (move.getMoveLineList().stream()
@@ -293,6 +304,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
       moveLineTaxService.checkTaxMoveLines(move);
 
       this.validateWellBalancedMove(move);
+      this.checkMoveLineInvoiceTermBalance(move);
 
       if (move.getJournal() != null
           && move.getPartner() != null
@@ -307,6 +319,31 @@ public class MoveValidateServiceImpl implements MoveValidateService {
               move.getPartner().getFullName(),
               move.getPeriod().getYear().getName());
         }
+      }
+    }
+  }
+
+  protected void checkMoveLineInvoiceTermBalance(Move move) throws AxelorException {
+
+    log.debug(
+        "Well-balanced move line invoice terms validation on account move {}", move.getReference());
+
+    for (MoveLine moveLine : move.getMoveLineList()) {
+      if (CollectionUtils.isEmpty(moveLine.getInvoiceTermList())
+          || !moveLine.getAccount().getUseForPartnerBalance()) {
+        return;
+      }
+      BigDecimal totalMoveLineInvoiceTerm =
+          moveLine.getInvoiceTermList().stream()
+              .map(InvoiceTerm::getCompanyAmount)
+              .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+      if (totalMoveLineInvoiceTerm.compareTo(moveLine.getDebit().max(moveLine.getCredit())) != 0) {
+        throw new AxelorException(
+            move,
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(AccountExceptionMessage.MOVE_LINE_INVOICE_TERM_SUM_COMPANY_AMOUNT),
+            moveLine.getName());
       }
     }
   }

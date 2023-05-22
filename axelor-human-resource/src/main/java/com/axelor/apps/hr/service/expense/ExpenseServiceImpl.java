@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.hr.service.expense;
 
@@ -47,6 +48,7 @@ import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -55,6 +57,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.db.repo.YearBaseRepository;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PeriodService;
@@ -75,15 +78,13 @@ import com.axelor.apps.hr.service.KilometricService;
 import com.axelor.apps.hr.service.bankorder.BankOrderCreateServiceHr;
 import com.axelor.apps.hr.service.config.AccountConfigHRService;
 import com.axelor.apps.hr.service.config.HRConfigService;
-import com.axelor.apps.message.db.Message;
-import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.message.db.Message;
+import com.axelor.message.service.TemplateMessageService;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -95,7 +96,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import javax.mail.MessagingException;
+import org.apache.commons.collections.CollectionUtils;
 import wslite.json.JSONException;
 
 @Singleton
@@ -245,14 +246,14 @@ public class ExpenseServiceImpl implements ExpenseService {
   public void confirm(Expense expense) throws AxelorException {
 
     expense.setStatusSelect(ExpenseRepository.STATUS_CONFIRMED);
-    expense.setSentDate(appAccountService.getTodayDate(expense.getCompany()));
+    expense.setSentDateTime(
+        appAccountService.getTodayDateTime(expense.getCompany()).toLocalDateTime());
     expenseRepository.save(expense);
   }
 
   @Override
   public Message sendConfirmationEmail(Expense expense)
-      throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException, JSONException {
+      throws AxelorException, ClassNotFoundException, IOException, JSONException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(expense.getCompany());
 
@@ -290,7 +291,8 @@ public class ExpenseServiceImpl implements ExpenseService {
     Beans.get(EmployeeAdvanceService.class).fillExpenseWithAdvances(expense);
     expense.setStatusSelect(ExpenseRepository.STATUS_VALIDATED);
     expense.setValidatedBy(AuthUtils.getUser());
-    expense.setValidationDate(appAccountService.getTodayDate(expense.getCompany()));
+    expense.setValidationDateTime(
+        appAccountService.getTodayDateTime(expense.getCompany()).toLocalDateTime());
 
     if (expense.getEmployee().getContactPartner() != null) {
       PaymentMode paymentMode = expense.getEmployee().getContactPartner().getOutPaymentMode();
@@ -301,8 +303,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
   @Override
   public Message sendValidationEmail(Expense expense)
-      throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException, JSONException {
+      throws AxelorException, ClassNotFoundException, IOException, JSONException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(expense.getCompany());
 
@@ -321,14 +322,14 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     expense.setStatusSelect(ExpenseRepository.STATUS_REFUSED);
     expense.setRefusedBy(AuthUtils.getUser());
-    expense.setRefusalDate(appAccountService.getTodayDate(expense.getCompany()));
+    expense.setRefusalDateTime(
+        appAccountService.getTodayDateTime(expense.getCompany()).toLocalDateTime());
     expenseRepository.save(expense);
   }
 
   @Override
   public Message sendRefusalEmail(Expense expense)
-      throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException, JSONException {
+      throws AxelorException, ClassNotFoundException, IOException, JSONException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(expense.getCompany());
 
@@ -510,6 +511,11 @@ public class ExpenseServiceImpl implements ExpenseService {
                 ? expenseLine.getComments().replaceAll("(\r\n|\n\r|\r|\n)", " ")
                 : "");
     moveLine.setAnalyticDistributionTemplate(expenseLine.getAnalyticDistributionTemplate());
+    List<AnalyticMoveLine> analyticMoveLineList =
+        CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())
+            ? new ArrayList<>()
+            : new ArrayList<>(moveLine.getAnalyticMoveLineList());
+    moveLine.clearAnalyticMoveLineList();
     expenseLine
         .getAnalyticMoveLineList()
         .forEach(
@@ -517,6 +523,9 @@ public class ExpenseServiceImpl implements ExpenseService {
                 moveLine.addAnalyticMoveLineListItem(
                     analyticMoveLineGenerateRealService.createFromForecast(
                         analyticMoveLine, moveLine)));
+    if (CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())) {
+      moveLine.setAnalyticMoveLineList(analyticMoveLineList);
+    }
     return moveLine;
   }
 
@@ -548,8 +557,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
   @Override
   public Message sendCancellationEmail(Expense expense)
-      throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException, JSONException {
+      throws AxelorException, ClassNotFoundException, IOException, JSONException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(expense.getCompany());
 
@@ -735,7 +743,7 @@ public class ExpenseServiceImpl implements ExpenseService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public void resetExpensePaymentAfterCancellation(Expense expense) {
     expense.setPaymentStatusSelect(InvoicePaymentRepository.STATUS_CANCELED);
     expense.setStatusSelect(ExpenseRepository.STATUS_VALIDATED);
@@ -930,7 +938,8 @@ public class ExpenseServiceImpl implements ExpenseService {
     if (sequence != null) {
       expense.setExpenseSeq(
           Beans.get(SequenceService.class)
-              .getSequenceNumber(sequence, expense.getSentDate(), Expense.class, "expenseSeq"));
+              .getSequenceNumber(
+                  sequence, expense.getSentDateTime().toLocalDate(), Expense.class, "expenseSeq"));
       if (expense.getExpenseSeq() != null) {
         return;
       }

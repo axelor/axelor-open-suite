@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="crm" package="com.axelor.apps.crm.db"/>
 
-  <entity name="Lead" lang="java">
+  <entity name="Lead">
 
     <string name="titleSelect" title="Gender" selection="partner.title.type.select"/>
     <string name="name" required="true" title="Last name"/>
@@ -35,7 +35,7 @@
     <many-to-one name="primaryCountry" ref="com.axelor.apps.base.db.Country"
       title="Country"/>
 
-    <one-to-one name="emailAddress" ref="com.axelor.apps.message.db.EmailAddress"
+    <one-to-one name="emailAddress" ref="com.axelor.message.db.EmailAddress"
       title="Email"/>
     <binary name="picture" title="Picture"/>
 
@@ -61,7 +61,7 @@
       ref="com.axelor.apps.base.db.IndustrySector" massUpdate="true"/>
 
     <one-to-many name="eventList" ref="com.axelor.apps.crm.db.Event" title="Events"
-      mappedBy="lead"/>
+      mappedBy="eventLead"/>
     <many-to-one name="lostReason" ref="LostReason" title="Lost reason"/>
 
     <string name="lostReasonStr" title="Lost reason" large="true"/>

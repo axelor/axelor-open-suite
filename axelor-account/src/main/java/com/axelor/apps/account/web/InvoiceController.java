@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.web;
 
@@ -39,13 +40,15 @@ import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.print.InvoicePrintService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PrintingSettings;
-import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.db.repo.LanguageRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.BankDetailsService;
@@ -53,19 +56,17 @@ import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PricedOrderDomainService;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.tool.StringTool;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.ResponseMessageType;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.axelor.utils.StringTool;
+import com.axelor.utils.db.Wizard;
 import com.google.common.base.Function;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
@@ -132,7 +133,7 @@ public class InvoiceController {
                     response.setNotify(
                         String.format(
                             I18n.get(
-                                com.axelor.apps.message.exception.MessageExceptionMessage
+                                com.axelor.message.exception.MessageExceptionMessage
                                     .SEND_EMAIL_EXCEPTION),
                             traceback.getMessage())));
       }
@@ -167,7 +168,7 @@ public class InvoiceController {
                     response.setNotify(
                         String.format(
                             I18n.get(
-                                com.axelor.apps.message.exception.MessageExceptionMessage
+                                com.axelor.message.exception.MessageExceptionMessage
                                     .SEND_EMAIL_EXCEPTION),
                             traceback.getMessage())));
       }
@@ -201,7 +202,7 @@ public class InvoiceController {
                     response.setNotify(
                         String.format(
                             I18n.get(
-                                com.axelor.apps.message.exception.MessageExceptionMessage
+                                com.axelor.message.exception.MessageExceptionMessage
                                     .SEND_EMAIL_EXCEPTION),
                             traceback.getMessage())));
       }
@@ -222,18 +223,8 @@ public class InvoiceController {
     Invoice invoice = request.getContext().asType(Invoice.class);
     invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
 
-    if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED
-        && invoice.getCompany().getAccountConfig() != null
-        && !invoice.getCompany().getAccountConfig().getAllowCancelVentilatedInvoice()) {
-      response.setError(
-          I18n.get(
-              AccountExceptionMessage
-                  .INVOICE_CAN_NOT_GO_BACK_TO_VALIDATE_STATUS_OR_CANCEL_VENTILATED_INVOICE));
-      return;
-    }
-
     Beans.get(InvoiceService.class).cancel(invoice);
-    response.setFlash(I18n.get(AccountExceptionMessage.INVOICE_1));
+    response.setInfo(I18n.get(AccountExceptionMessage.INVOICE_1));
     response.setReload(true);
   }
 
@@ -384,7 +375,7 @@ public class InvoiceController {
     try {
       String msg = Beans.get(InvoiceService.class).checkNotImputedRefunds(invoice);
       if (msg != null) {
-        response.setFlash(msg);
+        response.setInfo(msg);
       }
     } catch (AxelorException e) {
       TraceBackService.trace(response, e);
@@ -399,7 +390,7 @@ public class InvoiceController {
     try {
       String msg = Beans.get(InvoiceService.class).checkNotLetteredAdvancePaymentMoveLines(invoice);
       if (msg != null) {
-        response.setFlash(msg);
+        response.setInfo(msg);
       }
     } catch (AxelorException e) {
       TraceBackService.trace(response, e);
@@ -599,7 +590,7 @@ public class InvoiceController {
       Pair<Integer, Integer> massCount = function.apply(ids);
 
       String message = buildMassMessage(massCount.getLeft(), massCount.getRight());
-      response.setFlash(message);
+      response.setInfo(message);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     } finally {
@@ -983,7 +974,7 @@ public class InvoiceController {
 
         response.setValue("invoiceLineList", invoice.getInvoiceLineList());
       } else {
-        response.setFlash(I18n.get(AccountExceptionMessage.NO_CUT_OFF_TO_APPLY));
+        response.setInfo(I18n.get(AccountExceptionMessage.NO_CUT_OFF_TO_APPLY));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -1022,7 +1013,7 @@ public class InvoiceController {
           "pfpValidatorUser", "hidden", !invoiceVisibilityService.isValidatorUserVisible(invoice));
 
       response.setAttr(
-          "decisionPfpTakenDate",
+          "decisionPfpTakenDateTime",
           "hidden",
           !invoiceVisibilityService.isDecisionPfpVisible(invoice));
 
@@ -1179,6 +1170,24 @@ public class InvoiceController {
     }
   }
 
+  public void updateInvoiceTermBankDetails(ActionRequest request, ActionResponse response) {
+    try {
+      Invoice invoice = request.getContext().asType(Invoice.class);
+
+      if (Beans.get(AppAccountService.class).getAppAccount().getAllowMultiInvoiceTerms()
+          || CollectionUtils.isEmpty(invoice.getInvoiceTermList())
+          || !Beans.get(InvoiceTermService.class)
+              .isNotReadonly(invoice.getInvoiceTermList().get(0))) {
+        return;
+      }
+
+      invoice.getInvoiceTermList().get(0).setBankDetails(invoice.getBankDetails());
+      response.setValue("invoiceTermList", invoice.getInvoiceTermList());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
   public void checkMultiCurrency(ActionRequest request, ActionResponse response) {
     try {
       Invoice invoice = request.getContext().asType(Invoice.class);
@@ -1189,7 +1198,7 @@ public class InvoiceController {
         String partnerType =
             InvoiceToolService.isPurchase(invoice) ? I18n.get("Supplier") : I18n.get("Customer");
 
-        response.setFlash(
+        response.setInfo(
             String.format(
                 I18n.get(AccountExceptionMessage.INVOICE_MULTI_CURRENCY_FINANCIAL_DISCOUNT_PARTNER),
                 partnerType.toLowerCase()));
