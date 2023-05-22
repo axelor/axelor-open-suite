@@ -564,6 +564,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   @Transactional
   public void deleteOldInvoices(List<Invoice> invoiceList) {
     for (Invoice invoicetemp : invoiceList) {
+      invoicetemp.setStatusSelect(InvoiceRepository.STATUS_CANCELED);
       invoiceRepo.remove(invoicetemp);
     }
   }
