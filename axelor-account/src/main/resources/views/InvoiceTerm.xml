@@ -239,7 +239,7 @@
       <panel name="financialDiscountPanel" title="Financial discount" colSpan="12"
         itemSpan="4" if="__config__.app.getApp('account').getManageFinancialDiscount()"
         hidden="true" showIf="applyFinancialDiscount &amp;&amp; $showFinancialDiscount"
-        readonlyIf="amount != amountRemaining || isPaid">
+        readonlyIf="amount != amountRemaining || isPaid || paymentSession">
         <field name="financialDiscount"
           onChange="action-invoice-term-method-update-financial-discount"/>
         <field name="financialDiscount.discountRate"/>
@@ -760,7 +760,7 @@
       <panel name="financialDiscountPanel" title="Financial discount" colSpan="12"
         itemSpan="4" if="__config__.app.getApp('account').getManageFinancialDiscount()"
         hidden="true" showIf="applyFinancialDiscount &amp;&amp; $showFinancialDiscount"
-        readonlyIf="amount != amountRemaining || isPaid">
+        readonlyIf="amount != amountRemaining || isPaid || paymentSession">
         <field name="financialDiscount"
           onChange="action-invoice-term-method-update-financial-discount"/>
         <field name="financialDiscount.discountRate"/>

@@ -59,17 +59,18 @@
       <field name="invoice" hidden="true"/>
       <field name="$isMultiCurrency" type="boolean" hidden="true"/>
     </panel>
-    <panel name="discountPanel" title="Financial discount" showIf="applyFinancialDiscount"
-      if="__config__.app.getApp('account')?.getManageFinancialDiscount()">
-      <field name="applyFinancialDiscount" readonly="true"/>
+    <panel name="discountPanel" title="Financial discount"
+      if="__config__.app.getApp('account')?.getManageFinancialDiscount()"
+      readonlyIf="statusSelect > 0 || invoice.amountPaid > 0">
+      <field name="applyFinancialDiscount"/>
+      <field name="financialDiscount" onChange="action-invoice-payment-method-update-discount"
+        showIf="applyFinancialDiscount" readonlyIf="!applyFinancialDiscount"
+        requiredIf="applyFinancialDiscount"/>
       <field name="totalAmountWithFinancialDiscount" title="Total amount with Fin. Discount"
         showIf="applyFinancialDiscount &amp;&amp; totalAmountWithFinancialDiscount != null"
         readonly="true"/>
       <panel name="financialDiscountAmountPanel"
-        showIf="applyFinancialDiscount &amp;&amp; !$isMultiCurrency" readonlyIf="statusSelect > 0"
-        colSpan="12">
-        <field name="financialDiscount"
-          onChange="action-invoice-payment-method-update-discount"/>
+        showIf="applyFinancialDiscount &amp;&amp; !$isMultiCurrency" colSpan="12">
         <field name="financialDiscountDeadlineDate"/>
         <field name="financialDiscountAmount" readonly="true"
           showIf="financialDiscountTaxAmount > 0"/>
@@ -77,6 +78,7 @@
           showIf="financialDiscountTaxAmount > 0"/>
         <field name="financialDiscountTotalAmount" readonly="true"
           showIf="financialDiscountTaxAmount == 0"/>
+        <field name="invoice.amountPaid" readonly="true" hidden="true" type="boolean"/>
       </panel>
     </panel>
     <panel name="otherDetailsPanel" showIf="id">

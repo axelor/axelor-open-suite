@@ -41,6 +41,8 @@ import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceFinancialDiscountService;
+import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveToolService;
@@ -82,6 +84,8 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
   protected AccountManagementAccountService accountManagementAccountService;
   protected InvoicePaymentToolService invoicePaymentToolService;
   protected DateService dateService;
+  protected InvoiceTermService invoiceTermService;
+  protected InvoiceFinancialDiscountService invoiceFinancialDiscountService;
 
   @Inject
   public InvoicePaymentValidateServiceImpl(
@@ -96,7 +100,9 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
       AppAccountService appAccountService,
       AccountManagementAccountService accountManagementAccountService,
       InvoicePaymentToolService invoicePaymentToolService,
-      DateService dateService) {
+      DateService dateService,
+      InvoiceTermService invoiceTermService,
+      InvoiceFinancialDiscountService invoiceFinancialDiscountService) {
 
     this.paymentModeService = paymentModeService;
     this.moveLineCreateService = moveLineCreateService;
@@ -110,6 +116,8 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
     this.accountManagementAccountService = accountManagementAccountService;
     this.invoicePaymentToolService = invoicePaymentToolService;
     this.dateService = dateService;
+    this.invoiceTermService = invoiceTermService;
+    this.invoiceFinancialDiscountService = invoiceFinancialDiscountService;
   }
 
   /**
@@ -135,6 +143,14 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
 
     if (!force && invoicePayment.getStatusSelect() != InvoicePaymentRepository.STATUS_DRAFT) {
       return;
+    }
+    if (invoice.getFinancialDiscount() != invoicePayment.getFinancialDiscount()) {
+      invoice.setFinancialDiscount(invoicePayment.getFinancialDiscount());
+      invoiceFinancialDiscountService.setFinancialDiscountInformations(invoice);
+
+      if (!invoiceTermService.checkIfCustomizedInvoiceTerms(invoice)) {
+        invoiceTermService.updateFinancialDiscount(invoice);
+      }
     }
 
     setInvoicePaymentStatus(invoicePayment);

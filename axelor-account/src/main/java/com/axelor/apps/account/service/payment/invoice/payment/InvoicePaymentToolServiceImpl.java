@@ -314,39 +314,43 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
     if (CollectionUtils.isEmpty(invoicePayment.getInvoiceTermPaymentList())) {
       return;
     }
-
     List<InvoiceTermPayment> invoiceTermPaymentList =
         invoicePayment.getInvoiceTermPaymentList().stream()
-            .filter(
-                it ->
-                    it.getInvoiceTerm() != null && it.getInvoiceTerm().getApplyFinancialDiscount())
+            .filter(it -> it.getInvoiceTerm() != null)
             .collect(Collectors.toList());
 
     invoiceTermPaymentList.forEach(
         it -> updateInvoiceTermFinancialDiscount(it, it.getInvoiceTerm(), invoicePayment));
 
-    invoicePayment.setFinancialDiscountTotalAmount(
-        this.getFinancialDiscountTotalAmount(invoiceTermPaymentList));
-    invoicePayment.setFinancialDiscountTaxAmount(
-        this.getFinancialDiscountTaxAmount(invoiceTermPaymentList));
-    invoicePayment.setFinancialDiscountAmount(
-        invoicePayment
-            .getFinancialDiscountTotalAmount()
-            .subtract(invoicePayment.getFinancialDiscountTaxAmount()));
-    invoicePayment.setTotalAmountWithFinancialDiscount(
-        invoicePayment.getAmount().add(invoicePayment.getFinancialDiscountTotalAmount()));
-    invoicePayment.setFinancialDiscountDeadlineDate(
-        this.getFinancialDiscountDeadlineDate(invoiceTermPaymentList));
+    if (invoicePayment.getFinancialDiscount() != null) {
+      invoicePayment.setFinancialDiscountTotalAmount(
+          this.getFinancialDiscountTotalAmount(invoiceTermPaymentList));
+      invoicePayment.setFinancialDiscountTaxAmount(
+          this.getFinancialDiscountTaxAmount(invoiceTermPaymentList));
+      invoicePayment.setFinancialDiscountAmount(
+          invoicePayment
+              .getFinancialDiscountTotalAmount()
+              .subtract(invoicePayment.getFinancialDiscountTaxAmount()));
+      invoicePayment.setTotalAmountWithFinancialDiscount(
+          invoicePayment.getAmount().add(invoicePayment.getFinancialDiscountTotalAmount()));
+      invoicePayment.setFinancialDiscountDeadlineDate(
+          this.getFinancialDiscountDeadlineDate(invoiceTermPaymentList));
+    }
   }
 
   protected void updateInvoiceTermFinancialDiscount(
       InvoiceTermPayment invoiceTermPayment,
       InvoiceTerm invoiceTerm,
       InvoicePayment invoicePayment) {
-    invoiceTerm.setFinancialDiscount(invoicePayment.getFinancialDiscount());
-    invoiceTermService.updateFinancialDiscount(invoiceTerm);
-    invoiceTermPaymentService.manageInvoiceTermFinancialDiscount(
-        invoiceTermPayment, invoiceTerm, invoicePayment.getApplyFinancialDiscount());
+    if (invoicePayment.getFinancialDiscount() != null) {
+      invoiceTerm.setApplyFinancialDiscount(true);
+      invoiceTerm.setFinancialDiscount(invoicePayment.getFinancialDiscount());
+      invoiceTermService.updateFinancialDiscount(invoiceTerm);
+      invoiceTermPaymentService.manageInvoiceTermFinancialDiscount(
+          invoiceTermPayment, invoiceTerm, invoicePayment.getApplyFinancialDiscount());
+    } else {
+      invoiceTerm.setApplyFinancialDiscount(false);
+    }
   }
 
   protected BigDecimal getFinancialDiscountTotalAmount(

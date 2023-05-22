@@ -224,7 +224,13 @@ public class InvoicePaymentController {
 
       Beans.get(InvoicePaymentToolService.class).updateFinancialDiscount(invoicePayment);
 
-      response.setValues(invoicePayment);
+      if (invoicePayment.getFinancialDiscount() != null) {
+
+        response.setValues(invoicePayment);
+      } else {
+        response.setValue("applyFinancialDiscount", false);
+      }
+
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

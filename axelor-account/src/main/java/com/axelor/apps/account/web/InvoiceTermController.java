@@ -418,9 +418,11 @@ public class InvoiceTermController {
 
       if (invoiceTerm.getFinancialDiscount() != null) {
         Beans.get(InvoiceTermService.class).updateFinancialDiscount(invoiceTerm);
+        response.setValues(invoiceTerm);
+      } else {
+        response.setValue("applyFinancialDiscount", false);
       }
 
-      response.setValues(invoiceTerm);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
