@@ -34,6 +34,7 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -274,6 +275,7 @@ public class MassEntryServiceImpl implements MassEntryService {
   }
 
   @Override
+  @Transactional
   public Map<List<Long>, String> validateMassEntryMove(Move move) {
     Map<List<Long>, String> resultMap = new HashMap<>();
     String errors = "";
@@ -281,6 +283,7 @@ public class MassEntryServiceImpl implements MassEntryService {
     List<Long> moveIdList = new ArrayList<>();
     List<Integer> temporaryErrorIdList = new ArrayList<>();
     int i = 0;
+    move = moveRepository.find(move.getId());
 
     if (massEntryToolService.verifyJournalAuthorizeNewMove(
             move.getMoveLineMassEntryList(), move.getJournal())
@@ -329,6 +332,7 @@ public class MassEntryServiceImpl implements MassEntryService {
       }
     }
 
+    moveRepository.save(move);
     resultMap.put(moveIdList, errors);
 
     return resultMap;

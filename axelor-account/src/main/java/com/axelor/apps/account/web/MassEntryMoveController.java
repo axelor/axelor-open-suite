@@ -98,16 +98,11 @@ public class MassEntryMoveController {
         moveIdList = entryMap.getKey();
         error = entryMap.getValue();
 
-        response.setValue("moveLineMassEntryList", move.getMoveLineMassEntryList());
-        response.setValue("massEntryErrors", move.getMassEntryErrors());
-        response.setValue("massEntryStatusSelect", move.getMassEntryStatusSelect());
-
+        response.setReload(true);
         if (error.length() > 0) {
           response.setInfo(
               String.format(I18n.get(AccountExceptionMessage.MOVE_ACCOUNTING_NOT_OK), error));
-          response.setAttr("controlMassEntryMoves", "hidden", false);
         } else {
-          response.setInfo(I18n.get(AccountExceptionMessage.MOVE_ACCOUNTING_OK));
           if (!CollectionUtils.isEmpty(moveIdList)) {
             response.setView(
                 ActionView.define(I18n.get(AccountExceptionMessage.MOVE_TEMPLATE_3))
@@ -119,7 +114,6 @@ public class MassEntryMoveController {
                     .map());
           }
         }
-        response.setAttr("validateMassEntryMoves", "hidden", true);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
