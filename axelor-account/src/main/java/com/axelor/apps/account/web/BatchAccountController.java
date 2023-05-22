@@ -36,6 +36,7 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -68,11 +69,12 @@ public class BatchAccountController {
       MoveLineRepository moveLineRepository = Beans.get(MoveLineRepository.class);
       ReconcileGroupRepository reconcileGroupRepo = Beans.get(ReconcileGroupRepository.class);
       ReconcileGroupService reconcileGroupService = Beans.get(ReconcileGroupService.class);
+      Map batchMap = (Map<String, Object>) request.getContext().get("batch");
       List<MoveLine> moveLineList =
           moveLineRepository
               .all()
               .filter(":batch MEMBER OF self.batchSet")
-              .bind("batch", ((Integer) request.getContext().get("_id")).longValue())
+              .bind("batch", ((Integer) batchMap.get("id")).longValue())
               .fetchStream()
               .filter(moveLine -> moveLine.getReconcileGroup() != null)
               .collect(Collectors.toList());
