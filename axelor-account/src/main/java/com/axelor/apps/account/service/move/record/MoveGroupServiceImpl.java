@@ -367,6 +367,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     moveAttrsService.addPaymentConditionChangeChangeValue(false, attrsMap);
     moveAttrsService.addHeaderChangeValue(false, attrsMap);
     moveAttrsService.addDateChangeFalseValue(move, true, attrsMap);
+    moveAttrsService.addDueDateHidden(move, attrsMap);
 
     return attrsMap;
   }
