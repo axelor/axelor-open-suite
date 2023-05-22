@@ -26,6 +26,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveCancelService;
 import com.axelor.apps.account.service.move.MoveCreateService;
@@ -74,6 +75,7 @@ public class AdvancePaymentServiceSupplychainImpl extends AdvancePaymentServiceI
   @Inject protected MoveCancelService moveCancelService;
 
   @Inject protected AppSupplychainService appSupplychainService;
+  @Inject protected AppAccountService appAccountService;
 
   @Transactional(rollbackOn = {Exception.class})
   public void validate(AdvancePayment advancePayment) throws AxelorException {
@@ -86,7 +88,8 @@ public class AdvancePaymentServiceSupplychainImpl extends AdvancePaymentServiceI
 
     Company company = advancePayment.getSaleOrder().getCompany();
 
-    if (accountConfigService.getAccountConfig(company).getGenerateMoveForAdvancePayment()
+    if (!appAccountService.getAppAccount().getManageAdvancePaymentInvoice()
+        && accountConfigService.getAccountConfig(company).getGenerateMoveForAdvancePayment()
         && advancePayment.getAmount().compareTo(BigDecimal.ZERO) != 0) {
       this.createMoveForAdvancePayment(advancePayment);
     }
