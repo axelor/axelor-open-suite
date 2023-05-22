@@ -134,4 +134,6 @@ public interface ReconcileGroupService {
   void createProposal(List<MoveLine> moveLineList);
 
   void removeDraftReconciles(ReconcileGroup reconcileGroup);
+
+  void validateProposal(ReconcileGroup reconcileGroup) throws AxelorException;
 }

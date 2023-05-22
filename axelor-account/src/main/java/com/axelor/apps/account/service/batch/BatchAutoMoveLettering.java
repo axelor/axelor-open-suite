@@ -505,7 +505,6 @@ public class BatchAutoMoveLettering extends BatchStrategy {
       filters += "(self.fromAccount IS null OR self.fromAccount.code <= :toAccountCode)";
       params.put("toAccountCode", accountingBatch.getToAccount().getCode());
     }
-    filters += ")";
     return accountingBatchRepository
         .all()
         .filter(filters)
