@@ -3109,6 +3109,7 @@
 "The closure of a period will block the operations that can be carried out on the accounting journals for this period. The 'New' moves will be deleted, the 'Daybook' moves will be validated and the 'Simulated' moves will no longer be editable.",,,
 "The code defined here is already used by another record for the specified %s. Code must be unique by company. Please modify it accordingly.",,,
 "The code defined here is already used by another record. Code must be unique either by company or if shared. Please modify it accordingly.",,,
+"The company account configuration customer sales journal is required.",,,
 "The company is required and must be the same for all invoices",,,
 "The configuration to retrieve the account on the payment mode is missing:",,,
 "The configured distribution is incorrect, the sum of percentages for at least an axis is different than 100%",,,
