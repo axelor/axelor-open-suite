@@ -405,6 +405,7 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
   public void checkWellBalancedMove(Move move, int temporaryMoveNumber) {
     try {
       moveValidateService.validateWellBalancedMove(move);
+      moveValidateService.checkTaxAmount(move);
     } catch (AxelorException e) {
       this.setErrorMassEntryMoveLines(move, temporaryMoveNumber, "balance", e.getMessage());
     }
