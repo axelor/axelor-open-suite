@@ -53,4 +53,16 @@ public class ProjectPlanningTimeController {
 
     response.setReload(true);
   }
+
+  public void removeSingleProjectPlanningTime(ActionRequest request, ActionResponse response) {
+
+    ProjectPlanningTime projectPlanningTime =
+        request.getContext().asType(ProjectPlanningTime.class);
+
+    if (projectPlanningTime != null) {
+      Beans.get(ProjectPlanningTimeService.class).removeProjectPlanningLine(projectPlanningTime);
+    }
+
+    response.setReload(true);
+  }
 }

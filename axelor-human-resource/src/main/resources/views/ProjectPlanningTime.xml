@@ -194,6 +194,12 @@
       method="removeProjectPlanningTime"/>
   </action-method>
 
+  <action-method
+    name="action-project-planning-time-method-remove-single-project-planning-time">
+    <call class="com.axelor.apps.hr.web.project.ProjectPlanningTimeController"
+      method="removeSingleProjectPlanningTime"/>
+  </action-method>
+
   <action-validate name="action-project-validate-remove-project-planning-time">
     <alert message="Are you sure wants to remove selected lines?"/>
   </action-validate>
