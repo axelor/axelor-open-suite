@@ -28,19 +28,21 @@ public class MoveViewHelperServiceImpl implements MoveViewHelperService {
 
   @Override
   public String filterPartner(Company company, Journal journal) {
-    Long companyId = company.getId();
-    String domain = "self.isContact = false AND " + companyId + " member of self.companySet";
-    if (journal != null && !Strings.isNullOrEmpty(journal.getCompatiblePartnerTypeSelect())) {
-      domain += " AND (";
-      String[] partnerSet = journal.getCompatiblePartnerTypeSelect().split(", ");
-      String lastPartner = partnerSet[partnerSet.length - 1];
-      for (String partner : partnerSet) {
-        domain += "self." + partner + " = true";
-        if (!partner.equals(lastPartner)) {
-          domain += " OR ";
+    String domain = "self.isContact = false";
+    if (company != null) {
+      domain += " AND " + company.getId() + " member of self.companySet";
+      if (journal != null && !Strings.isNullOrEmpty(journal.getCompatiblePartnerTypeSelect())) {
+        domain += " AND (";
+        String[] partnerSet = journal.getCompatiblePartnerTypeSelect().split(", ");
+        String lastPartner = partnerSet[partnerSet.length - 1];
+        for (String partner : partnerSet) {
+          domain += "self." + partner + " = true";
+          if (!partner.equals(lastPartner)) {
+            domain += " OR ";
+          }
         }
+        domain += ")";
       }
-      domain += ")";
     }
     return domain;
   }
