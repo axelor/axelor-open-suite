@@ -27,6 +27,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -36,7 +37,10 @@ import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.common.ObjectUtils;
+import com.axelor.common.StringUtils;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -108,24 +112,32 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
       origin = invoice.getSupplierInvoiceNb();
     }
 
-    if (invoice != null && invoice.getInvoiceLineList() != null) {
-
+    if (invoice.getInvoiceLineList() != null) {
       Journal journal = invoice.getJournal();
       Company company = invoice.getCompany();
       Partner partner = invoice.getPartner();
       Account account = invoice.getPartnerAccount();
 
       String description = null;
+
       if (journal != null) {
         description = journal.getDescriptionModel();
+
+        if (journal.getDescriptionIdentificationOk() && origin != null) {
+          if (ObjectUtils.isEmpty(description)) {
+            description = origin;
+          } else {
+            description = String.format("%s %s", description, origin);
+          }
+        }
       }
 
-      if (journal.getDescriptionIdentificationOk() && origin != null) {
-        if (ObjectUtils.isEmpty(description)) {
-          description = origin;
-        } else {
-          description += " " + origin;
-        }
+      if (accountConfigService.getAccountConfig(company).getIsDescriptionRequired()
+          && StringUtils.isEmpty(description)) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(AccountExceptionMessage.MOVE_INVOICE_DESCRIPTION_REQUIRED),
+            company.getName());
       }
 
       log.debug(
