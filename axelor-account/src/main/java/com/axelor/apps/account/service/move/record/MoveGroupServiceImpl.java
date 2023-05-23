@@ -30,6 +30,7 @@ import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.attributes.MoveAttrsService;
 import com.axelor.apps.account.service.move.control.MoveCheckService;
 import com.axelor.apps.account.service.move.massentry.MassEntryService;
+import com.axelor.apps.account.service.move.massentry.MassEntryVerificationService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryToolService;
 import com.axelor.apps.base.AxelorException;
@@ -61,6 +62,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   protected MoveLineMassEntryToolService moveLineMassEntryToolService;
   protected AppAccountService appAccountService;
   protected MassEntryService massEntryService;
+  protected MassEntryVerificationService massEntryVerificationService;
 
   @Inject
   public MoveGroupServiceImpl(
@@ -80,7 +82,8 @@ public class MoveGroupServiceImpl implements MoveGroupService {
       MoveRepository moveRepository,
       MoveLineMassEntryToolService moveLineMassEntryToolService,
       AppAccountService appAccountService,
-      MassEntryService massEntryService) {
+      MassEntryService massEntryService,
+      MassEntryVerificationService massEntryVerificationService) {
     this.moveDefaultService = moveDefaultService;
     this.moveAttrsService = moveAttrsService;
     this.periodAccountService = periodAccountService;
@@ -98,6 +101,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     this.moveLineMassEntryToolService = moveLineMassEntryToolService;
     this.appAccountService = appAccountService;
     this.massEntryService = massEntryService;
+    this.massEntryVerificationService = massEntryVerificationService;
   }
 
   protected void addPeriodDummyFields(Move move, Map<String, Object> valuesMap)
@@ -254,7 +258,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   }
 
   @Override
-  public Map<String, Object> getJournalOnChangeValuesMap(Move move) {
+  public Map<String, Object> getJournalOnChangeValuesMap(Move move) throws AxelorException {
     Map<String, Object> valuesMap = new HashMap<>();
 
     moveRecordSetService.setFunctionalOriginSelect(move);
@@ -262,6 +266,11 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     moveRecordSetService.setPaymentCondition(move);
     moveRecordSetService.setPartnerBankDetails(move);
     moveRecordSetService.setOriginDate(move);
+
+    if (move.getJournal() != null && move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL) {
+      move.setCompanyBankDetails(massEntryVerificationService.verifyCompanyBankDetails(move.getCompany(), move.getCompanyBankDetails(), move.getJournal()));
+      valuesMap.put("companyBankDetails", move.getCompanyBankDetails());
+    }
 
     if (appAccountService.getAppAccount().getActivatePassedForPayment()) {
       moveRecordSetService.setPfpStatus(move);

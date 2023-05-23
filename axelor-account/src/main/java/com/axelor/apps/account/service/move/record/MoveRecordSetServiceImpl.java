@@ -225,7 +225,6 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
 
   public void setPfpStatus(Move move) {
     Objects.requireNonNull(move);
-    Objects.requireNonNull(move.getJournal());
     JournalType journalType = move.getJournal().getJournalType();
 
     if (move.getCompany() != null
