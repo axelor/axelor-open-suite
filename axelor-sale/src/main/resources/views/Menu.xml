@@ -129,8 +129,8 @@
 
   <action-view name="sc.hist.sale.orders" title="Historical"
     model="com.axelor.apps.sale.db.SaleOrder">
-    <view type="cards" name="sale-order-cards"/>
     <view type="grid" name="sale-order-grid"/>
+    <view type="cards" name="sale-order-cards"/>
     <view type="calendar" name="sale-order-calendar"/>
     <view type="form" name="sale-order-form"/>
     <view-param name="search-filters" value="sale-order-filters"/>
