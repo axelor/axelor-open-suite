@@ -18,7 +18,12 @@
  */
 package com.axelor.apps.account.service.payment.invoice.payment;
 
-import com.axelor.apps.account.db.*;
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoicePayment;
+import com.axelor.apps.account.db.InvoiceTerm;
+import com.axelor.apps.account.db.InvoiceTermPayment;
+import com.axelor.apps.account.db.PayVoucherElementToPay;
+import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
