@@ -696,6 +696,7 @@
 
   <action-group name="action-account-move-group-accounting-click">
     <action name="action-move-method-check-accounting"/>
+    <action name="action-move-method-apply-cut-off-dates-in-empty-lines"/>
     <action name="action-account-move-group-onsave"/>
     <action name="action-move-method-accounting"/>
   </action-group>
@@ -1037,4 +1038,9 @@
       expr="eval: &quot;self.id = ${company?.defaultBankDetails?.id} AND self.active = true&quot;"
       for="companyBankDetails" if="company?.bankDetailsList?.isEmpty()"/>
   </action-attrs>
+
+  <action-method name="action-move-method-apply-cut-off-dates-in-empty-lines">
+    <call class="com.axelor.apps.account.web.MoveController"
+          method="applyCutOffDatesInEmptyLines"/>
+  </action-method>
 </object-views>

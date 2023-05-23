@@ -53,4 +53,6 @@ public interface MoveRecordSetService {
   void setPeriod(Move move) throws AxelorException;
 
   void setCompanyBankDetails(Move move) throws AxelorException;
+
+  void setOriginDate(Move move);
 }

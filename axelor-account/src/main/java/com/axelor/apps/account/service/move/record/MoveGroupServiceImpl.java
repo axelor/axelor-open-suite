@@ -135,6 +135,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     moveRecordSetService.setJournal(move);
     moveRecordSetService.setPeriod(move);
     moveRecordSetService.setFunctionalOriginSelect(move);
+    moveRecordSetService.setOriginDate(move);
 
     valuesMap.put("company", move.getCompany());
     valuesMap.put("date", move.getDate());
@@ -147,6 +148,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     valuesMap.put("tradingName", move.getTradingName());
     valuesMap.put("journal", move.getJournal());
     valuesMap.put("period", move.getPeriod());
+    valuesMap.put("originDate", move.getOriginDate());
 
     valuesMap.put(
         "$validatePeriod",
@@ -204,6 +206,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     moveRecordSetService.setPeriod(move);
     moveLineControlService.setMoveLineDates(move);
     moveRecordUpdateService.updateMoveLinesCurrencyRate(move);
+    moveRecordSetService.setOriginDate(move);
 
     Map<String, Object> valuesMap = moveComputeService.computeTotals(move);
 
@@ -212,6 +215,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     valuesMap.put("period", move.getPeriod());
     valuesMap.put("dueDate", move.getDueDate());
     valuesMap.put("moveLineList", move.getMoveLineList());
+    valuesMap.put("originDate", move.getOriginDate());
 
     valuesMap.put(
         "$validatePeriod",

@@ -337,7 +337,7 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
               == JournalTypeRepository.TECHNICAL_TYPE_SELECT_OTHER, attrsMap);
       this.addAttr("moveLineMassEntryList.currencyRate", "hidden", isSameCurrency, attrsMap);
       this.addAttr("moveLineMassEntryList.currencyAmount", "hidden", isSameCurrency, attrsMap);
-      this.addAttr("moveLineMassEntryList.pfpValidatorUser", "hidden", technicalTypeSelectIsNotNull
+      this.addAttr("moveLineMassEntryList.movePfpValidatorUser", "hidden", technicalTypeSelectIsNotNull
               && move.getJournal().getJournalType().getTechnicalTypeSelect()
               != JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE, attrsMap);
       this.addAttr("moveLineMassEntryList.cutOffStartDate", "hidden", !move.getMassEntryManageCutOff(), attrsMap);

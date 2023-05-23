@@ -213,4 +213,13 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
         bankDetailsService.getDefaultCompanyBankDetails(company, paymentMode, partner, null);
     move.setCompanyBankDetails(defaultBankDetails);
   }
+
+  @Override
+  public void setOriginDate(Move move) {
+    Objects.requireNonNull(move);
+
+    if (move.getDate() != null) {
+      move.setOriginDate(move.getDate());
+    }
+  }
 }
