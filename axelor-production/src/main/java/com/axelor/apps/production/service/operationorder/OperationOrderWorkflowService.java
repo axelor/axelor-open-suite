@@ -39,6 +39,7 @@ import com.axelor.apps.production.db.repo.WorkCenterRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.ProdProcessLineService;
 import com.axelor.apps.production.service.app.AppProductionService;
+import com.axelor.apps.production.service.machine.MachineService;
 import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowService;
 import com.axelor.apps.stock.db.StockMove;
@@ -68,6 +69,7 @@ public class OperationOrderWorkflowService {
   protected MachineToolRepository machineToolRepo;
   protected WeeklyPlanningService weeklyPlanningService;
   protected ProdProcessLineService prodProcessLineService;
+  protected MachineService machineService;
 
   @Inject
   public OperationOrderWorkflowService(
@@ -77,7 +79,8 @@ public class OperationOrderWorkflowService {
       AppProductionService appProductionService,
       MachineToolRepository machineToolRepo,
       WeeklyPlanningService weeklyPlanningService,
-      ProdProcessLineService prodProcessLineService) {
+      ProdProcessLineService prodProcessLineService,
+      MachineService machineService) {
     this.operationOrderStockMoveService = operationOrderStockMoveService;
     this.operationOrderRepo = operationOrderRepo;
     this.operationOrderDurationRepo = operationOrderDurationRepo;
@@ -85,6 +88,7 @@ public class OperationOrderWorkflowService {
     this.machineToolRepo = machineToolRepo;
     this.weeklyPlanningService = weeklyPlanningService;
     this.prodProcessLineService = prodProcessLineService;
+    this.machineService = machineService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -236,24 +240,35 @@ public class OperationOrderWorkflowService {
 
     LocalDateTime lastOPerationDate = this.getLastOperationDate(operationOrder);
     LocalDateTime maxDate = DateTool.max(plannedStartDate, lastOPerationDate);
-    operationOrder.setPlannedStartDateT(maxDate);
-
     Machine machine = operationOrder.getMachine();
+
     WeeklyPlanning weeklyPlanning = null;
     if (machine != null) {
       weeklyPlanning = machine.getWeeklyPlanning();
+      operationOrder.setPlannedStartDateT(
+          machineService.getClosestAvailableDateFrom(machine, maxDate, operationOrder));
+    } else {
+      operationOrder.setPlannedStartDateT(maxDate);
     }
+
     if (weeklyPlanning != null) {
       this.planWithPlanning(operationOrder, weeklyPlanning);
     }
 
     operationOrder.setPlannedEndDateT(this.computePlannedEndDateT(operationOrder));
     if (cumulatedDuration != null) {
-      operationOrder.setPlannedEndDateT(
+
+      LocalDateTime plannedEndDateT =
           operationOrder
               .getPlannedEndDateT()
               .minusSeconds(cumulatedDuration)
-              .plusSeconds(this.getMachineSetupDuration(operationOrder)));
+              .plusSeconds(this.getMachineSetupDuration(operationOrder));
+      if (machine != null) {
+        operationOrder.setPlannedEndDateT(
+            machineService.getClosestAvailableDateFrom(machine, plannedEndDateT, operationOrder));
+      } else {
+        operationOrder.setPlannedEndDateT(plannedEndDateT);
+      }
     }
     Long plannedDuration =
         DurationTool.getSecondsDuration(
@@ -641,6 +656,17 @@ public class OperationOrderWorkflowService {
       throws AxelorException {
 
     if (operationOrder.getWorkCenter() != null) {
+      if (operationOrder.getMachine() != null) {
+        return machineService.getClosestAvailableDateFrom(
+            operationOrder.getMachine(),
+            operationOrder
+                .getPlannedStartDateT()
+                .plusSeconds(
+                    (int)
+                        this.computeEntireCycleDuration(
+                            operationOrder, operationOrder.getManufOrder().getQty())),
+            operationOrder);
+      }
       return operationOrder
           .getPlannedStartDateT()
           .plusSeconds(
