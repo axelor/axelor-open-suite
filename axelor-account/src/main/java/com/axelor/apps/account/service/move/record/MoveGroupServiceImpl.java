@@ -261,6 +261,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     moveRecordSetService.setPaymentMode(move);
     moveRecordSetService.setPaymentCondition(move);
     moveRecordSetService.setPartnerBankDetails(move);
+    moveRecordSetService.setOriginDate(move);
 
     if (appAccountService.getAppAccount().getActivatePassedForPayment()) {
       moveRecordSetService.setPfpStatus(move);
@@ -271,6 +272,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     valuesMap.put("paymentMode", move.getPaymentMode());
     valuesMap.put("paymentCondition", move.getPaymentCondition());
     valuesMap.put("partnerBankDetails", move.getPartnerBankDetails());
+    valuesMap.put("originDate", move.getOriginDate());
 
     return valuesMap;
   }
