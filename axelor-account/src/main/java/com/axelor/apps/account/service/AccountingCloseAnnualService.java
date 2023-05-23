@@ -39,7 +39,8 @@ public interface AccountingCloseAnnualService {
       String moveDescription,
       boolean closeYear,
       boolean openYear,
-      boolean allocatePerPartner)
+      boolean allocatePerPartner,
+      boolean isSimulatedMove)
       throws AxelorException;
 
   public List<Move> generateCloseAnnualAccount(
@@ -51,7 +52,8 @@ public interface AccountingCloseAnnualService {
       String origin,
       String moveDescription,
       boolean closeYear,
-      boolean allocatePerPartner)
+      boolean allocatePerPartner,
+      boolean isSimulatedMove)
       throws AxelorException;
 
   public List<Move> generateOpenAnnualAccount(
@@ -63,7 +65,8 @@ public interface AccountingCloseAnnualService {
       String origin,
       String moveDescription,
       boolean openYear,
-      boolean allocatePerPartner)
+      boolean allocatePerPartner,
+      boolean isSimulatedMove)
       throws AxelorException;
 
   public List<Long> getAllAccountOfYear(Set<Account> accountSet, Year year);
