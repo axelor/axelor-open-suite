@@ -24,7 +24,7 @@
     <action name="action-method-budget-level-method-export-budget-level"
       if="_model == 'com.axelor.apps.budget.db.BudgetLevel'"/>
     <action name="action-method-budget-level-method-export-budget"
-      if="_model == 'com.axelor.apps.account.db.Budget'"/>
+      if="_model == 'com.axelor.apps.budget.db.Budget'"/>
   </action-group>
 
   <action-method name="action-method-budget-level-method-export-budget-level">

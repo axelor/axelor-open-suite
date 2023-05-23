@@ -1,5 +1,6 @@
 package com.axelor.apps.budget.service;
 
+import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.base.AxelorException;
 

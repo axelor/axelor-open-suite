@@ -46,4 +46,12 @@ public interface PurchaseOrderBudgetBudgetService {
 
   // Duplicated from axelor-supplychain to prevent axelor-production dependency
   void generateBudgetDistribution(PurchaseOrder purchaseOrder);
+
+  public void updateBudgetLinesFromPurchaseOrder(PurchaseOrder purchaseOrder);
+
+  public void setPurchaseOrderLineBudget(PurchaseOrder purchaseOrder);
+
+  public void applyToallBudgetDistribution(PurchaseOrder purchaseOrder);
+
+  public void updateBudgetDistributionAmountAvailable(PurchaseOrder purchaseOrder);
 }

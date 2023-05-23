@@ -1,10 +1,10 @@
 package com.axelor.apps.budget.service.move;
 
-import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.exception.IExceptionMessage;
 import com.axelor.apps.budget.service.BudgetBudgetDistributionService;
 import com.axelor.apps.budget.service.BudgetBudgetService;

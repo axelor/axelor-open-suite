@@ -752,12 +752,6 @@
       method="validateSupplier"/>
   </action-method>
 
-  <action-method name="action-purchase-order-method-generate-budget-distribution"
-    if-module="axelor-supplychain">
-    <call class="com.axelor.apps.supplychain.web.PurchaseOrderController"
-      method="generateBudgetDistribution" if="__config__.app.isApp('supplychain')"/>
-  </action-method>
-
   <action-method name="action-purchase-order-method-compute">
     <call class="com.axelor.apps.purchase.web.PurchaseOrderController" method="compute"/>
   </action-method>
@@ -1036,10 +1030,5 @@
       expr="eval: &quot; SIZE(self.paymentConditionLineList) &lt; 2 &quot;"
       if="!__config__.app.getApp('account').allowMultiInvoiceTerms"/>
   </action-attrs>
-
-  <action-method name="action-method-purchase-order-validate-budget-distribution-list">
-    <call class="com.axelor.apps.supplychain.web.PurchaseOrderController"
-      method="confirmBudgetDistributionList"/>
-  </action-method>
 
 </object-views>

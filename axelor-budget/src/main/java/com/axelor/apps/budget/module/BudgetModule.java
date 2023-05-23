@@ -1,9 +1,6 @@
 package com.axelor.apps.budget.module;
 
 import com.axelor.app.AxelorModule;
-import com.axelor.apps.account.db.repo.BudgetBudgetRepository;
-import com.axelor.apps.budget.db.repo.BudgetRepository;
-import com.axelor.apps.budget.db.repo.MoveBudgetManagementRepository;
 import com.axelor.apps.account.service.invoice.workflow.ventilate.VentilateState;
 import com.axelor.apps.bankpayment.db.repo.MoveBankPaymentRepository;
 import com.axelor.apps.bankpayment.service.move.MoveRemoveServiceBankPaymentImpl;
@@ -13,9 +10,12 @@ import com.axelor.apps.base.db.repo.AdvancedImportBaseRepository;
 import com.axelor.apps.base.db.repo.AdvancedImportBudgetRepository;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.BankDetailsServiceImpl;
+import com.axelor.apps.budget.db.repo.BudgetBudgetRepository;
 import com.axelor.apps.budget.db.repo.BudgetInvoiceRepository;
 import com.axelor.apps.budget.db.repo.BudgetLevelManagementRepository;
 import com.axelor.apps.budget.db.repo.BudgetLevelRepository;
+import com.axelor.apps.budget.db.repo.BudgetRepository;
+import com.axelor.apps.budget.db.repo.MoveBudgetManagementRepository;
 import com.axelor.apps.budget.export.ExportGlobalBudgetLevelService;
 import com.axelor.apps.budget.export.ExportGlobalBudgetLevelServiceImpl;
 import com.axelor.apps.budget.service.BudgetAccountConfigService;
@@ -38,6 +38,7 @@ import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.budget.service.BudgetToolsServiceImpl;
 import com.axelor.apps.budget.service.advanced.imports.AdvancedImportBudgetService;
 import com.axelor.apps.budget.service.advanced.imports.AdvancedImportBudgetServiceImpl;
+import com.axelor.apps.budget.service.invoice.StockMoveInvoiceBudgetServiceImpl;
 import com.axelor.apps.budget.service.invoice.workflow.ventilate.VentilateStateBudget;
 import com.axelor.apps.budget.service.move.MoveBudgetService;
 import com.axelor.apps.budget.service.move.MoveBudgetServiceImpl;
@@ -54,26 +55,23 @@ import com.axelor.apps.budget.service.saleorder.SaleOrderLineBudgetService;
 import com.axelor.apps.budget.service.saleorder.SaleOrderLineBudgetServiceImpl;
 import com.axelor.apps.businessproject.db.repo.InvoiceProjectRepository;
 import com.axelor.apps.businessproject.service.InvoiceLineProjectServiceImpl;
+import com.axelor.apps.businessproject.service.ProjectStockMoveInvoiceServiceImpl;
 import com.axelor.apps.businessproject.service.SaleOrderInvoiceProjectServiceImpl;
 import com.axelor.apps.cash.management.service.InvoiceServiceManagementImpl;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderManagementBudgetRepository;
 import com.axelor.apps.supplychain.db.repo.PurchaseOrderSupplychainRepository;
-import com.axelor.apps.supplychain.service.BudgetSupplychainService;
-import com.axelor.apps.supplychain.service.PurchaseOrderBudgetServiceImpl;
-import com.axelor.apps.supplychain.service.PurchaseOrderLineBudgetServiceImpl;
+import com.axelor.apps.supplychain.service.PurchaseOrderWorkflowServiceSupplychainImpl;
 
 public class BudgetModule extends AxelorModule {
 
   @Override
   protected void configure() {
-    bind(BudgetSupplychainService.class).to(BudgetBudgetServiceImpl.class);
     bind(BudgetLevelService.class).to(BudgetLevelServiceImpl.class);
     bind(BudgetBudgetService.class).to(BudgetBudgetServiceImpl.class);
     bind(PurchaseOrderBudgetBudgetService.class).to(PurchaseOrderBudgetBudgetServiceImpl.class);
-    bind(PurchaseOrderBudgetServiceImpl.class).to(PurchaseOrderBudgetBudgetServiceImpl.class);
+    bind(PurchaseOrderWorkflowServiceSupplychainImpl.class)
+        .to(PurchaseOrderBudgetBudgetServiceImpl.class);
     bind(PurchaseOrderLineBudgetBudgetService.class)
-        .to(PurchaseOrderLineBudgetBudgetServiceImpl.class);
-    bind(PurchaseOrderLineBudgetServiceImpl.class)
         .to(PurchaseOrderLineBudgetBudgetServiceImpl.class);
     bind(BudgetRepository.class).to(BudgetBudgetRepository.class);
     bind(BudgetLevelRepository.class).to(BudgetLevelManagementRepository.class);
@@ -103,5 +101,6 @@ public class BudgetModule extends AxelorModule {
     bind(SaleOrderBudgetService.class).to(SaleOrderBudgetServiceImpl.class);
     bind(SaleOrderLineBudgetService.class).to(SaleOrderLineBudgetServiceImpl.class);
     bind(SaleOrderInvoiceProjectServiceImpl.class).to(SaleOrderBudgetServiceImpl.class);
+    bind(ProjectStockMoveInvoiceServiceImpl.class).to(StockMoveInvoiceBudgetServiceImpl.class);
   }
 }

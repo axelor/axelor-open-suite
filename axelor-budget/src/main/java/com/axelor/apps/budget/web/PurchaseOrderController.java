@@ -10,8 +10,6 @@ import com.axelor.apps.budget.service.purchaseorder.PurchaseOrderLineBudgetBudge
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
-import com.axelor.apps.supplychain.service.PurchaseOrderBudgetService;
-import com.axelor.apps.supplychain.service.PurchaseOrderLineBudgetService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -63,8 +61,8 @@ public class PurchaseOrderController {
       purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
       if (purchaseOrder != null
           && !CollectionUtils.isEmpty(purchaseOrder.getPurchaseOrderLineList())) {
-        PurchaseOrderLineBudgetService purchaseOrderLineBudgetService =
-            Beans.get(PurchaseOrderLineBudgetService.class);
+        PurchaseOrderLineBudgetBudgetService purchaseOrderLineBudgetService =
+            Beans.get(PurchaseOrderLineBudgetBudgetService.class);
         for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
           purchaseOrderLineBudgetService.computeBudgetDistributionSumAmount(
               purchaseOrderLine, purchaseOrder);
@@ -98,8 +96,8 @@ public class PurchaseOrderController {
 
   public void applyToAllBudgetDistribution(ActionRequest request, ActionResponse response) {
     try {
-      PurchaseOrderBudgetService purchaseOrderBudgetService =
-          Beans.get(PurchaseOrderBudgetService.class);
+      PurchaseOrderBudgetBudgetService purchaseOrderBudgetService =
+          Beans.get(PurchaseOrderBudgetBudgetService.class);
       PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
       purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
       AppBudget appBudget = Beans.get(AppBudgetRepository.class).all().fetchOne();

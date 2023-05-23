@@ -52,7 +52,7 @@ public class InvoiceLineController {
     Invoice invoice = request.getContext().getParent().asType(Invoice.class);
 
     Beans.get(BudgetInvoiceLineService.class)
-            .computeBudgetDistributionSumAmount(invoiceLine, invoice);
+        .computeBudgetDistributionSumAmount(invoiceLine, invoice);
 
     response.setValue("budgetDistributionSumAmount", invoiceLine.getBudgetDistributionSumAmount());
     response.setValue("budgetDistributionList", invoiceLine.getBudgetDistributionList());

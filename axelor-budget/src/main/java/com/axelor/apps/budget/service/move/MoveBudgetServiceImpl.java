@@ -1,15 +1,15 @@
 package com.axelor.apps.budget.service.move;
 
-import com.axelor.apps.budget.db.Budget;
-import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.app.AppBudgetService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.budget.db.Budget;
+import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.service.BudgetAccountService;
 import com.axelor.apps.budget.service.BudgetBudgetDistributionService;
 import com.google.common.base.Strings;
@@ -29,25 +29,25 @@ public class MoveBudgetServiceImpl implements MoveBudgetService {
   protected MoveLineBudgetService moveLineBudgetService;
   protected BudgetBudgetDistributionService budgetDistributionService;
   protected MoveRepository moveRepo;
-  protected AppAccountService appAccountService;
   protected BudgetAccountService budgetAccountService;
   protected MoveLineRepository moveLineRepo;
+  protected AppBudgetService appBudgetService;
 
   @Inject
   public MoveBudgetServiceImpl(
       MoveLineBudgetService moveLineBudgetService,
       MoveRepository moveRepo,
       BudgetBudgetDistributionService budgetDistributionService,
-      AppAccountService appAccountService,
       BudgetAccountService budgetAccountService,
-      MoveLineRepository moveLineRepo) {
+      MoveLineRepository moveLineRepo,
+      AppBudgetService appBudgetService) {
 
     this.moveLineBudgetService = moveLineBudgetService;
     this.budgetDistributionService = budgetDistributionService;
     this.moveRepo = moveRepo;
-    this.appAccountService = appAccountService;
     this.budgetAccountService = budgetAccountService;
     this.moveLineRepo = moveLineRepo;
+    this.appBudgetService = appBudgetService;
   }
 
   @Override
@@ -76,8 +76,8 @@ public class MoveBudgetServiceImpl implements MoveBudgetService {
 
     List<MoveLine> moveLineList = move.getMoveLineList();
 
-    if (appAccountService.isApp("budget")
-        && appAccountService.getAppBudget().getCheckAvailableBudget()
+    if (appBudgetService.getAppBudget() != null
+        && appBudgetService.getAppBudget().getCheckAvailableBudget()
         && CollectionUtils.isNotEmpty(moveLineList)
         && move.getStatusSelect() != MoveRepository.STATUS_NEW
         && move.getStatusSelect() != MoveRepository.STATUS_CANCELED) {

@@ -115,7 +115,7 @@ public class SaleOrderController {
       SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
       saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
       if (saleOrder != null && !CollectionUtils.isEmpty(saleOrder.getSaleOrderLineList())) {
-        Beans.get(BudgetBudgetService.class).updateBudgetLinesFromSaleOrder(saleOrder);
+        Beans.get(SaleOrderBudgetService.class).updateBudgetLinesFromSaleOrder(saleOrder);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

@@ -9,6 +9,8 @@
     <many-to-one name="budgetLevel" ref="com.axelor.apps.budget.db.BudgetLevel"
       title="Global budget"/>
 
+    <many-to-one name="budget" ref="com.axelor.apps.budget.db.Budget" title="Budget"/>
+
     <many-to-one name="companyDepartment"
       ref="com.axelor.apps.base.db.CompanyDepartment" title="Company department"/>
 

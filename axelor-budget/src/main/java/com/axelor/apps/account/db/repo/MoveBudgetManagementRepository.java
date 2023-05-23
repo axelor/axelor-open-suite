@@ -2,6 +2,7 @@ package com.axelor.apps.budget.db.repo;
 
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.bankpayment.db.repo.MoveBankPaymentRepository;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.budget.service.BudgetBudgetService;

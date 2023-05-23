@@ -7,7 +7,7 @@
 
   <entity name="MoveLine" lang="java">
 
-    <one-to-many ref="com.axelor.apps.account.db.BudgetDistribution"
+    <one-to-many ref="com.axelor.apps.budget.db.BudgetDistribution"
       name="budgetDistributionList" mappedBy="moveLine" title="Budget Distribution"/>
     <boolean name="isBudgetImputed" title="Budget distribution imputed"/>
 

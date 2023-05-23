@@ -3,7 +3,8 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_5.4.xsd">
 
-
+  <input file="meta_metaMenu.csv" separator=";" type="com.axelor.meta.db.MetaMenu"
+    search="self.name = :name" update="true"/>
 
   <input file="budget_advanced_export.csv" search="self.importId = :importId"
     type="com.axelor.apps.base.db.AdvancedExport" separator=";">

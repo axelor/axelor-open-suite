@@ -43,7 +43,7 @@
 
     <one-to-many name="budgetLevelList" ref="com.axelor.apps.budget.db.BudgetLevel"
       title="Budget Levels" mappedBy="parentBudgetLevel"/>
-    <one-to-many name="budgetList" ref="com.axelor.apps.account.db.Budget"
+    <one-to-many name="budgetList" ref="com.axelor.apps.budget.db.Budget"
       title="Budgets" mappedBy="budgetLevel"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
 

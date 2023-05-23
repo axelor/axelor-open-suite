@@ -1,7 +1,7 @@
 package com.axelor.apps.budget.web;
 
-import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetLevel;
 import com.axelor.apps.budget.service.advanced.imports.AdvancedImportBudgetService;
 import com.axelor.inject.Beans;

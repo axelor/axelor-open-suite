@@ -19,14 +19,9 @@
 package com.axelor.apps.account.service.app;
 
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.studio.db.AppAccount;
-import com.axelor.studio.db.AppInvoice;
+import com.axelor.studio.db.AppBudget;
 
-public interface AppAccountService extends AppBaseService {
+public interface AppBudgetService extends AppBaseService {
 
-  public AppAccount getAppAccount();
-
-  public AppInvoice getAppInvoice();
-
-  public void generateAccountConfigurations();
+  public AppBudget getAppBudget();
 }

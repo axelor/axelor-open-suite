@@ -9,4 +9,5 @@
     <many-to-one name="budget" ref="com.axelor.apps.budget.db.BudgetLevel"
       title="Budget"/>
   </entity>
+
 </domain-models>

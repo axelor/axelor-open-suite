@@ -2,10 +2,10 @@ package com.axelor.apps.budget.service;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AnalyticMoveLine;
-import com.axelor.apps.budget.db.Budget;
-import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.budget.db.Budget;
+import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.auth.db.AuditableModel;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -45,4 +45,7 @@ public interface BudgetBudgetDistributionService {
       BigDecimal amount,
       String name,
       AuditableModel object);
+
+  public void computeBudgetDistributionSumAmount(
+      BudgetDistribution budgetDistribution, LocalDate computeDate);
 }

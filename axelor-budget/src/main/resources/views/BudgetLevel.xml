@@ -651,7 +651,7 @@
   </action-record>
 
   <action-view name="action-budget-budget-level-view-budget-lines" title="Lignes"
-    model="com.axelor.apps.account.db.Budget">
+    model="com.axelor.apps.budget.db.Budget">
     <view type="grid" name="budget-lines-grid"/>
     <view type="form" name="budget-included-form"/>
     <view-param name="details-view" value="true"/>
@@ -699,7 +699,7 @@
   </action-view>
 
   <action-view name="action-budget-global-budget-level-view-budget-lines" title="Lignes"
-    model="com.axelor.apps.account.db.Budget">
+    model="com.axelor.apps.budget.db.Budget">
     <view type="grid" name="budget-lines-grid"/>
     <view type="form" name="budget-included-form"/>
     <view-param name="details-view" value="true"/>
@@ -722,7 +722,7 @@
   </action-group>
 
   <action-view name="action-budget-level-view-global-purchase-order-line"
-    title="Committed lines" model="com.axelor.apps.account.db.BudgetDistribution">
+    title="Committed lines" model="com.axelor.apps.budget.db.BudgetDistribution">
     <view type="grid" name="budget-budget-distribution-purchase-order-line-global-dashlet-grid"/>
     <view type="form" name="budget-budget-distribution-purchase-order-line-dashlet-form"/>
     <domain>self.purchaseOrderLine != null and
@@ -733,7 +733,7 @@
   </action-view>
 
   <action-view name="action-budget-level-view-global-sale-order-line"
-    title="Committed lines" model="com.axelor.apps.account.db.BudgetDistribution">
+    title="Committed lines" model="com.axelor.apps.budget.db.BudgetDistribution">
     <view type="grid" name="budget-budget-distribution-sale-order-line-global-dashlet-grid"/>
     <view type="form" name="sale-order-budget-distribution-form"/>
     <domain>self.saleOrderLine != null and
@@ -750,7 +750,7 @@
   </action-group>
 
   <action-view name="action-budget-level-view-group-purchase-order-line"
-    title="Committed lines" model="com.axelor.apps.account.db.BudgetDistribution">
+    title="Committed lines" model="com.axelor.apps.budget.db.BudgetDistribution">
     <view type="grid" name="budget-budget-distribution-purchase-order-line-group-dashlet-grid"/>
     <view type="form" name="budget-budget-distribution-purchase-order-line-dashlet-form"/>
     <domain>self.budget.budgetLevel.parentBudgetLevel.id = :_groupId and self.purchaseOrderLine !=
@@ -761,7 +761,7 @@
   </action-view>
 
   <action-view name="action-budget-level-view-group-sale-order-line"
-    title="Committed lines" model="com.axelor.apps.account.db.BudgetDistribution">
+    title="Committed lines" model="com.axelor.apps.budget.db.BudgetDistribution">
     <view type="grid" name="budget-budget-distribution-sale-order-line-global-dashlet-grid"/>
     <view type="form" name="sale-order-budget-distribution-form"/>
     <domain>self.budget.budgetLevel.parentBudgetLevel.id = :_groupId and self.saleOrderLine !=
@@ -780,7 +780,7 @@
   </action-group>
 
   <action-view name="action-budget-level-view-section-purchase-order-line"
-    title="Committed lines" model="com.axelor.apps.account.db.BudgetDistribution">
+    title="Committed lines" model="com.axelor.apps.budget.db.BudgetDistribution">
     <view type="grid"
       name="budget-budget-distribution-purchase-order-line-section-dashlet-grid"/>
     <view type="form" name="budget-budget-distribution-purchase-order-line-dashlet-form"/>
@@ -792,7 +792,7 @@
   </action-view>
 
   <action-view name="action-budget-level-view-section-sale-order-line"
-    title="Committed lines" model="com.axelor.apps.account.db.BudgetDistribution">
+    title="Committed lines" model="com.axelor.apps.budget.db.BudgetDistribution">
     <view type="grid" name="budget-budget-distribution-sale-order-line-global-dashlet-grid"/>
     <view type="form" name="sale-order-budget-distribution-form"/>
     <domain>self.budget.budgetLevel.id = :_sectionId and self.saleOrderLine != null
@@ -811,7 +811,7 @@
 
   <action-view id="budget-action-budget-view-budget-distribution-purchase-order-line"
     name="action-budget-view-budget-distribution-purchase-order-line" title="Committed lines"
-    model="com.axelor.apps.account.db.BudgetDistribution">
+    model="com.axelor.apps.budget.db.BudgetDistribution">
     <view type="grid" name="budget-distribution-grid-purchase-order-line-grid"/>
     <view type="form" name="budget-budget-distribution-purchase-order-line-dashlet-form"/>
     <domain>self.budget.id = :_budgetId and self.purchaseOrderLine != null
@@ -822,7 +822,7 @@
   </action-view>
 
   <action-view name="action-budget-view-budget-distribution-sale-order-line"
-    title="Committed lines" model="com.axelor.apps.account.db.BudgetDistribution">
+    title="Committed lines" model="com.axelor.apps.budget.db.BudgetDistribution">
     <view type="grid" name="budget-budget-distribution-sale-order-line-global-dashlet-grid"/>
     <view type="form" name="sale-order-budget-distribution-form"/>
     <domain>self.budget.id = :_budgetId and self.saleOrderLine != null
@@ -882,7 +882,7 @@
   </action-view>
   <action-view
     name="action-budget-distribution-view-show-budget-section-distibution-lines"
-    title="Display distribution lines" model="com.axelor.apps.account.db.BudgetDistribution">
+    title="Display distribution lines" model="com.axelor.apps.budget.db.BudgetDistribution">
     <view type="grid" name="budget-distribution-line-grid"/>
     <view type="form" name="budget-distribution-line-form"/>
     <view-param name="show-toolbar" value="true"/>
@@ -892,7 +892,7 @@
   </action-view>
   <action-view
     name="action-budget-line-distribution-view-show-global-budget-section-distribution-lines-realized-without-po"
-    title="Display realized with no po" model="com.axelor.apps.account.db.BudgetDistribution">
+    title="Display realized with no po" model="com.axelor.apps.budget.db.BudgetDistribution">
     <view type="grid" name="budget-distribution-realized-without-po-line-grid"/>
     <view type="form" name="budget-distribution-line-form"/>
     <view-param name="show-toolbar" value="true"/>
@@ -908,7 +908,7 @@
   </action-view>
   <action-view
     name="action-budget-line-distribution-view-show-global-budget-section-distribution-lines-realized-with-po"
-    title="Display realized with po" model="com.axelor.apps.account.db.BudgetDistribution">
+    title="Display realized with po" model="com.axelor.apps.budget.db.BudgetDistribution">
     <view type="grid" name="budget-distribution-realized-with-po-line-grid"/>
     <view type="form" name="budget-distribution-line-form"/>
     <view-param name="show-toolbar" value="true"/>
@@ -922,7 +922,7 @@
   </action-view>
   <action-view
     name="action-section-budget-line-distribution-view-show-simulated-moves-lines"
-    title="Simulated Moves" model="com.axelor.apps.account.db.BudgetDistribution">
+    title="Simulated Moves" model="com.axelor.apps.budget.db.BudgetDistribution">
     <view type="grid" name="budget-distribution-simulated-moves"/>
     <view type="form" name="budget-distribution-line-form"/>
     <view-param name="show-toolbar" value="true"/>
@@ -932,7 +932,7 @@
   </action-view>
   <action-view
     name="action-budget-distribution-view-show-budget-group-distibution-lines"
-    title="Distribution lines" model="com.axelor.apps.account.db.BudgetDistribution">
+    title="Distribution lines" model="com.axelor.apps.budget.db.BudgetDistribution">
     <view type="grid" name="budget-distribution-line-grid"/>
     <view type="form" name="budget-distribution-line-form"/>
     <view-param name="show-toolbar" value="true"/>
@@ -942,7 +942,7 @@
   </action-view>
   <action-view
     name="action-budget-line-distribution-view-show-global-budget-group-distribution-lines-realized-without-po"
-    title="Display realized with no po" model="com.axelor.apps.account.db.BudgetDistribution">
+    title="Display realized with no po" model="com.axelor.apps.budget.db.BudgetDistribution">
     <view type="grid" name="budget-distribution-realized-without-po-line-grid"/>
     <view type="form" name="budget-distribution-line-form"/>
     <view-param name="show-toolbar" value="true"/>
@@ -959,7 +959,7 @@
   </action-view>
   <action-view
     name="action-budget-line-distribution-view-show-global-budget-group-distribution-lines-realized-with-po"
-    title="Display realized with po" model="com.axelor.apps.account.db.BudgetDistribution">
+    title="Display realized with po" model="com.axelor.apps.budget.db.BudgetDistribution">
     <view type="grid" name="budget-distribution-realized-with-po-line-grid"/>
     <view type="form" name="budget-distribution-line-form"/>
     <view-param name="show-toolbar" value="true"/>
@@ -973,7 +973,7 @@
   </action-view>
   <action-view
     name="action-group-budget-line-distribution-view-show-simulated-moves-lines"
-    title="Simulated Moves" model="com.axelor.apps.account.db.BudgetDistribution">
+    title="Simulated Moves" model="com.axelor.apps.budget.db.BudgetDistribution">
     <view type="grid" name="budget-distribution-simulated-moves"/>
     <view type="form" name="budget-distribution-line-form"/>
     <view-param name="show-toolbar" value="true"/>
@@ -984,7 +984,7 @@
   </action-view>
   <action-view
     name="action-budget-distribution-view-show-budget-global-budget-distibution-lines"
-    title="Distribution lines" model="com.axelor.apps.account.db.BudgetDistribution">
+    title="Distribution lines" model="com.axelor.apps.budget.db.BudgetDistribution">
     <view type="grid" name="budget-distribution-line-grid"/>
     <view type="form" name="budget-distribution-line-form"/>
     <view-param name="show-toolbar" value="true"/>
@@ -994,7 +994,7 @@
   </action-view>
   <action-view
     name="action-budget-line-distribution-view-show-global-budget-distribution-lines-realized-without-po"
-    title="Display realized with no po" model="com.axelor.apps.account.db.BudgetDistribution">
+    title="Display realized with no po" model="com.axelor.apps.budget.db.BudgetDistribution">
     <view type="grid" name="budget-distribution-realized-without-po-line-grid"/>
     <view type="form" name="budget-distribution-line-form"/>
     <view-param name="show-toolbar" value="true"/>
@@ -1010,7 +1010,7 @@
   </action-view>
   <action-view
     name="action-budget-line-distribution-view-show-global-budget-distribution-lines-realized-with-po"
-    title="Display realized with po" model="com.axelor.apps.account.db.BudgetDistribution">
+    title="Display realized with po" model="com.axelor.apps.budget.db.BudgetDistribution">
     <view type="grid" name="budget-distribution-realized-with-po-line-grid"/>
     <view type="form" name="budget-distribution-line-form"/>
     <view-param name="show-toolbar" value="true"/>
@@ -1024,7 +1024,7 @@
   </action-view>
   <action-view
     name="action-global-budget-line-distribution-view-show-simulated-moves-lines"
-    title="Simulated Moves" model="com.axelor.apps.account.db.BudgetDistribution">
+    title="Simulated Moves" model="com.axelor.apps.budget.db.BudgetDistribution">
     <view type="grid" name="budget-distribution-simulated-moves"/>
     <view type="form" name="budget-distribution-line-form"/>
     <view-param name="show-toolbar" value="true"/>

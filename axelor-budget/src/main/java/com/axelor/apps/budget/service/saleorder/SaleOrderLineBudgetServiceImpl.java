@@ -1,17 +1,16 @@
 package com.axelor.apps.budget.service.saleorder;
 
-import com.axelor.apps.account.db.Budget;
-import com.axelor.apps.account.db.BudgetDistribution;
-import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.app.AppBudgetService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.budget.db.Budget;
+import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.exception.IExceptionMessage;
 import com.axelor.apps.budget.service.BudgetBudgetDistributionService;
 import com.axelor.apps.budget.service.BudgetBudgetService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
-import com.axelor.apps.supplychain.service.BudgetSupplychainService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -27,21 +26,18 @@ public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetServic
   protected BudgetBudgetService budgetBudgetService;
   protected BudgetBudgetDistributionService budgetBudgetDistributionService;
   protected SaleOrderLineRepository saleOrderLineRepo;
-  protected AppAccountService appAccountService;
-  protected BudgetSupplychainService budgetSupplychainService;
+  protected AppBudgetService appBudgetService;
 
   @Inject
   public SaleOrderLineBudgetServiceImpl(
       BudgetBudgetService budgetBudgetService,
       BudgetBudgetDistributionService budgetBudgetDistributionService,
       SaleOrderLineRepository saleOrderLineRepo,
-      AppAccountService appAccountService,
-      BudgetSupplychainService budgetSupplychainService) {
+      AppBudgetService appBudgetService) {
     this.budgetBudgetService = budgetBudgetService;
     this.budgetBudgetDistributionService = budgetBudgetDistributionService;
     this.saleOrderLineRepo = saleOrderLineRepo;
-    this.appAccountService = appAccountService;
-    this.budgetSupplychainService = budgetSupplychainService;
+    this.appBudgetService = appBudgetService;
   }
 
   @Override
@@ -95,7 +91,8 @@ public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetServic
   @Override
   public List<BudgetDistribution> addBudgetDistribution(SaleOrderLine saleOrderLine) {
     List<BudgetDistribution> budgetDistributionList = new ArrayList<>();
-    if (!appAccountService.getAppBudget().getManageMultiBudget()
+    if (appBudgetService.getAppBudget() != null
+        && !appBudgetService.getAppBudget().getManageMultiBudget()
         && saleOrderLine.getBudget() != null) {
       BudgetDistribution budgetDistribution = new BudgetDistribution();
       budgetDistribution.setBudget(saleOrderLine.getBudget());
@@ -158,7 +155,7 @@ public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetServic
       for (BudgetDistribution budgetDistribution : budgetDistributionList) {
         budgetDistributionSumAmount =
             budgetDistributionSumAmount.add(budgetDistribution.getAmount());
-        budgetSupplychainService.computeBudgetDistributionSumAmount(
+        budgetBudgetDistributionService.computeBudgetDistributionSumAmount(
             budgetDistribution, computeDate);
       }
     }

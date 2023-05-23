@@ -4,21 +4,21 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
   <grid name="invoice-supplier-grid" id="budget-invoice-supplier-grid" title="Invoices"
-        model="com.axelor.apps.account.db.Invoice" extension="true">
+    model="com.axelor.apps.account.db.Invoice" extension="true">
     <extend target="//item[@name='seeSupplInvoicesLinesItem']">
       <insert position="after">
         <item title="See budget distribution lines"
-              action="action-invoice-see-budget-distribution-lines"/>
+          action="action-invoice-see-budget-distribution-lines"/>
       </insert>
     </extend>
   </grid>
 
-  <grid name="invoice-supplier-refund-grid" id="budget-invoice-supplier-refund-grid" title="Invoices"
-        model="com.axelor.apps.account.db.Invoice" extension="true">
+  <grid name="invoice-supplier-refund-grid" id="budget-invoice-supplier-refund-grid"
+    title="Invoices" model="com.axelor.apps.account.db.Invoice" extension="true">
     <extend target="//item[@name='seeSupplInvoicesLinesItem']">
       <insert position="after">
         <item title="See budget distribution lines"
-              action="action-invoice-see-budget-distribution-lines"/>
+          action="action-invoice-see-budget-distribution-lines"/>
       </insert>
     </extend>
   </grid>
@@ -32,9 +32,10 @@
     <extend target="panel-tabs[@name='mainPanelTab']/panel[@name='pfpAccountConfigPanel']">
       <insert position="after">
         <panel name="budgetPanel" title="Budget"
-               showIf="(statusSelect >= 2 &amp;&amp; statusSelect &lt; 4) || budgetDistributionGenerated">
+          showIf="(statusSelect >= 2 &amp;&amp; statusSelect &lt; 4) || budgetDistributionGenerated">
           <panel-dashlet name="budgetDistributionPanel" title="Budget distribution"
-                         action="action-budget-distribution-view-budget-distribution" colSpan="12" readonly="true"/>
+            action="action-budget-distribution-view-budget-distribution" colSpan="12"
+            readonly="true"/>
         </panel>
       </insert>
     </extend>
@@ -123,7 +124,7 @@
   </action-validate>
 
   <action-view name="action-budget-distribution-view-budget-distribution"
-               title="Budget distribution" model="com.axelor.apps.budget.db.BudgetDistribution">
+    title="Budget distribution" model="com.axelor.apps.budget.db.BudgetDistribution">
     <view type="grid" name="invoice-budget-distribution-grid"/>
     <view type="form" name="invoice-budget-distribution-form"/>
     <view-param name="limit" value="200"/>
@@ -132,7 +133,7 @@
   </action-view>
 
   <action-view name="action-invoice-see-budget-distribution-lines"
-               title="See budget distribution lines" model="com.axelor.apps.budget.db.BudgetDistribution">
+    title="See budget distribution lines" model="com.axelor.apps.budget.db.BudgetDistribution">
     <view type="grid" name="budget-distribution-grid-invoice-line-grid"/>
     <view type="form" name="budget-distribution-grid-invoice-line-form"/>
     <domain>self.invoiceLine.invoice.statusSelect in (2,3)</domain>

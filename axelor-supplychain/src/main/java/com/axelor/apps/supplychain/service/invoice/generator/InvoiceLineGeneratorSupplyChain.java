@@ -20,7 +20,6 @@ package com.axelor.apps.supplychain.service.invoice.generator;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AnalyticMoveLine;
-import com.axelor.apps.account.db.BudgetDistribution;
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.FixedAssetCategory;
 import com.axelor.apps.account.db.Invoice;
@@ -240,10 +239,10 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
         analyticMoveLineList.stream().forEach(invoiceLine::addAnalyticMoveLineListItem);
       }
 
-      this.copyBudgetDistributionList(purchaseOrderLine.getBudgetDistributionList(), invoiceLine);
+      /*this.copyBudgetDistributionList(purchaseOrderLine.getBudgetDistributionList(), invoiceLine);
       invoiceLine.setBudget(purchaseOrderLine.getBudget());
       invoiceLine.setBudgetDistributionSumAmount(
-          purchaseOrderLine.getBudgetDistributionSumAmount());
+          purchaseOrderLine.getBudgetDistributionSumAmount());*/
       invoiceLine.setFixedAssets(purchaseOrderLine.getFixedAssets());
 
       if (product != null && purchaseOrderLine.getFixedAssets()) {
@@ -356,7 +355,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
     }
   }
 
-  public void copyBudgetDistributionList(
+  /*public void copyBudgetDistributionList(
       List<BudgetDistribution> originalBudgetDistributionList, InvoiceLine invoiceLine) {
 
     if (originalBudgetDistributionList == null) {
@@ -370,7 +369,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
       budgetDistribution.setBudgetAmountAvailable(budgetDistributionIt.getBudgetAmountAvailable());
       invoiceLine.addBudgetDistributionListItem(budgetDistribution);
     }
-  }
+  }*/
 
   public Unit getSaleOrPurchaseUnit() throws AxelorException {
 

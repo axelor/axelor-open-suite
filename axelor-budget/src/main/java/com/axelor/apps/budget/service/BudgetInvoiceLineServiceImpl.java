@@ -1,8 +1,7 @@
 package com.axelor.apps.budget.service;
 
-import com.axelor.apps.budget.db.BudgetDistribution;
+import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.budget.db.repo.BudgetRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -16,13 +15,19 @@ import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
+import com.axelor.apps.budget.db.BudgetDistribution;
+import com.axelor.apps.budget.db.repo.BudgetRepository;
 import com.axelor.apps.budget.exception.IExceptionMessage;
 import com.axelor.apps.businessproject.service.InvoiceLineProjectServiceImpl;
+import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.service.SupplierCatalogService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
 
 @RequestScoped
 public class BudgetInvoiceLineServiceImpl extends InvoiceLineProjectServiceImpl
@@ -121,9 +126,9 @@ public class BudgetInvoiceLineServiceImpl extends InvoiceLineProjectServiceImpl
 
       for (BudgetDistribution budgetDistribution : budgetDistributionList) {
         budgetDistributionSumAmount =
-                budgetDistributionSumAmount.add(budgetDistribution.getAmount());
-        Beans.get(BudgetSupplychainService.class)
-                .computeBudgetDistributionSumAmount(budgetDistribution, computeDate);
+            budgetDistributionSumAmount.add(budgetDistribution.getAmount());
+        budgetBudgetDistributionService.computeBudgetDistributionSumAmount(
+            budgetDistribution, computeDate);
       }
     }
     invoiceLine.setBudgetDistributionSumAmount(budgetDistributionSumAmount);

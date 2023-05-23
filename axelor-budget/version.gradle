@@ -1,8 +1,0 @@
-ext.versionFile = "version.txt"
-ext.baseVersion = project.file(versionFile).text.trim()
-
-version baseVersion
-
-if(!project.hasProperty("finalRelease")) {
-    version += "-SNAPSHOT"
-}

@@ -5,9 +5,6 @@ import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticAxisByCompany;
 import com.axelor.apps.account.db.AnalyticMoveLine;
-import com.axelor.apps.budget.db.Budget;
-import com.axelor.apps.budget.db.BudgetDistribution;
-import com.axelor.apps.budget.db.BudgetLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.Move;
@@ -15,9 +12,6 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.AnalyticDistributionLineRepository;
-import com.axelor.apps.budget.db.repo.BudgetDistributionRepository;
-import com.axelor.apps.budget.db.repo.BudgetLineRepository;
-import com.axelor.apps.budget.db.repo.BudgetRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
@@ -27,17 +21,18 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.budget.db.Budget;
+import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.db.BudgetLevel;
+import com.axelor.apps.budget.db.BudgetLine;
+import com.axelor.apps.budget.db.repo.BudgetDistributionRepository;
 import com.axelor.apps.budget.db.repo.BudgetLevelRepository;
+import com.axelor.apps.budget.db.repo.BudgetLineRepository;
+import com.axelor.apps.budget.db.repo.BudgetRepository;
 import com.axelor.apps.budget.exception.IExceptionMessage;
-import com.axelor.apps.purchase.db.PurchaseOrder;
-import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
-import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.supplychain.service.BudgetSupplychainService;
 import com.axelor.i18n.I18n;
 import com.axelor.utils.date.DateTool;
 import com.google.common.base.Strings;
@@ -53,12 +48,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.ListUtils;
 
 @RequestScoped
-public class BudgetBudgetServiceImpl extends BudgetSupplychainService
-    implements BudgetBudgetService {
+public class BudgetBudgetServiceImpl implements BudgetBudgetService {
 
+  protected BudgetLineRepository budgetLineRepository;
+  protected BudgetRepository budgetRepository;
   protected BudgetLevelRepository budgetLevelRepository;
   protected PurchaseOrderLineRepository purchaseOrderLineRepo;
   protected BudgetDistributionRepository budgetDistributionRepo;
@@ -70,6 +65,7 @@ public class BudgetBudgetServiceImpl extends BudgetSupplychainService
   protected BudgetLevelService budgetLevelService;
   protected AccountRepository accountRepo;
   protected AnalyticDistributionLineRepository analyticDistributionLineRepo;
+  protected BudgetInvoiceService budgetInvoiceService;
 
   @Inject
   public BudgetBudgetServiceImpl(
@@ -85,8 +81,10 @@ public class BudgetBudgetServiceImpl extends BudgetSupplychainService
       BudgetDistributionRepository budgetDistributionRepository,
       BudgetLevelService budgetLevelService,
       AccountRepository accountRepo,
-      AnalyticDistributionLineRepository analyticDistributionLineRepo) {
-    super(budgetLineRepository, budgetRepository);
+      AnalyticDistributionLineRepository analyticDistributionLineRepo,
+      BudgetInvoiceService budgetInvoiceService) {
+    this.budgetLineRepository = budgetLineRepository;
+    this.budgetRepository = budgetRepository;
     this.budgetLevelRepository = budgetLevelRepository;
     this.purchaseOrderLineRepo = purchaseOrderLineRepo;
     this.budgetDistributionRepo = budgetDistributionRepo;
@@ -98,6 +96,7 @@ public class BudgetBudgetServiceImpl extends BudgetSupplychainService
     this.budgetLevelService = budgetLevelService;
     this.accountRepo = accountRepo;
     this.analyticDistributionLineRepo = analyticDistributionLineRepo;
+    this.budgetInvoiceService = budgetInvoiceService;
   }
 
   @Override
@@ -186,46 +185,6 @@ public class BudgetBudgetServiceImpl extends BudgetSupplychainService
   }
 
   @Override
-  public void updateBudgetLinesFromPurchaseOrder(PurchaseOrder purchaseOrder) {
-
-    if (CollectionUtils.isNotEmpty(purchaseOrder.getPurchaseOrderLineList())) {
-      for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
-        if (CollectionUtils.isNotEmpty(purchaseOrderLine.getBudgetDistributionList())) {
-          purchaseOrderLine.getBudgetDistributionList().stream()
-              .forEach(
-                  budgetDistribution -> {
-                    Budget budget = budgetDistribution.getBudget();
-                    updateLines(budget);
-                    computeTotalAmountCommitted(budget);
-                    computeTotalAmountPaid(budget);
-                    computeToBeCommittedAmount(budget);
-                  });
-        }
-      }
-    }
-  }
-
-  @Override
-  public void updateBudgetLinesFromSaleOrder(SaleOrder saleOrder) {
-
-    if (CollectionUtils.isNotEmpty(saleOrder.getSaleOrderLineList())) {
-      for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-        if (CollectionUtils.isNotEmpty(saleOrderLine.getBudgetDistributionList())) {
-          saleOrderLine.getBudgetDistributionList().stream()
-              .forEach(
-                  budgetDistribution -> {
-                    Budget budget = budgetDistribution.getBudget();
-                    updateLines(budget);
-                    computeTotalAmountCommitted(budget);
-                    computeTotalAmountPaid(budget);
-                    computeToBeCommittedAmount(budget);
-                  });
-        }
-      }
-    }
-  }
-
-  @Override
   @Transactional(rollbackOn = {RuntimeException.class})
   public BigDecimal computeTotalAmountPaid(Budget budget) {
 
@@ -270,8 +229,22 @@ public class BudgetBudgetServiceImpl extends BudgetSupplychainService
   }
 
   @Override
-  public BigDecimal _computeTotalAmountCommitted(Budget budget) {
-    return computeTotalAmountCommitted(budget);
+  @Transactional
+  public BigDecimal computeTotalAmountCommitted(Budget budget) {
+    List<BudgetLine> budgetLineList = budget.getBudgetLineList();
+
+    if (budgetLineList == null) {
+      return BigDecimal.ZERO;
+    }
+
+    BigDecimal totalAmountCommitted =
+        budgetLineList.stream()
+            .map(BudgetLine::getAmountCommitted)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+    budget.setTotalAmountCommitted(totalAmountCommitted);
+
+    return totalAmountCommitted;
   }
 
   @Override
@@ -306,25 +279,31 @@ public class BudgetBudgetServiceImpl extends BudgetSupplychainService
   @Transactional
   public BigDecimal computeTotalAmountRealized(Budget budget) {
 
-    BigDecimal totalAmountRealized = super.computeTotalAmountRealized(budget);
+    BigDecimal totalAmountRealized = BigDecimal.ZERO;
+    BigDecimal realizedWithPo = BigDecimal.ZERO;
+    BigDecimal realizedWithNoPo = BigDecimal.ZERO;
 
-    List<BudgetLine> budgetLineList =
-        CollectionUtils.isNotEmpty(budget.getBudgetLineList())
-            ? budget.getBudgetLineList()
-            : ListUtils.EMPTY_LIST;
+    List<BudgetLine> budgetLineList = budget.getBudgetLineList();
 
-    BigDecimal realizedWithPo =
-        budgetLineList.stream()
-            .map(BudgetLine::getRealizedWithPo)
-            .reduce(BigDecimal.ZERO, BigDecimal::add);
+    if (!CollectionUtils.isEmpty(budgetLineList)) {
+      totalAmountRealized =
+          budgetLineList.stream()
+              .map(BudgetLine::getAmountRealized)
+              .reduce(BigDecimal.ZERO, BigDecimal::add);
+      realizedWithPo =
+          budgetLineList.stream()
+              .map(BudgetLine::getRealizedWithPo)
+              .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-    BigDecimal realizedWithNoPo =
-        budgetLineList.stream()
-            .map(BudgetLine::getRealizedWithNoPo)
-            .reduce(BigDecimal.ZERO, BigDecimal::add);
+      realizedWithNoPo =
+          budgetLineList.stream()
+              .map(BudgetLine::getRealizedWithNoPo)
+              .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-    budget.setRealizedWithPo(realizedWithPo);
-    budget.setRealizedWithNoPo(realizedWithNoPo);
+      budget.setTotalAmountRealized(totalAmountRealized);
+      budget.setRealizedWithPo(realizedWithPo);
+      budget.setRealizedWithNoPo(realizedWithNoPo);
+    }
 
     return totalAmountRealized;
   }
@@ -369,9 +348,9 @@ public class BudgetBudgetServiceImpl extends BudgetSupplychainService
       for (BudgetDistribution budgetDistribution : budgetDistributionList) {
         if (invoiceLine.getInvoice().getPurchaseOrder() != null
             || invoiceLine.getInvoice().getSaleOrder() != null) {
-          updateLineWithPO(budgetDistribution, invoice, invoiceLine);
+          budgetInvoiceService.updateLineWithPO(budgetDistribution, invoice, invoiceLine);
         } else {
-          updateLineWithNoPO(budgetDistribution, invoice);
+          budgetInvoiceService.updateLineWithNoPO(budgetDistribution, invoice);
         }
         Budget budget = budgetDistribution.getBudget();
         if (budget != null) {
@@ -380,87 +359,6 @@ public class BudgetBudgetServiceImpl extends BudgetSupplychainService
           computeTotalAmountCommitted(budget);
           budgetRepository.save(budget);
         }
-      }
-    }
-  }
-
-  @Override
-  @Transactional
-  public void updateLineWithNoPO(BudgetDistribution budgetDistribution, Invoice invoice) {
-    if (budgetDistribution != null && budgetDistribution.getBudget() != null) {
-      LocalDate date =
-          invoice.getInvoiceDate() != null
-              ? invoice.getInvoiceDate()
-              : invoice.getCreatedOn().toLocalDate();
-      Budget budget = budgetDistribution.getBudget();
-      Optional<BudgetLine> optBudgetLine =
-          budgetLineService.findBudgetLineAtDate(budget.getBudgetLineList(), date);
-      if (optBudgetLine.isPresent()) {
-        BudgetLine budgetLine = optBudgetLine.get();
-        budgetLine.setRealizedWithNoPo(
-            budgetLine.getRealizedWithNoPo().add(budgetDistribution.getAmount()));
-        budgetLine.setAmountRealized(
-            budgetLine.getAmountRealized().add(budgetDistribution.getAmount()));
-        budgetLine.setToBeCommittedAmount(
-            budgetLine.getToBeCommittedAmount().subtract(budgetDistribution.getAmount()));
-        BigDecimal firmGap =
-            budgetLine
-                .getAmountExpected()
-                .subtract(budgetLine.getRealizedWithPo().add(budgetLine.getRealizedWithNoPo()));
-        budgetLine.setFirmGap(firmGap.signum() >= 0 ? BigDecimal.ZERO : firmGap.abs());
-
-        budgetLine.setAvailableAmount(
-            budgetLine
-                        .getAvailableAmount()
-                        .subtract(budgetDistribution.getAmount())
-                        .compareTo(BigDecimal.ZERO)
-                    > 0
-                ? budgetLine.getAvailableAmount().subtract(budgetDistribution.getAmount())
-                : BigDecimal.ZERO);
-      }
-    }
-  }
-
-  @Override
-  @Transactional
-  public void updateLineWithPO(
-      BudgetDistribution budgetDistribution, Invoice invoice, InvoiceLine invoiceLine) {
-
-    if (budgetDistribution != null && budgetDistribution.getBudget() != null) {
-      LocalDate date = null;
-      if (invoiceLine.getInvoice().getPurchaseOrder() != null
-          && invoiceLine.getInvoice().getPurchaseOrder().getOrderDate() != null) {
-        date = invoiceLine.getInvoice().getPurchaseOrder().getOrderDate();
-      } else if (invoiceLine.getInvoice().getSaleOrder() != null) {
-        date =
-            invoiceLine.getInvoice().getSaleOrder().getOrderDate() != null
-                ? invoiceLine.getInvoice().getSaleOrder().getOrderDate()
-                : invoiceLine.getInvoice().getSaleOrder().getCreationDate();
-      }
-      Budget budget = budgetDistribution.getBudget();
-      Optional<BudgetLine> optBudgetLine =
-          budgetLineService.findBudgetLineAtDate(budget.getBudgetLineList(), date);
-      if (optBudgetLine.isPresent()) {
-        BudgetLine budgetLine = optBudgetLine.get();
-        budgetLine.setRealizedWithPo(
-            budgetLine.getRealizedWithPo().add(budgetDistribution.getAmount()));
-        budgetLine.setAmountRealized(
-            budgetLine.getAmountRealized().add(budgetDistribution.getAmount()));
-        budgetLine.setAmountCommitted(
-            budgetLine.getAmountCommitted().subtract(budgetDistribution.getAmount()));
-        BigDecimal firmGap =
-            budgetLine
-                .getAmountExpected()
-                .subtract(budgetLine.getRealizedWithPo().add(budgetLine.getRealizedWithNoPo()));
-        budgetLine.setFirmGap(firmGap.signum() >= 0 ? BigDecimal.ZERO : firmGap.abs());
-        budgetLine.setAvailableAmount(
-            budgetLine
-                        .getAvailableAmount()
-                        .subtract(budgetDistribution.getAmount())
-                        .compareTo(BigDecimal.ZERO)
-                    > 0
-                ? budgetLine.getAvailableAmount().subtract(budgetDistribution.getAmount())
-                : BigDecimal.ZERO);
       }
     }
   }

@@ -1,53 +1,51 @@
 package com.axelor.apps.budget.service.purchaseorder;
 
-import com.axelor.apps.budget.db.Budget;
-import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
-import com.axelor.apps.budget.db.repo.BudgetRepository;
-import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.app.AppBudgetService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.budget.db.Budget;
+import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.db.repo.BudgetLevelRepository;
+import com.axelor.apps.budget.db.repo.BudgetRepository;
 import com.axelor.apps.budget.exception.IExceptionMessage;
 import com.axelor.apps.budget.service.BudgetBudgetDistributionService;
 import com.axelor.apps.budget.service.BudgetBudgetService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
-import com.axelor.apps.supplychain.service.BudgetSupplychainService;
-import com.axelor.apps.supplychain.service.PurchaseOrderLineBudgetServiceImpl;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 @RequestScoped
-public class PurchaseOrderLineBudgetBudgetServiceImpl extends PurchaseOrderLineBudgetServiceImpl
+public class PurchaseOrderLineBudgetBudgetServiceImpl
     implements PurchaseOrderLineBudgetBudgetService {
   protected BudgetBudgetService budgetBudgetService;
   protected BudgetRepository budgetRepository;
   protected BudgetBudgetDistributionService budgetBudgetDistributionService;
   protected PurchaseOrderLineRepository purchaseOrderLineRepo;
-  protected AppAccountService appAccountService;
+  protected AppBudgetService appBudgetService;
 
   @Inject
   public PurchaseOrderLineBudgetBudgetServiceImpl(
-      BudgetSupplychainService budgetSupplychainService,
       BudgetBudgetService budgetBudgetService,
       BudgetRepository budgetRepository,
       BudgetBudgetDistributionService budgetBudgetDistributionService,
       PurchaseOrderLineRepository purchaseOrderLineRepo,
-      AppAccountService appAccountService) {
-    super(budgetSupplychainService);
+      AppBudgetService appBudgetService) {
     this.budgetBudgetService = budgetBudgetService;
     this.budgetRepository = budgetRepository;
     this.budgetBudgetDistributionService = budgetBudgetDistributionService;
     this.purchaseOrderLineRepo = purchaseOrderLineRepo;
-    this.appAccountService = appAccountService;
+    this.appBudgetService = appBudgetService;
   }
 
   @Override
@@ -99,7 +97,7 @@ public class PurchaseOrderLineBudgetBudgetServiceImpl extends PurchaseOrderLineB
   @Override
   public List<BudgetDistribution> addBudgetDistribution(PurchaseOrderLine purchaseOrderLine) {
     List<BudgetDistribution> budgetDistributionList = new ArrayList<>();
-    if (!appAccountService.getAppBudget().getManageMultiBudget()
+    if (!appBudgetService.getAppBudget().getManageMultiBudget()
         && purchaseOrderLine.getBudget() != null) {
       BudgetDistribution budgetDistribution = new BudgetDistribution();
       budgetDistribution.setBudget(purchaseOrderLine.getBudget());
@@ -197,5 +195,25 @@ public class PurchaseOrderLineBudgetBudgetServiceImpl extends PurchaseOrderLineB
         }
       }
     }
+  }
+
+  @Override
+  public void computeBudgetDistributionSumAmount(
+      PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder) {
+    List<BudgetDistribution> budgetDistributionList = purchaseOrderLine.getBudgetDistributionList();
+    BigDecimal budgetDistributionSumAmount = BigDecimal.ZERO;
+    LocalDate computeDate = purchaseOrder.getOrderDate();
+
+    if (CollectionUtils.isNotEmpty(budgetDistributionList)) {
+      for (BudgetDistribution budgetDistribution : budgetDistributionList) {
+        budgetDistributionSumAmount =
+            budgetDistributionSumAmount.add(budgetDistribution.getAmount());
+
+        budgetBudgetDistributionService.computeBudgetDistributionSumAmount(
+            budgetDistribution, computeDate);
+      }
+    }
+
+    purchaseOrderLine.setBudgetDistributionSumAmount(budgetDistributionSumAmount);
   }
 }

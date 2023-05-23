@@ -4,17 +4,15 @@ import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticMoveLine;
-import com.axelor.apps.budget.db.Budget;
-import com.axelor.apps.budget.db.BudgetDistribution;
-import com.axelor.apps.budget.db.BudgetLine;
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.budget.db.Budget;
+import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.db.BudgetLevel;
-import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.budget.db.BudgetLine;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -42,7 +40,7 @@ public interface BudgetBudgetService {
    * @param budget
    * @return BigDecimal
    */
-  public BigDecimal _computeTotalAmountCommitted(Budget budget);
+  public BigDecimal computeTotalAmountCommitted(Budget budget);
 
   /**
    * Set from date and to date of selected budget and save it
@@ -52,25 +50,6 @@ public interface BudgetBudgetService {
    */
   public void updateBudgetDates(Budget budget, LocalDate fromDate, LocalDate toDate)
       throws AxelorException;
-
-  /**
-   * Select budget line linked to the budget distribution at invoice's date or invoice's created on
-   * if date is null and modify totals (realized without po, realized, to be committed, firm gap and
-   * available) as a without purchase order line
-   *
-   * @param budgetDistribution, invoice
-   */
-  public void updateLineWithNoPO(BudgetDistribution budgetDistribution, Invoice invoice);
-
-  /**
-   * Select budget line linked to the budget distribution at purchase order's order date and modify
-   * totals (realized with po, realized, to be committed, firm gap and available) as a without
-   * purchase order line
-   *
-   * @param budgetDistribution, invoice
-   */
-  public void updateLineWithPO(
-      BudgetDistribution budgetDistribution, Invoice invoice, InvoiceLine invoiceLine);
 
   /**
    * Compute all firm gap in budget lines and set the total firm gap on budget then save it
@@ -254,8 +233,6 @@ public interface BudgetBudgetService {
    */
   public void createBudgetKey(Budget budget) throws AxelorException;
 
-  void updateBudgetLinesFromSaleOrder(SaleOrder saleOrder);
-
   /**
    * Get all accounts that are linked to this company and active from immobilisation, payable,
    * receivable, tax, charge or income type.
@@ -317,4 +294,13 @@ public interface BudgetBudgetService {
   void validateBudgetDistributionAmounts(
       List<BudgetDistribution> budgetDistributionList, BigDecimal amount, String code)
       throws AxelorException;
+
+  public List<BudgetLine> updateLines(Budget budget);
+
+  public void updateBudgetLinesFromInvoice(Invoice invoice);
+
+  public BigDecimal computeTotalAmountRealized(Budget budget);
+
+  public void computeBudgetDistributionSumAmount(
+      BudgetDistribution budgetDistribution, LocalDate computeDate);
 }

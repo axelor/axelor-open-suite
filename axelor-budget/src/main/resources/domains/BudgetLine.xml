@@ -13,12 +13,12 @@
     <many-to-one name="budget" ref="com.axelor.apps.budget.db.Budget"/>
 
     <decimal name="amountCommitted" title="Committed amount"
-             help="Represents the sum of purchase orders of status requested, validated or finished and that don't have a invoiced invoice."
-             precision="20" scale="2"/>
+      help="Represents the sum of purchase orders of status requested, validated or finished and that don't have a invoiced invoice."
+      precision="20" scale="2"/>
 
     <decimal name="amountExpected" title="Expected amount"
-             help="Expected amount allocated on the budget. This amount is automatically computed by adding up expected amounts of bellowed levels."
-             precision="20" scale="2"/>
+      help="Expected amount allocated on the budget. This amount is automatically computed by adding up expected amounts of bellowed levels."
+      precision="20" scale="2"/>
     <decimal name="amountRealized" title="Realized amount" precision="20" scale="2"/>
 
     <decimal name="amountPaid" title="Paid amount" precision="20" scale="2"/>

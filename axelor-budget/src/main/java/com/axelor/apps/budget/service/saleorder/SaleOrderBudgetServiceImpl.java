@@ -1,6 +1,5 @@
 package com.axelor.apps.budget.service.saleorder;
 
-import com.axelor.apps.account.db.BudgetDistribution;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
@@ -8,6 +7,8 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.budget.db.Budget;
+import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.service.BudgetBudgetDistributionService;
 import com.axelor.apps.budget.service.BudgetBudgetService;
 import com.axelor.apps.businessproject.service.SaleOrderInvoiceProjectServiceImpl;
@@ -178,6 +179,26 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
       budgetDistribution.setAmount(budgetDistributionIt.getAmount());
       budgetDistribution.setBudgetAmountAvailable(budgetDistributionIt.getBudgetAmountAvailable());
       invoiceLine.addBudgetDistributionListItem(budgetDistribution);
+    }
+  }
+
+  @Override
+  public void updateBudgetLinesFromSaleOrder(SaleOrder saleOrder) {
+
+    if (CollectionUtils.isNotEmpty(saleOrder.getSaleOrderLineList())) {
+      for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+        if (CollectionUtils.isNotEmpty(saleOrderLine.getBudgetDistributionList())) {
+          saleOrderLine.getBudgetDistributionList().stream()
+              .forEach(
+                  budgetDistribution -> {
+                    Budget budget = budgetDistribution.getBudget();
+                    budgetBudgetService.updateLines(budget);
+                    budgetBudgetService.computeTotalAmountCommitted(budget);
+                    budgetBudgetService.computeTotalAmountPaid(budget);
+                    budgetBudgetService.computeToBeCommittedAmount(budget);
+                  });
+        }
+      }
     }
   }
 }

@@ -1,8 +1,8 @@
 package com.axelor.apps.sale.repo;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
-import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.budget.service.BudgetBudgetServiceImpl;
 import com.axelor.apps.budget.service.saleorder.SaleOrderBudgetService;
 import com.axelor.apps.sale.db.SaleOrder;

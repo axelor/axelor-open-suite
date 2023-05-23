@@ -1,14 +1,11 @@
 package com.axelor.apps.budget.service;
 
-import com.axelor.apps.budget.db.Budget;
-import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.budget.db.repo.BudgetDistributionRepository;
-import com.axelor.apps.budget.db.repo.BudgetRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.app.AppBudgetService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
@@ -20,10 +17,16 @@ import com.axelor.apps.account.service.invoice.generator.invoice.RefundInvoice;
 import com.axelor.apps.account.service.invoice.print.InvoiceProductStatementService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
+import com.axelor.apps.budget.db.Budget;
+import com.axelor.apps.budget.db.BudgetDistribution;
+import com.axelor.apps.budget.db.BudgetLine;
+import com.axelor.apps.budget.db.repo.BudgetDistributionRepository;
+import com.axelor.apps.budget.db.repo.BudgetRepository;
 import com.axelor.apps.cash.management.service.InvoiceEstimatedPaymentService;
 import com.axelor.apps.cash.management.service.InvoiceServiceManagementImpl;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
@@ -35,10 +38,13 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
 
 @RequestScoped
@@ -49,6 +55,9 @@ public class BudgetInvoiceServiceImpl extends InvoiceServiceManagementImpl
   protected BudgetRepository budgetRepository;
   protected BudgetInvoiceLineService budgetInvoiceLineService;
   protected BudgetBudgetDistributionService budgetDistributionService;
+  protected BudgetBudgetService budgetBudgetService;
+  protected BudgetLineService budgetLineService;
+  protected AppBudgetService appBudgetService;
 
   @Inject
   public BudgetInvoiceServiceImpl(
@@ -75,7 +84,10 @@ public class BudgetInvoiceServiceImpl extends InvoiceServiceManagementImpl
       BudgetDistributionRepository budgetDistributionRepo,
       BudgetRepository budgetRepository,
       BudgetInvoiceLineService budgetInvoiceLineService,
-      BudgetBudgetDistributionService budgetDistributionService) {
+      BudgetBudgetDistributionService budgetDistributionService,
+      BudgetBudgetService budgetBudgetService,
+      BudgetLineService budgetLineService,
+      AppBudgetService appBudgetService) {
     super(
         validateFactory,
         ventilateFactory,
@@ -101,6 +113,9 @@ public class BudgetInvoiceServiceImpl extends InvoiceServiceManagementImpl
     this.budgetRepository = budgetRepository;
     this.budgetInvoiceLineService = budgetInvoiceLineService;
     this.budgetDistributionService = budgetDistributionService;
+    this.budgetBudgetService = budgetBudgetService;
+    this.budgetLineService = budgetLineService;
+    this.appBudgetService = appBudgetService;
   }
 
   @Override
@@ -155,8 +170,8 @@ public class BudgetInvoiceServiceImpl extends InvoiceServiceManagementImpl
 
     List<InvoiceLine> invoiceLineList = invoice.getInvoiceLineList();
 
-    if (appAccountService.isApp("budget")
-        && appAccountService.getAppBudget().getCheckAvailableBudget()
+    if (appBudgetService.getAppBudget() != null
+        && appBudgetService.getAppBudget().getCheckAvailableBudget()
         && invoice.getId() != null
         && CollectionUtils.isNotEmpty(invoiceLineList)
         && invoice.getOperationTypeSelect() < InvoiceRepository.OPERATION_TYPE_CLIENT_SALE) {
@@ -164,7 +179,7 @@ public class BudgetInvoiceServiceImpl extends InvoiceServiceManagementImpl
       Map<Budget, BigDecimal> amountPerBudgetMap = new HashMap<>();
 
       for (InvoiceLine invoiceLine : invoiceLineList) {
-        if (appAccountService.getAppBudget().getManageMultiBudget()
+        if (appBudgetService.getAppBudget().getManageMultiBudget()
             && CollectionUtils.isNotEmpty(invoiceLine.getBudgetDistributionList())) {
 
           for (BudgetDistribution budgetDistribution : invoiceLine.getBudgetDistributionList()) {
@@ -223,5 +238,190 @@ public class BudgetInvoiceServiceImpl extends InvoiceServiceManagementImpl
       }
     }
     return false;
+  }
+
+  @Override
+  public void updateBudgetLinesFromInvoice(Invoice invoice) {
+    List<InvoiceLine> invoiceLineList = invoice.getInvoiceLineList();
+
+    if (CollectionUtils.isEmpty(invoiceLineList)) {
+      return;
+    }
+
+    invoiceLineList.stream()
+        .filter(invoiceLine -> !CollectionUtils.isEmpty(invoiceLine.getBudgetDistributionList()))
+        .forEach(
+            invoiceLine -> {
+              updateLinesFromInvoice(invoiceLine.getBudgetDistributionList(), invoice, invoiceLine);
+            });
+  }
+
+  @Transactional
+  protected void updateLinesFromInvoice(
+      List<BudgetDistribution> budgetDistributionList, Invoice invoice, InvoiceLine invoiceLine) {
+    if (budgetDistributionList != null) {
+      for (BudgetDistribution budgetDistribution : budgetDistributionList) {
+        if (invoiceLine.getInvoice().getPurchaseOrder() != null
+            || invoiceLine.getInvoice().getSaleOrder() != null) {
+          updateLineWithPO(budgetDistribution, invoice, invoiceLine);
+        } else {
+          updateLineWithNoPO(budgetDistribution, invoice);
+        }
+        Budget budget = budgetDistribution.getBudget();
+        if (budget != null) {
+          budgetBudgetService.computeTotalAmountRealized(budget);
+          budgetBudgetService.computeTotalFirmGap(budget);
+          budgetBudgetService.computeTotalAmountCommitted(budget);
+          budgetRepository.save(budget);
+        }
+      }
+    }
+  }
+
+  @Override
+  @Transactional
+  public void updateLineWithNoPO(BudgetDistribution budgetDistribution, Invoice invoice) {
+    if (budgetDistribution != null && budgetDistribution.getBudget() != null) {
+      LocalDate date =
+          invoice.getInvoiceDate() != null
+              ? invoice.getInvoiceDate()
+              : invoice.getCreatedOn().toLocalDate();
+      Budget budget = budgetDistribution.getBudget();
+      Optional<BudgetLine> optBudgetLine =
+          budgetLineService.findBudgetLineAtDate(budget.getBudgetLineList(), date);
+      if (optBudgetLine.isPresent()) {
+        BudgetLine budgetLine = optBudgetLine.get();
+        budgetLine.setRealizedWithNoPo(
+            budgetLine.getRealizedWithNoPo().add(budgetDistribution.getAmount()));
+        budgetLine.setAmountRealized(
+            budgetLine.getAmountRealized().add(budgetDistribution.getAmount()));
+        budgetLine.setToBeCommittedAmount(
+            budgetLine.getToBeCommittedAmount().subtract(budgetDistribution.getAmount()));
+        BigDecimal firmGap =
+            budgetLine
+                .getAmountExpected()
+                .subtract(budgetLine.getRealizedWithPo().add(budgetLine.getRealizedWithNoPo()));
+        budgetLine.setFirmGap(firmGap.signum() >= 0 ? BigDecimal.ZERO : firmGap.abs());
+
+        budgetLine.setAvailableAmount(
+            budgetLine
+                        .getAvailableAmount()
+                        .subtract(budgetDistribution.getAmount())
+                        .compareTo(BigDecimal.ZERO)
+                    > 0
+                ? budgetLine.getAvailableAmount().subtract(budgetDistribution.getAmount())
+                : BigDecimal.ZERO);
+      }
+    }
+  }
+
+  @Override
+  @Transactional
+  public void updateLineWithPO(
+      BudgetDistribution budgetDistribution, Invoice invoice, InvoiceLine invoiceLine) {
+
+    if (budgetDistribution != null && budgetDistribution.getBudget() != null) {
+      LocalDate date = null;
+      if (invoiceLine.getInvoice().getPurchaseOrder() != null
+          && invoiceLine.getInvoice().getPurchaseOrder().getOrderDate() != null) {
+        date = invoiceLine.getInvoice().getPurchaseOrder().getOrderDate();
+      } else if (invoiceLine.getInvoice().getSaleOrder() != null) {
+        date =
+            invoiceLine.getInvoice().getSaleOrder().getOrderDate() != null
+                ? invoiceLine.getInvoice().getSaleOrder().getOrderDate()
+                : invoiceLine.getInvoice().getSaleOrder().getCreationDate();
+      }
+      Budget budget = budgetDistribution.getBudget();
+      Optional<BudgetLine> optBudgetLine =
+          budgetLineService.findBudgetLineAtDate(budget.getBudgetLineList(), date);
+      if (optBudgetLine.isPresent()) {
+        BudgetLine budgetLine = optBudgetLine.get();
+        budgetLine.setRealizedWithPo(
+            budgetLine.getRealizedWithPo().add(budgetDistribution.getAmount()));
+        budgetLine.setAmountRealized(
+            budgetLine.getAmountRealized().add(budgetDistribution.getAmount()));
+        budgetLine.setAmountCommitted(
+            budgetLine.getAmountCommitted().subtract(budgetDistribution.getAmount()));
+        BigDecimal firmGap =
+            budgetLine
+                .getAmountExpected()
+                .subtract(budgetLine.getRealizedWithPo().add(budgetLine.getRealizedWithNoPo()));
+        budgetLine.setFirmGap(firmGap.signum() >= 0 ? BigDecimal.ZERO : firmGap.abs());
+        budgetLine.setAvailableAmount(
+            budgetLine
+                        .getAvailableAmount()
+                        .subtract(budgetDistribution.getAmount())
+                        .compareTo(BigDecimal.ZERO)
+                    > 0
+                ? budgetLine.getAvailableAmount().subtract(budgetDistribution.getAmount())
+                : BigDecimal.ZERO);
+      }
+    }
+  }
+
+  @Override
+  public void generateBudgetDistribution(Invoice invoice) {
+    if (invoice.getInvoiceLineList() != null) {
+      for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+        if (invoiceLine.getBudget() != null
+            && (invoiceLine.getBudgetDistributionList() == null
+                || invoiceLine.getBudgetDistributionList().isEmpty())) {
+          BudgetDistribution budgetDistribution = new BudgetDistribution();
+          budgetDistribution.setBudget(invoiceLine.getBudget());
+          budgetDistribution.setAmount(invoiceLine.getCompanyExTaxTotal());
+          invoiceLine.addBudgetDistributionListItem(budgetDistribution);
+        }
+      }
+    }
+  }
+
+  @Override
+  public void setComputedBudgetLinesAmount(List<InvoiceLine> invoiceLineList) {
+    invoiceLineList.forEach(invoiceLine -> computeBudgetLineAmount(invoiceLineList, invoiceLine));
+  }
+
+  protected void computeBudgetLineAmount(
+      List<InvoiceLine> invoiceLineList, InvoiceLine invoiceLine) {
+
+    Product product = invoiceLine.getProduct();
+
+    if (invoiceLine != null && !CollectionUtils.isEmpty(invoiceLine.getBudgetDistributionList())) {
+      invoiceLine
+          .getBudgetDistributionList()
+          .forEach(
+              budgetDistribution ->
+                  budgetDistribution.setAmount(
+                      divideBudgetDistributionAmount(
+                          budgetDistribution, product, invoiceLineList)));
+    }
+  }
+
+  protected BigDecimal divideBudgetDistributionAmount(
+      BudgetDistribution budgetDistribution, Product product, List<InvoiceLine> invoiceLineList) {
+    return budgetDistribution
+        .getAmount()
+        .divide(
+            new BigDecimal(
+                countInvoiceLineWithSameProductAndBudget(
+                    product, invoiceLineList, budgetDistribution.getBudget())),
+            RoundingMode.HALF_UP);
+  }
+
+  protected long countInvoiceLineWithSameProductAndBudget(
+      Product product, List<InvoiceLine> invoiceLineList, Budget budget) {
+    return invoiceLineList.stream()
+        .filter(
+            invoiceLine ->
+                product.equals(invoiceLine.getProduct()) && useSameBudget(budget, invoiceLine))
+        .count();
+  }
+
+  protected boolean useSameBudget(Budget budget, InvoiceLine invoiceLine) {
+    List<BudgetDistribution> budgetDistributionList = invoiceLine.getBudgetDistributionList();
+    if (budgetDistributionList == null) {
+      return false;
+    }
+    return budgetDistributionList.stream()
+        .anyMatch(budgetDistribution -> budget.equals(budgetDistribution.getBudget()));
   }
 }

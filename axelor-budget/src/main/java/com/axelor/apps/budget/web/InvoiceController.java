@@ -7,9 +7,9 @@ import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.budget.exception.IExceptionMessage;
 import com.axelor.apps.budget.service.BudgetBudgetService;
+import com.axelor.apps.budget.service.BudgetInvoiceLineService;
 import com.axelor.apps.budget.service.BudgetInvoiceService;
 import com.axelor.apps.budget.service.BudgetToolsService;
-import com.axelor.apps.supplychain.service.InvoiceLineSupplychainService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -55,10 +55,10 @@ public class InvoiceController {
       Invoice invoice = request.getContext().asType(Invoice.class);
       invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
       if (invoice != null && !CollectionUtils.isEmpty(invoice.getInvoiceLineList())) {
-        InvoiceLineSupplychainService invoiceLineSupplychainService =
-            Beans.get(InvoiceLineSupplychainService.class);
+        BudgetInvoiceLineService budgetInvoiceLineService =
+            Beans.get(BudgetInvoiceLineService.class);
         for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
-          invoiceLineSupplychainService.computeBudgetDistributionSumAmount(invoiceLine, invoice);
+          budgetInvoiceLineService.computeBudgetDistributionSumAmount(invoiceLine, invoice);
         }
         response.setValue("invoiceLineList", invoice.getInvoiceLineList());
       }

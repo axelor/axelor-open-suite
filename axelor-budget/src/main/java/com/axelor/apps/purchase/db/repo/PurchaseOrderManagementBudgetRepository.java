@@ -1,22 +1,17 @@
 package com.axelor.apps.purchase.db.repo;
 
+import com.axelor.apps.account.service.app.AppBudgetService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.db.repo.BudgetRepository;
-import com.axelor.apps.account.service.BudgetService;
-import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.budget.service.BudgetBudgetService;
-import com.axelor.apps.budget.service.BudgetBudgetServiceImpl;
 import com.axelor.apps.budget.service.purchaseorder.PurchaseOrderBudgetBudgetService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
-import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.supplychain.db.repo.PurchaseOrderSupplychainRepository;
-import com.axelor.apps.supplychain.service.BudgetSupplychainService;
 import com.axelor.inject.Beans;
 import com.axelor.studio.db.AppBudget;
-import com.axelor.studio.db.repo.AppBudgetRepository;
-import com.google.common.base.Strings;
 import com.google.inject.persist.Transactional;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,9 +24,10 @@ public class PurchaseOrderManagementBudgetRepository extends PurchaseOrderSupply
   @Override
   public PurchaseOrder save(PurchaseOrder purchaseOrder) {
     try {
-      if (Strings.isNullOrEmpty(purchaseOrder.getPurchaseOrderSeq())) {
-        purchaseOrder.setPurchaseOrderSeq(
-            Beans.get(PurchaseOrderService.class).getSequence(purchaseOrder.getCompany()));
+
+      AppBudget appBudget = Beans.get(AppBudgetService.class).getAppBudget();
+      if (appBudget != null) {
+        Beans.get(PurchaseOrderBudgetBudgetService.class).generateBudgetDistribution(purchaseOrder);
       }
 
       purchaseOrder = super.save(purchaseOrder);
@@ -47,8 +43,7 @@ public class PurchaseOrderManagementBudgetRepository extends PurchaseOrderSupply
        * budget of PO gets changed, there will be two budgetDistributionLines in PO which will
        * create regression as per #26510.
        */
-      AppBudget appBudget = Beans.get(AppBudgetRepository.class).all().fetchOne();
-      if (Boolean.FALSE.equals(appBudget.getManageMultiBudget())) {
+      if (appBudget != null && Boolean.FALSE.equals(appBudget.getManageMultiBudget())) {
         List<PurchaseOrderLine> purchaseOrderLineList = purchaseOrder.getPurchaseOrderLineList();
 
         if (!CollectionUtils.isEmpty(purchaseOrderLineList)) {
@@ -74,18 +69,18 @@ public class PurchaseOrderManagementBudgetRepository extends PurchaseOrderSupply
 
       if (purchaseOrder.getStatusSelect() != null
           && purchaseOrder.getStatusSelect() == PurchaseOrderRepository.STATUS_REQUESTED) {
-        Beans.get(BudgetSupplychainService.class).updateBudgetLinesFromPurchaseOrder(purchaseOrder);
+        Beans.get(PurchaseOrderBudgetBudgetService.class)
+            .updateBudgetLinesFromPurchaseOrder(purchaseOrder);
       }
 
       if (!CollectionUtils.isEmpty(updateBudgetList)) {
 
-        BudgetService budgetService = Beans.get(BudgetService.class);
         BudgetBudgetService budgetBudgetService = Beans.get(BudgetBudgetService.class);
         BudgetRepository budgetRepository = Beans.get(BudgetRepository.class);
 
         for (Budget budget : updateBudgetList) {
-          budgetService.updateLines(budget);
-          budgetBudgetService._computeTotalAmountCommitted(budget);
+          budgetBudgetService.updateLines(budget);
+          budgetBudgetService.computeTotalAmountCommitted(budget);
           budgetBudgetService.computeTotalAmountPaid(budget);
           budgetRepository.save(budget);
         }
@@ -128,7 +123,7 @@ public class PurchaseOrderManagementBudgetRepository extends PurchaseOrderSupply
 
   @Transactional(rollbackOn = {Exception.class})
   public void resetBudgets(List<Budget> budgetList) {
-    BudgetBudgetServiceImpl budgetBudgetService = Beans.get(BudgetBudgetServiceImpl.class);
+    BudgetBudgetService budgetBudgetService = Beans.get(BudgetBudgetService.class);
 
     if (!CollectionUtils.isEmpty(budgetList)) {
       for (Budget budget : budgetList) {

@@ -2,16 +2,16 @@ package com.axelor.apps.budget.service;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AnalyticMoveLine;
-import com.axelor.apps.budget.db.Budget;
-import com.axelor.apps.budget.db.BudgetDistribution;
-import com.axelor.apps.budget.db.BudgetLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.budget.db.repo.BudgetDistributionRepository;
-import com.axelor.apps.budget.db.repo.BudgetRepository;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.budget.db.Budget;
+import com.axelor.apps.budget.db.BudgetDistribution;
+import com.axelor.apps.budget.db.BudgetLine;
+import com.axelor.apps.budget.db.repo.BudgetDistributionRepository;
 import com.axelor.apps.budget.db.repo.BudgetLevelRepository;
+import com.axelor.apps.budget.db.repo.BudgetRepository;
 import com.axelor.apps.budget.translation.ITranslation;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -209,6 +209,29 @@ public class BudgetBudgetDistributionServiceImpl implements BudgetBudgetDistribu
     } else if (InvoiceLine.class.equals(EntityHelper.getEntityClass(object))) {
       InvoiceLine invoiceLine = (InvoiceLine) object;
       invoiceLine.addBudgetDistributionListItem(budgetDistribution);
+    }
+  }
+
+  public void computeBudgetDistributionSumAmount(
+      BudgetDistribution budgetDistribution, LocalDate computeDate) {
+
+    if (budgetDistribution.getBudget() != null
+        && budgetDistribution.getBudget().getBudgetLineList() != null
+        && computeDate != null) {
+      List<BudgetLine> budgetLineList = budgetDistribution.getBudget().getBudgetLineList();
+      BigDecimal budgetAmountAvailable = BigDecimal.ZERO;
+
+      for (BudgetLine budgetLine : budgetLineList) {
+        LocalDate fromDate = budgetLine.getFromDate();
+        LocalDate toDate = budgetLine.getToDate();
+
+        if (fromDate != null && DateTool.isBetween(fromDate, toDate, computeDate)) {
+          BigDecimal amount =
+              budgetLine.getAmountExpected().subtract(budgetLine.getAmountCommitted());
+          budgetAmountAvailable = budgetAmountAvailable.add(amount);
+        }
+      }
+      budgetDistribution.setBudgetAmountAvailable(budgetAmountAvailable);
     }
   }
 }

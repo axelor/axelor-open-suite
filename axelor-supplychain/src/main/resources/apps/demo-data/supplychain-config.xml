@@ -103,7 +103,7 @@
   </input>
 
   <input file="account_budgetDistribution.csv" separator=";"
-    type="com.axelor.apps.account.db.BudgetDistribution" search="self.importId = :importId">
+    type="com.axelor.apps.budget.db.BudgetDistribution" search="self.importId = :importId">
     <bind to="createdOn" eval="call:com.axelor.csv.script.ImportDateTime:importDate(createdOn)"
       column="createdOn"/>
   </input>

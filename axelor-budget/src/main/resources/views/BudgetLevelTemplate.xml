@@ -210,7 +210,7 @@
   </action-view>
 
   <action-view name="action-budget-budget-level-view-budget-template-lines"
-    title="Lignes" model="com.axelor.apps.account.db.Budget">
+    title="Lignes" model="com.axelor.apps.budget.db.Budget">
     <view type="grid" name="budget-lines-template-grid"/>
     <view type="form" name="budget-included-template-form"/>
     <view-param name="details-view" value="true"/>
@@ -234,7 +234,7 @@
   </action-view>
 
   <action-view name="action-budget-global-budget-level-view-budget-template-lines"
-    title="Lignes" model="com.axelor.apps.account.db.Budget">
+    title="Lignes" model="com.axelor.apps.budget.db.Budget">
     <view type="grid" name="budget-lines-template-grid"/>
     <view type="form" name="budget-included-template-form"/>
     <view-param name="details-view" value="true"/>

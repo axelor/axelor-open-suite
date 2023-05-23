@@ -1,9 +1,6 @@
 package com.axelor.apps.budget.service;
 
-import com.axelor.apps.budget.db.Budget;
-import com.axelor.apps.budget.db.repo.BudgetBudgetRepository;
-import com.axelor.apps.budget.db.repo.BudgetRepository;
-import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.app.AppBudgetService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.AdvancedImport;
 import com.axelor.apps.base.db.Company;
@@ -16,9 +13,12 @@ import com.axelor.apps.base.service.advanced.imports.AdvancedImportService;
 import com.axelor.apps.base.service.advanced.imports.DataImportService;
 import com.axelor.apps.base.service.advanced.imports.ValidatorService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetLevel;
+import com.axelor.apps.budget.db.repo.BudgetBudgetRepository;
 import com.axelor.apps.budget.db.repo.BudgetLevelManagementRepository;
 import com.axelor.apps.budget.db.repo.BudgetLevelRepository;
+import com.axelor.apps.budget.db.repo.BudgetRepository;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
@@ -50,8 +50,8 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
   protected PurchaseOrderLineRepository purchaseOrderLineRepo;
   protected ProjectRepository projectRepo;
   protected BudgetBudgetService budgetBudgetService;
-  protected AppAccountService appAccountService;
   protected BudgetBudgetRepository budgetBudgetRepository;
+  protected AppBudgetService appBudgetService;
 
   @Inject
   public BudgetLevelServiceImpl(
@@ -65,8 +65,8 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
       PurchaseOrderLineRepository purchaseOrderLineRepo,
       ProjectRepository projectRepo,
       BudgetBudgetService budgetBudgetService,
-      AppAccountService appAccountService,
-      BudgetBudgetRepository budgetBudgetRepository) {
+      BudgetBudgetRepository budgetBudgetRepository,
+      AppBudgetService appBudgetService) {
     this.budgetLevelManagementRepository = budgetLevelManagementRepository;
     this.advancedImportRepo = advancedImportRepo;
     this.advancedImportService = advancedImportService;
@@ -77,8 +77,8 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
     this.purchaseOrderLineRepo = purchaseOrderLineRepo;
     this.projectRepo = projectRepo;
     this.budgetBudgetService = budgetBudgetService;
-    this.appAccountService = appAccountService;
     this.budgetBudgetRepository = budgetBudgetRepository;
+    this.appBudgetService = appBudgetService;
   }
 
   @Override
@@ -443,8 +443,8 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
   @Override
   public Integer getBudgetControlLevel(Budget budget) {
 
-    if (!appAccountService.isApp("budget")
-        || !appAccountService.getAppBudget().getCheckAvailableBudget()) {
+    if (appBudgetService.getAppBudget() == null
+        || !appBudgetService.getAppBudget().getCheckAvailableBudget()) {
       return null;
     }
 
@@ -470,7 +470,7 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
           .getParentBudgetLevel()
           .getCheckAvailableSelect();
     } else {
-      return appAccountService.getAppBudget().getCheckAvailableBudget()
+      return appBudgetService.getAppBudget().getCheckAvailableBudget()
           ? BudgetLevelRepository.BUDGET_LEVEL_AVAILABLE_AMOUNT_BUDGET_LINE
           : null;
     }

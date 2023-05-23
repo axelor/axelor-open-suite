@@ -6,7 +6,7 @@
   <input file="studio_appBudget.csv" separator=";" search="self.app.code = :code"
     update="true" type="com.axelor.studio.db.AppBudget"/>
 
-  <input file="account_budget.csv" separator=";" type="com.axelor.apps.account.db.Budget"
+  <input file="account_budget.csv" separator=";" type="com.axelor.apps.budget.db.Budget"
     search="self.importId = :importId">
     <bind to="fromDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(fromDate)"
       column="fromDate"/>
@@ -15,7 +15,7 @@
   </input>
 
   <input file="account_budgetDistribution.csv" separator=";"
-    type="com.axelor.apps.account.db.BudgetDistribution" search="self.importId = :importId">
+    type="com.axelor.apps.budget.db.BudgetDistribution" search="self.importId = :importId">
     <bind to="createdOn" eval="call:com.axelor.csv.script.ImportDateTime:importDate(createdOn)"
       column="createdOn"/>
   </input>

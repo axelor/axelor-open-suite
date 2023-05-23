@@ -1,7 +1,7 @@
 package com.axelor.apps.budget.service.purchaseorder;
 
-import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import java.util.List;
@@ -63,4 +63,7 @@ public interface PurchaseOrderLineBudgetBudgetService {
    */
   public void checkAmountForPurchaseOrderLine(PurchaseOrderLine purchaseOrderLine)
       throws AxelorException;
+
+  public void computeBudgetDistributionSumAmount(
+      PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder);
 }

@@ -12,4 +12,6 @@ public interface SaleOrderBudgetService {
   void validateSaleAmountWithBudgetDistribution(SaleOrder saleOrder) throws AxelorException;
 
   boolean isBudgetInLines(SaleOrder saleOrder);
+
+  public void updateBudgetLinesFromSaleOrder(SaleOrder saleOrder);
 }
