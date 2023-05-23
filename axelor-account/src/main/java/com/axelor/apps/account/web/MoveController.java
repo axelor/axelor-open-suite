@@ -642,6 +642,8 @@ public class MoveController {
       Move move = request.getContext().asType(Move.class);
 
       response.setValues(Beans.get(MoveGroupService.class).getCurrencyOnChangeValuesMap(move));
+      response.setAttrs(Beans.get(MoveGroupService.class).getCurrencyOnChangeAttrsMap(move));
+
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

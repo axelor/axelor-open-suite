@@ -29,6 +29,7 @@ import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.attributes.MoveAttrsService;
 import com.axelor.apps.account.service.move.control.MoveCheckService;
+import com.axelor.apps.account.service.move.massentry.MassEntryService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryToolService;
 import com.axelor.apps.base.AxelorException;
@@ -59,6 +60,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   protected MoveRepository moveRepository;
   protected MoveLineMassEntryToolService moveLineMassEntryToolService;
   protected AppAccountService appAccountService;
+  protected MassEntryService massEntryService;
 
   @Inject
   public MoveGroupServiceImpl(
@@ -77,7 +79,8 @@ public class MoveGroupServiceImpl implements MoveGroupService {
       PeriodService periodService,
       MoveRepository moveRepository,
       MoveLineMassEntryToolService moveLineMassEntryToolService,
-      AppAccountService appAccountService) {
+      AppAccountService appAccountService,
+      MassEntryService massEntryService) {
     this.moveDefaultService = moveDefaultService;
     this.moveAttrsService = moveAttrsService;
     this.periodAccountService = periodAccountService;
@@ -94,6 +97,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     this.moveRepository = moveRepository;
     this.moveLineMassEntryToolService = moveLineMassEntryToolService;
     this.appAccountService = appAccountService;
+    this.massEntryService = massEntryService;
   }
 
   protected void addPeriodDummyFields(Move move, Map<String, Object> valuesMap)
@@ -326,6 +330,9 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     Map<String, Object> valuesMap = moveComputeService.computeTotals(move);
 
     moveRecordUpdateService.updateDueDate(move, paymentConditionChange, dateChange);
+    if (move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL) {
+      massEntryService.verifyFieldsAndGenerateTaxLineAndCounterpart(move, move.getDate());
+    }
 
     valuesMap.put("dueDate", move.getDueDate());
 
@@ -339,6 +346,9 @@ public class MoveGroupServiceImpl implements MoveGroupService {
 
     moveAttrsService.addMoveLineAnalyticAttrs(move, attrsMap);
     moveAttrsService.addDateChangeFalseValue(move, paymentConditionChange, attrsMap);
+    if (move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL) {
+      moveAttrsService.addMassEntryBtnHidden(move, attrsMap);
+    }
 
     return attrsMap;
   }
@@ -489,6 +499,19 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     valuesMap.put("companyCurrencyCode", move.getCompanyCurrencyCode());
 
     return valuesMap;
+  }
+
+  @Override
+  public Map<String, Map<String, Object>> getCurrencyOnChangeAttrsMap(Move move) {
+    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+
+    if (move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL) {
+      moveAttrsService.addMassEntryHidden(move, attrsMap);
+      moveAttrsService.addMassEntryPaymentConditionRequired(move, attrsMap);
+      moveAttrsService.addMassEntryBtnHidden(move, attrsMap);
+    }
+
+    return attrsMap;
   }
 
   @Override

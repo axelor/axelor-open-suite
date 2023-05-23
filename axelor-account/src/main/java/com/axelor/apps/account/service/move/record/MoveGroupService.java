@@ -87,6 +87,8 @@ public interface MoveGroupService {
 
   Map<String, Object> getCurrencyOnChangeValuesMap(Move move);
 
+  Map<String, Map<String, Object>> getCurrencyOnChangeAttrsMap(Move move);
+
   Map<String, Object> getDateOfReversionSelectOnChangeValuesMap(
       LocalDate moveDate, int dateOfReversionSelect);
 
