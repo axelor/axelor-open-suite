@@ -177,7 +177,7 @@ public class OperationOrderServiceImpl implements OperationOrderService {
 
       throw new AxelorException(
           TraceBackRepository.CATEGORY_NO_VALUE,
-          I18n.get(ProductionExceptionMessage.PRODUCTION_PROCESS_IS_EMPTY));
+          I18n.get(IExceptionMessage.PRODUCTION_PROCESS_IS_EMPTY));
     }
     if (prodProcessLine.getToConsumeProdProductList() != null) {
       for (ProdProduct prodProduct : prodProcessLine.getToConsumeProdProductList()) {
