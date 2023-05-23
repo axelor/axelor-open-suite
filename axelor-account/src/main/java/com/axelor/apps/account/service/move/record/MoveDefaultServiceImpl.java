@@ -25,9 +25,6 @@ import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.user.UserService;
 import com.google.inject.Inject;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
 
 public class MoveDefaultServiceImpl implements MoveDefaultService {
 
@@ -44,29 +41,13 @@ public class MoveDefaultServiceImpl implements MoveDefaultService {
   }
 
   @Override
-  public Map<String, Object> setDefaultMoveValues(Move move) {
+  public void setDefaultValues(Move move) {
+    this.setCompany(move);
+    this.setDate(move);
+    this.setDefaultCurrency(move);
 
-    Objects.requireNonNull(move);
-    HashMap<String, Object> resultMap = new HashMap<>();
-
-    setDefaultValues(move);
-
-    resultMap.put("company", move.getCompany());
-    resultMap.put("date", move.getDate());
-    resultMap.put("technicalOriginSelect", move.getTechnicalOriginSelect());
-    resultMap.put("tradingName", move.getTradingName());
-
-    return resultMap;
-  }
-
-  protected void setDefaultValues(Move move) {
-    Company activeCompany = userService.getUserActiveCompany();
-
-    setCompany(move, activeCompany);
-    setDate(move);
     move.setTechnicalOriginSelect(MoveRepository.TECHNICAL_ORIGIN_ENTRY);
     move.setTradingName(userService.getTradingName());
-    this.setDefaultCurrency(move);
   }
 
   protected void setDate(Move move) {
@@ -75,40 +56,25 @@ public class MoveDefaultServiceImpl implements MoveDefaultService {
     }
   }
 
-  protected void setCompany(Move move, Company activeCompany) {
+  protected void setCompany(Move move) {
+    Company activeCompany = userService.getUserActiveCompany();
+
     if (activeCompany != null) {
       move.setCompany(activeCompany);
-    } else {
-      if (onlyOneCompanyExist()) {
-        move.setCompany(companyRepository.all().fetchOne());
-      }
+    } else if (companyRepository.all().count() == 1) {
+      move.setCompany(companyRepository.all().fetchOne());
     }
   }
 
-  protected boolean onlyOneCompanyExist() {
-    return companyRepository.all().count() == 1;
-  }
-
   @Override
-  public Map<String, Object> setDefaultCurrency(Move move) {
-
-    Objects.requireNonNull(move);
-    HashMap<String, Object> resultMap = new HashMap<>();
-
+  public void setDefaultCurrency(Move move) {
     Company company = move.getCompany();
 
-    if (company != null && company.getCurrency() != null) {
+    if (move.getPartner() == null && company != null && company.getCurrency() != null) {
       move.setCompanyCurrency(company.getCurrency());
       move.setCurrency(company.getCurrency());
       move.setCurrencyCode(company.getCurrency().getCodeISO());
       move.setCompanyCurrencyCode(company.getCurrency().getCodeISO());
     }
-
-    resultMap.put("companyCurrency", move.getCompanyCurrency());
-    resultMap.put("currency", move.getCurrency());
-    resultMap.put("currencyCode", move.getCurrencyCode());
-    resultMap.put("companyCurrencyCode", move.getCompanyCurrencyCode());
-
-    return resultMap;
   }
 }

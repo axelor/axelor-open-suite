@@ -20,9 +20,8 @@ package com.axelor.apps.account.service.analytic;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AnalyticAccount;
+import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticAxisByCompany;
-import com.axelor.apps.account.db.AnalyticDistributionLine;
-import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.repo.AccountAnalyticRulesRepository;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
@@ -109,25 +108,20 @@ public class AnalyticAccountServiceImpl implements AnalyticAccountService {
 
   @Override
   public String getAnalyticAccountDomain(
-      AnalyticDistributionTemplate analyticDistributionTemplate,
-      AnalyticDistributionLine analyticDistributionLine,
-      Account account)
-      throws AxelorException {
+      Company company, AnalyticAxis analyticAxis, Account account) throws AxelorException {
     String domain = "null";
 
-    if (analyticDistributionTemplate != null && analyticDistributionTemplate.getCompany() != null) {
+    if (company != null) {
       domain =
           "(self.company is null OR self.company.id = "
-              + analyticDistributionTemplate.getCompany().getId()
+              + company.getId()
               + ") AND self.analyticAxis.id ";
-      if (analyticDistributionLine.getAnalyticAxis() != null) {
-        domain += "= " + analyticDistributionLine.getAnalyticAxis().getId();
+      if (analyticAxis != null) {
+        domain += "= " + analyticAxis.getId();
       } else {
         String analyticAxisIdList = "0";
         List<AnalyticAxisByCompany> analyticAxisByCompanyList =
-            accountConfigService
-                .getAccountConfig(analyticDistributionTemplate.getCompany())
-                .getAnalyticAxisByCompanyList();
+            accountConfigService.getAccountConfig(company).getAnalyticAxisByCompanyList();
         if (ObjectUtils.notEmpty(analyticAxisByCompanyList)) {
           analyticAxisIdList =
               StringTool.getIdListString(
@@ -142,9 +136,11 @@ public class AnalyticAccountServiceImpl implements AnalyticAccountService {
       if (account != null) {
         List<AnalyticAccount> analyticAccountList =
             accountAnalyticRulesRepository.findAnalyticAccountByAccounts(account);
-        domain += " AND self.id in (";
-        String idList = StringTool.getIdListString(analyticAccountList);
-        domain += idList + ")";
+        if (!CollectionUtils.isEmpty(analyticAccountList)) {
+          domain += " AND self.id in (";
+          String idList = StringTool.getIdListString(analyticAccountList);
+          domain += idList + ")";
+        }
       }
     }
 
