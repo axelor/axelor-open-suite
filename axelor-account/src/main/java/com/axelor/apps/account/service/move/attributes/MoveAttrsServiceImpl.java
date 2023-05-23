@@ -32,6 +32,7 @@ import com.axelor.apps.account.service.move.MovePfpService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.db.User;
+import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -208,73 +209,78 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
   public Map<String, Map<String, Object>> getMassEntryHiddenAttributeValues(Move move) {
     Objects.requireNonNull(move);
     Map<String, Map<String, Object>> mapResult = new HashMap<>();
-    boolean technicalTypeSelectIsNotNull =
-        move.getJournal() != null
-            && move.getJournal().getJournalType() != null
-            && move.getJournal().getJournalType().getTechnicalTypeSelect() != null;
-    boolean isSameCurrency =
-        move.getCompany() != null && move.getCompany().getCurrency() == move.getCurrency();
+    boolean journalIsNull = ObjectUtils.isEmpty(move.getJournal());
+    mapResult.put("moveLineMassEntryList", new HashMap<>());
 
-    mapResult.put("moveLineMassEntryList.originDate", new HashMap<>());
-    mapResult.put("moveLineMassEntryList.origin", new HashMap<>());
-    mapResult.put("moveLineMassEntryList.movePaymentMode", new HashMap<>());
-    mapResult.put("moveLineMassEntryList.currencyRate", new HashMap<>());
-    mapResult.put("moveLineMassEntryList.currencyAmount", new HashMap<>());
-    mapResult.put("moveLineMassEntryList.pfpValidatorUser", new HashMap<>());
-    mapResult.put("moveLineMassEntryList.cutOffStartDate", new HashMap<>());
-    mapResult.put("moveLineMassEntryList.cutOffEndDate", new HashMap<>());
-    mapResult.put("moveLineMassEntryList.deliveryDate", new HashMap<>());
+    if (!journalIsNull) {
+      boolean technicalTypeSelectIsNotNull =
+          move.getJournal().getJournalType() != null
+              && move.getJournal().getJournalType().getTechnicalTypeSelect() != null;
+      boolean isSameCurrency =
+          move.getCompany() != null && move.getCompany().getCurrency() == move.getCurrency();
 
-    mapResult
-        .get("moveLineMassEntryList.originDate")
-        .put(
-            "hidden",
-            technicalTypeSelectIsNotNull
-                && (move.getJournal().getJournalType().getTechnicalTypeSelect()
-                        == JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY
-                    || move.getJournal().getJournalType().getTechnicalTypeSelect()
-                        == JournalTypeRepository.TECHNICAL_TYPE_SELECT_OTHER));
-    mapResult
-        .get("moveLineMassEntryList.origin")
-        .put(
-            "hidden",
-            technicalTypeSelectIsNotNull
-                && (move.getJournal().getJournalType().getTechnicalTypeSelect()
-                        == JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY
-                    || move.getJournal().getJournalType().getTechnicalTypeSelect()
-                        == JournalTypeRepository.TECHNICAL_TYPE_SELECT_OTHER));
-    mapResult
-        .get("moveLineMassEntryList.movePaymentMode")
-        .put(
-            "hidden",
-            technicalTypeSelectIsNotNull
-                && move.getJournal().getJournalType().getTechnicalTypeSelect()
-                    == JournalTypeRepository.TECHNICAL_TYPE_SELECT_OTHER);
-    mapResult.get("moveLineMassEntryList.currencyRate").put("hidden", isSameCurrency);
-    mapResult.get("moveLineMassEntryList.currencyAmount").put("hidden", isSameCurrency);
-    mapResult
-        .get("moveLineMassEntryList.pfpValidatorUser")
-        .put(
-            "hidden",
-            technicalTypeSelectIsNotNull
-                && move.getJournal().getJournalType().getTechnicalTypeSelect()
-                    != JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE);
-    mapResult
-        .get("moveLineMassEntryList.cutOffStartDate")
-        .put("hidden", !move.getMassEntryManageCutOff());
-    mapResult
-        .get("moveLineMassEntryList.cutOffEndDate")
-        .put("hidden", !move.getMassEntryManageCutOff());
-    mapResult
-        .get("moveLineMassEntryList.deliveryDate")
-        .put(
-            "hidden",
-            !move.getMassEntryManageCutOff()
-                && technicalTypeSelectIsNotNull
-                && (move.getJournal().getJournalType().getTechnicalTypeSelect()
-                        == JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY
-                    || move.getJournal().getJournalType().getTechnicalTypeSelect()
-                        == JournalTypeRepository.TECHNICAL_TYPE_SELECT_OTHER));
+      mapResult.put("moveLineMassEntryList.originDate", new HashMap<>());
+      mapResult.put("moveLineMassEntryList.origin", new HashMap<>());
+      mapResult.put("moveLineMassEntryList.movePaymentMode", new HashMap<>());
+      mapResult.put("moveLineMassEntryList.currencyRate", new HashMap<>());
+      mapResult.put("moveLineMassEntryList.currencyAmount", new HashMap<>());
+      mapResult.put("moveLineMassEntryList.pfpValidatorUser", new HashMap<>());
+      mapResult.put("moveLineMassEntryList.cutOffStartDate", new HashMap<>());
+      mapResult.put("moveLineMassEntryList.cutOffEndDate", new HashMap<>());
+      mapResult.put("moveLineMassEntryList.deliveryDate", new HashMap<>());
+
+      mapResult
+          .get("moveLineMassEntryList.originDate")
+          .put(
+              "hidden",
+              technicalTypeSelectIsNotNull
+                  && (move.getJournal().getJournalType().getTechnicalTypeSelect()
+                          == JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY
+                      || move.getJournal().getJournalType().getTechnicalTypeSelect()
+                          == JournalTypeRepository.TECHNICAL_TYPE_SELECT_OTHER));
+      mapResult
+          .get("moveLineMassEntryList.origin")
+          .put(
+              "hidden",
+              technicalTypeSelectIsNotNull
+                  && (move.getJournal().getJournalType().getTechnicalTypeSelect()
+                          == JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY
+                      || move.getJournal().getJournalType().getTechnicalTypeSelect()
+                          == JournalTypeRepository.TECHNICAL_TYPE_SELECT_OTHER));
+      mapResult
+          .get("moveLineMassEntryList.movePaymentMode")
+          .put(
+              "hidden",
+              technicalTypeSelectIsNotNull
+                  && move.getJournal().getJournalType().getTechnicalTypeSelect()
+                      == JournalTypeRepository.TECHNICAL_TYPE_SELECT_OTHER);
+      mapResult.get("moveLineMassEntryList.currencyRate").put("hidden", isSameCurrency);
+      mapResult.get("moveLineMassEntryList.currencyAmount").put("hidden", isSameCurrency);
+      mapResult
+          .get("moveLineMassEntryList.pfpValidatorUser")
+          .put(
+              "hidden",
+              technicalTypeSelectIsNotNull
+                  && move.getJournal().getJournalType().getTechnicalTypeSelect()
+                      != JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE);
+      mapResult
+          .get("moveLineMassEntryList.cutOffStartDate")
+          .put("hidden", !move.getMassEntryManageCutOff());
+      mapResult
+          .get("moveLineMassEntryList.cutOffEndDate")
+          .put("hidden", !move.getMassEntryManageCutOff());
+      mapResult
+          .get("moveLineMassEntryList.deliveryDate")
+          .put(
+              "hidden",
+              !move.getMassEntryManageCutOff()
+                  && technicalTypeSelectIsNotNull
+                  && (move.getJournal().getJournalType().getTechnicalTypeSelect()
+                          == JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY
+                      || move.getJournal().getJournalType().getTechnicalTypeSelect()
+                          == JournalTypeRepository.TECHNICAL_TYPE_SELECT_OTHER));
+    }
+    mapResult.get("moveLineMassEntryList").put("hidden", journalIsNull);
 
     return mapResult;
   }

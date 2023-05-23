@@ -401,7 +401,7 @@
         onClick="action-move-method-control-mass-entry-moves" colSpan="12" hidden="false"
         css="btn-primary"/>
       <button name="validateMassEntryMoves" title="Validate" hidden="true"
-        onClick="action-move-method-validate-mass-entry-moves,save" colSpan="12" css="btn-success"/>
+        onClick="save,action-move-method-validate-mass-entry-moves" colSpan="12" css="btn-success"/>
     </toolbar>
 
     <panel name="mainPanel" colSpan="12">

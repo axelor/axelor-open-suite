@@ -478,7 +478,7 @@
           <field name="isShowStatus" colSpan="4" widget="inline-checkbox"
             onChange="action-project-record-status-reset-values"/>
           <field name="projectTaskStatusSet" widget="TagSelect" colSpan="12"
-            showIf="isShowStatus" requiredIf="isShowStatus" domain="self.relatedToSelect = 2"/>
+            showIf="isShowStatus" requiredIf="isShowStatus"/>
           <field name="isShowPriority" colSpan="4" widget="inline-checkbox"
             onChange="action-project-record-priority-reset-values"/>
           <field name="projectTaskPrioritySet" widget="TagSelect" colSpan="12"
@@ -924,7 +924,7 @@
 
   <action-attrs name="action-project-attrs-on-new-load">
     <attribute name="selection-in" for="projectStatus"
-      expr="eval: __repo__(ProjectStatus).all()?.filter('self.relatedToSelect = ?1',__repo__(ProjectStatus).PROJECT_STATUS_PROJECT)?.fetch()?.collect{it.id}?.join(',')"/>
+      expr="eval: __repo__(ProjectStatus).all()?.fetch()?.collect{it.id}?.join(',')"/>
     <attribute name="scale" for="price"
       expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
   </action-attrs>
@@ -957,7 +957,7 @@
   <action-record name="action-project-record-status-new"
     model="com.axelor.apps.project.db.Project">
     <field name="projectStatus"
-      expr="eval: __repo__(ProjectStatus).all().filter('self.relatedToSelect = ?1',__repo__(ProjectStatus).PROJECT_STATUS_PROJECT).order('sequence').fetchOne()"/>
+      expr="eval: __repo__(ProjectStatus).all().order('sequence').fetchOne()"/>
     <field name="projectTaskStatusSet"
       expr="eval: __config__.app.getApp('project')?.getDefaultTaskStatusSet()"/>
     <field name="projectTaskPrioritySet"

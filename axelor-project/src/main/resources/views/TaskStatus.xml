@@ -3,16 +3,16 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
-  <grid name="project-status-grid" title="Project status"
-    model="com.axelor.apps.project.db.ProjectStatus" orderBy="sequence">
+  <grid name="task-status-grid" title="Task status"
+    model="com.axelor.apps.project.db.TaskStatus" orderBy="sequence">
     <field name="sequence"/>
     <field name="name"/>
     <field name="isCompleted"/>
     <field name="isDefaultCompleted"/>
   </grid>
 
-  <form name="project-status-form" title="Project status"
-    model="com.axelor.apps.project.db.ProjectStatus">
+  <form name="task-status-form" title="Task status"
+    model="com.axelor.apps.project.db.TaskStatus">
     <panel name="mainPanel">
       <field name="sequence"/>
       <field name="name"/>

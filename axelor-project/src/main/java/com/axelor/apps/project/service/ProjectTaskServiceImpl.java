@@ -24,8 +24,8 @@ import com.axelor.apps.base.service.FrequencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPriority;
-import com.axelor.apps.project.db.ProjectStatus;
 import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.project.db.TaskStatus;
 import com.axelor.apps.project.db.repo.ProjectPriorityRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
@@ -187,21 +187,27 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
   }
 
   @Override
-  public ProjectStatus getDefaultCompletedStatus(Project project) {
+  public TaskStatus getDefaultCompletedStatus(Project project) {
     return project == null || ObjectUtils.isEmpty(project.getProjectTaskStatusSet())
         ? null
         : project.getProjectTaskStatusSet().stream()
-            .filter(ProjectStatus::getIsDefaultCompleted)
+            .filter(TaskStatus::getIsDefaultCompleted)
             .findAny()
             .orElse(null);
   }
 
   @Override
-  public ProjectStatus getStatus(Project project) {
-    return project == null || ObjectUtils.isEmpty(project.getProjectTaskStatusSet())
+  public TaskStatus getStatus(Project project) {
+    if (project == null) {
+      return null;
+    }
+
+    project = Beans.get(ProjectRepository.class).find(project.getId());
+
+    return ObjectUtils.isEmpty(project.getProjectTaskStatusSet())
         ? null
         : project.getProjectTaskStatusSet().stream()
-            .min(Comparator.comparingInt(ProjectStatus::getSequence))
+            .min(Comparator.comparingInt(TaskStatus::getSequence))
             .orElse(null);
   }
 

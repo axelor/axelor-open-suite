@@ -521,6 +521,13 @@ public class MoveLineController {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
       Move move = moveLine.getMove();
 
+      Context parentContext = request.getContext().getParent();
+      if (move == null
+          && parentContext != null
+          && Move.class.equals(parentContext.getContextClass())) {
+        move = parentContext.asType(Move.class);
+      }
+
       response.setAttrs(
           Beans.get(MoveLineGroupService.class).getOnLoadMoveAttrsMap(moveLine, move));
     } catch (Exception e) {
