@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,27 +14,27 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.base.service.message;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.BirtTemplateParameter;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
-import com.axelor.apps.message.db.Template;
-import com.axelor.apps.message.service.MessageService;
-import com.axelor.apps.message.service.TemplateContextService;
-import com.axelor.apps.message.service.TemplateMessageServiceImpl;
 import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.message.db.Template;
+import com.axelor.message.service.MessageService;
+import com.axelor.message.service.TemplateContextService;
+import com.axelor.message.service.TemplateMessageServiceImpl;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.text.Templates;
-import com.axelor.tool.template.TemplateMaker;
+import com.axelor.utils.template.TemplateMaker;
 import com.google.inject.Inject;
 import java.io.File;
 import java.io.FileInputStream;
@@ -64,8 +65,7 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
 
   @Override
   public Set<MetaFile> getMetaFiles(
-      Template template, Templates templates, Map<String, Object> templatesContext)
-      throws AxelorException, IOException {
+      Template template, Templates templates, Map<String, Object> templatesContext) {
 
     Set<MetaFile> metaFiles = super.getMetaFiles(template, templates, templatesContext);
     Set<BirtTemplate> birtTemplates = template.getBirtTemplateSet();
@@ -74,8 +74,12 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
     }
 
     for (BirtTemplate birtTemplate : birtTemplates) {
-      metaFiles.add(
-          createMetaFileUsingBirtTemplate(null, birtTemplate, templates, templatesContext));
+      try {
+        metaFiles.add(
+            createMetaFileUsingBirtTemplate(null, birtTemplate, templates, templatesContext));
+      } catch (Exception e) {
+        throw new IllegalStateException(e);
+      }
     }
 
     logger.debug("Metafile to attach: {}", metaFiles);
@@ -168,7 +172,7 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
     return birtTemplateFileLink;
   }
 
-  private ReportSettings generateTemplate(
+  protected ReportSettings generateTemplate(
       TemplateMaker maker,
       Templates templates,
       Map<String, Object> templatesContext,
@@ -211,7 +215,7 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
     return reportSettings;
   }
 
-  private Object convertValue(String type, String value) throws BirtException {
+  protected Object convertValue(String type, String value) throws BirtException {
 
     if (DesignChoiceConstants.PARAM_TYPE_BOOLEAN.equals(type)) {
       return DataTypeUtil.toBoolean(value);

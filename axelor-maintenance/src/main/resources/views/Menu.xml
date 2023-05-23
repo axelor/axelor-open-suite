@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
-  <menuitem name="maintenance-root" title="Maintenance" order="-84"
+  <menuitem name="maintenance-root" title="Maintenance" order="-500"
     if="__config__.app.isApp('maintenance')" icon="fa-recycle" icon-background="olive"/>
 
   <menuitem name="maintenance-root-equipement-maintenances" parent="maintenance-root"
-    title="Equipement maintenances" action="maintenance.root.equipement.maintenances" order="5"/>
+    title="Equipement maintenances" action="maintenance.root.equipement.maintenances" order="100"/>
 
   <action-view name="maintenance.root.equipement.maintenances"
     title="Equipement maintenances" model="com.axelor.apps.maintenance.db.EquipementMaintenance">
@@ -17,7 +17,7 @@
   </action-view>
 
   <menuitem name="maintenance-root-current-maintenance-requests" parent="maintenance-root"
-    title="Current requests" action="maintenance.root.current.maintenance.requests" order="10"/>
+    title="Current requests" action="maintenance.root.current.maintenance.requests" order="200"/>
 
   <action-view name="maintenance.root.current.maintenance.requests"
     title="Current requests" model="com.axelor.apps.maintenance.db.MaintenanceRequest">
@@ -31,7 +31,7 @@
   </action-view>
 
   <menuitem name="maintenance-root-my-maintenance-requests" parent="maintenance-root"
-    title="My Maintenance requests" action="maintenance.root.my.maintenance.requests" order="15"/>
+    title="My Maintenance requests" action="maintenance.root.my.maintenance.requests" order="300"/>
 
   <action-view name="maintenance.root.my.maintenance.requests"
     title="My Maintenance requests" model="com.axelor.apps.maintenance.db.MaintenanceRequest">
@@ -44,7 +44,7 @@
   </action-view>
 
   <menuitem name="maintenance-root-machine-unavailable" parent="maintenance-root"
-    title="Machines unavailable" action="maintenance.root.machine.unavailable" order="25"/>
+    title="Machines unavailable" action="maintenance.root.machine.unavailable" order="400"/>
 
   <action-view name="maintenance.root.machine.unavailable" title="Machines unavailable"
     model="com.axelor.apps.maintenance.db.MaintenanceRequest">
@@ -54,7 +54,7 @@
   </action-view>
 
   <menuitem name="maintenance-root-maintenance-request-history" parent="maintenance-root"
-    title="Request history" action="maintenance.root.maintenance.request.history" order="30"/>
+    title="Request history" action="maintenance.root.maintenance.request.history" order="500"/>
 
   <action-view name="maintenance.root.maintenance.request.history"
     title="Request history" model="com.axelor.apps.maintenance.db.MaintenanceRequest">
@@ -65,7 +65,7 @@
     <context name="_todayDate" expr="eval:__config__.date"/>
   </action-view>
 
-  <menuitem name="maintenance-root-manuf-order" parent="maintenance-root" order="33"
+  <menuitem name="maintenance-root-manuf-order" parent="maintenance-root" order="600"
     title="Maintenance order" action="maintenance.manufacturing.root.manuf.order"/>
 
   <action-view name="maintenance.manufacturing.root.manuf.order"
@@ -79,11 +79,11 @@
   </action-view>
 
   <menuitem name="maintenance-root-config" parent="maintenance-root" title="Configuration"
-    order="35"/>
+    order="700"/>
 
   <menuitem name="maintenance-root-config-maintenance-category"
     parent="maintenance-root-config" title="Maintenance Category"
-    action="maintenance.root.config.maintenance.category" order="5"/>
+    action="maintenance.root.config.maintenance.category" order="100"/>
 
   <action-view name="maintenance.root.config.maintenance.category"
     title="Maintenance Category" model="com.axelor.apps.maintenance.db.MaintenanceCategory">
@@ -92,7 +92,7 @@
   </action-view>
 
   <menuitem name="maintenance-root-config-machines" parent="maintenance-root-config"
-    order="10" title="Machines" action="maintenance.root.config.machines"/>
+    order="200" title="Machines" action="maintenance.root.config.machines"/>
 
   <action-view name="maintenance.root.config.machines" title="Machines"
     model="com.axelor.apps.production.db.Machine">
@@ -101,7 +101,7 @@
   </action-view>
 
   <menuitem name="maintenance-root-config-prod-process" parent="maintenance-root-config"
-    order="15" title="Production processes" action="maintenance.manufacturing.root.prod.process"/>
+    order="300" title="Production processes" action="maintenance.manufacturing.root.prod.process"/>
 
   <action-view name="maintenance.manufacturing.root.prod.process"
     title="Production processes" model="com.axelor.apps.production.db.ProdProcess">
@@ -112,7 +112,7 @@
   </action-view>
 
   <menuitem name="maintenance-root-config-bill-of-material"
-    parent="maintenance-root-config" order="20" title="Bills of materials"
+    parent="maintenance-root-config" order="400" title="Bills of materials"
     action="maintenance.manufacturing.root.bill.of.material"/>
 
   <action-view name="maintenance.manufacturing.root.bill.of.material"

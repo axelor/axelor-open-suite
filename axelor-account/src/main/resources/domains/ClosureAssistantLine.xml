@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="ClosureAssistantLine" lang="java">
+  <entity name="ClosureAssistantLine">
 
     <integer name="sequence" title="Sequence" required="true" initParam="true"/>
     <many-to-one ref="com.axelor.apps.account.db.ClosureAssistant"
@@ -15,7 +15,7 @@
     <boolean name="isValidated" title="Validated" readonly="true" initParam="true"/>
     <many-to-one ref="com.axelor.auth.db.User" name="validatedByUser"
       title="Validated by" readonly="true"/>
-    <date name="validatedOnDate" title="Validated on" readonly="true"/>
+    <datetime name="validatedOnDateTime" title="Validated on" readonly="true"/>
 
     <boolean name="isPreviousLineValidated"/>
     <boolean name="isNextLineValidated"/>

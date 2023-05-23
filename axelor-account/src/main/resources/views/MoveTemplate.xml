@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="move-template-grid" title="Move templates"
     model="com.axelor.apps.account.db.MoveTemplate">
@@ -90,7 +90,7 @@
   </form>
 
   <form name="move-template-wizard-form" title="Generate move from template"
-    model="com.axelor.apps.base.db.Wizard" width="large"
+    model="com.axelor.utils.db.Wizard" width="large"
     onNew="action-move-template-wizard-set-active-company"
     onLoad="action-move-template-wizard-set-active-company">
     <panel name="mainPanel">
@@ -118,7 +118,7 @@
       </panel>
       <panel-related name="dataInputListPanel" field="dataInputList"
         type="one-to-many" showIf="moveTemplateType.typeSelect == 1"
-        target="com.axelor.apps.base.db.Wizard" title="Move Lines data input"
+        target="com.axelor.utils.db.Wizard" title="Move Lines data input"
         grid-view="wizard-custom-in-percentage-grid" form-view="wizard-custom-in-percentage-form"
         colSpan="12"/>
       <panel-related name="moveTemplateSetPanel" field="moveTemplateSet"
@@ -137,7 +137,7 @@
   </form>
 
   <grid name="wizard-custom-in-percentage-grid" title="MoveLines content data input"
-    model="com.axelor.apps.base.db.Wizard" editable="true"
+    model="com.axelor.utils.db.Wizard" editable="true"
     onNew="action-move-template-wizard-line-set-move-template">
     <field name="date" type="date" title="Date" required="true"
       onChange="action-move-template-wizard-check-value"/>
@@ -154,8 +154,7 @@
   </grid>
 
   <form name="wizard-custom-in-percentage-form" title="MoveLines content data input"
-    model="com.axelor.apps.base.db.Wizard"
-    onLoad="action-move-template-wizard-line-set-move-template"
+    model="com.axelor.utils.db.Wizard" onLoad="action-move-template-wizard-line-set-move-template"
     onNew="action-move-template-wizard-line-set-move-template">
     <panel name="mainPanel">
       <field name="date" type="date" title="Date" required="true"
@@ -201,7 +200,7 @@
       if="__user__.activeCompany != null"/>
   </action-record>
 
-  <action-record model="com.axelor.apps.base.db.Wizard"
+  <action-record model="com.axelor.utils.db.Wizard"
     name="action-move-template-wizard-reset-value">
     <field if="date != null &amp;&amp; LocalDate.parse(date).isAfter(__config__.date)"
       name="date" expr="eval:null"/>
@@ -209,7 +208,7 @@
       if="moveBalance != null &amp;&amp; (moveBalance as BigDecimal) &lt; 0"/>
   </action-record>
 
-  <action-record model="com.axelor.apps.base.db.Wizard"
+  <action-record model="com.axelor.utils.db.Wizard"
     name="action-move-template-wizard-set-active-company">
     <field name="company" expr="eval:__user__.activeCompany"
       if="__user__.activeCompany != null"/>
@@ -251,7 +250,7 @@
   </action-attrs>
 
   <action-record name="action-move-template-wizard-line-set-move-template"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.utils.db.Wizard">
     <field name="date" expr="eval:__config__.date" if="date == null"/>
     <field name="moveTemplate"
       expr="eval:__repo__(MoveTemplate).find(__parent__.moveTemplate.id)"/>

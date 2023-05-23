@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="in-stock-move-manuf-order-grid" title="Stock moves"
     model="com.axelor.apps.stock.db.StockMove" orderBy="-estimatedDate" edit-icon="true">
@@ -173,8 +173,8 @@
     </panel>
     <panel-related name="stockMoveLineListPanel" field="$stockMoveLines"
       canNew="false" target="com.axelor.apps.stock.db.StockMoveLine" type="one-to-many"
-      editable="true" showIf="operationSelect == 2">
-      <field name="productCode"/>
+      editable="true" showIf="operationSelect == 2" form-view="partial-invoice-stock-move-line-form">
+      <field name="productCode" readonly="true"/>
       <field name="productName" readonly="true"/>
       <field name="realQty" readonly="true" aggregate="sum" title="Real Qty"/>
       <field name="qtyInvoiced" readonly="true" title="Invoiced Qty"/>

@@ -1,0 +1,6 @@
+"importId";"purchaseOrder.importId";"sequence";"product.importId";"productName";"qty";"unit.importId";"price";"inTaxPrice";"priceDiscounted";"taxLine.importId";"exTaxTotal";"desiredReceiptDate";"estimatedReceiptDate"
+22;8;1;200;"HARDSHARK SATA 1 To  - Ref: 7458764";30;1;45;45;45;24;"1350";"TODAY[+7d]";"TODAY[+7d]"
+23;8;2;201;"SSDSHARK 100 Go  - Ref: 7458897";30;1;"57.6";"57.6";"57.6";24;"1728";"TODAY[+7d]";"TODAY[+7d]"
+24;9;1;302;"Cartouche jet d'encre FLUID - Ref: C.MH0100";60;1;21;"25.2";21;13;"1260";"TODAY[+14d]";"TODAY[+14d]"
+25;9;2;303;"Cartouche encre laser POWDER - Ref: C.TH0850";50;1;54;"64.8";54;13;"2700";"TODAY[+14d]";"TODAY[+14d]"
+26;9;3;304;"Ramette 500 Feuilles A4 Standard 80 g - Ref: P.AS8005";30;1;"4.96";"5.95";"4.96";13;"148.8";"TODAY[+14d]";"TODAY[+14d]"

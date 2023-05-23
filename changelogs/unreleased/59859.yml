@@ -1,2 +1,0 @@
-title: "Bank reconciliation : on generated moves, if the account has analytic distribution required on move lines, fill the analytic distribution of the account, on the move line"
-type: fix

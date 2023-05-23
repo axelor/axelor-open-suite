@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="marketing" package="com.axelor.apps.marketing.db"/>
 
-  <entity name="Campaign" lang="java" sequential="true">
+  <entity name="Campaign" sequential="true">
 
     <string name="name" title="Name" required="true"/>
     <integer name="stageSelect" title="Stage" selection="campaign.stage.select"/>
     <many-to-many name="targetModelSet" ref="com.axelor.apps.marketing.db.TargetList"
       title="Target Model"/>
-    <many-to-one name="partnerTemplate" ref="com.axelor.apps.message.db.Template"
+    <many-to-one name="partnerTemplate" ref="com.axelor.message.db.Template"
       title="Contact/Partners template"/>
-    <many-to-one name="leadTemplate" ref="com.axelor.apps.message.db.Template"
+    <many-to-one name="leadTemplate" ref="com.axelor.message.db.Template"
       title="Leads template"/>
     <many-to-one name="emailLog" ref="com.axelor.meta.db.MetaFile"
       title="Email sending log"/>
@@ -28,7 +28,7 @@
       title="Partners"/>
     <many-to-one name="eventUser" ref="com.axelor.auth.db.User" title="Assigned to"/>
     <many-to-one name="team" ref="com.axelor.team.db.Team" title="Team"/>
-    <many-to-one name="emailAccount" ref="com.axelor.apps.message.db.EmailAccount"
+    <many-to-one name="emailAccount" ref="com.axelor.message.db.EmailAccount"
       title="Email Account"/>
     <string name="subject" title="Subject"/>
     <integer name="eventTypeSelect" title="Event type"
@@ -56,9 +56,9 @@
     <many-to-many name="presentLeadSet" title="Leads" ref="com.axelor.apps.crm.db.Lead"/>
     <one-to-many name="campaignReminderList" title="Reminders"
       ref="com.axelor.apps.marketing.db.CampaignReminder" mappedBy="campaign"/>
-    <many-to-one name="partnerReminderTemplate"
-      ref="com.axelor.apps.message.db.Template" title="Contact/Partner reminder template"/>
-    <many-to-one name="leadReminderTemplate" ref="com.axelor.apps.message.db.Template"
+    <many-to-one name="partnerReminderTemplate" ref="com.axelor.message.db.Template"
+      title="Contact/Partner reminder template"/>
+    <many-to-one name="leadReminderTemplate" ref="com.axelor.message.db.Template"
       title="Lead reminder template"/>
     <boolean name="isAllowEditingOfTargets" title="Allow the editing of the targets"
       default="true"/>

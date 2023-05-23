@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.bankpayment.service.bankreconciliation;
 
@@ -21,6 +22,7 @@ import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.AccountType;
+import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
@@ -29,18 +31,19 @@ import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AccountManagementRepository;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
+import com.axelor.apps.account.db.repo.AccountingSituationRepository;
 import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.AccountService;
 import com.axelor.apps.account.service.ReconcileService;
+import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
-import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.bankpayment.db.BankPaymentConfig;
 import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.db.BankReconciliationLine;
@@ -63,27 +66,28 @@ import com.axelor.apps.bankpayment.service.bankreconciliation.load.BankReconcili
 import com.axelor.apps.bankpayment.service.bankreconciliation.load.afb120.BankReconciliationLoadAFB120Service;
 import com.axelor.apps.bankpayment.service.bankstatementrule.BankStatementRuleService;
 import com.axelor.apps.bankpayment.service.config.BankPaymentConfigService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PrintingSettings;
 import com.axelor.apps.base.db.repo.PeriodRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.BankDetailsService;
-import com.axelor.apps.base.service.PeriodService;
+import com.axelor.apps.base.service.DateService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.apps.tool.StringTool;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.rpc.Context;
 import com.axelor.script.GroovyScriptHelper;
+import com.axelor.utils.StringTool;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -93,7 +97,6 @@ import java.math.RoundingMode;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -108,6 +111,7 @@ public class BankReconciliationService {
 
   protected static final int RETURNED_SCALE = 2;
 
+  protected AccountingSituationRepository accountingSituationRepository;
   protected AccountManagementRepository accountManagementRepository;
   protected AccountService accountService;
   protected BankReconciliationRepository bankReconciliationRepository;
@@ -118,11 +122,9 @@ public class BankReconciliationService {
   protected BankStatementLineRepository bankStatementLineRepository;
   protected BankStatementRuleRepository bankStatementRuleRepository;
   protected MoveValidateService moveValidateService;
-  protected PeriodService periodService;
   protected BankReconciliationLineService bankReconciliationLineService;
   protected MoveLineService moveLineService;
   protected BankReconciliationLineRepository bankReconciliationLineRepository;
-  protected MoveLineToolService moveLineToolService;
   protected MoveCreateService moveCreateService;
   protected MoveLineCreateService moveLineCreateService;
   protected BankDetailsService bankDetailsService;
@@ -136,6 +138,8 @@ public class BankReconciliationService {
   protected ReconcileService reconcileService;
   protected TaxService taxService;
   protected MoveLineTaxService moveLineTaxService;
+  protected DateService dateService;
+  protected TaxAccountService taxAccountService;
 
   @Inject
   public BankReconciliationService(
@@ -148,12 +152,10 @@ public class BankReconciliationService {
       MoveRepository moveRepository,
       BankStatementLineRepository bankStatementLineRepository,
       BankStatementRuleRepository bankStatementRuleRepository,
-      PeriodService periodService,
       MoveValidateService moveValidateService,
       BankReconciliationLineService bankReconciliationLineService,
       MoveLineService moveLineService,
       BankReconciliationLineRepository bankReconciliationLineRepository,
-      MoveLineToolService moveLineToolService,
       MoveCreateService moveCreateService,
       MoveLineCreateService moveLineCreateService,
       BankDetailsService bankDetailsService,
@@ -166,7 +168,10 @@ public class BankReconciliationService {
       BankStatementRuleService bankStatementRuleService,
       ReconcileService reconcileService,
       TaxService taxService,
-      MoveLineTaxService moveLineTaxService) {
+      MoveLineTaxService moveLineTaxService,
+      AccountingSituationRepository accountingSituationRepository,
+      TaxAccountService taxAccountService,
+      DateService dateService) {
 
     this.bankReconciliationRepository = bankReconciliationRepository;
     this.accountService = accountService;
@@ -178,11 +183,9 @@ public class BankReconciliationService {
     this.bankStatementLineRepository = bankStatementLineRepository;
     this.bankStatementRuleRepository = bankStatementRuleRepository;
     this.moveValidateService = moveValidateService;
-    this.periodService = periodService;
     this.bankReconciliationLineService = bankReconciliationLineService;
     this.moveLineService = moveLineService;
     this.bankReconciliationLineRepository = bankReconciliationLineRepository;
-    this.moveLineToolService = moveLineToolService;
     this.moveCreateService = moveCreateService;
     this.moveLineCreateService = moveLineCreateService;
     this.bankDetailsService = bankDetailsService;
@@ -196,6 +199,9 @@ public class BankReconciliationService {
     this.reconcileService = reconcileService;
     this.taxService = taxService;
     this.moveLineTaxService = moveLineTaxService;
+    this.accountingSituationRepository = accountingSituationRepository;
+    this.taxAccountService = taxAccountService;
+    this.dateService = dateService;
   }
 
   public void generateMovesAutoAccounting(BankReconciliation bankReconciliation)
@@ -249,6 +255,9 @@ public class BankReconciliationService {
                               .getQuery()
                               .replaceAll(
                                   "%s", "\"" + bankStatementRule.getSearchLabel() + "\"")))) {
+
+            checkAccountBeforeAutoAccounting(bankStatementRule, bankReconciliation);
+
             if (bankStatementRule.getAccountManagement().getJournal() == null) {
               continue;
             }
@@ -303,7 +312,7 @@ public class BankReconciliationService {
     }
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public Move generateMove(
       BankReconciliationLine bankReconciliationLine, BankStatementRule bankStatementRule)
       throws AxelorException {
@@ -340,13 +349,86 @@ public class BankReconciliationService {
             description,
             bankReconciliationLine.getBankReconciliation().getBankDetails());
 
-    generateMoveLine(bankReconciliationLine, bankStatementRule, move, true);
-    moveLineTaxService.autoTaxLineGenerate(move);
+    MoveLine counterPartMoveLine =
+        generateMoveLine(bankReconciliationLine, bankStatementRule, move, true);
 
     MoveLine moveLine = generateMoveLine(bankReconciliationLine, bankStatementRule, move, false);
+
+    generateTaxMoveLine(counterPartMoveLine, moveLine, bankStatementRule);
+
     bankReconciliationLineService.reconcileBRLAndMoveLine(bankReconciliationLine, moveLine);
 
     return moveRepository.save(move);
+  }
+
+  protected void generateTaxMoveLine(
+      MoveLine counterPartMoveLine, MoveLine moveLine, BankStatementRule bankStatementRule)
+      throws AxelorException {
+    int vatSystemSelect = AccountRepository.VAT_SYSTEM_DEFAULT;
+    Move move = counterPartMoveLine.getMove();
+    Journal journal = move.getJournal();
+    int journalTechnicalType = journal.getJournalType().getTechnicalTypeSelect();
+    Company company = counterPartMoveLine.getMove().getCompany();
+    Partner partner = null;
+
+    if (journalTechnicalType == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE) {
+      partner = counterPartMoveLine.getPartner();
+    } else if (journalTechnicalType == JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE) {
+      partner = company.getPartner();
+    }
+
+    if (partner != null) {
+      AccountingSituation accountingSituation =
+          accountingSituationRepository.findByCompanyAndPartner(company, partner);
+      if (accountingSituation != null && accountingSituation.getVatSystemSelect() != null) {
+        vatSystemSelect = accountingSituation.getVatSystemSelect();
+      }
+    }
+
+    Account counterPartAccount = bankStatementRule.getCounterpartAccount();
+    if (vatSystemSelect == AccountRepository.VAT_SYSTEM_DEFAULT && counterPartAccount != null) {
+      vatSystemSelect = counterPartAccount.getVatSystemSelect();
+    }
+
+    TaxLine taxLine = counterPartMoveLine.getTaxLine();
+    Account account =
+        taxAccountService.getAccount(
+            taxLine != null ? taxLine.getTax() : null,
+            company,
+            journal,
+            vatSystemSelect,
+            false,
+            move.getFunctionalOriginSelect());
+    moveLineTaxService.autoTaxLineGenerate(move, account);
+
+    fixTaxAmountRounding(move, counterPartMoveLine, moveLine);
+  }
+
+  protected void fixTaxAmountRounding(Move move, MoveLine counterPartMoveLine, MoveLine moveLine) {
+    MoveLine taxMoveLine =
+        move.getMoveLineList().stream()
+            .filter(
+                ml ->
+                    ml.getAccount()
+                        .getAccountType()
+                        .getTechnicalTypeSelect()
+                        .equals(AccountTypeRepository.TYPE_TAX))
+            .findFirst()
+            .orElse(null);
+    if (taxMoveLine == null) {
+      return;
+    }
+    BigDecimal taxAmount =
+        moveLine
+            .getDebit()
+            .max(moveLine.getCredit())
+            .subtract(counterPartMoveLine.getDebit().max(counterPartMoveLine.getCredit()))
+            .abs();
+    if (taxMoveLine.getDebit().signum() > 0) {
+      taxMoveLine.setDebit(taxAmount);
+    } else {
+      taxMoveLine.setCredit(taxAmount);
+    }
   }
 
   protected MoveLine generateMoveLine(
@@ -363,7 +445,6 @@ public class BankReconciliationService {
     String description = move.getDescription();
     String origin = move.getOrigin();
     TaxLine taxLine = null;
-    BigDecimal taxAmount = BigDecimal.ZERO;
     if (isCounterpartLine) {
       debit = bankReconciliationLine.getDebit();
       credit = bankReconciliationLine.getCredit();
@@ -391,25 +472,15 @@ public class BankReconciliationService {
             I18n.get(BankPaymentExceptionMessage.BANK_STATEMENT_RULE_CASH_ACCOUNT_MISSING),
             bankStatementRule.getSearchLabel());
       }
-      MoveLine taxMoveLine =
-          move.getMoveLineList().stream()
-              .filter(
-                  moveLine1 ->
-                      moveLine1
-                          .getAccount()
-                          .getAccountType()
-                          .getTechnicalTypeSelect()
-                          .equals(AccountTypeRepository.TYPE_TAX))
-              .findFirst()
-              .orElse(null);
-      if (taxMoveLine != null) {
-        taxAmount = taxMoveLine.getDebit().add(taxMoveLine.getCredit());
-      }
     }
 
     boolean isDebit = debit.compareTo(credit) > 0;
 
-    BigDecimal amount = debit.add(credit).add(taxAmount);
+    BigDecimal amount = debit.add(credit);
+    if (taxLine != null) {
+      BigDecimal taxRate = taxLine.getValue().divide(BigDecimal.valueOf(100));
+      amount = amount.divide(BigDecimal.ONE.add(taxRate), RETURNED_SCALE, RoundingMode.HALF_UP);
+    }
 
     moveLine =
         moveLineCreateService.createMoveLine(
@@ -862,8 +933,6 @@ public class BankReconciliationService {
     }
     if (bankReconciliation.getCashAccount() != null) {
       query = query + " AND self.account = :cashAccount";
-    } else {
-      query = query + " AND self.account.accountType.technicalTypeSelect = :accountType";
     }
 
     return query;
@@ -889,13 +958,12 @@ public class BankReconciliationService {
     }
     if (bankReconciliation.getCashAccount() != null) {
       params.put("cashAccount", bankReconciliation.getCashAccount());
-    } else {
-      params.put("accountType", AccountTypeRepository.TYPE_CASH);
     }
+
     return params;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public BankReconciliation reconciliateAccordingToQueries(BankReconciliation bankReconciliation)
       throws AxelorException {
     List<BankStatementQuery> bankStatementQueries =
@@ -949,6 +1017,7 @@ public class BankReconciliationService {
                     == BankReconciliationRepository.STATUS_UNDER_CORRECTION;
             if (isUnderCorrection) {
               bankReconciliationLine.setIsPosted(true);
+              bankReconciliationLineService.checkAmount(bankReconciliationLine);
               bankReconciliationLineService.updateBankReconciledAmounts(bankReconciliationLine);
             }
             moveLine.setPostedNbr(bankReconciliationLine.getPostedNbr());
@@ -1024,7 +1093,7 @@ public class BankReconciliationService {
     }
     bankReconciliationLine.setMoveLine(null);
     bankReconciliationLine.setConfidenceIndex(0);
-    bankReconciliationLine.setPostedNbr("");
+    bankReconciliationLine.setPostedNbr(null);
   }
 
   @Transactional
@@ -1267,7 +1336,7 @@ public class BankReconciliationService {
     }
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public BankReconciliation reconcileSelected(BankReconciliation bankReconciliation)
       throws AxelorException {
     BankReconciliationLine bankReconciliationLine;
@@ -1294,6 +1363,7 @@ public class BankReconciliationService {
             == BankReconciliationRepository.STATUS_UNDER_CORRECTION;
     if (isUnderCorrection) {
       bankReconciliationLine.setIsPosted(true);
+      bankReconciliationLineService.checkAmount(bankReconciliationLine);
       bankReconciliationLineService.updateBankReconciledAmounts(bankReconciliationLine);
     }
     return bankReconciliation;
@@ -1391,13 +1461,13 @@ public class BankReconciliationService {
         || haveMoveLineOnClosedPeriod;
   }
 
-  public String getCorrectedLabel(LocalDateTime correctedDateTime, User correctedUser) {
+  public String getCorrectedLabel(LocalDateTime correctedDateTime, User correctedUser)
+      throws AxelorException {
     String space = " ";
     StringBuilder correctedLabel = new StringBuilder();
     correctedLabel.append(I18n.get("Reconciliation corrected at"));
     correctedLabel.append(space);
-    correctedLabel.append(
-        correctedDateTime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")));
+    correctedLabel.append(correctedDateTime.format(dateService.getDateTimeFormat()));
     correctedLabel.append(space);
     correctedLabel.append(I18n.get("by"));
     correctedLabel.append(space);
@@ -1433,5 +1503,26 @@ public class BankReconciliationService {
         .filter(MoveLine::getIsSelectedBankReconciliation)
         .map(it -> it.getDebit().subtract(it.getCredit()))
         .reduce(BigDecimal.ZERO, BigDecimal::add);
+  }
+
+  public void checkAccountBeforeAutoAccounting(
+      BankStatementRule bankStatementRule, BankReconciliation bankReconciliation)
+      throws AxelorException {
+    if (bankStatementRule.getAccountManagement() != null
+        && bankStatementRule.getAccountManagement().getCashAccount() != null
+        && bankReconciliation.getBankDetails() != null
+        && bankReconciliation.getBankDetails().getBankAccount() != null
+        && !bankStatementRule
+            .getAccountManagement()
+            .getCashAccount()
+            .equals(bankReconciliation.getBankDetails().getBankAccount())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BankPaymentExceptionMessage.BANK_ACCOUNT_DIFFERENT_THAN_CASH_ACCOUNT),
+          bankReconciliation.getBankDetails().getIbanBic(),
+          bankReconciliation.getBankDetails().getBankAccount().getCode(),
+          bankStatementRule.getAccountManagement().getName(),
+          bankStatementRule.getAccountManagement().getCashAccount().getCode());
+    }
   }
 }

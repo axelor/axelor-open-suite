@@ -1,0 +1,49 @@
+"importId";"name";"mediaTypeSelect";"language.code";"templateEngineSelect";"metaModel.tableName";"toRecipients";"subject";"content";"addSignature";"signature";"birtTemplateSet.templateLink"
+30;"B2C Reminder email";2;"en";1;"ACCOUNT_DEBT_RECOVERY_HISTORY";"$DebtRecoveryHistory.debtRecovery.accountingSituation.partner.emailAddress.address$";"$DebtRecoveryHistory.debtRecovery.company.name$ : Payment reminder of $DebtRecoveryHistory.debtRecovery.accountingSituation.company.name$ invoice(s)";"Dear $DebtRecoveryHistory.debtRecovery.accountingSituation.partner.simpleFullName$,<br/><br/>
+We are glad to count you as one of our great customers. However, after a detailed analysis of your balance, we noticed that the following listed invoice(s) remain(s) with a due balance:<br/>
+<table style=""border-collapse: collapse"" border=""1"">
+<tr>
+<td><b>Invoice N°</b></td>
+<td><b>Due Amount</b></td>
+<td><b>Invoice Date</b></td>
+<td><b>Due Date</b></td>
+<td><b>Order N°</b></td>
+</tr>
+$DebtRecoveryHistory.debtRecovery.invoiceDebtRecoverySet:{list |
+<tr>
+<td>$list.invoiceId$</td>
+<td>$list.amountRemaining; format=""%,10.2f""$ $list.currency.symbol$ ($list.currency.name$)</td>
+<td>$list.invoiceDate; format=""dd/MM/yyy""$</td>
+<td>$list.dueDate; format=""dd/MM/yyy""$</td>
+<td>$list.externalReference$</td>
+</tr>
+}$
+</table>
+<br/><br/>
+If a payment has already been executed during this message transit time, please ignore it. May you have any question regarding the payment of those invoice(s), please contact us by replying to this email.<br/><br/>
+Kind regards<br/>
+For the accounting department of $DebtRecoveryHistory.debtRecovery.company.name$";"true";"$__user__.emailSignature$";"PaymentReminder.rptdesign"
+31;"B2B Reminder email";2;"en";1;"ACCOUNT_DEBT_RECOVERY_HISTORY";"$DebtRecoveryHistory.debtRecovery.accountingSituation.partner.emailAddress.address$";"$DebtRecoveryHistory.debtRecovery.company.name$ : Payment reminder of $DebtRecoveryHistory.debtRecovery.accountingSituation.company.name$";"Dear manager of $DebtRecoveryHistory.debtRecovery.accountingSituation.partner.simpleFullName$,<br/><br/>
+We are glad to count you as one of our great customers. However, after a detailed analysis of your balance, we noticed that the following listed invoice(s) remain(s) with a due balance :<br/>
+<table style=""border-collapse: collapse"" border=""1"">
+<tr>
+<td><b>Invoice N°</b></td>
+<td><b>Due Amount</b></td>
+<td><b>Invoice Date</b></td>
+<td><b>Due Date</b></td>
+<td><b>Order N°</b></td>
+</tr>
+$DebtRecoveryHistory.debtRecovery.invoiceDebtRecoverySet:{list |
+<tr>
+<td>$list.invoiceId$</td>
+<td>$list.amountRemaining; format=""%,10.2f""$ $list.currency.symbol$ ($list.currency.name$)</td>
+<td>$list.invoiceDate; format=""dd/MM/yyy""$</td>
+<td>$list.dueDate; format=""dd/MM/yyy""$</td>
+<td>$list.externalReference$</td>
+</tr>
+}$
+</table>
+<br/><br/>
+If a payment has already been executed during this message transit time, please ignore it. May you have any question regarding the payment of those invoice(s), please contact us by replying to this email.<br/><br/>
+Kind regards<br/>
+For the accounting department of $DebtRecoveryHistory.debtRecovery.company.name$";"true";"$__user__.emailSignature$";"PaymentReminder.rptdesign"

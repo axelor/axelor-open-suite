@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="object-data-config-export-grid" title="Object data config exports"
+    model="com.axelor.apps.base.db.ObjectDataConfigExport">
+    <field name="recordName"/>
+    <field name="createdOn"/>
+    <field name="exportFormatSelect"/>
+  </grid>
+
+  <form name="object-data-config-export-form" title="Object data config export"
+    model="com.axelor.apps.base.db.ObjectDataConfigExport"
+    onNew="action-object-data-config-export-record-on-onnew">
+    <panel name="mainPanel">
+      <field name="modelSelect" title="Model" widget="RefSelect" x-related="modelSelectId"
+        selection-in="null"/>
+      <field name="exportFormatSelect" title="Export format"
+        selection="object.data.export.format.select" type="string"/>
+      <field name="langSelect" title="Language" selection="select.language" type="string"/>
+      <spacer name="langSelectSpacer"/>
+      <button name="exportBtn" title="Export"
+        onClick="save,action-object-data-export-method-export" readonlyIf="modelSelectId == 0"/>
+      <field name="modelSelectId" hidden="true"/>
+      <field name="objectDataConfig" hidden="true"/>
+    </panel>
+  </form>
+
+  <action-record name="action-object-data-config-export-record-on-onnew"
+    model="com.axelor.apps.base.db.ObjectDataConfigExport">
+    <field name="modelSelect" expr="eval:_objectDataConfig?.modelSelect"/>
+    <field name="langSelect" expr="eval:__user__.language"/>
+    <field name="objectDataConfig" expr="eval:_objectDataConfig"/>
+    <field name="exportFormatSelect" expr="eval:'csv'"/>
+  </action-record>
+
+  <action-method name="action-object-data-export-method-export">
+    <call class="com.axelor.apps.base.web.ObjectDataExportController" method="export"/>
+  </action-method>
+
+</object-views>

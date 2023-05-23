@@ -1,0 +1,13 @@
+---
+name: Helpdesk
+code: helpdesk
+typeSelect: standard
+installOrder: 2290
+description: |
+   Helpdesk Management
+image: app-helpdesk.png
+modules: 
+   axelor-helpdesk
+dependsOn:
+   - base
+sequence: 28

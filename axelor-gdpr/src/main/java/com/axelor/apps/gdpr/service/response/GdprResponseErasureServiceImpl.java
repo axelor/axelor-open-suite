@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,13 +14,15 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.gdpr.service.response;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Anonymizer;
 import com.axelor.apps.base.db.AnonymizerLine;
-import com.axelor.apps.base.service.app.AnonymizeService;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.AnonymizeService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.gdpr.db.GDPRErasureLog;
 import com.axelor.apps.gdpr.db.GDPRRequest;
@@ -30,16 +33,14 @@ import com.axelor.apps.gdpr.exception.GdprExceptionMessage;
 import com.axelor.apps.gdpr.service.GdprAnonymizeService;
 import com.axelor.apps.gdpr.service.GdprErasureLogService;
 import com.axelor.apps.gdpr.service.app.AppGdprService;
-import com.axelor.apps.message.db.Message;
-import com.axelor.apps.message.db.Template;
-import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.auth.db.AuditableModel;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.message.db.Message;
+import com.axelor.message.db.Template;
+import com.axelor.message.service.TemplateMessageService;
 import com.axelor.meta.MetaStore;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaModel;
@@ -54,7 +55,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import javax.mail.MessagingException;
 import org.apache.commons.lang3.StringUtils;
 import wslite.json.JSONException;
 
@@ -302,13 +302,7 @@ public class GdprResponseErasureServiceImpl implements GdprResponseErasureServic
       gdprResponse.setSendingDateT(appBaseService.getTodayDateTime().toLocalDateTime());
       gdprResponse.setResponseMessage(message);
 
-    } catch (AxelorException
-        | MessagingException
-        | JSONException
-        | IOException
-        | ClassNotFoundException
-        | InstantiationException
-        | IllegalAccessException e) {
+    } catch (JSONException | IOException | ClassNotFoundException e) {
       throw new AxelorException(
           e,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
