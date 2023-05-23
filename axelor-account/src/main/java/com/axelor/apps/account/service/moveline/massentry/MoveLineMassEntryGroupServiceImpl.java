@@ -13,6 +13,7 @@ import com.axelor.apps.account.service.moveline.MoveLineGroupService;
 import com.axelor.apps.account.service.moveline.MoveLineRecordService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -199,6 +200,16 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
             moveLineGroupService.getAnalyticDistributionTemplateOnChangeValuesMap(moveLine, move));
     moveLineInvoiceTermService.generateDefaultInvoiceTerm(move, moveLine, dueDate, false);
 
+    if (moveLine.getAccount() != null && !moveLine.getAccount().getManageCutOffPeriod()) {
+      moveLine.setCutOffStartDate(null);
+      moveLine.setCutOffEndDate(null);
+    } else if (ObjectUtils.isEmpty(moveLine.getCutOffStartDate())
+        && ObjectUtils.isEmpty(moveLine.getCutOffEndDate())
+        && ObjectUtils.notEmpty(moveLine.getAccount())) {
+      moveLine.setCutOffStartDate(moveLine.getDate());
+      moveLine.setCutOffEndDate(moveLine.getDate());
+    }
+
     valuesMap.put("partner", moveLine.getPartner());
     valuesMap.put("cutOffStartDate", moveLine.getCutOffStartDate());
     valuesMap.put("cutOffEndDate", moveLine.getCutOffEndDate());
@@ -225,6 +236,7 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
         moveLine.getAccount(), moveLine.getIsOtherCurrency(), attrsMap);
     moveLineMassEntryAttrsService.addMovePfpValidatorUserReadOnly(moveLine, attrsMap);
     moveLineMassEntryAttrsService.addMovePfpValidatorUserRequired(moveLine.getAccount(), attrsMap);
+    moveLineMassEntryAttrsService.addCutOffReadOnly(moveLine.getAccount(), attrsMap);
 
     return attrsMap;
   }
