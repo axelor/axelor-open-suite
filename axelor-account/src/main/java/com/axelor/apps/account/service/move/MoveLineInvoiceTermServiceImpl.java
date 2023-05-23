@@ -104,6 +104,8 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
                 MoveRepository.FUNCTIONAL_ORIGIN_SALE)
             .contains(move.getFunctionalOriginSelect());
 
+    moveLine.clearInvoiceTermList();
+
     if (paymentCondition == null
         || CollectionUtils.isEmpty(paymentCondition.getPaymentConditionLineList())
         || (containsHoldback && !isHoldbackAllowed)) {
@@ -124,8 +126,6 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(AccountExceptionMessage.INVOICE_INVOICE_TERM_MULTIPLE_LINES_NO_MULTI));
     }
-
-    moveLine.clearInvoiceTermList();
 
     Account holdbackAccount = containsHoldback ? this.getHoldbackAccount(moveLine, move) : null;
     boolean isHoldback = moveLine.getAccount().equals(holdbackAccount);
