@@ -35,7 +35,6 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PeriodService;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
@@ -48,39 +47,33 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
   protected PartnerRepository partnerRepository;
   protected BankDetailsService bankDetailsService;
   protected MoveToolService moveToolService;
+  protected PeriodService periodService;
 
   @Inject
   public MoveRecordSetServiceImpl(
       MoveLineControlService moveLineControlService,
       PartnerRepository partnerRepository,
       BankDetailsService bankDetailsService,
-      MoveToolService moveToolService) {
+      MoveToolService moveToolService,
+      PeriodService periodService) {
     this.moveLineControlService = moveLineControlService;
     this.partnerRepository = partnerRepository;
     this.bankDetailsService = bankDetailsService;
     this.moveToolService = moveToolService;
+    this.periodService = periodService;
   }
 
   @Override
-  public Map<String, Object> setPeriod(Move move) throws AxelorException {
-    Objects.requireNonNull(move);
-
-    HashMap<String, Object> resultMap = new HashMap<>();
+  public void setPeriod(Move move) throws AxelorException {
     if (move.getDate() != null && move.getCompany() != null) {
       move.setPeriod(
-          Beans.get(PeriodService.class)
-              .getActivePeriod(move.getDate(), move.getCompany(), YearRepository.TYPE_FISCAL));
+          periodService.getActivePeriod(
+              move.getDate(), move.getCompany(), YearRepository.TYPE_FISCAL));
     }
-    resultMap.put("period", move.getPeriod());
-    return resultMap;
   }
 
   @Override
-  public Map<String, Object> setPaymentMode(Move move) {
-    Objects.requireNonNull(move);
-
-    HashMap<String, Object> resultMap = new HashMap<>();
-
+  public void setPaymentMode(Move move) {
     Partner partner = move.getPartner();
     JournalType journalType =
         Optional.ofNullable(move.getJournal()).map(Journal::getJournalType).orElse(null);
@@ -100,16 +93,10 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
     } else {
       move.setPaymentMode(null);
     }
-    resultMap.put("paymentMode", move.getPaymentMode());
-    return resultMap;
   }
 
   @Override
-  public Map<String, Object> setPaymentCondition(Move move) {
-    Objects.requireNonNull(move);
-
-    HashMap<String, Object> resultMap = new HashMap<>();
-
+  public void setPaymentCondition(Move move) {
     Partner partner = move.getPartner();
     JournalType journalType =
         Optional.ofNullable(move.getJournal()).map(Journal::getJournalType).orElse(null);
@@ -123,15 +110,10 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
     } else {
       move.setPaymentCondition(null);
     }
-
-    resultMap.put("paymentCondition", move.getPaymentCondition());
-    return resultMap;
   }
 
   @Override
-  public Map<String, Object> setPartnerBankDetails(Move move) {
-    Objects.requireNonNull(move);
-    HashMap<String, Object> resultMap = new HashMap<>();
+  public void setPartnerBankDetails(Move move) {
     Partner partner = move.getPartner();
 
     if (partner != null) {
@@ -143,15 +125,10 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
     } else {
       move.setPartnerBankDetails(null);
     }
-    resultMap.put("partnerBankDetails", move.getPartnerBankDetails());
-    return resultMap;
   }
 
   @Override
-  public Map<String, Object> setCurrencyByPartner(Move move) {
-    Objects.requireNonNull(move);
-    HashMap<String, Object> resultMap = new HashMap<>();
-
+  public void setCurrencyByPartner(Move move) {
     Partner partner = move.getPartner();
 
     if (partner != null) {
@@ -160,10 +137,6 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
           Optional.ofNullable(partner.getCurrency()).map(Currency::getCodeISO).orElse(null));
       move.setFiscalPosition(partner.getFiscalPosition());
     }
-    resultMap.put("currency", move.getCurrency());
-    resultMap.put("currencyCode", move.getCurrencyCode());
-    resultMap.put("fiscalPosition", move.getFiscalPosition());
-    return resultMap;
   }
 
   @Override
@@ -183,22 +156,16 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
   }
 
   @Override
-  public Map<String, Object> setJournal(Move move) {
-    Objects.requireNonNull(move);
-    HashMap<String, Object> resultMap = new HashMap<>();
+  public void setJournal(Move move) {
     move.setJournal(
         Optional.ofNullable(move.getCompany())
             .map(Company::getAccountConfig)
             .map(AccountConfig::getManualMiscOpeJournal)
             .orElse(null));
-    resultMap.put("journal", move.getJournal());
-    return resultMap;
   }
 
   @Override
-  public Map<String, Object> setFunctionalOriginSelect(Move move) {
-    Objects.requireNonNull(move);
-    HashMap<String, Object> resultMap = new HashMap<>();
+  public void setFunctionalOriginSelect(Move move) {
     if (move.getJournal() != null
         && move.getJournal().getAuthorizedFunctionalOriginSelect() != null) {
       if (move.getJournal().getAuthorizedFunctionalOriginSelect().split(",").length == 1) {
@@ -208,64 +175,25 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
         move.setFunctionalOriginSelect(null);
       }
     }
-    resultMap.put("functionalOriginSelect", move.getFunctionalOriginSelect());
-    return resultMap;
   }
 
   @Override
-  public Map<String, Object> setMoveLineDates(Move move) throws AxelorException {
-    Objects.requireNonNull(move);
-    HashMap<String, Object> resultMap = new HashMap<>();
-
-    moveLineControlService.setMoveLineDates(move);
-    resultMap.put("moveLineList", move.getMoveLineList());
-
-    return resultMap;
-  }
-
-  @Override
-  public Map<String, Object> setCompanyBankDetails(Move move) throws AxelorException {
-    Objects.requireNonNull(move);
-    HashMap<String, Object> resultMap = new HashMap<>();
-
+  public void setCompanyBankDetails(Move move) throws AxelorException {
     PaymentMode paymentMode = move.getPaymentMode();
     Company company = move.getCompany();
     Partner partner = move.getPartner();
+
     if (company == null) {
       move.setCompanyBankDetails(null);
-      resultMap.put("companyBankDetails", null);
-      return resultMap;
+      return;
     }
+
     if (partner != null) {
       partner = partnerRepository.find(partner.getId());
     }
+
     BankDetails defaultBankDetails =
         bankDetailsService.getDefaultCompanyBankDetails(company, paymentMode, partner, null);
     move.setCompanyBankDetails(defaultBankDetails);
-    resultMap.put("companyBankDetails", defaultBankDetails);
-
-    return resultMap;
-  }
-
-  @Override
-  public Map<String, Object> setMoveLineOriginDates(Move move) throws AxelorException {
-    Objects.requireNonNull(move);
-    HashMap<String, Object> resultMap = new HashMap<>();
-
-    moveLineControlService.setMoveLineOriginDates(move);
-    resultMap.put("moveLineList", move.getMoveLineList());
-
-    return resultMap;
-  }
-
-  @Override
-  public Map<String, Object> setOriginOnMoveLineList(Move move) throws AxelorException {
-    Objects.requireNonNull(move);
-    HashMap<String, Object> resultMap = new HashMap<>();
-
-    moveToolService.setOriginOnMoveLineList(move);
-    resultMap.put("moveLineList", move.getMoveLineList());
-
-    return resultMap;
   }
 }

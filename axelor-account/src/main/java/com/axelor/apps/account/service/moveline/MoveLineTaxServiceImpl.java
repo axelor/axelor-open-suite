@@ -216,6 +216,15 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
   }
 
   @Override
+  public void autoTaxLineGenerateNoSave(Move move) throws AxelorException {
+    if (CollectionUtils.isNotEmpty(move.getMoveLineList())
+        && (move.getStatusSelect().equals(MoveRepository.STATUS_NEW)
+            || move.getStatusSelect().equals(MoveRepository.STATUS_SIMULATED))) {
+      this.autoTaxLineGenerateNoSave(move, null);
+    }
+  }
+
+  @Override
   public void autoTaxLineGenerateNoSave(Move move, Account account, boolean percentMoveTemplate)
       throws AxelorException {
 

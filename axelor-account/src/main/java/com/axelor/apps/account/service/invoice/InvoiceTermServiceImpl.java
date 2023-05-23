@@ -1013,10 +1013,12 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
         invoiceTerm.setOriginDate(invoice.getOriginDate());
       }
     } else if (moveLine != null) {
-
-      invoiceTerm.setCompany(move.getCompany());
-      invoiceTerm.setCurrency(move.getCurrency());
       invoiceTerm.setOrigin(moveLine.getOrigin());
+
+      if (move != null) {
+        invoiceTerm.setCompany(move.getCompany());
+        invoiceTerm.setCurrency(move.getCurrency());
+      }
 
       if (moveLine.getPartner() != null) {
         invoiceTerm.setPartner(moveLine.getPartner());

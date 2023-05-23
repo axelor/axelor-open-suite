@@ -29,6 +29,8 @@ public interface MoveLineTaxService {
   void autoTaxLineGenerate(Move move, Account account, boolean percentMoveTemplate)
       throws AxelorException;
 
+  void autoTaxLineGenerateNoSave(Move move) throws AxelorException;
+
   /**
    * Same as method 'autoTaxLineGenerate' but this method will not save the move.
    *
