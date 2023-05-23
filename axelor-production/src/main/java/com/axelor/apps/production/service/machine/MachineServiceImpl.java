@@ -37,7 +37,7 @@ public class MachineServiceImpl implements MachineService {
         operationOrderRepository
             .all()
             .filter(
-                "self.machine = :machine AND self.plannedStartDateT <= :startDate AND self.plannedEndDateT >= :startDate"
+                "self.machine = :machine AND self.plannedStartDateT <= :startDate AND self.plannedEndDateT > :startDate"
                     + " AND (self.manufOrder.statusSelect != :cancelled OR self.manufOrder.statusSelect != :finished)"
                     + " AND self.id != :operationOrderId")
             .bind("startDate", startDate)
@@ -51,7 +51,8 @@ public class MachineServiceImpl implements MachineService {
     if (concurrentOperationOrders.isEmpty()) {
       return startDate;
     } else {
-      return concurrentOperationOrders.get(0).getPlannedEndDateT();
+      return getClosestAvailableDateFrom(
+          machine, concurrentOperationOrders.get(0).getPlannedEndDateT(), operationOrder);
     }
   }
 }
