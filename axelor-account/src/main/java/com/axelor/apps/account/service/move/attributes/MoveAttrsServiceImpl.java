@@ -137,6 +137,11 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
   @Override
   public void addMoveLineAnalyticAttrs(Move move, Map<String, Map<String, Object>> attrsMap)
       throws AxelorException {
+    String fieldNameToSet = "moveLineList";
+    if (move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL) {
+      fieldNameToSet = "moveLineMassEntryList";
+    }
+
     if (move.getCompany() != null) {
       AccountConfig accountConfig = accountConfigService.getAccountConfig(move.getCompany());
 
@@ -146,7 +151,7 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
         AnalyticAxis analyticAxis = null;
 
         for (int i = 1; i <= 5; i++) {
-          String analyticAxisKey = "moveLineList.axis" + i + "AnalyticAccount";
+          String analyticAxisKey = fieldNameToSet + ".axis" + i + "AnalyticAccount";
           this.addAttr(
               analyticAxisKey,
               "hidden",
@@ -166,11 +171,11 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
           }
         }
       } else {
-        this.addAttr("moveLineList.analyticDistributionTemplate", "hidden", true, attrsMap);
-        this.addAttr("moveLineList.analyticMoveLineList", "hidden", true, attrsMap);
+        this.addAttr(fieldNameToSet + ".analyticDistributionTemplate", "hidden", true, attrsMap);
+        this.addAttr(fieldNameToSet + ".analyticMoveLineList", "hidden", true, attrsMap);
 
         for (int i = 1; i <= 5; i++) {
-          String analyticAxisKey = "moveLineList.axis" + i + "AnalyticAccount";
+          String analyticAxisKey = fieldNameToSet + ".axis" + i + "AnalyticAccount";
           this.addAttr(analyticAxisKey, "hidden", true, attrsMap);
         }
       }
