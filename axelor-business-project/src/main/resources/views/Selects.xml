@@ -67,7 +67,7 @@
   </selection>
 
   <selection name="meta.schedule.batch.service.select"
-             id="business.project.meta.schedule.batch.service.select">
+    id="business.project.meta.schedule.batch.service.select">
     <option value="com.axelor.apps.businessproject.service.batch.BusinessProjectBatchService">
       com.axelor.apps.businessproject.service.batch.BusinessProjectBatchService
     </option>
