@@ -156,6 +156,7 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
             saleOrder.getClientPartner(),
             saleOrderLine.getProduct(),
             saleOrder.getCompany(),
+            saleOrder.getTradingName(),
             false);
 
     saleOrderLine.setAnalyticDistributionTemplate(analyticDistributionTemplate);
