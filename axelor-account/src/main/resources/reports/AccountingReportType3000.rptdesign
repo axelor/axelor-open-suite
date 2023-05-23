@@ -2497,8 +2497,9 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                                                             <data id="5853">
                                                                 <structure name="numberFormat">
                                                                     <property name="category">Custom</property>
-                                                                    <property name="pattern">#0.00</property>
+                                                                    <property name="pattern">0,000.00</property>
                                                                 </structure>
+                                                                <property name="textAlign">right</property>
                                                                 <list-property name="highlightRules">
                                                                     <structure>
                                                                         <property name="operator">eq</property>
