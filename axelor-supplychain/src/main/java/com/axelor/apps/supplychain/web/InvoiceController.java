@@ -21,9 +21,11 @@ package com.axelor.apps.supplychain.web;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
+import com.axelor.apps.supplychain.service.invoice.InvoiceControlSupplychainService;
 import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychain;
 import com.axelor.apps.supplychain.service.invoice.SubscriptionInvoiceService;
 import com.axelor.i18n.I18n;
@@ -78,5 +80,15 @@ public class InvoiceController {
       TraceBackService.trace(response, e);
     }
     response.setReload(true);
+  }
+
+  public void checkOrders(ActionRequest request, ActionResponse response) {
+    try {
+      Invoice invoice = request.getContext().asType(Invoice.class);
+
+      Beans.get(InvoiceControlSupplychainService.class).checkOrders(invoice);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
   }
 }

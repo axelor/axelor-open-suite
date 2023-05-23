@@ -379,4 +379,16 @@ public final class SupplychainExceptionMessage {
 
   public static final String STOCK_MOVE_LINES_ASSOCIATED_WITH_INVOICE_LINES_CANNOT_SPLIT = /*$$(*/
       "The following stock move lines are already associated with invoice lines and can not be splitted: %s" /*)*/;
+
+  public static final String INVOICE_SALE_ORDER_INVOICED = /*$$(*/
+      "This invoice cannot be ventilated because it is linked to a sale order that is already fully invoiced." /*)*/;
+
+  public static final String INVOICE_SALE_ORDER_LINE_INVOICED = /*$$(*/
+      "This invoice cannot be ventilated because at least one of its lines is linked to a sale order that is already fully invoiced." /*)*/;
+
+  public static final String INVOICE_PURCHASE_ORDER_INVOICED = /*$$(*/
+      "This invoice cannot be ventilated because it is linked to a purchase order that is already fully invoiced." /*)*/;
+
+  public static final String INVOICE_PURCHASE_ORDER_LINE_INVOICED = /*$$(*/
+      "This invoice cannot be ventilated because at least one of its lines is linked to a purchase order that is already fully invoiced." /*)*/;
 }
