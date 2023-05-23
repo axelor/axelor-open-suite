@@ -561,7 +561,7 @@
   </action-group>
 
   <action-group name="action-account-move-group-accounting-click">
-    <action name="action-move-method-check-accounting" if=""/>
+    <action name="action-move-method-check-accounting"/>
     <action name="action-account-move-group-onsave"/>
     <action name="action-move-method-accounting"/>
   </action-group>
