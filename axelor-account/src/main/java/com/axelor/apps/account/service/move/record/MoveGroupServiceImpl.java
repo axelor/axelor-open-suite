@@ -21,6 +21,7 @@ package com.axelor.apps.account.service.move.record;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.PeriodServiceAccount;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveComputeService;
 import com.axelor.apps.account.service.move.MoveCounterPartService;
 import com.axelor.apps.account.service.move.MoveInvoiceTermService;
@@ -33,6 +34,7 @@ import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryToolS
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
@@ -56,6 +58,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   protected PeriodService periodService;
   protected MoveRepository moveRepository;
   protected MoveLineMassEntryToolService moveLineMassEntryToolService;
+  protected AppAccountService appAccountService;
 
   @Inject
   public MoveGroupServiceImpl(
@@ -73,7 +76,8 @@ public class MoveGroupServiceImpl implements MoveGroupService {
       MoveLineTaxService moveLineTaxService,
       PeriodService periodService,
       MoveRepository moveRepository,
-      MoveLineMassEntryToolService moveLineMassEntryToolService) {
+      MoveLineMassEntryToolService moveLineMassEntryToolService,
+      AppAccountService appAccountService) {
     this.moveDefaultService = moveDefaultService;
     this.moveAttrsService = moveAttrsService;
     this.periodAccountService = periodAccountService;
@@ -89,6 +93,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     this.periodService = periodService;
     this.moveRepository = moveRepository;
     this.moveLineMassEntryToolService = moveLineMassEntryToolService;
+    this.appAccountService = appAccountService;
   }
 
   protected void addPeriodDummyFields(Move move, Map<String, Object> valuesMap)
@@ -156,17 +161,25 @@ public class MoveGroupServiceImpl implements MoveGroupService {
 
     this.addPeriodDummyFields(move, valuesMap);
 
+    if (appAccountService.getAppAccount().getActivatePassedForPayment()) {
+      moveRecordSetService.setPfpStatus(move);
+    }
+
     return valuesMap;
   }
 
   @Override
-  public Map<String, Map<String, Object>> getOnNewAttrsMap(Move move) throws AxelorException {
+  public Map<String, Map<String, Object>> getOnNewAttrsMap(Move move, User user) throws AxelorException {
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
     moveAttrsService.addHidden(move, attrsMap);
     moveAttrsService.addMoveLineListViewerHidden(move, attrsMap);
     moveAttrsService.addFunctionalOriginSelectDomain(move, attrsMap);
     moveAttrsService.addMoveLineAnalyticAttrs(move, attrsMap);
+
+    if (appAccountService.getAppAccount().getActivatePassedForPayment()) {
+      moveAttrsService.getPfpAttrs(move, user, attrsMap);
+    }
 
     return attrsMap;
   }
@@ -186,8 +199,8 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   }
 
   @Override
-  public Map<String, Map<String, Object>> getOnLoadAttrsMap(Move move) throws AxelorException {
-    Map<String, Map<String, Object>> attrsMap = this.getOnNewAttrsMap(move);
+  public Map<String, Map<String, Object>> getOnLoadAttrsMap(Move move, User user) throws AxelorException {
+    Map<String, Map<String, Object>> attrsMap = this.getOnNewAttrsMap(move, user);
 
     moveAttrsService.addDueDateHidden(move, attrsMap);
     if (move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL) {
@@ -245,6 +258,11 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     moveRecordSetService.setPaymentCondition(move);
     moveRecordSetService.setPartnerBankDetails(move);
 
+    if (appAccountService.getAppAccount().getActivatePassedForPayment()) {
+      moveRecordSetService.setPfpStatus(move);
+      valuesMap.put("pfpValidateStatusSelect", move.getPfpValidateStatusSelect());
+    }
+
     valuesMap.put("functionalOriginSelect", move.getFunctionalOriginSelect());
     valuesMap.put("paymentMode", move.getPaymentMode());
     valuesMap.put("paymentCondition", move.getPaymentCondition());
@@ -272,6 +290,12 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     moveRecordSetService.setPaymentCondition(move);
     moveRecordSetService.setPartnerBankDetails(move);
     moveRecordUpdateService.updateDueDate(move, paymentConditionChange, dateChange);
+
+    if (appAccountService.getAppAccount().getActivatePassedForPayment()
+            && move.getPfpValidateStatusSelect() > MoveRepository.PFP_NONE) {
+      moveRecordSetService.setPfpValidatorUser(move);
+      valuesMap.put("pfpValidatorUser", move.getPfpValidatorUser());
+    }
 
     valuesMap.put("currency", move.getCurrency());
     valuesMap.put("currencyCode", move.getCurrencyCode());

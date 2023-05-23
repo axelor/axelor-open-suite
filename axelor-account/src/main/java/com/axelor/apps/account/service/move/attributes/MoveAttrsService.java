@@ -57,6 +57,8 @@ public interface MoveAttrsService {
 
   void addHeaderChangeValue(boolean value, Map<String, Map<String, Object>> attrsMap);
 
+  void getPfpAttrs(Move move, User user, Map<String, Map<String, Object>> attrsMap) throws AxelorException;
+
   void addMassEntryHidden(Move move, Map<String, Map<String, Object>> attrsMap);
 
   void addMassEntryPaymentConditionRequired(Move move, Map<String, Map<String, Object>> attrsMap);

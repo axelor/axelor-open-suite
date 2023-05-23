@@ -55,4 +55,8 @@ public interface MoveRecordSetService {
   void setCompanyBankDetails(Move move) throws AxelorException;
 
   void setOriginDate(Move move);
+
+  void setPfpStatus(Move move);
+
+  void setPfpValidatorUser(Move move);
 }

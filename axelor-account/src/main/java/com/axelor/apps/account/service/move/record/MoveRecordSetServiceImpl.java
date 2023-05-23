@@ -222,4 +222,27 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
       move.setOriginDate(move.getDate());
     }
   }
+
+  public void setPfpStatus(Move move) {
+    Objects.requireNonNull(move);
+    Objects.requireNonNull(move.getJournal());
+    JournalType journalType = move.getJournal().getJournalType();
+
+    if (move.getCompany() != null
+            && move.getCompany().getAccountConfig() != null
+            && move.getCompany().getAccountConfig().getIsManagePassedForPayment()
+            && move.getCompany().getAccountConfig().getIsManagePFPInRefund()
+            && (journalType.getTechnicalTypeSelect()
+            == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE
+            || journalType.getTechnicalTypeSelect()
+            == JournalTypeRepository.TECHNICAL_TYPE_SELECT_CREDIT_NOTE)) {
+      move.setPfpValidateStatusSelect(MoveRepository.PFP_STATUS_AWAITING);
+    }
+  }
+
+  public void setPfpValidatorUser(Move move) {
+    Objects.requireNonNull(move);
+
+    move.setPfpValidatorUser(invoiceTermService.getPfpValidatorUser(move.getPartner(), move.getCompany()));
+  }
 }

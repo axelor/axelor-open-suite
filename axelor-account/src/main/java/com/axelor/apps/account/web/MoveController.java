@@ -27,7 +27,14 @@ import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.PeriodServiceAccount;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
-import com.axelor.apps.account.service.move.*;
+import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.apps.account.service.move.MoveReverseService;
+import com.axelor.apps.account.service.move.MoveValidateService;
+import com.axelor.apps.account.service.move.MoveSimulateService;
+import com.axelor.apps.account.service.move.MoveRemoveService;
+import com.axelor.apps.account.service.move.MoveComputeService;
+import com.axelor.apps.account.service.move.MovePfpService;
+import com.axelor.apps.account.service.move.attributes.MoveAttrsService;
 import com.axelor.apps.account.service.move.control.MoveCheckService;
 import com.axelor.apps.account.service.move.record.MoveGroupService;
 import com.axelor.apps.base.AxelorException;
@@ -53,6 +60,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.HashMap;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -366,10 +374,11 @@ public class MoveController {
   public void onNew(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
+      User user = request.getUser();
       MoveGroupService moveGroupService = Beans.get(MoveGroupService.class);
 
       response.setValues(moveGroupService.getOnNewValuesMap(move));
-      response.setAttrs(moveGroupService.getOnNewAttrsMap(move));
+      response.setAttrs(moveGroupService.getOnNewAttrsMap(move, user));
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
@@ -378,10 +387,11 @@ public class MoveController {
   public void onLoad(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
+      User user = request.getUser();
       MoveGroupService moveGroupService = Beans.get(MoveGroupService.class);
 
       response.setValues(moveGroupService.getOnLoadValuesMap(move));
-      response.setAttrs(moveGroupService.getOnLoadAttrsMap(move));
+      response.setAttrs(moveGroupService.getOnLoadAttrsMap(move, user));
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
@@ -780,6 +790,58 @@ public class MoveController {
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void validatePfp(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      Beans.get(MovePfpService.class).validatePfp(move.getId());
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void setPfpVisibility(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      User user = request.getUser();
+      Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+
+      if (move != null) {
+        Beans.get(MoveAttrsService.class).getPfpAttrs(move, user, attrsMap);
+        response.setAttrs(attrsMap);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setPfpValidatorUserDomain(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      response.setAttr(
+              "pfpValidatorUser",
+              "domain",
+              Beans.get(InvoiceTermService.class)
+                      .getPfpValidatorUserDomain(move.getPartner(), move.getCompany()));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void refusalToPay(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      Beans.get(MovePfpService.class)
+              .refusalToPay(
+                      Beans.get(MoveRepository.class).find(move.getId()),
+                      move.getReasonOfRefusalToPay(),
+                      move.getReasonOfRefusalToPayStr());
+      response.setCanClose(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 }

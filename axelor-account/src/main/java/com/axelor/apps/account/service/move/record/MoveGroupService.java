@@ -20,6 +20,7 @@ package com.axelor.apps.account.service.move.record;
 
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.auth.db.User;
 import java.time.LocalDate;
 import java.util.Map;
 
@@ -27,11 +28,11 @@ public interface MoveGroupService {
 
   Map<String, Object> getOnNewValuesMap(Move move) throws AxelorException;
 
-  Map<String, Map<String, Object>> getOnNewAttrsMap(Move move) throws AxelorException;
+  Map<String, Map<String, Object>> getOnNewAttrsMap(Move move, User user) throws AxelorException;
 
   Map<String, Object> getOnLoadValuesMap(Move move) throws AxelorException;
 
-  Map<String, Map<String, Object>> getOnLoadAttrsMap(Move move) throws AxelorException;
+  Map<String, Map<String, Object>> getOnLoadAttrsMap(Move move, User user) throws AxelorException;
 
   void checkBeforeSave(Move move) throws AxelorException;
 

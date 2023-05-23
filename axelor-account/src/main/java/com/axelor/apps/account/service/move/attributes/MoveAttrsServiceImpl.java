@@ -22,7 +22,6 @@ import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticAxisByCompany;
 import com.axelor.apps.account.db.Move;
-import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -53,7 +52,6 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
   protected AppAccountService appAccountService;
   protected MoveInvoiceTermService moveInvoiceTermService;
   protected MoveViewHelperService moveViewHelperService;
-  protected MoveRepository moveRepository;
   protected MovePfpService movePfpService;
 
   @Inject
@@ -63,14 +61,12 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
       AppAccountService appAccountService,
       MoveInvoiceTermService moveInvoiceTermService,
       MoveViewHelperService moveViewHelperService,
-      MoveRepository moveRepository,
       MovePfpService movePfpService) {
     this.appBaseService = appBaseService;
     this.accountConfigService = accountConfigService;
     this.appAccountService = appAccountService;
     this.moveInvoiceTermService = moveInvoiceTermService;
     this.moveViewHelperService = moveViewHelperService;
-    this.moveRepository = moveRepository;
     this.movePfpService = movePfpService;
   }
 
@@ -291,23 +287,12 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
   }
 
   @Override
-  public Map<String, Map<String, Object>> getPfpAttrs(Move move, User user) throws AxelorException {
+  public void getPfpAttrs(Move move, User user, Map<String, Map<String, Object>> attrsMap) throws AxelorException {
     Objects.requireNonNull(move);
-    Map<String, Map<String, Object>> resultMap = new HashMap<>();
 
-    resultMap.put("passedForPaymentValidationBtn", new HashMap<>());
-    resultMap.put("refusalToPayBtn", new HashMap<>());
-    resultMap.put("pfpValidatorUser", new HashMap<>());
-
-    resultMap
-        .get("passedForPaymentValidationBtn")
-        .put("hidden", !movePfpService.isPfpButtonVisible(move, user, true));
-    resultMap
-        .get("refusalToPayBtn")
-        .put("hidden", !movePfpService.isPfpButtonVisible(move, user, false));
-    resultMap.get("pfpValidatorUser").put("hidden", !movePfpService.isValidatorUserVisible(move));
-
-    return resultMap;
+    this.addAttr("passedForPaymentValidationBtn", "hidden", !movePfpService.isPfpButtonVisible(move, user, true), attrsMap);
+    this.addAttr("refusalToPayBtn", "hidden", !movePfpService.isPfpButtonVisible(move, user, false), attrsMap);
+    this.addAttr("pfpValidatorUser", "hidden", !movePfpService.isValidatorUserVisible(move), attrsMap);
   }
 
   @Override
