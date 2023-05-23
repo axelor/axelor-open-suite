@@ -218,8 +218,14 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
   public void setOriginDate(Move move) {
     Objects.requireNonNull(move);
 
-    if (move.getDate() != null) {
+    if (move.getDate() != null
+            && move.getJournal() != null
+            && move.getJournal().getIsFillOriginDate()) {
       move.setOriginDate(move.getDate());
+    } else if (move.getDate() == null
+            || (move.getJournal() == null
+            || (move.getJournal() != null && !move.getJournal().getIsFillOriginDate()))) {
+      move.setOriginDate(null);
     }
   }
 
