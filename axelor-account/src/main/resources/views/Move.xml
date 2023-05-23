@@ -687,16 +687,16 @@
   </form>
 
   <form name="move-refusal-to-pay-wizard-form" model="com.axelor.apps.account.db.Move"
-        title="Move.refuseToPayWizard">
+    title="Move.refuseToPayWizard">
     <panel name="mainPanel">
       <field name="reasonOfRefusalToPay"
-             domain="self.applicationType = 'com.axelor.apps.account.db.Invoice'" colOffset="4"
-             colSpan="4" widget="SuggestBox" canNew="false" canEdit="false"
-             onChange="action-attrs-move-other-reason"/>
+        domain="self.applicationType = 'com.axelor.apps.account.db.Invoice'" colOffset="4"
+        colSpan="4" widget="SuggestBox" canNew="false" canEdit="false"
+        onChange="action-attrs-move-other-reason"/>
       <field name="reasonOfRefusalToPayStr" colOffset="4" colSpan="4" hidden="true"/>
       <button name="cancelConfirmBtn" title="Move.refuseToPayBtn"
-              onClick="action-move-refusal-to-pay-cancel-reason-check,action-move-method-refusal-to-pay"
-              colOffset="4" colSpan="4"/>
+        onClick="action-move-refusal-to-pay-cancel-reason-check,action-move-method-refusal-to-pay"
+        colOffset="4" colSpan="4"/>
     </panel>
   </form>
 
@@ -965,7 +965,7 @@
 
   <action-attrs name="action-attrs-move-other-reason">
     <attribute for="reasonOfRefusalToPayStr" name="hidden"
-               expr="reasonOfRefusalToPay?.freeText == false"/>
+      expr="reasonOfRefusalToPay?.freeText == false"/>
   </action-attrs>
 
   <search-filters name="move-filters" model="com.axelor.apps.account.db.Move"
@@ -1060,7 +1060,7 @@
 
   <action-method name="action-move-method-apply-cut-off-dates-in-empty-lines">
     <call class="com.axelor.apps.account.web.MoveController"
-          method="applyCutOffDatesInEmptyLines"/>
+      method="applyCutOffDatesInEmptyLines"/>
   </action-method>
 
   <action-group name="action-move-group-pfp-validate">

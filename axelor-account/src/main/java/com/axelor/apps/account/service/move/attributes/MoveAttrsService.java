@@ -20,8 +20,8 @@ package com.axelor.apps.account.service.move.attributes;
 
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.base.AxelorException;
-import java.time.LocalDate;
 import com.axelor.auth.db.User;
+import java.time.LocalDate;
 import java.util.Map;
 
 public interface MoveAttrsService {
@@ -57,7 +57,8 @@ public interface MoveAttrsService {
 
   void addHeaderChangeValue(boolean value, Map<String, Map<String, Object>> attrsMap);
 
-  void getPfpAttrs(Move move, User user, Map<String, Map<String, Object>> attrsMap) throws AxelorException;
+  void getPfpAttrs(Move move, User user, Map<String, Map<String, Object>> attrsMap)
+      throws AxelorException;
 
   void addMassEntryHidden(Move move, Map<String, Map<String, Object>> attrsMap);
 

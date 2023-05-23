@@ -28,12 +28,12 @@ import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.PeriodServiceAccount;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
-import com.axelor.apps.account.service.move.MoveReverseService;
-import com.axelor.apps.account.service.move.MoveValidateService;
-import com.axelor.apps.account.service.move.MoveSimulateService;
-import com.axelor.apps.account.service.move.MoveRemoveService;
 import com.axelor.apps.account.service.move.MoveComputeService;
 import com.axelor.apps.account.service.move.MovePfpService;
+import com.axelor.apps.account.service.move.MoveRemoveService;
+import com.axelor.apps.account.service.move.MoveReverseService;
+import com.axelor.apps.account.service.move.MoveSimulateService;
+import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.move.attributes.MoveAttrsService;
 import com.axelor.apps.account.service.move.control.MoveCheckService;
 import com.axelor.apps.account.service.move.record.MoveGroupService;
@@ -56,11 +56,11 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.HashMap;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -777,11 +777,11 @@ public class MoveController {
       MoveComputeService moveComputeService = Beans.get(MoveComputeService.class);
 
       if (request.getContext().get("cutOffStartDate") != null
-              && request.getContext().get("cutOffEndDate") != null) {
+          && request.getContext().get("cutOffEndDate") != null) {
         LocalDate cutOffStartDate =
-                LocalDate.parse((String) request.getContext().get("cutOffStartDate"));
+            LocalDate.parse((String) request.getContext().get("cutOffStartDate"));
         LocalDate cutOffEndDate =
-                LocalDate.parse((String) request.getContext().get("cutOffEndDate"));
+            LocalDate.parse((String) request.getContext().get("cutOffEndDate"));
 
         if (moveComputeService.checkManageCutOffDates(move)) {
           moveComputeService.applyCutOffDatesInEmptyLines(move, cutOffStartDate, cutOffEndDate);
@@ -824,10 +824,10 @@ public class MoveController {
     try {
       Move move = request.getContext().asType(Move.class);
       response.setAttr(
-              "pfpValidatorUser",
-              "domain",
-              Beans.get(InvoiceTermService.class)
-                      .getPfpValidatorUserDomain(move.getPartner(), move.getCompany()));
+          "pfpValidatorUser",
+          "domain",
+          Beans.get(InvoiceTermService.class)
+              .getPfpValidatorUserDomain(move.getPartner(), move.getCompany()));
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
@@ -837,10 +837,10 @@ public class MoveController {
     try {
       Move move = request.getContext().asType(Move.class);
       Beans.get(MovePfpService.class)
-              .refusalToPay(
-                      Beans.get(MoveRepository.class).find(move.getId()),
-                      move.getReasonOfRefusalToPay(),
-                      move.getReasonOfRefusalToPayStr());
+          .refusalToPay(
+              Beans.get(MoveRepository.class).find(move.getId()),
+              move.getReasonOfRefusalToPay(),
+              move.getReasonOfRefusalToPayStr());
       response.setCanClose(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);

@@ -219,11 +219,11 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
     Objects.requireNonNull(move);
 
     if (move.getDate() != null
-            && move.getJournal() != null
-            && move.getJournal().getIsFillOriginDate()) {
+        && move.getJournal() != null
+        && move.getJournal().getIsFillOriginDate()) {
       move.setOriginDate(move.getDate());
     } else if (move.getDate() == null
-            || (move.getJournal() == null
+        || (move.getJournal() == null
             || (move.getJournal() != null && !move.getJournal().getIsFillOriginDate()))) {
       move.setOriginDate(null);
     }
@@ -234,13 +234,13 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
     JournalType journalType = move.getJournal().getJournalType();
 
     if (move.getCompany() != null
-            && move.getCompany().getAccountConfig() != null
-            && move.getCompany().getAccountConfig().getIsManagePassedForPayment()
-            && move.getCompany().getAccountConfig().getIsManagePFPInRefund()
-            && (journalType.getTechnicalTypeSelect()
-            == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE
+        && move.getCompany().getAccountConfig() != null
+        && move.getCompany().getAccountConfig().getIsManagePassedForPayment()
+        && move.getCompany().getAccountConfig().getIsManagePFPInRefund()
+        && (journalType.getTechnicalTypeSelect()
+                == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE
             || journalType.getTechnicalTypeSelect()
-            == JournalTypeRepository.TECHNICAL_TYPE_SELECT_CREDIT_NOTE)) {
+                == JournalTypeRepository.TECHNICAL_TYPE_SELECT_CREDIT_NOTE)) {
       move.setPfpValidateStatusSelect(MoveRepository.PFP_STATUS_AWAITING);
     }
   }
@@ -248,6 +248,7 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
   public void setPfpValidatorUser(Move move) {
     Objects.requireNonNull(move);
 
-    move.setPfpValidatorUser(invoiceTermService.getPfpValidatorUser(move.getPartner(), move.getCompany()));
+    move.setPfpValidatorUser(
+        invoiceTermService.getPfpValidatorUser(move.getPartner(), move.getCompany()));
   }
 }

@@ -127,7 +127,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
       move.setMassEntryErrors(null);
     } else if (move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_ON_GOING) {
       moveLineMassEntryToolService.setNewMoveStatusSelectMassEntryLines(
-              move.getMoveLineMassEntryList(), MoveRepository.STATUS_NEW);
+          move.getMoveLineMassEntryList(), MoveRepository.STATUS_NEW);
     }
 
     moveRecordUpdateService.updateInvoiceTerms(move, paymentConditionChange, headerChange);
@@ -177,7 +177,8 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   }
 
   @Override
-  public Map<String, Map<String, Object>> getOnNewAttrsMap(Move move, User user) throws AxelorException {
+  public Map<String, Map<String, Object>> getOnNewAttrsMap(Move move, User user)
+      throws AxelorException {
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
     moveAttrsService.addHidden(move, attrsMap);
@@ -207,7 +208,8 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   }
 
   @Override
-  public Map<String, Map<String, Object>> getOnLoadAttrsMap(Move move, User user) throws AxelorException {
+  public Map<String, Map<String, Object>> getOnLoadAttrsMap(Move move, User user)
+      throws AxelorException {
     Map<String, Map<String, Object>> attrsMap = this.getOnNewAttrsMap(move, user);
 
     moveAttrsService.addDueDateHidden(move, attrsMap);
@@ -267,8 +269,11 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     moveRecordSetService.setPartnerBankDetails(move);
     moveRecordSetService.setOriginDate(move);
 
-    if (move.getJournal() != null && move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL) {
-      move.setCompanyBankDetails(massEntryVerificationService.verifyCompanyBankDetails(move.getCompany(), move.getCompanyBankDetails(), move.getJournal()));
+    if (move.getJournal() != null
+        && move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL) {
+      move.setCompanyBankDetails(
+          massEntryVerificationService.verifyCompanyBankDetails(
+              move.getCompany(), move.getCompanyBankDetails(), move.getJournal()));
       valuesMap.put("companyBankDetails", move.getCompanyBankDetails());
     }
 
@@ -307,7 +312,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     moveRecordUpdateService.updateDueDate(move, paymentConditionChange, dateChange);
 
     if (appAccountService.getAppAccount().getActivatePassedForPayment()
-            && move.getPfpValidateStatusSelect() > MoveRepository.PFP_NONE) {
+        && move.getPfpValidateStatusSelect() > MoveRepository.PFP_NONE) {
       moveRecordSetService.setPfpValidatorUser(move);
       valuesMap.put("pfpValidatorUser", move.getPfpValidatorUser());
     }
