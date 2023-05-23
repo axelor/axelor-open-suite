@@ -22,10 +22,10 @@ import com.axelor.apps.base.callable.ControllerCallableTool;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.businessproject.db.BusinessProjectBatch;
 import com.axelor.apps.businessproject.db.InvoicingProject;
-import com.axelor.apps.businessproject.db.ProjectInvoicingAssistantBatch;
-import com.axelor.apps.businessproject.db.repo.ProjectInvoicingAssistantBatchRepository;
-import com.axelor.apps.businessproject.service.batch.ProjectInvoicingAssistantBatchService;
+import com.axelor.apps.businessproject.db.repo.BusinessProjectBatchRepository;
+import com.axelor.apps.businessproject.service.batch.BusinessProjectBatchService;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.i18n.I18n;
@@ -36,23 +36,21 @@ import com.axelor.rpc.ActionResponse;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ProjectInvoicingAssistantBatchController {
+public class BusinessProjectBatchController {
 
   public void runBatch(ActionRequest request, ActionResponse response) {
     try {
-      ProjectInvoicingAssistantBatch projectInvoicingAssistantBatch =
-          request.getContext().asType(ProjectInvoicingAssistantBatch.class);
+      BusinessProjectBatch businessProjectBatch =
+          request.getContext().asType(BusinessProjectBatch.class);
 
-      projectInvoicingAssistantBatch =
-          Beans.get(ProjectInvoicingAssistantBatchRepository.class)
-              .find(projectInvoicingAssistantBatch.getId());
-      ProjectInvoicingAssistantBatchService projectInvoicingAssistantBatchService =
-          Beans.get(ProjectInvoicingAssistantBatchService.class);
-      projectInvoicingAssistantBatchService.setBatchModel(projectInvoicingAssistantBatch);
+      businessProjectBatch =
+          Beans.get(BusinessProjectBatchRepository.class).find(businessProjectBatch.getId());
+      BusinessProjectBatchService businessProjectBatchService =
+          Beans.get(BusinessProjectBatchService.class);
+      businessProjectBatchService.setBatchModel(businessProjectBatch);
       ControllerCallableTool<Batch> controllerCallableTool = new ControllerCallableTool<>();
       Batch batch =
-          controllerCallableTool.runInSeparateThread(
-              projectInvoicingAssistantBatchService, response);
+          controllerCallableTool.runInSeparateThread(businessProjectBatchService, response);
       if (batch != null) {
         response.setInfo(batch.getComments());
       }
@@ -121,7 +119,7 @@ public class ProjectInvoicingAssistantBatchController {
     batch = Beans.get(BatchRepository.class).find(batch.getId());
 
     String ids =
-        Beans.get(ProjectInvoicingAssistantBatchService.class)
+        Beans.get(BusinessProjectBatchService.class)
             .getShowRecordIds(batch, values.get("field").toString());
 
     response.setView(

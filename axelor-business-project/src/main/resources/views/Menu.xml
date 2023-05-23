@@ -41,17 +41,15 @@
 
   <!-- ADMINISTRATION -->
 
-  <menuitem name="admin-root-batch-project-invoicing-assistant" parent="admin-root-batch"
+  <menuitem name="admin-root-batch-business-project" parent="admin-root-batch"
     if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
-    title="Project invoicing assistant batches"
-    action="admin.root.batch.project.invoicing.assistant" order="1300"/>
+    title="Business project batches" action="admin.root.batch.business.project" order="1300"/>
 
-  <action-view name="admin.root.batch.project.invoicing.assistant"
-    title="Project invoicing assistant batches"
-    model="com.axelor.apps.businessproject.db.ProjectInvoicingAssistantBatch">
-    <view type="grid" name="project-invoicing-assistant-batch-grid"/>
-    <view type="form" name="project-invoicing-assistant-batch-form"/>
-    <view-param name="search-filters" value="project-invoicing-assistant-batch-filters"/>
+  <action-view name="admin.root.batch.business.project" title="Business project batches"
+    model="com.axelor.apps.businessproject.db.BusinessProjectBatch">
+    <view type="grid" name="business-project-batch-grid"/>
+    <view type="form" name="business-project-batch-form"/>
+    <view-param name="search-filters" value="business-project-batch-filters"/>
   </action-view>
 
 </object-views>
