@@ -220,7 +220,7 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
     if (CollectionUtils.isNotEmpty(move.getMoveLineList())
         && (move.getStatusSelect().equals(MoveRepository.STATUS_NEW)
             || move.getStatusSelect().equals(MoveRepository.STATUS_SIMULATED))) {
-      this.autoTaxLineGenerateNoSave(move, null);
+      this.autoTaxLineGenerateNoSave(move, null, false);
     }
   }
 
