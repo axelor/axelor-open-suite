@@ -56,4 +56,10 @@ public interface MoveAttrsService {
       boolean value, Map<String, Map<String, Object>> attrsMap);
 
   void addHeaderChangeValue(boolean value, Map<String, Map<String, Object>> attrsMap);
+
+  void addMassEntryHidden(Move move, Map<String, Map<String, Object>> attrsMap);
+
+  void addMassEntryPaymentConditionRequired(Move move, Map<String, Map<String, Object>> attrsMap);
+
+  void addMassEntryBtnHidden(Move move, Map<String, Map<String, Object>> attrsMap);
 }
