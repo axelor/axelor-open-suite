@@ -19,7 +19,9 @@ package com.axelor.apps.account.service;
 
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.DepositSlip;
+import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.PaymentVoucher;
+import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
@@ -32,11 +34,20 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 public class DepositSlipServiceImpl implements DepositSlipService {
+
+  protected InvoicePaymentRepository invoicePaymentRepository;
+
+  @Inject
+  public DepositSlipServiceImpl(InvoicePaymentRepository invoicePaymentRepository) {
+    this.invoicePaymentRepository = invoicePaymentRepository;
+  }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
@@ -174,7 +185,30 @@ public class DepositSlipServiceImpl implements DepositSlipService {
 
       for (PaymentVoucher paymentVoucher : depositSlip.getPaymentVoucherList()) {
         paymentVoucherConfirmService.createMoveAndConfirm(paymentVoucher);
+        updateInvoicePayment(
+            paymentVoucher, paymentVoucher.getChequeDate(), depositSlip.getDepositNumber());
       }
     }
+  }
+
+  protected void updateInvoicePayment(
+      PaymentVoucher paymentVoucher, LocalDate depositDate, String depositNumber) {
+    InvoicePayment invoicePayment =
+        invoicePaymentRepository
+            .all()
+            .filter(
+                "self.move = :move AND self.paymentMode.typeSelect = :paymentModeTypeSelect AND self.statusSelect = :statusSelect")
+            .bind("move", paymentVoucher.getGeneratedMove())
+            .bind("paymentModeTypeSelect", PaymentModeRepository.TYPE_CHEQUE)
+            .bind("statusSelect", InvoicePaymentRepository.STATUS_VALIDATED)
+            .fetchOne();
+    if (invoicePayment == null) {
+      return;
+    }
+    if (depositDate != null) {
+      invoicePayment.setBankDepositDate(depositDate);
+    }
+    invoicePayment.setDescription(invoicePayment.getDescription() + ":" + depositNumber);
+    invoicePaymentRepository.save(invoicePayment);
   }
 }
