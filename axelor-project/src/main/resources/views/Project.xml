@@ -473,7 +473,8 @@
         <field name="sequence" hidden="true"/>
         <field name="imputable" colSpan="4" widget="boolean-switch"
           if="__config__.app.isApp('employee') &amp;&amp; __config__.app.isApp('timesheet')"
-          if-module="axelor-human-resource"/>
+          if-module="axelor-human-resource"
+          onChange="action-project-record-reset-value-is-show-timespent,action-project-record-is-show-timespent-reset-values"/>
         <panel name="fieldsToDisplay" title="Fields to display" colSpan="12">
           <field name="isShowStatus" colSpan="4" widget="inline-checkbox"
             onChange="action-project-record-status-reset-values"/>
@@ -493,7 +494,7 @@
           <field name="isShowFrequency" colSpan="4" widget="inline-checkbox"/>
           <field name="isShowTimeSpent" colSpan="4" widget="inline-checkbox"
             onChange="action-project-record-is-show-timespent-reset-values"
-            if="__config__.app.isApp('timesheet')"/>
+            if="__config__.app.isApp('timesheet')" readonlyIf="!imputable"/>
           <field name="isShowSection" colSpan="4" widget="inline-checkbox"
             onChange="action-project-record-section-reset-values"/>
           <field name="isShowTopic" colSpan="4" widget="inline-checkbox"/>
@@ -1102,6 +1103,11 @@
   <action-record name="action-project-record-is-show-timespent-reset-values"
     model="com.axelor.apps.project.db.Project">
     <field name="isInvoicingTimesheet" expr="eval: false" if="!isShowTimeSpent"/>
+  </action-record>
+
+  <action-record name="action-project-record-reset-value-is-show-timespent"
+    model="com.axelor.apps.project.db.Project">
+    <field name="isShowTimeSpent" expr="eval: false" if="!imputable"/>
   </action-record>
 
   <search-filters name="project-filters" model="com.axelor.apps.project.db.Project"
