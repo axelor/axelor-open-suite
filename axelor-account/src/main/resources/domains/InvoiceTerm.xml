@@ -72,7 +72,7 @@
     <string name="name" namecolumn="true" search="invoice,dueDate,amount,moveLine"
       title="Name">
             <![CDATA[
-            if( invoice != null ){
+            if( invoice != null && invoice.getInvoiceId() != null){
                if (dueDate != null) {
             	 return invoice.getInvoiceId() + "_" + dueDate + "_" + amount;
                }
