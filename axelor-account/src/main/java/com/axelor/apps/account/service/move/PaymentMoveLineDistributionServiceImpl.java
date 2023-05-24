@@ -80,7 +80,8 @@ public class PaymentMoveLineDistributionServiceImpl implements PaymentMoveLineDi
           new PaymentMoveLineDistribution(
               move.getPartner(), reconcile, moveLine, move, moveLine.getTaxLine());
 
-      if (moveLine.getAccount().getServiceType().getN4dsCode() == null) {
+      if (moveLine.getAccount().getServiceType() == null
+          || moveLine.getAccount().getServiceType().getN4dsCode() == null) {
         paymentMvlD.setExcludeFromDas2Report(true);
       }
       paymentMvlD.setOperationDate(reconcile.getReconciliationDateTime().toLocalDate());
