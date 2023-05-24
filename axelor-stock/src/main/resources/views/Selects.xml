@@ -163,4 +163,8 @@
     <option value="2">Stock location content</option>
   </selection>
 
+  <selection name="message.related.to.select" id="stockRule.message.related.to.select">
+    <option value="com.axelor.apps.stock.db.StockRules">Stock Rules</option>
+  </selection>
+
 </object-views>
