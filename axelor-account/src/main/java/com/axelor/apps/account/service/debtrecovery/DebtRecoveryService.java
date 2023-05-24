@@ -28,8 +28,10 @@ import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentScheduleLine;
+import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.AccountingSituationRepository;
 import com.axelor.apps.account.db.repo.DebtRecoveryRepository;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
@@ -57,7 +59,6 @@ import com.axelor.message.db.repo.MessageRepository;
 import com.axelor.message.db.repo.MultiRelatedRepository;
 import com.axelor.utils.date.DateTool;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
@@ -404,18 +405,22 @@ public class DebtRecoveryService {
             .all()
             .filter(
                 "(self.paymentSession IS NULL OR self.paymentSession.statusSelect != :paymentSessionStatus) "
-                    + " and self.amountRemaining > 0 "
-                    + " and self.isPaid IS FALSE "
-                    + " and self.debtRecoveryBlockingOk IS FALSE "
-                    + " and self.moveLine IS NOT NULL "
-                    + " and self.moveLine.move.company = :company "
-                    + " and self.moveLine.partner = :partner "
+                    + " AND self.amountRemaining > 0 "
+                    + " AND self.isPaid IS FALSE "
+                    + " AND self.debtRecoveryBlockingOk IS FALSE "
+                    + " AND self.moveLine IS NOT NULL "
+                    + " AND self.moveLine.move.company = :company "
+                    + " AND self.moveLine.partner = :partner "
+                    + " AND ((self.invoice IS NOT NULL AND self.invoice.operationTypeSelect = :operationTypeClientSale) "
+                    + " OR (self.moveLine.account.accountType.technicalTypeSelect = :typeReceivable AND self.moveLine.debit > 0)) "
                     + (tradingName != null
-                        ? " and self.moveLine.move.tradingName = :tradingName"
+                        ? " AND self.moveLine.move.tradingName = :tradingName"
                         : ""))
             .bind("paymentSessionStatus", PaymentSessionRepository.STATUS_ONGOING)
             .bind("company", company)
-            .bind("partner", partner);
+            .bind("partner", partner)
+            .bind("operationTypeClientSale", InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
+            .bind("typeReceivable", AccountTypeRepository.TYPE_RECEIVABLE);
 
     if (tradingName != null) {
       query.bind("tradingName", tradingName);
@@ -423,6 +428,7 @@ public class DebtRecoveryService {
 
     List<InvoiceTerm> invoiceTermList = query.fetch();
     List<InvoiceTerm> invoiceTermWithDateCheck = Lists.newArrayList();
+
     for (InvoiceTerm invoiceTerm : invoiceTermList) {
       if (invoiceTerm.getDueDate() != null
           && invoiceTerm.getMoveLine() != null
@@ -755,8 +761,7 @@ public class DebtRecoveryService {
 
   public void updateInvoiceTermDebtRecovery(
       DebtRecovery debtRecovery, List<InvoiceTerm> invoiceTermList) {
-    debtRecovery.setInvoiceTermDebtRecoverySet(Sets.newHashSet());
-    debtRecovery.getInvoiceTermDebtRecoverySet().addAll(invoiceTermList);
+    debtRecovery.setInvoiceTermDebtRecoverySet(new HashSet<>(invoiceTermList));
   }
 
   public void updatePaymentScheduleLineDebtRecovery(
