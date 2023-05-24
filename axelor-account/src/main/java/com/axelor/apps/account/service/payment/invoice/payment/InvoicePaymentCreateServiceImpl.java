@@ -26,6 +26,7 @@ import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -133,6 +134,14 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
       BankDetails companyBankDetails = invoice.getPaymentSchedule().getCompanyBankDetails();
       invoicePayment.setCompanyBankDetails(companyBankDetails);
     }
+
+    if (paymentVoucher != null
+        && paymentMode != null
+        && paymentMode.getTypeSelect() == PaymentModeRepository.TYPE_CHEQUE) {
+      invoicePayment.setChequeNumber(paymentVoucher.getChequeNumber());
+      invoicePayment.setDescription(paymentVoucher.getRef());
+    }
+
     computeAdvancePaymentImputation(invoicePayment, paymentMove, invoice.getOperationTypeSelect());
     invoice.addInvoicePaymentListItem(invoicePayment);
     invoicePaymentToolService.updateAmountPaid(invoice);
