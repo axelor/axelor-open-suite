@@ -216,7 +216,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   }
 
   @Override
-  public Map<String, Object> getJournalOnChangeValuesMap(Move move) {
+  public Map<String, Object> getJournalOnChangeValuesMap(Move move) throws AxelorException {
     Map<String, Object> valuesMap = new HashMap<>();
 
     moveRecordSetService.setFunctionalOriginSelect(move);
