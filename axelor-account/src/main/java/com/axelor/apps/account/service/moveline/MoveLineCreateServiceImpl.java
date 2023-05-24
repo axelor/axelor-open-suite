@@ -18,21 +18,7 @@
  */
 package com.axelor.apps.account.service.moveline;
 
-import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.AccountingSituation;
-import com.axelor.apps.account.db.AnalyticAccount;
-import com.axelor.apps.account.db.AnalyticMoveLine;
-import com.axelor.apps.account.db.FiscalPosition;
-import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.InvoiceLineTax;
-import com.axelor.apps.account.db.InvoiceTerm;
-import com.axelor.apps.account.db.Journal;
-import com.axelor.apps.account.db.Move;
-import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.Tax;
-import com.axelor.apps.account.db.TaxEquiv;
-import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.*;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.AccountingSituationRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
@@ -842,29 +828,9 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
         taxLineBeforeReverse != null ? taxLineBeforeReverse.getValue() : taxLine.getValue();
 
     if (percentMoveTemplate) {
-      List<MoveLine> moveLineList = move.getMoveLineList();
-      debit =
-          moveLineList.stream()
-              .filter(
-                  ml ->
-                      ml.getAccount()
-                          .getAccountType()
-                          .getTechnicalTypeSelect()
-                          .equals(AccountTypeRepository.TYPE_PAYABLE))
-              .map(it -> it.getDebit().add(it.getCredit()))
-              .reduce(BigDecimal::add)
-              .orElse(BigDecimal.ZERO);
+      debit = sumMoveLinesByAccountType(move.getMoveLineList(), AccountTypeRepository.TYPE_PAYABLE);
       credit =
-          moveLineList.stream()
-              .filter(
-                  ml ->
-                      ml.getAccount()
-                          .getAccountType()
-                          .getTechnicalTypeSelect()
-                          .equals(AccountTypeRepository.TYPE_RECEIVABLE))
-              .map(it -> it.getDebit().add(it.getCredit()))
-              .reduce(BigDecimal::add)
-              .orElse(BigDecimal.ZERO);
+          sumMoveLinesByAccountType(move.getMoveLineList(), AccountTypeRepository.TYPE_RECEIVABLE);
     }
 
     BigDecimal newMoveLineDebit =
@@ -920,6 +886,14 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       }
     }
     return newOrUpdatedMoveLine;
+  }
+
+  protected BigDecimal sumMoveLinesByAccountType(List<MoveLine> moveLines, String accountType) {
+    return moveLines.stream()
+        .filter(ml -> ml.getAccount().getAccountType().getTechnicalTypeSelect().equals(accountType))
+        .map(it -> it.getDebit().add(it.getCredit()))
+        .reduce(BigDecimal::add)
+        .orElse(BigDecimal.ZERO);
   }
 
   protected Account getTaxAccount(
