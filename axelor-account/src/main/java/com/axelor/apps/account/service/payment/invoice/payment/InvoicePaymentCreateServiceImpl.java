@@ -161,6 +161,7 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
     }
 
     if (paymentVoucher != null
+        && paymentMode != null
         && paymentMode.getTypeSelect() == PaymentModeRepository.TYPE_CHEQUE) {
       invoicePayment.setChequeNumber(paymentVoucher.getChequeNumber());
       invoicePayment.setDescription(paymentVoucher.getRef());
