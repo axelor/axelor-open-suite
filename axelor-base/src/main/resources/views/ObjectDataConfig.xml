@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="object-data-config-grid" title="Object data config"
+    model="com.axelor.apps.base.db.ObjectDataConfig">
+    <field name="title"/>
+    <field name="modelSelect"/>
+  </grid>
+
+  <form name="object-data-config-form" title="Object data config"
+    model="com.axelor.apps.base.db.ObjectDataConfig">
+    <panel name="overviewPanel">
+      <panel name="mainPanel" colSpan="12">
+        <field name="title"/>
+        <field name="modelSelect"/>
+      </panel>
+    </panel>
+    <panel name="contentPanel" colSpan="12">
+      <panel-related name="dataConfigLineListPanel" field="dataConfigLineList"
+        colSpan="12"/>
+      <field name="comment" widget="HTML" colSpan="12"/>
+    </panel>
+    <panel-dashlet name="exportByObject" title="Exports"
+      action="action-object-data-config-dashlet-export-by-object" colSpan="12"/>
+    <panel name="actionPanel" sidebar="true">
+      <button name="exportBtn" title="Export"
+        onClick="save,action-open-object-data-export-form"/>
+      <button name="anonymizeBtn" title="Anonymize"
+        onClick="save,action-open-object-data-anonymize-wizard"/>
+    </panel>
+  </form>
+
+  <action-view name="action-open-object-data-export-form" title="Export"
+    model="com.axelor.apps.base.db.ObjectDataConfigExport">
+    <view type="form" name="object-data-config-export-form"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="popup-save" value="false"/>
+    <context name="_objectDataConfig" expr="eval:__this__"/>
+  </action-view>
+
+  <action-view name="action-open-object-data-anonymize-wizard" title="Anonymize"
+    model="com.axelor.utils.db.Wizard">
+    <view type="form" name="object-data-anonymize-wizard-form"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="popup" value="true"/>
+    <view-param name="popup-save" value="false"/>
+    <context name="_modelSelect" expr="eval:modelSelect"/>
+    <context name="_objectDataConfigId" expr="eval:id"/>
+  </action-view>
+
+  <action-view name="action-object-data-config-dashlet-export-by-object" title="Exports"
+    model="com.axelor.apps.base.db.ObjectDataConfigExport">
+    <view type="grid" name="object-data-config-export-grid"/>
+    <view type="form" name="object-data-config-export-form"/>
+    <domain>self.objectDataConfig.id = :id</domain>
+    <context name="id" expr="eval: id"/>
+  </action-view>
+
+</object-views>

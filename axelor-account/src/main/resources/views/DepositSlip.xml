@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="cheque-deposit-slip-grid" model="com.axelor.apps.account.db.DepositSlip"
     title="Deposit slips" orderBy="-depositDate,-depositNumber">
@@ -85,7 +85,7 @@
         hideIf="companyBankDetails || isBankDepositMoveGenerated">
         <field name="__depositDate" type="Date" title="Deposit date"/>
         <button
-          onClick="save,action-cheque-deposit-slip-method-update-deposit-cheque-date,save"
+          onClick="save,action-cheque-deposit-slip-method-update-deposit-cheque-date,action-cheque-deposit-slip-method-update-invoice-payments,save"
           name="updateDepositDatesBtn" title="Update deposit dates" readonlyIf="!__depositDate"/>
       </panel>
       <panel colSpan="3" colOffset="4" itemSpan="12"
@@ -201,6 +201,12 @@
   <action-method name="action-deposit-slip-method-validate"
     model="com.axelor.apps.account.db.DepositSlip">
     <call class="com.axelor.apps.account.web.DepositSlipController" method="validate"/>
+  </action-method>
+
+  <action-method name="action-cheque-deposit-slip-method-update-invoice-payments"
+    model="com.axelor.apps.account.db.DepositSlip">
+    <call class="com.axelor.apps.account.web.DepositSlipController"
+      method="updateInvoicePayments"/>
   </action-method>
 
   <grid title="Payment vouchers" name="selector-payment-voucher-deposit-slip-grid"

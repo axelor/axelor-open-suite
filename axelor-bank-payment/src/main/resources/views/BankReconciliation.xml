@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="bank-reconciliation-grid" title="Bank reconciliations"
     model="com.axelor.apps.bankpayment.db.BankReconciliation"
@@ -35,7 +35,7 @@
       <panel name="detailsPanel" readonlyIf="statusSelect == 2" colSpan="12">
         <field name="statusSelect" showTitle="false" colSpan="6" widget="NavSelect"/>
         <field name="validatedByUser" colSpan="2"/>
-        <field name="validatedDate" colSpan="2"/>
+        <field name="validateDateTime" colSpan="2"/>
         <button name="validateBtn" title="Validate reconciliation"
           readonlyIf="!(bankReconciliationLineList &amp;&amp; bankReconciliationLineList.length > 0)"
           hideIf="statusSelect == 2" colSpan="2"
@@ -111,6 +111,16 @@
         onClick="save,action-bank-reconciliation-method-unreconcile"/>
       <button name="reconcileBtn" title="Reconcile selected" colSpan="3"
         onClick="save,action-bank-reconciliation-method-reconcile-selected"/>
+      <spacer colSpan="1"/>
+      <label name="selectionBankReconciliationLinesLabel"
+        title="Selection total for bank reconciliation lines" css="label-bold" colSpan="3"/>
+      <field name="$selectionBankReconciliationLines" showTitle="false" readonly="true"
+        colSpan="2" css="bold"/>
+      <label name="selectionUnreconciledMoveLinesLabel"
+        title="Selection total for unreconciliated move lines" css="label-bold" colSpan="3"/>
+      <field name="$selectionUnreconciledMoveLines" readonly="true" showTitle="false"
+        colSpan="2" css="bold"/>
+
       <panel-dashlet name="showUnreconciledMoveLinesPanel"
         title="Accounting Move Line(s) to reconcile" colSpan="12" canSearch="true" height="380"
         action="action-bank-reconciliation-method-show-unreconciled-move-lines"/>
@@ -203,6 +213,7 @@
   <action-group name="action-bank-reconciliation-onload-group">
     <action name="action-bank-reconciliation-method-correct-button-visible"/>
     <action name="action-bank-reconciliation-method-fill-corrected-label"/>
+    <action name="action-bank-reconciliation-method-compute-selections"/>
   </action-group>
 
   <action-group name="action-bank-reconciliation-group-onchange-company">
@@ -254,6 +265,11 @@
   <action-method name="action-bank-reconciliation-method-set-bank-details-domain">
     <call class="com.axelor.apps.bankpayment.web.BankReconciliationController"
       method="setBankDetailsDomain"/>
+  </action-method>
+
+  <action-method name="action-bank-reconciliation-method-compute-selections">
+    <call class="com.axelor.apps.bankpayment.web.BankReconciliationController"
+      method="computeSelections"/>
   </action-method>
 
   <action-method name="action-bank-reconciliation-method-load-bank-statement">

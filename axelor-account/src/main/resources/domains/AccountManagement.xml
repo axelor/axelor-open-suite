@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="AccountManagement" lang="java">
+  <entity name="AccountManagement">
 
     <many-to-one name="purchaseAccount" ref="com.axelor.apps.account.db.Account"
       title="Purchase account"/>
@@ -38,8 +38,8 @@
 
     <many-to-one name="chequeDepositJournal" ref="com.axelor.apps.account.db.Journal"/>
 
-    <many-to-one name="pmtNotificationTemplate"
-      ref="com.axelor.apps.message.db.Template" title="Email model for Payment notice"/>
+    <many-to-one name="pmtNotificationTemplate" ref="com.axelor.message.db.Template"
+      title="Email model for payment notice"/>
 
     <!-- Cut off -->
     <many-to-one name="purchVatRegulationAccount"

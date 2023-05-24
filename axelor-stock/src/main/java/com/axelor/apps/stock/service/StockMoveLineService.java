@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,10 +14,11 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.stock.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
@@ -27,8 +29,6 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.TrackingNumberConfiguration;
-import com.axelor.exception.AxelorException;
-import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.LinkedHashMap;
@@ -132,7 +132,8 @@ public interface StockMoveLineService {
       int toStatus,
       List<StockMoveLine> stockMoveLineList,
       LocalDate lastFutureStockMoveDate,
-      boolean realQty)
+      boolean realQty,
+      boolean generateOrder)
       throws AxelorException;
 
   public void updateLocations(
@@ -144,10 +145,11 @@ public interface StockMoveLineService {
       int fromStatus,
       int toStatus,
       LocalDate lastFutureStockMoveDate,
-      TrackingNumber trackingNumber)
+      TrackingNumber trackingNumber,
+      boolean generateOrder)
       throws AxelorException;
 
-  public void updateAveragePriceLocationLine(
+  public void updateAveragePriceAndLocationLineHistory(
       StockLocation stockLocation,
       StockMoveLine stockMoveLine,
       int fromStatus,
@@ -245,7 +247,6 @@ public interface StockMoveLineService {
    */
   boolean checkMassesRequired(StockMove stockMove, StockMoveLine stockMoveLine);
 
-  @Transactional
   public void splitStockMoveLineByTrackingNumber(
       StockMoveLine stockMoveLine, List<LinkedHashMap<String, Object>> trackingNumbers);
 
@@ -286,7 +287,8 @@ public interface StockMoveLineService {
       throws AxelorException;
 
   /** To update realQty and conformity of a stock move line (API AOS) */
-  void updateStockMoveLine(StockMoveLine stockMoveLine, BigDecimal realQty, Integer conformity)
+  void updateStockMoveLine(
+      StockMoveLine stockMoveLine, BigDecimal realQty, Integer conformity, Unit unit)
       throws AxelorException;
 
   /**
@@ -313,6 +315,10 @@ public interface StockMoveLineService {
       LocalDate lastFutureStockMoveDate,
       boolean realQty,
       LocalDate date,
-      String origin)
+      String origin,
+      boolean generateOrder)
       throws AxelorException;
+
+  public BigDecimal computeNewAveragePriceLocationLine(
+      StockLocationLine stockLocationLine, StockMoveLine stockMoveLine) throws AxelorException;
 }

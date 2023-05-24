@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="production" package="com.axelor.apps.production.db"/>
 
-  <entity name="ProdProcess" lang="java">
+  <entity name="ProdProcess">
 
     <one-to-many name="prodProcessLineList"
       ref="com.axelor.apps.production.db.ProdProcessLine" mappedBy="prodProcess" title="Phases"
@@ -40,7 +40,7 @@
     <integer name="stockMoveRealizeOrderSelect" default="1" massUpdate="true"
       selection="production.manuf.order.stock.move.realize.order.select"/>
 
-    <many-to-one name="subcontractors" ref="com.axelor.apps.base.db.Partner"
+    <many-to-one name="subcontractor" ref="com.axelor.apps.base.db.Partner"
       title="Subcontractor"/>
     <many-to-one name="outsourcingStockLocation"
       ref="com.axelor.apps.stock.db.StockLocation" title="Outsourcing stock location"/>

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="production" package="com.axelor.apps.production.db"/>
 
-  <entity name="ProductionConfig" lang="java" cacheable="true">
+  <entity name="ProductionConfig" cacheable="true">
     <one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"
       required="true" unique="true"/>
 
@@ -19,11 +19,11 @@
     <boolean name="finishMoAutomaticEmail"
       title="Send email when manufacturing order finished" default="false"/>
     <many-to-one name="finishMoMessageTemplate" title="Message template"
-      ref="com.axelor.apps.message.db.Template"/>
+      ref="com.axelor.message.db.Template"/>
     <boolean name="partFinishMoAutomaticEmail"
       title="Send email when manufacturing order partially finished" default="false"/>
     <many-to-one name="partFinishMoMessageTemplate" title="Message template"
-      ref="com.axelor.apps.message.db.Template"/>
+      ref="com.axelor.message.db.Template"/>
 
 
     <finder-method name="findByCompany" using="company"/>

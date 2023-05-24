@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.web;
 
@@ -29,8 +30,7 @@ import com.axelor.apps.account.service.AccountingReportPrintService;
 import com.axelor.apps.account.service.AccountingReportService;
 import com.axelor.apps.account.service.AccountingReportToolService;
 import com.axelor.apps.account.service.MoveLineExportService;
-import com.axelor.apps.base.db.App;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
@@ -38,6 +38,7 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.studio.db.App;
 import com.google.common.base.Joiner;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
@@ -74,20 +75,24 @@ public class AccountingReportController {
    * @param response
    */
   public void searchMoveLine(ActionRequest request, ActionResponse response) {
-
     try {
       AccountingReport accountingReport = request.getContext().asType(AccountingReport.class);
-      AccountingReportService accountingReportService = Beans.get(AccountingReportService.class);
-
       accountingReport = Beans.get(AccountingReportRepository.class).find(accountingReport.getId());
-      AccountingReportToolService accountingReportToolService =
-          Beans.get(AccountingReportToolService.class);
+
+      ActionViewBuilder actionViewBuilder =
+          ActionView.define(I18n.get(AccountExceptionMessage.ACCOUNTING_REPORT_3));
+      String query;
+      BigDecimal debitBalance;
+      BigDecimal creditBalance;
 
       if (accountingReport.getReportType().getTypeSelect()
           == AccountingReportRepository.REPORT_FEES_DECLARATION_PREPARATORY_PROCESS) {
 
         AccountingReportDas2Service accountingReportDas2Service =
             Beans.get(AccountingReportDas2Service.class);
+        AccountingReportToolService accountingReportToolService =
+            Beans.get(AccountingReportToolService.class);
+
         if (accountingReportToolService.isThereAlreadyDraftReportInPeriod(accountingReport)) {
           response.setError(
               I18n.get(
@@ -97,42 +102,39 @@ public class AccountingReportController {
 
         List<Long> paymentMoveLinedistributionIdList =
             accountingReportDas2Service.getAccountingReportDas2Pieces(accountingReport);
-        ActionViewBuilder actionViewBuilder =
-            ActionView.define(I18n.get(AccountExceptionMessage.ACCOUNTING_REPORT_3));
+
         actionViewBuilder.model(PaymentMoveLineDistribution.class.getName());
         actionViewBuilder.add("grid", "payment-move-line-distribution-das2-grid");
         actionViewBuilder.add("form", "payment-move-line-distribution-form");
-        String domain = "self.id IN (0)";
+
+        query = "self.id IN (0)";
         if (CollectionUtils.isNotEmpty(paymentMoveLinedistributionIdList)) {
-          domain =
+          query =
               String.format(
                   "self.id in ( %s )", Joiner.on(",").join(paymentMoveLinedistributionIdList));
         }
-        actionViewBuilder.domain(domain);
-
-        response.setReload(true);
-        response.setView(actionViewBuilder.map());
+        debitBalance = accountingReportDas2Service.getDebitBalance(query);
+        creditBalance = accountingReportDas2Service.getCreditBalance(query);
 
       } else {
-        String query = accountingReportService.getMoveLineList(accountingReport);
-        BigDecimal debitBalance = accountingReportService.getDebitBalance();
-        BigDecimal creditBalance = accountingReportService.getCreditBalance();
+        AccountingReportService accountingReportService = Beans.get(AccountingReportService.class);
 
-        response.setValue("totalDebit", debitBalance);
-        response.setValue("totalCredit", creditBalance);
-        response.setValue("balance", debitBalance.subtract(creditBalance));
-
-        ActionViewBuilder actionViewBuilder =
-            ActionView.define(I18n.get(AccountExceptionMessage.ACCOUNTING_REPORT_3));
         actionViewBuilder.model(MoveLine.class.getName());
         actionViewBuilder.add("grid", "move-line-grid");
         actionViewBuilder.add("form", "move-line-form");
         actionViewBuilder.param("search-filters", "move-line-filters");
-        actionViewBuilder.domain(query);
 
-        response.setView(actionViewBuilder.map());
+        query = accountingReportService.getMoveLineList(accountingReport);
+        debitBalance = accountingReportService.getDebitBalance();
+        creditBalance = accountingReportService.getCreditBalance();
       }
+      actionViewBuilder.domain(query);
 
+      response.setValue("totalDebit", debitBalance);
+      response.setValue("totalCredit", creditBalance);
+      response.setValue("balance", debitBalance.subtract(creditBalance));
+
+      response.setView(actionViewBuilder.map());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -197,7 +199,7 @@ public class AccountingReportController {
       if (accountingReport.getExportTypeSelect() == null
           || accountingReport.getExportTypeSelect().isEmpty()
           || typeSelect == 0) {
-        response.setFlash(I18n.get(AccountExceptionMessage.ACCOUNTING_REPORT_4));
+        response.setInfo(I18n.get(AccountExceptionMessage.ACCOUNTING_REPORT_4));
         response.setReload(true);
         return;
       }

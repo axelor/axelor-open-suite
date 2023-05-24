@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="Company" lang="java" cacheable="true">
+  <entity name="Company" cacheable="true">
     <string name="name" title="Name" required="true" unique="true"/>
     <string name="code" title="Code" required="true" unique="true"/>
     <many-to-one name="address" ref="Address" title="Address" massUpdate="true"/>  <!-- A supprimer si Partner sur company -->
@@ -57,6 +57,9 @@
       title="Attached partners"/>
 
     <string name="timezone" title="Time Zone" selection="company.timezone.select"/>
+    <one-to-many name="emailAccountList" ref="com.axelor.message.db.EmailAccount"
+      title="Email accounts" mappedBy="company"/>
+    <string name="locale" title="Locale"/>
     <extra-code><![CDATA[
 
 	   	// CATEGORY SELECT
@@ -64,6 +67,29 @@
 		public static final int CATEGORY_SUPPLIER = 2;
 
 	]]></extra-code>
+
+    <track>
+      <field name="name" on="UPDATE"/>
+      <field name="code" on="UPDATE"/>
+      <field name="address" on="UPDATE"/>
+      <field name="partner" on="UPDATE"/>
+      <field name="parent" on="UPDATE"/>
+      <field name="notes" on="UPDATE"/>
+      <field name="logo" on="UPDATE"/>
+      <field name="currency" on="UPDATE"/>
+      <field name="customerPaymentDelay" on="UPDATE"/>
+      <field name="supplierPaymentDelay" on="UPDATE"/>
+      <field name="defaultBankDetails" on="UPDATE"/>
+      <field name="printingSettings" on="UPDATE"/>
+      <field name="defaultPartnerTypeSelect" on="UPDATE"/>
+      <field name="defaultPartnerCategorySelect" on="UPDATE"/>
+      <field name="weeklyPlanning" on="UPDATE"/>
+      <field name="publicHolidayEventsPlanning" on="UPDATE"/>
+      <field name="language" on="UPDATE"/>
+      <field name="width" on="UPDATE"/>
+      <field name="height" on="UPDATE"/>
+      <field name="timezone" on="UPDATE"/>
+    </track>
   </entity>
 
 </domain-models>

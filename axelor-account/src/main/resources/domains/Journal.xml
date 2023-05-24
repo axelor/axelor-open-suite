@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="Journal" lang="java" cacheable="true">
+  <entity name="Journal" cacheable="true">
 
     <string name="code" title="Code"/>
     <string name="name" title="Name" required="true"/>
     <many-to-one name="journalType" ref="JournalType" title="Journal Type"
-      massUpdate="true"/>
+      massUpdate="true" required="true"/>
     <string name="exportCode" title="Export code" massUpdate="true"/>
     <boolean name="excessPaymentOk" title="Allow payments greater than due amount"
       massUpdate="true"/>
@@ -35,7 +35,7 @@
     <string name="compatiblePartnerTypeSelect" title="Compatible partner"
       selection="account.journal.compatible.partner.type.select"/>
     <boolean name="authorizeSimulatedMove" title="Authorize simulated move?"/>
-    <boolean name="allowAccountingDaybook" title="Allow accounting daybook"/>
+    <boolean name="allowAccountingDaybook" title="Allow accounting daybook?"/>
     <string name="authorizedFunctionalOriginSelect" title="Authorized functional origin"
       selection="iaccount.move.functional.origin.select"/>
 

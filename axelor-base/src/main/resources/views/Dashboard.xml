@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <!-- Partner Dashboard -->
 
@@ -11,7 +11,8 @@
     <dashlet action="dashlet.partner.by.saleman" height="350" canSearch="true" colSpan="12"/>
     <dashlet height="350" action="dashlet.prospects.by.country" canSearch="true"/>
     <dashlet height="350" action="dashlet.prospects.by.industrySector" canSearch="true"/>
-    <dashlet action="dashlet.customers.with.first.sale.order" height="350" canSearch="true"/>
+    <dashlet action="dashlet.customers.with.first.sale.order" height="350" canSearch="true"
+      if-module="axelor-sale" if="__config__.app.isApp('sale')"/>
   </dashboard>
 
   <dashboard title="Contact Dashboard" name="base.contact.dashboard">

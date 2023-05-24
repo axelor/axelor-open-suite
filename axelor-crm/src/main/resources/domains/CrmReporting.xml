@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="crm" package="com.axelor.apps.crm.db"/>
+
+  <entity name="CrmReporting">
+
+    <string name="typeSelect" title="Type" selection="crm.reporting.type.select"/>
+    <many-to-many name="companySet" ref="com.axelor.apps.base.db.Company"
+      title="Companies"/>
+    <many-to-many name="agencySet" ref="com.axelor.apps.crm.db.Agency" title="Agencies"/>
+    <many-to-many name="teamSet" ref="com.axelor.team.db.Team" title="Teams"/>
+    <many-to-many name="countrySet" ref="com.axelor.apps.base.db.Country"
+      title="Countries"/>
+    <many-to-many name="industrySectorSet" ref="com.axelor.apps.base.db.IndustrySector"
+      title="Industry sectors"/>
+    <many-to-many name="categorySet" ref="com.axelor.apps.base.db.PartnerCategory"
+      title="Categories"/>
+    <date name="fromDate" title="From date"/>
+    <date name="toDate" title="crm.toDate"/>
+
+    <extra-code>
+      	<![CDATA[
+      		// TYPE SELECT
+            public static final String TYPE_LEAD = "com.axelor.apps.crm.db.Lead";
+			public static final String TYPE_PARTNER = "com.axelor.apps.base.db.Partner";
+	  ]]>
+    </extra-code>
+
+  </entity>
+</domain-models>

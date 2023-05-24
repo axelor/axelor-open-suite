@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="gdpr" package="com.axelor.apps.gdpr.db"/>
+  <entity name="GDPRErasureLog">
+    <many-to-one name="modelLog" ref="com.axelor.meta.db.MetaModel" title="Model log"/>
+    <integer name="numberOfrecords" title="Number of records"/>
+    <many-to-one name="gdprResponse" ref="com.axelor.apps.gdpr.db.GDPRResponse"
+      title="Response"/>
+  </entity>
+
+</domain-models>

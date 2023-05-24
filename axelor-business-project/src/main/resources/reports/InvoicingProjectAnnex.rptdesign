@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202071616</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202108150822</property>
     <property name="units">in</property>
     <property name="iconFile">/templates/blank_report.gif</property>
     <property name="layoutPreference">fixed layout</property>
@@ -112,10 +112,10 @@
                     <text-property name="heading">total_ati</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">estimated_deliv_date</property>
+                    <property name="columnName">estimated_shipping_date</property>
                     <property name="analysis">dimension</property>
-                    <text-property name="displayName">estimated_deliv_date</text-property>
-                    <text-property name="heading">estimated_deliv_date</text-property>
+                    <text-property name="displayName">estimated_shipping_date</text-property>
+                    <text-property name="heading">estimated_shipping_date</text-property>
                 </structure>
             </list-property>
             <list-property name="parameters">
@@ -174,7 +174,7 @@
                     </structure>
                     <structure>
                         <property name="position">9</property>
-                        <property name="name">estimated_deliv_date</property>
+                        <property name="name">estimated_shipping_date</property>
                         <property name="dataType">date</property>
                     </structure>
                 </list-property>
@@ -239,8 +239,8 @@
                 </structure>
                 <structure>
                     <property name="position">9</property>
-                    <property name="name">estimated_deliv_date</property>
-                    <property name="nativeName">estimated_deliv_date</property>
+                    <property name="name">estimated_shipping_date</property>
+                    <property name="nativeName">estimated_shipping_date</property>
                     <property name="dataType">date</property>
                     <property name="nativeDataType">91</property>
                 </structure>
@@ -254,7 +254,7 @@
 	line.in_tax_price AS unit_price_ati,
 	line.ex_tax_total AS total_wt,
 	line.in_tax_total AS total_ati,
-	line.estimated_deliv_date AS estimated_deliv_date
+	line.estimated_shipping_date AS estimated_shipping_date
 
 FROM sale_sale_order_line AS line
 
@@ -2988,9 +2988,9 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="dataType">decimal</property>
                 </structure>
                 <structure>
-                    <property name="name">estimated_deliv_date</property>
-                    <text-property name="displayName">estimated_deliv_date</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["estimated_deliv_date"]</expression>
+                    <property name="name">estimated_shipping_date</property>
+                    <text-property name="displayName">estimated_shipping_date</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["estimated_shipping_date"]</expression>
                     <property name="dataType">date</property>
                 </structure>
             </list-property>
@@ -3555,12 +3555,12 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         <property name="borderRightWidth">thin</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <data id="4314">
+                        <data id="4321">
                             <structure name="dateTimeFormat">
                                 <property name="category">Short Date</property>
                                 <property name="pattern">Short Date</property>
                             </structure>
-                            <property name="resultSetColumn">estimated_deliv_date</property>
+                            <property name="resultSetColumn">estimated_shipping_date</property>
                         </data>
                     </cell>
                 </row>

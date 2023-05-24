@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="account" package="com.axelor.apps.account.db"/>
+
+  <entity name="AccountingReportAnalyticConfigLine">
+
+    <integer name="ruleLevel" title="Level" min="1" max="5" required="true" default="1"/>
+    <integer name="typeSelect" title="Type" required="true"
+      selection="accounting.report.analytic.config.line.type.select"/>
+    <string name="analyticAccountCode" title="Analytic account code"/>
+    <many-to-many ref="com.axelor.apps.account.db.AnalyticAccount"
+      name="analyticAccountSet" title="Analytic Accounts"/>
+    <many-to-one ref="com.axelor.apps.account.db.AnalyticAccount" name="analyticAccount"
+      title="Analytic Account"/>
+    <many-to-one ref="com.axelor.apps.account.db.AccountingReport"
+      name="accountingReport"/>
+
+    <extra-code><![CDATA[
+         // TYPE SELECT
+         public static final int TYPE_CODE = 1;
+         public static final int TYPE_RANGE = 2;
+         public static final int TYPE_ACCOUNT = 3;
+      ]]></extra-code>
+
+  </entity>
+</domain-models>

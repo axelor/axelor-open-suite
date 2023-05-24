@@ -1,13 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
-  <module name="message" package="com.axelor.apps.message.db"/>
+  <module name="message" package="com.axelor.message.db"/>
 
-  <entity name="EmailAccount" lang="java">
+  <entity name="EmailAccount">
 
     <many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User" title="User"/>
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
+
+    <track>
+      <field name="user" on="UPDATE"/>
+      <field name="company" on="UPDATE"/>
+      <field name="signature" on="UPDATE"/>
+      <field name="securitySelect" on="UPDATE"/>
+      <field name="fromName" on="UPDATE"/>
+      <field name="host" on="UPDATE"/>
+      <field name="company" on="UPDATE"/>
+      <field name="fromAddress" on="UPDATE"/>
+      <field name="serverTypeSelect" on="UPDATE"/>
+      <field name="isDefault" on="UPDATE"/>
+      <field name="port" on="UPDATE"/>
+      <field name="name" on="UPDATE"/>
+      <field name="user" on="UPDATE"/>
+    </track>
 
   </entity>
 

@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,21 +14,24 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.cash.management.service;
 
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceTerm;
+import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.service.JournalService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.cash.management.db.Forecast;
@@ -49,14 +53,12 @@ import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.db.repo.TimetableRepository;
-import com.axelor.apps.tool.StringTool;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.utils.StringTool;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
@@ -214,6 +216,19 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
     if (statusSelectList.isEmpty()) {
       statusSelectList.add(0);
     }
+    List<Integer> functionalOriginList =
+        StringTool.getIntegerList(forecastRecapLineType.getFunctionalOriginSelect());
+    if (functionalOriginList.isEmpty()) {
+      functionalOriginList.add(0);
+    }
+    List<Long> journalIdList =
+        forecastRecapLineType.getJournalSet().stream()
+            .map(Journal::getId)
+            .collect(Collectors.toList());
+    if (CollectionUtils.isEmpty(journalIdList)) {
+      journalIdList.add((long) 0);
+    }
+
     Query<? extends Model> modelQuery =
         JPA.all(getModel(forecastRecapLineType))
             .filter(getFilter(forecastRecapLineType, manageMultiBanks))
@@ -234,11 +249,14 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
             .bind(
                 "toDateMinusDuration",
                 forecastRecap.getToDate().minusDays(forecastRecapLineType.getEstimatedDuration()))
+            .bind("journalIds", journalIdList)
+            .bind("functionalOrigin", functionalOriginList)
             .order("id");
 
     final int FETCH_LIMIT = 10;
     int offset = 0;
     List<? extends Model> modelList;
+
     while (!(modelList = modelQuery.fetch(FETCH_LIMIT, offset)).isEmpty()) {
       for (Model model : modelList) {
         offset++;
@@ -378,6 +396,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
       case ForecastRecapLineTypeRepository.ELEMENT_INVOICE:
         return "self.company = :company "
             + "AND (:bankDetails IS NULL OR self.companyBankDetails = :bankDetails) "
+            + "AND (0 in (:journalIds) OR self.journal.id in (:journalIds)) "
             + "AND self.statusSelect IN (:statusSelectList) "
             + "AND self.operationTypeSelect = :operationTypeSelect "
             + "AND (select count(1) FROM InvoiceTerm Inv WHERE Inv.invoice = self.id "
@@ -402,7 +421,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
             + "AND (:bankDetails IS NULL OR self.companyBankDetails = :bankDetails) "
             + "AND self.timetableList IS EMPTY";
       case ForecastRecapLineTypeRepository.ELEMENT_EXPENSE:
-        return "self.validationDate BETWEEN :fromDate AND :toDate "
+        return "self.validationDateTime BETWEEN :fromDate AND :toDate "
             + "AND self.company = :company "
             + "AND self.statusSelect = "
             + ExpenseRepository.STATUS_VALIDATED
@@ -422,24 +441,26 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
             + ((forecastRecapLineType.getStatusSelect() == null
                     || forecastRecapLineType.getStatusSelect().isEmpty())
                 ? ""
-                : "AND self.salesStageSelect IN :statusSelectList");
+                : "AND self.opportunityStatus.id IN :statusSelectList");
       case ForecastRecapLineTypeRepository.ELEMENT_SALARY:
         return "self.mainEmploymentContract.payCompany = :company "
             + "AND self.mainEmploymentContract.monthlyGlobalCost != 0 "
             + "AND (:bankDetails IS NULL OR self.bankDetails = :bankDetails)";
       case ForecastRecapLineTypeRepository.ELEMENT_MOVE:
         return "self.company = :company "
-            + "AND self.journal.journalType.technicalTypeSelect = "
+            + "AND (0 in (:journalIds) OR self.journal.id in (:journalIds)) "
+            + "AND (0 in (:functionalOrigin) OR self.functionalOriginSelect in (:functionalOrigin)) "
+            + " AND self.journal.journalType.technicalTypeSelect = "
             + (forecastRecapLineType.getTypeSelect() == 1
                 ? JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE
                 : JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE)
             + (manageMultiBanks
                 ? " AND (:bankDetails IS NULL OR self.companyBankDetails = :bankDetails) "
                 : "")
-            + "AND self.statusSelect IN (:statusSelectList) "
+            + " AND self.statusSelect IN (:statusSelectList) "
             + "AND (select count(1) FROM InvoiceTerm Inv WHERE Inv.moveLine.move = self.id "
             + "AND Inv.dueDate BETWEEN :fromDate AND :toDate "
-            + "AND Inv.amountRemaining != 0) > 0";
+            + "AND Inv.amountRemaining != 0) > 0 ";
       default:
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -607,7 +628,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
             : purchaseOrder.getExpectedRealisationDate();
       case ForecastRecapLineTypeRepository.ELEMENT_EXPENSE:
         Expense expense = (Expense) forecastModel;
-        return expense.getValidationDate();
+        return expense.getValidationDateTime().toLocalDate();
       case ForecastRecapLineTypeRepository.ELEMENT_FORECAST:
         Forecast forecast = (Forecast) forecastModel;
         return forecast
@@ -689,6 +710,18 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
       throws AxelorException {
 
     List<Integer> statusList = StringTool.getIntegerList(forecastRecapLineType.getStatusSelect());
+    List<Integer> functionalOriginList =
+        StringTool.getIntegerList(forecastRecapLineType.getFunctionalOriginSelect());
+    if (functionalOriginList.isEmpty()) {
+      functionalOriginList.add(0);
+    }
+    List<Long> journalIdList =
+        forecastRecapLineType.getJournalSet().stream()
+            .map(Journal::getId)
+            .collect(Collectors.toList());
+    if (CollectionUtils.isEmpty(journalIdList)) {
+      journalIdList.add((long) 0);
+    }
     List<Timetable> timetableList = new ArrayList<>();
     if (forecastRecapLineType.getElementSelect()
         == ForecastRecapLineTypeRepository.ELEMENT_SALE_ORDER) {
@@ -791,6 +824,8 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
               .filter(
                   "self.dueDate BETWEEN :fromDate AND :toDate AND self.moveLine.move.company = :company"
                       + " AND self.moveLine.move.journal.journalType.technicalTypeSelect = :journalType"
+                      + " AND (0 in (:journalIds) OR self.moveLine.move.journal.id in (:journalIds)) "
+                      + " AND (0 in (:functionalOrigin) OR self.moveLine.move.functionalOriginSelect in (:functionalOrigin)) "
                       + " AND self.moveLine.move.statusSelect IN (:moveStatusList) AND self.amount != 0"
                       + ((CollectionUtils.isNotEmpty(forecastRecap.getBankDetailsSet())
                               && manageMultiBanks)
@@ -814,6 +849,8 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
                   forecastRecapLineType.getTypeSelect() == 1
                       ? JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE
                       : JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE)
+              .bind("journalIds", journalIdList)
+              .bind("functionalOrigin", functionalOriginList)
               .fetch();
 
       for (InvoiceTerm invoiceTerm : invoiceTermList) {

@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
-  <form name="duplicate-object-wizard-form" title="Merge duplicated" cols="2"
-    model="com.axelor.apps.base.db.Wizard" onNew="action-default-object-name">
-    <panel name="mainPanel">
+  <form name="duplicate-object-wizard-form" title="Merge duplicated"
+    model="com.axelor.utils.db.Wizard" onNew="action-default-object-name">
+    <panel name="mainPanel" colSpan="2">
       <panel name="duplicateObjectsPanel">
         <field name="$duplicateObjects" title="Duplicate" type="one-to-many" canView="false"
-          readonly="true" target="com.axelor.apps.base.db.Wizard" grid-view="duplicate-object-grid"
+          readonly="true" target="com.axelor.utils.db.Wizard" grid-view="duplicate-object-grid"
           colSpan="12"/>
       </panel>
       <panel name="actionsPanel">
         <button name="addOriginalBtn" icon="fa-arrow-right" colSpan="2"
           onClick="action-method-add-original" colOffset="1"/>
         <field name="$originalObject" title="Original" readonly="true" colSpan="8"
-          type="many-to-one" canView="false" target="com.axelor.apps.base.db.Wizard" colOffset="1"/>
+          type="many-to-one" canView="false" target="com.axelor.utils.db.Wizard" colOffset="1"/>
         <button name="replaceDuplicatesBtn" showIf="$originalObject" title="Merge duplicated"
           onClick="action-validate-replace-object-message,action-method-remove-duplicate"
           colSpan="6" colOffset="4"/>
@@ -24,13 +24,13 @@
   </form>
 
 
-  <grid model="com.axelor.apps.base.db.Wizard" title="Duplicate Object"
+  <grid model="com.axelor.utils.db.Wizard" title="Duplicate Object"
     name="duplicate-object-grid">
     <field name="recordId"/>
     <field name="recordName"/>
   </grid>
 
-  <form model="com.axelor.apps.base.db.Wizard" title="Check duplicate"
+  <form model="com.axelor.utils.db.Wizard" title="Check duplicate"
     name="wizard-check-duplicate-form">
     <panel-related name="fieldsSetPanel" field="$fieldsSet"
       title="Fields to select duplicate"
@@ -44,7 +44,7 @@
   </form>
 
   <action-view name="action-duplicate-object-wizard-open"
-    model="com.axelor.apps.base.db.Wizard" title="Remove duplicates">
+    model="com.axelor.utils.db.Wizard" title="Remove duplicates">
     <view type="form" name="duplicate-object-wizard-form"/>
     <view-param name="popup" value="reload"/>
     <view-param name="show-toolbar" value="false"/>

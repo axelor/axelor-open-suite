@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service.invoice;
 
@@ -27,10 +28,10 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentConditionLineRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.CallMethod;
@@ -289,7 +290,7 @@ public class InvoiceToolService {
     copy.setInterbankCodeLine(null);
     copy.setPaymentMove(null);
     copy.clearRefundInvoiceList();
-    copy.setRejectDate(null);
+    copy.setRejectDateTime(null);
     copy.setOriginalInvoice(null);
     copy.setUsherPassageOk(false);
     copy.setAlreadyPrintedOk(false);
@@ -300,10 +301,10 @@ public class InvoiceToolService {
     copy.setJournal(null);
     copy.clearInvoicePaymentList();
     copy.setPrintedPDF(null);
-    copy.setValidatedDate(null);
+    copy.setValidatedDateTime(null);
     copy.setVentilatedByUser(null);
-    copy.setVentilatedDate(null);
-    copy.setDecisionPfpTakenDate(null);
+    copy.setVentilatedDateTime(null);
+    copy.setDecisionPfpTakenDateTime(null);
     copy.setInternalReference(null);
     copy.setExternalReference(null);
     copy.setLcrAccounted(false);

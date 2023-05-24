@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid title="Debt Recoveries" name="debt-recovery-grid"
     model="com.axelor.apps.account.db.DebtRecovery" canNew="false"
@@ -84,8 +84,6 @@
         </panel-related>
         <field name="accountingSituation.partner.fixedPhone" widget="phone" colSpan="6"
           hidden="true" showIf="accountingSituation != null" x-placeholder-number-type="FIXED_LINE"/>
-        <field name="accountingSituation.partner.fax" widget="phone" colSpan="6" hidden="true"
-          showIf="accountingSituation != null"/>
         <field name="accountingSituation.partner.emailAddress" colSpan="6" hidden="true"
           showIf="accountingSituation != null"/>
         <field name="accountingSituation.partner.webSite" colSpan="6" hidden="true"
@@ -93,8 +91,6 @@
         <field name="tradingNameAccountingSituation.partner.fixedPhone" widget="phone"
           colSpan="6" hidden="true" showIf="tradingNameAccountingSituation != null"
           x-placeholder-number-type="FIXED_LINE"/>
-        <field name="tradingNameAccountingSituation.partner.fax" widget="phone" colSpan="6"
-          hidden="true" showIf="tradingNameAccountingSituation != null"/>
         <field name="tradingNameAccountingSituation.partner.emailAddress" colSpan="6"
           hidden="true" showIf="tradingNameAccountingSituation != null"/>
         <field name="tradingNameAccountingSituation.partner.webSite" colSpan="6" hidden="true"

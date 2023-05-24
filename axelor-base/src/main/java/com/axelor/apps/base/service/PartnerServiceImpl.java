@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,12 +14,13 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.base.service;
 
 import static com.axelor.apps.base.db.repo.PartnerRepository.PARTNER_TYPE_INDIVIDUAL;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
@@ -30,20 +32,20 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.repo.PartnerAddressRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.SequenceRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.message.db.EmailAddress;
-import com.axelor.apps.tool.ComputeNameTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.message.db.EmailAddress;
+import com.axelor.message.db.repo.MessageRepository;
+import com.axelor.utils.ComputeNameTool;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -304,19 +306,9 @@ public class PartnerServiceImpl implements PartnerService {
     name = name == null ? "" : name;
     urlMap.put(
         "google",
-        "<a class='fa fa-google' href='https://www.google.com/?gws_rd=cr#q="
+        "<a class='fa fa-google' href='https://www.google.com/search?q="
             + name
-            + "' target='_blank' />");
-    urlMap.put(
-        "facebook",
-        "<a class='fa fa-facebook' href='https://www.facebook.com/search/more/?q="
-            + name
-            + "&init=public"
-            + "' target='_blank'/>");
-    urlMap.put(
-        "twitter",
-        "<a class='fa fa-twitter' href='https://twitter.com/search?q="
-            + name
+            + "&gws_rd=cr"
             + "' target='_blank' />");
     urlMap.put(
         "linkedin",
@@ -330,42 +322,33 @@ public class PartnerServiceImpl implements PartnerService {
               + name.replace("+", "/")
               + "' target='_blank' />");
     }
-    urlMap.put(
-        "youtube",
-        "<a class='fa fa-youtube' href='https://www.youtube.com/results?search_query="
-            + name
-            + "' target='_blank' />");
 
     return urlMap;
   }
 
+  @Deprecated
   @Override
-  public List<Long> findPartnerMails(Partner partner) {
+  public List<Long> findPartnerMails(Partner partner, int emailType) {
     List<Long> idList = new ArrayList<Long>();
 
-    idList.addAll(this.findMailsFromPartner(partner));
+    idList.addAll(this.findMailsFromPartner(partner, emailType));
+
+    if (partner.getIsContact()) {
+      return idList;
+    }
 
     Set<Partner> contactSet = partner.getContactPartnerSet();
     if (contactSet != null && !contactSet.isEmpty()) {
       for (Partner contact : contactSet) {
-        idList.addAll(this.findMailsFromPartner(contact));
+        idList.addAll(this.findMailsFromPartner(contact, emailType));
       }
     }
     return idList;
   }
 
-  @Override
-  public List<Long> findContactMails(Partner partner) {
-    List<Long> idList = new ArrayList<Long>();
-
-    idList.addAll(this.findMailsFromPartner(partner));
-
-    return idList;
-  }
-
   @SuppressWarnings("unchecked")
   @Override
-  public List<Long> findMailsFromPartner(Partner partner) {
+  public List<Long> findMailsFromPartner(Partner partner, int emailType) {
 
     String query =
         String.format(
@@ -373,14 +356,27 @@ public class PartnerServiceImpl implements PartnerService {
                 + "AND email IN (SELECT message FROM MultiRelated as related WHERE related.relatedToSelect = 'com.axelor.apps.base.db.Partner' AND related.relatedToSelectId = %s)",
             partner.getId());
 
-    if (partner.getEmailAddress() != null) {
-      query += "OR (email.fromEmailAddress.id = " + partner.getEmailAddress().getId() + ")";
+    String emailAddress =
+        (partner.getEmailAddress() != null) ? partner.getEmailAddress().getAddress() : null;
+    if (emailAddress != null) {
+      query +=
+          " OR (:emailAddress IN ("
+              + ((emailType == MessageRepository.TYPE_RECEIVED)
+                  ? "email.fromEmailAddress.address"
+                  : "SELECT em.address FROM EmailAddress em WHERE em member of email.toEmailAddressSet")
+              + "))";
+    } else {
+      query += " AND email.typeSelect = " + emailType;
+    }
+    javax.persistence.Query q = JPA.em().createQuery(query);
+    if (emailAddress != null) {
+      q.setParameter("emailAddress", emailAddress);
     }
 
-    return JPA.em().createQuery(query).getResultList();
+    return q.getResultList();
   }
 
-  private PartnerAddress createPartnerAddress(Address address, Boolean isDefault) {
+  protected PartnerAddress createPartnerAddress(Address address, Boolean isDefault) {
 
     PartnerAddress partnerAddress = new PartnerAddress();
     partnerAddress.setAddress(address);
@@ -702,7 +698,7 @@ public class PartnerServiceImpl implements PartnerService {
     int siren = Integer.parseInt(sirenStr);
     int taxKey = Math.floorMod(siren, 97);
     taxKey = Math.floorMod(12 + 3 * taxKey, 97);
-    return Integer.toString(taxKey);
+    return String.format("%02d", taxKey);
   }
 
   public Partner isThereDuplicatePartnerInArchive(Partner partner) {

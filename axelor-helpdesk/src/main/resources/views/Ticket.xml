@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
 
   <grid name="ticket-grid" title="All tickets" model="com.axelor.apps.helpdesk.db.Ticket">
@@ -118,7 +118,7 @@
     <panel name="followupPanel" title="Follow-up" sidebar="true" canCollapse="true">
       <field name="assignedToUser" colSpan="6" form-view="user-form" grid-view="user-grid"/>
       <field name="responsibleUser" colSpan="6" form-view="user-form" grid-view="user-grid"/>
-      <field name="lead" colSpan="6" form-view="lead-form" grid-view="lead-grid"
+      <field name="ticketLead" colSpan="6" form-view="lead-form" grid-view="lead-grid"
         if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
     </panel>
     <panel name="datesPanel" title="Dates" sidebar="true" canCollapse="true">
@@ -335,6 +335,6 @@
       if="!__config__.app.getApp('helpdesk')?.getManageTimer()"/>
     <field name="timerState" hidden="true"
       if="!__config__.app.getApp('helpdesk')?.getManageTimer()"/>
-    <field name="lead" hidden="true" if="!__config__.app.isApp('crm')"/>
+    <field name="ticketLead" hidden="true" if="!__config__.app.isApp('crm')"/>
   </search-filters>
 </object-views>

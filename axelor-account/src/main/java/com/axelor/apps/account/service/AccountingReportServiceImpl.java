@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service;
 
@@ -24,6 +25,7 @@ import com.axelor.apps.account.db.AccountingReportMoveLine;
 import com.axelor.apps.account.db.AccountingReportType;
 import com.axelor.apps.account.db.JournalType;
 import com.axelor.apps.account.db.repo.AccountRepository;
+import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.AccountingReportRepository;
 import com.axelor.apps.account.db.repo.AccountingReportTypeRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
@@ -36,15 +38,15 @@ import com.axelor.apps.account.db.repo.TaxPaymentMoveLineRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.SequenceRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
@@ -54,12 +56,14 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.persistence.Query;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -124,9 +128,14 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     if (accountingReport.getReportType().getTypeSelect()
         == AccountingReportRepository.REPORT_FEES_DECLARATION_PREPARATORY_PROCESS) {
       fileLink = accountingReportDas2Service.printPreparatoryProcessDeclaration(accountingReport);
+    } else if (accountingReport.getReportType().getTypeSelect()
+            == AccountingReportRepository.REPORT_CUSTOM_STATE
+        && !accountingReport.getReportType().getUseLegacyCustomReports()) {
+      fileLink = accountingReportPrintService.printCustomReport(accountingReport);
     } else {
       fileLink = accountingReportPrintService.print(accountingReport);
     }
+    accountingReport = accountingReportRepo.find(accountingReport.getId());
     setStatus(accountingReport);
     return fileLink;
   }
@@ -135,6 +144,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
   public MetaFile export(AccountingReport accountingReport) throws AxelorException, IOException {
 
     int typeSelect = accountingReport.getReportType().getTypeSelect();
+
     if (typeSelect == AccountingReportRepository.EXPORT_N4DS) {
       return accountingReportDas2Service.exportN4DSFile(accountingReport);
     } else {
@@ -142,7 +152,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     }
   }
 
-  private Boolean compareReportType(AccountingReport accountingReport, int type) {
+  protected Boolean compareReportType(AccountingReport accountingReport, int type) {
     return accountingReport.getReportType() != null
         && accountingReport.getReportType().getTypeSelect() == type;
   }
@@ -195,7 +205,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     }
 
     if (accountingReport.getCurrency() != null) {
-      this.addParams("self.move.companyCurrency = ?%d", accountingReport.getCurrency());
+      this.addParams("self.move.currency = ?%d", accountingReport.getCurrency());
     }
 
     if (accountingReport.getDateFrom() != null) {
@@ -227,6 +237,23 @@ public class AccountingReportServiceImpl implements AccountingReportService {
           accountingReport.getAccountSet());
     }
 
+    List<String> technicalTypeToExclude = new ArrayList<>();
+    if (accountingReport.getExcludeViewAccount()) {
+      technicalTypeToExclude.add("'" + AccountTypeRepository.TYPE_VIEW + "'");
+    }
+    if (accountingReport.getExcludeCommitmentSpecialAccount()) {
+      technicalTypeToExclude.add("'" + AccountTypeRepository.TYPE_COMMITMENT + "'");
+      technicalTypeToExclude.add("'" + AccountTypeRepository.TYPE_SPECIAL + "'");
+    }
+    if (!CollectionUtils.isEmpty(technicalTypeToExclude)) {
+      this.addParams(
+          String.format(
+              "self.account.accountType.technicalTypeSelect not in (%s)",
+              technicalTypeToExclude.stream()
+                  .map(String::valueOf)
+                  .collect(Collectors.joining(","))));
+    }
+
     if (accountingReport.getPartnerSet() != null && !accountingReport.getPartnerSet().isEmpty()) {
       this.addParams("self.partner in (?%d)", accountingReport.getPartnerSet());
     }
@@ -249,15 +276,15 @@ public class AccountingReportServiceImpl implements AccountingReportService {
       if (journalType != null) {
         this.addParams("self.move.journal.journalType = ?%d", journalType);
       }
-      String dateFromStr = "'" + accountingReport.getDateFrom().toString() + "'";
-      String dateToStr = "'" + accountingReport.getDateTo().toString() + "'";
+      String dateFromStr = "'" + accountingReport.getDateFrom().atStartOfDay().toString() + "'";
+      String dateToStr = "'" + accountingReport.getDateTo().atTime(LocalTime.MAX).toString() + "'";
       String selfReconciledQuery =
           String.format(
-              "(self.reconcileGroup is not null AND self.reconcileGroup.dateOfLettering >= %s AND self.reconcileGroup.dateOfLettering <= %s)",
+              "(self.reconcileGroup is not null AND self.reconcileGroup.letteringDateTime >= %s AND self.reconcileGroup.letteringDateTime <= %s)",
               dateFromStr, dateToStr);
       String otherLinedReconciledQuery =
           String.format(
-              "exists (select 1 from MoveLine as ml where ml.reconcileGroup is not null AND ml.reconcileGroup.dateOfLettering >= %s AND ml.reconcileGroup.dateOfLettering <= %s AND ml.move.id = self.move.id)",
+              "exists (select 1 from MoveLine as ml where ml.reconcileGroup is not null AND ml.reconcileGroup.letteringDateTime >= %s AND ml.reconcileGroup.letteringDateTime <= %s AND ml.move.id = self.move.id)",
               dateFromStr, dateToStr);
       String reconcileQuery =
           String.format("(%s OR %s)", selfReconciledQuery, otherLinedReconciledQuery);
@@ -653,7 +680,9 @@ public class AccountingReportServiceImpl implements AccountingReportService {
   protected void buildAnalyticMoveLineQuery(AccountingReport accountingReport) {
     this.initQuery();
 
-    this.addParams("self.moveLine.move.companyCurrency = ?%d", accountingReport.getCurrency());
+    if (accountingReport.getCurrency() != null) {
+      this.addParams("self.moveLine.move.companyCurrency = ?%d", accountingReport.getCurrency());
+    }
 
     if (accountingReport.getJournal() != null) {
       this.addParams("self.moveLine.move.journal = ?%d", accountingReport.getJournal());
@@ -848,7 +877,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     return this.query;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   @Override
   public AccountingReport createAccountingExportFromReport(
       AccountingReport accountingReport, int exportTypeSelect, boolean isComplementary)

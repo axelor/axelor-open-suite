@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="studio" package="com.axelor.studio.db"/>
+
+  <entity name="AppGdpr" cacheable="true">
+    <one-to-one name="app" ref="com.axelor.studio.db.App"/>
+    <integer name="maxRespondingDays" title="Maximum days to respond" default="30"
+      help="Maximum number of days to respond to a request."/>
+
+    <many-to-one ref="com.axelor.apps.base.db.Anonymizer" name="anonymizer"
+      title="Pseudonymizer" help="Pseudonymizer template to use when pseudonymizing datas."/>
+    <one-to-many ref="com.axelor.apps.gdpr.db.GDPRSearchConfig" name="searchConfigList"
+      mappedBy="appGdpr" title="Search configurations"
+      help="Configure how the app will search the datas"/>
+    <one-to-many ref="com.axelor.apps.gdpr.db.GDPRRequestOrigin"
+      name="requestOriginList" mappedBy="appGdpr" title="Requests origins"
+      help="Configure request origins"/>
+    <many-to-one name="accessResponseTemplate" ref="com.axelor.message.db.Template"
+      title="Email template for access request response"
+      help="Email template to send when responding to an access request."/>
+    <many-to-one name="erasureResponseTemplate" ref="com.axelor.message.db.Template"
+      title="Email template for erasure request response"
+      help="Email template to send when responding to an erasure request."/>
+
+    <track>
+      <field name="maxRespondingDays" on="UPDATE"/>
+      <field name="anonymizer" on="UPDATE"/>
+      <field name="accessResponseTemplate" on="UPDATE"/>
+      <field name="erasureResponseTemplate" on="UPDATE"/>
+    </track>
+
+  </entity>
+</domain-models>

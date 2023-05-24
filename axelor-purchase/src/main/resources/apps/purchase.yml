@@ -1,0 +1,13 @@
+---
+name: Purchase
+code: purchase
+typeSelect: standard
+installOrder: 2060
+description: |
+   Purchase configuration
+image: app-purchase.png
+modules: 
+   axelor-purchase
+dependsOn:
+   - base
+sequence: 3
