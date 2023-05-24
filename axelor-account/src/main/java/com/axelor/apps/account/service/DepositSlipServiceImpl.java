@@ -191,7 +191,7 @@ public class DepositSlipServiceImpl implements DepositSlipService {
     }
   }
 
-  private void updateInvoicePayment(
+  protected void updateInvoicePayment(
       PaymentVoucher paymentVoucher, LocalDate depositDate, String depositNumber) {
     InvoicePayment invoicePayment =
         invoicePaymentRepository
