@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.journal.JournalCheckPartnerTypeService;
 import com.axelor.apps.account.service.move.MoveInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveToolService;
@@ -53,6 +54,7 @@ public class MoveCheckServiceImpl implements MoveCheckService {
   protected MoveLineService moveLineService;
   protected JournalCheckPartnerTypeService journalCheckPartnerTypeService;
   protected MoveInvoiceTermService moveInvoiceTermService;
+  protected InvoiceTermService invoiceTermService;
 
   @Inject
   public MoveCheckServiceImpl(
@@ -63,7 +65,8 @@ public class MoveCheckServiceImpl implements MoveCheckService {
       MoveLineCheckService moveLineCheckService,
       MoveLineService moveLineService,
       JournalCheckPartnerTypeService journalCheckPartnerTypeService,
-      MoveInvoiceTermService moveInvoiceTermService) {
+      MoveInvoiceTermService moveInvoiceTermService,
+      InvoiceTermService invoiceTermService) {
     this.moveRepository = moveRepository;
     this.moveToolService = moveToolService;
     this.periodService = periodService;
@@ -72,6 +75,7 @@ public class MoveCheckServiceImpl implements MoveCheckService {
     this.moveLineService = moveLineService;
     this.journalCheckPartnerTypeService = journalCheckPartnerTypeService;
     this.moveInvoiceTermService = moveInvoiceTermService;
+    this.invoiceTermService = invoiceTermService;
   }
 
   @Override
@@ -203,6 +207,15 @@ public class MoveCheckServiceImpl implements MoveCheckService {
             && (move.getStatusSelect() == MoveRepository.STATUS_NEW
                 || move.getStatusSelect() == MoveRepository.STATUS_SIMULATED))) {
       return I18n.get(AccountExceptionMessage.MOVE_CHECK_ACCOUNTING);
+    } else if (move.getMoveLineList().stream()
+        .anyMatch(
+            ml ->
+                ml.getMove() != null
+                    && invoiceTermService.getPfpValidatorUserCondition(
+                        ml.getMove().getInvoice(), ml)
+                    && ml.getInvoiceTermList().stream()
+                        .anyMatch(it -> it.getPfpValidatorUser() == null))) {
+      return I18n.get(AccountExceptionMessage.INVOICE_PFP_VALIDATOR_USER_MISSING);
     }
 
     return null;

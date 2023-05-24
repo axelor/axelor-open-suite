@@ -271,9 +271,8 @@ public class MoveGroupServiceImpl implements MoveGroupService {
 
     if (move.getJournal() != null
         && move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL) {
-      move.setCompanyBankDetails(
-          massEntryVerificationService.verifyCompanyBankDetails(
-              move.getCompany(), move.getCompanyBankDetails(), move.getJournal()));
+      massEntryVerificationService.verifyCompanyBankDetails(
+          move, move.getCompany(), move.getCompanyBankDetails(), move.getJournal());
       valuesMap.put("companyBankDetails", move.getCompanyBankDetails());
     }
 
@@ -463,6 +462,11 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     moveRecordSetService.setCompanyBankDetails(move);
     moveDefaultService.setDefaultCurrency(move);
 
+    if (move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL) {
+      massEntryVerificationService.verifyCompanyBankDetails(
+          move, move.getCompany(), move.getCompanyBankDetails(), move.getJournal());
+    }
+
     valuesMap.put("journal", move.getJournal());
     valuesMap.put("companyBankDetails", move.getCompanyBankDetails());
     valuesMap.put("currency", move.getCurrency());
@@ -479,6 +483,9 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
     moveAttrsService.addMoveLineAnalyticAttrs(move, attrsMap);
+    if (move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL) {
+      moveAttrsService.addMassEntryBtnHidden(move, attrsMap);
+    }
 
     return attrsMap;
   }

@@ -846,4 +846,21 @@ public class MoveController {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
+
+  public void getMassEntryAttributeValues(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+
+      if (move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL) {
+        Beans.get(MoveAttrsService.class).addMassEntryHidden(move, attrsMap);
+        Beans.get(MoveAttrsService.class).addMassEntryPaymentConditionRequired(move, attrsMap);
+        Beans.get(MoveAttrsService.class).addMassEntryBtnHidden(move, attrsMap);
+
+        response.setAttrs(attrsMap);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
 }
