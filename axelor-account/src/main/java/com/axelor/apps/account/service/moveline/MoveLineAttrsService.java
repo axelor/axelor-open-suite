@@ -20,6 +20,7 @@ package com.axelor.apps.account.service.moveline;
 
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.MoveTemplate;
 import com.axelor.apps.base.AxelorException;
 import java.util.Map;
 
@@ -51,7 +52,8 @@ public interface MoveLineAttrsService {
 
   void addPartnerReadonly(MoveLine moveLine, Move move, Map<String, Map<String, Object>> attrsMap);
 
-  void addAccountDomain(Move move, Map<String, Map<String, Object>> attrsMap);
+  void addAccountDomain(
+      Move move, MoveTemplate moveTemplate, Map<String, Map<String, Object>> attrsMap);
 
   void addPartnerDomain(Move move, Map<String, Map<String, Object>> attrsMap);
 

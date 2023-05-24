@@ -20,6 +20,7 @@ package com.axelor.apps.account.service.moveline;
 
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.MoveTemplate;
 import com.axelor.apps.base.AxelorException;
 import java.time.LocalDate;
 import java.util.Map;
@@ -70,7 +71,7 @@ public interface MoveLineGroupService {
   Map<String, Object> getCurrencyAmountRateOnChangeValuesMap(
       MoveLine moveLine, Move move, LocalDate dueDate) throws AxelorException;
 
-  Map<String, Map<String, Object>> getAccountOnSelectAttrsMap(Move move);
+  Map<String, Map<String, Object>> getAccountOnSelectAttrsMap(Move move, MoveTemplate moveTemplate);
 
   Map<String, Map<String, Object>> getPartnerOnSelectAttrsMap(MoveLine moveLine, Move move);
 

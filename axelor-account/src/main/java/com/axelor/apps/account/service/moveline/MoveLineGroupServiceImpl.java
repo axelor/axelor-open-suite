@@ -20,6 +20,7 @@ package com.axelor.apps.account.service.moveline;
 
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.MoveTemplate;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
@@ -349,10 +350,11 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
   }
 
   @Override
-  public Map<String, Map<String, Object>> getAccountOnSelectAttrsMap(Move move) {
+  public Map<String, Map<String, Object>> getAccountOnSelectAttrsMap(
+      Move move, MoveTemplate moveTemplate) {
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
-    moveLineAttrsService.addAccountDomain(move, attrsMap);
+    moveLineAttrsService.addAccountDomain(move, moveTemplate, attrsMap);
 
     return attrsMap;
   }
