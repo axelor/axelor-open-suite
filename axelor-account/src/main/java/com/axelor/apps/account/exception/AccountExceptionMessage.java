@@ -861,6 +861,8 @@ public final class AccountExceptionMessage {
   public static final String INVOICE_MULTI_CURRENCY_FINANCIAL_DISCOUNT_PARTNER = /*$$(*/
       "Please be aware that the selected %s offers financial discounts but the system does not support at the moment financial discount on invoices/refunds in a currency different from the company currency." /*)*/;
 
+  public static final String INVOICE_PFP_VALIDATOR_USER_MISSING = /*$$(*/
+      "At least one pfp validator is missing, do you wish to continue ?" /*)*/;
   /** Invoice line generator */
   public static final String INVOICE_LINE_GENERATOR_1 = /*$$(*/
       "You must select a currency for partner %s (%s)" /*)*/;
@@ -1243,6 +1245,9 @@ public final class AccountExceptionMessage {
   public static final String MOVE_CHECK_DESCRIPTION = /*$$(*/
       "The move field description is empty, do you wish to continue ?" /*)*/;
 
+  public static final String MOVE_CHECK_ACCOUNTING = /*$$(*/
+      "By clicking on this button, move status will be updated to Accounted. Please be aware that accounting a move brings irrevocable integration of the move in its moves book. Do you wish to continue ?" /*)*/;
+
   public static final String DATE_NOT_IN_PERIOD_MOVE = /*$$(*/
       "The date input on the move line of %s %s on account %s is not belonging to the accounting period defined on the move." /*)*/;
 
@@ -1594,6 +1599,9 @@ public final class AccountExceptionMessage {
 
   public static final String ANALYTIC_DISTRIBUTION_TEMPLATE_CONTAINS_NOT_ALLOWED_ACCOUNTS = /*$$(*/
       "The selected Analytic Distribution template contains Analytic Accounts which are not allowed on this account. Please select an appropriate template or modify the analytic coherence rule for this account." /*)*/;
+
+  public static final String MOVE_INVOICE_DESCRIPTION_REQUIRED = /*$$(*/
+      "Description is required in moves for company %s but description of moves that are being generated will be empty. Please make sure a journal is set and fill a default description or enable document number to be used as such." /*)*/;
 
   /** Mass entry move control message */
   public static final String MASS_ENTRY_MOVE_IDENTIFICATION_MESSAGE = /*$$(*/
