@@ -92,11 +92,9 @@ public class ProjectPlanningTimeBusinessProjectServiceImpl extends ProjectPlanni
     if (projectTask != null) {
       planningTime.setTimeUnit(projectTask.getTimeUnit());
     } else {
-      planningTime.setTimeUnit(appBusinessProjectService.getAppBusinessProject().getHoursUnit());
+      planningTime.setTimeUnit(appBusinessProjectService.getHoursUnit());
     }
-    if (planningTime
-        .getTimeUnit()
-        .equals(appBusinessProjectService.getAppBusinessProject().getDaysUnit())) {
+    if (planningTime.getTimeUnit().equals(appBusinessProjectService.getDaysUnit())) {
       BigDecimal numberHoursADay = project.getNumberHoursADay();
       if (numberHoursADay.signum() <= 0) {
         throw new AxelorException(
@@ -104,7 +102,7 @@ public class ProjectPlanningTimeBusinessProjectServiceImpl extends ProjectPlanni
             I18n.get(BusinessProjectExceptionMessage.PROJECT_CONFIG_DEFAULT_HOURS_PER_DAY_MISSING));
       }
       planningTime.setPlannedTime(
-          planningTime.getPlannedTime().divide(numberHoursADay, RoundingMode.HALF_UP));
+          planningTime.getPlannedTime().divide(numberHoursADay, 2, RoundingMode.HALF_UP));
     }
     return planningTime;
   }
