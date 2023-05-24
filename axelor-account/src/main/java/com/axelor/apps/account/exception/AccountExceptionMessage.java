@@ -1623,4 +1623,7 @@ public final class AccountExceptionMessage {
 
   public static final String MOVE_TAX_NOT_EQUALS = /*$$(*/
       "Sum of tax amounts in charge and income lines is not the same as sum of tax lines." /*)*/;
+
+  public static final String PAYMENT_CONDITION_CONFIGURATION_ERROR = /*$$(*/
+      "The payment condition %s is not correctly configured." /*)*/;
 }

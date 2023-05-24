@@ -33,7 +33,6 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.TradingName;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
@@ -47,7 +46,6 @@ import org.apache.commons.collections.CollectionUtils;
 
 public class MoveAttrsServiceImpl implements MoveAttrsService {
 
-  protected AppBaseService appBaseService;
   protected AccountConfigService accountConfigService;
   protected AppAccountService appAccountService;
   protected MoveInvoiceTermService moveInvoiceTermService;
@@ -56,13 +54,11 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
 
   @Inject
   public MoveAttrsServiceImpl(
-      AppBaseService appBaseService,
       AccountConfigService accountConfigService,
       AppAccountService appAccountService,
       MoveInvoiceTermService moveInvoiceTermService,
       MoveViewHelperService moveViewHelperService,
       MovePfpService movePfpService) {
-    this.appBaseService = appBaseService;
     this.accountConfigService = accountConfigService;
     this.appAccountService = appAccountService;
     this.moveInvoiceTermService = moveInvoiceTermService;

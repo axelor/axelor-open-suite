@@ -22,12 +22,12 @@ import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.JournalType;
 import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.service.PaymentConditionService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
-import com.axelor.apps.account.service.move.MoveLineControlService;
-import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
@@ -46,26 +46,23 @@ import java.util.Optional;
 
 public class MoveRecordSetServiceImpl implements MoveRecordSetService {
 
-  protected MoveLineControlService moveLineControlService;
   protected PartnerRepository partnerRepository;
   protected BankDetailsService bankDetailsService;
-  protected MoveToolService moveToolService;
   protected PeriodService periodService;
+  protected PaymentConditionService paymentConditionService;
   protected InvoiceTermService invoiceTermService;
 
   @Inject
   public MoveRecordSetServiceImpl(
-      MoveLineControlService moveLineControlService,
       PartnerRepository partnerRepository,
       BankDetailsService bankDetailsService,
-      MoveToolService moveToolService,
       PeriodService periodService,
+      PaymentConditionService paymentConditionService,
       InvoiceTermService invoiceTermService) {
-    this.moveLineControlService = moveLineControlService;
     this.partnerRepository = partnerRepository;
     this.bankDetailsService = bankDetailsService;
-    this.moveToolService = moveToolService;
     this.periodService = periodService;
+    this.paymentConditionService = paymentConditionService;
     this.invoiceTermService = invoiceTermService;
   }
 
@@ -102,7 +99,7 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
   }
 
   @Override
-  public void setPaymentCondition(Move move) {
+  public void setPaymentCondition(Move move) throws AxelorException {
     Partner partner = move.getPartner();
     JournalType journalType =
         Optional.ofNullable(move.getJournal()).map(Journal::getJournalType).orElse(null);
@@ -112,7 +109,9 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
         && !journalType
             .getTechnicalTypeSelect()
             .equals(JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY)) {
-      move.setPaymentCondition(partner.getPaymentCondition());
+      PaymentCondition paymentCondition = partner.getPaymentCondition();
+      paymentConditionService.checkPaymentCondition(paymentCondition);
+      move.setPaymentCondition(paymentCondition);
     } else {
       move.setPaymentCondition(null);
     }

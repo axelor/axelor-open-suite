@@ -116,6 +116,8 @@ import com.axelor.apps.account.service.MoveLineQueryService;
 import com.axelor.apps.account.service.MoveLineQueryServiceImpl;
 import com.axelor.apps.account.service.NotificationService;
 import com.axelor.apps.account.service.NotificationServiceImpl;
+import com.axelor.apps.account.service.PaymentConditionService;
+import com.axelor.apps.account.service.PaymentConditionServiceImpl;
 import com.axelor.apps.account.service.PaymentModeControlService;
 import com.axelor.apps.account.service.PaymentModeControlServiceImpl;
 import com.axelor.apps.account.service.PaymentScheduleLineService;
@@ -763,5 +765,7 @@ public class AccountModule extends AxelorModule {
     bind(MoveLineMassEntryAttrsService.class).to(MoveLineMassEntryAttrsServiceImpl.class);
 
     bind(MoveLineMassEntryRecordService.class).to(MoveLineMassEntryRecordServiceImpl.class);
+
+    bind(PaymentConditionService.class).to(PaymentConditionServiceImpl.class);
   }
 }

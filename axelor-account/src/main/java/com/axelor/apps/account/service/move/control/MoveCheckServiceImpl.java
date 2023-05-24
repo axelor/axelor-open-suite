@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.PaymentConditionService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.journal.JournalCheckPartnerTypeService;
@@ -55,6 +56,7 @@ public class MoveCheckServiceImpl implements MoveCheckService {
   protected JournalCheckPartnerTypeService journalCheckPartnerTypeService;
   protected MoveInvoiceTermService moveInvoiceTermService;
   protected InvoiceTermService invoiceTermService;
+  protected PaymentConditionService paymentConditionService;
 
   @Inject
   public MoveCheckServiceImpl(
@@ -66,6 +68,7 @@ public class MoveCheckServiceImpl implements MoveCheckService {
       MoveLineService moveLineService,
       JournalCheckPartnerTypeService journalCheckPartnerTypeService,
       MoveInvoiceTermService moveInvoiceTermService,
+      PaymentConditionService paymentConditionService,
       InvoiceTermService invoiceTermService) {
     this.moveRepository = moveRepository;
     this.moveToolService = moveToolService;
@@ -75,6 +78,7 @@ public class MoveCheckServiceImpl implements MoveCheckService {
     this.moveLineService = moveLineService;
     this.journalCheckPartnerTypeService = journalCheckPartnerTypeService;
     this.moveInvoiceTermService = moveInvoiceTermService;
+    this.paymentConditionService = paymentConditionService;
     this.invoiceTermService = invoiceTermService;
   }
 
@@ -183,6 +187,7 @@ public class MoveCheckServiceImpl implements MoveCheckService {
       if (move.getId() != null) {
         PaymentCondition formerPaymentCondition =
             moveRepository.find(move.getId()).getPaymentCondition();
+        paymentConditionService.checkPaymentCondition(formerPaymentCondition);
         move.setPaymentCondition(formerPaymentCondition);
       }
 

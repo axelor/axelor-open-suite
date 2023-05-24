@@ -26,7 +26,7 @@ public interface MoveRecordSetService {
 
   void setPaymentMode(Move move);
 
-  void setPaymentCondition(Move move);
+  void setPaymentCondition(Move move) throws AxelorException;
 
   void setPartnerBankDetails(Move move);
 
