@@ -140,7 +140,8 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   }
 
   @Override
-  public Map<String, Object> getOnNewValuesMap(Move move) throws AxelorException {
+  public Map<String, Object> getOnNewValuesMap(Move move, boolean isMassEntry)
+      throws AxelorException {
     Map<String, Object> valuesMap = new HashMap<>();
 
     moveCheckService.checkPeriodPermission(move);
@@ -171,6 +172,12 @@ public class MoveGroupServiceImpl implements MoveGroupService {
 
     if (appAccountService.getAppAccount().getActivatePassedForPayment()) {
       moveRecordSetService.setPfpStatus(move);
+      valuesMap.put("pfpValidateStatusSelect", move.getOriginDate());
+    }
+
+    if (isMassEntry) {
+      move.setMassEntryStatusSelect(MoveRepository.MASS_ENTRY_STATUS_ON_GOING);
+      valuesMap.put("massEntryStatusSelect", move.getMassEntryStatusSelect());
     }
 
     return valuesMap;
@@ -214,6 +221,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
 
     moveAttrsService.addDueDateHidden(move, attrsMap);
     if (move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL) {
+      moveAttrsService.addMoveLineAnalyticAttrs(move, attrsMap);
       moveAttrsService.addMassEntryHidden(move, attrsMap);
       moveAttrsService.addMassEntryPaymentConditionRequired(move, attrsMap);
       moveAttrsService.addMassEntryBtnHidden(move, attrsMap);
