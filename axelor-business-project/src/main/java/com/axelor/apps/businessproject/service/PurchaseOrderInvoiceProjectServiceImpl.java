@@ -119,51 +119,54 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
   @Override
   public List<InvoiceLine> createInvoiceLine(Invoice invoice, PurchaseOrderLine purchaseOrderLine)
       throws AxelorException {
+
     Product product = purchaseOrderLine.getProduct();
     Company company =
         purchaseOrderLine.getPurchaseOrder() != null
             ? purchaseOrderLine.getPurchaseOrder().getCompany()
             : null;
-    BigDecimal price = BigDecimal.ZERO;
+    BigDecimal price;
+
+    if (product != null) {
+      price = (BigDecimal) productCompanyService.get(product, "costPrice", company);
+    } else {
+      price = purchaseOrderLine.getPrice();
+    }
+
     BigDecimal discountAmount = price;
     int discountTypeSelect = 1;
-    if (!purchaseOrderLine.getIsTitleLine()) {
-      price = (BigDecimal) productCompanyService.get(product, "costPrice", company);
-      discountAmount = price;
-
-      if (invoice.getPartner().getChargeBackPurchaseSelect()
-          == PartnerRepository.CHARGING_BACK_TYPE_PRICE_LIST) {
-        PriceList priceList =
-            Beans.get(PartnerPriceListService.class)
-                .getDefaultPriceList(invoice.getPartner(), PriceListRepository.TYPE_SALE);
-        if (priceList != null) {
-          PriceListLine priceListLine =
-              purchaseOrderLineService.getPriceListLine(purchaseOrderLine, priceList, price);
-          if (priceListLine != null) {
-            discountTypeSelect = priceListLine.getTypeSelect();
+    if (invoice.getPartner().getChargeBackPurchaseSelect()
+        == PartnerRepository.CHARGING_BACK_TYPE_PRICE_LIST) {
+      PriceList priceList =
+          Beans.get(PartnerPriceListService.class)
+              .getDefaultPriceList(invoice.getPartner(), PriceListRepository.TYPE_SALE);
+      if (priceList != null) {
+        PriceListLine priceListLine =
+            purchaseOrderLineService.getPriceListLine(purchaseOrderLine, priceList, price);
+        if (priceListLine != null) {
+          discountTypeSelect = priceListLine.getTypeSelect();
+        }
+        if ((appBusinessProjectService.getAppBase().getComputeMethodDiscountSelect()
+                    == AppBaseRepository.INCLUDE_DISCOUNT_REPLACE_ONLY
+                && discountTypeSelect == PriceListLineRepository.TYPE_REPLACE)
+            || appBusinessProjectService.getAppBase().getComputeMethodDiscountSelect()
+                == AppBaseRepository.INCLUDE_DISCOUNT) {
+          Map<String, Object> discounts =
+              priceListService.getDiscounts(priceList, priceListLine, price);
+          if (discounts != null) {
+            discountAmount = (BigDecimal) discounts.get("discountAmount");
+            price =
+                priceListService.computeDiscount(
+                    price, (int) discounts.get("discountTypeSelect"), discountAmount);
           }
-          if ((appBusinessProjectService.getAppBase().getComputeMethodDiscountSelect()
-                      == AppBaseRepository.INCLUDE_DISCOUNT_REPLACE_ONLY
-                  && discountTypeSelect == PriceListLineRepository.TYPE_REPLACE)
-              || appBusinessProjectService.getAppBase().getComputeMethodDiscountSelect()
-                  == AppBaseRepository.INCLUDE_DISCOUNT) {
-            Map<String, Object> discounts =
-                priceListService.getDiscounts(priceList, priceListLine, price);
-            if (discounts != null) {
-              discountAmount = (BigDecimal) discounts.get("discountAmount");
-              price =
-                  priceListService.computeDiscount(
-                      price, (int) discounts.get("discountTypeSelect"), discountAmount);
-            }
 
-          } else {
-            Map<String, Object> discounts =
-                priceListService.getDiscounts(priceList, priceListLine, price);
-            if (discounts != null) {
-              discountAmount = (BigDecimal) discounts.get("discountAmount");
-              if (discounts.get("price") != null) {
-                price = (BigDecimal) discounts.get("price");
-              }
+        } else {
+          Map<String, Object> discounts =
+              priceListService.getDiscounts(priceList, priceListLine, price);
+          if (discounts != null) {
+            discountAmount = (BigDecimal) discounts.get("discountAmount");
+            if (discounts.get("price") != null) {
+              price = (BigDecimal) discounts.get("price");
             }
           }
         }
