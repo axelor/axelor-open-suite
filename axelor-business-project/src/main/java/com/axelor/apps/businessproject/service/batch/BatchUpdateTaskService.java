@@ -72,7 +72,7 @@ public class BatchUpdateTaskService extends AbstractBatch {
 
     Map<String, Object> contextValues = null;
     try {
-      contextValues = ProjectInvoicingAssistantBatchService.createJsonContext(batch);
+      contextValues = BusinessProjectBatchService.createJsonContext(batch);
     } catch (Exception e) {
       TraceBackService.trace(e);
     }
@@ -160,7 +160,7 @@ public class BatchUpdateTaskService extends AbstractBatch {
       JPA.clear();
     }
     findBatch();
-    ProjectInvoicingAssistantBatchService.updateJsonObject(
+    BusinessProjectBatchService.updateJsonObject(
         batch, updatedTaskList, "updatedTaskSet", contextValues);
   }
 
@@ -201,7 +201,7 @@ public class BatchUpdateTaskService extends AbstractBatch {
       JPA.clear();
     }
     findBatch();
-    ProjectInvoicingAssistantBatchService.updateJsonObject(
+    BusinessProjectBatchService.updateJsonObject(
         batch, updatedTimesheetLineList, "updatedTimesheetLineSet", contextValues);
   }
 
@@ -218,6 +218,6 @@ public class BatchUpdateTaskService extends AbstractBatch {
   }
 
   protected void setBatchTypeSelect() {
-    this.batch.setBatchTypeSelect(BatchRepository.BATCH_TYPE_PROJECT_INVOICING_ASSISTANT_BATCH);
+    this.batch.setBatchTypeSelect(BatchRepository.BATCH_TYPE_BUSINESS_PROJECT_BATCH);
   }
 }

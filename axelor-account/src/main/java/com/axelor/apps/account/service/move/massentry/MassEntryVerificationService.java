@@ -38,6 +38,7 @@ public interface MassEntryVerificationService {
   void setErrorMassEntryMoveLines(
       Move move, int temporaryMoveNumber, String fieldName, String errorMessage);
 
-  BankDetails verifyCompanyBankDetails(
-      Company company, BankDetails companyBankDetails, Journal journal) throws AxelorException;
+  void verifyCompanyBankDetails(
+      Move move, Company company, BankDetails companyBankDetails, Journal journal)
+      throws AxelorException;
 }

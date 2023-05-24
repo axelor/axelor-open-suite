@@ -452,8 +452,10 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
   }
 
   @Override
-  public BankDetails verifyCompanyBankDetails(
-      Company company, BankDetails companyBankDetails, Journal journal) throws AxelorException {
+  public void verifyCompanyBankDetails(
+      Move move, Company company, BankDetails companyBankDetails, Journal journal)
+      throws AxelorException {
+    BankDetails newCompanyBankDetails = companyBankDetails;
     int technicalTypeSelect = journal.getJournalType().getTechnicalTypeSelect();
 
     if (company.getDefaultBankDetails() == null
@@ -465,8 +467,6 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
               I18n.get(AccountExceptionMessage.COMPANY_BANK_DETAILS_MISSING), company.getName()));
 
     } else if (company.getDefaultBankDetails() != null) {
-      BankDetails newCompanyBankDetails = companyBankDetails;
-
       if (newCompanyBankDetails == null
           && technicalTypeSelect != JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY) {
         newCompanyBankDetails = company.getDefaultBankDetails();
@@ -475,9 +475,8 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
           && newCompanyBankDetails.getJournal() != journal) {
         newCompanyBankDetails = null;
       }
-      return newCompanyBankDetails;
     }
 
-    return companyBankDetails;
+    move.setCompanyBankDetails(newCompanyBankDetails);
   }
 }

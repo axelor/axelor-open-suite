@@ -116,6 +116,8 @@ import com.axelor.apps.account.service.MoveLineQueryService;
 import com.axelor.apps.account.service.MoveLineQueryServiceImpl;
 import com.axelor.apps.account.service.NotificationService;
 import com.axelor.apps.account.service.NotificationServiceImpl;
+import com.axelor.apps.account.service.PaymentConditionService;
+import com.axelor.apps.account.service.PaymentConditionServiceImpl;
 import com.axelor.apps.account.service.PaymentModeControlService;
 import com.axelor.apps.account.service.PaymentModeControlServiceImpl;
 import com.axelor.apps.account.service.PaymentScheduleLineService;
@@ -298,8 +300,8 @@ import com.axelor.apps.account.service.move.massentry.MassEntryVerificationServi
 import com.axelor.apps.account.service.move.massentry.MassEntryVerificationServiceImpl;
 import com.axelor.apps.account.service.move.record.MoveDefaultService;
 import com.axelor.apps.account.service.move.record.MoveDefaultServiceImpl;
-import com.axelor.apps.account.service.move.record.MoveRecordService;
-import com.axelor.apps.account.service.move.record.MoveRecordServiceImpl;
+import com.axelor.apps.account.service.move.record.MoveGroupService;
+import com.axelor.apps.account.service.move.record.MoveGroupServiceImpl;
 import com.axelor.apps.account.service.move.record.MoveRecordSetService;
 import com.axelor.apps.account.service.move.record.MoveRecordSetServiceImpl;
 import com.axelor.apps.account.service.move.record.MoveRecordUpdateService;
@@ -732,7 +734,7 @@ public class AccountModule extends AxelorModule {
 
     bind(MoveDefaultService.class).to(MoveDefaultServiceImpl.class);
 
-    bind(MoveRecordService.class).to(MoveRecordServiceImpl.class);
+    bind(MoveGroupService.class).to(MoveGroupServiceImpl.class);
 
     bind(MoveCheckService.class).to(MoveCheckServiceImpl.class);
 
@@ -763,5 +765,7 @@ public class AccountModule extends AxelorModule {
     bind(MoveLineMassEntryAttrsService.class).to(MoveLineMassEntryAttrsServiceImpl.class);
 
     bind(MoveLineMassEntryRecordService.class).to(MoveLineMassEntryRecordServiceImpl.class);
+
+    bind(PaymentConditionService.class).to(PaymentConditionServiceImpl.class);
   }
 }
