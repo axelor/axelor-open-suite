@@ -68,7 +68,9 @@ public class MoveAdjustementService {
    * @throws AxelorException
    */
   @Transactional(rollbackOn = {Exception.class})
-  public MoveLine createAdjustmentMove(MoveLine moveLine, boolean isDebit) throws AxelorException {
+  public MoveLine createAdjustmentMove(
+      MoveLine moveLine, Account cashPositionVariationAccount, boolean isDebit)
+      throws AxelorException {
 
     Partner partner = moveLine.getPartner();
     Account account = moveLine.getAccount();
@@ -93,62 +95,29 @@ public class MoveAdjustementService {
             null,
             move.getCompanyBankDetails());
 
-    MoveLine creditAdjustmentMoveLine = null;
-    MoveLine debitAdjustmentMoveLine = null;
+    MoveLine creditAdjustmentMoveLine =
+        moveLineCreateService.createMoveLine(
+            adjustmentMove,
+            partner,
+            isDebit ? account : cashPositionVariationAccount,
+            amountRemaining,
+            false,
+            appAccountService.getTodayDate(company),
+            1,
+            null,
+            null);
 
-    if (isDebit) {
-
-      creditAdjustmentMoveLine =
-          moveLineCreateService.createMoveLine(
-              adjustmentMove,
-              partner,
-              account,
-              amountRemaining,
-              false,
-              appAccountService.getTodayDate(company),
-              1,
-              null,
-              null);
-
-      // Création de la ligne au débit
-      debitAdjustmentMoveLine =
-          moveLineCreateService.createMoveLine(
-              adjustmentMove,
-              partner,
-              accountConfigService.getCashPositionVariationDebitAccount(accountConfig),
-              amountRemaining,
-              true,
-              appAccountService.getTodayDate(company),
-              2,
-              null,
-              null);
-    } else {
-
-      creditAdjustmentMoveLine =
-          moveLineCreateService.createMoveLine(
-              adjustmentMove,
-              partner,
-              accountConfigService.getCashPositionVariationCreditAccount(accountConfig),
-              amountRemaining,
-              false,
-              appAccountService.getTodayDate(company),
-              1,
-              null,
-              null);
-
-      // Création de la ligne au débit
-      debitAdjustmentMoveLine =
-          moveLineCreateService.createMoveLine(
-              adjustmentMove,
-              partner,
-              account,
-              amountRemaining,
-              true,
-              appAccountService.getTodayDate(company),
-              2,
-              null,
-              null);
-    }
+    MoveLine debitAdjustmentMoveLine =
+        moveLineCreateService.createMoveLine(
+            adjustmentMove,
+            partner,
+            isDebit ? cashPositionVariationAccount : account,
+            amountRemaining,
+            true,
+            appAccountService.getTodayDate(company),
+            2,
+            null,
+            null);
 
     adjustmentMove.addMoveLineListItem(creditAdjustmentMoveLine);
     adjustmentMove.addMoveLineListItem(debitAdjustmentMoveLine);
