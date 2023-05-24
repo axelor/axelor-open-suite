@@ -442,12 +442,14 @@ public class InvoiceTermController {
       response.setValue("$isMultiCurrency", isMultiCurrency);
       MoveLine moveLine = invoiceTerm.getMoveLine();
       Invoice invoice = invoiceTerm.getInvoice();
-      Move move = moveLine.getMove();
       if (invoice != null
               && !Objects.equals(invoice.getCurrency(), invoice.getCompany().getCurrency())
           || (invoice == null
-              && move != null
-              && !Objects.equals(move.getCurrency(), move.getCompany().getCurrency()))) {
+              && moveLine != null
+              && moveLine.getMove() != null
+              && !Objects.equals(
+                  moveLine.getMove().getCurrency(),
+                  moveLine.getMove().getCompany().getCurrency()))) {
         response.setAttr("amount", "title", I18n.get("Amount in currency"));
         response.setAttr("amountRemaining", "title", I18n.get("Amount remaining in currency"));
       }
