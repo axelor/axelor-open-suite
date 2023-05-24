@@ -375,9 +375,11 @@ public class MoveController {
     try {
       Move move = request.getContext().asType(Move.class);
       User user = request.getUser();
+      boolean isMassEntryMove =
+          "move-mass-entry-form".equals(request.getContext().get("_viewName").toString());
       MoveGroupService moveGroupService = Beans.get(MoveGroupService.class);
 
-      response.setValues(moveGroupService.getOnNewValuesMap(move));
+      response.setValues(moveGroupService.getOnNewValuesMap(move, isMassEntryMove));
       response.setAttrs(moveGroupService.getOnNewAttrsMap(move, user));
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
@@ -853,9 +855,11 @@ public class MoveController {
       Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
       if (move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL) {
-        Beans.get(MoveAttrsService.class).addMassEntryHidden(move, attrsMap);
-        Beans.get(MoveAttrsService.class).addMassEntryPaymentConditionRequired(move, attrsMap);
-        Beans.get(MoveAttrsService.class).addMassEntryBtnHidden(move, attrsMap);
+        MoveAttrsService moveAttrsService = Beans.get(MoveAttrsService.class);
+        moveAttrsService.addMoveLineAnalyticAttrs(move, attrsMap);
+        moveAttrsService.addMassEntryHidden(move, attrsMap);
+        moveAttrsService.addMassEntryPaymentConditionRequired(move, attrsMap);
+        moveAttrsService.addMassEntryBtnHidden(move, attrsMap);
 
         response.setAttrs(attrsMap);
       }

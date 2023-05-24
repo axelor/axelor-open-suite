@@ -26,7 +26,7 @@ import java.util.Map;
 
 public interface MoveGroupService {
 
-  Map<String, Object> getOnNewValuesMap(Move move) throws AxelorException;
+  Map<String, Object> getOnNewValuesMap(Move move, boolean isMassEntry) throws AxelorException;
 
   Map<String, Map<String, Object>> getOnNewAttrsMap(Move move, User user) throws AxelorException;
 
