@@ -654,11 +654,12 @@ public class MoveLineController {
   public void currencyAmountRateOnChange(ActionRequest request, ActionResponse response) {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
+      Move move = this.getMove(request, moveLine);
       LocalDate dueDate = this.extractDueDate(request);
 
       response.setValues(
           Beans.get(MoveLineGroupService.class)
-              .getCurrencyAmountRateOnChangeValuesMap(moveLine, dueDate));
+              .getCurrencyAmountRateOnChangeValuesMap(moveLine, move, dueDate));
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
