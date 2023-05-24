@@ -18,7 +18,15 @@
  */
 package com.axelor.apps.account.service.moveline;
 
-import com.axelor.apps.account.db.*;
+import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.AccountType;
+import com.axelor.apps.account.db.AnalyticAxis;
+import com.axelor.apps.account.db.AnalyticAxisByCompany;
+import com.axelor.apps.account.db.Journal;
+import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.MoveTemplate;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.PeriodServiceAccount;
@@ -228,13 +236,15 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
   }
 
   @Override
-  public void addAccountDomain(Move move, Map<String, Map<String, Object>> attrsMap) {
-    if (move == null) {
+  public void addAccountDomain(
+      Move move, MoveTemplate moveTemplate, Map<String, Map<String, Object>> attrsMap) {
+    if (move == null && moveTemplate == null) {
       return;
     }
-
+    Journal journal = move != null ? move.getJournal() : moveTemplate.getJournal();
+    Company company = move != null ? move.getCompany() : moveTemplate.getCompany();
     String validAccountTypes =
-        move.getJournal().getValidAccountTypeSet().stream()
+        journal.getValidAccountTypeSet().stream()
             .map(AccountType::getId)
             .map(Objects::toString)
             .collect(Collectors.joining(","));
@@ -244,7 +254,7 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
     }
 
     String validAccounts =
-        move.getJournal().getValidAccountSet().stream()
+        journal.getValidAccountSet().stream()
             .map(Account::getId)
             .map(Objects::toString)
             .collect(Collectors.joining(","));
@@ -256,10 +266,7 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
     String domain =
         String.format(
             "self.statusSelect = %s AND self.company.id = %d AND (self.accountType.id IN (%s) OR self.id IN (%s))",
-            AccountRepository.STATUS_ACTIVE,
-            move.getCompany().getId(),
-            validAccountTypes,
-            validAccounts);
+            AccountRepository.STATUS_ACTIVE, company.getId(), validAccountTypes, validAccounts);
 
     this.addAttr("account", "domain", domain, attrsMap);
   }

@@ -623,7 +623,8 @@ public class MoveLineController {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
       Move move = this.getMove(request, moveLine);
 
-      response.setAttrs(Beans.get(MoveLineGroupService.class).getAccountOnSelectAttrsMap(move));
+      response.setAttrs(
+          Beans.get(MoveLineGroupService.class).getAccountOnSelectAttrsMap(move, null));
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
