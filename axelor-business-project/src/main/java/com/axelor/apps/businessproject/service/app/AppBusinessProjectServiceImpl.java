@@ -60,25 +60,25 @@ public class AppBusinessProjectServiceImpl extends AppBaseServiceImpl
 
   @Override
   public Unit getDaysUnit() throws AxelorException {
-    if (Objects.isNull(getAppBusinessProject().getDaysUnit())) {
+    Unit daysUnit = getAppBusinessProject().getDaysUnit();
+    if (Objects.isNull(daysUnit)) {
       throw new AxelorException(
           getAppBusinessProject(),
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(BusinessProjectExceptionMessage.PROJECT_CONFIG_DEFAULT_HOURS_PER_DAY_MISSING));
+          I18n.get(BusinessProjectExceptionMessage.PROJECT_CONFIG_DAYS_UNIT_MISSING));
     }
-
-    return getAppBusinessProject().getDaysUnit();
+    return daysUnit;
   }
 
   @Override
   public Unit getHoursUnit() throws AxelorException {
-    if (Objects.isNull(getAppBusinessProject().getHoursUnit())) {
+    Unit hoursUnit = getAppBusinessProject().getHoursUnit();
+    if (Objects.isNull(hoursUnit)) {
       throw new AxelorException(
           getAppBusinessProject(),
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(BusinessProjectExceptionMessage.PROJECT_CONFIG_DEFAULT_HOURS_PER_DAY_MISSING));
+          I18n.get(BusinessProjectExceptionMessage.PROJECT_CONFIG_HOURS_UNIT_MISSING));
     }
-
-    return getAppBusinessProject().getHoursUnit();
+    return hoursUnit;
   }
 }

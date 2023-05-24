@@ -84,6 +84,7 @@ import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -1217,8 +1218,9 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
       timesheetLine.setProjectTask(projectPlanningTime.getProjectTask());
       timesheetLine.setProject(projectPlanningTime.getProject());
     }
-    if (!Objects.isNull(projectPlanningTime.getStartDateTime())) {
-      timesheetLine.setDate(projectPlanningTime.getStartDateTime().toLocalDate());
+    LocalDateTime startDateTime = projectPlanningTime.getStartDateTime();
+    if (!Objects.isNull(startDateTime)) {
+      timesheetLine.setDate(startDateTime.toLocalDate());
     }
     timesheetLine.setProjectPlanningTime(projectPlanningTime);
     return timesheetLine;
