@@ -265,7 +265,7 @@ public class DepositSlipServiceImpl implements DepositSlipService {
                     paymentVoucher.getValueForCollectionMove()));
   }
 
-  private void updateInvoicePayment(LocalDate depositDate, String depositNumber, Move move) {
+  protected void updateInvoicePayment(LocalDate depositDate, String depositNumber, Move move) {
     InvoicePayment invoicePayment =
         invoicePaymentRepository
             .all()
