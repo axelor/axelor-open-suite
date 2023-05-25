@@ -9,7 +9,7 @@ import com.axelor.apps.budget.db.repo.BudgetLevelRepository;
 import com.axelor.apps.budget.db.repo.BudgetRepository;
 import com.axelor.apps.budget.exception.IExceptionMessage;
 import com.axelor.apps.budget.service.AppBudgetService;
-import com.axelor.apps.budget.service.BudgetBudgetDistributionService;
+import com.axelor.apps.budget.service.BudgetDistributionService;
 import com.axelor.apps.budget.service.BudgetService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -29,7 +29,7 @@ import org.apache.commons.collections.CollectionUtils;
 public class PurchaseOrderLineBudgetServiceImpl implements PurchaseOrderLineBudgetService {
   protected BudgetService budgetService;
   protected BudgetRepository budgetRepository;
-  protected BudgetBudgetDistributionService budgetBudgetDistributionService;
+  protected BudgetDistributionService budgetDistributionService;
   protected PurchaseOrderLineRepository purchaseOrderLineRepo;
   protected AppBudgetService appBudgetService;
 
@@ -37,12 +37,12 @@ public class PurchaseOrderLineBudgetServiceImpl implements PurchaseOrderLineBudg
   public PurchaseOrderLineBudgetServiceImpl(
       BudgetService budgetService,
       BudgetRepository budgetRepository,
-      BudgetBudgetDistributionService budgetBudgetDistributionService,
+      BudgetDistributionService budgetDistributionService,
       PurchaseOrderLineRepository purchaseOrderLineRepo,
       AppBudgetService appBudgetService) {
     this.budgetService = budgetService;
     this.budgetRepository = budgetRepository;
-    this.budgetBudgetDistributionService = budgetBudgetDistributionService;
+    this.budgetDistributionService = budgetDistributionService;
     this.purchaseOrderLineRepo = purchaseOrderLineRepo;
     this.appBudgetService = appBudgetService;
   }
@@ -56,7 +56,7 @@ public class PurchaseOrderLineBudgetServiceImpl implements PurchaseOrderLineBudg
     purchaseOrderLine.clearBudgetDistributionList();
     purchaseOrderLine.setBudgetStr("");
     String alertMessage =
-        budgetBudgetDistributionService.createBudgetDistribution(
+        budgetDistributionService.createBudgetDistribution(
             purchaseOrderLine.getAnalyticMoveLineList(),
             purchaseOrderLine.getAccount(),
             purchaseOrderLine.getPurchaseOrder().getCompany(),
@@ -208,7 +208,7 @@ public class PurchaseOrderLineBudgetServiceImpl implements PurchaseOrderLineBudg
         budgetDistributionSumAmount =
             budgetDistributionSumAmount.add(budgetDistribution.getAmount());
 
-        budgetBudgetDistributionService.computeBudgetDistributionSumAmount(
+        budgetDistributionService.computeBudgetDistributionSumAmount(
             budgetDistribution, computeDate);
       }
     }

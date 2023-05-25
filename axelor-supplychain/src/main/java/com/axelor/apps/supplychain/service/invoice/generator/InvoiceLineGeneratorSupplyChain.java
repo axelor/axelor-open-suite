@@ -238,11 +238,6 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
             invoiceLineAnalyticService.getAndComputeAnalyticDistribution(invoiceLine, invoice);
         analyticMoveLineList.stream().forEach(invoiceLine::addAnalyticMoveLineListItem);
       }
-
-      /*this.copyBudgetDistributionList(purchaseOrderLine.getBudgetDistributionList(), invoiceLine);
-      invoiceLine.setBudget(purchaseOrderLine.getBudget());
-      invoiceLine.setBudgetDistributionSumAmount(
-          purchaseOrderLine.getBudgetDistributionSumAmount());*/
       invoiceLine.setFixedAssets(purchaseOrderLine.getFixedAssets());
 
       if (product != null && purchaseOrderLine.getFixedAssets()) {
@@ -354,22 +349,6 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
       invoiceLine.addAnalyticMoveLineListItem(analyticMoveLine);
     }
   }
-
-  /*public void copyBudgetDistributionList(
-      List<BudgetDistribution> originalBudgetDistributionList, InvoiceLine invoiceLine) {
-
-    if (originalBudgetDistributionList == null) {
-      return;
-    }
-
-    for (BudgetDistribution budgetDistributionIt : originalBudgetDistributionList) {
-      BudgetDistribution budgetDistribution = new BudgetDistribution();
-      budgetDistribution.setBudget(budgetDistributionIt.getBudget());
-      budgetDistribution.setAmount(budgetDistributionIt.getAmount());
-      budgetDistribution.setBudgetAmountAvailable(budgetDistributionIt.getBudgetAmountAvailable());
-      invoiceLine.addBudgetDistributionListItem(budgetDistribution);
-    }
-  }*/
 
   public Unit getSaleOrPurchaseUnit() throws AxelorException {
 

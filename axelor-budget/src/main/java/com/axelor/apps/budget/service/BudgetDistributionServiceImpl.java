@@ -12,7 +12,7 @@ import com.axelor.apps.budget.db.BudgetLine;
 import com.axelor.apps.budget.db.repo.BudgetDistributionRepository;
 import com.axelor.apps.budget.db.repo.BudgetLevelRepository;
 import com.axelor.apps.budget.db.repo.BudgetRepository;
-import com.axelor.apps.budget.translation.ITranslation;
+import com.axelor.apps.budget.exception.IExceptionMessage;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.auth.db.AuditableModel;
@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 
-public class BudgetBudgetDistributionServiceImpl implements BudgetBudgetDistributionService {
+public class BudgetDistributionServiceImpl implements BudgetDistributionService {
 
   protected BudgetDistributionRepository budgetDistributionRepository;
   protected BudgetLineService budgetLineService;
@@ -42,7 +42,7 @@ public class BudgetBudgetDistributionServiceImpl implements BudgetBudgetDistribu
   private final int RETURN_SCALE = 2;
 
   @Inject
-  public BudgetBudgetDistributionServiceImpl(
+  public BudgetDistributionServiceImpl(
       BudgetDistributionRepository budgetDistributionRepository,
       BudgetLineService budgetLineService,
       BudgetLevelService budgetLevelService,
@@ -115,7 +115,7 @@ public class BudgetBudgetDistributionServiceImpl implements BudgetBudgetDistribu
     if (budgetToCompare.compareTo(amount) < 0) {
       budgetExceedAlert =
           String.format(
-              I18n.get(ITranslation.BUGDET_EXCEED_ERROR),
+              I18n.get(IExceptionMessage.BUGDET_EXCEED_ERROR),
               budgetName,
               budgetToCompare,
               budget

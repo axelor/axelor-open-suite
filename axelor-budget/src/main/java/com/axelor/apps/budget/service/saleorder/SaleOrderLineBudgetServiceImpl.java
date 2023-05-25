@@ -6,7 +6,7 @@ import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.exception.IExceptionMessage;
 import com.axelor.apps.budget.service.AppBudgetService;
-import com.axelor.apps.budget.service.BudgetBudgetDistributionService;
+import com.axelor.apps.budget.service.BudgetDistributionService;
 import com.axelor.apps.budget.service.BudgetService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -24,18 +24,18 @@ import org.apache.commons.collections.CollectionUtils;
 public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetService {
 
   protected BudgetService budgetService;
-  protected BudgetBudgetDistributionService budgetBudgetDistributionService;
+  protected BudgetDistributionService budgetDistributionService;
   protected SaleOrderLineRepository saleOrderLineRepo;
   protected AppBudgetService appBudgetService;
 
   @Inject
   public SaleOrderLineBudgetServiceImpl(
       BudgetService budgetService,
-      BudgetBudgetDistributionService budgetBudgetDistributionService,
+      BudgetDistributionService budgetDistributionService,
       SaleOrderLineRepository saleOrderLineRepo,
       AppBudgetService appBudgetService) {
     this.budgetService = budgetService;
-    this.budgetBudgetDistributionService = budgetBudgetDistributionService;
+    this.budgetDistributionService = budgetDistributionService;
     this.saleOrderLineRepo = saleOrderLineRepo;
     this.appBudgetService = appBudgetService;
   }
@@ -49,7 +49,7 @@ public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetServic
     saleOrderLine.clearBudgetDistributionList();
     saleOrderLine.setBudgetStr("");
     String alertMessage =
-        budgetBudgetDistributionService.createBudgetDistribution(
+        budgetDistributionService.createBudgetDistribution(
             saleOrderLine.getAnalyticMoveLineList(),
             saleOrderLine.getAccount(),
             saleOrderLine.getSaleOrder().getCompany(),
@@ -155,7 +155,7 @@ public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetServic
       for (BudgetDistribution budgetDistribution : budgetDistributionList) {
         budgetDistributionSumAmount =
             budgetDistributionSumAmount.add(budgetDistribution.getAmount());
-        budgetBudgetDistributionService.computeBudgetDistributionSumAmount(
+        budgetDistributionService.computeBudgetDistributionSumAmount(
             budgetDistribution, computeDate);
       }
     }

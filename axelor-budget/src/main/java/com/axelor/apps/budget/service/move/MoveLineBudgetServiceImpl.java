@@ -6,7 +6,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.exception.IExceptionMessage;
-import com.axelor.apps.budget.service.BudgetBudgetDistributionService;
+import com.axelor.apps.budget.service.BudgetDistributionService;
 import com.axelor.apps.budget.service.BudgetService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
@@ -18,16 +18,16 @@ public class MoveLineBudgetServiceImpl implements MoveLineBudgetService {
 
   protected MoveLineRepository moveLineRepository;
   protected BudgetService budgetService;
-  protected BudgetBudgetDistributionService budgetBudgetDistributionService;
+  protected BudgetDistributionService budgetDistributionService;
 
   @Inject
   public MoveLineBudgetServiceImpl(
       MoveLineRepository moveLineRepository,
       BudgetService budgetService,
-      BudgetBudgetDistributionService budgetBudgetDistributionService) {
+      BudgetDistributionService budgetDistributionService) {
     this.moveLineRepository = moveLineRepository;
     this.budgetService = budgetService;
-    this.budgetBudgetDistributionService = budgetBudgetDistributionService;
+    this.budgetDistributionService = budgetDistributionService;
   }
 
   @Override
@@ -38,7 +38,7 @@ public class MoveLineBudgetServiceImpl implements MoveLineBudgetService {
     }
     moveLine.clearBudgetDistributionList();
     String alertMessage =
-        budgetBudgetDistributionService.createBudgetDistribution(
+        budgetDistributionService.createBudgetDistribution(
             moveLine.getAnalyticMoveLineList(),
             moveLine.getAccount(),
             moveLine.getMove().getCompany(),

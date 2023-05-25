@@ -18,7 +18,7 @@ import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.db.repo.BudgetRepository;
 import com.axelor.apps.budget.exception.IExceptionMessage;
-import com.axelor.apps.budget.service.BudgetBudgetDistributionService;
+import com.axelor.apps.budget.service.BudgetDistributionService;
 import com.axelor.apps.budget.service.BudgetService;
 import com.axelor.apps.businessproject.service.InvoiceLineProjectServiceImpl;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -37,7 +37,7 @@ public class BudgetInvoiceLineServiceImpl extends InvoiceLineProjectServiceImpl
 
   protected BudgetService budgetService;
   protected BudgetRepository budgetRepository;
-  protected BudgetBudgetDistributionService budgetBudgetDistributionService;
+  protected BudgetDistributionService budgetDistributionService;
 
   @Inject
   public BudgetInvoiceLineServiceImpl(
@@ -55,7 +55,7 @@ public class BudgetInvoiceLineServiceImpl extends InvoiceLineProjectServiceImpl
       InternationalService internationalService,
       BudgetService budgetService,
       BudgetRepository budgetRepository,
-      BudgetBudgetDistributionService budgetBudgetDistributionService) {
+      BudgetDistributionService budgetDistributionService) {
     super(
         currencyService,
         priceListService,
@@ -71,7 +71,7 @@ public class BudgetInvoiceLineServiceImpl extends InvoiceLineProjectServiceImpl
         internationalService);
     this.budgetService = budgetService;
     this.budgetRepository = budgetRepository;
-    this.budgetBudgetDistributionService = budgetBudgetDistributionService;
+    this.budgetDistributionService = budgetDistributionService;
   }
 
   @Override
@@ -82,7 +82,7 @@ public class BudgetInvoiceLineServiceImpl extends InvoiceLineProjectServiceImpl
     }
     invoiceLine.clearBudgetDistributionList();
     String alertMessage =
-        budgetBudgetDistributionService.createBudgetDistribution(
+        budgetDistributionService.createBudgetDistribution(
             invoiceLine.getAnalyticMoveLineList(),
             invoiceLine.getAccount(),
             invoiceLine.getInvoice().getCompany(),
@@ -129,7 +129,7 @@ public class BudgetInvoiceLineServiceImpl extends InvoiceLineProjectServiceImpl
       for (BudgetDistribution budgetDistribution : budgetDistributionList) {
         budgetDistributionSumAmount =
             budgetDistributionSumAmount.add(budgetDistribution.getAmount());
-        budgetBudgetDistributionService.computeBudgetDistributionSumAmount(
+        budgetDistributionService.computeBudgetDistributionSumAmount(
             budgetDistribution, computeDate);
       }
     }

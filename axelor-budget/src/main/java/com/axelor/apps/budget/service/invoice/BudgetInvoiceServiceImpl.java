@@ -27,7 +27,7 @@ import com.axelor.apps.budget.db.BudgetLine;
 import com.axelor.apps.budget.db.repo.BudgetDistributionRepository;
 import com.axelor.apps.budget.db.repo.BudgetRepository;
 import com.axelor.apps.budget.service.AppBudgetService;
-import com.axelor.apps.budget.service.BudgetBudgetDistributionService;
+import com.axelor.apps.budget.service.BudgetDistributionService;
 import com.axelor.apps.budget.service.BudgetLineService;
 import com.axelor.apps.budget.service.BudgetService;
 import com.axelor.apps.cash.management.service.InvoiceEstimatedPaymentService;
@@ -56,7 +56,7 @@ public class BudgetInvoiceServiceImpl extends InvoiceServiceManagementImpl
   protected BudgetDistributionRepository budgetDistributionRepo;
   protected BudgetRepository budgetRepository;
   protected BudgetInvoiceLineService budgetInvoiceLineService;
-  protected BudgetBudgetDistributionService budgetDistributionService;
+  protected BudgetDistributionService budgetDistributionService;
 
   protected BudgetService budgetService;
   protected BudgetLineService budgetLineService;
@@ -87,7 +87,7 @@ public class BudgetInvoiceServiceImpl extends InvoiceServiceManagementImpl
       BudgetDistributionRepository budgetDistributionRepo,
       BudgetRepository budgetRepository,
       BudgetInvoiceLineService budgetInvoiceLineService,
-      BudgetBudgetDistributionService budgetDistributionService,
+      BudgetDistributionService budgetDistributionService,
       BudgetService budgetService,
       BudgetLineService budgetLineService,
       AppBudgetService appBudgetService) {

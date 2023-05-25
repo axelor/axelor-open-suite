@@ -8,7 +8,7 @@ import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.db.repo.BudgetDistributionRepository;
 import com.axelor.apps.budget.db.repo.BudgetRepository;
 import com.axelor.apps.budget.service.AppBudgetService;
-import com.axelor.apps.budget.service.BudgetBudgetDistributionService;
+import com.axelor.apps.budget.service.BudgetDistributionService;
 import com.axelor.apps.budget.service.BudgetService;
 import com.axelor.apps.businessproject.service.PurchaseOrderWorkflowServiceProjectImpl;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -36,7 +36,7 @@ public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderWorkflowService
     implements PurchaseOrderBudgetService {
   protected BudgetRepository budgetRepository;
   protected PurchaseOrderLineBudgetService purchaseOrderLineBudgetService;
-  protected BudgetBudgetDistributionService budgetDistributionService;
+  protected BudgetDistributionService budgetDistributionService;
 
   protected BudgetService budgetService;
   protected BudgetDistributionRepository budgetDistributionRepository;
@@ -53,7 +53,7 @@ public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderWorkflowService
       PurchaseOrderSupplychainService purchaseOrderSupplychainService,
       AnalyticMoveLineRepository analyticMoveLineRepository,
       BudgetRepository budgetRepository,
-      BudgetBudgetDistributionService budgetDistributionService,
+      BudgetDistributionService budgetDistributionService,
       PurchaseOrderLineBudgetService purchaseOrderLineBudgetService,
       BudgetService budgetService,
       BudgetDistributionRepository budgetDistributionRepository,

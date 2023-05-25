@@ -5,7 +5,7 @@ import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.apps.budget.service.BudgetBudgetDistributionService;
+import com.axelor.apps.budget.service.BudgetDistributionService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -32,7 +32,7 @@ public class InvoicePaymentController {
             invoicePayment
                 .getAmount()
                 .divide(invoice.getCompanyInTaxTotal(), CALCULATION_SCALE, RoundingMode.HALF_UP);
-        Beans.get(BudgetBudgetDistributionService.class).computePaidAmount(invoice, ratio);
+        Beans.get(BudgetDistributionService.class).computePaidAmount(invoice, ratio);
       }
 
     } catch (Exception e) {

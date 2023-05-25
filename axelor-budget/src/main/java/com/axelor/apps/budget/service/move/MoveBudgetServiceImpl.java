@@ -11,7 +11,7 @@ import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetAccountService;
-import com.axelor.apps.budget.service.BudgetBudgetDistributionService;
+import com.axelor.apps.budget.service.BudgetDistributionService;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
@@ -27,7 +27,7 @@ import org.apache.commons.collections.CollectionUtils;
 public class MoveBudgetServiceImpl implements MoveBudgetService {
 
   protected MoveLineBudgetService moveLineBudgetService;
-  protected BudgetBudgetDistributionService budgetDistributionService;
+  protected BudgetDistributionService budgetDistributionService;
   protected MoveRepository moveRepo;
   protected BudgetAccountService budgetAccountService;
   protected MoveLineRepository moveLineRepo;
@@ -37,7 +37,7 @@ public class MoveBudgetServiceImpl implements MoveBudgetService {
   public MoveBudgetServiceImpl(
       MoveLineBudgetService moveLineBudgetService,
       MoveRepository moveRepo,
-      BudgetBudgetDistributionService budgetDistributionService,
+      BudgetDistributionService budgetDistributionService,
       BudgetAccountService budgetAccountService,
       MoveLineRepository moveLineRepo,
       AppBudgetService appBudgetService) {

@@ -10,7 +10,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.db.repo.BudgetLevelRepository;
-import com.axelor.apps.budget.service.BudgetBudgetDistributionService;
+import com.axelor.apps.budget.service.BudgetDistributionService;
 import com.axelor.apps.budget.service.purchaseorder.PurchaseOrderLineBudgetService;
 import com.axelor.apps.budget.service.saleorder.SaleOrderLineBudgetService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -65,7 +65,7 @@ public class BudgetDistributionController {
         }
       }
 
-      Beans.get(BudgetBudgetDistributionService.class)
+      Beans.get(BudgetDistributionService.class)
           .computeBudgetDistributionSumAmount(budgetDistribution, date);
       response.setValues(budgetDistribution);
 

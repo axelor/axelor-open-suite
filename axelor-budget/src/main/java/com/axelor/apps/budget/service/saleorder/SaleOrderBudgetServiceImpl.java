@@ -9,7 +9,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
-import com.axelor.apps.budget.service.BudgetBudgetDistributionService;
+import com.axelor.apps.budget.service.BudgetDistributionService;
 import com.axelor.apps.budget.service.BudgetService;
 import com.axelor.apps.businessproject.service.SaleOrderInvoiceProjectServiceImpl;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
@@ -37,7 +37,7 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
     implements SaleOrderBudgetService {
 
   protected AppAccountService appAccountService;
-  protected BudgetBudgetDistributionService budgetDistributionService;
+  protected BudgetDistributionService budgetDistributionService;
   protected SaleOrderLineBudgetService saleOrderLineBudgetService;
   protected BudgetService budgetService;
 
@@ -57,7 +57,7 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
       InvoiceLineOrderService invoiceLineOrderService,
       SaleInvoicingStateService saleInvoicingStateService,
       AppAccountService appAccountService,
-      BudgetBudgetDistributionService budgetDistributionService,
+      BudgetDistributionService budgetDistributionService,
       SaleOrderLineBudgetService saleOrderLineBudgetService,
       BudgetService budgetService) {
     super(
