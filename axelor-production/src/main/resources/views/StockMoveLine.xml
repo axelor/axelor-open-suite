@@ -94,8 +94,7 @@
       <field name="unitPriceTaxed" hidden="true"/>
       <field name="unit" canEdit="false" form-view="unit-form" grid-view="unit-grid"/>
       <field name="trackingNumber" onChange="action-stock-move-line-record-product"
-        domain="self.product = :product" form-view="tracking-number-form"
-        grid-view="tracking-number-grid"
+        form-view="tracking-number-form" grid-view="tracking-number-grid"
         canNew="$get('stockMove.fromStockLocation.typeSelect') == 3 &amp;&amp; ($get('stockMove.toStockLocation.typeSelect') == 1 || $get('stockMove.toStockLocation.typeSelect') == 2)"
         onSelect="action-stock-move-line-attrs-tracking-number-domain"
         readonlyIf="$get('stockMove.statusSelect') > 2"

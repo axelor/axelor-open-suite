@@ -1,7 +1,0 @@
-title: Added filter on tracking number when adding consumed and produced products of ManufOrder
-type: fix
-description:
-  When trying to add a new consumed product or produced product on a ManufOrder, there is now a filter on the trackingNumber field.
-  We can select a tracking numbers depending of the selected product, if the product has at least one tracking number.
-
-  
