@@ -62,8 +62,6 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
   public Map<String, Object> getOnNewValuesMap(MoveLineMassEntry moveLine, Move move)
       throws AxelorException {
 
-    moveLine.setTemporaryMoveNumber(1);
-    moveLine.setCounter(1);
     moveLine.setInputAction(MoveLineMassEntryRepository.MASS_ENTRY_INPUT_ACTION_LINE);
     moveLine =
         massEntryService.getFirstMoveLineMassEntryInformations(
