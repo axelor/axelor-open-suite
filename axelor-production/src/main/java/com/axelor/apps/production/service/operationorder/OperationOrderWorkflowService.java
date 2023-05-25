@@ -91,6 +91,13 @@ public class OperationOrderWorkflowService {
     this.machineService = machineService;
   }
 
+  /**
+   * DEPECRATED: We must not split operation
+   * @param operationOrder
+   * @param weeklyPlanning
+   * @param duration
+   * @throws AxelorException
+   */
   @Transactional(rollbackOn = {Exception.class})
   public void manageDurationWithMachinePlanning(
       OperationOrder operationOrder, WeeklyPlanning weeklyPlanning, Long duration)
@@ -236,49 +243,15 @@ public class OperationOrderWorkflowService {
       Beans.get(OperationOrderService.class).createToConsumeProdProductList(operationOrder);
     }
 
-    LocalDateTime plannedStartDate = operationOrder.getPlannedStartDateT();
-
-    LocalDateTime lastOPerationDate = this.getLastOperationDate(operationOrder);
-    LocalDateTime maxDate = DateTool.max(plannedStartDate, lastOPerationDate);
     Machine machine = operationOrder.getMachine();
 
-    WeeklyPlanning weeklyPlanning = null;
     if (machine != null) {
-      weeklyPlanning = machine.getWeeklyPlanning();
-      operationOrder.setPlannedStartDateT(
-          machineService.getClosestAvailableDateFrom(machine, maxDate, operationOrder));
+    	planDatesWithMachine(operationOrder, machine, cumulatedDuration);
     } else {
-      operationOrder.setPlannedStartDateT(maxDate);
-    }
-
-    if (weeklyPlanning != null) {
-      this.planWithPlanning(operationOrder, weeklyPlanning);
-    }
-
-    operationOrder.setPlannedEndDateT(this.computePlannedEndDateT(operationOrder));
-    if (cumulatedDuration != null) {
-
-      LocalDateTime plannedEndDateT =
-          operationOrder
-              .getPlannedEndDateT()
-              .minusSeconds(cumulatedDuration)
-              .plusSeconds(this.getMachineSetupDuration(operationOrder));
-      if (machine != null) {
-        operationOrder.setPlannedEndDateT(
-            machineService.getClosestAvailableDateFrom(machine, plannedEndDateT, operationOrder));
-      } else {
-        operationOrder.setPlannedEndDateT(plannedEndDateT);
-      }
-    }
-    Long plannedDuration =
-        DurationTool.getSecondsDuration(
-            Duration.between(
-                operationOrder.getPlannedStartDateT(), operationOrder.getPlannedEndDateT()));
-
-    operationOrder.setPlannedDuration(plannedDuration);
-
-    if (weeklyPlanning != null) {
-      this.manageDurationWithMachinePlanning(operationOrder, weeklyPlanning, plannedDuration);
+    	//cumulatedDuration only filled when weeklyPlanning can be extracted.
+    	//Weeklyplanning exist only if there is a machine
+    	//So no need of cumulatedDuration here 
+    	planDatesWithoutMachine(operationOrder);
     }
 
     ManufOrder manufOrder = operationOrder.getManufOrder();
@@ -291,7 +264,69 @@ public class OperationOrderWorkflowService {
     return operationOrderRepo.save(operationOrder);
   }
 
-  public long getMachineSetupDuration(OperationOrder operationOrder) throws AxelorException {
+  protected void planDatesWithoutMachine(OperationOrder operationOrder) throws AxelorException {
+	    LocalDateTime plannedStartDate = operationOrder.getPlannedStartDateT();
+
+	    LocalDateTime lastOPerationDate = this.getLastOperationDate(operationOrder);
+	    LocalDateTime maxDate = DateTool.max(plannedStartDate, lastOPerationDate);
+
+	   operationOrder.setPlannedStartDateT(maxDate);
+
+	    operationOrder.setPlannedEndDateT(operationOrder.getPlannedStartDateT().plusSeconds(this.getDuration(operationOrder)));
+  
+	    Long plannedDuration =
+	        DurationTool.getSecondsDuration(
+	            Duration.between(
+	                operationOrder.getPlannedStartDateT(), operationOrder.getPlannedEndDateT()));
+
+	    operationOrder.setPlannedDuration(plannedDuration);
+
+	    
+	
+ }
+
+ protected void planDatesWithMachine(OperationOrder operationOrder, Machine machine, Long cumulatedDuration) throws AxelorException {
+	 
+    LocalDateTime plannedStartDate = operationOrder.getPlannedStartDateT();
+
+    LocalDateTime lastOPerationDate = this.getLastOperationDate(operationOrder);
+    LocalDateTime maxDate = DateTool.max(plannedStartDate, lastOPerationDate);
+	 
+	 WeeklyPlanning weeklyPlanning = machine.getWeeklyPlanning();
+	 
+	 operationOrder.setPlannedStartDateT(
+	     machineService.getClosestAvailableTimeSlotFrom(machine, maxDate, maxDate.plusSeconds(getDuration(operationOrder)), operationOrder));
+
+    if (weeklyPlanning != null) {
+        this.planWithPlanning(operationOrder, weeklyPlanning);
+      }
+    
+    operationOrder.setPlannedEndDateT(this.computePlannedEndDateT(operationOrder));
+    if (cumulatedDuration != null) {
+
+      LocalDateTime plannedEndDateT =
+          operationOrder
+              .getPlannedEndDateT()
+              .minusSeconds(cumulatedDuration)
+              .plusSeconds(this.getMachineSetupDuration(operationOrder));
+        operationOrder.setPlannedEndDateT(
+            machineService.getClosestAvailableDateFrom(machine, plannedEndDateT, operationOrder));
+    }
+    
+    Long plannedDuration =
+        DurationTool.getSecondsDuration(
+            Duration.between(
+                operationOrder.getPlannedStartDateT(), operationOrder.getPlannedEndDateT()));
+
+    operationOrder.setPlannedDuration(plannedDuration);
+
+    if (weeklyPlanning != null) {
+      this.manageDurationWithMachinePlanning(operationOrder, weeklyPlanning, plannedDuration);
+    }
+	
+ }
+
+public long getMachineSetupDuration(OperationOrder operationOrder) throws AxelorException {
     ProdProcessLine prodProcessLine = operationOrder.getProdProcessLine();
 
     long duration = 0;
@@ -676,6 +711,13 @@ public class OperationOrderWorkflowService {
     }
 
     return operationOrder.getPlannedStartDateT();
+  }
+  
+  public long getDuration(OperationOrder operationOrder) throws AxelorException {
+	  if (operationOrder.getWorkCenter() != null) {
+		  return this.computeEntireCycleDuration(operationOrder, operationOrder.getManufOrder().getQty());
+	  }
+	  return 0;
   }
 
   public long computeEntireCycleDuration(OperationOrder operationOrder, BigDecimal qty)
