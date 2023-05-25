@@ -1,0 +1,3 @@
+---
+title: "Supplychain: fix an error occurring when generating an invoice from a purchase order with a title line"
+type: fix
