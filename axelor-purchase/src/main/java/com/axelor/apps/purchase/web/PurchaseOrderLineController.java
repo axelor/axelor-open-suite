@@ -318,12 +318,12 @@ public class PurchaseOrderLineController {
     try {
       PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
       if (purchaseOrderLine.getIsTitleLine()) {
-        PurchaseOrderLine newPurchaseOrderLine = new PurchaseOrderLine();
-        newPurchaseOrderLine.setIsTitleLine(true);
-        newPurchaseOrderLine.setQty(BigDecimal.ZERO);
-        newPurchaseOrderLine.setId(purchaseOrderLine.getId());
-        newPurchaseOrderLine.setVersion(purchaseOrderLine.getVersion());
-        response.setValues(Mapper.toMap(purchaseOrderLine));
+        Map<String, Object> newPurchaseOrderLine = Mapper.toMap(new PurchaseOrderLine());
+        newPurchaseOrderLine.put("qty", BigDecimal.ZERO);
+        newPurchaseOrderLine.put("id", purchaseOrderLine.getId());
+        newPurchaseOrderLine.put("version", purchaseOrderLine.getVersion());
+        newPurchaseOrderLine.put("isTitleLine", true);
+        response.setValues(newPurchaseOrderLine);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
