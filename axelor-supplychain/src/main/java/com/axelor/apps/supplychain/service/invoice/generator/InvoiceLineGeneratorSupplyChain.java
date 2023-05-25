@@ -226,31 +226,34 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
       }
 
     } else if (purchaseOrderLine != null) {
-
-      if (purchaseOrderLine.getAnalyticDistributionTemplate() != null
-          || !ObjectUtils.isEmpty(purchaseOrderLine.getAnalyticMoveLineList())) {
-        invoiceLine.setAnalyticDistributionTemplate(
-            purchaseOrderLine.getAnalyticDistributionTemplate());
-        this.copyAnalyticMoveLines(purchaseOrderLine.getAnalyticMoveLineList(), invoiceLine);
-        analyticMoveLineList = invoiceLineAnalyticService.computeAnalyticDistribution(invoiceLine);
+      if (purchaseOrderLine.getIsTitleLine()) {
+        return invoiceLine;
       } else {
-        analyticMoveLineList =
-            invoiceLineAnalyticService.getAndComputeAnalyticDistribution(invoiceLine, invoice);
-        analyticMoveLineList.stream().forEach(invoiceLine::addAnalyticMoveLineListItem);
+        if (purchaseOrderLine.getAnalyticDistributionTemplate() != null
+            || !ObjectUtils.isEmpty(purchaseOrderLine.getAnalyticMoveLineList())) {
+          invoiceLine.setAnalyticDistributionTemplate(
+              purchaseOrderLine.getAnalyticDistributionTemplate());
+          this.copyAnalyticMoveLines(purchaseOrderLine.getAnalyticMoveLineList(), invoiceLine);
+          analyticMoveLineList =
+              invoiceLineAnalyticService.computeAnalyticDistribution(invoiceLine);
+        } else {
+          analyticMoveLineList =
+              invoiceLineAnalyticService.getAndComputeAnalyticDistribution(invoiceLine, invoice);
+          analyticMoveLineList.stream().forEach(invoiceLine::addAnalyticMoveLineListItem);
+        }
+
+        this.copyBudgetDistributionList(purchaseOrderLine.getBudgetDistributionList(), invoiceLine);
+        invoiceLine.setBudget(purchaseOrderLine.getBudget());
+        invoiceLine.setBudgetDistributionSumAmount(
+            purchaseOrderLine.getBudgetDistributionSumAmount());
+        invoiceLine.setFixedAssets(purchaseOrderLine.getFixedAssets());
+
+        if (product != null && purchaseOrderLine.getFixedAssets()) {
+          FixedAssetCategory fixedAssetCategory =
+              accountManagementService.getProductFixedAssetCategory(product, invoice.getCompany());
+          invoiceLine.setFixedAssetCategory(fixedAssetCategory);
+        }
       }
-
-      this.copyBudgetDistributionList(purchaseOrderLine.getBudgetDistributionList(), invoiceLine);
-      invoiceLine.setBudget(purchaseOrderLine.getBudget());
-      invoiceLine.setBudgetDistributionSumAmount(
-          purchaseOrderLine.getBudgetDistributionSumAmount());
-      invoiceLine.setFixedAssets(purchaseOrderLine.getFixedAssets());
-
-      if (product != null && purchaseOrderLine.getFixedAssets()) {
-        FixedAssetCategory fixedAssetCategory =
-            accountManagementService.getProductFixedAssetCategory(product, invoice.getCompany());
-        invoiceLine.setFixedAssetCategory(fixedAssetCategory);
-      }
-
     } else if (stockMoveLine != null) {
 
       this.price = stockMoveLine.getUnitPriceUntaxed();
