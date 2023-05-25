@@ -36,7 +36,8 @@ public class BudgetBudgetDistributionServiceImpl implements BudgetBudgetDistribu
   protected BudgetLineService budgetLineService;
   protected BudgetLevelService budgetLevelService;
   protected BudgetRepository budgetRepo;
-  protected BudgetBudgetService budgetBudgetService;
+
+  protected BudgetService budgetService;
   protected BudgetToolsService budgetToolsService;
   private final int RETURN_SCALE = 2;
 
@@ -46,13 +47,13 @@ public class BudgetBudgetDistributionServiceImpl implements BudgetBudgetDistribu
       BudgetLineService budgetLineService,
       BudgetLevelService budgetLevelService,
       BudgetRepository budgetRepo,
-      BudgetBudgetService budgetBudgetService,
+      BudgetService budgetService,
       BudgetToolsService budgetToolsService) {
     this.budgetDistributionRepository = budgetDistributionRepository;
     this.budgetLineService = budgetLineService;
     this.budgetLevelService = budgetLevelService;
     this.budgetRepo = budgetRepo;
-    this.budgetBudgetService = budgetBudgetService;
+    this.budgetService = budgetService;
     this.budgetToolsService = budgetToolsService;
   }
 
@@ -165,10 +166,10 @@ public class BudgetBudgetDistributionServiceImpl implements BudgetBudgetDistribu
 
     if (!CollectionUtils.isEmpty(analyticMoveLineList)) {
       for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
-        String key = budgetBudgetService.computeKey(account, company, analyticMoveLine);
+        String key = budgetService.computeKey(account, company, analyticMoveLine);
 
         if (!Strings.isNullOrEmpty(key)) {
-          Budget budget = budgetBudgetService.findBudgetWithKey(key, date);
+          Budget budget = budgetService.findBudgetWithKey(key, date);
 
           if (budget != null) {
             BudgetDistribution budgetDistribution =

@@ -5,7 +5,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.bankpayment.db.repo.MoveBankPaymentRepository;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.budget.service.BudgetBudgetService;
+import com.axelor.apps.budget.service.BudgetService;
 import com.axelor.apps.budget.service.move.MoveLineBudgetService;
 import com.axelor.inject.Beans;
 import javax.persistence.PersistenceException;
@@ -29,7 +29,7 @@ public class MoveBudgetManagementRepository extends MoveBankPaymentRepository {
     }
 
     super.save(move);
-    Beans.get(BudgetBudgetService.class).updateBudgetLinesFromMove(move, false);
+    Beans.get(BudgetService.class).updateBudgetLinesFromMove(move, false);
     return move;
   }
 

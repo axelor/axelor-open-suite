@@ -11,7 +11,7 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.db.repo.BudgetLevelRepository;
 import com.axelor.apps.budget.service.BudgetBudgetDistributionService;
-import com.axelor.apps.budget.service.purchaseorder.PurchaseOrderLineBudgetBudgetService;
+import com.axelor.apps.budget.service.purchaseorder.PurchaseOrderLineBudgetService;
 import com.axelor.apps.budget.service.saleorder.SaleOrderLineBudgetService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -94,7 +94,7 @@ public class BudgetDistributionController {
           purchaseOrder = parentContext.getParent().asType(PurchaseOrder.class);
         }
         query =
-            Beans.get(PurchaseOrderLineBudgetBudgetService.class)
+            Beans.get(PurchaseOrderLineBudgetService.class)
                 .getBudgetDomain(purchaseOrderLine, purchaseOrder);
 
       } else if (parentContext != null && MoveLine.class.equals(parentContext.getContextClass())) {

@@ -4,20 +4,18 @@ import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticMoveLine;
-import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
-import com.axelor.apps.budget.db.BudgetLevel;
 import com.axelor.apps.budget.db.BudgetLine;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
-public interface BudgetBudgetService {
+public interface BudgetService {
 
   /**
    * This function aggregates total amount paid from all {@link BudgetLine}s
@@ -26,13 +24,6 @@ public interface BudgetBudgetService {
    * @return BigDecimal
    */
   public BigDecimal computeTotalAmountPaid(Budget budget);
-
-  /**
-   * This function computes all totals of {@link BudgetLevel}
-   *
-   * @param budget
-   */
-  public void computeBudgetLevelTotals(Budget budget);
 
   /**
    * This function aggregates total amount committed from all {@link BudgetLine}s
@@ -165,7 +156,7 @@ public interface BudgetBudgetService {
    * Take the analytic distribution line and concat their axis and account to create the analytic
    * part of the key. Then return it
    *
-   * @param AnalyticAxis analyticAxis, AnalyticAccount analyticAccount
+   * @param analyticAxis analyticAccount
    * @return String
    */
   public String computeAnalyticDistributionLineKey(
@@ -202,7 +193,7 @@ public interface BudgetBudgetService {
    * Find the budget line with move date and update it amounts (realized wih no po, amount realized,
    * to be committed, firm gap, available)
    *
-   * @param budgetDistributionList, move, moveLine
+   * @param budgetDistribution, move, moveLine
    */
   public boolean updateLineFromMove(
       BudgetDistribution budgetDistribution, Move move, MoveLine moveLine);
@@ -295,12 +286,9 @@ public interface BudgetBudgetService {
       List<BudgetDistribution> budgetDistributionList, BigDecimal amount, String code)
       throws AxelorException;
 
+  public BigDecimal computeTotalAmount(Budget budget);
+
   public List<BudgetLine> updateLines(Budget budget);
 
-  public void updateBudgetLinesFromInvoice(Invoice invoice);
-
   public BigDecimal computeTotalAmountRealized(Budget budget);
-
-  public void computeBudgetDistributionSumAmount(
-      BudgetDistribution budgetDistribution, LocalDate computeDate);
 }

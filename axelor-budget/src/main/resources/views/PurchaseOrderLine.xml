@@ -54,7 +54,7 @@
 
 
 
-    <extend target="//panel[@name='supplierRequestsPanel']">
+    <extend target="//panel[@name='analyticDistributionPanel']">
       <insert position="after">
         <panel name="budgetDistributionPanel" title="Budget"
           if="__config__.app.isApp('budget')" if-module="axelor-supplychain" colSpan="12">
@@ -96,10 +96,6 @@
           <field name="$currencySymbol" hidden="true"/>
         </panel>
       </insert>
-    </extend>
-
-    <extend target="//panel[@name='descriptionPanel']">
-      <move position="after" source="//panel[@name='budgetDistributionPanel']"/>
     </extend>
 
   </form>

@@ -1,6 +1,7 @@
-package com.axelor.apps.base.db.repo;
+package com.axelor.apps.budget.db.repo;
 
 import com.axelor.apps.base.db.AdvancedImport;
+import com.axelor.apps.base.db.repo.AdvancedImportBaseRepository;
 
 public class AdvancedImportBudgetRepository extends AdvancedImportBaseRepository {
 

@@ -1,28 +1,24 @@
 package com.axelor.apps.budget.service;
 
-import com.axelor.apps.account.service.app.AppBudgetService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.AdvancedImport;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.ImportHistory;
-import com.axelor.apps.base.db.repo.AdvancedImportBudgetRepository;
 import com.axelor.apps.base.db.repo.AdvancedImportRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.advanced.imports.AdvancedImportService;
 import com.axelor.apps.base.service.advanced.imports.DataImportService;
 import com.axelor.apps.base.service.advanced.imports.ValidatorService;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetLevel;
-import com.axelor.apps.budget.db.repo.BudgetBudgetRepository;
+import com.axelor.apps.budget.db.repo.AdvancedImportBudgetRepository;
 import com.axelor.apps.budget.db.repo.BudgetLevelManagementRepository;
 import com.axelor.apps.budget.db.repo.BudgetLevelRepository;
+import com.axelor.apps.budget.db.repo.BudgetManagementRepository;
 import com.axelor.apps.budget.db.repo.BudgetRepository;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
-import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
-import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
@@ -45,13 +41,11 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
   protected AdvancedImportService advancedImportService;
   protected ValidatorService validatorService;
   protected DataImportService dataImportService;
-  protected AppBaseService appBaseService;
-  protected PurchaseOrderRepository purchaseOrderRepo;
-  protected PurchaseOrderLineRepository purchaseOrderLineRepo;
   protected ProjectRepository projectRepo;
-  protected BudgetBudgetService budgetBudgetService;
-  protected BudgetBudgetRepository budgetBudgetRepository;
+  protected BudgetService budgetService;
+  protected BudgetManagementRepository budgetRepository;
   protected AppBudgetService appBudgetService;
+  protected BudgetLevelRepository budgetLevelRepository;
 
   @Inject
   public BudgetLevelServiceImpl(
@@ -60,25 +54,21 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
       AdvancedImportService advancedImportService,
       DataImportService dataImportService,
       ValidatorService validatorService,
-      AppBaseService appBaseService,
-      PurchaseOrderRepository purchaseOrderRepo,
-      PurchaseOrderLineRepository purchaseOrderLineRepo,
       ProjectRepository projectRepo,
-      BudgetBudgetService budgetBudgetService,
-      BudgetBudgetRepository budgetBudgetRepository,
-      AppBudgetService appBudgetService) {
+      BudgetService budgetService,
+      BudgetManagementRepository budgetRepository,
+      AppBudgetService appBudgetService,
+      BudgetLevelRepository budgetLevelRepository) {
     this.budgetLevelManagementRepository = budgetLevelManagementRepository;
     this.advancedImportRepo = advancedImportRepo;
     this.advancedImportService = advancedImportService;
     this.validatorService = validatorService;
     this.dataImportService = dataImportService;
-    this.appBaseService = appBaseService;
-    this.purchaseOrderRepo = purchaseOrderRepo;
-    this.purchaseOrderLineRepo = purchaseOrderLineRepo;
     this.projectRepo = projectRepo;
-    this.budgetBudgetService = budgetBudgetService;
-    this.budgetBudgetRepository = budgetBudgetRepository;
+    this.budgetService = budgetService;
+    this.budgetRepository = budgetRepository;
     this.appBudgetService = appBudgetService;
+    this.budgetLevelRepository = budgetLevelRepository;
   }
 
   @Override
@@ -206,7 +196,7 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
         optSectionBudgetLevel.setSourceSelect(BudgetLevelRepository.BUDGET_LEVEL_SOURCE_AUTO);
 
         for (Budget budget : budgetList) {
-          Budget optBudget = budgetBudgetRepository.copy(budget, true);
+          Budget optBudget = budgetRepository.copy(budget, true);
           optBudget.setTypeSelect(BudgetRepository.BUDGET_TYPE_SELECT_BUDGET);
           optBudget.setSourceSelect(BudgetRepository.BUDGET_SOURCE_AUTO);
           optBudget.clearAccountModelSet();
@@ -273,7 +263,7 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
   @Transactional(rollbackOn = {RuntimeException.class})
   public void computeBudgetLevel(BudgetLevel globalBudgetLevel) throws AxelorException {
     List<Budget> budgetList =
-        budgetBudgetRepository
+        budgetRepository
             .all()
             .filter(
                 "self.budgetLevel.parentBudgetLevel.parentBudgetLevel.id = ?",
@@ -281,8 +271,8 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
             .fetch();
 
     for (Budget budget : budgetList) {
-      budgetBudgetService.createBudgetKey(budget);
-      budgetBudgetRepository.save(budget);
+      budgetService.createBudgetKey(budget);
+      budgetRepository.save(budget);
     }
   }
 
@@ -353,11 +343,10 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
       throws AxelorException {
 
     if (CollectionUtils.isNotEmpty(budgetList)) {
-      BudgetBudgetService budgetBudgetService = Beans.get(BudgetBudgetService.class);
       for (Budget budget : budgetList) {
         if (budget.getId() != null) {
-          budgetBudgetService.updateBudgetDates(budget, fromDate, toDate);
-          budgetBudgetService.getUpdatedBudgetLineList(budget, fromDate, toDate);
+          budgetService.updateBudgetDates(budget, fromDate, toDate);
+          budgetService.getUpdatedBudgetLineList(budget, fromDate, toDate);
         }
       }
     }
@@ -398,10 +387,10 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
         if (budgetLevel.getParentBudgetLevel() != null
             && budgetLevel.getParentBudgetLevel().getParentBudgetLevel() != null) {
           Company company = budgetLevel.getParentBudgetLevel().getParentBudgetLevel().getCompany();
-          checkBudgetKey = budgetBudgetService.checkBudgetKeyInConfig(company);
+          checkBudgetKey = budgetService.checkBudgetKeyInConfig(company);
         }
         for (Budget budget : budgetLevel.getBudgetList()) {
-          budgetBudgetService.validateBudget(budget, checkBudgetKey);
+          budgetService.validateBudget(budget, checkBudgetKey);
         }
       }
     }
@@ -425,7 +414,7 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
     } else {
       if (!CollectionUtils.isEmpty(budgetLevel.getBudgetList())) {
         for (Budget budget : budgetLevel.getBudgetList()) {
-          budgetBudgetService.draftBudget(budget);
+          budgetService.draftBudget(budget);
         }
       }
     }
@@ -481,7 +470,7 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
   public void computeChildrenKey(BudgetLevel section) throws AxelorException {
     if (!CollectionUtils.isEmpty(section.getBudgetList())) {
       for (Budget budget : section.getBudgetList()) {
-        budgetBudgetService.createBudgetKey(budget);
+        budgetService.createBudgetKey(budget);
       }
     }
   }
@@ -495,7 +484,7 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
     } else {
       if (!CollectionUtils.isEmpty(budgetLevel.getBudgetList())) {
         for (Budget budget : budgetLevel.getBudgetList()) {
-          budgetBudgetService.checkDatesOnBudget(budget);
+          budgetService.checkDatesOnBudget(budget);
         }
       }
     }
@@ -518,6 +507,31 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
                 I18n.get(
                     com.axelor.apps.budget.exception.IExceptionMessage.WRONG_DATES_ON_BUDGET_LEVEL),
                 budgetLevel.getCode()));
+      }
+    }
+  }
+
+  @Override
+  @Transactional(rollbackOn = {RuntimeException.class})
+  public void computeBudgetLevelTotals(Budget budget) {
+
+    BudgetLevel sectionBudgetLevel = budget.getBudgetLevel();
+
+    if (sectionBudgetLevel != null) {
+
+      computeBudgetTotals(sectionBudgetLevel);
+      budgetLevelRepository.save(sectionBudgetLevel);
+
+      BudgetLevel groupBudgetLevel = sectionBudgetLevel.getParentBudgetLevel();
+      if (groupBudgetLevel != null) {
+        computeTotals(groupBudgetLevel);
+        budgetLevelRepository.save(groupBudgetLevel);
+
+        BudgetLevel globalBudgetLevel = groupBudgetLevel.getParentBudgetLevel();
+        if (globalBudgetLevel != null) {
+          computeTotals(globalBudgetLevel);
+          budgetLevelRepository.save(groupBudgetLevel);
+        }
       }
     }
   }

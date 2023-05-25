@@ -6,7 +6,7 @@ import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.budget.service.BudgetToolsService;
-import com.axelor.apps.budget.service.purchaseorder.PurchaseOrderLineBudgetBudgetService;
+import com.axelor.apps.budget.service.purchaseorder.PurchaseOrderLineBudgetService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
@@ -56,20 +56,19 @@ public class PurchaseOrderLineController {
       response.setValue(
           "account", !CollectionUtils.isEmpty(accountsSet) ? accountsSet.iterator().next() : null);
     }
-    if (!Beans.get(PurchaseOrderLineBudgetBudgetService.class)
+    if (!Beans.get(PurchaseOrderLineBudgetService.class)
         .addBudgetDistribution(purchaseOrderLine)
         .isEmpty()) {
       response.setValue(
           "budgetDistibutionList",
-          Beans.get(PurchaseOrderLineBudgetBudgetService.class)
-              .addBudgetDistribution(purchaseOrderLine));
+          Beans.get(PurchaseOrderLineBudgetService.class).addBudgetDistribution(purchaseOrderLine));
     }
   }
 
   public void validateBudgetLinesAmount(ActionRequest request, ActionResponse response) {
     try {
       PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
-      Beans.get(PurchaseOrderLineBudgetBudgetService.class)
+      Beans.get(PurchaseOrderLineBudgetService.class)
           .checkAmountForPurchaseOrderLine(purchaseOrderLine);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.INFORMATION);
@@ -125,15 +124,14 @@ public class PurchaseOrderLineController {
     try {
       PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
       if (purchaseOrderLine != null) {
-        PurchaseOrderLineBudgetBudgetService purchaseOrderLineBudgetBudgetService =
-            Beans.get(PurchaseOrderLineBudgetBudgetService.class);
+        PurchaseOrderLineBudgetService purchaseOrderLineBudgetService =
+            Beans.get(PurchaseOrderLineBudgetService.class);
         boolean multiBudget =
             Beans.get(AppBudgetRepository.class).all().fetchOne().getManageMultiBudget();
 
         response.setValue(
             "budgetStr",
-            purchaseOrderLineBudgetBudgetService.searchAndFillBudgetStr(
-                purchaseOrderLine, multiBudget));
+            purchaseOrderLineBudgetService.searchAndFillBudgetStr(purchaseOrderLine, multiBudget));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

@@ -3,7 +3,7 @@ package com.axelor.apps.budget.db.repo;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.budget.service.BudgetInvoiceLineService;
+import com.axelor.apps.budget.service.invoice.BudgetInvoiceLineService;
 import com.axelor.apps.businessproject.db.repo.InvoiceProjectRepository;
 import com.axelor.inject.Beans;
 import java.math.BigDecimal;

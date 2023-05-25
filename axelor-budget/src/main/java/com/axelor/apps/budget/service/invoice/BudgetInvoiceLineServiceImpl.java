@@ -1,4 +1,4 @@
-package com.axelor.apps.budget.service;
+package com.axelor.apps.budget.service.invoice;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
@@ -18,6 +18,8 @@ import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.db.repo.BudgetRepository;
 import com.axelor.apps.budget.exception.IExceptionMessage;
+import com.axelor.apps.budget.service.BudgetBudgetDistributionService;
+import com.axelor.apps.budget.service.BudgetService;
 import com.axelor.apps.businessproject.service.InvoiceLineProjectServiceImpl;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.service.SupplierCatalogService;
@@ -33,7 +35,7 @@ import java.util.List;
 public class BudgetInvoiceLineServiceImpl extends InvoiceLineProjectServiceImpl
     implements BudgetInvoiceLineService {
 
-  protected BudgetBudgetService budgetBudgetService;
+  protected BudgetService budgetService;
   protected BudgetRepository budgetRepository;
   protected BudgetBudgetDistributionService budgetBudgetDistributionService;
 
@@ -51,7 +53,7 @@ public class BudgetInvoiceLineServiceImpl extends InvoiceLineProjectServiceImpl
       SupplierCatalogService supplierCatalogService,
       TaxService taxService,
       InternationalService internationalService,
-      BudgetBudgetService budgetBudgetService,
+      BudgetService budgetService,
       BudgetRepository budgetRepository,
       BudgetBudgetDistributionService budgetBudgetDistributionService) {
     super(
@@ -67,7 +69,7 @@ public class BudgetInvoiceLineServiceImpl extends InvoiceLineProjectServiceImpl
         supplierCatalogService,
         taxService,
         internationalService);
-    this.budgetBudgetService = budgetBudgetService;
+    this.budgetService = budgetService;
     this.budgetRepository = budgetRepository;
     this.budgetBudgetDistributionService = budgetBudgetDistributionService;
   }

@@ -1,4 +1,4 @@
-package com.axelor.apps.budget.service;
+package com.axelor.apps.budget.service.invoice;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;

@@ -99,7 +99,7 @@ public interface BudgetLevelService {
    * @param budget
    * @return Integer
    */
-  public Integer getBudgetControlLevel(Budget budgetl);
+  public Integer getBudgetControlLevel(Budget budget);
 
   /**
    * Create budget key for each budget related to this section
@@ -135,4 +135,11 @@ public interface BudgetLevelService {
 
   void getUpdatedBudgetList(List<Budget> budgetList, LocalDate fromDate, LocalDate toDate)
       throws AxelorException;
+
+  /**
+   * This function computes all totals of {@link BudgetLevel}
+   *
+   * @param budget
+   */
+  public void computeBudgetLevelTotals(Budget budget);
 }

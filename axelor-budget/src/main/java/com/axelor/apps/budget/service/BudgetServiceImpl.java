@@ -5,18 +5,14 @@ import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticAxisByCompany;
 import com.axelor.apps.account.db.AnalyticMoveLine;
-import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.AnalyticDistributionLineRepository;
-import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
-import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
@@ -30,7 +26,6 @@ import com.axelor.apps.budget.db.repo.BudgetLevelRepository;
 import com.axelor.apps.budget.db.repo.BudgetLineRepository;
 import com.axelor.apps.budget.db.repo.BudgetRepository;
 import com.axelor.apps.budget.exception.IExceptionMessage;
-import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.i18n.I18n;
@@ -50,53 +45,52 @@ import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 @RequestScoped
-public class BudgetBudgetServiceImpl implements BudgetBudgetService {
+public class BudgetServiceImpl implements BudgetService {
 
   protected BudgetLineRepository budgetLineRepository;
   protected BudgetRepository budgetRepository;
   protected BudgetLevelRepository budgetLevelRepository;
-  protected PurchaseOrderLineRepository purchaseOrderLineRepo;
   protected BudgetDistributionRepository budgetDistributionRepo;
   protected BudgetLineService budgetLineService;
-  protected AppAccountService appAccountService;
   protected AccountConfigService accountConfigService;
   protected AnalyticMoveLineService analyticMoveLineService;
   protected BudgetDistributionRepository budgetDistributionRepository;
-  protected BudgetLevelService budgetLevelService;
   protected AccountRepository accountRepo;
   protected AnalyticDistributionLineRepository analyticDistributionLineRepo;
-  protected BudgetInvoiceService budgetInvoiceService;
 
   @Inject
-  public BudgetBudgetServiceImpl(
+  public BudgetServiceImpl(
       BudgetLineRepository budgetLineRepository,
       BudgetRepository budgetRepository,
       BudgetLevelRepository budgetLevelRepository,
-      PurchaseOrderLineRepository purchaseOrderLineRepo,
       BudgetDistributionRepository budgetDistributionRepo,
       BudgetLineService budgetLineService,
-      AppAccountService appAccountService,
       AccountConfigService accountConfigService,
       AnalyticMoveLineService analyticMoveLineService,
       BudgetDistributionRepository budgetDistributionRepository,
-      BudgetLevelService budgetLevelService,
       AccountRepository accountRepo,
-      AnalyticDistributionLineRepository analyticDistributionLineRepo,
-      BudgetInvoiceService budgetInvoiceService) {
+      AnalyticDistributionLineRepository analyticDistributionLineRepo) {
     this.budgetLineRepository = budgetLineRepository;
     this.budgetRepository = budgetRepository;
     this.budgetLevelRepository = budgetLevelRepository;
-    this.purchaseOrderLineRepo = purchaseOrderLineRepo;
     this.budgetDistributionRepo = budgetDistributionRepo;
     this.budgetLineService = budgetLineService;
-    this.appAccountService = appAccountService;
     this.accountConfigService = accountConfigService;
     this.analyticMoveLineService = analyticMoveLineService;
     this.budgetDistributionRepository = budgetDistributionRepository;
-    this.budgetLevelService = budgetLevelService;
     this.accountRepo = accountRepo;
     this.analyticDistributionLineRepo = analyticDistributionLineRepo;
-    this.budgetInvoiceService = budgetInvoiceService;
+  }
+
+  @Override
+  public BigDecimal computeTotalAmount(Budget budget) {
+    BigDecimal total = BigDecimal.ZERO;
+    if (budget.getBudgetLineList() != null) {
+      for (BudgetLine budgetLine : budget.getBudgetLineList()) {
+        total = total.add(budgetLine.getAmountExpected());
+      }
+    }
+    return total;
   }
 
   @Override
@@ -204,31 +198,6 @@ public class BudgetBudgetServiceImpl implements BudgetBudgetService {
   }
 
   @Override
-  @Transactional(rollbackOn = {RuntimeException.class})
-  public void computeBudgetLevelTotals(Budget budget) {
-
-    BudgetLevel sectionBudgetLevel = budget.getBudgetLevel();
-
-    if (sectionBudgetLevel != null) {
-
-      budgetLevelService.computeBudgetTotals(sectionBudgetLevel);
-      budgetLevelRepository.save(sectionBudgetLevel);
-
-      BudgetLevel groupBudgetLevel = sectionBudgetLevel.getParentBudgetLevel();
-      if (groupBudgetLevel != null) {
-        budgetLevelService.computeTotals(groupBudgetLevel);
-        budgetLevelRepository.save(groupBudgetLevel);
-
-        BudgetLevel globalBudgetLevel = groupBudgetLevel.getParentBudgetLevel();
-        if (globalBudgetLevel != null) {
-          budgetLevelService.computeTotals(globalBudgetLevel);
-          budgetLevelRepository.save(groupBudgetLevel);
-        }
-      }
-    }
-  }
-
-  @Override
   @Transactional
   public BigDecimal computeTotalAmountCommitted(Budget budget) {
     List<BudgetLine> budgetLineList = budget.getBudgetLineList();
@@ -255,24 +224,6 @@ public class BudgetBudgetServiceImpl implements BudgetBudgetService {
     budget.setFromDate(fromDate);
     budget.setToDate(toDate);
     budgetRepository.save(budget);
-  }
-
-  @Override
-  @Transactional
-  public void updateBudgetLinesFromInvoice(Invoice invoice) {
-
-    if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED) {
-      if (invoice.getInvoiceLineList() != null) {
-        invoice.getInvoiceLineList().stream()
-            .filter(
-                invoiceLine -> CollectionUtils.isNotEmpty(invoiceLine.getBudgetDistributionList()))
-            .forEach(
-                invoiceLine -> {
-                  updateLinesFromInvoice(
-                      invoiceLine.getBudgetDistributionList(), invoice, invoiceLine);
-                });
-      }
-    }
   }
 
   @Override
@@ -338,28 +289,6 @@ public class BudgetBudgetServiceImpl implements BudgetBudgetService {
 
     } else {
       budget.setAvailableAmountWithSimulated(BigDecimal.ZERO);
-    }
-  }
-
-  @Transactional
-  protected void updateLinesFromInvoice(
-      List<BudgetDistribution> budgetDistributionList, Invoice invoice, InvoiceLine invoiceLine) {
-    if (budgetDistributionList != null) {
-      for (BudgetDistribution budgetDistribution : budgetDistributionList) {
-        if (invoiceLine.getInvoice().getPurchaseOrder() != null
-            || invoiceLine.getInvoice().getSaleOrder() != null) {
-          budgetInvoiceService.updateLineWithPO(budgetDistribution, invoice, invoiceLine);
-        } else {
-          budgetInvoiceService.updateLineWithNoPO(budgetDistribution, invoice);
-        }
-        Budget budget = budgetDistribution.getBudget();
-        if (budget != null) {
-          computeTotalAmountRealized(budget);
-          computeTotalFirmGap(budget);
-          computeTotalAmountCommitted(budget);
-          budgetRepository.save(budget);
-        }
-      }
     }
   }
 
@@ -726,80 +655,6 @@ public class BudgetBudgetServiceImpl implements BudgetBudgetService {
       }
     }
     return false;
-  }
-
-  @Override
-  public void computeBudgetDistributionSumAmount(
-      BudgetDistribution budgetDistribution, LocalDate computeDate) {
-
-    if (budgetDistribution.getBudget() != null) {
-      Budget budget = budgetDistribution.getBudget();
-      if (budget.getBudgetLevel() != null
-          && budget.getBudgetLevel().getParentBudgetLevel() != null
-          && budget.getBudgetLevel().getParentBudgetLevel().getParentBudgetLevel() != null
-          && budget
-                  .getBudgetLevel()
-                  .getParentBudgetLevel()
-                  .getParentBudgetLevel()
-                  .getBudgetTypeSelect()
-              == BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_SALE) {
-        budgetDistribution.setBudgetAmountAvailable(budget.getAvailableAmount());
-        return;
-      }
-      BigDecimal budgetAmountAvailable = BigDecimal.ZERO;
-      Integer budgetControlLevel = budgetLevelService.getBudgetControlLevel(budget);
-      if (budgetControlLevel == null) {
-        budgetControlLevel = 0;
-      }
-
-      switch (budgetControlLevel) {
-        case BudgetLevelRepository.BUDGET_LEVEL_AVAILABLE_AMOUNT_BUDGET_LINE:
-          if (budgetDistribution.getBudget().getBudgetLineList() != null && computeDate != null) {
-            List<BudgetLine> budgetLineList = budgetDistribution.getBudget().getBudgetLineList();
-
-            for (BudgetLine budgetLine : budgetLineList) {
-              LocalDate fromDate = budgetLine.getFromDate();
-              LocalDate toDate = budgetLine.getToDate();
-
-              if (fromDate != null && DateTool.isBetween(fromDate, toDate, computeDate)) {
-                BigDecimal amount =
-                    budgetLine
-                                .getAmountExpected()
-                                .subtract(budgetLine.getRealizedWithNoPo())
-                                .subtract(budgetLine.getRealizedWithPo())
-                                .compareTo(BigDecimal.ZERO)
-                            > 0
-                        ? budgetLine
-                            .getAmountExpected()
-                            .subtract(budgetLine.getRealizedWithNoPo())
-                            .subtract(budgetLine.getRealizedWithPo())
-                        : BigDecimal.ZERO;
-                budgetAmountAvailable = budgetAmountAvailable.add(amount);
-              }
-            }
-          }
-          break;
-        case BudgetLevelRepository.BUDGET_LEVEL_AVAILABLE_AMOUNT_BUDGET:
-          budgetAmountAvailable = budget.getAvailableAmount();
-          break;
-        case BudgetLevelRepository.BUDGET_LEVEL_AVAILABLE_AMOUNT_BUDGET_SECTION:
-          budgetAmountAvailable = budget.getBudgetLevel().getTotalAmountAvailable();
-          break;
-        case BudgetLevelRepository.BUDGET_LEVEL_AVAILABLE_AMOUNT_BUDGET_GROUP:
-          budgetAmountAvailable =
-              budget.getBudgetLevel().getParentBudgetLevel().getTotalAmountAvailable();
-          break;
-        default:
-          budgetAmountAvailable =
-              budget
-                  .getBudgetLevel()
-                  .getParentBudgetLevel()
-                  .getParentBudgetLevel()
-                  .getTotalAmountAvailable();
-          break;
-      }
-      budgetDistribution.setBudgetAmountAvailable(budgetAmountAvailable);
-    }
   }
 
   @Override

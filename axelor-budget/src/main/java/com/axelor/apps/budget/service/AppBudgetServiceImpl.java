@@ -1,4 +1,4 @@
-package com.axelor.apps.account.service.app;
+package com.axelor.apps.budget.service;
 
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.meta.MetaFiles;

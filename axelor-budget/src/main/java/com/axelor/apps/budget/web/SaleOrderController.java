@@ -3,7 +3,7 @@ package com.axelor.apps.budget.web;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.budget.exception.IExceptionMessage;
-import com.axelor.apps.budget.service.BudgetBudgetService;
+import com.axelor.apps.budget.service.BudgetService;
 import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.budget.service.saleorder.SaleOrderBudgetService;
 import com.axelor.apps.budget.service.saleorder.SaleOrderLineBudgetService;
@@ -30,7 +30,7 @@ public class SaleOrderController {
       SaleOrderBudgetService saleOrderBudgetService = Beans.get(SaleOrderBudgetService.class);
       if (saleOrder != null
           && saleOrder.getCompany() != null
-          && Beans.get(BudgetBudgetService.class).checkBudgetKeyInConfig(saleOrder.getCompany())) {
+          && Beans.get(BudgetService.class).checkBudgetKeyInConfig(saleOrder.getCompany())) {
         if (!Beans.get(BudgetToolsService.class)
                 .checkBudgetKeyAndRole(saleOrder.getCompany(), AuthUtils.getUser())
             && saleOrderBudgetService.isBudgetInLines(saleOrder)) {

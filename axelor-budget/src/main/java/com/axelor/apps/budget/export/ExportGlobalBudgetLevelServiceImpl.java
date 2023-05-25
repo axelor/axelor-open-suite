@@ -8,8 +8,8 @@ import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.advancedExport.AdvancedExportService;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetLevel;
-import com.axelor.apps.budget.db.repo.BudgetBudgetRepository;
 import com.axelor.apps.budget.db.repo.BudgetLevelRepository;
+import com.axelor.apps.budget.db.repo.BudgetManagementRepository;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.i18n.I18n;
@@ -64,7 +64,7 @@ public class ExportGlobalBudgetLevelServiceImpl implements ExportGlobalBudgetLev
     }
 
     List<Long> budgetRecordIds =
-        Beans.get(BudgetBudgetRepository.class).all()
+        Beans.get(BudgetManagementRepository.class).all()
             .filter(
                 "self.budgetLevel.parentBudgetLevel.parentBudgetLevel.id = ?1", budgetLevel.getId())
             .fetch().stream()

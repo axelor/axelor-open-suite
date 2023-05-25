@@ -13,7 +13,7 @@ import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.service.app.AppBankPaymentService;
 import com.axelor.apps.bankpayment.service.move.MoveRemoveServiceBankPaymentImpl;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.budget.service.BudgetBudgetService;
+import com.axelor.apps.budget.service.BudgetService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.service.ArchivingToolService;
@@ -26,7 +26,7 @@ import java.util.Map;
 
 public class MoveRemoveBudgetService extends MoveRemoveServiceBankPaymentImpl {
 
-  protected BudgetBudgetService budgetService;
+  protected BudgetService budgetService;
 
   @Inject
   public MoveRemoveBudgetService(
@@ -37,7 +37,7 @@ public class MoveRemoveBudgetService extends MoveRemoveServiceBankPaymentImpl {
       AccountingSituationService accountingSituationService,
       AccountCustomerService accountCustomerService,
       BankStatementLineAFB120Repository bankStatementLineAFB120Repository,
-      BudgetBudgetService budgetService) {
+      BudgetService budgetService) {
     super(
         moveRepo,
         moveLineRepo,

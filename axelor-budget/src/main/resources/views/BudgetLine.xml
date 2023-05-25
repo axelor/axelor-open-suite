@@ -26,7 +26,7 @@
       <field name="toDate" onChange="action-budget-line-on-change-to-date-validate"
         required="true"/>
       <field name="amountExpected"
-        onChange="action-budget-line-record-compute-available-amount,save"/>
+        onChange="action-budget-line-record-compute-available-amount"/>
       <field name="amountCommitted" readonly="true" if-module="axelor-supplychain"
         if="__config__.app.isApp('supplychain')"/>
       <field name="availableAmount" readonly="true"/>

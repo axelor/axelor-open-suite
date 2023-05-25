@@ -10,7 +10,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.service.BudgetBudgetDistributionService;
-import com.axelor.apps.budget.service.BudgetBudgetService;
+import com.axelor.apps.budget.service.BudgetService;
 import com.axelor.apps.businessproject.service.SaleOrderInvoiceProjectServiceImpl;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -39,7 +39,7 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
   protected AppAccountService appAccountService;
   protected BudgetBudgetDistributionService budgetDistributionService;
   protected SaleOrderLineBudgetService saleOrderLineBudgetService;
-  protected BudgetBudgetService budgetBudgetService;
+  protected BudgetService budgetService;
 
   @Inject
   public SaleOrderBudgetServiceImpl(
@@ -59,7 +59,7 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
       AppAccountService appAccountService,
       BudgetBudgetDistributionService budgetDistributionService,
       SaleOrderLineBudgetService saleOrderLineBudgetService,
-      BudgetBudgetService budgetBudgetService) {
+      BudgetService budgetService) {
     super(
         appBaseService,
         appSupplychainService,
@@ -77,7 +77,7 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
     this.appAccountService = appAccountService;
     this.budgetDistributionService = budgetDistributionService;
     this.saleOrderLineBudgetService = saleOrderLineBudgetService;
-    this.budgetBudgetService = budgetBudgetService;
+    this.budgetService = budgetService;
   }
 
   @Override
@@ -130,7 +130,7 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
   public void validateSaleAmountWithBudgetDistribution(SaleOrder saleOrder) throws AxelorException {
     if (!CollectionUtils.isEmpty(saleOrder.getSaleOrderLineList())) {
       for (SaleOrderLine soLine : saleOrder.getSaleOrderLineList()) {
-        budgetBudgetService.validateBudgetDistributionAmounts(
+        budgetService.validateBudgetDistributionAmounts(
             soLine.getBudgetDistributionList(),
             soLine.getCompanyExTaxTotal(),
             soLine.getProduct().getCode());
@@ -192,10 +192,10 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
               .forEach(
                   budgetDistribution -> {
                     Budget budget = budgetDistribution.getBudget();
-                    budgetBudgetService.updateLines(budget);
-                    budgetBudgetService.computeTotalAmountCommitted(budget);
-                    budgetBudgetService.computeTotalAmountPaid(budget);
-                    budgetBudgetService.computeToBeCommittedAmount(budget);
+                    budgetService.updateLines(budget);
+                    budgetService.computeTotalAmountCommitted(budget);
+                    budgetService.computeTotalAmountPaid(budget);
+                    budgetService.computeToBeCommittedAmount(budget);
                   });
         }
       }

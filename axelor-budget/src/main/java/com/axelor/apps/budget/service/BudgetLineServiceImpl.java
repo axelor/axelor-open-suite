@@ -1,6 +1,7 @@
 package com.axelor.apps.budget.service;
 
 import com.axelor.apps.budget.db.BudgetLine;
+import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -9,6 +10,9 @@ import java.util.Optional;
 
 @RequestScoped
 public class BudgetLineServiceImpl implements BudgetLineService {
+
+  @Inject
+  public BudgetLineServiceImpl() {}
 
   @Override
   public Optional<BudgetLine> findBudgetLineAtDate(

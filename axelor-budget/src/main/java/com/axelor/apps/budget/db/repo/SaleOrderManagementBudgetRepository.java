@@ -1,9 +1,9 @@
-package com.axelor.apps.sale.repo;
+package com.axelor.apps.budget.db.repo;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
-import com.axelor.apps.budget.service.BudgetBudgetServiceImpl;
+import com.axelor.apps.budget.service.BudgetServiceImpl;
 import com.axelor.apps.budget.service.saleorder.SaleOrderBudgetService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -62,7 +62,7 @@ public class SaleOrderManagementBudgetRepository extends SaleOrderSupplychainRep
 
   @Transactional(rollbackOn = {Exception.class})
   public void resetBudgets(List<Budget> budgetList) {
-    BudgetBudgetServiceImpl budgetBudgetService = Beans.get(BudgetBudgetServiceImpl.class);
+    BudgetServiceImpl budgetBudgetService = Beans.get(BudgetServiceImpl.class);
 
     if (!CollectionUtils.isEmpty(budgetList)) {
       for (Budget budget : budgetList) {

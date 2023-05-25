@@ -1,13 +1,13 @@
 package com.axelor.apps.budget.service.saleorder;
 
-import com.axelor.apps.account.service.app.AppBudgetService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.exception.IExceptionMessage;
+import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetBudgetDistributionService;
-import com.axelor.apps.budget.service.BudgetBudgetService;
+import com.axelor.apps.budget.service.BudgetService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
@@ -23,18 +23,18 @@ import org.apache.commons.collections.CollectionUtils;
 
 public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetService {
 
-  protected BudgetBudgetService budgetBudgetService;
+  protected BudgetService budgetService;
   protected BudgetBudgetDistributionService budgetBudgetDistributionService;
   protected SaleOrderLineRepository saleOrderLineRepo;
   protected AppBudgetService appBudgetService;
 
   @Inject
   public SaleOrderLineBudgetServiceImpl(
-      BudgetBudgetService budgetBudgetService,
+      BudgetService budgetService,
       BudgetBudgetDistributionService budgetBudgetDistributionService,
       SaleOrderLineRepository saleOrderLineRepo,
       AppBudgetService appBudgetService) {
-    this.budgetBudgetService = budgetBudgetService;
+    this.budgetService = budgetService;
     this.budgetBudgetDistributionService = budgetBudgetDistributionService;
     this.saleOrderLineRepo = saleOrderLineRepo;
     this.appBudgetService = appBudgetService;

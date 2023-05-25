@@ -1,14 +1,14 @@
-package com.axelor.apps.purchase.db.repo;
+package com.axelor.apps.budget.db.repo;
 
-import com.axelor.apps.account.service.app.AppBudgetService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
-import com.axelor.apps.budget.db.repo.BudgetRepository;
-import com.axelor.apps.budget.service.BudgetBudgetService;
-import com.axelor.apps.budget.service.purchaseorder.PurchaseOrderBudgetBudgetService;
+import com.axelor.apps.budget.service.AppBudgetService;
+import com.axelor.apps.budget.service.BudgetService;
+import com.axelor.apps.budget.service.purchaseorder.PurchaseOrderBudgetService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.supplychain.db.repo.PurchaseOrderSupplychainRepository;
 import com.axelor.inject.Beans;
 import com.axelor.studio.db.AppBudget;
@@ -27,14 +27,14 @@ public class PurchaseOrderManagementBudgetRepository extends PurchaseOrderSupply
 
       AppBudget appBudget = Beans.get(AppBudgetService.class).getAppBudget();
       if (appBudget != null) {
-        Beans.get(PurchaseOrderBudgetBudgetService.class).generateBudgetDistribution(purchaseOrder);
+        Beans.get(PurchaseOrderBudgetService.class).generateBudgetDistribution(purchaseOrder);
       }
 
       purchaseOrder = super.save(purchaseOrder);
 
       List<Budget> updateBudgetList = new ArrayList<>();
 
-      Beans.get(PurchaseOrderBudgetBudgetService.class)
+      Beans.get(PurchaseOrderBudgetService.class)
           .validatePurchaseAmountWithBudgetDistribution(purchaseOrder);
 
       /**
@@ -69,19 +69,19 @@ public class PurchaseOrderManagementBudgetRepository extends PurchaseOrderSupply
 
       if (purchaseOrder.getStatusSelect() != null
           && purchaseOrder.getStatusSelect() == PurchaseOrderRepository.STATUS_REQUESTED) {
-        Beans.get(PurchaseOrderBudgetBudgetService.class)
+        Beans.get(PurchaseOrderBudgetService.class)
             .updateBudgetLinesFromPurchaseOrder(purchaseOrder);
       }
 
       if (!CollectionUtils.isEmpty(updateBudgetList)) {
 
-        BudgetBudgetService budgetBudgetService = Beans.get(BudgetBudgetService.class);
+        BudgetService budgetService = Beans.get(BudgetService.class);
         BudgetRepository budgetRepository = Beans.get(BudgetRepository.class);
 
         for (Budget budget : updateBudgetList) {
-          budgetBudgetService.updateLines(budget);
-          budgetBudgetService.computeTotalAmountCommitted(budget);
-          budgetBudgetService.computeTotalAmountPaid(budget);
+          budgetService.updateLines(budget);
+          budgetService.computeTotalAmountCommitted(budget);
+          budgetService.computeTotalAmountPaid(budget);
           budgetRepository.save(budget);
         }
       }
@@ -123,14 +123,14 @@ public class PurchaseOrderManagementBudgetRepository extends PurchaseOrderSupply
 
   @Transactional(rollbackOn = {Exception.class})
   public void resetBudgets(List<Budget> budgetList) {
-    BudgetBudgetService budgetBudgetService = Beans.get(BudgetBudgetService.class);
+    BudgetService budgetService = Beans.get(BudgetService.class);
 
     if (!CollectionUtils.isEmpty(budgetList)) {
       for (Budget budget : budgetList) {
-        budgetBudgetService.updateLines(budget);
-        budgetBudgetService.computeTotalAmountCommitted(budget);
-        budgetBudgetService.computeTotalAmountPaid(budget);
-        budgetBudgetService.computeToBeCommittedAmount(budget);
+        budgetService.updateLines(budget);
+        budgetService.computeTotalAmountCommitted(budget);
+        budgetService.computeTotalAmountPaid(budget);
+        budgetService.computeToBeCommittedAmount(budget);
       }
     }
   }

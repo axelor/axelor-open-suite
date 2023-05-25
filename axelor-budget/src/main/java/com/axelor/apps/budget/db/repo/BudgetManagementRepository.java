@@ -1,11 +1,11 @@
 package com.axelor.apps.budget.db.repo;
 
 import com.axelor.apps.budget.db.Budget;
-import com.axelor.apps.budget.service.BudgetBudgetService;
+import com.axelor.apps.budget.service.BudgetLevelService;
 import com.axelor.inject.Beans;
 import java.math.BigDecimal;
 
-public class BudgetBudgetRepository extends BudgetRepository {
+public class BudgetManagementRepository extends BudgetRepository {
 
   @Override
   public Budget save(Budget entity) {
@@ -22,11 +22,11 @@ public class BudgetBudgetRepository extends BudgetRepository {
                 .subtract(entity.getRealizedWithNoPo())
             : BigDecimal.ZERO);
 
-    BudgetBudgetService budgetBudgetService = Beans.get(BudgetBudgetService.class);
+    BudgetLevelService budgetLevelService = Beans.get(BudgetLevelService.class);
 
     entity = super.save(entity);
 
-    budgetBudgetService.computeBudgetLevelTotals(entity);
+    budgetLevelService.computeBudgetLevelTotals(entity);
 
     return entity;
   }

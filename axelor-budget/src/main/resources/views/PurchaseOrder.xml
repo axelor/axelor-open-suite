@@ -229,7 +229,7 @@
 
   <action-method
     name="action-purchase-order-supplychain-method-update-budget-distribution-amount-available">
-    <call class="com.axelor.apps.supplychain.web.PurchaseOrderController"
+    <call class="com.axelor.apps.budget.web.PurchaseOrderController"
       method="updateBudgetDistributionAmountAvailable"/>
   </action-method>
 

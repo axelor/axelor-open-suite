@@ -2,7 +2,7 @@ package com.axelor.apps.budget.db.repo;
 
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetLevel;
-import com.axelor.apps.budget.service.BudgetBudgetService;
+import com.axelor.apps.budget.service.BudgetService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import java.math.BigDecimal;
@@ -37,7 +37,7 @@ public class BudgetLevelManagementRepository extends BudgetLevelRepository {
       }
     } else if (!CollectionUtils.isEmpty(copy.getBudgetList())) {
       for (Budget budget : copy.getBudgetList()) {
-        budget = Beans.get(BudgetBudgetService.class).resetBudget(budget);
+        budget = Beans.get(BudgetService.class).resetBudget(budget);
       }
     }
 

@@ -1,7 +1,6 @@
 package com.axelor.apps.budget.service.purchaseorder;
 
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
-import com.axelor.apps.account.service.app.AppBudgetService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.budget.db.Budget;
@@ -9,8 +8,9 @@ import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.db.repo.BudgetLevelRepository;
 import com.axelor.apps.budget.db.repo.BudgetRepository;
 import com.axelor.apps.budget.exception.IExceptionMessage;
+import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetBudgetDistributionService;
-import com.axelor.apps.budget.service.BudgetBudgetService;
+import com.axelor.apps.budget.service.BudgetService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
@@ -26,22 +26,21 @@ import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 @RequestScoped
-public class PurchaseOrderLineBudgetBudgetServiceImpl
-    implements PurchaseOrderLineBudgetBudgetService {
-  protected BudgetBudgetService budgetBudgetService;
+public class PurchaseOrderLineBudgetServiceImpl implements PurchaseOrderLineBudgetService {
+  protected BudgetService budgetService;
   protected BudgetRepository budgetRepository;
   protected BudgetBudgetDistributionService budgetBudgetDistributionService;
   protected PurchaseOrderLineRepository purchaseOrderLineRepo;
   protected AppBudgetService appBudgetService;
 
   @Inject
-  public PurchaseOrderLineBudgetBudgetServiceImpl(
-      BudgetBudgetService budgetBudgetService,
+  public PurchaseOrderLineBudgetServiceImpl(
+      BudgetService budgetService,
       BudgetRepository budgetRepository,
       BudgetBudgetDistributionService budgetBudgetDistributionService,
       PurchaseOrderLineRepository purchaseOrderLineRepo,
       AppBudgetService appBudgetService) {
-    this.budgetBudgetService = budgetBudgetService;
+    this.budgetService = budgetService;
     this.budgetRepository = budgetRepository;
     this.budgetBudgetDistributionService = budgetBudgetDistributionService;
     this.purchaseOrderLineRepo = purchaseOrderLineRepo;

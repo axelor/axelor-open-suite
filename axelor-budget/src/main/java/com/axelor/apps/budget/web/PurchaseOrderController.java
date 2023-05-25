@@ -3,10 +3,10 @@ package com.axelor.apps.budget.web;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.budget.exception.IExceptionMessage;
-import com.axelor.apps.budget.service.BudgetBudgetService;
+import com.axelor.apps.budget.service.BudgetService;
 import com.axelor.apps.budget.service.BudgetToolsService;
-import com.axelor.apps.budget.service.purchaseorder.PurchaseOrderBudgetBudgetService;
-import com.axelor.apps.budget.service.purchaseorder.PurchaseOrderLineBudgetBudgetService;
+import com.axelor.apps.budget.service.purchaseorder.PurchaseOrderBudgetService;
+import com.axelor.apps.budget.service.purchaseorder.PurchaseOrderLineBudgetService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
@@ -27,21 +27,19 @@ public class PurchaseOrderController {
     try {
       PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
       purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
-      PurchaseOrderBudgetBudgetService purchaseOrderBudgetBudgetService =
-          Beans.get(PurchaseOrderBudgetBudgetService.class);
+      PurchaseOrderBudgetService purchaseOrderBudgetService =
+          Beans.get(PurchaseOrderBudgetService.class);
       if (purchaseOrder != null
           && purchaseOrder.getCompany() != null
-          && Beans.get(BudgetBudgetService.class)
-              .checkBudgetKeyInConfig(purchaseOrder.getCompany())) {
+          && Beans.get(BudgetService.class).checkBudgetKeyInConfig(purchaseOrder.getCompany())) {
         if (!Beans.get(BudgetToolsService.class)
                 .checkBudgetKeyAndRole(purchaseOrder.getCompany(), AuthUtils.getUser())
-            && purchaseOrderBudgetBudgetService.isBudgetInLines(purchaseOrder)) {
+            && purchaseOrderBudgetService.isBudgetInLines(purchaseOrder)) {
           response.setInfo(
               I18n.get(IExceptionMessage.BUDGET_ROLE_NOT_IN_BUDGET_DISTRIBUTION_AUTHORIZED_LIST));
           return;
         }
-        String alertMessage =
-            purchaseOrderBudgetBudgetService.computeBudgetDistribution(purchaseOrder);
+        String alertMessage = purchaseOrderBudgetService.computeBudgetDistribution(purchaseOrder);
         if (!Strings.isNullOrEmpty(alertMessage)) {
           response.setInfo(
               String.format(I18n.get(IExceptionMessage.BUDGET_KEY_NOT_FOUND), alertMessage));
@@ -61,8 +59,8 @@ public class PurchaseOrderController {
       purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
       if (purchaseOrder != null
           && !CollectionUtils.isEmpty(purchaseOrder.getPurchaseOrderLineList())) {
-        PurchaseOrderLineBudgetBudgetService purchaseOrderLineBudgetService =
-            Beans.get(PurchaseOrderLineBudgetBudgetService.class);
+        PurchaseOrderLineBudgetService purchaseOrderLineBudgetService =
+            Beans.get(PurchaseOrderLineBudgetService.class);
         for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
           purchaseOrderLineBudgetService.computeBudgetDistributionSumAmount(
               purchaseOrderLine, purchaseOrder);
@@ -80,12 +78,12 @@ public class PurchaseOrderController {
       purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
       if (purchaseOrder != null
           && !CollectionUtils.isEmpty(purchaseOrder.getPurchaseOrderLineList())) {
-        PurchaseOrderLineBudgetBudgetService purchaseOrderLineBudgetBudgetService =
-            Beans.get(PurchaseOrderLineBudgetBudgetService.class);
+        PurchaseOrderLineBudgetService purchaseOrderLineBudgetService =
+            Beans.get(PurchaseOrderLineBudgetService.class);
         boolean multiBudget =
             Beans.get(AppBudgetRepository.class).all().fetchOne().getManageMultiBudget();
         for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
-          purchaseOrderLineBudgetBudgetService.fillBudgetStrOnLine(purchaseOrderLine, multiBudget);
+          purchaseOrderLineBudgetService.fillBudgetStrOnLine(purchaseOrderLine, multiBudget);
         }
         response.setReload(true);
       }
@@ -96,16 +94,15 @@ public class PurchaseOrderController {
 
   public void applyToAllBudgetDistribution(ActionRequest request, ActionResponse response) {
     try {
-      PurchaseOrderBudgetBudgetService purchaseOrderBudgetService =
-          Beans.get(PurchaseOrderBudgetBudgetService.class);
+      PurchaseOrderBudgetService purchaseOrderBudgetService =
+          Beans.get(PurchaseOrderBudgetService.class);
       PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
       purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
       AppBudget appBudget = Beans.get(AppBudgetRepository.class).all().fetchOne();
 
       if (purchaseOrder != null
           && purchaseOrder.getCompany() != null
-          && Beans.get(BudgetBudgetService.class)
-              .checkBudgetKeyInConfig(purchaseOrder.getCompany())) {
+          && Beans.get(BudgetService.class).checkBudgetKeyInConfig(purchaseOrder.getCompany())) {
         if (!Beans.get(BudgetToolsService.class)
             .checkBudgetKeyAndRole(purchaseOrder.getCompany(), AuthUtils.getUser())) {
           response.setInfo(
@@ -143,6 +140,18 @@ public class PurchaseOrderController {
           response.setAlert(I18n.get(IExceptionMessage.NO_BUDGET_VALUES_FOUND));
         }
       }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void updateBudgetDistributionAmountAvailable(
+      ActionRequest request, ActionResponse response) {
+    try {
+      PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+      purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
+      Beans.get(PurchaseOrderBudgetService.class)
+          .updateBudgetDistributionAmountAvailable(purchaseOrder);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

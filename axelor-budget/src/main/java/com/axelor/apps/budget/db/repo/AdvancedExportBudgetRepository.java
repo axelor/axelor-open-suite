@@ -1,6 +1,7 @@
-package com.axelor.apps.base.db.repo;
+package com.axelor.apps.budget.db.repo;
 
 import com.axelor.apps.base.db.AdvancedExport;
+import com.axelor.apps.base.db.repo.AdvancedExportRepository;
 
 public class AdvancedExportBudgetRepository extends AdvancedExportRepository {
 

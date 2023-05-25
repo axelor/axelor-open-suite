@@ -45,7 +45,7 @@
     <field name="availableAmountWithSimulated" aggregate="sum"/>
     <field name="availableAmount" title="Total amount available" aggregate="sum"/>
     <field name="statusSelect"/>
-    <field name="typeSelect"/>
+    <field name="budgetLevel.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect"/>
     <field name="sourceSelect"/>
     <field name="budgetLevel" hidden="true"/>
     <field name="budgetLevel.parentBudgetLevel" hidden="true"/>
@@ -198,19 +198,19 @@
       <panel name="budgetDistributionLineOrderLineBtnPanel"
         if="__config__.app.isApp('supplychain')" colSpan="3" stacked="true" hidden="true"
         showIf="budgetLevel != null &amp;&amp; budgetLevel.parentBudgetLevel != null &amp;&amp; budgetLevel.parentBudgetLevel.parentBudgetLevel != null &amp;&amp; budgetLevel.parentBudgetLevel.parentBudgetLevel.statusSelect == 'valid'">
-        <button name="showBudgetDistributionLinePurchaseOrderLineBtn"
+        <button name="showBudgetDistributionLineOrderLineBtn"
           onClick="action-budget-group-view-budget-distribution-order-line"
           title="Display committed lines" colSpan="12"/>
         <button name="seeBudgetDistributionLines"
           onClick="action-budget-distribution-view-show-budget-distibution-lines"
           title="Display distribution lines" colSpan="12"/>
-        <button name="seeRealizedWithNoPo"
+        <button name="seeRealizedWithNoPo" showIf="realizedWithNoPo &gt; 0"
           onClick="action-budget-line-distribution-view-show-budget-distribution-lines-realized-without-po"
           title="Display realized with no po" colSpan="12"/>
-        <button name="seeRealizedWithPo"
+        <button name="seeRealizedWithPo" showIf="realizedWithPo &gt; 0"
           onClick="action-budget-line-distribution-view-show-budget-distribution-lines-realized-with-po"
           title="Display realized with po" colSpan="12"/>
-        <button name="seeSimulatedMoves"
+        <button name="seeSimulatedMoves" showIf="simulatedAmount &gt; 0"
           onClick="action-budget-line-distribution-view-show-simulated-moves-lines"
           title="Display simulated moves" colSpan="12"/>
       </panel>
@@ -307,7 +307,7 @@
   </action-validate>
 
   <action-method name="action-budget-method-compute-total-amount">
-    <call class="com.axelor.apps.budget.web.BudgetController" method="compute"/>
+    <call class="com.axelor.apps.budget.web.BudgetController" method="computeTotalAmount"/>
   </action-method>
 
   <action-validate name="action-budget-validate-exceed-line-amount">

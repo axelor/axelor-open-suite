@@ -6,7 +6,7 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import java.util.List;
 
-public interface PurchaseOrderLineBudgetBudgetService {
+public interface PurchaseOrderLineBudgetService {
 
   /**
    * Clear budget distribution, compute the budget key related to this configuration of account and

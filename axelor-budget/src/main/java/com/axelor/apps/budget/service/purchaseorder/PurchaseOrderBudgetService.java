@@ -3,7 +3,7 @@ package com.axelor.apps.budget.service.purchaseorder;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 
-public interface PurchaseOrderBudgetBudgetService {
+public interface PurchaseOrderBudgetService {
 
   /**
    * For all budgets related to this purchase order, check budget exceed based on global budget

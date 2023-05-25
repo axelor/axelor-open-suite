@@ -1,14 +1,16 @@
 package com.axelor.apps.budget.service.purchaseorder;
 
+import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
-import com.axelor.apps.account.service.app.AppBudgetService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.db.repo.BudgetDistributionRepository;
 import com.axelor.apps.budget.db.repo.BudgetRepository;
+import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetBudgetDistributionService;
-import com.axelor.apps.budget.service.BudgetBudgetService;
+import com.axelor.apps.budget.service.BudgetService;
+import com.axelor.apps.businessproject.service.PurchaseOrderWorkflowServiceProjectImpl;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
@@ -16,7 +18,6 @@ import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.apps.supplychain.service.PurchaseOrderStockService;
 import com.axelor.apps.supplychain.service.PurchaseOrderSupplychainService;
-import com.axelor.apps.supplychain.service.PurchaseOrderWorkflowServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.meta.CallMethod;
 import com.google.common.base.Strings;
@@ -31,20 +32,18 @@ import java.util.Map;
 import org.apache.commons.collections.CollectionUtils;
 
 @RequestScoped
-public class PurchaseOrderBudgetBudgetServiceImpl
-    extends PurchaseOrderWorkflowServiceSupplychainImpl
-    implements PurchaseOrderBudgetBudgetService {
+public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderWorkflowServiceProjectImpl
+    implements PurchaseOrderBudgetService {
   protected BudgetRepository budgetRepository;
-  protected PurchaseOrderLineBudgetBudgetService purchaseOrderLineBudgetBudgetService;
+  protected PurchaseOrderLineBudgetService purchaseOrderLineBudgetService;
   protected BudgetBudgetDistributionService budgetDistributionService;
-  protected AppAccountService appAccountService;
-  protected PurchaseOrderRepository purchaseOrderRepo;
-  protected BudgetBudgetService budgetBudgetService;
+
+  protected BudgetService budgetService;
   protected BudgetDistributionRepository budgetDistributionRepository;
   protected AppBudgetService appBudgetService;
 
   @Inject
-  public PurchaseOrderBudgetBudgetServiceImpl(
+  public PurchaseOrderBudgetServiceImpl(
       PurchaseOrderService purchaseOrderService,
       PurchaseOrderRepository purchaseOrderRepo,
       AppPurchaseService appPurchaseService,
@@ -52,10 +51,11 @@ public class PurchaseOrderBudgetBudgetServiceImpl
       PurchaseOrderStockService purchaseOrderStockService,
       AppAccountService appAccountService,
       PurchaseOrderSupplychainService purchaseOrderSupplychainService,
+      AnalyticMoveLineRepository analyticMoveLineRepository,
       BudgetRepository budgetRepository,
       BudgetBudgetDistributionService budgetDistributionService,
-      PurchaseOrderLineBudgetBudgetService purchaseOrderLineBudgetBudgetService,
-      BudgetBudgetService budgetBudgetService,
+      PurchaseOrderLineBudgetService purchaseOrderLineBudgetService,
+      BudgetService budgetService,
       BudgetDistributionRepository budgetDistributionRepository,
       AppBudgetService appBudgetService) {
     super(
@@ -65,11 +65,12 @@ public class PurchaseOrderBudgetBudgetServiceImpl
         appSupplychainService,
         purchaseOrderStockService,
         appAccountService,
-        purchaseOrderSupplychainService);
+        purchaseOrderSupplychainService,
+        analyticMoveLineRepository);
     this.budgetRepository = budgetRepository;
     this.budgetDistributionService = budgetDistributionService;
-    this.purchaseOrderLineBudgetBudgetService = purchaseOrderLineBudgetBudgetService;
-    this.budgetBudgetService = budgetBudgetService;
+    this.purchaseOrderLineBudgetService = purchaseOrderLineBudgetService;
+    this.budgetService = budgetService;
     this.budgetDistributionRepository = budgetDistributionRepository;
     this.appBudgetService = appBudgetService;
   }
@@ -174,7 +175,7 @@ public class PurchaseOrderBudgetBudgetServiceImpl
     if (!CollectionUtils.isEmpty(purchaseOrder.getPurchaseOrderLineList())) {
       for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
         String alertMessage =
-            purchaseOrderLineBudgetBudgetService.computeBudgetDistribution(purchaseOrderLine);
+            purchaseOrderLineBudgetService.computeBudgetDistribution(purchaseOrderLine);
         if (Strings.isNullOrEmpty(alertMessage)) {
           purchaseOrder.setBudgetDistributionGenerated(true);
         } else {
@@ -191,7 +192,7 @@ public class PurchaseOrderBudgetBudgetServiceImpl
       throws AxelorException {
     if (!CollectionUtils.isEmpty(purchaseOrder.getPurchaseOrderLineList())) {
       for (PurchaseOrderLine poLine : purchaseOrder.getPurchaseOrderLineList()) {
-        budgetBudgetService.validateBudgetDistributionAmounts(
+        budgetService.validateBudgetDistributionAmounts(
             poLine.getBudgetDistributionList(),
             poLine.getCompanyExTaxTotal(),
             poLine.getProduct().getCode());
@@ -222,10 +223,10 @@ public class PurchaseOrderBudgetBudgetServiceImpl
               .forEach(
                   budgetDistribution -> {
                     Budget budget = budgetDistribution.getBudget();
-                    budgetBudgetService.updateLines(budget);
-                    budgetBudgetService.computeTotalAmountCommitted(budget);
-                    budgetBudgetService.computeTotalAmountPaid(budget);
-                    budgetBudgetService.computeToBeCommittedAmount(budget);
+                    budgetService.updateLines(budget);
+                    budgetService.computeTotalAmountCommitted(budget);
+                    budgetService.computeTotalAmountPaid(budget);
+                    budgetService.computeToBeCommittedAmount(budget);
                   });
         }
       }
@@ -248,7 +249,7 @@ public class PurchaseOrderBudgetBudgetServiceImpl
       newBudgetDistribution.setPurchaseOrderLine(purchaseOrderLine);
 
       budgetDistributionRepository.save(newBudgetDistribution);
-      purchaseOrderLineBudgetBudgetService.computeBudgetDistributionSumAmount(
+      purchaseOrderLineBudgetService.computeBudgetDistributionSumAmount(
           purchaseOrderLine, purchaseOrder);
     }
   }
