@@ -24,5 +24,5 @@ public interface MoveLineMassEntryAttrsService {
 
   void addMovePfpValidatorUserRequired(Account account, Map<String, Map<String, Object>> attrsMap);
 
-  void addTemporaryMoveNumberFocus(Map<String, Map<String, Object>> attrsMap);
+  void addTemporaryMoveNumberFocus(Move move, Map<String, Map<String, Object>> attrsMap);
 }

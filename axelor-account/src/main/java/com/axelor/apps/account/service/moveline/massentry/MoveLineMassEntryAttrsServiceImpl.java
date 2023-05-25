@@ -118,7 +118,10 @@ public class MoveLineMassEntryAttrsServiceImpl implements MoveLineMassEntryAttrs
   }
 
   @Override
-  public void addTemporaryMoveNumberFocus(Map<String, Map<String, Object>> attrsMap) {
-    this.addAttr("temporaryMoveNumber", "focus", true, attrsMap);
+  public void addTemporaryMoveNumberFocus(Move move, Map<String, Map<String, Object>> attrsMap) {
+    if (ObjectUtils.notEmpty(move.getMoveLineMassEntryList())
+        && move.getMoveLineMassEntryList().size() > 0) {
+      this.addAttr("temporaryMoveNumber", "focus", true, attrsMap);
+    }
   }
 }
