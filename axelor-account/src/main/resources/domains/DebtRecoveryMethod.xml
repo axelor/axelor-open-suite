@@ -5,7 +5,7 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="DebtRecoveryMethod" cacheable="true">
+  <entity name="DebtRecoveryMethod">
 
     <string name="name" title="Method name"/>
     <string name="code" title="Code" unique="true"/>

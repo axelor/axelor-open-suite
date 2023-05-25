@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="WeeklyPlanning" cacheable="true">
+  <entity name="WeeklyPlanning">
     <string name="name" required="true" namecolumn="true"/>
     <one-to-many name="weekDays" ref="com.axelor.apps.base.db.DayPlanning"
       mappedBy="weeklyPlanning"/>

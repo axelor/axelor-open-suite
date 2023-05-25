@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
   <module name="fleet" package="com.axelor.apps.fleet.db"/>
 
-  <entity name="Booking" cacheable="true">
+  <entity name="Booking">
     <string name="name"/>
     <date name="bookingDate" title="BookingDate"/>
     <many-to-many name="contactSet" ref="com.axelor.apps.base.db.Partner"/>

@@ -5,7 +5,7 @@
 
   <module name="talent" package="com.axelor.apps.talent.db"/>
 
-  <entity name="Skill" cacheable="true">
+  <entity name="Skill">
     <string name="name" title="Name" required="true"/>
     <many-to-one name="validityDuration" title="Validity duration"
       ref="com.axelor.apps.base.db.Duration"/>

@@ -5,7 +5,7 @@
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
-  <entity name="PayGrid" cacheable="true">
+  <entity name="PayGrid">
     <many-to-one name="collectiveAgreement" title="Collective agreement"
       ref="com.axelor.apps.hr.db.CollectiveAgreement"/>
     <many-to-one name="qualification" title="Qualification"

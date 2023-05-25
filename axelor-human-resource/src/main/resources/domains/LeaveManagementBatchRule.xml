@@ -5,7 +5,7 @@
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
-  <entity name="LeaveManagementBatchRule" cacheable="true">
+  <entity name="LeaveManagementBatchRule">
 
     <integer name="executiveStatusSelect" title="Status"
       selection="hr.employment.contract.executiveStatus.select"/>

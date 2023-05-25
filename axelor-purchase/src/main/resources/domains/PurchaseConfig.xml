@@ -5,7 +5,7 @@
 
   <module name="purchase" package="com.axelor.apps.purchase.db"/>
 
-  <entity name="PurchaseConfig" cacheable="true">
+  <entity name="PurchaseConfig">
 
     <one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"
       required="true" unique="true"/>

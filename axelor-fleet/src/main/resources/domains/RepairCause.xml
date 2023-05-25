@@ -5,7 +5,7 @@
 
   <module name="fleet" package="com.axelor.apps.fleet.db"/>
 
-  <entity name="RepairCause" cacheable="true">
+  <entity name="RepairCause">
     <string name="name" title="Name"/>
   </entity>
 

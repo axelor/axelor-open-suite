@@ -5,7 +5,7 @@
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
-  <entity name="TimesheetReminder" cacheable="true">
+  <entity name="TimesheetReminder">
 
     <many-to-one name="employee" ref="com.axelor.apps.hr.db.Employee" title="Employee"/>
     <datetime name="emailSentDateT" title="Email sent date"/>

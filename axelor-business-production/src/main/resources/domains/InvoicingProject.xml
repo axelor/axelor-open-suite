@@ -5,7 +5,7 @@
 
   <module name="business-project" package="com.axelor.apps.businessproject.db"/>
 
-  <entity name="InvoicingProject" cacheable="true">
+  <entity name="InvoicingProject">
 
 
     <many-to-many name="manufOrderSet" ref="com.axelor.apps.production.db.ManufOrder"

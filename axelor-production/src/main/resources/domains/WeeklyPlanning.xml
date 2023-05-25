@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="WeeklyPlanning" cacheable="true">
+  <entity name="WeeklyPlanning">
 
     <integer name="typeSelect" title="Type"
       selection="production.weekly.planning.type.select" default="1"/>

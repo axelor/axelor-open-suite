@@ -5,7 +5,7 @@
 
   <module name="message" package="com.axelor.message.db"/>
 
-  <entity name="Template">
+  <entity name="Template" cacheable="true">
 
     <many-to-many name="birtTemplateSet" ref="com.axelor.apps.base.db.BirtTemplate"
       title="Birt Template"/>

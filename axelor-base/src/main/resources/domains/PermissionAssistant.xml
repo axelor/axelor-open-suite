@@ -5,7 +5,7 @@
 
   <module name="auth" package="com.axelor.auth.db"/>
 
-  <entity name="PermissionAssistant" cacheable="true">
+  <entity name="PermissionAssistant">
     <![CDATA[
     This object stores the permission assistant.
     ]]>

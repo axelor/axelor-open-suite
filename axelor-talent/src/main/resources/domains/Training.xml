@@ -5,7 +5,7 @@
 
   <module name="talent" package="com.axelor.apps.talent.db"/>
 
-  <entity name="Training" cacheable="true">
+  <entity name="Training">
     <string name="name" title="Name" required="true"/>
     <many-to-one name="category" ref="com.axelor.apps.talent.db.TrainingCategory"
       title="Category"/>

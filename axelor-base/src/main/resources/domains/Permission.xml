@@ -5,7 +5,7 @@
 
   <module name="auth" package="com.axelor.auth.db"/>
 
-  <entity name="Permission" cacheable="true">
+  <entity name="Permission">
 
     <track>
       <field name="name"/>

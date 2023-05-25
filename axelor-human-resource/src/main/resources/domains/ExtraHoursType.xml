@@ -5,7 +5,7 @@
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
-  <entity name="ExtraHoursType" cacheable="true">
+  <entity name="ExtraHoursType">
     <string name="name" title="Extra hours type"/>
     <decimal name="increase" title="Increase %" min="0" max="100"/>
     <boolean name="payrollPreprationExport" title="Export for payroll preparation"/>

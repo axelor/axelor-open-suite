@@ -5,7 +5,7 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="AnalyticAxis">
+  <entity name="AnalyticAxis" cacheable="true">
 
     <string name="code" title="Code" required="true"/>
     <string name="name" title="Name" required="true" unique="true"/>
