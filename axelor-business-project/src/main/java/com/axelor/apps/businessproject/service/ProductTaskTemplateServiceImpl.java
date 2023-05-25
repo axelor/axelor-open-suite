@@ -88,10 +88,10 @@ public class ProductTaskTemplateServiceImpl implements ProductTaskTemplateServic
         qtyTmp = qtyTmp.subtract(BigDecimal.ONE);
       }
     }
-
     return tasks;
   }
 
+  @Override
   public void fillProjectTask(
       Project project,
       BigDecimal qty,
@@ -103,6 +103,7 @@ public class ProductTaskTemplateServiceImpl implements ProductTaskTemplateServic
       throws AxelorException {
     task.setParentTask(parent);
     task.setProduct(product);
+    task.setSaleOrderLine(saleOrderLine);
     task.setPlannedTime(qty);
     task.setTimeUnit(product.getUnit());
     task.setUnitPrice(
