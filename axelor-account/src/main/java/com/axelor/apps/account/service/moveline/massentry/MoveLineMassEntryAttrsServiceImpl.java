@@ -116,4 +116,9 @@ public class MoveLineMassEntryAttrsServiceImpl implements MoveLineMassEntryAttrs
       this.addAttr("movePfpValidatorUser", "required", true, attrsMap);
     }
   }
+
+  @Override
+  public void addTemporaryMoveNumberFocus(Map<String, Map<String, Object>> attrsMap) {
+    this.addAttr("temporaryMoveNumber", "focus", true, attrsMap);
+  }
 }
