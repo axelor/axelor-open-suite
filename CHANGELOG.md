@@ -1,3 +1,12 @@
+## [6.1.38] (2023-05-25)
+
+#### Fixed
+
+* Sale order: fixed an issue during sale order validation when checking price list date validity.
+* Invoice payment: update cheque and deposit info on the invoice payment record when generated from Payment Voucher and Deposit slip.
+* Purchase order: fixed an error occurring when generating an invoice from a purchase order with a title line.
+* Invoice: fixed an error preventing from merging invoices.
+
 ## [6.1.37] (2023-04-27)
 
 #### Fixed
@@ -1089,6 +1098,7 @@ In price list, we fix the display to exclude list that are defined on an exclusi
 * Moved axelor docusign module from Axelor Open Suite to Axelor Addons repository.
 
 
+[6.1.38]: https://github.com/axelor/axelor-open-suite/compare/v6.1.37...v6.1.38
 [6.1.37]: https://github.com/axelor/axelor-open-suite/compare/v6.1.36...v6.1.37
 [6.1.36]: https://github.com/axelor/axelor-open-suite/compare/v6.1.35...v6.1.36
 [6.1.35]: https://github.com/axelor/axelor-open-suite/compare/v6.1.34...v6.1.35
