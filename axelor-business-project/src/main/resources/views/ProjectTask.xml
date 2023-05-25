@@ -85,7 +85,7 @@
           if-module="axelor-business-project" if="__config__.app.isApp('business-project')">
           <field name="invoicingType" colspan="6"
             if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
-            onChange="action-project-task-attrs-invoice-type-on-change"/>
+            onChange="action-project-task-attrs-onchange-invoice-type"/>
           <field name="toInvoice" colSpan="2" readonly="true"
             if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').automaticInvoicing"
             if-module="axelor-business-project"/>
