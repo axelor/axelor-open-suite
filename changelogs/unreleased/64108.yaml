@@ -1,5 +1,0 @@
-title: NPE when selecting partner and Company is empty
-type: fix
-description:
-  When creating an account move, when you select a partner and filter the partners by the company,
-  we check that the company is not null.
