@@ -62,6 +62,7 @@ import java.lang.invoke.MethodHandles;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.eclipse.birt.core.exception.BirtException;
 import org.iban4j.IbanFormatException;
@@ -410,6 +411,21 @@ public class PartnerController {
     PartnerService partnerService = Beans.get(PartnerService.class);
     if (!partnerService.isRegistrationCodeValid(partner)) {
       response.setError(I18n.get(BaseExceptionMessage.PARTNER_INVALID_REGISTRATION_CODE));
+    }
+  }
+
+  public void setParentPartnerDomain(ActionRequest request, ActionResponse response) {
+    Partner partner = request.getContext().asType(Partner.class);
+    List<Partner> parentPartnerList = Beans.get(PartnerService.class).getParentPartnerList(partner);
+    if (!parentPartnerList.isEmpty()) {
+      response.setAttr(
+          "parentPartner",
+          "domain",
+          String.format(
+              "self.id IN (%s)",
+              parentPartnerList.stream()
+                  .map(p -> p.getId().toString())
+                  .collect(Collectors.joining(","))));
     }
   }
 }

@@ -818,4 +818,46 @@ public class PartnerServiceImpl implements PartnerService {
     }
     return sum % 10 == 0;
   }
+
+  @Override
+  public List<Partner> getParentPartnerList(Partner partner) {
+    partner = partnerRepo.find(partner.getId());
+    List<Partner> parentPartnerList = getFilteredPartners(partner);
+    parentPartnerList.removeAll(getPartnerExemptionList(partner, parentPartnerList));
+    return parentPartnerList;
+  }
+
+  protected List<Partner> getFilteredPartners(Partner partner) {
+    return partnerRepo
+        .all()
+        .filter(
+            "self.isContact = false "
+                + "AND self.partnerTypeSelect = :partnerType "
+                + "AND self in (SELECT p FROM Partner p join p.companySet c where c in :companySet) "
+                + "AND self.id != :id")
+        .bind("partnerType", PartnerRepository.PARTNER_TYPE_COMPANY)
+        .bind("companySet", partner.getCompanySet())
+        .bind("id", partner.getId())
+        .fetch();
+  }
+
+  protected List<Partner> getPartnerExemptionList(
+      Partner partner, List<Partner> parentPartnerList) {
+    List<Partner> partnerExemptionList = new ArrayList<>();
+    partnerExemptionList.add(partner);
+    List<Partner> filteredList = new ArrayList<>();
+    filteredList.add(partner);
+    while (!filteredList.isEmpty()) {
+      filteredList = getPartnerExemptionSubList(filteredList, parentPartnerList);
+      partnerExemptionList.addAll(filteredList);
+    }
+    return partnerExemptionList;
+  }
+
+  protected List<Partner> getPartnerExemptionSubList(
+      List<Partner> partnerCheckList, List<Partner> parentPartnerList) {
+    return parentPartnerList.stream()
+        .filter(p -> partnerCheckList.contains(p.getParentPartner()))
+        .collect(Collectors.toList());
+  }
 }

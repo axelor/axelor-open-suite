@@ -383,4 +383,6 @@ public final class SupplychainExceptionMessage {
 
   public static final String STOCK_MOVE_LINES_ASSOCIATED_WITH_INVOICE_LINES_CANNOT_SPLIT = /*$$(*/
       "The following stock move lines are already associated with invoice lines and can not be splitted: %s" /*)*/;
+  public static final String PARENT_PARTNER_CONFIGURATION_ERROR = /*$$(*/
+      "There is a configuration error, partner %s is its own parent." /*)*/;
 }
