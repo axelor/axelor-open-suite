@@ -1,3 +1,30 @@
+## [6.3.20] (2023-05-25)
+
+#### Fixed
+
+* Production, Sale, Quality printings: fixed an issue were pictures with specific filenames were not displayed in the printings.
+* Configurator: fixed an issue where removing an attribute did not update the configurator form.
+* Sale order: fixed an issue during sale order validation when checking price list date validity.
+* Invoice payment: update cheque and deposit info on the invoice payment record when generated from Payment Voucher and Deposit slip.
+* Purchase order: fixed an error occurring when generating an invoice from a purchase order with a title line.
+* Bank reconciliation: fixed an issue in bank reconciliation printing where reconciled lines still appeared.
+* Bill of materials: fixed creation of personalized bill of materials.
+* Invoice: added an error message when generating moves with no description when a description is required.
+* Project: fixed an issue when creating a task in a project marked as "to invoice" where the task was not marked as "to invoice" by default.
+* Manufacturing order: fixed filter on sale order.
+* Move: fixed an error that occured when selecting a partner with an empty company.
+* Summary of gross values and depreciation accounting report: fixed wrong values for depreciation columns.
+* Manufacturing order: when planning a manufacturing order, fixed the error message when the field production process is empty.
+* Timesheet: when generating lines, get all lines from project instead of only getting lines from task.
+* Accounting report DAS 2: fixed export not working if N4DS code is missing.
+* Bank order: fixed an issue where moves generated from a bank order were not accounted/set to daybook.
+* Project task: when creating a new project task, the status will now be correctly initialized.
+* Product: fixed an issue where activating the configuration "auto update sale price" did not update the sale price.
+* Stock move: prevent cancellation of an invoiced stock move.
+* Sale order: fixed popup error "Id to load is required for loading" when opening a new sale order line.
+* Invoice: fixed an error preventing from merging invoices.
+* Expense: prevent deletion of ventilated expense.
+
 ## [6.3.19] (2023-05-11)
 
 #### Fixed
@@ -648,6 +675,7 @@ If you had modules calling these methods, you will need to update them so they c
 * Account Config: Remove Invoices button and associate action from account config
 * Stock correction: Removed unused future and reserved quantity from database.
 
+[6.3.20]: https://github.com/axelor/axelor-open-suite/compare/v6.3.19...v6.3.20
 [6.3.19]: https://github.com/axelor/axelor-open-suite/compare/v6.3.18...v6.3.19
 [6.3.18]: https://github.com/axelor/axelor-open-suite/compare/v6.3.17...v6.3.18
 [6.3.17]: https://github.com/axelor/axelor-open-suite/compare/v6.3.16...v6.3.17
