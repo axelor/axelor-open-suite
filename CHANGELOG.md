@@ -1,3 +1,43 @@
+## [6.5.9] (2023-05-25)
+
+#### Fixed
+
+* Production, Sale, Purchase, Quality printings: fixed an issue were pictures with specific filenames were not displayed in the printings.
+* Invoice payment: disable financial discount process when the invoice is paid by a refund.
+* Accounting batch: fixed close annual accounts batch when no moves are selectable and simulate generate move if needed.
+* Configurator: fixed an issue where removing an attribute did not update the configurator form.
+* Tax: fixed tax demo data missing accounting configuration and having wrong values.
+* Sale order: fixed an issue during sale order validation when checking price list date validity.
+* Printing settings: on orders and invoices, removed the filter on printing settings.
+* Invoice payment: update cheque and deposit info on the invoice payment record when generated from Payment Voucher and Deposit slip.
+* Purchase order: fixed an error occurring when generating an invoice from a purchase order with a title line.
+* Accounting batch: fix duplicated moves in closure/opening batch.
+* Bank reconciliation: fixed an issue in bank reconciliation printing where reconciled lines still appeared.
+* RGPD search: fixed an issue where some filters in the search were not correctly taken into account.
+* Bill of materials: fixed creation of personalized bill of materials.
+* Invoice: added an error message when generating moves with no description when a description is required.
+* Project: fixed an issue when creating a task in a project marked as "to invoice" where the task was not marked as "to invoice" by default.
+* Manufacturing order: fixed filter on sale order.
+* Bank order: fixed payment status update when we cancel a bank order and there are still pending payments on the invoice.
+* Move: fixed an error that occured when selecting a partner with an empty company.
+* Summary of gross values and depreciation accounting report: fixed wrong values for depreciation columns.
+* Manufacturing order: when planning a manufacturing order, fixed the error message when the field production process is empty.
+* Timesheet: when generating lines, get all lines from project instead of only getting lines from task.
+* Accounting report DAS 2: fixed export not working if N4DS code is missing.
+* Accounting report DAS 2: fixed balance.
+* Bank order: fixed an issue where moves generated from a bank order were not accounted/set to daybook.
+* Project task: when creating a new project task, the status will now be correctly initialized.
+* Product: fixed an issue where activating the configuration "auto update sale price" did not update the sale price.
+* Stock move: prevent cancellation of an invoiced stock move.
+* Stock move: modifying a real quantity or creating an internal stock move from the mobile application will correctly indicate that the real quantity has been modified by an user.
+* Bank order: fixed an issue where the process never ended when cancelling a bank order.
+* Sale order: fixed popup error "Id to load is required for loading" when opening a new sale order line.
+* Journal: fixed error message when the "type select" was not filled in the journal type.
+* Account config: fixed UI and UX for payment session configuration.
+* Account/Analytic: fixed analytic account filter in analytic lines.
+* Invoice: fixed an error preventing from merging invoices.
+* Expense: prevent deletion of ventilated expense.
+
 ## [6.5.8] (2023-05-11)
 
 #### Fixed
@@ -499,6 +539,7 @@ Opportunity Status: add label-help on some opportunities status in form
 * Opportunity : Remove lead field
 * CRM : remove Target and TargetConfiguration from CRM
 
+[6.5.9]: https://github.com/axelor/axelor-open-suite/compare/v6.5.8...v6.5.9
 [6.5.8]: https://github.com/axelor/axelor-open-suite/compare/v6.5.7...v6.5.8
 [6.5.7]: https://github.com/axelor/axelor-open-suite/compare/v6.5.6...v6.5.7
 [6.5.6]: https://github.com/axelor/axelor-open-suite/compare/v6.5.5...v6.5.6
