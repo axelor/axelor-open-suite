@@ -33,19 +33,10 @@ public final class BusinessProjectExceptionMessage {
       "You haven't select a product to invoice for the task %s" /*)*/;
   public static final String INVOICING_PROJECT_PROJECT_COMPANY = /*$$(*/
       "You haven't select a company on the main project" /*)*/;
-  public static final String SALE_ORDER_NO_PROJECT = /*$$(*/ "No Project selected" /*)*/;
-  public static final String SALE_ORDER_NO_LINES = /*$$(*/ "No Line can be used for tasks" /*)*/;
-  public static final String SALE_ORDER_NO_TYPE_GEN_PROJECT = /*$$(*/
-      "No type of generation project has been selected" /*)*/;
-  public static final String SALE_ORDER_BUSINESS_PROJECT = /*$$(*/
-      "The project is configured to be alone" /*)*/;
-  public static final String JOB_COSTING_APP = /*$$(*/ "Job costing" /*)*/;
   public static final String FACTORY_NO_FOUND = /*$$(*/
       "Factory not found this type of generator" /*)*/;
   public static final String FACTORY_FILL_WITH_PROJECT_ALONE = /*$$(*/
       "You can't fill a project with the strategy Project Alone." /*)*/;
-
-  public static final String NO_PROJECT_IN_CONTEXT = /*$$(*/ "No project found in context" /*)*/;
   public static final String LINES_NOT_SELECTED = /*$$(*/ "Please select lines" /*)*/;
 
   public static final String SALE_ORDER_GENERATE_FILL_PROJECT_ERROR_1 = /*$$(*/
@@ -97,4 +88,7 @@ public final class BusinessProjectExceptionMessage {
 
   public static final String PROJECT_TASK_UPDATE_REPORTING_VALUES_ERROR = /*$$(*/
       "Sold time and updated time must be greater than 0 for task %s" /*)*/;
+
+  public static final String PROJECT_TASK_NO_PROJECT_FOUND = /*$$(*/
+      "No project found for task %s." /*)*/;
 }

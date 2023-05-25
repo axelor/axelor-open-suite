@@ -11,6 +11,7 @@ import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
+import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectRepository;
@@ -23,6 +24,7 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
+import java.util.Objects;
 
 public class ProjectTaskReportingValuesComputingServiceImpl
     implements ProjectTaskReportingValuesComputingService {
@@ -31,7 +33,8 @@ public class ProjectTaskReportingValuesComputingServiceImpl
   private TimesheetLineRepository timesheetLineRepository;
   private AppBusinessProjectService appBusinessProjectService;
 
-  public static final int DURATION_SCALE = 2;
+  public static final int RESULT_SCALE = 2;
+  public static final int COMPUTATION_SCALE = 5;
 
   // AppBusinessProject config
   private Unit daysUnit;
@@ -106,7 +109,11 @@ public class ProjectTaskReportingValuesComputingServiceImpl
    */
   protected void computeFinancialReporting(ProjectTask projectTask) throws AxelorException {
 
-    projectTask.setTurnover(projectTask.getQuantity().multiply(projectTask.getUnitPrice()));
+    projectTask.setTurnover(
+        projectTask
+            .getSoldTime()
+            .multiply(projectTask.getUnitPrice())
+            .setScale(RESULT_SCALE, RoundingMode.HALF_UP));
 
     SaleOrderLine saleOrderLine = projectTask.getSaleOrderLine();
     Product product = projectTask.getProduct();
@@ -141,10 +148,14 @@ public class ProjectTaskReportingValuesComputingServiceImpl
       projectTask.setForecastUnitCost(
           saleOrderLine
               .getSubTotalCostPrice()
-              .divide(projectTask.getSoldTime(), RoundingMode.HALF_UP));
+              .divide(projectTask.getSoldTime(), RESULT_SCALE, RoundingMode.HALF_UP));
     } else {
       BigDecimal convertedProductPrice = getProductConvertedPrice(product, projectTaskUnit);
-      BigDecimal initialCosts = projectTask.getSoldTime().multiply(convertedProductPrice);
+      BigDecimal initialCosts =
+          projectTask
+              .getSoldTime()
+              .multiply(convertedProductPrice)
+              .setScale(RESULT_SCALE, RoundingMode.HALF_UP);
       projectTask.setInitialCosts(initialCosts);
       projectTask.setForecastUnitCost(convertedProductPrice);
     }
@@ -155,7 +166,7 @@ public class ProjectTaskReportingValuesComputingServiceImpl
         getPercentValue(
             projectTask
                 .getInitialMargin()
-                .divide(projectTask.getInitialCosts(), RoundingMode.HALF_UP)));
+                .divide(projectTask.getInitialCosts(), COMPUTATION_SCALE, RoundingMode.HALF_UP)));
 
     // unitCost to compute other values
     BigDecimal unitCost = computeUnitCost(projectTask);
@@ -163,16 +174,22 @@ public class ProjectTaskReportingValuesComputingServiceImpl
 
     // Real
     BigDecimal progress =
-        projectTask.getSpentTime().divide(projectTask.getUpdatedTime(), RoundingMode.HALF_UP);
-    projectTask.setRealTurnover(progress.multiply(projectTask.getTurnover()));
-    projectTask.setRealCosts(projectTask.getSpentTime().multiply(unitCost));
+        projectTask
+            .getSpentTime()
+            .divide(projectTask.getUpdatedTime(), RESULT_SCALE, RoundingMode.HALF_UP);
+    projectTask.setRealTurnover(
+        progress.multiply(projectTask.getTurnover()).setScale(RESULT_SCALE, RoundingMode.HALF_UP));
+    projectTask.setRealCosts(
+        projectTask.getSpentTime().multiply(unitCost).setScale(RESULT_SCALE, RoundingMode.HALF_UP));
     projectTask.setRealMargin(projectTask.getRealTurnover().subtract(projectTask.getRealCosts()));
 
     BigDecimal realMarkup = BigDecimal.ZERO;
     if (projectTask.getRealCosts().signum() > 0) {
       realMarkup =
           getPercentValue(
-              projectTask.getRealMargin().divide(projectTask.getRealCosts(), RoundingMode.HALF_UP));
+              projectTask
+                  .getRealMargin()
+                  .divide(projectTask.getRealCosts(), COMPUTATION_SCALE, RoundingMode.HALF_UP));
     }
     projectTask.setRealMarkup(realMarkup);
 
@@ -184,14 +201,15 @@ public class ProjectTaskReportingValuesComputingServiceImpl
                 projectTask
                     .getUpdatedTime()
                     .subtract(projectTask.getSpentTime())
-                    .multiply(projectTask.getForecastUnitCost())));
+                    .multiply(projectTask.getForecastUnitCost()))
+            .setScale(RESULT_SCALE, RoundingMode.HALF_UP));
     projectTask.setForecastMargin(
         projectTask.getTurnover().subtract(projectTask.getForecastCosts()));
     projectTask.setForecastMarkup(
         getPercentValue(
             projectTask
                 .getForecastMargin()
-                .divide(projectTask.getForecastCosts(), RoundingMode.HALF_UP)));
+                .divide(projectTask.getForecastCosts(), COMPUTATION_SCALE, RoundingMode.HALF_UP)));
   }
 
   /**
@@ -205,8 +223,17 @@ public class ProjectTaskReportingValuesComputingServiceImpl
     BigDecimal unitCost = BigDecimal.ZERO;
 
     Unit timeUnit = projectTask.getTimeUnit();
-    Integer spentTimeCostComputationMethod =
-        projectTask.getProject().getSpentTimeCostComputationMethod();
+    Project project = projectTask.getProject();
+
+    if (Objects.isNull(project)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          String.format(
+              I18n.get(BusinessProjectExceptionMessage.PROJECT_TASK_NO_PROJECT_FOUND),
+              projectTask.getName()));
+    }
+
+    Integer spentTimeCostComputationMethod = project.getSpentTimeCostComputationMethod();
 
     switch (spentTimeCostComputationMethod) {
       case ProjectRepository.COMPUTATION_METHOD_SALE_ORDER:
@@ -215,7 +242,8 @@ public class ProjectTaskReportingValuesComputingServiceImpl
               projectTask
                   .getSaleOrderLine()
                   .getSubTotalCostPrice()
-                  .divide(projectTask.getSaleOrderLine().getQty(), RoundingMode.HALF_UP);
+                  .divide(
+                      projectTask.getSaleOrderLine().getQty(), RESULT_SCALE, RoundingMode.HALF_UP);
         } else {
           unitCost = getProductConvertedPrice(projectTask.getProduct(), timeUnit);
         }
@@ -227,7 +255,6 @@ public class ProjectTaskReportingValuesComputingServiceImpl
         unitCost = getAverageHourCostFromTimesheetLines(projectTask);
 
         if (timeUnit.equals(daysUnit)) {
-
           unitCost = unitCost.multiply(defaultHoursADay);
         }
         break;
@@ -271,17 +298,14 @@ public class ProjectTaskReportingValuesComputingServiceImpl
           convertedDuration = duration;
         }
         if (timeUnit.equals(daysUnit)) {
-          convertedDuration =
-              duration.divide(defaultHoursADay, DURATION_SCALE, RoundingMode.HALF_UP);
+          convertedDuration = duration.divide(defaultHoursADay, RESULT_SCALE, RoundingMode.HALF_UP);
         }
         break;
       case EmployeeRepository.TIME_PREFERENCE_MINUTES:
         // convert to hours
-        convertedDuration =
-            duration.divide(new BigDecimal(60), DURATION_SCALE, RoundingMode.HALF_UP);
+        convertedDuration = duration.divide(new BigDecimal(60), RESULT_SCALE, RoundingMode.HALF_UP);
         if (timeUnit.equals(daysUnit)) {
-          convertedDuration =
-              duration.divide(defaultHoursADay, DURATION_SCALE, RoundingMode.HALF_UP);
+          convertedDuration = duration.divide(defaultHoursADay, RESULT_SCALE, RoundingMode.HALF_UP);
         }
         break;
       default:
@@ -317,7 +341,7 @@ public class ProjectTaskReportingValuesComputingServiceImpl
     }
 
     if (timeConsidered.signum() > 0) {
-      return totalCost.divide(timeConsidered, RoundingMode.HALF_UP);
+      return totalCost.divide(timeConsidered, RESULT_SCALE, RoundingMode.HALF_UP);
     } else {
       return BigDecimal.ZERO;
     }
@@ -335,7 +359,8 @@ public class ProjectTaskReportingValuesComputingServiceImpl
     if (projectTaskUnit.equals(daysUnit) && product.getUnit().equals(hoursUnit)) {
       convertedProductPrice = convertedProductPrice.multiply(defaultHoursADay);
     } else if (projectTaskUnit.equals(hoursUnit) && product.getUnit().equals(daysUnit)) {
-      convertedProductPrice = convertedProductPrice.divide(defaultHoursADay, RoundingMode.HALF_UP);
+      convertedProductPrice =
+          convertedProductPrice.divide(defaultHoursADay, RESULT_SCALE, RoundingMode.HALF_UP);
     }
 
     return convertedProductPrice;
@@ -363,6 +388,8 @@ public class ProjectTaskReportingValuesComputingServiceImpl
    * @return
    */
   protected BigDecimal getPercentValue(BigDecimal decimalValue) {
-    return new BigDecimal("100").multiply(decimalValue).setScale(2, RoundingMode.HALF_UP);
+    return new BigDecimal("100")
+        .multiply(decimalValue)
+        .setScale(RESULT_SCALE, RoundingMode.HALF_UP);
   }
 }
