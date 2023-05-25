@@ -1,5 +1,0 @@
-title: When activating autoUpdateSalePrice option on Product update salePrice
-type: fix
-description:
-  On product-form, the sale price can be computed from costPrice and managPriceCoef when autoUpdateSalePrice field is true.
-  The action is now triggered when activating the autoUpdateSalePrice option too.
