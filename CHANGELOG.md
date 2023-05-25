@@ -1,3 +1,9 @@
+## [5.4.42] (2023-05-25)
+
+#### Fixed
+
+* Invoice: fixed an error preventing from merging invoices.
+
 ## [5.4.41] (2023-04-27)
 
 #### Fixed
@@ -921,6 +927,7 @@ password only if user type is signatory and ebics partner mode is ebics TS,
 - Bank reconciliation: add management of case of several account management for account domain, journal domain, auto change of journal and cash account fields and now account and journal from bank details are prioritized.
 - Invoice: Fix NullPointerException when the product is not filled in invoice line.
 
+[5.4.42]: https://github.com/axelor/axelor-open-suite/compare/v5.4.41...v5.4.42
 [5.4.41]: https://github.com/axelor/axelor-open-suite/compare/v5.4.40...v5.4.41
 [5.4.40]: https://github.com/axelor/axelor-open-suite/compare/v5.4.39...v5.4.40
 [5.4.39]: https://github.com/axelor/axelor-open-suite/compare/v5.4.38...v5.4.39
