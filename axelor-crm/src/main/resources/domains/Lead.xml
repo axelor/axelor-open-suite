@@ -60,10 +60,12 @@
     <many-to-one name="industrySector" title="Industry sector"
       ref="com.axelor.apps.base.db.IndustrySector" massUpdate="true"/>
 
+    <boolean name="isPartner" title="Partner.title"/>
     <one-to-many name="eventList" ref="com.axelor.apps.crm.db.Event" title="Events"
       mappedBy="eventLead"/>
     <many-to-one name="lostReason" ref="LostReason" title="Lost reason"/>
 
+    <many-to-one ref="com.axelor.apps.crm.db.Event" name="event" title="Event"/>
     <string name="lostReasonStr" title="Lost reason" large="true"/>
     <string name="fullName" title="Contact name" namecolumn="true"/>
 
