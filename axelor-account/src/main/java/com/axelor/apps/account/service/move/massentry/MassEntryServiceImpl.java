@@ -139,9 +139,9 @@ public class MassEntryServiceImpl implements MassEntryService {
     moveLine.setMoveStatusSelect(null);
     moveLine.setVatSystemSelect(0);
     moveLine.setMovePfpValidatorUser(null);
-    moveLine.setDeliveryDate(LocalDate.now());
-    moveLine.setCutOffStartDate(LocalDate.now());
-    moveLine.setCutOffEndDate(LocalDate.now());
+    moveLine.setDeliveryDate(null);
+    moveLine.setCutOffStartDate(null);
+    moveLine.setCutOffEndDate(null);
     moveLine.setIsEdited(MoveLineMassEntryRepository.MASS_ENTRY_IS_EDITED_NULL);
     moveLine.setFieldsErrorList(null);
     moveLine.setAnalyticDistributionTemplate(null);
@@ -152,10 +152,10 @@ public class MassEntryServiceImpl implements MassEntryService {
     moveLine.setAxis5AnalyticAccount(null);
     moveLine.setAnalyticMoveLineList(null);
 
-    if (!appAccountService.getAppAccount().getManageCutOffPeriod()) {
-      moveLine.setCutOffStartDate(null);
-      moveLine.setCutOffEndDate(null);
-      moveLine.setDeliveryDate(null);
+    if (appAccountService.getAppAccount().getManageCutOffPeriod()) {
+      moveLine.setCutOffStartDate(LocalDate.now());
+      moveLine.setCutOffEndDate(LocalDate.now());
+      moveLine.setDeliveryDate(LocalDate.now());
     }
   }
 
