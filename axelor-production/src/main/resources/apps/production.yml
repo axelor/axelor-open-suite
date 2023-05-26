@@ -2,7 +2,7 @@
 name: Manufacturing
 code: production
 typeSelect: standard
-installOrder: 18
+installOrder: 2190
 description: |
    Manufacturing configuration
 image: app-production.png

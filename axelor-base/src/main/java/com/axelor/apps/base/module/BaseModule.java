@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.base.module;
 
@@ -61,6 +62,8 @@ import com.axelor.apps.base.db.repo.TeamTaskBaseRepository;
 import com.axelor.apps.base.db.repo.UserBaseRepository;
 import com.axelor.apps.base.db.repo.YearBaseRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
+import com.axelor.apps.base.listener.BaseServerStartListener;
+import com.axelor.apps.base.openapi.AosSwagger;
 import com.axelor.apps.base.rest.TranslationRestService;
 import com.axelor.apps.base.rest.TranslationRestServiceImpl;
 import com.axelor.apps.base.service.ABCAnalysisService;
@@ -69,6 +72,8 @@ import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.AddressServiceImpl;
 import com.axelor.apps.base.service.AnonymizeService;
 import com.axelor.apps.base.service.AnonymizeServiceImpl;
+import com.axelor.apps.base.service.BankDetailsFullNameComputeService;
+import com.axelor.apps.base.service.BankDetailsFullNameComputeServiceImpl;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.BankDetailsServiceImpl;
 import com.axelor.apps.base.service.BankService;
@@ -193,10 +198,17 @@ import com.axelor.message.service.MailServiceMessageImpl;
 import com.axelor.message.service.MessageServiceImpl;
 import com.axelor.message.service.TemplateMessageServiceImpl;
 import com.axelor.report.ReportGenerator;
+import com.axelor.rpc.ActionRequest;
+import com.axelor.rpc.ActionResponse;
 import com.axelor.studio.app.service.AppService;
 import com.axelor.studio.app.service.AppServiceImpl;
 import com.axelor.team.db.repo.TeamTaskRepository;
+import com.google.inject.matcher.AbstractMatcher;
 import com.google.inject.matcher.Matchers;
+import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
+import java.util.Arrays;
+import java.util.List;
 
 public class BaseModule extends AxelorModule {
 
@@ -206,6 +218,28 @@ public class BaseModule extends AxelorModule {
         Matchers.any(),
         Matchers.annotatedWith(HandleExceptionResponse.class),
         new HandleExceptionResponseImpl());
+
+    bindInterceptor(
+        new AbstractMatcher<>() {
+          @Override
+          public boolean matches(Class<?> aClass) {
+            return aClass.getSimpleName().endsWith("Controller")
+                && aClass.getPackageName().startsWith("com.axelor.apps")
+                && aClass.getPackageName().endsWith("web");
+          }
+        },
+        new AbstractMatcher<>() {
+          @Override
+          public boolean matches(Method method) {
+            List<Parameter> parameters = Arrays.asList(method.getParameters());
+            return parameters.size() == 2
+                && parameters.stream()
+                    .anyMatch(parameter -> ActionRequest.class.equals(parameter.getType()))
+                && parameters.stream()
+                    .anyMatch(parameter -> ActionResponse.class.equals(parameter.getType()));
+          }
+        },
+        new ControllerMethodInterceptor());
 
     bind(AddressService.class).to(AddressServiceImpl.class);
     bind(AdvancedExportService.class).to(AdvancedExportServiceImpl.class);
@@ -304,5 +338,8 @@ public class BaseModule extends AxelorModule {
     bind(DataBackupRepository.class).to(DataBackupManagementRepository.class);
     bind(DataBackupAnonymizeService.class).to(DataBackupAnonymizeServiceImpl.class);
     bind(DataBackupService.class).to(DataBackupServiceImpl.class);
+    bind(BankDetailsFullNameComputeService.class).to(BankDetailsFullNameComputeServiceImpl.class);
+    bind(BaseServerStartListener.class);
+    bind(AosSwagger.class);
   }
 }

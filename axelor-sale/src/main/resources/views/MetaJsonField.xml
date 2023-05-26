@@ -68,6 +68,7 @@
         <field name="showIf"/>
         <field name="hideIf"/>
         <field name="requiredIf"/>
+        <field name="readonlyIf"/>
       </panel>
       <panel name="attributesHelpPanel" title="Help" itemSpan="12">
         <panel-include view="incl-help-meta-json-field"/>

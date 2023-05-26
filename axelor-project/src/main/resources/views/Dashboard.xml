@@ -18,8 +18,8 @@
   </dashboard>
 
   <form name="project-dashboard-form" title="Project dashboard"
-    model="com.axelor.message.db.Wizard" onNew="action-project-dashboard-method-on-new"
-    width="large" canNew="false" canEdit="false" canDelete="false">
+    model="com.axelor.utils.db.Wizard" onNew="action-project-dashboard-method-on-new" width="large"
+    canNew="false" canEdit="false" canDelete="false">
     <panel name="overviewPanel" title="Overview" readonly="true">
       <field name="$description" showTitle="false">
         <viewer>
@@ -115,7 +115,7 @@
 
 
   <form name="project-activity-dashboard-form" title="Project Activity"
-    model="com.axelor.message.db.Wizard" onNew="action-project-activity-dashboard-method-on-new"
+    model="com.axelor.utils.db.Wizard" onNew="action-project-activity-dashboard-method-on-new"
     width="large" canNew="false" canEdit="false" canDelete="false">
     <panel name="activityPanel" title="Activity">
       <field name="$dates" showTitle="false" colSpan="12" readonly="true">

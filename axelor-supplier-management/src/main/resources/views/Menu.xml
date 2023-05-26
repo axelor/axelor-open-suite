@@ -5,7 +5,7 @@
 
 
   <menuitem name="sc-root-purchase-order-supplier-lines-requests"
-    title="Supplier consultations" order="30"
+    title="Supplier consultations" order="1200"
     if="__config__.app.getApp('purchase') &amp;&amp; __config__.app.getApp('purchase')?.getSupplierRequestMgt()"
     action="sc.root.purchase.orders.supplier.lines.requests" parent="sc-root-purchase"/>
 

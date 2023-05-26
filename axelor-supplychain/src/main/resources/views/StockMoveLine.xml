@@ -136,6 +136,24 @@
     </panel>
   </form>
 
+  <form name="partial-invoice-stock-move-line-form" title="Stock move line"
+    model="com.axelor.apps.stock.db.StockMoveLine">
+    <panel name="productPanel">
+      <field name="productCode" title="Product code" readonly="true" colSpan="3"/>
+      <field name="productName" colSpan="9" readonly="true"/>
+      <field name="realQty" readonly="true" title="Real Qty"/>
+      <field name="qtyInvoiced" readonly="true" title="Invoiced Qty"/>
+      <field name="remainingQty" readonly="true" aggregate="sum" title="Remaining Qty"/>
+      <field name="qtyToInvoice" title="Qty to invoice" type="decimal"
+        readonlyIf="invoiceAll || isSubline" min="0"
+        validIf="$number(remainingQty) >= $number(qtyToInvoice)"/>
+      <field name="invoiceAll" title="Invoice all" type="boolean"
+        onChange="action-attrs-stock-move-line-invoicing-wizard-fill-qty"/>
+      <field name="isSubline" hidden="true"/>
+      <field name="stockMoveLineId" hidden="true"/>
+    </panel>
+  </form>
+
   <action-view name="action-stock-move-line-product-reserved-planned"
     title="${fullName} plan. st. move" model="com.axelor.apps.stock.db.StockMoveLine">
     <view type="grid" name="stock-move-line-all-grid-planned"/>

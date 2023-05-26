@@ -33,7 +33,7 @@
   </form>
 
   <action-view name="action-base-view-import-city-popup" title="Import city"
-    model="com.axelor.message.db.Wizard">
+    model="com.axelor.utils.db.Wizard">
     <view type="form" name="wizard-import-city-form"/>
     <view-param name="show-toolbar" value="false"/>
     <view-param name="width" value="800"/>
@@ -43,7 +43,7 @@
     <view-param name="popup" value="reload"/>
   </action-view>
 
-  <form name="wizard-import-city-form" title="Import city" model="com.axelor.message.db.Wizard"
+  <form name="wizard-import-city-form" title="Import city" model="com.axelor.utils.db.Wizard"
     onNew="action-wizard-import-city-record-preload">
     <panel name="typeSelectPanel" colSpan="12">
       <field name="typeSelect" type="string" title="Type"
@@ -71,7 +71,7 @@
   </form>
 
   <action-record name="action-wizard-import-city-record-preload"
-    model="com.axelor.message.db.Wizard">
+    model="com.axelor.utils.db.Wizard">
     <field name="typeSelect" expr="eval: __repo__(City).TYPE_SELECT_GEONAMES"/>
     <field name="importTypeSelect" expr="eval: __repo__(City).IMPORT_TYPE_SELECT_AUTO"/>
   </action-record>

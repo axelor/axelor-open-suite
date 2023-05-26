@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.businessproject.service;
 
@@ -30,16 +31,24 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.FrequencyRepository;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.FrequencyService;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
+import com.axelor.apps.hr.db.TimesheetLine;
+import com.axelor.apps.hr.db.repo.EmployeeRepository;
+import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
+import com.axelor.apps.hr.db.repo.TimesheetRepository;
+import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.project.db.Project;
-import com.axelor.apps.project.db.ProjectStatus;
+import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.ProjectTaskCategory;
+import com.axelor.apps.project.db.TaskStatus;
 import com.axelor.apps.project.db.TaskTemplate;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
@@ -50,6 +59,7 @@ import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
+import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppBusinessProject;
 import com.axelor.utils.QueryBuilder;
 import com.google.common.base.Strings;
@@ -66,10 +76,13 @@ import java.util.Set;
 public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImpl
     implements ProjectTaskBusinessProjectService {
 
+  public static final int DURATION_SCALE = 2;
   private PriceListLineRepository priceListLineRepo;
   private PriceListService priceListService;
   private PartnerPriceListService partnerPriceListService;
   private ProductCompanyService productCompanyService;
+  private TimesheetLineRepository timesheetLineRepository;
+  private AppBusinessProjectService appBusinessProjectService;
 
   @Inject
   public ProjectTaskBusinessProjectServiceImpl(
@@ -77,15 +90,20 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
       FrequencyRepository frequencyRepo,
       FrequencyService frequencyService,
       AppBaseService appBaseService,
+      ProjectRepository projectRepository,
       PriceListLineRepository priceListLineRepo,
       PriceListService priceListService,
+      PartnerPriceListService partnerPriceListService,
       ProductCompanyService productCompanyService,
-      PartnerPriceListService partnerPriceListService) {
-    super(projectTaskRepo, frequencyRepo, frequencyService, appBaseService);
+      TimesheetLineRepository timesheetLineRepository,
+      AppBusinessProjectService appBusinessProjectService) {
+    super(projectTaskRepo, frequencyRepo, frequencyService, appBaseService, projectRepository);
     this.priceListLineRepo = priceListLineRepo;
     this.priceListService = priceListService;
     this.partnerPriceListService = partnerPriceListService;
     this.productCompanyService = productCompanyService;
+    this.timesheetLineRepository = timesheetLineRepository;
+    this.appBusinessProjectService = appBusinessProjectService;
   }
 
   @Override
@@ -94,6 +112,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     ProjectTask task = create(saleOrderLine.getFullName() + "_task", project, assignedTo);
     task.setProduct(saleOrderLine.getProduct());
     task.setUnit(saleOrderLine.getUnit());
+    task.setTimeUnit(saleOrderLine.getUnit());
     task.setCurrency(project.getClientPartner().getCurrency());
     if (project.getPriceList() != null) {
       PriceListLine line =
@@ -116,6 +135,9 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
         saleOrderLine.getSaleOrder() != null
             ? saleOrderLine.getSaleOrder().getToInvoiceViaTask()
             : false);
+
+    task.setSoldTime(saleOrderLine.getQty());
+    task.setUpdatedTime(saleOrderLine.getQty());
     return task;
   }
 
@@ -341,14 +363,14 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
 
       switch (projectTask.getProject().getInvoicingSequenceSelect()) {
         case ProjectRepository.INVOICING_SEQ_INVOICE_PRE_TASK:
-          Set<ProjectStatus> preTaskStatusSet = appBusinessProject.getPreTaskStatusSet();
+          Set<TaskStatus> preTaskStatusSet = appBusinessProject.getPreTaskStatusSet();
           projectTask.setToInvoice(
               ObjectUtils.notEmpty(preTaskStatusSet)
                   && preTaskStatusSet.contains(projectTask.getStatus()));
           break;
 
         case ProjectRepository.INVOICING_SEQ_INVOICE_POST_TASK:
-          Set<ProjectStatus> postTaskStatusSet = appBusinessProject.getPostTaskStatusSet();
+          Set<TaskStatus> postTaskStatusSet = appBusinessProject.getPostTaskStatusSet();
           projectTask.setToInvoice(
               ObjectUtils.notEmpty(postTaskStatusSet)
                   && postTaskStatusSet.contains(projectTask.getStatus()));
@@ -423,8 +445,8 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     taskQueryBuilder =
         taskQueryBuilder.add("self.project.id = :projectId").bind("projectId", project.getId());
 
-    if (!Strings.isNullOrEmpty(appBusinessProject.getExculdeTaskInvoicing())) {
-      String filter = "NOT (" + appBusinessProject.getExculdeTaskInvoicing() + ")";
+    if (!Strings.isNullOrEmpty(appBusinessProject.getExcludeTaskInvoicing())) {
+      String filter = "NOT (" + appBusinessProject.getExcludeTaskInvoicing() + ")";
       taskQueryBuilder = taskQueryBuilder.add(filter);
     }
     Query<ProjectTask> taskQuery = taskQueryBuilder.build().order("id");
@@ -449,5 +471,95 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     }
     projectTask = updateTaskFinancialInfo(projectTask);
     return projectTaskRepo.save(projectTask);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void computeProjectTaskTotals(ProjectTask projectTask) throws AxelorException {
+
+    BigDecimal plannedTime;
+    BigDecimal spentTime = BigDecimal.ZERO;
+
+    Unit timeUnit = projectTask.getTimeUnit();
+
+    plannedTime =
+        projectTask.getProjectPlanningTimeList().stream()
+            .map(ProjectPlanningTime::getPlannedHours)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+    List<TimesheetLine> timeSheetLines =
+        timesheetLineRepository
+            .all()
+            .filter("self.timesheet.statusSelect = :status AND self.projectTask = :projectTask")
+            .bind("status", TimesheetRepository.STATUS_VALIDATED)
+            .bind("projectTask", projectTask)
+            .fetch();
+
+    for (TimesheetLine timeSheetLine : timeSheetLines) {
+      spentTime =
+          spentTime.add(convertTimesheetLineDurationToProjectTaskUnit(timeSheetLine, timeUnit));
+    }
+
+    List<ProjectTask> projectTaskList = projectTask.getProjectTaskList();
+    for (ProjectTask task : projectTaskList) {
+      computeProjectTaskTotals(task);
+      plannedTime = plannedTime.add(task.getPlannedTime());
+      spentTime = spentTime.add(task.getSpentTime());
+    }
+
+    projectTask.setPlannedTime(plannedTime);
+    projectTask.setSpentTime(spentTime);
+    projectTaskRepo.save(projectTask);
+  }
+
+  protected BigDecimal convertTimesheetLineDurationToProjectTaskUnit(
+      TimesheetLine timesheetLine, Unit timeUnit) throws AxelorException {
+    String timeLoggingUnit = timesheetLine.getTimesheet().getTimeLoggingPreferenceSelect();
+    BigDecimal duration = timesheetLine.getDuration();
+    BigDecimal convertedDuration = BigDecimal.ZERO;
+
+    AppBusinessProject appBusinessProject = appBusinessProjectService.getAppBusinessProject();
+
+    Unit daysUnit = appBusinessProject.getDaysUnit();
+    Unit hoursUnit = appBusinessProject.getHoursUnit();
+    BigDecimal defaultHoursADay = appBusinessProject.getDefaultHoursADay();
+    if (defaultHoursADay.compareTo(BigDecimal.ZERO) == 0) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(HumanResourceExceptionMessage.TIMESHEET_DAILY_WORK_HOURS));
+    }
+
+    switch (timeLoggingUnit) {
+      case EmployeeRepository.TIME_PREFERENCE_DAYS:
+        if (timeUnit.equals(daysUnit)) {
+          convertedDuration = duration;
+        }
+        if (timeUnit.equals(hoursUnit)) {
+          convertedDuration = duration.multiply(defaultHoursADay);
+        }
+        break;
+      case EmployeeRepository.TIME_PREFERENCE_HOURS:
+        if (timeUnit.equals(hoursUnit)) {
+          convertedDuration = duration;
+        }
+        if (timeUnit.equals(daysUnit)) {
+          convertedDuration =
+              duration.divide(defaultHoursADay, DURATION_SCALE, RoundingMode.HALF_UP);
+        }
+        break;
+      case EmployeeRepository.TIME_PREFERENCE_MINUTES:
+        // convert to hours
+        convertedDuration =
+            duration.divide(new BigDecimal(60), DURATION_SCALE, RoundingMode.HALF_UP);
+        if (timeUnit.equals(daysUnit)) {
+          convertedDuration =
+              duration.divide(defaultHoursADay, DURATION_SCALE, RoundingMode.HALF_UP);
+        }
+        break;
+      default:
+        break;
+    }
+
+    return convertedDuration;
   }
 }

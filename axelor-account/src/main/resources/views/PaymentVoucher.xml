@@ -84,6 +84,10 @@
           <field name="bankEntryGenWithoutValEntryCollectionOk" widget="boolean-switch"/>
           <field name="valueForCollectionAccount" title="Value for collection" hidden="true"
             hideIf="bankEntryGenWithoutValEntryCollectionOk"/>
+          <field name="depositBankDetails"
+            requiredIf="!bankEntryGenWithoutValEntryCollectionOk &amp;&amp; paymentMode.inOutSelect == 1 &amp;&amp; paymentMode.accountingTriggerSelect == 5"
+            hideIf="bankEntryGenWithoutValEntryCollectionOk"
+            domain="self.active = true AND self.company = :company"/>
         </panel>
         <panel colSpan="12">
           <field name="chequeNumber"
@@ -261,6 +265,7 @@
     <field name="currency" expr="eval:__repo__(Company).all().fetchOne()?.currency"
       if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
     <field name="tradingName" expr="eval: _invoice.tradingName" if="_invoice"/>
+    <field name="statusSelect" expr="eval: 1"/>
   </action-record>
 
   <action-record name="action-payment-voucher-getDate"

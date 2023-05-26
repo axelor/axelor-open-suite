@@ -3,11 +3,11 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
-  <menuitem name="fleet-root" title="Fleet" order="-83" if="__config__.app.isApp('fleet')"
+  <menuitem name="fleet-root" title="Fleet" order="-400" if="__config__.app.isApp('fleet')"
     icon="fa-car" icon-background="orange"/>
 
   <menuitem name="fleet-root-vehicle" title="Vehicle" action="fleet.root.vehicle"
-    parent="fleet-root" order="1"/>
+    parent="fleet-root" order="100"/>
 
   <action-view name="fleet.root.vehicle" title="Vehicle"
     model="com.axelor.apps.fleet.db.Vehicle">
@@ -17,7 +17,7 @@
   </action-view>
 
   <menuitem name="fleet-root-vehicle-models" title="Vehicle models"
-    action="fleet.root.vehicle.models" parent="fleet-root" order="2"/>
+    action="fleet.root.vehicle.models" parent="fleet-root" order="200"/>
 
   <action-view name="fleet.root.vehicle.models" title="Vehicle models"
     model="com.axelor.apps.fleet.db.VehicleModel">
@@ -26,7 +26,7 @@
   </action-view>
 
   <menuitem name="fleet-root-vehicle-rent" title="Vehicle rent"
-    action="fleet.root.vehicle.rent" parent="fleet-root" order="3"/>
+    action="fleet.root.vehicle.rent" parent="fleet-root" order="300"/>
 
   <action-view name="fleet.root.vehicle.rent" title="Vehicle rent"
     model="com.axelor.apps.fleet.db.VehicleRent">
@@ -35,7 +35,7 @@
   </action-view>
 
   <menuitem name="fleet-root-vehicle-contract" title="Vehicle contracts"
-    action="fleet.root.vehicle.contract" parent="fleet-root" order="4"/>
+    action="fleet.root.vehicle.contract" parent="fleet-root" order="400"/>
 
   <action-view name="fleet.root.vehicle.contract" title="Vehicle contracts"
     model="com.axelor.apps.fleet.db.VehicleContract">
@@ -44,7 +44,7 @@
   </action-view>
 
   <menuitem name="fleet-root-vehicle-fuel-log" title="Vehicle fuel log"
-    action="fleet.root.vehicle.fuel.log" parent="fleet-root" order="5"/>
+    action="fleet.root.vehicle.fuel.log" parent="fleet-root" order="500"/>
 
   <action-view name="fleet.root.vehicle.fuel.log" title="Vehicle fuel log"
     model="com.axelor.apps.fleet.db.VehicleFuelLog">
@@ -53,7 +53,7 @@
   </action-view>
 
   <menuitem name="fleet-root-vehicle-service-log" title="Vehicle service log"
-    action="fleet.root.vehicle.service.log" parent="fleet-root" order="6"/>
+    action="fleet.root.vehicle.service.log" parent="fleet-root" order="600"/>
 
   <action-view name="fleet.root.vehicle.service.log" title="Vehicle service log"
     model="com.axelor.apps.fleet.db.VehicleServiceLog">
@@ -62,7 +62,7 @@
   </action-view>
 
   <menuitem name="fleet-root-vehicle-cost" title="Vehicle cost"
-    action="fleet.root.vehicle.cost" parent="fleet-root" order="7"/>
+    action="fleet.root.vehicle.cost" parent="fleet-root" order="700"/>
 
   <action-view name="fleet.root.vehicle.cost" title="Vehicle cost"
     model="com.axelor.apps.fleet.db.VehicleCost">
@@ -71,10 +71,10 @@
   </action-view>
 
   <menuitem name="fleet-conf" title="Configuration" parent="fleet-root" icon="fa-cog"
-    order="8"/>
+    order="800"/>
 
   <menuitem name="fleet-conf-recurring-cost" title="Recurring Costs"
-    action="fleet.conf.recurring.cost" parent="fleet-conf"/>
+    action="fleet.conf.recurring.cost" parent="fleet-conf" order="100"/>
 
   <action-view name="fleet.conf.recurring.cost" title="Recurring Costs"
     model="com.axelor.apps.fleet.db.RecurringCost">
@@ -83,7 +83,7 @@
   </action-view>
 
   <menuitem name="fleet-conf-vehicle-make" title="Vehicle brands"
-    action="fleet.conf.vehicle.makes" parent="fleet-conf"/>
+    action="fleet.conf.vehicle.makes" parent="fleet-conf" order="200"/>
 
   <action-view name="fleet.conf.vehicle.makes" title="Vehicle brands"
     model="com.axelor.apps.fleet.db.VehicleMake">
@@ -92,7 +92,7 @@
   </action-view>
 
   <menuitem name="fleet-conf-vehicle-odometer" title="Vehicle odometer"
-    action="fleet.conf.vehicle.odometer" parent="fleet-conf"/>
+    action="fleet.conf.vehicle.odometer" parent="fleet-conf" order="300"/>
 
   <action-view name="fleet.conf.vehicle.odometer" title="Vehicle odometer"
     model="com.axelor.apps.fleet.db.VehicleOdometer">
@@ -101,7 +101,7 @@
   </action-view>
 
   <menuitem name="fleet-conf-vehicle-service-type" title="Vehicle service type"
-    action="fleet.conf.vehicle.service.type" parent="fleet-conf"/>
+    action="fleet.conf.vehicle.service.type" parent="fleet-conf" order="400"/>
 
   <action-view name="fleet.conf.vehicle.service.type" title="Vehicle sevice type"
     model="com.axelor.apps.fleet.db.VehicleServiceType">
@@ -110,7 +110,7 @@
   </action-view>
 
   <menuitem name="fleet-conf-vehicle-tag" title="Vehicle tags"
-    action="fleet.conf.vehicle.tag" parent="fleet-conf"/>
+    action="fleet.conf.vehicle.tag" parent="fleet-conf" order="500"/>
 
   <action-view name="fleet.conf.vehicle.tag" title="Vehicle tags"
     model="com.axelor.apps.fleet.db.VehicleTag">
@@ -119,7 +119,7 @@
   </action-view>
 
   <menuitem name="fleet-conf-vehicle-repair-cause" title="Cause of repair"
-    action="fleet.conf.vehicle.repair.cause" parent="fleet-conf"/>
+    action="fleet.conf.vehicle.repair.cause" parent="fleet-conf" order="600"/>
 
   <action-view name="fleet.conf.vehicle.repair.cause" title="Cause of repair"
     model="com.axelor.apps.fleet.db.RepairCause">

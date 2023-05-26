@@ -9,7 +9,7 @@
 
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true"
       title="Company"/>
-    <string name="fullName" namecolumn="true"/>
+    <string name="fullName" namecolumn="true" title="Full name"/>
     <string name="saleOrderSeq" title="Internal Number" readonly="true"/>
     <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"
       massUpdate="true"/>
@@ -90,10 +90,6 @@
     <date name="orderDate" title="Order Date"/>
     <string name="orderNumber" title="Order Number"/>
 
-    <!-- Onglet scheduler -->
-    <date name="invoicedFirstDate" title="Invoiced first date"/>
-    <date name="nextInvPeriodStartDate" title="Next invoiced period start date" readonly="true"/>
-
     <many-to-one name="confirmedByUser" ref="com.axelor.auth.db.User" readonly="true"
       title="Confirmed by"/>
 
@@ -124,13 +120,15 @@
     <!-- Impression -->
     <string name="specificNotes" title="Specific notes" large="true"/>
 
-    <boolean name="orderBeingEdited"/>
+    <boolean name="orderBeingEdited" title="Order being edited"/>
 
     <many-to-one name="opportunity" ref="com.axelor.apps.crm.db.Opportunity"
-      copy="false"/>
+      copy="false" title="Opportunity"/>
 
-    <many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName"/>
-    <many-to-one name="printingSettings" ref="com.axelor.apps.base.db.PrintingSettings"/>
+    <many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName"
+      title="Trading name"/>
+    <many-to-one name="printingSettings" ref="com.axelor.apps.base.db.PrintingSettings"
+      title="Printing settings"/>
     <boolean name="groupProductsOnPrintings" title="Group products on printings"
       default="false"/>
 

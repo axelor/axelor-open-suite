@@ -3,10 +3,10 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
-  <menuitem name="forecast-root" title="Cash management" order="-86"
+  <menuitem name="forecast-root" title="Cash management" order="-800"
     if="__config__.app.isApp('cash-management')" icon="fa-money" icon-background="#e0a83c"/>
 
-  <menuitem name="forecast-config-manual-forecast" order="10" parent="forecast-conf"
+  <menuitem name="forecast-config-manual-forecast" order="300" parent="forecast-conf"
     title="Manual forecasts" action="forecast-config-manual-forecast"/>
 
   <action-view name="forecast-config-manual-forecast" title="Manual forecasts"
@@ -16,7 +16,7 @@
     <view-param name="search-filters" value="forecast-filters"/>
   </action-view>
 
-  <menuitem name="forecast-root-forecast-recap" order="20" parent="forecast-root"
+  <menuitem name="forecast-root-forecast-recap" order="200" parent="forecast-root"
     title="Forecast Recaps" action="forecast.root.forecast.recap"/>
 
   <action-view name="forecast.root.forecast.recap" title="Forecast Recaps"
@@ -27,7 +27,7 @@
     <domain>self.isReport != true</domain>
   </action-view>
 
-  <menuitem name="forecast-root-forecast-report" order="30" parent="forecast-root"
+  <menuitem name="forecast-root-forecast-report" order="300" parent="forecast-root"
     title="Forecast Reports" action="forecast.root.forecast.report" icon="fa-bar-chart"/>
 
   <action-view name="forecast.root.forecast.report" title="Forecast Reports"
@@ -38,10 +38,10 @@
     <domain>self.isReport = true</domain>
   </action-view>
 
-  <menuitem name="forecast-conf" title="Configuration" order="200" parent="forecast-root"
+  <menuitem name="forecast-conf" title="Configuration" order="400" parent="forecast-root"
     icon="fa-cog"/>
 
-  <menuitem name="forecast-conf-forecast-generator" order="10" parent="forecast-conf"
+  <menuitem name="forecast-conf-forecast-generator" order="200" parent="forecast-conf"
     title="Forecast Assistants" action="forecast.conf.forecast.generator"/>
 
   <action-view name="forecast.conf.forecast.generator" title="Forecast Assistants"
@@ -52,7 +52,7 @@
   </action-view>
 
   <menuitem name="forecast-conf-forecast-recap-line-type" parent="forecast-conf"
-    title="Forecast Recap line Types" action="forecast.conf.forecast.recap.line.type"/>
+    title="Forecast Recap line Types" action="forecast.conf.forecast.recap.line.type" order="100"/>
 
   <action-view name="forecast.conf.forecast.recap.line.type"
     title="Forecast Recap line Types"
@@ -62,10 +62,10 @@
   </action-view>
 
   <menuitem name="menu-cash-management-dashboard-1" parent="forecast-root"
-    title="Cash Management Dashboard" action="cash.management.dashboard.1.view"/>
+    title="Cash Management Dashboard" action="cash.management.dashboard.1.view" order="100"/>
 
   <action-view name="cash.management.dashboard.1.view" title="Cash Management Dashboard"
-    model="com.axelor.message.db.Wizard">
+    model="com.axelor.utils.db.Wizard">
     <view type="form" name="forecast-dashboard-form"/>
     <context name="_userId" expr="eval: 0"/>
   </action-view>

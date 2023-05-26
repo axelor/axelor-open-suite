@@ -149,6 +149,9 @@
       <button name="adminBtn" title="Administration mode"
         onClick="action-ebics-user-attrs-administration-mode"/>
     </panel>
+    <panel-mail name="mailPanel">
+      <mail-messages limit="4"/>
+    </panel-mail>
 
   </form>
 

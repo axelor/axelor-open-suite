@@ -10,7 +10,7 @@
   </grid>
 
   <form name="company-form" title="Company" model="com.axelor.apps.base.db.Company"
-    onSave="action-company-check-multi-banks" canNew="_canNew">
+    onSave="action-company-check-multi-banks,action-company-method-validate-locale" canNew="_canNew">
     <panel name="mainPanel" readonlyIf="$popup()">
       <panel name="logoPanel" colSpan="4">
         <field name="logo" widget="Image" colSpan="12"/>
@@ -42,7 +42,7 @@
       </panel>
     </panel>
     <panel sidebar="true" name="modulesConfigPanel" title="Modules configurations"
-      hideIf="$popup()">
+      hideIf="!id || $popup()">
       <button name="accountConfigBtn" title="Account config" width="100%" colSpan="6"
         onClick="action-company-view-account-config" if-module="axelor-account"
         if="__config__.app.isApp('account')"/>
@@ -111,6 +111,7 @@
         <field name="publicHolidayEventsPlanning" form-view="events-planning-form"
           grid-view="events-planning-grid" canNew="true"/>
         <field name="language" colSpan="6" canEdit="false"/>
+        <field name="locale" colSpan="6" onChange="action-company-method-validate-locale"/>
         <field name="timezone" colSpan="6"/>
         <field name="taxNumberList" colSpan="12" canSelect="true" canNew="false"
           canEdit="false" domain="self.company.id = :id" if="__config__.app.isApp('account')"/>
@@ -130,6 +131,9 @@
         if="__config__.app.getApp('base').getEmailAccountByCompany()" colSpan="12"
         form-view="mail-account-form" grid-view="mail-account-grid"/>
     </panel-tabs>
+    <panel-mail name="mailPanel">
+      <mail-messages limit="4"/>
+    </panel-mail>
   </form>
 
   <tree name="company-tree" title="Companies">
@@ -178,6 +182,10 @@
 
   <action-method name="action-company-check-multi-banks">
     <call class="com.axelor.apps.base.web.CompanyController" method="checkMultiBanks"/>
+  </action-method>
+
+  <action-method name="action-company-method-validate-locale">
+    <call class="com.axelor.apps.base.web.CompanyController" method="validateLocale"/>
   </action-method>
 
   <search-filters name="company-filters" model="com.axelor.apps.base.db.Company"

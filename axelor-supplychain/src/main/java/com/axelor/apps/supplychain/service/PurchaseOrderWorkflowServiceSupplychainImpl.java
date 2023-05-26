@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.supplychain.service;
 
@@ -36,6 +37,7 @@ public class PurchaseOrderWorkflowServiceSupplychainImpl extends PurchaseOrderWo
   protected AppAccountService appAccountService;
   protected BudgetSupplychainService budgetSupplychainService;
   protected PurchaseOrderSupplychainService purchaseOrderSupplychainService;
+  protected PurchaseOrderBudgetService purchaseOrderBudgetService;
 
   @Inject
   public PurchaseOrderWorkflowServiceSupplychainImpl(
@@ -46,13 +48,15 @@ public class PurchaseOrderWorkflowServiceSupplychainImpl extends PurchaseOrderWo
       PurchaseOrderStockService purchaseOrderStockService,
       AppAccountService appAccountService,
       BudgetSupplychainService budgetSupplychainService,
-      PurchaseOrderSupplychainService purchaseOrderSupplychainService) {
+      PurchaseOrderSupplychainService purchaseOrderSupplychainService,
+      PurchaseOrderBudgetService purchaseOrderBudgetService) {
     super(purchaseOrderService, purchaseOrderRepo, appPurchaseService);
     this.appSupplychainService = appSupplychainService;
     this.purchaseOrderStockService = purchaseOrderStockService;
     this.appAccountService = appAccountService;
     this.budgetSupplychainService = budgetSupplychainService;
     this.purchaseOrderSupplychainService = purchaseOrderSupplychainService;
+    this.purchaseOrderBudgetService = purchaseOrderBudgetService;
   }
 
   @Override
@@ -73,7 +77,7 @@ public class PurchaseOrderWorkflowServiceSupplychainImpl extends PurchaseOrderWo
 
     if (appAccountService.getAppBudget().getApp().getActive()
         && !appAccountService.getAppBudget().getManageMultiBudget()) {
-      purchaseOrderSupplychainService.generateBudgetDistribution(purchaseOrder);
+      purchaseOrderBudgetService.generateBudgetDistribution(purchaseOrder);
     }
     int intercoPurchaseCreatingStatus =
         appSupplychainService.getAppSupplychain().getIntercoPurchaseCreatingStatusSelect();
@@ -83,7 +87,7 @@ public class PurchaseOrderWorkflowServiceSupplychainImpl extends PurchaseOrderWo
     }
 
     if (!appAccountService.getAppBudget().getManageMultiBudget()) {
-      purchaseOrderSupplychainService.updateBudgetDistributionAmountAvailable(purchaseOrder);
+      purchaseOrderBudgetService.updateBudgetDistributionAmountAvailable(purchaseOrder);
     }
   }
 

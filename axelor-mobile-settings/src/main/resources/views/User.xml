@@ -10,7 +10,7 @@
         <panel name="qrCodePanel" colSpan="2">
           <field name="qrCode" colSpan="12" showTitle="false" hidden="true" readonly="true"
             hideIf="qrCode == null" widget="Image" canRemove="true"
-            if="__config__.app.getApp('mobile-settings')?.getIsLoginUserQrcodeEnable()"/>
+            if="__config__.app.getApp('mobile-settings')?.getIsLoginUserQrcodeEnabled()"/>
         </panel>
       </insert>
       <attribute name="colSpan" value="10"/>
@@ -20,7 +20,7 @@
         <panel name="configAppPanel" sidebar="true">
           <button name="generateQrCodeBtn" title="Generate QR Code"
             readonlyIf="qrCode != null" onClick="action-user-group-generate-qr-code-button-on-click"
-            if="__config__.app.getApp('mobile-settings')?.getIsLoginUserQrcodeEnable()"/>
+            if="__config__.app.getApp('mobile-settings')?.getIsLoginUserQrcodeEnabled()"/>
         </panel>
       </insert>
     </extend>
@@ -32,7 +32,7 @@
       <insert position="after">
         <field name="qrCode" colSpan="2" showTitle="false" hidden="true" readonly="true"
           hideIf="qrCode == null" widget="Image" canRemove="true"
-          if="__config__.app.getApp('mobile-settings')?.getIsLoginUserQrcodeEnable()"/>
+          if="__config__.app.getApp('mobile-settings')?.getIsLoginUserQrcodeEnabled()"/>
       </insert>
       <attribute name="colSpan" value="10"/>
     </extend>

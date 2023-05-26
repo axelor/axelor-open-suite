@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.base.exceptions;
 
@@ -182,13 +183,6 @@ public final class BaseExceptionMessage {
   public static final String TEMPLATE_MESSAGE_BASE_2 = /*$$(*/
       "Unable to generate Birt report file" /*)*/;
 
-  /** Querie Service and controller */
-  public static final String QUERIE_1 = /*$$(*/
-      "Error : There is no query set for the querie %s" /*)*/;
-
-  public static final String QUERIE_2 = /*$$(*/ "Error : Incorrect query for the querie %s" /*)*/;
-  public static final String QUERIE_3 = /*$$(*/ "Valid query." /*)*/;
-
   /** Tax service */
   public static final String TAX_1 = /*$$(*/ "Please enter a tax version for the tax %s" /*)*/;
 
@@ -203,6 +197,9 @@ public final class BaseExceptionMessage {
   /** Sequence service */
   public static final String SEQUENCE_NOT_SAVED_RECORD = /*$$(*/
       "Can't generate draft sequence number on an unsaved record." /*)*/;
+
+  public static final String SEQUENCE_LENGTH_NOT_VALID = /*$$(*/
+      "Total sequence length must be less than 15 characters." /*)*/;
 
   /** Address controller */
   public static final String ADDRESS_1 = /*$$(*/ "OK" /*)*/;
@@ -531,4 +528,15 @@ public final class BaseExceptionMessage {
 
   public static final String ADVANCED_IMPORT_NOT_VALIDATED = /*$$(*/
       "Advanced import is not validated" /*)*/;
+
+  public static final String COMPANY_INVALID_LOCALE = /*$$(*/
+      "Warning: locale %s is invalid, please enter a valid locale." /*)*/;
+
+  public static final String COMPANY_LOCALE_MISSING = /*$$(*/
+      "Please fill locale for the company %s" /*)*/;
+
+  public static final String SWAGGER_DISABLED = /*$$(*/ "Swagger is not enabled." /*)*/;
+
+  public static final String SWAGGER_NO_RESOURCE_PACKAGES = /*$$(*/
+      "Swagger is enabled but not resource packages is specified." /*)*/;
 }

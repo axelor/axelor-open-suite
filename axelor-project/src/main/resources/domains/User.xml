@@ -13,6 +13,11 @@
       ref="com.axelor.apps.project.db.Project"/>
     <boolean name="isIncludeSubContextProjects" title="Include sub context projects"/>
 
+    <track>
+      <field name="contextProject" on="UPDATE"/>
+      <field name="isIncludeSubContextProjects" on="UPDATE"/>
+    </track>
+
   </entity>
 
 </domain-models>

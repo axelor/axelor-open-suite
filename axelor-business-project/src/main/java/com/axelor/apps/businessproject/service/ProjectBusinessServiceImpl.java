@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.businessproject.service;
 
@@ -28,11 +29,11 @@ import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.ProjectTemplate;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectStatusRepository;
 import com.axelor.apps.project.db.repo.ProjectTemplateRepository;
-import com.axelor.apps.project.service.ProjectService;
 import com.axelor.apps.project.service.ProjectServiceImpl;
 import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -42,14 +43,13 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
 import com.axelor.apps.supplychain.service.SaleOrderSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.auth.db.User;
-import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.studio.db.AppSupplychain;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.HashSet;
-import java.util.Map;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     implements ProjectBusinessService {
@@ -57,7 +57,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
   protected PartnerService partnerService;
   protected AddressService addressService;
   protected AppBusinessProjectService appBusinessProjectService;
-  protected ProjectTemplateRepository projTemplateRepo;
+  protected ProjectTaskBusinessProjectService projectTaskBusinessProjectService;
 
   @Inject
   public ProjectBusinessServiceImpl(
@@ -67,12 +67,13 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
       AppProjectService appProjectService,
       PartnerService partnerService,
       AddressService addressService,
-      AppBusinessProjectService appBusinessProjectService) {
-    super(projectRepository, projectStatusRepository, appProjectService);
+      AppBusinessProjectService appBusinessProjectService,
+      ProjectTaskBusinessProjectService projectTaskBusinessProjectService) {
+    super(projectRepository, projectStatusRepository, appProjectService, projTemplateRepo);
     this.partnerService = partnerService;
     this.addressService = addressService;
     this.appBusinessProjectService = appBusinessProjectService;
-    this.projTemplateRepo = projTemplateRepo;
+    this.projectTaskBusinessProjectService = projectTaskBusinessProjectService;
   }
 
   @Override
@@ -212,20 +213,21 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     if (parentProject != null && parentProject.getIsInvoicingTimesheet()) {
       project.setIsInvoicingTimesheet(true);
     }
+
+    project.setNumberHoursADay(
+        appBusinessProjectService.getAppBusinessProject().getDefaultHoursADay());
+    project.setProjectTimeUnit(appBusinessProjectService.getAppBusinessProject().getDaysUnit());
     return project;
   }
 
   @Override
   public Project generatePhaseProject(SaleOrderLine saleOrderLine, Project parent) {
-    Project project =
-        generateProject(
-            parent,
-            saleOrderLine.getFullName(),
-            saleOrderLine.getSaleOrder().getSalespersonUser(),
-            parent.getCompany(),
-            parent.getClientPartner());
-    saleOrderLine.setProject(project);
-    return project;
+    return generateProject(
+        parent,
+        saleOrderLine.getFullName(),
+        saleOrderLine.getSaleOrder().getSalespersonUser(),
+        parent.getCompany(),
+        parent.getClientPartner());
   }
 
   @Override
@@ -258,29 +260,22 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
   }
 
   @Override
-  public Map<String, Object> createProjectFromTemplateView(ProjectTemplate projectTemplate)
-      throws AxelorException {
-    if (appBusinessProjectService.getAppBusinessProject().getGenerateProjectSequence()
-        && !projectTemplate.getIsBusinessProject()) {
-      projectTemplate = projTemplateRepo.find(projectTemplate.getId());
-      Project project =
-          Beans.get(ProjectService.class).createProjectFromTemplate(projectTemplate, null, null);
-      return ActionView.define(I18n.get("Project"))
-          .model(Project.class.getName())
-          .add("form", "project-form")
-          .add("grid", "project-grid")
-          .param("search-filters", "project-filters")
-          .context("_showRecord", project.getId())
-          .map();
-    }
-    return super.createProjectFromTemplateView(projectTemplate);
-  }
-
-  @Override
   public String getTimeZone(Project project) {
     if (project == null || project.getCompany() == null) {
       return null;
     }
     return project.getCompany().getTimezone();
+  }
+
+  @Override
+  public void computeProjectTotals(Project project) throws AxelorException {
+
+    List<ProjectTask> projectTaskList =
+        project.getProjectTaskList().stream()
+            .filter(projectTask -> projectTask.getParentTask() == null)
+            .collect(Collectors.toList());
+    for (ProjectTask projectTask : projectTaskList) {
+      projectTaskBusinessProjectService.computeProjectTaskTotals(projectTask);
+    }
   }
 }

@@ -35,7 +35,7 @@
     <integer name="stockLineQuantity" title="Quantity" min="0"/>
     <string name="stockLineComment" title="Comment" large="true"/>
 
-    <date name="exportDate" title="Export date"/>
+    <datetime name="exportDateTime" title="Export date"/>
     <many-to-one name="csvFile" title="CSV" ref="com.axelor.meta.db.MetaFile"/>
 
     <extra-code>

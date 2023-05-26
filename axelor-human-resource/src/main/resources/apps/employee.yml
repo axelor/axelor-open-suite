@@ -1,8 +1,8 @@
 ---
-name: Employees Managment
+name: Employees Management
 code: employee
 typeSelect: standard
-installOrder: 12
+installOrder: 2120
 description: |
    Employees Management
 image: app-employee.png

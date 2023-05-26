@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.base.service.message;
 
@@ -36,8 +37,10 @@ import com.axelor.message.db.EmailAccount;
 import com.axelor.message.db.EmailAddress;
 import com.axelor.message.db.Message;
 import com.axelor.message.db.repo.MessageRepository;
+import com.axelor.message.service.AppSettingsMessageService;
 import com.axelor.message.service.MessageServiceImpl;
 import com.axelor.message.service.SendMailQueueService;
+import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.repo.MetaAttachmentRepository;
 import com.axelor.studio.db.AppBase;
@@ -75,9 +78,14 @@ public class MessageServiceBaseImpl extends MessageServiceImpl implements Messag
       MetaAttachmentRepository metaAttachmentRepository,
       MessageRepository messageRepository,
       SendMailQueueService sendMailQueueService,
+      AppSettingsMessageService appSettingsMessageService,
       UserService userService,
       AppBaseService appBaseService) {
-    super(metaAttachmentRepository, messageRepository, sendMailQueueService);
+    super(
+        metaAttachmentRepository,
+        messageRepository,
+        sendMailQueueService,
+        appSettingsMessageService);
     this.userService = userService;
     this.appBaseService = appBaseService;
   }
@@ -202,11 +210,14 @@ public class MessageServiceBaseImpl extends MessageServiceImpl implements Messag
     }
 
     PrintingSettings printSettings = company.getPrintingSettings();
-    if (printSettings == null || printSettings.getDefaultMailBirtTemplate() == null) {
+    if (printSettings == null
+        || printSettings.getDefaultMailBirtTemplate() == null
+        || printSettings.getDefaultMailBirtTemplate().getTemplateMetaFile() == null) {
       return null;
     }
 
     BirtTemplate birtTemplate = printSettings.getDefaultMailBirtTemplate();
+    MetaFile templateMetaFile = birtTemplate.getTemplateMetaFile();
 
     logger.debug("Default BirtTemplate : {}", birtTemplate);
 
@@ -232,7 +243,7 @@ public class MessageServiceBaseImpl extends MessageServiceImpl implements Messag
               templates,
               templatesContext,
               fileName,
-              birtTemplate.getTemplateLink(),
+              MetaFiles.getPath(templateMetaFile).toString(),
               birtTemplate.getFormat(),
               birtTemplate.getBirtTemplateParameterList());
 

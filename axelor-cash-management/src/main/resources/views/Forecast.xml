@@ -34,7 +34,7 @@
   </form>
 
   <form name="forecast-dashboard-form" title="Forecast Dashboard"
-    model="com.axelor.message.db.Wizard" onNew="action-dashboard-forecast-attrs-set-defaults"
+    model="com.axelor.utils.db.Wizard" onNew="action-dashboard-forecast-attrs-set-defaults"
     width="large" canNew="false" canSave="false">
     <panel name="detailsPanel">
       <field if="__config__.app.getApp('base')?.getManageMultiBanks()"
