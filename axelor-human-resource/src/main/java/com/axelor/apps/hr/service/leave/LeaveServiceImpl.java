@@ -20,7 +20,6 @@ package com.axelor.apps.hr.service.leave;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.DayPlanning;
 import com.axelor.apps.base.db.EventsPlanning;
 import com.axelor.apps.base.db.ICalendarEvent;
 import com.axelor.apps.base.db.WeeklyPlanning;
@@ -29,6 +28,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.ical.ICalendarService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
+import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningServiceImp;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.LeaveLine;
@@ -55,6 +55,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import wslite.json.JSONException;
 
@@ -105,8 +106,8 @@ public class LeaveServiceImpl implements LeaveService {
   @Override
   public BigDecimal computeDuration(LeaveRequest leave, LocalDate fromDate, LocalDate toDate)
       throws AxelorException {
-    LocalDateTime leaveFromDate = leave.getFromDateT();
-    LocalDateTime leaveToDate = leave.getToDateT();
+    LocalDateTime leaveFromDate = leave.getIcalendarEvent().getStartDateTime();
+    LocalDateTime leaveToDate = leave.getIcalendarEvent().getEndDateTime();
 
     int startOn = leave.getStartOnSelect();
     int endOn = leave.getEndOnSelect();
@@ -140,8 +141,8 @@ public class LeaveServiceImpl implements LeaveService {
   public BigDecimal computeDuration(LeaveRequest leave) throws AxelorException {
     return computeDuration(
         leave,
-        leave.getFromDateT(),
-        leave.getToDateT(),
+        leave.getIcalendarEvent().getStartDateTime(),
+        leave.getIcalendarEvent().getEndDateTime(),
         leave.getStartOnSelect(),
         leave.getEndOnSelect());
   }
@@ -466,11 +467,16 @@ public class LeaveServiceImpl implements LeaveService {
     if (select == LeaveRequestRepository.SELECT_MORNING) {
       value = weeklyPlanningService.getWorkingDayValueInDays(weeklyPlanning, date);
     } else {
-      DayPlanning dayPlanning = weeklyPlanningService.findDayPlanning(weeklyPlanning, date);
-      if (dayPlanning != null
-          && dayPlanning.getAfternoonFrom() != null
-          && dayPlanning.getAfternoonTo() != null) {
-        value = 0.5;
+      List<ICalendarEvent> dayPlanningList =
+          weeklyPlanningService.findDayPlanning(weeklyPlanning, date);
+      if (dayPlanningList != null && !dayPlanningList.isEmpty()) {
+        for (ICalendarEvent dayPlanning : dayPlanningList) {
+          if (dayPlanning.getSubject().endsWith(WeeklyPlanningServiceImp.AFTERNOON)
+              && dayPlanning.getStartDateTime().toLocalTime() != null
+              && dayPlanning.getEndDateTime().toLocalTime() != null) {
+            value = 0.5;
+          }
+        }
       }
     }
     return value;
@@ -483,11 +489,16 @@ public class LeaveServiceImpl implements LeaveService {
     if (select == LeaveRequestRepository.SELECT_AFTERNOON) {
       value = weeklyPlanningService.getWorkingDayValueInDays(weeklyPlanning, date);
     } else {
-      DayPlanning dayPlanning = weeklyPlanningService.findDayPlanning(weeklyPlanning, date);
-      if (dayPlanning != null
-          && dayPlanning.getMorningFrom() != null
-          && dayPlanning.getMorningTo() != null) {
-        value = 0.5;
+      List<ICalendarEvent> dayPlanningList =
+          weeklyPlanningService.findDayPlanning(weeklyPlanning, date);
+      if (dayPlanningList != null && !dayPlanningList.isEmpty()) {
+        for (ICalendarEvent dayPlanning : dayPlanningList) {
+          if (dayPlanning.getSubject().endsWith(WeeklyPlanningServiceImp.MORNING)
+              && dayPlanning.getStartDateTime().toLocalTime() != null
+              && dayPlanning.getEndDateTime().toLocalTime() != null) {
+            value = 0.5;
+          }
+        }
       }
     }
     return value;
@@ -516,23 +527,32 @@ public class LeaveServiceImpl implements LeaveService {
     LocalDateTime toDateTime;
     if (leave.getLeaveReason().getUnitSelect() == LeaveReasonRepository.UNIT_SELECT_DAYS) {
       fromDateTime = getDefaultStart(weeklyPlanning, leave);
-      toDateTime = getDefaultEnd(weeklyPlanning, leave);
+      toDateTime = setDateLocalTime(getDefaultEnd(weeklyPlanning, leave));
     } else {
-      fromDateTime = leave.getFromDateT();
-      toDateTime = leave.getToDateT();
+      fromDateTime = leave.getIcalendarEvent().getStartDateTime();
+      toDateTime = leave.getIcalendarEvent().getEndDateTime();
     }
-
-    ICalendarEvent event =
-        icalendarService.createEvent(
-            fromDateTime,
-            toDateTime,
-            user,
-            leave.getComments(),
-            4,
-            leave.getLeaveReason().getName() + " " + leave.getEmployee().getName());
-    icalEventRepo.save(event);
-    leave.setIcalendarEvent(event);
-
+    ICalendarEvent icalendarEvent = leave.getIcalendarEvent();
+    if (icalendarEvent.getId() == null) {
+      icalendarEvent =
+          icalendarService.createEvent(
+              fromDateTime,
+              toDateTime,
+              user,
+              leave.getComments(),
+              4,
+              leave.getLeaveReason().getName() + " " + leave.getEmployee().getName());
+    } else {
+      icalendarEvent.setStartDateTime(fromDateTime);
+      icalendarEvent.setEndDateTime(toDateTime);
+      icalendarEvent.setUser(user);
+      icalendarEvent.setTypeSelect(4);
+      icalendarEvent.setCalendar(user.getiCalendar());
+      icalendarEvent.setDescription(
+          leave.getLeaveReason().getName() + " " + leave.getEmployee().getName());
+    }
+    icalEventRepo.save(icalendarEvent);
+    leave.setIcalendarEvent(icalendarEvent);
     return leave;
   }
 
@@ -540,57 +560,70 @@ public class LeaveServiceImpl implements LeaveService {
     int startTimeHour = 0;
     int startTimeMin = 0;
 
-    DayPlanning startDay =
-        weeklyPlanningService.findDayPlanning(weeklyPlanning, leave.getFromDateT().toLocalDate());
-
-    if (leave.getStartOnSelect() == LeaveRequestRepository.SELECT_MORNING) {
-      if (startDay != null && startDay.getMorningFrom() != null) {
-        startTimeHour = startDay.getMorningFrom().getHour();
-        startTimeMin = startDay.getMorningFrom().getMinute();
-      } else {
-        startTimeHour = 8;
-        startTimeMin = 0;
-      }
-    } else {
-      if (startDay != null && startDay.getAfternoonFrom() != null) {
-        startTimeHour = startDay.getAfternoonFrom().getHour();
-        startTimeMin = startDay.getAfternoonFrom().getMinute();
-      } else {
-        startTimeHour = 14;
-        startTimeMin = 0;
+    List<ICalendarEvent> dayPlanningList =
+        weeklyPlanningService.findDayPlanning(
+            weeklyPlanning, leave.getIcalendarEvent().getStartDateTime().toLocalDate());
+    if (dayPlanningList != null && !dayPlanningList.isEmpty()) {
+      for (ICalendarEvent dayPlanning : dayPlanningList) {
+        if (leave.getStartOnSelect() == LeaveRequestRepository.SELECT_MORNING) {
+          if (dayPlanning.getSubject().endsWith(WeeklyPlanningServiceImp.MORNING)
+              && dayPlanning.getStartDateTime().toLocalTime() != null) {
+            startTimeHour = dayPlanning.getStartDateTime().getHour();
+            startTimeMin = dayPlanning.getStartDateTime().getMinute();
+          } else {
+            startTimeHour = 8;
+            startTimeMin = 0;
+          }
+        } else {
+          if (dayPlanning.getSubject().endsWith(WeeklyPlanningServiceImp.AFTERNOON)
+              && dayPlanning.getStartDateTime().toLocalTime() != null) {
+            startTimeHour = dayPlanning.getStartDateTime().getHour();
+            startTimeMin = dayPlanning.getStartDateTime().getMinute();
+          } else {
+            startTimeHour = 14;
+            startTimeMin = 0;
+          }
+        }
       }
     }
     return LocalDateTime.of(
-        leave.getFromDateT().toLocalDate(), LocalTime.of(startTimeHour, startTimeMin));
+        leave.getIcalendarEvent().getStartDateTime().toLocalDate(),
+        LocalTime.of(startTimeHour, startTimeMin));
   }
 
   protected LocalDateTime getDefaultEnd(WeeklyPlanning weeklyPlanning, LeaveRequest leave) {
     int endTimeHour = 0;
     int endTimeMin = 0;
 
-    DayPlanning endDay =
-        weeklyPlanningService.findDayPlanning(weeklyPlanning, leave.getToDateT().toLocalDate());
-
-    if (leave.getEndOnSelect() == LeaveRequestRepository.SELECT_MORNING) {
-      if (endDay != null && endDay.getMorningTo() != null) {
-        endTimeHour = endDay.getMorningTo().getHour();
-        endTimeMin = endDay.getMorningTo().getMinute();
-      } else {
-        endTimeHour = 12;
-        endTimeMin = 0;
-      }
-    } else {
-      if (endDay != null && endDay.getAfternoonTo() != null) {
-        endTimeHour = endDay.getAfternoonTo().getHour();
-        endTimeMin = endDay.getAfternoonTo().getMinute();
-      } else {
-        endTimeHour = 18;
-        endTimeMin = 0;
+    List<ICalendarEvent> dayPlanningList =
+        weeklyPlanningService.findDayPlanning(
+            weeklyPlanning, leave.getIcalendarEvent().getEndDateTime().toLocalDate());
+    if (dayPlanningList != null && !dayPlanningList.isEmpty()) {
+      for (ICalendarEvent dayPlanning : dayPlanningList) {
+        if (leave.getEndOnSelect() == LeaveRequestRepository.SELECT_MORNING) {
+          if (dayPlanning.getSubject().endsWith(WeeklyPlanningServiceImp.MORNING)
+              && weeklyPlanningService.validateTime(dayPlanning.getEndDateTime())) {
+            endTimeHour = dayPlanning.getEndDateTime().getHour();
+            endTimeMin = dayPlanning.getEndDateTime().getMinute();
+          } else {
+            endTimeHour = 12;
+            endTimeMin = 0;
+          }
+        } else {
+          if (dayPlanning.getSubject().endsWith(WeeklyPlanningServiceImp.AFTERNOON)
+              && weeklyPlanningService.validateTime(dayPlanning.getEndDateTime())) {
+            endTimeHour = dayPlanning.getEndDateTime().getHour();
+            endTimeMin = dayPlanning.getEndDateTime().getMinute();
+          } else {
+            endTimeHour = 18;
+            endTimeMin = 0;
+          }
+        }
       }
     }
-
     return LocalDateTime.of(
-        leave.getToDateT().toLocalDate(), LocalTime.of(endTimeHour, endTimeMin));
+        leave.getIcalendarEvent().getEndDateTime().toLocalDate(),
+        LocalTime.of(endTimeHour, endTimeMin));
   }
 
   @Override
@@ -599,8 +632,8 @@ public class LeaveServiceImpl implements LeaveService {
       throws AxelorException {
     BigDecimal leaveDays = BigDecimal.ZERO;
     WeeklyPlanning weeklyPlanning = employee.getWeeklyPlanning();
-    LocalDate leaveFrom = leaveRequest.getFromDateT().toLocalDate();
-    LocalDate leaveTo = leaveRequest.getToDateT().toLocalDate();
+    LocalDate leaveFrom = leaveRequest.getIcalendarEvent().getStartDateTime().toLocalDate();
+    LocalDate leaveTo = leaveRequest.getIcalendarEvent().getEndDateTime().toLocalDate();
 
     LocalDate itDate = fromDate;
     if (fromDate.isBefore(leaveFrom) || fromDate.equals(leaveFrom)) {
@@ -645,23 +678,17 @@ public class LeaveServiceImpl implements LeaveService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void cancel(LeaveRequest leaveRequest) throws AxelorException {
-
     checkCompany(leaveRequest);
     if (leaveRequest.getLeaveReason().getManageAccumulation()) {
       manageCancelLeaves(leaveRequest);
     }
 
-    if (leaveRequest.getIcalendarEvent() != null) {
-      ICalendarEvent event = leaveRequest.getIcalendarEvent();
-      leaveRequest.setIcalendarEvent(null);
-      icalEventRepo.remove(icalEventRepo.find(event.getId()));
-    }
     leaveRequest.setStatusSelect(LeaveRequestRepository.STATUS_CANCELED);
-    leaveRequestRepo.save(leaveRequest);
 
     if (leaveRequest.getLeaveReason().getManageAccumulation()) {
       updateDaysToValidate(getLeaveLine(leaveRequest));
     }
+    leaveRequestRepo.save(leaveRequest);
   }
 
   @Override
@@ -691,11 +718,10 @@ public class LeaveServiceImpl implements LeaveService {
     leaveRequest.setStatusSelect(LeaveRequestRepository.STATUS_AWAITING_VALIDATION);
     leaveRequest.setRequestDate(appBaseService.getTodayDate(leaveRequest.getCompany()));
 
-    leaveRequestRepo.save(leaveRequest);
-
     if (leaveRequest.getLeaveReason().getManageAccumulation()) {
       updateDaysToValidate(getLeaveLine(leaveRequest));
     }
+    leaveRequestRepo.save(leaveRequest);
   }
 
   @Override
@@ -796,7 +822,7 @@ public class LeaveServiceImpl implements LeaveService {
   public boolean willHaveEnoughDays(LeaveRequest leaveRequest) {
 
     LocalDateTime todayDate = appBaseService.getTodayDateTime().toLocalDateTime();
-    LocalDateTime beginDate = leaveRequest.getFromDateT();
+    LocalDateTime beginDate = leaveRequest.getIcalendarEvent().getStartDateTime();
 
     int interval =
         (beginDate.getYear() - todayDate.getYear()) * 12
@@ -880,8 +906,8 @@ public class LeaveServiceImpl implements LeaveService {
 
     if (ObjectUtils.notEmpty(leaves)) {
       for (LeaveRequest leave : leaves) {
-        LocalDate from = leave.getFromDateT().toLocalDate();
-        LocalDate to = leave.getToDateT().toLocalDate();
+        LocalDate from = leave.getIcalendarEvent().getStartDateTime().toLocalDate();
+        LocalDate to = leave.getIcalendarEvent().getEndDateTime().toLocalDate();
         if ((from.isBefore(date) && to.isAfter(date)) || from.isEqual(date) || to.isEqual(date)) {
           leavesList.add(leave);
         }
@@ -921,16 +947,31 @@ public class LeaveServiceImpl implements LeaveService {
   }
 
   protected boolean isDatesNonOverlapped(LeaveRequest request1, LeaveRequest request2) {
-    return request2.getToDateT().isBefore(request1.getFromDateT())
-        || request1.getToDateT().isBefore(request2.getFromDateT())
-        || request1.getToDateT().isBefore(request1.getFromDateT())
-        || request2.getToDateT().isBefore(request2.getFromDateT());
+    return request2
+            .getIcalendarEvent()
+            .getEndDateTime()
+            .isBefore(request1.getIcalendarEvent().getStartDateTime())
+        || request1
+            .getIcalendarEvent()
+            .getEndDateTime()
+            .isBefore(request2.getIcalendarEvent().getStartDateTime())
+        || request1
+            .getIcalendarEvent()
+            .getEndDateTime()
+            .isBefore(request1.getIcalendarEvent().getStartDateTime())
+        || request2
+            .getIcalendarEvent()
+            .getEndDateTime()
+            .isBefore(request2.getIcalendarEvent().getStartDateTime());
   }
 
   protected boolean isSelectsNonOverlapped(LeaveRequest request1, LeaveRequest request2) {
     return request1.getEndOnSelect() == LeaveRequestRepository.SELECT_MORNING
         && request2.getStartOnSelect() == LeaveRequestRepository.SELECT_AFTERNOON
-        && request1.getToDateT().isEqual(request2.getFromDateT());
+        && request1
+            .getIcalendarEvent()
+            .getEndDateTime()
+            .isEqual(request2.getIcalendarEvent().getStartDateTime());
   }
 
   @Override
@@ -997,5 +1038,81 @@ public class LeaveServiceImpl implements LeaveService {
           TraceBackRepository.CATEGORY_NO_VALUE,
           I18n.get(HumanResourceExceptionMessage.LEAVE_REQUEST_NO_COMPANY));
     }
+  }
+
+  public ICalendarEvent createIcalendarEvent(
+      ICalendarEvent icalendarEvent, Employee employee, LeaveReason leaveReason) {
+    if (icalendarEvent == null || icalendarEvent.getId() == null) {
+      icalendarEvent = new ICalendarEvent();
+    }
+    icalendarEvent.setTypeSelect(ICalendarEventRepository.TYPE_LEAVE);
+    icalendarEvent.setDisponibilitySelect(ICalendarEventRepository.DISPONIBILITY_BUSY);
+    icalendarEvent.setVisibilitySelect(ICalendarEventRepository.VISIBILITY_PUBLIC);
+    icalendarEvent.setSubject(String.format("%s %s", employee.getName(), leaveReason.getName()));
+    icalendarEvent.setDescription(leaveReason.getName() + " " + employee.getName());
+    return icalendarEvent;
+  }
+
+  @Override
+  @Transactional
+  public LeaveRequest setCalendarValues(LeaveRequest leave) {
+    Employee employee = leave.getEmployee();
+    if (employee == null || employee.getUser() == null) {
+      return null;
+    }
+    ICalendarEvent icalendarEvent = leave.getIcalendarEvent();
+    LeaveReason leaveReason = leave.getLeaveReason();
+    icalendarEvent.setCalendar(employee.getUser().getiCalendar());
+    icalendarEvent.setUser(leave.getEmployee().getUser());
+
+    WeeklyPlanning weeklyPlanning = employee.getWeeklyPlanning();
+    icalendarEvent = createIcalendarEvent(icalendarEvent, employee, leaveReason);
+    LocalDateTime fromDateTime;
+    LocalDateTime toDateTime;
+    if (leaveReason.getUnitSelect() == LeaveReasonRepository.UNIT_SELECT_DAYS) {
+      fromDateTime = getDefaultStart(weeklyPlanning, leave);
+      toDateTime = setDateLocalTime(getDefaultEnd(weeklyPlanning, leave));
+    } else {
+      fromDateTime = leave.getIcalendarEvent().getStartDateTime();
+      toDateTime = leave.getIcalendarEvent().getEndDateTime();
+    }
+
+    icalendarEvent.setStartDateTime(fromDateTime);
+    icalendarEvent.setEndDateTime(toDateTime);
+
+    icalEventRepo.save(icalendarEvent);
+    leave.setIcalendarEvent(icalendarEvent);
+    return leave;
+  }
+
+  private LocalDateTime setDateLocalTime(LocalDateTime localDateTime) {
+    return ((localDateTime.toLocalTime() != LocalTime.of(0, 0))
+        ? localDateTime
+        : LocalDateTime.of(localDateTime.toLocalDate(), LocalTime.of(12, 59, 59)));
+  }
+
+  @Override
+  public LeaveRequest setLeaveRequest(LeaveRequest leave, Map<String, Object> event) {
+    if (event != null && event.get("startDateTime") != null) {
+      leave
+          .getIcalendarEvent()
+          .setStartDateTime(
+              LocalDateTime.of(
+                  LocalDate.parse(((String) event.get("startDateTime")).split("T")[0]),
+                  leave.getIcalendarEvent().getStartDateTime().toLocalTime()));
+    }
+    if (event != null && event.get("endDateTime") != null) {
+      LocalTime endTime = leave.getIcalendarEvent().getStartDateTime().toLocalTime();
+      if (leave.getLeaveReason().getUnitSelect() == LeaveReasonRepository.UNIT_SELECT_DAYS
+          && weeklyPlanningService.validateTime(leave.getIcalendarEvent().getStartDateTime())) {
+        endTime = LocalTime.of(12, 59, 59);
+      }
+      leave
+          .getIcalendarEvent()
+          .setEndDateTime(
+              LocalDateTime.of(
+                  LocalDate.parse(((String) event.get("endDateTime")).split("T")[0]), endTime));
+    }
+    return leave;
   }
 }

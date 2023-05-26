@@ -717,4 +717,21 @@
     <option value="5">EXPORT</option>
   </selection>
 
+  <selection name="base.event.recurrence.type">
+    <option value="1">Every day</option>
+    <option value="2">Every week</option>
+    <option value="3">Every month</option>
+    <option value="4">Every year</option>
+  </selection>
+
+  <selection name="base.event.recurrence.month.repeat.type">
+    <option value="1">Day of month</option>
+    <option value="2">Day of week</option>
+  </selection>
+
+  <selection name="base.event.recurrence.end.type">
+    <option value="1">After n repetitions</option>
+    <option value="2">At the date</option>
+  </selection>
+
 </object-views>

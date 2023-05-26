@@ -63,8 +63,8 @@ public abstract class EmployeeComputeDaysLeaveService {
         .filter(
             "self.employee = ?1 AND self.duration > 0"
                 + " AND self.statusSelect = ?2"
-                + " AND (self.fromDateT BETWEEN ?3 AND ?4 OR self.toDateT BETWEEN ?3 AND ?4 OR ?3 BETWEEN self.fromDateT"
-                + " AND self.toDateT OR ?4 BETWEEN self.fromDateT AND self.toDateT)",
+                + " AND (self.icalendarEvent.startDateTime BETWEEN ?3 AND ?4 OR self.icalendarEvent.endDateTime BETWEEN ?3 AND ?4 OR ?3 BETWEEN self.icalendarEvent.startDateTime"
+                + " AND self.icalendarEvent.endDateTime OR ?4 BETWEEN self.icalendarEvent.startDateTime AND self.icalendarEvent.endDateTime)",
             employee,
             LeaveRequestRepository.STATUS_VALIDATED,
             fromDate,

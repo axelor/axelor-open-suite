@@ -49,8 +49,8 @@ public class EmployeeComputeDaysLeaveLunchVoucherService extends EmployeeCompute
       throws AxelorException {
     return leaveService.computeDuration(
         leave,
-        leave.getFromDateT(),
-        leave.getToDateT(),
+        leave.getIcalendarEvent().getStartDateTime(),
+        leave.getIcalendarEvent().getEndDateTime(),
         LeaveRequestRepository.SELECT_MORNING,
         LeaveRequestRepository.SELECT_AFTERNOON);
   }

@@ -37,6 +37,8 @@ import com.axelor.apps.hr.db.repo.ExpenseHRRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.db.repo.HrBatchHRRepository;
 import com.axelor.apps.hr.db.repo.HrBatchRepository;
+import com.axelor.apps.hr.db.repo.LeaveRequestRepo;
+import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.db.repo.PartnerHRRepository;
 import com.axelor.apps.hr.db.repo.ProjectHRRepository;
 import com.axelor.apps.hr.db.repo.ProjectPlanningTimeHRRepository;
@@ -150,5 +152,6 @@ public class HumanResourceModule extends AxelorModule {
     bind(MoveReverseServiceBankPaymentImpl.class).to(ExpenseMoveReverseServiceImpl.class);
     bind(ProjectPlanningTimeComputeNameService.class)
         .to(ProjectPlanningTimeComputeNameServiceImpl.class);
+    bind(LeaveRequestRepository.class).to(LeaveRequestRepo.class);
   }
 }

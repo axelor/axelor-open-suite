@@ -3,11 +3,11 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
-  <module name="crm" package="com.axelor.apps.crm.db"/>
+  <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="RecurrenceConfiguration">
 
-    <integer name="recurrenceType" title="Recurrence" selection="crm.event.recurrence.type"/>
+    <integer name="recurrenceType" title="Recurrence" selection="base.event.recurrence.type"/>
     <integer name="periodicity" title="Repeat every"/>
     <boolean name="sunday" title="Su"/>
     <boolean name="monday" title="Mo"/>
@@ -17,9 +17,9 @@
     <boolean name="friday" title="Fr"/>
     <boolean name="saturday" title="Sa"/>
     <integer name="monthRepeatType" title="Repeat every:"
-      selection="crm.event.recurrence.month.repeat.type"/>
+      selection="base.event.recurrence.month.repeat.type"/>
     <date name="startDate" title="Start date"/>
-    <integer name="endType" title="End" selection="crm.event.recurrence.end.type"/>
+    <integer name="endType" title="End" selection="base.event.recurrence.end.type"/>
     <integer name="repetitionsNumber" title="Repetitions number"/>
     <date name="endDate" title="End date"/>
     <string name="recurrenceName" title="Recurrence name" namecolumn="true"/>

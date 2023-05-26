@@ -42,6 +42,7 @@ import com.axelor.apps.crm.service.CrmReportingService;
 import com.axelor.apps.crm.service.CrmReportingServiceImpl;
 import com.axelor.apps.crm.service.EventService;
 import com.axelor.apps.crm.service.EventServiceImpl;
+import com.axelor.apps.crm.service.ICalendarEventServiceCRMImpl;
 import com.axelor.apps.crm.service.LeadService;
 import com.axelor.apps.crm.service.LeadServiceImpl;
 import com.axelor.apps.crm.service.OpportunityService;
@@ -50,6 +51,7 @@ import com.axelor.apps.crm.service.PartnerCrmService;
 import com.axelor.apps.crm.service.PartnerCrmServiceImpl;
 import com.axelor.apps.crm.service.app.AppCrmService;
 import com.axelor.apps.crm.service.app.AppCrmServiceImpl;
+import com.axelor.base.service.ical.ICalendarEventServiceImpl;
 
 public class CrmModule extends AxelorModule {
 
@@ -70,5 +72,6 @@ public class CrmModule extends AxelorModule {
     bind(ConvertLeadWizardService.class).to(ConvertLeadWizardServiceImpl.class);
     bind(ConvertWizardOpportunityService.class).to(ConvertWizardOpportunityServiceImpl.class);
     bind(PartnerCrmService.class).to(PartnerCrmServiceImpl.class);
+    bind(ICalendarEventServiceImpl.class).to(ICalendarEventServiceCRMImpl.class);
   }
 }

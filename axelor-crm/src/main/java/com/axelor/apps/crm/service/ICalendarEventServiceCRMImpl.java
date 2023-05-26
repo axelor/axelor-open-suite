@@ -18,36 +18,23 @@
  */
 package com.axelor.apps.crm.service;
 
-import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.ICalendarEvent;
 import com.axelor.apps.crm.db.Event;
-import com.axelor.auth.db.User;
-import com.axelor.message.db.EmailAddress;
-import com.axelor.meta.CallMethod;
-import java.time.LocalDateTime;
+import com.axelor.base.service.ical.ICalendarEventServiceImpl;
 
-public interface EventService {
+public class ICalendarEventServiceCRMImpl extends ICalendarEventServiceImpl {
 
-  void saveEvent(Event event);
-
-  Event createEvent(
-      LocalDateTime fromDateTime,
-      LocalDateTime toDateTime,
-      User user,
-      String description,
-      int type,
-      String subject);
-
-  @CallMethod
-  String getInvoicingAddressFullName(Partner partner);
-
-  public EmailAddress getEmailAddress(Event event);
-
-  public void fillEventDates(Event event) throws AxelorException;
-
-  public void planEvent(Event event);
-
-  public void realizeEvent(Event event);
-
-  public void cancelEvent(Event event);
+  @Override
+  public ICalendarEvent setCalenderValues(ICalendarEvent event, ICalendarEvent child) {
+    if (event != null && event.getClass().equals(ICalendarEvent.class)) {
+      return child;
+    }
+    Event crmEvent = (Event) event;
+    Event crmChild = (Event) child;
+    crmChild.setTeam(crmEvent.getTeam());
+    crmChild.setPartner(crmEvent.getPartner());
+    crmChild.setContactPartner(crmEvent.getContactPartner());
+    crmChild.setEventLead(crmEvent.getEventLead());
+    return crmChild;
+  }
 }

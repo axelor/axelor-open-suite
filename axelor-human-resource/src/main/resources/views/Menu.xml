@@ -173,6 +173,18 @@
     <view type="form" name="weekly-planning-form"/>
   </action-view>
 
+  <menuitem name="weekly-planning-calendar" parent="plannings-all"
+    title="Weekly planning Calendar" action="weekly.planning.icalendar.event.calender"/>
+
+  <action-view name="weekly.planning.icalendar.event.calender"
+    title="Weekly Planning Calendar" model="com.axelor.apps.base.db.ICalendarEvent">
+    <view type="calendar" name="icalendar-event-week-planning-calendar"/>
+    <view type="grid" name="calendar-event-grid"/>
+    <view type="form" name="calendar-event-form"/>
+    <domain>self.weeklyPlanning != null</domain>
+    <context name="_createRecurr" expr="true"/>
+  </action-view>
+
   <menuitem name="hr-root-emp-mgt-conf-file-type" parent="hr-root-emp-mgt-conf"
     title="File types" action="hr.root.emp.mgt.conf.file.type" order="1000"/>
 
@@ -328,6 +340,17 @@
   <action-method name="action.leave.request.method.leave.calendar">
     <call class="com.axelor.apps.hr.web.leave.LeaveController" method="leaveCalendar"/>
   </action-method>
+
+  <menuitem name="leave-request-root-icalendar-event-calendar" parent="leave-request-root"
+    title="Calendar Leaves" action="leave.request.icalendar.event.calendar"/>
+
+  <action-view name="leave.request.icalendar.event.calendar" title="Calendar Leave"
+    model="com.axelor.apps.base.db.ICalendarEvent">
+    <view type="calendar" name="icalendar-event-leave-request-calendar"/>
+    <view type="grid" name="calendar-event-grid"/>
+    <view type="form" name="calendar-event-form"/>
+    <domain>self.typeSelect = 4</domain>
+  </action-view>
 
   <menuitem name="leave-request-to-justify" parent="leave-request-root"
     title="Leave to justify" action="leave.request.to.justify" order="600"/>

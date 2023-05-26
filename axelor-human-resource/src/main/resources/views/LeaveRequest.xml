@@ -4,7 +4,8 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="leave-request-grid" title="Leave Requests"
-    model="com.axelor.apps.hr.db.LeaveRequest" orderBy="-fromDateT,-startOnSelect">
+    model="com.axelor.apps.hr.db.LeaveRequest"
+    orderBy="-icalendarEvent.startDateTime,-startOnSelect">
     <hilite color="danger" if="statusSelect == 4"/>
     <hilite color="success" if="statusSelect == 3"/>
     <hilite color="warning" if="statusSelect == 2"/>
@@ -13,21 +14,23 @@
     <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
     <field name="leaveReason"/>
     <field name="requestDate"/>
-    <field name="fromDateT"/>
+    <field name="icalendarEvent.startDateTime"/>
     <field name="startOnSelect"/>
-    <field name="toDateT"/>
+    <field name="icalendarEvent.endDateTime"/>
     <field name="endOnSelect"/>
     <field name="statusSelect"/>
   </grid>
 
   <grid name="leave-request-validate-grid" title="Leave Requests"
-    model="com.axelor.apps.hr.db.LeaveRequest" orderBy="-fromDateT,-startOnSelect">
+    model="com.axelor.apps.hr.db.LeaveRequest"
+    orderBy="-icalendarEvent.startDateTime,-startOnSelect">
     <toolbar>
       <button name="showSubordinateLeaveToValidateBtn"
         title="Show leaves to be validated by my subordinates"
         onClick="com.axelor.apps.hr.web.leave.LeaveController:showSubordinateLeaves"/>
     </toolbar>
-    <hilite background="danger" if="$moment(fromDateT).diff(todayDate,'days') &lt;= 0"/>
+    <hilite background="danger"
+      if="$moment(icalendarEvent.startDateTime).diff(todayDate,'days') &lt;= 0"/>
     <hilite background="warning"
       if="$moment(todayDate).diff(requestDate,'days') &gt;= 7 || $moment(todayDate).diff(requestDate,'days') &gt;= 15"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
@@ -36,18 +39,18 @@
       onChange="action-leave-request-validate-dates"/>
     <field name="leaveReason"/>
     <field name="requestDate"/>
-    <field name="fromDateT" onChange="action-leave-request-validate-dates"/>
+    <field name="icalendarEvent.startDateTime" onChange="action-leave-request-validate-dates"/>
     <field name="startOnSelect"/>
-    <field name="toDateT" onChange="action-leave-request-validate-dates"/>
+    <field name="icalendarEvent.endDateTime" onChange="action-leave-request-validate-dates"/>
     <field name="endOnSelect"/>
     <field name="statusSelect"/>
   </grid>
 
   <form name="leave-request-form" title="Leave Request"
-    model="com.axelor.apps.hr.db.LeaveRequest"
-    onNew="action-leave-request-record-default,action-leave-request-attrs-buttons, action-leave-request-record-to-justify, action-leave-request-method-leave-reason-to-justify"
+    model="com.axelor.apps.hr.db.LeaveRequest" onNew="action-leave-request-group-onnew"
     onLoad="action-leave-request-group-on-form-load"
-    onSave="action-leave-request-validate-dates-on-save" canCopy="false">
+    onSave="action-leave-request-validate-dates-on-save,action-leave-request-method-set-values-onsave"
+    canCopy="false">
 
     <panel sidebar="true" name="actionsPanel" stacked="true">
       <button name="sendLeaveBtn" onClick="action-leave-request-group-send" colSpan="4"
@@ -91,12 +94,13 @@
       </panel>
       <field name="injectConsumeSelect" hidden="true"
         onChange="action-leave-request-attrs-inject-change"/>
-      <spacer name="injectConsumeSelectSpacer"/>
+      <field name="icalendarEvent" hidden="true"/>
 
       <panel name="fromDatesPanel" colSpan="12">
         <panel name="fromDatesFirstInferiorPanel" hideIf="leaveReason.unitSelect == 2"
           colSpan="12">
-          <field name="fromDateT"
+          <field name="icalendarEvent.startDateTime" readonly="false" title="From"
+            required="true"
             onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration"
             widget="date"/>
           <field name="startOnSelect"
@@ -104,7 +108,8 @@
         </panel>
         <panel name="fromDatesSecondInferiorPanel" showIf="leaveReason.unitSelect == 2"
           colSpan="12">
-          <field name="fromDateT"
+          <field name="icalendarEvent.startDateTime" readonly="false" title="From"
+            required="true"
             onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration"
             widget="datetime"/>
         </panel>
@@ -112,7 +117,7 @@
       <panel name="toDatesPanel" colSpan="12">
         <panel name="toDatesFirstInferiorPanel" hideIf="leaveReason.unitSelect == 2"
           colSpan="12">
-          <field name="toDateT"
+          <field name="icalendarEvent.endDateTime" readonly="false" title="To (included)"
             onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration"
             widget="date"/>
           <field name="endOnSelect"
@@ -120,7 +125,7 @@
         </panel>
         <panel name="toDatesSecondInferiorPanel" showIf="leaveReason.unitSelect == 2"
           colSpan="12">
-          <field name="toDateT"
+          <field name="icalendarEvent.endDateTime" readonly="false" title="To (included)"
             onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration"
             widget="datetime"/>
         </panel>
@@ -169,12 +174,21 @@
   </form>
 
   <calendar name="calendar-event-leave-request" model="com.axelor.apps.hr.db.LeaveRequest"
-    title="Calendar" eventStart="fromDateT" eventStop="toDateT" colorBy="employee" editable="false">
+    title="Calendar" eventStart="icalendarEvent.startDateTime"
+    eventStop="icalendarEvent.endDateTime" colorBy="employee" editable="false">
     <field name="employee"/>
   </calendar>
 
+  <action-group name="action-leave-request-group-onnew">
+    <action name="action-leave-request-record-default"/>
+    <action name="action-leave-request-attrs-buttons"/>
+    <action name="action-leave-request-record-to-justify"/>
+    <action name="action-leave-request-method-leave-reason-to-justify"/>
+  </action-group>
+
   <action-group name="action-leave-request-group-send">
-    <action name="action-leave-request-validate-dates-on-save"/>
+    <action name="action-leave-request-validate-dates-on-save" if="icalendarEvent != null"/>
+    <action name="action-leave-request-method-set-values-onsave"/>
     <action name="save"/>
     <action name="action-leave-request-method-sent-leave-request"/>
     <action name="action-leave-request-attrs-buttons"/>
@@ -183,7 +197,8 @@
   </action-group>
 
   <action-group name="action-leave-request-group-validate">
-    <action name="action-leave-request-validate-dates-on-save"/>
+    <action name="action-leave-request-validate-dates-on-save" if="icalendarEvent != null"/>
+    <action name="action-leave-request-method-set-values-onsave"/>
     <action name="save"/>
     <action name="action-leave-request-method-validate-leave-request"/>
     <action name="action-leave-request-attrs-buttons"/>
@@ -192,6 +207,7 @@
   </action-group>
 
   <action-group name="action-leave-request-group-refuse">
+    <action name="action-leave-request-method-set-values-onsave"/>
     <action name="save"/>
     <action name="action-leave-request-method-refuse-leave-request"/>
     <action name="action-leave-request-attrs-buttons"/>
@@ -201,6 +217,7 @@
   </action-group>
 
   <action-group name="action-leave-request-group-cancel">
+    <action name="action-leave-request-method-set-values-onsave"/>
     <action name="save"/>
     <action name="action-leave-request-method-cancel-leave-request"/>
     <action name="save"/>
@@ -222,12 +239,14 @@
     <field name="employee" expr="eval:__user__.employee"/>
     <field name="company"
       expr="eval: __user__.employee?.mainEmploymentContract?.payCompany ?: __user__.activeCompany"/>
+    <field name="icalendarEvent" expr="eval: _icalendarEvent" if="_icalendarEvent"/>
   </action-record>
 
   <action-record name="action-leave-request-record-to-justify"
     model="com.axelor.apps.hr.db.LeaveRequest">
     <field name="toJustifyLeaveReason" expr="eval: to_justify_leave_reason"/>
-    <field name="fromDateT" expr="eval:__config__.date" if="to_justify_leave_reason"/>
+    <field name="icalendarEvent.startDateTime" expr="eval:__config__.date"
+      if="to_justify_leave_reason"/>
   </action-record>
 
   <action-attrs name="action-leave-request-attrs-domain-leave-request-select">
@@ -286,13 +305,13 @@
 
   <action-validate name="action-leave-request-validate-dates">
     <error
-      if="( toDateT &lt; fromDateT || (toDateT == fromDateT &amp;&amp; startOnSelect > endOnSelect)) &amp;&amp; fromDateT != null &amp;&amp; toDateT != null"
+      if="( icalendarEvent.endDateTime &lt; icalendarEvent.startDateTime || (icalendarEvent.endDateTime == icalendarEvent.startDateTime &amp;&amp; startOnSelect > endOnSelect)) &amp;&amp; icalendarEvent.startDateTime != null &amp;&amp; icalendarEvent.endDateTime != null"
       message="Invalid dates"/>
   </action-validate>
 
   <action-validate name="action-leave-request-validate-dates-on-save">
     <error message="Invalid dates"
-      if="toDateT &lt; fromDateT || (toDateT == fromDateT &amp;&amp; startOnSelect &gt; endOnSelect)"/>
+      if="icalendarEvent.endDateTime &lt; icalendarEvent.startDateTime || (icalendarEvent.endDateTime == icalendarEvent.startDateTime &amp;&amp; startOnSelect &gt; endOnSelect)"/>
     <error message="Duration equals 0" if="duration == 0"/>
   </action-validate>
 
@@ -324,6 +343,10 @@
     <call class="com.axelor.apps.hr.web.leave.LeaveController" method="cancel"/>
   </action-method>
 
+  <action-method name="action-leave-request-method-set-values-onsave">
+    <call class="com.axelor.apps.hr.web.leave.LeaveController" method="setCalendarValues"/>
+  </action-method>
+
   <action-view name="action-leave-request-refusal-popup-form" title="Ground for refusal"
     model="com.axelor.apps.hr.db.LeaveRequest">
     <view type="form" name="popup-leave-request-refusal-form"/>
@@ -336,9 +359,11 @@
   </action-view>
 
   <action-attrs name="action-leave-request-attrs-inject-change">
-    <attribute name="hidden" for="fromDateT" expr="eval: injectConsumeSelect == 2"/>
+    <attribute name="hidden" for="icalendarEvent.startDateTime"
+      expr="eval: injectConsumeSelect == 2"/>
     <attribute name="hidden" for="startOnSelect" expr="eval: injectConsumeSelect == 2"/>
-    <attribute name="hidden" for="toDateT" expr="eval: injectConsumeSelect == 2"/>
+    <attribute name="hidden" for="icalendarEvent.endDateTime"
+      expr="eval: injectConsumeSelect == 2"/>
     <attribute name="hidden" for="endOnSelect" expr="eval: injectConsumeSelect == 2"/>
     <attribute name="readonly" for="duration" expr="eval: injectConsumeSelect != 2"/>
   </action-attrs>

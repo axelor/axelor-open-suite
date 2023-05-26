@@ -11,7 +11,8 @@
   <form name="weekly-planning-form" title="Weekly Planning"
     model="com.axelor.apps.base.db.WeeklyPlanning"
     onNew="com.axelor.apps.base.web.weeklyplanning.WeeklyPlanningController:initPlanning"
-    onSave="com.axelor.apps.base.web.weeklyplanning.WeeklyPlanningController:checkPlanning">
+    onLoad="action-weekly-planning-method-set-time-values"
+    onSave="save, action-weekly-planning-group-onsave">
     <panel name="mainPanel">
       <field name="name"/>
       <field name="typeSelect" if-module="axelor-production"
@@ -21,7 +22,27 @@
       <field name="leaveCoef" if-module="axelor-human-resource" hideIf="typeSelect == 2"/>
     </panel>
     <panel-related name="weekDaysPanel" field="weekDays" editable="true"
-      grid-view="day-planning-grid" form-view="day-planning-form"/>
+      grid-view="icalendar-event-week-planning-grid" form-view="icalendar-event-week-planning-form"/>
   </form>
+
+  <action-group name="action-weekly-planning-group-onsave">
+    <action name="action-weekly-planning-method-check-planning"/>
+    <action name="action-weekly-planning-method-set-event-values"/>
+  </action-group>
+
+  <action-method name="action-weekly-planning-method-check-planning">
+    <call class="com.axelor.apps.base.web.weeklyplanning.WeeklyPlanningController"
+      method="checkPlanning"/>
+  </action-method>
+
+  <action-method name="action-weekly-planning-method-set-event-values">
+    <call class="com.axelor.apps.base.web.weeklyplanning.WeeklyPlanningController"
+      method="setICalEventValues"/>
+  </action-method>
+
+  <action-method name="action-weekly-planning-method-set-time-values">
+    <call class="com.axelor.apps.base.web.weeklyplanning.WeeklyPlanningController"
+      method="setTimeValues"/>
+  </action-method>
 
 </object-views>

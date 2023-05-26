@@ -1,15 +1,29 @@
-"weeklyPlanning.importId";"nameSelect";"morningFrom";"morningTo";"afternoonFrom";"afternoonTo";"importId"
-1;"monday";"08:30:00";"12:00:00";"14:00:00";"17:30:00";1
-1;"tuesday";"08:30:00";"12:00:00";"14:00:00";"17:30:00";2
-1;"wednesday";"08:30:00";"12:00:00";"14:00:00";"17:30:00";3
-1;"thursday";"08:30:00";"12:00:00";"14:00:00";"17:30:00";4
-1;"friday";"08:30:00";"12:00:00";"14:00:00";"17:30:00";5
-1;"saturday";;;;;6
-1;"sunday";;;;;7
-2;"monday";"08:30:00";"12:00:00";;;8
-2;"tuesday";"08:30:00";"12:00:00";;;9
-2;"wednesday";"08:30:00";"12:00:00";;;10
-2;"thursday";"08:30:00";"12:00:00";;;11
-2;"friday";"08:30:00";"12:00:00";;;12
-2;"saturday";;;;;13
-2;"sunday";;;;;14
+weeklyPlanning.importId;subject;starTime;endTime;importId;sequence;typeSelect
+1;"monday morning";"08:30";"12:00";1;0;0
+1;"monday afternoon";"14:00";"17:30";2;1;0
+1;"tuesday morning";"08:30";"12:00";3;2;0
+1;"tuesday afternoon";"14:00";"17:30";4;3;0
+1;"wednesday morning";"08:30";"12:00";5;4;0
+1;"wednesday afternoon";"14:00";"17:30";6;5;0
+1;"thursday morning";"08:30";"12:00";7;6;0
+1;"thursday afternoon";"14:00";"17:30";8;7;0
+1;"friday morning";"08:30";"12:00";9;8;0
+1;"friday afternoon";"14:00";"17:30";10;9;0
+1;"saturday morning";"00:00";"00:00";11;10;0
+1;"saturday afternoon";"00:00";"00:00";12;11;0
+1;"sunday morning";"00:00";"00:00";13;12;0
+1;"sunday afternoon";"00:00";"00:00";14;13;0
+2;"monday morning";"08:30";"12:00";15;0;0
+2;"monday afternoon";"14:00";"17:30";16;1;0
+2;"tuesday morning";"08:30";"12:00";17;2;0
+2;"tuesday afternoon";"14:00";"17:30";18;3;0
+2;"wednesday morning";"08:30";"12:00";19;4;0
+2;"wednesday afternoon";"14:00";"17:30";20;5;0
+2;"thursday morning";"08:30";"12:00";21;6;0
+2;"thursday afternoon";"14:00";"17:30";22;7;0
+2;"friday morning";"08:30";"12:00";23;8;0
+2;"friday afternoon";"14:00";"17:30";24;9;0
+2;"saturday morning";"00:00";"00:00";25;10;0
+2;"saturday afternoon";"00:00";"00:00";26;11;0
+2;"sunday morning";"00:00";"00:00";27;12;0
+2;"sunday afternoon";"00:00";"00:00";28;13;0

@@ -29,8 +29,13 @@
     <string name="subjectTeam" large="true"/>
     <integer name="typeSelect" title="Type" selection="icalendar.event.type.select"
       required="true"/>
+    <integer name="sequence"/>
     <many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User"
       title="Assigned to"/>
+    <many-to-one name="recurrenceConfiguration"
+      ref="com.axelor.apps.base.db.RecurrenceConfiguration"/>
+    <many-to-one name="parentEvent" ref="com.axelor.apps.base.db.ICalendarEvent"/>
+    <many-to-one name="weeklyPlanning" ref="com.axelor.apps.base.db.WeeklyPlanning"/>
     <finder-method name="findByUid" using="uid"/>
 
     <extra-code>
@@ -46,6 +51,29 @@
 	  		public static final Integer VISIBILITY_PRIVATE = 2;
 	  		public static final Integer DISPONIBILITY_BUSY = 1;
 	  		public static final Integer DISPONIBILITY_AVAILABLE = 2;
+
+			public static final String MONDAY = "monday";
+			public static final String TUESDAY = "tuesday";
+			public static final String WEDNESDAY = "wednesday";
+			public static final String THURSDAY = "thursday";
+			public static final String FRIDAY = "friday";
+			public static final String SATURDAY = "saturday";
+			public static final String SUNDAY = "sunday";
+
+			public static final String MONDAY_MORNING = "monday morning";
+			public static final String MONDAY_AFTERNOON = "monday afternoon";
+			public static final String TUESDAY_MORNING = "tuesday morning";
+			public static final String TUESDAY_AFTERNOON = "tuesday afternoon";
+			public static final String WEDNESDAY_MORNING = "wednesday morning";
+			public static final String WEDNESDAY_AFTERNOON = "wednesday afternoon";
+			public static final String THURSDAY_MORNING = "thursday morning";
+			public static final String THURSDAY_AFTERNOON = "thursday afternoon";
+			public static final String FRIDAY_MORNING = "friday morning";
+			public static final String FRIDAY_AFTERNOON = "friday afternoon";
+			public static final String SATURDAY_MORNING = "saturday morning";
+			public static final String SATURDAY_AFTERNOON = "saturday afternoon";
+			public static final String SUNDAY_MORNING = "sunday morning";
+			public static final String SUNDAY_AFTERNOON = "sunday afternoon";
 	  ]]>
     </extra-code>
 

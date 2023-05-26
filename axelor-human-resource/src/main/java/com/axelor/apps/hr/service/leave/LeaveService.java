@@ -31,6 +31,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import wslite.json.JSONException;
 
 public interface LeaveService {
@@ -121,4 +122,8 @@ public interface LeaveService {
   void updateDaysToValidate(LeaveLine leaveLine);
 
   String getLeaveCalendarDomain(User user);
+
+  public LeaveRequest setCalendarValues(LeaveRequest leave);
+
+  public LeaveRequest setLeaveRequest(LeaveRequest leave, Map<String, Object> event);
 }

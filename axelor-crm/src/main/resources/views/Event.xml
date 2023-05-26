@@ -382,23 +382,11 @@
   <action-group name="action-event-group-on-save">
     <action name="action-event-record-compute-attendee-list"/>
     <action name="action-event-record-subjectTeam"/>
-    <action name="action-event-view-modifications-recurrence"
+    <action name="action-icalendar-event-modifications-recurrence"
       if="recurrenceConfiguration &amp;&amp; id > 0"/>
     <action name="action-event-attrs-show-past-event-text"/>
     <action name="action-event-method-fill-event-related-dates"/>
   </action-group>
-
-  <action-view name="action-event-view-modifications-recurrence"
-    title="Apply modifications" model="com.axelor.utils.db.Wizard">
-    <view type="form" name="modifications-assistant-form"/>
-    <view-param name="popup" value="reload"/>
-    <view-param name="forceEdit" value="true"/>
-    <view-param name="width" value="800"/>
-    <view-param name="show-toolbar" value="false"/>
-    <view-param name="popup-save" value="false"/>
-    <context name="_idEvent" expr="eval: id"/>
-  </action-view>
-
 
   <action-view name="action-event-view-create-opportunity" title="Create opportunity"
     model="com.axelor.apps.crm.db.Opportunity">
@@ -417,21 +405,6 @@
     <context name="_typeSelect" expr="eval: typeSelect"/>
     <context name="_relatedToSelectId" expr="eval: relatedToSelectId"/>
   </action-view>
-
-  <form model="com.axelor.utils.db.Wizard" title="Apply modifications"
-    name="modifications-assistant-form">
-    <panel name="wizardPanel">
-      <button name="applyToThisBtn" title="Apply changes to this event only" onClick="close"
-        colSpan="12"/>
-      <button name="applyToAllBtn" title="Apply changes to all recurrence's events"
-        onClick="action-event-method-apply-changes-to-all" colSpan="12"/>
-    </panel>
-  </form>
-
-  <action-method name="action-event-method-apply-changes-to-all">
-    <call class="com.axelor.apps.crm.web.EventController" method="applyChangesToAll"/>
-  </action-method>
-
 
   <!-- ACTION GROUP -->
 
@@ -650,10 +623,6 @@
 
   <action-method name="action-event-method-compute-from-calendar">
     <call class="com.axelor.apps.crm.web.EventController" method="computeFromCalendar"/>
-  </action-method>
-
-  <action-method name="action-event-method-generate-recurrence">
-    <call class="com.axelor.apps.crm.web.EventController" method="generateRecurrentEvents"/>
   </action-method>
 
   <action-method name="action-event-method-add-guest">

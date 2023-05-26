@@ -539,4 +539,21 @@ public final class BaseExceptionMessage {
 
   public static final String SWAGGER_NO_RESOURCE_PACKAGES = /*$$(*/
       "Swagger is enabled but not resource packages is specified." /*)*/;
+
+  public static final String EVENT_SAVED = /*$$(*/
+      "Please save the event before setting the recurrence" /*)*/;
+
+  /*
+   * Recurrence
+   */
+  public static final String RECURRENCE_RECURRENCE_TYPE = /*$$(*/
+      "You must choose a recurrence type" /*)*/;
+  public static final String RECURRENCE_PERIODICITY = /*$$(*/
+      "Periodicity must be greater than 0" /*)*/;
+  public static final String RECURRENCE_DAYS_CHECKED = /*$$(*/
+      "You must choose at least one day in the week" /*)*/;
+  public static final String RECURRENCE_REPETITION_NUMBER = /*$$(*/
+      "The number of repetitions must be greater than 0" /*)*/;
+  public static final String RECURRENCE_END_DATE = /*$$(*/
+      "The end date must be after the start date" /*)*/;
 }

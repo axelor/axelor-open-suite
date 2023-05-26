@@ -19,7 +19,7 @@
 package com.axelor.apps.production.service.operationorder;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.DayPlanning;
+import com.axelor.apps.base.db.ICalendarEvent;
 import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
@@ -69,6 +69,9 @@ public class OperationOrderWorkflowService {
   protected WeeklyPlanningService weeklyPlanningService;
   protected ProdProcessLineService prodProcessLineService;
 
+  public static final String MORNING = "morning";
+  public static final String AFTERNOON = "afternoon";
+
   @Inject
   public OperationOrderWorkflowService(
       OperationOrderStockMoveService operationOrderStockMoveService,
@@ -93,16 +96,21 @@ public class OperationOrderWorkflowService {
       throws AxelorException {
     LocalDateTime startDate = operationOrder.getPlannedStartDateT();
     LocalDateTime endDate = operationOrder.getPlannedEndDateT();
-    DayPlanning dayPlanning =
+    List<ICalendarEvent> dayPlanningList =
         weeklyPlanningService.findDayPlanning(weeklyPlanning, startDate.toLocalDate());
-    if (dayPlanning != null) {
-      LocalTime firstPeriodFrom = dayPlanning.getMorningFrom();
-      LocalTime firstPeriodTo = dayPlanning.getMorningTo();
-      LocalTime secondPeriodFrom = dayPlanning.getAfternoonFrom();
-      LocalTime secondPeriodTo = dayPlanning.getAfternoonTo();
+    if (dayPlanningList != null && !dayPlanningList.isEmpty()) {
       LocalTime startDateTime = startDate.toLocalTime();
       LocalTime endDateTime = endDate.toLocalTime();
-
+      LocalTime firstPeriodTo = null;
+      LocalTime secondPeriodFrom = null;
+      for (ICalendarEvent dayPlanning : dayPlanningList) {
+        if (dayPlanning.getSubject().endsWith(MORNING)) {
+          firstPeriodTo = dayPlanning.getEndDateTime().toLocalTime();
+        }
+        if (dayPlanning.getSubject().endsWith(AFTERNOON)) {
+          secondPeriodFrom = dayPlanning.getStartDateTime().toLocalTime();
+        }
+      }
       /*
        * If operation begins inside one period of the machine but finished after that period, then
        * we split the operation
@@ -138,15 +146,25 @@ public class OperationOrderWorkflowService {
    */
   public void planWithPlanning(OperationOrder operationOrder, WeeklyPlanning weeklyPlanning) {
     LocalDateTime startDate = operationOrder.getPlannedStartDateT();
-    DayPlanning dayPlanning =
+    List<ICalendarEvent> dayPlanninglist =
         weeklyPlanningService.findDayPlanning(weeklyPlanning, startDate.toLocalDate());
 
-    if (dayPlanning != null) {
-      LocalTime firstPeriodFrom = dayPlanning.getMorningFrom();
-      LocalTime firstPeriodTo = dayPlanning.getMorningTo();
-      LocalTime secondPeriodFrom = dayPlanning.getAfternoonFrom();
-      LocalTime secondPeriodTo = dayPlanning.getAfternoonTo();
+    if (dayPlanninglist != null && !dayPlanninglist.isEmpty()) {
       LocalTime startDateTime = startDate.toLocalTime();
+      LocalTime firstPeriodFrom = null;
+      LocalTime firstPeriodTo = null;
+      LocalTime secondPeriodFrom = null;
+      LocalTime secondPeriodTo = null;
+      for (ICalendarEvent dayPlanning : dayPlanninglist) {
+        if (dayPlanning.getSubject().endsWith(MORNING)) {
+          firstPeriodFrom = dayPlanning.getStartDateTime().toLocalTime();
+          firstPeriodTo = dayPlanning.getEndDateTime().toLocalTime();
+        }
+        if (dayPlanning.getSubject().endsWith(AFTERNOON)) {
+          secondPeriodFrom = dayPlanning.getStartDateTime().toLocalTime();
+          secondPeriodTo = dayPlanning.getEndDateTime().toLocalTime();
+        }
+      }
 
       /*
        * If the start date is before the start time of the machine (or equal, then the operation
@@ -189,30 +207,36 @@ public class OperationOrderWorkflowService {
   public void searchForNextWorkingDay(
       OperationOrder operationOrder, WeeklyPlanning weeklyPlanning, LocalDateTime startDate) {
     int daysToAddNbr = 0;
-    DayPlanning nextDayPlanning;
+    List<ICalendarEvent> nextDayPlanning;
+    LocalTime morningFrom = null;
+    LocalTime afternoonFrom = null;
+
     /* We will find the next DayPlanning with at least one working period. */
     do {
-
       daysToAddNbr++;
       nextDayPlanning =
           weeklyPlanningService.findDayPlanning(
               weeklyPlanning, startDate.toLocalDate().plusDays(daysToAddNbr));
-    } while (nextDayPlanning.getAfternoonFrom() == null
-        && nextDayPlanning.getMorningFrom() == null);
+      for (ICalendarEvent iCalendarEvent : nextDayPlanning) {
+        if (iCalendarEvent.getSubject().endsWith(MORNING)) {
+          morningFrom = iCalendarEvent.getStartDateTime().toLocalTime();
+        }
+        if (iCalendarEvent.getSubject().endsWith(AFTERNOON)) {
+          afternoonFrom = iCalendarEvent.getStartDateTime().toLocalTime();
+        }
+      }
+    } while (afternoonFrom == null && morningFrom == null);
 
     /*
      * We will add the nbr of days to retrieve the working day, and set the time to either the first
      * morning period or the first afternoon period.
      */
-    if (nextDayPlanning.getMorningFrom() != null) {
+    if (morningFrom != null) {
       operationOrder.setPlannedStartDateT(
-          startDate.toLocalDate().plusDays(daysToAddNbr).atTime(nextDayPlanning.getMorningFrom()));
-    } else if (nextDayPlanning.getAfternoonFrom() != null) {
+          startDate.toLocalDate().plusDays(daysToAddNbr).atTime(morningFrom));
+    } else if (afternoonFrom != null) {
       operationOrder.setPlannedStartDateT(
-          startDate
-              .toLocalDate()
-              .plusDays(daysToAddNbr)
-              .atTime(nextDayPlanning.getAfternoonFrom()));
+          startDate.toLocalDate().plusDays(daysToAddNbr).atTime(afternoonFrom));
     }
   }
 

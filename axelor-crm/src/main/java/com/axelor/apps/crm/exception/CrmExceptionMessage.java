@@ -56,9 +56,6 @@ public final class CrmExceptionMessage {
   /** Event controller */
   public static final String EVENT_1 = /*$$(*/ "Input location please" /*)*/;
 
-  public static final String EVENT_SAVED = /*$$(*/
-      "Please save the event before setting the recurrence" /*)*/;
-
   /** Lead controller */
   public static final String LEAD_1 = /*$$(*/ "Please select the Lead(s) to print." /*)*/;
 
@@ -97,19 +94,6 @@ public final class CrmExceptionMessage {
   public static final String CRM_LOST_LEAD_STATUS_MISSING = /*$$(*/
       "Please fill lost lead status in App CRM configuration." /*)*/;
 
-  /*
-   * Recurrence
-   */
-  public static final String RECURRENCE_RECURRENCE_TYPE = /*$$(*/
-      "You must choose a recurrence type" /*)*/;
-  public static final String RECURRENCE_PERIODICITY = /*$$(*/
-      "Periodicity must be greater than 0" /*)*/;
-  public static final String RECURRENCE_DAYS_CHECKED = /*$$(*/
-      "You must choose at least one day in the week" /*)*/;
-  public static final String RECURRENCE_REPETITION_NUMBER = /*$$(*/
-      "The number of repetitions must be greater than 0" /*)*/;
-  public static final String RECURRENCE_END_DATE = /*$$(*/
-      "The end date must be after the start date" /*)*/;
   public static final String OPPORTUNITY_1 = /*$$(*/
       "There's no configured sequence for opportunities for the company %s" /*)*/;
 

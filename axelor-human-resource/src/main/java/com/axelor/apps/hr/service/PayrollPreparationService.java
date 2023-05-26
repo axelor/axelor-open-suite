@@ -147,7 +147,7 @@ public class PayrollPreparationService {
         leaveRequestRepo
             .all()
             .filter(
-                "self.statusSelect = ?4 AND self.employee = ?3 AND ((self.fromDateT BETWEEN ?2 AND ?1 OR self.toDateT BETWEEN ?2 AND ?1) OR (?1 BETWEEN self.fromDateT AND self.toDateT OR ?2 BETWEEN self.fromDateT AND self.toDateT))",
+                "self.statusSelect = ?4 AND self.employee = ?3 AND ((self.icalendarEvent.startDateTime BETWEEN ?2 AND ?1 OR self.icalendarEvent.endDateTime BETWEEN ?2 AND ?1) OR (?1 BETWEEN self.icalendarEvent.startDateTime AND self.icalendarEvent.endDateTime OR ?2 BETWEEN self.icalendarEvent.startDateTime AND self.icalendarEvent.endDateTime))",
                 toDate,
                 fromDate,
                 employee,
@@ -158,16 +158,16 @@ public class PayrollPreparationService {
 
       PayrollLeave payrollLeave = new PayrollLeave();
 
-      if (leaveRequest.getFromDateT().toLocalDate().isBefore(fromDate)) {
+      if (leaveRequest.getIcalendarEvent().getStartDateTime().toLocalDate().isBefore(fromDate)) {
         payrollLeave.setFromDate(fromDate);
       } else {
-        payrollLeave.setFromDate(leaveRequest.getFromDateT().toLocalDate());
+        payrollLeave.setFromDate(leaveRequest.getIcalendarEvent().getStartDateTime().toLocalDate());
       }
 
-      if (leaveRequest.getToDateT().toLocalDate().isAfter(toDate)) {
+      if (leaveRequest.getIcalendarEvent().getEndDateTime().toLocalDate().isAfter(toDate)) {
         payrollLeave.setToDate(toDate);
       } else {
-        payrollLeave.setToDate(leaveRequest.getToDateT().toLocalDate());
+        payrollLeave.setToDate(leaveRequest.getIcalendarEvent().getEndDateTime().toLocalDate());
       }
 
       payrollLeave.setDuration(
