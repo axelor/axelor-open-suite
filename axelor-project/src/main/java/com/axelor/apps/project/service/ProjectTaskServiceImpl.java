@@ -32,13 +32,13 @@ import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -48,6 +48,7 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
   protected FrequencyRepository frequencyRepo;
   protected FrequencyService frequencyService;
   protected AppBaseService appBaseService;
+  protected ProjectRepository projectRepository;
 
   private static final String TASK_LINK = "<a href=\"#/ds/all.open.project.tasks/edit/%s\">@%s</a>";
 
@@ -56,11 +57,13 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
       ProjectTaskRepository projectTaskRepo,
       FrequencyRepository frequencyRepo,
       FrequencyService frequencyService,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      ProjectRepository projectRepository) {
     this.projectTaskRepo = projectTaskRepo;
     this.frequencyRepo = frequencyRepo;
     this.frequencyService = frequencyService;
     this.appBaseService = appBaseService;
+    this.projectRepository = projectRepository;
   }
 
   @Override
@@ -202,11 +205,12 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
       return null;
     }
 
-    project = Beans.get(ProjectRepository.class).find(project.getId());
+    project = projectRepository.find(project.getId());
+    Set<TaskStatus> projectStatusSet = project.getProjectTaskStatusSet();
 
-    return ObjectUtils.isEmpty(project.getProjectTaskStatusSet())
+    return ObjectUtils.isEmpty(projectStatusSet)
         ? null
-        : project.getProjectTaskStatusSet().stream()
+        : projectStatusSet.stream()
             .min(Comparator.comparingInt(TaskStatus::getSequence))
             .orElse(null);
   }
@@ -217,7 +221,7 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
       return null;
     }
 
-    project = Beans.get(ProjectRepository.class).find(project.getId());
+    project = projectRepository.find(project.getId());
 
     return ObjectUtils.isEmpty(project.getProjectTaskPrioritySet())
         ? null

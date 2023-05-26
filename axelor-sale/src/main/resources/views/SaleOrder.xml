@@ -611,8 +611,7 @@
       </panel>
       <panel if="__config__.app.getApp('sale')?.getPrintingConfigPerSaleOrder()"
         name="printingPanel" title="Printing">
-        <field name="printingSettings" canEdit="false"
-          onSelect="action-sale-method-filter-printing-settings"/>
+        <field name="printingSettings" canEdit="false"/>
         <field name="groupProductsOnPrintings"
           if="__config__.app.getApp('base')?.getIsRegroupProductsOnPrintings()" colSpan="6"/>
         <field name="hideDiscount"/>
@@ -2079,10 +2078,6 @@
 
   <action-method name="action-method-sale-order-validate-changes">
     <call class="com.axelor.apps.sale.web.SaleOrderController" method="validateChanges"/>
-  </action-method>
-
-  <action-method name="action-sale-method-filter-printing-settings">
-    <call class="com.axelor.apps.sale.web.SaleOrderController" method="filterPrintingSettings"/>
   </action-method>
 
   <action-method name="action-sale-method-printing-settings-default-values">

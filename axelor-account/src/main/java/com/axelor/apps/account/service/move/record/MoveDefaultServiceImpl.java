@@ -77,4 +77,11 @@ public class MoveDefaultServiceImpl implements MoveDefaultService {
       move.setCompanyCurrencyCode(company.getCurrency().getCodeISO());
     }
   }
+
+  @Override
+  public void setDefaultCurrencyOnChange(Move move) {
+    if (move.getCurrency() != null) {
+      move.setCurrencyCode(move.getCurrency().getCodeISO());
+    }
+  }
 }
