@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid model="com.axelor.apps.crm.db.LeadStatus" title="Lead status" name="lead-status-grid"
+    orderBy="sequence">
+    <field name="name"/>
+    <field name="sequence"/>
+    <field name="isOpen"/>
+  </grid>
+
+  <form model="com.axelor.apps.crm.db.LeadStatus" title="Lead status" name="lead-status-form"
+    onLoad="action-lead-status-attrs-set-isopen-readonly">
+    <panel name="mainPanel">
+      <field name="name"/>
+      <field name="sequence"/>
+      <field name="isOpen"/>
+    </panel>
+  </form>
+
+  <action-attrs name="action-lead-status-attrs-set-isopen-readonly">
+    <attribute name="readonly" for="isOpen"
+      expr="eval: __this__?.id == __config__.app.getApp('crm')?.convertedLeadStatus?.id"/>
+  </action-attrs>
+
+</object-views>

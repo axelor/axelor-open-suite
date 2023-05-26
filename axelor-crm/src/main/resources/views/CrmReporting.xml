@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="crm-reporting-grid" title="Crm reporting"
+    model="com.axelor.apps.crm.db.CrmReporting">
+    <field name="typeSelect"/>
+    <field name="companySet" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="agencySet" if="__config__.app.getApp('crm')?.getAgenciesManagement()"/>
+    <field name="teamSet" if="__config__.app.getApp('base')?.getTeamManagement()"/>
+    <field name="countrySet"/>
+    <field name="industrySectorSet"/>
+    <field name="categorySet"/>
+    <field name="fromDate"/>
+    <field name="toDate"/>
+    <button name="openResultButton" help="Open the list of results"
+      onClick="action-crm-reporting-method-show-results" icon="fa-list"/>
+    <button name="showOpportunitiesButton" help="Show the opportunities"
+      onClick="action-crm-reporting-method-show-opportunities"
+      hideIf="typeSelect == 'com.axelor.apps.crm.db.Lead'" icon="fa-list"/>
+    <button name="showEventsButton" help="Show the events"
+      onClick="action-crm-reporting-method-show-events" icon="fa-list"/>
+  </grid>
+
+  <form name="crm-reporting-form" title="Crm reporting"
+    model="com.axelor.apps.crm.db.CrmReporting">
+    <panel colSpan="12">
+      <field name="typeSelect"/>
+      <field name="companySet" widget="TagSelect"
+        if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      <field name="agencySet" widget="TagSelect"
+        if="__config__.app.getApp('crm').getAgenciesManagement()"/>
+      <field name="teamSet" widget="TagSelect"
+        if="__config__.app.getApp('base').getTeamManagement()"/>
+      <field name="countrySet" widget="TagSelect"/>
+      <field name="industrySectorSet" widget="TagSelect"/>
+      <field name="categorySet" widget="TagSelect"/>
+      <field name="fromDate" colSpan="3"/>
+      <field name="toDate" colSpan="3"/>
+    </panel>
+    <panel sidebar="true" canCollapse="true">
+      <button name="openResultButton" title="Open the list of results"
+        onClick="save,action-crm-reporting-method-show-results"/>
+      <button name="showOpportunitiesButton" title="Show the opportunities"
+        onClick="save,action-crm-reporting-method-show-opportunities"
+        hideIf="typeSelect == 'com.axelor.apps.crm.db.Lead'"/>
+      <button name="showEventsButton" title="Show the events"
+        onClick="save,action-crm-reporting-method-show-events"/>
+    </panel>
+  </form>
+
+  <action-method name="action-crm-reporting-method-show-results">
+    <call method="showResults" class="com.axelor.apps.crm.web.CrmReportingController"/>
+  </action-method>
+
+  <action-method name="action-crm-reporting-method-show-opportunities">
+    <call method="showOpportunities" class="com.axelor.apps.crm.web.CrmReportingController"/>
+  </action-method>
+
+  <action-method name="action-crm-reporting-method-show-events">
+    <call method="showEvents" class="com.axelor.apps.crm.web.CrmReportingController"/>
+  </action-method>
+
+</object-views>

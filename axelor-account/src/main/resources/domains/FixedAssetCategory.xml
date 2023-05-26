@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="FixedAssetCategory" lang="java" cacheable="true">
+  <entity name="FixedAssetCategory" cacheable="true">
 
     <string name="name" title="Name" required="true"/>
 
@@ -59,16 +59,16 @@
     <many-to-one ref="com.axelor.apps.account.db.Account" name="debtReceivableAccount"
       title="Debt Receivable Account"/>
     <many-to-one ref="com.axelor.apps.account.db.Account"
-      name="provisionTangibleFixedAssetAccount" title="Provision Tangible Fixed Asset Account"/>
+      name="provisionFixedAssetAccount" title="Provision Tangible Fixed Asset Account"/>
     <many-to-one ref="com.axelor.apps.account.db.Account"
-      name="wbProvisionTangibleFixedAssetAccount"
+      name="wbProvisionFixedAssetAccount"
       title="Written-back provision tangible fixed asset account"/>
     <many-to-one ref="com.axelor.apps.account.db.Account" name="ifrsDepreciationAccount"
       title="IFRS Depreciation Account"/>
     <many-to-one ref="com.axelor.apps.account.db.Account" name="ifrsChargeAccount"
       title="IFRS Charge Account"/>
     <many-to-one ref="com.axelor.apps.account.db.Account"
-      name="appProvisionTangibleFixedAssetAccount"
+      name="appProvisionFixedAssetAccount"
       title="Appropriation Provision Tangible Fixed Asset Account"/>
 
 

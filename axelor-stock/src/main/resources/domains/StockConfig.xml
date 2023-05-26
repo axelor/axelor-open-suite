@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
-  <entity name="StockConfig" lang="java" cacheable="true">
+  <entity name="StockConfig" cacheable="true">
 
     <one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"
       required="true" unique="true"/>
@@ -40,14 +40,14 @@
     <boolean name="realStockMoveAutomaticMail" title="Send email on stock move realization"
       default="false"/>
     <many-to-one name="plannedStockMoveMessageTemplate" title="Message template"
-      ref="com.axelor.apps.message.db.Template"/>
+      ref="com.axelor.message.db.Template"/>
     <many-to-one name="realStockMoveMessageTemplate" title="Message template"
-      ref="com.axelor.apps.message.db.Template"/>
+      ref="com.axelor.message.db.Template"/>
 
     <boolean name="logisticalFormAutomaticEmail"
       title="Send email when saving logistical form" default="false"/>
     <many-to-one name="logisticalFormMessageTemplate" title="Message template"
-      ref="com.axelor.apps.message.db.Template"/>
+      ref="com.axelor.message.db.Template"/>
 
     <one-to-many name="freightCarrierCustomerAccountNumberList"
       ref="com.axelor.apps.stock.db.FreightCarrierCustomerAccountNumber"
@@ -94,13 +94,16 @@
       title="Display tracking number details on certificate of conformity printing" default="true"/>
     <boolean name="displayExtRefOnCertificateOfConformityPrinting"
       title="Display external ref. on certificate of conformity printing" default="true"/>
-    <many-to-one name="stockRuleMessageTemplate"
-      ref="com.axelor.apps.message.db.Template" title="Message template for stock rules"/>
+    <many-to-one name="stockRuleMessageTemplate" ref="com.axelor.message.db.Template"
+      title="Message template for stock rules"/>
     <boolean name="displayProductCodeOnPrinting" title="Display product code on printing"
       default="true"/>
     <boolean name="displayPriceOnPrinting" title="Display price on printing" default="true"/>
     <boolean name="displayOrderReferenceAndOrderDate"
       title="Display order reference and order date" default="true"/>
+
+    <integer name="percentToleranceForWapChange" title="Tolerance on WAP changes (%)"
+      min="0" nullable="true"/>
 
     <extra-code><![CDATA[
 		public static final int VALUATION_TYPE_WAP_VALUE = 1;
@@ -153,6 +156,16 @@
 
       <field name="displayTrackNbrOnCertificateOfConformityPrinting" on="UPDATE"/>
       <field name="displayExtRefOnCertificateOfConformityPrinting" on="UPDATE"/>
+      <field name="virtualOutsourcingStockLocation" on="UPDATE"/>
+      <field name="outsourcingReceiptStockLocation" on="UPDATE"/>
+      <field name="logisticalFormAutomaticEmail" on="UPDATE"/>
+      <field name="logisticalFormMessageTemplate" on="UPDATE"/>
+      <field name="isDisplayPurchaseValueInPrinting" on="UPDATE"/>
+      <field name="stockRuleMessageTemplate" on="UPDATE"/>
+      <field name="displayProductCodeOnPrinting" on="UPDATE"/>
+      <field name="displayPriceOnPrinting" on="UPDATE"/>
+      <field name="displayOrderReferenceAndOrderDate" on="UPDATE"/>
+      <field name="percentToleranceForWapChange" on="UPDATE"/>
     </track>
   </entity>
 

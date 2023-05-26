@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views
+  http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="gdpr-processing-register-grid" title="GDPR processing registers" canNew="true"
+    model="com.axelor.apps.gdpr.db.GDPRProcessingRegister">
+    <toolbar>
+      <button onClick="action-gdpr-method-launch-register" name="archiveBtn" title="Archive"
+        icon="fa-cog"/>
+    </toolbar>
+    <field name="name"/>
+    <field name="code"/>
+    <field name="retentionPeriod"/>
+    <field name="status"/>
+    <field name="anonymizer"/>
+    <button onClick="action-gdpr-method-launch-register" name="archiveBtn" title="Archive"
+      icon="fa-cog"/>
+  </grid>
+
+  <form name="gdpr-processing-register-form" title="Processing register"
+    model="com.axelor.apps.gdpr.db.GDPRProcessingRegister" width="large" canCopy="false">
+    <panel name="statusPanel">
+      <field name="status" widget="NavSelect" colSpan="6" readonly="true" showTitle="false"/>
+    </panel>
+    <panel name="gpdrProcessingRegisterPanel" title="Processing register">
+      <field name="code" colSpan="3"/>
+      <field name="name" colSpan="3"/>
+      <field name="retentionPeriod" colSpan="3"/>
+      <field name="gdprProcessingRegisterRuleList"
+        grid-view="gdpr-processing-register-rule-grid"
+        form-view="gdpr-processing-register-rule-form" colSpan="12"/>
+      <field name="description" widget="html" colSpan="12"/>
+      <panel-dashlet name="logsPanel"
+        action="action-gdpr-processing-register-log-view" hidden="true" showIf="id != null"
+        canEdit="false" colSpan="12"/>
+    </panel>
+
+    <panel name="sidePanel" sidebar="true">
+      <field name="anonymizer" canNew="true" canEdit="true" form-view="anonymizer-form"/>
+      <button name="registerActivateBtn" onClick="action-gdpr-record-activate-register,save"
+        title="Activate"
+        showIf="status == 0 &amp;&amp; gdprProcessingRegisterRuleList &amp;&amp; gdprProcessingRegisterRuleList.length > 0"
+        icon="fa-check" css="btn-success"/>
+      <button name="archiveBtn" onClick="save, action-gdpr-method-launch-register"
+        title="Archive" hidden="true"
+        showIf="status == 1 &amp;&amp; gdprProcessingRegisterRuleList &amp;&amp; gdprProcessingRegisterRuleList.length > 0"
+        icon="fa-cog"/>
+      <button name="registerCancelBtn" onClick="action-gdpr-record-cancel-register,save"
+        title="Cancel" showIf="id != null &amp;&amp; status == 1" icon="fa-times" css="btn-danger"/>
+      <button onClick="action-gdpr-record-restore-register,save" name="registerRestoreBtn"
+        title="Restore" hidden="true" showIf="status == 2"/>
+    </panel>
+
+    <panel-mail name="mailPanel">
+      <mail-messages/>
+      <mail-followers/>
+    </panel-mail>
+  </form>
+
+  <!-- ACTION BUTTONS -->
+  <action-record name="action-gdpr-record-activate-register"
+    model="com.axelor.apps.gdpr.db.GDPRProcessingRegister">
+    <field name="status" expr="1"/>
+  </action-record>
+
+  <action-record name="action-gdpr-record-cancel-register"
+    model="com.axelor.apps.gdpr.db.GDPRProcessingRegister">
+    <field name="status" expr="2"/>
+  </action-record>
+
+  <action-record name="action-gdpr-record-restore-register"
+    model="com.axelor.apps.gdpr.db.GDPRProcessingRegister">
+    <field name="status" expr="0"/>
+  </action-record>
+
+  <action-method name="action-gdpr-method-launch-register">
+    <call class="com.axelor.apps.gdpr.web.GdprProcessingRegisterController"
+      method="launchProcessingRegister"/>
+  </action-method>
+
+  <action-view name="action-gdpr-processing-register-log-view"
+    title="GDPR Processing Register Log" model="com.axelor.apps.gdpr.db.GDPRProcessingRegisterLog">
+    <view type="grid" name="gdpr-processing-register-log-grid"/>
+    <view type="form" name="gdpr-processing-register-log-form"/>
+    <domain>self.gdprProcessingRegister = :processingRegister</domain>
+    <context name="processingRegister" expr="eval:__this__" if="id != null"/>
+  </action-view>
+</object-views>

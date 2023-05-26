@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="bank-payment" package="com.axelor.apps.bankpayment.db"/>
 
-  <entity name="BankStatementLineAFB120" lang="java" extends="BankStatementLine"
-    persistable="true">
+  <entity name="BankStatementLineAFB120" extends="BankStatementLine" persistable="true">
 
     <integer name="unavailabilityIndexSelect" title="Unavailability index"
       selection="bankpayment.bank.statement.line.afb.120.unavailability.index.select"/>

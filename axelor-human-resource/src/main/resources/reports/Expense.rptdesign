@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202071616</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -342,7 +342,7 @@
                     <structure>
                         <property name="position">9</property>
                         <property name="name">validation_date</property>
-                        <property name="dataType">date</property>
+                        <property name="dataType">date-time</property>
                     </structure>
                     <structure>
                         <property name="position">10</property>
@@ -372,7 +372,7 @@
                     <structure>
                         <property name="position">15</property>
                         <property name="name">sent_date</property>
-                        <property name="dataType">date</property>
+                        <property name="dataType">date-time</property>
                     </structure>
                     <structure>
                         <property name="position">16</property>
@@ -448,8 +448,8 @@
                     <property name="position">9</property>
                     <property name="name">validation_date</property>
                     <property name="nativeName">validation_date</property>
-                    <property name="dataType">date</property>
-                    <property name="nativeDataType">91</property>
+                    <property name="dataType">date-time</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">10</property>
@@ -490,8 +490,8 @@
                     <property name="position">15</property>
                     <property name="name">sent_date</property>
                     <property name="nativeName">sent_date</property>
-                    <property name="dataType">date</property>
-                    <property name="nativeDataType">91</property>
+                    <property name="dataType">date-time</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">16</property>
@@ -516,13 +516,13 @@
 	PaymentPeriod.name AS payment_period_name, 
 	Expense.in_tax_total AS total_amount, 
 	ValidatedUser.full_name AS validated_user_name,
-	Expense.validation_date,
+	Expense.validation_date_time AS validation_date,
 	Expense.advance_amount,
 	Expense.withdrawn_cash,
 	Expense.personal_expense_amount,
 	select_item.title  AS company_cb_select,
 	Expense.multiple_users,
-	Expense.sent_date,
+	Expense.sent_date_time AS sent_date,
 	Currency.code AS currency,
 	Expense.payment_amount
 FROM hr_expense AS Expense

@@ -1,0 +1,8 @@
+"metaModel";"metaField";"anonymizer_importId";"useFakeData";"fakerApiField.name"
+"Campaign";"subject";"4";"true";"lorem.word"
+"Campaign";"name";"4";"true";"lorem.word"
+"Event";"subject";"4";"true";"lorem.word"
+"Event";"description";"4";"true";"lorem.sentence"
+"Event";"computedAttendeeList";"4";"true";"lorem.sentence"
+"Event";"geo";"4";"true";"lorem.word"
+"Event";"url";"4";"true";"internet.url"

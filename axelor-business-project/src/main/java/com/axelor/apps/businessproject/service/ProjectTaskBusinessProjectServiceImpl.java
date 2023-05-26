@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,14 +14,14 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
-import com.axelor.apps.base.db.AppBusinessProject;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.PriceList;
@@ -46,12 +47,12 @@ import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.service.ProjectTaskServiceImpl;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.app.AppSaleService;
-import com.axelor.apps.tool.QueryBuilder;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
-import com.axelor.exception.AxelorException;
+import com.axelor.studio.db.AppBusinessProject;
+import com.axelor.utils.QueryBuilder;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -77,11 +78,12 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
       FrequencyRepository frequencyRepo,
       FrequencyService frequencyService,
       AppBaseService appBaseService,
+      ProjectRepository projectRepository,
       PriceListLineRepository priceListLineRepo,
       PriceListService priceListService,
-      ProductCompanyService productCompanyService,
-      PartnerPriceListService partnerPriceListService) {
-    super(projectTaskRepo, frequencyRepo, frequencyService, appBaseService);
+      PartnerPriceListService partnerPriceListService,
+      ProductCompanyService productCompanyService) {
+    super(projectTaskRepo, frequencyRepo, frequencyService, appBaseService, projectRepository);
     this.priceListLineRepo = priceListLineRepo;
     this.priceListService = priceListService;
     this.partnerPriceListService = partnerPriceListService;
@@ -170,13 +172,13 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     return projectTask;
   }
 
-  private void emptyDiscounts(ProjectTask projectTask) {
+  protected void emptyDiscounts(ProjectTask projectTask) {
     projectTask.setDiscountTypeSelect(PriceListLineRepository.AMOUNT_TYPE_NONE);
     projectTask.setDiscountAmount(BigDecimal.ZERO);
     projectTask.setPriceDiscounted(BigDecimal.ZERO);
   }
 
-  private PriceListLine getPriceListLine(
+  protected PriceListLine getPriceListLine(
       ProjectTask projectTask, PriceList priceList, BigDecimal price) {
 
     return priceListService.getPriceListLine(
@@ -199,7 +201,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     return projectTask;
   }
 
-  private BigDecimal computeDiscount(ProjectTask projectTask) {
+  protected BigDecimal computeDiscount(ProjectTask projectTask) {
 
     return priceListService.computeDiscount(
         projectTask.getUnitPrice(),
@@ -207,7 +209,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
         projectTask.getDiscountAmount());
   }
 
-  private BigDecimal computeAmount(BigDecimal quantity, BigDecimal price) {
+  protected BigDecimal computeAmount(BigDecimal quantity, BigDecimal price) {
 
     BigDecimal amount =
         price
@@ -285,7 +287,6 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     nextProjectTask.setCustomerReferral(projectTask.getCustomerReferral());
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   @Override
   public ProjectTask updateTaskFinancialInfo(ProjectTask projectTask) throws AxelorException {
     Product product = projectTask.getProduct();
@@ -301,12 +302,17 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
         return projectTask;
       }
 
-      projectTask.setInvoicingType(projectTaskCategory.getDefaultInvoicingType());
-      projectTask.setProduct(projectTaskCategory.getDefaultProduct());
-      product = projectTask.getProduct();
+      Integer invoicingType = projectTaskCategory.getDefaultInvoicingType();
+      projectTask.setInvoicingType(invoicingType);
+      if (invoicingType.equals(ProjectTaskRepository.INVOICING_TYPE_TIME_SPENT)
+          || invoicingType.equals(ProjectTaskRepository.INVOICING_TYPE_PACKAGE)) {
+        projectTask.setToInvoice(true);
+      }
+      product = projectTaskCategory.getDefaultProduct();
       if (product == null) {
         return projectTask;
       }
+      projectTask.setProduct(product);
       projectTask.setUnitPrice(this.computeUnitPrice(projectTask));
     }
     Company company =
@@ -324,11 +330,10 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
             : projectTask.getBudgetedTime());
     projectTask = this.updateDiscount(projectTask);
     projectTask = this.compute(projectTask);
-
-    return projectTaskRepo.save(projectTask);
+    return projectTask;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   @Override
   public ProjectTask updateTaskToInvoice(
       ProjectTask projectTask, AppBusinessProject appBusinessProject) {
@@ -358,7 +363,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     return projectTaskRepo.save(projectTask);
   }
 
-  private BigDecimal computeUnitPrice(ProjectTask projectTask) throws AxelorException {
+  protected BigDecimal computeUnitPrice(ProjectTask projectTask) throws AxelorException {
     Product product = projectTask.getProduct();
     Company company =
         projectTask.getProject() != null ? projectTask.getProject().getCompany() : null;
@@ -420,8 +425,8 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     taskQueryBuilder =
         taskQueryBuilder.add("self.project.id = :projectId").bind("projectId", project.getId());
 
-    if (!Strings.isNullOrEmpty(appBusinessProject.getExculdeTaskInvoicing())) {
-      String filter = "NOT (" + appBusinessProject.getExculdeTaskInvoicing() + ")";
+    if (!Strings.isNullOrEmpty(appBusinessProject.getExcludeTaskInvoicing())) {
+      String filter = "NOT (" + appBusinessProject.getExcludeTaskInvoicing() + ")";
       taskQueryBuilder = taskQueryBuilder.add(filter);
     }
     Query<ProjectTask> taskQuery = taskQueryBuilder.build().order("id");
@@ -436,5 +441,15 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
       }
       JPA.clear();
     }
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  @Override
+  public ProjectTask setProjectTaskValues(ProjectTask projectTask) throws AxelorException {
+    if (projectTask.getSaleOrderLine() != null || projectTask.getInvoiceLine() != null) {
+      return projectTask;
+    }
+    projectTask = updateTaskFinancialInfo(projectTask);
+    return projectTaskRepo.save(projectTask);
   }
 }

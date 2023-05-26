@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="project" package="com.axelor.apps.project.db"/>
 
@@ -12,18 +12,9 @@
     <integer name="invoicingSequenceSelect" title="Invoicing sequence"
       selection="business.project.invoicing.sequence.select"/>
     <string name="invoicingComment" title="Invoicing comment" large="true"/>
-    <decimal name="totalSaleOrdersFinalized" title="Finalized Orders Total" readonly="true"/>
-    <decimal name="totalSaleOrdersConfirmed" title="Confirmed Orders Total" readonly="true"/>
-    <decimal name="totalSaleOrdersInvoiced" title="Invoiced Orders Total" readonly="true"/>
     <many-to-one name="priceList" ref="com.axelor.apps.base.db.PriceList"
       title="Price list"/>
 
-    <decimal name="totalPurchaseOrdersFinalized" title="Finalized Orders Total"
-      readonly="true"/>
-    <decimal name="totalPurchaseOrdersConfirmed" title="Confirmed Orders Total"
-      readonly="true"/>
-    <decimal name="totalPurchaseOrdersInvoiced" title="Invoiced Orders Total"
-      readonly="true"/>
 
     <decimal name="totalTimesPlanned" title="Planned Times Total" readonly="true"/>
     <decimal name="totalTimesRealised" title="Realised Times Total" readonly="true"/>
@@ -58,7 +49,7 @@
 
     <boolean name="isBusinessProject" title="Business project"/>
 
-    <boolean name="toInvoice" title="To invoice"/>
+    <boolean name="toInvoice" title="Packaged task invoicing"/>
     <boolean name="isInvoicingTimesheet" title="Invoicing timesheet"/>
     <boolean name="isInvoicingExpenses" title="Invoicing Expenses"/>
     <boolean name="isInvoicingPurchases" title="Invoicing Purchases"/>

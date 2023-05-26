@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="gdpr" package="com.axelor.apps.gdpr.db"/>
+
+  <entity name="GDPRProcessingRegister">
+    <string name="name" required="true"/>
+    <string name="code" required="true" unique="true"/>
+    <integer name="retentionPeriod" title="Retention period (in months)" min="0"/>
+    <one-to-many name="gdprProcessingRegisterRuleList"
+      ref="com.axelor.apps.gdpr.db.GDPRProcessingRegisterRule" mappedBy="gdprProcessingRegister"/>
+    <string name="description" large="true"/>
+    <integer name="status" selection="gdpr.processing.register.status.select"/>
+    <many-to-one ref="com.axelor.apps.base.db.Anonymizer" name="anonymizer"
+      title="Pseudonymizer"/>
+    <one-to-many ref="com.axelor.apps.gdpr.db.GDPRProcessingRegisterLog"
+      name="gdprProcessingRegisterLogList" mappedBy="gdprProcessingRegister"/>
+
+    <finder-method name="findByStatus" using="status" all="true"/>
+
+    <extra-code>
+    <![CDATA[
+    	public static final int PROCESSING_REGISTER_STATUS_DRAFT = 0;
+    	public static final int PROCESSING_REGISTER_STATUS_ACTIVE = 1;
+    	public static final int PROCESSING_REGISTER_STATUS_CANCELED = 2;
+
+    ]]>
+    </extra-code>
+
+    <track>
+      <field name="name"/>
+      <field name="code"/>
+      <field name="retentionPeriod"/>
+      <field name="status"/>
+      <message if="true" on="CREATE">Register created</message>
+    </track>
+
+  </entity>
+
+</domain-models>

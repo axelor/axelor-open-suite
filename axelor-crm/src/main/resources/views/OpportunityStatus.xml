@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="opportunity-status-grid" title="Opportunity statuses" orderBy="sequence"
+    model="com.axelor.apps.crm.db.OpportunityStatus" editable="true" sortable="false">
+    <field name="name"/>
+    <field name="sequence"/>
+  </grid>
+
+  <form name="opportunity-status-form" title="Opportunity status"
+    model="com.axelor.apps.crm.db.OpportunityStatus"
+    onLoad="action-opportunity-status-attrs-display-label">
+    <panel name="mainPanel">
+      <label colSpan="12"
+        title="These statuses are essential to the operation of the process, they can be renamed but cannot be deleted."
+        hidden="true" css="label-bold" name="opportunityStatusEssentialLabel"/>
+      <field name="name"/>
+      <field name="sequence"/>
+    </panel>
+  </form>
+
+  <action-attrs name="action-opportunity-status-attrs-display-label">
+    <attribute name="hidden" for="opportunityStatusEssentialLabel"
+      expr="eval: __this__?.id != __config__.app.getApp('crm')?.closedWinOpportunityStatus?.id &amp;&amp; __this__?.id != __config__.app.getApp('crm')?.closedLostOpportunityStatus?.id"/>
+  </action-attrs>
+
+</object-views>

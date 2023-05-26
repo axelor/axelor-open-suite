@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <form id="sale-partner-form" model="com.axelor.apps.base.db.Partner" title="Partner"
     name="partner-form" extension="true">
@@ -9,7 +9,7 @@
     <extend target="//panel[@name='saleOrderCommentsPanel']">
       <insert position="after">
         <panel-related field="$saleDetailsByProduct" type="one-to-many"
-          target="com.axelor.apps.base.db.Wizard" title="Sale details by product"
+          target="com.axelor.utils.db.Wizard" title="Sale details by product"
           grid-view="sale-details-by-product-per-customer-grid" form-view="none" readonly="true"
           hidden="true" colSpan="12">
         </panel-related>
@@ -32,13 +32,12 @@
     extension="true" onLoad="" id="partner-customer-sales-form">
 
     <extend target="/">
-      <attribute name="onLoad"
-        value="action-group-partner-onload, action-partner-attrs-hide-customer-recovery, action-wizard-method-display-sales-details-by-product-per-customer"/>
+      <attribute name="onLoad" value="sale-action-group-partner-onload"/>
     </extend>
 
   </form>
 
-  <grid model="com.axelor.apps.base.db.Wizard" title="Sale details by product"
+  <grid model="com.axelor.utils.db.Wizard" title="Sale details by product"
     name="sale-details-by-product-per-customer-grid" edit-icon="false">
     <field name="name" title="Product"/>
     <field name="$quantitySold" title="Total quantity sold" type="decimal"/>
@@ -50,5 +49,11 @@
     name="action-wizard-method-display-sales-details-by-product-per-customer">
     <call class="com.axelor.apps.sale.web.PartnerSaleController" method="displayValues"/>
   </action-method>
+
+  <action-group name="sale-action-group-partner-onload">
+    <action name="crm-action-group-partner-onload" if="__config__.app.isApp('crm')"/>
+    <action name="action-partner-attrs-hide-customer-recovery"/>
+    <action name="action-wizard-method-display-sales-details-by-product-per-customer"/>
+  </action-group>
 
 </object-views>

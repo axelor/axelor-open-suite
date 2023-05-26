@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,18 +14,17 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.sale.service.configurator;
 
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.db.ConfiguratorFormula;
-import com.axelor.apps.tool.MetaTool;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.rpc.JsonContext;
+import com.axelor.utils.MetaTool;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -41,14 +41,16 @@ import java.util.stream.Collectors;
 public class ConfiguratorMetaJsonFieldServiceImpl implements ConfiguratorMetaJsonFieldService {
 
   /**
-   * Method that generate a Map for attrs fields (wich are storing customs fields). A map entry's
-   * form is <attrNameField, mapOfCustomsFields>, with attrNameField the name of the attr field (for
-   * example 'attr') and mapOfCustomsFields are entries with the form of <customFieldName, value>.
-   * Only indicators that have name in form of "attrFieldName$fieldName_*" , with "_*" being
-   * optional, will be treated Note : This method will consume indicators that are attr fields (i.e.
-   * : will be removed from jsonIndicators)
+   * Generate a Map for custom fields. The map entry pattern is {@code <attrNameField,
+   * mapOfCustomsFields>}, with {@code attrNameField} the name of the custom field (for example
+   * 'attrs') and {@code mapOfCustomsFields} the entries with the form of {@code<customFieldName,
+   * value>}. Only indicators having a name with the pattern "attrFieldName$fieldName_*" ("_*" being
+   * optional) will be treated.
    *
-   * @param configurator
+   * <p>Note: This method consumes indicators which are custom fields (i.e.: will be removed from
+   * jsonIndicators).
+   *
+   * @param formulas
    * @param jsonIndicators
    * @return
    */
@@ -60,29 +62,29 @@ public class ConfiguratorMetaJsonFieldServiceImpl implements ConfiguratorMetaJso
     HashMap<String, Map<String, Object>> attrValueMap = new HashMap<>();
     // Keys to remove from map, because we don't need them afterward
     List<String> keysToRemove = new ArrayList<>();
-    jsonIndicators.entrySet().stream()
-        .map(entry -> entry.getKey())
-        .filter(fullName -> fullName.contains("$"))
-        .forEach(
-            fullName -> {
-              formulas.forEach(
-                  formula -> {
-                    String[] nameFieldInfo = fullName.split("[\\$_]");
-                    String attrName = nameFieldInfo[0];
-                    String fieldName = nameFieldInfo[1];
-                    if (formula.getMetaJsonField() != null
-                        && attrName.equals(formula.getMetaField().getName())
-                        && fieldName.equals(formula.getMetaJsonField().getName())) {
-                      putFieldValueInMap(
-                          fieldName,
-                          jsonIndicators.get(fullName),
-                          attrName,
-                          formula.getMetaJsonField(),
-                          attrValueMap);
-                      keysToRemove.add(fullName);
-                    }
-                  });
-            });
+
+    for (Entry<String, Object> entry : jsonIndicators.entrySet()) {
+      String fullName = entry.getKey();
+      if (!fullName.contains("$")) {
+        continue;
+      }
+
+      Object value = entry.getValue();
+      String[] nameFieldInfo = fullName.split("[\\$_]");
+      String attrName = nameFieldInfo[0];
+      String fieldName = nameFieldInfo[1];
+
+      formulas.forEach(
+          formula -> {
+            MetaJsonField metaJsonField = formula.getMetaJsonField();
+            if (metaJsonField != null
+                && attrName.equals(formula.getMetaField().getName())
+                && fieldName.equals(metaJsonField.getName())) {
+              putFieldValueInMap(fieldName, value, attrName, metaJsonField, attrValueMap);
+              keysToRemove.add(fullName);
+            }
+          });
+    }
 
     jsonIndicators.entrySet().removeIf(entry -> keysToRemove.contains(entry.getKey()));
     return attrValueMap;
@@ -123,9 +125,8 @@ public class ConfiguratorMetaJsonFieldServiceImpl implements ConfiguratorMetaJso
       MetaJsonField metaJsonField,
       Map<String, Map<String, Object>> attrValueMap) {
 
-    if (!attrValueMap.containsKey(attrName)) {
-      attrValueMap.put(attrName, new HashMap<>());
-    }
+    attrValueMap.computeIfAbsent(attrName, i -> new HashMap<>());
+
     Entry<String, Object> entry = adaptType(nameField, object, metaJsonField);
     attrValueMap.get(attrName).put(entry.getKey(), entry.getValue());
   }
@@ -180,7 +181,7 @@ public class ConfiguratorMetaJsonFieldServiceImpl implements ConfiguratorMetaJso
 
         return new AbstractMap.SimpleEntry<>(nameField, mappedList);
       }
-    } catch (AxelorException | IllegalArgumentException | SecurityException e) {
+    } catch (IllegalArgumentException | SecurityException e) {
 
       TraceBackService.trace(e);
     }

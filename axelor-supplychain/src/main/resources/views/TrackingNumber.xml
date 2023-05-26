@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <search name="tracking-number-search" title="Tracking number search" limit="50"
     id="tracking-number-supplychain-search">
@@ -27,27 +27,26 @@
 
     <select model="com.axelor.apps.stock.db.StockMove" title="Stock move"
       form-view="stock-move-form">
-      <field name="stockMoveLineList[].trackingNumber" as="trackingNumber"/>
-      <field name="stockMoveLineList[].product.fullName" as="product"/>
-      <field name="stockMoveLineList[].productName" as="moveLine"/>
-      <field name="stockMoveLineList[].realQty" as="currentQty"/>
-      <field name="stockMoveLineList[].qty" as="futureQty"/>
-      <field name="stockMoveLineList[].stockMove.realDate" as="date"/>
-      <field name="stockMoveLineList[].stockMove.origin" as="origin"/>
+      <field name="stockMoveLineList.trackingNumber" as="trackingNumber"/>
+      <field name="stockMoveLineList.product.fullName" as="product"/>
+      <field name="stockMoveLineList.productName" as="moveLine"/>
+      <field name="stockMoveLineList.realQty" as="currentQty"/>
+      <field name="stockMoveLineList.qty" as="futureQty"/>
+      <field name="stockMoveLineList.stockMove.realDate" as="date"/>
+      <field name="stockMoveLineList.stockMove.origin" as="origin"/>
       <where>
-        <input name="trackingNumber" field="stockMoveLineList[].trackingNumber"/>
+        <input name="trackingNumber" field="stockMoveLineList.trackingNumber"/>
       </where>
     </select>
     <select model="com.axelor.apps.stock.db.StockLocation" title="Stock location"
       form-view="stock-location-form">
-      <field name="detailsStockLocationLineList[].trackingNumber" as="trackingNumber"/>
-      <field name="detailsStockLocationLineList[].product.name" as="product"/>
-      <field name="detailsStockLocationLineList[].detailsStockLocation.name"
-        as="stockLocation"/>
-      <field name="detailsStockLocationLineList[].currentQty" as="currentQty"/>
-      <field name="detailsStockLocationLineList[].futureQty" as="futureQty"/>
+      <field name="detailsStockLocationLineList.trackingNumber" as="trackingNumber"/>
+      <field name="detailsStockLocationLineList.product.name" as="product"/>
+      <field name="detailsStockLocationLineList.detailsStockLocation.name" as="stockLocation"/>
+      <field name="detailsStockLocationLineList.currentQty" as="currentQty"/>
+      <field name="detailsStockLocationLineList.futureQty" as="futureQty"/>
       <where>
-        <input name="trackingNumber" field="detailsStockLocationLineList[].trackingNumber"/>
+        <input name="trackingNumber" field="detailsStockLocationLineList.trackingNumber"/>
       </where>
     </select>
   </search>

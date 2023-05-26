@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <form title="App GDPR" name="app-gdpr-config-form" model="com.axelor.studio.db.AppGdpr"
+    canDelete="false" canNew="false" width="large">
+    <panel name="configPanel" title="Configurations">
+      <field name="maxRespondingDays" colSpan="6"/>
+      <spacer name="respondingDaysSpacer" colSpan="6"/>
+      <field name="accessResponseTemplate" colSpan="6"
+        domain="self.metaModel.name = 'GDPRResponse' "/>
+      <field name="erasureResponseTemplate" colSpan="6"
+        domain="self.metaModel.name = 'GDPRResponse' "/>
+      <field name="anonymizer" colSpan="12"/>
+      <field name="requestOriginList" colSpan="12"/>
+      <field name="searchConfigList" colSpan="12"/>
+    </panel>
+    <panel-mail name="mailPanel">
+      <mail-messages limit="4"/>
+    </panel-mail>
+  </form>
+</object-views>

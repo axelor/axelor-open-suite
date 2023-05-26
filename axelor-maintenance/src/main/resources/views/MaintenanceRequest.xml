@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="maintenance-request-grid" title="Maintenance Request"
     model="com.axelor.apps.maintenance.db.MaintenanceRequest">
@@ -35,7 +35,7 @@
       <field name="actionSelect" widget="RadioSelect"
         onChange="action-maintenance-request-record-action-select-onchange"/>
       <field name="manufOrder" readonlyIf="!equipementMaintenance || !expectedDate"
-        canNew="true" domain="self.typeSelect = 3"/>
+        canNew="true" domain="self.typeSelect = 3" form-view="maintenance-manuf-order-form"/>
       <field name="doneOn" onChange="action-maintenance-request-record-action-select-onchange"/>
     </panel>
     <panel name="actions" sidebar="true" title="Actions" stacked="true">

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="sale" package="com.axelor.apps.sale.db"/>
 
-  <entity name="SaleOrderLine" lang="java">
+  <entity name="SaleOrderLine">
 
     <string name="fullName" namecolumn="true">
 	  	<![CDATA[
@@ -52,8 +52,9 @@
     <integer name="discountTypeSelect" title="Discount type"
       selection="base.price.list.line.amount.type.select" default="0"/>
 
-    <date name="estimatedDelivDate" title="Estimated shipping date"/>
-    <date name="desiredDelivDate" title="Desired delivery date"/>
+    <date name="estimatedShippingDate" title="Estimated shipping date"/>
+    <date name="desiredDeliveryDate" title="Desired delivery date"/>
+    <date name="estimatedDeliveryDate" title="Estimated delivery date"/>
     <decimal name="deliveredQty" title="Delivered quantity" precision="20" scale="10"/>
 
     <!-- Complementary Products -->

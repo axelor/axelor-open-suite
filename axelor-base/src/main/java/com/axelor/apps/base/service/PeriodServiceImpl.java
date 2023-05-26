@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,18 +14,18 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.base.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.PeriodRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.i18n.L10n;
 import com.google.inject.Inject;
@@ -66,7 +67,9 @@ public class PeriodServiceImpl implements PeriodService {
       throws AxelorException {
 
     Period period = this.getPeriod(date, company, typeSelect);
-    if (period == null || (period.getStatusSelect() == PeriodRepository.STATUS_CLOSED)) {
+    if (period == null
+        || period.getStatusSelect() == PeriodRepository.STATUS_CLOSED
+        || period.getStatusSelect() == PeriodRepository.STATUS_CLOSURE_IN_PROGRESS) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(BaseExceptionMessage.PERIOD_1),
@@ -101,7 +104,9 @@ public class PeriodServiceImpl implements PeriodService {
                 PeriodRepository.STATUS_OPENED)
             .fetchOne();
 
-    if (nextPeriod == null || nextPeriod.getStatusSelect() == PeriodRepository.STATUS_CLOSED) {
+    if (nextPeriod == null
+        || nextPeriod.getStatusSelect() == PeriodRepository.STATUS_CLOSED
+        || nextPeriod.getStatusSelect() == PeriodRepository.STATUS_CLOSURE_IN_PROGRESS) {
       throw new AxelorException(
           period,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -113,7 +118,8 @@ public class PeriodServiceImpl implements PeriodService {
   }
 
   public void testOpenPeriod(Period period) throws AxelorException {
-    if (period.getStatusSelect() == PeriodRepository.STATUS_CLOSED) {
+    if (period.getStatusSelect() == PeriodRepository.STATUS_CLOSED
+        || period.getStatusSelect() == PeriodRepository.STATUS_CLOSURE_IN_PROGRESS) {
       throw new AxelorException(
           period,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -135,7 +141,7 @@ public class PeriodServiceImpl implements PeriodService {
     this.updateCloseTemporarilyPeriod(period);
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   protected void updateClosePeriod(Period period) {
     period.setStatusSelect(PeriodRepository.STATUS_CLOSED);
     period.setClosureDateTime(LocalDateTime.now());
@@ -143,10 +149,10 @@ public class PeriodServiceImpl implements PeriodService {
     periodRepo.save(period);
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   protected void updateCloseTemporarilyPeriod(Period period) {
     period.setStatusSelect(PeriodRepository.STATUS_TEMPORARILY_CLOSED);
-    period.setTemporarilyCloseDate(LocalDate.now());
+    period.setTemporarilyCloseDateTime(LocalDateTime.now());
 
     periodRepo.save(period);
   }
@@ -209,7 +215,9 @@ public class PeriodServiceImpl implements PeriodService {
    * @throws AxelorException if the period is closed
    */
   public void checkPeriod(Period period) throws AxelorException {
-    if (period != null && period.getStatusSelect() == PeriodRepository.STATUS_CLOSED) {
+    if (period != null
+        && (period.getStatusSelect() == PeriodRepository.STATUS_CLOSED
+            || period.getStatusSelect() == PeriodRepository.STATUS_CLOSURE_IN_PROGRESS)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(BaseExceptionMessage.PAY_PERIOD_CLOSED),
@@ -239,7 +247,8 @@ public class PeriodServiceImpl implements PeriodService {
         for (Object result : resultQuery.getResultList()) {
           Period previousPeriod = periodRepo.find(Long.valueOf(result.toString()).longValue());
           if (previousPeriod.getStatusSelect() != PeriodRepository.STATUS_TEMPORARILY_CLOSED
-              && previousPeriod.getStatusSelect() != PeriodRepository.STATUS_CLOSED) {
+              && previousPeriod.getStatusSelect() != PeriodRepository.STATUS_CLOSED
+              && previousPeriod.getStatusSelect() != PeriodRepository.STATUS_CLOSURE_IN_PROGRESS) {
             throw new AxelorException(
                 TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
                 I18n.get(BaseExceptionMessage.PREVIOUS_PERIOD_NOT_TEMP_CLOSED));
@@ -266,7 +275,8 @@ public class PeriodServiceImpl implements PeriodService {
 
         for (Object result : resultQuery.getResultList()) {
           Period previousPeriod = periodRepo.find(Long.valueOf(result.toString()).longValue());
-          if (previousPeriod.getStatusSelect() != PeriodRepository.STATUS_CLOSED) {
+          if (previousPeriod.getStatusSelect() != PeriodRepository.STATUS_CLOSED
+              && previousPeriod.getStatusSelect() != PeriodRepository.STATUS_CLOSURE_IN_PROGRESS) {
             throw new AxelorException(
                 TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
                 I18n.get(BaseExceptionMessage.PREVIOUS_PERIOD_NOT_CLOSED));
@@ -283,5 +293,12 @@ public class PeriodServiceImpl implements PeriodService {
     if (period != null) {
       period.setStatusSelect(PeriodRepository.STATUS_OPENED);
     }
+  }
+
+  @Override
+  @Transactional
+  public void closureInProgress(Period period) {
+    period.setStatusSelect(PeriodRepository.STATUS_CLOSURE_IN_PROGRESS);
+    periodRepo.save(period);
   }
 }

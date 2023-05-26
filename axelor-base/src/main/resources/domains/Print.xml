@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
@@ -11,7 +11,7 @@
     <many-to-one name="metaModel" title="Model" ref="com.axelor.meta.db.MetaModel"/>
     <many-to-one name="company" title="Company" ref="com.axelor.apps.base.db.Company"/>
     <one-to-many name="printLineList" title="Content lines"
-      ref="com.axelor.apps.base.db.PrintLine" mappedBy="print" orderBy="rank"/>
+      ref="com.axelor.apps.base.db.PrintLine" mappedBy="print" orderBy="printLineRank"/>
     <many-to-one name="language" title="Language" ref="com.axelor.apps.base.db.Language"/>
     <boolean name="hidePrintSettings" title="Hide print settings" hidden="true"/>
     <string name="formatSelect" title="Format" selection="base.print.template.format.select"/>

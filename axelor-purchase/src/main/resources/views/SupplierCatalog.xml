@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="supplier-catalog-grid" title="Supplier Catalog"
     model="com.axelor.apps.purchase.db.SupplierCatalog">
@@ -27,7 +27,8 @@
   </grid>
 
   <form name="supplier-catalog-form" title="Supplier Catalog"
-    model="com.axelor.apps.purchase.db.SupplierCatalog" onNew="action-supplier-catalog-attrs-init"
+    model="com.axelor.apps.purchase.db.SupplierCatalog"
+    onNew="action-supplier-catalog-attrs-init,action-supplier-catalog-attrs-on-new"
     onLoad="action-supplier-catalog-attrs-init" width="large">
     <panel name="mainPanel" colSpan="12">
       <field name="supplierPartner" domain="self.isContact = false AND self.isSupplier = true"
@@ -38,7 +39,10 @@
       <field name="productSupplierCode"/>
       <field name="productSupplierName"/>
       <field name="minQty"/>
-      <field name="price"/>
+      <field name="isTakingProductPurchasePrice"
+        onChange="action-supplier-catalog-attrs-set-price"/>
+      <field name="price" hideIf="isTakingProductPurchasePrice"
+        validIf="isTakingProductPurchasePrice || price > 0"/>
     </panel>
     <panel name="descriptionPanel" title="Description" colSpan="12">
       <field name="description" showTitle="false" colSpan="12"/>
@@ -48,18 +52,24 @@
   </form>
 
   <form name="supplier-catalog-partner-form" title="Supplier Catalog"
-    model="com.axelor.apps.purchase.db.SupplierCatalog" onNew="action-supplier-catalog-attrs-init"
+    model="com.axelor.apps.purchase.db.SupplierCatalog"
+    onNew="action-supplier-catalog-attrs-init,action-supplier-catalog-attrs-partner-on-new"
     onLoad="action-supplier-catalog-attrs-init" width="large">
     <panel name="mainPanel" colSpan="12">
       <field name="product" form-view="product-form" grid-view="product-grid"
-        onChange="action-supplier-catalog-attrs-update" domain="self.dtype = 'Product'"/>
+        onChange="action-supplier-catalog-attrs-update,action-supplier-catalog-attrs-set-price"
+        domain="self.dtype = 'Product'"/>
       <field name="supplierPartner.currency" form-view="currency-form"
         grid-view="currency-grid"/>
       <field name="updateDate"/>
       <field name="productSupplierCode"/>
       <field name="productSupplierName"/>
       <field name="minQty"/>
-      <field name="price"/>
+      <field name="isTakingProductPurchasePrice"
+        onChange="action-supplier-catalog-attrs-set-price"/>
+      <field name="price" hideIf="isTakingProductPurchasePrice"
+        validIf="isTakingProductPurchasePrice || price > 0"/>
+      <field name="supplierPartner" hidden="true"/>
     </panel>
     <panel name="descriptionPanel" title="Description" colSpan="12">
       <field name="description" showTitle="false" colSpan="12"/>
@@ -88,6 +98,21 @@
     <attribute name="hidden" for="shippingCoefList"
       expr="eval: product &amp;&amp; !product.defShipCoefByPartner"
       if="eval: __parent__._model != 'com.axelor.apps.base.db.Product'"/>
+  </action-attrs>
+
+  <action-attrs name="action-supplier-catalog-attrs-on-new">
+    <attribute name="value" for="minQty" expr="1"/>
+    <attribute name="value" for="price" expr="eval: __parent__?.purchasePrice"/>
+  </action-attrs>
+
+  <action-attrs name="action-supplier-catalog-attrs-partner-on-new">
+    <attribute name="value" for="minQty" expr="1"/>
+    <attribute name="value" for="supplierPartner" expr="eval: __parent__"/>
+  </action-attrs>
+
+  <action-attrs name="action-supplier-catalog-attrs-set-price">
+    <attribute name="value" for="price"
+      expr="eval: !isTakingProductPurchasePrice ? (__parent__ &amp;&amp; __parent__._model == 'com.axelor.apps.base.db.Partner' ? product?.purchasePrice : __parent__?.purchasePrice) : null"/>
   </action-attrs>
 
 </object-views>

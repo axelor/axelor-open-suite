@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,14 +14,16 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.businessproject.service.projectgenerator.factory;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.ProductTaskTemplateService;
@@ -34,8 +37,6 @@ import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
@@ -82,7 +83,7 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class, AxelorException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public ActionViewBuilder fill(Project project, SaleOrder saleOrder, LocalDateTime startDate)
       throws AxelorException {
     List<ProjectTask> tasks = new ArrayList<>();
@@ -162,7 +163,7 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
         .domain("self.parentTask = " + root.getId());
   }
 
-  private void updateTask(ProjectTask root, ProjectTask childTask, SaleOrderLine orderLine)
+  protected void updateTask(ProjectTask root, ProjectTask childTask, SaleOrderLine orderLine)
       throws AxelorException {
     childTask.setParentTask(root);
     childTask.setQuantity(orderLine.getQty());

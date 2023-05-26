@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid model="com.axelor.apps.base.db.Anonymizer" title="Pseudonymizer templates"
+    name="anonymizer-grid">
+    <field name="name"/>
+  </grid>
+
+  <form model="com.axelor.apps.base.db.Anonymizer" title="Pseudonymizer template"
+    name="anonymizer-form">
+    <panel name="mainPanel" large="true">
+      <field name="name"/>
+    </panel>
+    <panel-related field="anonymizerLineList" grid-view="anonymizer-line-grid"
+      form-view="anonymizer-line-form" groupBy="metaModel" colSpan="12"/>
+  </form>
+</object-views>

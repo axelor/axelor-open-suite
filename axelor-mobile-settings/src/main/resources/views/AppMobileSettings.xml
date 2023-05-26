@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <form name="app-mobile-settings-config-form" title="App mobile"
+    model="com.axelor.studio.db.AppMobileSettings" width="large"
+    onLoad="action-app-mobile-settings-config-group-on-load" canNew="false" canDelete="false">
+    <panel name="mainPanel">
+      <panel name="applicationsPanel" title="Mobile apps" colSpan="10">
+        <field name="isStockAppEnabled" colSpan="3" widget="boolean-switch"
+          readonlyIf="isProductionAppEnabled"
+          onChange="action-app-mobile-settings-boolean-group-on-change"/>
+        <field name="isProductionAppEnabled" colSpan="3" widget="boolean-switch"
+          onChange="action-app-mobile-settings-production-boolean-group-on-change"/>
+        <field name="isCrmAppEnabled" colSpan="3" widget="boolean-switch"
+          onChange="action-app-mobile-settings-boolean-group-on-change"/>
+      </panel>
+      <panel name="qrCodePanel" colSpan="2">
+        <field name="qrCode" colSpan="12" showTitle="false" hidden="true" readonly="true"
+          hideIf="qrCode == null" widget="Image"/>
+      </panel>
+      <panel name="generalConfigPanel" title="General configuration" colSpan="12">
+        <field name="isLoginUserQrcodeEnabled" widget="boolean-switch" colSpan="4"/>
+        <field name="isTrackerMessageEnabled" widget="boolean-switch" colSpan="4"/>
+      </panel>
+    </panel>
+    <panel name="versionPanel" sidebar="true">
+      <field name="minimalRequiredMobileAppVersion"/>
+    </panel>
+    <panel name="configPanel" sidebar="true">
+      <panel name="configBasePanel" title="General">
+        <button name="generateQrCodeBtn" title="Generate barcode" readonlyIf="qrCode != null"
+          onClick="action-app-mobile-settings-config-group-generate-qr-code-button-on-click"/>
+        <button name="customizeTranslationsBtn" title="Customize translations"
+          onClick="action.mobile.settings.translation.view"/>
+        <button name="viewTracebacksBtn" title="View tracebacks"
+          onClick="action.mobile.settings.tracebacks.view"/>
+      </panel>
+      <panel name="configAppPanel" title="App configuration">
+        <button name="stockAppBtn" title="Config Stock" hidden="true"
+          hideIf="!isStockAppEnabled" onClick="action.stock.config.view"/>
+        <button name="prodAppBtn" title="Config Production" hidden="true"
+          hideIf="!isProductionAppEnabled" onClick="action.production.config.view"/>
+        <button name="crmAppBtn" title="Config CRM" hidden="true" hideIf="!isCrmAppEnabled"
+          onClick="action.crm.config.view"/>
+      </panel>
+    </panel>
+    <panel-tabs name="appConfigPanelTab">
+      <panel name="stockValidationPanel" title="Stock" hideIf="!isStockAppEnabled">
+        <panel name="generalStockConfigPanel" title="Enable validation" colSpan="6"
+          help="If this configuration is enabled, users will be able to directly validate the enabled feature on mobile application.">
+          <field name="isInventoryValidationEnabled" widget="boolean-switch" colSpan="6"
+            title="On inventories"/>
+          <field name="isStockCorrectionValidationEnabled" widget="boolean-switch" colSpan="6"
+            title="On stock corrections"/>
+        </panel>
+        <panel name="stockAdditionPanel" title="Enable line addition" colSpan="6"
+          help="If this configuration is enabled, users can add new lines to the enabled feature on mobile application.">
+          <field name="isCustomerDeliveryLineAdditionEnabled" widget="boolean-switch"
+            colSpan="6" title="On customer deliveries"/>
+          <field name="isSupplierArrivalLineAdditionEnabled" widget="boolean-switch"
+            colSpan="6" title="On supplier arrivals"/>
+        </panel>
+        <panel name="stockLineConfigPanel" title="Enable line verification" colSpan="6"
+          help="For each of the following features, if configuration is enabled, users will be asked to confirm the tracking number or product of the line before accessing the details screen. If the setting is disabled, they will be able to access the details screen directly.">
+          <field name="isVerifyCustomerDeliveryLineEnabled" title="On customer deliveries"
+            widget="boolean-switch" colSpan="6"/>
+          <field name="isVerifySupplierArrivalLineEnabled" title="On supplier arrivals"
+            widget="boolean-switch" colSpan="6"/>
+          <field name="isVerifyInternalMoveLineEnabled" title="On internal moves"
+            widget="boolean-switch" colSpan="6"/>
+          <field name="isVerifyInventoryLineEnabled" title="On inventories"
+            widget="boolean-switch" colSpan="6"/>
+        </panel>
+        <field name="manageCarrierOption" widget="boolean-switch" colSpan="12" hidden="true"/>
+        <!-- This field manageCarrierOption will be used later when carrier mode is implemented in AOS
+          and App mobile -->
+      </panel>
+    </panel-tabs>
+
+    <panel-mail name="mailPanel">
+      <mail-messages limit="4"/>
+      <mail-followers/>
+    </panel-mail>
+  </form>
+
+  <action-view name="action.mobile.settings.translation.view"
+    title="Mobile translations" model="com.axelor.meta.db.MetaTranslation">
+    <view type="grid" name="meta-translations-grid"/>
+    <view type="form" name="meta-translations-form"/>
+    <domain>self.key LIKE 'mobile_app_%'</domain>
+  </action-view>
+
+  <action-view name="action.mobile.settings.tracebacks.view" title="Mobile tracebacks"
+    model="com.axelor.apps.base.db.TraceBack">
+    <view type="grid" name="trace-back-grid"/>
+    <view type="form" name="trace-back-form"/>
+    <domain>self.origin = 'mobile app'</domain>
+  </action-view>
+
+  <action-view name="action.stock.config.view" title="Stock config"
+    model="com.axelor.apps.mobilesettings.db.MobileConfig">
+    <view type="form" name="mobile-config-form"/>
+    <view-param name="popup" value="true"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="forceEdit" value="true"/>
+    <context name="_showRecord"
+      expr="eval: __repo__(MobileConfig).all().filter('self.sequence = ?', 'app-stock').fetchOne()?.id"/>
+  </action-view>
+
+  <action-view name="action.production.config.view" title="Production config"
+    model="com.axelor.apps.mobilesettings.db.MobileConfig">
+    <view type="form" name="mobile-config-form"/>
+    <view-param name="popup" value="true"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="forceEdit" value="true"/>
+    <context name="_showRecord"
+      expr="eval: __repo__(MobileConfig).all().filter('self.sequence = ?', 'app-manufacturing').fetchOne()?.id"/>
+  </action-view>
+
+  <action-view name="action.crm.config.view" title="CRM config"
+    model="com.axelor.apps.mobilesettings.db.MobileConfig">
+    <view type="form" name="mobile-config-form"/>
+    <view-param name="popup" value="true"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="forceEdit" value="true"/>
+    <context name="_showRecord"
+      expr="eval: __repo__(MobileConfig).all().filter('self.sequence = ?', 'app-crm').fetchOne()?.id"/>
+  </action-view>
+
+  <action-attrs name="action-app-mobile-settings-config-attrs-boolean-readonly">
+    <attribute for="isStockAppEnabled" name="readonly"
+      expr="!__config__.app.isApp('stock')"/>
+    <attribute for="isProductionAppEnabled" name="readonly"
+      expr="!__config__.app.isApp('production')"/>
+    <attribute for="isCrmAppEnabled" name="readonly" expr="!__config__.app.isApp('crm')"/>
+  </action-attrs>
+
+  <action-group name="action-app-mobile-settings-config-group-on-load">
+    <action name="action-app-mobile-settings-config-attrs-boolean-readonly"/>
+  </action-group>
+
+  <action-attrs name="action-app-mobile-settings-attrs-update-stock-boolean">
+    <attribute for="isStockAppEnabled" name="value" expr="true"
+      if="!isStockAppEnabled &amp;&amp; isProductionAppEnabled"/>
+  </action-attrs>
+
+  <action-group name="action-app-mobile-settings-production-boolean-group-on-change">
+    <action name="action-app-mobile-settings-attrs-update-stock-boolean"/>
+    <action name="action-app-mobile-settings-boolean-group-on-change"/>
+  </action-group>
+
+  <action-group name="action-app-mobile-settings-boolean-group-on-change">
+    <action name="save"/>
+    <action name="action-app-mobile-settings-config-method-update-boolean-config"/>
+  </action-group>
+
+  <action-method name="action-app-mobile-settings-config-method-update-boolean-config">
+    <call class="com.axelor.apps.mobilesettings.web.AppMobileSettingsController"
+      method="updateBooleanConfig"/>
+  </action-method>
+
+  <action-group
+    name="action-app-mobile-settings-config-group-generate-qr-code-button-on-click">
+    <action name="action-app-mobile-settings-config-method-generate-qr-code"/>
+    <action name="save"/>
+  </action-group>
+
+  <action-method name="action-app-mobile-settings-config-method-generate-qr-code">
+    <call class="com.axelor.apps.mobilesettings.web.AppMobileSettingsController"
+      method="generateQrCode"/>
+  </action-method>
+
+</object-views>

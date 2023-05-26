@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="Partner">
+
+    <integer name="sizeSelect" title="Size" selection="crm.lead.size.select"/>
+    <integer name="leadScoringSelect" title="Lead scoring"
+      selection="gold.rating.icon.select"/>
+    <boolean name="isPartner" title="crm.Partner"/>
+    <boolean name="isKeyAccount" title="Key account" default="false"/>
+    <many-to-one name="companyDepartment"
+      ref="com.axelor.apps.base.db.CompanyDepartment" title="Department"/>
+    <boolean name="isDoNotCall" title="Do not call"/>
+    <boolean name="isDoNotEmail" title="Do not email"/>
+    <boolean name="isNurturing" title="Nurturing"/>
+    <datetime name="lastEventDateT" title="Last event date"/>
+    <datetime name="scheduledEventDateT" title="Scheduled event date"/>
+
+    <!-- Change title -->
+    <many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User"
+      title="Account owner" index="false" massUpdate="true"/>
+    <string name="fixedPhone" title="Phone number"/>
+    <many-to-one name="reportsTo" ref="com.axelor.apps.base.db.Partner"
+      title="partner.manager" massUpdate="true" index="false"/>
+    <many-to-one name="agency" ref="com.axelor.apps.crm.db.Agency" title="Agency"/>
+
+    <extra-code>
+    <![CDATA[
+		//partner size select
+		public static final int PARTNER_SIZE_ONE_TO_TWENTY = 1;
+		public static final int PARTNER_SIZE_TWENTY_TO_HUNDERED = 2;
+		public static final int PARTNER_SIZE_HUNDERED_TO_FIVE_HUNDRED = 3;
+		public static final int PARTNER_SIZE_FIVE_HUNDRED_TO_ONE_THOUSAND = 4;
+		public static final int PARTNER_SIZE_ONE_THOUSAND_TO_TWO_THOUSAND = 5;
+		public static final int PARTNER_SIZE_OVER_TWO_THOUSAND = 6;
+	]]>
+    </extra-code>
+  </entity>
+
+</domain-models>

@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service.invoice;
 
@@ -23,18 +24,19 @@ import com.axelor.apps.account.db.PfpPartialReason;
 import com.axelor.apps.account.db.SubstitutePfpValidator;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
-import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
@@ -53,11 +55,12 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public void validatePfp(InvoiceTerm invoiceTerm, User currentUser) {
     Company company = invoiceTerm.getCompany();
 
-    invoiceTerm.setDecisionPfpTakenDate(Beans.get(AppBaseService.class).getTodayDate(company));
+    invoiceTerm.setDecisionPfpTakenDateTime(
+        Beans.get(AppBaseService.class).getTodayDateTime(company).toLocalDateTime());
     invoiceTerm.setInitialPfpAmount(invoiceTerm.getAmount());
     invoiceTerm.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_VALIDATED);
     invoiceTerm.setPfpValidatorUser(currentUser);
@@ -73,7 +76,7 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public Integer massValidatePfp(List<Long> invoiceTermIds) {
     List<InvoiceTerm> invoiceTermList = this.getInvoiceTerms(invoiceTermIds);
     User currentUser = AuthUtils.getUser();
@@ -169,12 +172,14 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public void refusalToPay(
       InvoiceTerm invoiceTerm, CancelReason reasonOfRefusalToPay, String reasonOfRefusalToPayStr) {
     invoiceTerm.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_LITIGATION);
-    invoiceTerm.setDecisionPfpTakenDate(
-        Beans.get(AppBaseService.class).getTodayDate(invoiceTerm.getCompany()));
+    invoiceTerm.setDecisionPfpTakenDateTime(
+        Beans.get(AppBaseService.class)
+            .getTodayDateTime(invoiceTerm.getCompany())
+            .toLocalDateTime());
     invoiceTerm.setInitialPfpAmount(BigDecimal.ZERO);
     invoiceTerm.setRemainingPfpAmount(invoiceTerm.getAmount());
     invoiceTerm.setPfpValidatorUser(AuthUtils.getUser());
@@ -228,6 +233,7 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
     InvoiceTerm invoiceTerm =
         invoiceTermService.createInvoiceTerm(
             invoice,
+            originalInvoiceTerm.getMoveLine().getMove(),
             originalInvoiceTerm.getMoveLine(),
             originalInvoiceTerm.getBankDetails(),
             originalInvoiceTerm.getPfpValidatorUser(),
@@ -245,7 +251,7 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
     return invoiceTerm;
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   protected void updateOriginalTerm(
       InvoiceTerm originalInvoiceTerm,
       InvoiceTerm newInvoiceTerm,
@@ -270,7 +276,7 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
     originalInvoiceTerm.setPfpValidateStatusSelect(
         InvoiceTermRepository.PFP_STATUS_PARTIALLY_VALIDATED);
     originalInvoiceTerm.setRemainingPfpAmount(amount);
-    originalInvoiceTerm.setDecisionPfpTakenDate(LocalDate.now());
+    originalInvoiceTerm.setDecisionPfpTakenDateTime(LocalDateTime.now());
     originalInvoiceTerm.setPfpPartialReason(partialReason);
     originalInvoiceTerm.setCompanyAmount(
         originalInvoiceTerm.getCompanyAmount().subtract(newInvoiceTerm.getCompanyAmount()));
@@ -280,7 +286,7 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
             .subtract(newInvoiceTerm.getCompanyAmountRemaining()));
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   protected void checkOtherInvoiceTerms(InvoiceTerm invoiceTerm) {
     Invoice invoice = invoiceTerm.getInvoice();
     if (invoice == null) {

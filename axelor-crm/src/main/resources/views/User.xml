@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <form name="user-form" title="User" model="com.axelor.auth.db.User" extension="true"
+    id="crm-user-form">
+    <extend target="//panel[@name='teamsPanel']">
+      <insert position="after">
+        <panel if="__config__.app.getApp('crm')?.getAgenciesManagement()" name="agencyPanel"
+          title="Agencies" showIf="[2,5].indexOf(stepStatusSelect) > -1">
+          <field name="activeAgency" canEdit="false"
+            onSelect="action-user-attrs-domain-active-agency" form-view="agency-form"
+            grid-view="agency-grid"/>
+          <field name="agencySet" colSpan="12" canEdit="false" form-view="agency-form"
+            grid-view="agency-grid"/>
+        </panel>
+      </insert>
+    </extend>
+    <extend target="//panel[@name='stepContactPanel']/field[@name='activeTeam']">
+      <insert position="after">
+        <field name="activeAgency" canEdit="false"
+          onSelect="action-user-attrs-domain-active-agency" form-view="agency-form"
+          grid-view="agency-grid" if="__config__.app.getApp('crm')?.getAgenciesManagement()"/>
+      </insert>
+    </extend>
+
+    <extend target="//panel[@name='stepContactPanel']/field[@name='teamSet']">
+      <insert position="after">
+        <field name="agencySet" colSpan="12" canEdit="false" form-view="agency-form"
+          grid-view="agency-grid" if="__config__.app.getApp('crm')?.getAgenciesManagement()"/>
+      </insert>
+    </extend>
+  </form>
+
+  <action-attrs name="action-user-attrs-domain-active-agency">
+    <attribute name="domain"
+      expr="eval:agencySet?.size() > 0 ? &quot; self.id IN (${agencySet?.collect{it.id}.join(',')}) &quot; : &quot;self = null&quot; "
+      for="activeAgency"/>
+  </action-attrs>
+
+</object-views>

@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.project.service;
 
@@ -38,6 +39,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -47,6 +49,7 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
   protected FrequencyRepository frequencyRepo;
   protected FrequencyService frequencyService;
   protected AppBaseService appBaseService;
+  protected ProjectRepository projectRepository;
 
   private static final String TASK_LINK = "<a href=\"#/ds/all.open.project.tasks/edit/%s\">@%s</a>";
 
@@ -55,11 +58,13 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
       ProjectTaskRepository projectTaskRepo,
       FrequencyRepository frequencyRepo,
       FrequencyService frequencyService,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      ProjectRepository projectRepository) {
     this.projectTaskRepo = projectTaskRepo;
     this.frequencyRepo = frequencyRepo;
     this.frequencyService = frequencyService;
     this.appBaseService = appBaseService;
+    this.projectRepository = projectRepository;
   }
 
   @Override
@@ -197,9 +202,16 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
 
   @Override
   public ProjectStatus getStatus(Project project) {
-    return project == null || ObjectUtils.isEmpty(project.getProjectTaskStatusSet())
+    if (project == null) {
+      return null;
+    }
+
+    project = projectRepository.find(project.getId());
+    Set<ProjectStatus> projectStatusSet = project.getProjectTaskStatusSet();
+
+    return ObjectUtils.isEmpty(projectStatusSet)
         ? null
-        : project.getProjectTaskStatusSet().stream()
+        : projectStatusSet.stream()
             .min(Comparator.comparingInt(ProjectStatus::getSequence))
             .orElse(null);
   }
