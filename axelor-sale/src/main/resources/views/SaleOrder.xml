@@ -1452,6 +1452,7 @@
     <action name="action-sale-order-attrs-set-discounts-need-review"/>
     <action name="action-sale-order-record-get-trading-names-management-config"/>
     <action name="action-sale-order-attrs-incoterm-required"/>
+    <action name="action-sale-order-attrs-hide-selection-on-enable-task-template-by-product"/>
   </action-group>
 
   <action-group name="action-sale-group-confirmed">
@@ -2189,6 +2190,13 @@
   <action-attrs name="action-sale-order-attrs-set-required">
     <attribute name="required" for="$_projectGeneratorType"
       expr="eval: statusSelect == com.axelor.apps.sale.db.repo.SaleOrderRepository.STATUS_FINALIZED_QUOTATION &amp;&amp; __config__.app.getApp('business-project')?.getAutomaticProject()"/>
+  </action-attrs>
+
+  <action-attrs
+    name="action-sale-order-attrs-hide-selection-on-enable-task-template-by-product">
+    <attribute name="selection-in" for="$_projectGeneratorType"
+      if="!__config__.app.getApp('business-project')?.getEnableTaskTemplatesByProduct()"
+      expr="['PROJECT_ALONE', 'SUB_PROJECT_BY_LINE', 'TASK_BY_LINE']"/>
   </action-attrs>
 
   <action-method name="action-sale-order-method-generate-advance-payment">

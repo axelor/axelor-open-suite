@@ -218,11 +218,11 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
       Product product = saleOrderLine.getProduct();
       if (product != null
           && (ProductRepository.PROCUREMENT_METHOD_PRODUCE.equals(
-                      (String)
-                          productCompanyService.get(
-                              product, "procurementMethodSelect", saleOrder.getCompany()))
-                  || saleOrderLine.getSaleSupplySelect() == SaleOrderLineRepository.SALE_SUPPLY_PRODUCE)
-              && ProductRepository.PRODUCT_TYPE_SERVICE.equals(product.getProductTypeSelect())) {
+                  (String)
+                      productCompanyService.get(
+                          product, "procurementMethodSelect", saleOrder.getCompany()))
+              || saleOrderLine.getSaleSupplySelect() == SaleOrderLineRepository.SALE_SUPPLY_PRODUCE)
+          && ProductRepository.PRODUCT_TYPE_SERVICE.equals(product.getProductTypeSelect())) {
         saleOrderLineList.add(saleOrderLine);
       }
     }
