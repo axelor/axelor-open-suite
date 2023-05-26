@@ -35,20 +35,15 @@ import org.slf4j.LoggerFactory;
 
 public class MoveLineConsolidateServiceImpl implements MoveLineConsolidateService {
 
-  protected MoveToolService moveToolService;
-
-  @Inject
-  public MoveLineConsolidateServiceImpl(MoveToolService moveToolService) {
-    this.moveToolService = moveToolService;
-  }
-
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected MoveLineToolService moveLineToolService;
+  protected MoveToolService moveToolService;
 
   @Inject
   public MoveLineConsolidateServiceImpl(MoveLineToolService moveLineToolService) {
     this.moveLineToolService = moveLineToolService;
+    this.moveToolService = moveToolService;
   }
 
   @Override
