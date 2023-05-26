@@ -37,4 +37,11 @@ public interface MoveDefaultService {
    * @return Map of modified fields.
    */
   void setDefaultCurrency(Move move);
+
+  /**
+   * Set default currency code for move.
+   *
+   * @param move
+   */
+  void setDefaultCurrencyOnChange(Move move);
 }

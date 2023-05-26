@@ -1566,4 +1566,7 @@ public final class AccountExceptionMessage {
 
   public static final String PAYMENT_CONDITION_CONFIGURATION_ERROR = /*$$(*/
       "The payment condition %s is not correctly configured." /*)*/;
+
+  public static final String JOURNAL_TYPE_MISSING_TECHNICAL_TYPE = /*$$(*/
+      "A technical type is required on the journal type %s." /*)*/;
 }

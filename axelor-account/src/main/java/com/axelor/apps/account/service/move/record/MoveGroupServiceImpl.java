@@ -398,6 +398,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     valuesMap.put("companyCurrency", move.getCompanyCurrency());
     valuesMap.put("currencyCode", move.getCurrencyCode());
     valuesMap.put("companyCurrencyCode", move.getCompanyCurrencyCode());
+    valuesMap.put("partner", null);
 
     return valuesMap;
   }
@@ -436,7 +437,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   public Map<String, Object> getCurrencyOnChangeValuesMap(Move move) {
     Map<String, Object> valuesMap = new HashMap<>();
 
-    moveDefaultService.setDefaultCurrency(move);
+    moveDefaultService.setDefaultCurrencyOnChange(move);
 
     valuesMap.put("currency", move.getCurrency());
     valuesMap.put("companyCurrency", move.getCompanyCurrency());
