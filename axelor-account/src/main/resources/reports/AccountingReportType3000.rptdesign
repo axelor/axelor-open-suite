@@ -3019,7 +3019,7 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                                                 </simple-property-list>
                                             </filter-condition-element>
                                         </property>
-                                        <property name="pageBreakAfter">always</property>
+                                        <property name="pageBreakAfter">auto</property>
                                         <list-property name="boundDataColumns">
                                             <structure>
                                                 <property name="name">line</property>
