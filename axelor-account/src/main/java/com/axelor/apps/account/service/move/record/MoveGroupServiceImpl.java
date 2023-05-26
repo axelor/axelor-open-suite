@@ -197,6 +197,13 @@ public class MoveGroupServiceImpl implements MoveGroupService {
       moveAttrsService.getPfpAttrs(move, user, attrsMap);
     }
 
+    if (move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL) {
+      moveAttrsService.addMoveLineAnalyticAttrs(move, attrsMap);
+      moveAttrsService.addMassEntryHidden(move, attrsMap);
+      moveAttrsService.addMassEntryPaymentConditionRequired(move, attrsMap);
+      moveAttrsService.addMassEntryBtnHidden(move, attrsMap);
+    }
+
     return attrsMap;
   }
 
@@ -220,12 +227,6 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     Map<String, Map<String, Object>> attrsMap = this.getOnNewAttrsMap(move, user);
 
     moveAttrsService.addDueDateHidden(move, attrsMap);
-    if (move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL) {
-      moveAttrsService.addMoveLineAnalyticAttrs(move, attrsMap);
-      moveAttrsService.addMassEntryHidden(move, attrsMap);
-      moveAttrsService.addMassEntryPaymentConditionRequired(move, attrsMap);
-      moveAttrsService.addMassEntryBtnHidden(move, attrsMap);
-    }
 
     return attrsMap;
   }
@@ -303,6 +304,10 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
     moveAttrsService.addFunctionalOriginSelectDomain(move, attrsMap);
+
+    if (move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL) {
+      moveAttrsService.addMassEntryHidden(move, attrsMap);
+    }
 
     return attrsMap;
   }
