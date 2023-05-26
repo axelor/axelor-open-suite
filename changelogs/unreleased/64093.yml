@@ -1,3 +1,0 @@
----
-title: "Invoice : Add error message when generating moves with no description even though it's required"
-type: fix

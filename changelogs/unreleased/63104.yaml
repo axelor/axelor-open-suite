@@ -1,5 +1,0 @@
-title: ACCOUNT CONFIG correct payment session config
-type: fix
-description:
-  Fix display of fields, added condition to show field.
-  Modified field title and his translation.
