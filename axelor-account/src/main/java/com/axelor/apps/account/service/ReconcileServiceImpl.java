@@ -32,6 +32,7 @@ import com.axelor.apps.account.db.ReconcileGroup;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermPaymentRepository;
+import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
@@ -759,7 +760,11 @@ public class ReconcileServiceImpl implements ReconcileService {
     // FIXME This feature will manage at a first step only reconcile of purchase (journal type of
     // type purchase)
     Move purchaseMove = reconcile.getCreditMoveLine().getMove();
-    if (!purchaseMove.getJournal().getJournalType().getCode().equals("ACH")
+    if (!purchaseMove
+            .getJournal()
+            .getJournalType()
+            .getTechnicalTypeSelect()
+            .equals(JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE)
         || purchaseMove.getPartner() == null) {
       return;
     }
@@ -771,7 +776,11 @@ public class ReconcileServiceImpl implements ReconcileService {
     // FIXME This feature will manage at a first step only reconcile of purchase (journal type of
     // type purchase)
     Move purchaseMove = reconcile.getCreditMoveLine().getMove();
-    if (!purchaseMove.getJournal().getJournalType().getCode().equals("ACH")
+    if (!purchaseMove
+            .getJournal()
+            .getJournalType()
+            .getTechnicalTypeSelect()
+            .equals(JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE)
         || CollectionUtils.isEmpty(reconcile.getPaymentMoveLineDistributionList())) {
       return;
     }
