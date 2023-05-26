@@ -82,4 +82,20 @@ public class DepositSlipController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void updateInvoicePayments(ActionRequest request, ActionResponse response) {
+    try {
+      DepositSlip depositSlip = request.getContext().asType(DepositSlip.class);
+      LocalDate depositDate =
+          (LocalDate)
+              Adapter.adapt(
+                  request.getContext().get("__depositDate"),
+                  LocalDate.class,
+                  LocalDate.class,
+                  null);
+      Beans.get(DepositSlipService.class).updateInvoicePayments(depositSlip, depositDate);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

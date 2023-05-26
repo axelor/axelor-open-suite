@@ -24,4 +24,12 @@
     <bind column="searchConfig" to="searchConfig" search="self.metaModel.name = :searchConfig"/>
   </input>
 
+  <input file="app_gdpr.csv" separator=";" type="com.axelor.studio.db.AppGdpr"
+    search="self.app.code = :appGdpr">
+    <bind column="accessResponseTemplate" to="accessResponseTemplate"
+      search="self.name = :accessResponseTemplate"/>
+    <bind column="erasureResponseTemplate" to="erasureResponseTemplate"
+      search="self.name = :erasureResponseTemplate"/>
+  </input>
+
 </csv-inputs>

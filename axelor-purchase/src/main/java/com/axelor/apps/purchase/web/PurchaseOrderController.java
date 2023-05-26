@@ -26,7 +26,6 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
-import com.axelor.apps.base.db.PrintingSettings;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
@@ -56,7 +55,6 @@ import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.axelor.utils.StringTool;
 import com.axelor.utils.db.Wizard;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
@@ -410,32 +408,6 @@ public class PurchaseOrderController {
       purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
       Beans.get(PurchaseOrderWorkflowService.class).cancelPurchaseOrder(purchaseOrder);
       response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  /**
-   * Called on printing settings select. Set the domain for {@link PurchaseOrder#printingSettings}
-   *
-   * @param request
-   * @param response
-   */
-  public void filterPrintingSettings(ActionRequest request, ActionResponse response) {
-    try {
-      PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
-
-      List<PrintingSettings> printingSettingsList =
-          Beans.get(TradingNameService.class)
-              .getPrintingSettingsList(purchaseOrder.getTradingName(), purchaseOrder.getCompany());
-      String domain =
-          String.format(
-              "self.id IN (%s)",
-              !printingSettingsList.isEmpty()
-                  ? StringTool.getIdListString(printingSettingsList)
-                  : "0");
-
-      response.setAttr("printingSettings", "domain", domain);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
