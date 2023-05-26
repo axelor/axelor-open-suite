@@ -1212,6 +1212,9 @@ public final class AccountExceptionMessage {
   public static final String MOVE_CHECK_DESCRIPTION = /*$$(*/
       "The move field description is empty, do you wish to continue ?" /*)*/;
 
+  public static final String MOVE_CHECK_ACCOUNTING = /*$$(*/
+      "By clicking on this button, move status will be updated to Accounted. Please be aware that accounting a move brings irrevocable integration of the move in its moves book. Do you wish to continue ?" /*)*/;
+
   public static final String DATE_NOT_IN_PERIOD_MOVE = /*$$(*/
       "The date input on the move line of %s %s on account %s is not belonging to the accounting period defined on the move." /*)*/;
 
@@ -1560,4 +1563,10 @@ public final class AccountExceptionMessage {
 
   public static final String MOVE_INVOICE_DESCRIPTION_REQUIRED = /*$$(*/
       "Description is required in moves for company %s but description of moves that are being generated will be empty. Please make sure a journal is set and fill a default description or enable document number to be used as such." /*)*/;
+
+  public static final String PAYMENT_CONDITION_CONFIGURATION_ERROR = /*$$(*/
+      "The payment condition %s is not correctly configured." /*)*/;
+
+  public static final String JOURNAL_TYPE_MISSING_TECHNICAL_TYPE = /*$$(*/
+      "A technical type is required on the journal type %s." /*)*/;
 }

@@ -78,13 +78,6 @@ public class MoveComputeServiceImpl implements MoveComputeService {
   }
 
   @Override
-  public boolean checkManageCutOffDates(Move move) {
-    return CollectionUtils.isNotEmpty(move.getMoveLineList())
-        && move.getMoveLineList().stream()
-            .anyMatch(invoiceLine -> moveLineService.checkManageCutOffDates(invoiceLine));
-  }
-
-  @Override
   public void applyCutOffDates(Move move, LocalDate cutOffStartDate, LocalDate cutOffEndDate) {
     if (CollectionUtils.isNotEmpty(move.getMoveLineList())) {
       move.getMoveLineList()

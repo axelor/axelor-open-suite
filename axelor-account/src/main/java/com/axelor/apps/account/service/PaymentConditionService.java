@@ -16,27 +16,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.account.service.move.record;
+package com.axelor.apps.account.service;
 
-import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.base.AxelorException;
-import java.time.LocalDate;
 
-public interface MoveRecordUpdateService {
-
-  void updatePartner(Move move);
-
-  String updateInvoiceTerms(Move move, boolean paymentConditionChange, boolean headerChange)
-      throws AxelorException;
-
-  void updateInvoiceTermDueDate(Move move, LocalDate dueDate);
-
-  void updateInDayBookMode(Move move) throws AxelorException;
-
-  void updateMoveLinesCurrencyRate(Move move) throws AxelorException;
-
-  void updateDueDate(Move move, boolean paymentConditionChange, boolean dateChange)
-      throws AxelorException;
-
-  LocalDate getDateOfReversion(LocalDate moveDate, int dateOfReversionSelect);
+public interface PaymentConditionService {
+  void checkPaymentCondition(PaymentCondition paymentCondition) throws AxelorException;
 }

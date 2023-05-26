@@ -69,7 +69,7 @@
         <panel name="moveContentPanel" colSpan="12">
           <field name="company" canEdit="false" widget="SuggestBox"
             readonlyIf="$validatePeriod || moveLineList.length &gt; 0 || statusSelect == 3"
-            onChange="action-group-move-company-onchange" form-view="company-form"
+            onChange="action-move-method-company-onchange" form-view="company-form"
             grid-view="company-grid" colSpan="2"/>
           <field if="__config__.app.getApp('base')?.getManageMultiBanks()"
             name="companyBankDetails" colSpan="2" canEdit="false"
@@ -80,7 +80,7 @@
             readonlyIf="$validatePeriod || moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"
             if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"
             form-view="trading-name-form" grid-view="trading-name-grid" canNew="false"
-            onSelect="action-move-set-trading-name-domain" colSpan="2"/>
+            onSelect="action-move-method-trading-name-onselect" colSpan="2"/>
           <spacer if="!__config__.app.getApp('base')?.getEnableTradingNamesManagement()"
             colSpan="2"/>
           <field name="journal" domain="self.statusSelect = 1 AND self.company = :company"
@@ -96,7 +96,7 @@
               canEdit="false" canView="false" readonly="true" colSpan="4"/>
             <field name="date"
               readonlyIf="moveLineList.length &gt; 0 &amp;&amp; statusSelect == 3"
-              onChange="action-group-move-date-onchange" colSpan="2"/>
+              onChange="action-account-move-method-date-onchange" colSpan="2"/>
 
 
             <field name="accountingDate" readonly="true" showIf="statusSelect == 3"/>
@@ -104,22 +104,22 @@
           <field name="partner" readonlyIf="$validatePeriod || moveLineList.length &gt; 0"
             colSpan="2" canNew="false" canEdit="false"
             onChange="action-account-move-method-partner-onchange"
-            onSelect="action-account-move-method-filter-partner" form-view="partner-form"
+            onSelect="action-move-partner-onselect" form-view="partner-form"
             grid-view="partner-grid"/>
           <field name="fiscalPosition" colSpan="2" canNew="false" canEdit="false"
             form-view="fiscal-position-form" grid-view="fiscal-position-grid"/>
           <field name="currency"
             readonlyIf="$validatePeriod || moveLineList.length &gt; 0 || statusSelect == 3"
-            colSpan="2" onChange="action-move-method-set-default-move-currency" required="true"/>
+            colSpan="2" onChange="action-move-method-currency-onchange" required="true"/>
           <field name="paymentMode"
             readonlyIf="period.statusSelect == 2 || period.statusSelect == 5 || $validatePeriod"
-            colSpan="3" onChange="action-move-group-payment-mode-onchange"
+            colSpan="3" onChange="action-move-method-payment-mode-onchange"
             form-view="payment-mode-form" grid-view="payment-mode-grid"
-            onSelect="action-move-attrs-set-domain-payment-mode"/>
+            onSelect="action-move-method-payment-mode-onselect"/>
           <field name="partnerBankDetails"
             showIf="[2,3,9,10].includes(paymentMode.typeSelect)" colSpan="3"
-            onChange="action-move-attrs-header-change"
-            onSelect="action-move-attrs-bank-details-from-partner-domain"
+            onChange="action-move-method-partner-bank-details-onchange"
+            onSelect="action-move-method-partner-bank-details-onselect"
             form-view="bank-details-form" grid-view="bank-details-grid"/>
           <field name="paymentCondition" showIf="journal.journalType.technicalTypeSelect != 4"
             readonlyIf="$validatePeriod &amp;&amp; statusSelect == 3" colSpan="4"
@@ -132,13 +132,12 @@
         </panel>
         <panel name="originDescriptionPanel" colSpan="12">
           <field name="origin" readonlyIf="$validatePeriod" colSpan="4"
-            onChange="action-account-move-method-origin-onchange"
-            requiredIf="journal.hasRequiredOrigin"/>
+            onChange="action-move-group-origin-onchange" requiredIf="journal.hasRequiredOrigin"/>
           <field name="originDate" title="Origin date"
             readonlyIf="$validatePeriod || moveLineList.length  &gt; 0 &amp;&amp; statusSelect == 3"
-            onChange="action-account-move-method-origin-date-onchange" colSpan="2"/>
+            onChange="action-move-group-origin-date-onchange" colSpan="2"/>
           <field name="description" readonlyIf="$validatePeriod"
-            onChange="action-account-move-group-set-description-on-lines" colSpan="6"/>
+            onChange="action-move-group-description-onchange" colSpan="6"/>
         </panel>
       </panel>
       <panel name="otherDetailsPanel" colSpan="3">
@@ -210,10 +209,10 @@
         <button colSpan="3" name="counterpartGenerateBtn" css="btn-custom text-left"
           icon="fa-plus" title="Generate counterpart"
           showIf="journal != null &amp;&amp; statusSelect != 3 &amp;&amp; ([1,2,4].includes(journal.journalType.technicalTypeSelect) &amp;&amp; functionalOriginSelect &amp;&amp; (functionalOriginSelect == 3 || functionalOriginSelect == 4 || functionalOriginSelect == 7))"
-          onClick="action-account-move-group-generate-counterpart"/>
+          onClick="action-move-method-generate-counterpart"/>
         <button colSpan="3" name="autoTaxLineGenerateBtn" css="btn-custom text-left"
           icon="fa-plus" title="Generate tax lines" showIf="statusSelect == 1 || statusSelect == 5"
-          onClick="action-account-move-group-generate-tax-lines"/>
+          onClick="action-move-method-generate-tax-lines"/>
         <panel-related name="moveLineListPanel"
           showIf="(statusSelect == 1 || statusSelect == 2 || statusSelect == 5) &amp;&amp; journal &amp;&amp; currency &amp;&amp; company &amp;&amp; date &amp;&amp; period"
           colSpan="12" height="20" field="moveLineList" form-view="move-line-move-form"
@@ -355,7 +354,7 @@
         <panel name="moveContentPanel"
           readonlyIf="moveLineList.length > 0 &amp;&amp; statusSelect == 3" colSpan="12">
           <field name="company" widget="SuggestBox" canEdit="false"
-            onChange="action-group-move-company-onchange" form-view="company-form"
+            onChange="action-move-method-company-onchange" form-view="company-form"
             grid-view="company-grid"/>
           <field name="journal" colSpan="3" canNew="false" canEdit="false"
             onChange="action-account-move-method-journal-onchange"
@@ -365,22 +364,22 @@
             readonlyIf="statusSelect != 1 &amp;&amp; statusSelect != 2 &amp;&amp; statusSelect != 5"
             colSpan="3"
             hideIf="journal.authorizedFunctionalOriginSelect.split(',').length == 1 &amp;&amp; journal.authorizedFunctionalOriginSelect == functionalOriginSelect || journal.authorizedFunctionalOriginSelect == null &amp;&amp; functionalOriginSelect == null"/>
-          <field name="date" colSpan="3" onChange="action-group-move-date-onchange"/>
+          <field name="date" colSpan="3" onChange="action-account-move-method-date-onchange"/>
           <field hidden="true" name="period" canView="false" canEdit="false"
             form-view="period-form" grid-view="period-grid"/>
           <field if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"
-            name="tradingName" canNew="false" onSelect="action-move-set-trading-name-domain"
+            name="tradingName" canNew="false" onSelect="action-move-method-trading-name-onselect"
             form-view="trading-name-form" grid-view="trading-name-grid"/>
           <field name="paymentMode" colSpan="3"
-            onSelect="action-move-attrs-set-domain-payment-mode"/>
+            onSelect="action-move-method-payment-mode-onselect"/>
           <field name="journal.journalType" hidden="true"/>
           <field name="journal.journalType.technicalTypeSelect" hidden="true" type="integer"/>
           <field name="journal.authorizeSimulatedMove" hidden="true"/>
         </panel>
         <field name="description" colSpan="6"
-          onChange="action-account-move-group-set-description-on-lines"/>
+          onChange="action-move-group-description-onchange"/>
         <field name="origin" colSpan="3" requiredIf="journal.hasRequiredOrigin"
-          onChange="action-account-move-method-origin-onchange"/>
+          onChange="action-move-group-origin-onchange"/>
         <field name="journal.hasRequiredOrigin" readonly="true" hidden="true"/>
         <field name="journal.hasDuplicateDetectionOnOrigin" readonly="true" hidden="true"/>
         <field name="journal.authorizedFunctionalOriginSelect" hidden="true"/>
@@ -433,12 +432,12 @@
             onClick="action-move-account-group-simulate" colSpan="12"
             showIf="statusSelect == 1 &amp;&amp; _isActivateSimulatedMoves &amp;&amp; journal.authorizeSimulatedMove"/>
           <button name="autoTaxLineGenerateBtn" title="Generate tax lines"
-            onClick="action-account-move-group-generate-tax-lines" colSpan="12"
+            onClick="action-move-method-generate-tax-lines" colSpan="12"
             showIf="statusSelect == 1 || statusSelect == 5"/>
           <button
             showIf="journal != null &amp;&amp; statusSelect != 3 &amp;&amp; ([1,2,4].includes(journal.journalType.technicalTypeSelect) &amp;&amp; functionalOriginSelect &amp;&amp; (functionalOriginSelect == 3 || functionalOriginSelect == 4 || functionalOriginSelect == 7))"
             name="counterpartGenerateBtn" title="Generate counterpart"
-            onClick="action-account-move-group-generate-counterpart" colSpan="12"/>
+            onClick="action-move-method-generate-counterpart" colSpan="12"/>
         </panel>
         <field name="$validatePeriod" hidden="true" type="boolean"/>
       </panel>
@@ -513,13 +512,12 @@
   </form>
 
   <form name="move-wizard-generate-reverse-form" title="Generate Reverse Move"
-    onLoad="action-move-attrs-set-generate-reverse-wizard-defaults"
-    model="com.axelor.apps.account.db.Move">
+    onLoad="action-move-method-wizard-default" model="com.axelor.apps.account.db.Move">
     <panel name="mainPanel">
       <field name="isAutomaticReconcile" title="Automatic reconcile" type="boolean"/>
       <field name="dateOfReversionSelect" title="Date of reversion" type="integer"
         selection="account.move.date.of.reversion.type.select"
-        onChange="action-move-record-set-date-of-revision"/>
+        onChange="action-move-method-date-of-reversion-select-onchange"/>
       <field name="isAutomaticAccounting" title="Automatic accounting" type="boolean"/>
       <field name="dateOfReversion" type="date" showTitle="false"
         requiredIf="dateOfReversionSelect == 4" readonlyIf="dateOfReversionSelect != 4"/>
@@ -534,8 +532,7 @@
   </form>
 
   <form name="move-wizard-mass-reverse-form" title="Mass Generate Reverse Move"
-    onNew="action-move-attrs-set-generate-reverse-wizard-defaults"
-    model="com.axelor.utils.db.Wizard">
+    onNew="action-move-method-wizard-default" model="com.axelor.utils.db.Wizard">
     <panel name="mainPanel">
       <field name="isAutomaticReconcile" title="Automatic reconcile" type="boolean"/>
       <field name="dateOfReversionSelect" title="Date of reversion" type="integer"
@@ -555,58 +552,16 @@
     </panel>
   </form>
 
-  <action-record name="action-move-record-set-date-of-revision"
-    model="com.axelor.apps.account.db.Move">
-    <field name="dateOfReversion" expr="eval: __config__.date" if="dateOfReversionSelect == 1"/>
-    <field name="dateOfReversion" expr="eval: _moveDate" if="dateOfReversionSelect == 2"/>
-    <field name="dateOfReversion" expr="eval: __config__.date.plusDays(1)"
-      if="dateOfReversionSelect == 3"/>
-  </action-record>
-
-  <action-method name="action-account-move-method-onnew">
-    <call class="com.axelor.apps.account.web.MoveController" method="onNew"/>
-  </action-method>
-
-  <action-method name="action-account-move-method-onLoad">
-    <call class="com.axelor.apps.account.web.MoveController" method="onLoad"/>
-  </action-method>
-
-  <action-method name="action-account-move-method-onSave-before">
-    <call class="com.axelor.apps.account.web.MoveController" method="onSaveBefore"/>
-  </action-method>
-
-  <action-method name="action-account-move-method-onSave-check">
-    <call class="com.axelor.apps.account.web.MoveController" method="onSaveCheck"/>
-  </action-method>
-
-  <action-method name="action-account-move-method-onSave-after">
-    <call class="com.axelor.apps.account.web.MoveController" method="onSaveAfter"/>
-  </action-method>
-
+  <!-- ACTION GROUP WITH SAVE -->
 
   <action-group name="action-account-move-group-onsave">
-    <action name="action-account-move-method-onSave-check"/>
+    <action name="action-move-method-check-before-save"/>
     <action name="save"/>
-    <action name="action-account-move-method-onSave-before"/>
-    <action name="save"/>
-    <action name="action-account-move-method-onSave-after"/>
-  </action-group>
-
-  <action-group name="action-account-move-group-generate-counterpart">
-    <action name="action-account-move-method-exception-counterpart"/>
-    <action name="action-account-move-method-automatic-taxline-generation"/>
-    <action name="action-account-move-method-generate-counterpart"/>
-    <action name="action-account-move-method-compute-totals"/>
-  </action-group>
-
-  <action-group name="action-account-move-group-generate-tax-lines">
-    <action name="action-account-move-method-automatic-taxline-generation"/>
-    <action name="action-account-move-method-compute-totals"/>
+    <action name="action-move-method-onsave"/>
   </action-group>
 
   <action-group name="action-account-move-group-accounting-click">
-    <action name="action-account-accounting-prompt"
-      if="statusSelect == 2 || ((!company?.accountConfig?.accountingDaybook || !journal?.allowAccountingDaybook) &amp;&amp; (statusSelect == 1 || statusSelect == 5))"/>
+    <action name="action-move-method-check-accounting"/>
     <action name="action-account-move-group-onsave"/>
     <action name="action-move-method-accounting"/>
   </action-group>
@@ -616,126 +571,32 @@
     <action name="action-move-method-set-status-simulate"/>
   </action-group>
 
-  <action-group name="action-account-move-group-set-description-on-lines">
-    <action name="action-account-move-method-description-is-empty"/>
-    <action name="action-account-move-method-set-description-on-lines"/>
+  <!-- ACTION GROUP WITH ALERT -->
+
+  <action-group name="action-move-group-description-onchange">
+    <action name="action-move-method-check-description"/>
+    <action name="action-move-method-description-onchange"/>
   </action-group>
 
-  <action-method name="action-account-move-method-origin-onchange">
-    <call class="com.axelor.apps.account.web.MoveController" method="onChangeOrigin"/>
-  </action-method>
-
-  <action-group name="action-group-move-company-onchange">
-    <action name="action-move-method-set-journal"/>
-    <action name="action-group-move-date-onchange"/>
-    <action name="action-move-method-fill-company-bank-details"/>
-    <action name="action-method-hide-axis-analytic-account-move-line"/>
-    <action name="action-move-method-set-default-move-currency"/>
+  <action-group name="action-move-group-origin-date-onchange">
+    <action name="action-move-method-check-duplicate-origin-move"/>
+    <action name="action-account-move-method-origin-date-onchange"/>
   </action-group>
 
-  <action-method name="action-account-move-method-date-onchange">
-    <call class="com.axelor.apps.account.web.MoveController" method="onChangeDate"/>
-  </action-method>
-
-  <action-group name="action-group-move-date-onchange">
-    <action name="action-account-move-method-date-onchange"/>
+  <action-group name="action-move-group-origin-onchange">
+    <action name="action-move-method-check-origin"/>
+    <action name="action-move-method-check-duplicate-origin-move"/>
+    <action name="action-account-move-method-origin-onchange"/>
   </action-group>
 
-  <action-method name="action-account-move-method-journal-onchange">
-    <call class="com.axelor.apps.account.web.MoveController" method="onChangeJournal"/>
-  </action-method>
+  <!-- ACTION METHOD ON CLICK -->
 
-  <action-method name="action-account-move-method-partner-onchange">
-    <call class="com.axelor.apps.account.web.MoveController" method="onChangePartner"/>
-  </action-method>
-
-  <action-method name="action-account-move-method-move-line-list-onchange">
-    <call class="com.axelor.apps.account.web.MoveController" method="onChangeMoveLineList"/>
-  </action-method>
-
-  <action-method name="action-account-move-method-payment-condition-onchange">
-    <call class="com.axelor.apps.account.web.MoveController" method="onChangePaymentCondition"/>
-  </action-method>
-
-  <action-method name="action-account-move-method-origin-date-onchange">
-    <call class="com.axelor.apps.account.web.MoveController" method="onChangeOriginDate"/>
-  </action-method>
-
-  <action-group name="action-move-group-payment-mode-onchange">
-    <action name="action-move-attrs-header-change"/>
-    <action name="action-move-method-fill-company-bank-details"/>
-  </action-group>
-
-  <action-validate name="action-account-accounting-prompt">
-    <alert
-      message="By clicking on this button, move status will be updated to Accounted. Please be aware that accounting a move brings irrevocable integration of the move in its moves book. Do you wish to continue ?"/>
-  </action-validate>
-
-  <action-method name="action-account-move-method-description-is-empty">
-    <call class="com.axelor.apps.account.web.MoveController" method="validateDescription"/>
-  </action-method>
-
-  <action-method name="action-move-method-check-term-in-payment">
-    <call class="com.axelor.apps.account.web.MoveController" method="checkTermsInPayment"/>
-  </action-method>
-
-  <action-validate name="action-move-validate-check-term-in-payment">
-    <error message="$paymentConditionChangeError"
-      if="!com.google.common.base.Strings.isNullOrEmpty(paymentConditionChangeError)"/>
-  </action-validate>
-
-  <action-method name="action-move-method-set-default-move-currency">
-    <call class="com.axelor.apps.account.web.MoveController" method="setDefaultCurrency"/>
-  </action-method>
-
-  <action-method name="action-move-method-set-currency-code">
-    <call class="com.axelor.apps.account.web.MoveController" method="setCurrencyCode"/>
-  </action-method>
-
-  <action-method name="action-move-method-set-journal">
-    <call class="com.axelor.apps.account.web.MoveController" method="setJournal"/>
-  </action-method>
-
-  <!-- ACTION ATTRS -->
-  <action-attrs name="action-move-attrs-set-domain-payment-mode">
-    <attribute name="domain" for="paymentMode"
-      expr="eval: &quot; self.id IN (SELECT am.paymentMode FROM AccountManagement am WHERE am.company = :company)  &quot;"/>
-  </action-attrs>
-
-  <action-attrs name="action-move-attrs-set-generate-reverse-wizard-defaults">
-    <attribute name="value" for="isAutomaticReconcile" expr="eval: true"/>
-    <attribute name="value" for="dateOfReversionSelect" expr="eval: 2"/>
-    <attribute name="value" for="isAutomaticAccounting" expr="eval: true"/>
-    <attribute name="value" for="isUnreconcileOriginalMove" expr="eval: true"/>
-    <attribute name="value" for="isHiddenMoveLinesInBankReconciliation" expr="eval: true"/>
-    <attribute name="value" for="dateOfReversion" expr="eval: _moveDate"/>
-  </action-attrs>
-
-  <action-attrs name="action-move-attrs-bank-details-from-partner-domain">
-    <attribute name="domain" for="partnerBankDetails"
-      expr="eval: &quot; self = null &quot;"/>
-    <attribute name="domain" for="partnerBankDetails"
-      expr="eval: &quot; self.id IN (${partner.bankDetailsList.collect{it.id}.join(',')}) AND self.active IS TRUE &quot;"
-      if="partner?.bankDetailsList &amp;&amp; !partner.bankDetailsList.isEmpty()"/>
-  </action-attrs>
-
-  <action-attrs name="action-move-attrs-payment-condition-set-domain">
-    <attribute name="domain" for="paymentCondition"
-      expr="eval: &quot; SIZE(self.paymentConditionLineList) &lt; 2 &quot;"
-      if="!__config__.app.getApp('account').allowMultiInvoiceTerms"/>
-  </action-attrs>
-
-  <!-- ACTION METHOD -->
   <action-method name="action-move-method-accounting">
     <call class="com.axelor.apps.account.web.MoveController" method="accounting"/>
   </action-method>
 
   <action-method name="action-move-method-generate-reverse-move">
     <call class="com.axelor.apps.account.web.MoveController" method="generateReverse"/>
-  </action-method>
-
-  <action-method name="action-move-method-update-lines">
-    <call class="com.axelor.apps.account.web.MoveController" method="updateLines"/>
   </action-method>
 
   <action-method name="action-move-method-accounting-multiple-moves">
@@ -758,30 +619,6 @@
     <call class="com.axelor.apps.account.web.MoveController" method="printMove"/>
   </action-method>
 
-  <action-method name="action-account-move-method-compute-totals">
-    <call class="com.axelor.apps.account.web.MoveController" method="computeTotals"/>
-  </action-method>
-
-  <action-method name="action-account-move-method-automatic-taxline-generation">
-    <call class="com.axelor.apps.account.web.MoveController" method="autoTaxLineGenerate"/>
-  </action-method>
-
-  <action-method name="action-account-move-method-generate-counterpart">
-    <call class="com.axelor.apps.account.web.MoveController" method="generateCounterpart"/>
-  </action-method>
-
-  <action-method name="action-account-move-method-filter-partner">
-    <call class="com.axelor.apps.account.web.MoveController" method="filterPartner"/>
-  </action-method>
-
-  <action-method name="action-account-move-method-set-description-on-lines">
-    <call class="com.axelor.apps.account.web.MoveController" method="setDescriptionOnLines"/>
-  </action-method>
-
-  <action-method name="action-move-method-set-moveline-dates">
-    <call class="com.axelor.apps.account.web.MoveController" method="setMoveLineDates"/>
-  </action-method>
-
   <action-method name="action-move-method-set-status-simulate">
     <call class="com.axelor.apps.account.web.MoveController" method="setSimulate"/>
   </action-method>
@@ -790,19 +627,139 @@
     <call class="com.axelor.apps.account.web.MoveController" method="simulateMultipleMoves"/>
   </action-method>
 
-  <action-method name="action-move-method-apply-cut-off-dates">
-    <call class="com.axelor.apps.account.web.MoveController" method="applyCutOffDates"/>
-  </action-method>
-
   <action-method name="action-move-method-mass-reverse-move">
     <call class="com.axelor.apps.account.web.MoveController" method="massReverseMove"/>
   </action-method>
 
-  <action-method name="action-account-move-method-exception-counterpart">
-    <call class="com.axelor.apps.account.web.MoveController" method="exceptionCounterpart"/>
+  <!-- OTHER ACTION METHOD -->
+
+  <action-method name="action-move-partner-onselect">
+    <call class="com.axelor.apps.account.web.MoveController" method="onSelectPartner"/>
+  </action-method>
+
+  <action-method name="action-move-method-description-onchange">
+    <call class="com.axelor.apps.account.web.MoveController" method="onChangeDescription"/>
+  </action-method>
+
+  <action-method name="action-move-method-apply-cut-off-dates">
+    <call class="com.axelor.apps.account.web.MoveController" method="onClickApplyCutOffDates"/>
+  </action-method>
+
+  <action-method name="action-move-method-journal-on-change">
+    <call class="com.axelor.apps.account.web.MoveController" method="onChangeJournal"/>
+  </action-method>
+
+  <action-method name="action-account-move-method-journal-onchange">
+    <call class="com.axelor.apps.account.web.MoveController" method="onChangeJournal"/>
+  </action-method>
+
+  <action-method name="action-account-move-method-partner-onchange">
+    <call class="com.axelor.apps.account.web.MoveController" method="onChangePartner"/>
+  </action-method>
+
+  <action-method name="action-account-move-method-move-line-list-onchange">
+    <call class="com.axelor.apps.account.web.MoveController" method="onChangeMoveLineList"/>
+  </action-method>
+
+  <action-method name="action-account-move-method-payment-condition-onchange">
+    <call class="com.axelor.apps.account.web.MoveController" method="onChangePaymentCondition"/>
+  </action-method>
+
+  <action-method name="action-move-method-check-duplicate-origin-move">
+    <call class="com.axelor.apps.account.web.MoveController" method="checkDuplicateOriginMove"/>
+  </action-method>
+
+  <action-method name="action-account-move-method-origin-date-onchange">
+    <call class="com.axelor.apps.account.web.MoveController" method="onChangeOriginDate"/>
+  </action-method>
+
+  <action-method name="action-move-method-check-description">
+    <call class="com.axelor.apps.account.web.MoveController" method="checkDescription"/>
+  </action-method>
+
+  <action-method name="action-account-move-method-onnew">
+    <call class="com.axelor.apps.account.web.MoveController" method="onNew"/>
+  </action-method>
+
+  <action-method name="action-account-move-method-onLoad">
+    <call class="com.axelor.apps.account.web.MoveController" method="onLoad"/>
+  </action-method>
+
+  <action-method name="action-move-method-check-before-save">
+    <call class="com.axelor.apps.account.web.MoveController" method="onSaveCheck"/>
+  </action-method>
+
+  <action-method name="action-move-method-onsave">
+    <call class="com.axelor.apps.account.web.MoveController" method="onSave"/>
+  </action-method>
+
+  <action-method name="action-move-method-check-origin">
+    <call class="com.axelor.apps.account.web.MoveController" method="checkOrigin"/>
+  </action-method>
+
+  <action-method name="action-account-move-method-origin-onchange">
+    <call class="com.axelor.apps.account.web.MoveController" method="onChangeOrigin"/>
+  </action-method>
+
+  <action-method name="action-account-move-method-date-onchange">
+    <call class="com.axelor.apps.account.web.MoveController" method="onChangeDate"/>
+  </action-method>
+
+  <action-method name="action-move-method-generate-counterpart">
+    <call class="com.axelor.apps.account.web.MoveController"
+      method="onClickGenerateCounterpart"/>
+  </action-method>
+
+  <action-method name="action-move-method-generate-tax-lines">
+    <call class="com.axelor.apps.account.web.MoveController" method="onClickGenerateTaxLines"/>
+  </action-method>
+
+  <action-method name="action-move-method-company-onchange">
+    <call class="com.axelor.apps.account.web.MoveController" method="onChangeCompany"/>
+  </action-method>
+
+  <action-method name="action-move-method-payment-mode-onchange">
+    <call class="com.axelor.apps.account.web.MoveController" method="onChangePaymentMode"/>
+  </action-method>
+
+  <action-method name="action-move-method-currency-onchange">
+    <call class="com.axelor.apps.account.web.MoveController" method="onChangeCurrency"/>
+  </action-method>
+
+  <action-method name="action-move-method-date-of-reversion-select-onchange"
+    model="com.axelor.apps.account.db.Move">
+    <call class="com.axelor.apps.account.web.MoveController"
+      method="onChangeDateOfReversionSelect"/>
+  </action-method>
+
+  <action-method name="action-move-method-payment-mode-onselect">
+    <call class="com.axelor.apps.account.web.MoveController" method="onSelectPaymentMode"/>
+  </action-method>
+
+  <action-method name="action-move-method-wizard-default">
+    <call class="com.axelor.apps.account.web.MoveController" method="wizardDefault"/>
+  </action-method>
+
+  <action-method name="action-move-method-partner-bank-details-onselect">
+    <call class="com.axelor.apps.account.web.MoveController"
+      method="onSelectPartnerBankDetails"/>
+  </action-method>
+
+  <action-method name="action-move-method-trading-name-onselect">
+    <call class="com.axelor.apps.account.web.MoveController" method="onSelectTradingName"/>
+  </action-method>
+
+  <action-method name="action-move-method-partner-bank-details-onchange">
+    <call class="com.axelor.apps.account.web.MoveController"
+      method="onChangePartnerBankDetails"/>
+  </action-method>
+
+  <action-method name="action-move-method-check-accounting">
+    <call class="com.axelor.apps.account.web.MoveController" method="checkAccounting"/>
   </action-method>
 
   <!-- ACTION VIEW -->
+
   <action-view name="action-move-view-open-generate-reverse-wizard"
     title="Generate Reverse Move" model="com.axelor.apps.account.db.Move">
     <view type="form" name="move-wizard-generate-reverse-form"/>
@@ -834,19 +791,6 @@
     <view type="form" name="move-form"/>
     <domain>self.cutOffOriginMove = :id</domain>
   </action-view>
-
-  <action-attrs name="action-move-set-trading-name-domain">
-    <attribute name="domain" for="tradingName"
-      expr="eval: &quot;self.id IN (${(company?.tradingNameSet?.collect{it.id}+[0]).join(',')})&quot;"/>
-  </action-attrs>
-
-  <action-attrs name="action-move-attrs-header-change">
-    <attribute name="value" for="$headerChange" expr="eval: true"/>
-  </action-attrs>
-
-  <action-attrs name="action-move-attrs-payment-condition-change">
-    <attribute name="value" for="$paymentConditionChange" expr="eval: true"/>
-  </action-attrs>
 
   <search-filters name="move-filters" model="com.axelor.apps.account.db.Move"
     title="Move filters">
@@ -888,16 +832,5 @@
       <domain>self.statusSelect = 5</domain>
     </filter>
   </search-filters>
-  <action-method name="action-method-hide-axis-analytic-account-move-line">
-    <call class="com.axelor.apps.account.web.MoveController" method="manageMoveLineAxis"/>
-  </action-method>
-
-  <action-method name="action-move-method-journal-on-change">
-    <call class="com.axelor.apps.account.web.MoveController" method="onChangeJournal"/>
-  </action-method>
-
-  <action-method name="action-move-method-fill-company-bank-details">
-    <call class="com.axelor.apps.account.web.MoveController" method="fillCompanyBankDetails"/>
-  </action-method>
 
 </object-views>
