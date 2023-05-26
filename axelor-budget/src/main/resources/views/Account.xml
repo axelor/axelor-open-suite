@@ -6,11 +6,6 @@
 
   <form name="account-form" title="Accounting.Account"
     model="com.axelor.apps.account.db.Account" id="budget-account-form" extension="true">
-    <extend target="/">
-      <attribute name="onLoad"
-        value="action-group-account-account-onload,action-account-method-budget-hide-budget-panel"/>
-    </extend>
-
 
     <extend target="//panel[@name='viewAccountingReportConfigLinePanel']">
       <insert position="after">
@@ -21,6 +16,15 @@
       </insert>
     </extend>
   </form>
+
+  <action-group name="action-group-account-account-onload"
+    id="action-budget-group-account-account-onload">
+    <action name="action-account-method-compute-balance"/>
+    <action name="action-attrs-account-account-readonly-if-account-in-move-line"/>
+    <action name="action-method-account-hide-analytic"/>
+    <action name="action-attrs-account-account-status-show-title"/>
+    <action name="action-account-method-budget-hide-budget-panel"/>
+  </action-group>
 
   <action-view name="action-account-view-related-budget-line" title=""
     model="com.axelor.apps.budget.db.Budget">

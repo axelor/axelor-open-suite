@@ -25,20 +25,22 @@ public class SaleOrderLineController {
 
   public void setProductAccount(ActionRequest request, ActionResponse response) {
     try {
-      Context context = request.getContext();
-      SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
-      Account account =
-          Beans.get(AccountManagementAccountService.class)
-              .getProductAccount(
-                  saleOrderLine.getProduct(),
-                  saleOrderLine.getSaleOrder().getCompany(),
-                  saleOrderLine.getSaleOrder().getFiscalPosition(),
-                  false,
-                  false);
-      if (account.getCode().startsWith("2")
-          || account.getCode().startsWith("4")
-          || account.getCode().startsWith("7")) {
-        response.setValue("account", account);
+      SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+      SaleOrder saleOrder = request.getContext().getParent().asType(SaleOrder.class);
+      if (saleOrder != null) {
+        Account account =
+            Beans.get(AccountManagementAccountService.class)
+                .getProductAccount(
+                    saleOrderLine.getProduct(),
+                    saleOrder.getCompany(),
+                    saleOrder.getFiscalPosition(),
+                    false,
+                    false);
+        if (account.getCode().startsWith("2")
+            || account.getCode().startsWith("4")
+            || account.getCode().startsWith("7")) {
+          response.setValue("account", account);
+        }
       }
 
     } catch (Exception e) {

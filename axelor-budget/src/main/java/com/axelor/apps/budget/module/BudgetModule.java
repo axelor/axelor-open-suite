@@ -19,8 +19,10 @@
 package com.axelor.apps.budget.module;
 
 import com.axelor.app.AxelorModule;
+import com.axelor.apps.account.service.move.record.MoveRecordServiceImpl;
 import com.axelor.apps.bankpayment.db.repo.MoveBankPaymentRepository;
 import com.axelor.apps.bankpayment.service.move.MoveRemoveServiceBankPaymentImpl;
+import com.axelor.apps.bankpayment.service.moveline.MoveLineGroupBankPaymentServiceImpl;
 import com.axelor.apps.base.db.repo.AdvancedExportRepository;
 import com.axelor.apps.base.db.repo.AdvancedImportBaseRepository;
 import com.axelor.apps.budget.db.repo.AdvancedExportBudgetRepository;
@@ -62,6 +64,8 @@ import com.axelor.apps.budget.service.move.MoveBudgetService;
 import com.axelor.apps.budget.service.move.MoveBudgetServiceImpl;
 import com.axelor.apps.budget.service.move.MoveLineBudgetService;
 import com.axelor.apps.budget.service.move.MoveLineBudgetServiceImpl;
+import com.axelor.apps.budget.service.move.MoveLineGroupBudgetServiceImpl;
+import com.axelor.apps.budget.service.move.MoveRecordBudgetServiceImpl;
 import com.axelor.apps.budget.service.move.MoveRemoveBudgetService;
 import com.axelor.apps.budget.service.purchaseorder.PurchaseOrderBudgetService;
 import com.axelor.apps.budget.service.purchaseorder.PurchaseOrderBudgetServiceImpl;
@@ -106,9 +110,13 @@ public class BudgetModule extends AxelorModule {
     bind(BudgetService.class).to(BudgetServiceImpl.class);
     bind(BudgetLevelService.class).to(BudgetLevelServiceImpl.class);
     bind(BudgetDistributionService.class).to(BudgetDistributionServiceImpl.class);
+
     bind(MoveLineBudgetService.class).to(MoveLineBudgetServiceImpl.class);
     bind(MoveBudgetService.class).to(MoveBudgetServiceImpl.class);
     bind(MoveRemoveServiceBankPaymentImpl.class).to(MoveRemoveBudgetService.class);
+    bind(MoveRecordServiceImpl.class).to(MoveRecordBudgetServiceImpl.class);
+    bind(MoveLineGroupBankPaymentServiceImpl.class).to(MoveLineGroupBudgetServiceImpl.class);
+
     bind(PurchaseOrderLineBudgetService.class).to(PurchaseOrderLineBudgetServiceImpl.class);
     bind(PurchaseOrderBudgetService.class).to(PurchaseOrderBudgetServiceImpl.class);
     bind(BudgetInvoiceLineService.class).to(BudgetInvoiceLineServiceImpl.class);

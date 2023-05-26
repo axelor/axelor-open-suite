@@ -6,11 +6,6 @@
   <form id="budget-invoice-line-form" name="invoice-line-form" title="Invoice line"
     model="com.axelor.apps.account.db.InvoiceLine" extension="true">
 
-    <extend target="/">
-      <attribute name="onLoad" value="action-group-budget-invoice-line-onload"/>
-      <attribute name="onNew" value="action-group-budget-invoice-line-onnew"/>
-    </extend>
-
     <extend target="//panel[@name='accountingPanel']">
       <insert position="after">
         <panel name="budgetPanel" title="Budget" if="__config__.app.isApp('budget')">
@@ -59,72 +54,31 @@
     <call class="com.axelor.apps.budget.web.InvoiceLineController" method="checkBudget"/>
   </action-method>
 
-  <action-group name="action-group-budget-invoice-line-onload">
-    <action name="action-group-account-invoice-line-onload"/>
+  <action-group name="action-group-account-invoice-line-onload"
+    id="action-group-budget-invoice-line-onload">
+    <action name="action-attrs-account-invoice-line-onnew-onload"/>
+    <action name="action-invoice-line-attrs-readonly-form"/>
+    <action name="action-invoice-line-record-operation-type"/>
+    <action name="action-invoice-line-attrs-set-isFilterOnSupplier"/>
+    <action name="action-invoice-line-attrs-display-different-language-message"/>
+    <action name="action-invoice-line-method-manage-invoice-line-axis"/>
+    <action name="action-attrs-account-invoice-line-cut-off-dates-required"/>
+    <action name="action-invoice-line-attrs-set-hidden-analytic-distribution-panel"/>
     <action name="action-budget-distribution-attrs-budget-amount-available"/>
     <action name="action-method-invoice-line-budget-check-budget-key-roles"/>
   </action-group>
 
-  <action-group name="action-group-budget-invoice-line-onnew">
-    <action name="action-account-invoice-line-onnew-group"/>
+  <action-group name="action-account-invoice-line-onnew-group"
+    id="action-group-budget-invoice-line-onnew">
+    <action name="action-invoice-line-record-new"/>
+    <action name="action-invoice-line-record-project"/>
+    <action name="action-invoice-line-record-operation-type"/>
+    <action name="action-attrs-account-invoice-line-onnew-onload"/>
+    <action name="action-invoice-line-attrs-display-different-language-message"/>
+    <action name="action-invoice-line-method-manage-invoice-line-axis"/>
+    <action name="action-attrs-account-invoice-line-cut-off-dates-required"/>
+    <action name="action-invoice-line-attrs-set-hidden-analytic-distribution-panel"/>
     <action name="action-budget-distribution-attrs-budget-amount-available"/>
     <action name="action-method-invoice-line-budget-check-budget-key-roles"/>
   </action-group>
-
-  <action-attrs name="action-attrs-account-invoice-line-onnew-onload"
-    id="action-attrs-account-invoice-line-budget-onnew-onload">
-    <!-- Show Elements -->
-    <attribute name="title" for="projectPanel"
-      expr="eval: __config__.app.getApp('project')?.getProjectLabel()"
-      if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.isApp('project') &amp;&amp; !com.google.common.base.Strings.isNullOrEmpty(__config__.app.getApp('project')?.getProjectLabel())"/>
-    <attribute name="title" for="project"
-      expr="eval:  __config__.app.getApp('project')?.getProjectLabel()"
-      if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.isApp('project') &amp;&amp; !com.google.common.base.Strings.isNullOrEmpty(__config__.app.getApp('project')?.getProjectLabel())"/>
-    <attribute name="hidden" for="saleOrder"
-      expr="eval: __parent__?.operationTypeSelect != 3 &amp;&amp; __parent__?.operationTypeSelect != 4"
-      if="__config__.app.isApp('business-project')"/>
-    <attribute name="hidden" for="purchaseOrder"
-      expr="eval: __parent__?.operationTypeSelect != 1 &amp;&amp; __parent__?.operationTypeSelect != 2"
-      if="__config__.app.isApp('business-project')"/>
-    <attribute name="hidden" for="saleOrderLine"
-      expr="eval: __parent__?.operationTypeSelect != 3 &amp;&amp; __parent__?.operationTypeSelect != 4"
-      if="__config__.app.isApp('business-project')"/>
-    <attribute name="hidden" for="purchaseOrderLine"
-      expr="eval: __parent__?.operationTypeSelect != 1 &amp;&amp; __parent__?.operationTypeSelect != 2"
-      if="__config__.app.isApp('business-project')"/>
-    <attribute name="hidden" for="$isFilterOnSupplier"
-      expr="eval: __parent__?.operationTypeSelect &gt; 2"/>
-    <attribute name="hidden" for="accountingPanel"
-      expr="eval:__parent__?.operationSubTypeSelect==2"/>
-    <!-- Scale and Precision -->
-    <attribute name="scale" for="price"
-      expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
-    <attribute name="scale" for="inTaxPrice"
-      expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
-    <attribute name="scale" for="priceDiscounted"
-      expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
-    <attribute name="scale" for="discountAmount"
-      expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
-
-    <attribute name="scale" for="qty"
-      expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
-
-    <!-- Show Price Discounted -->
-    <attribute name="hidden" for="priceDiscounted" expr="eval: priceDiscounted == price"
-      if="__parent__?._model == 'com.axelor.apps.account.db.Invoice' &amp;&amp; !__parent__?.inAti"/>
-    <attribute name="hidden" for="priceDiscounted"
-      expr="eval: priceDiscounted == inTaxPrice"
-      if="__parent__?._model == 'com.axelor.apps.account.db.Invoice' &amp;&amp; __parent__?.inAti"/>
-
-    <attribute name="required" for="analyticDistributionTemplate"
-      expr="__parent__?.statusSelect &gt; 1 &amp;&amp; analyticMoveLineList != null &amp;&amp; analyticMoveLineList.isEmpty() &amp;&amp; account?.analyticDistributionAuthorized &amp;&amp; account?.analyticDistributionRequiredOnInvoiceLines"
-      if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"/>
-    <attribute name="hidden" for="customerInvoicePanel"
-      expr="eval: invoice != null ? invoice.operationTypeSelect &lt; 3 : __parent__?.operationTypeSelect &lt; 3"/>
-    <attribute name="hidden" for="supplierInvoicePanel"
-      expr="eval: invoice != null ? invoice.operationTypeSelect &gt; 2 : __parent__?.operationTypeSelect &gt; 2"/>
-
-    <attribute name="selection-in" for="typeSelect"
-      expr="eval: __config__.app.getApp('sale')?.enablePackManagement ? [0,1,2,3] : [0,1]"/>
-  </action-attrs>
 </object-views>

@@ -15,19 +15,6 @@
   <form id="budget-sale-order-line-form" name="sale-order-line-form" title="SO line"
     model="com.axelor.apps.sale.db.SaleOrderLine" extension="true">
 
-    <extend target="/">
-      <attribute name="onNew"
-        value="action-group-sale-saleorderline-onnew, action-record-sale-order-line-fill-request-qty, action-sale-order-line-group-manage-attrs, action-method-sale-order-line-budget-check-budget-key-roles"/>
-      <attribute name="onLoad"
-        value="action-group-sale-saleorderline-onload, action-sale-order-line-attrs-hidden-fields-for-client, action-sale-order-line-group-manage-attrs, action-method-sale-order-line-budget-check-budget-key-roles"/>
-
-    </extend>
-
-    <extend target="//field[@name='product']">
-      <attribute name="onChange"
-        value="action-budget-group-sale-sale-orderline-product-onchange"/>
-    </extend>
-
     <extend target="//panel[@name='analyticDistributionPanel']">
       <insert position="after">
         <panel if="__config__.app.isApp('budget')" if-module="axelor-supplychain"
@@ -71,8 +58,87 @@
     </extend>
   </form>
 
-  <action-group name="action-budget-group-sale-sale-orderline-product-onchange">
-    <action name="action-group-sale-saleorderline-product-onchange"/>
+  <action-group name="action-group-sale-saleorderline-onnew"
+    id="action-budget-group-sale-saleorderline-onnew">
+    <action name="action-sale-order-line-record-is-form-readonly"/>
+    <action name="action-sale-order-line-record-non-negotiable"/>
+    <action name="action-sale-order-line-attrs-hide-qty-warning-label"/>
+    <action name="action-sale-order-line-attrs-title-project"/>
+    <action name="action-sale-order-line-attrs-show-priceDiscounted"/>
+    <action name="action-sale-order-line-attrs-scale-and-precision"/>
+    <action name="action-sale-order-line-record-new"/>
+    <action name="action-sale-order-line-record-project"/>
+    <action name="action-sale-order-line-attrs-hide-bill-of-material"/>
+    <action name="action-sale-order-line-attrs-set-company-currency"/>
+    <action name="action-sale-order-attrs-hide-ati"/>
+    <action name="action-supplychain-sale-order-line-attrs-hide-button"/>
+    <action name="action-sale-order-line-attrs-fill-estimated-date"/>
+    <action name="action-sale-order-line-attrs-is-requested-qty-readonly"
+      if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getManageStockReservation()"/>
+    <action name="action-sale-order-line-record-update-requested-reserved-qty-from-qty"
+      if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getManageStockReservation()"/>
+    <action name="action-sale-order-line-attrs-selection-in-type-select"/>
+    <action name="action-sale-order-line-attrs-delivered-qty-hidden"/>
+    <action name="action-sale-order-line-attrs-display-different-language-message"/>
+    <action name="action-sale-order-line-attrs-hidden-analytic-distribution-panel"/>
+    <action name="action-record-sale-order-line-fill-request-qty"/>
+    <action name="action-sale-order-line-group-manage-attrs"/>
+    <action name="action-method-sale-order-line-budget-check-budget-key-roles"/>
+  </action-group>
+
+  <action-group name="action-group-sale-saleorderline-onload"
+    id="action-budget-sale-order-line-group-onload">
+    <action name="action-sale-order-line-attrs-show-availabilty-request"
+      if="__config__.app.isApp('supplychain')"/>
+    <action name="action-sale-order-line-record-is-form-readonly"/>
+    <action name="action-sale-order-line-record-non-negotiable"/>
+    <action name="action-sale-order-line-attrs-title-project"/>
+    <action name="action-sale-order-line-attrs-show-priceDiscounted"/>
+    <action name="action-sale-order-line-attrs-scale-and-precision"/>
+    <action name="action-sale-order-line-attrs-hide-bill-of-material"/>
+    <action name="action-sale-order-line-attrs-reserved-qty-visibility"/>
+    <action name="action-method-sale-order-line-available-and-allocated-stock"/>
+    <action name="action-sale-order-line-attrs-set-company-currency"/>
+    <action name="action-supplychain-sale-order-line-attrs-hide-button"/>
+    <action name="action-sale-order-line-method-check-qty"
+      if="__config__.app.getApp('sale')?.manageMultipleSaleQuantity"/>
+    <action name="action-sale-order-line-attrs-is-requested-qty-readonly"
+      if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getManageStockReservation()"/>
+    <action name="action-record-sale-order-line-future-qty"
+      if="__config__.app.isApp('supplychain')"/>
+    <action name="action-sale-order-attrs-hide-ati"/>
+    <action name="action-sale-order-line-method-fill-max-discount"/>
+    <action name="action-sale-order-line-attrs-selection-in-type-select"/>
+    <action name="action-sale-order-line-attrs-delivered-qty-hidden"/>
+    <action name="action-sale-order-line-attrs-display-different-language-message"/>
+    <action name="action-sale-order-line-attrs-hidden-analytic-distribution-panel"/>
+    <action name="action-sale-order-line-attrs-hidden-fields-for-client"/>
+    <action name="action-sale-order-line-group-manage-attrs"/>
+    <action name="action-sale-order-line-supplychain-method-get-invoicing-state"/>
+    <action name="action-method-sale-order-line-budget-check-budget-key-roles"/>
+  </action-group>
+
+  <action-group name="action-group-sale-saleorderline-product-onchange"
+    id="action-budget-group-sale-saleorderline-product-onchange">
+    <action name="action-sale-order-line-method-get-product-information"/>
+    <action name="action-sale-order-line-method-compute"/>
+    <action name="action-sale-order-line-attrs-hide-bill-of-material"/>
+    <action name="action-sale-order-line-get-production-information"/>
+    <action name="action-sale-order-line-method-supplier-partner-default"
+      if="__config__.app.isApp('supplychain')"/>
+    <action name="action-sale-order-line-method-check-stock"
+      if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getCheckSaleStocks()"/>
+    <action name="action-sale-order-line-method-check-qty"
+      if="__config__.app.getApp('sale')?.manageMultipleSaleQuantity"/>
+    <action if="__config__.app.isApp('supplychain')"
+      name="action-sale-order-line-attrs-show-delivery-panel"/>
+    <action name="action-method-sale-order-line-available-and-allocated-stock"/>
+    <action name="action-sale-order-attrs-hide-ati"/>
+    <action name="action-record-sale-order-line-future-qty"
+      if="__config__.app.isApp('supplychain')"/>
+    <action name="action-sale-order-line-record-complementary-products-to-handle"/>
+    <action name="action-sale-order-line-method-fill-max-discount"/>
+    <action name="action-sale-order-line-method-translate-product-description-and-name"/>
     <action name="action-method-budget-sale-orderline-set-product-account"/>
   </action-group>
 

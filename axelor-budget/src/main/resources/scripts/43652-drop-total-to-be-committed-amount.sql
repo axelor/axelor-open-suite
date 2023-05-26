@@ -1,2 +1,0 @@
-ALTER TABLE account_budget DROP COLUMN total_to_be_committed_amount;
-ALTER TABLE budget_budget_level DROP COLUMN total_to_be_committed_amount;

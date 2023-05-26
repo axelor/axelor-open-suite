@@ -9,15 +9,6 @@
     <extend target="/">
       <attribute name="onSave"
         value="action-supplychain-saleorder-onsave,action-budget-sale-order-group-on-save"/>
-      <attribute name="onNew"
-        value="action-group-supplychain-saleorder-onnew,action-budget-sale-order-record-load-budget-key-config"/>
-      <attribute name="onLoad"
-        value="action-group-business-project-saleorder-onload,action-budget-sale-order-record-load-budget-key-config"/>
-    </extend>
-
-    <extend target="//button[@name='confirmOrderBtn']">
-      <attribute name="onClick"
-        value="save,action-group-budget-sale-order-confirm-onclick,action-sale-group-confirmed"/>
     </extend>
 
     <extend target="//button[@name='cancelBtn']">
@@ -49,6 +40,19 @@
     <action name="action-budget-sale-order-method-update-budget-lines"/>
   </action-group>
 
+  <action-group name="action-group-supplychain-saleorder-onnew"
+    id="action-group-budget-saleorder-onnew">
+    <action name="action-group-sale-saleorder-onnew"/>
+    <action name="action-sale-order-record-payment-mode"/>
+    <action name="action-supplychain-sale-order-method-get-stock-location"
+      if="tradingName?.shippingDefaultStockLocation == null || stockLocation == null"/>
+    <action name="action-sale-order-attrs-interco"/>
+    <action name="action-sale-order-record-interco"/>
+    <action name="supplychain-action-create-shipment-cost-line"/>
+    <action name="action-sale-order-record-set-default-tax-number"/>
+    <action name="action-budget-sale-order-record-load-budget-key-config"/>
+  </action-group>
+
   <action-group name="action-budget-group-sale-order-compute-budget-distribution">
     <action name="save"/>
     <action name="action-validate-budget-recompute-budget-distribution"/>
@@ -57,9 +61,24 @@
     <action name="save"/>
   </action-group>
 
-  <action-group name="action-group-budget-sale-order-confirm-onclick">
+  <action-group name="action-group-business-project-saleorder-onload"
+    id="action-group-budget-saleorder-onload">
+    <action name="action-group-supplychain-saleorder-onload"/>
+    <action name="action-sale-order-attrs-project"/>
+    <action name="action-budget-sale-order-record-load-budget-key-config"/>
+  </action-group>
+
+  <action-group name="action-sale-group-confirmed"
+    id="action-budget-sale-group-confirmed">
+    <action name="action-sale-order-validate-check-on-confirm"/>
+    <action name="save"/>
     <action name="action-method-budget-sale-order-no-compute-budget-distribution"/>
     <action name="action-budget-sale-order-method-update-budget-lines"/>
+    <action name="action-business-project-method-generate-project"
+      if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getAutomaticProject()"/>
+    <action name="action-sale-order-method-confirm"/>
+    <action name="action-sale-order-method-notify-stock-move-created"
+      if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.customerStockMoveGenerationAuto "/>
   </action-group>
 
   <action-record name="action-budget-sale-order-record-load-budget-key-config"

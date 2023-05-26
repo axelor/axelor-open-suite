@@ -1,1 +1,0 @@
-UPDATE budget_budget_level SET budget_type_select = 4 WHERE level_type_select = 'global';

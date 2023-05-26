@@ -1,9 +1,12 @@
 package com.axelor.apps.budget.service;
 
 import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.Role;
 import com.axelor.auth.db.User;
 import com.google.inject.Inject;
@@ -38,6 +41,16 @@ public class BudgetToolsServiceImpl implements BudgetToolsService {
           return true;
         }
       }
+    }
+    return false;
+  }
+
+  @Override
+  public boolean checkBudgetKeyAndRoleForMove(Move move) throws AxelorException {
+    if (move != null) {
+      return !(checkBudgetKeyAndRole(move.getCompany(), AuthUtils.getUser()))
+          || move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED
+          || move.getStatusSelect() == MoveRepository.STATUS_CANCELED;
     }
     return false;
   }
