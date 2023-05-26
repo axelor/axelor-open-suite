@@ -1500,6 +1500,7 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                         <property name="width">1.448in</property>
                     </column>
                     <row id="14">
+                        <property name="verticalAlign">middle</property>
                         <cell id="5522">
                             <text id="5524">
                                 <property name="fontSize">8pt</property>
@@ -2497,7 +2498,7 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                                                             <data id="5853">
                                                                 <structure name="numberFormat">
                                                                     <property name="category">Custom</property>
-                                                                    <property name="pattern">0,000.00</property>
+                                                                    <property name="pattern">#,##0.00</property>
                                                                 </structure>
                                                                 <property name="textAlign">right</property>
                                                                 <list-property name="highlightRules">
