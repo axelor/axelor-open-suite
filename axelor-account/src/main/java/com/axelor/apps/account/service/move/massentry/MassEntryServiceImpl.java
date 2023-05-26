@@ -22,7 +22,6 @@ import com.axelor.apps.account.db.MoveLineMassEntry;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineMassEntryRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryService;
@@ -32,7 +31,6 @@ import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
-import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
@@ -197,16 +195,13 @@ public class MassEntryServiceImpl implements MassEntryService {
         Move workingMove =
             massEntryMoveCreateService.createMoveFromMassEntryList(parentMove, temporaryMoveNumber);
 
-        int categoryError =
+        String categoryMessage =
             this.generatedTaxeAndCounterPart(parentMove, workingMove, dueDate, temporaryMoveNumber);
-        if (categoryError == 0) {
+        if (ObjectUtils.isEmpty(categoryMessage)) {
           massEntryToolService.sortMoveLinesMassEntryByTemporaryNumber(parentMove);
         } else {
           massEntryVerificationService.setErrorMassEntryMoveLines(
-              parentMove,
-              temporaryMoveNumber,
-              "paymentMode",
-              I18n.get(AccountExceptionMessage.EXCEPTION_GENERATE_COUNTERPART));
+              parentMove, temporaryMoveNumber, "paymentMode", categoryMessage);
         }
 
         resultMap.put("massEntryErrors", parentMove.getMassEntryErrors());
@@ -339,7 +334,7 @@ public class MassEntryServiceImpl implements MassEntryService {
   }
 
   @Override
-  public int generatedTaxeAndCounterPart(
+  public String generatedTaxeAndCounterPart(
       Move parentMove, Move workingMove, LocalDate dueDate, int temporaryMoveNumber) {
     try {
       moveToolService.exceptionOnGenerateCounterpart(workingMove);
@@ -349,8 +344,8 @@ public class MassEntryServiceImpl implements MassEntryService {
           parentMove.getMoveLineMassEntryList(), parentMove.getCompany(), temporaryMoveNumber);
     } catch (AxelorException e) {
       TraceBackService.trace(e);
-      return e.getCategory();
+      return e.getMessage();
     }
-    return 0;
+    return null;
   }
 }
