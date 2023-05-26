@@ -707,6 +707,8 @@ public class MoveLineController {
       Move move = this.getMove(request, moveLine);
       LocalDate dueDate = this.extractDueDate(request);
 
+      moveLine.setMove(move);
+
       response.setValues(
           Beans.get(MoveLineGroupService.class).getDebitOnChangeValuesMap(moveLine, move, dueDate));
     } catch (Exception e) {
@@ -719,6 +721,8 @@ public class MoveLineController {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
       Move move = this.getMove(request, moveLine);
       LocalDate dueDate = this.extractDueDate(request);
+
+      moveLine.setMove(move);
 
       response.setValues(
           Beans.get(MoveLineGroupService.class)
