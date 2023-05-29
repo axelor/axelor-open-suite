@@ -6,7 +6,8 @@
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
   <entity name="EmploymentContractType">
-    <string name="name" title="EmploymentContractType.name" required="true"/>
+    <string name="name" title="EmploymentContractType.name" required="true"
+      translatable="true"/>
     <one-to-many name="employmentContractSubTypeList"
       ref="com.axelor.apps.hr.db.EmploymentContractSubType" title="Contract sub type"/>
     <string name="description" title="EmploymentContractType.description"/>

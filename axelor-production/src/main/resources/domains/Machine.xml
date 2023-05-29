@@ -8,7 +8,7 @@
   <entity name="Machine">
     <many-to-one name="picture" ref="com.axelor.meta.db.MetaFile" title="Image"
       index="false"/>
-    <string name="name" title="Name" required="true"/>
+    <string name="name" title="Name" required="true" translatable="true"/>
     <string name="serialNumber" title="Serial Nbr"/>
     <string name="brand" title="Brand"/>
     <string name="description" title="Description" large="true"/>

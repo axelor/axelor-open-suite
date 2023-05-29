@@ -7,7 +7,7 @@
 
   <entity name="AnalyticDistributionTemplate">
 
-    <string name="name" title="Name" required="true"/>
+    <string name="name" title="Name" required="true" translatable="true"/>
     <one-to-many name="analyticDistributionLineList"
       ref="com.axelor.apps.account.db.AnalyticDistributionLine" title="Analytic distribution lines"
       mappedBy="analyticDistributionTemplate"/>

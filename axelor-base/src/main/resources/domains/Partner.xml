@@ -10,7 +10,8 @@
     <!-- En-tête -->
     <many-to-one name="partnerCategory" ref="com.axelor.apps.base.db.PartnerCategory"
       title="Category" massUpdate="true"/>
-    <string name="partnerSeq" title="Reference" readonly="true" unique="true"/>
+    <string name="partnerSeq" title="Reference" readonly="true" unique="true"
+      translatable="true"/>
 
     <!-- ERP -->
     <integer name="partnerTypeSelect" title="Partner Type"

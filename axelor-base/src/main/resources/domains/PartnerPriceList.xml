@@ -6,7 +6,7 @@
   <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="PartnerPriceList">
-    <string name="label" title="Label" namecolumn="true" required="true"/>
+    <string name="label" title="Label" namecolumn="true" required="true" translatable="true"/>
     <integer name="typeSelect" title="Type" selection="base.price.list.type.select"
       required="true"/>
     <many-to-many name="priceListSet" title="Price lists"
