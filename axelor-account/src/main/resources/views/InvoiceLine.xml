@@ -73,7 +73,7 @@
               ]]>
           </viewer>
         </field>
-        <panel name="customerInvoicePanel" colSpan="12">
+        <panel name="customerInvoicePanel" colSpan="12" hidden="true">
           <field name="product" canEdit="false"
             onChange="action-group-account-invoice-line-product-onchange"
             onSelect="action-invoice-line-attrs-set-product-domain-onselect"
@@ -85,7 +85,7 @@
             onChange="action-invoice-line-method-empty-line"/>
         </panel>
 
-        <panel name="supplierInvoicePanel" colSpan="12">
+        <panel name="supplierInvoicePanel" colSpan="12" hidden="true">
           <field name="product" canEdit="false"
             onChange="action-group-account-invoice-line-product-onchange"
             onSelect="action-invoice-line-attrs-set-product-domain-onselect"
