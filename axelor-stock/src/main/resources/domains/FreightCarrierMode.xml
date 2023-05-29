@@ -6,7 +6,7 @@
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
   <entity name="FreightCarrierMode" sequential="true">
-    <string name="name" title="Freight carrier mode"/>
+    <string name="name" title="Freight carrier mode" translatable="true"/>
     <many-to-one name="carrierPartner" ref="com.axelor.apps.base.db.Partner"
       title="Freight Carrier"/>
     <many-to-one name="shipmentMode" ref="com.axelor.apps.stock.db.ShipmentMode"

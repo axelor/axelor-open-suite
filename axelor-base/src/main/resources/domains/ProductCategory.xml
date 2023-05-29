@@ -8,7 +8,8 @@
   <entity name="ProductCategory" cacheable="true">
 
     <string name="code" title="Code" required="true" unique="true"/>
-    <string name="name" title="Name" unique="true" required="true" namecolumn="true"/>
+    <string name="name" title="Name" unique="true" required="true" namecolumn="true"
+      translatable="true"/>
     <many-to-one name="parentProductCategory" ref="ProductCategory"
       title="Parent category"/>
     <many-to-one name="sequence" ref="com.axelor.apps.base.db.Sequence" title="Sequence"/>

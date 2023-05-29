@@ -7,6 +7,7 @@
 
   <entity name="User" sequential="true">
 
+    <string name="name" required="true" min="2" translatable="true"/>
     <many-to-many name="companySet" ref="com.axelor.apps.base.db.Company"
       title="Company"/>
     <many-to-one name="activeCompany" ref="com.axelor.apps.base.db.Company"

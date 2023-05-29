@@ -10,7 +10,7 @@
     <string name="alpha3Code" title="Alpha-3 code (ISO)" min="3" max="3"/>
     <string name="alpha2Code" title="Alpha-2 code (ISO)" min="2" max="2"/>
     <string name="numericCode" title="Numeric code (ISO)" min="3" max="3"/>
-    <string name="name" required="true" title="Country name"/>
+    <string name="name" required="true" title="Country name" translatable="true"/>
     <string name="cog" title="COG"/>
     <string name="phonePrefix" title="Calling code"/>
 

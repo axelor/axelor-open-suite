@@ -8,6 +8,7 @@
   <entity name="Team">
 
     <string name="code" title="Code"/>
+    <string name="name" required="true" unique="true" translatable="true"/>
     <string name="typeSelect" title="Type" selection="team.type.select"/>
 
   </entity>

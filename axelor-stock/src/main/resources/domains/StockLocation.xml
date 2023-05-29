@@ -7,7 +7,7 @@
 
   <entity name="StockLocation">
 
-    <string name="name" title="Name" required="true"/>
+    <string name="name" title="Name" required="true" translatable="true"/>
     <many-to-one name="parentStockLocation" ref="com.axelor.apps.stock.db.StockLocation"
       title="Parent stock location"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"

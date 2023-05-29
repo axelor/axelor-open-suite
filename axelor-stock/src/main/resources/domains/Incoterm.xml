@@ -7,9 +7,9 @@
 
   <entity name="Incoterm">
 
-    <string name="name" title="Incoterm Name" required="true"/>
+    <string name="name" title="Incoterm Name" required="true" translatable="true"/>
     <string name="code" title="Incoterm Code" required="true"/>
-    <string name="fullname" title="Fullname" namecolumn="true"/>
+    <string name="fullname" title="Fullname" namecolumn="true" translatable="true"/>
 
     <integer name="exportCustomsDeclaration" title="Export customs declaration"
       selection="stock.incoterm.allocation.select"/>

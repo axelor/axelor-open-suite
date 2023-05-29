@@ -7,7 +7,7 @@
 
   <entity name="AnalyticJournalType">
 
-    <string name="name" title="Name" required="true" unique="true"/>
+    <string name="name" title="Name" required="true" unique="true" translatable="true"/>
     <string name="code" title="Code" min="2" required="true" unique="true"/>
 
   </entity>
