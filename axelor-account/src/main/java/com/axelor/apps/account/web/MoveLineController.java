@@ -58,7 +58,6 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.axelor.utils.ContextTool;
 import com.axelor.utils.db.Wizard;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
@@ -76,7 +75,7 @@ public class MoveLineController {
   public void computeAnalyticDistribution(ActionRequest request, ActionResponse response) {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
-      Move move = request.getContext().getParent().asType(Move.class);
+      Move move = this.getMove(request, moveLine);
       if (move != null
           && Beans.get(MoveLineComputeAnalyticService.class)
               .checkManageAnalytic(move.getCompany())) {
@@ -212,7 +211,7 @@ public class MoveLineController {
     try {
 
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
-      Move move = request.getContext().getParent().asType(Move.class);
+      Move move = this.getMove(request, moveLine);
       if (move != null
           && Beans.get(MoveLineComputeAnalyticService.class)
               .checkManageAnalytic(move.getCompany())) {
@@ -229,7 +228,7 @@ public class MoveLineController {
   public void setAxisDomains(ActionRequest request, ActionResponse response) {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
-      Move move = request.getContext().getParent().asType(Move.class);
+      Move move = this.getMove(request, moveLine);
       List<Long> analyticAccountList;
       AnalyticToolService analyticToolService = Beans.get(AnalyticToolService.class);
       AnalyticLineService analyticLineService = Beans.get(AnalyticLineService.class);
@@ -274,10 +273,7 @@ public class MoveLineController {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
 
-      Move move = moveLine.getMove();
-      if (move == null) {
-        move = request.getContext().getParent().asType(Move.class);
-      }
+      Move move = this.getMove(request, moveLine);
 
       AnalyticLineService analyticLineService = Beans.get(AnalyticLineService.class);
       for (int i = startAxisPosition; i <= endAxisPosition; i++) {
@@ -359,6 +355,7 @@ public class MoveLineController {
   public void setInvoiceTermReadonly(ActionRequest request, ActionResponse response) {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
+      moveLine.setMove(this.getMove(request, moveLine));
 
       response.setAttr(
           "invoiceTermPanel",
@@ -424,10 +421,7 @@ public class MoveLineController {
   public void updateInvoiceTerms(ActionRequest request, ActionResponse response) {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
-
-      if (moveLine.getMove() == null) {
-        moveLine.setMove(ContextTool.getContextParent(request.getContext(), Move.class, 1));
-      }
+      moveLine.setMove(this.getMove(request, moveLine));
 
       Beans.get(MoveLineInvoiceTermService.class).updateInvoiceTermsParentFields(moveLine);
       response.setValues(moveLine);
@@ -438,6 +432,7 @@ public class MoveLineController {
 
   public void updateDueDates(ActionRequest request, ActionResponse response) {
     MoveLine moveLine = request.getContext().asType(MoveLine.class);
+    moveLine.setMove(this.getMove(request, moveLine));
     if (moveLine.getMove() != null && moveLine.getMove().getOriginDate() != null) {
       LocalDate dueDate =
           Beans.get(InvoiceTermService.class)
@@ -521,7 +516,7 @@ public class MoveLineController {
   public void onLoad(ActionRequest request, ActionResponse response) {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
-      Move move = moveLine.getMove();
+      Move move = this.getMove(request, moveLine);
 
       response.setAttrs(Beans.get(MoveLineGroupService.class).getOnLoadAttrsMap(moveLine, move));
     } catch (Exception e) {
@@ -532,7 +527,7 @@ public class MoveLineController {
   public void onLoadMove(ActionRequest request, ActionResponse response) {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
-      Move move = moveLine.getMove();
+      Move move = this.getMove(request, moveLine);
 
       response.setAttrs(
           Beans.get(MoveLineGroupService.class).getOnLoadMoveAttrsMap(moveLine, move));
@@ -544,7 +539,7 @@ public class MoveLineController {
   public void onLoadAnalyticDistribution(ActionRequest request, ActionResponse response) {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
-      Move move = moveLine.getMove();
+      Move move = this.getMove(request, moveLine);
 
       MoveLineGroupService moveLineGroupService = Beans.get(MoveLineGroupService.class);
 
@@ -584,18 +579,15 @@ public class MoveLineController {
   public void accountOnChange(ActionRequest request, ActionResponse response) {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
-      Move move;
+      Move move = this.getMove(request, moveLine);
       LocalDate cutOffStartDate = null;
       LocalDate cutOffEndDate = null;
       LocalDate dueDate = this.extractDueDate(request);
 
       if (request.getContext().getParent() != null
           && Move.class.equals(request.getContext().getParent().getContextClass())) {
-        move = request.getContext().getParent().asType(Move.class);
         cutOffStartDate = (LocalDate) request.getContext().getParent().get("cutOffStartDate");
         cutOffEndDate = (LocalDate) request.getContext().getParent().get("cutOffEndDate");
-      } else {
-        move = moveLine.getMove();
       }
 
       MoveLineGroupService moveLineGroupService = Beans.get(MoveLineGroupService.class);
@@ -655,6 +647,7 @@ public class MoveLineController {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
       LocalDate dueDate = this.extractDueDate(request);
+      moveLine.setMove(this.getMove(request, moveLine));
 
       response.setValues(
           Beans.get(MoveLineGroupService.class)
@@ -731,9 +724,7 @@ public class MoveLineController {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
 
-      if (moveLine.getMove() == null && request.getContext().getParent() != null) {
-        moveLine.setMove(request.getContext().getParent().asType(Move.class));
-      }
+      moveLine.setMove(this.getMove(request, moveLine));
 
       response.setValues(
           Beans.get(MoveLineGroupService.class).getPartnerOnChangeValuesMap(moveLine));
@@ -760,9 +751,9 @@ public class MoveLineController {
   }
 
   protected Move getMove(ActionRequest request, MoveLine moveLine) {
-    if (request.getContext().getParent() != null
-        && Move.class.equals(request.getContext().getParent().getContextClass())) {
-      return request.getContext().getParent().asType(Move.class);
+    Context parentContext = request.getContext().getParent();
+    if (parentContext != null && Move.class.equals(parentContext.getContextClass())) {
+      return parentContext.asType(Move.class);
     } else {
       return moveLine.getMove();
     }
