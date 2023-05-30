@@ -39,4 +39,10 @@ public final class GdprExceptionMessage {
 
   public static final String MODEL_FIELD_NO_MAPPED_BY = /*$$(*/
       "Impossible to link with the children meta field %s, no mappedBy field found." /*)*/;
+
+  public static final String RELATIONSHIP_ANONYMIZER_ONE_TO_MANY_REQUIRED_RESULT = /*$$(*/
+      "Field %s of model %s has not been anonymized. Please check manually." /*)*/;
+
+  public static final String ANONYMIZATION_SUCCESS_RESULT = /*$$(*/
+      "%s has been anonymized using the anonymizer %s." /*)*/;
 }

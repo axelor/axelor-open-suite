@@ -109,12 +109,25 @@ public class GdprResponseErasureServiceImpl implements GdprResponseErasureServic
     // get meta model
     MetaModel entityMetaModel = getMetaModelFromFullName(modelSelect);
 
+    Anonymizer anonymizer = appGDPRService.getAppGDPR().getAnonymizer();
+
     gdprResponseService
         .getEmailFromPerson(referenceEntity)
         .ifPresent(gdprResponse::setResponseEmailAddress);
 
+    StringBuilder anonymizationResult = new StringBuilder();
+
     // anonymize datas
-    anonymizeEntity(gdprResponse, referenceEntity, entityMetaModel, 0);
+    anonymizeEntity(gdprResponse, referenceEntity, entityMetaModel, anonymizationResult, 0);
+
+    if (StringUtils.isBlank(anonymizationResult. toString())) {
+      anonymizationResult.append(
+          String.format(
+              I18n.get(GdprExceptionMessage.ANONYMIZATION_SUCCESS_RESULT),
+              entityMetaModel.getName(),
+              anonymizer.getName()));
+    }
+    gdprResponse.setAnonymizationResult(anonymizationResult.toString());
 
     JPA.merge(referenceEntity);
 
@@ -134,7 +147,11 @@ public class GdprResponseErasureServiceImpl implements GdprResponseErasureServic
    * @throws AxelorException
    */
   protected void anonymizeEntity(
-      GDPRResponse gdprResponse, AuditableModel reference, MetaModel metaModel, int depth)
+      GDPRResponse gdprResponse,
+      AuditableModel reference,
+      MetaModel metaModel,
+      StringBuilder anonymizationResult,
+      int depth)
       throws ClassNotFoundException, AxelorException {
     Mapper mapper = Mapper.of(reference.getClass());
 
@@ -158,7 +175,8 @@ public class GdprResponseErasureServiceImpl implements GdprResponseErasureServic
     }
 
     for (MetaField metaField : metaFields) {
-      anonymizeMetaField(gdprResponse, reference, mapper, metaField, anonymizerLines, depth);
+      anonymizeMetaField(
+          gdprResponse, reference, mapper, metaField, anonymizerLines, anonymizationResult, depth);
     }
 
     reference.setArchived(true);
@@ -198,6 +216,7 @@ public class GdprResponseErasureServiceImpl implements GdprResponseErasureServic
       Mapper mapper,
       MetaField metaField,
       List<AnonymizerLine> anonymizerLines,
+      StringBuilder anonymizationResult,
       int depth)
       throws AxelorException, ClassNotFoundException {
 
@@ -238,7 +257,7 @@ public class GdprResponseErasureServiceImpl implements GdprResponseErasureServic
         && metaField.getRelationship().equals("OneToOne")
         && Strings.isNullOrEmpty(metaField.getMappedBy())) {
 
-      anonymizeRelatedObject(gdprResponse, metaField, currentValue, depth);
+      anonymizeRelatedObject(gdprResponse, metaField, currentValue, anonymizationResult, depth);
 
     } else if (depth < 1 && metaField.getRelationship().equals("OneToMany")) {
       // o2m : break link if config, anonymization if config (if not breaking link)
@@ -264,16 +283,35 @@ public class GdprResponseErasureServiceImpl implements GdprResponseErasureServic
                                   metaField.getPackageName() + "." + metaField.getTypeName())))
               .findFirst();
 
+      if (relationshipAnonymizer.isPresent() && property.isRequired()) {
+        anonymizationResult.append(
+            String.format(
+                I18n.get(GdprExceptionMessage.RELATIONSHIP_ANONYMIZER_ONE_TO_MANY_REQUIRED_RESULT),
+                metaField.getName(),
+                metaField.getMetaModel().getName()));
+        anonymizationResult.append("\n");
+        return;
+      }
+
       for (Object relatedObject : relatedObjects) {
         if (relationshipAnonymizer.isPresent()) {
           breakO2MRelationship(metaField, relationshipAnonymizers, mappedBy, relatedObject);
         } else {
-          anonymizeRelatedObject(gdprResponse, metaField, relatedObject, depth);
+          anonymizeRelatedObject(
+              gdprResponse, metaField, relatedObject, anonymizationResult, depth);
         }
       }
     } else if (depth < 1 && metaField.getRelationship().equals("ManyToOne")) {
       // m2o, no anonymization, break link if config
-      breakM2ORelationship(property, reference, mapper, metaField, relationshipAnonymizers);
+      MetaModel modelToSearch =
+          getMetaModelFromFullName(metaField.getPackageName() + "." + metaField.getTypeName());
+      Optional<RelationshipAnonymizer> relationshipAnonymizer =
+          relationshipAnonymizers.stream()
+              .filter(anonymizer -> anonymizer.getModel().equals(modelToSearch))
+              .findAny();
+      if (relationshipAnonymizer.isPresent()) {
+        breakM2ORelationship(property, reference, mapper, metaField, relationshipAnonymizer.get());
+      }
     }
   }
 
@@ -316,7 +354,7 @@ public class GdprResponseErasureServiceImpl implements GdprResponseErasureServic
    * @param reference
    * @param mapper
    * @param metaField
-   * @param relationshipAnonymizers
+   * @param relationshipAnonymizer
    * @throws ClassNotFoundException
    */
   protected void breakM2ORelationship(
@@ -324,15 +362,11 @@ public class GdprResponseErasureServiceImpl implements GdprResponseErasureServic
       AuditableModel reference,
       Mapper mapper,
       MetaField metaField,
-      List<RelationshipAnonymizer> relationshipAnonymizers)
+      RelationshipAnonymizer relationshipAnonymizer)
       throws ClassNotFoundException, AxelorException {
 
     AuditableModel newObject = null;
     if (property.isRequired()) {
-      MetaModel modelToSearch =
-          getMetaModelFromFullName(metaField.getPackageName() + "." + metaField.getTypeName());
-      RelationshipAnonymizer relationshipAnonymizer =
-          getRelationshipAnonymizer(modelToSearch, relationshipAnonymizers);
       newObject =
           gdprResponseService.extractReferenceFromModelAndId(
               relationshipAnonymizer.getModel().getFullName(),
@@ -350,7 +384,11 @@ public class GdprResponseErasureServiceImpl implements GdprResponseErasureServic
   }
 
   protected void anonymizeRelatedObject(
-      GDPRResponse gdprResponse, MetaField metaField, Object currentValue, int depth)
+      GDPRResponse gdprResponse,
+      MetaField metaField,
+      Object currentValue,
+      StringBuilder anonymizationResult,
+      int depth)
       throws ClassNotFoundException, AxelorException {
 
     // choosed object
@@ -363,7 +401,7 @@ public class GdprResponseErasureServiceImpl implements GdprResponseErasureServic
     MetaModel relatedMetaModel =
         getMetaModelFromFullName(metaField.getPackageName() + "." + metaField.getTypeName());
 
-    anonymizeEntity(gdprResponse, relatedEntity, relatedMetaModel, ++depth);
+    anonymizeEntity(gdprResponse, relatedEntity, relatedMetaModel, anonymizationResult, ++depth);
   }
 
   /**
