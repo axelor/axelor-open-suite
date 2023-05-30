@@ -52,6 +52,8 @@ public final class BusinessProjectExceptionMessage {
       "Products must be Service type and Method of Supply Produce." /*)*/;
   public static final String SALE_ORDER_GENERATE_FILL_PROJECT_ERROR_2 = /*$$(*/
       "Please complete the order lines with at least one product type 'Service' and the supply mode 'Produce'" /*)*/;
+  public static final String SALE_ORDER_GENERATE_FILL_PROJECT_ERROR_3 = /*$$(*/
+      "Nothing has changed so no new task will be generated" /*)*/;
 
   public static final String INVALID_EXCLUDE_TASK_FILTER = /*$$(*/
       "Invalid exclude task for invoicing filter" /*)*/;
@@ -73,7 +75,7 @@ public final class BusinessProjectExceptionMessage {
       "Compute project totals" /*)*/;
 
   public static final String SALE_ORDER_GENERATE_FILL_PRODUCT_UNIT_ERROR = /*$$(*/
-      "Service sale order lines that generate a project task should be in days or hours as they are defined in Business Project module configuration" /*)*/;
+      "%s is in %s and should be in Days or Hours as they are defined in Business Project module configuration" /*)*/;
 
   public static final String PROJECT_UPDATE_TOTALS_SUCCESS = /*$$(*/
       "Totals have been updated" /*)*/;
@@ -86,4 +88,7 @@ public final class BusinessProjectExceptionMessage {
 
   public static final String PROJECT_CONFIG_HOURS_UNIT_MISSING = /*$$(*/
       "Please set hours unit in the configuration of app Business Project." /*)*/;
+
+  public static final String PROJECT_TASK_UPDATE_REPORTING_VALUES_ERROR = /*$$(*/
+      "Sold time and updated time must be greater than 0 for task %s" /*)*/;
 }

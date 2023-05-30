@@ -31,6 +31,15 @@
     <decimal name="updatedTime" title="Updated time"/>
     <decimal name="plannedTime" title="Planned time"/>
     <decimal name="spentTime" title="Spent time"/>
+    <decimal name="percentageOfProgress" title="% of progress" readonly="true" precision="5"
+      scale="2"
+      help="% progress is the ratio of spent time on updated time on the task and all of it's sub tasks."/>
+    <decimal name="percentageOfConsumption" title="% of consumption" readonly="true"
+      precision="5" scale="2"
+      help="% consumption is the ratio of spent time on sold time on the task and all of it's sub tasks."/>
+    <decimal name="remainingAmountToDo" title="Remaining amount to do" readonly="true"
+      precision="6" scale="2"
+      help="Remaining amount is the subtraction of the spent time from the updated time on the task and all of it's sub tasks."/>
 
     <extra-code>
 			<![CDATA[
