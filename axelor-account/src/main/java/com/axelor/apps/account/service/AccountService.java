@@ -23,9 +23,11 @@ import com.axelor.apps.account.db.AccountType;
 import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticDistributionLine;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
+import com.axelor.apps.account.db.AnalyticRules;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
+import com.axelor.apps.account.db.repo.AnalyticRulesRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -65,12 +67,16 @@ public class AccountService {
 
   protected AccountRepository accountRepository;
   protected AccountConfigService accountConfigService;
+  protected AnalyticRulesRepository analyticRulesRepository;
 
   @Inject
   public AccountService(
-      AccountRepository accountRepository, AccountConfigService accountConfigService) {
+      AccountRepository accountRepository,
+      AccountConfigService accountConfigService,
+      AnalyticRulesRepository analyticRulesRepository) {
     this.accountRepository = accountRepository;
     this.accountConfigService = accountConfigService;
+    this.analyticRulesRepository = analyticRulesRepository;
   }
 
   /**
@@ -272,6 +278,23 @@ public class AccountService {
       }
     }
     return account;
+  }
+
+  public List<AnalyticAccount> getAnalyticAccounts(Account account) {
+    List<AnalyticAccount> analyticAccountList = new ArrayList<AnalyticAccount>();
+    List<Long> analyticRulesIdsList = getRulesIds(account);
+
+    if (CollectionUtils.isNotEmpty(analyticRulesIdsList)) {
+      for (Long analyticRuleId : analyticRulesIdsList) {
+        AnalyticRules analyticRule = analyticRulesRepository.find(analyticRuleId);
+        if (analyticRule.getAnalyticAccountSet() != null) {
+          for (AnalyticAccount analyticAccount : analyticRule.getAnalyticAccountSet()) {
+            analyticAccountList.add(analyticAccount);
+          }
+        }
+      }
+    }
+    return analyticAccountList;
   }
 
   protected Account activate(Account account) {
