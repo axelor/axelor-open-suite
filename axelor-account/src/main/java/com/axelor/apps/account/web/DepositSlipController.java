@@ -31,6 +31,7 @@ import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Singleton
 public class DepositSlipController {
@@ -40,7 +41,10 @@ public class DepositSlipController {
     DepositSlip depositSlip = request.getContext().asType(DepositSlip.class);
     DepositSlipService depositSlipService = Beans.get(DepositSlipService.class);
     response.setValue(
-        "__paymentVoucherDueList", depositSlipService.fetchPaymentVouchers(depositSlip));
+        "__paymentVoucherDueList",
+        depositSlipService.fetchPaymentVouchers(depositSlip).stream()
+            .map(PaymentVoucher::getId)
+            .collect(Collectors.toList()));
   }
 
   public void updateDepositChequeDate(ActionRequest request, ActionResponse response) {
@@ -78,6 +82,22 @@ public class DepositSlipController {
       depositSlipService.validate(depositSlip);
       response.setNotify(I18n.get("The deposit slip is validated"));
       response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void updateInvoicePayments(ActionRequest request, ActionResponse response) {
+    try {
+      DepositSlip depositSlip = request.getContext().asType(DepositSlip.class);
+      LocalDate depositDate =
+          (LocalDate)
+              Adapter.adapt(
+                  request.getContext().get("__depositDate"),
+                  LocalDate.class,
+                  LocalDate.class,
+                  null);
+      Beans.get(DepositSlipService.class).updateInvoicePayments(depositSlip, depositDate);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

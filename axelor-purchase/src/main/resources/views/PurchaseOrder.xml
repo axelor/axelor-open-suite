@@ -274,8 +274,7 @@
           showIf="statusSelect &gt;= 3 &amp;&amp; statusSelect &lt;= 4" readonly="true"/>
       </panel>
       <panel name="printingPanel" title="Printing">
-        <field name="printingSettings"
-          onSelect="action-purchase-order-method-filter-printing-settings" canEdit="false"/>
+        <field name="printingSettings" canEdit="false"/>
         <field name="groupProductsOnPrintings"
           if="__config__.app.getApp('base')?.getIsRegroupProductsOnPrintings()" colSpan="6"/>
         <field name="displayPriceOnQuotationRequest" colSpan="12"/>
@@ -859,7 +858,9 @@
   </action-view>
 
   <action-validate name="action-purchase-order-validate-stock-location">
-    <error message="The field 'Stock Location' must be filled." if="stockLocation == null"/>
+    <error message="The field 'Stock Location' must be filled."
+      if="__config__.app.isApp('supplychain')
+          &amp;&amp; purchaseOrderLineList?.any{it?.product?.stockManaged} &amp;&amp; stockLocation == null"/>
   </action-validate>
 
   <action-validate name="action-purchase-order-validate-purchase-order-line">
@@ -987,11 +988,6 @@
       if="__config__.app.getApp('base')?.enableTradingNamesManagement"/>
     <field name="printingSettings" expr="eval: company?.printingSettings"/>
   </action-record>
-
-  <action-method name="action-purchase-order-method-filter-printing-settings">
-    <call class="com.axelor.apps.purchase.web.PurchaseOrderController"
-      method="filterPrintingSettings"/>
-  </action-method>
 
   <action-method name="action-purchase-order-method-finish-purchase-order">
     <call class="com.axelor.apps.purchase.web.PurchaseOrderController"

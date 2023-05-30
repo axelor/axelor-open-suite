@@ -58,6 +58,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -327,12 +328,23 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
     if (this.compareReportType(
         accountingReport, AccountingReportRepository.REPORT_PAYMENT_DIFFERENCES)) {
-      Account cashPositionVariationAccount =
-          Beans.get((AccountConfigService.class))
-              .getAccountConfig(accountingReport.getCompany())
-              .getCashPositionVariationAccount();
-      if (cashPositionVariationAccount != null) {
-        this.addParams("self.account = ?%d", cashPositionVariationAccount);
+      AccountConfigService accountConfigService = Beans.get(AccountConfigService.class);
+      AccountConfig accountConfig =
+          accountConfigService.getAccountConfig(accountingReport.getCompany());
+
+      Account cashPositionVariationDebitAccount =
+          accountConfigService.getCashPositionVariationDebitAccount(accountConfig);
+      Account cashPositionVariationCreditAccount =
+          accountConfigService.getCashPositionVariationCreditAccount(accountConfig);
+      Set<Account> accountSet = new HashSet();
+      if (cashPositionVariationDebitAccount != null) {
+        accountSet.add(cashPositionVariationDebitAccount);
+      }
+      if (cashPositionVariationCreditAccount != null) {
+        accountSet.add(cashPositionVariationCreditAccount);
+      }
+      if (!CollectionUtils.isEmpty(accountSet)) {
+        this.addParams("self.account.id in (?%d)", accountSet);
       } else {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,

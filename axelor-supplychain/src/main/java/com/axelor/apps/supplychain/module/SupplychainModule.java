@@ -110,6 +110,8 @@ import com.axelor.apps.supplychain.service.MrpLineService;
 import com.axelor.apps.supplychain.service.MrpLineServiceImpl;
 import com.axelor.apps.supplychain.service.MrpLineTypeService;
 import com.axelor.apps.supplychain.service.MrpLineTypeServiceImpl;
+import com.axelor.apps.supplychain.service.MrpProposalService;
+import com.axelor.apps.supplychain.service.MrpProposalServiceImpl;
 import com.axelor.apps.supplychain.service.MrpSaleOrderCheckLateSaleService;
 import com.axelor.apps.supplychain.service.MrpSaleOrderCheckLateSaleServiceImpl;
 import com.axelor.apps.supplychain.service.MrpService;
@@ -124,8 +126,12 @@ import com.axelor.apps.supplychain.service.ProductStockLocationServiceImpl;
 import com.axelor.apps.supplychain.service.ProductVariantServiceSupplyChainImpl;
 import com.axelor.apps.supplychain.service.ProjectedStockService;
 import com.axelor.apps.supplychain.service.ProjectedStockServiceImpl;
+import com.axelor.apps.supplychain.service.PurchaseOrderBudgetService;
+import com.axelor.apps.supplychain.service.PurchaseOrderBudgetServiceImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceServiceImpl;
+import com.axelor.apps.supplychain.service.PurchaseOrderLineBudgetService;
+import com.axelor.apps.supplychain.service.PurchaseOrderLineBudgetServiceImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderLineServiceSupplyChain;
 import com.axelor.apps.supplychain.service.PurchaseOrderLineServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
@@ -306,6 +312,9 @@ public class SupplychainModule extends AxelorModule {
     bind(AnalyticMoveLineServiceImpl.class).to(AnalyticMoveLineSupplychainServiceImpl.class);
     bind(InvoiceLineAnalyticServiceImpl.class).to(InvoiceLineAnalyticSupplychainServiceImpl.class);
     bind(InvoiceLineOrderService.class).to(InvoiceLineOrderServiceImpl.class);
+    bind(PurchaseOrderBudgetService.class).to(PurchaseOrderBudgetServiceImpl.class);
+    bind(PurchaseOrderLineBudgetService.class).to(PurchaseOrderLineBudgetServiceImpl.class);
+    bind(MrpProposalService.class).to(MrpProposalServiceImpl.class);
     bind(SaleInvoicingStateService.class).to(SaleInvoicingStateServiceImpl.class);
   }
 }

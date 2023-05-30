@@ -46,7 +46,7 @@ public class MoveLineController {
 
       Beans.get(MoveLineService.class).setIsSelectedBankReconciliation(moveLine);
 
-      response.setValue("isSelectedBankReconciliation", moveLine.getIsSelectedBankReconciliation());
+      response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

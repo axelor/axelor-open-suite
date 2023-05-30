@@ -221,6 +221,9 @@ public class InvoicePaymentController {
   public void changeAmount(ActionRequest request, ActionResponse response) {
     try {
       InvoicePayment invoicePayment = request.getContext().asType(InvoicePayment.class);
+      if (invoicePayment.getCurrency() == null) {
+        return;
+      }
       Long invoiceId =
           Long.valueOf(
               (Integer) ((LinkedHashMap<?, ?>) request.getContext().get("_invoice")).get("id"));
@@ -235,7 +238,8 @@ public class InvoicePaymentController {
                 .getPayableAmount(
                     invoiceTerms,
                     invoicePayment.getPaymentDate(),
-                    invoicePayment.getManualChange());
+                    invoicePayment.getManualChange(),
+                    invoicePayment.getCurrency());
 
         if (!invoicePayment.getManualChange()
             || invoicePayment.getAmount().compareTo(payableAmount) > 0) {

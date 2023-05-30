@@ -31,6 +31,7 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
+import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -86,7 +87,8 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
   public void setCutOffDates(
       MoveLine moveLine, LocalDate cutOffStartDate, LocalDate cutOffEndDate) {
     if (!appAccountService.getAppAccount().getManageCutOffPeriod()
-        || !moveLine.getAccount().getManageCutOffPeriod()) {
+        || (ObjectUtils.notEmpty(moveLine.getAccount())
+            && !moveLine.getAccount().getManageCutOffPeriod())) {
       return;
     }
 

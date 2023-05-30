@@ -20,6 +20,7 @@ package com.axelor.apps.account.service.moveline;
 
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveToolService;
@@ -116,6 +117,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
         new HashMap<>(this.getAnalyticDistributionTemplateOnChangeAttrsMap(moveLine, move));
 
     moveLineAttrsService.addAnalyticAxisAttrs(move, attrsMap);
+    moveLineAttrsService.addPartnerRequired(move, attrsMap);
     moveLineAttrsService.addDescriptionRequired(move, attrsMap);
 
     return attrsMap;
@@ -128,6 +130,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
     Map<String, Map<String, Object>> attrsMap =
         new HashMap<>(this.getAnalyticDistributionTemplateOnChangeAttrsMap(moveLine, move));
 
+    moveLineAttrsService.addPartnerRequired(move, attrsMap);
     moveLineAttrsService.addShowTaxAmount(moveLine, attrsMap);
     moveLineAttrsService.addInvoiceTermListPercentageWarningText(moveLine, attrsMap);
 
@@ -149,6 +152,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
 
     moveLineAttrsService.addInvoiceTermListPercentageWarningText(moveLine, attrsMap);
     moveLineAttrsService.addShowTaxAmount(moveLine, attrsMap);
+    moveLineAttrsService.addPartnerRequired(move, attrsMap);
 
     if (move != null) {
       moveLineAttrsService.addReadonly(move, attrsMap);
@@ -307,14 +311,22 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
   @Override
   public Map<String, Object> getDateOnChangeValuesMap(MoveLine moveLine, Move move)
       throws AxelorException {
-    moveLineRecordService.setOriginDate(moveLine);
+    if (move != null && move.getJournal() != null && move.getJournal().getIsFillOriginDate()) {
+      moveLineRecordService.setOriginDate(moveLine);
+    }
     moveLineComputeAnalyticService.computeAnalyticDistribution(moveLine, move);
-    moveLineToolService.checkDateInPeriod(move, moveLine);
+    if (move != null && move.getMassEntryStatusSelect() == MoveRepository.MASS_ENTRY_STATUS_NULL) {
+      moveLineToolService.checkDateInPeriod(move, moveLine);
+    }
 
     Map<String, Object> valuesMap = new HashMap<>();
 
     valuesMap.put("originDate", moveLine.getOriginDate());
     valuesMap.put("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
+    if (move != null && move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL) {
+      valuesMap.put("cutOffStartDate", moveLine.getOriginDate());
+      valuesMap.put("deliveryDate", moveLine.getOriginDate());
+    }
 
     return valuesMap;
   }
@@ -446,18 +458,6 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
     valuesMap.put("axis3AnalyticAccount", moveLine.getAxis3AnalyticAccount());
     valuesMap.put("axis4AnalyticAccount", moveLine.getAxis4AnalyticAccount());
     valuesMap.put("axis5AnalyticAccount", moveLine.getAxis5AnalyticAccount());
-    valuesMap.put("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
-
-    return valuesMap;
-  }
-
-  @Override
-  public Map<String, Object> getAnalyticDistributionTemplateAnalyticDistributionOnChangeValuesMap(
-      MoveLine moveLine, Move move) throws AxelorException {
-    moveLineComputeAnalyticService.createAnalyticDistributionWithTemplate(moveLine, move);
-
-    Map<String, Object> valuesMap = new HashMap<>();
-
     valuesMap.put("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
 
     return valuesMap;

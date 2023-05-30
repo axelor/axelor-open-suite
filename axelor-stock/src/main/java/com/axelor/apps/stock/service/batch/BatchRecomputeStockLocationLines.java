@@ -191,7 +191,8 @@ public class BatchRecomputeStockLocationLines extends AbstractBatch {
           null,
           false,
           group.getRealDate(),
-          entry.getValue().getOrigin());
+          entry.getValue().getOrigin(),
+          true);
     }
   }
 
@@ -202,13 +203,9 @@ public class BatchRecomputeStockLocationLines extends AbstractBatch {
 
   protected void clearWapHistoryLines() {
 
-    javax.persistence.Query clearWapHistoryLinesQuery =
-        JPA.em().createNativeQuery("Delete FROM stock_wap_history");
-
     javax.persistence.Query clearStockLocationsHistoryLinesQuery =
         JPA.em().createNativeQuery("Delete FROM stock_stock_location_line_history");
 
-    JPA.runInTransaction(clearWapHistoryLinesQuery::executeUpdate);
     JPA.runInTransaction(clearStockLocationsHistoryLinesQuery::executeUpdate);
   }
 

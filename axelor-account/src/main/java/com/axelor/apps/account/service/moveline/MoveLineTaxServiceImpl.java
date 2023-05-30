@@ -159,7 +159,7 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
             reconcile,
             vatRate,
             detailPaymentAmount,
-            appBaseService.getTodayDate(reconcile.getCompany()));
+            reconcile.getEffectiveDate());
 
     taxPaymentMoveLine.setFiscalPosition(invoiceMove.getFiscalPosition());
 
@@ -212,6 +212,15 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
 
     autoTaxLineGenerateNoSave(move, account);
     moveRepository.save(move);
+  }
+
+  @Override
+  public void autoTaxLineGenerateNoSave(Move move) throws AxelorException {
+    if (CollectionUtils.isNotEmpty(move.getMoveLineList())
+        && (move.getStatusSelect().equals(MoveRepository.STATUS_NEW)
+            || move.getStatusSelect().equals(MoveRepository.STATUS_SIMULATED))) {
+      this.autoTaxLineGenerateNoSave(move, null);
+    }
   }
 
   @Override

@@ -69,8 +69,6 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
 
   protected AppBaseService appBaseService;
 
-  protected WapHistoryService wapHistoryService;
-
   protected UnitConversionService unitConversionService;
 
   protected StockLocationLineHistoryService stockLocationLineHistoryService;
@@ -81,14 +79,12 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       StockRulesService stockRulesService,
       StockMoveLineRepository stockMoveLineRepository,
       AppBaseService appBaseService,
-      WapHistoryService wapHistoryService,
       UnitConversionService unitConversionService,
       StockLocationLineHistoryService stockLocationLineHistoryService) {
     this.stockLocationLineRepo = stockLocationLineRepo;
     this.stockRulesService = stockRulesService;
     this.stockMoveLineRepository = stockMoveLineRepository;
     this.appBaseService = appBaseService;
-    this.wapHistoryService = wapHistoryService;
     this.unitConversionService = unitConversionService;
     this.stockLocationLineHistoryService = stockLocationLineHistoryService;
   }
@@ -104,7 +100,8 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       boolean future,
       boolean isIncrement,
       LocalDate lastFutureStockMoveDate,
-      TrackingNumber trackingNumber)
+      TrackingNumber trackingNumber,
+      boolean generateOrder)
       throws AxelorException {
 
     this.updateLocation(
@@ -115,7 +112,8 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
         current,
         future,
         isIncrement,
-        lastFutureStockMoveDate);
+        lastFutureStockMoveDate,
+        generateOrder);
 
     if (trackingNumber != null) {
       this.updateDetailLocation(
@@ -141,7 +139,8 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       boolean current,
       boolean future,
       boolean isIncrement,
-      LocalDate lastFutureStockMoveDate)
+      LocalDate lastFutureStockMoveDate,
+      boolean generateOrder)
       throws AxelorException {
 
     StockLocationLine stockLocationLine = this.getOrCreateStockLocationLine(stockLocation, product);
@@ -174,10 +173,12 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
         isIncrement,
         lastFutureStockMoveDate);
 
-    if (!isIncrement) {
-      minStockRules(product, qty, stockLocationLine, current, future);
-    } else {
-      maxStockRules(product, qty, stockLocationLine, current, future);
+    if (generateOrder) {
+      if (!isIncrement) {
+        minStockRules(product, qty, stockLocationLine, current, future);
+      } else {
+        maxStockRules(product, qty, stockLocationLine, current, future);
+      }
     }
 
     stockLocationLine =

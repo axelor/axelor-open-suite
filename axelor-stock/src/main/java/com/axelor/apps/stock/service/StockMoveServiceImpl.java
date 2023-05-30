@@ -266,6 +266,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     }
     line.setQty(movedQty);
     line.setRealQty(movedQty);
+    line.setIsRealQtyModifiedByUser(true);
     line.setUnitPriceUntaxed(product.getLastPurchasePrice());
     line.setUnit(unit);
     stockMoveLineRepo.save(line);
@@ -420,7 +421,8 @@ public class StockMoveServiceImpl implements StockMoveService {
         StockMoveRepository.STATUS_PLANNED,
         stockMove.getPlannedStockMoveLineList(),
         stockMove.getEstimatedDate(),
-        false);
+        false,
+        true);
   }
 
   protected void copyPlannedStockMovLines(StockMove stockMove) {
@@ -489,6 +491,7 @@ public class StockMoveServiceImpl implements StockMoveService {
         StockMoveRepository.STATUS_CANCELED,
         stockMove.getPlannedStockMoveLineList(),
         stockMove.getEstimatedDate(),
+        false,
         false);
 
     stockMoveLineService.updateLocations(
@@ -498,6 +501,7 @@ public class StockMoveServiceImpl implements StockMoveService {
         StockMoveRepository.STATUS_REALIZED,
         stockMove.getStockMoveLineList(),
         stockMove.getEstimatedDate(),
+        true,
         true);
 
     stockMove.clearPlannedStockMoveLineList();
@@ -915,6 +919,7 @@ public class StockMoveServiceImpl implements StockMoveService {
           StockMoveRepository.STATUS_CANCELED,
           stockMove.getPlannedStockMoveLineList(),
           stockMove.getEstimatedDate(),
+          false,
           false);
     } else {
       stockMoveLineService.updateLocations(
@@ -924,6 +929,7 @@ public class StockMoveServiceImpl implements StockMoveService {
           StockMoveRepository.STATUS_CANCELED,
           stockMove.getStockMoveLineList(),
           stockMove.getEstimatedDate(),
+          true,
           true);
 
       stockMove.setRealDate(appBaseService.getTodayDate(stockMove.getCompany()));
@@ -1397,6 +1403,7 @@ public class StockMoveServiceImpl implements StockMoveService {
         StockMoveRepository.STATUS_CANCELED,
         savedStockMoveLineList,
         stockMove.getEstimatedDate(),
+        false,
         false);
 
     stockMoveLineService.updateLocations(
@@ -1406,6 +1413,7 @@ public class StockMoveServiceImpl implements StockMoveService {
         StockMoveRepository.STATUS_PLANNED,
         stockMoveLineList,
         stockMove.getEstimatedDate(),
+        true,
         true);
 
     stockMove.clearPlannedStockMoveLineList();

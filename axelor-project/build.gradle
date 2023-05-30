@@ -36,6 +36,7 @@ task buildFront(type: YarnTask) {
     inputs.files('src/main/task-editor/package.json', 'src/main/task-editor/yarn.lock', 'src/main/task-editor/package-lock.json' )
     inputs.dir('src/main/task-editor/src')
     inputs.dir('src/main/task-editor/public')
+    outputs.dir('src/main/task-editor/build')
 
 	dependsOn 'installFrontDeps'
     args = ["run", "build"]

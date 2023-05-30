@@ -354,11 +354,31 @@ public class PaymentSessionController {
         isUnSelectedReadonly = false;
       }
 
-      response.setAttr("selectAllBtn", "hidden", false);
-      response.setAttr("unselectAllBtn", "hidden", false);
+      response.setAttr(
+          "selectAllBtn",
+          "hidden",
+          paymentSession.getStatusSelect() > PaymentSessionRepository.STATUS_ONGOING);
+      response.setAttr(
+          "unselectAllBtn",
+          "hidden",
+          paymentSession.getStatusSelect() > PaymentSessionRepository.STATUS_ONGOING);
       response.setAttr("selectAllBtn", "readonly", isSelectedReadonly);
       response.setAttr("unselectAllBtn", "readonly", isUnSelectedReadonly);
 
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void removeNegativeLines(ActionRequest request, ActionResponse response) {
+    try {
+      PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
+      paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
+
+      Beans.get(PaymentSessionService.class).removeNegativeLines(paymentSession);
+
+      response.setInfo(I18n.get(AccountExceptionMessage.PAYMENT_SESSION_NEGATIVE_LINES_REMOVED));
+      response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -368,7 +388,6 @@ public class PaymentSessionController {
     try {
       PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
       paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
-
       List<InvoiceTerm> invoiceTermList =
           Beans.get(InvoiceTermRepository.class).findByPaymentSession(paymentSession).fetch();
       int partnerCount =

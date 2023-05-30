@@ -14,6 +14,8 @@
       </menu>
     </menubar>
     <field name="name"/>
+    <field name="company" form-view="company-form" grid-view="company-grid"
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="code"/>
     <field name="parentProject"/>
     <field name="clientPartner"/>
@@ -103,11 +105,10 @@
           <editor x-show-titles="false">
             <panel name="seq" colSpan="3">
               <field name="code" showTitle="false" colSpan="12" readonly="true"
-                if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project')?.generateProjectSequence"
-                css="label-bold bold large" x-bind="{{code|unaccent|uppercase}}"
-                if-module="axelor-business-project"/>
+                if="__config__.app.getApp('project')?.generateProjectSequence"
+                css="label-bold bold large" x-bind="{{code|unaccent|uppercase}}"/>
               <field name="code" showTitle="false" colSpan="12" required="true"
-                if="!(__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project')?.generateProjectSequence)"
+                if="!__config__.app.getApp('project')?.generateProjectSequence"
                 css="label-bold bold large" x-bind="{{code|unaccent|uppercase}}"/>
             </panel>
             <field name="name" showTitle="false" colSpan="6" required="true"
@@ -119,8 +120,7 @@
     <panel name="detailsPanel">
       <panel name="generalInfoPanel" colSpan="12">
         <field name="company" form-view="company-form" grid-view="company-grid" colSpan="3"
-          canEdit="false" if="__config__.app.isApp('business-project')"
-          if-module="axelor-business-project"/>
+          canEdit="false" if-module="axelor-business-project"/>
         <field name="clientPartner"
           domain="self.isCustomer = true AND :company member of self.companySet"
           onChange="action-project-method-get-partner-data" requiredIf="isBusinessProject"
@@ -473,12 +473,13 @@
         <field name="sequence" hidden="true"/>
         <field name="imputable" colSpan="4" widget="boolean-switch"
           if="__config__.app.isApp('employee') &amp;&amp; __config__.app.isApp('timesheet')"
-          if-module="axelor-human-resource"/>
+          if-module="axelor-human-resource"
+          onChange="action-project-record-reset-value-is-show-timespent,action-project-record-is-show-timespent-reset-values"/>
         <panel name="fieldsToDisplay" title="Fields to display" colSpan="12">
           <field name="isShowStatus" colSpan="4" widget="inline-checkbox"
             onChange="action-project-record-status-reset-values"/>
           <field name="projectTaskStatusSet" widget="TagSelect" colSpan="12"
-            showIf="isShowStatus" requiredIf="isShowStatus" domain="self.relatedToSelect = 2"/>
+            showIf="isShowStatus" requiredIf="isShowStatus"/>
           <field name="isShowPriority" colSpan="4" widget="inline-checkbox"
             onChange="action-project-record-priority-reset-values"/>
           <field name="projectTaskPrioritySet" widget="TagSelect" colSpan="12"
@@ -493,7 +494,7 @@
           <field name="isShowFrequency" colSpan="4" widget="inline-checkbox"/>
           <field name="isShowTimeSpent" colSpan="4" widget="inline-checkbox"
             onChange="action-project-record-is-show-timespent-reset-values"
-            if="__config__.app.isApp('timesheet')"/>
+            if="__config__.app.isApp('timesheet')" readonlyIf="!imputable"/>
           <field name="isShowSection" colSpan="4" widget="inline-checkbox"
             onChange="action-project-record-section-reset-values"/>
           <field name="isShowTopic" colSpan="4" widget="inline-checkbox"/>
@@ -924,7 +925,7 @@
 
   <action-attrs name="action-project-attrs-on-new-load">
     <attribute name="selection-in" for="projectStatus"
-      expr="eval: __repo__(ProjectStatus).all()?.filter('self.relatedToSelect = ?1',__repo__(ProjectStatus).PROJECT_STATUS_PROJECT)?.fetch()?.collect{it.id}?.join(',')"/>
+      expr="eval: __repo__(ProjectStatus).all()?.fetch()?.collect{it.id}?.join(',')"/>
     <attribute name="scale" for="price"
       expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
   </action-attrs>
@@ -957,7 +958,7 @@
   <action-record name="action-project-record-status-new"
     model="com.axelor.apps.project.db.Project">
     <field name="projectStatus"
-      expr="eval: __repo__(ProjectStatus).all().filter('self.relatedToSelect = ?1',__repo__(ProjectStatus).PROJECT_STATUS_PROJECT).order('sequence').fetchOne()"/>
+      expr="eval: __repo__(ProjectStatus).all().order('sequence').fetchOne()"/>
     <field name="projectTaskStatusSet"
       expr="eval: __config__.app.getApp('project')?.getDefaultTaskStatusSet()"/>
     <field name="projectTaskPrioritySet"
@@ -1104,10 +1105,15 @@
     <field name="isInvoicingTimesheet" expr="eval: false" if="!isShowTimeSpent"/>
   </action-record>
 
+  <action-record name="action-project-record-reset-value-is-show-timespent"
+    model="com.axelor.apps.project.db.Project">
+    <field name="isShowTimeSpent" expr="eval: false" if="!imputable"/>
+  </action-record>
+
   <search-filters name="project-filters" model="com.axelor.apps.project.db.Project"
     title="Project filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base')?.getEnableMultiCompany() || !__config__.app.isApp('business-project')"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="resourceBookingList" hidden="true"
       if="!__config__.app.getApp('project')?.resourceManagement"/>
     <field name="productionOrderList" hidden="true"

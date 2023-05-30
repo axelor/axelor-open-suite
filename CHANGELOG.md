@@ -1,3 +1,111 @@
+## [7.0.2] (2023-05-25)
+
+#### Fixed
+
+* Updated Axelor Open Plateform dependency to 6.1.3. See the [Changelog](https://github.com/axelor/axelor-open-platform/blob/v6.1.3/CHANGELOG.md#613-2023-05-15) for more details.
+* Updated axelor-studio version to 1.0.2, this fixes following issues:
+  - fixed an error causing DMN to crash.
+  - fixed an issue preventing access to the application in the case where a parameter was missing in `axelor-config.properties`.
+
+* Invoice payment: disable financial discount process when the invoice is paid by a refund.
+* Accounting batch: fixed close annual accounts batch when no moves are selectable and simulate generate move if needed.
+* Configurator: fixed an issue where removing an attribute did not update the configurator form.
+* Tax: fixed tax demo data missing accounting configuration and having wrong values.
+* Sale order: fixed an issue during sale order validation when checking price list date validity.
+* Printing settings: on orders and invoices, removed the filter on printing settings.
+* Accounting move: fixed an issue where we were not able to change currency on a move.
+* Invoice payment: update cheque and deposit info on the invoice payment record when generated from Payment Voucher and Deposit slip.
+* Purchase order: fixed an error occurring when generating an invoice from a purchase order with a title line.
+* Accounting batch: fix duplicated moves in closure/opening batch.
+* Bank reconciliation: fixed an issue in bank reconciliation printing where reconciled lines still appeared.
+* GDPR search: fixed an issue where some filters in the search were not correctly taken into account.
+* GDPR: add UI improvement and data-init to make the module configuration easier.
+* Bill of materials: fixed creation of personalized bill of materials.
+* Invoice: added an error message when generating moves with no description when a description is required.
+* Project: fixed an issue when creating a task in a project marked as "to invoice" where the task was not marked as "to invoice" by default.
+* Manufacturing order: fixed filter on sale order.
+* Bank order: fixed payment status update when we cancel a bank order and there are still pending payments on the invoice.
+* Move: fixed an error that occured when selecting a partner with an empty company.
+* Summary of gross values and depreciation accounting report: fixed wrong values for depreciation columns.
+* Manufacturing order: when planning a manufacturing order, fixed the error message when the field production process is empty.
+* Accounting move line: fixed filter on partner.
+* Timesheet: when generating lines, get all lines from project instead of only getting lines from task.
+* Accounting report DAS 2: fixed export not working if N4DS code is missing.
+* Accounting report DAS 2: fixed balance.
+* Bank order: fixed an issue where moves generated from a bank order were not accounted/set to daybook.
+* Project task: when creating a new project task, the status will now be correctly initialized.
+* Product: fixed an issue where activating the configuration "auto update sale price" did not update the sale price.
+* Stock move: prevent cancellation of an invoiced stock move.
+* Payment condition: add controls on payment condition when moves are created.
+* Stock move: modifying a real quantity or creating an internal stock move from the mobile application will correctly indicate that the real quantity has been modified by an user.
+* Bank order: fixed an issue where the process never ended when cancelling a bank order.
+* Sale order: fixed popup error "Id to load is required for loading" when opening a new sale order line.
+* Journal: fixed error message when the "type select" was not filled in the journal type.
+* Account config: fixed UI and UX for payment session configuration.
+* Account/Analytic: fixed analytic account filter in analytic lines.
+* Account/Analytic: fix analytic account domain in analytic lines
+* Move line: fixed error when emptying account on move line.
+* Invoice: fixed an error preventing from merging invoices.
+* Expense: prevent deletion of ventilated expense.
+
+## [7.0.1] (2023-05-11)
+
+#### Fixed
+
+* Update axelor-studio to version 1.0.1 with multiples fixes made to the app builder.
+* Invoice: fixed bank details being required for wrong payment modes.
+* Invoice: fixed an issue blocking advance payment invoice creation when the lines were missing an account.
+* Job application: fixed an error occuring when creating a job application without setting a manager.
+* Bank reconciliation: added missing translation for "Bank reconciliation lines" in french.
+* Product: fixed an issue preventing product copy when using sequence by product category.
+* Bank reconciliation/Bank statement rule: added a control in auto accounting process to check if bank detail bank account and bank statement rule cash account are the same.
+* Tracking number search: fixed an error occurring when using the tracking number search.
+* Stock move: fixed an issue when creating tracking number from an unsaved stock move. If we do not save the stock move, tracking number are now correctly deleted.
+* Sale order: fixed an issue where sale order templates were displayed from the 'Historical' menu entry.
+* Bank reconciliation: fixed issue preventing to select move lines to reconcile them. 
+* Accounting payment vat report: fixed wrong french translations.
+* MRP: fixed an JNPE error when deleting a purchase order generated by a MRP.
+* Partner: added missing translation on partner size selection.
+* Public holiday events planning: set the holidays calendar in a dynamic way to avoid it become outdated in the demo data.
+* VAT amount received accounting report: fixed height limit and 40 page interval break limit.
+* Invoice payment: fixed payment with different currencies.
+* Accounting report das 2: fixed currency required in process.
+* Payment Voucher: fixed excess on payment amount, generate an unreconciled move line with the difference.
+* Bank reconciliation: fixed tax computation with auto accounting.
+* Sale, Stock, CRM, Supplychain printings: fixed an issue were pictures with specific filenames were not displayed in the printings.
+* Accounting batch: added missing filter on year.
+* Move line: fixed analytic account domain when no analytic rules are based on this account.
+* Purchase order: stock location is not required anymore if there are no purchase order lines with stock managed product.
+* Custom accounting reports: fixed accounting reports "Display Details" feature.
+* Accounting situation: display VAT system select when the partner is internal.
+* Invoice: fixed wrong alert message when invoiced quantity was superior to delivered or ordered qty.
+* Project report: fixed error preventing the generation of the PDF report for projects.
+* Project: Display "Ticket" instead of "Project Task" in Activities tab when the activity is from a ticket.
+* Opportunity: added missing sequence on the Kanban and Card view.
+* Payment session: select/unselect buttons are now hidden when status is not in progress.
+* Analytic move line query: fixed filter on analytic account.
+* Move: fixed default currency selection, now the currency from the partner is automatically selected, and if the partner is missing the currency from the company is used.
+* Bank reconciliation: fixed initial and final balance when importing multiple statements.
+* Accounting report: fixed translation of currency title.
+* Bank order: fixed an error preventing the validation of a bank order.
+* Inventory: fixed UI issue by preventing unit from being changed in inventory lines.
+* Stock rules: now correctly apply stock rules when minimum quantity is zero.
+
+#### Removed
+
+* Because of a refactor, action-record-initialize-permission-validation-move is not used anymore and is now deleted.
+
+* Delete action 'action-record-analytic-distribution-type-select' since its not used anymore.
+
+You can run following SQL script to update your database:
+
+```sql
+DELETE FROM meta_action WHERE name='action-record-initialize-permission-validation-move';
+
+DELETE FROM meta_action WHERE name='action-record-analytic-distribution-type-select';
+```
+
+
 ## [7.0.0] (2023-04-28)
 
 
@@ -89,4 +197,6 @@ closedWinOpportunityStatus, closedLostOpportunityStatus, salesPropositionStatus 
     </details>
 
 
+[7.0.2]: https://github.com/axelor/axelor-open-suite/compare/v7.0.1...v7.0.2
+[7.0.1]: https://github.com/axelor/axelor-open-suite/compare/v7.0.0...v7.0.1
 [7.0.0]: https://github.com/axelor/axelor-open-suite/compare/v6.5.7...v7.0.0

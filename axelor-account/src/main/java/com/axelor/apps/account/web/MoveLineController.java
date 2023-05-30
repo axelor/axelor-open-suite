@@ -42,7 +42,6 @@ import com.axelor.apps.account.service.moveline.MoveLineGroupService;
 import com.axelor.apps.account.service.moveline.MoveLineRecordService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
-import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Batch;
@@ -344,18 +343,6 @@ public class MoveLineController {
     }
   }
 
-  public void checkDateInPeriod(ActionRequest request, ActionResponse response) {
-    try {
-      if (request.getContext().getParent() != null) {
-        MoveLine moveLine = request.getContext().asType(MoveLine.class);
-        Move move = request.getContext().getParent().asType(Move.class);
-        Beans.get(MoveLineToolService.class).checkDateInPeriod(move, moveLine);
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-    }
-  }
-
   public void setInvoiceTermReadonly(ActionRequest request, ActionResponse response) {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
@@ -533,6 +520,13 @@ public class MoveLineController {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
       Move move = moveLine.getMove();
+
+      Context parentContext = request.getContext().getParent();
+      if (move == null
+          && parentContext != null
+          && Move.class.equals(parentContext.getContextClass())) {
+        move = parentContext.asType(Move.class);
+      }
 
       response.setAttrs(
           Beans.get(MoveLineGroupService.class).getOnLoadMoveAttrsMap(moveLine, move));
@@ -731,6 +725,10 @@ public class MoveLineController {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
 
+      if (moveLine.getMove() == null && request.getContext().getParent() != null) {
+        moveLine.setMove(request.getContext().getParent().asType(Move.class));
+      }
+
       response.setValues(
           Beans.get(MoveLineGroupService.class).getPartnerOnChangeValuesMap(moveLine));
     } catch (Exception e) {
@@ -748,24 +746,6 @@ public class MoveLineController {
 
       response.setValues(
           moveLineGroupService.getAnalyticDistributionTemplateOnChangeLightValuesMap(moveLine));
-      response.setAttrs(
-          moveLineGroupService.getAnalyticDistributionTemplateOnChangeAttrsMap(moveLine, move));
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-    }
-  }
-
-  public void analyticDistributionTemplateAnalyticDistributionOnChange(
-      ActionRequest request, ActionResponse response) {
-    try {
-      MoveLine moveLine = request.getContext().asType(MoveLine.class);
-      Move move = this.getMove(request, moveLine);
-
-      MoveLineGroupService moveLineGroupService = Beans.get(MoveLineGroupService.class);
-
-      response.setValues(
-          moveLineGroupService.getAnalyticDistributionTemplateAnalyticDistributionOnChangeValuesMap(
-              moveLine, move));
       response.setAttrs(
           moveLineGroupService.getAnalyticDistributionTemplateOnChangeAttrsMap(moveLine, move));
     } catch (Exception e) {
