@@ -657,6 +657,8 @@ public class MoveLineController {
       Move move = this.getMove(request, moveLine);
       LocalDate dueDate = this.extractDueDate(request);
 
+      moveLine.setMove(move);
+
       response.setValues(
           Beans.get(MoveLineGroupService.class)
               .getCurrencyAmountRateOnChangeValuesMap(moveLine, move, dueDate));
