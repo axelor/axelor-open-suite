@@ -731,6 +731,10 @@ public class MoveLineController {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
 
+      if (moveLine.getMove() == null && request.getContext().getParent() != null) {
+        moveLine.setMove(request.getContext().getParent().asType(Move.class));
+      }
+
       response.setValues(
           Beans.get(MoveLineGroupService.class).getPartnerOnChangeValuesMap(moveLine));
     } catch (Exception e) {
@@ -748,24 +752,6 @@ public class MoveLineController {
 
       response.setValues(
           moveLineGroupService.getAnalyticDistributionTemplateOnChangeLightValuesMap(moveLine));
-      response.setAttrs(
-          moveLineGroupService.getAnalyticDistributionTemplateOnChangeAttrsMap(moveLine, move));
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-    }
-  }
-
-  public void analyticDistributionTemplateAnalyticDistributionOnChange(
-      ActionRequest request, ActionResponse response) {
-    try {
-      MoveLine moveLine = request.getContext().asType(MoveLine.class);
-      Move move = this.getMove(request, moveLine);
-
-      MoveLineGroupService moveLineGroupService = Beans.get(MoveLineGroupService.class);
-
-      response.setValues(
-          moveLineGroupService.getAnalyticDistributionTemplateAnalyticDistributionOnChangeValuesMap(
-              moveLine, move));
       response.setAttrs(
           moveLineGroupService.getAnalyticDistributionTemplateOnChangeAttrsMap(moveLine, move));
     } catch (Exception e) {
