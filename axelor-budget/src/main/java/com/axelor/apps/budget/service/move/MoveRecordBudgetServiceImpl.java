@@ -5,21 +5,26 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.PeriodServiceAccount;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveComputeService;
+import com.axelor.apps.account.service.move.MoveCounterPartService;
+import com.axelor.apps.account.service.move.MoveInvoiceTermService;
+import com.axelor.apps.account.service.move.MoveLineControlService;
+import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.attributes.MoveAttrsService;
 import com.axelor.apps.account.service.move.control.MoveCheckService;
 import com.axelor.apps.account.service.move.massentry.MassEntryService;
+import com.axelor.apps.account.service.move.massentry.MassEntryVerificationService;
 import com.axelor.apps.account.service.move.record.MoveDefaultService;
-import com.axelor.apps.account.service.move.record.MoveRecordServiceImpl;
+import com.axelor.apps.account.service.move.record.MoveGroupServiceImpl;
 import com.axelor.apps.account.service.move.record.MoveRecordSetService;
 import com.axelor.apps.account.service.move.record.MoveRecordUpdateService;
-import com.axelor.apps.account.service.move.record.model.MoveContext;
+import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryToolService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.PeriodService;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 
-public class MoveRecordBudgetServiceImpl extends MoveRecordServiceImpl {
+public class MoveRecordBudgetServiceImpl extends MoveGroupServiceImpl {
 
   protected MoveBudgetService moveBudgetService;
 
@@ -32,10 +37,17 @@ public class MoveRecordBudgetServiceImpl extends MoveRecordServiceImpl {
       MoveComputeService moveComputeService,
       MoveRecordUpdateService moveRecordUpdateService,
       MoveRecordSetService moveRecordSetService,
+      MoveToolService moveToolService,
+      MoveInvoiceTermService moveInvoiceTermService,
+      MoveCounterPartService moveCounterPartService,
+      MoveLineControlService moveLineControlService,
+      MoveLineTaxService moveLineTaxService,
+      PeriodService periodService,
       MoveRepository moveRepository,
+      MoveLineMassEntryToolService moveLineMassEntryToolService,
       AppAccountService appAccountService,
       MassEntryService massEntryService,
-      MoveLineMassEntryToolService moveLineMassEntryToolService,
+      MassEntryVerificationService massEntryVerificationService,
       MoveBudgetService moveBudgetService) {
     super(
         moveDefaultService,
@@ -45,20 +57,25 @@ public class MoveRecordBudgetServiceImpl extends MoveRecordServiceImpl {
         moveComputeService,
         moveRecordUpdateService,
         moveRecordSetService,
+        moveToolService,
+        moveInvoiceTermService,
+        moveCounterPartService,
+        moveLineControlService,
+        moveLineTaxService,
+        periodService,
         moveRepository,
+        moveLineMassEntryToolService,
         appAccountService,
         massEntryService,
-        moveLineMassEntryToolService);
+        massEntryVerificationService);
     this.moveBudgetService = moveBudgetService;
   }
 
   @Override
-  @Transactional(rollbackOn = Exception.class)
-  public MoveContext onSaveCheck(Move move) throws AxelorException {
-    MoveContext result = super.onSaveCheck(move);
+  public void checkBeforeSave(Move move) throws AxelorException {
+
+    super.checkBeforeSave(move);
 
     Beans.get(MoveBudgetService.class).getBudgetExceedAlert(move);
-
-    return result;
   }
 }
