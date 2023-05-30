@@ -583,20 +583,12 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
               projectTask.getFullName()));
     }
 
-    BigDecimal percentageOfProgression =
-        projectTask
-            .getSpentTime()
-            .multiply(new BigDecimal("100"))
-            .setScale(BIG_DECIMAL_SCALE, RoundingMode.HALF_UP);
+    BigDecimal percentageOfProgression = projectTask.getSpentTime().multiply(new BigDecimal("100"));
     percentageOfProgression =
         percentageOfProgression.divide(
             projectTask.getUpdatedTime(), BIG_DECIMAL_SCALE, RoundingMode.HALF_UP);
 
-    BigDecimal percentageOfConsumption =
-        projectTask
-            .getSpentTime()
-            .multiply(new BigDecimal("100"))
-            .setScale(BIG_DECIMAL_SCALE, RoundingMode.HALF_UP);
+    BigDecimal percentageOfConsumption = projectTask.getSpentTime().multiply(new BigDecimal("100"));
     percentageOfConsumption =
         percentageOfConsumption.divide(
             projectTask.getSoldTime(), BIG_DECIMAL_SCALE, RoundingMode.HALF_UP);
