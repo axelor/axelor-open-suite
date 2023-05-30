@@ -64,4 +64,7 @@ public interface ProjectTaskBusinessProjectService extends ProjectTaskService {
 
   @Transactional(rollbackOn = {Exception.class})
   ProjectTask setProjectTaskValues(ProjectTask projectTask) throws AxelorException;
+
+  @Transactional(rollbackOn = {Exception.class})
+  void computeProjectTaskTotals(ProjectTask projectTask) throws AxelorException;
 }

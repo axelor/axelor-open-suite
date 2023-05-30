@@ -81,7 +81,7 @@ public class ProjectTaskReportingValuesComputingServiceImpl
     Unit timeUnit = projectTask.getTimeUnit();
     plannedTime =
         projectTask.getProjectPlanningTimeList().stream()
-            .map(ProjectPlanningTime::getPlannedHours)
+            .map(ProjectPlanningTime::getPlannedTime)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
 
     for (TimesheetLine timeSheetLine : timesheetLines) {
