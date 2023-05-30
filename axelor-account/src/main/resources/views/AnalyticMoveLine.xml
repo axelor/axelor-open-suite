@@ -231,7 +231,7 @@
   </search-filters>
 
   <action-method name="action-method-domain-onselect-axis-analytic-move-line">
-    <call class="com.axelor.apps.account.web.AnalyticDistributionLineController"
+    <call class="com.axelor.apps.account.web.AnalyticMoveLineQueryController"
       method="setAnalyticAxisDomain"/>
   </action-method>
 
