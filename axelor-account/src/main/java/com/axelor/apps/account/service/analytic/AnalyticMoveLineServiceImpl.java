@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.account.service.analytic;
 
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticAxisByCompany;
@@ -359,15 +360,18 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
   }
 
   @Override
-  public String getAnalyticAxisDomain(AnalyticMoveLine analyticMoveLine, Company company) {
+  public String getAnalyticAxisDomain(Company company) {
     StringBuilder domain = new StringBuilder();
     domain.append("(self.company is null OR self.company.id = " + company.getId() + ")");
-    List<AnalyticAxis> analyticAxisList =
-        accountConfigRepository.findByCompany(company).getAnalyticAxisByCompanyList().stream()
-            .map(AnalyticAxisByCompany::getAnalyticAxis)
-            .collect(Collectors.toList());
-    String idList = StringTool.getIdListString(analyticAxisList);
-    domain.append(" AND self.id IN (" + idList + ")");
+    AccountConfig accountConfig = accountConfigRepository.findByCompany(company);
+    if (accountConfig != null) {
+      List<AnalyticAxis> analyticAxisList =
+          accountConfig.getAnalyticAxisByCompanyList().stream()
+              .map(AnalyticAxisByCompany::getAnalyticAxis)
+              .collect(Collectors.toList());
+      String idList = StringTool.getIdListString(analyticAxisList);
+      domain.append(" AND self.id IN (" + idList + ")");
+    }
     return domain.toString();
   }
 }
