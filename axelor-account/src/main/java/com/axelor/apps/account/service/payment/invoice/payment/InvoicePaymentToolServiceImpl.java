@@ -335,18 +335,13 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
           invoicePayment.getAmount().add(invoicePayment.getFinancialDiscountTotalAmount()));
       invoicePayment.setFinancialDiscountDeadlineDate(
           this.getFinancialDiscountDeadlineDate(invoiceTermPaymentList));
-    }else {
-    	invoicePayment.setApplyFinancialDiscount(false);
-    	invoicePayment.setFinancialDiscountTotalAmount(
-    	         BigDecimal.ZERO);
-    	      invoicePayment.setFinancialDiscountTaxAmount(
-    	    		  BigDecimal.ZERO);
-    	      invoicePayment.setFinancialDiscountAmount(
-    	    		  BigDecimal.ZERO);
-    	      invoicePayment.setTotalAmountWithFinancialDiscount(
-    	    		  BigDecimal.ZERO);
-    	      invoicePayment.setFinancialDiscountDeadlineDate(
-    	          null);
+    } else {
+      invoicePayment.setApplyFinancialDiscount(false);
+      invoicePayment.setFinancialDiscountTotalAmount(BigDecimal.ZERO);
+      invoicePayment.setFinancialDiscountTaxAmount(BigDecimal.ZERO);
+      invoicePayment.setFinancialDiscountAmount(BigDecimal.ZERO);
+      invoicePayment.setTotalAmountWithFinancialDiscount(BigDecimal.ZERO);
+      invoicePayment.setFinancialDiscountDeadlineDate(null);
     }
   }
 

@@ -1504,6 +1504,8 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-record-set-pfp-status"
       if="__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <action name="action-invoice-attrs-set-hidden-analytic-accounting-panel"/>
+    <action name="action-record-invoice-set-discount-values"
+      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
   </action-group>
 
   <action-group name="action-account-invoice-onload-group">
@@ -1648,8 +1650,6 @@ InvoiceSet.length > 0))"
     <action name="save"/>
     <action name="action-invoice-line-check-distribution-template-account"/>
     <action name="action-invoice-method-validate"/>
-    <action name="action-record-invoice-set-discount-values"
-      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
   </action-group>
 
   <action-group name="action-invoice-group-payment-condition-onchange">
