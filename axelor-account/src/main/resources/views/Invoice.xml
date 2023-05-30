@@ -669,6 +669,8 @@
             onClick="save,action-invoice-method-create-refund,save"/>
           <field name="originalInvoice" readonly="true" showIf="originalInvoice"
             form-view="invoice-form" grid-view="invoice-grid"/>
+          <field name="" readonly="true" showIf="originalInvoice" form-view="invoice-form"
+            grid-view="invoice-grid"/>
           <panel-related name="refundInvoiceListPanel" field="refundInvoiceList"
             readonly="true"
             showIf="refundInvoiceList != null &amp;&amp; refundInvoiceList.length > 0" colSpan="12"
