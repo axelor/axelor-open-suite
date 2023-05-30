@@ -208,6 +208,7 @@
 "A previous result can be used with its code, but it can only be elements of the same type.",,,
 "A sequence already exists on this code for this company and this sequence have to be unique",,,
 "A tax line is missing",,,
+"A technical type is required on the journal type %s.",,,
 "A transmitted or a accounted subrogation release already exist for the invoices %s.",,,
 "A.T.I.",,,
 "AND",,,

@@ -1,3 +1,0 @@
----
-title : "Bank Order : Fix update when we cancel a bank order and he still pending on invoice payment list"
-type: fix

@@ -392,7 +392,8 @@
   <form name="move-mass-entry-form" title="Mass entry" canArchive="false"
     model="com.axelor.apps.account.db.Move" canDelete="false" width="large"
     onNew="action-account-move-method-onnew" onLoad="action-account-move-method-onLoad"
-    onSave="action-account-move-group-onsave" readonlyIf="massEntryStatusSelect == 2">
+    onSave="action-account-move-group-onsave" readonlyIf="massEntryStatusSelect == 2"
+    canCopy="massEntryStatusSelect != 2">
     <toolbar>
       <button name="controlMassEntryMoves" title="Control moves consistency"
         onClick="action-move-method-control-mass-entry-moves" colSpan="12" hidden="false"

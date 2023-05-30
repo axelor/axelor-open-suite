@@ -197,6 +197,13 @@ public class MoveGroupServiceImpl implements MoveGroupService {
       moveAttrsService.getPfpAttrs(move, user, attrsMap);
     }
 
+    if (move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL) {
+      moveAttrsService.addMoveLineAnalyticAttrs(move, attrsMap);
+      moveAttrsService.addMassEntryHidden(move, attrsMap);
+      moveAttrsService.addMassEntryPaymentConditionRequired(move, attrsMap);
+      moveAttrsService.addMassEntryBtnHidden(move, attrsMap);
+    }
+
     return attrsMap;
   }
 
@@ -220,12 +227,6 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     Map<String, Map<String, Object>> attrsMap = this.getOnNewAttrsMap(move, user);
 
     moveAttrsService.addDueDateHidden(move, attrsMap);
-    if (move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL) {
-      moveAttrsService.addMoveLineAnalyticAttrs(move, attrsMap);
-      moveAttrsService.addMassEntryHidden(move, attrsMap);
-      moveAttrsService.addMassEntryPaymentConditionRequired(move, attrsMap);
-      moveAttrsService.addMassEntryBtnHidden(move, attrsMap);
-    }
 
     return attrsMap;
   }
@@ -304,6 +305,10 @@ public class MoveGroupServiceImpl implements MoveGroupService {
 
     moveAttrsService.addFunctionalOriginSelectDomain(move, attrsMap);
 
+    if (move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL) {
+      moveAttrsService.addMassEntryHidden(move, attrsMap);
+    }
+
     return attrsMap;
   }
 
@@ -355,6 +360,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     moveRecordUpdateService.updateDueDate(move, paymentConditionChange, dateChange);
     if (move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL) {
       massEntryService.verifyFieldsAndGenerateTaxLineAndCounterpart(move, move.getDate());
+      valuesMap.put("moveLineMassEntryList", move.getMoveLineMassEntryList());
     }
 
     valuesMap.put("dueDate", move.getDueDate());
@@ -481,6 +487,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     valuesMap.put("companyCurrency", move.getCompanyCurrency());
     valuesMap.put("currencyCode", move.getCurrencyCode());
     valuesMap.put("companyCurrencyCode", move.getCompanyCurrencyCode());
+    valuesMap.put("partner", null);
 
     return valuesMap;
   }
@@ -522,7 +529,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   public Map<String, Object> getCurrencyOnChangeValuesMap(Move move) {
     Map<String, Object> valuesMap = new HashMap<>();
 
-    moveDefaultService.setDefaultCurrency(move);
+    moveDefaultService.setDefaultCurrencyOnChange(move);
 
     valuesMap.put("currency", move.getCurrency());
     valuesMap.put("companyCurrency", move.getCompanyCurrency());

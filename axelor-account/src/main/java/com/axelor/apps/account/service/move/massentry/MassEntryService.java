@@ -41,6 +41,6 @@ public interface MassEntryService {
 
   Map<List<Long>, String> validateMassEntryMove(Move move);
 
-  int generatedTaxeAndCounterPart(
+  String generatedTaxeAndCounterPart(
       Move parentMove, Move workingMove, LocalDate dueDate, int temporaryMoveNumber);
 }
