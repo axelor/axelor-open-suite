@@ -18,36 +18,39 @@
 package com.axelor.apps.base.service.batch;
 
 import com.axelor.apps.base.db.BaseBatch;
-import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.db.repo.ExceptionOriginRepository;
 import com.axelor.apps.base.service.administration.AbstractBatch;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.apache.commons.collections4.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class BatchPasswordChange extends AbstractBatch {
+public class BatchPasswordChange extends BatchStrategy {
+
+  private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected UserRepository userRepo;
   protected UserService userService;
-  protected AppBaseService appBaseService;
 
   @Inject
-  public BatchPasswordChange(
-      UserRepository userRepo, UserService userService, AppBaseService appBaseService) {
+  public BatchPasswordChange(UserRepository userRepo, UserService userService) {
     this.userRepo = userRepo;
     this.userService = userService;
-    this.appBaseService = appBaseService;
   }
 
   @Override
@@ -55,20 +58,19 @@ public class BatchPasswordChange extends AbstractBatch {
 
     BaseBatch baseBatch = batch.getBaseBatch();
 
-    if (baseBatch.getGenerateNewRandomPasswords() || baseBatch.getUpdatePasswordNextLogin()) {
-      updateUsers(baseBatch);
+    if (!baseBatch.getGenerateNewRandomPasswords() && !baseBatch.getUpdatePasswordNextLogin()) {
+      return;
     }
-  }
-
-  protected void updateUsers(BaseBatch baseBatch) {
-
     LocalDate date =
         appBaseService
             .getTodayDate(baseBatch.getCompany())
             .minusDays(baseBatch.getNbOfDaySinceLastUpdate());
 
+    log.debug("date: {}", date);
+
     String filter =
-        "((cast(self.passwordUpdatedOn as LocalDate) < :date OR self.passwordUpdatedOn IS NULL) AND (self.group IS NULL OR self.group.code != 'admins'))";
+        "((self.passwordUpdatedOn IS NULL OR cast(self.passwordUpdatedOn as LocalDate) < :date) "
+            + "AND (self.group IS NULL OR self.group.code != 'admins'))";
 
     HashMap<String, Object> queryParameters = new HashMap<>();
     queryParameters.put("date", date);
@@ -77,55 +79,72 @@ public class BatchPasswordChange extends AbstractBatch {
       filter += " AND (self.group IN (:groupSet) OR self IN (:userSet))";
       queryParameters.put(
           "groupSet",
-          CollectionUtils.isNotEmpty(baseBatch.getGroupSet()) ? baseBatch.getGroupSet() : 0l);
+          CollectionUtils.isNotEmpty(baseBatch.getGroupSet()) ? baseBatch.getGroupSet() : 0L);
       queryParameters.put(
           "userSet",
-          CollectionUtils.isNotEmpty(baseBatch.getUserSet()) ? baseBatch.getUserSet() : 0l);
+          CollectionUtils.isNotEmpty(baseBatch.getUserSet()) ? baseBatch.getUserSet() : 0L);
     }
 
     int offset = 0;
     List<User> userList;
-    Query<User> userQuery =
-        userRepo.all().filter(filter.toString()).bind(queryParameters).order("id");
+    Query<User> userQuery = userRepo.all().filter(filter).bind(queryParameters).order("id");
+    List<Long> userIdList =
+        userQuery.select("id").fetch(0, 0).stream()
+            .map(m -> (Long) m.get("id"))
+            .collect(
+                Collectors
+                    .toList()); // have to do this because the processed users potentially cannot be
+    // queried again.
 
-    while (!(userList = userQuery.fetch(AbstractBatch.FETCH_LIMIT, offset)).isEmpty()) {
+    while (!(userList =
+            userRepo
+                .all()
+                .filter("self.id IN :userIds")
+                .bind("userIds", userIdList)
+                .order("id")
+                .fetch(AbstractBatch.FETCH_LIMIT, offset))
+        .isEmpty()) {
       for (User user : userList) {
         ++offset;
         try {
-          if (baseBatch.getGenerateNewRandomPasswords()) {
-            userService.generateRandomPasswordForUser(user);
-            user.setSendEmailUponPasswordChange(true);
-          }
-
-          if (baseBatch.getUpdatePasswordNextLogin()) {
-            user.setForcePasswordChange(true);
-          }
-          updateUser(user); // processChangedPassword method call in save method for email send
-          incrementDone();
+          // incrementDone is called inside generatePassword(User user)
+          generatePassword(user);
         } catch (Exception e) {
           TraceBackService.trace(e, ExceptionOriginRepository.PASSWORD_CHANGE, batch.getId());
           incrementAnomaly();
         }
       }
-      updateBatch(batch);
       JPA.clear();
+      findBatch();
     }
   }
 
   @Transactional
-  public void updateUser(User user) {
-    userRepo.save(user);
-  }
+  protected void generatePassword(User user) {
+    log.debug(
+        "Generating password for user {}, current time {}, user password time {}",
+        user.getCode(),
+        LocalDateTime.now(),
+        user.getPasswordUpdatedOn());
+    BaseBatch baseBatch = batch.getBaseBatch();
+    if (baseBatch.getGenerateNewRandomPasswords()) {
+      userService.generateRandomPasswordForUser(user);
+      user.setSendEmailUponPasswordChange(true);
+    }
 
-  @Transactional
-  public void updateBatch(Batch batch) {
-    batchRepo.save(batch);
+    if (baseBatch.getUpdatePasswordNextLogin()) {
+      user.setForcePasswordChange(true);
+    }
+    userRepo.save(user); // processChangedPassword method call in save method for email send
+    updateUser(user);
   }
 
   @Override
   protected void stop() {
 
-    String comment = String.format("%s Users processed", batch.getDone());
+    String comment =
+        String.format(
+            I18n.get("%s user processed", "%s users processed", batch.getDone()), batch.getDone());
 
     super.stop();
     addComment(comment);

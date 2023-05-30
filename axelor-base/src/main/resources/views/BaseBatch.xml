@@ -43,7 +43,8 @@
         form-view="batch-form" grid-view="batch-grid"/>
     </panel>
     <panel name="actionPanel" sidebar="true">
-      <button name="runBatchBtn" showIf="actionSelect == 2 || actionSelect == 3"
+      <button name="runBatchBtn"
+        showIf="actionSelect == 2 || (actionSelect == 3 &amp;&amp; (generateNewRandomPasswords || updatePasswordNextLogin))"
         title="Run batch" onClick="save,action-base-batch-method-run-batch"/>
     </panel>
   </form>
