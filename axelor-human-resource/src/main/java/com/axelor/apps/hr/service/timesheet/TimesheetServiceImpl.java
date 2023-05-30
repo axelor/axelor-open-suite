@@ -84,6 +84,7 @@ import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -93,6 +94,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
@@ -1203,10 +1205,10 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
       Timesheet timesheet, ProjectPlanningTime projectPlanningTime) throws AxelorException {
     TimesheetLine timesheetLine = new TimesheetLine();
     Project project = projectPlanningTime.getProject();
-    timesheetLine.setHoursDuration(projectPlanningTime.getPlannedHours());
+    timesheetLine.setHoursDuration(projectPlanningTime.getPlannedTime());
     timesheetLine.setDuration(
         timesheetLineService.computeHoursDuration(
-            timesheet, projectPlanningTime.getPlannedHours(), false));
+            timesheet, projectPlanningTime.getPlannedTime(), false));
     timesheetLine.setTimesheet(timesheet);
     timesheetLine.setEmployee(timesheet.getEmployee());
     timesheetLine.setProduct(projectPlanningTime.getProduct());
@@ -1214,7 +1216,10 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
       timesheetLine.setProjectTask(projectPlanningTime.getProjectTask());
       timesheetLine.setProject(projectPlanningTime.getProject());
     }
-    timesheetLine.setDate(projectPlanningTime.getDate());
+    LocalDateTime startDateTime = projectPlanningTime.getStartDateTime();
+    if (!Objects.isNull(startDateTime)) {
+      timesheetLine.setDate(startDateTime.toLocalDate());
+    }
     timesheetLine.setProjectPlanningTime(projectPlanningTime);
     return timesheetLine;
   }

@@ -77,4 +77,13 @@ public final class BusinessProjectExceptionMessage {
 
   public static final String PROJECT_UPDATE_TOTALS_SUCCESS = /*$$(*/
       "Totals have been updated" /*)*/;
+
+  public static final String PROJECT_CONFIG_DEFAULT_HOURS_PER_DAY_MISSING = /*$$(*/
+      "Please set the default number of hours per day in the configuration of app Business Project." /*)*/;
+
+  public static final String PROJECT_CONFIG_DAYS_UNIT_MISSING = /*$$(*/
+      "Please set days unit in the configuration of app Business Project." /*)*/;
+
+  public static final String PROJECT_CONFIG_HOURS_UNIT_MISSING = /*$$(*/
+      "Please set hours unit in the configuration of app Business Project." /*)*/;
 }

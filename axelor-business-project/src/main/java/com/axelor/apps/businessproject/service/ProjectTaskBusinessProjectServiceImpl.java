@@ -484,7 +484,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
 
     plannedTime =
         projectTask.getProjectPlanningTimeList().stream()
-            .map(ProjectPlanningTime::getPlannedHours)
+            .map(ProjectPlanningTime::getPlannedTime)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
 
     List<TimesheetLine> timeSheetLines =
