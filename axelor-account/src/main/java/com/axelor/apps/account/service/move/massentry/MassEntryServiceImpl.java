@@ -22,7 +22,6 @@ import com.axelor.apps.account.db.MoveLineMassEntry;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineMassEntryRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryService;
@@ -32,8 +31,8 @@ import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
-import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -140,9 +139,9 @@ public class MassEntryServiceImpl implements MassEntryService {
     moveLine.setMoveStatusSelect(null);
     moveLine.setVatSystemSelect(0);
     moveLine.setMovePfpValidatorUser(null);
-    moveLine.setDeliveryDate(LocalDate.now());
-    moveLine.setCutOffStartDate(LocalDate.now());
-    moveLine.setCutOffEndDate(LocalDate.now());
+    moveLine.setDeliveryDate(null);
+    moveLine.setCutOffStartDate(null);
+    moveLine.setCutOffEndDate(null);
     moveLine.setIsEdited(MoveLineMassEntryRepository.MASS_ENTRY_IS_EDITED_NULL);
     moveLine.setFieldsErrorList(null);
     moveLine.setAnalyticDistributionTemplate(null);
@@ -153,10 +152,10 @@ public class MassEntryServiceImpl implements MassEntryService {
     moveLine.setAxis5AnalyticAccount(null);
     moveLine.setAnalyticMoveLineList(null);
 
-    if (!appAccountService.getAppAccount().getManageCutOffPeriod()) {
-      moveLine.setCutOffStartDate(null);
-      moveLine.setCutOffEndDate(null);
-      moveLine.setDeliveryDate(null);
+    if (appAccountService.getAppAccount().getManageCutOffPeriod()) {
+      moveLine.setCutOffStartDate(LocalDate.now());
+      moveLine.setCutOffEndDate(LocalDate.now());
+      moveLine.setDeliveryDate(LocalDate.now());
     }
   }
 
@@ -196,16 +195,13 @@ public class MassEntryServiceImpl implements MassEntryService {
         Move workingMove =
             massEntryMoveCreateService.createMoveFromMassEntryList(parentMove, temporaryMoveNumber);
 
-        int categoryError =
+        String categoryMessage =
             this.generatedTaxeAndCounterPart(parentMove, workingMove, dueDate, temporaryMoveNumber);
-        if (categoryError == 0) {
+        if (ObjectUtils.isEmpty(categoryMessage)) {
           massEntryToolService.sortMoveLinesMassEntryByTemporaryNumber(parentMove);
         } else {
           massEntryVerificationService.setErrorMassEntryMoveLines(
-              parentMove,
-              temporaryMoveNumber,
-              "paymentMode",
-              I18n.get(AccountExceptionMessage.EXCEPTION_GENERATE_COUNTERPART));
+              parentMove, temporaryMoveNumber, "paymentMode", categoryMessage);
         }
 
         resultMap.put("massEntryErrors", parentMove.getMassEntryErrors());
@@ -274,6 +270,7 @@ public class MassEntryServiceImpl implements MassEntryService {
   }
 
   @Override
+  @Transactional
   public Map<List<Long>, String> validateMassEntryMove(Move move) {
     Map<List<Long>, String> resultMap = new HashMap<>();
     String errors = "";
@@ -281,6 +278,7 @@ public class MassEntryServiceImpl implements MassEntryService {
     List<Long> moveIdList = new ArrayList<>();
     List<Integer> temporaryErrorIdList = new ArrayList<>();
     int i = 0;
+    move = moveRepository.find(move.getId());
 
     if (massEntryToolService.verifyJournalAuthorizeNewMove(
             move.getMoveLineMassEntryList(), move.getJournal())
@@ -329,13 +327,14 @@ public class MassEntryServiceImpl implements MassEntryService {
       }
     }
 
+    moveRepository.save(move);
     resultMap.put(moveIdList, errors);
 
     return resultMap;
   }
 
   @Override
-  public int generatedTaxeAndCounterPart(
+  public String generatedTaxeAndCounterPart(
       Move parentMove, Move workingMove, LocalDate dueDate, int temporaryMoveNumber) {
     try {
       moveToolService.exceptionOnGenerateCounterpart(workingMove);
@@ -345,8 +344,8 @@ public class MassEntryServiceImpl implements MassEntryService {
           parentMove.getMoveLineMassEntryList(), parentMove.getCompany(), temporaryMoveNumber);
     } catch (AxelorException e) {
       TraceBackService.trace(e);
-      return e.getCategory();
+      return e.getMessage();
     }
-    return 0;
+    return null;
   }
 }

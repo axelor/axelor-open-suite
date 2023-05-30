@@ -462,16 +462,4 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
 
     return valuesMap;
   }
-
-  @Override
-  public Map<String, Object> getAnalyticDistributionTemplateAnalyticDistributionOnChangeValuesMap(
-      MoveLine moveLine, Move move) throws AxelorException {
-    moveLineComputeAnalyticService.createAnalyticDistributionWithTemplate(moveLine, move);
-
-    Map<String, Object> valuesMap = new HashMap<>();
-
-    valuesMap.put("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
-
-    return valuesMap;
-  }
 }

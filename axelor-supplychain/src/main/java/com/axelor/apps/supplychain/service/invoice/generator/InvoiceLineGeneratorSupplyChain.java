@@ -226,26 +226,31 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
       }
 
     } else if (purchaseOrderLine != null) {
-
-      if (purchaseOrderLine.getAnalyticDistributionTemplate() != null
-          || !ObjectUtils.isEmpty(purchaseOrderLine.getAnalyticMoveLineList())) {
-        invoiceLine.setAnalyticDistributionTemplate(
-            purchaseOrderLine.getAnalyticDistributionTemplate());
-        this.copyAnalyticMoveLines(purchaseOrderLine.getAnalyticMoveLineList(), invoiceLine);
-        analyticMoveLineList = invoiceLineAnalyticService.computeAnalyticDistribution(invoiceLine);
+      if (purchaseOrderLine.getIsTitleLine()) {
+        return invoiceLine;
       } else {
-        analyticMoveLineList =
-            invoiceLineAnalyticService.getAndComputeAnalyticDistribution(invoiceLine, invoice);
-        analyticMoveLineList.stream().forEach(invoiceLine::addAnalyticMoveLineListItem);
-      }
-      invoiceLine.setFixedAssets(purchaseOrderLine.getFixedAssets());
 
-      if (product != null && purchaseOrderLine.getFixedAssets()) {
-        FixedAssetCategory fixedAssetCategory =
-            accountManagementService.getProductFixedAssetCategory(product, invoice.getCompany());
-        invoiceLine.setFixedAssetCategory(fixedAssetCategory);
-      }
+        if (purchaseOrderLine.getAnalyticDistributionTemplate() != null
+            || !ObjectUtils.isEmpty(purchaseOrderLine.getAnalyticMoveLineList())) {
+          invoiceLine.setAnalyticDistributionTemplate(
+              purchaseOrderLine.getAnalyticDistributionTemplate());
+          this.copyAnalyticMoveLines(purchaseOrderLine.getAnalyticMoveLineList(), invoiceLine);
+          analyticMoveLineList =
+              invoiceLineAnalyticService.computeAnalyticDistribution(invoiceLine);
+        } else {
+          analyticMoveLineList =
+              invoiceLineAnalyticService.getAndComputeAnalyticDistribution(invoiceLine, invoice);
+          analyticMoveLineList.stream().forEach(invoiceLine::addAnalyticMoveLineListItem);
+        }
 
+        invoiceLine.setFixedAssets(purchaseOrderLine.getFixedAssets());
+
+        if (product != null && purchaseOrderLine.getFixedAssets()) {
+          FixedAssetCategory fixedAssetCategory =
+              accountManagementService.getProductFixedAssetCategory(product, invoice.getCompany());
+          invoiceLine.setFixedAssetCategory(fixedAssetCategory);
+        }
+      }
     } else if (stockMoveLine != null) {
 
       this.price = stockMoveLine.getUnitPriceUntaxed();

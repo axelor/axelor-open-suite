@@ -108,6 +108,10 @@ public final class SupplychainExceptionMessage {
       "An invoice not canceled already exists for the incoming stock move %s" /*)*/;
   public static final String STOCK_MOVE_AVAILABILITY_REQUEST_NOT_UPDATABLE = /*$$(*/
       "Please uncheck picking order edited box from this stock move from Cust. Shipment to prepare menu entry." /*)*/;
+  public static final String STOCK_MOVE_CANCEL_WRONG_STATUS_ERROR = /*$$(*/
+      "Can't cancel a stock move that is partially or totally invoiced." /*)*/;
+  public static final String STOCK_MOVE_CANCEL_WRONG_INVOICE_STATUS_ALERT = /*$$(*/
+      "An invoice at status draft or validated is linked to the stock move %s. Please contact the invoicing/accounting department before any changes." /*)*/;
 
   /** Stock move line service */
   public static final String STOCK_MOVE_MISSING_SALE_ORDER = /*$$(*/

@@ -115,12 +115,11 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
       SaleOrderLine saleOrderLine)
       throws AxelorException {
     Product product = saleOrderLine.getProduct();
-    boolean isTaskGenerated =
-        !projectTaskRepo
+    List<ProjectTask> taskGenerated =
+        projectTaskRepo
             .all()
             .filter("self.saleOrderLine = ? AND self.project = ?", saleOrderLine, project)
-            .fetch()
-            .isEmpty();
+            .fetch();
 
     saleOrderLine.setProject(project);
 
@@ -128,36 +127,54 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
         && ProductRepository.PRODUCT_TYPE_SERVICE.equals(
             (String)
                 productCompanyService.get(product, "productTypeSelect", saleOrder.getCompany()))
-        && saleOrderLine.getSaleSupplySelect() == SaleOrderLineRepository.SALE_SUPPLY_PRODUCE
-        && !(isTaskGenerated)) {
-
-      // check on product unit
-      AppBusinessProject appBusinessProject = appBusinessProjectService.getAppBusinessProject();
-      if (!Objects.equals(saleOrderLine.getUnit(), appBusinessProject.getDaysUnit())
-          && !Objects.equals(saleOrderLine.getUnit(), appBusinessProject.getHoursUnit())) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_NO_VALUE,
-            I18n.get(BusinessProjectExceptionMessage.SALE_ORDER_GENERATE_FILL_PRODUCT_UNIT_ERROR));
-      }
-
-      ProjectTask task =
-          projectTaskBusinessProjectService.create(saleOrderLine, project, project.getAssignedTo());
-
-      if (saleOrder.getToInvoiceViaTask()) {
-        task.setInvoicingType(ProjectTaskRepository.INVOICING_TYPE_PACKAGE);
-      }
-
-      task.setTaskDate(startDate.toLocalDate());
-      task.setUnitPrice(
-          (BigDecimal) productCompanyService.get(product, "salePrice", saleOrder.getCompany()));
-      task.setExTaxTotal(saleOrderLine.getExTaxTotal());
-      if (project.getIsInvoicingTimesheet()) {
-        task.setToInvoice(true);
+        && saleOrderLine.getSaleSupplySelect() == SaleOrderLineRepository.SALE_SUPPLY_PRODUCE) {
+      if (!taskGenerated.isEmpty()) {
+        taskGenerated.stream()
+            .filter(task -> task.getSoldTime().compareTo(saleOrderLine.getQty()) != 0)
+            .forEach(
+                task -> {
+                  updateSoldTime(task, saleOrderLine);
+                  tasks.add(task);
+                });
       } else {
-        task.setToInvoice(false);
+        // check on product unit
+        AppBusinessProject appBusinessProject = appBusinessProjectService.getAppBusinessProject();
+        if (!Objects.equals(saleOrderLine.getUnit(), appBusinessProject.getDaysUnit())
+            && !Objects.equals(saleOrderLine.getUnit(), appBusinessProject.getHoursUnit())) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_NO_VALUE,
+              I18n.get(
+                  BusinessProjectExceptionMessage.SALE_ORDER_GENERATE_FILL_PRODUCT_UNIT_ERROR));
+        }
+
+        ProjectTask task =
+            projectTaskBusinessProjectService.create(
+                saleOrderLine, project, project.getAssignedTo());
+
+        if (saleOrder.getToInvoiceViaTask()) {
+          task.setInvoicingType(ProjectTaskRepository.INVOICING_TYPE_PACKAGE);
+        }
+
+        task.setTaskDate(startDate.toLocalDate());
+        task.setUnitPrice(
+            (BigDecimal) productCompanyService.get(product, "salePrice", saleOrder.getCompany()));
+        task.setExTaxTotal(saleOrderLine.getExTaxTotal());
+        if (project.getIsInvoicingTimesheet()) {
+          task.setToInvoice(true);
+        } else {
+          task.setToInvoice(false);
+        }
+        projectTaskRepo.save(task);
+        tasks.add(task);
       }
-      projectTaskRepo.save(task);
-      tasks.add(task);
     }
+  }
+
+  protected void updateSoldTime(ProjectTask task, SaleOrderLine saleOrderLine) {
+    if (task.getSoldTime().compareTo(task.getUpdatedTime()) == 0) {
+      task.setUpdatedTime(saleOrderLine.getQty());
+    }
+    task.setSoldTime(saleOrderLine.getQty());
+    projectTaskRepo.save(task);
   }
 }
