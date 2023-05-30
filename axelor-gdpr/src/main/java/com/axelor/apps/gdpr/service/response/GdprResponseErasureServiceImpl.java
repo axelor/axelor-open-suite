@@ -120,7 +120,7 @@ public class GdprResponseErasureServiceImpl implements GdprResponseErasureServic
     // anonymize datas
     anonymizeEntity(gdprResponse, referenceEntity, entityMetaModel, anonymizationResult, 0);
 
-    if (StringUtils.isBlank(anonymizationResult. toString())) {
+    if (StringUtils.isBlank(anonymizationResult.toString())) {
       anonymizationResult.append(
           String.format(
               I18n.get(GdprExceptionMessage.ANONYMIZATION_SUCCESS_RESULT),
