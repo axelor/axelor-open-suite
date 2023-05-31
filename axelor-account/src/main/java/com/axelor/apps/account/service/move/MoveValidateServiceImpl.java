@@ -804,6 +804,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     }
   }
 
+  @Override
   public void checkTaxAmount(Move move) throws AxelorException {
     AccountConfig accountConfig = accountConfigService.getAccountConfig(move.getCompany());
     List<MoveLine> moveLineList = move.getMoveLineList();
