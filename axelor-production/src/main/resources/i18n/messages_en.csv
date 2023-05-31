@@ -476,7 +476,7 @@
 "OperationOrder.startTime","Start time",,
 "OperationOrder.stopTime","Stop time",,
 "OperationOrder.title","OPERATION ORDER",,
-"OperationOrder.trackingNumber",,,
+"OperationOrder.trackingNumber","Tracking Number",,
 "Operations",,,
 "Operations Finished late",,,
 "Operations In Progress",,,
