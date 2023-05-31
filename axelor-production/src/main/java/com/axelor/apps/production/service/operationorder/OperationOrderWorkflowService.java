@@ -19,8 +19,6 @@
 package com.axelor.apps.production.service.operationorder;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.DayPlanning;
-import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.production.db.Machine;
@@ -46,7 +44,6 @@ import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.auth.AuthUtils;
-import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.date.DateTool;
@@ -56,7 +53,6 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -90,143 +86,6 @@ public class OperationOrderWorkflowService {
     this.weeklyPlanningService = weeklyPlanningService;
     this.prodProcessLineService = prodProcessLineService;
     this.machineService = machineService;
-  }
-
-  /**
-   * DEPECRATED: We must not split operation
-   *
-   * @param operationOrder
-   * @param weeklyPlanning
-   * @param duration
-   * @throws AxelorException
-   */
-  @Transactional(rollbackOn = {Exception.class})
-  public void manageDurationWithMachinePlanning(
-      OperationOrder operationOrder, WeeklyPlanning weeklyPlanning, Long duration)
-      throws AxelorException {
-    LocalDateTime startDate = operationOrder.getPlannedStartDateT();
-    LocalDateTime endDate = operationOrder.getPlannedEndDateT();
-    DayPlanning dayPlanning =
-        weeklyPlanningService.findDayPlanning(weeklyPlanning, startDate.toLocalDate());
-    if (dayPlanning != null) {
-      LocalTime firstPeriodFrom = dayPlanning.getMorningFrom();
-      LocalTime firstPeriodTo = dayPlanning.getMorningTo();
-      LocalTime secondPeriodFrom = dayPlanning.getAfternoonFrom();
-      LocalTime secondPeriodTo = dayPlanning.getAfternoonTo();
-      LocalTime startDateTime = startDate.toLocalTime();
-      LocalTime endDateTime = endDate.toLocalTime();
-
-      /*
-       * If operation begins inside one period of the machine but finished after that period, then
-       * we split the operation
-       */
-      if (firstPeriodTo != null
-          && startDateTime.isBefore(firstPeriodTo)
-          && endDateTime.isAfter(firstPeriodTo)) {
-        LocalDateTime plannedEndDate = startDate.toLocalDate().atTime(firstPeriodTo);
-        Long plannedDuration =
-            DurationTool.getSecondsDuration(Duration.between(startDate, plannedEndDate));
-        operationOrder.setPlannedDuration(plannedDuration);
-        operationOrder.setPlannedEndDateT(plannedEndDate);
-        operationOrderRepo.save(operationOrder);
-        OperationOrder otherOperationOrder = JPA.copy(operationOrder, true);
-        otherOperationOrder.setPlannedStartDateT(plannedEndDate);
-        if (secondPeriodFrom != null) {
-          otherOperationOrder.setPlannedStartDateT(
-              startDate.toLocalDate().atTime(secondPeriodFrom));
-        } else {
-          this.searchForNextWorkingDay(otherOperationOrder, weeklyPlanning, plannedEndDate);
-        }
-        operationOrderRepo.save(otherOperationOrder);
-        this.plan(otherOperationOrder, operationOrder.getPlannedDuration());
-      }
-    }
-  }
-
-  /**
-   * Set the planned start date of the operation order according to the planning of the machine
-   *
-   * @param weeklyPlanning
-   * @param operationOrder
-   */
-  public void planWithPlanning(OperationOrder operationOrder, WeeklyPlanning weeklyPlanning) {
-    LocalDateTime startDate = operationOrder.getPlannedStartDateT();
-    DayPlanning dayPlanning =
-        weeklyPlanningService.findDayPlanning(weeklyPlanning, startDate.toLocalDate());
-
-    if (dayPlanning != null) {
-      LocalTime firstPeriodFrom = dayPlanning.getMorningFrom();
-      LocalTime firstPeriodTo = dayPlanning.getMorningTo();
-      LocalTime secondPeriodFrom = dayPlanning.getAfternoonFrom();
-      LocalTime secondPeriodTo = dayPlanning.getAfternoonTo();
-      LocalTime startDateTime = startDate.toLocalTime();
-
-      /*
-       * If the start date is before the start time of the machine (or equal, then the operation
-       * order will begins at the same time than the machine Example: Machine begins at 8am. We set
-       * the date to 6am. Then the planned start date will be set to 8am.
-       */
-      if (firstPeriodFrom != null
-          && (startDateTime.isBefore(firstPeriodFrom) || startDateTime.equals(firstPeriodFrom))) {
-        operationOrder.setPlannedStartDateT(startDate.toLocalDate().atTime(firstPeriodFrom));
-      }
-      /*
-       * If the machine has two periods, with a break between them, and the operation is planned
-       * inside this period of time, then we will start the operation at the beginning of the
-       * machine second period. Example: Machine hours is 8am to 12 am. 2pm to 6pm. We try to begins
-       * at 1pm. The operation planned start date will be set to 2pm.
-       */
-      else if (firstPeriodTo != null
-          && secondPeriodFrom != null
-          && (startDateTime.isAfter(firstPeriodTo) || startDateTime.equals(firstPeriodTo))
-          && (startDateTime.isBefore(secondPeriodFrom) || startDateTime.equals(secondPeriodFrom))) {
-        operationOrder.setPlannedStartDateT(startDate.toLocalDate().atTime(secondPeriodFrom));
-      }
-      /*
-       * If the start date is planned after working hours, or during a day off, then we will search
-       * for the first period of the machine available. Example: Machine on Friday is 6am to 8 pm.
-       * We set the date to 9pm. The next working day is Monday 8am. Then the planned start date
-       * will be set to Monday 8am.
-       */
-      else if ((firstPeriodTo != null
-              && secondPeriodFrom == null
-              && (startDateTime.isAfter(firstPeriodTo) || startDateTime.equals(firstPeriodTo)))
-          || (secondPeriodTo != null
-              && (startDateTime.isAfter(secondPeriodTo) || startDateTime.equals(secondPeriodTo)))
-          || (firstPeriodFrom == null && secondPeriodFrom == null)) {
-        this.searchForNextWorkingDay(operationOrder, weeklyPlanning, startDate);
-      }
-    }
-  }
-
-  public void searchForNextWorkingDay(
-      OperationOrder operationOrder, WeeklyPlanning weeklyPlanning, LocalDateTime startDate) {
-    int daysToAddNbr = 0;
-    DayPlanning nextDayPlanning;
-    /* We will find the next DayPlanning with at least one working period. */
-    do {
-
-      daysToAddNbr++;
-      nextDayPlanning =
-          weeklyPlanningService.findDayPlanning(
-              weeklyPlanning, startDate.toLocalDate().plusDays(daysToAddNbr));
-    } while (nextDayPlanning.getAfternoonFrom() == null
-        && nextDayPlanning.getMorningFrom() == null);
-
-    /*
-     * We will add the nbr of days to retrieve the working day, and set the time to either the first
-     * morning period or the first afternoon period.
-     */
-    if (nextDayPlanning.getMorningFrom() != null) {
-      operationOrder.setPlannedStartDateT(
-          startDate.toLocalDate().plusDays(daysToAddNbr).atTime(nextDayPlanning.getMorningFrom()));
-    } else if (nextDayPlanning.getAfternoonFrom() != null) {
-      operationOrder.setPlannedStartDateT(
-          startDate
-              .toLocalDate()
-              .plusDays(daysToAddNbr)
-              .atTime(nextDayPlanning.getAfternoonFrom()));
-    }
   }
 
   /**
