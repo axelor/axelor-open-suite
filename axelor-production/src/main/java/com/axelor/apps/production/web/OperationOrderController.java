@@ -19,6 +19,7 @@
 package com.axelor.apps.production.web;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
@@ -61,12 +62,16 @@ public class OperationOrderController {
   }
 
   public void setPlannedDates(ActionRequest request, ActionResponse response) {
-    OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
-    LocalDateTime plannedStartDateT = operationOrder.getPlannedStartDateT();
-    LocalDateTime plannedEndDateT = operationOrder.getPlannedEndDateT();
-    operationOrder = Beans.get(OperationOrderRepository.class).find(operationOrder.getId());
-    Beans.get(OperationOrderWorkflowService.class)
-        .setPlannedDates(operationOrder, plannedStartDateT, plannedEndDateT);
+    try {
+      OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
+      LocalDateTime plannedStartDateT = operationOrder.getPlannedStartDateT();
+      LocalDateTime plannedEndDateT = operationOrder.getPlannedEndDateT();
+      operationOrder = Beans.get(OperationOrderRepository.class).find(operationOrder.getId());
+      Beans.get(OperationOrderWorkflowService.class)
+          .setPlannedDates(operationOrder, plannedStartDateT, plannedEndDateT);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
   }
 
   public void setRealDates(ActionRequest request, ActionResponse response) {
