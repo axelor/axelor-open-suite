@@ -245,16 +245,7 @@ public class OperationOrderWorkflowService {
       Beans.get(OperationOrderService.class).createToConsumeProdProductList(operationOrder);
     }
 
-    Machine machine = operationOrder.getMachine();
-
-    if (machine != null) {
-      planDatesWithMachine(operationOrder, machine, cumulatedDuration);
-    } else {
-      // cumulatedDuration only filled when weeklyPlanning can be extracted.
-      // Weeklyplanning exist only if there is a machine
-      // So no need of cumulatedDuration here
-      planDatesWithoutMachine(operationOrder);
-    }
+    planPlannedDates(operationOrder);
 
     ManufOrder manufOrder = operationOrder.getManufOrder();
     if (manufOrder == null || manufOrder.getIsConsProOnOperation()) {
@@ -264,6 +255,15 @@ public class OperationOrderWorkflowService {
     operationOrder.setStatusSelect(OperationOrderRepository.STATUS_PLANNED);
 
     return operationOrderRepo.save(operationOrder);
+  }
+
+  protected void planPlannedDates(OperationOrder operationOrder) throws AxelorException {
+    Machine machine = operationOrder.getMachine();
+    if (machine != null) {
+      planDatesWithMachine(operationOrder, machine);
+    } else {
+      planDatesWithoutMachine(operationOrder);
+    }
   }
 
   protected void planDatesWithoutMachine(OperationOrder operationOrder) throws AxelorException {
@@ -285,8 +285,7 @@ public class OperationOrderWorkflowService {
     operationOrder.setPlannedDuration(plannedDuration);
   }
 
-  protected void planDatesWithMachine(
-      OperationOrder operationOrder, Machine machine, Long cumulatedDuration)
+  protected void planDatesWithMachine(OperationOrder operationOrder, Machine machine)
       throws AxelorException {
 
     LocalDateTime plannedStartDate = operationOrder.getPlannedStartDateT();
@@ -350,14 +349,10 @@ public class OperationOrderWorkflowService {
   @Transactional(rollbackOn = {Exception.class})
   public OperationOrder replan(OperationOrder operationOrder) throws AxelorException {
 
-    operationOrder.setPlannedStartDateT(this.getLastOperationDate(operationOrder));
+    operationOrder.setPlannedStartDateT(null);
+    operationOrder.setPlannedEndDateT(null);
 
-    operationOrder.setPlannedEndDateT(this.computePlannedEndDateT(operationOrder));
-
-    operationOrder.setPlannedDuration(
-        DurationTool.getSecondsDuration(
-            Duration.between(
-                operationOrder.getPlannedStartDateT(), operationOrder.getPlannedEndDateT())));
+    planPlannedDates(operationOrder);
 
     return operationOrderRepo.save(operationOrder);
   }
@@ -667,32 +662,6 @@ public class OperationOrderWorkflowService {
     updateRealDuration(operationOrder);
 
     return operationOrder;
-  }
-
-  public LocalDateTime computePlannedEndDateT(OperationOrder operationOrder)
-      throws AxelorException {
-
-    if (operationOrder.getWorkCenter() != null) {
-      if (operationOrder.getMachine() != null) {
-        return machineService.getClosestAvailableDateFrom(
-            operationOrder.getMachine(),
-            operationOrder
-                .getPlannedStartDateT()
-                .plusSeconds(
-                    (int)
-                        this.computeEntireCycleDuration(
-                            operationOrder, operationOrder.getManufOrder().getQty())),
-            operationOrder);
-      }
-      return operationOrder
-          .getPlannedStartDateT()
-          .plusSeconds(
-              (int)
-                  this.computeEntireCycleDuration(
-                      operationOrder, operationOrder.getManufOrder().getQty()));
-    }
-
-    return operationOrder.getPlannedStartDateT();
   }
 
   public long getDuration(OperationOrder operationOrder) throws AxelorException {
