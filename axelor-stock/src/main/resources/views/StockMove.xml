@@ -463,7 +463,8 @@
         <field name="invoicedPartner" canEdit="false" readonlyIf="statusSelect != 1"
           onSelect="action-stock-move-supplychain-method-set-invoiced-partner-domain"
           grid-view="partner-grid" form-view="partner-form"/>
-        <field name="fromStockLocation" canEdit="false" domain="self.company = :company"
+        <field name="fromStockLocation" canEdit="false"
+          onSelect="action-stock-move-method-set-from-stock-location-domain"
           onChange="action-stock-move-group-from-location-onchange" readonlyIf="statusSelect != 1"
           grid-view="stock-location-grid" form-view="stock-location-form"/>
         <field name="toAddress" onSelect="action-stock-move-attrs-domain-address"
@@ -518,7 +519,8 @@
           domain="self.isContact = false AND :company member of self.companySet"
           readonlyIf="statusSelect != 1" onChange="action-stock-move-group-partner-onchange"
           grid-view="partner-grid" form-view="partner-form"/>
-        <field name="toStockLocation" canEdit="false" domain="self.company = :company"
+        <field name="toStockLocation" canEdit="false"
+          onSelect="action-stock-move-method-set-to-stock-location-domain"
           onChange="action-stock-move-group-to-location-onchange" readonlyIf="statusSelect != 1"
           grid-view="stock-location-grid" form-view="stock-location-form"/>
         <field name="fromAddress" onSelect="action-stock-move-attrs-domain-address"
@@ -1501,6 +1503,16 @@
 
   <action-method name="action-stock-move-method-check-wap">
     <call class="com.axelor.apps.stock.web.StockMoveController" method="checkWap"/>
+  </action-method>
+
+  <action-method name="action-stock-move-method-set-from-stock-location-domain">
+    <call class="com.axelor.apps.stock.web.StockMoveController"
+      method="setFromStockLocationDomain"/>
+  </action-method>
+
+  <action-method name="action-stock-move-method-set-to-stock-location-domain">
+    <call class="com.axelor.apps.stock.web.StockMoveController"
+      method="setToStockLocationDomain"/>
   </action-method>
 
 </object-views>

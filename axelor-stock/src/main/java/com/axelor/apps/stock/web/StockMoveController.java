@@ -690,4 +690,26 @@ public class StockMoveController {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
+
+  public void setFromStockLocationDomain(ActionRequest request, ActionResponse response) {
+    StockMove stockMove = request.getContext().asType(StockMove.class);
+
+    try {
+      String domain = Beans.get(StockMoveService.class).getStockLocationDomain(stockMove, true);
+      response.setAttr("fromStockLocation", "domain", domain);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setToStockLocationDomain(ActionRequest request, ActionResponse response) {
+    StockMove stockMove = request.getContext().asType(StockMove.class);
+
+    try {
+      String domain = Beans.get(StockMoveService.class).getStockLocationDomain(stockMove, false);
+      response.setAttr("toStockLocation", "domain", domain);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

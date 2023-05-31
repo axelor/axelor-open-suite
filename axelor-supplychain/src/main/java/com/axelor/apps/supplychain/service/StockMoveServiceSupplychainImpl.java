@@ -659,4 +659,11 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       }
     }
   }
+
+  @Override
+  protected String getTypeFilter(StockMove stockMove, boolean from) {
+    return super.getTypeFilter(stockMove, from)
+        + " AND "
+        + (from ? "self.usableOnSaleOrder = true" : "self.usableOnPurchaseOrder = true");
+  }
 }

@@ -60,6 +60,7 @@ import com.axelor.inject.Beans;
 import com.axelor.message.db.Template;
 import com.axelor.message.service.TemplateMessageService;
 import com.axelor.studio.db.repo.AppBaseRepository;
+import com.axelor.utils.StringTool;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -1497,5 +1498,29 @@ public class StockMoveServiceImpl implements StockMoveService {
       }
     }
     return toStockLocation;
+  }
+
+  @Override
+  public String getStockLocationDomain(StockMove stockMove, Boolean from) {
+    String domain = "self.company = :company AND ";
+    String typeFilter = getTypeFilter(stockMove, from);
+
+    if (stockMove.getTradingName() != null
+        && !ObjectUtils.isEmpty(stockMove.getTradingName().getStockLocationList())) {
+      domain +=
+          "(("
+              + typeFilter
+              + ") OR "
+              + "self.id IN ("
+              + StringTool.getIdListString(stockMove.getTradingName().getStockLocationList())
+              + "))";
+    } else {
+      domain += typeFilter;
+    }
+    return domain;
+  }
+
+  protected String getTypeFilter(StockMove stockMove, boolean from) {
+    return "self.typeSelect != 3";
   }
 }
