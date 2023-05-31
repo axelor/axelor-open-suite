@@ -218,7 +218,9 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
             stockMove,
             StockMoveLineService.TYPE_NULL,
             false,
-            BigDecimal.ZERO);
+            BigDecimal.ZERO,
+            fromStockLocation,
+            toStockLocation);
 
     if (stockMoveLine == null) {
       throw new AxelorException(

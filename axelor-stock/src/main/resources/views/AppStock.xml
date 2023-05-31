@@ -11,6 +11,7 @@
       <field name="isSeparateShipmentOperations" widget="boolean-switch" colSpan="4"/>
       <field name="isRequiredShipmentSupplierDetails" widget="boolean-switch" colSpan="4"/>
       <field name="stockUnit" colSpan="4" form-view="unit-form" grid-view="unit-grid"/>
+      <field name="isManageStockLocationOnStockMoveLine" widget="boolean-switch" colSpan="4"/>
     </panel>
     <panel name="barCodePanel" title="Barcode">
       <panel name="trackingNumberBarCodePanel" title="Tracking number" colSpan="12">

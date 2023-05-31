@@ -42,8 +42,8 @@ public class StockMoveLineStockRepository extends StockMoveLineRepository {
     StockMove stockMove = stockMoveLine.getStockMove();
 
     if (stockMove == null
-        || (stockMove.getFromStockLocation() != null
-            && stockMove.getFromStockLocation().getTypeSelect()
+        || (stockMoveLine.getFromStockLocation() != null
+            && stockMoveLine.getFromStockLocation().getTypeSelect()
                 == StockLocationRepository.TYPE_VIRTUAL)) {
 
       return super.populate(json, context);

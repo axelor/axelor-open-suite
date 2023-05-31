@@ -267,7 +267,8 @@
     <view type="grid" name="stock-move-line-all-grid-planned"/>
     <view type="form" name="stock-move-line-all-form"/>
     <domain>self.stockMove.statusSelect = 2 AND self.product.id = :productId AND
-      (self.stockMove.fromStockLocation.id = :locationId OR self.stockMove.toStockLocation.id =
+      (self.stockMove.stockMoveLineList.fromStockLocation.id = :locationId OR
+      self.stockMove.stockMoveLineList.toStockLocation.id =
       :locationId)</domain>
     <context name="productId" expr="eval: product?.id"/>
     <context name="locationId" expr="eval: stockLocation?.id"/>
@@ -278,7 +279,8 @@
     <view type="grid" name="stock-move-line-all-grid"/>
     <view type="form" name="stock-move-line-all-form"/>
     <domain>self.stockMove.statusSelect = 3 AND self.product.id = :productId AND
-      (self.stockMove.fromStockLocation.id = :locationId OR self.stockMove.toStockLocation.id =
+      (self.stockMove.stockMoveLineList.fromStockLocation.id = :locationId OR
+      self.stockMove.stockMoveLineList.toStockLocation.id =
       :locationId)</domain>
     <context name="productId" expr="eval: product?.id"/>
     <context name="locationId" expr="eval: stockLocation?.id "/>
