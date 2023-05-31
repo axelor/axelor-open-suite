@@ -444,7 +444,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
               : version.getEndDateTime().toLocalDate();
 
       for (ContractLine line : lines) {
-        LocalDate start = computeStartDate(contract, line, version, end);
+        LocalDate start = computeStartDate(contract, line, version);
         ratio =
             contract.getCurrentContractVersion().getIsTimeProratedInvoice()
                 ? durationService.computeRatio(
@@ -493,11 +493,9 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
   }
 
   protected LocalDate computeStartDate(
-      Contract contract,
-      ContractLine contractLine,
-      ContractVersion contractVersion,
-      LocalDate end) {
-    if (contractLine.getFromDate() != null && contractLine.getFromDate().isBefore(end)) {
+      Contract contract, ContractLine contractLine, ContractVersion contractVersion) {
+    if (contractLine.getFromDate() != null
+        && contractLine.getFromDate().isAfter(contract.getInvoicePeriodStartDate())) {
       return contractLine.getFromDate();
     } else if (contractVersion.getActivationDateTime() == null) {
       return null;
