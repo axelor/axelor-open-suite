@@ -22,10 +22,14 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.businessproject.service.ProjectTaskBusinessProjectService;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.persist.Transactional;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ProjectTaskController {
 
@@ -95,5 +99,26 @@ public class ProjectTaskController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void getPercentageOfProgress(ActionRequest request, ActionResponse response) {
+    Map<String, Object> data = new HashMap<>();
+    data.put("progress", request.getData().get("displayProgress"));
+    data.put("label", I18n.get("% of progress"));
+    response.setData(List.of(data));
+  }
+
+  public void getPercentageOfConsumption(ActionRequest request, ActionResponse response) {
+    Map<String, Object> data = new HashMap<>();
+    data.put("consumption", request.getData().get("displayConsumption"));
+    data.put("label", I18n.get("% of consumption"));
+    response.setData(List.of(data));
+  }
+
+  public void getRemainingToDo(ActionRequest request, ActionResponse response) {
+    Map<String, Object> data = new HashMap<>();
+    data.put("remaining", request.getData().get("displayRemaining"));
+    data.put("label", I18n.get("Remaining amount to do"));
+    response.setData(List.of(data));
   }
 }

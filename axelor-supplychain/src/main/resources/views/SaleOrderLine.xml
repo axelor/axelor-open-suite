@@ -198,7 +198,7 @@
     <action name="action-group-sale-saleorderline-onload"/>
     <action name="action-sale-order-line-attrs-hidden-fields-for-client"/>
     <action name="action-sale-order-line-group-manage-attrs"/>
-    <action name="action-sale-order-line-supplychain-method-get-invoicing-state"/>
+    <action name="action-sale-order-line-supplychain-method-get-invoicing-state" if="id"/>
   </action-group>
 
 </object-views>
