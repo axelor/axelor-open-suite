@@ -476,7 +476,8 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     moveRecordSetService.setCompanyBankDetails(move);
     moveDefaultService.setDefaultCurrency(move);
 
-    if (move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL) {
+    if (move.getJournal() != null
+        && move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL) {
       massEntryVerificationService.verifyCompanyBankDetails(
           move, move.getCompany(), move.getCompanyBankDetails(), move.getJournal());
     }
