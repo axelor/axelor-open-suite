@@ -83,6 +83,13 @@ public class MassEntryServiceImpl implements MassEntryService {
   public MoveLineMassEntry getFirstMoveLineMassEntryInformations(
       List<MoveLineMassEntry> moveLineList, MoveLineMassEntry inputLine) {
     if (ObjectUtils.notEmpty(moveLineList)) {
+      inputLine.setInputAction(MoveLineMassEntryRepository.MASS_ENTRY_INPUT_ACTION_LINE);
+      if (inputLine.getTemporaryMoveNumber() <= 0) {
+        inputLine.setTemporaryMoveNumber(
+            massEntryMoveCreateService.getMaxTemporaryMoveNumber(moveLineList));
+        inputLine.setCounter(moveLineList.size() + 1);
+      }
+
       for (MoveLineMassEntry moveLine : moveLineList) {
         if (moveLine.getTemporaryMoveNumber().equals(inputLine.getTemporaryMoveNumber())) {
           inputLine.setPartner(moveLine.getPartner());
@@ -118,6 +125,8 @@ public class MassEntryServiceImpl implements MassEntryService {
 
   @Override
   public void resetMoveLineMassEntry(MoveLineMassEntry moveLine) {
+    moveLine.setTemporaryMoveNumber(1);
+    moveLine.setCounter(1);
     moveLine.setDate(LocalDate.now());
     moveLine.setOrigin(null);
     moveLine.setOriginDate(LocalDate.now());
