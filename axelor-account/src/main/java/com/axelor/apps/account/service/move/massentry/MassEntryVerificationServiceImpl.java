@@ -457,7 +457,9 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
       throws AxelorException {
     BankDetails newCompanyBankDetails = companyBankDetails;
     int technicalTypeSelect =
-        journal.getJournalType() != null ? journal.getJournalType().getTechnicalTypeSelect() : 0;
+        journal.getJournalType() != null
+            ? journal.getJournalType().getTechnicalTypeSelect()
+            : JournalTypeRepository.TECHNICAL_TYPE_SELECT_EMPTY;
 
     if (company.getDefaultBankDetails() == null
         && (technicalTypeSelect == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE
