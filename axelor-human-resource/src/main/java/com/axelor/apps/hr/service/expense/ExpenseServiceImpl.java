@@ -402,6 +402,9 @@ public class ExpenseServiceImpl implements ExpenseService {
             description,
             companyBankDetails);
 
+    move.setCurrency(expense.getCurrency());
+    move.setCurrencyCode(move.getCurrency().getCode());
+
     List<MoveLine> moveLines = new ArrayList<>();
 
     int moveLineCounter = 1;

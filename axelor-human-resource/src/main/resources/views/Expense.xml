@@ -15,6 +15,7 @@
     <field name="period" form-view="period-form" grid-view="period-grid" canEdit="false"
       canView="false"/>
     <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
+    <field name="currency" colSpan="2" required="true"/>
     <field name="statusSelect"/>
     <field name="ventilated"/>
   </grid>
@@ -87,6 +88,8 @@
             onSelect="action-hr-attrs-set-employee-domain" grid-view="employee-grid" canNew="false"
             canEdit="false" canView="false" onChange="action-expense-record-employee-onchange"
             required="true"/>
+          <field name="currency" canEdit="false" colSpan="6" required="true"
+            readonlyIf="statusSelect != 1 &amp;&amp; statusSelect != 2"/>
           <field name="bankDetails" widget="SuggestBox" if-module="axelor-cash-management"
             onSelect="action-accounting-batch-attrs-bank-details-domain"
             form-view="bank-details-form" grid-view="bank-details-grid"
@@ -129,15 +132,15 @@
         <panel name="inTaxTotalPanel" readonly="true">
           <field name="inTaxTotal" css="order-subtotal" showTitle="false" colSpan="12">
             <viewer
-              depends="exTaxTotal,taxTotal,personalExpenseAmount,withdrawnCash,advanceAmount,statusSelect,paymentAmount,paymentStatusSelect,$totalToRefund">
+              depends="exTaxTotal,taxTotal,personalExpenseAmount,withdrawnCash,advanceAmount,statusSelect,paymentAmount,paymentStatusSelect,$totalToRefund,currency.symbol">
 		                    <![CDATA[
 		                    <dl class="dl-horizontal">
 		                        <dt x-translate>Total W.T.</dt>
-		                        <dd>{{$fmt('exTaxTotal')}}</dd>
+		                        <dd>{{$fmt('exTaxTotal') | currency: record.currency.symbol}}</dd>
 		                        <dt x-translate>Total tax</dt>
-		                        <dd>{{$fmt('taxTotal')}}</dd>
+		                        <dd>{{$fmt('taxTotal') | currency: record.currency.symbol}}</dd>
 		                        <dt class="order-subtotal-total" x-translate>Total A.T.I.</dt>
-		                        <dd class="order-subtotal-total">{{$fmt('inTaxTotal')}}</dd>
+		                        <dd class="order-subtotal-total">{{$fmt('inTaxTotal') | currency: record.currency.symbol}}</dd>
 		                        <dt ng-show="record.personalExpenseAmount != 0" x-translate>Personal expense</dt>
 		                        <dd ng-show="record.personalExpenseAmount != 0"> -{{$fmt('personalExpenseAmount')}}</dd>
 		                        <dt ng-show="record.withdrawnCash != 0" x-translate>Withdrawn cash</dt>
@@ -147,7 +150,7 @@
 		                        <dt ng-show="(record.statusSelect == 3 || record.statusSelect == 4 &amp;&amp; record.paymentAmount != 0) &amp;&amp; (record.paymentStatusSelect == 1 || record.paymentStatusSelect == 3)"  ng-style="{'color' : 'blue'}" x-translate>Payment</dt>
 		                        <dd ng-show="(record.statusSelect == 3 || record.statusSelect == 4 &amp;&amp; record.paymentAmount != 0) &amp;&amp; (record.paymentStatusSelect == 1 || record.paymentStatusSelect == 3)"  ng-style="{'color' : 'blue'}">-{{$fmt('paymentAmount')}}</dd>
 		                        <dt class="order-subtotal-total" x-translate>TotalToRefund</dt>
-		                        <dd class="order-subtotal-total">{{$fmt('$totalToRefund')}}</dd>
+		                        <dd class="order-subtotal-total">{{$fmt('$totalToRefund') | currency: record.currency.symbol}}</dd>
 		                    </dl>
 		                    ]]>
             </viewer>
@@ -276,6 +279,8 @@
     <field name="multipleUsers" expr="eval: setMultipleUsers" if="setMultipleUsers"/>
     <field name="bankDetails"
       expr="eval: __user__?.employee?.mainEmploymentContract?.payCompany ? __user__.employee.mainEmploymentContract.payCompany.defaultBankDetails : __user__.activeCompany?.defaultBankDetails"/>
+    <field name="currency"
+      expr="eval: __user__.employee?.mainEmploymentContract?.payCompany.currency ?: __user__.activeCompany.currency"/>
   </action-record>
 
   <action-record name="action-expense-record-employee-onchange"
@@ -290,6 +295,7 @@
       expr="eval: __repo__(Period).all().filter('self.fromDate &lt;= ?1 AND self.toDate &gt;= ?1 AND self.allowExpenseCreation = true AND self.year.company = ?2 AND self.year.typeSelect = 1', __config__.date, company).fetchOne()"/>
     <field name="bankDetails" expr="eval: null"/>
     <field name="employee" expr="eval: null"/>
+    <field name="currency" expr="eval: company?.currency"/>
   </action-record>
 
   <action-record name="action-expense-record-draft"
