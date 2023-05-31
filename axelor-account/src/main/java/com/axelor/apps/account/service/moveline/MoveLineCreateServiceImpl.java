@@ -52,6 +52,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.config.CompanyConfigService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.base.service.tax.TaxService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.utils.StringTool;
 import com.google.common.base.Strings;
@@ -761,9 +762,16 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     if (newAccount == null && fiscalPosition != null) {
       newAccount = fiscalPositionAccountService.getAccount(fiscalPosition, newAccount);
       taxEquiv = moveLine.getTaxEquiv();
-      if (taxEquiv != null
-          && taxEquiv.getReverseCharge()
-          && taxEquiv.getReverseChargeTax() != null) {
+      if (taxEquiv != null && taxEquiv.getReverseCharge()) {
+        if (ObjectUtils.isEmpty(taxEquiv.getReverseChargeTax())) {
+          throw new AxelorException(
+              fiscalPosition,
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(AccountExceptionMessage.REVERSE_CHARGE_TAX_MISSING_ON_FISCAL_POSITION),
+              fiscalPosition.getName(),
+              taxEquiv.getFromTax().getName(),
+              taxEquiv.getToTax().getName());
+        }
         taxLineBeforeReverse = moveLine.getTaxLineBeforeReverse();
         taxLineRC =
             taxEquiv.getReverseChargeTax().getActiveTaxLine() != null
