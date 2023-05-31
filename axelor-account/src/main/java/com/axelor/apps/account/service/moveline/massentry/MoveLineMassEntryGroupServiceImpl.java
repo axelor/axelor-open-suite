@@ -127,6 +127,7 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
     moveLineMassEntryAttrsService.addMovePaymentModeReadOnly(attrsMap);
     moveLineMassEntryAttrsService.addPartnerBankDetailsReadOnly(moveLine, attrsMap);
     moveLineMassEntryAttrsService.addInputActionSelectionIn(move, attrsMap);
+    moveLineMassEntryAttrsService.addTemporaryMoveNumberFocus(move, attrsMap);
 
     if (move.getJournal() != null) {
       moveLineMassEntryAttrsService.addMovePaymentConditionRequired(
@@ -203,6 +204,7 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
         new HashMap<>(
             moveLineGroupService.getAnalyticDistributionTemplateOnChangeValuesMap(moveLine, move));
     moveLineInvoiceTermService.generateDefaultInvoiceTerm(move, moveLine, dueDate, false);
+    moveLineMassEntryRecordService.setCutOff(moveLine);
 
     valuesMap.put("partner", moveLine.getPartner());
     valuesMap.put("cutOffStartDate", moveLine.getCutOffStartDate());
@@ -230,6 +232,7 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
         moveLine.getAccount(), moveLine.getIsOtherCurrency(), attrsMap);
     moveLineMassEntryAttrsService.addMovePfpValidatorUserReadOnly(moveLine, attrsMap);
     moveLineMassEntryAttrsService.addMovePfpValidatorUserRequired(moveLine.getAccount(), attrsMap);
+    moveLineMassEntryAttrsService.addCutOffReadOnly(moveLine.getAccount(), attrsMap);
 
     return attrsMap;
   }

@@ -4,6 +4,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLineMassEntry;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.common.ObjectUtils;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
@@ -46,5 +47,18 @@ public class MoveLineMassEntryRecordServiceImpl implements MoveLineMassEntryReco
         Beans.get(MoveLineMassEntryService.class)
             .getPfpValidatorUserForInTaxAccount(
                 moveLine.getAccount(), company, moveLine.getPartner()));
+  }
+
+  @Override
+  public void setCutOff(MoveLineMassEntry moveLine) {
+    if (moveLine.getAccount() != null && !moveLine.getAccount().getManageCutOffPeriod()) {
+      moveLine.setCutOffStartDate(null);
+      moveLine.setCutOffEndDate(null);
+    } else if (ObjectUtils.isEmpty(moveLine.getCutOffStartDate())
+        && ObjectUtils.isEmpty(moveLine.getCutOffEndDate())
+        && ObjectUtils.notEmpty(moveLine.getAccount())) {
+      moveLine.setCutOffStartDate(moveLine.getDate());
+      moveLine.setCutOffEndDate(moveLine.getDate());
+    }
   }
 }
