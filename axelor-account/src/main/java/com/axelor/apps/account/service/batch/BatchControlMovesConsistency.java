@@ -65,6 +65,12 @@ public class BatchControlMovesConsistency extends BatchStrategy {
                 null,
                 batch.getId());
             incrementAnomaly();
+          } catch (Exception e) {
+            TraceBackService.trace(
+                new AxelorException(e, move, TraceBackRepository.CATEGORY_INCONSISTENCY),
+                null,
+                batch.getId());
+            incrementAnomaly();
           } finally {
             JPA.clear();
           }
