@@ -1162,13 +1162,14 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   @Transactional
   public void validatePfp(Long invoiceId) {
     Invoice invoice = invoiceRepo.find(invoiceId);
-    User currentUser = AuthUtils.getUser();
+    User pfpValidatorUser =
+        invoice.getPfpValidatorUser() != null ? invoice.getPfpValidatorUser() : AuthUtils.getUser();
 
     for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
-      invoiceTermPfpService.validatePfp(invoiceTerm, currentUser);
+      invoiceTermPfpService.validatePfp(invoiceTerm, pfpValidatorUser);
     }
 
-    invoice.setPfpValidatorUser(currentUser);
+    invoice.setPfpValidatorUser(pfpValidatorUser);
     invoice.setPfpValidateStatusSelect(InvoiceRepository.PFP_STATUS_VALIDATED);
     invoice.setDecisionPfpTakenDateTime(
         appBaseService.getTodayDateTime(invoice.getCompany()).toLocalDateTime());
