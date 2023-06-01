@@ -67,7 +67,7 @@
       </panel>
 
       <panel title="Configurations" name="configurationsPanel">
-        <field if="__config__.app.isApp('employee')" if-module="axelor-human-resource"
+        <field if="__config__.app.isApp('human-resource')" if-module="axelor-human-resource"
           name="productSet" colSpan="12" widget="TagSelect" canEdit="false"
           domain="self.isActivity = true AND self.dtype = 'Product'"
           form-view="product-activity-form" grid-view="product-activity-grid"/>
@@ -75,7 +75,7 @@
         <field name="projectFolderSet" colSpan="12" widget="TagSelect"
           if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
         <field name="imputable" colSpan="4" widget="boolean-switch"
-          if="__config__.app.isApp('employee')" if-module="axelor-human-resource"/>
+          if="__config__.app.isApp('human-resource')" if-module="axelor-human-resource"/>
       </panel>
     </panel-tabs>
 
@@ -146,8 +146,8 @@
       if="!__config__.app.isApp('business-project')"/>
     <field name="invoicingComment" hidden="true"
       if="!__config__.app.isApp('business-project')"/>
-    <field name="productSet" hidden="true" if="!__config__.app.isApp('employee')"/>
-    <field name="imputable" hidden="true" if="!__config__.app.isApp('employee')"/>
+    <field name="productSet" hidden="true" if="!__config__.app.isApp('human-resource')"/>
+    <field name="imputable" hidden="true" if="!__config__.app.isApp('human-resource')"/>
     <field name="isBusinessProject" hidden="true"
       if="!__config__.app.isApp('business-project')"/>
   </search-filters>

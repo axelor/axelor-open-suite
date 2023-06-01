@@ -166,7 +166,7 @@
           onClick="action-project-method-import-members"/>
       </panel>
       <panel title="Planning" name="planningPanel" colSpan="12" hideIf="!isShowPlanning"
-        if="__config__.app.isApp('employee')" if-module="axelor-human-resource">
+        if="__config__.app.isApp('human-resource')" if-module="axelor-human-resource">
         <button name="addMultipleLinesBtn" title="Add multiple lines"
           css="btn-custom text-left"
           onClick="save,action-project-view-add-multiple-project-planning-time" colSpan="4"
@@ -448,7 +448,7 @@
         </panel-related>
       </panel>
       <panel title="Configurations" name="configurationsPanel">
-        <field if="__config__.app.isApp('employee')" if-module="axelor-human-resource"
+        <field if="__config__.app.isApp('human-resource')" if-module="axelor-human-resource"
           name="productSet" colSpan="12" widget="TagSelect" canEdit="false"
           domain="self.isActivity = true AND self.dtype = 'Product'"
           form-view="product-activity-form" grid-view="product-activity-grid"/>
@@ -459,7 +459,7 @@
         <field name="childProjectList" hidden="true"/>
         <field name="sequence" hidden="true"/>
         <field name="imputable" colSpan="4" widget="boolean-switch"
-          if="__config__.app.isApp('employee') &amp;&amp; __config__.app.isApp('timesheet')"
+          if="__config__.app.isApp('human-resource') &amp;&amp; __config__.app.isApp('timesheet')"
           if-module="axelor-human-resource"
           onChange="action-project-record-reset-value-is-show-timespent,action-project-record-is-show-timespent-reset-values"/>
         <panel name="fieldsToDisplay" title="Fields to display" colSpan="12">
@@ -1110,7 +1110,7 @@
     <field name="priceList" hidden="true" if="!__config__.app.isApp('business-project')"/>
     <field name="contactPartner" hidden="true" if="!__config__.app.isApp('business-project')"/>
     <field name="customerAddress" hidden="true" if="!__config__.app.isApp('business-project')"/>
-    <field name="totalPlannedHrs" hidden="true" if="!__config__.app.isApp('employee')"/>
+    <field name="totalPlannedHrs" hidden="true" if="!__config__.app.isApp('human-resource')"/>
     <field name="timeSpent" hidden="true" if="!__config__.app.isApp('timesheet')"/>
     <field name="toInvoice" hidden="true" if="!__config__.app.isApp('business-project')"/>
     <field name="isInvoicingTimesheet" hidden="true"
@@ -1130,8 +1130,8 @@
     <field name="roadmapSet" hidden="true" if="!__config__.app.isApp('business-support')"/>
     <field name="announcementList" hidden="true"
       if="!__config__.app.isApp('business-support')"/>
-    <field name="productSet" hidden="true" if="!__config__.app.isApp('employee')"/>
-    <field name="imputable" hidden="true" if="!__config__.app.isApp('employee')"/>
+    <field name="productSet" hidden="true" if="!__config__.app.isApp('human-resource')"/>
+    <field name="imputable" hidden="true" if="!__config__.app.isApp('human-resource')"/>
     <field name="isBusinessProject" hidden="true"
       if="!__config__.app.isApp('business-project')"/>
   </search-filters>

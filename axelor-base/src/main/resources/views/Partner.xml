@@ -9,7 +9,7 @@
       <button name="printPhoneBookBtn" title="Contact PhoneBook" icon="fa-print"
         onClick="action-print-phonebook"/>
       <button name="printCompanyPhoneBookBtn" title="Company PhoneBook" icon="fa-print"
-        onClick="action-print-company-phonebook" if="__config__.app.isApp('employee')"/>
+        onClick="action-print-company-phonebook" if="__config__.app.isApp('human-resource')"/>
       <button name="checkDuplicateBtn" title="Check Duplicate"
         onClick="action-general-check-duplicate-records"/>
       <button name="replaceDuplicateBtn" title="Merge duplicated"
@@ -42,7 +42,7 @@
         <item name="contactPhoneBookItem" title="Contact PhoneBook"
           action="action-print-phonebook"/>
         <item name="companyPhoneBookItem" title="Company phoneBook"
-          action="action-print-company-phonebook" if="__config__.app.isApp('employee')"/>
+          action="action-print-company-phonebook" if="__config__.app.isApp('human-resource')"/>
       </menu>
       <menu name="partnerToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
         <item name="checkDuplicateItem" title="Check Duplicate"
@@ -74,7 +74,7 @@
         <item name="contactPhoneBookItem" title="Contact PhoneBook"
           action="action-print-phonebook"/>
         <item name="companyPhoneBookItem" title="Company phoneBook"
-          action="action-print-company-phonebook" if="__config__.app.isApp('employee')"/>
+          action="action-print-company-phonebook" if="__config__.app.isApp('human-resource')"/>
       </menu>
       <menu name="partnerToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
         <item name="checkDuplicateItem" title="Check Duplicate"
@@ -796,7 +796,7 @@
       <button name="printPhoneBookBtn" title="Contact PhoneBook" icon="fa-print"
         onClick="action-print-phonebook"/>
       <button name="printCompanyPhoneBookBtn" title="Company PhoneBook" icon="fa-print"
-        onClick="action-print-company-phonebook" if="__config__.app.isApp('employee')"/>
+        onClick="action-print-company-phonebook" if="__config__.app.isApp('human-resource')"/>
       <button name="checkDuplicateBtn" title="Check Duplicate"
         onClick="action-general-check-duplicate-records"/>
       <button name="replaceDuplicateBtn" title="Merge duplicated"
@@ -1178,7 +1178,7 @@
     <action name="action-partner-attrs-show-specific-tax-note"/>
     <action name="action-partner-method-set-social-network-url"/>
     <action name="action-partner-attrs-hide-employee-panel"
-      if="__config__.app.isApp('employee')"/>
+      if="__config__.app.isApp('human-resource')"/>
     <action name="action-partner-account-attrs-hide-supplier-account"/>
     <action name="action-partner-account-attrs-hide-customer-account"/>
     <action name="action-partner-account-attrs-hide-employee-account"/>
@@ -1406,7 +1406,7 @@
 
   <action-group name="action-group-partner-contact-onload">
     <action name="action-partner-attrs-hide-employee-panel"
-      if="__config__.app.isApp('employee')"/>
+      if="__config__.app.isApp('human-resource')"/>
     <action name="action-partner-method-check-name"/>
     <action name="action-partner-method-check-name-in-archive"/>
     <action name="action-partner-attrs-change-name"/>

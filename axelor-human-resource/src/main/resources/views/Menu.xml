@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <menuitem name="hr-root" order="-1600" title="HR" icon="fa-sitemap"
-    if="__config__.app.isApp('employee')" icon-background="#84429f"/>
+    if="__config__.app.isApp('human-resource')" icon-background="#84429f"/>
 
   <menuitem name="hr-root-emp-mgt" parent="hr-root" title="Employees Management"
     icon="fa-address-card-o" icon-background="#84429f" order="100"/>
@@ -31,7 +31,7 @@
 
   <menuitem name="all-payroll-preparation" parent="hr-root-emp-mgt"
     title="Payroll Preparations" action="payroll.preparation.all"
-    if="__config__.app.getApp('employee')?.getPayrollPreparation()" order="300"/>
+    if="__config__.app.getApp('human-resource')?.getPayrollPreparation()" order="300"/>
 
   <action-view name="payroll.preparation.all" title="Payroll Preparations"
     model="com.axelor.apps.hr.db.PayrollPreparation">
@@ -42,7 +42,7 @@
 
   <menuitem name="all-lunch-voucher-mgt" parent="hr-root-emp-mgt"
     title="Lunch Voucher Management" action="lunch.voucher.mgt.all"
-    if="__config__.app.getApp('employee')?.getLunchVoucher()" order="400"/>
+    if="__config__.app.getApp('human-resource')?.getLunchVoucher()" order="400"/>
 
   <action-view name="lunch.voucher.mgt.all" title="Lunch Voucher Management"
     model="com.axelor.apps.hr.db.LunchVoucherMgt">
@@ -53,7 +53,7 @@
 
   <menuitem name="hr-employee-bonus-mgt" parent="hr-root-emp-mgt"
     title="Employee bonus mgt" action="employee.bonus.mgt.all"
-    if="__config__.app.getApp('employee')?.getEmployeeBonus()" order="500"/>
+    if="__config__.app.getApp('human-resource')?.getEmployeeBonus()" order="500"/>
 
   <action-view name="employee.bonus.mgt.all" title="Employee bonus mgt"
     model="com.axelor.apps.hr.db.EmployeeBonusMgt">
@@ -104,7 +104,7 @@
 
   <menuitem name="hr-employee-bonus-type" parent="hr-root-emp-mgt-conf"
     title="Employee bonus type" action="employee.bonus.type.all"
-    if="__config__.app.getApp('employee')?.getEmployeeBonus()" order="400"/>
+    if="__config__.app.getApp('human-resource')?.getEmployeeBonus()" order="400"/>
 
   <action-view name="employee.bonus.type.all" title="Employee bonus type"
     model="com.axelor.apps.hr.db.EmployeeBonusType">
@@ -604,7 +604,7 @@
   </action-view>
 
   <menuitem name="admin-root-batch-hr" parent="admin-root-batch"
-    if="__config__.app.isApp('employee')" if-module="axelor-human-resource" title="HR batches"
+    if="__config__.app.isApp('human-resource')" if-module="axelor-human-resource" title="HR batches"
     action="admin.root.batch.hr" order="700"/>
 
   <action-view name="admin.root.batch.hr" title="HR batches"
@@ -646,7 +646,7 @@
   <!-- Top Menus -->
 
   <menuitem name="top-menu-hr" title="HR" order="4" top="true" left="false"
-    if="__config__.app.isApp('employee')"/>
+    if="__config__.app.isApp('human-resource')"/>
 
   <menuitem name="top-menu-hr-my-timesheet" parent="top-menu-hr" title="My timesheet"
     action="edit.timesheet" top="true" if="__config__.app.isApp('timesheet')"/>

@@ -25,13 +25,13 @@ import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.repo.HRConfigRepository;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.repo.MetaModelRepository;
-import com.axelor.rpc.ActionRequest;
-import com.axelor.rpc.ActionResponse;
 import com.axelor.studio.app.service.AppVersionService;
 import com.axelor.studio.db.AppExpense;
+import com.axelor.studio.db.AppHumanResource;
 import com.axelor.studio.db.AppLeave;
 import com.axelor.studio.db.AppTimesheet;
 import com.axelor.studio.db.repo.AppExpenseRepository;
+import com.axelor.studio.db.repo.AppHumanResourceRepository;
 import com.axelor.studio.db.repo.AppLeaveRepository;
 import com.axelor.studio.db.repo.AppRepository;
 import com.axelor.studio.db.repo.AppTimesheetRepository;
@@ -39,9 +39,7 @@ import com.axelor.studio.service.AppSettingsStudioService;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Singleton
 public class AppHumanResourceServiceImpl extends AppBaseServiceImpl
@@ -55,6 +53,8 @@ public class AppHumanResourceServiceImpl extends AppBaseServiceImpl
 
   protected HRConfigRepository hrConfigRepo;
 
+  protected AppHumanResourceRepository appHumanResourceRepository;
+
   @Inject
   public AppHumanResourceServiceImpl(
       AppRepository appRepo,
@@ -66,13 +66,20 @@ public class AppHumanResourceServiceImpl extends AppBaseServiceImpl
       AppLeaveRepository appLeaveRepo,
       AppExpenseRepository appExpenseRepo,
       CompanyRepository companyRepo,
-      HRConfigRepository hrConfigRepo) {
+      HRConfigRepository hrConfigRepo,
+      AppHumanResourceRepository appHumanResourceRepository) {
     super(appRepo, metaFiles, appVersionService, metaModelRepo, appSettingsStudioService);
     this.appTimesheetRepo = appTimesheetRepo;
     this.appLeaveRepo = appLeaveRepo;
     this.appExpenseRepo = appExpenseRepo;
     this.companyRepo = companyRepo;
     this.hrConfigRepo = hrConfigRepo;
+    this.appHumanResourceRepository = appHumanResourceRepository;
+  }
+
+  @Override
+  public AppHumanResource getAppHumanResource() {
+    return appHumanResourceRepository.all().fetchOne();
   }
 
   @Override
@@ -88,28 +95,6 @@ public class AppHumanResourceServiceImpl extends AppBaseServiceImpl
   @Override
   public AppExpense getAppExpense() {
     return appExpenseRepo.all().fetchOne();
-  }
-
-  @Override
-  public void getHrmAppSettings(ActionRequest request, ActionResponse response) {
-
-    try {
-
-      Map<String, Object> map = new HashMap<>();
-
-      map.put("hasInvoicingAppEnable", isApp("invoice"));
-      map.put("hasLeaveAppEnable", isApp("leave"));
-      map.put("hasExpenseAppEnable", isApp("expense"));
-      map.put("hasTimesheetAppEnable", isApp("timesheet"));
-      map.put("hasProjectAppEnable", isApp("project"));
-
-      response.setData(map);
-      response.setTotal(map.size());
-
-    } catch (Exception e) {
-      e.printStackTrace();
-      response.setException(e);
-    }
   }
 
   @Override

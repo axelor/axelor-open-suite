@@ -63,7 +63,7 @@
         if="__config__.app.isApp('production')"/>
       <button name="hrConfigBtn" title="Human Resources config" width="100%" colSpan="6"
         onClick="action-company-view-hr-config" if-module="axelor-human-resource"
-        if="__config__.app.isApp('employee')"/>
+        if="__config__.app.isApp('human-resource')"/>
       <button name="crmConfigBtn" title="CRM config" width="100%" colSpan="6"
         onClick="action-company-view-crm-config" if-module="axelor-crm"
         if="__config__.app.isApp('crm')"/>

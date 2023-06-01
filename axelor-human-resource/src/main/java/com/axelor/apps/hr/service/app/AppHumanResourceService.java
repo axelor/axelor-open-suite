@@ -19,21 +19,20 @@
 package com.axelor.apps.hr.service.app;
 
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.rpc.ActionRequest;
-import com.axelor.rpc.ActionResponse;
 import com.axelor.studio.db.AppExpense;
+import com.axelor.studio.db.AppHumanResource;
 import com.axelor.studio.db.AppLeave;
 import com.axelor.studio.db.AppTimesheet;
 
 public interface AppHumanResourceService extends AppBaseService {
+
+  public AppHumanResource getAppHumanResource();
 
   public AppTimesheet getAppTimesheet();
 
   public AppLeave getAppLeave();
 
   public AppExpense getAppExpense();
-
-  public void getHrmAppSettings(ActionRequest request, ActionResponse response);
 
   public void generateHrConfigurations();
 }
