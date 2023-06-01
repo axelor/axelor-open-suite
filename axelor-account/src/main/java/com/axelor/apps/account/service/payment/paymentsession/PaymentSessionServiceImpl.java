@@ -141,6 +141,13 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
   @Override
   @Transactional
   public void computeTotalPaymentSession(PaymentSession paymentSession) {
+    BigDecimal sessionTotalAmount = this.computeSessionTotalAmount(paymentSession);
+    paymentSession.setSessionTotalAmount(sessionTotalAmount);
+    paymentSessionRepository.save(paymentSession);
+  }
+
+  @Override
+  public BigDecimal computeSessionTotalAmount(PaymentSession paymentSession) {
     BigDecimal sessionTotalAmount =
         (BigDecimal)
             JPA.em()
@@ -148,8 +155,7 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
                     "select SUM(self.amountPaid) FROM InvoiceTerm as self WHERE self.paymentSession = ?1 AND self.isSelectedOnPaymentSession = TRUE")
                 .setParameter(1, paymentSession)
                 .getSingleResult();
-    paymentSession.setSessionTotalAmount(sessionTotalAmount);
-    paymentSessionRepository.save(paymentSession);
+    return sessionTotalAmount;
   }
 
   @Override
@@ -299,8 +305,8 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
             + " OR ( self.moveLine.partner.isSupplier = TRUE "
             + " AND :partnerTypeSelect = :partnerTypeSupplier "
             + " AND self.moveLine.move.functionalOriginSelect = :functionalOriginSupplier "
-            + " AND (self.moveLine.move.company.accountConfig.isManagePassedForPayment is NULL "
-            + " OR self.moveLine.move.company.accountConfig.isManagePassedForPayment = FALSE  "
+            + " AND (self.moveLine.move.company.accountConfig.isManagePassedForPayment is NULL"
+            + " OR self.moveLine.move.company.accountConfig.isManagePassedForPayment = FALSE"
             + " OR (self.moveLine.move.company.accountConfig.isManagePassedForPayment = TRUE "
             + " AND (self.pfpValidateStatusSelect = :pfpValidateStatusValidated OR self.pfpValidateStatusSelect = :pfpValidateStatusPartiallyValidated))))) ";
     String paymentHistoryCondition =

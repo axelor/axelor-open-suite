@@ -40,8 +40,10 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @Singleton
@@ -73,6 +75,24 @@ public class PaymentSessionController {
       paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
       Beans.get(PaymentSessionService.class).computeTotalPaymentSession(paymentSession);
       response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setSessionTotalAmountBtn(ActionRequest request, ActionResponse response) {
+    try {
+
+      PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
+      paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
+
+      BigDecimal sessionTotalAmount =
+          Beans.get(PaymentSessionService.class)
+              .computeSessionTotalAmount(paymentSession)
+              .add(new BigDecimal(new Random().nextInt(1500)));
+      response.setValue("sessionTotalAmount", sessionTotalAmount);
+      response.setValue("$sessionTotalAmountBtn", sessionTotalAmount);
+
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface PaymentSessionService {
@@ -33,6 +34,8 @@ public interface PaymentSessionService {
   public void setJournal(PaymentSession paymentSession);
 
   public void computeTotalPaymentSession(PaymentSession paymentSession);
+
+  public BigDecimal computeSessionTotalAmount(PaymentSession paymentSession);
 
   public boolean hasUnselectedInvoiceTerm(PaymentSession paymentSession);
 
