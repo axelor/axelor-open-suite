@@ -98,6 +98,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
   protected MoveLineTaxService moveLineTaxService;
   protected PeriodServiceAccount periodServiceAccount;
   protected MoveControlService moveControlService;
+  protected MoveComputeService moveComputeService;
 
   @Inject
   public MoveValidateServiceImpl(
@@ -116,7 +117,8 @@ public class MoveValidateServiceImpl implements MoveValidateService {
       FixedAssetGenerationService fixedAssetGenerationService,
       MoveLineTaxService moveLineTaxService,
       PeriodServiceAccount periodServiceAccount,
-      MoveControlService moveControlService) {
+      MoveControlService moveControlService,
+      MoveComputeService moveComputeService) {
 
     this.moveLineControlService = moveLineControlService;
     this.moveLineToolService = moveLineToolService;
@@ -134,6 +136,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     this.moveLineTaxService = moveLineTaxService;
     this.periodServiceAccount = periodServiceAccount;
     this.moveControlService = moveControlService;
+    this.moveComputeService = moveComputeService;
   }
 
   /**
@@ -225,11 +228,14 @@ public class MoveValidateServiceImpl implements MoveValidateService {
                 MoveRepository.FUNCTIONAL_ORIGIN_CUT_OFF,
                 MoveRepository.FUNCTIONAL_ORIGIN_OPENING,
                 MoveRepository.FUNCTIONAL_ORIGIN_CLOSURE)
-            .contains(move.getFunctionalOriginSelect())
-        && !moveToolService.checkMoveLinesCutOffDates(move)) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(AccountExceptionMessage.MOVE_MISSING_CUT_OFF_DATE));
+            .contains(move.getFunctionalOriginSelect())) {
+      moveComputeService.autoApplyCutOffDates(move);
+
+      if (!moveToolService.checkMoveLinesCutOffDates(move)) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            I18n.get(AccountExceptionMessage.MOVE_MISSING_CUT_OFF_DATE));
+      }
     }
 
     if (move.getPaymentCondition() != null
