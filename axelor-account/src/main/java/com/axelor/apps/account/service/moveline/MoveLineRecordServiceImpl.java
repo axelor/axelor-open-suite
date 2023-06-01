@@ -124,6 +124,10 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
         moveLine.setTaxLineBeforeReverse(taxLine);
       }
     }
+
+    if (ObjectUtils.notEmpty(accountingAccount.getVatSystemSelect())) {
+      moveLine.setVatSystemSelect(accountingAccount.getVatSystemSelect());
+    }
   }
 
   @Override
