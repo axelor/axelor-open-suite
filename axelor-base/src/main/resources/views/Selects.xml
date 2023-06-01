@@ -718,4 +718,10 @@
     <option value="5">EXPORT</option>
   </selection>
 
+  <selection name="base.batch.password.change.action.select">
+    <option value="1">Generate new random passwords</option>
+    <option value="2">Force the users to update password the next login</option>
+    <option value="3">Generate new random passwords and force password change</option>
+  </selection>
+
 </object-views>

@@ -23,9 +23,8 @@
     <boolean name="allEvents" title="All events"/>
 
     <!-- PASSWORD CHANGE BATCH -->
-    <boolean name="generateNewRandomPasswords" title="Generate a new random passwords"/>
-    <boolean name="updatePasswordNextLogin"
-      title="Force the users to update password the next login"/>
+    <integer name="passwordChangeActionSelect" title="Action"
+      selection="base.batch.password.change.action.select"/>
     <boolean name="allUsers" title="All users"/>
     <many-to-many name="userSet" title="Users" ref="com.axelor.auth.db.User"/>
     <many-to-many name="groupSet" title="Groups" ref="com.axelor.auth.db.Group"/>
@@ -36,6 +35,10 @@
 		<![CDATA[
 		public static final int ACTION_SYNCHRONIZE_CALENDARS = 2;
 		public static final int ACTION_PASSWORD_CHANGE = 3;
+
+		public static final int PASSWORD_CHANGE_ACTION_GENERATE = 1;
+		public static final int PASSWORD_CHANGE_ACTION_FORCE_UPDATE = 2;
+		public static final int PASSWORD_CHANGE_ACTION_GENERATE_AND_FORCE_UPDATE = 3;
 		]]>
     </extra-code>
   </entity>

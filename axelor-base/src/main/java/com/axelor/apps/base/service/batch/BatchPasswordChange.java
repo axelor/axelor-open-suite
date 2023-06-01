@@ -18,6 +18,7 @@
 package com.axelor.apps.base.service.batch;
 
 import com.axelor.apps.base.db.BaseBatch;
+import com.axelor.apps.base.db.repo.BaseBatchRepository;
 import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.db.repo.ExceptionOriginRepository;
 import com.axelor.apps.base.service.administration.AbstractBatch;
@@ -58,7 +59,7 @@ public class BatchPasswordChange extends BatchStrategy {
 
     BaseBatch baseBatch = batch.getBaseBatch();
 
-    if (!baseBatch.getGenerateNewRandomPasswords() && !baseBatch.getUpdatePasswordNextLogin()) {
+    if (baseBatch.getPasswordChangeActionSelect() == 0) {
       return;
     }
     LocalDate date =
@@ -127,12 +128,17 @@ public class BatchPasswordChange extends BatchStrategy {
         LocalDateTime.now(),
         user.getPasswordUpdatedOn());
     BaseBatch baseBatch = batch.getBaseBatch();
-    if (baseBatch.getGenerateNewRandomPasswords()) {
+    int passwordChangeActionSelect = baseBatch.getPasswordChangeActionSelect();
+    if (passwordChangeActionSelect == BaseBatchRepository.PASSWORD_CHANGE_ACTION_GENERATE
+        || passwordChangeActionSelect
+            == BaseBatchRepository.PASSWORD_CHANGE_ACTION_GENERATE_AND_FORCE_UPDATE) {
       userService.generateRandomPasswordForUser(user);
       user.setSendEmailUponPasswordChange(true);
     }
 
-    if (baseBatch.getUpdatePasswordNextLogin()) {
+    if (passwordChangeActionSelect == BaseBatchRepository.PASSWORD_CHANGE_ACTION_FORCE_UPDATE
+        || passwordChangeActionSelect
+            == BaseBatchRepository.PASSWORD_CHANGE_ACTION_GENERATE_AND_FORCE_UPDATE) {
       user.setForcePasswordChange(true);
     }
     userRepo.save(user); // processChangedPassword method call in save method for email send
