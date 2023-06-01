@@ -37,6 +37,7 @@ import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.LogisticalFormLine;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
+import com.axelor.apps.stock.db.StockLocationLineHistory;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.TrackingNumber;
@@ -598,14 +599,53 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     if (stockLocationLine == null) {
       return;
     }
-    stockLocationLine.setAvgPrice(
-        Optional.ofNullable(stockLocationLine.getAvgPrice()).orElse(BigDecimal.ZERO));
+
+    if (origin == null) {
+      origin =
+          Optional.ofNullable(stockMoveLine)
+              .map(StockMoveLine::getStockMove)
+              .map(StockMove::getStockMoveSeq)
+              .orElse("");
+    }
+
+    if (toStatus == StockMoveRepository.STATUS_CANCELED) {
+      resetAvgPrice(stockLocationLine, origin);
+    } else {
+      stockLocationLine.setAvgPrice(
+          Optional.ofNullable(stockLocationLine.getAvgPrice()).orElse(BigDecimal.ZERO));
+    }
+
     stockLocationLineService.updateHistory(
         stockLocationLine,
         stockMoveLine,
         date != null ? date.atStartOfDay() : null,
         origin,
         getStockLocationLineHistoryTypeSelect(toStatus));
+  }
+
+  protected void resetAvgPrice(StockLocationLine stockLocationLine, String origin) {
+
+    // Sort by date.
+    List<StockLocationLineHistory> sortedHistoryLines =
+        stockLocationLineHistoryService.getStockLineHistoryLines(stockLocationLine).stream()
+            .sorted((slh1, slh2) -> slh2.getDateT().compareTo(slh1.getDateT()))
+            .collect(Collectors.toList());
+
+    // If last historyLine X is the realization of the same origin
+    // Then we will reset the avg price to the value of previous historyLine X
+    if (sortedHistoryLines.size() >= 2) {
+      StockLocationLineHistory lastHistoryLine = sortedHistoryLines.get(0);
+      if (origin != null
+          && origin.equals(lastHistoryLine.getOrigin())
+          && lastHistoryLine
+              .getTypeSelect()
+              .equals(StockLocationLineHistoryRepository.TYPE_SELECT_STOCK_MOVE)) {
+        stockLocationLine.setAvgPrice(sortedHistoryLines.get(1).getWap());
+      }
+    } else {
+      stockLocationLine.setAvgPrice(
+          Optional.ofNullable(stockLocationLine.getAvgPrice()).orElse(BigDecimal.ZERO));
+    }
   }
 
   @Override
