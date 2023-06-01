@@ -41,6 +41,7 @@ import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.Message;
@@ -59,6 +60,8 @@ import com.google.common.collect.Lists;
 import com.google.inject.Singleton;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -410,6 +413,59 @@ public class PartnerController {
     PartnerService partnerService = Beans.get(PartnerService.class);
     if (!partnerService.isRegistrationCodeValid(partner)) {
       response.setError(I18n.get(BaseExceptionMessage.PARTNER_INVALID_REGISTRATION_CODE));
+    }
+  }
+
+  public void updateAndCheckDomainNameList(ActionRequest request, ActionResponse response) {
+    try {
+      Partner partner = request.getContext().asType(Partner.class);
+      partner = Beans.get(PartnerRepository.class).find(partner.getId());
+
+      PartnerService partnerService = Beans.get(PartnerService.class);
+      List<Partner> contactList = partnerService.getUpdateAndCheckDomainName(partner);
+
+      if (ObjectUtils.notEmpty(contactList)) {
+        response.setView(null);
+
+        response.setView(
+            ActionView.define(I18n.get("Register a mass payment"))
+                .model(Partner.class.getName())
+                .add("form", "contact-with-same-domain-partner-form")
+                .param("popup", "reload")
+                .param("show-toolbar", "false")
+                .param("show-confirm", "false")
+                .param("popup-save", "false")
+                .param("forceEdit", "true")
+                .context("_contactList", contactList)
+                .context("_showRecord", partner.getId())
+                .map());
+      } else {
+        response.setReload(true);
+      }
+
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+    }
+  }
+
+  public void addContactSet(ActionRequest request, ActionResponse response) {
+    try {
+      Partner partner = request.getContext().asType(Partner.class);
+      partner = Beans.get(PartnerRepository.class).find(partner.getId());
+      List<Partner> contactPartnerList = new ArrayList<>();
+      List<HashMap<String, Object>> contactToAddContextList =
+          (List<HashMap<String, Object>>) request.getContext().get("contactToAddSet");
+      for (HashMap<String, Object> selectContactContext : contactToAddContextList) {
+        contactPartnerList.add(
+            Beans.get(PartnerRepository.class)
+                .find(((Integer) selectContactContext.get("id")).longValue()));
+      }
+      Beans.get(PartnerService.class).addContactListToPartner(partner, contactPartnerList);
+
+      response.setCanClose(true);
+
+    } catch (Exception e) {
+      TraceBackService.trace(e);
     }
   }
 }

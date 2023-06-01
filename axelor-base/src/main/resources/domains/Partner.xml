@@ -40,6 +40,9 @@
 
     <many-to-many name="contactPartnerSet" ref="com.axelor.apps.base.db.Partner"
       title="Contacts"/>
+    <one-to-many name="domainNameList" ref="com.axelor.apps.base.db.DomainName"
+      mappedBy="partner"/>
+
     <many-to-one name="mainPartner" ref="com.axelor.apps.base.db.Partner"
       title="Main company" index="false"/>
     <many-to-one name="source" ref="com.axelor.apps.base.db.Source" title="Source"
