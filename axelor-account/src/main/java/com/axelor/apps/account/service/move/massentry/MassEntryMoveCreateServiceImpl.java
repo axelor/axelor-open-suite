@@ -101,7 +101,7 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
               move.getPaymentMode(),
               move.getPartner().getFiscalPosition(),
               move.getPartnerBankDetails(),
-              MoveRepository.TECHNICAL_ORIGIN_TEMPLATE,
+              MoveRepository.TECHNICAL_ORIGIN_MASS_ENTRY,
               !ObjectUtils.isEmpty(functionalOriginTab) ? functionalOriginTab[0] : 0,
               false,
               false,
