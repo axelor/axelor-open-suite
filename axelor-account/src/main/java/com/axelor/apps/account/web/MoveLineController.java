@@ -592,8 +592,10 @@ public class MoveLineController {
       if (request.getContext().getParent() != null
           && Move.class.equals(request.getContext().getParent().getContextClass())) {
         move = request.getContext().getParent().asType(Move.class);
-        cutOffStartDate = (LocalDate) request.getContext().getParent().get("cutOffStartDate");
-        cutOffEndDate = (LocalDate) request.getContext().getParent().get("cutOffEndDate");
+        cutOffStartDate =
+            LocalDate.parse((String) request.getContext().getParent().get("cutOffStartDate"));
+        cutOffEndDate =
+            LocalDate.parse((String) request.getContext().getParent().get("cutOffEndDate"));
       } else {
         move = moveLine.getMove();
       }
