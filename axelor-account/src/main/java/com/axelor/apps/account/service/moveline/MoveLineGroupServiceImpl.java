@@ -117,6 +117,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
 
     moveLineAttrsService.addAnalyticAxisAttrs(move, attrsMap);
     moveLineAttrsService.addDescriptionRequired(move, attrsMap);
+    moveLineAttrsService.addVatSystemSelectReadonly(moveLine, move, attrsMap);
 
     return attrsMap;
   }
@@ -276,6 +277,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
 
     moveLineAttrsService.addPartnerReadonly(moveLine, move, attrsMap);
     moveLineAttrsService.addAnalyticAxisAttrs(move, attrsMap);
+    moveLineAttrsService.addVatSystemSelectReadonly(moveLine, move, attrsMap);
 
     return attrsMap;
   }

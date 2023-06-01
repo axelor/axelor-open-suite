@@ -26,6 +26,7 @@ import com.axelor.apps.account.db.AnalyticAxisByCompany;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountRepository;
+import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.PeriodServiceAccount;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
@@ -288,5 +289,21 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
             "self.isSpecific IS FALSE AND self.company.id = %d", move.getCompany().getId());
 
     this.addAttr("account", "domain", domain, attrsMap);
+  }
+
+  @Override
+  public void addVatSystemSelectReadonly(
+      MoveLine moveLine, Move move, Map<String, Map<String, Object>> attrsMap) {
+    boolean isReadonly = true;
+    if (moveLine.getAccount() != null) {
+      isReadonly =
+          !Objects.equals(
+                  moveLine.getAccount().getAccountType().getTechnicalTypeSelect(),
+                  AccountTypeRepository.TYPE_CHARGE)
+              && !Objects.equals(
+                  moveLine.getAccount().getAccountType().getTechnicalTypeSelect(),
+                  AccountTypeRepository.TYPE_INCOME);
+    }
+    this.addAttr("$isVatSystemSelectReadonly", "value", isReadonly, attrsMap);
   }
 }

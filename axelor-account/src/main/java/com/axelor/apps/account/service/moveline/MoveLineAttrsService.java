@@ -58,4 +58,7 @@ public interface MoveLineAttrsService {
   void addPartnerDomain(Move move, Map<String, Map<String, Object>> attrsMap);
 
   void addAnalyticDistributionTemplateDomain(Move move, Map<String, Map<String, Object>> attrsMap);
+
+  void addVatSystemSelectReadonly(
+      MoveLine moveLine, Move move, Map<String, Map<String, Object>> attrsMap);
 }

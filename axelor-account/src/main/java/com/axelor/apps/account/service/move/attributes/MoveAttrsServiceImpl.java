@@ -100,6 +100,14 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
         move.getStatusSelect() == MoveRepository.STATUS_NEW
             || move.getStatusSelect() == MoveRepository.STATUS_CANCELED,
         attrsMap);
+
+    this.addAttr(
+        "moveLineList.vatSystemSelect",
+        "hidden",
+        move.getJournal() != null
+            && move.getJournal().getJournalType().getTechnicalTypeSelect() != 1
+            && move.getJournal().getJournalType().getTechnicalTypeSelect() != 2,
+        attrsMap);
   }
 
   @Override
