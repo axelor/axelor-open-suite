@@ -123,6 +123,10 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
         moveLine.setTaxEquiv(taxEquiv);
       }
     }
+
+    if (ObjectUtils.notEmpty(accountingAccount.getVatSystemSelect())) {
+      moveLine.setVatSystemSelect(accountingAccount.getVatSystemSelect());
+    }
   }
 
   @Override
