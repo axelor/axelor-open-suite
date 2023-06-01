@@ -164,12 +164,6 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     valuesMap.put("period", move.getPeriod());
     valuesMap.put("originDate", move.getOriginDate());
 
-    valuesMap.put(
-        "$validatePeriod",
-        !periodAccountService.isAuthorizedToAccountOnPeriod(move, AuthUtils.getUser()));
-
-    this.addPeriodDummyFields(move, valuesMap);
-
     if (appAccountService.getAppAccount().getActivatePassedForPayment()) {
       moveRecordSetService.setPfpStatus(move);
       valuesMap.put("pfpValidateStatusSelect", move.getOriginDate());
@@ -178,6 +172,12 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     if (isMassEntry) {
       move.setMassEntryStatusSelect(MoveRepository.MASS_ENTRY_STATUS_ON_GOING);
       valuesMap.put("massEntryStatusSelect", move.getMassEntryStatusSelect());
+    } else {
+      valuesMap.put(
+          "$validatePeriod",
+          !periodAccountService.isAuthorizedToAccountOnPeriod(move, AuthUtils.getUser()));
+
+      this.addPeriodDummyFields(move, valuesMap);
     }
 
     return valuesMap;

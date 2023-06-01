@@ -245,7 +245,7 @@ public class MassEntryServiceImpl implements MassEntryService {
   }
 
   @Override
-  public void checkMassEntryMoveGeneration(Move move) {
+  public void checkMassEntryMoveGeneration(Move move) throws AxelorException {
     List<Move> moveList;
     boolean authorizeSimulatedMove = move.getJournal().getAuthorizeSimulatedMove();
     boolean allowAccountingDaybook = move.getJournal().getAllowAccountingDaybook();
