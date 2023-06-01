@@ -158,4 +158,8 @@ public interface PartnerService {
   String getSirenFromRegistrationCode(Partner partner);
 
   boolean isRegistrationCodeValid(Partner partner);
+
+  List<Partner> getUpdateAndCheckDomainName(Partner partner);
+
+  public void addContactListToPartner(Partner partner, List<Partner> contactPartnerList);
 }

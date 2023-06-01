@@ -365,7 +365,11 @@
     <panel-related name="contactPartnerSetPanel" field="contactPartnerSet"
       hideIf="!id || isContact || partnerTypeSelect == 2"
       domain="self.isContact = 'true' AND self in (SELECT p FROM Partner p join p.companySet c where c in :companySet)"
-      form-view="partner-contact-form" grid-view="partner-contact-grid"/>
+      form-view="partner-contact-form" grid-view="partner-contact-grid"
+      onChange="save,action-partner-method-update-check-domain-name-list"/>
+    <panel-related name="domainNameListPanel" field="domainNameList"
+      title="Domain names" hidden="true" readonly="true" colSpan="12" grid-view="domain-name-grid"
+      form-view="domain-name-form"/>
     <panel-tabs name="mainPanelTab">
       <panel name="informationPanel" title="Information">
         <panel name="employeeAddressPanel" title="Contact address" colSpan="12"
@@ -1173,6 +1177,23 @@
     </panel>
   </form>
 
+  <form model="com.axelor.apps.base.db.Partner" title="Contacts to add"
+    name="contact-with-same-domain-partner-form"
+    onLoad="action-partner-record-init-same-domain-partner">
+    <panel name="mainPanel">
+      <label
+        title="We found one or more contact(s) with the same domain name in the application. Would you like to add them in the contact list of this tier ?"
+        colSpan="12"/>
+      <panel-related field="$contactToAddSet" name="contactToAddSet" title="Contacts"
+        type="one-to-many" target="com.axelor.apps.base.db.Partner" grid-view="partner-contact-grid"
+        form-view="partner-contact-form" canNew="false" canEdit="false" canSelect="true"
+        colSpan="12" domain="self.isContact = true" height="10"/>
+      <button onClick="close" name="cancelBtn" title="Cancel" colOffset="6" colSpan="3"/>
+      <button onClick="action-partner-method-add-contact-set" name="validateBtn"
+        title="Add contact(s)" colSpan="3"/>
+    </panel>
+  </form>
+
   <action-group name="action-group-partner-onload">
     <action name="action-partner-attrs-change-name"/>
     <action name="action-partner-attrs-show-specific-tax-note"/>
@@ -1372,6 +1393,10 @@
 
   <action-method name="action-partner-method-set-user-partner">
     <call class="com.axelor.apps.base.web.UserController" method="setUserPartner"/>
+  </action-method>
+
+  <action-method name="action-partner-method-add-contact-set">
+    <call class="com.axelor.apps.base.web.PartnerController" method="addContactSet"/>
   </action-method>
 
   <action-attrs name="action-partner-attrs-partner-seq-editable">
@@ -1612,6 +1637,11 @@
       expr="eval: __user__?.activeCompany?.accountConfig?.defPaymentCondition"/>
   </action-record>
 
+  <action-record name="action-partner-record-init-same-domain-partner"
+    model="com.axelor.apps.base.db.Partner">
+    <field name="$contactToAddSet" expr="eval: _contactList"/>
+  </action-record>
+
   <action-method name="action-print-company-phonebook">
     <call class="com.axelor.apps.base.web.PartnerController" method="printCompanyPhonebook"/>
   </action-method>
@@ -1642,6 +1672,11 @@
 
   <action-method name="action-method-partner-check-registration-code">
     <call class="com.axelor.apps.base.web.PartnerController" method="checkRegistrationCode"/>
+  </action-method>
+
+  <action-method name="action-partner-method-update-check-domain-name-list">
+    <call class="com.axelor.apps.base.web.PartnerController"
+      method="updateAndCheckDomainNameList"/>
   </action-method>
 
   <action-view name="action-contact-partner-dashlet" title="Partners"
