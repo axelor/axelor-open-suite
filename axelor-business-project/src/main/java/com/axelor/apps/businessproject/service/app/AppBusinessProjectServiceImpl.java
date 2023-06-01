@@ -33,6 +33,7 @@ import com.axelor.studio.db.repo.AppRepository;
 import com.axelor.studio.service.AppSettingsStudioService;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.math.BigDecimal;
 import java.util.Objects;
 
 @Singleton
@@ -78,6 +79,18 @@ public class AppBusinessProjectServiceImpl extends AppBaseServiceImpl
           getAppBusinessProject(),
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(BusinessProjectExceptionMessage.PROJECT_CONFIG_HOURS_UNIT_MISSING));
+    }
+    return hoursUnit;
+  }
+
+  @Override
+  public BigDecimal getDefaultHoursADay() throws AxelorException {
+    BigDecimal hoursUnit = getAppBusinessProject().getDefaultHoursADay();
+    if (Objects.isNull(hoursUnit) || hoursUnit.signum() <= 0) {
+      throw new AxelorException(
+          getAppBusinessProject(),
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BusinessProjectExceptionMessage.PROJECT_CONFIG_DEFAULT_HOURS_PER_DAY_MISSING));
     }
     return hoursUnit;
   }

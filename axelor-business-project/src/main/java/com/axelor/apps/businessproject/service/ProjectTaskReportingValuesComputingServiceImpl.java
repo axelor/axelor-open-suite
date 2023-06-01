@@ -10,7 +10,6 @@ import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
-import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.ProjectTask;
@@ -18,7 +17,6 @@ import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.i18n.I18n;
-import com.axelor.studio.db.AppBusinessProject;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -56,10 +54,9 @@ public class ProjectTaskReportingValuesComputingServiceImpl
   public void computeProjectTaskTotals(ProjectTask projectTask) throws AxelorException {
 
     // get AppBusinessProject config
-    AppBusinessProject appBusinessProject = appBusinessProjectService.getAppBusinessProject();
-    daysUnit = appBusinessProject.getDaysUnit();
-    hoursUnit = appBusinessProject.getHoursUnit();
-    defaultHoursADay = appBusinessProject.getDefaultHoursADay();
+    daysUnit = appBusinessProjectService.getDaysUnit();
+    hoursUnit = appBusinessProjectService.getHoursUnit();
+    defaultHoursADay = appBusinessProjectService.getDefaultHoursADay();
 
     computeProjectTaskTimes(projectTask);
     computeFinancialReporting(projectTask);
@@ -120,11 +117,6 @@ public class ProjectTaskReportingValuesComputingServiceImpl
 
     Unit projectTaskUnit = projectTask.getTimeUnit();
 
-    if (defaultHoursADay.signum() <= 0) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(HumanResourceExceptionMessage.TIMESHEET_DAILY_WORK_HOURS));
-    }
     if (projectTask.getSoldTime().signum() <= 0) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -277,12 +269,6 @@ public class ProjectTaskReportingValuesComputingServiceImpl
     String timeLoggingUnit = timesheetLine.getTimesheet().getTimeLoggingPreferenceSelect();
     BigDecimal duration = timesheetLine.getDuration();
     BigDecimal convertedDuration = BigDecimal.ZERO;
-
-    if (defaultHoursADay.compareTo(BigDecimal.ZERO) == 0) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(HumanResourceExceptionMessage.TIMESHEET_DAILY_WORK_HOURS));
-    }
 
     switch (timeLoggingUnit) {
       case EmployeeRepository.TIME_PREFERENCE_DAYS:
