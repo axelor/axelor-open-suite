@@ -39,7 +39,8 @@
       <panel name="productTypologyPanel" title="Product typology" colSpan="12">
         <field name="productTypeSelect" required="true" readonly="true"/>
         <field name="deductLunchVoucher" hideIf="!expense"/>
-        <field name="blockExpenseTax"/>
+        <field name="blockExpenseTax"
+          help="If this box is ticked, the expense line with this type of expense will not generate deductible VAT"/>
         <field name="personalExpense"/>
         <field name="unavailableToUsers"/>
         <field name="saleSupplySelect" readonly="true" hidden="true"/>
