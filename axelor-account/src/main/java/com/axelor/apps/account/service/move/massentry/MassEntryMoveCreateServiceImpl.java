@@ -99,7 +99,7 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
               move.getDate(),
               move.getOriginDate(),
               move.getPaymentMode(),
-              move.getPartner().getFiscalPosition(),
+              move.getPartner() != null ? move.getPartner().getFiscalPosition() : null,
               move.getPartnerBankDetails(),
               MoveRepository.TECHNICAL_ORIGIN_MASS_ENTRY,
               !ObjectUtils.isEmpty(functionalOriginTab) ? functionalOriginTab[0] : 0,
