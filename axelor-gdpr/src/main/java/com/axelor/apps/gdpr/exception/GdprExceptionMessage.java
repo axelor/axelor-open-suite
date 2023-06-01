@@ -45,4 +45,7 @@ public final class GdprExceptionMessage {
 
   public static final String ANONYMIZATION_SUCCESS_RESULT = /*$$(*/
       "%s has been anonymized using the anonymizer %s." /*)*/;
+
+  public static final String APP_GDPR_NO_ANONYMIZER_FOUND = /*$$(*/
+      "No anonymizer found in app GDPR configuration." /*)*/;
 }

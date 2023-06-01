@@ -70,6 +70,7 @@
 "Models",,,
 "Name","Nom",,
 "Name of the key for the search engine","Nom de la clé pour le moteur de recherche",,
+"No anonymizer found in app GDPR configuration.","Il n'y pas de pseudonymiseur configuré dans l'application RGPD.",,
 "Number of records","Nombre d'enregistrements",,
 "Partner","Tiers",,
 "Phone","Téléphone",,

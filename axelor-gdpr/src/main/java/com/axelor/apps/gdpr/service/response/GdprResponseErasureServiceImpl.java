@@ -109,7 +109,7 @@ public class GdprResponseErasureServiceImpl implements GdprResponseErasureServic
     // get meta model
     MetaModel entityMetaModel = getMetaModelFromFullName(modelSelect);
 
-    Anonymizer anonymizer = appGDPRService.getAppGDPR().getAnonymizer();
+    Anonymizer anonymizer = appGDPRService.getGdprAnonymizer();
 
     gdprResponseService
         .getEmailFromPerson(referenceEntity)
