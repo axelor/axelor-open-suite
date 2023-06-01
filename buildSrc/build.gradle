@@ -19,4 +19,5 @@ repositories repos
 buildscript.repositories repos
 dependencies {
     implementation 'org.yaml:snakeyaml:1.30'
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.12.2'
 }

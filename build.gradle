@@ -1,3 +1,4 @@
+import com.axelor.gradle.tasks.CheckCredentialsInRptdesign
 import com.axelor.gradle.tasks.GenerateAosChangelog
 import com.axelor.gradle.tasks.CheckEOLCharsInCsv
 
@@ -87,6 +88,17 @@ task checkCsvEOL(type: CheckEOLCharsInCsv) {
     exclude '**/bin'
     exclude '**/out'
     include '**/*.csv'
+  }
+}
+
+task checkBirtCredentials(type: CheckCredentialsInRptdesign) {
+  group "Axelor application"
+  description "Generate change logs from unreleased entries."
+  files = fileTree(projectDir) {
+    exclude '**/build'
+    exclude '**/bin'
+    exclude '**/out'
+    include '**/*.rptdesign'
   }
 }
 
