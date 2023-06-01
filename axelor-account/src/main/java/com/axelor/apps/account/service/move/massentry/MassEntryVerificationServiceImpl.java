@@ -209,16 +209,11 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
           true,
           temporaryMoveNumber);
       return true;
-    } else {
-      if (!periodServiceAccount.isAuthorizedToAccountOnPeriod(
-          move.getPeriod(), AuthUtils.getUser())) {
-        this.setMassEntryErrorMessage(
-            move,
-            I18n.get(AccountExceptionMessage.MOVE_PERIOD_IS_CLOSED),
-            true,
-            temporaryMoveNumber);
-        return true;
-      }
+    } else if (!periodServiceAccount.isAuthorizedToAccountOnPeriod(
+        move.getPeriod(), AuthUtils.getUser())) {
+      this.setMassEntryErrorMessage(
+          move, I18n.get(AccountExceptionMessage.MOVE_PERIOD_IS_CLOSED), true, temporaryMoveNumber);
+      return true;
     }
     return false;
   }
