@@ -181,6 +181,8 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
       } else {
         move.setFunctionalOriginSelect(null);
       }
+    } else {
+      move.setFunctionalOriginSelect(null);
     }
   }
 

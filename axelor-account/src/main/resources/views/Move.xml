@@ -90,7 +90,7 @@
           <field name="functionalOriginSelect"
             readonlyIf="statusSelect != 1 &amp;&amp; statusSelect != 2 &amp;&amp; statusSelect != 5"
             colSpan="3"
-            hideIf="journal.authorizedFunctionalOriginSelect.split(',').length == 1 &amp;&amp; journal.authorizedFunctionalOriginSelect == functionalOriginSelect || journal.authorizedFunctionalOriginSelect == null &amp;&amp; functionalOriginSelect == null"/>
+            hideIf="(journal.authorizedFunctionalOriginSelect.split(',').length == 1 &amp;&amp; journal.authorizedFunctionalOriginSelect == functionalOriginSelect) || (journal.authorizedFunctionalOriginSelect == null &amp;&amp; functionalOriginSelect == null) || journal == null || journal.authorizedFunctionalOriginSelect.split(',').length == null"/>
           <panel name="datePanel" showFrame="false" colSpan="12">
             <field name="period" form-view="period-form" grid-view="period-grid"
               canEdit="false" canView="false" readonly="true" colSpan="4"/>

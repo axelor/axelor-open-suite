@@ -1,0 +1,3 @@
+---
+title: "Move : Fix when we change journal, functional origin isn't reset if we change to an journal without authorized functional origin"
+type: fix
