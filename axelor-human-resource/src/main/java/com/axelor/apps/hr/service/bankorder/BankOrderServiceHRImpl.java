@@ -20,7 +20,6 @@ package com.axelor.apps.hr.service.bankorder;
 
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
-import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
 import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionCancelService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
@@ -30,6 +29,7 @@ import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMoveService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderServiceImpl;
 import com.axelor.apps.bankpayment.service.config.BankPaymentConfigService;
+import com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentBankPaymentCancelService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -52,21 +52,21 @@ public class BankOrderServiceHRImpl extends BankOrderServiceImpl {
       InvoicePaymentRepository invoicePaymentRepo,
       BankOrderLineService bankOrderLineService,
       EbicsService ebicsService,
-      InvoicePaymentCancelService invoicePaymentCancelService,
+      InvoicePaymentBankPaymentCancelService invoicePaymentBankPaymentCancelService,
       BankPaymentConfigService bankPaymentConfigService,
       SequenceService sequenceService,
       BankOrderLineOriginService bankOrderLineOriginService,
-      ExpenseService expenseService,
       BankOrderMoveService bankOrderMoveService,
       AppBaseService appBaseService,
       PaymentSessionCancelService paymentSessionCancelService,
-      PaymentSessionRepository paymentSessionRepo) {
+      PaymentSessionRepository paymentSessionRepo,
+      ExpenseService expenseService) {
     super(
         bankOrderRepo,
         invoicePaymentRepo,
         bankOrderLineService,
         ebicsService,
-        invoicePaymentCancelService,
+        invoicePaymentBankPaymentCancelService,
         bankPaymentConfigService,
         sequenceService,
         bankOrderLineOriginService,
@@ -99,7 +99,6 @@ public class BankOrderServiceHRImpl extends BankOrderServiceImpl {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
   public BankOrder cancelPayment(BankOrder bankOrder) throws AxelorException {
     bankOrder = super.cancelPayment(bankOrder);
 

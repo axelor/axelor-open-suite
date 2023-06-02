@@ -18,7 +18,6 @@
  */
 package com.axelor.apps.businessproject.web;
 
-import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PriceListRepository;
@@ -26,13 +25,11 @@ import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
-import com.axelor.apps.businessproject.report.IReport;
 import com.axelor.apps.businessproject.service.InvoicingProjectService;
 import com.axelor.apps.businessproject.service.ProjectBusinessService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.purchase.db.PurchaseOrder;
-import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -79,27 +76,6 @@ public class ProjectController {
     }
   }
 
-  public void printProject(ActionRequest request, ActionResponse response) throws AxelorException {
-    Project project = request.getContext().asType(Project.class);
-
-    String name = I18n.get("Project") + " " + (project.getCode() != null ? project.getCode() : "");
-
-    String fileLink =
-        ReportFactory.createReport(IReport.PROJECT, name + "-${date}")
-            .addParam("ProjectId", project.getId())
-            .addParam(
-                "Timezone",
-                project.getCompany() != null ? project.getCompany().getTimezone() : null)
-            .addParam("Locale", ReportSettings.getPrintingLocale(null))
-            .toAttach(project)
-            .generate()
-            .getFileLink();
-
-    logger.debug("Printing " + name);
-
-    response.setView(ActionView.define(name).add("html", fileLink).map());
-  }
-
   public void countToInvoice(ActionRequest request, ActionResponse response) {
 
     Project project = request.getContext().asType(Project.class);
@@ -125,31 +101,6 @@ public class ProjectController {
             .param("show-toolbar", "false")
             .context("_project", project)
             .map());
-  }
-
-  public void printPlannifAndCost(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-
-    Project project = request.getContext().asType(Project.class);
-
-    String name = I18n.get("Planification and costs");
-
-    if (project.getCode() != null) {
-      name += " (" + project.getCode() + ")";
-    }
-
-    String fileLink =
-        ReportFactory.createReport(IReport.PLANNIF_AND_COST, name)
-            .addParam("ProjectId", project.getId())
-            .addParam(
-                "Timezone",
-                project.getCompany() != null ? project.getCompany().getTimezone() : null)
-            .addParam("Locale", ReportSettings.getPrintingLocale(null))
-            .toAttach(project)
-            .generate()
-            .getFileLink();
-
-    response.setView(ActionView.define(name).add("html", fileLink).map());
   }
 
   public void getPartnerData(ActionRequest request, ActionResponse response) {

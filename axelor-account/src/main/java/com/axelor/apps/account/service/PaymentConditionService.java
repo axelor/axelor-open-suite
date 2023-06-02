@@ -16,17 +16,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.businessproject.service;
+package com.axelor.apps.account.service;
 
+import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.businessproject.db.ProjectFolder;
-import java.io.IOException;
 
-public interface ProjectFolderService {
-
-  String printProjectsPlanificationAndCost(ProjectFolder projectFolder)
-      throws IOException, AxelorException;
-
-  String printProjectFinancialReport(ProjectFolder projectFolder)
-      throws IOException, AxelorException;
+public interface PaymentConditionService {
+  void checkPaymentCondition(PaymentCondition paymentCondition) throws AxelorException;
 }

@@ -19,6 +19,7 @@
 package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -70,6 +71,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
 import javax.persistence.Query;
@@ -230,6 +232,12 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       return;
     }
 
+    if (stockMove.getInvoicingStatusSelect() == StockMoveRepository.STATUS_PARTIALLY_INVOICED
+        || stockMove.getInvoicingStatusSelect() == StockMoveRepository.STATUS_INVOICED) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(SupplychainExceptionMessage.STOCK_MOVE_CANCEL_WRONG_STATUS_ERROR));
+    }
     if (stockMove.getStatusSelect() == StockMoveRepository.STATUS_REALIZED) {
       if (StockMoveRepository.ORIGIN_SALE_ORDER.equals(stockMove.getOriginTypeSelect())) {
         updateSaleOrderOnCancel(stockMove);
@@ -634,5 +642,21 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       }
     }
     return stockMove;
+  }
+
+  @Override
+  public void checkInvoiceStatus(StockMove stockMove) throws AxelorException {
+    Set<Invoice> invoiceSet = stockMove.getInvoiceSet();
+    if (!CollectionUtils.isEmpty(invoiceSet)) {
+      for (Invoice invoice : invoiceSet) {
+        if (invoice.getStatusSelect() == InvoiceRepository.STATUS_DRAFT
+            || invoice.getStatusSelect() == InvoiceRepository.STATUS_VALIDATED) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_INCONSISTENCY,
+              I18n.get(SupplychainExceptionMessage.STOCK_MOVE_CANCEL_WRONG_INVOICE_STATUS_ALERT),
+              stockMove.getStockMoveSeq());
+        }
+      }
+    }
   }
 }
