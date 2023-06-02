@@ -506,13 +506,14 @@ public class ExpenseServiceImpl implements ExpenseService {
             productAccount,
             expenseLine.getUntaxedAmount(),
             true,
-            moveDate,
+            expenseLine.getExpenseDate(),
             moveDate,
             count,
             expense.getExpenseSeq(),
             expenseLine.getComments() != null
                 ? expenseLine.getComments().replaceAll("(\r\n|\n\r|\r|\n)", " ")
                 : "");
+
     moveLine.setAnalyticDistributionTemplate(expenseLine.getAnalyticDistributionTemplate());
     List<AnalyticMoveLine> analyticMoveLineList =
         CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())
