@@ -18,10 +18,8 @@
 package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.Move;
-import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.move.massentry.MassEntryService;
-import com.axelor.apps.account.service.move.massentry.MassEntryVerificationService;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.ObjectUtils;
@@ -98,16 +96,11 @@ public class MassEntryMoveController {
         moveIdList = entryMap.getKey();
         error = entryMap.getValue();
 
-        response.setValue("moveLineMassEntryList", move.getMoveLineMassEntryList());
-        response.setValue("massEntryErrors", move.getMassEntryErrors());
-        response.setValue("massEntryStatusSelect", move.getMassEntryStatusSelect());
-
+        response.setReload(true);
         if (error.length() > 0) {
           response.setInfo(
               String.format(I18n.get(AccountExceptionMessage.MOVE_ACCOUNTING_NOT_OK), error));
-          response.setAttr("controlMassEntryMoves", "hidden", false);
         } else {
-          response.setInfo(I18n.get(AccountExceptionMessage.MOVE_ACCOUNTING_OK));
           if (!CollectionUtils.isEmpty(moveIdList)) {
             response.setView(
                 ActionView.define(I18n.get(AccountExceptionMessage.MOVE_TEMPLATE_3))
@@ -119,25 +112,6 @@ public class MassEntryMoveController {
                     .map());
           }
         }
-        response.setAttr("validateMassEntryMoves", "hidden", true);
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-    }
-  }
-
-  public void verifyCompanyBankDetails(ActionRequest request, ActionResponse response) {
-    try {
-      Move move = request.getContext().asType(Move.class);
-      if (move != null
-          && move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL
-          && move.getJournal() != null
-          && move.getCompany() != null) {
-        response.setValue(
-            "companyBankDetails",
-            Beans.get(MassEntryVerificationService.class)
-                .verifyCompanyBankDetails(
-                    move.getCompany(), move.getCompanyBankDetails(), move.getJournal()));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);

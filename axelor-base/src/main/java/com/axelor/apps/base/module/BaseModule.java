@@ -160,6 +160,8 @@ import com.axelor.apps.base.service.advancedExport.AdvancedExportService;
 import com.axelor.apps.base.service.advancedExport.AdvancedExportServiceImpl;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
+import com.axelor.apps.base.service.birt.template.BirtTemplateService;
+import com.axelor.apps.base.service.birt.template.BirtTemplateServiceImpl;
 import com.axelor.apps.base.service.exception.HandleExceptionResponse;
 import com.axelor.apps.base.service.exception.HandleExceptionResponseImpl;
 import com.axelor.apps.base.service.filesourceconnector.FileSourceConnectorService;
@@ -339,6 +341,7 @@ public class BaseModule extends AxelorModule {
     bind(DataBackupAnonymizeService.class).to(DataBackupAnonymizeServiceImpl.class);
     bind(DataBackupService.class).to(DataBackupServiceImpl.class);
     bind(BankDetailsFullNameComputeService.class).to(BankDetailsFullNameComputeServiceImpl.class);
+    bind(BirtTemplateService.class).to(BirtTemplateServiceImpl.class);
     bind(BaseServerStartListener.class);
     bind(AosSwagger.class);
   }

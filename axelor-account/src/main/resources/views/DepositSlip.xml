@@ -83,7 +83,7 @@
         hideIf="companyBankDetails || isBankDepositMoveGenerated">
         <field name="__depositDate" type="Date" title="Date of the deposit slip"/>
         <button
-          onClick="save,action-cheque-deposit-slip-method-update-deposit-cheque-date,save"
+          onClick="save,action-cheque-deposit-slip-method-update-deposit-cheque-date,action-cheque-deposit-slip-method-update-invoice-payments,save"
           name="updateDepositDatesBtn" title="Update deposit dates" readonlyIf="!__depositDate"/>
       </panel>
       <panel colSpan="3" colOffset="4" itemSpan="12"
@@ -199,6 +199,12 @@
   <action-method name="action-deposit-slip-method-validate"
     model="com.axelor.apps.account.db.DepositSlip">
     <call class="com.axelor.apps.account.web.DepositSlipController" method="validate"/>
+  </action-method>
+
+  <action-method name="action-cheque-deposit-slip-method-update-invoice-payments"
+    model="com.axelor.apps.account.db.DepositSlip">
+    <call class="com.axelor.apps.account.web.DepositSlipController"
+      method="updateInvoicePayments"/>
   </action-method>
 
   <grid title="Payment vouchers" name="selector-payment-voucher-deposit-slip-grid"

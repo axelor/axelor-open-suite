@@ -38,8 +38,8 @@ import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.businessproject.db.InvoicingProject;
+import com.axelor.apps.businessproject.db.repo.BusinessProjectBatchRepository;
 import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
-import com.axelor.apps.businessproject.db.repo.ProjectInvoicingAssistantBatchRepository;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.report.IReport;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
@@ -547,13 +547,13 @@ public class InvoicingProjectService {
     invoicingProject.setProject(project);
 
     if (consolidatePhaseSelect
-        == ProjectInvoicingAssistantBatchRepository.CONSOLIDATE_PHASE_CONSOLIDATE_ALL) {
+        == BusinessProjectBatchRepository.CONSOLIDATE_PHASE_CONSOLIDATE_ALL) {
       invoicingProject.setConsolidatePhaseWhenInvoicing(true);
     } else if (consolidatePhaseSelect
-        == ProjectInvoicingAssistantBatchRepository.CONSOLIDATE_PHASE_DONT_CONSOLIDATE) {
+        == BusinessProjectBatchRepository.CONSOLIDATE_PHASE_DONT_CONSOLIDATE) {
       invoicingProject.setConsolidatePhaseWhenInvoicing(false);
     } else if (consolidatePhaseSelect
-        == ProjectInvoicingAssistantBatchRepository.CONSOLIDATE_PHASE_DEFAULT_VALUE) {
+        == BusinessProjectBatchRepository.CONSOLIDATE_PHASE_DEFAULT_VALUE) {
       invoicingProject.setConsolidatePhaseWhenInvoicing(
           invoicingProject.getProject().getConsolidatePhaseWhenInvoicing());
     }
