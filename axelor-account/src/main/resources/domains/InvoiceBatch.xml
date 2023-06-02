@@ -35,7 +35,6 @@
 	   	// ACTION TYPE
 		public static final int BATCH_INVOICE = 0;
 		public static final int BATCH_STATUS = 1;
-		public static final int BATCH_ALARM = 2;
 
 	]]></extra-code>
 
