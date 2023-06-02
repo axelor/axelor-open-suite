@@ -188,13 +188,12 @@ public class AccountService {
                 I18n.get(
                     "Please put AnalyticDistributionLines in the Analytic Distribution Template"));
           } else {
-            List<Long> rulesAnalyticAccountList = getRulesIds(account);
+            List<AnalyticAccount> rulesAnalyticAccountList = getAnalyticAccounts(account);
 
             if (CollectionUtils.isNotEmpty(rulesAnalyticAccountList)
                 && analyticDistributionTemplate.getAnalyticDistributionLineList().stream()
                     .map(AnalyticDistributionLine::getAnalyticAccount)
                     .filter(Objects::nonNull)
-                    .map(AnalyticAccount::getId)
                     .anyMatch(it -> !rulesAnalyticAccountList.contains(it))) {
               throw new AxelorException(
                   TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -212,8 +211,7 @@ public class AccountService {
     Query query =
         JPA.em()
             .createQuery(
-                "SELECT analyticAccount.id FROM AnalyticRules "
-                    + "self JOIN self.analyticAccountSet analyticAccount "
+                "SELECT self.id FROM AnalyticRules self "
                     + "WHERE self.fromAccount.code <= :account AND self.toAccount.code >= :account AND self.company = :company");
     query.setParameter("account", account.getCode());
     query.setParameter("company", account.getCompany());
