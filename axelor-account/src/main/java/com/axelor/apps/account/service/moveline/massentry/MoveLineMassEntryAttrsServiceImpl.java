@@ -1,6 +1,7 @@
 package com.axelor.apps.account.service.moveline.massentry;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.JournalType;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLineMassEntry;
@@ -137,6 +138,16 @@ public class MoveLineMassEntryAttrsServiceImpl implements MoveLineMassEntryAttrs
             && journalType.getTechnicalTypeSelect() != null
             && journalType.getTechnicalTypeSelect()
                 < JournalTypeRepository.TECHNICAL_TYPE_SELECT_OTHER,
+        attrsMap);
+  }
+
+  @Override
+  public void addOriginRequired(
+      MoveLineMassEntry moveLine, Journal journal, Map<String, Map<String, Object>> attrsMap) {
+    this.addAttr(
+        "origin",
+        "required",
+        moveLine.getOriginDate() != null && journal != null && journal.getHasRequiredOrigin(),
         attrsMap);
   }
 }
