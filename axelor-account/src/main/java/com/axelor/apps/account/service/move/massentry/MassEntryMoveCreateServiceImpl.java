@@ -25,7 +25,6 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
@@ -77,18 +76,6 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
     boolean authorizeSimulatedMove = move.getJournal().getAuthorizeSimulatedMove();
 
     if (move.getJournal().getCompany() != null) {
-      int[] functionalOriginTab = new int[0];
-      if (!ObjectUtils.isEmpty(move.getJournal().getAuthorizedFunctionalOriginSelect())) {
-        functionalOriginTab =
-            Arrays.stream(
-                    move.getJournal()
-                        .getAuthorizedFunctionalOriginSelect()
-                        .replace(" ", "")
-                        .split(","))
-                .mapToInt(Integer::parseInt)
-                .toArray();
-      }
-
       newMove =
           moveCreateService.createMove(
               move.getJournal(),
@@ -101,7 +88,7 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
               move.getPartner().getFiscalPosition(),
               move.getPartnerBankDetails(),
               MoveRepository.TECHNICAL_ORIGIN_TEMPLATE,
-              !ObjectUtils.isEmpty(functionalOriginTab) ? functionalOriginTab[0] : 0,
+              move.getFunctionalOriginSelect(),
               false,
               false,
               false,
