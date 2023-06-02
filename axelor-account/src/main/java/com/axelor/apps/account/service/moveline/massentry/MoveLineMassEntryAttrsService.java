@@ -1,8 +1,8 @@
 package com.axelor.apps.account.service.moveline.massentry;
 
 import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.JournalType;
 import com.axelor.apps.account.db.Journal;
+import com.axelor.apps.account.db.JournalType;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLineMassEntry;
 import java.util.Map;
