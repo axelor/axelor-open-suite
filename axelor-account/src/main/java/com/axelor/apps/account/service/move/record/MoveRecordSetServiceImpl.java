@@ -230,17 +230,19 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
 
   public void setPfpStatus(Move move) {
     Objects.requireNonNull(move);
-    JournalType journalType = move.getJournal().getJournalType();
 
-    if (move.getCompany() != null
-        && move.getCompany().getAccountConfig() != null
-        && move.getCompany().getAccountConfig().getIsManagePassedForPayment()
-        && move.getCompany().getAccountConfig().getIsManagePFPInRefund()
-        && (journalType.getTechnicalTypeSelect()
-                == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE
-            || journalType.getTechnicalTypeSelect()
-                == JournalTypeRepository.TECHNICAL_TYPE_SELECT_CREDIT_NOTE)) {
-      move.setPfpValidateStatusSelect(MoveRepository.PFP_STATUS_AWAITING);
+    if (move.getJournal() != null && move.getJournal().getJournalType() != null) {
+      JournalType journalType = move.getJournal().getJournalType();
+      if (move.getCompany() != null
+          && move.getCompany().getAccountConfig() != null
+          && move.getCompany().getAccountConfig().getIsManagePassedForPayment()
+          && move.getCompany().getAccountConfig().getIsManagePFPInRefund()
+          && (journalType.getTechnicalTypeSelect()
+                  == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE
+              || journalType.getTechnicalTypeSelect()
+                  == JournalTypeRepository.TECHNICAL_TYPE_SELECT_CREDIT_NOTE)) {
+        move.setPfpValidateStatusSelect(MoveRepository.PFP_STATUS_AWAITING);
+      }
     }
   }
 

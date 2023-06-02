@@ -496,10 +496,10 @@ public class BatchAutoMoveLettering extends BatchStrategy {
     params.put("company", accountingBatch.getCompany());
     params.put("startDate", accountingBatch.getStartDate());
     params.put("endDate", accountingBatch.getEndDate());
-    filters += " AND (";
+    filters += " AND ";
     if (accountingBatch.getFromAccount() != null && accountingBatch.getToAccount() != null) {
       filters +=
-          "(self.fromAccount IS NOT null AND self.toAccount IS NOT null AND self.fromAccount.code <= :toAccountCode AND self.toAccount.code >= :fromAccountCode)";
+          "((self.fromAccount IS NOT null AND self.toAccount IS NOT null AND self.fromAccount.code <= :toAccountCode AND self.toAccount.code >= :fromAccountCode)";
       filters +=
           " OR (self.fromAccount IS NOT null AND self.toAccount IS null AND self.fromAccount.code <= :toAccountCode)";
       filters +=

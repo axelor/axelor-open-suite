@@ -52,8 +52,11 @@ class BirtTemplateReportSettingsBuilder {
   }
 
   private ReportSettings initReportSettings(String outputName) {
+    String designPath = this.template.getTemplateLink();
     MetaFile templateMetaFile = this.template.getTemplateMetaFile();
-    String designPath = MetaFiles.getPath(templateMetaFile).toString();
+    if (templateMetaFile != null) {
+      designPath = MetaFiles.getPath(templateMetaFile).toString();
+    }
     return ReportFactory.createReport(designPath, outputName);
   }
 

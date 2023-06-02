@@ -27,6 +27,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateService {
 
@@ -85,9 +86,9 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
               move.getDate(),
               move.getOriginDate(),
               move.getPaymentMode(),
-              move.getPartner().getFiscalPosition(),
+              move.getPartner() != null ? move.getPartner().getFiscalPosition() : null,
               move.getPartnerBankDetails(),
-              MoveRepository.TECHNICAL_ORIGIN_TEMPLATE,
+              MoveRepository.TECHNICAL_ORIGIN_MASS_ENTRY,
               move.getFunctionalOriginSelect(),
               false,
               false,
@@ -156,9 +157,12 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
     List<Move> moveList = new ArrayList();
     Move moveToAdd;
 
-    for (int i = 1;
-        i <= this.getMaxTemporaryMoveNumber(parentMove.getMoveLineMassEntryList());
-        i++) {
+    List<Integer> uniqueIdList =
+        parentMove.getMoveLineMassEntryList().stream()
+            .map(MoveLineMassEntry::getTemporaryMoveNumber)
+            .distinct()
+            .collect(Collectors.toList());
+    for (Integer i : uniqueIdList) {
       moveToAdd = this.createMoveFromMassEntryList(parentMove, i);
       moveList.add(moveToAdd);
     }

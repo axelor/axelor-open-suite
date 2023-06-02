@@ -75,18 +75,6 @@ public class MoveLineMassEntryController {
         Move move = parentContext.asType(Move.class);
 
         if (move != null) {
-          line.setInputAction(MoveLineMassEntryRepository.MASS_ENTRY_INPUT_ACTION_LINE);
-          if (ObjectUtils.notEmpty(move.getMoveLineMassEntryList())) {
-            if (line.getTemporaryMoveNumber() <= 0) {
-              line.setTemporaryMoveNumber(
-                  Beans.get(MassEntryMoveCreateService.class)
-                      .getMaxTemporaryMoveNumber(move.getMoveLineMassEntryList()));
-              line.setCounter(move.getMoveLineMassEntryList().size() + 1);
-            }
-          } else {
-            line.setTemporaryMoveNumber(1);
-            line.setCounter(1);
-          }
           response.setValues(
               Beans.get(MassEntryService.class)
                   .getFirstMoveLineMassEntryInformations(move.getMoveLineMassEntryList(), line));
