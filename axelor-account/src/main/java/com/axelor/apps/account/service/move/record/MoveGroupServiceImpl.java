@@ -150,6 +150,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     moveRecordSetService.setPeriod(move);
     moveRecordSetService.setFunctionalOriginSelect(move);
     moveRecordSetService.setOriginDate(move);
+    moveRecordSetService.addEmptyMoveLine(move);
 
     valuesMap.put("company", move.getCompany());
     valuesMap.put("date", move.getDate());
@@ -163,6 +164,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     valuesMap.put("journal", move.getJournal());
     valuesMap.put("period", move.getPeriod());
     valuesMap.put("originDate", move.getOriginDate());
+    valuesMap.put("moveLineList", move.getMoveLineList());
 
     valuesMap.put(
         "$validatePeriod",

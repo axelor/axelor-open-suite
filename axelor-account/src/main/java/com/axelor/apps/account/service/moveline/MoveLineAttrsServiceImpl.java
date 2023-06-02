@@ -184,7 +184,9 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
     this.addAttr(
         "taxAmount",
         "hidden",
-        !moveLine.getAccount().getReconcileOk() || !moveLine.getAccount().getUseForPartnerBalance(),
+        moveLine.getAccount() == null
+            || !moveLine.getAccount().getReconcileOk()
+            || !moveLine.getAccount().getUseForPartnerBalance(),
         attrsMap);
   }
 

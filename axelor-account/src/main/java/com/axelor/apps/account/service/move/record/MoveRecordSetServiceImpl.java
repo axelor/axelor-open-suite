@@ -22,12 +22,14 @@ import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.JournalType;
 import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.PaymentConditionService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.apps.account.service.moveline.MoveLineGroupService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
@@ -51,6 +53,7 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
   protected PeriodService periodService;
   protected PaymentConditionService paymentConditionService;
   protected InvoiceTermService invoiceTermService;
+  protected MoveLineGroupService moveLineGroupService;
 
   @Inject
   public MoveRecordSetServiceImpl(
@@ -58,12 +61,14 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
       BankDetailsService bankDetailsService,
       PeriodService periodService,
       PaymentConditionService paymentConditionService,
-      InvoiceTermService invoiceTermService) {
+      InvoiceTermService invoiceTermService,
+      MoveLineGroupService moveLineGroupService) {
     this.partnerRepository = partnerRepository;
     this.bankDetailsService = bankDetailsService;
     this.periodService = periodService;
     this.paymentConditionService = paymentConditionService;
     this.invoiceTermService = invoiceTermService;
+    this.moveLineGroupService = moveLineGroupService;
   }
 
   @Override
@@ -249,5 +254,12 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
 
     move.setPfpValidatorUser(
         invoiceTermService.getPfpValidatorUser(move.getPartner(), move.getCompany()));
+  }
+
+  public void addEmptyMoveLine(Move move) throws AxelorException {
+    MoveLine firstMoveLine = new MoveLine();
+    firstMoveLine.setMove(move);
+    move.addMoveLineListItem(firstMoveLine);
+    moveLineGroupService.getOnNewValuesMap(firstMoveLine, move);
   }
 }
