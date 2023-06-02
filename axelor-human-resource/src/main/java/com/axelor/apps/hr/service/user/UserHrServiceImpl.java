@@ -129,7 +129,7 @@ public class UserHrServiceImpl implements UserHrService {
     userRepo.save(employeeUser);
   }
 
-  private void setUserInfoFromUser(User employeeUser, User user) {
+  protected void setUserInfoFromUser(User employeeUser, User user) {
     employeeUser.setActivateOn(user.getActivateOn());
     employeeUser.setExpiresOn(user.getExpiresOn());
     employeeUser.setCode(user.getCode());
@@ -139,7 +139,7 @@ public class UserHrServiceImpl implements UserHrService {
     employeeUser.setPassword(password.toString());
   }
 
-  private void setUserInfoFromEmployee(User employeeUser, Employee employee) {
+  protected void setUserInfoFromEmployee(User employeeUser, Employee employee) {
     employeeUser.setEmployee(employee);
 
     if (employee.getContactPartner() != null) {
