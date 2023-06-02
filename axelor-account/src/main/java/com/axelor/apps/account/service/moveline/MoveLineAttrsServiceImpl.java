@@ -302,7 +302,10 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
                   AccountTypeRepository.TYPE_CHARGE)
               && !Objects.equals(
                   moveLine.getAccount().getAccountType().getTechnicalTypeSelect(),
-                  AccountTypeRepository.TYPE_INCOME);
+                  AccountTypeRepository.TYPE_INCOME)
+              && !Objects.equals(
+                  moveLine.getAccount().getAccountType().getTechnicalTypeSelect(),
+                  AccountTypeRepository.TYPE_TAX);
     }
     this.addAttr("$isVatSystemSelectReadonly", "value", isReadonly, attrsMap);
   }
