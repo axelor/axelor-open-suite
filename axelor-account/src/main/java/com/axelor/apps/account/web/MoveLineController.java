@@ -474,6 +474,8 @@ public class MoveLineController {
         TaxLine taxLine = moveLine.getTaxLine();
         TaxEquiv taxEquiv = null;
         FiscalPosition fiscalPosition = move.getFiscalPosition();
+        response.setValue("taxLineBeforeReverse", null);
+
         if (fiscalPosition != null && taxLine != null) {
           taxEquiv =
               Beans.get(FiscalPositionService.class).getTaxEquiv(fiscalPosition, taxLine.getTax());
@@ -482,10 +484,10 @@ public class MoveLineController {
             response.setValue("taxLineBeforeReverse", taxLine);
             taxLine =
                 Beans.get(TaxService.class).getTaxLine(taxEquiv.getToTax(), moveLine.getDate());
-            response.setValue("taxLine", taxLine);
-            response.setValue("taxEquiv", taxEquiv);
           }
         }
+        response.setValue("taxLine", taxLine);
+        response.setValue("taxEquiv", taxEquiv);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

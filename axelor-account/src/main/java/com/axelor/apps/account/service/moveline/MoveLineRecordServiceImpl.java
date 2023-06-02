@@ -111,7 +111,7 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
 
     TaxLine taxLine = moveLoadDefaultConfigService.getTaxLine(move, moveLine, accountingAccount);
     TaxEquiv taxEquiv = null;
-
+    moveLine.setTaxLineBeforeReverse(null);
     if (taxLine != null) {
       if (move.getFiscalPosition() != null) {
         taxEquiv = fiscalPositionService.getTaxEquiv(move.getFiscalPosition(), taxLine.getTax());
@@ -121,6 +121,7 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
 
       if (taxEquiv != null) {
         moveLine.setTaxEquiv(taxEquiv);
+        moveLine.setTaxLineBeforeReverse(taxLine);
       }
     }
   }
