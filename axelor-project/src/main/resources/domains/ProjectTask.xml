@@ -48,7 +48,8 @@
     <many-to-many name="membersUserSet" ref="com.axelor.auth.db.User" title="Followers"/>
     <string name="description" title="Description" large="true"/>
     <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
-    <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
+    <many-to-one name="invoicingUnit" ref="com.axelor.apps.base.db.Unit"
+      title="Invoicing unit"/>
     <decimal name="quantity" title="Quantity"/>
     <decimal name="unitPrice" title="Unit price"/>
     <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"
