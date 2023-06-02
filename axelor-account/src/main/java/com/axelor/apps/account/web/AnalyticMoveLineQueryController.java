@@ -181,7 +181,7 @@ public class AnalyticMoveLineQueryController {
 
       AnalyticLineService analyticLineService = Beans.get(AnalyticLineService.class);
       List<Long> analyticAccountList = new ArrayList<>();
-      StringBuilder domain = new StringBuilder("self.id in (");
+      StringBuilder domain = new StringBuilder("self.analyticLevel.nbr = 1 AND self.id in (");
       if (invoiceLine != null) {
         analyticAccountList =
             analyticLineService.getAnalyticAccountsByAxis(
