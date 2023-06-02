@@ -100,7 +100,7 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
               .toArray();
     }
 
-    newMove =
+    Move newMove =
         moveCreateService.createMove(
             move.getJournal(),
             move.getCompany(),
