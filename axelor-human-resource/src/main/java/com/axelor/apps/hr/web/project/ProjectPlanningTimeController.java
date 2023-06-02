@@ -20,6 +20,7 @@ package com.axelor.apps.hr.web.project;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeService;
+import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
