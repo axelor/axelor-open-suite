@@ -125,7 +125,9 @@ public class ProjectTaskReportingValuesComputingServiceImpl
               projectTask.getName()));
     }
     // stock unit not compatible with BusinessProject configuration
-    if (!daysUnit.equals(product.getUnit()) && !hoursUnit.equals(product.getUnit())) {
+    if (product != null
+        && !daysUnit.equals(product.getUnit())
+        && !hoursUnit.equals(product.getUnit())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           String.format(
@@ -134,32 +136,34 @@ public class ProjectTaskReportingValuesComputingServiceImpl
     }
 
     // Initial
+    BigDecimal initialCosts = BigDecimal.ZERO;
+    BigDecimal forecastUnitCost = BigDecimal.ZERO;
     if (saleOrderLine != null) {
-      projectTask.setInitialCosts(saleOrderLine.getSubTotalCostPrice());
-
-      projectTask.setForecastUnitCost(
+      initialCosts = saleOrderLine.getSubTotalCostPrice();
+      forecastUnitCost =
           saleOrderLine
               .getSubTotalCostPrice()
-              .divide(projectTask.getSoldTime(), RESULT_SCALE, RoundingMode.HALF_UP));
-    } else {
+              .divide(projectTask.getSoldTime(), RESULT_SCALE, RoundingMode.HALF_UP);
+    } else if (product != null) {
       BigDecimal convertedProductPrice = getProductConvertedPrice(product, projectTaskUnit);
-      BigDecimal initialCosts =
+      initialCosts =
           projectTask
               .getSoldTime()
               .multiply(convertedProductPrice)
               .setScale(RESULT_SCALE, RoundingMode.HALF_UP);
-      projectTask.setInitialCosts(initialCosts);
-      projectTask.setForecastUnitCost(convertedProductPrice);
+      forecastUnitCost = convertedProductPrice;
     }
+    projectTask.setInitialCosts(initialCosts);
+    projectTask.setForecastUnitCost(forecastUnitCost);
 
     projectTask.setInitialMargin(projectTask.getTurnover().subtract(projectTask.getInitialCosts()));
-
-    projectTask.setInitialMarkup(
-        getPercentValue(
-            projectTask
-                .getInitialMargin()
-                .divide(projectTask.getInitialCosts(), COMPUTATION_SCALE, RoundingMode.HALF_UP)));
-
+    if (initialCosts.signum() > 0) {
+      projectTask.setInitialMarkup(
+          getPercentValue(
+              projectTask
+                  .getInitialMargin()
+                  .divide(projectTask.getInitialCosts(), COMPUTATION_SCALE, RoundingMode.HALF_UP)));
+    }
     // unitCost to compute other values
     BigDecimal unitCost = computeUnitCost(projectTask);
     projectTask.setUnitCost(unitCost);
@@ -197,11 +201,14 @@ public class ProjectTaskReportingValuesComputingServiceImpl
             .setScale(RESULT_SCALE, RoundingMode.HALF_UP));
     projectTask.setForecastMargin(
         projectTask.getTurnover().subtract(projectTask.getForecastCosts()));
-    projectTask.setForecastMarkup(
-        getPercentValue(
-            projectTask
-                .getForecastMargin()
-                .divide(projectTask.getForecastCosts(), COMPUTATION_SCALE, RoundingMode.HALF_UP)));
+    if (projectTask.getForecastCosts().signum() > 0) {
+      projectTask.setForecastMarkup(
+          getPercentValue(
+              projectTask
+                  .getForecastMargin()
+                  .divide(
+                      projectTask.getForecastCosts(), COMPUTATION_SCALE, RoundingMode.HALF_UP)));
+    }
   }
 
   /**
@@ -227,6 +234,7 @@ public class ProjectTaskReportingValuesComputingServiceImpl
 
     Integer spentTimeCostComputationMethod = project.getSpentTimeCostComputationMethod();
 
+    Product product = projectTask.getProduct();
     switch (spentTimeCostComputationMethod) {
       case ProjectRepository.COMPUTATION_METHOD_SALE_ORDER:
         if (projectTask.getSaleOrderLine() != null) {
@@ -236,12 +244,14 @@ public class ProjectTaskReportingValuesComputingServiceImpl
                   .getSubTotalCostPrice()
                   .divide(
                       projectTask.getSaleOrderLine().getQty(), RESULT_SCALE, RoundingMode.HALF_UP);
-        } else {
-          unitCost = getProductConvertedPrice(projectTask.getProduct(), timeUnit);
+        } else if (product != null) {
+          unitCost = getProductConvertedPrice(product, timeUnit);
         }
         break;
       case ProjectRepository.COMPUTATION_METHOD_PRODUCT:
-        unitCost = projectTask.getProduct().getCostPrice();
+        if (product != null) {
+          unitCost = product.getCostPrice();
+        }
         break;
       case ProjectRepository.COMPUTATION_METHOD_EMPLOYEE:
         unitCost = getAverageHourCostFromTimesheetLines(projectTask);

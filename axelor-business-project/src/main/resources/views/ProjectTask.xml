@@ -197,7 +197,7 @@
             action="action-project-task-view-percentage-consumption-custom" colSpan="4"
             showTitle="false"/>
           <panel-dashlet action="action-project-task-view-remaining-to-do-custom"
-            colSpan="4" showTitle="false"/>
+            colSpan="4" showTitle="false" showIf="$remainingAmountToDo"/>
           <field name="$displayProgress" hidden="true"/>
           <field name="$displayConsumption" hidden="true"/>
           <field name="$displayRemaining" hidden="true"/>
@@ -322,7 +322,8 @@
     <attribute for="$displayConsumption" name="value"
       expr="eval: percentageOfConsumption + ' %'"/>
     <attribute for="$displayRemaining" name="value"
-      expr="eval: remainingAmountToDo + ' ' + timeUnit.name + '(s)'"/>
+      expr="eval: remainingAmountToDo + ' ' + timeUnit.name + '(s)'"
+      if="remainingAmountToDo &amp;&amp; timeUnit"/>
   </action-attrs>
 
 </object-views>
