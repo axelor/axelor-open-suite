@@ -48,4 +48,11 @@ public class CompanyController {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
+
+  public void resetDefaultBankDetails(ActionRequest request, ActionResponse response) {
+    Company company = request.getContext().asType(Company.class);
+    if (Boolean.FALSE.equals(Beans.get(CompanyService.class).hasDefaultBankDetails(company))) {
+      response.setValue("defaultBankDetails", null);
+    }
+  }
 }

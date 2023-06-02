@@ -119,9 +119,11 @@
       <panel name="bankDetailsPanel" title="Bank details">
         <field name="defaultBankDetails"
           onSelect="action-company-attrs-default-bank-details-domain" form-view="bank-details-form"
-          grid-view="bank-details-grid"/>
+          grid-view="bank-details-grid"
+          readonlyIf="!(bankDetailsList &amp;&amp; bankDetailsList.length > 0)"/>
         <panel-related name="bankDetailsListPanel" field="bankDetailsList"
-          showTitle="false" colSpan="12" form-view="bank-details-form" grid-view="bank-details-grid"/>
+          showTitle="false" colSpan="12" form-view="bank-details-form" grid-view="bank-details-grid"
+          onChange="action-company-method-reset-default-bank-details"/>
       </panel>
       <panel name="orderBloquedMessagePanel" title="Order Bloqued Message"
         if-module="axelor-sale" if="__config__.app.isApp('sale')">
@@ -186,6 +188,10 @@
 
   <action-method name="action-company-method-validate-locale">
     <call class="com.axelor.apps.base.web.CompanyController" method="validateLocale"/>
+  </action-method>
+
+  <action-method name="action-company-method-reset-default-bank-details">
+    <call class="com.axelor.apps.base.web.CompanyController" method="resetDefaultBankDetails"/>
   </action-method>
 
   <search-filters name="company-filters" model="com.axelor.apps.base.db.Company"
