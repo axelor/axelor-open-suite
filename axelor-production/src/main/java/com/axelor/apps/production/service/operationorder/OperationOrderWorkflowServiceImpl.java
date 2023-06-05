@@ -134,8 +134,13 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
   protected void planDatesWithoutMachine(OperationOrder operationOrder) throws AxelorException {
     LocalDateTime plannedStartDate = operationOrder.getPlannedStartDateT();
 
+    WorkCenter workCenter = operationOrder.getWorkCenter();
     LocalDateTime lastOPerationDate = this.getLastOperationDate(operationOrder);
     LocalDateTime maxDate = DateTool.max(plannedStartDate, lastOPerationDate);
+
+    if (workCenter != null) {
+      lastOPerationDate = lastOPerationDate.plusSeconds(workCenter.getSetupDuration());
+    }
 
     operationOrder.setPlannedStartDateT(maxDate);
 
@@ -153,9 +158,14 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
   protected void planDatesWithMachine(OperationOrder operationOrder, Machine machine)
       throws AxelorException {
 
+    WorkCenter workCenter = operationOrder.getWorkCenter();
     LocalDateTime plannedStartDate = operationOrder.getPlannedStartDateT();
 
     LocalDateTime lastOPerationDate = this.getLastOperationDate(operationOrder);
+
+    if (workCenter != null) {
+      lastOPerationDate = lastOPerationDate.plusSeconds(workCenter.getSetupDuration());
+    }
     LocalDateTime maxDate = DateTool.max(plannedStartDate, lastOPerationDate);
 
     MachineTimeSlot freeMachineTimeSlot =
@@ -196,9 +206,9 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
             I18n.get(ProductionExceptionMessage.WORKCENTER_NO_MACHINE),
             workCenter.getName());
       }
-      duration += machine.getStartingDuration();
-      duration += machine.getEndingDuration();
-      duration += machine.getSetupDuration();
+      duration += workCenter.getStartingDuration();
+      duration += workCenter.getEndingDuration();
+      duration += workCenter.getSetupDuration();
     }
 
     return duration;

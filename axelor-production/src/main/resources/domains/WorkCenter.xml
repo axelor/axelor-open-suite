@@ -15,7 +15,7 @@
       selection="iproduction.work.center.type.select"/>
     <decimal name="minCapacityPerCycle" title="Min. capacity / cycle"/>
     <decimal name="maxCapacityPerCycle" title="Max. capacity / cycle"/>
-    <long name="durationPerCycle" title="Duration / cycle (hh:mm:ss)"/>
+    <long name="durationPerCycle" title="Duration / cycle (hhh:mm:ss)"/>
     <long name="timingOfImplementation" title="Timing of implementation (hh:mm:ss)"/>
     <boolean name="isRevaluationAtActualPrices" title="Revaluation at actual prices"/>
 
@@ -37,6 +37,9 @@
     <many-to-one name="machineTool" ref="com.axelor.apps.production.db.MachineTool"
       title="Tools"/>
     <integer name="sequence" title="Priority"/>
+    <long name="startingDuration" title="Starting duration (hhh:mm:ss)"/>
+    <long name="setupDuration" title="Duration between two cycles (hhh:mm:ss)"/>
+    <long name="endingDuration" title="Ending duration (hhh:mm:ss)"/>
     <extra-code>
 		<![CDATA[
 

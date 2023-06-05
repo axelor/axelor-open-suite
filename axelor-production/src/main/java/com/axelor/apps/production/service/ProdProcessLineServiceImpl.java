@@ -114,12 +114,12 @@ public class ProdProcessLineServiceImpl implements ProdProcessLineService {
             I18n.get(ProductionExceptionMessage.WORKCENTER_NO_MACHINE),
             workCenter.getName());
       }
-      duration += machine.getStartingDuration();
-      duration += machine.getEndingDuration();
+      duration += workCenter.getStartingDuration();
+      duration += workCenter.getEndingDuration();
       duration +=
           nbCycles
               .subtract(new BigDecimal(1))
-              .multiply(new BigDecimal(machine.getSetupDuration()))
+              .multiply(new BigDecimal(workCenter.getSetupDuration()))
               .longValue();
     }
 
