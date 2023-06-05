@@ -72,12 +72,6 @@
     <option value="3">Produce</option>
   </selection>
 
-  <selection name='ialarm.type.select'>
-    <option value='invoice'>Invoice</option>
-    <option value='payment'>Payment Schedule</option>
-    <option value='reject'>Reject</option>
-  </selection>
-
   <selection name='iimport.type.select'>
     <option value='csv'>CSV File</option>
     <option value='xml'>XML File</option>
@@ -659,7 +653,6 @@
 
   <selection name="batch.batch.type.select">
     <option value="100">Base batch</option>
-    <option value="101">Alarm engine batch</option>
     <option value="102">Mail batch</option>
     <option value="103">Import batch</option>
   </selection>

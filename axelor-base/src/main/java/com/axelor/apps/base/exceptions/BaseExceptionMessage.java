@@ -134,19 +134,11 @@ public final class BaseExceptionMessage {
   public static final String INDICATOR_GENERATOR_2 = /*$$(*/
       "Error : incorrect request for the indicatior generator %s" /*)*/;
   public static final String INDICATOR_GENERATOR_3 = /*$$(*/ "Request performed" /*)*/;
-
-  /** Alarm engine batch service */
-  public static final String ALARM_ENGINE_BATCH_1 = /*$$(*/ "Alarm Engine %s" /*)*/;
-
-  public static final String ALARM_ENGINE_BATCH_2 = /*$$(*/ "Alarms report :" /*)*/;
-  public static final String ALARM_ENGINE_BATCH_3 = /*$$(*/ "* %s object(s) into alarm" /*)*/;
-  public static final String ALARM_ENGINE_BATCH_4 = /*$$(*/ "* %s anomaly(ies)" /*)*/;
-  public static final String ALARM_ENGINE_BATCH_5 = /*$$(*/ "Alarm batch" /*)*/;
-
   /** Base batch service */
   public static final String BASE_BATCH_1 = /*$$(*/ "Unknown action %s for the %s treatment" /*)*/;
 
   public static final String BASE_BATCH_2 = /*$$(*/ "Batch %s unknown" /*)*/;
+  public static final String BASE_BATCH_3 = /*$$(*/ "* %s anomaly(ies)" /*)*/;
 
   /** Product service */
   public static final String PRODUCT_NO_SEQUENCE = /*$$(*/

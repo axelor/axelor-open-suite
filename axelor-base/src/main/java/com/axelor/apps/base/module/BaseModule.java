@@ -28,8 +28,6 @@ import com.axelor.apps.base.db.repo.AddressBaseRepository;
 import com.axelor.apps.base.db.repo.AddressRepository;
 import com.axelor.apps.base.db.repo.AdvancedImportBaseRepository;
 import com.axelor.apps.base.db.repo.AdvancedImportRepository;
-import com.axelor.apps.base.db.repo.AlarmEngineBatchBaseRepository;
-import com.axelor.apps.base.db.repo.AlarmEngineBatchRepository;
 import com.axelor.apps.base.db.repo.BankAddressBaseRepository;
 import com.axelor.apps.base.db.repo.BankAddressRepository;
 import com.axelor.apps.base.db.repo.BankBaseRepository;
@@ -275,7 +273,6 @@ public class BaseModule extends AxelorModule {
     bind(ImportCityService.class).to(ImportCityServiceImpl.class);
     bind(BaseBatchRepository.class).to(BaseBatchBaseRepository.class);
     bind(MailBatchRepository.class).to(MailBatchBaseRepository.class);
-    bind(AlarmEngineBatchRepository.class).to(AlarmEngineBatchBaseRepository.class);
     bind(TradingNameService.class).to(TradingNameServiceImpl.class);
     bind(PartnerPriceListService.class).to(PartnerPriceListServiceImpl.class);
     bind(ICalendarEventService.class).to(ICalendarEventServiceImpl.class);
