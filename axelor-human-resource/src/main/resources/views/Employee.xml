@@ -207,7 +207,7 @@
     <panel name="userPanel" title="User" showIf="stepByStepSelect == 4">
       <field name="user" title="Attach to" onSelect="action-employee-attrs-change-domain"/>
       <button name="createUserBtn" title="Create new user"
-        onClick="save,action-employee-view-open-user-creation-wizard" hideIf="user != null"
+        onClick="save,action-employee-view-open-user-creation-form" hideIf="user != null"
         hidden="true"/>
     </panel>
     <!-- END OF User creation -->
