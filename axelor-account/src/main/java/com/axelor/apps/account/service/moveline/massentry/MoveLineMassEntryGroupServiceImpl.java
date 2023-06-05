@@ -194,7 +194,7 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
       MoveLineMassEntry moveLine, Move move, LocalDate dueDate) throws AxelorException {
     moveLineComputeAnalyticService.computeAnalyticDistribution(moveLine, move);
     moveLineRecordService.setIsCutOffGeneratedFalse(moveLine);
-    moveLineRecordService.refreshAccountInformation(moveLine, move);
+    moveLineMassEntryRecordService.refreshAccountInformation(moveLine, move);
     moveLineDefaultService.setDefaultDistributionTemplate(moveLine, move);
     moveLineMassEntryRecordService.setMovePfpValidatorUser(moveLine, move.getCompany());
 
