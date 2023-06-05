@@ -50,6 +50,7 @@ import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -214,6 +215,12 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
     } else {
       endLocation =
           stockConfigService.getStockConfig(company).getQualityControlDefaultStockLocation();
+      if (ObjectUtils.isEmpty(endLocation)) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_NO_VALUE,
+            I18n.get(SupplychainExceptionMessage.PO_MISSING_DEFAULT_STOCK_LOCATION),
+            company.getName());
+      }
     }
 
     StockMove qualityStockMove =

@@ -442,6 +442,7 @@
 "Period type",,,
 "Picking Order Info",,,
 "Planned stock move lines",,,
+"Please add a quality control default stock location for company %s in the app stock configuration",,,
 "Please configure a correct value for the sale order date used for reservation.",,,
 "Please configure the advance payment account for the company %s",,,
 "Please configure the advance payment product",,,
