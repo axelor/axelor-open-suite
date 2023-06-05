@@ -631,17 +631,32 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
             .sorted((slh1, slh2) -> slh2.getDateT().compareTo(slh1.getDateT()))
             .collect(Collectors.toList());
 
-    // If last historyLine X is the realization of the same origin
-    // Then we will reset the avg price to the value of previous historyLine X
-    if (sortedHistoryLines.size() >= 2) {
-      StockLocationLineHistory lastHistoryLine = sortedHistoryLines.get(0);
-      if (origin != null
+    if (sortedHistoryLines.size() >= 2 && origin != null) {
+      int i = 0;
+      StockLocationLineHistory lastHistoryLine = sortedHistoryLines.get(i);
+
+      while (lastHistoryLine != null
           && origin.equals(lastHistoryLine.getOrigin())
           && lastHistoryLine
               .getTypeSelect()
               .equals(StockLocationLineHistoryRepository.TYPE_SELECT_STOCK_MOVE)) {
-        stockLocationLine.setAvgPrice(sortedHistoryLines.get(1).getWap());
+
+        i++;
+        if (i >= sortedHistoryLines.size()) {
+          lastHistoryLine = null;
+        } else {
+          lastHistoryLine = sortedHistoryLines.get(i);
+        }
       }
+      // Case where firstHistoryLine is simply not from same origin.
+      // Or we could not find historyLine from different origin.
+      if (i == 0 || i >= sortedHistoryLines.size()) {
+        stockLocationLine.setAvgPrice(
+            Optional.ofNullable(stockLocationLine.getAvgPrice()).orElse(BigDecimal.ZERO));
+      } else {
+        stockLocationLine.setAvgPrice(lastHistoryLine.getWap());
+      }
+
     } else {
       stockLocationLine.setAvgPrice(
           Optional.ofNullable(stockLocationLine.getAvgPrice()).orElse(BigDecimal.ZERO));
