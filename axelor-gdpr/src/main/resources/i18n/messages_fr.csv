@@ -1,5 +1,4 @@
 "key","message","comment","context"
-"%s has been anonymized using the anonymizer %s.","%s a bien été anonymisé selon l'anonymiseur",,
 "<br>Mapping for the query :<br>First Name -> :firstName <br>Last Name -> :lastName <br>Email -> :email <br>Phone -> :phone <br>","<br>Correspondance pour la requête :<br>Prénom -> :firstName <br>Nom -> :lastName <br>Email -> :email <br>Téléphone -> :phone <br>",,
 "A replacement object is missing for model %s.","Un objet de remplacement est manquant pour le modèle %s.",,
 "Access","Accès",,
@@ -64,6 +63,7 @@
 "Meta model",,,
 "Missing response email address","Absence d'adresse email pour la réponse.",,
 "Model","Modèle",,
+"Model %s has been anonymized using the anonymizer %s.","L'objet %s a bien été anonymisé selon l'anonymiseur %s.",,
 "Model id","Identifiant du modèle",,
 "Model log","Log du modèle",,
 "Model to search","Objet à rechercher",,

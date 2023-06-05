@@ -44,7 +44,7 @@ public final class GdprExceptionMessage {
       "Field %s of model %s has not been anonymized. Please check manually." /*)*/;
 
   public static final String ANONYMIZATION_SUCCESS_RESULT = /*$$(*/
-      "%s has been anonymized using the anonymizer %s." /*)*/;
+      "Model %s has been anonymized using the anonymizer %s." /*)*/;
 
   public static final String APP_GDPR_NO_ANONYMIZER_FOUND = /*$$(*/
       "No anonymizer found in app GDPR configuration." /*)*/;

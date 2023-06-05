@@ -1,5 +1,4 @@
 "key","message","comment","context"
-"%s has been anonymized using the anonymizer %s.",,,
 "<br>Mapping for the query :<br>First Name -> :firstName <br>Last Name -> :lastName <br>Email -> :email <br>Phone -> :phone <br>",,,
 "A replacement object is missing for model %s.",,,
 "Access",,,
@@ -64,6 +63,7 @@
 "Meta model",,,
 "Missing response email address",,,
 "Model",,,
+"Model %s has been anonymized using the anonymizer %s.",,,
 "Model id",,,
 "Model log",,,
 "Model to search",,,
