@@ -338,8 +338,6 @@ import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryRecor
 import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryRecordServiceImpl;
 import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryService;
 import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryServiceImpl;
-import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryToolService;
-import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryToolServiceImpl;
 import com.axelor.apps.account.service.notebills.NoteBillsCreateService;
 import com.axelor.apps.account.service.notebills.NoteBillsCreateServiceImpl;
 import com.axelor.apps.account.service.payment.PaymentModeService;
@@ -757,8 +755,6 @@ public class AccountModule extends AxelorModule {
     bind(MassEntryMoveCreateService.class).to(MassEntryMoveCreateServiceImpl.class);
 
     bind(MoveLineMassEntryService.class).to(MoveLineMassEntryServiceImpl.class);
-
-    bind(MoveLineMassEntryToolService.class).to(MoveLineMassEntryToolServiceImpl.class);
 
     bind(MoveLineMassEntryGroupService.class).to(MoveLineMassEntryGroupServiceImpl.class);
 

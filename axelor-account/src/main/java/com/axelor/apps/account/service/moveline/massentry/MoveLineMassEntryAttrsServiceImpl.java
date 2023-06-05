@@ -9,10 +9,15 @@ import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.common.ObjectUtils;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
+import org.apache.commons.lang3.ArrayUtils;
 
 public class MoveLineMassEntryAttrsServiceImpl implements MoveLineMassEntryAttrsService {
 
@@ -144,10 +149,31 @@ public class MoveLineMassEntryAttrsServiceImpl implements MoveLineMassEntryAttrs
   @Override
   public void addOriginRequired(
       MoveLineMassEntry moveLine, Journal journal, Map<String, Map<String, Object>> attrsMap) {
+    int[] technicalTypeSelectArray = {
+      JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE,
+      JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE,
+      JournalTypeRepository.TECHNICAL_TYPE_SELECT_CREDIT_NOTE
+    };
+
     this.addAttr(
         "origin",
         "required",
-        moveLine.getOriginDate() != null && journal != null && journal.getHasRequiredOrigin(),
+        moveLine.getOriginDate() != null
+            && journal != null
+            && journal.getHasRequiredOrigin()
+            && ArrayUtils.contains(
+                technicalTypeSelectArray, journal.getJournalType().getTechnicalTypeSelect()),
+        attrsMap);
+  }
+
+  @Override
+  public void addPfpValidatorUserDomain(
+      Partner partner, Company company, Map<String, Map<String, Object>> attrsMap) {
+
+    this.addAttr(
+        "movePfpValidatorUser",
+        "domain",
+        Beans.get(InvoiceTermService.class).getPfpValidatorUserDomain(partner, company),
         attrsMap);
   }
 }

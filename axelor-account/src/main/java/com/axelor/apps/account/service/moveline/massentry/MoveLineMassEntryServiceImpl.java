@@ -1,16 +1,12 @@
 package com.axelor.apps.account.service.moveline.massentry;
 
 import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.AccountingSituation;
-import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLineMassEntry;
-import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveCounterPartService;
-import com.axelor.apps.account.service.move.MoveLoadDefaultConfigService;
 import com.axelor.apps.account.service.move.massentry.MassEntryToolService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.base.AxelorException;
@@ -38,9 +34,7 @@ public class MoveLineMassEntryServiceImpl implements MoveLineMassEntryService {
   protected MoveLineTaxService moveLineTaxService;
   protected MoveCounterPartService moveCounterPartService;
   protected MassEntryToolService massEntryToolService;
-  protected MoveLoadDefaultConfigService moveLoadDefaultConfigService;
   protected CurrencyService currencyService;
-  protected MoveLineMassEntryToolService moveLineMassEntryToolService;
   protected AccountingSituationService accountingSituationService;
   protected InvoiceTermService invoiceTermService;
 
@@ -49,17 +43,13 @@ public class MoveLineMassEntryServiceImpl implements MoveLineMassEntryService {
       MoveLineTaxService moveLineTaxService,
       MoveCounterPartService moveCounterPartService,
       MassEntryToolService massEntryToolService,
-      MoveLoadDefaultConfigService moveLoadDefaultConfigService,
       CurrencyService currencyService,
-      MoveLineMassEntryToolService moveLineMassEntryToolService,
       AccountingSituationService accountingSituationService,
       InvoiceTermService invoiceTermService) {
     this.moveLineTaxService = moveLineTaxService;
     this.moveCounterPartService = moveCounterPartService;
     this.massEntryToolService = massEntryToolService;
-    this.moveLoadDefaultConfigService = moveLoadDefaultConfigService;
     this.currencyService = currencyService;
-    this.moveLineMassEntryToolService = moveLineMassEntryToolService;
     this.accountingSituationService = accountingSituationService;
     this.invoiceTermService = invoiceTermService;
   }
@@ -77,24 +67,6 @@ public class MoveLineMassEntryServiceImpl implements MoveLineMassEntryService {
       massEntryToolService.clearMoveLineMassEntryListAndAddNewLines(
           parentMove, childMove, temporaryMoveNumber);
     }
-  }
-
-  @Override
-  public void loadAccountInformation(Move move, MoveLineMassEntry moveLine) throws AxelorException {
-    Account accountingAccount =
-        moveLoadDefaultConfigService.getAccountingAccountFromAccountConfig(move);
-
-    if (accountingAccount != null) {
-      moveLine.setAccount(accountingAccount);
-
-      AnalyticDistributionTemplate analyticDistributionTemplate =
-          accountingAccount.getAnalyticDistributionTemplate();
-      if (accountingAccount.getAnalyticDistributionAuthorized()
-          && analyticDistributionTemplate != null) {
-        moveLine.setAnalyticDistributionTemplate(analyticDistributionTemplate);
-      }
-    }
-    moveLine.setTaxLine(moveLoadDefaultConfigService.getTaxLine(move, moveLine, accountingAccount));
   }
 
   @Override
@@ -166,48 +138,6 @@ public class MoveLineMassEntryServiceImpl implements MoveLineMassEntryService {
       }
     }
     return currencyRate;
-  }
-
-  @Override
-  public void setPartnerAndRelatedFields(Move move, MoveLineMassEntry moveLine)
-      throws AxelorException {
-    if (moveLine.getPartner() == null) {
-      moveLineMassEntryToolService.setPartnerChanges(moveLine, null);
-    } else {
-      if (move != null && move.getJournal() != null) {
-        int journalTechnicalTypeSelect =
-            move.getJournal().getJournalType().getTechnicalTypeSelect();
-        moveLineMassEntryToolService.setPaymentModeOnMoveLineMassEntry(
-            moveLine, journalTechnicalTypeSelect);
-
-        move.setPartner(moveLine.getPartner());
-        moveLine.setMovePaymentCondition(null);
-        if (journalTechnicalTypeSelect != JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY) {
-          moveLine.setMovePaymentCondition(moveLine.getPartner().getPaymentCondition());
-        }
-
-        this.loadAccountInformation(move, moveLine);
-        move.setPartner(null);
-
-        AccountingSituation accountingSituation =
-            accountingSituationService.getAccountingSituation(
-                moveLine.getPartner(), move.getCompany());
-        moveLine.setVatSystemSelect(null);
-        if (accountingSituation != null) {
-          moveLine.setVatSystemSelect(accountingSituation.getVatSystemSelect());
-        }
-      }
-
-      moveLine.setMovePartnerBankDetails(
-          moveLine.getPartner().getBankDetailsList().stream()
-              .filter(it -> it.getIsDefault() && it.getActive())
-              .findFirst()
-              .orElse(null));
-      moveLine.setCurrencyCode(
-          moveLine.getPartner().getCurrency() != null
-              ? moveLine.getPartner().getCurrency().getCodeISO()
-              : null);
-    }
   }
 
   @Override

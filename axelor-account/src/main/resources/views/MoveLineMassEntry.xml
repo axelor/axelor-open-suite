@@ -15,7 +15,7 @@
       <hilite if="$contains(fieldsErrorList,'date:'+date.toString())" background="danger"/>
     </field>
     <field name="originDate"
-      onChange="action-move-line-mass-entry-method-set-currencyRate,action-move-line-mass-entry-attrs-set-cut-off-dates">
+      onChange="action-move-line-mass-entry-method-origin-date-onchange,action-move-line-mass-entry-attrs-set-cut-off-dates">
       <hilite if="$contains(fieldsErrorList,'originDate:'+originDate.toString())"
         background="danger"/>
     </field>
@@ -217,13 +217,13 @@
 
   <action-method name="action-move-line-mass-entry-method-on-change-partner">
     <call class="com.axelor.apps.account.web.MoveLineMassEntryController"
-      method="changePartnerOnMoveLineMassEntry"/>
+      method="partnerOnChange"/>
   </action-method>
 
-  <action-method name="action-move-line-mass-entry-method-set-currencyRate"
+  <action-method name="action-move-line-mass-entry-method-origin-date-onchange"
     model="com.axelor.apps.account.db.MoveLine">
     <call class="com.axelor.apps.account.web.MoveLineMassEntryController"
-      method="computeCurrentRate"/>
+      method="originDateOnChange"/>
   </action-method>
 
   <action-method name="action-move-line-mass-entry-method-input-action-onchange">
@@ -248,7 +248,7 @@
   <action-method
     name="action-move-line-mass-entry-method-domain-pfp-validator-user-on-select">
     <call class="com.axelor.apps.account.web.MoveLineMassEntryController"
-      method="setMovePfpValidatorUserDomain"/>
+      method="pfpValidatorUserOnSelect"/>
   </action-method>
 
 </object-views>

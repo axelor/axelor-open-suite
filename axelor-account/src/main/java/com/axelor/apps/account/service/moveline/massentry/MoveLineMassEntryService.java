@@ -19,8 +19,6 @@ public interface MoveLineMassEntryService {
       Move parentMove, Move childMove, LocalDate dueDate, Integer temporaryMoveNumber)
       throws AxelorException;
 
-  void loadAccountInformation(Move move, MoveLineMassEntry moveLine) throws AxelorException;
-
   Map<String, Map<String, Object>> setAttrsInputActionOnChange(
       boolean isCounterPartLine, Account account);
 
@@ -32,8 +30,6 @@ public interface MoveLineMassEntryService {
       Integer temporaryMoveNumber,
       LocalDate originDate)
       throws AxelorException;
-
-  void setPartnerAndRelatedFields(Move move, MoveLineMassEntry moveLine) throws AxelorException;
 
   User getPfpValidatorUserForInTaxAccount(Account account, Company company, Partner partner);
 

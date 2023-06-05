@@ -24,8 +24,8 @@ import com.axelor.apps.account.db.repo.MoveLineMassEntryRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveToolService;
+import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryRecordService;
 import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryService;
-import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -34,7 +34,6 @@ import com.axelor.db.JPA;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
-import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -42,13 +41,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @RequestScoped
 public class MassEntryServiceImpl implements MassEntryService {
-
-  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected MassEntryToolService massEntryToolService;
   protected MassEntryVerificationService massEntryVerificationService;
@@ -57,7 +52,7 @@ public class MassEntryServiceImpl implements MassEntryService {
   protected MassEntryMoveCreateService massEntryMoveCreateService;
   protected AppAccountService appAccountService;
   protected MoveRepository moveRepository;
-  protected MoveLineMassEntryToolService moveLineMassEntryToolService;
+  protected MoveLineMassEntryRecordService moveLineMassEntryRecordService;
 
   @Inject
   public MassEntryServiceImpl(
@@ -68,7 +63,7 @@ public class MassEntryServiceImpl implements MassEntryService {
       MassEntryMoveCreateService massEntryMoveCreateService,
       AppAccountService appAccountService,
       MoveRepository moveRepository,
-      MoveLineMassEntryToolService moveLineMassEntryToolService) {
+      MoveLineMassEntryRecordService moveLineMassEntryRecordService) {
     this.massEntryToolService = massEntryToolService;
     this.massEntryVerificationService = massEntryVerificationService;
     this.moveToolService = moveToolService;
@@ -76,7 +71,7 @@ public class MassEntryServiceImpl implements MassEntryService {
     this.massEntryMoveCreateService = massEntryMoveCreateService;
     this.appAccountService = appAccountService;
     this.moveRepository = moveRepository;
-    this.moveLineMassEntryToolService = moveLineMassEntryToolService;
+    this.moveLineMassEntryRecordService = moveLineMassEntryRecordService;
   }
 
   @Override
@@ -113,7 +108,7 @@ public class MassEntryServiceImpl implements MassEntryService {
           inputLine.setDeliveryDate(moveLine.getDeliveryDate());
           inputLine.setVatSystemSelect(moveLine.getVatSystemSelect());
           inputLine.setIsEdited(MoveLineMassEntryRepository.MASS_ENTRY_IS_EDITED_NULL);
-          moveLineMassEntryToolService.setAnalyticsFields(inputLine, moveLine);
+          moveLineMassEntryRecordService.setAnalytics(inputLine, moveLine);
           break;
         }
       }

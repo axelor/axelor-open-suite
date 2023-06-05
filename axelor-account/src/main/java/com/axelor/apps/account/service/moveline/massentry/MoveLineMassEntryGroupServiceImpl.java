@@ -235,4 +235,92 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
 
     return attrsMap;
   }
+
+  @Override
+  public Map<String, Map<String, Object>> getPfpValidatorOnSelectAttrsMap(
+      MoveLineMassEntry moveLine, Move move) {
+    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+
+    moveLineMassEntryAttrsService.addPfpValidatorUserDomain(
+        moveLine.getPartner(), move.getCompany(), attrsMap);
+
+    return attrsMap;
+  }
+
+  @Override
+  public Map<String, Object> getOriginDateOnChangeValuesMap(MoveLineMassEntry moveLine, Move move)
+      throws AxelorException {
+    Map<String, Object> valuesMap = new HashMap<>();
+
+    moveLineMassEntryRecordService.setCurrencyRate(move, moveLine);
+
+    valuesMap.put("isEdited", MoveLineMassEntryRepository.MASS_ENTRY_IS_EDITED_EXCEPT_VAT_SYSTEM);
+    valuesMap.put("currencyRate", moveLine.getCurrencyRate());
+
+    return valuesMap;
+  }
+
+  @Override
+  public Map<String, Map<String, Object>> getOriginDateOnChangeAttrsMap(
+      MoveLineMassEntry moveLine, Move move) {
+    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+
+    moveLineMassEntryAttrsService.addOriginRequired(moveLine, move.getJournal(), attrsMap);
+
+    return attrsMap;
+  }
+
+  @Override
+  public Map<String, Object> getPartnerOnChangeValuesMap(MoveLineMassEntry moveLine, Move move)
+      throws AxelorException {
+    Map<String, Object> valuesMap = new HashMap<>();
+
+    if (moveLine.getPartner() == null) {
+      moveLineMassEntryRecordService.resetPartner(moveLine, null);
+    } else {
+      if (move != null && move.getJournal() != null) {
+        int journalTechnicalTypeSelect =
+            move.getJournal().getJournalType().getTechnicalTypeSelect();
+        moveLineMassEntryRecordService.setMovePaymentMode(moveLine, journalTechnicalTypeSelect);
+        move.setPartner(moveLine.getPartner());
+        moveLineMassEntryRecordService.setMovePaymentCondition(
+            moveLine, journalTechnicalTypeSelect);
+        moveLineMassEntryRecordService.loadAccountInformation(move, moveLine);
+        move.setPartner(null);
+        moveLineMassEntryRecordService.setVatSystemSelect(moveLine, move);
+      }
+      moveLineMassEntryRecordService.setMovePartnerBankDetails(moveLine);
+      moveLineMassEntryRecordService.setCurrencyCode(moveLine);
+    }
+
+    if (move != null) {
+      moveLineMassEntryRecordService.setMovePfpValidatorUser(moveLine, move.getCompany());
+      valuesMap.put("movePfpValidatorUser", moveLine.getMovePfpValidatorUser());
+    }
+
+    valuesMap.put("isEdited", MoveLineMassEntryRepository.MASS_ENTRY_IS_EDITED_ALL);
+    valuesMap.put("partner", moveLine.getPartner());
+    valuesMap.put("partnerId", moveLine.getPartnerId());
+    valuesMap.put("partnerSeq", moveLine.getPartnerSeq());
+    valuesMap.put("partnerFullName", moveLine.getPartnerFullName());
+    valuesMap.put("movePartnerBankDetails", moveLine.getMovePartnerBankDetails());
+    valuesMap.put("vatSystemSelect", moveLine.getVatSystemSelect());
+    valuesMap.put("taxLine", moveLine.getTaxLine());
+    valuesMap.put("analyticDistributionTemplate", moveLine.getAnalyticDistributionTemplate());
+    valuesMap.put("currencyCode", moveLine.getCurrencyCode());
+    valuesMap.put("movePaymentMode", moveLine.getMovePaymentMode());
+    valuesMap.put("movePaymentCondition", moveLine.getMovePaymentCondition());
+    valuesMap.put("account", moveLine.getAccount());
+
+    return valuesMap;
+  }
+
+  @Override
+  public Map<String, Map<String, Object>> getPartnerOnChangeAttrsMap(MoveLineMassEntry moveLine) {
+    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+
+    moveLineMassEntryAttrsService.addMovePfpValidatorUserReadOnly(moveLine, attrsMap);
+
+    return attrsMap;
+  }
 }

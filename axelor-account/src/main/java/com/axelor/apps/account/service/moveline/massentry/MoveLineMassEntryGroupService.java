@@ -28,4 +28,18 @@ public interface MoveLineMassEntryGroupService {
 
   Map<String, Map<String, Object>> getAccountOnChangeAttrsMap(MoveLineMassEntry moveLine, Move move)
       throws AxelorException;
+
+  Map<String, Map<String, Object>> getPfpValidatorOnSelectAttrsMap(
+      MoveLineMassEntry moveLine, Move move);
+
+  Map<String, Object> getOriginDateOnChangeValuesMap(MoveLineMassEntry moveLine, Move move)
+      throws AxelorException;
+
+  Map<String, Map<String, Object>> getOriginDateOnChangeAttrsMap(
+      MoveLineMassEntry moveLine, Move move);
+
+  Map<String, Object> getPartnerOnChangeValuesMap(MoveLineMassEntry moveLine, Move move)
+      throws AxelorException;
+
+  Map<String, Map<String, Object>> getPartnerOnChangeAttrsMap(MoveLineMassEntry moveLine);
 }
