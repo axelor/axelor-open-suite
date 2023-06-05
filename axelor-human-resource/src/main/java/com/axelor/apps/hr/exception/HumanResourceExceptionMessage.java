@@ -240,4 +240,7 @@ public final class HumanResourceExceptionMessage {
 
   public static final String NO_USER_FOR_EMPLOYEE = /*$$(*/
       "Please fill a user for the employee %s" /*)*/;
+
+  public static final String EXPENSE_CAN_NOT_DELETE_VENTILATED = /*$$(*/
+      "Ventilated expense can not be deleted. %s can not be deleted." /*)*/;
 }

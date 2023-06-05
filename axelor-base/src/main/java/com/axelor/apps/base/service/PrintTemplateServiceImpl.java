@@ -52,6 +52,7 @@ import java.lang.invoke.MethodHandles;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
@@ -181,7 +182,11 @@ public class PrintTemplateServiceImpl implements PrintTemplateService {
     }
     print = printRepo.save(print);
 
-    printService.attachMetaFiles(print, getMetaFiles(maker, printTemplate));
+    if (StringUtils.notEmpty(model)) {
+      Class<? extends Model> modelClass = (Class<? extends Model>) Class.forName(model);
+      Model entity = JPA.find(modelClass, objectId);
+      printService.attachMetaFiles(print, getMetaFiles(Map.of(simpleModel, entity), printTemplate));
+    }
 
     return print;
   }
@@ -302,7 +307,7 @@ public class PrintTemplateServiceImpl implements PrintTemplateService {
     return maker;
   }
 
-  public Set<MetaFile> getMetaFiles(TemplateMaker maker, PrintTemplate printTemplate)
+  public Set<MetaFile> getMetaFiles(Map<String, Object> context, PrintTemplate printTemplate)
       throws AxelorException, IOException {
     Set<MetaFile> metaFiles = new HashSet<>();
     if (printTemplate.getBirtTemplateSet() == null) {
@@ -310,8 +315,7 @@ public class PrintTemplateServiceImpl implements PrintTemplateService {
     }
 
     for (BirtTemplate birtTemplate : printTemplate.getBirtTemplateSet()) {
-      metaFiles.add(
-          templateMessageService.createMetaFileUsingBirtTemplate(maker, birtTemplate, null, null));
+      metaFiles.add(templateMessageService.createMetaFileUsingBirtTemplate(birtTemplate, context));
     }
 
     LOG.debug("MetaFile to attach: {}", metaFiles);

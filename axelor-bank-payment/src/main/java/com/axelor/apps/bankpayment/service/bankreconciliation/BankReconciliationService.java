@@ -933,8 +933,6 @@ public class BankReconciliationService {
     }
     if (bankReconciliation.getCashAccount() != null) {
       query = query + " AND self.account = :cashAccount";
-    } else {
-      query = query + " AND self.account.accountType.technicalTypeSelect = :accountType";
     }
 
     return query;
@@ -960,9 +958,8 @@ public class BankReconciliationService {
     }
     if (bankReconciliation.getCashAccount() != null) {
       params.put("cashAccount", bankReconciliation.getCashAccount());
-    } else {
-      params.put("accountType", AccountTypeRepository.TYPE_CASH);
     }
+
     return params;
   }
 
@@ -1096,7 +1093,7 @@ public class BankReconciliationService {
     }
     bankReconciliationLine.setMoveLine(null);
     bankReconciliationLine.setConfidenceIndex(0);
-    bankReconciliationLine.setPostedNbr("");
+    bankReconciliationLine.setPostedNbr(null);
   }
 
   @Transactional

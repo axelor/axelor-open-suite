@@ -375,4 +375,15 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
       reconcileRepository.remove(reconcile);
     }
   }
+
+  @Override
+  public void validateProposal(ReconcileGroup reconcileGroup) throws AxelorException {
+    if (reconcileGroup != null && reconcileGroup.getIsProposal()) {
+      letter(reconcileGroup);
+      reconcileGroup = reconcileGroupRepository.find(reconcileGroup.getId());
+      reconcileGroup.setIsProposal(false);
+      removeDraftReconciles(reconcileGroup);
+      updateStatus(reconcileGroup);
+    }
+  }
 }

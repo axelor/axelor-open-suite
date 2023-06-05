@@ -214,7 +214,7 @@
   </action-view>
 
   <menuitem name="crm-conf-partner-status" parent="crm-conf" title="Partner status"
-    action="crm.conf.partner.status" order="16"/>
+    action="crm.conf.partner.status" order="1050"/>
 
   <action-view name="crm.conf.partner.status" title="Partner status"
     model="com.axelor.apps.crm.db.PartnerStatus">
