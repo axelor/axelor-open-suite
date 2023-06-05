@@ -212,13 +212,13 @@ public class ContractLineServiceImpl implements ContractLineService {
             initialUnitPrice
                 .multiply(qty)
                 .multiply(BigDecimal.valueOf(getFactor(durationType) / durationValue.doubleValue()))
-                .setScale(2, RoundingMode.HALF_UP));
+                .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
       }
       if (exTaxTotal != null && durationValue != null) {
-        contractLine.setPriceRevaluedYearly(
+        contractLine.setYearlyPriceRevalued(
             exTaxTotal
                 .multiply(BigDecimal.valueOf(getFactor(durationType) / durationValue.doubleValue()))
-                .setScale(2, RoundingMode.HALF_UP));
+                .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
       }
     }
 

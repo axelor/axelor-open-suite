@@ -14,6 +14,8 @@
     <field name="startDate"/>
     <field name="currentContractVersion.supposedEndDate"/>
     <field name="statusSelect"/>
+    <field name="currentContractVersion.initialExTaxTotalPerYear"/>
+    <field name="currentContractVersion.yearlyExTaxTotalRevalued"/>
   </grid>
 
   <form name="contract-form" title="Contract" model="com.axelor.apps.contract.db.Contract"
@@ -128,6 +130,22 @@
         </panel>
         <panel title="Notes" stacked="true" name="notesPanel">
           <field name="note" showTitle="false"/>
+        </panel>
+        <panel name="pricesPerYear" title="Prices per year">
+          <field name="currentContractVersion" showTitle="false" colSpan="12"
+            x-show-icons="false" readonly="true">
+            <viewer
+              depends="initialExTaxTotalPerYear,yearlyExTaxTotalRevalued,contract.currency.symbol">
+              <![CDATA[
+              <div style="text-align: left;">
+              <div style="padding-top: 2%; font-weight: 600" x-translate>Initial ex tax total per year</div>
+              <div style="padding: 2% 0 5% 0; font-size: 22px; font-weight: 600; border-bottom: 1px solid #eee;">{{$fmt('initialExTaxTotalPerYear') | currency: record.contract.currency.symbol}}</div>
+              <div style="padding-top: 4%; font-weight: 600;" x-translate>Yearly ex tax total revalued</div>
+              <div style="padding: 2% 0; font-size: 22px; font-weight: 600;">{{$fmt('yearlyExTaxTotalRevalued') | currency: record.contract.currency.symbol}}</div>
+              </div>
+              ]]>
+            </viewer>
+          </field>
         </panel>
       </panel>
     </panel>

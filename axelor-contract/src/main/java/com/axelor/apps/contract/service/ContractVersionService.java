@@ -80,6 +80,8 @@ public interface ContractVersionService {
    */
   ContractVersion newDraft(Contract contract);
 
+  void computeTotals(ContractVersion contractVersion);
+
   default ContractVersion getContractVersion(Contract contract, LocalDate date) {
     for (ContractVersion version : contract.getVersionHistory()) {
       if (version.getActivationDateTime() == null || version.getEndDateTime() == null) {

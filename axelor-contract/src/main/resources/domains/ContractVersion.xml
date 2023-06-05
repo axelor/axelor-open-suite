@@ -77,6 +77,11 @@
 	  	]]>
     </string>
 
+    <decimal name="initialExTaxTotalPerYear" title="Initial ex tax total per year"
+      readonly="true" copy="false"/>
+    <decimal name="yearlyExTaxTotalRevalued" title="Yearly ex tax total revalued "
+      readonly="true"/>
+
     <extra-code><![CDATA[
             public static final int DRAFT_VERSION = 1;
             public static final int WAITING_VERSION = 2;

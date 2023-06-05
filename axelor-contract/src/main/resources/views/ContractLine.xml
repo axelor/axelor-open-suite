@@ -13,12 +13,14 @@
     <field name="price"/>
     <field name="exTaxTotal"/>
     <field name="inTaxTotal"/>
+    <field name="isToRevaluate"/>
+    <field name="initialPricePerYear" readonly="true"/>
+    <field name="yearlyPriceRevalued" readonly="true"/>
   </grid>
 
   <form name="contract-line-form" title="Contract line"
-    model="com.axelor.apps.contract.db.ContractLine"
-    onNew="action-contract-line-attrs-hide-consumption-line,action-contract-line-attrs-scale-and-precision, action-contract-line-attrs-hide-is-to-revaluate"
-    onLoad="action-contract-line-attrs-hide-consumption-line,action-contract-line-attrs-scale-and-precision, action-contract-line-attrs-hide-is-to-revaluate">
+    model="com.axelor.apps.contract.db.ContractLine" onNew="action-contract-line-group-edit-view"
+    onLoad="action-contract-line-group-edit-view">
 
     <panel-tabs name="mainPanelTab">
       <panel name="informationsPanel" title="Information">
@@ -44,7 +46,7 @@
 
       <panel name="pricesPerYear" title="Prices per year">
         <field name="initialPricePerYear" readonly="true"/>
-        <field name="priceRevaluedYearly" readonly="true"/>
+        <field name="yearlyPriceRevalued" readonly="true"/>
         <field name="isToRevaluate"/>
       </panel>
 
@@ -108,6 +110,12 @@
     <attribute name="scale" for="price"
       expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
   </action-attrs>
+
+  <action-group name="action-contract-line-group-edit-view">
+    <action name="action-contract-line-attrs-hide-consumption-line"/>
+    <action name="action-contract-line-attrs-scale-and-precision"/>
+    <action name="action-contract-line-attrs-hide-is-to-revaluate"/>
+  </action-group>
 
   <grid name="additional-contract-line-grid" title="Additional benefit lines"
     model="com.axelor.apps.contract.db.ContractLine">
