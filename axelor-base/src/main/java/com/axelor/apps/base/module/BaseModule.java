@@ -79,8 +79,8 @@ import com.axelor.apps.base.service.BankServiceImpl;
 import com.axelor.apps.base.service.BarcodeGeneratorService;
 import com.axelor.apps.base.service.BarcodeGeneratorServiceImpl;
 import com.axelor.apps.base.service.BaseReportGenerator;
-import com.axelor.apps.base.service.BirtTemplateService;
-import com.axelor.apps.base.service.BirtTemplateServiceImpl;
+import com.axelor.apps.base.service.BirtTemplateViewService;
+import com.axelor.apps.base.service.BirtTemplateViewServiceImpl;
 import com.axelor.apps.base.service.CompanyService;
 import com.axelor.apps.base.service.CompanyServiceImpl;
 import com.axelor.apps.base.service.DMSImportWizardService;
@@ -343,6 +343,6 @@ public class BaseModule extends AxelorModule {
     bind(BirtTemplateService.class).to(BirtTemplateServiceImpl.class);
     bind(BaseServerStartListener.class);
     bind(AosSwagger.class);
-    bind(BirtTemplateService.class).to(BirtTemplateServiceImpl.class);
+    bind(BirtTemplateViewService.class).to(BirtTemplateViewServiceImpl.class);
   }
 }

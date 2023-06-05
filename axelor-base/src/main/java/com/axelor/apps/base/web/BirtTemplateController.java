@@ -18,7 +18,7 @@
  */
 package com.axelor.apps.base.web;
 
-import com.axelor.apps.base.service.BirtTemplateService;
+import com.axelor.apps.base.service.BirtTemplateViewService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.inject.Beans;
@@ -35,7 +35,7 @@ public class BirtTemplateController {
       String templateName = (String) request.getContext().get("templateFileName");
 
       if (ObjectUtils.notEmpty(templateName) && ObjectUtils.notEmpty(birtTemplateId)) {
-        Beans.get(BirtTemplateService.class)
+        Beans.get(BirtTemplateViewService.class)
             .setTemplateMetaFile(Long.valueOf(birtTemplateId), templateName);
       }
     } catch (Exception e) {
