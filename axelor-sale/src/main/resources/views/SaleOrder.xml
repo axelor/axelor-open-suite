@@ -321,13 +321,13 @@
         </field>
         <field name="$invoicingState" showTitle="false" readonly="true"
           showIf="statusSelect >= 3" css="label-bold bold" colSpan="3">
-          <viewer depends="amountInvoiced,exTaxTotal"><![CDATA[
+          <viewer depends="$invoicingState"><![CDATA[
 	        <div>
 	        <div class="span7">
 	          <h5>
-	          <span class="label label-important" ng-show="record.amountInvoiced == 0"  x-translate>Not invoiced</span>
-	          <span class="label label-warning" ng-show="record.amountInvoiced > 0 && $number(record.amountInvoiced) < $number(record.exTaxTotal)" x-translate>Partially invoiced</span>
-	          <span class="label label-success" ng-show="record.amountInvoiced > 0 && $number(record.amountInvoiced) >= $number(record.exTaxTotal)" x-translate>Invoiced</span>
+	          <span class="label label-important" ng-show="record.$invoicingState == 1"  x-translate>Not invoiced</span>
+	          <span class="label label-warning" ng-show="record.$invoicingState == 2" x-translate>Partially invoiced</span>
+	          <span class="label label-success" ng-show="record.$invoicingState == 3" x-translate>Invoiced</span>
 	        </h5>
 	        </div>
 	      </div>
@@ -611,8 +611,7 @@
       </panel>
       <panel if="__config__.app.getApp('sale')?.getPrintingConfigPerSaleOrder()"
         name="printingPanel" title="Printing">
-        <field name="printingSettings" canEdit="false"
-          onSelect="action-sale-method-filter-printing-settings"/>
+        <field name="printingSettings" canEdit="false"/>
         <field name="groupProductsOnPrintings"
           if="__config__.app.getApp('base')?.getIsRegroupProductsOnPrintings()" colSpan="6"/>
         <field name="hideDiscount"/>
@@ -1208,6 +1207,7 @@
     <field name="company"/>
     <field name="tradingName"/>
     <field name="stockLocation" if="__config__.app.isApp('supplychain')"/>
+    <field name="$invoicingState"/>
     <template><![CDATA[
 		    <div class="span12">
 		    	<strong><span x-translate>Sale order</span> {{ saleOrderSeq }}</strong> <span ng-show="record.externalReference">( {{ externalReference }} )</span>
@@ -1231,9 +1231,9 @@
 			  <div>
 				  <div class="span6">
 				  	<h5>
-						<span class="label label-important"  ng-show="record.amountInvoiced == 0"  x-translate>Not invoiced</span>
-						<span class="label label-warning" ng-show="record.amountInvoiced > 0 && $number(record.amountInvoiced) < $number(record.exTaxTotal)" x-translate>Partially invoiced</span>
-						<span class="label label-success" ng-show="record.amountInvoiced > 0 && record.amountInvoiced == record.exTaxTotal" x-translate>Invoiced</span>
+						<span class="label label-important"  ng-show="record.$invoicingState == 1"  x-translate>Not invoiced</span>
+						<span class="label label-warning" ng-show="record.$invoicingState == 2" x-translate>Partially invoiced</span>
+						<span class="label label-success" ng-show="record.$invoicingState == 3" x-translate>Invoiced</span>
 					</h5>
 					<h5>
 						<span class="label label-important" ng-show="record.deliveryState > 0 && record.deliveryState == 1" x-translate>Not delivered</span>
@@ -1285,6 +1285,7 @@
     <field name="company"/>
     <field name="tradingName"/>
     <field name="stockLocation" if="__config__.app.isApp('supplychain')"/>
+    <field name="$invoicingState"/>
     <template><![CDATA[
 		    <div class="span12">
 		    	<strong><span x-translate>Sale quotation</span> {{ saleOrderSeq }}</strong> <span ng-show="record.externalReference">( {{ externalReference }} )</span>
@@ -1308,9 +1309,9 @@
 			  <div>
 				  <div class="span6">
 				  	<h5>
-						<span class="label label-important"  ng-show="record.amountInvoiced == 0"  x-translate>Not invoiced</span>
-						<span class="label label-warning" ng-show="record.amountInvoiced > 0 && $number(record.amountInvoiced) < $number(record.exTaxTotal)" x-translate>Partially invoiced</span>
-						<span class="label label-success" ng-show="record.amountInvoiced > 0 && record.amountInvoiced == record.exTaxTotal" x-translate>Invoiced</span>
+						<span class="label label-important"  ng-show="record.$invoicingState == 1"  x-translate>Not invoiced</span>
+						<span class="label label-warning" ng-show="record.$invoicingState == 2" x-translate>Partially invoiced</span>
+						<span class="label label-success" ng-show="record.$invoicingState == 3" x-translate>Invoiced</span>
 					</h5>
 					<h5>
 						<span class="label label-important" ng-show="record.deliveryState > 0 && record.deliveryState == 1" x-translate>Not delivered</span>
@@ -1498,7 +1499,6 @@
       if="__config__.app.isApp('supplychain')"/>
     <action name="action-partner-attrs-hide-contact-partner"/>
     <action name="action-sale-order-method-update-sale-order-line-list" if="template"/>
-    <action name="action-sale-order-method-compute" if="template"/>
     <action name="action-sale-order-attrs-set-is-ispm-required"
       if="__config__.app.isApp('supplychain')"/>
     <action name="action-sale-order-record-set-group-product-on-printing"/>
@@ -1526,7 +1526,7 @@
       if="saleOrderLineList?.any{ it.subTotalGrossMargin &lt; 0 }"/>
     <alert
       message="The selected price list is no longer valid, do you still want to continue?"
-      if="priceList != null  &amp;&amp; !(priceList?.isActive &amp;&amp; (priceList?.applicationBeginDate == null || priceList?.applicationBeginDate &lt; __config__.date) &amp;&amp; (priceList?.applicationEndDate == null || priceList?.applicationEndDate &gt; __config__.date))"/>
+      if="priceList != null  &amp;&amp; !(priceList?.isActive &amp;&amp; (priceList?.applicationBeginDate == null || priceList?.applicationBeginDate &lt;= __config__.date) &amp;&amp; (priceList?.applicationEndDate == null || priceList?.applicationEndDate &gt;= __config__.date))"/>
   </action-validate>
 
   <action-attrs name="action-sale-order-attrs-in-ati">
@@ -2078,10 +2078,6 @@
 
   <action-method name="action-method-sale-order-validate-changes">
     <call class="com.axelor.apps.sale.web.SaleOrderController" method="validateChanges"/>
-  </action-method>
-
-  <action-method name="action-sale-method-filter-printing-settings">
-    <call class="com.axelor.apps.sale.web.SaleOrderController" method="filterPrintingSettings"/>
   </action-method>
 
   <action-method name="action-sale-method-printing-settings-default-values">

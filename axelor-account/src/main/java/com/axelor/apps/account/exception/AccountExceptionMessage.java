@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.exception;
 
@@ -116,6 +117,12 @@ public final class AccountExceptionMessage {
       "No move lines to reconcile." /*)*/;
   public static final String MOVE_LINE_GENERATION_FIXED_ASSET_MISSING_DESCRIPTION = /*$$(*/
       "The move line %s is missing description in order to create fixed asset" /*)*/;
+
+  public static final String MOVE_LINE_NO_DEBIT_CREDIT = /*$$(*/
+      "An accounting moveline must have either a credit value or a debit value." /*)*/;
+
+  public static final String MOVE_LINE_NEGATIVE_DEBIT_CREDIT = /*$$(*/
+      "Debit and credit value cannot be negative." /*)*/;
   public static final String MOVE_ARCHIVE_OR_REMOVE_NOT_OK_NB = /*$$(*/
       "%d moves couldn't be deleted or archived, please check the logs." /*)*/;
 
@@ -686,7 +693,7 @@ public final class AccountExceptionMessage {
   public static final String ACCOUNT_CONFIG_26 = /*$$(*/
       "%s : You must configure a supplier account for the company %s" /*)*/;
   public static final String ACCOUNT_CONFIG_27 = /*$$(*/
-      "%s : You must configure a cash difference account for the company %s" /*)*/;
+      "%s : You must configure a cash difference debit account for the company %s" /*)*/;
   public static final String ACCOUNT_CONFIG_28 = /*$$(*/
       "%s : You must configure a reimbursement account for the company %s" /*)*/;
   public static final String ACCOUNT_CONFIG_29 = /*$$(*/
@@ -731,6 +738,8 @@ public final class AccountExceptionMessage {
       "%s : You must configure a purchase financial discount account for the company %s" /*)*/;
   public static final String ACCOUNT_CONFIG_50 = /*$$(*/
       "%s : You must configure a sale financial discount account for the company %s" /*)*/;
+  public static final String ACCOUNT_CONFIG_51 = /*$$(*/
+      "%s : You must configure a cash difference credit account for the company %s" /*)*/;
 
   public static final String ACCOUNT_CONFIG_MISSING_HOLDBACK_CUSTOMER = /*$$(*/
       "%s : You must configure a holdback customer account for the company %s" /*)*/;
@@ -852,6 +861,8 @@ public final class AccountExceptionMessage {
   public static final String INVOICE_MULTI_CURRENCY_FINANCIAL_DISCOUNT_PARTNER = /*$$(*/
       "Please be aware that the selected %s offers financial discounts but the system does not support at the moment financial discount on invoices/refunds in a currency different from the company currency." /*)*/;
 
+  public static final String INVOICE_PFP_VALIDATOR_USER_MISSING = /*$$(*/
+      "At least one pfp validator is missing, do you wish to continue ?" /*)*/;
   /** Invoice line generator */
   public static final String INVOICE_LINE_GENERATOR_1 = /*$$(*/
       "You must select a currency for partner %s (%s)" /*)*/;
@@ -1024,6 +1035,9 @@ public final class AccountExceptionMessage {
   public static final String INVOICE_4 = /*$$(*/ "Refunds from invoice %s" /*)*/;
 
   public static final String INVOICE_NO_INVOICE_TO_PAY = /*$$(*/ "No invoice to pay" /*)*/;
+
+  public static final String INVOICE_CAN_NOT_DELETE = /*$$(*/
+      "Invoices can only be deleted if they are canceled. %s can not be deleted." /*)*/;
 
   public static final String INVOICE_WRONG_ANALYTIC_DISTRIBUTION = /*$$(*/
       "Some invoice lines analytic distributions are not correct, please correct them." /*)*/;
@@ -1230,6 +1244,9 @@ public final class AccountExceptionMessage {
 
   public static final String MOVE_CHECK_DESCRIPTION = /*$$(*/
       "The move field description is empty, do you wish to continue ?" /*)*/;
+
+  public static final String MOVE_CHECK_ACCOUNTING = /*$$(*/
+      "By clicking on this button, move status will be updated to Accounted. Please be aware that accounting a move brings irrevocable integration of the move in its moves book. Do you wish to continue ?" /*)*/;
 
   public static final String DATE_NOT_IN_PERIOD_MOVE = /*$$(*/
       "The date input on the move line of %s %s on account %s is not belonging to the accounting period defined on the move." /*)*/;
@@ -1583,9 +1600,12 @@ public final class AccountExceptionMessage {
   public static final String ANALYTIC_DISTRIBUTION_TEMPLATE_CONTAINS_NOT_ALLOWED_ACCOUNTS = /*$$(*/
       "The selected Analytic Distribution template contains Analytic Accounts which are not allowed on this account. Please select an appropriate template or modify the analytic coherence rule for this account." /*)*/;
 
+  public static final String MOVE_INVOICE_DESCRIPTION_REQUIRED = /*$$(*/
+      "Description is required in moves for company %s but description of moves that are being generated will be empty. Please make sure a journal is set and fill a default description or enable document number to be used as such." /*)*/;
+
   /** Mass entry move control message */
   public static final String MASS_ENTRY_MOVE_IDENTIFICATION_MESSAGE = /*$$(*/
-      "Errors in move : %s\n" /*)*/;
+      "Errors in move : %s" /*)*/;
 
   public static final String MASS_ENTRY_DIFFERENT_MOVE_LINE_DATE = /*$$(*/
       "The same move can't have different dates" /*)*/;
@@ -1594,4 +1614,19 @@ public final class AccountExceptionMessage {
 
   public static final String MASS_ENTRY_DIFFERENT_MOVE_LINE_ORIGIN_DATE = /*$$(*/
       "The same move can't have different origin dates" /*)*/;
+
+  public static final String NO_DEBT_RECOVERY_HISTORY_SELECTED = /*$$(*/
+      "Please select debt recovery history." /*)*/;
+
+  public static final String NO_DEBT_RECOVERY_HISTORY_FILE = /*$$(*/
+      "No debt recovery history attachments found." /*)*/;
+
+  public static final String MOVE_TAX_NOT_EQUALS = /*$$(*/
+      "Sum of tax amounts in charge and income lines is not the same as sum of tax lines." /*)*/;
+
+  public static final String PAYMENT_CONDITION_CONFIGURATION_ERROR = /*$$(*/
+      "The payment condition %s is not correctly configured." /*)*/;
+
+  public static final String JOURNAL_TYPE_MISSING_TECHNICAL_TYPE = /*$$(*/
+      "A technical type is required on the journal type %s." /*)*/;
 }

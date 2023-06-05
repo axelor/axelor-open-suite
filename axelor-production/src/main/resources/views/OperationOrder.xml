@@ -17,6 +17,12 @@
     <field name="name"/>
   </calendar>
 
+  <calendar name="planning-machine-calender"
+    model="com.axelor.apps.production.db.OperationOrder" title="Machine Planning"
+    eventStart="plannedStartDateT" eventStop="plannedEndDateT" colorBy="statusSelect">
+    <field name="operationName"/>
+  </calendar>
+
 
   <grid name="operation-order-group-grid" title="Operations"
     model="com.axelor.apps.production.db.OperationOrder" groupBy="manufOrder"
@@ -313,6 +319,13 @@
     model="com.axelor.apps.production.db.OperationOrder">
     <field name="plannedEndDateT" expr="eval: plannedStartDateT?.plusSeconds(plannedDuration)"/>
   </action-record>
+
+  <action-view name="action-manufacturing-view-on-click-planning-machine-calender-view"
+    title="Machine Planning" model="com.axelor.apps.production.db.OperationOrder">
+    <view type="calendar" name="planning-machine-calender"/>
+    <domain>self.statusSelect IN (3,4,5,6) AND self.machine.id = :_machineId</domain>
+    <context name="_machineId" expr="eval: id"/>
+  </action-view>
 
   <search-filters name="operation-order-filters"
     model="com.axelor.apps.production.db.OperationOrder" title="Operation order filters">

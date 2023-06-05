@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.hr.service.timesheet;
 
@@ -83,6 +84,7 @@ import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -92,6 +94,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
@@ -1084,8 +1087,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
                       + "AND self.id NOT IN "
                       + "(SELECT timesheetLine.projectPlanningTime.id FROM TimesheetLine as timesheetLine "
                       + "WHERE timesheetLine.projectPlanningTime != null "
-                      + "AND timesheetLine.timesheet = ?3) "
-                      + "AND self.projectTask != null ",
+                      + "AND timesheetLine.timesheet = ?3) ",
                   timesheet.getEmployee().getId(),
                   timesheet.getFromDate(),
                   timesheet)
@@ -1100,8 +1102,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
                       + "AND self.id NOT IN "
                       + "(SELECT timesheetLine.projectPlanningTime.id FROM TimesheetLine as timesheetLine "
                       + "WHERE timesheetLine.projectPlanningTime != null "
-                      + "AND timesheetLine.timesheet = ?4) "
-                      + "AND self.projectTask != null ",
+                      + "AND timesheetLine.timesheet = ?4) ",
                   timesheet.getEmployee().getId(),
                   timesheet.getFromDate(),
                   timesheet.getToDate(),
@@ -1204,10 +1205,10 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
       Timesheet timesheet, ProjectPlanningTime projectPlanningTime) throws AxelorException {
     TimesheetLine timesheetLine = new TimesheetLine();
     Project project = projectPlanningTime.getProject();
-    timesheetLine.setHoursDuration(projectPlanningTime.getPlannedHours());
+    timesheetLine.setHoursDuration(projectPlanningTime.getPlannedTime());
     timesheetLine.setDuration(
         timesheetLineService.computeHoursDuration(
-            timesheet, projectPlanningTime.getPlannedHours(), false));
+            timesheet, projectPlanningTime.getPlannedTime(), false));
     timesheetLine.setTimesheet(timesheet);
     timesheetLine.setEmployee(timesheet.getEmployee());
     timesheetLine.setProduct(projectPlanningTime.getProduct());
@@ -1215,7 +1216,10 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
       timesheetLine.setProjectTask(projectPlanningTime.getProjectTask());
       timesheetLine.setProject(projectPlanningTime.getProject());
     }
-    timesheetLine.setDate(projectPlanningTime.getDate());
+    LocalDateTime startDateTime = projectPlanningTime.getStartDateTime();
+    if (!Objects.isNull(startDateTime)) {
+      timesheetLine.setDate(startDateTime.toLocalDate());
+    }
     timesheetLine.setProjectPlanningTime(projectPlanningTime);
     return timesheetLine;
   }

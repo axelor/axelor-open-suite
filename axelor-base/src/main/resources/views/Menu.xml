@@ -624,48 +624,6 @@
     <view type="form" name="trading-name-form"/>
   </action-view>
 
-  <menuitem name="alarm-root" title="Alarms" order="600" if="__config__.app.isApp('base')"
-    parent="admin-root"/>
-
-  <menuitem name="alarm-root-alarm-other" parent="alarm-root" title="All Alarms"
-    action="alarm.root.alarm.other" order="100"/>
-
-  <action-view name="alarm.root.alarm.other" title="All Alarms"
-    model="com.axelor.apps.base.db.Alarm">
-    <view type="grid" name="alarm-grid"/>
-    <view type="form" name="alarm-form"/>
-  </action-view>
-
-  <menuitem name="alarm-conf" parent="alarm-root" title="Configuration" icon="fa-cog"
-    order="200"/>
-
-  <menuitem name="alarm-conf-alarm-engine" parent="alarm-conf" title="Alarm engines"
-    action="alarm.conf.alarm.engine" order="100"/>
-
-  <action-view name="alarm.conf.alarm.engine" title="Alarm engines"
-    model="com.axelor.apps.base.db.AlarmEngine">
-    <view type="grid" name="alarm-engine-grid"/>
-    <view type="form" name="alarm-engine-form"/>
-  </action-view>
-
-  <menuitem name="alarm-conf-message" parent="alarm-conf" title="All Messages"
-    action="alarm.conf.message" order="200"/>
-
-  <action-view name="alarm.conf.message" title="All Messages"
-    model="com.axelor.apps.base.db.AlarmMessage">
-    <view type="grid" name="alarm-message-grid"/>
-    <view type="form" name="alarm-message-form"/>
-  </action-view>
-
-  <menuitem name="alarm-conf-alarm-engine-batch" parent="alarm-conf" title="Alarm batches"
-    action="alarm.conf.alarm.engine.batch" order="300"/>
-
-  <action-view name="alarm.conf.alarm.engine.batch" title="Alarm batches"
-    model="com.axelor.apps.base.db.AlarmEngineBatch">
-    <view type="grid" name="alarm-engine-batch-grid"/>
-    <view type="form" name="alarm-engine-batch-form"/>
-  </action-view>
-
   <menuitem name="admin-root-batch" parent="admin-root" if="__config__.app.isApp('base')"
     title="Batches" order="700"/>
 

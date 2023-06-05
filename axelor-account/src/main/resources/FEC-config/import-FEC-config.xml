@@ -3,6 +3,11 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_6.1.xsd">
 
+  <adapter name="LocalDate" type="com.axelor.data.adapter.JavaTimeAdapter">
+    <option name="type" value="LocalDate"/>
+    <option name="format" value="yyyyMMdd"/>
+  </adapter>
+
   <input file="FEC.csv" separator="|" type="com.axelor.apps.account.db.MoveLine"
     call="com.axelor.csv.script.ImportMove:importFECMove">
     <!-- <header>journalCode, journalName, move_reference, moveLine_date, accountCode, accountName, partnerSeq,

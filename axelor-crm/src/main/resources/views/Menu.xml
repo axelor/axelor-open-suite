@@ -80,7 +80,8 @@
 
   <action-view name="crm.opened.prospects" title="Opened prospects"
     model="com.axelor.apps.base.db.Partner">
-    <view type="kanban" name="partner-prospect-kanban"/>
+    <view type="kanban" name="partner-prospect-kanban"
+      if="__config__.app.getApp('crm')?.getCrmProcessOnPartner()"/>
     <view type="cards" name="partner-cards"/>
     <view type="grid" name="partner-prospect-grid"/>
     <view type="form" name="partner-customer-form"/>
@@ -91,6 +92,7 @@
     <context name="_isProspect" expr="true"/>
     <context name="_domain" expr="self.isContact = false AND self.isProspect = true"/>
     <context name="json-enhance" expr="eval:true"/>
+    <context name="_isFromCrm" expr="eval:true"/>
   </action-view>
 
   <menuitem name="crm-closed-prospects" parent="crm-root-prospects"
@@ -124,6 +126,7 @@
     <context name="_isCustomer" expr="true"/>
     <context name="_domain" expr="self.isContact = false AND self.isCustomer = true"/>
     <context name="json-enhance" expr="eval:true"/>
+    <context name="_isFromCrm" expr="eval:true"/>
   </action-view>
 
   <menuitem name="crm-root-contacts" parent="crm-root" title="Contacts"
@@ -352,6 +355,15 @@
     model="com.axelor.apps.crm.db.OpportunityStatus">
     <view type="grid" name="opportunity-status-grid"/>
     <view type="form" name="opportunity-status-form"/>
+  </action-view>
+
+  <menuitem name="crm-conf-partner-status" parent="crm-conf" title="Partner status"
+    action="crm.conf.partner.status" order="1050"/>
+
+  <action-view name="crm.conf.partner.status" title="Partner status"
+    model="com.axelor.apps.crm.db.PartnerStatus">
+    <view type="grid" name="partner-status-grid"/>
+    <view type="form" name="partner-status-form"/>
   </action-view>
 
   <menuitem name="admin-root-batch-crm" parent="admin-root-batch" title="CRM batches"

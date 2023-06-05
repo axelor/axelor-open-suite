@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.db.repo;
 
@@ -79,7 +80,6 @@ public class MoveManagementRepository extends MoveRepository {
       copy.setOrigin(origin);
       copy.setReasonOfRefusalToPay(null);
       copy.setReasonOfRefusalToPayStr(null);
-      copy.setPfpValidatorUser(null);
       Beans.get(MovePfpService.class).setPfpStatus(copy);
 
       List<MoveLine> moveLineList = copy.getMoveLineList();
@@ -151,11 +151,10 @@ public class MoveManagementRepository extends MoveRepository {
     invoiceTerm.setPfpPartialReason(null);
     invoiceTerm.setReasonOfRefusalToPay(null);
     invoiceTerm.setReasonOfRefusalToPayStr(null);
-    invoiceTerm.setPfpValidatorUser(null);
     invoiceTerm.setDecisionPfpTakenDateTime(null);
     invoiceTerm.setInvoice(null);
 
-    invoiceTermService.setPfpStatus(invoiceTerm);
+    invoiceTermService.setPfpStatus(invoiceTerm, null);
   }
 
   @Override

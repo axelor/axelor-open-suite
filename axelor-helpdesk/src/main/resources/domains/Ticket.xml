@@ -18,7 +18,8 @@
     	return fullName + subject;
     ]]></string>
     <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
-    <many-to-one name="customer" ref="com.axelor.apps.base.db.Partner" title="Customer"/>
+    <many-to-one name="customerPartner" ref="com.axelor.apps.base.db.Partner"
+      title="Customer"/>
     <many-to-one name="contactPartner" ref="com.axelor.apps.base.db.Partner"
       title="Customer contact"/>
     <many-to-one name="slaPolicy" ref="com.axelor.apps.helpdesk.db.Sla"

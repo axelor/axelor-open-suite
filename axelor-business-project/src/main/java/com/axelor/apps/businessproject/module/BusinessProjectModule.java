@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.businessproject.module;
 
@@ -42,12 +43,13 @@ import com.axelor.apps.businessproject.service.ProjectAnalyticMoveLineServiceImp
 import com.axelor.apps.businessproject.service.ProjectBusinessService;
 import com.axelor.apps.businessproject.service.ProjectBusinessServiceImpl;
 import com.axelor.apps.businessproject.service.ProjectContractServiceImpl;
-import com.axelor.apps.businessproject.service.ProjectFolderService;
-import com.axelor.apps.businessproject.service.ProjectFolderServiceImpl;
+import com.axelor.apps.businessproject.service.ProjectPlanningTimeBusinessProjectServiceImpl;
 import com.axelor.apps.businessproject.service.ProjectPurchaseServiceImpl;
 import com.axelor.apps.businessproject.service.ProjectStockMoveInvoiceServiceImpl;
 import com.axelor.apps.businessproject.service.ProjectTaskBusinessProjectService;
 import com.axelor.apps.businessproject.service.ProjectTaskBusinessProjectServiceImpl;
+import com.axelor.apps.businessproject.service.ProjectTaskReportingValuesComputingService;
+import com.axelor.apps.businessproject.service.ProjectTaskReportingValuesComputingServiceImpl;
 import com.axelor.apps.businessproject.service.PurchaseOrderInvoiceProjectServiceImpl;
 import com.axelor.apps.businessproject.service.PurchaseOrderLineProjectService;
 import com.axelor.apps.businessproject.service.PurchaseOrderLineServiceProjectImpl;
@@ -70,6 +72,7 @@ import com.axelor.apps.contract.service.ContractServiceImpl;
 import com.axelor.apps.contract.service.WorkflowCancelServiceContractImpl;
 import com.axelor.apps.hr.db.repo.ProjectTaskHRRepository;
 import com.axelor.apps.hr.service.expense.ExpenseServiceImpl;
+import com.axelor.apps.hr.service.project.ProjectPlanningTimeServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetServiceImpl;
 import com.axelor.apps.project.service.ProjectServiceImpl;
@@ -131,11 +134,14 @@ public class BusinessProjectModule extends AxelorModule {
     bind(AppBusinessProjectRepository.class).to(AppBusinessProjectManagementRepository.class);
     bind(InvoicePaymentValidateServiceBankPayImpl.class)
         .to(InvoicePaymentValidateProjectServiceImpl.class);
-    bind(ProjectFolderService.class).to(ProjectFolderServiceImpl.class);
     bind(ProjectAnalyticMoveLineService.class).to(ProjectAnalyticMoveLineServiceImpl.class);
     bind(PurchaseOrderWorkflowServiceSupplychainImpl.class)
         .to(PurchaseOrderWorkflowServiceProjectImpl.class);
     bind(InvoiceMergingServiceSupplychainImpl.class)
         .to(InvoiceMergingServiceBusinessProjectImpl.class);
+    bind(ProjectTaskReportingValuesComputingService.class)
+        .to(ProjectTaskReportingValuesComputingServiceImpl.class);
+    bind(ProjectPlanningTimeServiceImpl.class)
+        .to(ProjectPlanningTimeBusinessProjectServiceImpl.class);
   }
 }

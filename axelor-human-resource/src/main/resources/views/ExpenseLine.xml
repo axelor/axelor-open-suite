@@ -5,7 +5,7 @@
 
   <grid name="expense-line-grid" title="Expense lines"
     model="com.axelor.apps.hr.db.ExpenseLine" orderBy="-expenseDate"
-    onNew="action-expense-line-default, action-kilometric-allowance-record-default">
+    onNew="action-expense-line-group-onnew, action-kilometric-allowance-record-default">
     <hilite if="untaxedAmount == 0" color="danger"/>
     <field name="project" requiredIf="toInvoice" canView="false"
       onSelect="action-expense-line-attrs-domain-project" widget="SuggestBox" width="150"
@@ -22,6 +22,7 @@
       aggregate="sum" readonlyIf="expenseProduct.blockExpenseTax" width="80"
       onChange="action-expense-on-change-tax-untaxt-amount,action-expense-line-method-compute-analytic-distribution"/>
     <field name="toInvoice"/>
+    <field name="justificationMetaFile" widget="binary-link"/>
     <field name="comments" width="400"/>
     <field name="untaxedAmount" hidden="true"/>
     <field name="expenseProduct.blockExpenseTax" hidden="true"/>
@@ -29,7 +30,7 @@
 
   <grid name="expense-line-kilometric-grid" title="Kilometric Allowances"
     model="com.axelor.apps.hr.db.ExpenseLine" orderBy="-expenseDate"
-    onNew="action-expense-line-default, action-expense-line-method-fill-kilometric-expense-product">
+    onNew="action-expense-line-group-onnew, action-expense-line-method-fill-kilometric-expense-product">
     <hilite if="untaxedAmount == 0" color="danger"/>
     <field name="project" requiredIf="toInvoice" canView="false"
       onSelect="action-expense-line-attrs-domain-project" widget="SuggestBox"
@@ -62,8 +63,8 @@
   </form>
 
   <form name="expense-line-form" title="Expense line" model="com.axelor.apps.hr.db.ExpenseLine"
-    onNew="action-expense-line-default" onSave="action-expense-line-validate-expenseDate"
-    width="large">
+    onNew="action-expense-line-group-onnew" onSave="action-expense-line-validate-expenseDate"
+    width="large" onLoad="action-expense-line-attrs-read-only-analytic-distribution">
 
     <panel name="mainPanel" title="Main">
       <field name="employee" hidden="true" showIf="expense.multipleUsers"
@@ -102,8 +103,7 @@
     </panel>
 
     <panel name="analyticDistributionPanel" title="Analytic distribution"
-      if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()"
-      onTabSelect="action-expense-line-attrs-read-only-distribution-lines">
+      if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()">
       <field name="analyticDistributionTemplate"
         grid-view="analytic-distribution-template-grid"
         form-view="analytic-distribution-template-form" canEdit="false"
@@ -123,8 +123,9 @@
 
   <form name="expense-line-kilometric-form" title="Kilometric Allowance"
     model="com.axelor.apps.hr.db.ExpenseLine"
-    onNew="action-expense-line-default,action-expense-line-method-fill-kilometric-expense-product"
-    onSave="action-expense-line-validate-expenseDate" width="large">
+    onNew="action-expense-line-group-onnew,action-expense-line-method-fill-kilometric-expense-product"
+    onSave="action-expense-line-validate-expenseDate" width="large"
+    onLoad="action-expense-line-attrs-read-only-analytic-distribution">
 
     <panel name="kilometricAllowancePanel" title="Kilometric Allowance">
       <field name="project" requiredIf="toInvoice" edit-icon="false" canEdit="false"
@@ -153,8 +154,7 @@
     </panel>
 
     <panel name="analyticDistributionPanel" title="Analytic distribution"
-      if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()"
-      onTabSelect="action-expense-line-attrs-read-only-distribution-lines">
+      if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()">
       <field name="analyticDistributionTemplate"
         grid-view="analytic-distribution-template-grid"
         form-view="analytic-distribution-template-form" canEdit="false"
@@ -201,9 +201,15 @@
       method="computeDistanceAndKilometricExpense"/>
   </action-method>
 
-  <action-attrs name="action-expense-line-attrs-read-only-distribution-lines">
+  <action-attrs name="action-expense-line-attrs-read-only-analytic-distribution">
+    <attribute name="readonly" for="analyticDistributionPanel"
+      expr="eval: __parent__?.employee?.analyticDistributionTemplate != null"
+      if="__config__.app.isApp('account') &amp;&amp;
+   __config__.app.getApp('account')?.getManageAnalyticAccounting()"/>
     <attribute name="readonly" for="analyticMoveLineList"
-      expr="eval: __repo__(AccountConfig).findByCompany(__parent__.company)?.analyticDistributionTypeSelect != 1"/>
+      expr="eval: __repo__(AccountConfig).findByCompany(__parent__.company)?.analyticDistributionTypeSelect != 1"
+      if="__config__.app.isApp('account') &amp;&amp;
+   __config__.app.getApp('account')?.getManageAnalyticAccounting()"/>
   </action-attrs>
 
   <action-attrs name="action-expense-line-attrs-domain-project">
@@ -214,6 +220,9 @@
   <action-record name="action-expense-line-default"
     model="com.axelor.apps.hr.db.ExpenseLine">
     <field name="employee" expr="eval: __parent__?.employee"/>
+    <field name="analyticDistributionTemplate"
+      expr="eval: __parent__?.employee?.analyticDistributionTemplate"
+      if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()"/>
   </action-record>
 
   <action-record name="action-expense-on-change-tax-untaxt-amount"
@@ -264,4 +273,14 @@
     <attribute name="value" for="toInvoice" expr="eval: project?.isInvoicingExpenses"
       if="__config__.app.isApp('business-project')"/>
   </action-attrs>
+
+  <action-group name="action-expense-line-group-onnew">
+    <action name="action-expense-line-default"/>
+    <action name="action-expense-line-attrs-read-only-analytic-distribution"
+      if="__config__.app.isApp('account') &amp;&amp;
+   __config__.app.getApp('account')?.getManageAnalyticAccounting()"/>
+    <action name="action-expense-line-method-create-distribution"
+      if="__config__.app.isApp('account') &amp;&amp;
+   __config__.app.getApp('account')?.getManageAnalyticAccounting() &amp;&amp; analyticDistributionTemplate"/>
+  </action-group>
 </object-views>
