@@ -685,7 +685,7 @@
       <field name="progressSelect" as="progress"/>
       <button name="openTaskBtn" title="Open task" onClick="action-project-task-open-task"/>
       <button name="deleteTaskBtn" icon="fa-times-circle"
-        onClick="action-project-task-validate-delete-team-task-confirmation, action-project-task-method-delete-project-task"/>
+        onClick="action-project-task-validate-delete-team-task-confirmation,action-project-task-method-delete-project-task"/>
     </node>
 
     <node model="com.axelor.apps.project.db.ProjectTask" parent="parentTask" draggable="true"
@@ -696,7 +696,7 @@
       <field name="progressSelect" as="progress"/>
       <button name="openTaskBtn" title="Open task" onClick="action-project-task-open-task"/>
       <button name="deleteTaskBtn" icon="fa-times-circle"
-        onClick="action-project-task-validate-delete-team-task-confirmation, action-project-task-method-delete-project-task"/>
+        onClick="action-project-task-validate-delete-team-task-confirmation,action-project-task-method-delete-project-task"/>
     </node>
 
   </tree>
