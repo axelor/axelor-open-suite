@@ -144,7 +144,8 @@
           <field name="paymentCondition" showIf="journal.journalType.technicalTypeSelect != 4"
             readonlyIf="$validatePeriod &amp;&amp; statusSelect == 3" colSpan="4"
             onChange="action-account-move-method-payment-condition-onchange"
-            form-view="payment-condition-form" grid-view="payment-condition-grid"/>
+            form-view="payment-condition-form" grid-view="payment-condition-grid"
+            x-order="-frequency"/>
           <field name="dueDate" title="Due date"
             help="This field allows to modify directly the move line due date which is by default calculated based on the payment condition."
             hidden="true" readonlyIf="!paymentCondition.isFree" type="date" colSpan="2"/>

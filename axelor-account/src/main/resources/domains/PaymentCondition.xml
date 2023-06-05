@@ -14,6 +14,13 @@
     <one-to-many name="paymentConditionLineList"
       ref="com.axelor.apps.account.db.PaymentConditionLine" mappedBy="paymentCondition"
       title="Payment condition lines"/>
+    <integer name="frequency" formula="true">
+      <![CDATA[
+        (SELECT COUNT(MOVE.id)
+        FROM account_move MOVE
+        WHERE MOVE.payment_condition = id)
+      ]]>
+    </integer>
 
     <extra-code><![CDATA[
 
