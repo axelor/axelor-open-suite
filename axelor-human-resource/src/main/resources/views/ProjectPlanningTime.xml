@@ -12,6 +12,9 @@
     <field name="employee"/>
     <field name="startDateTime"/>
     <field name="endDateTime"/>
+    <button name="deleteProjectPlanningTime" icon="fa-times-circle"
+      onClick="action-project-planning-time-method-remove-single-project-planning-time"
+      help="Delete"/>
   </grid>
 
   <grid name="project-planning-db-grid" title="Project Plannings"
