@@ -71,11 +71,10 @@ public class BatchContractRevaluate extends BatchStrategy {
         contractRepository
             .all()
             .filter(
-                "self.isToRevaluate = true AND self.nextRevaluationDate = :today AND self.currentContractVersion.statusSelect = :onGoingStatus AND self.id NOT IN (:idsOk) AND self.id NOT IN (:idsFail)");
+                "self.isToRevaluate = true AND self.currentContractVersion.statusSelect = :onGoingStatus AND self.id NOT IN (:idsOk) AND self.id NOT IN (:idsFail)");
     List<Contract> contractList;
     while (!(contractList =
             query
-                .bind("today", appBaseService.getTodayDate(null))
                 .bind("onGoingStatus", ContractVersionRepository.ONGOING_VERSION)
                 .bind("idsOk", idsOk)
                 .bind("idsFail", idsFail)
