@@ -1,3 +1,3 @@
 ---
-title: "Alarms :fix delete everything related to alarms"
-type: fix
+title: "Alarms: remove delete everything related to alarms"
+type: remove
