@@ -521,7 +521,7 @@ public class MoveLineController {
   public void onLoad(ActionRequest request, ActionResponse response) {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
-      Move move = moveLine.getMove();
+      Move move = this.getMove(request, moveLine);
 
       response.setAttrs(Beans.get(MoveLineGroupService.class).getOnLoadAttrsMap(moveLine, move));
     } catch (Exception e) {
@@ -532,7 +532,7 @@ public class MoveLineController {
   public void onLoadMove(ActionRequest request, ActionResponse response) {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
-      Move move = moveLine.getMove();
+      Move move = this.getMove(request, moveLine);
 
       response.setAttrs(
           Beans.get(MoveLineGroupService.class).getOnLoadMoveAttrsMap(moveLine, move));

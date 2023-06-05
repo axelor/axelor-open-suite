@@ -607,7 +607,7 @@
         readonlyIf="amountPaid &gt; 0" onChange="action-move-line-method-account-onchange"/>
       <field name="partner" form-view="partner-form" grid-view="partner-grid"
         onSelect="action-move-line-method-partner-onselect" canEdit="false"
-        readonlyIf="amountPaid &gt; 0" onChange="action-move-line-method-partner-onchange"
+        onChange="action-move-line-method-partner-onchange"
         requiredIf="account.useForPartnerBalance"/>
       <field name="currencyAmount"
         onChange="action-move-line-method-currency-amount-rate-onchange"
