@@ -180,11 +180,6 @@ public class BatchAutoMoveLettering extends BatchStrategy {
   protected void reconcileWithMethod(
       List<MoveLine> debitMoveLines, List<MoveLine> creditMoveLines, int reconcileMethodSelect) {
 
-    Comparator<MoveLine> moveLineComparator = getMoveLineComparator();
-
-    creditMoveLines.sort(Comparator.nullsLast(moveLineComparator));
-    debitMoveLines.sort(Comparator.nullsLast(moveLineComparator));
-
     BigDecimal debitTotalRemaining =
         debitMoveLines.stream()
             .map(MoveLine::getAmountRemaining)
@@ -473,10 +468,23 @@ public class BatchAutoMoveLettering extends BatchStrategy {
   }
 
   protected Map<List<Object>, Pair<List<MoveLine>, List<MoveLine>>> getMoveLinesMap() {
-    return moveLineService.getPopulatedReconcilableMoveLineMap(
-        getMoveLinesQuery().fetch().stream()
-            .filter(moveLine -> moveLineControlService.canReconcile(moveLine))
-            .collect(Collectors.toList()));
+    Map<List<Object>, Pair<List<MoveLine>, List<MoveLine>>> listPairMap =
+        moveLineService.getPopulatedReconcilableMoveLineMap(
+            getMoveLinesQuery().fetch().stream()
+                .filter(moveLine -> moveLineControlService.canReconcile(moveLine))
+                .collect(Collectors.toList()));
+
+    Comparator<MoveLine> moveLineComparator = getMoveLineComparator();
+
+    listPairMap
+        .values()
+        .forEach(
+            listListPair -> {
+              listListPair.getLeft().sort(Comparator.nullsLast(moveLineComparator));
+              listListPair.getRight().sort(Comparator.nullsLast(moveLineComparator));
+            });
+
+    return listPairMap;
   }
 
   public boolean existsAlreadyRunning(AccountingBatch accountingBatch) {
@@ -488,10 +496,10 @@ public class BatchAutoMoveLettering extends BatchStrategy {
     params.put("company", accountingBatch.getCompany());
     params.put("startDate", accountingBatch.getStartDate());
     params.put("endDate", accountingBatch.getEndDate());
-    filters += " AND (";
+    filters += " AND ";
     if (accountingBatch.getFromAccount() != null && accountingBatch.getToAccount() != null) {
       filters +=
-          "(self.fromAccount IS NOT null AND self.toAccount IS NOT null AND self.fromAccount.code <= :toAccountCode AND self.toAccount.code >= :fromAccountCode)";
+          "((self.fromAccount IS NOT null AND self.toAccount IS NOT null AND self.fromAccount.code <= :toAccountCode AND self.toAccount.code >= :fromAccountCode)";
       filters +=
           " OR (self.fromAccount IS NOT null AND self.toAccount IS null AND self.fromAccount.code <= :toAccountCode)";
       filters +=
@@ -505,7 +513,6 @@ public class BatchAutoMoveLettering extends BatchStrategy {
       filters += "(self.fromAccount IS null OR self.fromAccount.code <= :toAccountCode)";
       params.put("toAccountCode", accountingBatch.getToAccount().getCode());
     }
-    filters += ")";
     return accountingBatchRepository
         .all()
         .filter(filters)

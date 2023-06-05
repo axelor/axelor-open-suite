@@ -100,8 +100,13 @@
 
   <selection name='iadministration.export.type.select'>
     <option value="pdf">PDF</option>
-    <option value="xlsx">XLS</option>
+    <option value="xlsx">XLSX</option>
     <option value="ods">ODS</option>
+    <option value="xls">XLS</option>
+    <option value="doc">DOC</option>
+    <option value="docx">DOCX</option>
+    <option value="odt">ODT</option>
+    <option value="html">HTML</option>
   </selection>
 
   <selection name='iadministration.declaration.of.exchanges.export.type.select'>
@@ -123,6 +128,7 @@
 
   <selection name='ibase.batch.action.select'>
     <option value='2'>Calendar synchronization</option>
+    <option value='3'>Password change</option>
   </selection>
 
   <selection name="base.routing.rule.type.select">
@@ -715,6 +721,12 @@
     <option value="3">UPDATE</option>
     <option value="4">DELETE</option>
     <option value="5">EXPORT</option>
+  </selection>
+
+  <selection name="base.batch.password.change.action.select">
+    <option value="1">Generate new random passwords</option>
+    <option value="2">Force the users to update password the next login</option>
+    <option value="3">Generate new random passwords and force password change</option>
   </selection>
 
 </object-views>

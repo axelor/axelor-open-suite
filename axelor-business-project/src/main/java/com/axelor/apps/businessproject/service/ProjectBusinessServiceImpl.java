@@ -58,6 +58,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
   protected AddressService addressService;
   protected AppBusinessProjectService appBusinessProjectService;
   protected ProjectTaskBusinessProjectService projectTaskBusinessProjectService;
+  protected ProjectTaskReportingValuesComputingService projectTaskReportingValuesComputingService;
 
   @Inject
   public ProjectBusinessServiceImpl(
@@ -68,12 +69,14 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
       PartnerService partnerService,
       AddressService addressService,
       AppBusinessProjectService appBusinessProjectService,
-      ProjectTaskBusinessProjectService projectTaskBusinessProjectService) {
+      ProjectTaskBusinessProjectService projectTaskBusinessProjectService,
+      ProjectTaskReportingValuesComputingService projectTaskReportingValuesComputingService) {
     super(projectRepository, projectStatusRepository, appProjectService, projTemplateRepo);
     this.partnerService = partnerService;
     this.addressService = addressService;
     this.appBusinessProjectService = appBusinessProjectService;
     this.projectTaskBusinessProjectService = projectTaskBusinessProjectService;
+    this.projectTaskReportingValuesComputingService = projectTaskReportingValuesComputingService;
   }
 
   @Override
@@ -275,7 +278,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
             .filter(projectTask -> projectTask.getParentTask() == null)
             .collect(Collectors.toList());
     for (ProjectTask projectTask : projectTaskList) {
-      projectTaskBusinessProjectService.computeProjectTaskTotals(projectTask);
+      projectTaskReportingValuesComputingService.computeProjectTaskTotals(projectTask);
     }
   }
 }

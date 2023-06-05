@@ -1,8 +1,11 @@
 package com.axelor.apps.account.service.moveline.massentry;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.Journal;
+import com.axelor.apps.account.db.JournalType;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLineMassEntry;
+import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -115,5 +118,36 @@ public class MoveLineMassEntryAttrsServiceImpl implements MoveLineMassEntryAttrs
         && account.getUseForPartnerBalance()) {
       this.addAttr("movePfpValidatorUser", "required", true, attrsMap);
     }
+  }
+
+  @Override
+  public void addTemporaryMoveNumberFocus(Move move, Map<String, Map<String, Object>> attrsMap) {
+    if (ObjectUtils.notEmpty(move.getMoveLineMassEntryList())
+        && move.getMoveLineMassEntryList().size() > 0) {
+      this.addAttr("temporaryMoveNumber", "focus", true, attrsMap);
+    }
+  }
+
+  @Override
+  public void addMovePaymentConditionRequired(
+      JournalType journalType, Map<String, Map<String, Object>> attrsMap) {
+    this.addAttr(
+        "movePaymentCondition",
+        "required",
+        journalType != null
+            && journalType.getTechnicalTypeSelect() != null
+            && journalType.getTechnicalTypeSelect()
+                < JournalTypeRepository.TECHNICAL_TYPE_SELECT_OTHER,
+        attrsMap);
+  }
+
+  @Override
+  public void addOriginRequired(
+      MoveLineMassEntry moveLine, Journal journal, Map<String, Map<String, Object>> attrsMap) {
+    this.addAttr(
+        "origin",
+        "required",
+        moveLine.getOriginDate() != null && journal != null && journal.getHasRequiredOrigin(),
+        attrsMap);
   }
 }

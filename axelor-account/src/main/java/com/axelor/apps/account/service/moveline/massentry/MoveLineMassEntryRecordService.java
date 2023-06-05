@@ -12,4 +12,6 @@ public interface MoveLineMassEntryRecordService {
   void resetDebit(MoveLineMassEntry moveLine);
 
   void setMovePfpValidatorUser(MoveLineMassEntry moveLine, Company company);
+
+  void setCutOff(MoveLineMassEntry moveLine);
 }

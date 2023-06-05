@@ -269,7 +269,7 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
         String.format(
             "self.isContact IS FALSE AND %d MEMBER OF self.companySet", move.getCompany().getId());
 
-    this.addAttr("account", "domain", domain, attrsMap);
+    this.addAttr("partner", "domain", domain, attrsMap);
   }
 
   @Override
