@@ -61,8 +61,6 @@ public class CheckCredentialsInRptdesign extends DefaultTask {
       Map<String, String> properties = report.getDataSource().getOdaDataSource().getPropertyMap();
       EncryptedProperty password = report.getDataSource().getOdaDataSource().getEncryptedProperty();
 
-      System.out.println(parameters);
-
       if (!Objects.isNull(parameters.get("DBName"))
           && parameters.get("DBName").compareTo(STANDARD_DB_URL) != 0) {
         errorList.add(String.format(ERROR_DEFAULT_DBNAME, file.getPath()));
