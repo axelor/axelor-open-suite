@@ -37,6 +37,8 @@ public interface MoveValidateService {
 
   void checkConsistencyPreconditions(Move move) throws AxelorException;
 
+  void checkPeriodPreconditions(Move move) throws AxelorException;
+
   public void accounting(Move move) throws AxelorException;
 
   public void accounting(Move move, boolean updateCustomerAccount) throws AxelorException;

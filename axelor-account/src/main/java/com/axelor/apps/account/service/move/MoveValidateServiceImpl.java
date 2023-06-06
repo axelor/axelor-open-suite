@@ -169,7 +169,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
 
   @Override
   public void checkPreconditions(Move move) throws AxelorException {
-    checkClosurePeriod(move);
+    checkPeriodPreconditions(move);
     checkConsistencyPreconditions(move);
   }
 
@@ -190,22 +190,6 @@ public class MoveValidateServiceImpl implements MoveValidateService {
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(AccountExceptionMessage.MOVE_2),
           move.getReference());
-    }
-
-    if (move.getPeriod() == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(AccountExceptionMessage.MOVE_4),
-          move.getReference());
-    }
-    if (!CollectionUtils.isEmpty(move.getPeriod().getClosedJournalSet())
-        && move.getPeriod().getClosedJournalSet().contains(move.getJournal())) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          String.format(
-              I18n.get(AccountExceptionMessage.MOVE_13),
-              move.getJournal().getCode(),
-              move.getPeriod().getCode()));
     }
 
     if (move.getMoveLineList() == null || move.getMoveLineList().isEmpty()) {
@@ -325,6 +309,27 @@ public class MoveValidateServiceImpl implements MoveValidateService {
         }
       }
     }
+  }
+
+  @Override
+  public void checkPeriodPreconditions(Move move) throws AxelorException {
+    if (move.getPeriod() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(AccountExceptionMessage.MOVE_4),
+          move.getReference());
+    }
+    if (!CollectionUtils.isEmpty(move.getPeriod().getClosedJournalSet())
+        && move.getPeriod().getClosedJournalSet().contains(move.getJournal())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          String.format(
+              I18n.get(AccountExceptionMessage.MOVE_13),
+              move.getJournal().getCode(),
+              move.getPeriod().getCode()));
+    }
+
+    checkClosurePeriod(move);
   }
 
   protected void checkMoveLineInvoiceTermBalance(Move move) throws AxelorException {
