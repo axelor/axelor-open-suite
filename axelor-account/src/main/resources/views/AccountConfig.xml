@@ -29,7 +29,8 @@
         icon="fa-import" onClick="action-group-account-config-installchart-click"/>
 
       <field name="hasChartImported"/>
-      <field name="generateMoveForAdvancePayment" colSpan="3"/>
+      <field name="generateMoveForAdvancePayment" colSpan="3"
+        if="!__config__.app.getApp('account')?.getManageAdvancePaymentInvoice()"/>
       <field name="isActivateSimulatedMove" colSpan="3"/>
       <field name="accountingDaybook" colSpan="3"
         onChange="action-account-config-attrs-accounting-daybook-onchange"/>
