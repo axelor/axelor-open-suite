@@ -50,6 +50,7 @@ import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -729,10 +730,13 @@ public class DebtRecoveryService {
       throw new AxelorException(
           debtRecovery,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          "%s :\n" + I18n.get("Partner") + " %s, " + I18n.get("Company") + " %s : " + tradingName
-                  != null
-              ? I18n.get("Trading name") + " %s : "
-              : "" + I18n.get(AccountExceptionMessage.DEBT_RECOVERY_3),
+          "%s :\n"
+              + I18n.get("Partner")
+              + " %s, "
+              + I18n.get("Company")
+              + " %s : "
+              + (ObjectUtils.notEmpty(tradingName) ? I18n.get("Trading name") + " %s : " : "")
+              + I18n.get(AccountExceptionMessage.DEBT_RECOVERY_3),
           I18n.get(BaseExceptionMessage.EXCEPTION),
           partner.getName(),
           company.getName());
