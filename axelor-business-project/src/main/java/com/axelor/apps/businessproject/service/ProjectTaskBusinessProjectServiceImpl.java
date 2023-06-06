@@ -38,6 +38,7 @@ import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
@@ -76,7 +77,7 @@ import java.util.Set;
 public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImpl
     implements ProjectTaskBusinessProjectService {
 
-  public static final int DURATION_SCALE = 2;
+  public static final int BIG_DECIMAL_SCALE = 2;
   private PriceListLineRepository priceListLineRepo;
   private PriceListService priceListService;
   private PartnerPriceListService partnerPriceListService;
@@ -111,7 +112,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
       throws AxelorException {
     ProjectTask task = create(saleOrderLine.getFullName() + "_task", project, assignedTo);
     task.setProduct(saleOrderLine.getProduct());
-    task.setUnit(saleOrderLine.getUnit());
+    task.setInvoicingUnit(saleOrderLine.getUnit());
     task.setTimeUnit(saleOrderLine.getUnit());
     task.setCurrency(project.getClientPartner().getCurrency());
     if (project.getPriceList() != null) {
@@ -266,7 +267,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
             projectTask.getPriceDiscounted(),
             projectTask.getDescription(),
             projectTask.getQuantity(),
-            projectTask.getUnit(),
+            projectTask.getInvoicingUnit(),
             null,
             priority,
             projectTask.getDiscountAmount(),
@@ -338,7 +339,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     Company company =
         projectTask.getProject() != null ? projectTask.getProject().getCompany() : null;
     Unit salesUnit = (Unit) productCompanyService.get(product, "salesUnit", company);
-    projectTask.setUnit(
+    projectTask.setInvoicingUnit(
         salesUnit != null ? salesUnit : (Unit) productCompanyService.get(product, "unit", company));
     projectTask.setCurrency((Currency) productCompanyService.get(product, "saleCurrency", company));
     projectTask.setQuantity(projectTask.getBudgetedTime());
@@ -418,7 +419,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     projectTask.setInvoicingType(null);
     projectTask.setToInvoice(null);
     projectTask.setQuantity(null);
-    projectTask.setUnit(null);
+    projectTask.setInvoicingUnit(null);
     projectTask.setUnitPrice(null);
     projectTask.setCurrency(null);
     projectTask.setExTaxTotal(null);
@@ -484,7 +485,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
 
     plannedTime =
         projectTask.getProjectPlanningTimeList().stream()
-            .map(ProjectPlanningTime::getPlannedHours)
+            .map(ProjectPlanningTime::getPlannedTime)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
 
     List<TimesheetLine> timeSheetLines =
@@ -509,6 +510,10 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
 
     projectTask.setPlannedTime(plannedTime);
     projectTask.setSpentTime(spentTime);
+
+    if (projectTask.getParentTask() == null) {
+      computeProjectTaskReporting(projectTask);
+    }
     projectTaskRepo.save(projectTask);
   }
 
@@ -544,16 +549,16 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
         }
         if (timeUnit.equals(daysUnit)) {
           convertedDuration =
-              duration.divide(defaultHoursADay, DURATION_SCALE, RoundingMode.HALF_UP);
+              duration.divide(defaultHoursADay, BIG_DECIMAL_SCALE, RoundingMode.HALF_UP);
         }
         break;
       case EmployeeRepository.TIME_PREFERENCE_MINUTES:
         // convert to hours
         convertedDuration =
-            duration.divide(new BigDecimal(60), DURATION_SCALE, RoundingMode.HALF_UP);
+            duration.divide(new BigDecimal(60), BIG_DECIMAL_SCALE, RoundingMode.HALF_UP);
         if (timeUnit.equals(daysUnit)) {
           convertedDuration =
-              duration.divide(defaultHoursADay, DURATION_SCALE, RoundingMode.HALF_UP);
+              duration.divide(defaultHoursADay, BIG_DECIMAL_SCALE, RoundingMode.HALF_UP);
         }
         break;
       default:
@@ -561,5 +566,40 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     }
 
     return convertedDuration;
+  }
+
+  /**
+   * update project task values for reporting
+   *
+   * @param projectTask
+   * @throws AxelorException
+   */
+  protected void computeProjectTaskReporting(ProjectTask projectTask) throws AxelorException {
+    if (projectTask.getUpdatedTime().signum() <= 0 || projectTask.getSoldTime().signum() <= 0) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          String.format(
+              I18n.get(BusinessProjectExceptionMessage.PROJECT_TASK_UPDATE_REPORTING_VALUES_ERROR),
+              projectTask.getFullName()));
+    }
+
+    BigDecimal percentageOfProgression = projectTask.getSpentTime().multiply(new BigDecimal("100"));
+    percentageOfProgression =
+        percentageOfProgression.divide(
+            projectTask.getUpdatedTime(), BIG_DECIMAL_SCALE, RoundingMode.HALF_UP);
+
+    BigDecimal percentageOfConsumption = projectTask.getSpentTime().multiply(new BigDecimal("100"));
+    percentageOfConsumption =
+        percentageOfConsumption.divide(
+            projectTask.getSoldTime(), BIG_DECIMAL_SCALE, RoundingMode.HALF_UP);
+    BigDecimal remainingAmountToDo =
+        projectTask
+            .getUpdatedTime()
+            .subtract(projectTask.getSpentTime())
+            .setScale(BIG_DECIMAL_SCALE, RoundingMode.HALF_UP);
+
+    projectTask.setPercentageOfProgress(percentageOfProgression);
+    projectTask.setPercentageOfConsumption(percentageOfConsumption);
+    projectTask.setRemainingAmountToDo(remainingAmountToDo);
   }
 }

@@ -496,10 +496,10 @@ public class BatchAutoMoveLettering extends BatchStrategy {
     params.put("company", accountingBatch.getCompany());
     params.put("startDate", accountingBatch.getStartDate());
     params.put("endDate", accountingBatch.getEndDate());
-    filters += " AND (";
+    filters += " AND ";
     if (accountingBatch.getFromAccount() != null && accountingBatch.getToAccount() != null) {
       filters +=
-          "(self.fromAccount IS NOT null AND self.toAccount IS NOT null AND self.fromAccount.code <= :toAccountCode AND self.toAccount.code >= :fromAccountCode)";
+          "((self.fromAccount IS NOT null AND self.toAccount IS NOT null AND self.fromAccount.code <= :toAccountCode AND self.toAccount.code >= :fromAccountCode)";
       filters +=
           " OR (self.fromAccount IS NOT null AND self.toAccount IS null AND self.fromAccount.code <= :toAccountCode)";
       filters +=
@@ -548,9 +548,7 @@ public class BatchAutoMoveLettering extends BatchStrategy {
 
     comment.append(
         String.format(
-            "\n\t"
-                + I18n.get(
-                    com.axelor.apps.base.exceptions.BaseExceptionMessage.ALARM_ENGINE_BATCH_4),
+            "\n\t" + I18n.get(com.axelor.apps.base.exceptions.BaseExceptionMessage.BASE_BATCH_3),
             batch.getAnomaly()));
 
     super.stop();

@@ -38,13 +38,6 @@
     onLoad="action-project-on-load-group" onNew="action-project-group-on-new-project"
     onSave="action-project-method-check-resource-availibility">
     <menubar>
-      <menu name="projectReportsMenu" title="Reports" showTitle="true" icon="fa-files-o">
-        <item if-module="axelor-business-project" name="planificationAndCostsItem"
-          title="Planification and costs" action="save,action-project-method-print-planif-and-cost"/>
-        <item if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
-          name="financialReportItem" title="Financial Report" showIf="isBusinessProject"
-          action="save,action-project-method-print-project"/>
-      </menu>
       <menu name="taskMenu" title="Tasks" showTitle="true" icon="fa-tasks">
         <item name="myOpenTasks" title="My open tasks"
           action="save,action-project-method-my-open-tasks" showIf="id &amp;&amp; isShowStatus"/>
@@ -174,12 +167,6 @@
       </panel>
       <panel title="Planning" name="planningPanel" colSpan="12" hideIf="!isShowPlanning"
         if="__config__.app.isApp('employee')" if-module="axelor-human-resource">
-        <field name="totalPlannedHrs" readonly="true">
-          <viewer><![CDATA[
-		                   	<span>{{$fmt('totalPlannedHrs')}} </span><span x-translate>hours</span>
-		       			]]></viewer>
-        </field>
-        <spacer name="totalPlannedHrsSpacer" colSpan="6"/>
         <button name="addMultipleLinesBtn" title="Add multiple lines"
           css="btn-custom text-left"
           onClick="save,action-project-view-add-multiple-project-planning-time" colSpan="4"
@@ -971,6 +958,10 @@
 
   <action-validate name="action-wizard-validate-project-select">
     <error message="Please select project" if="eval: projectSet == null || projectSet  == 0"/>
+  </action-validate>
+
+  <action-validate name="action-project-task-validate-delete-team-task-confirmation">
+    <alert message="Are you sure you want to delete this task ?"/>
   </action-validate>
 
   <action-attrs name="action-business-support-attrs-project-default">

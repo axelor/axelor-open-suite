@@ -18,35 +18,27 @@
  */
 package com.axelor.apps.base.web;
 
-import com.axelor.apps.base.db.AlarmEngine;
-import com.axelor.apps.base.db.repo.AlarmEngineRepository;
-import com.axelor.apps.base.service.alarm.AlarmEngineService;
+import com.axelor.apps.base.service.BirtTemplateViewService;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
 
 @Singleton
-public class AlarmEngineController {
+public class BirtTemplateController {
 
-  @SuppressWarnings("unchecked")
-  public void validateQuery(ActionRequest request, ActionResponse response) {
-
-    AlarmEngine alarmEngine = request.getContext().asType(AlarmEngine.class);
-
+  public void setStandardReportTemplate(ActionRequest request, ActionResponse response) {
     try {
-      if (alarmEngine.getQuery() != null) {
-        Beans.get(AlarmEngineService.class)
-            .results(
-                alarmEngine.getQuery(), Class.forName(alarmEngine.getMetaModel().getFullName()));
+      String birtTemplateId = request.getContext().get("_birtId").toString();
+      String templateName = (String) request.getContext().get("templateFileName");
+
+      if (ObjectUtils.notEmpty(templateName) && ObjectUtils.notEmpty(birtTemplateId)) {
+        Beans.get(BirtTemplateViewService.class)
+            .setTemplateMetaFile(Long.valueOf(birtTemplateId), templateName);
       }
     } catch (Exception e) {
-      response.setValue(
-          "query",
-          alarmEngine.getId() != null
-              ? Beans.get(AlarmEngineRepository.class).find(alarmEngine.getId()).getQuery()
-              : null);
       TraceBackService.trace(response, e);
     }
   }

@@ -16,17 +16,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.businessproject.service;
+package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.businessproject.db.ProjectFolder;
 import java.io.IOException;
 
-public interface ProjectFolderService {
+public interface BirtTemplateViewService {
 
-  String printProjectsPlanificationAndCost(ProjectFolder projectFolder)
-      throws IOException, AxelorException;
-
-  String printProjectFinancialReport(ProjectFolder projectFolder)
-      throws IOException, AxelorException;
+  void setTemplateMetaFile(Long birtId, String templateFileName)
+      throws AxelorException, IOException;
 }

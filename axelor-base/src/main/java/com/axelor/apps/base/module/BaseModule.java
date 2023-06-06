@@ -28,8 +28,6 @@ import com.axelor.apps.base.db.repo.AddressBaseRepository;
 import com.axelor.apps.base.db.repo.AddressRepository;
 import com.axelor.apps.base.db.repo.AdvancedImportBaseRepository;
 import com.axelor.apps.base.db.repo.AdvancedImportRepository;
-import com.axelor.apps.base.db.repo.AlarmEngineBatchBaseRepository;
-import com.axelor.apps.base.db.repo.AlarmEngineBatchRepository;
 import com.axelor.apps.base.db.repo.BankAddressBaseRepository;
 import com.axelor.apps.base.db.repo.BankAddressRepository;
 import com.axelor.apps.base.db.repo.BankBaseRepository;
@@ -81,6 +79,8 @@ import com.axelor.apps.base.service.BankServiceImpl;
 import com.axelor.apps.base.service.BarcodeGeneratorService;
 import com.axelor.apps.base.service.BarcodeGeneratorServiceImpl;
 import com.axelor.apps.base.service.BaseReportGenerator;
+import com.axelor.apps.base.service.BirtTemplateViewService;
+import com.axelor.apps.base.service.BirtTemplateViewServiceImpl;
 import com.axelor.apps.base.service.CompanyService;
 import com.axelor.apps.base.service.CompanyServiceImpl;
 import com.axelor.apps.base.service.DMSImportWizardService;
@@ -160,6 +160,8 @@ import com.axelor.apps.base.service.advancedExport.AdvancedExportService;
 import com.axelor.apps.base.service.advancedExport.AdvancedExportServiceImpl;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
+import com.axelor.apps.base.service.birt.template.BirtTemplateService;
+import com.axelor.apps.base.service.birt.template.BirtTemplateServiceImpl;
 import com.axelor.apps.base.service.exception.HandleExceptionResponse;
 import com.axelor.apps.base.service.exception.HandleExceptionResponseImpl;
 import com.axelor.apps.base.service.filesourceconnector.FileSourceConnectorService;
@@ -273,7 +275,6 @@ public class BaseModule extends AxelorModule {
     bind(ImportCityService.class).to(ImportCityServiceImpl.class);
     bind(BaseBatchRepository.class).to(BaseBatchBaseRepository.class);
     bind(MailBatchRepository.class).to(MailBatchBaseRepository.class);
-    bind(AlarmEngineBatchRepository.class).to(AlarmEngineBatchBaseRepository.class);
     bind(TradingNameService.class).to(TradingNameServiceImpl.class);
     bind(PartnerPriceListService.class).to(PartnerPriceListServiceImpl.class);
     bind(ICalendarEventService.class).to(ICalendarEventServiceImpl.class);
@@ -339,7 +340,9 @@ public class BaseModule extends AxelorModule {
     bind(DataBackupAnonymizeService.class).to(DataBackupAnonymizeServiceImpl.class);
     bind(DataBackupService.class).to(DataBackupServiceImpl.class);
     bind(BankDetailsFullNameComputeService.class).to(BankDetailsFullNameComputeServiceImpl.class);
+    bind(BirtTemplateService.class).to(BirtTemplateServiceImpl.class);
     bind(BaseServerStartListener.class);
     bind(AosSwagger.class);
+    bind(BirtTemplateViewService.class).to(BirtTemplateViewServiceImpl.class);
   }
 }
