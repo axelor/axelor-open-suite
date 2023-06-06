@@ -742,7 +742,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       MoveLine moveLine,
       TaxLine taxLine,
       String accountType,
-      Account newAccount)
+      Account newAccount,
+      boolean percentMoveTemplate)
       throws AxelorException {
     BigDecimal debit = moveLine.getDebit();
     BigDecimal credit = moveLine.getCredit();
@@ -839,6 +840,13 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
 
     BigDecimal taxLineValue =
         taxLineBeforeReverse != null ? taxLineBeforeReverse.getValue() : taxLine.getValue();
+
+    if (percentMoveTemplate) {
+      debit = sumMoveLinesByAccountType(move.getMoveLineList(), AccountTypeRepository.TYPE_PAYABLE);
+      credit =
+          sumMoveLinesByAccountType(move.getMoveLineList(), AccountTypeRepository.TYPE_RECEIVABLE);
+    }
+
     BigDecimal newMoveLineDebit =
         debit
             .multiply(taxLineValue)
@@ -892,6 +900,14 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       }
     }
     return newOrUpdatedMoveLine;
+  }
+
+  protected BigDecimal sumMoveLinesByAccountType(List<MoveLine> moveLines, String accountType) {
+    return moveLines.stream()
+        .filter(ml -> ml.getAccount().getAccountType().getTechnicalTypeSelect().equals(accountType))
+        .map(it -> it.getDebit().add(it.getCredit()))
+        .reduce(BigDecimal::add)
+        .orElse(BigDecimal.ZERO);
   }
 
   protected Account getTaxAccount(

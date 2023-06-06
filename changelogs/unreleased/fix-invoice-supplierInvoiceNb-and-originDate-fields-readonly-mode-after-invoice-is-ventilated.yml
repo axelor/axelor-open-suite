@@ -1,0 +1,3 @@
+---
+title: "INVOICE : fix supplierInvoiceNb and originDate fields are no more in readonly mode once the invoice is ventilated"
+type: fix
