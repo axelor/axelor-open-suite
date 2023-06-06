@@ -120,7 +120,7 @@
           <panel name="contentPanel" title="Content" colSpan="12">
             <field name="product" colSpan="6" canEdit="false"
               onChange="action-project-task-group-product-onchange"
-              domain="self.invoicingUnit.unitTypeSelect=3 AND self.dtype = 'Product'"
+              domain="self.unit.unitTypeSelect=3 AND self.dtype = 'Product'"
               form-view="product-form" grid-view="product-grid" readonlyIf="saleOrderLine"/>
             <field name="quantity" colSpan="3"
               onChange="action-project-task-group-qty-onchange" readonlyIf="saleOrderLine"/>
