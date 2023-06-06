@@ -279,6 +279,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
             .collect(Collectors.toList());
     for (ProjectTask projectTask : projectTaskList) {
       projectTaskReportingValuesComputingService.computeProjectTaskTotals(projectTask);
+      projectTaskBusinessProjectService.computeProjectTaskTotals(projectTask);
     }
   }
 }
