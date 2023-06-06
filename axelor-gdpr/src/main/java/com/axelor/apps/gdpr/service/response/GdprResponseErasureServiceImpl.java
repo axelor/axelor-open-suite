@@ -315,7 +315,7 @@ public class GdprResponseErasureServiceImpl implements GdprResponseErasureServic
     }
   }
 
-  private void breakO2MRelationship(
+  protected void breakO2MRelationship(
       MetaField metaField,
       List<RelationshipAnonymizer> relationshipAnonymizers,
       String mappedBy,
