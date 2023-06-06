@@ -169,7 +169,12 @@ public class MoveValidateServiceImpl implements MoveValidateService {
 
   @Override
   public void checkPreconditions(Move move) throws AxelorException {
+    checkClosurePeriod(move);
+    checkConsistencyPreconditions(move);
+  }
 
+  @Override
+  public void checkConsistencyPreconditions(Move move) throws AxelorException {
     Journal journal = move.getJournal();
     Company company = move.getCompany();
 
@@ -246,7 +251,6 @@ public class MoveValidateServiceImpl implements MoveValidateService {
           move.getReference());
     }
 
-    checkClosurePeriod(move);
     checkInactiveAnalyticJournal(move);
     checkInactiveAccount(move);
     checkInactiveAnalyticAccount(move);
