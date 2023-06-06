@@ -1629,4 +1629,8 @@ public final class AccountExceptionMessage {
 
   public static final String JOURNAL_TYPE_MISSING_TECHNICAL_TYPE = /*$$(*/
       "A technical type is required on the journal type %s." /*)*/;
+
+  public static final String
+      IMMO_FIXED_ASSET_DISPOSAL_COMPANY_ACCOUNT_CONFIG_CUSTOMER_SALES_JOURNAL_EMPTY = /*$$(*/
+          "The company account configuration customer sales journal is required." /*)*/;
 }
