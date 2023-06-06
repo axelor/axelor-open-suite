@@ -21,7 +21,6 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.MoveLineMassEntry;
 import com.axelor.apps.account.db.repo.MoveLineMassEntryRepository;
-import com.axelor.apps.account.service.move.massentry.MassEntryService;
 import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryGroupService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
@@ -56,8 +55,7 @@ public class MoveLineMassEntryController {
     }
   }
 
-  public void getFirstMoveLineMassEntryInformations(
-      ActionRequest request, ActionResponse response) {
+  public void temporaryMoveNumberOnChange(ActionRequest request, ActionResponse response) {
     try {
       MoveLineMassEntry line = request.getContext().asType(MoveLineMassEntry.class);
       Context parentContext = request.getContext().getParent();
@@ -68,14 +66,13 @@ public class MoveLineMassEntryController {
         Move move = parentContext.asType(Move.class);
 
         if (move != null) {
+          MoveLineMassEntryGroupService moveLineMassEntryGroupService =
+              Beans.get(MoveLineMassEntryGroupService.class);
+
           response.setValues(
-              Beans.get(MassEntryService.class)
-                  .getFirstMoveLineMassEntryInformations(move.getMoveLineMassEntryList(), line));
-          if (move.getMoveLineMassEntryList() != null
-              && move.getMoveLineMassEntryList().size() != 0) {
-            response.setAttr("inputAction", "readonly", false);
-            response.setAttr("temporaryMoveNumber", "focus", true);
-          }
+              moveLineMassEntryGroupService.getTemporaryMoveNumberOnChangeValuesMap(line, move));
+          response.setAttrs(
+              moveLineMassEntryGroupService.getTemporaryMoveNumberOnChangeAttrsMap(move));
         }
       }
     } catch (Exception e) {

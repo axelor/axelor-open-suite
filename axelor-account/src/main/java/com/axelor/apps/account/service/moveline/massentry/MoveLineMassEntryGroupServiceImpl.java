@@ -330,46 +330,12 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
     Map<String, Object> valuesMap = new HashMap<>();
 
     if (moveLine.getInputAction() == MoveLineMassEntryRepository.MASS_ENTRY_INPUT_ACTION_MOVE) {
+      moveLine = new MoveLineMassEntry();
       massEntryService.resetMoveLineMassEntry(moveLine);
-      moveLine.setInputAction(MoveLineMassEntryRepository.MASS_ENTRY_INPUT_ACTION_LINE);
       moveLineMassEntryRecordService.setNextTemporaryMoveNumber(moveLine, move);
       moveLine.setCounter(1);
 
-      valuesMap.put("temporaryMoveNumber", moveLine.getTemporaryMoveNumber());
-      valuesMap.put("counter", moveLine.getCounter());
-      valuesMap.put("date", moveLine.getDate());
-      valuesMap.put("origin", moveLine.getOrigin());
-      valuesMap.put("originDate", moveLine.getOriginDate());
-      valuesMap.put("partner", moveLine.getPartner());
-      valuesMap.put("partnerId", moveLine.getPartnerId());
-      valuesMap.put("partnerSeq", moveLine.getPartnerSeq());
-      valuesMap.put("partnerFullName", moveLine.getPartnerFullName());
-      valuesMap.put("moveDescription", moveLine.getMoveDescription());
-      valuesMap.put("movePaymentCondition", moveLine.getMovePaymentCondition());
-      valuesMap.put("movePaymentMode", moveLine.getMovePaymentMode());
-      valuesMap.put("movePartnerBankDetails", moveLine.getMovePartnerBankDetails());
-      valuesMap.put("account", moveLine.getAccount());
-      valuesMap.put("taxLine", moveLine.getTaxLine());
-      valuesMap.put("Description", moveLine.getDescription());
-      valuesMap.put("debit", moveLine.getDebit());
-      valuesMap.put("credit", moveLine.getCredit());
-      valuesMap.put("currencyRate", moveLine.getCurrencyRate());
-      valuesMap.put("currencyAmount", moveLine.getCurrencyAmount());
-      valuesMap.put("moveStatusSelect", moveLine.getMoveStatusSelect());
-      valuesMap.put("vatSystemSelect", moveLine.getVatSystemSelect());
-      valuesMap.put("movePfpValidatorUser", moveLine.getMovePfpValidatorUser());
-      valuesMap.put("cutOffStartDate", moveLine.getCutOffStartDate());
-      valuesMap.put("cutOffEndDate", moveLine.getCutOffEndDate());
-      valuesMap.put("isEdited", moveLine.getIsEdited());
-      valuesMap.put("fieldsErrorList", moveLine.getFieldsErrorList());
-      valuesMap.put("analyticDistributionTemplate", moveLine.getAnalyticDistributionTemplate());
-      valuesMap.put("axis1AnalyticAccount", moveLine.getAxis1AnalyticAccount());
-      valuesMap.put("axis2AnalyticAccount", moveLine.getAxis2AnalyticAccount());
-      valuesMap.put("axis3AnalyticAccount", moveLine.getAxis3AnalyticAccount());
-      valuesMap.put("axis4AnalyticAccount", moveLine.getAxis4AnalyticAccount());
-      valuesMap.put("axis5AnalyticAccount", moveLine.getAxis5AnalyticAccount());
-      valuesMap.put("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
-      valuesMap.put("inputAction", moveLine.getInputAction());
+      valuesMap = this.setAllMoveLineValuesMap(moveLine);
     }
 
     return valuesMap;
@@ -384,5 +350,68 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
     moveLineMassEntryAttrsService.addRequired(isCounterpartLine, attrsMap);
 
     return attrsMap;
+  }
+
+  @Override
+  public Map<String, Object> getTemporaryMoveNumberOnChangeValuesMap(
+      MoveLineMassEntry moveLine, Move move) {
+    massEntryService.getFirstMoveLineMassEntryInformations(
+        move.getMoveLineMassEntryList(), moveLine);
+
+    return this.setAllMoveLineValuesMap(moveLine);
+  }
+
+  @Override
+  public Map<String, Map<String, Object>> getTemporaryMoveNumberOnChangeAttrsMap(Move move) {
+    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+
+    if (move.getMoveLineMassEntryList() != null && move.getMoveLineMassEntryList().size() != 0) {
+      moveLineMassEntryAttrsService.addInputActionReadonly(false, attrsMap);
+      moveLineMassEntryAttrsService.addTemporaryMoveNumberFocus(attrsMap);
+    }
+
+    return attrsMap;
+  }
+
+  public Map<String, Object> setAllMoveLineValuesMap(MoveLineMassEntry moveLine) {
+    Map<String, Object> valuesMap = new HashMap<>();
+
+    valuesMap.put("temporaryMoveNumber", moveLine.getTemporaryMoveNumber());
+    valuesMap.put("counter", moveLine.getCounter());
+    valuesMap.put("date", moveLine.getDate());
+    valuesMap.put("origin", moveLine.getOrigin());
+    valuesMap.put("originDate", moveLine.getOriginDate());
+    valuesMap.put("partner", moveLine.getPartner());
+    valuesMap.put("partnerId", moveLine.getPartnerId());
+    valuesMap.put("partnerSeq", moveLine.getPartnerSeq());
+    valuesMap.put("partnerFullName", moveLine.getPartnerFullName());
+    valuesMap.put("moveDescription", moveLine.getMoveDescription());
+    valuesMap.put("movePaymentCondition", moveLine.getMovePaymentCondition());
+    valuesMap.put("movePaymentMode", moveLine.getMovePaymentMode());
+    valuesMap.put("movePartnerBankDetails", moveLine.getMovePartnerBankDetails());
+    valuesMap.put("account", moveLine.getAccount());
+    valuesMap.put("taxLine", moveLine.getTaxLine());
+    valuesMap.put("description", moveLine.getDescription());
+    valuesMap.put("debit", moveLine.getDebit());
+    valuesMap.put("credit", moveLine.getCredit());
+    valuesMap.put("currencyRate", moveLine.getCurrencyRate());
+    valuesMap.put("currencyAmount", moveLine.getCurrencyAmount());
+    valuesMap.put("moveStatusSelect", moveLine.getMoveStatusSelect());
+    valuesMap.put("vatSystemSelect", moveLine.getVatSystemSelect());
+    valuesMap.put("movePfpValidatorUser", moveLine.getMovePfpValidatorUser());
+    valuesMap.put("cutOffStartDate", moveLine.getCutOffStartDate());
+    valuesMap.put("cutOffEndDate", moveLine.getCutOffEndDate());
+    valuesMap.put("isEdited", moveLine.getIsEdited());
+    valuesMap.put("fieldsErrorList", moveLine.getFieldsErrorList());
+    valuesMap.put("analyticDistributionTemplate", moveLine.getAnalyticDistributionTemplate());
+    valuesMap.put("axis1AnalyticAccount", moveLine.getAxis1AnalyticAccount());
+    valuesMap.put("axis2AnalyticAccount", moveLine.getAxis2AnalyticAccount());
+    valuesMap.put("axis3AnalyticAccount", moveLine.getAxis3AnalyticAccount());
+    valuesMap.put("axis4AnalyticAccount", moveLine.getAxis4AnalyticAccount());
+    valuesMap.put("axis5AnalyticAccount", moveLine.getAxis5AnalyticAccount());
+    valuesMap.put("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
+    valuesMap.put("inputAction", moveLine.getInputAction());
+
+    return valuesMap;
   }
 }

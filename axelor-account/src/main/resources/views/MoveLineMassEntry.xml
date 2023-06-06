@@ -7,7 +7,7 @@
     model="com.axelor.apps.account.db.MoveLineMassEntry" title="Move lines" canArchive="false"
     edit-icon="false" onNew="action-move-line-mass-entry-method-onnew">
     <field name="temporaryMoveNumber" width="50"
-      onChange="action-move-line-mass-entry-method-get-first-move-line-informations"/>
+      onChange="action-move-line-mass-entry-method-temporary-move-number-onchange"/>
     <field name="inputAction" selection="iaccount.move.line.mass.entry.input.action.select"
       onChange="action-move-line-mass-entry-method-input-action-onchange" readonly="true"
       required="true" width="50" selection-in="[1,2,3]"/>
@@ -210,9 +210,9 @@
 
   <!-- Action method -->
   <action-method
-    name="action-move-line-mass-entry-method-get-first-move-line-informations">
+    name="action-move-line-mass-entry-method-temporary-move-number-onchange">
     <call class="com.axelor.apps.account.web.MoveLineMassEntryController"
-      method="getFirstMoveLineMassEntryInformations"/>
+      method="temporaryMoveNumberOnChange"/>
   </action-method>
 
   <action-method name="action-move-line-mass-entry-method-on-change-partner">

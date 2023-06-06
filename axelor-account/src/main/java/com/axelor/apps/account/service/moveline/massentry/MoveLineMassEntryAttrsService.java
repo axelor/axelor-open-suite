@@ -43,4 +43,8 @@ public interface MoveLineMassEntryAttrsService {
       boolean isCounterPartLine, Account account, Map<String, Map<String, Object>> attrsMap);
 
   void addRequired(boolean isCounterPartLine, Map<String, Map<String, Object>> attrsMap);
+
+  void addInputActionReadonly(boolean readonly, Map<String, Map<String, Object>> attrsMap);
+
+  void addTemporaryMoveNumberFocus(Map<String, Map<String, Object>> attrsMap);
 }

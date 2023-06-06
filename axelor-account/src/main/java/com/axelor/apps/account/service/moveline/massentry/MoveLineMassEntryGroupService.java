@@ -47,4 +47,9 @@ public interface MoveLineMassEntryGroupService {
 
   Map<String, Map<String, Object>> getInputActionOnChangeAttrsMap(
       boolean isCounterpartLine, MoveLineMassEntry moveLine);
+
+  Map<String, Object> getTemporaryMoveNumberOnChangeValuesMap(
+      MoveLineMassEntry moveLine, Move move);
+
+  Map<String, Map<String, Object>> getTemporaryMoveNumberOnChangeAttrsMap(Move move);
 }

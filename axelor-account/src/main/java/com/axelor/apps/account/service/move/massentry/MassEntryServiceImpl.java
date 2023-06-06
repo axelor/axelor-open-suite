@@ -113,6 +113,7 @@ public class MassEntryServiceImpl implements MassEntryService {
         }
       }
     } else {
+      inputLine = new MoveLineMassEntry();
       resetMoveLineMassEntry(inputLine);
     }
     return inputLine;
@@ -123,38 +124,10 @@ public class MassEntryServiceImpl implements MassEntryService {
     moveLine.setTemporaryMoveNumber(1);
     moveLine.setCounter(1);
     moveLine.setDate(LocalDate.now());
-    moveLine.setOrigin(null);
     moveLine.setOriginDate(LocalDate.now());
-    moveLine.setPartner(null);
-    moveLine.setPartnerId(null);
-    moveLine.setPartnerSeq(null);
-    moveLine.setPartnerFullName(null);
-    moveLine.setMoveDescription(null);
-    moveLine.setMovePaymentCondition(null);
-    moveLine.setMovePaymentMode(null);
-    moveLine.setMovePartnerBankDetails(null);
-    moveLine.setAccount(null);
-    moveLine.setTaxLine(null);
-    moveLine.setDescription(null);
-    moveLine.setDebit(BigDecimal.ZERO);
-    moveLine.setCredit(BigDecimal.ZERO);
     moveLine.setCurrencyRate(BigDecimal.ONE);
-    moveLine.setCurrencyAmount(BigDecimal.ZERO);
-    moveLine.setMoveStatusSelect(null);
-    moveLine.setVatSystemSelect(0);
-    moveLine.setMovePfpValidatorUser(null);
-    moveLine.setDeliveryDate(null);
-    moveLine.setCutOffStartDate(null);
-    moveLine.setCutOffEndDate(null);
     moveLine.setIsEdited(MoveLineMassEntryRepository.MASS_ENTRY_IS_EDITED_NULL);
-    moveLine.setFieldsErrorList(null);
-    moveLine.setAnalyticDistributionTemplate(null);
-    moveLine.setAxis1AnalyticAccount(null);
-    moveLine.setAxis2AnalyticAccount(null);
-    moveLine.setAxis3AnalyticAccount(null);
-    moveLine.setAxis4AnalyticAccount(null);
-    moveLine.setAxis5AnalyticAccount(null);
-    moveLine.setAnalyticMoveLineList(null);
+    moveLine.setInputAction(MoveLineMassEntryRepository.MASS_ENTRY_INPUT_ACTION_LINE);
 
     if (appAccountService.getAppAccount().getManageCutOffPeriod()) {
       moveLine.setCutOffStartDate(LocalDate.now());

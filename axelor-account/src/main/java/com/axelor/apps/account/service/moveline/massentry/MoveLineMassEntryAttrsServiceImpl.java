@@ -92,8 +92,8 @@ public class MoveLineMassEntryAttrsServiceImpl implements MoveLineMassEntryAttrs
   public void addPartnerBankDetailsReadOnly(
       MoveLineMassEntry moveLine, Map<String, Map<String, Object>> attrsMap) {
     this.addAttr(
-        "credit",
-        "focus",
+        "movePartnerBankDetails",
+        "readonly",
         moveLine != null
             && moveLine.getMovePaymentMode() != null
             && moveLine.getMovePaymentMode().getTypeSelect() != null
@@ -208,5 +208,15 @@ public class MoveLineMassEntryAttrsServiceImpl implements MoveLineMassEntryAttrs
   @Override
   public void addRequired(boolean isCounterPartLine, Map<String, Map<String, Object>> attrsMap) {
     this.addAttr("account", "required", !isCounterPartLine, attrsMap);
+  }
+
+  @Override
+  public void addInputActionReadonly(boolean readonly, Map<String, Map<String, Object>> attrsMap) {
+    this.addAttr("inputAction", "required", readonly, attrsMap);
+  }
+
+  @Override
+  public void addTemporaryMoveNumberFocus(Map<String, Map<String, Object>> attrsMap) {
+    this.addAttr("temporaryMoveNumber", "focus", true, attrsMap);
   }
 }
