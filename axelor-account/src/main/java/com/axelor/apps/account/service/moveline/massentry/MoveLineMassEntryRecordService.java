@@ -34,4 +34,6 @@ public interface MoveLineMassEntryRecordService {
   void setAnalytics(MoveLine newMoveLine, MoveLine moveLine);
 
   void setMoveStatusSelect(List<MoveLineMassEntry> massEntryLines, Integer newStatusSelect);
+
+  void setNextTemporaryMoveNumber(MoveLineMassEntry moveLine, Move move);
 }

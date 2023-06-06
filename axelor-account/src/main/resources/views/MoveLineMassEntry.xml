@@ -56,11 +56,11 @@
       <hilite if="$contains(fieldsErrorList,'balance:')" background="danger"/>
     </field>
     <field name="debit" onChange="action-move-line-mass-entry-method-debit-onchange"
-      width="90" readonlyIf="isOtherCurrency">
+      width="90" readonlyIf="isOtherCurrency || inputAction == 2">
       <hilite if="$contains(fieldsErrorList,'balance:')" background="danger"/>
     </field>
     <field name="credit" onChange="action-move-line-mass-entry-method-credit-onchange"
-      width="90" readonlyIf="isOtherCurrency">
+      width="90" readonlyIf="isOtherCurrency || inputAction == 2">
       <hilite if="$contains(fieldsErrorList,'balance:')" background="danger"/>
     </field>
     <field name="description"
@@ -228,7 +228,7 @@
 
   <action-method name="action-move-line-mass-entry-method-input-action-onchange">
     <call class="com.axelor.apps.account.web.MoveLineMassEntryController"
-      method="setAttrsAndFieldsOnInputActionChanges"/>
+      method="inputActionOnChange"/>
   </action-method>
 
   <action-method name="action-move-line-mass-entry-method-onnew">

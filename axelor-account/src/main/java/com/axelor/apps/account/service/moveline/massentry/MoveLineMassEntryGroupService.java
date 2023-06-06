@@ -42,4 +42,9 @@ public interface MoveLineMassEntryGroupService {
       throws AxelorException;
 
   Map<String, Map<String, Object>> getPartnerOnChangeAttrsMap(MoveLineMassEntry moveLine);
+
+  Map<String, Object> getInputActionOnChangeValuesMap(MoveLineMassEntry moveLine, Move move);
+
+  Map<String, Map<String, Object>> getInputActionOnChangeAttrsMap(
+      boolean isCounterpartLine, MoveLineMassEntry moveLine);
 }

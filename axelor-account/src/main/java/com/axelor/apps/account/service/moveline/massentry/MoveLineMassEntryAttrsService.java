@@ -11,7 +11,7 @@ import java.util.Map;
 
 public interface MoveLineMassEntryAttrsService {
 
-  void addCutOffReadOnly(Account account, Map<String, Map<String, Object>> attrsMap);
+  void addCutOffReadonly(Account account, Map<String, Map<String, Object>> attrsMap);
 
   void addMovePaymentModeReadOnly(Map<String, Map<String, Object>> attrsMap);
 
@@ -38,4 +38,9 @@ public interface MoveLineMassEntryAttrsService {
 
   void addPfpValidatorUserDomain(
       Partner partner, Company company, Map<String, Map<String, Object>> attrsMap);
+
+  void addReadonly(
+      boolean isCounterPartLine, Account account, Map<String, Map<String, Object>> attrsMap);
+
+  void addRequired(boolean isCounterPartLine, Map<String, Map<String, Object>> attrsMap);
 }

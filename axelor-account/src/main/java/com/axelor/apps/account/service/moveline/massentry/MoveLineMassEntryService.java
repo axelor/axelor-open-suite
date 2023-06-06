@@ -11,16 +11,12 @@ import com.axelor.auth.db.User;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 
 public interface MoveLineMassEntryService {
 
   void generateTaxLineAndCounterpart(
       Move parentMove, Move childMove, LocalDate dueDate, Integer temporaryMoveNumber)
       throws AxelorException;
-
-  Map<String, Map<String, Object>> setAttrsInputActionOnChange(
-      boolean isCounterPartLine, Account account);
 
   BigDecimal computeCurrentRate(
       BigDecimal currencyRate,

@@ -4,7 +4,6 @@ import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLineMassEntry;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveCounterPartService;
 import com.axelor.apps.account.service.move.massentry.MassEntryToolService;
@@ -17,25 +16,17 @@ import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
-import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class MoveLineMassEntryServiceImpl implements MoveLineMassEntryService {
-
-  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected MoveLineTaxService moveLineTaxService;
   protected MoveCounterPartService moveCounterPartService;
   protected MassEntryToolService massEntryToolService;
   protected CurrencyService currencyService;
-  protected AccountingSituationService accountingSituationService;
   protected InvoiceTermService invoiceTermService;
 
   @Inject
@@ -44,13 +35,11 @@ public class MoveLineMassEntryServiceImpl implements MoveLineMassEntryService {
       MoveCounterPartService moveCounterPartService,
       MassEntryToolService massEntryToolService,
       CurrencyService currencyService,
-      AccountingSituationService accountingSituationService,
       InvoiceTermService invoiceTermService) {
     this.moveLineTaxService = moveLineTaxService;
     this.moveCounterPartService = moveCounterPartService;
     this.massEntryToolService = massEntryToolService;
     this.currencyService = currencyService;
-    this.accountingSituationService = accountingSituationService;
     this.invoiceTermService = invoiceTermService;
   }
 
@@ -67,45 +56,6 @@ public class MoveLineMassEntryServiceImpl implements MoveLineMassEntryService {
       massEntryToolService.clearMoveLineMassEntryListAndAddNewLines(
           parentMove, childMove, temporaryMoveNumber);
     }
-  }
-
-  @Override
-  public Map<String, Map<String, Object>> setAttrsInputActionOnChange(
-      boolean isCounterPartLine, Account account) {
-    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
-    Map<String, Object> readonlyMap = new HashMap<>();
-    Map<String, Object> requiredMap = new HashMap<>();
-    Map<String, Object> taxLineMap = new HashMap<>();
-
-    readonlyMap.put("readonly", isCounterPartLine);
-    requiredMap.put("readonly", isCounterPartLine);
-    requiredMap.put("required", !isCounterPartLine);
-    taxLineMap.put(
-        "readonly",
-        isCounterPartLine && account != null && !account.getIsTaxAuthorizedOnMoveLine());
-
-    attrsMap.put("date", readonlyMap);
-    attrsMap.put("originDate", readonlyMap);
-    attrsMap.put("origin", readonlyMap);
-    attrsMap.put("moveDescription", readonlyMap);
-    attrsMap.put("movePaymentCondition", readonlyMap);
-    attrsMap.put("movePaymentMode", readonlyMap);
-    attrsMap.put("account", requiredMap);
-    attrsMap.put("taxLine", taxLineMap);
-    attrsMap.put("partner", readonlyMap);
-    attrsMap.put("description", readonlyMap);
-    attrsMap.put("debit", readonlyMap);
-    attrsMap.put("credit", readonlyMap);
-    attrsMap.put("currencyRate", readonlyMap);
-    attrsMap.put("currencyAmount", readonlyMap);
-    attrsMap.put("cutOffStartDate", readonlyMap);
-    attrsMap.put("cutOffEndDate", readonlyMap);
-    attrsMap.put("pfpValidatorUser", readonlyMap);
-    attrsMap.put("movePartnerBankDetails", readonlyMap);
-    attrsMap.put("vatSystemSelect", readonlyMap);
-    attrsMap.put("moveStatusSelect", readonlyMap);
-
-    return attrsMap;
   }
 
   @Override

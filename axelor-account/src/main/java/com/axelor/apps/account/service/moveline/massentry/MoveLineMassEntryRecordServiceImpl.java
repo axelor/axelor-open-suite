@@ -5,6 +5,7 @@ import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.move.MoveLoadDefaultConfigService;
+import com.axelor.apps.account.service.move.massentry.MassEntryMoveCreateService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -20,15 +21,18 @@ public class MoveLineMassEntryRecordServiceImpl implements MoveLineMassEntryReco
   protected MoveLineMassEntryService moveLineMassEntryService;
   protected AccountingSituationService accountingSituationService;
   protected MoveLoadDefaultConfigService moveLoadDefaultConfigService;
+  protected MassEntryMoveCreateService massEntryMoveCreateService;
 
   @Inject
   public MoveLineMassEntryRecordServiceImpl(
       MoveLineMassEntryService moveLineMassEntryService,
       AccountingSituationService accountingSituationService,
-      MoveLoadDefaultConfigService moveLoadDefaultConfigService) {
+      MoveLoadDefaultConfigService moveLoadDefaultConfigService,
+      MassEntryMoveCreateService massEntryMoveCreateService) {
     this.moveLineMassEntryService = moveLineMassEntryService;
     this.accountingSituationService = accountingSituationService;
     this.moveLoadDefaultConfigService = moveLoadDefaultConfigService;
+    this.massEntryMoveCreateService = massEntryMoveCreateService;
   }
 
   @Override
@@ -189,5 +193,11 @@ public class MoveLineMassEntryRecordServiceImpl implements MoveLineMassEntryReco
         line.setMoveStatusSelect(newStatusSelect);
       }
     }
+  }
+
+  @Override
+  public void setNextTemporaryMoveNumber(MoveLineMassEntry moveLine, Move move) {
+    moveLine.setTemporaryMoveNumber(
+        massEntryMoveCreateService.getMaxTemporaryMoveNumber(move.getMoveLineMassEntryList()) + 1);
   }
 }

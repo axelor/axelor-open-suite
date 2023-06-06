@@ -21,10 +21,8 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.MoveLineMassEntry;
 import com.axelor.apps.account.db.repo.MoveLineMassEntryRepository;
-import com.axelor.apps.account.service.move.massentry.MassEntryMoveCreateService;
 import com.axelor.apps.account.service.move.massentry.MassEntryService;
 import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryGroupService;
-import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -85,39 +83,26 @@ public class MoveLineMassEntryController {
     }
   }
 
-  public void setAttrsAndFieldsOnInputActionChanges(
-      ActionRequest request, ActionResponse response) {
+  public void inputActionOnChange(ActionRequest request, ActionResponse response) {
     try {
       MoveLineMassEntry moveLine = request.getContext().asType(MoveLineMassEntry.class);
       Context parentContext = request.getContext().getParent();
-      boolean isCounterpartLine = false;
 
       if (parentContext != null
           && Move.class.equals(parentContext.getContextClass())
           && moveLine != null
           && moveLine.getInputAction() != null) {
         Move move = parentContext.asType(Move.class);
+        MoveLineMassEntryGroupService moveLineMassEntryGroupService =
+            Beans.get(MoveLineMassEntryGroupService.class);
 
-        switch (moveLine.getInputAction()) {
-          case MoveLineMassEntryRepository.MASS_ENTRY_INPUT_ACTION_COUNTERPART:
-            isCounterpartLine = true;
-            break;
-          case MoveLineMassEntryRepository.MASS_ENTRY_INPUT_ACTION_MOVE:
-            Beans.get(MassEntryService.class).resetMoveLineMassEntry(moveLine);
-            moveLine.setInputAction(MoveLineMassEntryRepository.MASS_ENTRY_INPUT_ACTION_LINE);
-            moveLine.setTemporaryMoveNumber(
-                Beans.get(MassEntryMoveCreateService.class)
-                        .getMaxTemporaryMoveNumber(move.getMoveLineMassEntryList())
-                    + 1);
-            moveLine.setCounter(1);
-            response.setValues(moveLine);
-            break;
-          default:
-            break;
-        }
+        response.setValues(
+            moveLineMassEntryGroupService.getInputActionOnChangeValuesMap(moveLine, move));
         response.setAttrs(
-            Beans.get(MoveLineMassEntryService.class)
-                .setAttrsInputActionOnChange(isCounterpartLine, moveLine.getAccount()));
+            moveLineMassEntryGroupService.getInputActionOnChangeAttrsMap(
+                moveLine.getInputAction()
+                    == MoveLineMassEntryRepository.MASS_ENTRY_INPUT_ACTION_COUNTERPART,
+                moveLine));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
