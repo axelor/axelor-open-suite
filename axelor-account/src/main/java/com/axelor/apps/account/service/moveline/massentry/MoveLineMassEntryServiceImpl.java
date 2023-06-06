@@ -176,9 +176,6 @@ public class MoveLineMassEntryServiceImpl implements MoveLineMassEntryService {
       throws AxelorException {
     if (moveLine.getPartner() == null) {
       moveLineMassEntryToolService.setPartnerChanges(moveLine, null);
-      if (ObjectUtils.notEmpty(moveLine.getAccount())) {
-        moveLine.setVatSystemSelect(moveLine.getAccount().getVatSystemSelect());
-      }
     } else {
       if (move != null && move.getJournal() != null) {
         int journalTechnicalTypeSelect =
