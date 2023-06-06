@@ -18,7 +18,13 @@
  */
 package com.axelor.apps.businessproject.service;
 
+import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
+import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -35,10 +41,20 @@ public class ContractLineServiceProjectImpl extends ContractLineServiceImpl {
   @Inject
   public ContractLineServiceProjectImpl(
       AppBaseService appBaseService,
+      AppAccountService appAccountService,
       AccountManagementService accountManagementService,
+      AccountConfigService accountConfigService,
       CurrencyService currencyService,
-      ProductCompanyService productCompanyService) {
-    super(appBaseService, accountManagementService, currencyService, productCompanyService);
+      ProductCompanyService productCompanyService,
+      AnalyticMoveLineService analyticMoveLineService) {
+    super(
+        appBaseService,
+        appAccountService,
+        accountManagementService,
+        accountConfigService,
+        currencyService,
+        productCompanyService,
+        analyticMoveLineService);
   }
 
   @Override
@@ -55,5 +71,22 @@ public class ContractLineServiceProjectImpl extends ContractLineServiceImpl {
       contractLine.setAnalyticMoveLineList(analyticMoveLineList);
     }
     return contractLine;
+  }
+
+  @Override
+  public AnalyticMoveLine computeAnalyticMoveLine(
+      ContractLine contractLine,
+      Contract contract,
+      Company company,
+      AnalyticAccount analyticAccount)
+      throws AxelorException {
+    AnalyticMoveLine analyticMoveLine =
+        super.computeAnalyticMoveLine(contractLine, contract, company, analyticAccount);
+
+    if (contract.getProject() != null) {
+      analyticMoveLine.setProject(contract.getProject());
+    }
+
+    return analyticMoveLine;
   }
 }
