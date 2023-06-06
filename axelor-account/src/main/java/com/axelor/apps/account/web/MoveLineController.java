@@ -254,7 +254,7 @@ public class MoveLineController {
               response.setAttr(
                   "axis" + i + "AnalyticAccount",
                   "domain",
-                  "self.id IN ("
+                  "self.analyticLevel.nbr = 1 AND self.id IN ("
                       + idList
                       + ") AND self.statusSelect = "
                       + AnalyticAccountRepository.STATUS_ACTIVE

@@ -452,7 +452,7 @@ public class InvoiceLineController {
       InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
       if (request.getContext().getParent() != null) {
         Invoice invoice = request.getContext().getParent().asType(Invoice.class);
-        List<Long> analyticAccountList = new ArrayList<Long>();
+        List<Long> analyticAccountList;
         AnalyticToolService analyticToolService = Beans.get(AnalyticToolService.class);
         AnalyticLineService analyticLineService = Beans.get(AnalyticLineService.class);
         for (int i = startAxisPosition; i <= endAxisPosition; i++) {
@@ -469,12 +469,12 @@ public class InvoiceLineController {
             } else {
               String idList =
                   analyticAccountList.stream()
-                      .map(id -> id.toString())
+                      .map(Object::toString)
                       .collect(Collectors.joining(","));
               response.setAttr(
                   "axis".concat(Integer.toString(i)).concat("AnalyticAccount"),
                   "domain",
-                  "self.id IN (" + idList + ")");
+                  "self.analyticLevel.nbr = 1 AND self.id IN (" + idList + ")");
             }
           }
         }
