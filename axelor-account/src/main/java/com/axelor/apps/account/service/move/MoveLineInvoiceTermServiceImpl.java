@@ -80,13 +80,10 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
   public void generateDefaultInvoiceTerm(
       Move move, MoveLine moveLine, LocalDate singleTermDueDate, boolean canCreateHolbackMoveLine)
       throws AxelorException {
-    if (moveLine == null
+    if (move == null
+        || moveLine == null
         || moveLine.getAccount() == null
         || !moveLine.getAccount().getUseForPartnerBalance()) {
-      return;
-    }
-
-    if (move == null) {
       return;
     }
 
@@ -103,6 +100,8 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
                 MoveRepository.FUNCTIONAL_ORIGIN_FIXED_ASSET,
                 MoveRepository.FUNCTIONAL_ORIGIN_SALE)
             .contains(move.getFunctionalOriginSelect());
+
+    moveLine.clearInvoiceTermList();
 
     if (paymentCondition == null
         || CollectionUtils.isEmpty(paymentCondition.getPaymentConditionLineList())
@@ -124,8 +123,6 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(AccountExceptionMessage.INVOICE_INVOICE_TERM_MULTIPLE_LINES_NO_MULTI));
     }
-
-    moveLine.clearInvoiceTermList();
 
     Account holdbackAccount = containsHoldback ? this.getHoldbackAccount(moveLine, move) : null;
     boolean isHoldback = moveLine.getAccount().equals(holdbackAccount);
