@@ -39,12 +39,13 @@
       <panel name="productTypologyPanel" title="Product typology" colSpan="12">
         <field name="productTypeSelect" required="true" readonly="true"/>
         <field name="deductLunchVoucher" hideIf="!expense"/>
-        <field name="blockExpenseTax"/>
-        <field name="vatInAmount"/>
         <field name="personalExpense"/>
         <field name="unavailableToUsers"/>
         <field name="saleSupplySelect" readonly="true" hidden="true"/>
         <field name="expense" hidden="true"/>
+      </panel>
+      <panel name="vatPanel" title="VAT" colSpan="12">
+        <field name="taxComputeModeSelect"/>
       </panel>
       <panel name="categorizationPanel" title="Categorization" colSpan="12">
         <field name="productFamily" colSpan="12" form-view="product-family-form"

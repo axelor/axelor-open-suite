@@ -10,10 +10,13 @@
     <boolean name="expense" title="Expense"/>
     <boolean name="isActivity" title="Activity"/>
     <boolean name="deductLunchVoucher" title="Deduct lunch voucher"/>
-    <boolean name="blockExpenseTax" title="Block expense tax modification" default="false"/>
-    <boolean name="vatInAmount" title="VAT in amount"/>
     <boolean name="personalExpense" title="Personal expense"/>
     <boolean name="unavailableToUsers" title="Unavailable to users" default="false"/>
+    <string name="taxComputeModeSelect" title="Tax computing method"
+      selection="hrs.expenses.product.compute.mode.select" default="10"
+      help="- Tax in amount : Tax amount must be entered manually on the expense line
+- No tax : Tax amount entry is disabled on the expense line and can't be entered
+- Tax in percentage : Tax amount is computed automatically based on configured tax rate"/>
   </entity>
 
 </domain-models>
