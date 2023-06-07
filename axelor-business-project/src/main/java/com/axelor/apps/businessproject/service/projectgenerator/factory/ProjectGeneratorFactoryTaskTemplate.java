@@ -85,6 +85,81 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public ActionViewBuilder fill(Project project, SaleOrder saleOrder, LocalDateTime startDate)
+          throws AxelorException {
+    List<ProjectTask> tasks = new ArrayList<>();
+    projectRepository.save(project);
+
+    for (SaleOrderLine orderLine : saleOrder.getSaleOrderLineList()) {
+      Product product = orderLine.getProduct();
+      ProjectTask root =
+              projectTaskRepository
+                      .all()
+                      .filter(
+                              "self.project = ? AND self.assignedTo = ? AND self.name = ? AND self.saleOrderLine = ?",
+                              project,
+                              project.getAssignedTo(),
+                              orderLine.getSequence() + " - " + product.getName(),
+                              orderLine)
+                      .fetchOne();
+
+      if (product != null
+              && !((ProductRepository.PROCUREMENT_METHOD_PRODUCE.equals(
+              (String)
+                      productCompanyService.get(
+                              product, "procurementMethodSelect", saleOrder.getCompany()))
+              || orderLine.getSaleSupplySelect() == SaleOrderLineRepository.SALE_SUPPLY_PRODUCE)
+              && ProductRepository.PRODUCT_TYPE_SERVICE.equals(product.getProductTypeSelect()))) {
+        continue;
+      }
+      boolean isTaskGenerated =
+              projectTaskRepository
+                      .all()
+                      .filter("self.saleOrderLine = ? AND self.project = ?", orderLine, project)
+                      .fetch()
+                      .size()
+                      > 0;
+      if (root == null) {
+        root =
+                projectTaskBusinessProjectService.create(
+                        orderLine.getSequence() + " - " + product.getName(), project, project.getAssignedTo());
+        root.setTaskDate(startDate.toLocalDate());
+        productTaskTemplateService.fillProjectTask(
+                project, orderLine.getQty(), orderLine, tasks, product, root, null);
+      }
+      if (product != null && !isTaskGenerated) {
+        if (!CollectionUtils.isEmpty(product.getTaskTemplateSet())) {
+          List<ProjectTask> convertedTasks =
+                  productTaskTemplateService.convert(
+                          product.getTaskTemplateSet().stream()
+                                  .filter(template -> Objects.isNull(template.getParentTaskTemplate()))
+                                  .collect(Collectors.toList()),
+                          project,
+                          root,
+                          startDate,
+                          orderLine.getQty(),
+                          orderLine);
+          convertedTasks.forEach(task -> task.setSaleOrderLine(orderLine));
+          tasks.addAll(convertedTasks);
+        } else {
+          ProjectTask childTask =
+                  projectTaskBusinessProjectService.create(
+                          orderLine.getFullName(), project, project.getAssignedTo());
+          this.updateTask(root, childTask, orderLine);
+
+          tasks.add(projectTaskRepository.save(childTask));
+        }
+      }
+    }
+    return ActionView.define(I18n.get("Tasks"))
+            .model(ProjectTask.class.getName())
+            .add("grid", "project-task-grid")
+            .add("form", "project-task-form")
+            .param("search-filters", "project-task-filters")
+            .domain("self.parentTask = " + root.getId());
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  public ActionViewBuilder fill2(Project project, SaleOrder saleOrder, LocalDateTime startDate)
       throws AxelorException {
     List<ProjectTask> tasks = new ArrayList<>();
     ProjectTask root;

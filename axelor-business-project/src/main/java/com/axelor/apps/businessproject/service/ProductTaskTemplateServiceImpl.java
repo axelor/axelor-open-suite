@@ -63,23 +63,30 @@ public class ProductTaskTemplateServiceImpl implements ProductTaskTemplateServic
     Product product = saleOrderLine.getProduct();
 
     for (TaskTemplate template : templates) {
-      LocalDateTime dateWithDelay = startDate.plusHours(template.getDelayToStart().longValue());
+      BigDecimal qtyTmp = (template.getIsUniqueTaskForMultipleQuantity() ? BigDecimal.ONE : qty);
 
-      ProjectTask task =
-          projectTaskBusinessProjectService.create(template, project, dateWithDelay, qty);
-      task.setQuantity(!template.getIsUniqueTaskForMultipleQuantity() ? BigDecimal.ONE : qty);
-      fillProjectTask(project, qty, saleOrderLine, tasks, product, task, parent);
+      while (qtyTmp.signum() > 0) {
+        LocalDateTime dateWithDelay = startDate.plusHours(template.getDelayToStart().longValue());
 
-      // Only parent task can have multiple quantities
-      List<ProjectTask> children =
-          convert(
-              template.getTaskTemplateList(),
-              project,
-              task,
-              dateWithDelay,
-              BigDecimal.ONE,
-              saleOrderLine);
-      tasks.addAll(children);
+        ProjectTask task =
+            projectTaskBusinessProjectService.create(template, project, dateWithDelay, qty);
+        task.setQuantity(!template.getIsUniqueTaskForMultipleQuantity() ? BigDecimal.ONE : qty);
+        task.setName(saleOrderLine.getSaleOrder().getSaleOrderSeq() + " - " + task.getName());
+        fillProjectTask(project, qty, saleOrderLine, tasks, product, task, parent);
+
+        // Only parent task can have multiple quantities
+        List<ProjectTask> children =
+            convert(
+                template.getTaskTemplateList(),
+                project,
+                task,
+                dateWithDelay,
+                BigDecimal.ONE,
+                saleOrderLine);
+        tasks.addAll(children);
+
+        qtyTmp = qtyTmp.subtract(BigDecimal.ONE);
+      }
     }
 
     return tasks;
