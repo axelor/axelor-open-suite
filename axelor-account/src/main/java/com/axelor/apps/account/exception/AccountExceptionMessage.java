@@ -378,7 +378,7 @@ public final class AccountExceptionMessage {
       "Account move %s has a total debit different than total credit : %s <> %s" /*)*/;
   public static final String MOVE_8 = /*$$(*/ "The move %s cannot be empty" /*)*/;
   public static final String MOVE_9 = /*$$(*/
-      "Tax is mandatory for the account %s on the move line %s" /*)*/;
+      "Tax is mandatory for the account %s (%s) on the move line %s" /*)*/;
   public static final String MOVE_10 = /*$$(*/
       "Analytic distribution template is mandatory for the account %s on the move line %s." /*)*/;
   public static final String MOVE_11 = /*$$(*/

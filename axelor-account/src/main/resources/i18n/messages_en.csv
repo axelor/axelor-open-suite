@@ -3047,7 +3047,7 @@
 "Tax code",,,
 "Tax excluded",,,
 "Tax included",,,
-"Tax is mandatory for the account %s on the move line %s",,,
+"Tax is mandatory for the account %s (%s) on the move line %s",,,
 "Tax line",,,
 "Tax lines can't be computed due to missing configuration line for the company %s in the accounting situation panel of the partner %s (company own vat system option).",,,
 "Tax lines can't be computed due to missing value in partner field on the company %s configuration.",,,
