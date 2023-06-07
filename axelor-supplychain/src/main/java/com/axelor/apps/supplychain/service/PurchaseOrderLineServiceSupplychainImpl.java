@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
@@ -26,6 +27,7 @@ import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -40,8 +42,12 @@ import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,6 +74,7 @@ public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineSe
     return purchaseOrderLine;
   }
 
+  @Override
   public PurchaseOrderLine createPurchaseOrderLine(
       PurchaseOrder purchaseOrder, SaleOrderLine saleOrderLine) throws AxelorException {
 
@@ -152,8 +159,10 @@ public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineSe
     return purchaseOrderLine;
   }
 
+  @Override
   public PurchaseOrderLine createAnalyticDistributionWithTemplate(
       PurchaseOrderLine purchaseOrderLine) {
+    this.clearAnalyticInLine(purchaseOrderLine);
 
     List<AnalyticMoveLine> analyticMoveLineList =
         analyticMoveLineService.generateLines(
@@ -169,7 +178,63 @@ public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineSe
 
     purchaseOrderLine.clearAnalyticMoveLineList();
     analyticMoveLineList.forEach(purchaseOrderLine::addAnalyticMoveLineListItem);
+
     return purchaseOrderLine;
+  }
+
+  public void clearAnalyticInLine(PurchaseOrderLine purchaseOrderLine) {
+    purchaseOrderLine.setAxis1AnalyticAccount(null);
+    purchaseOrderLine.setAxis2AnalyticAccount(null);
+    purchaseOrderLine.setAxis3AnalyticAccount(null);
+    purchaseOrderLine.setAxis4AnalyticAccount(null);
+    purchaseOrderLine.setAxis5AnalyticAccount(null);
+  }
+
+  @Override
+  public PurchaseOrderLine analyzePurchaseOrderLine(
+      PurchaseOrderLine purchaseOrderLine, Company company) throws AxelorException {
+    if (purchaseOrderLine == null) {
+      return null;
+    }
+
+    if (purchaseOrderLine.getAnalyticMoveLineList() == null) {
+      purchaseOrderLine.setAnalyticMoveLineList(new ArrayList<>());
+    } else {
+      purchaseOrderLine.getAnalyticMoveLineList().clear();
+    }
+
+    for (AnalyticAccount axisAnalyticAccount : this.getAxisAnalyticAccountList(purchaseOrderLine)) {
+      AnalyticMoveLine analyticMoveLine =
+          this.computeAnalyticMoveLine(purchaseOrderLine, company, axisAnalyticAccount);
+
+      purchaseOrderLine.addAnalyticMoveLineListItem(analyticMoveLine);
+    }
+
+    return purchaseOrderLine;
+  }
+
+  protected List<AnalyticAccount> getAxisAnalyticAccountList(PurchaseOrderLine purchaseOrderLine) {
+    return Stream.of(
+            purchaseOrderLine.getAxis1AnalyticAccount(),
+            purchaseOrderLine.getAxis2AnalyticAccount(),
+            purchaseOrderLine.getAxis3AnalyticAccount(),
+            purchaseOrderLine.getAxis4AnalyticAccount(),
+            purchaseOrderLine.getAxis5AnalyticAccount())
+        .filter(Objects::nonNull)
+        .collect(Collectors.toList());
+  }
+
+  protected AnalyticMoveLine computeAnalyticMoveLine(
+      PurchaseOrderLine purchaseOrderLine, Company company, AnalyticAccount analyticAccount)
+      throws AxelorException {
+    AnalyticMoveLine analyticMoveLine =
+        analyticMoveLineService.computeAnalytic(company, analyticAccount);
+
+    analyticMoveLine.setDate(appBaseService.getTodayDate(company));
+    analyticMoveLine.setAmount(purchaseOrderLine.getExTaxTotal());
+    analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_FORECAST_ORDER);
+
+    return analyticMoveLine;
   }
 
   public BigDecimal computeUndeliveredQty(PurchaseOrderLine purchaseOrderLine) {

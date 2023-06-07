@@ -19,6 +19,7 @@
 package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -30,4 +31,7 @@ public interface PurchaseOrderLineServiceSupplyChain {
 
   public PurchaseOrderLine createAnalyticDistributionWithTemplate(
       PurchaseOrderLine purchaseOrderLine);
+
+  PurchaseOrderLine analyzePurchaseOrderLine(PurchaseOrderLine purchaseOrderLine, Company company)
+      throws AxelorException;
 }

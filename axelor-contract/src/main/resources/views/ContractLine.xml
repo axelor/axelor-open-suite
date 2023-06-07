@@ -78,11 +78,11 @@
           form-view="analytic-distribution-template-form" canEdit="false"
           onChange="action-contract-line-group-analytic-distribution-template-onchange"/>
         <field name="axis1AnalyticAccount" grid-view="analytic-account-grid"
-          form-view="analytic-account-form" readonlyIf="analyticDistributionTemplate != null"
+          form-view="analytic-account-form" readonlyIf="analyticDistributionTemplate"
           onSelect="action-contract-line-method-set-axis-domain"
           onChange="action-contract-line-method-axis-create-analytic-line"/>
         <panel name="axisAnalyticAccountPanel" colSpan="12"
-          readonlyIf="analyticDistributionTemplate != null">
+          readonlyIf="analyticDistributionTemplate">
           <field name="axis2AnalyticAccount" grid-view="analytic-account-grid"
             form-view="analytic-account-form" onSelect="action-contract-line-method-set-axis-domain"
             onChange="action-contract-line-method-axis-create-analytic-line"/>
@@ -136,11 +136,11 @@
           onSelect="action-contract-line-attrs-set-analytic-distribution-template-domain"
           onChange="action-contract-line-group-analytic-distribution-template-onchange"/>
         <field name="axis1AnalyticAccount" grid-view="analytic-account-grid"
-          form-view="analytic-account-form" readonlyIf="analyticDistributionTemplate != null"
+          form-view="analytic-account-form" readonlyIf="analyticDistributionTemplate"
           onSelect="action-contract-line-method-set-axis-domain"
           onChange="action-contract-line-method-axis-create-analytic-line"/>
         <panel name="axisAnalyticAccountPanel" colSpan="12"
-          readonlyIf="analyticDistributionTemplate != null">
+          readonlyIf="analyticDistributionTemplate">
           <field name="axis2AnalyticAccount" grid-view="analytic-account-grid"
             form-view="analytic-account-form" onSelect="action-contract-line-method-set-axis-domain"
             onChange="action-contract-line-method-axis-create-analytic-line"/>

@@ -19,6 +19,7 @@
 package com.axelor.apps.contract.web;
 
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
+import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -146,8 +147,8 @@ public class ContractLineController {
       }
 
       response.setAttrs(
-          Beans.get(ContractLineService.class)
-              .getContractLineAnalyticAxisAttrsMap(contract, startAxisPosition, endAxisPosition));
+          Beans.get(AnalyticLineService.class)
+              .getAnalyticAxisAttrsMap(contract.getCompany(), startAxisPosition, endAxisPosition));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

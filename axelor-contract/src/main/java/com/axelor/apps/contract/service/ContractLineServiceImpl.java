@@ -18,9 +18,7 @@
  */
 package com.axelor.apps.contract.service;
 
-import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AnalyticAccount;
-import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticAxisByCompany;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.TaxLine;
@@ -54,9 +52,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -267,8 +263,7 @@ public class ContractLineServiceImpl implements ContractLineService {
         .collect(Collectors.toList());
   }
 
-  @Override
-  public AnalyticMoveLine computeAnalyticMoveLine(
+  protected AnalyticMoveLine computeAnalyticMoveLine(
       ContractLine contractLine,
       Contract contract,
       Company company,
@@ -277,7 +272,7 @@ public class ContractLineServiceImpl implements ContractLineService {
     AnalyticMoveLine analyticMoveLine =
         analyticMoveLineService.computeAnalytic(company, analyticAccount);
 
-    analyticMoveLine.setDate(appAccountService.getTodayDate(contract.getCompany()));
+    analyticMoveLine.setDate(appAccountService.getTodayDate(company));
     analyticMoveLine.setAmount(contractLine.getExTaxTotal());
     analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_FORECAST_CONTRACT);
 
@@ -349,57 +344,5 @@ public class ContractLineServiceImpl implements ContractLineService {
         .flatMap(Collection::stream)
         .map(AnalyticAccount::getId)
         .collect(Collectors.toList());
-  }
-
-  @Override
-  public Map<String, Map<String, Object>> getContractLineAnalyticAxisAttrsMap(
-      Contract contract, int startAxisPosition, int endAxisPosition) throws AxelorException {
-    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
-
-    AccountConfig accountConfig = accountConfigService.getAccountConfig(contract.getCompany());
-
-    if (moveLineComputeAnalyticService.checkManageAnalytic(contract.getCompany())) {
-      AnalyticAxis analyticAxis = null;
-
-      for (int i = startAxisPosition; i <= endAxisPosition; i++) {
-        for (AnalyticAxisByCompany analyticAxisByCompany :
-            accountConfig.getAnalyticAxisByCompanyList()) {
-          if (analyticAxisByCompany.getSequence() + 1 == i) {
-            analyticAxis = analyticAxisByCompany.getAnalyticAxis();
-          }
-        }
-
-        if (analyticAxis != null) {
-          this.addAttr(
-              String.format("axis%dAnalyticAccount", i), "title", analyticAxis.getName(), attrsMap);
-
-          analyticAxis = null;
-        }
-
-        this.addAttr(
-            String.format("axis%dAnalyticAccount", i),
-            "hidden",
-            !(i <= accountConfig.getNbrOfAnalyticAxisSelect()),
-            attrsMap);
-      }
-    } else {
-      this.addAttr("analyticDistributionTemplate", "hidden", true, attrsMap);
-      this.addAttr("analyticMoveLineList", "hidden", true, attrsMap);
-
-      for (int i = startAxisPosition; i <= endAxisPosition; i++) {
-        this.addAttr(String.format("axis%dAnalyticAccount", i), "hidden", true, attrsMap);
-      }
-    }
-
-    return attrsMap;
-  }
-
-  protected void addAttr(
-      String field, String attr, Object value, Map<String, Map<String, Object>> attrsMap) {
-    if (!attrsMap.containsKey(field)) {
-      attrsMap.put(field, new HashMap<>());
-    }
-
-    attrsMap.get(field).put(attr, value);
   }
 }

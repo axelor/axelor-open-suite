@@ -18,19 +18,31 @@
  */
 package com.axelor.apps.supplychain.web;
 
+import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
+import com.axelor.apps.account.db.repo.AnalyticLine;
+import com.axelor.apps.account.service.analytic.AnalyticLineService;
+import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.supplychain.service.PurchaseOrderLineBudgetService;
 import com.axelor.apps.supplychain.service.PurchaseOrderLineServiceSupplyChain;
 import com.axelor.apps.supplychain.service.PurchaseOrderLineServiceSupplychainImpl;
+import com.axelor.common.ObjectUtils;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.utils.ContextTool;
 import com.google.inject.Singleton;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Singleton
 public class PurchaseOrderLineController {
+  private final int startAxisPosition = 1;
+  private final int endAxisPosition = 5;
 
   public void computeAnalyticDistribution(ActionRequest request, ActionResponse response) {
     PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
@@ -63,5 +75,115 @@ public class PurchaseOrderLineController {
     response.setValue(
         "budgetDistributionSumAmount", purchaseOrderLine.getBudgetDistributionSumAmount());
     response.setValue("budgetDistributionList", purchaseOrderLine.getBudgetDistributionList());
+  }
+
+  public void setAxisDomains(ActionRequest request, ActionResponse response) {
+    try {
+      PurchaseOrder purchaseOrder =
+          ContextTool.getContextParent(request.getContext(), PurchaseOrder.class, 2);
+
+      if (purchaseOrder == null) {
+        return;
+      }
+
+      PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
+      List<Long> analyticAccountList;
+      AnalyticToolService analyticToolService = Beans.get(AnalyticToolService.class);
+      AnalyticLineService analyticLineService = Beans.get(AnalyticLineService.class);
+
+      for (int i = startAxisPosition; i <= endAxisPosition; i++) {
+        if (analyticToolService.isPositionUnderAnalyticAxisSelect(purchaseOrder.getCompany(), i)) {
+          analyticAccountList =
+              analyticLineService.getAxisDomains(
+                  (AnalyticLine) purchaseOrderLine, purchaseOrder.getCompany(), i);
+
+          if (ObjectUtils.isEmpty(analyticAccountList)) {
+            response.setAttr(String.format("axis%dAnalyticAccount", i), "domain", "self.id IN (0)");
+          } else {
+            if (purchaseOrder.getCompany() != null) {
+              String idList =
+                  analyticAccountList.stream()
+                      .map(Object::toString)
+                      .collect(Collectors.joining(","));
+
+              response.setAttr(
+                  String.format("axis%dAnalyticAccount", i),
+                  "domain",
+                  String.format(
+                      "self.id IN (%s) AND self.statusSelect = %d AND (self.company IS NULL OR self.company.id = %d)",
+                      idList,
+                      AnalyticAccountRepository.STATUS_ACTIVE,
+                      purchaseOrder.getCompany().getId()));
+            }
+          }
+        }
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void createAnalyticAccountLines(ActionRequest request, ActionResponse response) {
+    try {
+      PurchaseOrder purchaseOrder =
+          ContextTool.getContextParent(request.getContext(), PurchaseOrder.class, 2);
+
+      if (purchaseOrder == null) {
+        return;
+      }
+
+      PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
+
+      if (Beans.get(MoveLineComputeAnalyticService.class)
+          .checkManageAnalytic(purchaseOrder.getCompany())) {
+        purchaseOrderLine =
+            Beans.get(PurchaseOrderLineServiceSupplyChain.class)
+                .analyzePurchaseOrderLine(purchaseOrderLine, purchaseOrder.getCompany());
+        response.setValue("analyticMoveLineList", purchaseOrderLine.getAnalyticMoveLineList());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void manageAxis(ActionRequest request, ActionResponse response) {
+    try {
+      PurchaseOrder purchaseOrder =
+          ContextTool.getContextParent(request.getContext(), PurchaseOrder.class, 2);
+
+      if (purchaseOrder == null || purchaseOrder.getCompany() == null) {
+        return;
+      }
+
+      response.setAttrs(
+          Beans.get(AnalyticLineService.class)
+              .getAnalyticAxisAttrsMap(
+                  purchaseOrder.getCompany(), startAxisPosition, endAxisPosition));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void printAnalyticAccounts(ActionRequest request, ActionResponse response) {
+    try {
+      PurchaseOrder purchaseOrder =
+          ContextTool.getContextParent(request.getContext(), PurchaseOrder.class, 2);
+
+      if (purchaseOrder == null || purchaseOrder.getCompany() == null) {
+        return;
+      }
+
+      PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
+      Beans.get(AnalyticLineService.class)
+          .printAnalyticAccount((AnalyticLine) purchaseOrderLine, purchaseOrder.getCompany());
+
+      response.setValue("axis1AnalyticAccount", purchaseOrderLine.getAxis1AnalyticAccount());
+      response.setValue("axis2AnalyticAccount", purchaseOrderLine.getAxis2AnalyticAccount());
+      response.setValue("axis3AnalyticAccount", purchaseOrderLine.getAxis3AnalyticAccount());
+      response.setValue("axis4AnalyticAccount", purchaseOrderLine.getAxis4AnalyticAccount());
+      response.setValue("axis5AnalyticAccount", purchaseOrderLine.getAxis5AnalyticAccount());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }
