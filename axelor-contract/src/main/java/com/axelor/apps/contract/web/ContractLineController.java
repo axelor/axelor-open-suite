@@ -20,6 +20,7 @@ package com.axelor.apps.contract.web;
 
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
+import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
@@ -72,7 +73,6 @@ public class ContractLineController {
 
   public void setAxisDomains(ActionRequest request, ActionResponse response) {
     try {
-      ContractLine contractLine = request.getContext().asType(ContractLine.class);
       Contract contract = ContextTool.getContextParent(request.getContext(), Contract.class, 2);
 
       if (contract == null) {
@@ -109,6 +109,67 @@ public class ContractLineController {
           }
         }
       }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void createAnalyticAccountLines(ActionRequest request, ActionResponse response) {
+    try {
+      Contract contract = ContextTool.getContextParent(request.getContext(), Contract.class, 2);
+
+      if (contract == null) {
+        return;
+      }
+
+      ContractLine contractLine = request.getContext().asType(ContractLine.class);
+
+      if (Beans.get(MoveLineComputeAnalyticService.class)
+          .checkManageAnalytic(contract.getCompany())) {
+        contractLine =
+            Beans.get(ContractLineService.class)
+                .analyzeContractLine(contractLine, contract, contract.getCompany());
+
+        response.setValue("analyticMoveLineList", contractLine.getAnalyticMoveLineList());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void manageAxis(ActionRequest request, ActionResponse response) {
+    try {
+      Contract contract = ContextTool.getContextParent(request.getContext(), Contract.class, 2);
+
+      if (contract == null || contract.getCompany() == null) {
+        return;
+      }
+
+      response.setAttrs(
+          Beans.get(ContractLineService.class)
+              .getContractLineAnalyticAxisAttrsMap(contract, startAxisPosition, endAxisPosition));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void printAnalyticAccounts(ActionRequest request, ActionResponse response) {
+    try {
+      Contract contract = ContextTool.getContextParent(request.getContext(), Contract.class, 2);
+
+      if (contract == null || contract.getCompany() == null) {
+        return;
+      }
+
+      ContractLine contractLine = request.getContext().asType(ContractLine.class);
+      Beans.get(ContractLineService.class)
+          .printAnalyticAccount(contractLine, contract.getCompany());
+
+      response.setValue("axis1AnalyticAccount", contractLine.getAxis1AnalyticAccount());
+      response.setValue("axis2AnalyticAccount", contractLine.getAxis2AnalyticAccount());
+      response.setValue("axis3AnalyticAccount", contractLine.getAxis3AnalyticAccount());
+      response.setValue("axis4AnalyticAccount", contractLine.getAxis4AnalyticAccount());
+      response.setValue("axis5AnalyticAccount", contractLine.getAxis5AnalyticAccount());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

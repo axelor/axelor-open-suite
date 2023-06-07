@@ -18,7 +18,9 @@
  */
 package com.axelor.apps.contract.service;
 
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AnalyticAccount;
+import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticAxisByCompany;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.TaxLine;
@@ -29,6 +31,7 @@ import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -51,7 +54,9 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -67,6 +72,7 @@ public class ContractLineServiceImpl implements ContractLineService {
   protected AnalyticMoveLineService analyticMoveLineService;
   protected AnalyticToolService analyticToolService;
   protected ListToolService listToolService;
+  protected MoveLineComputeAnalyticService moveLineComputeAnalyticService;
   protected AnalyticAccountRepository analyticAccountRepo;
   protected AccountAnalyticRulesRepository accountAnalyticRulesRepo;
 
@@ -81,6 +87,7 @@ public class ContractLineServiceImpl implements ContractLineService {
       AnalyticMoveLineService analyticMoveLineService,
       AnalyticToolService analyticToolService,
       ListToolService listToolService,
+      MoveLineComputeAnalyticService moveLineComputeAnalyticService,
       AnalyticAccountRepository analyticAccountRepo,
       AccountAnalyticRulesRepository accountAnalyticRulesRepo) {
     this.appBaseService = appBaseService;
@@ -92,6 +99,7 @@ public class ContractLineServiceImpl implements ContractLineService {
     this.analyticMoveLineService = analyticMoveLineService;
     this.analyticToolService = analyticToolService;
     this.listToolService = listToolService;
+    this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
     this.analyticAccountRepo = analyticAccountRepo;
     this.accountAnalyticRulesRepo = accountAnalyticRulesRepo;
   }
@@ -341,5 +349,57 @@ public class ContractLineServiceImpl implements ContractLineService {
         .flatMap(Collection::stream)
         .map(AnalyticAccount::getId)
         .collect(Collectors.toList());
+  }
+
+  @Override
+  public Map<String, Map<String, Object>> getContractLineAnalyticAxisAttrsMap(
+      Contract contract, int startAxisPosition, int endAxisPosition) throws AxelorException {
+    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+
+    AccountConfig accountConfig = accountConfigService.getAccountConfig(contract.getCompany());
+
+    if (moveLineComputeAnalyticService.checkManageAnalytic(contract.getCompany())) {
+      AnalyticAxis analyticAxis = null;
+
+      for (int i = startAxisPosition; i <= endAxisPosition; i++) {
+        for (AnalyticAxisByCompany analyticAxisByCompany :
+            accountConfig.getAnalyticAxisByCompanyList()) {
+          if (analyticAxisByCompany.getSequence() + 1 == i) {
+            analyticAxis = analyticAxisByCompany.getAnalyticAxis();
+          }
+        }
+
+        if (analyticAxis != null) {
+          this.addAttr(
+              String.format("axis%dAnalyticAccount", i), "title", analyticAxis.getName(), attrsMap);
+
+          analyticAxis = null;
+        }
+
+        this.addAttr(
+            String.format("axis%dAnalyticAccount", i),
+            "hidden",
+            !(i <= accountConfig.getNbrOfAnalyticAxisSelect()),
+            attrsMap);
+      }
+    } else {
+      this.addAttr("analyticDistributionTemplate", "hidden", true, attrsMap);
+      this.addAttr("analyticMoveLineList", "hidden", true, attrsMap);
+
+      for (int i = startAxisPosition; i <= endAxisPosition; i++) {
+        this.addAttr(String.format("axis%dAnalyticAccount", i), "hidden", true, attrsMap);
+      }
+    }
+
+    return attrsMap;
+  }
+
+  protected void addAttr(
+      String field, String attr, Object value, Map<String, Map<String, Object>> attrsMap) {
+    if (!attrsMap.containsKey(field)) {
+      attrsMap.put(field, new HashMap<>());
+    }
+
+    attrsMap.get(field).put(attr, value);
   }
 }
