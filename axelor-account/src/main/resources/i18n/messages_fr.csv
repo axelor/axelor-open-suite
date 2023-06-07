@@ -1,5 +1,4 @@
 "key","message","comment","context"
-"$paymentConditionChangeError",,,
 "${label} move lines","Lignes d'écritures : ${label}",,
 "%","%",,
 "% to match any character","% pour remplacer n'importe quel caractère",,
@@ -204,6 +203,7 @@
 "A new record of fixed asset will be generated based on the split quantity. Current fixed asset will be recalculated based on the remaining quantity.","Un nouvel enregistrement d'Immobilisation sera généré basé sur la quantité à scinder. L'immobilisation courante sera recalculée sur la base de la quantité restante.",,
 "A payment mode already exists with the same information.","Un mode de paiement existe déjà avec les mêmes informations.",,
 "A previous result can be used with the following syntax : rules[""code""] where code is the ""code"" field of a previous config line.","Un résultat antérieur peut être utilisé à l'aide de la syntaxe suivante : rules[""code""] où code correspond au champ ""code"" d'une ligne de configuration antérieure.'",,
+"A reverse charge tax is required on the fiscal position %s (From tax : %s - To tax : %s).","Une taxe de contrepartie est requise sur la position fiscale %s (Taxe à remplacer : %s - Taxe de remplacement : %s)",,
 "A sequence already exists on this code for this company and this sequence have to be unique",,,
 "A tax line is missing","Il manque une ligne de taxe",,
 "A technical type is required on the journal type %s.","Un type technique est requis sur le type de journal %s.",,

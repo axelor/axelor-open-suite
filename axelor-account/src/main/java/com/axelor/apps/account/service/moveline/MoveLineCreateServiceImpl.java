@@ -51,10 +51,10 @@ import com.axelor.apps.base.service.config.CompanyConfigService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
@@ -66,7 +66,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -91,6 +90,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
   protected AccountingSituationService accountingSituationService;
   protected FiscalPositionService fiscalPositionService;
   protected TaxService taxService;
+  protected AppBaseService appBaseService;
 
   @Inject
   public MoveLineCreateServiceImpl(
@@ -108,7 +108,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       AccountingSituationRepository accountingSituationRepository,
       AccountingSituationService accountingSituationService,
       FiscalPositionService fiscalPositionService,
-      TaxService taxService) {
+      TaxService taxService,
+      AppBaseService appBaseService) {
     this.companyConfigService = companyConfigService;
     this.currencyService = currencyService;
     this.fiscalPositionAccountService = fiscalPositionAccountService;
@@ -124,6 +125,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     this.accountingSituationService = accountingSituationService;
     this.fiscalPositionService = fiscalPositionService;
     this.taxService = taxService;
+    this.appBaseService = appBaseService;
   }
 
   /**
@@ -761,14 +763,21 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       newAccount = fiscalPositionAccountService.getAccount(fiscalPosition, newAccount);
       taxEquiv = moveLine.getTaxEquiv();
       if (taxEquiv != null && taxEquiv.getReverseCharge()) {
+        if (ObjectUtils.isEmpty(taxEquiv.getReverseChargeTax())) {
+          throw new AxelorException(
+              fiscalPosition,
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(AccountExceptionMessage.REVERSE_CHARGE_TAX_MISSING_ON_FISCAL_POSITION),
+              fiscalPosition.getName(),
+              taxEquiv.getFromTax().getName(),
+              taxEquiv.getToTax().getName());
+        }
         taxLineBeforeReverse = moveLine.getTaxLineBeforeReverse();
         taxLineRC =
-            Optional.ofNullable(taxEquiv.getReverseChargeTax())
-                .map(Tax::getActiveTaxLine)
-                .orElse(
-                    taxService.getTaxLine(
-                        taxEquiv.getReverseChargeTax(),
-                        Beans.get(AppBaseService.class).getTodayDate(move.getCompany())));
+            taxEquiv.getReverseChargeTax().getActiveTaxLine() != null
+                ? taxEquiv.getReverseChargeTax().getActiveTaxLine()
+                : taxService.getTaxLine(
+                    taxEquiv.getReverseChargeTax(), appBaseService.getTodayDate(move.getCompany()));
       }
     }
 
