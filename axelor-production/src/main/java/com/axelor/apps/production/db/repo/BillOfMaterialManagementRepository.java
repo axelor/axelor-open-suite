@@ -19,10 +19,16 @@
 package com.axelor.apps.production.db.repo;
 
 import com.axelor.apps.production.db.BillOfMaterial;
+import com.axelor.apps.production.db.BillOfMaterialLine;
+import com.google.inject.Inject;
+
 import java.math.BigDecimal;
-import java.util.Set;
+import java.util.List;
 
 public class BillOfMaterialManagementRepository extends BillOfMaterialRepository {
+	
+	@Inject
+	protected BillOfMaterialLineRepository billOfMaterialLineRepository;
 
   @Override
   public BillOfMaterial save(BillOfMaterial billOfMaterial) {
@@ -47,12 +53,13 @@ public class BillOfMaterialManagementRepository extends BillOfMaterialRepository
     copy.setOriginalBillOfMaterial(null);
     copy.setCostPrice(BigDecimal.ZERO);
     copy.clearCostSheetList();
-    copy.clearBillOfMaterialSet();
-    Set<BillOfMaterial> billOfMaterials = entity.getBillOfMaterialSet();
-
-    if (billOfMaterials != null && !billOfMaterials.isEmpty()) {
-      billOfMaterials.forEach(bom -> copy.addBillOfMaterialSetItem(copy(bom, deep)));
+    copy.clearBillOfMaterialLineList();
+    
+    List<BillOfMaterialLine> billOfMaterialLineList = entity.getBillOfMaterialLineList();
+    if (billOfMaterialLineList != null && !billOfMaterialLineList.isEmpty()) {
+    	billOfMaterialLineList.forEach(boml -> copy.addBillOfMaterialLineListItem(billOfMaterialLineRepository.copy(boml, deep)));
     }
+
 
     return copy;
   }

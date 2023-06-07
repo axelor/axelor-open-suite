@@ -12,10 +12,8 @@
     <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"
       required="true"/>
     <many-to-one ref="com.axelor.apps.production.db.BillOfMaterial"
-      name="productBillOfMaterial" title="Product Bill of material"/>
+      name="billOfMaterial" title="Bill of material"/>
     <boolean name="hasNoManageStock" title="Manage stock"/>
-
-
 
     <track>
       <field name="priority"/>

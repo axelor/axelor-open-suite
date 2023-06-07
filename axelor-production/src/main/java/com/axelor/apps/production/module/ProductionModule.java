@@ -19,6 +19,8 @@
 package com.axelor.apps.production.module;
 
 import com.axelor.app.AxelorModule;
+import com.axelor.apps.production.db.repo.BillOfMaterialLineManagementRepository;
+import com.axelor.apps.production.db.repo.BillOfMaterialLineRepository;
 import com.axelor.apps.production.db.repo.BillOfMaterialManagementRepository;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.MachineRepository;
@@ -45,6 +47,8 @@ import com.axelor.apps.production.rest.ManufOrderRestService;
 import com.axelor.apps.production.rest.ManufOrderRestServiceImpl;
 import com.axelor.apps.production.rest.OperationOrderRestService;
 import com.axelor.apps.production.rest.OperationOrderRestServiceImpl;
+import com.axelor.apps.production.service.BillOfMaterialLineService;
+import com.axelor.apps.production.service.BillOfMaterialLineServiceImpl;
 import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.BillOfMaterialServiceImpl;
 import com.axelor.apps.production.service.MpsChargeService;
@@ -178,5 +182,7 @@ public class ProductionModule extends AxelorModule {
     bind(ManufOrderRestService.class).to(ManufOrderRestServiceImpl.class);
     bind(OperationOrderRestService.class).to(OperationOrderRestServiceImpl.class);
     bind(ManufOrderWorkflowService.class).to(ManufOrderWorkflowServiceImpl.class);
+    bind(BillOfMaterialLineRepository.class).to(BillOfMaterialLineManagementRepository.class);
+    bind(BillOfMaterialLineService.class).to(BillOfMaterialLineServiceImpl.class);
   }
 }

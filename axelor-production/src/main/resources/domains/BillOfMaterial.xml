@@ -11,13 +11,10 @@
     <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"
       required="true"/>
     <decimal name="qty" title="Qty" precision="20" scale="10"/>
-    <integer name="priority" title="Priority"/>
     <boolean name="defineSubBillOfMaterial" title="Define sub bill of materials"/>
     <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
     <many-to-one name="prodProcess" ref="com.axelor.apps.production.db.ProdProcess"
       title="Production process"/>
-    <many-to-many name="billOfMaterialSet"
-      ref="com.axelor.apps.production.db.BillOfMaterial" title="BOMs" orderBy="priority"/>
     <one-to-many ref="com.axelor.apps.production.db.BillOfMaterialLine"
       name="billOfMaterialLineList"/>
     <one-to-many name="prodResidualProductList"
