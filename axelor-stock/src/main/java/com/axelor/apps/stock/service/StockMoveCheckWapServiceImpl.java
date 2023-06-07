@@ -72,7 +72,7 @@ public class StockMoveCheckWapServiceImpl implements StockMoveCheckWapService {
         if (!product.getStockManaged()
             || toStockLocation.getTypeSelect() == StockLocationRepository.TYPE_VIRTUAL
             || stockLocationLine == null
-            || stockLocationLine.getAvgPrice().compareTo(BigDecimal.ZERO) == 0) {
+            || stockLocationLine.getWapPrice().compareTo(BigDecimal.ZERO) == 0) {
           continue;
         }
 
@@ -93,13 +93,13 @@ public class StockMoveCheckWapServiceImpl implements StockMoveCheckWapService {
             .getStockConfig(stockLocationLine.getStockLocation().getCompany())
             .getPercentToleranceForWapChange();
 
-    BigDecimal newAvgPrice =
-        stockMoveLineService.computeNewAveragePriceLocationLine(stockLocationLine, stockMoveLine);
-    BigDecimal oldAvgPrice = stockLocationLine.getAvgPrice();
+    BigDecimal newWapPrice =
+        stockMoveLineService.computeNewWapPriceLocationLine(stockLocationLine, stockMoveLine);
+    BigDecimal oldWapPrice = stockLocationLine.getWapPrice();
 
     BigDecimal percentWapChange =
-        (newAvgPrice.subtract(oldAvgPrice))
-            .divide(oldAvgPrice, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP)
+        (newWapPrice.subtract(oldWapPrice))
+            .divide(oldWapPrice, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP)
             .multiply(new BigDecimal(100))
             .abs();
 

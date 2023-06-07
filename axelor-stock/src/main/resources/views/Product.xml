@@ -23,7 +23,7 @@
 
   <action-attrs name="action-product-attrs-scale-and-precision-stock"
     if-module="axelor-stock">
-    <attribute name="scale" for="avgPrice"
+    <attribute name="scale" for="wapPrice"
       expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
   </action-attrs>
 

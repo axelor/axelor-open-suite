@@ -115,7 +115,7 @@ public class BatchRecomputeStockLocationLines extends AbstractBatch {
         JPA.em()
             .createNativeQuery(
                 "UPDATE stock_stock_location_line SET "
-                    + " avg_price = 0, "
+                    + " wap_price = 0, "
                     + " current_qty = 0, "
                     + " future_qty = 0 ");
 

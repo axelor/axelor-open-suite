@@ -8,7 +8,7 @@
     <field name="company"/>
     <field name="lastPurchasePrice" x-scale="2" width="250px"/>
     <field name="costPrice" x-scale="2"/>
-    <field name="avgPrice" x-scale="2"/>
+    <field name="wapPrice" x-scale="2"/>
     <field name="company.currency" title="Company currency"/>
     <field name="salePrice" x-scale="2"/>
     <field name="saleCurrency"/>
@@ -35,7 +35,7 @@
         onChange="action-product-record-compute-sale-price"/>
       <field name="costTypeSelect" onChange="action-product-group-cost-type-select-onchange"/>
       <field name="managPriceCoef" colSpan="12"/>
-      <field name="avgPrice" readonly="true"/>
+      <field name="wapPrice" readonly="true"/>
       <field name="company.currency" title="Company currency" readonly="true"/>
       <field name="autoUpdateSalePrice"/>
       <field name="lastPurchasePrice" readonly="true" colSpan="3"/>
@@ -72,7 +72,7 @@
       expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
     <attribute name="scale" for="costPrice"
       expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
-    <attribute name="scale" for="avgPrice"
+    <attribute name="scale" for="wapPrice"
       expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
   </action-attrs>
 

@@ -51,7 +51,7 @@ public class StockLocationLineController {
               .toLocalDateTime();
 
       Beans.get(WeightedAveragePriceService.class)
-          .computeAvgPriceForProduct(stockLocationLine.getProduct());
+          .computeWapPriceForProduct(stockLocationLine.getProduct());
       Beans.get(StockLocationLineHistoryService.class)
           .saveHistory(
               stockLocationLine,

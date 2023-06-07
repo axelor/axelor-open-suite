@@ -94,7 +94,7 @@ public class ProductStockController {
       for (StockLocationLine stockLocationLine : stockLocationLineList) {
         stockLocationLineService.updateStockLocationFromProduct(stockLocationLine, product);
       }
-      Beans.get(WeightedAveragePriceService.class).computeAvgPriceForProduct(product);
+      Beans.get(WeightedAveragePriceService.class).computeWapPriceForProduct(product);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

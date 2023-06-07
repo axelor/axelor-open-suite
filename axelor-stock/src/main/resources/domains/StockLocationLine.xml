@@ -15,8 +15,8 @@
     <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
     <decimal name="currentQty" title="Current Qty" precision="20" scale="10" readonly="true"/>
     <decimal name="futureQty" title="Future Qty" precision="20" scale="10" readonly="true"/>
-    <decimal name="avgPrice" precision="20" scale="10" readonly="true" title="Average Price"/>
-    <boolean name="isAvgPriceChanged" transient="true"/>
+    <decimal name="wapPrice" precision="20" scale="10" readonly="true" title="Average Price"/>
+    <boolean name="isWapPriceChanged" transient="true"/>
     <date name="lastFutureStockMoveDate" title="Last Future Stock Move" readonly="true"/>
 
     <string name="rack" title="Rack"/>

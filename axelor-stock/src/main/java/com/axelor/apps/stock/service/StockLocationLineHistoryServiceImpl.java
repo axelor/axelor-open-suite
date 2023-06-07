@@ -49,7 +49,7 @@ public class StockLocationLineHistoryServiceImpl implements StockLocationLineHis
             typeSelect,
             dateTime,
             origin,
-            stockLocationLine.getAvgPrice(),
+            stockLocationLine.getWapPrice(),
             stockLocationLine.getCurrentQty(),
             stockLocationLine.getUnit()));
   }

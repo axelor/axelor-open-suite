@@ -31,8 +31,8 @@ public class StockLocationLineStockRepository extends StockLocationLineRepositor
   public StockLocationLine save(StockLocationLine entity) {
     try {
       Product product = entity.getProduct();
-      if (entity.getIsAvgPriceChanged()) {
-        Beans.get(WeightedAveragePriceService.class).computeAvgPriceForProduct(product);
+      if (entity.getIsWapPriceChanged()) {
+        Beans.get(WeightedAveragePriceService.class).computeWapPriceForProduct(product);
       }
       return super.save(entity);
     } catch (Exception e) {

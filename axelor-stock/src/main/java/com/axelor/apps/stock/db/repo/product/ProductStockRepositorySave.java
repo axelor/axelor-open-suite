@@ -88,9 +88,9 @@ public class ProductStockRepositorySave {
           productCompany, specificField.getName(), mapper.get(product, specificField.getName()));
     }
 
-    // specific case for avgPrice per company
-    productCompany.setAvgPrice(
-        weightedAveragePriceService.computeAvgPriceForCompany(product, company));
+    // specific case for wapPrice per company
+    productCompany.setWapPrice(
+        weightedAveragePriceService.computeWapPriceForCompany(product, company));
     productCompany.setCompany(company);
     productCompany.setProduct(product);
     return productCompany;
