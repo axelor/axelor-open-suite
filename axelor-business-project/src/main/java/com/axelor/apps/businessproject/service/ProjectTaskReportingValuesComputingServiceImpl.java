@@ -124,8 +124,22 @@ public class ProjectTaskReportingValuesComputingServiceImpl
               I18n.get(BusinessProjectExceptionMessage.PROJECT_TASK_SOLD_TIME_ERROR),
               projectTask.getName()));
     }
+
+    // sale order line unit not compatible with BusinessProject configuration
+    if (saleOrderLine != null
+        && !daysUnit.equals(saleOrderLine.getUnit())
+        && !hoursUnit.equals(saleOrderLine.getUnit())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          String.format(
+              I18n.get(
+                  BusinessProjectExceptionMessage.PROJECT_TASK_PRODUCT_SALE_ORDER_LINE_UNIT_ERROR),
+              product.getName()));
+    }
+
     // stock unit not compatible with BusinessProject configuration
-    if (product != null
+    if (saleOrderLine == null
+        && product != null
         && !daysUnit.equals(product.getUnit())
         && !hoursUnit.equals(product.getUnit())) {
       throw new AxelorException(
@@ -250,7 +264,7 @@ public class ProjectTaskReportingValuesComputingServiceImpl
         break;
       case ProjectRepository.COMPUTATION_METHOD_PRODUCT:
         if (product != null) {
-          unitCost = product.getCostPrice();
+          unitCost = getProductConvertedPrice(product, timeUnit);
         }
         break;
       case ProjectRepository.COMPUTATION_METHOD_EMPLOYEE:
