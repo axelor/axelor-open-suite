@@ -19,7 +19,7 @@
       title="Person in charge"/>
 
     <decimal name="totalAmountCommitted" title="Committed amount"
-      help="Represents the sum of orders of status requested, validated or finished and that don't have a invoiced invoice."
+      help="Represents the sum of orders of status requested, validated or finished and that don't have an invoiced invoice."
       precision="20" scale="2"/>
 
     <decimal name="totalAmountExpected" title="Expected amount"
@@ -46,7 +46,7 @@
     <decimal name="realizedWithNoPo" title="Realized with no po" precision="20" scale="2"
       help="Represents the sum of ventilated invoices with no order and daybook and accounted moves with no invoice."/>
     <decimal name="realizedWithPo" title="Realized with po" precision="20" scale="2"
-      help="Represents the sum of ventilated invoices with a purchase order."/>
+      help="Represents the sum of ventilated invoices with an order."/>
     <decimal name="totalFirmGap" title="Firm gap" precision="20" scale="2"
       help="Represents the sum of amounts realized with or without commitment that exceed the initial"/>
     <decimal name="simulatedAmount" title="Simulated amount" precision="20" scale="2"
