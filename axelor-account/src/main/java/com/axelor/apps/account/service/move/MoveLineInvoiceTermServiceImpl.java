@@ -137,9 +137,7 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
         paymentCondition.getPaymentConditionLineList().stream()
             .sorted(Comparator.comparing(PaymentConditionLine::getSequence))
             .collect(Collectors.toList())) {
-      if (paymentConditionLine.getIsHoldback() == isHoldback && !isHoldback) {
-        this.computeInvoiceTerm(moveLine, move, paymentConditionLine, singleTermDueDate, total);
-      } else if ((paymentConditionLine.getIsHoldback()
+      if ((paymentConditionLine.getIsHoldback()
               && !this.isHoldbackAlreadyGenerated(move, holdbackAccount))
           || isHoldback) {
         holdbackMoveLine =
@@ -151,6 +149,8 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
                 singleTermDueDate,
                 total,
                 canCreateHolbackMoveLine);
+      } else if (!paymentConditionLine.getIsHoldback()) {
+        this.computeInvoiceTerm(moveLine, move, paymentConditionLine, singleTermDueDate, total);
       }
     }
 
