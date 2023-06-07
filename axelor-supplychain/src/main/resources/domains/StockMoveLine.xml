@@ -27,11 +27,11 @@
 
     <finder-method name="findAllBySaleOrder"
       using="com.axelor.apps.sale.db.SaleOrder:saleOrder" all="true"
-      filter="self.stockMove.originTypeSelect LIKE 'com.axelor.apps.sale.db.SaleOrder' AND self.stockMove.originId = :saleOrder.id"/>
+      filter="self.stockMove.saleOrder.id = :saleOrder.id"/>
 
     <finder-method name="findAllBySaleOrderAndStatusSelect"
       using="com.axelor.apps.sale.db.SaleOrder:saleOrder,Integer:statusSelect" all="true"
-      filter="self.stockMove.originTypeSelect LIKE 'com.axelor.apps.sale.db.SaleOrder' AND self.stockMove.originId = :saleOrder.id AND self.stockMove.statusSelect = :statusSelect"/>
+      filter="self.stockMove.saleOrder.id = :saleOrder.id AND self.stockMove.statusSelect = :statusSelect"/>
 
 
     <finder-method name="findForDeclarationOfExchanges"
