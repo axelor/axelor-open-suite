@@ -189,9 +189,9 @@
             <viewer>
               <![CDATA[
 	                        <h4 class="text-left">
-                                    <span class="label label-warning" style="margin: 3px 0 !important; display: inline-table; line-height: initial; font-size: 11px; border-radius: 8px;" ng-show="(record.statusSelect == 2 || record.statusSelect == 3) && record.pfpValidateStatusSelect == 1">Awaiting PFP</span>
-                                    <span class="label label-success" style="margin: 3px 0 !important; display: inline-table; line-height: initial; font-size: 11px; border-radius: 8px;" ng-show="(record.statusSelect == 2 || record.statusSelect == 3)  && record.pfpValidateStatusSelect == 2">PFP validated</span>
-                                    <span class="label label-important" style="margin: 3px 0 !important; display: inline-table; line-height: initial; font-size: 11px; border-radius: 8px;" ng-show="(record.statusSelect == 2 || record.statusSelect == 3) && record.pfpValidateStatusSelect == 3">Litigation</span>
+                                    <span class="label label-warning" style="margin: 3px 0 !important; display: inline-table; line-height: initial; font-size: 11px; border-radius: 8px;" ng-show="(record.statusSelect == 2 || record.statusSelect == 3) && record.pfpValidateStatusSelect == 1" x-translate>Awaiting PFP</span>
+                                    <span class="label label-success" style="margin: 3px 0 !important; display: inline-table; line-height: initial; font-size: 11px; border-radius: 8px;" ng-show="(record.statusSelect == 2 || record.statusSelect == 3)  && record.pfpValidateStatusSelect == 2" x-translate>PFP validated</span>
+                                    <span class="label label-important" style="margin: 3px 0 !important; display: inline-table; line-height: initial; font-size: 11px; border-radius: 8px;" ng-show="(record.statusSelect == 2 || record.statusSelect == 3) && record.pfpValidateStatusSelect == 3" x-translate>Litigation</span>
 	                        </h4>
 	                    ]]>
             </viewer>
