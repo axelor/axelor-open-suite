@@ -609,8 +609,7 @@
       </panel>
       <panel if="__config__.app.getApp('sale')?.getPrintingConfigPerSaleOrder()"
         name="printingPanel" title="Printing">
-        <field name="printingSettings" canEdit="false"
-          onSelect="action-sale-method-filter-printing-settings"/>
+        <field name="printingSettings" canEdit="false"/>
         <field name="groupProductsOnPrintings"
           if="__config__.app.getApp('base')?.getIsRegroupProductsOnPrintings()" colSpan="6"/>
         <field name="hideDiscount"/>
@@ -1525,7 +1524,7 @@
       if="saleOrderLineList?.any{ it.subTotalGrossMargin &lt; 0 }"/>
     <alert
       message="The selected price list is no longer valid, do you still want to continue?"
-      if="priceList != null  &amp;&amp; !(priceList?.isActive &amp;&amp; (priceList?.applicationBeginDate == null || priceList?.applicationBeginDate &lt; __config__.date) &amp;&amp; (priceList?.applicationEndDate == null || priceList?.applicationEndDate &gt; __config__.date))"/>
+      if="priceList != null  &amp;&amp; !(priceList?.isActive &amp;&amp; (priceList?.applicationBeginDate == null || priceList?.applicationBeginDate &lt;= __config__.date) &amp;&amp; (priceList?.applicationEndDate == null || priceList?.applicationEndDate &gt;= __config__.date))"/>
   </action-validate>
 
   <action-attrs name="action-sale-order-attrs-in-ati">
@@ -2077,10 +2076,6 @@
 
   <action-method name="action-method-sale-order-validate-changes">
     <call class="com.axelor.apps.sale.web.SaleOrderController" method="validateChanges"/>
-  </action-method>
-
-  <action-method name="action-sale-method-filter-printing-settings">
-    <call class="com.axelor.apps.sale.web.SaleOrderController" method="filterPrintingSettings"/>
   </action-method>
 
   <action-method name="action-sale-method-printing-settings-default-values">

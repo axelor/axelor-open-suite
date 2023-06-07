@@ -18,55 +18,52 @@
  */
 package com.axelor.apps.account.service.move.record;
 
+import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.TaxEquiv;
+import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.tax.FiscalPositionService;
+import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.base.service.user.UserService;
+import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
 
 public class MoveDefaultServiceImpl implements MoveDefaultService {
 
   protected UserService userService;
   protected CompanyRepository companyRepository;
   protected AppBaseService appBaseService;
+  protected FiscalPositionService fiscalPositionService;
+  protected TaxService taxService;
 
   @Inject
   public MoveDefaultServiceImpl(
-      UserService userService, CompanyRepository companyRepository, AppBaseService appBaseService) {
+      UserService userService,
+      CompanyRepository companyRepository,
+      AppBaseService appBaseService,
+      FiscalPositionService fiscalPositionService,
+      TaxService taxService) {
     this.userService = userService;
     this.companyRepository = companyRepository;
     this.appBaseService = appBaseService;
+    this.fiscalPositionService = fiscalPositionService;
+    this.taxService = taxService;
   }
 
   @Override
-  public Map<String, Object> setDefaultMoveValues(Move move) {
+  public void setDefaultValues(Move move) {
+    this.setCompany(move);
+    this.setDate(move);
+    this.setDefaultCurrency(move);
 
-    Objects.requireNonNull(move);
-    HashMap<String, Object> resultMap = new HashMap<>();
-
-    setDefaultValues(move);
-
-    resultMap.put("company", move.getCompany());
-    resultMap.put("date", move.getDate());
-    resultMap.put("technicalOriginSelect", move.getTechnicalOriginSelect());
-    resultMap.put("tradingName", move.getTradingName());
-
-    return resultMap;
-  }
-
-  protected void setDefaultValues(Move move) {
-    Company activeCompany = userService.getUserActiveCompany();
-
-    setCompany(move, activeCompany);
-    setDate(move);
     move.setTechnicalOriginSelect(MoveRepository.TECHNICAL_ORIGIN_ENTRY);
     move.setTradingName(userService.getTradingName());
-    this.setDefaultCurrency(move);
   }
 
   protected void setDate(Move move) {
@@ -75,26 +72,18 @@ public class MoveDefaultServiceImpl implements MoveDefaultService {
     }
   }
 
-  protected void setCompany(Move move, Company activeCompany) {
+  protected void setCompany(Move move) {
+    Company activeCompany = userService.getUserActiveCompany();
+
     if (activeCompany != null) {
       move.setCompany(activeCompany);
-    } else {
-      if (onlyOneCompanyExist()) {
-        move.setCompany(companyRepository.all().fetchOne());
-      }
+    } else if (companyRepository.all().count() == 1) {
+      move.setCompany(companyRepository.all().fetchOne());
     }
   }
 
-  protected boolean onlyOneCompanyExist() {
-    return companyRepository.all().count() == 1;
-  }
-
   @Override
-  public Map<String, Object> setDefaultCurrency(Move move) {
-
-    Objects.requireNonNull(move);
-    HashMap<String, Object> resultMap = new HashMap<>();
-
+  public void setDefaultCurrency(Move move) {
     Company company = move.getCompany();
 
     if (move.getPartner() == null && company != null && company.getCurrency() != null) {
@@ -103,12 +92,39 @@ public class MoveDefaultServiceImpl implements MoveDefaultService {
       move.setCurrencyCode(company.getCurrency().getCodeISO());
       move.setCompanyCurrencyCode(company.getCurrency().getCodeISO());
     }
+  }
 
-    resultMap.put("companyCurrency", move.getCompanyCurrency());
-    resultMap.put("currency", move.getCurrency());
-    resultMap.put("currencyCode", move.getCurrencyCode());
-    resultMap.put("companyCurrencyCode", move.getCompanyCurrencyCode());
+  @Override
+  public void setDefaultCurrencyOnChange(Move move) {
+    if (move.getCurrency() != null) {
+      move.setCurrencyCode(move.getCurrency().getCodeISO());
+    }
+  }
 
-    return resultMap;
+  @Override
+  public void setDefaultFiscalPositionOnChange(Move move) throws AxelorException {
+    if (ObjectUtils.isEmpty(move.getMoveLineList())) {
+      return;
+    }
+    FiscalPosition fiscalPosition = move.getFiscalPosition();
+
+    for (MoveLine moveLine : move.getMoveLineList()) {
+      TaxLine taxLine =
+          moveLine.getTaxLineBeforeReverse() != null
+              ? moveLine.getTaxLineBeforeReverse()
+              : moveLine.getTaxLine();
+      TaxEquiv taxEquiv = null;
+      moveLine.setTaxLineBeforeReverse(null);
+      if (fiscalPosition != null && taxLine != null) {
+        taxEquiv = fiscalPositionService.getTaxEquiv(fiscalPosition, taxLine.getTax());
+
+        if (taxEquiv != null) {
+          moveLine.setTaxLineBeforeReverse(taxLine);
+          taxLine = taxService.getTaxLine(taxEquiv.getToTax(), moveLine.getDate());
+        }
+      }
+      moveLine.setTaxLine(taxLine);
+      moveLine.setTaxEquiv(taxEquiv);
+    }
   }
 }

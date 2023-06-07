@@ -399,7 +399,7 @@ public class BankReconciliationService {
             vatSystemSelect,
             false,
             move.getFunctionalOriginSelect());
-    moveLineTaxService.autoTaxLineGenerate(move, account);
+    moveLineTaxService.autoTaxLineGenerate(move, account, false);
 
     fixTaxAmountRounding(move, counterPartMoveLine, moveLine);
   }
@@ -1093,7 +1093,7 @@ public class BankReconciliationService {
     }
     bankReconciliationLine.setMoveLine(null);
     bankReconciliationLine.setConfidenceIndex(0);
-    bankReconciliationLine.setPostedNbr("");
+    bankReconciliationLine.setPostedNbr(null);
   }
 
   @Transactional

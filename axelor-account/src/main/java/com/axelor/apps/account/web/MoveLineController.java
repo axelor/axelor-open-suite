@@ -58,7 +58,6 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.axelor.utils.ContextTool;
 import com.axelor.utils.db.Wizard;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
@@ -76,7 +75,7 @@ public class MoveLineController {
   public void computeAnalyticDistribution(ActionRequest request, ActionResponse response) {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
-      Move move = request.getContext().getParent().asType(Move.class);
+      Move move = this.getMove(request, moveLine);
       if (move != null
           && Beans.get(MoveLineComputeAnalyticService.class)
               .checkManageAnalytic(move.getCompany())) {
@@ -212,7 +211,7 @@ public class MoveLineController {
     try {
 
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
-      Move move = request.getContext().getParent().asType(Move.class);
+      Move move = this.getMove(request, moveLine);
       if (move != null
           && Beans.get(MoveLineComputeAnalyticService.class)
               .checkManageAnalytic(move.getCompany())) {
@@ -229,7 +228,7 @@ public class MoveLineController {
   public void setAxisDomains(ActionRequest request, ActionResponse response) {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
-      Move move = request.getContext().getParent().asType(Move.class);
+      Move move = this.getMove(request, moveLine);
       List<Long> analyticAccountList;
       AnalyticToolService analyticToolService = Beans.get(AnalyticToolService.class);
       AnalyticLineService analyticLineService = Beans.get(AnalyticLineService.class);
@@ -274,10 +273,7 @@ public class MoveLineController {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
 
-      Move move = moveLine.getMove();
-      if (move == null) {
-        move = request.getContext().getParent().asType(Move.class);
-      }
+      Move move = this.getMove(request, moveLine);
 
       AnalyticLineService analyticLineService = Beans.get(AnalyticLineService.class);
       for (int i = startAxisPosition; i <= endAxisPosition; i++) {
@@ -359,6 +355,7 @@ public class MoveLineController {
   public void setInvoiceTermReadonly(ActionRequest request, ActionResponse response) {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
+      moveLine.setMove(this.getMove(request, moveLine));
 
       response.setAttr(
           "invoiceTermPanel",
@@ -424,10 +421,7 @@ public class MoveLineController {
   public void updateInvoiceTerms(ActionRequest request, ActionResponse response) {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
-
-      if (moveLine.getMove() == null) {
-        moveLine.setMove(ContextTool.getContextParent(request.getContext(), Move.class, 1));
-      }
+      moveLine.setMove(this.getMove(request, moveLine));
 
       Beans.get(MoveLineInvoiceTermService.class).updateInvoiceTermsParentFields(moveLine);
       response.setValues(moveLine);
@@ -438,6 +432,7 @@ public class MoveLineController {
 
   public void updateDueDates(ActionRequest request, ActionResponse response) {
     MoveLine moveLine = request.getContext().asType(MoveLine.class);
+    moveLine.setMove(this.getMove(request, moveLine));
     if (moveLine.getMove() != null && moveLine.getMove().getOriginDate() != null) {
       LocalDate dueDate =
           Beans.get(InvoiceTermService.class)
@@ -474,6 +469,8 @@ public class MoveLineController {
         TaxLine taxLine = moveLine.getTaxLine();
         TaxEquiv taxEquiv = null;
         FiscalPosition fiscalPosition = move.getFiscalPosition();
+        response.setValue("taxLineBeforeReverse", null);
+
         if (fiscalPosition != null && taxLine != null) {
           taxEquiv =
               Beans.get(FiscalPositionService.class).getTaxEquiv(fiscalPosition, taxLine.getTax());
@@ -482,10 +479,10 @@ public class MoveLineController {
             response.setValue("taxLineBeforeReverse", taxLine);
             taxLine =
                 Beans.get(TaxService.class).getTaxLine(taxEquiv.getToTax(), moveLine.getDate());
-            response.setValue("taxLine", taxLine);
-            response.setValue("taxEquiv", taxEquiv);
           }
         }
+        response.setValue("taxLine", taxLine);
+        response.setValue("taxEquiv", taxEquiv);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -521,7 +518,7 @@ public class MoveLineController {
   public void onLoad(ActionRequest request, ActionResponse response) {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
-      Move move = moveLine.getMove();
+      Move move = this.getMove(request, moveLine);
 
       response.setAttrs(Beans.get(MoveLineGroupService.class).getOnLoadAttrsMap(moveLine, move));
     } catch (Exception e) {
@@ -532,7 +529,7 @@ public class MoveLineController {
   public void onLoadMove(ActionRequest request, ActionResponse response) {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
-      Move move = moveLine.getMove();
+      Move move = this.getMove(request, moveLine);
 
       response.setAttrs(
           Beans.get(MoveLineGroupService.class).getOnLoadMoveAttrsMap(moveLine, move));
@@ -544,7 +541,7 @@ public class MoveLineController {
   public void onLoadAnalyticDistribution(ActionRequest request, ActionResponse response) {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
-      Move move = moveLine.getMove();
+      Move move = this.getMove(request, moveLine);
 
       MoveLineGroupService moveLineGroupService = Beans.get(MoveLineGroupService.class);
 
@@ -584,18 +581,17 @@ public class MoveLineController {
   public void accountOnChange(ActionRequest request, ActionResponse response) {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
-      Move move;
+      Move move = this.getMove(request, moveLine);
       LocalDate cutOffStartDate = null;
       LocalDate cutOffEndDate = null;
       LocalDate dueDate = this.extractDueDate(request);
 
       if (request.getContext().getParent() != null
           && Move.class.equals(request.getContext().getParent().getContextClass())) {
-        move = request.getContext().getParent().asType(Move.class);
-        cutOffStartDate = (LocalDate) request.getContext().getParent().get("cutOffStartDate");
-        cutOffEndDate = (LocalDate) request.getContext().getParent().get("cutOffEndDate");
-      } else {
-        move = moveLine.getMove();
+        cutOffStartDate =
+            LocalDate.parse((String) request.getContext().getParent().get("cutOffStartDate"));
+        cutOffEndDate =
+            LocalDate.parse((String) request.getContext().getParent().get("cutOffEndDate"));
       }
 
       MoveLineGroupService moveLineGroupService = Beans.get(MoveLineGroupService.class);
@@ -654,11 +650,15 @@ public class MoveLineController {
   public void currencyAmountRateOnChange(ActionRequest request, ActionResponse response) {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
+      Move move = this.getMove(request, moveLine);
       LocalDate dueDate = this.extractDueDate(request);
+      moveLine.setMove(this.getMove(request, moveLine));
+
+      moveLine.setMove(move);
 
       response.setValues(
           Beans.get(MoveLineGroupService.class)
-              .getCurrencyAmountRateOnChangeValuesMap(moveLine, dueDate));
+              .getCurrencyAmountRateOnChangeValuesMap(moveLine, move, dueDate));
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
@@ -706,6 +706,8 @@ public class MoveLineController {
       Move move = this.getMove(request, moveLine);
       LocalDate dueDate = this.extractDueDate(request);
 
+      moveLine.setMove(move);
+
       response.setValues(
           Beans.get(MoveLineGroupService.class).getDebitOnChangeValuesMap(moveLine, move, dueDate));
     } catch (Exception e) {
@@ -719,6 +721,8 @@ public class MoveLineController {
       Move move = this.getMove(request, moveLine);
       LocalDate dueDate = this.extractDueDate(request);
 
+      moveLine.setMove(move);
+
       response.setValues(
           Beans.get(MoveLineGroupService.class)
               .getCreditOnChangeValuesMap(moveLine, move, dueDate));
@@ -730,6 +734,8 @@ public class MoveLineController {
   public void partnerOnChange(ActionRequest request, ActionResponse response) {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
+
+      moveLine.setMove(this.getMove(request, moveLine));
 
       response.setValues(
           Beans.get(MoveLineGroupService.class).getPartnerOnChangeValuesMap(moveLine));
@@ -755,28 +761,10 @@ public class MoveLineController {
     }
   }
 
-  public void analyticDistributionTemplateAnalyticDistributionOnChange(
-      ActionRequest request, ActionResponse response) {
-    try {
-      MoveLine moveLine = request.getContext().asType(MoveLine.class);
-      Move move = this.getMove(request, moveLine);
-
-      MoveLineGroupService moveLineGroupService = Beans.get(MoveLineGroupService.class);
-
-      response.setValues(
-          moveLineGroupService.getAnalyticDistributionTemplateAnalyticDistributionOnChangeValuesMap(
-              moveLine, move));
-      response.setAttrs(
-          moveLineGroupService.getAnalyticDistributionTemplateOnChangeAttrsMap(moveLine, move));
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-    }
-  }
-
   protected Move getMove(ActionRequest request, MoveLine moveLine) {
-    if (request.getContext().getParent() != null
-        && Move.class.equals(request.getContext().getParent().getContextClass())) {
-      return request.getContext().getParent().asType(Move.class);
+    Context parentContext = request.getContext().getParent();
+    if (parentContext != null && Move.class.equals(parentContext.getContextClass())) {
+      return parentContext.asType(Move.class);
     } else {
       return moveLine.getMove();
     }
