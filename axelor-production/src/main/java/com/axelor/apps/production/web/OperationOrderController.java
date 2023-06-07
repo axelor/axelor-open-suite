@@ -75,12 +75,16 @@ public class OperationOrderController {
   }
 
   public void setRealDates(ActionRequest request, ActionResponse response) {
-    OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
-    LocalDateTime realStartDateT = operationOrder.getRealStartDateT();
-    LocalDateTime realEndDateT = operationOrder.getRealEndDateT();
-    operationOrder = Beans.get(OperationOrderRepository.class).find(operationOrder.getId());
-    Beans.get(OperationOrderWorkflowService.class)
-        .setRealDates(operationOrder, realStartDateT, realEndDateT);
+    try {
+      OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
+      LocalDateTime realStartDateT = operationOrder.getRealStartDateT();
+      LocalDateTime realEndDateT = operationOrder.getRealEndDateT();
+      operationOrder = Beans.get(OperationOrderRepository.class).find(operationOrder.getId());
+      Beans.get(OperationOrderWorkflowService.class)
+          .setRealDates(operationOrder, realStartDateT, realEndDateT);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
   }
 
   public void plan(ActionRequest request, ActionResponse response) {

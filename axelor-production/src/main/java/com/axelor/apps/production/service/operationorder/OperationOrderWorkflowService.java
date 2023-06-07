@@ -129,9 +129,11 @@ public interface OperationOrderWorkflowService {
    * @param realStartDateT
    * @param realEndDateT
    * @return
+   * @throws AxelorException
    */
   OperationOrder setRealDates(
-      OperationOrder operationOrder, LocalDateTime realStartDateT, LocalDateTime realEndDateT);
+      OperationOrder operationOrder, LocalDateTime realStartDateT, LocalDateTime realEndDateT)
+      throws AxelorException;
 
   OperationOrder computeDuration(OperationOrder operationOrder);
 
