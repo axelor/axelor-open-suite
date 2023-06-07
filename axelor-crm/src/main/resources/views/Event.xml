@@ -118,9 +118,9 @@
         <field name="$fullName" showTitle="false" readonly="true" colSpan="12">
           <viewer>
 						<![CDATA[
-							<span class="pull-right" style="font-size: 22.75px; font-weight:600; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.lead == null">{{record.contactPartner.fullName}}</span>
-							<span class="pull-right" style="font-size: 22.75px; font-weight:600; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.contactPartner == null &amp;&amp; record.lead == null">{{record.partner.fullName}}</span>
-							<span class="pull-right" style="font-size: 22.75px; font-weight:600; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.lead != null">{{record.lead.fullName}}</span>
+							<span class="pull-right" style="font-size: 22.75px; font-weight:600; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.eventLead == null">{{record.contactPartner.fullName}}</span>
+							<span class="pull-right" style="font-size: 22.75px; font-weight:600; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.contactPartner == null &amp;&amp; record.eventLead == null">{{record.partner.fullName}}</span>
+							<span class="pull-right" style="font-size: 22.75px; font-weight:600; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.eventLead != null">{{record.eventLead.fullName}}</span>
 						]]>
           </viewer>
         </field>
@@ -164,16 +164,16 @@
           <field name="subject" showTitle="true" colSpan="12" height="2px"/>
         </editor>
       </field>
-      <field name="partner" hideIf="lead != null" canEdit="false"
+      <field name="partner" hideIf="eventLead != null" canEdit="false"
         onSelect="action-partner-attrs-set-domain" onChange="action-event-group-partner-onchange"
         form-view="partner-form" grid-view="partner-grid"/>
       <field name="contactPartner" canEdit="false"
-        hideIf="partner.partnerTypeSelect == 2 || lead != null"
+        hideIf="partner.partnerTypeSelect == 2 || eventLead != null"
         onChange="action-group-crm-meeting-contactpartner-onchange"
         onSelect="action-event-attrs-contact-partner-domain" domain="self.isContact = true"
         form-view="partner-contact-form" grid-view="partner-contact-grid"/>
-      <field name="lead" hideIf="partner != null || contactPartner != null" canEdit="false"
-        onChange="action-meeting-set-location-lead, action-event-method-add-guest"
+      <field name="eventLead" hideIf="partner != null || contactPartner != null"
+        canEdit="false" onChange="action-meeting-set-location-lead, action-event-method-add-guest"
         form-view="lead-form" grid-view="lead-grid"/>
       <spacer/>
       <field name="startDateTime" colSpan="3"
@@ -441,8 +441,8 @@
     <action name="action-event-method-compute-from-duration" if="endDateTime == null"/>
     <action name="action-event-method-compute-from-start-date-time" if="endDateTime != null"/>
     <action name="action-event-default-record-user"
-      if="_lead == null &amp;&amp; _partner == null"/>
-    <action name="action-event-record-event-from-lead" if="_lead != null"/>
+      if="_eventLead == null &amp;&amp; _partner == null"/>
+    <action name="action-event-record-event-from-lead" if="_eventLead != null"/>
     <action name="action-event-record-event-from-partner" if="_partner != null"/>
     <action name="action-event-record-task-status-select" if="typeSelect == 3"/>
     <action name="action-event-record-event-from-sale-order" if="_saleOrder != null"/>
