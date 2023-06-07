@@ -714,10 +714,6 @@ public class ReconcileServiceImpl implements ReconcileService {
     MoveLine creditMoveLine = reconcile.getCreditMoveLine();
     Invoice invoice = debitMoveLine.getMove().getInvoice();
 
-    if (reconcile.getStatusSelect() == ReconcileRepository.STATUS_CANCELED) {
-      return;
-    }
-
     // Change the state
     reconcile.setStatusSelect(ReconcileRepository.STATUS_CANCELED);
     reconcile.setReconciliationCancelDateTime(
