@@ -31,7 +31,9 @@ import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.moveline.MoveLineCheckService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.common.ObjectUtils;
@@ -92,7 +94,12 @@ public class MoveCheckServiceImpl implements MoveCheckService {
 
   @Override
   public void checkPeriodPermission(Move move) throws AxelorException {
-    if (periodService.isClosedPeriod(move.getPeriod())) {
+    Period datePeriod =
+        move.getDate() != null
+            ? periodService.getPeriod(move.getDate(), move.getCompany(), YearRepository.TYPE_FISCAL)
+            : null;
+    if (periodService.isClosedPeriod(move.getPeriod())
+        || (datePeriod != null && periodService.isClosedPeriod(datePeriod))) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(BaseExceptionMessage.PERIOD_CLOSED_AND_NO_PERMISSIONS));
