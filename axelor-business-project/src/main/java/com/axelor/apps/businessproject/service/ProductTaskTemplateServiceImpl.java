@@ -63,41 +63,48 @@ public class ProductTaskTemplateServiceImpl implements ProductTaskTemplateServic
     Product product = saleOrderLine.getProduct();
 
     for (TaskTemplate template : templates) {
-      BigDecimal qtyTmp = (template.getIsUniqueTaskForMultipleQuantity() ? BigDecimal.ONE : qty);
+      LocalDateTime dateWithDelay = startDate.plusHours(template.getDelayToStart().longValue());
 
-      while (qtyTmp.signum() > 0) {
-        LocalDateTime dateWithDelay = startDate.plusHours(template.getDelayToStart().longValue());
+      ProjectTask task =
+          projectTaskBusinessProjectService.create(template, project, dateWithDelay, qty);
+      task.setQuantity(!template.getIsUniqueTaskForMultipleQuantity() ? BigDecimal.ONE : qty);
+      fillProjectTask(project, qty, saleOrderLine, tasks, product, task, parent);
 
-        ProjectTask task =
-            projectTaskBusinessProjectService.create(template, project, dateWithDelay, qty);
-        task.setParentTask(parent);
-        task.setProduct(product);
-        task.setQuantity(!template.getIsUniqueTaskForMultipleQuantity() ? BigDecimal.ONE : qty);
-        task.setInvoicingUnit(product.getUnit());
-        task.setUnitPrice(
-            (BigDecimal) productCompanyService.get(product, "salePrice", project.getCompany()));
-        task.setExTaxTotal(task.getUnitPrice().multiply(task.getQuantity()));
-        if (saleOrderLine.getSaleOrder().getToInvoiceViaTask()) {
-          task.setToInvoice(true);
-          task.setInvoicingType(ProjectTaskRepository.INVOICING_TYPE_PACKAGE);
-        }
-        tasks.add(projectTaskRepo.save(task));
-
-        // Only parent task can have multiple quantities
-        List<ProjectTask> children =
-            convert(
-                template.getTaskTemplateList(),
-                project,
-                task,
-                dateWithDelay,
-                BigDecimal.ONE,
-                saleOrderLine);
-        tasks.addAll(children);
-
-        qtyTmp = qtyTmp.subtract(BigDecimal.ONE);
-      }
+      // Only parent task can have multiple quantities
+      List<ProjectTask> children =
+          convert(
+              template.getTaskTemplateList(),
+              project,
+              task,
+              dateWithDelay,
+              BigDecimal.ONE,
+              saleOrderLine);
+      tasks.addAll(children);
     }
 
     return tasks;
+  }
+
+  public void fillProjectTask(
+      Project project,
+      BigDecimal qty,
+      SaleOrderLine saleOrderLine,
+      List<ProjectTask> tasks,
+      Product product,
+      ProjectTask task,
+      ProjectTask parent)
+      throws AxelorException {
+    task.setParentTask(parent);
+    task.setProduct(product);
+    task.setPlannedTime(qty);
+    task.setTimeUnit(product.getUnit());
+    task.setUnitPrice(
+        (BigDecimal) productCompanyService.get(product, "salePrice", project.getCompany()));
+    task.setExTaxTotal(task.getUnitPrice().multiply(task.getQuantity()));
+    if (saleOrderLine.getSaleOrder().getToInvoiceViaTask()) {
+      task.setToInvoice(true);
+      task.setInvoicingType(ProjectTaskRepository.INVOICING_TYPE_PACKAGE);
+    }
+    tasks.add(projectTaskRepo.save(task));
   }
 }
