@@ -151,11 +151,11 @@ public class InventoryLineService {
               .getStockConfig(stockLocation.getCompany())
               .getInventoryValuationTypeSelect();
 
-      BigDecimal productAvgPrice = product.getAvgPrice();
+      BigDecimal productWapPrice = product.getWapPrice();
 
       switch (inventoryValuationTypeSelect) {
         case StockConfigRepository.VALUATION_TYPE_WAP_VALUE:
-          price = productAvgPrice;
+          price = productWapPrice;
           break;
         case StockConfigRepository.VALUATION_TYPE_ACCOUNTING_VALUE:
           price = product.getCostPrice();
@@ -168,13 +168,13 @@ public class InventoryLineService {
           break;
         case StockConfigRepository.VALUATION_TYPE_WAP_STOCK_LOCATION_VALUE:
           if (stockLocationLine != null) {
-            price = stockLocationLine.getAvgPrice();
+            price = stockLocationLine.getWapPrice();
           } else {
-            price = productAvgPrice;
+            price = productWapPrice;
           }
           break;
         default:
-          price = product.getAvgPrice();
+          price = product.getWapPrice();
           break;
       }
 

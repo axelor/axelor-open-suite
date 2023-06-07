@@ -740,13 +740,13 @@ public class InventoryService {
       diff = diff.negate();
     }
     if (diff.signum() > 0) {
-      BigDecimal avgPrice;
+      BigDecimal wapPrice;
       StockLocationLine stockLocationLine =
           stockLocationLineService.getStockLocationLine(stockMove.getToStockLocation(), product);
       if (stockLocationLine != null) {
-        avgPrice = stockLocationLine.getAvgPrice();
+        wapPrice = stockLocationLine.getWapPrice();
       } else {
-        avgPrice = BigDecimal.ZERO;
+        wapPrice = BigDecimal.ZERO;
       }
 
       StockMoveLine stockMoveLine =
@@ -755,8 +755,8 @@ public class InventoryService {
               product.getName(),
               product.getDescription(),
               diff,
-              avgPrice,
-              avgPrice,
+              wapPrice,
+              wapPrice,
               product.getUnit(),
               stockMove,
               StockMoveLineService.TYPE_NULL,

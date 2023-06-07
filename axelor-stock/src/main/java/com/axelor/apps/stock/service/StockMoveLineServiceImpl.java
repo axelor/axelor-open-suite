@@ -521,7 +521,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
             this.updateAveragePriceAndLocationLineHistory(
                 toStockLocation, stockMoveLine, fromStatus, toStatus, date, origin);
           }
-          weightedAveragePriceService.computeAvgPriceForProduct(stockMoveLine.getProduct());
+          weightedAveragePriceService.computeWapPriceForProduct(stockMoveLine.getProduct());
         }
         if (fromStatus == StockMoveRepository.STATUS_REALIZED
             && toStatus == StockMoveRepository.STATUS_CANCELED) {
@@ -556,9 +556,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     }
 
     if (toStatus == StockMoveRepository.STATUS_REALIZED) {
-      BigDecimal avgPrice =
-          this.computeNewAveragePriceLocationLine(stockLocationLine, stockMoveLine);
-      stockLocationLine.setAvgPrice(avgPrice);
+      BigDecimal wapPrice = this.computeNewWapPriceLocationLine(stockLocationLine, stockMoveLine);
+      stockLocationLine.setWapPrice(wapPrice);
 
       stockLocationLineService.updateHistory(
           stockLocationLine,
@@ -598,8 +597,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     if (stockLocationLine == null) {
       return;
     }
-    stockLocationLine.setAvgPrice(
-        Optional.ofNullable(stockLocationLine.getAvgPrice()).orElse(BigDecimal.ZERO));
+    stockLocationLine.setWapPrice(
+        Optional.ofNullable(stockLocationLine.getWapPrice()).orElse(BigDecimal.ZERO));
     stockLocationLineService.updateHistory(
         stockLocationLine,
         stockMoveLine,
@@ -609,22 +608,22 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
   }
 
   @Override
-  public BigDecimal computeNewAveragePriceLocationLine(
+  public BigDecimal computeNewWapPriceLocationLine(
       StockLocationLine stockLocationLine, StockMoveLine stockMoveLine) throws AxelorException {
-    BigDecimal oldAvgPrice = stockLocationLine.getAvgPrice();
-    // avgPrice in stock move line is a bigdecimal but is nullable.
+    BigDecimal oldWapPrice = stockLocationLine.getWapPrice();
+    // wapPrice in stock move line is a bigdecimal but is nullable.
     BigDecimal newQty = stockMoveLine.getRealQty();
     BigDecimal oldQty = stockLocationLine.getCurrentQty().subtract(newQty);
     BigDecimal newPrice =
         stockMoveLine.getWapPrice() != null
             ? stockMoveLine.getWapPrice()
             : stockMoveLine.getCompanyUnitPriceUntaxed();
-    BigDecimal newAvgPrice;
-    if (oldAvgPrice == null
+    BigDecimal newWapPrice;
+    if (oldWapPrice == null
         || oldQty == null
-        || oldAvgPrice.compareTo(BigDecimal.ZERO) == 0
+        || oldWapPrice.compareTo(BigDecimal.ZERO) == 0
         || oldQty.compareTo(BigDecimal.ZERO) == 0) {
-      oldAvgPrice = BigDecimal.ZERO;
+      oldWapPrice = BigDecimal.ZERO;
       oldQty = BigDecimal.ZERO;
     }
 
@@ -651,20 +650,20 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
     log.debug(
         "Old price: {}, Old quantity: {}, New price: {}, New quantity: {}",
-        oldAvgPrice,
+        oldWapPrice,
         oldQty,
         newPrice,
         newQty);
-    BigDecimal sum = oldAvgPrice.multiply(oldQty);
+    BigDecimal sum = oldWapPrice.multiply(oldQty);
     sum = sum.add(newPrice.multiply(newQty));
     BigDecimal denominator = oldQty.add(newQty);
     if (denominator.compareTo(BigDecimal.ZERO) != 0) {
       int scale = appBaseService.getNbDecimalDigitForUnitPrice();
-      newAvgPrice = sum.divide(denominator, scale, RoundingMode.HALF_UP);
+      newWapPrice = sum.divide(denominator, scale, RoundingMode.HALF_UP);
     } else {
-      newAvgPrice = oldAvgPrice;
+      newWapPrice = oldWapPrice;
     }
-    return newAvgPrice;
+    return newWapPrice;
   }
 
   @Override
@@ -1007,7 +1006,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
                 stockLocation, stockMoveLine.getProduct()));
     BigDecimal priceFromLocation = BigDecimal.ZERO;
     if (stockLocationLine.isPresent()) {
-      priceFromLocation = stockLocationLine.get().getAvgPrice();
+      priceFromLocation = stockLocationLine.get().getWapPrice();
       priceFromLocation =
           unitConversionService.convert(
               stockMoveLine.getUnit(),
@@ -1420,7 +1419,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
                 stockLocation, stockMoveLine.getProduct()));
 
     stockLocationLineOpt.ifPresent(
-        stockLocationLine -> stockMoveLine.setWapPrice(stockLocationLine.getAvgPrice()));
+        stockLocationLine -> stockMoveLine.setWapPrice(stockLocationLine.getWapPrice()));
   }
 
   /** Create new stock line, then set product infos and compute prices (API AOS) */

@@ -342,9 +342,9 @@
           <field name="controlOnReceipt" readonlyIf="productApproval.controlOnReceipt"/>
           <button name="showAllStockMoveLineBtn" title="Show all stock moves" colSpan="6"
             onClick="action-product-view-stock-move-line"/>
-          <field name="avgPrice" hideIf="!stockManaged"
-            if="!__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'avgPrice'})"/>
-          <spacer name="avgPriceSpacer"/>
+          <field name="wapPrice" hideIf="!stockManaged"
+            if="!__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'wapPrice'})"/>
+          <spacer name="wapPriceSpacer"/>
           <panel-dashlet name="productStockPanel" colSpan="12"
             action="action-product-view-stock" showIf="id &amp;&amp; stockManaged"/>
           <panel-dashlet name="stockReportPanel" colSpan="12"
@@ -714,7 +714,7 @@
     <attribute for="costPrice" name="value"
       expr="eval: shippingCoef ? purchasePrice.multiply(shippingCoef) : purchasePrice"
       if="costTypeSelect == 2  &amp;&amp; lastPurchasePrice &lt;= 0"/>
-    <attribute for="costPrice" name="value" expr="eval: avgPrice" if="costTypeSelect == 3"/>
+    <attribute for="costPrice" name="value" expr="eval: wapPrice" if="costTypeSelect == 3"/>
     <attribute for="costPrice" name="value" expr="eval: lastProductionPrice"
       if="costTypeSelect == 4"/>
   </action-attrs>
@@ -911,7 +911,7 @@
     <field name="productStandard" hidden="true" if="!__config__.app.isApp('production')"/>
     <field name="productApproval" hidden="true" if="!__config__.app.isApp('production')"/>
     <field name="controlOnReceipt" hidden="true" if="!__config__.app.isApp('supplychain')"/>
-    <field name="avgPrice" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+    <field name="wapPrice" hidden="true" if="!__config__.app.isApp('supplychain')"/>
     <field name="economicManufOrderQty" hidden="true" if="!__config__.app.isApp('production')"/>
     <field name="hasWarranty" hidden="true" if="!__config__.app.isApp('stock')"/>
     <field name="warrantyNbrOfMonths" hidden="true" if="!__config__.app.isApp('stock')"/>

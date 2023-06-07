@@ -241,20 +241,20 @@ public interface StockLocationLineService {
       Long productId, Long companyId, Long stockLocationId);
 
   /**
-   * Update avgPrice in stock location line and save wap history in the line.
+   * Update wapPrice in stock location line and save wap history in the line.
    *
    * @param stockLocationLine stock location line to updated.
-   * @param wap weighted average price which will update the field avgPrice.
+   * @param wap weighted average price which will update the field wapPrice.
    * @deprecated Please use updateHistory this method will not create a proper history
    */
   @Deprecated
   void updateWap(StockLocationLine stockLocationLine, BigDecimal wap);
 
   /**
-   * Update avgPrice in stock location line and save wap history in the line.
+   * Update wapPrice in stock location line and save wap history in the line.
    *
    * @param stockLocationLine stock location line to updated.
-   * @param wap weighted average price which will update the field avgPrice.
+   * @param wap weighted average price which will update the field wapPrice.
    * @param stockMoveLine the move line responsible for the WAP change.
    * @deprecated Please use updateHistory this method will not create a proper history
    */

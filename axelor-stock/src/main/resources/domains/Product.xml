@@ -6,7 +6,7 @@
   <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="Product">
-    <decimal name="avgPrice" readonly="true" precision="20" scale="10" title="Average Price"/>
+    <decimal name="wapPrice" readonly="true" precision="20" scale="10" title="Average Price"/>
     <many-to-one name="trackingNumberConfiguration"
       ref="com.axelor.apps.stock.db.TrackingNumberConfiguration" title="Tracking Nbr. Config."
       massUpdate="true"/>

@@ -57,7 +57,7 @@ public class ProductStockRepository extends ProductBaseRepository {
   @Override
   public Product copy(Product product, boolean deep) {
     Product copy = super.copy(product, deep);
-    copy.setAvgPrice(BigDecimal.ZERO);
+    copy.setWapPrice(BigDecimal.ZERO);
     return copy;
   }
 }

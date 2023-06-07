@@ -56,46 +56,46 @@ public class WeightedAveragePriceServiceImpl implements WeightedAveragePriceServ
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void computeAvgPriceForProduct(Product product) throws AxelorException {
+  public void computeWapPriceForProduct(Product product) throws AxelorException {
 
-    Boolean avgPriceHandledByCompany = false;
+    Boolean wapPriceHandledByCompany = false;
     Set<MetaField> companySpecificFields =
         appBaseService.getAppBase().getCompanySpecificProductFieldsSet();
     for (MetaField field : companySpecificFields) {
-      if (field.getName().equals("avgPrice")) {
-        avgPriceHandledByCompany = true;
+      if (field.getName().equals("wapPrice")) {
+        wapPriceHandledByCompany = true;
         break;
       }
     }
-    if (avgPriceHandledByCompany
+    if (wapPriceHandledByCompany
         && product.getProductCompanyList() != null
         && !product.getProductCompanyList().isEmpty()) {
       for (ProductCompany productCompany : product.getProductCompanyList()) {
         Company company = productCompany.getCompany();
-        BigDecimal productAvgPrice = this.computeAvgPriceForCompany(product, company);
-        if (productAvgPrice.compareTo(BigDecimal.ZERO) == 0) {
+        BigDecimal productWapPrice = this.computeWapPriceForCompany(product, company);
+        if (productWapPrice.compareTo(BigDecimal.ZERO) == 0) {
           continue;
         }
 
-        productCompanyService.set(product, "avgPrice", productAvgPrice, company);
+        productCompanyService.set(product, "wapPrice", productWapPrice, company);
         if ((Integer) productCompanyService.get(product, "costTypeSelect", company)
             == ProductRepository.COST_TYPE_AVERAGE_PRICE) {
-          productCompanyService.set(product, "costPrice", productAvgPrice, company);
+          productCompanyService.set(product, "costPrice", productWapPrice, company);
           if ((Boolean) productCompanyService.get(product, "autoUpdateSalePrice", company)) {
             Beans.get(ProductService.class).updateSalePrice(product, company);
           }
         }
       }
     } else {
-      BigDecimal productAvgPrice = this.computeAvgPriceForCompany(product, null);
+      BigDecimal productWapPrice = this.computeWapPriceForCompany(product, null);
 
-      if (productAvgPrice.compareTo(BigDecimal.ZERO) == 0) {
+      if (productWapPrice.compareTo(BigDecimal.ZERO) == 0) {
         return;
       }
 
-      product.setAvgPrice(productAvgPrice);
+      product.setWapPrice(productWapPrice);
       if (product.getCostTypeSelect() == ProductRepository.COST_TYPE_AVERAGE_PRICE) {
-        product.setCostPrice(productAvgPrice);
+        product.setCostPrice(productWapPrice);
         if (product.getAutoUpdateSalePrice()) {
           Beans.get(ProductService.class).updateSalePrice(product, null);
         }
@@ -105,10 +105,10 @@ public class WeightedAveragePriceServiceImpl implements WeightedAveragePriceServ
   }
 
   @Override
-  public BigDecimal computeAvgPriceForCompany(Product product, Company company) {
+  public BigDecimal computeWapPriceForCompany(Product product, Company company) {
     Long productId = product.getId();
     String query =
-        "SELECT new list(self.id, self.avgPrice, self.currentQty) FROM StockLocationLine as self "
+        "SELECT new list(self.id, self.wapPrice, self.currentQty) FROM StockLocationLine as self "
             + "WHERE self.product.id = "
             + productId
             + " AND self.stockLocation.typeSelect != "
@@ -119,22 +119,22 @@ public class WeightedAveragePriceServiceImpl implements WeightedAveragePriceServ
     }
 
     int scale = appBaseService.getNbDecimalDigitForUnitPrice();
-    BigDecimal productAvgPrice = BigDecimal.ZERO;
+    BigDecimal productWapPrice = BigDecimal.ZERO;
     BigDecimal qtyTot = BigDecimal.ZERO;
     List<List<Object>> results = JPA.em().createQuery(query).getResultList();
     if (results.isEmpty()) {
       return BigDecimal.ZERO;
     }
     for (List<Object> result : results) {
-      BigDecimal avgPrice = (BigDecimal) result.get(1);
+      BigDecimal wapPrice = (BigDecimal) result.get(1);
       BigDecimal qty = (BigDecimal) result.get(2);
-      productAvgPrice = productAvgPrice.add(avgPrice.multiply(qty));
+      productWapPrice = productWapPrice.add(wapPrice.multiply(qty));
       qtyTot = qtyTot.add(qty);
     }
     if (qtyTot.compareTo(BigDecimal.ZERO) == 0) {
       return BigDecimal.ZERO;
     }
-    productAvgPrice = productAvgPrice.divide(qtyTot, scale, BigDecimal.ROUND_HALF_UP);
-    return productAvgPrice;
+    productWapPrice = productWapPrice.divide(qtyTot, scale, BigDecimal.ROUND_HALF_UP);
+    return productWapPrice;
   }
 }

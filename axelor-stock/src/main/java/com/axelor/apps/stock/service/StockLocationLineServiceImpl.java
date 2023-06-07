@@ -630,7 +630,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       int scale = appBaseService.getNbDecimalDigitForUnitPrice();
       int qtyScale = appBaseService.getNbDecimalDigitForQty();
       BigDecimal oldQty = stockLocationLine.getCurrentQty();
-      BigDecimal oldAvgPrice = stockLocationLine.getAvgPrice();
+      BigDecimal oldWapPrice = stockLocationLine.getWapPrice();
 
       BigDecimal currentQty =
           unitConversionService.convert(
@@ -648,8 +648,8 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       if (currentQty.compareTo(BigDecimal.ZERO) != 0) {
         avgQty = oldQty.divide(currentQty, qtyScale, RoundingMode.HALF_UP);
       }
-      BigDecimal newAvgPrice = oldAvgPrice.multiply(avgQty).setScale(scale, RoundingMode.HALF_UP);
-      stockLocationLine.setAvgPrice(newAvgPrice);
+      BigDecimal newWapPrice = oldWapPrice.multiply(avgQty).setScale(scale, RoundingMode.HALF_UP);
+      stockLocationLine.setWapPrice(newWapPrice);
       updateHistory(
           stockLocationLine,
           null,
@@ -833,7 +833,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
             .map(StockMoveLine::getStockMove)
             .map(StockMove::getStockMoveSeq)
             .orElse("");
-    stockLocationLine.setAvgPrice(wap);
+    stockLocationLine.setWapPrice(wap);
     stockLocationLineHistoryService.saveHistory(stockLocationLine, dateT, origin, "");
   }
 
@@ -867,7 +867,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
               .toLocalDateTime();
     }
 
-    stockLocationLine.setAvgPrice(wap);
+    stockLocationLine.setWapPrice(wap);
     stockLocationLineHistoryService.saveHistory(stockLocationLine, dateT, origin, "");
   }
 

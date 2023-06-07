@@ -25,7 +25,7 @@ import java.math.BigDecimal;
 
 public interface WeightedAveragePriceService {
 
-  void computeAvgPriceForProduct(Product product) throws AxelorException;
+  public void computeWapPriceForProduct(Product product) throws AxelorException;
 
-  BigDecimal computeAvgPriceForCompany(Product product, Company company);
+  public BigDecimal computeWapPriceForCompany(Product product, Company company);
 }
