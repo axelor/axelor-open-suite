@@ -20,14 +20,27 @@ package com.axelor.apps.maintenance.service;
 
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.maintenance.report.IReport;
 import com.axelor.apps.production.db.BillOfMaterial;
+import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
+import com.axelor.apps.production.db.repo.TempBomTreeRepository;
+import com.axelor.apps.production.service.BillOfMaterialLineService;
 import com.axelor.apps.production.service.BillOfMaterialServiceImpl;
+import com.google.inject.Inject;
 
 public class BillOfMaterialServiceMaintenanceImpl extends BillOfMaterialServiceImpl {
 
-  @Override
+  @Inject
+  public BillOfMaterialServiceMaintenanceImpl(BillOfMaterialRepository billOfMaterialRepo,
+			TempBomTreeRepository tempBomTreeRepo, ProductRepository productRepo,
+			ProductCompanyService productCompanyService, BillOfMaterialLineService billOfMaterialLineService) {
+		super(billOfMaterialRepo, tempBomTreeRepo, productRepo, productCompanyService, billOfMaterialLineService);
+	}
+
+@Override
   public String computeName(BillOfMaterial bom) {
 
     return bom.getProduct() != null

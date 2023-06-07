@@ -21,14 +21,12 @@ package com.axelor.apps.production.db.repo;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.BillOfMaterialLine;
 import com.google.inject.Inject;
-
 import java.math.BigDecimal;
 import java.util.List;
 
 public class BillOfMaterialManagementRepository extends BillOfMaterialRepository {
-	
-	@Inject
-	protected BillOfMaterialLineRepository billOfMaterialLineRepository;
+
+  @Inject protected BillOfMaterialLineRepository billOfMaterialLineRepository;
 
   @Override
   public BillOfMaterial save(BillOfMaterial billOfMaterial) {
@@ -54,12 +52,13 @@ public class BillOfMaterialManagementRepository extends BillOfMaterialRepository
     copy.setCostPrice(BigDecimal.ZERO);
     copy.clearCostSheetList();
     copy.clearBillOfMaterialLineList();
-    
+
     List<BillOfMaterialLine> billOfMaterialLineList = entity.getBillOfMaterialLineList();
     if (billOfMaterialLineList != null && !billOfMaterialLineList.isEmpty()) {
-    	billOfMaterialLineList.forEach(boml -> copy.addBillOfMaterialLineListItem(billOfMaterialLineRepository.copy(boml, deep)));
+      billOfMaterialLineList.forEach(
+          boml ->
+              copy.addBillOfMaterialLineListItem(billOfMaterialLineRepository.copy(boml, deep)));
     }
-
 
     return copy;
   }

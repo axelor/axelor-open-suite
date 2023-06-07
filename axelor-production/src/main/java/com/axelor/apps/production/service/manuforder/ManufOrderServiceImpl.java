@@ -240,17 +240,6 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     return qty;
   }
 
-  private List<BillOfMaterial> getSortedBillsOfMaterials(
-      Collection<BillOfMaterial> billsOfMaterials) {
-
-    billsOfMaterials = MoreObjects.firstNonNull(billsOfMaterials, Collections.emptyList());
-    return billsOfMaterials.stream()
-        .sorted(
-            Comparator.comparing(BillOfMaterial::getPriority)
-                .thenComparing(Comparator.comparing(BillOfMaterial::getId)))
-        .collect(Collectors.toList());
-  }
-
   @Override
   public void createToProduceProdProductList(ManufOrder manufOrder) {
 

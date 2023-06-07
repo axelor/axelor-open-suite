@@ -20,7 +20,7 @@
       <field name="qty"/>
       <field name="product"/>
       <field name="hasNoManageStock"/>
-      <field name="productBillOfMaterial"/>
+      <field name="billOfMaterial"/>
     </track>
   </entity>
 

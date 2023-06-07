@@ -56,7 +56,6 @@
       <field name="name"/>
       <field name="product"/>
       <field name="qty"/>
-      <field name="priority"/>
       <field name="defineSubBillOfMaterial"/>
       <field name="unit"/>
       <field name="prodProcess"/>

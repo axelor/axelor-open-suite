@@ -15,13 +15,12 @@
   </grid>
 
   <form name="bill-of-material-line-form" title="Bill of materials"
-    model="com.axelor.apps.production.db.BillOfMaterial"
-    width="large">
+    model="com.axelor.apps.production.db.BillOfMaterial" width="large">
     <panel name="mainPanel">
       <field name="product" canEdit="false" onChange="action-bill-of-material-group-product"
         domain="self.productSubTypeSelect = 1 OR self.productSubTypeSelect = 2"
         form-view="product-form" grid-view="product-grid"/>
-       <field name="billOfMaterial"/>  
+      <field name="billOfMaterial"/>
       <field name="hasNoManageStock" colSpan="3" readonlyIf="product.stockManaged == false"/>
       <field name="qty" colSpan="3"/>
     </panel>
