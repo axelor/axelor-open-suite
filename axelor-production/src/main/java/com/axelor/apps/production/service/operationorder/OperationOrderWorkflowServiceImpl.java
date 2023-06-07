@@ -552,11 +552,19 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
    * @param realStartDateT
    * @param realEndDateT
    * @return
+   * @throws AxelorException
    */
   @Override
   @Transactional
   public OperationOrder setRealDates(
-      OperationOrder operationOrder, LocalDateTime realStartDateT, LocalDateTime realEndDateT) {
+      OperationOrder operationOrder, LocalDateTime realStartDateT, LocalDateTime realEndDateT)
+      throws AxelorException {
+
+    if (operationOrder.getStatusSelect() == OperationOrderRepository.STATUS_FINISHED) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(ProductionExceptionMessage.OPERATION_ORDER_ALREADY_FINISHED));
+    }
 
     operationOrder.setRealStartDateT(realStartDateT);
     operationOrder.setRealEndDateT(realEndDateT);
