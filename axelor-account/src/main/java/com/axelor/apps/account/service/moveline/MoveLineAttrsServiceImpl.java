@@ -295,18 +295,18 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
   @Override
   public void addVatSystemSelectReadonly(
       MoveLine moveLine, Move move, Map<String, Map<String, Object>> attrsMap) {
-    boolean isReadonly = true;
     String[] technicalTypeSelects = {
       AccountTypeRepository.TYPE_CHARGE,
       AccountTypeRepository.TYPE_INCOME,
       AccountTypeRepository.TYPE_TAX
     };
 
-    if (moveLine.getAccount() != null && moveLine.getAccount().getAccountType() != null) {
-      isReadonly =
-          !Arrays.asList(technicalTypeSelects)
-              .contains(moveLine.getAccount().getAccountType().getTechnicalTypeSelect());
-    }
+    boolean isReadonly =
+        !(moveLine.getAccount() != null
+            && moveLine.getAccount().getAccountType() != null
+            && !Arrays.asList(technicalTypeSelects)
+                .contains(moveLine.getAccount().getAccountType().getTechnicalTypeSelect()));
+
     this.addAttr("$isVatSystemSelectReadonly", "value", isReadonly, attrsMap);
   }
 }
