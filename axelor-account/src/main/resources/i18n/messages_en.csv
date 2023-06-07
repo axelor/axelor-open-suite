@@ -1,5 +1,4 @@
 "key","message","comment","context"
-"$paymentConditionChangeError",,,
 "${label} move lines",,,
 "%",,,
 "% to match any character (one or more)",,,
@@ -3287,7 +3286,6 @@
 "Totals by partner by bank details",,,
 "Totals company currency",,,
 "TraceBack",,,
-"Trading Name",,,
 "Trading name",,,
 "Trading name accounting situation",,,
 "Transfer(ed) to Usher",,,
