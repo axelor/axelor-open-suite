@@ -36,6 +36,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.StringUtils;
 import com.google.inject.Inject;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -295,17 +296,16 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
   public void addVatSystemSelectReadonly(
       MoveLine moveLine, Move move, Map<String, Map<String, Object>> attrsMap) {
     boolean isReadonly = true;
-    if (moveLine.getAccount() != null) {
+    String[] technicalTypeSelects = {
+      AccountTypeRepository.TYPE_CHARGE,
+      AccountTypeRepository.TYPE_INCOME,
+      AccountTypeRepository.TYPE_TAX
+    };
+
+    if (moveLine.getAccount() != null && moveLine.getAccount().getAccountType() != null) {
       isReadonly =
-          !Objects.equals(
-                  moveLine.getAccount().getAccountType().getTechnicalTypeSelect(),
-                  AccountTypeRepository.TYPE_CHARGE)
-              && !Objects.equals(
-                  moveLine.getAccount().getAccountType().getTechnicalTypeSelect(),
-                  AccountTypeRepository.TYPE_INCOME)
-              && !Objects.equals(
-                  moveLine.getAccount().getAccountType().getTechnicalTypeSelect(),
-                  AccountTypeRepository.TYPE_TAX);
+          !Arrays.asList(technicalTypeSelects)
+              .contains(moveLine.getAccount().getAccountType().getTechnicalTypeSelect());
     }
     this.addAttr("$isVatSystemSelectReadonly", "value", isReadonly, attrsMap);
   }
