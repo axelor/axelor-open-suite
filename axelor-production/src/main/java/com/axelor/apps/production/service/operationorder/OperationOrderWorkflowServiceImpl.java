@@ -57,6 +57,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -134,13 +135,8 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
   protected void planDatesWithoutMachine(OperationOrder operationOrder) throws AxelorException {
     LocalDateTime plannedStartDate = operationOrder.getPlannedStartDateT();
 
-    WorkCenter workCenter = operationOrder.getWorkCenter();
     LocalDateTime lastOPerationDate = this.getLastOperationDate(operationOrder);
     LocalDateTime maxDate = DateTool.max(plannedStartDate, lastOPerationDate);
-
-    if (workCenter != null) {
-      lastOPerationDate = lastOPerationDate.plusSeconds(workCenter.getSetupDuration());
-    }
 
     operationOrder.setPlannedStartDateT(maxDate);
 
@@ -158,14 +154,10 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
   protected void planDatesWithMachine(OperationOrder operationOrder, Machine machine)
       throws AxelorException {
 
-    WorkCenter workCenter = operationOrder.getWorkCenter();
     LocalDateTime plannedStartDate = operationOrder.getPlannedStartDateT();
 
     LocalDateTime lastOPerationDate = this.getLastOperationDate(operationOrder);
 
-    if (workCenter != null) {
-      lastOPerationDate = lastOPerationDate.plusSeconds(workCenter.getSetupDuration());
-    }
     LocalDateTime maxDate = DateTool.max(plannedStartDate, lastOPerationDate);
 
     MachineTimeSlot freeMachineTimeSlot =
@@ -273,6 +265,10 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
       return manufOrderPlannedStartDateT;
     }
 
+    WorkCenter workCenter = lastOperationOrder.getWorkCenter();
+    Long lastOperationSetupDuration =
+        Optional.ofNullable(workCenter).map(WorkCenter::getSetupDuration).orElse(0l);
+
     LocalDateTime plannedEndDateT = lastOperationOrder.getPlannedEndDateT();
 
     if (Objects.equals(lastOperationOrder.getPriority(), operationOrder.getPriority())) {
@@ -280,11 +276,14 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
       if (plannedStartDateT != null && plannedStartDateT.isAfter(manufOrderPlannedStartDateT)) {
         boolean isOnSameMachine =
             Objects.equals(lastOperationOrder.getMachine(), operationOrder.getMachine());
-        return isOnSameMachine ? plannedEndDateT : plannedStartDateT;
+
+        return isOnSameMachine
+            ? plannedEndDateT.plusSeconds(lastOperationSetupDuration)
+            : plannedStartDateT;
       }
 
     } else if (plannedEndDateT != null && plannedEndDateT.isAfter(manufOrderPlannedStartDateT)) {
-      return plannedEndDateT;
+      return plannedEndDateT.plusSeconds(lastOperationSetupDuration);
     }
 
     return manufOrderPlannedStartDateT;
