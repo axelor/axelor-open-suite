@@ -125,7 +125,7 @@
   <action-record name="action-budget-invoice-record-get-budget-balance"
     model="com.axelor.apps.account.db.Invoice">
     <field name="$budgetExceedAlert"
-      expr="call:com.axelor.apps.budget.service.BudgetInvoiceServiceImpl:getBudgetExceedAlert(__this__)"/>
+      expr="call:com.axelor.apps.budget.service.invoice.BudgetInvoiceServiceImpl:getBudgetExceedAlert(__this__)"/>
   </action-record>
 
   <action-validate name="action-budget-invoice-validate-budget-balance">

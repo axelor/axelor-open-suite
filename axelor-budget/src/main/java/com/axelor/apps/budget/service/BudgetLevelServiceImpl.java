@@ -535,4 +535,29 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
       }
     }
   }
+
+  @Override
+  public void resetBudgetLevel(BudgetLevel budgetLevel) {
+
+    budgetLevel.setCode(budgetLevel.getCode() + " (" + I18n.get("copy") + ")");
+
+    budgetLevel.setStatusSelect(BudgetLevelRepository.BUDGET_LEVEL_STATUS_SELECT_DRAFT);
+
+    budgetLevel.setArchived(false);
+
+    budgetLevel.setTotalAmountCommitted(BigDecimal.ZERO);
+    budgetLevel.setTotalAmountAvailable(budgetLevel.getTotalAmountExpected());
+    budgetLevel.setAvailableAmountWithSimulated(budgetLevel.getTotalAmountExpected());
+    budgetLevel.setRealizedWithNoPo(BigDecimal.ZERO);
+    budgetLevel.setRealizedWithPo(BigDecimal.ZERO);
+    budgetLevel.setSimulatedAmount(BigDecimal.ZERO);
+    budgetLevel.setTotalFirmGap(BigDecimal.ZERO);
+    budgetLevel.setTotalAmountPaid(BigDecimal.ZERO);
+
+    if (!ObjectUtils.isEmpty(budgetLevel.getBudgetLevelList())) {
+      budgetLevel.getBudgetLevelList().forEach(child -> resetBudgetLevel(child));
+    } else if (!CollectionUtils.isEmpty(budgetLevel.getBudgetList())) {
+      budgetLevel.getBudgetList().forEach(child -> budgetService.resetBudget(child));
+    }
+  }
 }

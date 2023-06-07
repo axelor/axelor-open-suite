@@ -123,6 +123,15 @@ public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetServic
                     " AND self.budgetLevel.parentBudgetLevel.id = %d",
                     saleOrderLine.getGroupBudget().getId()));
       }
+      LocalDate date =
+          saleOrderLine.getSaleOrder().getOrderDate() != null
+              ? saleOrderLine.getSaleOrder().getOrderDate()
+              : saleOrderLine.getSaleOrder().getCreationDate();
+      if (date != null) {
+        query =
+            query.concat(
+                String.format(" AND self.fromDate <= '%s' AND self.toDate >= '%s'", date, date));
+      }
     }
     return query;
   }

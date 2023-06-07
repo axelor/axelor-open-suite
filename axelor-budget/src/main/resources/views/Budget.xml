@@ -91,7 +91,7 @@
         colSpan="3" grid-view="budget-level-grid" form-view="budget-level-form"/>
       <field name="typeSelect" colSpan="3"/>
       <field name="sourceSelect" colSpan="3"/>
-      <field name="budgetKey" hidden="true" colSpan="6" readonly="true"/>
+      <field name="budgetKey" colSpan="6" readonly="true"/>
       <panel name="datesPanel" colSpan="12">
         <field name="fromDate" colSpan="3" readonlyIf="statusSelect == 2"
           onChange="action-budget-budget-validate-dates" required="true"/>

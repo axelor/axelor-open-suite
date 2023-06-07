@@ -121,4 +121,16 @@ public class SaleOrderController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void validateBudgetBalance(ActionRequest request, ActionResponse response) {
+
+    try {
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+
+      Beans.get(SaleOrderBudgetService.class).getBudgetExceedAlert(saleOrder);
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.WARNING);
+    }
+  }
 }

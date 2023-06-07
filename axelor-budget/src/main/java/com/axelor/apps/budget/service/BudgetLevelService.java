@@ -142,4 +142,6 @@ public interface BudgetLevelService {
    * @param budget
    */
   public void computeBudgetLevelTotals(Budget budget);
+
+  void resetBudgetLevel(BudgetLevel budgetLevel);
 }

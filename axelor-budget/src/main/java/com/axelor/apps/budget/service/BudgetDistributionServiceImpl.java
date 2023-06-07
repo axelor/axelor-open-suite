@@ -16,6 +16,7 @@ import com.axelor.apps.budget.exception.IExceptionMessage;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.auth.db.AuditableModel;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.i18n.I18n;
 import com.axelor.utils.date.DateTool;
@@ -217,7 +218,7 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
       BudgetDistribution budgetDistribution, LocalDate computeDate) {
 
     if (budgetDistribution.getBudget() != null
-        && budgetDistribution.getBudget().getBudgetLineList() != null
+        && !ObjectUtils.isEmpty(budgetDistribution.getBudget().getBudgetLineList())
         && computeDate != null) {
       List<BudgetLine> budgetLineList = budgetDistribution.getBudget().getBudgetLineList();
       BigDecimal budgetAmountAvailable = BigDecimal.ZERO;
@@ -227,12 +228,13 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
         LocalDate toDate = budgetLine.getToDate();
 
         if (fromDate != null && DateTool.isBetween(fromDate, toDate, computeDate)) {
-          BigDecimal amount =
-              budgetLine.getAmountExpected().subtract(budgetLine.getAmountCommitted());
+          BigDecimal amount = budgetLine.getAvailableAmount();
           budgetAmountAvailable = budgetAmountAvailable.add(amount);
         }
       }
       budgetDistribution.setBudgetAmountAvailable(budgetAmountAvailable);
+    } else {
+      budgetDistribution.setBudgetAmountAvailable(BigDecimal.ZERO);
     }
   }
 }

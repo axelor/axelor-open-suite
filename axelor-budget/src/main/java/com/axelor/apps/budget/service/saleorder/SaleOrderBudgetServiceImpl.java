@@ -3,12 +3,12 @@ package com.axelor.apps.budget.service.saleorder;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
+import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetDistributionService;
 import com.axelor.apps.budget.service.BudgetService;
 import com.axelor.apps.businessproject.service.SaleOrderInvoiceProjectServiceImpl;
@@ -24,19 +24,23 @@ import com.axelor.apps.supplychain.service.SaleInvoicingStateService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineOrderService;
+import com.axelor.meta.CallMethod;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
 
 public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceImpl
     implements SaleOrderBudgetService {
 
-  protected AppAccountService appAccountService;
+  protected AppBudgetService appBudgetService;
   protected BudgetDistributionService budgetDistributionService;
   protected SaleOrderLineBudgetService saleOrderLineBudgetService;
   protected BudgetService budgetService;
@@ -56,7 +60,7 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
       CommonInvoiceService commonInvoiceService,
       InvoiceLineOrderService invoiceLineOrderService,
       SaleInvoicingStateService saleInvoicingStateService,
-      AppAccountService appAccountService,
+      AppBudgetService appBudgetService,
       BudgetDistributionService budgetDistributionService,
       SaleOrderLineBudgetService saleOrderLineBudgetService,
       BudgetService budgetService) {
@@ -74,7 +78,7 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
         invoiceLineOrderService,
         saleInvoicingStateService,
         appBusinessProjectService);
-    this.appAccountService = appAccountService;
+    this.appBudgetService = appBudgetService;
     this.budgetDistributionService = budgetDistributionService;
     this.saleOrderLineBudgetService = saleOrderLineBudgetService;
     this.budgetService = budgetService;
@@ -185,7 +189,10 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
   @Override
   public void updateBudgetLinesFromSaleOrder(SaleOrder saleOrder) {
 
-    if (CollectionUtils.isNotEmpty(saleOrder.getSaleOrderLineList())) {
+    if (CollectionUtils.isNotEmpty(saleOrder.getSaleOrderLineList())
+        && (saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_FINALIZED_QUOTATION
+            || saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_ORDER_CONFIRMED
+            || saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_ORDER_COMPLETED)) {
       for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
         if (CollectionUtils.isNotEmpty(saleOrderLine.getBudgetDistributionList())) {
           saleOrderLine.getBudgetDistributionList().stream()
@@ -200,5 +207,64 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
         }
       }
     }
+  }
+
+  @Override
+  @CallMethod
+  public String getBudgetExceedAlert(SaleOrder saleOrder) {
+    String budgetExceedAlert = "";
+
+    List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
+
+    if (appBudgetService.getAppBudget() != null
+        && appBudgetService.getAppBudget().getCheckAvailableBudget()
+        && saleOrder.getId() != null
+        && CollectionUtils.isNotEmpty(saleOrderLineList)) {
+
+      Map<Budget, BigDecimal> amountPerBudgetMap = new HashMap<>();
+
+      for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+        LocalDate date =
+            saleOrderLine.getSaleOrder().getOrderDate() != null
+                ? saleOrderLine.getSaleOrder().getOrderDate()
+                : saleOrderLine.getSaleOrder().getCreationDate();
+        if (appBudgetService.getAppBudget().getManageMultiBudget()
+            && CollectionUtils.isNotEmpty(saleOrderLine.getBudgetDistributionList())) {
+
+          for (BudgetDistribution budgetDistribution : saleOrderLine.getBudgetDistributionList()) {
+            Budget budget = budgetDistribution.getBudget();
+
+            if (!amountPerBudgetMap.containsKey(budget)) {
+              amountPerBudgetMap.put(budget, budgetDistribution.getAmount());
+            } else {
+              BigDecimal oldAmount = amountPerBudgetMap.get(budget);
+
+              amountPerBudgetMap.remove(budget);
+              amountPerBudgetMap.put(budget, oldAmount.add(budgetDistribution.getAmount()));
+            }
+          }
+          for (Map.Entry<Budget, BigDecimal> budgetEntry : amountPerBudgetMap.entrySet()) {
+            budgetExceedAlert +=
+                budgetDistributionService.getBudgetExceedAlert(
+                    budgetEntry.getKey(), budgetEntry.getValue(), date);
+          }
+        } else {
+          Budget budget = saleOrderLine.getBudget();
+          if (budget != null) {
+            if (!amountPerBudgetMap.containsKey(budget)) {
+              amountPerBudgetMap.put(budget, saleOrderLine.getExTaxTotal());
+            } else {
+              BigDecimal oldAmount = amountPerBudgetMap.get(budget);
+              amountPerBudgetMap.put(budget, oldAmount.add(saleOrderLine.getExTaxTotal()));
+            }
+
+            budgetExceedAlert +=
+                budgetDistributionService.getBudgetExceedAlert(
+                    budget, amountPerBudgetMap.get(budget), date);
+          }
+        }
+      }
+    }
+    return budgetExceedAlert;
   }
 }

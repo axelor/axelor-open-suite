@@ -18,7 +18,6 @@ import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.PartnerService;
-import com.axelor.apps.base.service.alarm.AlarmEngineService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.budget.db.Budget;
@@ -67,7 +66,6 @@ public class BudgetInvoiceServiceImpl extends InvoiceServiceManagementImpl
       ValidateFactory validateFactory,
       VentilateFactory ventilateFactory,
       CancelFactory cancelFactory,
-      AlarmEngineService<Invoice> alarmEngineService,
       InvoiceRepository invoiceRepo,
       AppAccountService appAccountService,
       PartnerService partnerService,
@@ -95,7 +93,6 @@ public class BudgetInvoiceServiceImpl extends InvoiceServiceManagementImpl
         validateFactory,
         ventilateFactory,
         cancelFactory,
-        alarmEngineService,
         invoiceRepo,
         appAccountService,
         partnerService,
@@ -176,8 +173,7 @@ public class BudgetInvoiceServiceImpl extends InvoiceServiceManagementImpl
     if (appBudgetService.getAppBudget() != null
         && appBudgetService.getAppBudget().getCheckAvailableBudget()
         && invoice.getId() != null
-        && CollectionUtils.isNotEmpty(invoiceLineList)
-        && invoice.getOperationTypeSelect() < InvoiceRepository.OPERATION_TYPE_CLIENT_SALE) {
+        && CollectionUtils.isNotEmpty(invoiceLineList)) {
 
       Map<Budget, BigDecimal> amountPerBudgetMap = new HashMap<>();
 

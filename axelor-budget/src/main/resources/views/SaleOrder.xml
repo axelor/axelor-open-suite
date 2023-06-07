@@ -23,6 +23,11 @@
       </insert>
     </extend>
 
+    <extend target="//button[@name='completeManuallySaleOrderBtn']">
+      <attribute name="onClick"
+        value="save,action-method-budget-sale-order-validate-budget-balance,action-sale-order-method-complete-sale-order"/>
+    </extend>
+
     <extend target="panel[@name='internalNotePanel']">
       <insert position="after">
         <panel name="otherInfosPanel" hidden="true">
@@ -61,6 +66,14 @@
     <action name="save"/>
   </action-group>
 
+  <action-group name="action-group-sale-order-finalize-quotation"
+    id="action-budget-group-sale-order-finalize-quotation">
+    <action name="save"/>
+    <action name="action-sale-order-validate-quotation"/>
+    <action name="action-method-budget-sale-order-validate-budget-balance"/>
+    <action name="action-sale-order-method-finalize-quotation"/>
+  </action-group>
+
   <action-group name="action-group-business-project-saleorder-onload"
     id="action-group-budget-saleorder-onload">
     <action name="action-group-supplychain-saleorder-onload"/>
@@ -71,6 +84,7 @@
   <action-group name="action-sale-group-confirmed"
     id="action-budget-sale-group-confirmed">
     <action name="action-sale-order-validate-check-on-confirm"/>
+    <action name="action-method-budget-sale-order-validate-budget-balance"/>
     <action name="save"/>
     <action name="action-method-budget-sale-order-no-compute-budget-distribution"/>
     <action name="action-budget-sale-order-method-update-budget-lines"/>
@@ -112,6 +126,10 @@
 
   <action-method name="action-budget-sale-order-method-update-budget-lines">
     <call class="com.axelor.apps.budget.web.SaleOrderController" method="updateBudgetLines"/>
+  </action-method>
+
+  <action-method name="action-method-budget-sale-order-validate-budget-balance">
+    <call class="com.axelor.apps.budget.web.SaleOrderController" method="validateBudgetBalance"/>
   </action-method>
 
 </object-views>
