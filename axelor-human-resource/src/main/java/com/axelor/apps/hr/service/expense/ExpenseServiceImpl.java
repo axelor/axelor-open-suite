@@ -49,20 +49,17 @@ import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.BankDetails;
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.Period;
-import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.Sequence;
+import com.axelor.apps.base.db.*;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.db.repo.YearBaseRepository;
 import com.axelor.apps.base.service.BankDetailsService;
+import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.config.CompanyConfigService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.EmployeeAdvanceUsage;
 import com.axelor.apps.hr.db.EmployeeVehicle;
@@ -119,6 +116,8 @@ public class ExpenseServiceImpl implements ExpenseService {
   protected KilometricService kilometricService;
   protected PeriodRepository periodRepository;
   protected BankDetailsService bankDetailsService;
+  protected CompanyConfigService companyConfigService;
+  protected CurrencyService currencyService;
 
   @Inject
   public ExpenseServiceImpl(
@@ -138,7 +137,9 @@ public class ExpenseServiceImpl implements ExpenseService {
       PeriodRepository periodRepository,
       MoveLineConsolidateService moveLineConsolidateService,
       KilometricService kilometricService,
-      BankDetailsService bankDetailsService) {
+      BankDetailsService bankDetailsService,
+      CompanyConfigService companyConfigService,
+      CurrencyService currencyService) {
 
     this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;
@@ -157,6 +158,8 @@ public class ExpenseServiceImpl implements ExpenseService {
     this.moveLineConsolidateService = moveLineConsolidateService;
     this.kilometricService = kilometricService;
     this.bankDetailsService = bankDetailsService;
+    this.companyConfigService = companyConfigService;
+    this.currencyService = currencyService;
   }
 
   @Override
@@ -499,15 +502,28 @@ public class ExpenseServiceImpl implements ExpenseService {
           company.getName());
     }
 
+    Currency currency = move.getCurrency();
+    Currency companyCurrency = companyConfigService.getCompanyCurrency(move.getCompany());
+
+    BigDecimal currencyRate =
+        currencyService.getCurrencyConversionRate(currency, companyCurrency, moveDate);
+
+    BigDecimal amountConvertedInCompanyCurrency =
+        currencyService.getAmountCurrencyConvertedUsingExchangeRate(
+            expenseLine.getUntaxedAmount(), currencyRate);
+
     MoveLine moveLine =
         moveLineCreateService.createMoveLine(
             move,
             partner,
             productAccount,
             expenseLine.getUntaxedAmount(),
+            amountConvertedInCompanyCurrency,
+            currencyRate,
             true,
-            expenseLine.getExpenseDate(),
             moveDate,
+            moveDate,
+            expenseLine.getExpenseDate(),
             count,
             expense.getExpenseSeq(),
             expenseLine.getComments() != null
