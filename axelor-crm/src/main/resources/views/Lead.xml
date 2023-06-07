@@ -439,7 +439,7 @@
     title="Schedule Event(${ fullName})" model="com.axelor.apps.crm.db.Event">
     <view type="form" name="event-form"/>
     <view type="grid" name="event-grid"/>
-    <context name="_lead" expr="eval: __this__"/>
+    <context name="_eventLead" expr="eval: __this__"/>
   </action-view>
 
   <action-view name="action-lead-view-meeting-event" title="Meeting Event(${ fullName})"
@@ -447,7 +447,7 @@
     <view type="form" name="event-form"/>
     <view-param name="popup" value="reload"/>
     <view-param name="show-toolbar" value="false"/>
-    <context name="_lead" expr="eval: __this__"/>
+    <context name="_eventLead" expr="eval: __this__"/>
     <context name="_meeting" expr="eval: true"/>
   </action-view>
 
@@ -456,7 +456,7 @@
     <view type="form" name="event-form"/>
     <view-param name="popup" value="reload"/>
     <view-param name="show-toolbar" value="false"/>
-    <context name="_lead" expr="eval: __this__"/>
+    <context name="_eventLead" expr="eval: __this__"/>
     <context name="_call" expr="eval: true"/>
   </action-view>
 
@@ -465,7 +465,7 @@
     <view type="form" name="event-form"/>
     <view-param name="popup" value="reload"/>
     <view-param name="show-toolbar" value="false"/>
-    <context name="_lead" expr="eval: __this__"/>
+    <context name="_eventLead" expr="eval: __this__"/>
     <context name="_task" expr="eval: true"/>
   </action-view>
 
@@ -474,7 +474,7 @@
     <view type="form" name="event-form"/>
     <view-param name="popup" value="reload"/>
     <view-param name="show-toolbar" value="false"/>
-    <context name="_lead" expr="eval: __this__"/>
+    <context name="_eventLead" expr="eval: __this__"/>
     <context name="_note" expr="eval: true"/>
   </action-view>
 
@@ -512,7 +512,8 @@
     <view type="cards" name="event-cards"/>
     <view type="grid" name="list-event-grid"/>
     <view type="form" name="event-form"/>
-    <domain>self.lead.id = :_id</domain>
+    <domain>self.eventLead.id = :_leadId </domain>
+    <context name="_leadId" expr="eval: __id__"/>
   </action-view>
 
   <action-method name="action-show-leads-on-map-page">

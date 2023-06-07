@@ -469,6 +469,8 @@ public class MoveLineController {
         TaxLine taxLine = moveLine.getTaxLine();
         TaxEquiv taxEquiv = null;
         FiscalPosition fiscalPosition = move.getFiscalPosition();
+        response.setValue("taxLineBeforeReverse", null);
+
         if (fiscalPosition != null && taxLine != null) {
           taxEquiv =
               Beans.get(FiscalPositionService.class).getTaxEquiv(fiscalPosition, taxLine.getTax());
@@ -477,10 +479,10 @@ public class MoveLineController {
             response.setValue("taxLineBeforeReverse", taxLine);
             taxLine =
                 Beans.get(TaxService.class).getTaxLine(taxEquiv.getToTax(), moveLine.getDate());
-            response.setValue("taxLine", taxLine);
-            response.setValue("taxEquiv", taxEquiv);
           }
         }
+        response.setValue("taxLine", taxLine);
+        response.setValue("taxEquiv", taxEquiv);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -586,8 +588,10 @@ public class MoveLineController {
 
       if (request.getContext().getParent() != null
           && Move.class.equals(request.getContext().getParent().getContextClass())) {
-        cutOffStartDate = (LocalDate) request.getContext().getParent().get("cutOffStartDate");
-        cutOffEndDate = (LocalDate) request.getContext().getParent().get("cutOffEndDate");
+        cutOffStartDate =
+            LocalDate.parse((String) request.getContext().getParent().get("cutOffStartDate"));
+        cutOffEndDate =
+            LocalDate.parse((String) request.getContext().getParent().get("cutOffEndDate"));
       }
 
       MoveLineGroupService moveLineGroupService = Beans.get(MoveLineGroupService.class);
@@ -646,12 +650,15 @@ public class MoveLineController {
   public void currencyAmountRateOnChange(ActionRequest request, ActionResponse response) {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
+      Move move = this.getMove(request, moveLine);
       LocalDate dueDate = this.extractDueDate(request);
       moveLine.setMove(this.getMove(request, moveLine));
 
+      moveLine.setMove(move);
+
       response.setValues(
           Beans.get(MoveLineGroupService.class)
-              .getCurrencyAmountRateOnChangeValuesMap(moveLine, dueDate));
+              .getCurrencyAmountRateOnChangeValuesMap(moveLine, move, dueDate));
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
@@ -699,6 +706,8 @@ public class MoveLineController {
       Move move = this.getMove(request, moveLine);
       LocalDate dueDate = this.extractDueDate(request);
 
+      moveLine.setMove(move);
+
       response.setValues(
           Beans.get(MoveLineGroupService.class).getDebitOnChangeValuesMap(moveLine, move, dueDate));
     } catch (Exception e) {
@@ -711,6 +720,8 @@ public class MoveLineController {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
       Move move = this.getMove(request, moveLine);
       LocalDate dueDate = this.extractDueDate(request);
+
+      moveLine.setMove(move);
 
       response.setValues(
           Beans.get(MoveLineGroupService.class)
