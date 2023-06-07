@@ -208,9 +208,10 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void autoTaxLineGenerate(Move move, Account account) throws AxelorException {
+  public void autoTaxLineGenerate(Move move, Account account, boolean percentMoveTemplate)
+      throws AxelorException {
 
-    autoTaxLineGenerateNoSave(move, account);
+    autoTaxLineGenerateNoSave(move, account, percentMoveTemplate);
     moveRepository.save(move);
   }
 
@@ -219,12 +220,13 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
     if (CollectionUtils.isNotEmpty(move.getMoveLineList())
         && (move.getStatusSelect().equals(MoveRepository.STATUS_NEW)
             || move.getStatusSelect().equals(MoveRepository.STATUS_SIMULATED))) {
-      this.autoTaxLineGenerateNoSave(move, null);
+      this.autoTaxLineGenerateNoSave(move, null, false);
     }
   }
 
   @Override
-  public void autoTaxLineGenerateNoSave(Move move, Account account) throws AxelorException {
+  public void autoTaxLineGenerateNoSave(Move move, Account account, boolean percentMoveTemplate)
+      throws AxelorException {
 
     List<MoveLine> moveLineList = move.getMoveLineList();
 
@@ -266,7 +268,7 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
         if (this.isGenerateMoveLineForAutoTax(accountType)) {
 
           moveLineCreateService.createMoveLineForAutoTax(
-              move, map, newMap, moveLine, taxLine, accountType, account);
+              move, map, newMap, moveLine, taxLine, accountType, account, percentMoveTemplate);
         }
       }
     }
