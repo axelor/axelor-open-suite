@@ -429,7 +429,7 @@
             onSelect="action-move-mass-entry-attrs-set-company-bank-details-domain"
             form-view="bank-details-form" grid-view="bank-details-grid"/>
           <field name="functionalOriginSelect" readonlyIf="statusSelect > 2" colSpan="3"
-            hideIf="(journal.authorizedFunctionalOriginSelect.split(',').length == 1 &amp;&amp; journal.authorizedFunctionalOriginSelect == functionalOriginSelect) || (journal.authorizedFunctionalOriginSelect == null &amp;&amp; functionalOriginSelect == null) || journal == null || journal.authorizedFunctionalOriginSelect.split(',').length == null"
+            hideIf="(journal.authorizedFunctionalOriginSelect.split(',').length == 1 &amp;&amp; journal.authorizedFunctionalOriginSelect == functionalOriginSelect) || (!journal.authorizedFunctionalOriginSelect &amp;&amp; !functionalOriginSelect) || !journal || !journal.authorizedFunctionalOriginSelect.split(',').length"
             onChange="action-move-mass-entry-method-get-mass-entry-attribute"/>
           <field name="currency"
             readonlyIf="$validatePeriod || moveLineMassEntryList.length &gt; 0 || statusSelect == 3 || (companyBankDetails == null &amp;&amp; $journalTechnicalTypeSelect == 1)"
