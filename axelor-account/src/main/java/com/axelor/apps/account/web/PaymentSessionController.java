@@ -43,7 +43,6 @@ import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 @Singleton
@@ -85,14 +84,12 @@ public class PaymentSessionController {
 
       PaymentSession paymentSession = request.getContext().asType(PaymentSession.class);
       paymentSession = Beans.get(PaymentSessionRepository.class).find(paymentSession.getId());
-
-      BigDecimal sessionTotalAmount =
-          Beans.get(PaymentSessionService.class)
-              .computeSessionTotalAmount(paymentSession)
-              .add(new BigDecimal(new Random().nextInt(1500)));
-      response.setValue("sessionTotalAmount", sessionTotalAmount);
-      response.setValue("$sessionTotalAmountBtn", sessionTotalAmount);
-
+      if (paymentSession != null) {
+        BigDecimal sessionTotalAmount =
+            Beans.get(PaymentSessionService.class).computeSessionTotalAmount(paymentSession);
+        response.setValue("sessionTotalAmount", sessionTotalAmount);
+        response.setValue("$sessionTotalAmountBtn", sessionTotalAmount);
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
