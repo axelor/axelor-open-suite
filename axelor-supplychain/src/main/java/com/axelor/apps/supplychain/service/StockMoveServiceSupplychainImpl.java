@@ -659,6 +659,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
     }
   }
 
+  @Override
   public void setOrigin(StockMove oldStockMove, StockMove newStockMove) {
     if (oldStockMove.getSaleOrder() != null) {
       newStockMove.setSaleOrder(oldStockMove.getSaleOrder());
