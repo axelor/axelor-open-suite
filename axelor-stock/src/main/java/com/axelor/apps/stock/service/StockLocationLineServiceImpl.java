@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.stock.service;
 
-import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
