@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticAxisByCompany;
 import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -105,8 +106,10 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
         "moveLineList.vatSystemSelect",
         "hidden",
         move.getJournal() != null
-            && move.getJournal().getJournalType().getTechnicalTypeSelect() != 1
-            && move.getJournal().getJournalType().getTechnicalTypeSelect() != 2,
+            && move.getJournal().getJournalType().getTechnicalTypeSelect()
+                != JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE
+            && move.getJournal().getJournalType().getTechnicalTypeSelect()
+                != JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE,
         attrsMap);
   }
 
