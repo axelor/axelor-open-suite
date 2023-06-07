@@ -38,6 +38,9 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -126,5 +129,30 @@ public class ProjectController {
 
     Beans.get(ProjectBusinessService.class).computeProjectTotals(project);
     response.setNotify(I18n.get(BusinessProjectExceptionMessage.PROJECT_UPDATE_TOTALS_SUCCESS));
+    response.setReload(true);
+  }
+
+  public void getProjectTimeFollowUpData(ActionRequest request, ActionResponse response) {
+    Map<String, Object> data = new HashMap<>();
+    data.put("progress", request.getData().get("displayProgress"));
+    data.put("consumption", request.getData().get("displayConsumption"));
+    data.put("remaining", request.getData().get("displayRemaining"));
+    response.setData(List.of(data));
+  }
+
+  public void getProjectFinancialFollowUpData(ActionRequest request, ActionResponse response) {
+    Map<String, Object> data = new HashMap<>();
+    data.put("turnover", request.getData().get("turnover"));
+    data.put("initialCosts", request.getData().get("initialCosts"));
+    data.put("initialMargin", request.getData().get("initialMargin"));
+    data.put("initialMarkup", request.getData().get("initialMarkup"));
+    data.put("realTurnover", request.getData().get("realTurnover"));
+    data.put("realCosts", request.getData().get("realCosts"));
+    data.put("realMargin", request.getData().get("realMargin"));
+    data.put("realMarkup", request.getData().get("realMarkup"));
+    data.put("forecastCosts", request.getData().get("forecastCosts"));
+    data.put("forecastMargin", request.getData().get("forecastMargin"));
+    data.put("forecastMarkup", request.getData().get("forecastMarkup"));
+    response.setData(List.of(data));
   }
 }

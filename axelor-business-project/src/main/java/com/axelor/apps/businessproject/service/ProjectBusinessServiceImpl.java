@@ -22,11 +22,14 @@ import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
@@ -43,10 +46,13 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
 import com.axelor.apps.supplychain.service.SaleOrderSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.auth.db.User;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.studio.db.AppSupplychain;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -59,6 +65,8 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
   protected AppBusinessProjectService appBusinessProjectService;
   protected ProjectTaskBusinessProjectService projectTaskBusinessProjectService;
   protected ProjectTaskReportingValuesComputingService projectTaskReportingValuesComputingService;
+
+  public static final int DIVIDE_SCALE = 2;
 
   @Inject
   public ProjectBusinessServiceImpl(
@@ -273,12 +281,157 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
   @Override
   public void computeProjectTotals(Project project) throws AxelorException {
 
+    project = projectRepository.find(project.getId());
     List<ProjectTask> projectTaskList =
         project.getProjectTaskList().stream()
             .filter(projectTask -> projectTask.getParentTask() == null)
             .collect(Collectors.toList());
     for (ProjectTask projectTask : projectTaskList) {
       projectTaskReportingValuesComputingService.computeProjectTaskTotals(projectTask);
+      projectTaskBusinessProjectService.computeProjectTaskTotals(projectTask);
+    }
+
+    computeProjectReportingValues(project, projectTaskList);
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  public void computeProjectReportingValues(Project project, List<ProjectTask> projectTaskList)
+      throws AxelorException {
+    computeTimeFollowUp(project, projectTaskList);
+    computeFinancialFollowUp(project, projectTaskList);
+    projectRepository.save(project);
+  }
+
+  protected void computeTimeFollowUp(Project project, List<ProjectTask> projectTaskList)
+      throws AxelorException {
+    BigDecimal totalSoldTime = BigDecimal.ZERO;
+    BigDecimal totalUpdatedTime = BigDecimal.ZERO;
+    BigDecimal totalPlannedTime = BigDecimal.ZERO;
+    BigDecimal totalSpentTime = BigDecimal.ZERO;
+
+    Unit projectUnit = project.getProjectTimeUnit();
+    BigDecimal numberHoursADay = project.getNumberHoursADay();
+
+    if (numberHoursADay.signum() <= 0) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BusinessProjectExceptionMessage.PROJECT_CONFIG_DEFAULT_HOURS_PER_DAY_MISSING));
+    }
+
+    for (ProjectTask projectTask : projectTaskList) {
+      Unit projectTaskUnit = projectTask.getTimeUnit();
+      totalSoldTime =
+          totalSoldTime.add(
+              getConvertedTime(
+                  projectTask.getSoldTime(), projectTaskUnit, projectUnit, numberHoursADay));
+      totalUpdatedTime =
+          totalUpdatedTime.add(
+              getConvertedTime(
+                  projectTask.getUpdatedTime(), projectTaskUnit, projectUnit, numberHoursADay));
+      totalPlannedTime =
+          totalPlannedTime.add(
+              getConvertedTime(
+                  projectTask.getPlannedTime(), projectTaskUnit, projectUnit, numberHoursADay));
+      totalSpentTime =
+          totalSpentTime.add(
+              getConvertedTime(
+                  projectTask.getSpentTime(), projectTaskUnit, projectUnit, numberHoursADay));
+    }
+
+    project.setSoldTime(totalSoldTime);
+    project.setUpdatedTime(totalUpdatedTime);
+    project.setPlannedTime(totalPlannedTime);
+    project.setSpentTime(totalSpentTime);
+
+    if (totalUpdatedTime.signum() > 0) {
+      project.setPercentageOfProgress(
+          totalSpentTime
+              .multiply(new BigDecimal("100"))
+              .divide(totalUpdatedTime, DIVIDE_SCALE, RoundingMode.HALF_UP));
+    }
+
+    if (totalSoldTime.signum() > 0) {
+      project.setPercentageOfConsumption(
+          totalSpentTime
+              .multiply(new BigDecimal("100"))
+              .divide(totalSoldTime, DIVIDE_SCALE, RoundingMode.HALF_UP));
+    }
+
+    project.setRemainingAmountToDo(totalUpdatedTime.subtract(totalSpentTime));
+  }
+
+  protected void computeFinancialFollowUp(Project project, List<ProjectTask> projectTaskList) {
+
+    BigDecimal initialTurnover =
+        projectTaskList.stream()
+            .map(ProjectTask::getTurnover)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+    BigDecimal initialCosts =
+        projectTaskList.stream()
+            .map(ProjectTask::getInitialCosts)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+    BigDecimal initialMargin = initialTurnover.subtract(initialCosts);
+
+    project.setTurnover(initialTurnover);
+    project.setInitialCosts(initialCosts);
+
+    project.setInitialMargin(initialMargin);
+    if (initialCosts.signum() != 0) {
+      project.setInitialMarkup(
+          initialMargin
+              .multiply(new BigDecimal("100"))
+              .divide(initialCosts, DIVIDE_SCALE, RoundingMode.HALF_UP));
+    }
+
+    BigDecimal realTurnover =
+        projectTaskList.stream()
+            .map(ProjectTask::getRealTurnover)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+    BigDecimal realCosts =
+        projectTaskList.stream()
+            .map(ProjectTask::getRealCosts)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+    BigDecimal realMargin = realTurnover.subtract(realCosts);
+
+    project.setRealTurnover(realTurnover);
+    project.setRealCosts(realCosts);
+    project.setRealMargin(realMargin);
+
+    if (realCosts.signum() != 0) {
+      project.setRealMarkup(
+          realMargin
+              .multiply(new BigDecimal("100"))
+              .divide(realCosts, DIVIDE_SCALE, RoundingMode.HALF_UP));
+    }
+
+    BigDecimal forecastCosts =
+        projectTaskList.stream()
+            .map(ProjectTask::getForecastCosts)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+    project.setForecastCosts(forecastCosts);
+    BigDecimal forecastMargin = initialTurnover.subtract(forecastCosts);
+
+    project.setForecastMargin(forecastMargin);
+
+    if (forecastCosts.signum() != 0) {
+      project.setForecastMarkup(
+          forecastMargin
+              .multiply(new BigDecimal("100"))
+              .divide(forecastCosts, DIVIDE_SCALE, RoundingMode.HALF_UP));
+    }
+  }
+
+  protected BigDecimal getConvertedTime(
+      BigDecimal duration, Unit fromUnit, Unit toUnit, BigDecimal numberHoursADay)
+      throws AxelorException {
+    if (fromUnit.equals(appBusinessProjectService.getDaysUnit())
+        && toUnit.equals(appBusinessProjectService.getHoursUnit())) {
+      return duration.multiply(numberHoursADay);
+    } else if (fromUnit.equals(appBusinessProjectService.getHoursUnit())
+        && toUnit.equals(appBusinessProjectService.getDaysUnit())) {
+      return duration.divide(numberHoursADay, DIVIDE_SCALE, RoundingMode.HALF_UP);
+    } else {
+      return duration;
     }
   }
 }
