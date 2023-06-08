@@ -192,15 +192,7 @@ public class MoveLineMassEntryServiceImpl implements MoveLineMassEntryService {
         this.loadAccountInformation(move, moveLine);
         move.setPartner(null);
 
-        moveLine.setVatSystemSelect(
-            taxAccountToolService.calculateVatSystem(
-                moveLine.getPartner(),
-                move.getCompany(),
-                moveLine.getAccount(),
-                (move.getJournal().getJournalType().getTechnicalTypeSelect()
-                    == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE),
-                (move.getJournal().getJournalType().getTechnicalTypeSelect()
-                    == JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE)));
+        moveLine.setVatSystemSelect(moveLineTaxService.getVatSystem(move, moveLine));
       }
 
       moveLine.setMovePartnerBankDetails(
