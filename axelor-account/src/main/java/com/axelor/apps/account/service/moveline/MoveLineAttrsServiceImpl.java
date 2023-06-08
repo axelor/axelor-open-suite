@@ -302,10 +302,10 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
     };
 
     boolean isReadonly =
-        !(moveLine.getAccount() != null
-            && moveLine.getAccount().getAccountType() != null
-            && !Arrays.asList(technicalTypeSelects)
-                .contains(moveLine.getAccount().getAccountType().getTechnicalTypeSelect()));
+        moveLine.getAccount() == null
+            || moveLine.getAccount().getAccountType() == null
+            || !Arrays.asList(technicalTypeSelects)
+                .contains(moveLine.getAccount().getAccountType().getTechnicalTypeSelect());
 
     this.addAttr("$isVatSystemSelectReadonly", "value", isReadonly, attrsMap);
   }
