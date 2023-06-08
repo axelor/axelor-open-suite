@@ -1,0 +1,3 @@
+---
+title: "Move/Holdback: fix invoice term generation at counterpart generation with holdback payment condition. Case when supplier account is the same as holdback account"
+type: fix
