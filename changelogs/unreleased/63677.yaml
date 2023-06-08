@@ -1,0 +1,4 @@
+title: Fill dueDate when generating moves automatically
+type: fix
+description:
+  Fill dueDate when generating moves automatically (when ventilating an invoice), fill dueDate when there is a paymentCondition filled.
