@@ -140,11 +140,10 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
       analyticAccountListByAxis.add(analyticAccount.getId());
     }
     if (line.getAccount() != null) {
-      List<AnalyticAccount> analyticAccountList =
-          accountService.getAnalyticAccounts(line.getAccount());
-      if (!analyticAccountList.isEmpty()) {
-        for (AnalyticAccount analyticAccount : analyticAccountList) {
-          analyticAccountListByRules.add(analyticAccount.getId());
+      List<Long> analyticAccountIdList = accountService.getAnalyticAccountsIds(line.getAccount());
+      if (CollectionUtils.isNotEmpty(analyticAccountIdList)) {
+        for (Long analyticAccountId : analyticAccountIdList) {
+          analyticAccountListByRules.add(analyticAccountId);
         }
         if (!CollectionUtils.isEmpty(analyticAccountListByRules)) {
           analyticAccountListByAxis =

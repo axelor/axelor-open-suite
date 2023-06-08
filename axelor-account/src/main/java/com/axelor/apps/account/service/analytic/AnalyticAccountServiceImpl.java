@@ -30,6 +30,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.common.ObjectUtils;
 import com.axelor.utils.StringTool;
+import com.google.common.base.Joiner;
 import com.google.inject.persist.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -134,11 +135,9 @@ public class AnalyticAccountServiceImpl implements AnalyticAccountService {
       }
 
       if (account != null) {
-        List<AnalyticAccount> analyticAccountList = accountService.getAnalyticAccounts(account);
-        if (!CollectionUtils.isEmpty(analyticAccountList)) {
-          domain += " AND self.id in (";
-          String idList = StringTool.getIdListString(analyticAccountList);
-          domain += idList + ")";
+        List<Long> analyticAccountList = accountService.getAnalyticAccountsIds(account);
+        if (CollectionUtils.isNotEmpty(analyticAccountList)) {
+          domain += " AND self.id in (" + Joiner.on(",").join(analyticAccountList) + ")";
         }
       }
     }

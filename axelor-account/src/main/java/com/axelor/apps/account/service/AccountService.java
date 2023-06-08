@@ -21,9 +21,7 @@ package com.axelor.apps.account.service;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountType;
 import com.axelor.apps.account.db.AnalyticAccount;
-import com.axelor.apps.account.db.AnalyticDistributionLine;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
-import com.axelor.apps.account.db.AnalyticRules;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
@@ -188,13 +186,21 @@ public class AccountService {
                 I18n.get(
                     "Please put AnalyticDistributionLines in the Analytic Distribution Template"));
           } else {
-            List<AnalyticAccount> rulesAnalyticAccountList = getAnalyticAccounts(account);
+            List<Long> analyticAccountIdList = getAnalyticAccountsIds(account);
 
-            if (CollectionUtils.isNotEmpty(rulesAnalyticAccountList)
+            if (CollectionUtils.isNotEmpty(analyticAccountIdList)
                 && analyticDistributionTemplate.getAnalyticDistributionLineList().stream()
-                    .map(AnalyticDistributionLine::getAnalyticAccount)
+                    .map(
+                        analyticDistributionLine -> {
+                          AnalyticAccount analyticAccount =
+                              analyticDistributionLine.getAnalyticAccount();
+                          if (analyticAccount != null) {
+                            return analyticAccount.getId();
+                          }
+                          return null;
+                        })
                     .filter(Objects::nonNull)
-                    .anyMatch(it -> !rulesAnalyticAccountList.contains(it))) {
+                    .anyMatch(it -> !analyticAccountIdList.contains(it))) {
               throw new AxelorException(
                   TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
                   I18n.get(
@@ -205,17 +211,6 @@ public class AccountService {
         }
       }
     }
-  }
-
-  public List<Long> getRulesIds(Account account) {
-    Query query =
-        JPA.em()
-            .createQuery(
-                "SELECT self.id FROM AnalyticRules self "
-                    + "WHERE self.fromAccount.code <= :account AND self.toAccount.code >= :account AND self.company = :company");
-    query.setParameter("account", account.getCode());
-    query.setParameter("company", account.getCompany());
-    return query.getResultList();
   }
 
   @Transactional
@@ -278,21 +273,18 @@ public class AccountService {
     return account;
   }
 
-  public List<AnalyticAccount> getAnalyticAccounts(Account account) {
-    List<AnalyticAccount> analyticAccountList = new ArrayList<AnalyticAccount>();
-    List<Long> analyticRulesIdsList = getRulesIds(account);
-
-    if (CollectionUtils.isNotEmpty(analyticRulesIdsList)) {
-      for (Long analyticRuleId : analyticRulesIdsList) {
-        AnalyticRules analyticRule = analyticRulesRepository.find(analyticRuleId);
-        if (analyticRule.getAnalyticAccountSet() != null) {
-          for (AnalyticAccount analyticAccount : analyticRule.getAnalyticAccountSet()) {
-            analyticAccountList.add(analyticAccount);
-          }
-        }
-      }
-    }
-    return analyticAccountList;
+  public List<Long> getAnalyticAccountsIds(Account account) {
+    Query query =
+        JPA.em()
+            .createQuery(
+                "SELECT DISTINCT analyticAccount.id FROM AnalyticRules analyticRules "
+                    + "JOIN analyticRules.analyticAccountSet analyticAccount "
+                    + "WHERE analyticRules.fromAccount.code <= :account "
+                    + "AND analyticRules.toAccount.code >= :account "
+                    + "AND analyticRules.company = :company");
+    query.setParameter("account", account.getCode());
+    query.setParameter("company", account.getCompany());
+    return query.getResultList();
   }
 
   protected Account activate(Account account) {
