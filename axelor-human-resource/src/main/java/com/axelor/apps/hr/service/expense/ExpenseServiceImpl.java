@@ -50,6 +50,7 @@ import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.*;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
@@ -89,10 +90,8 @@ import com.google.inject.persist.Transactional;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import wslite.json.JSONException;
 
@@ -393,7 +392,7 @@ public class ExpenseServiceImpl implements ExpenseService {
         moveCreateService.createMove(
             accountConfigService.getExpenseJournal(accountConfig),
             company,
-            null,
+            expense.getCurrency(),
             partner,
             moveDate,
             moveDate,
@@ -405,32 +404,44 @@ public class ExpenseServiceImpl implements ExpenseService {
             description,
             companyBankDetails);
 
-    move.setCurrency(expense.getCurrency());
-    move.setCurrencyCode(move.getCurrency().getCode());
-
     List<MoveLine> moveLines = new ArrayList<>();
 
     int moveLineCounter = 1;
-
-    Account employeeAccount = accountingSituationService.getEmployeeAccount(partner, company);
-    moveLines.add(
-        moveLineCreateService.createMoveLine(
-            move,
-            partner,
-            employeeAccount,
-            expense.getInTaxTotal(),
-            false,
-            moveDate,
-            moveDate,
-            moveLineCounter++,
-            expense.getExpenseSeq(),
-            expense.getFullName()));
 
     List<ExpenseLine> expenseLineList = getExpenseLineList(expense);
     for (ExpenseLine expenseLine : expenseLineList) {
       moveLines.add(
           generateMoveLine(expense, company, partner, expenseLine, move, moveLineCounter));
       moveLineCounter++;
+    }
+
+    Map<LocalDate, List<ExpenseLine>> expenseLinesByExpenseDate =
+        expenseLineList.stream().collect(Collectors.groupingBy(ExpenseLine::getExpenseDate));
+
+    List<BigDecimal> expenseLinesTotalTax =
+        expenseLinesByExpenseDate.values().stream()
+            .map(
+                list ->
+                    list.stream()
+                        .map(ExpenseLine::getTotalTax)
+                        .reduce(BigDecimal.ZERO, BigDecimal::add))
+            .collect(Collectors.toList());
+
+    Account employeeAccount = accountingSituationService.getEmployeeAccount(partner, company);
+
+    for (BigDecimal totalTax : expenseLinesTotalTax) {
+      moveLines.add(
+          moveLineCreateService.createMoveLine(
+              move,
+              partner,
+              employeeAccount,
+              totalTax,
+              false,
+              moveDate,
+              moveDate,
+              moveLineCounter++,
+              expense.getExpenseSeq(),
+              expense.getFullName()));
     }
 
     moveLineConsolidateService.consolidateMoveLines(moveLines);
@@ -506,7 +517,8 @@ public class ExpenseServiceImpl implements ExpenseService {
     Currency companyCurrency = companyConfigService.getCompanyCurrency(move.getCompany());
 
     BigDecimal currencyRate =
-        currencyService.getCurrencyConversionRate(currency, companyCurrency, moveDate);
+        currencyService.getCurrencyConversionRate(
+            currency, companyCurrency, expenseLine.getExpenseDate());
 
     BigDecimal amountConvertedInCompanyCurrency =
         currencyService.getAmountCurrencyConvertedUsingExchangeRate(
