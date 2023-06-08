@@ -231,7 +231,6 @@
           onChange="action-invoice-line-group-analytic-move-line-onchange"/>
         <field name="account.analyticDistributionAuthorized" hidden="true"/>
         <field name="account.analyticDistributionRequiredOnInvoiceLines" hidden="true"/>
-        <field name="$isValidAnalyticMoveLineList" type="boolean" hidden="true"/>
       </panel>
       <panel name="configurationPanel" title="Configuration" if-module="axelor-supplychain"
         if="__config__.app.isApp('supplychain')">

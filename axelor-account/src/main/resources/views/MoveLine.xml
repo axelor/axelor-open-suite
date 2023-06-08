@@ -344,7 +344,7 @@
         <field name="account.analyticDistributionRequiredOnMoveLines"/>
         <field name="move.period.statusSelect"/>
         <field name="$validatePeriod"/>
-        <field name="$isValidAnalyticMoveLineList" type="boolean" hidden="true"/>
+
         <field name="$analyticDistributionTypeSelect" type="integer" hidden="true"/>
       </panel>
     </panel>

@@ -58,6 +58,13 @@ public interface AnalyticMoveLineService {
   @CallMethod
   boolean validateAnalyticMoveLines(List<AnalyticMoveLine> analyticDistributionLineList);
 
+  @CallMethod
+  boolean validateAnalyticMoveLinesPercentage(List<AnalyticMoveLine> analyticDistributionLineList);
+
+  @CallMethod
+  boolean validateAnalyticMoveLinesAccountUnicity(
+      List<AnalyticMoveLine> analyticDistributionLineList);
+
   AnalyticMoveLine computeAnalyticMoveLine(
       MoveLine moveLine, Company company, AnalyticAccount analyticAccount) throws AxelorException;
 

@@ -195,6 +195,12 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
 
   @Override
   public boolean validateAnalyticMoveLines(List<AnalyticMoveLine> analyticMoveLineList) {
+    return this.validateAnalyticMoveLinesPercentage(analyticMoveLineList)
+        && this.validateAnalyticMoveLinesAccountUnicity(analyticMoveLineList);
+  }
+
+  @Override
+  public boolean validateAnalyticMoveLinesPercentage(List<AnalyticMoveLine> analyticMoveLineList) {
     return CollectionUtils.isEmpty(analyticMoveLineList)
         || analyticMoveLineList.stream()
             .collect(
@@ -205,6 +211,38 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
             .values()
             .stream()
             .allMatch(percentage -> percentage.compareTo(BigDecimal.valueOf(100)) == 0);
+  }
+
+  @Override
+  public boolean validateAnalyticMoveLinesAccountUnicity(
+      List<AnalyticMoveLine> analyticMoveLineList) {
+    if (analyticMoveLineList != null) {
+      List<AnalyticAccount> distinctAccount =
+          analyticMoveLineList.stream()
+              .map(it -> it.getAnalyticAccount())
+              .distinct()
+              .collect(Collectors.toList());
+      for (AnalyticAccount account : distinctAccount) {
+        if (!analyticMoveLineList.stream()
+            .collect(
+                Collectors.groupingBy(
+                    AnalyticMoveLine::getAnalyticAxis,
+                    Collectors.reducing(
+                        BigDecimal.ZERO,
+                        it ->
+                            (account.equals(it.getAnalyticAccount())
+                                ? BigDecimal.ONE
+                                : BigDecimal.ZERO),
+                        BigDecimal::add)))
+            .values()
+            .stream()
+            .allMatch(total -> total.compareTo(BigDecimal.ONE) <= 0)) {
+          return false;
+        }
+      }
+      return true;
+    }
+    return false;
   }
 
   @Override

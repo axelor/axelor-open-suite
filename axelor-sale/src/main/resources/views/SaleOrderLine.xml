@@ -379,7 +379,7 @@
           grid-view="analytic-move-line-distribution-grid"
           form-view="analytic-move-line-distribution-form" colSpan="12"
           onChange="action-analytic-move-line-group-analytic-move-line-list-onchange"/>
-        <field name="$isValidAnalyticMoveLineList" type="boolean" hidden="true"/>
+
       </panel>
       <panel name="settingsPanel" readonlyIf="$isReadOnly !== false" title="Configuration">
         <field name="saleSupplySelect"
@@ -503,7 +503,7 @@
           grid-view="analytic-move-line-distribution-grid"
           form-view="analytic-move-line-distribution-form" colSpan="12"
           onChange="action-analytic-move-line-group-analytic-move-line-list-onchange"/>
-        <field name="$isValidAnalyticMoveLineList" type="boolean" hidden="true"/>
+
       </panel>
       <panel name="settingsPanel" title="Settings">
         <field name="saleSupplySelect"

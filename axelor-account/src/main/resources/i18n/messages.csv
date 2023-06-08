@@ -1824,6 +1824,7 @@
 "Inv. on",,,
 "Invalid Analytic moveLines, some axes percentage values are different than 100%.",,,
 "Invalid analytic move lines, some axes percentage values are different than 100%.",,,
+"Invalid analytic move lines, the same analytic account is linked multiple times to the same axis.",,,
 "Invalid automatic partner account creation mode, this is a bug that should be reported.",,,
 "Invoice",,,
 "Invoice & Rejects",,,

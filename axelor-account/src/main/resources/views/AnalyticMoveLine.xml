@@ -209,20 +209,35 @@
   </action-group>
 
   <action-attrs name="action-analytic-move-line-attrs-valid-analytic-move-line-list">
-    <attribute name="value" for="isValidAnalyticMoveLineList"
-      expr="call: com.axelor.apps.account.service.analytic.AnalyticMoveLineService:validateAnalyticMoveLines(analyticMoveLineList)"/>
+    <attribute name="value" for="isValidAnalyticMoveLineListPercentage"
+      expr="call: com.axelor.apps.account.service.analytic.AnalyticMoveLineService:validateAnalyticMoveLinesPercentage(analyticMoveLineList)"/>
+    <attribute name="value" for="isValidAnalyticMoveLineListAccountUnicity"
+      expr="call: com.axelor.apps.account.service.analytic.AnalyticMoveLineService:validateAnalyticMoveLinesAccountUnicity(analyticMoveLineList)"/>
   </action-attrs>
 
   <action-condition
-    name="action-analytic-move-line-condition-valid-analytic-move-line-list">
+    name="action-analytic-move-line-condition-valid-analytic-move-line-list-percentage">
     <check
       error="Invalid analytic move lines, some axes percentage values are different than 100%."
-      field="analyticMoveLineList" if="!isValidAnalyticMoveLineList"/>
+      field="analyticMoveLineList" if="!isValidAnalyticMoveLineListPercentage"/>
   </action-condition>
+
+  <action-condition
+    name="action-analytic-move-line-condition-valid-analytic-move-line-list-account-unicity">
+    <check
+      error="Invalid analytic move lines, the same analytic account is linked multiple times to the same axis."
+      field="analyticMoveLineList" if="!isValidAnalyticMoveLineListAccountUnicity"/>
+  </action-condition>
+
 
   <action-group name="action-analytic-move-line-group-analytic-move-line-list-onchange">
     <action name="action-analytic-move-line-attrs-valid-analytic-move-line-list"/>
-    <action name="action-analytic-move-line-condition-valid-analytic-move-line-list"/>
+    <action
+      name="action-analytic-move-line-condition-valid-analytic-move-line-list-percentage"
+      if="!isValidAnalyticMoveLineListPercentage"/>
+    <action
+      name="action-analytic-move-line-condition-valid-analytic-move-line-list-account-unicity"
+      if="isValidAnalyticMoveLineListPercentage"/>
   </action-group>
 
   <search-filters name="analytic-move-line-filters"

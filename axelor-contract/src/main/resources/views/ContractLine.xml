@@ -51,7 +51,7 @@
           grid-view="analytic-move-line-distribution-grid"
           form-view="analytic-move-line-distribution-form" colSpan="12"
           onChange="action-analytic-move-line-group-analytic-move-line-list-onchange"/>
-        <field name="$isValidAnalyticMoveLineList" type="boolean" hidden="true"/>
+
       </panel>
     </panel-tabs>
   </form>
@@ -143,7 +143,7 @@
           colSpan="12" grid-view="analytic-move-line-distribution-grid"
           form-view="analytic-move-line-distribution-form"
           onChange="action-analytic-move-line-group-analytic-move-line-list-onchange"/>
-        <field name="$isValidAnalyticMoveLineList" type="boolean" hidden="true"/>
+
       </panel>
     </panel-tabs>
   </form>
