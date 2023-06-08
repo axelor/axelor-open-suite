@@ -1,3 +1,25 @@
+## [6.3.21] (2023-06-08)
+
+#### Fixed
+
+* Business project, HR printings: fixed an issue were pictures with specific filenames were not displayed in the printings.
+* Configurator: fixed issue where sale order line generated from the configurator did not have a bill of materials.
+* Invoice: allow supplier references (supplier invoice number and origin date) to be filled on a ventilated invoice.
+* Invoice: fixed an issue where the button to print the annex was not displayed.
+* Account config: hide 'Generate move for advance payment' field when 'Manage advance payment invoice' is enabled.
+* Leave request: fixed an issue on hilite color in leave request validate grid.
+* Birt template parameter: fixed french translation issue where two distinct technical terms were both translated as 'Décimal'.
+* Budget distribution: fixed an issue where the budget were not negated on refund.
+* Sale order line form: fixed an UI issue on form view where the product field was not displayed.
+* Supplier portal and customer portal: add missing permissions on demo data.
+* Project: when creating a new resource booking from a project form, the booking is now correctly filled with information from the project.
+* MRP: UI improvements on form view by hiding unnecessary fields.
+* Stock: fixed an error occurring when updating stock location on a product with tracking number.
+* Cost calculation: fixed calculation issue when computing cost from a bill of materials.
+* Tracking number: fixed an issue preventing to select a product on a manually created tracking number.
+* Fixed asset: fixed JNPE error on disposal if account config customer sales journal is empty.
+* Accouting report view: fixed an issue where the filter on payment mode was displayed on an analytic report type.
+
 ## [6.3.20] (2023-05-25)
 
 #### Fixed
@@ -675,6 +697,7 @@ If you had modules calling these methods, you will need to update them so they c
 * Account Config: Remove Invoices button and associate action from account config
 * Stock correction: Removed unused future and reserved quantity from database.
 
+[6.3.21]: https://github.com/axelor/axelor-open-suite/compare/v6.3.20...v6.3.21
 [6.3.20]: https://github.com/axelor/axelor-open-suite/compare/v6.3.19...v6.3.20
 [6.3.19]: https://github.com/axelor/axelor-open-suite/compare/v6.3.18...v6.3.19
 [6.3.18]: https://github.com/axelor/axelor-open-suite/compare/v6.3.17...v6.3.18
