@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.batch.BatchCreditTransferSupplierPayment;
@@ -93,7 +94,9 @@ public class BatchCreditTransferSupplierPaymentBankPayment
 
   public void testCreditTransferBatchField() throws AxelorException {
     AccountingBatch accountingBatch = batch.getAccountingBatch();
-    if (ObjectUtils.isEmpty(accountingBatch.getBankDetails())) {
+    if (ObjectUtils.isEmpty(accountingBatch.getBankDetails())
+        && accountingBatch.getPaymentMode().getTypeSelect() == PaymentModeRepository.TYPE_TRANSFER
+        && accountingBatch.getPaymentMode().getInOutSelect() == PaymentModeRepository.OUT) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(AccountExceptionMessage.BATCH_CREDIT_TRANSFER_BANK_DETAILS_MISSING),
