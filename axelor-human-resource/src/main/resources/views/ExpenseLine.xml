@@ -112,7 +112,6 @@
         grid-view="analytic-move-line-distribution-grid"
         form-view="analytic-move-line-distribution-form" colSpan="12"
         onChange="action-analytic-move-line-group-analytic-move-line-list-onchange"/>
-      <field name="$isValidAnalyticMoveLineListPercentage" type="boolean" hidden="true"/>
     </panel>
 
     <panel name="attrsPanel">
@@ -163,7 +162,6 @@
         grid-view="analytic-move-line-distribution-grid"
         form-view="analytic-move-line-distribution-form" colSpan="12"
         onChange="action-analytic-move-line-group-analytic-move-line-list-onchange"/>
-      <field name="$isValidAnalyticMoveLineListPercentage" type="boolean" hidden="true"/>
     </panel>
   </form>
 
