@@ -1,3 +1,33 @@
+## [6.4.16] (2023-06-08)
+
+#### Fixed
+
+* Business project, HR printings: fixed an issue were pictures with specific filenames were not displayed in the printings.
+* Configurator: fixed issue where sale order line generated from the configurator did not have a bill of materials.
+* Deposit slip: fixed errors when loading selected lines.
+* Invoice: allow supplier references (supplier invoice number and origin date) to be filled on a ventilated invoice.
+* Invoice/Stock move: fixed an issue where invoice terms were not present on an invoice generated from a stock move.
+* Invoice: fixed an issue where the button to print the annex was not displayed.
+* Account config: hide 'Generate move for advance payment' field when 'Manage advance payment invoice' is enabled.
+* Leave request: fixed an issue on hilite color in leave request validate grid.
+* Birt template parameter: fixed french translation issue where two distinct technical terms were both translated as 'Décimal'.
+* Budget distribution: fixed an issue where the budget were not negated on refund.
+* Move: fixed auto tax generation via fiscal position when no reverse charge tax is configured.
+* Sale order line form: fixed an UI issue on form view where the product field was not displayed.
+* Move line query: fixed balance computation.
+* Supplier portal and customer portal: add missing permissions on demo data.
+* Project: when creating a new resource booking from a project form, the booking is now correctly filled with information from the project.
+* Partner: correctly select a default value for tax system on a generated accounting situation.
+* Move line: prevent from changing analytic account when a template is set.
+* Move/Holdback: fixed invoice term generation at counterpart generation with holdback payment condition.
+* MRP: UI improvements on form view by hiding unnecessary fields.
+* Stock: fixed an error occurring when updating stock location on a product with tracking number.
+* Cost calculation: fixed calculation issue when computing cost from a bill of materials.
+* Tracking number: fixed an issue preventing to select a product on a manually created tracking number.
+* Reconcile: fixed an issue were it was possible to unreconcile already unreconciled move lines.
+* Fixed asset: fixed JNPE error on disposal if account config customer sales journal is empty.
+* Accouting report view: fixed an issue where the filter on payment mode was displayed on an analytic report type.
+
 ## [6.4.15] (2023-05-25)
 
 #### Fixed
@@ -763,6 +793,7 @@ A new mobile application for stock and production modules are now available, the
 * Account budget: Remove checkAvailableBudget in budget, which was unused.
 * Accounting report: removed old specific export format for Sale, Purchase, Treasury, Refund (1006 to 1009 accounting report type). Already replaced per the generic Journal entry export with a filter on the journal.
 
+[6.4.16]: https://github.com/axelor/axelor-open-suite/compare/v6.4.15...v6.4.16
 [6.4.15]: https://github.com/axelor/axelor-open-suite/compare/v6.4.14...v6.4.15
 [6.4.14]: https://github.com/axelor/axelor-open-suite/compare/v6.4.13...v6.4.14
 [6.4.13]: https://github.com/axelor/axelor-open-suite/compare/v6.4.12...v6.4.13
