@@ -66,7 +66,8 @@
     <view-param name="popup" value="reload"/>
     <view-param name="show-confirm" value="false"/>
     <view-param name="popup-save" value="false"/>
-    <context name="_templateMetaFile" expr="eval: templateLink ?: templateMetaFile?.fileName"/>
+    <context name="_templateMetaFile"
+      expr="eval: templateLink ?: templateMetaFile?.fileName"/>
     <context name="_birtId" expr="eval: id"/>
   </action-view>
 
