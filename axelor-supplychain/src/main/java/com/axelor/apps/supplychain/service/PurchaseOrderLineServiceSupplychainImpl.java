@@ -19,6 +19,7 @@
 package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.account.db.AnalyticAccount;
+import com.axelor.apps.account.db.AnalyticAxisByCompany;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
@@ -48,6 +49,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -235,6 +237,59 @@ public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineSe
     analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_FORECAST_ORDER);
 
     return analyticMoveLine;
+  }
+
+  @Override
+  public PurchaseOrderLine printAnalyticAccount(
+      PurchaseOrderLine purchaseOrderLine, Company company) throws AxelorException {
+    if (CollectionUtils.isEmpty(purchaseOrderLine.getAnalyticMoveLineList()) || company == null) {
+      return purchaseOrderLine;
+    }
+
+    List<AnalyticMoveLine> analyticMoveLineList;
+
+    for (AnalyticAxisByCompany analyticAxisByCompany :
+        accountConfigService.getAccountConfig(company).getAnalyticAxisByCompanyList()) {
+      analyticMoveLineList =
+          purchaseOrderLine.getAnalyticMoveLineList().stream()
+              .filter(it -> it.getAnalyticAxis().equals(analyticAxisByCompany.getAnalyticAxis()))
+              .filter(it -> it.getPercentage().compareTo(new BigDecimal(100)) == 0)
+              .collect(Collectors.toList());
+
+      if (analyticMoveLineList.size() == 1) {
+        AnalyticMoveLine analyticMoveLine = analyticMoveLineList.get(0);
+        this.setAxisAccount(purchaseOrderLine, analyticAxisByCompany, analyticMoveLine);
+      }
+    }
+
+    return purchaseOrderLine;
+  }
+
+  protected void setAxisAccount(
+      PurchaseOrderLine purchaseOrderLine,
+      AnalyticAxisByCompany analyticAxisByCompany,
+      AnalyticMoveLine analyticMoveLine) {
+    AnalyticAccount analyticAccount = analyticMoveLine.getAnalyticAccount();
+
+    switch (analyticAxisByCompany.getSequence()) {
+      case 0:
+        purchaseOrderLine.setAxis1AnalyticAccount(analyticAccount);
+        break;
+      case 1:
+        purchaseOrderLine.setAxis2AnalyticAccount(analyticAccount);
+        break;
+      case 2:
+        purchaseOrderLine.setAxis3AnalyticAccount(analyticAccount);
+        break;
+      case 3:
+        purchaseOrderLine.setAxis4AnalyticAccount(analyticAccount);
+        break;
+      case 4:
+        purchaseOrderLine.setAxis5AnalyticAccount(analyticAccount);
+        break;
+      default:
+        break;
+    }
   }
 
   public BigDecimal computeUndeliveredQty(PurchaseOrderLine purchaseOrderLine) {

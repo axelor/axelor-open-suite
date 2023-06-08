@@ -19,7 +19,6 @@
 package com.axelor.apps.supplychain.web;
 
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
-import com.axelor.apps.account.db.repo.AnalyticLine;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -404,7 +403,6 @@ public class SaleOrderLineController {
         return;
       }
 
-      SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
       List<Long> analyticAccountList;
       AnalyticToolService analyticToolService = Beans.get(AnalyticToolService.class);
       AnalyticLineService analyticLineService = Beans.get(AnalyticLineService.class);
@@ -412,8 +410,7 @@ public class SaleOrderLineController {
       for (int i = startAxisPosition; i <= endAxisPosition; i++) {
         if (analyticToolService.isPositionUnderAnalyticAxisSelect(saleOrder.getCompany(), i)) {
           analyticAccountList =
-              analyticLineService.getAxisDomains(
-                  (AnalyticLine) saleOrderLine, saleOrder.getCompany(), i);
+              analyticLineService.getAnalyticAccountIdList(saleOrder.getCompany(), i);
 
           if (ObjectUtils.isEmpty(analyticAccountList)) {
             response.setAttr(String.format("axis%dAnalyticAccount", i), "domain", "self.id IN (0)");
@@ -488,8 +485,8 @@ public class SaleOrderLineController {
       }
 
       SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
-      Beans.get(AnalyticLineService.class)
-          .printAnalyticAccount((AnalyticLine) saleOrderLine, saleOrder.getCompany());
+      Beans.get(SaleOrderLineServiceSupplyChain.class)
+          .printAnalyticAccount(saleOrderLine, saleOrder.getCompany());
 
       response.setValue("axis1AnalyticAccount", saleOrderLine.getAxis1AnalyticAccount());
       response.setValue("axis2AnalyticAccount", saleOrderLine.getAxis2AnalyticAccount());

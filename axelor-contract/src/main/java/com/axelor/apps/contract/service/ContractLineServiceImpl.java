@@ -42,7 +42,6 @@ import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.exception.ContractExceptionMessage;
-import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.service.ListToolService;
@@ -51,7 +50,6 @@ import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -330,19 +328,5 @@ public class ContractLineServiceImpl implements ContractLineService {
       default:
         break;
     }
-  }
-
-  @Override
-  public List<Long> getAnalyticAccountIdList(Company company, int position) throws AxelorException {
-    return accountConfigService.getAccountConfig(company).getAnalyticAxisByCompanyList().stream()
-        .filter(it -> it.getSequence() + 1 == position)
-        .findFirst()
-        .stream()
-        .map(AnalyticAxisByCompany::getAnalyticAxis)
-        .map(analyticAccountRepo::findByAnalyticAxis)
-        .map(Query::fetch)
-        .flatMap(Collection::stream)
-        .map(AnalyticAccount::getId)
-        .collect(Collectors.toList());
   }
 }

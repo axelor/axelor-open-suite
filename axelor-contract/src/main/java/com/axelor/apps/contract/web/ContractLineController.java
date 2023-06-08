@@ -82,12 +82,12 @@ public class ContractLineController {
 
       List<Long> analyticAccountList;
       AnalyticToolService analyticToolService = Beans.get(AnalyticToolService.class);
-      ContractLineService contractLineService = Beans.get(ContractLineService.class);
+      AnalyticLineService analyticLineService = Beans.get(AnalyticLineService.class);
 
       for (int i = startAxisPosition; i <= endAxisPosition; i++) {
         if (analyticToolService.isPositionUnderAnalyticAxisSelect(contract.getCompany(), i)) {
           analyticAccountList =
-              contractLineService.getAnalyticAccountIdList(contract.getCompany(), i);
+              analyticLineService.getAnalyticAccountIdList(contract.getCompany(), i);
 
           if (ObjectUtils.isEmpty(analyticAccountList)) {
             response.setAttr(String.format("axis%dAnalyticAccount", i), "domain", "self.id IN (0)");

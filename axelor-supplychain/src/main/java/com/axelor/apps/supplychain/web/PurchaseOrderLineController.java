@@ -19,7 +19,6 @@
 package com.axelor.apps.supplychain.web;
 
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
-import com.axelor.apps.account.db.repo.AnalyticLine;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -86,7 +85,6 @@ public class PurchaseOrderLineController {
         return;
       }
 
-      PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
       List<Long> analyticAccountList;
       AnalyticToolService analyticToolService = Beans.get(AnalyticToolService.class);
       AnalyticLineService analyticLineService = Beans.get(AnalyticLineService.class);
@@ -94,8 +92,7 @@ public class PurchaseOrderLineController {
       for (int i = startAxisPosition; i <= endAxisPosition; i++) {
         if (analyticToolService.isPositionUnderAnalyticAxisSelect(purchaseOrder.getCompany(), i)) {
           analyticAccountList =
-              analyticLineService.getAxisDomains(
-                  (AnalyticLine) purchaseOrderLine, purchaseOrder.getCompany(), i);
+              analyticLineService.getAnalyticAccountIdList(purchaseOrder.getCompany(), i);
 
           if (ObjectUtils.isEmpty(analyticAccountList)) {
             response.setAttr(String.format("axis%dAnalyticAccount", i), "domain", "self.id IN (0)");
@@ -174,8 +171,8 @@ public class PurchaseOrderLineController {
       }
 
       PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
-      Beans.get(AnalyticLineService.class)
-          .printAnalyticAccount((AnalyticLine) purchaseOrderLine, purchaseOrder.getCompany());
+      Beans.get(PurchaseOrderLineServiceSupplyChain.class)
+          .printAnalyticAccount(purchaseOrderLine, purchaseOrder.getCompany());
 
       response.setValue("axis1AnalyticAccount", purchaseOrderLine.getAxis1AnalyticAccount());
       response.setValue("axis2AnalyticAccount", purchaseOrderLine.getAxis2AnalyticAccount());

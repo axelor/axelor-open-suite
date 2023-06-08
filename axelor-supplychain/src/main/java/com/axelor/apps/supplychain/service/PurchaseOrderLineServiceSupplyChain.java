@@ -34,4 +34,7 @@ public interface PurchaseOrderLineServiceSupplyChain {
 
   PurchaseOrderLine analyzePurchaseOrderLine(PurchaseOrderLine purchaseOrderLine, Company company)
       throws AxelorException;
+
+  PurchaseOrderLine printAnalyticAccount(PurchaseOrderLine purchaseOrderLine, Company company)
+      throws AxelorException;
 }

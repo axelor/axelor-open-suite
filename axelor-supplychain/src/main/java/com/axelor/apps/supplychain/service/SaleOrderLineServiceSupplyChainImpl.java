@@ -20,6 +20,7 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AnalyticAccount;
+import com.axelor.apps.account.db.AnalyticAxisByCompany;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
@@ -83,6 +84,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.persistence.TypedQuery;
+import org.apache.commons.collections.CollectionUtils;
 
 public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImpl
     implements SaleOrderLineServiceSupplyChain {
@@ -276,6 +278,59 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
     analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_FORECAST_ORDER);
 
     return analyticMoveLine;
+  }
+
+  @Override
+  public SaleOrderLine printAnalyticAccount(SaleOrderLine saleOrderLine, Company company)
+      throws AxelorException {
+    if (CollectionUtils.isEmpty(saleOrderLine.getAnalyticMoveLineList()) || company == null) {
+      return saleOrderLine;
+    }
+
+    List<AnalyticMoveLine> analyticMoveLineList;
+
+    for (AnalyticAxisByCompany analyticAxisByCompany :
+        accountConfigService.getAccountConfig(company).getAnalyticAxisByCompanyList()) {
+      analyticMoveLineList =
+          saleOrderLine.getAnalyticMoveLineList().stream()
+              .filter(it -> it.getAnalyticAxis().equals(analyticAxisByCompany.getAnalyticAxis()))
+              .filter(it -> it.getPercentage().compareTo(new BigDecimal(100)) == 0)
+              .collect(Collectors.toList());
+
+      if (analyticMoveLineList.size() == 1) {
+        AnalyticMoveLine analyticMoveLine = analyticMoveLineList.get(0);
+        this.setAxisAccount(saleOrderLine, analyticAxisByCompany, analyticMoveLine);
+      }
+    }
+
+    return saleOrderLine;
+  }
+
+  protected void setAxisAccount(
+      SaleOrderLine saleOrderLine,
+      AnalyticAxisByCompany analyticAxisByCompany,
+      AnalyticMoveLine analyticMoveLine) {
+    AnalyticAccount analyticAccount = analyticMoveLine.getAnalyticAccount();
+
+    switch (analyticAxisByCompany.getSequence()) {
+      case 0:
+        saleOrderLine.setAxis1AnalyticAccount(analyticAccount);
+        break;
+      case 1:
+        saleOrderLine.setAxis2AnalyticAccount(analyticAccount);
+        break;
+      case 2:
+        saleOrderLine.setAxis3AnalyticAccount(analyticAccount);
+        break;
+      case 3:
+        saleOrderLine.setAxis4AnalyticAccount(analyticAccount);
+        break;
+      case 4:
+        saleOrderLine.setAxis5AnalyticAccount(analyticAccount);
+        break;
+      default:
+        break;
+    }
   }
 
   @Override
