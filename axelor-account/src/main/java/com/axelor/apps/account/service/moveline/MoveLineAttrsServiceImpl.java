@@ -294,7 +294,7 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
 
   @Override
   public void addVatSystemSelectReadonly(
-      MoveLine moveLine, Move move, Map<String, Map<String, Object>> attrsMap) {
+      MoveLine moveLine, Map<String, Map<String, Object>> attrsMap) {
     String[] technicalTypeSelects = {
       AccountTypeRepository.TYPE_CHARGE,
       AccountTypeRepository.TYPE_INCOME,
