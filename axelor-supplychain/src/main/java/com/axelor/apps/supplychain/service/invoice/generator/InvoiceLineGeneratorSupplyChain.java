@@ -212,6 +212,13 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
               || !ObjectUtils.isEmpty(saleOrderLine.getAnalyticMoveLineList())) {
             invoiceLine.setAnalyticDistributionTemplate(
                 saleOrderLine.getAnalyticDistributionTemplate());
+
+            invoiceLine.setAxis1AnalyticAccount(saleOrderLine.getAxis1AnalyticAccount());
+            invoiceLine.setAxis2AnalyticAccount(saleOrderLine.getAxis2AnalyticAccount());
+            invoiceLine.setAxis3AnalyticAccount(saleOrderLine.getAxis3AnalyticAccount());
+            invoiceLine.setAxis4AnalyticAccount(saleOrderLine.getAxis4AnalyticAccount());
+            invoiceLine.setAxis5AnalyticAccount(saleOrderLine.getAxis5AnalyticAccount());
+
             this.copyAnalyticMoveLines(saleOrderLine.getAnalyticMoveLineList(), invoiceLine);
             analyticMoveLineList =
                 invoiceLineAnalyticService.computeAnalyticDistribution(invoiceLine);
@@ -234,6 +241,13 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
             || !ObjectUtils.isEmpty(purchaseOrderLine.getAnalyticMoveLineList())) {
           invoiceLine.setAnalyticDistributionTemplate(
               purchaseOrderLine.getAnalyticDistributionTemplate());
+
+          invoiceLine.setAxis1AnalyticAccount(purchaseOrderLine.getAxis1AnalyticAccount());
+          invoiceLine.setAxis2AnalyticAccount(purchaseOrderLine.getAxis2AnalyticAccount());
+          invoiceLine.setAxis3AnalyticAccount(purchaseOrderLine.getAxis3AnalyticAccount());
+          invoiceLine.setAxis4AnalyticAccount(purchaseOrderLine.getAxis4AnalyticAccount());
+          invoiceLine.setAxis5AnalyticAccount(purchaseOrderLine.getAxis5AnalyticAccount());
+
           this.copyAnalyticMoveLines(purchaseOrderLine.getAnalyticMoveLineList(), invoiceLine);
           analyticMoveLineList =
               invoiceLineAnalyticService.computeAnalyticDistribution(invoiceLine);
