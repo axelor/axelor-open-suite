@@ -19,19 +19,15 @@
 package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.account.db.AccountConfig;
-import com.axelor.apps.account.db.AnalyticAccount;
-import com.axelor.apps.account.db.AnalyticAxisByCompany;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
-import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.CurrencyService;
@@ -82,9 +78,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import javax.persistence.TypedQuery;
-import org.apache.commons.collections.CollectionUtils;
 
 public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImpl
     implements SaleOrderLineServiceSupplyChain {
@@ -199,138 +193,6 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
       }
     }
     return saleOrderLine;
-  }
-
-  public SaleOrderLine createAnalyticDistributionWithTemplate(SaleOrderLine saleOrderLine) {
-    this.clearAnalyticInLine(saleOrderLine);
-
-    List<AnalyticMoveLine> analyticMoveLineList =
-        analyticMoveLineService.generateLines(
-            saleOrderLine.getAnalyticDistributionTemplate(),
-            saleOrderLine.getCompanyExTaxTotal(),
-            AnalyticMoveLineRepository.STATUS_FORECAST_ORDER,
-            appAccountService.getTodayDate(
-                saleOrderLine.getSaleOrder() != null
-                    ? saleOrderLine.getSaleOrder().getCompany()
-                    : Optional.ofNullable(AuthUtils.getUser())
-                        .map(User::getActiveCompany)
-                        .orElse(null)));
-
-    if (ObjectUtils.isEmpty(analyticMoveLineList)) {
-      saleOrderLine.clearAnalyticMoveLineList();
-    } else {
-      saleOrderLine.setAnalyticMoveLineList(analyticMoveLineList);
-    }
-
-    return saleOrderLine;
-  }
-
-  protected void clearAnalyticInLine(SaleOrderLine saleOrderLine) {
-    saleOrderLine.setAxis1AnalyticAccount(null);
-    saleOrderLine.setAxis2AnalyticAccount(null);
-    saleOrderLine.setAxis3AnalyticAccount(null);
-    saleOrderLine.setAxis4AnalyticAccount(null);
-    saleOrderLine.setAxis5AnalyticAccount(null);
-  }
-
-  @Override
-  public SaleOrderLine analyzeSaleOrderLine(SaleOrderLine saleOrderLine, Company company)
-      throws AxelorException {
-    if (saleOrderLine == null) {
-      return null;
-    }
-
-    if (saleOrderLine.getAnalyticMoveLineList() == null) {
-      saleOrderLine.setAnalyticMoveLineList(new ArrayList<>());
-    } else {
-      saleOrderLine.getAnalyticMoveLineList().clear();
-    }
-
-    for (AnalyticAccount axisAnalyticAccount : this.getAxisAnalyticAccountList(saleOrderLine)) {
-      AnalyticMoveLine analyticMoveLine =
-          this.computeAnalyticMoveLine(saleOrderLine, company, axisAnalyticAccount);
-
-      saleOrderLine.addAnalyticMoveLineListItem(analyticMoveLine);
-    }
-
-    return saleOrderLine;
-  }
-
-  protected List<AnalyticAccount> getAxisAnalyticAccountList(SaleOrderLine saleOrderLine) {
-    return Stream.of(
-            saleOrderLine.getAxis1AnalyticAccount(),
-            saleOrderLine.getAxis2AnalyticAccount(),
-            saleOrderLine.getAxis3AnalyticAccount(),
-            saleOrderLine.getAxis4AnalyticAccount(),
-            saleOrderLine.getAxis5AnalyticAccount())
-        .filter(Objects::nonNull)
-        .collect(Collectors.toList());
-  }
-
-  protected AnalyticMoveLine computeAnalyticMoveLine(
-      SaleOrderLine saleOrderLine, Company company, AnalyticAccount analyticAccount)
-      throws AxelorException {
-    AnalyticMoveLine analyticMoveLine =
-        analyticMoveLineService.computeAnalytic(company, analyticAccount);
-
-    analyticMoveLine.setDate(appBaseService.getTodayDate(company));
-    analyticMoveLine.setAmount(saleOrderLine.getExTaxTotal());
-    analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_FORECAST_ORDER);
-
-    return analyticMoveLine;
-  }
-
-  @Override
-  public SaleOrderLine printAnalyticAccount(SaleOrderLine saleOrderLine, Company company)
-      throws AxelorException {
-    if (CollectionUtils.isEmpty(saleOrderLine.getAnalyticMoveLineList()) || company == null) {
-      return saleOrderLine;
-    }
-
-    List<AnalyticMoveLine> analyticMoveLineList;
-
-    for (AnalyticAxisByCompany analyticAxisByCompany :
-        accountConfigService.getAccountConfig(company).getAnalyticAxisByCompanyList()) {
-      analyticMoveLineList =
-          saleOrderLine.getAnalyticMoveLineList().stream()
-              .filter(it -> it.getAnalyticAxis().equals(analyticAxisByCompany.getAnalyticAxis()))
-              .filter(it -> it.getPercentage().compareTo(new BigDecimal(100)) == 0)
-              .collect(Collectors.toList());
-
-      if (analyticMoveLineList.size() == 1) {
-        AnalyticMoveLine analyticMoveLine = analyticMoveLineList.get(0);
-        this.setAxisAccount(saleOrderLine, analyticAxisByCompany, analyticMoveLine);
-      }
-    }
-
-    return saleOrderLine;
-  }
-
-  protected void setAxisAccount(
-      SaleOrderLine saleOrderLine,
-      AnalyticAxisByCompany analyticAxisByCompany,
-      AnalyticMoveLine analyticMoveLine) {
-    AnalyticAccount analyticAccount = analyticMoveLine.getAnalyticAccount();
-
-    switch (analyticAxisByCompany.getSequence()) {
-      case 0:
-        saleOrderLine.setAxis1AnalyticAccount(analyticAccount);
-        break;
-      case 1:
-        saleOrderLine.setAxis2AnalyticAccount(analyticAccount);
-        break;
-      case 2:
-        saleOrderLine.setAxis3AnalyticAccount(analyticAccount);
-        break;
-      case 3:
-        saleOrderLine.setAxis4AnalyticAccount(analyticAccount);
-        break;
-      case 4:
-        saleOrderLine.setAxis5AnalyticAccount(analyticAccount);
-        break;
-      default:
-        break;
-    }
   }
 
   @Override

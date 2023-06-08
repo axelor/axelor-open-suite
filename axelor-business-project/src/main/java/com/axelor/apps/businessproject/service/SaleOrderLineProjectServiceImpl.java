@@ -102,18 +102,6 @@ public class SaleOrderLineProjectServiceImpl extends SaleOrderLineServiceSupplyC
   }
 
   @Override
-  public SaleOrderLine createAnalyticDistributionWithTemplate(SaleOrderLine saleOrderLine) {
-
-    SaleOrderLine soLine = super.createAnalyticDistributionWithTemplate(saleOrderLine);
-    List<AnalyticMoveLine> analyticMoveLineList = soLine.getAnalyticMoveLineList();
-
-    if (soLine.getProject() != null && analyticMoveLineList != null) {
-      analyticMoveLineList.forEach(analyticLine -> analyticLine.setProject(soLine.getProject()));
-    }
-    return soLine;
-  }
-
-  @Override
   public SaleOrderLine updateAnalyticDistributionWithProject(SaleOrderLine saleOrderLine) {
     for (AnalyticMoveLine analyticMoveLine : saleOrderLine.getAnalyticMoveLineList()) {
       analyticMoveLine.setProject(saleOrderLine.getProject());

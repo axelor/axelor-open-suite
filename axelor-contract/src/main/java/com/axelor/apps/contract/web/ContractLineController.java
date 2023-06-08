@@ -21,16 +21,16 @@ package com.axelor.apps.contract.web;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
-import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
+import com.axelor.apps.contract.model.AnalyticLineContractModel;
 import com.axelor.apps.contract.service.ContractLineService;
+import com.axelor.apps.supplychain.service.AnalyticLineModelSerivce;
 import com.axelor.common.ObjectUtils;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.rpc.Context;
 import com.axelor.utils.ContextTool;
 import com.google.inject.Singleton;
 import java.util.List;
@@ -56,20 +56,13 @@ public class ContractLineController {
   public void createAnalyticDistributionWithTemplate(
       ActionRequest request, ActionResponse response) {
     ContractLine contractLine = request.getContext().asType(ContractLine.class);
-    Context parentContext = request.getContext().getParent();
-    Contract contract = null;
+    AnalyticLineContractModel analyticLineContractModel =
+        new AnalyticLineContractModel(contractLine);
 
-    if (parentContext.get("_model").equals(Contract.class.getCanonicalName())) {
-      contract = parentContext.asType(Contract.class);
-    } else if (parentContext.getParent() != null
-        && parentContext.getParent().get("_model").equals(Contract.class.getCanonicalName())) {
-      contract = parentContext.getParent().asType(Contract.class);
-    }
+    Beans.get(AnalyticLineModelSerivce.class)
+        .createAnalyticDistributionWithTemplate(analyticLineContractModel);
 
-    contractLine =
-        Beans.get(ContractLineService.class)
-            .createAnalyticDistributionWithTemplate(contractLine, contract);
-    response.setValue("analyticMoveLineList", contractLine.getAnalyticMoveLineList());
+    response.setValue("analyticMoveLineList", analyticLineContractModel.getAnalyticMoveLineList());
   }
 
   public void setAxisDomains(ActionRequest request, ActionResponse response) {
@@ -124,14 +117,13 @@ public class ContractLineController {
       }
 
       ContractLine contractLine = request.getContext().asType(ContractLine.class);
+      AnalyticLineContractModel analyticLineContractModel =
+          new AnalyticLineContractModel(contractLine);
 
-      if (Beans.get(MoveLineComputeAnalyticService.class)
-          .checkManageAnalytic(contract.getCompany())) {
-        contractLine =
-            Beans.get(ContractLineService.class)
-                .analyzeContractLine(contractLine, contract, contract.getCompany());
-
-        response.setValue("analyticMoveLineList", contractLine.getAnalyticMoveLineList());
+      if (Beans.get(AnalyticLineModelSerivce.class)
+          .analyzeAnalyticLineModel(analyticLineContractModel, contract.getCompany())) {
+        response.setValue(
+            "analyticMoveLineList", analyticLineContractModel.getAnalyticMoveLineList());
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -163,14 +155,22 @@ public class ContractLineController {
       }
 
       ContractLine contractLine = request.getContext().asType(ContractLine.class);
-      Beans.get(ContractLineService.class)
-          .printAnalyticAccount(contractLine, contract.getCompany());
+      AnalyticLineContractModel analyticLineContractModel =
+          new AnalyticLineContractModel(contractLine);
 
-      response.setValue("axis1AnalyticAccount", contractLine.getAxis1AnalyticAccount());
-      response.setValue("axis2AnalyticAccount", contractLine.getAxis2AnalyticAccount());
-      response.setValue("axis3AnalyticAccount", contractLine.getAxis3AnalyticAccount());
-      response.setValue("axis4AnalyticAccount", contractLine.getAxis4AnalyticAccount());
-      response.setValue("axis5AnalyticAccount", contractLine.getAxis5AnalyticAccount());
+      Beans.get(AnalyticLineService.class)
+          .printAnalyticAccount(analyticLineContractModel, contract.getCompany());
+
+      response.setValue(
+          "axis1AnalyticAccount", analyticLineContractModel.getAxis1AnalyticAccount());
+      response.setValue(
+          "axis2AnalyticAccount", analyticLineContractModel.getAxis2AnalyticAccount());
+      response.setValue(
+          "axis3AnalyticAccount", analyticLineContractModel.getAxis3AnalyticAccount());
+      response.setValue(
+          "axis4AnalyticAccount", analyticLineContractModel.getAxis4AnalyticAccount());
+      response.setValue(
+          "axis5AnalyticAccount", analyticLineContractModel.getAxis5AnalyticAccount());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

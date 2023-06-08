@@ -18,8 +18,6 @@
  */
 package com.axelor.apps.businessproject.service;
 
-import com.axelor.apps.account.db.AnalyticAccount;
-import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.repo.AccountAnalyticRulesRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
@@ -27,19 +25,13 @@ import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
-import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
-import com.axelor.apps.contract.db.Contract;
-import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.service.ContractLineServiceImpl;
-import com.axelor.apps.project.db.Project;
 import com.axelor.utils.service.ListToolService;
 import com.google.inject.Inject;
-import java.util.List;
 
 public class ContractLineServiceProjectImpl extends ContractLineServiceImpl {
 
@@ -70,37 +62,5 @@ public class ContractLineServiceProjectImpl extends ContractLineServiceImpl {
         moveLineComputeAnalyticService,
         analyticAccountRepo,
         accountAnalyticRulesRepo);
-  }
-
-  @Override
-  public ContractLine createAnalyticDistributionWithTemplate(
-      ContractLine contractLine, Contract contract) {
-    contractLine = super.createAnalyticDistributionWithTemplate(contractLine, contract);
-
-    Project project = contract.getProject();
-
-    if (project != null) {
-      List<AnalyticMoveLine> analyticMoveLineList = contractLine.getAnalyticMoveLineList();
-
-      analyticMoveLineList.forEach(analyticMoveLine -> analyticMoveLine.setProject(project));
-      contractLine.setAnalyticMoveLineList(analyticMoveLineList);
-    }
-    return contractLine;
-  }
-
-  protected AnalyticMoveLine computeAnalyticMoveLine(
-      ContractLine contractLine,
-      Contract contract,
-      Company company,
-      AnalyticAccount analyticAccount)
-      throws AxelorException {
-    AnalyticMoveLine analyticMoveLine =
-        super.computeAnalyticMoveLine(contractLine, contract, company, analyticAccount);
-
-    if (contract.getProject() != null) {
-      analyticMoveLine.setProject(contract.getProject());
-    }
-
-    return analyticMoveLine;
   }
 }

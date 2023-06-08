@@ -19,7 +19,6 @@
 package com.axelor.apps.contract.service;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
@@ -73,17 +72,4 @@ public interface ContractLineService {
    * @return ContractLine with ex/in tax total computed.
    */
   ContractLine computeTotal(ContractLine contractLine);
-
-  /**
-   * Create analytic move lines using analytic distribution template
-   *
-   * @param contractLine
-   * @return ContractLine filled with analytic move lines
-   */
-  ContractLine createAnalyticDistributionWithTemplate(ContractLine contractLine, Contract contract);
-
-  ContractLine analyzeContractLine(ContractLine contractLine, Contract contract, Company company)
-      throws AxelorException;
-
-  ContractLine printAnalyticAccount(ContractLine line, Company company) throws AxelorException;
 }

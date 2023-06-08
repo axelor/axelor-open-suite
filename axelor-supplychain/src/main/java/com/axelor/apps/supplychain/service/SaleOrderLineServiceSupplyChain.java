@@ -19,7 +19,6 @@
 package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import java.math.BigDecimal;
@@ -86,12 +85,6 @@ public interface SaleOrderLineServiceSupplyChain extends SaleOrderLineService {
    */
   public SaleOrderLine computeAnalyticDistribution(SaleOrderLine saleOrderLine);
 
-  SaleOrderLine analyzeSaleOrderLine(SaleOrderLine saleOrderLine, Company company)
-      throws AxelorException;
-
-  SaleOrderLine printAnalyticAccount(SaleOrderLine saleOrderLine, Company company)
-      throws AxelorException;
-
   /**
    * Update stock move lines linked to this sale order line by using estimated delivery date as date
    * used for reservation. Do nothing if the configuration is not set to use estimated delivery
@@ -100,8 +93,6 @@ public interface SaleOrderLineServiceSupplyChain extends SaleOrderLineService {
    * @param saleOrderLine a sale order line managed by hibernate
    */
   void updateStockMoveReservationDateTime(SaleOrderLine saleOrderLine) throws AxelorException;
-
-  public SaleOrderLine createAnalyticDistributionWithTemplate(SaleOrderLine saleOrderLine);
 
   int getSaleOrderLineInvoicingState(SaleOrderLine saleOrderLine);
 }

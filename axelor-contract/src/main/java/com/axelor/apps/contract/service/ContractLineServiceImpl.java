@@ -18,13 +18,9 @@
  */
 package com.axelor.apps.contract.service;
 
-import com.axelor.apps.account.db.AnalyticAccount;
-import com.axelor.apps.account.db.AnalyticAxisByCompany;
-import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AccountAnalyticRulesRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
-import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -43,18 +39,11 @@ import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.exception.ContractExceptionMessage;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.axelor.utils.service.ListToolService;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import org.apache.commons.collections.CollectionUtils;
 
 public class ContractLineServiceImpl implements ContractLineService {
   protected AppBaseService appBaseService;
@@ -200,133 +189,5 @@ public class ContractLineServiceImpl implements ContractLineService {
     contractLine.setInTaxTotal(inTaxTotal);
 
     return contractLine;
-  }
-
-  @Override
-  public ContractLine createAnalyticDistributionWithTemplate(
-      ContractLine contractLine, Contract contract) {
-    this.clearAnalyticInLine(contractLine);
-
-    List<AnalyticMoveLine> analyticMoveLineList =
-        Beans.get(AnalyticMoveLineService.class)
-            .generateLines(
-                contractLine.getAnalyticDistributionTemplate(),
-                contractLine.getExTaxTotal(),
-                AnalyticMoveLineRepository.STATUS_FORECAST_CONTRACT,
-                appAccountService.getTodayDate(contract.getCompany()));
-
-    contractLine.setAnalyticMoveLineList(analyticMoveLineList);
-    return contractLine;
-  }
-
-  protected void clearAnalyticInLine(ContractLine contractLine) {
-    contractLine.setAxis1AnalyticAccount(null);
-    contractLine.setAxis2AnalyticAccount(null);
-    contractLine.setAxis3AnalyticAccount(null);
-    contractLine.setAxis4AnalyticAccount(null);
-    contractLine.setAxis5AnalyticAccount(null);
-  }
-
-  @Override
-  public ContractLine analyzeContractLine(
-      ContractLine contractLine, Contract contract, Company company) throws AxelorException {
-    if (contractLine == null) {
-      return null;
-    }
-
-    if (contractLine.getAnalyticMoveLineList() == null) {
-      contractLine.setAnalyticMoveLineList(new ArrayList<>());
-    } else {
-      contractLine.getAnalyticMoveLineList().clear();
-    }
-
-    for (AnalyticAccount axisAnalyticAccount : this.getAxisAnalyticAccountList(contractLine)) {
-      AnalyticMoveLine analyticMoveLine =
-          this.computeAnalyticMoveLine(contractLine, contract, company, axisAnalyticAccount);
-
-      contractLine.addAnalyticMoveLineListItem(analyticMoveLine);
-    }
-
-    return contractLine;
-  }
-
-  protected List<AnalyticAccount> getAxisAnalyticAccountList(ContractLine contractLine) {
-    return Stream.of(
-            contractLine.getAxis1AnalyticAccount(),
-            contractLine.getAxis2AnalyticAccount(),
-            contractLine.getAxis3AnalyticAccount(),
-            contractLine.getAxis4AnalyticAccount(),
-            contractLine.getAxis5AnalyticAccount())
-        .filter(Objects::nonNull)
-        .collect(Collectors.toList());
-  }
-
-  protected AnalyticMoveLine computeAnalyticMoveLine(
-      ContractLine contractLine,
-      Contract contract,
-      Company company,
-      AnalyticAccount analyticAccount)
-      throws AxelorException {
-    AnalyticMoveLine analyticMoveLine =
-        analyticMoveLineService.computeAnalytic(company, analyticAccount);
-
-    analyticMoveLine.setDate(appAccountService.getTodayDate(company));
-    analyticMoveLine.setAmount(contractLine.getExTaxTotal());
-    analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_FORECAST_CONTRACT);
-
-    return analyticMoveLine;
-  }
-
-  @Override
-  public ContractLine printAnalyticAccount(ContractLine contractLine, Company company)
-      throws AxelorException {
-    if (CollectionUtils.isEmpty(contractLine.getAnalyticMoveLineList()) || company == null) {
-      return contractLine;
-    }
-
-    List<AnalyticMoveLine> analyticMoveLineList;
-
-    for (AnalyticAxisByCompany analyticAxisByCompany :
-        accountConfigService.getAccountConfig(company).getAnalyticAxisByCompanyList()) {
-      analyticMoveLineList =
-          contractLine.getAnalyticMoveLineList().stream()
-              .filter(it -> it.getAnalyticAxis().equals(analyticAxisByCompany.getAnalyticAxis()))
-              .filter(it -> it.getPercentage().compareTo(new BigDecimal(100)) == 0)
-              .collect(Collectors.toList());
-
-      if (analyticMoveLineList.size() == 1) {
-        AnalyticMoveLine analyticMoveLine = analyticMoveLineList.get(0);
-        this.setAxisAccount(contractLine, analyticAxisByCompany, analyticMoveLine);
-      }
-    }
-
-    return contractLine;
-  }
-
-  protected void setAxisAccount(
-      ContractLine contractLine,
-      AnalyticAxisByCompany analyticAxisByCompany,
-      AnalyticMoveLine analyticMoveLine) {
-    AnalyticAccount analyticAccount = analyticMoveLine.getAnalyticAccount();
-
-    switch (analyticAxisByCompany.getSequence()) {
-      case 0:
-        contractLine.setAxis1AnalyticAccount(analyticAccount);
-        break;
-      case 1:
-        contractLine.setAxis2AnalyticAccount(analyticAccount);
-        break;
-      case 2:
-        contractLine.setAxis3AnalyticAccount(analyticAccount);
-        break;
-      case 3:
-        contractLine.setAxis4AnalyticAccount(analyticAccount);
-        break;
-      case 4:
-        contractLine.setAxis5AnalyticAccount(analyticAccount);
-        break;
-      default:
-        break;
-    }
   }
 }

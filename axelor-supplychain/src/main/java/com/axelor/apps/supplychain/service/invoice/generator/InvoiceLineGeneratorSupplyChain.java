@@ -44,7 +44,6 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
-import com.axelor.common.ObjectUtils;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
@@ -209,7 +208,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 
         case SaleOrderLineRepository.TYPE_NORMAL:
           if (saleOrderLine.getAnalyticDistributionTemplate() != null
-              || !ObjectUtils.isEmpty(saleOrderLine.getAnalyticMoveLineList())) {
+              || CollectionUtils.isNotEmpty(saleOrderLine.getAnalyticMoveLineList())) {
             invoiceLine.setAnalyticDistributionTemplate(
                 saleOrderLine.getAnalyticDistributionTemplate());
 
@@ -220,8 +219,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
             invoiceLine.setAxis5AnalyticAccount(saleOrderLine.getAxis5AnalyticAccount());
 
             this.copyAnalyticMoveLines(saleOrderLine.getAnalyticMoveLineList(), invoiceLine);
-            analyticMoveLineList =
-                invoiceLineAnalyticService.computeAnalyticDistribution(invoiceLine);
+            invoiceLineAnalyticService.computeAnalyticDistribution(invoiceLine);
           } else {
             analyticMoveLineList =
                 invoiceLineAnalyticService.getAndComputeAnalyticDistribution(invoiceLine, invoice);
@@ -238,7 +236,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
         return invoiceLine;
       } else {
         if (purchaseOrderLine.getAnalyticDistributionTemplate() != null
-            || !ObjectUtils.isEmpty(purchaseOrderLine.getAnalyticMoveLineList())) {
+            || CollectionUtils.isNotEmpty(purchaseOrderLine.getAnalyticMoveLineList())) {
           invoiceLine.setAnalyticDistributionTemplate(
               purchaseOrderLine.getAnalyticDistributionTemplate());
 
@@ -249,8 +247,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
           invoiceLine.setAxis5AnalyticAccount(purchaseOrderLine.getAxis5AnalyticAccount());
 
           this.copyAnalyticMoveLines(purchaseOrderLine.getAnalyticMoveLineList(), invoiceLine);
-          analyticMoveLineList =
-              invoiceLineAnalyticService.computeAnalyticDistribution(invoiceLine);
+          invoiceLineAnalyticService.computeAnalyticDistribution(invoiceLine);
         } else {
           analyticMoveLineList =
               invoiceLineAnalyticService.getAndComputeAnalyticDistribution(invoiceLine, invoice);

@@ -22,12 +22,12 @@ import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.app.AppAccountService;
-import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import com.axelor.apps.supplychain.model.AnalyticLineModel;
+import com.axelor.apps.supplychain.service.AnalyticLineModelSerivce;
 import com.axelor.apps.supplychain.service.PurchaseOrderLineBudgetService;
-import com.axelor.apps.supplychain.service.PurchaseOrderLineServiceSupplyChain;
 import com.axelor.apps.supplychain.service.PurchaseOrderLineServiceSupplychainImpl;
 import com.axelor.common.ObjectUtils;
 import com.axelor.inject.Beans;
@@ -57,11 +57,12 @@ public class PurchaseOrderLineController {
   public void createAnalyticDistributionWithTemplate(
       ActionRequest request, ActionResponse response) {
     PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
+    AnalyticLineModel analyticLineModel = new AnalyticLineModel(purchaseOrderLine);
 
-    purchaseOrderLine =
-        Beans.get(PurchaseOrderLineServiceSupplyChain.class)
-            .createAnalyticDistributionWithTemplate(purchaseOrderLine);
-    response.setValue("analyticMoveLineList", purchaseOrderLine.getAnalyticMoveLineList());
+    Beans.get(AnalyticLineModelSerivce.class)
+        .createAnalyticDistributionWithTemplate(analyticLineModel);
+
+    response.setValue("analyticMoveLineList", analyticLineModel.getAnalyticMoveLineList());
   }
 
   public void computeBudgetDistributionSumAmount(ActionRequest request, ActionResponse response) {
@@ -130,13 +131,11 @@ public class PurchaseOrderLineController {
       }
 
       PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
+      AnalyticLineModel analyticLineModel = new AnalyticLineModel(purchaseOrderLine);
 
-      if (Beans.get(MoveLineComputeAnalyticService.class)
-          .checkManageAnalytic(purchaseOrder.getCompany())) {
-        purchaseOrderLine =
-            Beans.get(PurchaseOrderLineServiceSupplyChain.class)
-                .analyzePurchaseOrderLine(purchaseOrderLine, purchaseOrder.getCompany());
-        response.setValue("analyticMoveLineList", purchaseOrderLine.getAnalyticMoveLineList());
+      if (Beans.get(AnalyticLineModelSerivce.class)
+          .analyzeAnalyticLineModel(analyticLineModel, purchaseOrder.getCompany())) {
+        response.setValue("analyticMoveLineList", analyticLineModel.getAnalyticMoveLineList());
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -171,14 +170,16 @@ public class PurchaseOrderLineController {
       }
 
       PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
-      Beans.get(PurchaseOrderLineServiceSupplyChain.class)
-          .printAnalyticAccount(purchaseOrderLine, purchaseOrder.getCompany());
+      AnalyticLineModel analyticLineModel = new AnalyticLineModel(purchaseOrderLine);
 
-      response.setValue("axis1AnalyticAccount", purchaseOrderLine.getAxis1AnalyticAccount());
-      response.setValue("axis2AnalyticAccount", purchaseOrderLine.getAxis2AnalyticAccount());
-      response.setValue("axis3AnalyticAccount", purchaseOrderLine.getAxis3AnalyticAccount());
-      response.setValue("axis4AnalyticAccount", purchaseOrderLine.getAxis4AnalyticAccount());
-      response.setValue("axis5AnalyticAccount", purchaseOrderLine.getAxis5AnalyticAccount());
+      Beans.get(AnalyticLineService.class)
+          .printAnalyticAccount(analyticLineModel, purchaseOrder.getCompany());
+
+      response.setValue("axis1AnalyticAccount", analyticLineModel.getAxis1AnalyticAccount());
+      response.setValue("axis2AnalyticAccount", analyticLineModel.getAxis2AnalyticAccount());
+      response.setValue("axis3AnalyticAccount", analyticLineModel.getAxis3AnalyticAccount());
+      response.setValue("axis4AnalyticAccount", analyticLineModel.getAxis4AnalyticAccount());
+      response.setValue("axis5AnalyticAccount", analyticLineModel.getAxis5AnalyticAccount());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
