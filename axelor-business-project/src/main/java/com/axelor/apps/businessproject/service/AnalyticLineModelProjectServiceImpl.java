@@ -3,6 +3,8 @@ package com.axelor.apps.businessproject.service;
 import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
+import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
@@ -17,9 +19,16 @@ public class AnalyticLineModelProjectServiceImpl extends AnalyticLineModelServic
   @Inject
   public AnalyticLineModelProjectServiceImpl(
       AppBaseService appBaseService,
+      AppAccountService appAccountService,
+      AccountConfigService accountConfigService,
       AnalyticMoveLineService analyticMoveLineService,
       MoveLineComputeAnalyticService moveLineComputeAnalyticService) {
-    super(appBaseService, analyticMoveLineService, moveLineComputeAnalyticService);
+    super(
+        appBaseService,
+        appAccountService,
+        accountConfigService,
+        analyticMoveLineService,
+        moveLineComputeAnalyticService);
   }
 
   @Override

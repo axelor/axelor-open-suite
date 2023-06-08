@@ -28,7 +28,6 @@ import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.apps.supplychain.service.AnalyticLineModelSerivce;
 import com.axelor.apps.supplychain.service.PurchaseOrderLineBudgetService;
-import com.axelor.apps.supplychain.service.PurchaseOrderLineServiceSupplychainImpl;
 import com.axelor.common.ObjectUtils;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -47,10 +46,11 @@ public class PurchaseOrderLineController {
     PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
 
     if (Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()) {
-      purchaseOrderLine =
-          Beans.get(PurchaseOrderLineServiceSupplychainImpl.class)
-              .computeAnalyticDistribution(purchaseOrderLine);
-      response.setValue("analyticMoveLineList", purchaseOrderLine.getAnalyticMoveLineList());
+      AnalyticLineModel analyticLineModel = new AnalyticLineModel(purchaseOrderLine);
+
+      Beans.get(AnalyticLineModelSerivce.class).computeAnalyticDistribution(analyticLineModel);
+
+      response.setValue("analyticMoveLineList", analyticLineModel.getAnalyticMoveLineList());
     }
   }
 

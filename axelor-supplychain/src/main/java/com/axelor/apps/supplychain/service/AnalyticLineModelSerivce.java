@@ -8,5 +8,10 @@ public interface AnalyticLineModelSerivce {
   boolean analyzeAnalyticLineModel(AnalyticLineModel analyticLineModel, Company company)
       throws AxelorException;
 
+  AnalyticLineModel getAndComputeAnalyticDistribution(AnalyticLineModel analyticLineModel)
+      throws AxelorException;
+
+  AnalyticLineModel computeAnalyticDistribution(AnalyticLineModel analyticLineModel);
+
   AnalyticLineModel createAnalyticDistributionWithTemplate(AnalyticLineModel analyticLineModel);
 }

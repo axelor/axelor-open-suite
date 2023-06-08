@@ -79,13 +79,6 @@ public interface SaleOrderLineServiceSupplyChain extends SaleOrderLineService {
   BigDecimal checkInvoicedOrDeliveredOrderQty(SaleOrderLine saleOrderLine);
 
   /**
-   * Compute analytic distribution for every analytic move line
-   *
-   * @param saleOrderLine
-   */
-  public SaleOrderLine computeAnalyticDistribution(SaleOrderLine saleOrderLine);
-
-  /**
    * Update stock move lines linked to this sale order line by using estimated delivery date as date
    * used for reservation. Do nothing if the configuration is not set to use estimated delivery
    * date.

@@ -1,10 +1,14 @@
 package com.axelor.apps.contract.model;
 
 import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
+import com.axelor.apps.contract.db.ContractVersion;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
+import java.util.Optional;
 
 public class AnalyticLineContractModel extends AnalyticLineModel {
   protected ContractLine contractLine;
@@ -19,6 +23,8 @@ public class AnalyticLineContractModel extends AnalyticLineModel {
 
   public AnalyticLineContractModel(ContractLine contractLine) {
     super();
+
+    this.contractLine = contractLine;
 
     this.analyticMoveLineList = contractLine.getAnalyticMoveLineList();
     this.axis1AnalyticAccount = contractLine.getAxis1AnalyticAccount();
@@ -37,5 +43,13 @@ public class AnalyticLineContractModel extends AnalyticLineModel {
     if (this.contractLine != null) {
       analyticMoveLine.setContractLine(this.contractLine);
     }
+  }
+
+  public Company getCompany() {
+    return Optional.ofNullable(this.contractLine)
+        .map(ContractLine::getContractVersion)
+        .map(ContractVersion::getContract)
+        .map(Contract::getCompany)
+        .orElse(super.getCompany());
   }
 }

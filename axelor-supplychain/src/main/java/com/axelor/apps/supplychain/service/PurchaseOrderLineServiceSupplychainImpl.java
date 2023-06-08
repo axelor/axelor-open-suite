@@ -18,9 +18,6 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import com.axelor.apps.account.db.AnalyticDistributionTemplate;
-import com.axelor.apps.account.db.AnalyticMoveLine;
-import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -32,12 +29,11 @@ import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.service.PurchaseOrderLineServiceImpl;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,6 +41,8 @@ public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineSe
     implements PurchaseOrderLineServiceSupplyChain {
 
   @Inject protected AnalyticMoveLineService analyticMoveLineService;
+
+  @Inject protected AnalyticLineModelSerivce analyticLineModelSerivce;
 
   @Inject protected UnitConversionService unitConversionService;
 
@@ -59,7 +57,8 @@ public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineSe
 
     purchaseOrderLine = super.fill(purchaseOrderLine, purchaseOrder);
 
-    this.getAndComputeAnalyticDistribution(purchaseOrderLine, purchaseOrder);
+    AnalyticLineModel analyticLineModel = new AnalyticLineModel(purchaseOrderLine);
+    analyticLineModelSerivce.getAndComputeAnalyticDistribution(analyticLineModel);
 
     return purchaseOrderLine;
   }
@@ -100,52 +99,10 @@ public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineSe
 
     purchaseOrderLine.setIsTitleLine(
         !(saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_NORMAL));
-    this.getAndComputeAnalyticDistribution(purchaseOrderLine, purchaseOrder);
-    return purchaseOrderLine;
-  }
 
-  public PurchaseOrderLine getAndComputeAnalyticDistribution(
-      PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder) throws AxelorException {
+    AnalyticLineModel analyticLineModel = new AnalyticLineModel(purchaseOrderLine);
+    analyticLineModelSerivce.getAndComputeAnalyticDistribution(analyticLineModel);
 
-    if (accountConfigService
-            .getAccountConfig(purchaseOrder.getCompany())
-            .getAnalyticDistributionTypeSelect()
-        == AccountConfigRepository.DISTRIBUTION_TYPE_FREE) {
-      return purchaseOrderLine;
-    }
-
-    AnalyticDistributionTemplate analyticDistributionTemplate =
-        analyticMoveLineService.getAnalyticDistributionTemplate(
-            purchaseOrder.getSupplierPartner(),
-            purchaseOrderLine.getProduct(),
-            purchaseOrder.getCompany(),
-            true);
-
-    purchaseOrderLine.setAnalyticDistributionTemplate(analyticDistributionTemplate);
-
-    if (purchaseOrderLine.getAnalyticMoveLineList() != null) {
-      purchaseOrderLine.getAnalyticMoveLineList().clear();
-    }
-
-    this.computeAnalyticDistribution(purchaseOrderLine);
-
-    return purchaseOrderLine;
-  }
-
-  public PurchaseOrderLine computeAnalyticDistribution(PurchaseOrderLine purchaseOrderLine) {
-
-    List<AnalyticMoveLine> analyticMoveLineList = purchaseOrderLine.getAnalyticMoveLineList();
-
-    if ((analyticMoveLineList == null || analyticMoveLineList.isEmpty())) {
-      createAnalyticDistributionWithTemplate(purchaseOrderLine);
-    } else {
-      LocalDate date =
-          appAccountService.getTodayDate(purchaseOrderLine.getPurchaseOrder().getCompany());
-      for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
-        analyticMoveLineService.updateAnalyticMoveLine(
-            analyticMoveLine, purchaseOrderLine.getCompanyExTaxTotal(), date);
-      }
-    }
     return purchaseOrderLine;
   }
 

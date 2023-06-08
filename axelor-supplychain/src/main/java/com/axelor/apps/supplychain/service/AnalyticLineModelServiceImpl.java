@@ -1,9 +1,14 @@
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AnalyticAccount;
+import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
+import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
@@ -12,24 +17,32 @@ import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.google.inject.Inject;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.apache.commons.collections.CollectionUtils;
 
 public class AnalyticLineModelServiceImpl implements AnalyticLineModelSerivce {
   protected AppBaseService appBaseService;
+  protected AppAccountService appAccountService;
+  protected AccountConfigService accountConfigService;
   protected AnalyticMoveLineService analyticMoveLineService;
   protected MoveLineComputeAnalyticService moveLineComputeAnalyticService;
 
   @Inject
   public AnalyticLineModelServiceImpl(
       AppBaseService appBaseService,
+      AppAccountService appAccountService,
+      AccountConfigService accountConfigService,
       AnalyticMoveLineService analyticMoveLineService,
       MoveLineComputeAnalyticService moveLineComputeAnalyticService) {
     this.appBaseService = appBaseService;
+    this.appAccountService = appAccountService;
+    this.accountConfigService = accountConfigService;
     this.analyticMoveLineService = analyticMoveLineService;
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
   }
@@ -79,6 +92,59 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelSerivce {
     analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_FORECAST_ORDER);
 
     return analyticMoveLine;
+  }
+
+  public AnalyticLineModel getAndComputeAnalyticDistribution(AnalyticLineModel analyticLineModel)
+      throws AxelorException {
+    AccountConfig accountConfig =
+        accountConfigService.getAccountConfig(analyticLineModel.getCompany());
+
+    if (!accountConfig.getManageAnalyticAccounting()
+        || accountConfig.getAnalyticDistributionTypeSelect()
+            == AccountConfigRepository.DISTRIBUTION_TYPE_FREE) {
+      return analyticLineModel;
+    }
+
+    AnalyticDistributionTemplate analyticDistributionTemplate =
+        analyticMoveLineService.getAnalyticDistributionTemplate(
+            analyticLineModel.getPartner(),
+            analyticLineModel.getProduct(),
+            analyticLineModel.getCompany(),
+            analyticLineModel.getIsPurchase());
+
+    analyticLineModel.setAnalyticDistributionTemplate(analyticDistributionTemplate);
+
+    if (analyticLineModel.getAnalyticMoveLineList() != null) {
+      analyticLineModel.getAnalyticMoveLineList().clear();
+    }
+
+    this.computeAnalyticDistribution(analyticLineModel);
+
+    analyticLineModel.copyToModel();
+
+    return analyticLineModel;
+  }
+
+  @Override
+  public AnalyticLineModel computeAnalyticDistribution(AnalyticLineModel analyticLineModel) {
+    List<AnalyticMoveLine> analyticMoveLineList = analyticLineModel.getAnalyticMoveLineList();
+
+    if (CollectionUtils.isEmpty(analyticMoveLineList)) {
+      this.createAnalyticDistributionWithTemplate(analyticLineModel);
+    }
+
+    if (analyticMoveLineList != null) {
+      LocalDate date = appAccountService.getTodayDate(this.getCompany(analyticLineModel));
+
+      for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
+        analyticMoveLineService.updateAnalyticMoveLine(
+            analyticMoveLine, analyticLineModel.getCompanyExTaxTotal(), date);
+      }
+    }
+
+    analyticLineModel.copyToModel();
+
+    return analyticLineModel;
   }
 
   @Override

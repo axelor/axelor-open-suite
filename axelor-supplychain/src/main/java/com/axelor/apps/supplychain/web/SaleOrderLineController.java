@@ -62,13 +62,15 @@ public class SaleOrderLineController {
 
   public void computeAnalyticDistribution(ActionRequest request, ActionResponse response) {
     SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+
     if (Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()) {
-      saleOrderLine =
-          Beans.get(SaleOrderLineServiceSupplyChain.class)
-              .computeAnalyticDistribution(saleOrderLine);
+      AnalyticLineModel analyticLineModel = new AnalyticLineModel(saleOrderLine);
+
+      Beans.get(AnalyticLineModelSerivce.class).computeAnalyticDistribution(analyticLineModel);
+
       response.setValue(
-          "analyticDistributionTemplate", saleOrderLine.getAnalyticDistributionTemplate());
-      response.setValue("analyticMoveLineList", saleOrderLine.getAnalyticMoveLineList());
+          "analyticDistributionTemplate", analyticLineModel.getAnalyticDistributionTemplate());
+      response.setValue("analyticMoveLineList", analyticLineModel.getAnalyticMoveLineList());
     }
   }
 
