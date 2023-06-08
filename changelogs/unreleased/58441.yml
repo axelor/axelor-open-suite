@@ -1,0 +1,3 @@
+---
+title: "INVOICE : InvoiceTerm - Fixed name computation when Invoice unsaved"
+type: fix
