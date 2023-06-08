@@ -29,7 +29,7 @@
   <action-group
     name="action-contract-analytic-move-line-group-analytic-move-line-distribution-on-new">
     <action
-      name="action-sypplychain-analytic-move-line-group-analytic-move-line-distribution-on-new"/>
+      name="action-supplychain-analytic-move-line-group-analytic-move-line-distribution-on-new"/>
     <action name="action-method-analytic-move-line-invoice-line-contract-onnew"/>
   </action-group>
 

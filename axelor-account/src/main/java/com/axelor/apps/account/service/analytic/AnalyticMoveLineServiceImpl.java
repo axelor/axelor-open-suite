@@ -38,6 +38,8 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -49,6 +51,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -230,13 +233,31 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
       throws AxelorException {
     AnalyticMoveLine analyticMoveLine = computeAnalytic(company, analyticAccount);
 
-    analyticMoveLine.setDate(invoice.getOriginDate());
+    analyticMoveLine.setDate(this.getAnalyticMoveLineDate(invoice));
     if (invoiceLine.getAccount() != null) {
       analyticMoveLine.setAccount(invoiceLine.getAccount());
       analyticMoveLine.setAccountType(invoiceLine.getAccount().getAccountType());
     }
     analyticMoveLine.setAmount(invoiceLine.getCompanyExTaxTotal());
     return analyticMoveLine;
+  }
+
+  protected LocalDate getAnalyticMoveLineDate(Invoice invoice) {
+    if (invoice.getOriginDate() != null) {
+      return invoice.getOriginDate();
+    } else if (invoice.getDueDate() != null) {
+      return invoice.getDueDate();
+    } else if (invoice.getInvoiceDate() != null) {
+      return invoice.getInvoiceDate();
+    } else {
+      Company company = invoice.getCompany();
+
+      if (company == null) {
+        company = Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null);
+      }
+
+      return appBaseService.getTodayDate(company);
+    }
   }
 
   public AnalyticMoveLine computeAnalytic(Company company, AnalyticAccount analyticAccount)
