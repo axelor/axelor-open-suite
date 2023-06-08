@@ -7,24 +7,35 @@
     model="com.axelor.apps.production.db.BillOfMaterialLine">
     <field name="priority" width="71"/>
     <field name="qty" aggregate="sum" x-scale="2"/>
+    <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
     <field name="product"
       domain="self.productSubTypeSelect = 1 OR self.productSubTypeSelect = 2"/>
     <field name="billOfMaterial"/>
-    <field name="productBillOfMaterial"/>
     <field name="hasNoManageStock"/>
   </grid>
 
   <form name="bill-of-material-line-form" title="Bill of materials"
     model="com.axelor.apps.production.db.BillOfMaterial" width="large">
     <panel name="mainPanel">
-      <field name="product" canEdit="false" onChange="action-bill-of-material-group-product"
-        domain="self.productSubTypeSelect = 1 OR self.productSubTypeSelect = 2"
+      <field name="product" canEdit="false"
+        onChange="action-method-bill-of-material-line-product-on-change"
+        domain="self.productSubTypeSelect = 2 OR self.productSubTypeSelect = 3"
         form-view="product-form" grid-view="product-grid"/>
-      <field name="billOfMaterial"/>
+      <field name="billOfMaterial" showIf="product.productSubTypeSelect == 2"
+        form-view="bill-of-material-form" grid-view="bill-of-material-grid"/>
       <field name="hasNoManageStock" colSpan="3" readonlyIf="product.stockManaged == false"/>
       <field name="qty" colSpan="3"/>
+      <field name="unit" form-view="unit-form" grid-view="unit-grid" colSpan="3"/>
+      <field name="product.productSubTypeSelect" hidden="true"/>
+      <field name="product.stockManaged" hidden="true"/>
     </panel>
   </form>
+
+  <action-method name="action-method-bill-of-material-line-product-on-change">
+    <call class="com.axelor.apps.production.web.BillOfMaterialLineController"
+      method="productOnChange"/>
+
+  </action-method>
 
 </object-views>
 

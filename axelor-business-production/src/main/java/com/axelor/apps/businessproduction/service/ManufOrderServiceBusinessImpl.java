@@ -31,6 +31,7 @@ import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.ProdProductRepository;
+import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.manuforder.ManufOrderServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowService;
@@ -65,7 +66,8 @@ public class ManufOrderServiceBusinessImpl extends ManufOrderServiceImpl {
       ProductCompanyService productCompanyService,
       BarcodeGeneratorService barcodeGeneratorService,
       ProductStockLocationService productStockLocationService,
-      MetaFiles metaFiles) {
+      MetaFiles metaFiles,
+      BillOfMaterialService billOfMaterialService) {
     super(
         sequenceService,
         operationOrderService,
@@ -78,7 +80,8 @@ public class ManufOrderServiceBusinessImpl extends ManufOrderServiceImpl {
         productCompanyService,
         barcodeGeneratorService,
         productStockLocationService,
-        metaFiles);
+        metaFiles,
+        billOfMaterialService);
     this.operationOrderServiceBusinessImpl = operationOrderServiceBusinessImpl;
   }
 

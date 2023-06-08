@@ -3,6 +3,7 @@ package com.axelor.apps.production.service;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.BillOfMaterialLine;
@@ -13,27 +14,28 @@ public class BillOfMaterialLineServiceImpl implements BillOfMaterialLineService 
 
   protected ProductRepository productRepository;
   protected BillOfMaterialService billOfMaterialService;
-  
 
   @Inject
-  public BillOfMaterialLineServiceImpl(ProductRepository productRepository,
-		  BillOfMaterialService billOfMaterialService) {
+  public BillOfMaterialLineServiceImpl(
+      ProductRepository productRepository, BillOfMaterialService billOfMaterialService) {
     this.productRepository = productRepository;
     this.billOfMaterialService = billOfMaterialService;
   }
 
   @Override
-  public BillOfMaterialLine createFromRawMaterial(long productId, int priority, Company company) throws AxelorException {
+  public BillOfMaterialLine createFromRawMaterial(
+      long productId, int priority, BillOfMaterial billOfMaterial) throws AxelorException {
     Product product = productRepository.find(productId);
     BillOfMaterial bom = null;
     if (product != null
         && product
             .getProductSubTypeSelect()
-            .equals(ProductRepository.PRODUCT_SUB_TYPE_FINISHED_PRODUCT)) {
-      bom = billOfMaterialService.getBOM(product, company);
+            .equals(ProductRepository.PRODUCT_SUB_TYPE_SEMI_FINISHED_PRODUCT)) {
+      bom = billOfMaterialService.getBOM(product, billOfMaterial.getCompany());
     }
 
-    return newBillOfMaterial(product, bom, BigDecimal.ONE, priority, false);
+    return newBillOfMaterial(
+        product, bom, BigDecimal.ONE, billOfMaterial.getUnit(), priority, false);
   }
 
   @Override
@@ -41,6 +43,7 @@ public class BillOfMaterialLineServiceImpl implements BillOfMaterialLineService 
       Product product,
       BillOfMaterial billOfMaterial,
       BigDecimal qty,
+      Unit unit,
       Integer priority,
       boolean hasNoManageStock) {
 
@@ -53,5 +56,38 @@ public class BillOfMaterialLineServiceImpl implements BillOfMaterialLineService 
     billOfMaterial.setHasNoManageStock(hasNoManageStock);
 
     return billOfMaterialLine;
+  }
+
+  @Override
+  public BillOfMaterialLine createFromBillOfMaterial(BillOfMaterial billOfMaterial) {
+
+    Product product = billOfMaterial.getProduct();
+    BigDecimal qty = billOfMaterial.getQty();
+    boolean hasNoManageStock = billOfMaterial.getHasNoManageStock();
+
+    return newBillOfMaterial(
+        product, billOfMaterial, qty, billOfMaterial.getUnit(), null, hasNoManageStock);
+  }
+
+  @Override
+  public void fillBom(BillOfMaterialLine billOfMaterialLine, Company company)
+      throws AxelorException {
+
+    Product product = billOfMaterialLine.getProduct();
+    if (product != null
+        && product
+            .getProductSubTypeSelect()
+            .equals(ProductRepository.PRODUCT_SUB_TYPE_SEMI_FINISHED_PRODUCT)) {
+      billOfMaterialLine.setBillOfMaterial(billOfMaterialService.getBOM(product, company));
+    }
+  }
+
+  @Override
+  public void fillHasNoManageStock(BillOfMaterialLine billOfMaterialLine) {
+    Product product = billOfMaterialLine.getProduct();
+
+    if (product != null && !product.getStockManaged()) {
+      billOfMaterialLine.setHasNoManageStock(true);
+    }
   }
 }

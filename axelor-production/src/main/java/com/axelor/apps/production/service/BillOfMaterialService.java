@@ -50,7 +50,8 @@ public interface BillOfMaterialService {
       BillOfMaterial billOfMaterial, String name, String language, String format)
       throws AxelorException;
 
-  public TempBomTree generateTree(BillOfMaterial billOfMaterial, boolean useProductDefaultBom);
+  public TempBomTree generateTree(BillOfMaterial billOfMaterial, boolean useProductDefaultBom)
+      throws AxelorException;
 
   public void setBillOfMaterialAsDefault(BillOfMaterial billOfMaterial) throws AxelorException;
 
@@ -91,4 +92,8 @@ public interface BillOfMaterialService {
    * @throws AxelorException
    */
   List<Long> getBillOfMaterialProductsId(Set<Company> companySet) throws AxelorException;
+
+  int getPriority(BillOfMaterial billOfMaterial);
+
+  List<BillOfMaterial> getSubBillOfMaterial(BillOfMaterial billOfMaterial);
 }

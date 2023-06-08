@@ -170,19 +170,22 @@ public class BillOfMaterialController {
   }
 
   public void openBomTree(ActionRequest request, ActionResponse response) {
+    try {
+      BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
+      billOfMaterial = Beans.get(BillOfMaterialRepository.class).find(billOfMaterial.getId());
 
-    BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
-    billOfMaterial = Beans.get(BillOfMaterialRepository.class).find(billOfMaterial.getId());
+      TempBomTree tempBomTree =
+          Beans.get(BillOfMaterialService.class).generateTree(billOfMaterial, false);
 
-    TempBomTree tempBomTree =
-        Beans.get(BillOfMaterialService.class).generateTree(billOfMaterial, false);
-
-    response.setView(
-        ActionView.define(I18n.get("Bill of materials"))
-            .model(TempBomTree.class.getName())
-            .add("tree", "bill-of-material-tree")
-            .context("_tempBomTreeId", tempBomTree.getId())
-            .map());
+      response.setView(
+          ActionView.define(I18n.get("Bill of materials"))
+              .model(TempBomTree.class.getName())
+              .add("tree", "bill-of-material-tree")
+              .context("_tempBomTreeId", tempBomTree.getId())
+              .map());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void setBillOfMaterialAsDefault(ActionRequest request, ActionResponse response) {
