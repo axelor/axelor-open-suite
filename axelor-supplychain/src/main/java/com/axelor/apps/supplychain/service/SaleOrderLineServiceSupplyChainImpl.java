@@ -19,6 +19,7 @@
 package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
@@ -29,6 +30,7 @@ import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.CurrencyService;
@@ -79,6 +81,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.persistence.TypedQuery;
 
 public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImpl
@@ -197,6 +200,8 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
   }
 
   public SaleOrderLine createAnalyticDistributionWithTemplate(SaleOrderLine saleOrderLine) {
+    this.clearAnalyticInLine(saleOrderLine);
+
     List<AnalyticMoveLine> analyticMoveLineList =
         analyticMoveLineService.generateLines(
             saleOrderLine.getAnalyticDistributionTemplate(),
@@ -214,7 +219,63 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
     } else {
       saleOrderLine.setAnalyticMoveLineList(analyticMoveLineList);
     }
+
     return saleOrderLine;
+  }
+
+  protected void clearAnalyticInLine(SaleOrderLine saleOrderLine) {
+    saleOrderLine.setAxis1AnalyticAccount(null);
+    saleOrderLine.setAxis2AnalyticAccount(null);
+    saleOrderLine.setAxis3AnalyticAccount(null);
+    saleOrderLine.setAxis4AnalyticAccount(null);
+    saleOrderLine.setAxis5AnalyticAccount(null);
+  }
+
+  @Override
+  public SaleOrderLine analyzeSaleOrderLine(SaleOrderLine saleOrderLine, Company company)
+      throws AxelorException {
+    if (saleOrderLine == null) {
+      return null;
+    }
+
+    if (saleOrderLine.getAnalyticMoveLineList() == null) {
+      saleOrderLine.setAnalyticMoveLineList(new ArrayList<>());
+    } else {
+      saleOrderLine.getAnalyticMoveLineList().clear();
+    }
+
+    for (AnalyticAccount axisAnalyticAccount : this.getAxisAnalyticAccountList(saleOrderLine)) {
+      AnalyticMoveLine analyticMoveLine =
+          this.computeAnalyticMoveLine(saleOrderLine, company, axisAnalyticAccount);
+
+      saleOrderLine.addAnalyticMoveLineListItem(analyticMoveLine);
+    }
+
+    return saleOrderLine;
+  }
+
+  protected List<AnalyticAccount> getAxisAnalyticAccountList(SaleOrderLine saleOrderLine) {
+    return Stream.of(
+            saleOrderLine.getAxis1AnalyticAccount(),
+            saleOrderLine.getAxis2AnalyticAccount(),
+            saleOrderLine.getAxis3AnalyticAccount(),
+            saleOrderLine.getAxis4AnalyticAccount(),
+            saleOrderLine.getAxis5AnalyticAccount())
+        .filter(Objects::nonNull)
+        .collect(Collectors.toList());
+  }
+
+  protected AnalyticMoveLine computeAnalyticMoveLine(
+      SaleOrderLine saleOrderLine, Company company, AnalyticAccount analyticAccount)
+      throws AxelorException {
+    AnalyticMoveLine analyticMoveLine =
+        analyticMoveLineService.computeAnalytic(company, analyticAccount);
+
+    analyticMoveLine.setDate(appBaseService.getTodayDate(company));
+    analyticMoveLine.setAmount(saleOrderLine.getExTaxTotal());
+    analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_FORECAST_ORDER);
+
+    return analyticMoveLine;
   }
 
   @Override

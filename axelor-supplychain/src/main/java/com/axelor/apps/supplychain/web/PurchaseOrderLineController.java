@@ -80,7 +80,7 @@ public class PurchaseOrderLineController {
   public void setAxisDomains(ActionRequest request, ActionResponse response) {
     try {
       PurchaseOrder purchaseOrder =
-          ContextTool.getContextParent(request.getContext(), PurchaseOrder.class, 2);
+          ContextTool.getContextParent(request.getContext(), PurchaseOrder.class, 1);
 
       if (purchaseOrder == null) {
         return;
@@ -126,7 +126,7 @@ public class PurchaseOrderLineController {
   public void createAnalyticAccountLines(ActionRequest request, ActionResponse response) {
     try {
       PurchaseOrder purchaseOrder =
-          ContextTool.getContextParent(request.getContext(), PurchaseOrder.class, 2);
+          ContextTool.getContextParent(request.getContext(), PurchaseOrder.class, 1);
 
       if (purchaseOrder == null) {
         return;
@@ -149,7 +149,7 @@ public class PurchaseOrderLineController {
   public void manageAxis(ActionRequest request, ActionResponse response) {
     try {
       PurchaseOrder purchaseOrder =
-          ContextTool.getContextParent(request.getContext(), PurchaseOrder.class, 2);
+          ContextTool.getContextParent(request.getContext(), PurchaseOrder.class, 1);
 
       if (purchaseOrder == null || purchaseOrder.getCompany() == null) {
         return;
@@ -167,7 +167,7 @@ public class PurchaseOrderLineController {
   public void printAnalyticAccounts(ActionRequest request, ActionResponse response) {
     try {
       PurchaseOrder purchaseOrder =
-          ContextTool.getContextParent(request.getContext(), PurchaseOrder.class, 2);
+          ContextTool.getContextParent(request.getContext(), PurchaseOrder.class, 1);
 
       if (purchaseOrder == null || purchaseOrder.getCompany() == null) {
         return;

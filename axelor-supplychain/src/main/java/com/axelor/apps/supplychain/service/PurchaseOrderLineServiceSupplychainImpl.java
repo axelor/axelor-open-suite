@@ -182,7 +182,7 @@ public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineSe
     return purchaseOrderLine;
   }
 
-  public void clearAnalyticInLine(PurchaseOrderLine purchaseOrderLine) {
+  protected void clearAnalyticInLine(PurchaseOrderLine purchaseOrderLine) {
     purchaseOrderLine.setAxis1AnalyticAccount(null);
     purchaseOrderLine.setAxis2AnalyticAccount(null);
     purchaseOrderLine.setAxis3AnalyticAccount(null);

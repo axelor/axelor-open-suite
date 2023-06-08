@@ -19,6 +19,7 @@
 package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import java.math.BigDecimal;
@@ -84,6 +85,9 @@ public interface SaleOrderLineServiceSupplyChain extends SaleOrderLineService {
    * @param saleOrderLine
    */
   public SaleOrderLine computeAnalyticDistribution(SaleOrderLine saleOrderLine);
+
+  SaleOrderLine analyzeSaleOrderLine(SaleOrderLine saleOrderLine, Company company)
+      throws AxelorException;
 
   /**
    * Update stock move lines linked to this sale order line by using estimated delivery date as date
