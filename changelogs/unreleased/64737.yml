@@ -1,0 +1,3 @@
+---
+title : "Move/ MoveLine : Fix domain when we select analytic distribution template in move line or payment mode/partner bank details/trading name in move"
+type: fix

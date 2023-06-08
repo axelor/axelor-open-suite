@@ -1,0 +1,3 @@
+---
+title: "FIXED ASSET: corrected npe error on disposal if account config customer sales jounral is empty."
+type: fix
