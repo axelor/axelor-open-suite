@@ -289,7 +289,7 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
       bomTree =
           tempBomTreeRepo
               .all()
-              .filter("self.bom = ?1 and self.parentBom = ?2", bom, parentBom)
+              .filter("self.billOfMaterialLine = ?1 and self.parentBom = ?2", bomLine, parentBom)
               .fetchOne();
     }
 
@@ -322,12 +322,12 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
     }
 
     // It is a node with not children if bom is null
+    List<Long> validTreeIds = new ArrayList<>();
     if (bom != null) {
-      List<Long> validBomLineIds = processChildBom(bom, bomTree, useProductDefaultBom);
-      validBomLineIds.add(0L);
-      removeInvalidTree(validBomLineIds, bom);
+      validTreeIds.addAll(processChildBom(bom, bomTree, useProductDefaultBom));
     }
-
+    validTreeIds.add(0L);
+    removeInvalidTree(validTreeIds, bom);
     return bomTree;
   }
 
@@ -335,7 +335,7 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
       BillOfMaterial bom, TempBomTree bomTree, boolean useProductDefaultBom)
       throws AxelorException {
 
-    List<Long> validBomLineIds = new ArrayList<Long>();
+    List<Long> validTreeIds = new ArrayList<Long>();
 
     for (BillOfMaterialLine bomLineChild : bom.getBillOfMaterialLineList()) {
 
@@ -349,24 +349,22 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
       }
 
       if (bomLineChild != null && !processedBomLine.contains(bomLineChild.getId())) {
-        getBomTree(bomChild, bomLineChild, bom, bomTree, useProductDefaultBom);
-        validBomLineIds.add(bomLineChild.getId());
+        TempBomTree childTree =
+            getBomTree(bomChild, bomLineChild, bom, bomTree, useProductDefaultBom);
+        validTreeIds.add(childTree.getId());
       }
     }
 
-    return validBomLineIds;
+    return validTreeIds;
   }
 
   @Transactional
-  public void removeInvalidTree(List<Long> validBomLineIds, BillOfMaterial bom) {
+  public void removeInvalidTree(List<Long> validTreeIds, BillOfMaterial bom) {
 
     List<TempBomTree> invalidBomTrees =
         tempBomTreeRepo
             .all()
-            .filter(
-                "self.billOfMaterialLine.id not in (?1) and self.parentBom = ?2",
-                validBomLineIds,
-                bom)
+            .filter("self.id not in (?1) and self.parentBom = ?2", validTreeIds, bom)
             .fetch();
 
     log.debug("Invalid bom trees: {}", invalidBomTrees);

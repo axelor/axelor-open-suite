@@ -24,7 +24,8 @@
         domain="self.productSubTypeSelect = 2 OR self.productSubTypeSelect = 3"
         form-view="product-form" grid-view="product-grid"/>
       <field name="billOfMaterial" showIf="product.productSubTypeSelect == 2"
-        form-view="bill-of-material-form" grid-view="bill-of-material-grid"/>
+        form-view="bill-of-material-form" grid-view="bill-of-material-grid" canNew="true"
+        canEdit="true"/>
       <field name="hasNoManageStock" colSpan="3" readonlyIf="product.stockManaged == false"/>
       <field name="qty" colSpan="3"/>
       <field name="unit" form-view="unit-form" grid-view="unit-grid" colSpan="3"/>
