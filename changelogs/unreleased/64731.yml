@@ -1,3 +1,0 @@
----
-title: "MOVE : Fixed exception when selecting an account on a MoveLine where cutoff dates are filled"
-type: fix

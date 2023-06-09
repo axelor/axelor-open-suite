@@ -91,4 +91,7 @@ public final class BusinessProjectExceptionMessage {
 
   public static final String PROJECT_TASK_NO_PROJECT_FOUND = /*$$(*/
       "No project found for task %s." /*)*/;
+
+  public static final String PROJECT_TASK_NO_UNIT_FOUND = /*$$(*/
+      "Please set the unit for the task %s." /*)*/;
 }
