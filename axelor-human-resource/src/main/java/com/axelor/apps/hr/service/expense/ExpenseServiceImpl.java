@@ -415,59 +415,64 @@ public class ExpenseServiceImpl implements ExpenseService {
       moveLineCounter++;
     }
 
-    Map<LocalDate, List<ExpenseLine>> expenseLinesByExpenseDate =
-        expenseLineList.stream().collect(Collectors.groupingBy(ExpenseLine::getExpenseDate));
-
-    List<BigDecimal> expenseLinesTotalTax =
-        expenseLinesByExpenseDate.values().stream()
-            .map(
-                list ->
-                    list.stream()
-                        .map(ExpenseLine::getTotalTax)
-                        .reduce(BigDecimal.ZERO, BigDecimal::add))
-            .collect(Collectors.toList());
-
-    Account employeeAccount = accountingSituationService.getEmployeeAccount(partner, company);
-
-    for (BigDecimal totalTax : expenseLinesTotalTax) {
-      moveLines.add(
-          moveLineCreateService.createMoveLine(
-              move,
-              partner,
-              employeeAccount,
-              totalTax,
-              false,
-              moveDate,
-              moveDate,
-              moveLineCounter++,
-              expense.getExpenseSeq(),
-              expense.getFullName()));
-    }
-
-    moveLineConsolidateService.consolidateMoveLines(moveLines);
-    Account productAccount = accountConfigService.getExpenseTaxAccount(accountConfig);
-
     BigDecimal taxTotal =
         expenseLineList.stream()
             .map(ExpenseLine::getTotalTax)
             .reduce(BigDecimal::add)
             .orElse(BigDecimal.ZERO);
 
+    moveLineConsolidateService.consolidateMoveLines(moveLines);
+    Account productAccount = accountConfigService.getExpenseTaxAccount(accountConfig);
+
     if (taxTotal.signum() != 0) {
-      MoveLine moveLine =
-          moveLineCreateService.createMoveLine(
-              move,
-              partner,
-              productAccount,
-              taxTotal,
-              true,
-              moveDate,
-              moveDate,
-              moveLineCounter,
-              expense.getExpenseSeq(),
-              expense.getFullName());
-      moveLines.add(moveLine);
+      Map<LocalDate, List<ExpenseLine>> expenseLinesByExpenseDate =
+          expenseLineList.stream().collect(Collectors.groupingBy(ExpenseLine::getExpenseDate));
+
+      Map<LocalDate, BigDecimal> expenseLinesTotalTax =
+          expenseLinesByExpenseDate.entrySet().stream()
+              .collect(
+                  Collectors.toMap(
+                      Map.Entry::getKey,
+                      entry ->
+                          entry.getValue().stream()
+                              .map(ExpenseLine::getTotalTax)
+                              .reduce(BigDecimal.ZERO, BigDecimal::add)));
+
+      for (Map.Entry<LocalDate, BigDecimal> entry : expenseLinesTotalTax.entrySet()) {
+        moveLines.add(
+            moveLineCreateService.createMoveLine(
+                move,
+                partner,
+                productAccount,
+                entry.getValue(),
+                true,
+                entry.getKey(),
+                moveDate,
+                moveLineCounter,
+                expense.getExpenseSeq(),
+                expense.getFullName()));
+      }
     }
+
+    BigDecimal totalMoveLines =
+        moveLines.stream().map(MoveLine::getDebit).reduce(BigDecimal::add).orElse(BigDecimal.ZERO);
+
+    Account employeeAccount = accountingSituationService.getEmployeeAccount(partner, company);
+    moveLines.add(
+        moveLineCreateService.createMoveLine(
+            move,
+            partner,
+            employeeAccount,
+            totalMoveLines,
+            totalMoveLines,
+            BigDecimal.ONE,
+            false,
+            moveDate,
+            moveDate,
+            moveDate,
+            moveLineCounter++,
+            expense.getExpenseSeq(),
+            expense.getFullName()));
 
     move.getMoveLineList().addAll(moveLines);
 
