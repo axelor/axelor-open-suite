@@ -41,6 +41,14 @@
       <field name="archived" title="Archived"/>
       <field name="paymentMode.typeSelect"/>
       <field name="paymentMode.inOutSelect"/>
+      <help colSpan="12">
+        <![CDATA[
+        	The limits can be used to avoid retrieving undesired records et fonctionnent en inclus-inclus. If the field is empty or displays 0.00, the limit(s) will not apply.
+        ]]>
+      </help>
+      <field name="lowerAmountLimit" validIf="lowerAmountLimit >= 0"/>
+      <field name="upperAmountLimit"
+        validIf="upperAmountLimit >= lowerAmountLimit || upperAmountLimit == 0"/>
     </panel>
     <panel-tabs name="mainPanelTab">
       <panel name="reimbursementPagePanel" title="Reimbursement configuration"

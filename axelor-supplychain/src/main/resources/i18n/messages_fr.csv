@@ -346,6 +346,8 @@
 "Missing purchase order with id %s for stock move line %s","Le lien avec la ligne de commande fournisseur avec l’identifiant %s pour la ligne de mouvement de stock %s est manquant.",,
 "Month","Mois",,
 "Move","Ecriture",,
+"Move trigger lower limit","Limite inférieur du mouvement",,
+"Move trigger upper limit","Limite supérieur du mouvement",,
 "Mrp","CBN",,
 "Mrp calculation is already on going.","Le calcul du CBN est déjà en cours.",,
 "Mrp line","Ligne de CBN",,

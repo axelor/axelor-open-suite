@@ -346,6 +346,8 @@
 "Missing purchase order with id %s for stock move line %s",,,
 "Month",,,
 "Move",,,
+"Move trigger lower limit",,,
+"Move trigger upper limit",,,
 "Mrp",,,
 "Mrp calculation is already on going.",,,
 "Mrp line",,,

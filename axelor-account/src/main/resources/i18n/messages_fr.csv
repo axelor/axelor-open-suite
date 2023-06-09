@@ -3226,6 +3226,7 @@
 "The journal %s is in the 'journals to close' of the period %s, please remove it.","Le journal %s est dans les ‘journaux à fermer’ pour la période",,
 "The journal : %s is inactive. Thus, the move can't be set to daybook/accounted.","Le journal comptable : %s est inactif. Ainsi,l'écriture ne peut être passée en brouillard/comptabilisé.",,
 "The journal with the code %s cannot be found. The move cannot be created.","Le journal avec le code %s n'a pas pu être déterminé. L'écriture ne peut pas être créée.",,
+"The limits can be used to avoid retrieving undesired records et fonctionnent en inclus-inclus. If the field is empty or displays 0.00, the limit(s) will not apply.",,,
 "The line can not be simulated because there is no journal or it does not authorize simulated move","La ligne ne peut pas être simulée parceque le journal est absent, ou parceque les écritures simulées n'y sont pas autorisées",,
 "The move %s cannot be empty","L'écriture %s ne peut pas être vide",,
 "The move field description is empty, do you wish to continue ?","Le champ description de l'écriture est vide, voulez-vous continuer ?",,

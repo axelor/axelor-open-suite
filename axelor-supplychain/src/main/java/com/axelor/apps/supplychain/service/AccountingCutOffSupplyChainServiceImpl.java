@@ -77,6 +77,7 @@ import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -577,5 +578,82 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
       JPA.clear();
     }
     return stockMoveLineIdList;
+  }
+
+  @Override
+  public boolean checkPriceLimit(
+      StockMove stockMove,
+      BigDecimal lowerAmountLimit,
+      BigDecimal upperAmountLimit,
+      int accountingCutOffTypeSelect,
+      boolean ati)
+      throws AxelorException {
+    List<StockMoveLine> stockMoveLines = stockMove.getStockMoveLineList();
+    if (CollectionUtils.isEmpty(stockMoveLines)) {
+      return true;
+    }
+    BigDecimal totalAmount = BigDecimal.ZERO;
+    for (StockMoveLine stockMoveLine : stockMoveLines) {
+      totalAmount =
+          totalAmount.add(getNotInvoicedAmount(stockMoveLine, accountingCutOffTypeSelect, ati));
+    }
+    if (totalAmount.compareTo(lowerAmountLimit) < 0
+        || (upperAmountLimit.signum() != 0 && totalAmount.compareTo(upperAmountLimit) > 0)) {
+      return false;
+    }
+    return true;
+  }
+
+  protected BigDecimal getNotInvoicedAmount(
+      StockMoveLine stockMoveLine, int accountingCutOffTypeSelect, boolean ati)
+      throws AxelorException {
+    SaleOrderLine saleOrderLine = stockMoveLine.getSaleOrderLine();
+    PurchaseOrderLine purchaseOrderLine = stockMoveLine.getPurchaseOrderLine();
+    boolean isPurchase =
+        accountingCutOffTypeSelect
+            == AccountingBatchRepository.ACCOUNTING_CUT_OFF_TYPE_SUPPLIER_INVOICES;
+    BigDecimal amountInCurrency = BigDecimal.ZERO;
+    BigDecimal totalQty = BigDecimal.ZERO;
+    BigDecimal notInvoicedQty = BigDecimal.ZERO;
+
+    if (isPurchase && purchaseOrderLine != null) {
+      totalQty = purchaseOrderLine.getQty();
+
+      notInvoicedQty =
+          unitConversionService.convert(
+              stockMoveLine.getUnit(),
+              purchaseOrderLine.getUnit(),
+              stockMoveLine.getRealQty().subtract(stockMoveLine.getQtyInvoiced()),
+              stockMoveLine.getRealQty().scale(),
+              purchaseOrderLine.getProduct());
+      if (ati) {
+        amountInCurrency = purchaseOrderLine.getInTaxTotal();
+      } else {
+        amountInCurrency = purchaseOrderLine.getExTaxTotal();
+      }
+    }
+    if (!isPurchase && saleOrderLine != null) {
+      totalQty = saleOrderLine.getQty();
+
+      notInvoicedQty =
+          unitConversionService.convert(
+              stockMoveLine.getUnit(),
+              saleOrderLine.getUnit(),
+              stockMoveLine.getRealQty().subtract(stockMoveLine.getQtyInvoiced()),
+              stockMoveLine.getRealQty().scale(),
+              saleOrderLine.getProduct());
+      if (ati) {
+        amountInCurrency = saleOrderLine.getInTaxTotal();
+      } else {
+        amountInCurrency = saleOrderLine.getExTaxTotal();
+      }
+    }
+    if (totalQty.signum() == 0) {
+      return BigDecimal.ZERO;
+    }
+
+    BigDecimal qtyRate = notInvoicedQty.divide(totalQty, 10, RoundingMode.HALF_UP);
+    amountInCurrency = amountInCurrency.multiply(qtyRate).setScale(2, RoundingMode.HALF_UP);
+    return amountInCurrency;
   }
 }
