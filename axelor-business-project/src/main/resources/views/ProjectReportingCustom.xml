@@ -5,14 +5,26 @@
 
   <!-- time follow up -->
   <action-attrs name="action-project-attrs-set-time-reporting-values">
+    <attribute for="$displayUnit" name="value" expr="eval: projectTimeUnit.name + '(s)'"
+      if="projectTimeUnit"/>
     <attribute for="$displayProgress" name="value"
       expr="eval: percentageOfProgress + ' %'"/>
     <attribute for="$displayConsumption" name="value"
       expr="eval: percentageOfConsumption + ' %'"/>
-    <attribute for="$displayRemaining" name="value"
-      expr="eval: remainingAmountToDo + ' ' + projectTimeUnit.name + '(s)'"
-      if="remainingAmountToDo &amp;&amp; projectTimeUnit"/>
   </action-attrs>
+
+  <action-view name="action-project-view-sold-time-custom" title="Sold time">
+    <view type="custom" name="project-sold-time-custom"/>
+  </action-view>
+  <action-view name="action-project-view-updated-time-custom" title="Updated time">
+    <view type="custom" name="project-updated-time-custom"/>
+  </action-view>
+  <action-view name="action-project-view-planned-time-custom" title="Planned time">
+    <view type="custom" name="project-planned-time-custom"/>
+  </action-view>
+  <action-view name="action-project-view-spent-time-custom" title="Spent time">
+    <view type="custom" name="project-spent-time-custom"/>
+  </action-view>
 
   <action-view name="action-project-view-percentage-progress-custom"
     title="% of progress">
@@ -28,6 +40,54 @@
     title="Remaining amount to do">
     <view type="custom" name="project-remaining-to-do-custom"/>
   </action-view>
+
+  <custom title="Sold time" name="project-sold-time-custom" css="report-box">
+    <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectTimeFollowUpData</dataset>
+    <template>
+      <![CDATA[
+        <i class='report-icon fa fa-calendar-check-o' style='font-size:30px;top:40px;'></i>
+        <div style='display:inline-block;'>
+          <h1>{{first.soldTime}} <span style="font-size:20px;">{{first.unit}}</span></h1>
+        </div>
+      ]]>
+    </template>
+  </custom>
+
+  <custom title="Updated time" name="project-updated-time-custom" css="report-box">
+    <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectTimeFollowUpData</dataset>
+    <template>
+      <![CDATA[
+        <i class='report-icon fa fa-refresh' style='font-size:30px;top:40px;'></i>
+        <div style='display:inline-block;'>
+          <h1>{{first.updatedTime}} <span style="font-size:20px;">{{first.unit}}</span></h1>
+        </div>
+      ]]>
+    </template>
+  </custom>
+
+  <custom title="Planned time" name="project-planned-time-custom" css="report-box">
+    <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectTimeFollowUpData</dataset>
+    <template>
+      <![CDATA[
+        <i class='report-icon fa fa-calendar' style='font-size:30px;top:40px;'></i>
+        <div style='display:inline-block;'>
+          <h1>{{first.plannedTime}} <span style="font-size:20px;">{{first.unit}}</span></h1>
+        </div>
+      ]]>
+    </template>
+  </custom>
+
+  <custom title="Spent time" name="project-spent-time-custom" css="report-box">
+    <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectTimeFollowUpData</dataset>
+    <template>
+      <![CDATA[
+        <i class='report-icon fa fa-hourglass-end' style='font-size:30px;top:40px;'></i>
+        <div style='display:inline-block;'>
+          <h1>{{first.spentTime}} <span style="font-size:20px;">{{first.unit}}</span></h1>
+        </div>
+      ]]>
+    </template>
+  </custom>
 
   <custom title="% of progress" name="project-percentage-progress-custom" css="report-box">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectTimeFollowUpData</dataset>
@@ -61,7 +121,7 @@
       <![CDATA[
         <i class='report-icon fa fa-tasks' style='font-size:30px;top:40px;'></i>
         <div style='display:inline-block;'>
-          <h1>{{first.remaining}}</h1>
+          <h1>{{first.remaining}} <span style="font-size:20px;">{{first.unit}}</span></h1>
         </div>
       ]]>
     </template>

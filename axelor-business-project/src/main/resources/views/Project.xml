@@ -45,15 +45,30 @@
         <panel name="reportingPanel" title="Reporting" if-module="axelor-business-project"
           if="__config__.app.isApp('business-project')">
           <panel title="Time follow-up" colSpan="12">
+
+            <panel-dashlet action="action-project-view-sold-time-custom" colSpan="3"
+              showTitle="false"/>
+            <panel-dashlet action="action-project-view-updated-time-custom"
+              colSpan="3" showTitle="false"/>
+            <panel-dashlet action="action-project-view-planned-time-custom"
+              colSpan="3" showTitle="false"/>
+            <panel-dashlet action="action-project-view-spent-time-custom" colSpan="3"
+              showTitle="false"/>
+
             <panel-dashlet action="action-project-view-percentage-progress-custom"
-              colSpan="4" showTitle="false"/>
+              colSpan="3" showTitle="false"/>
             <panel-dashlet action="action-project-view-percentage-consumption-custom"
-              colSpan="4" showTitle="false"/>
+              colSpan="3" showTitle="false"/>
             <panel-dashlet action="action-project-view-remaining-to-do-custom"
-              colSpan="4" showTitle="false" showIf="$displayRemaining"/>
+              colSpan="3" showTitle="false"/>
             <field name="$displayProgress" hidden="true"/>
             <field name="$displayConsumption" hidden="true"/>
-            <field name="$displayRemaining" hidden="true"/>
+            <field name="$displayUnit" hidden="true"/>
+            <field name="soldTime" hidden="true"/>
+            <field name="updatedTime" hidden="true"/>
+            <field name="plannedTime" hidden="true"/>
+            <field name="spentTime" hidden="true"/>
+            <field name="remainingAmountToDo" hidden="true"/>
           </panel>
 
           <panel title="Financial follow-up" colSpan="12">

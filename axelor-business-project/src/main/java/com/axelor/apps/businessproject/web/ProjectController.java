@@ -134,9 +134,14 @@ public class ProjectController {
 
   public void getProjectTimeFollowUpData(ActionRequest request, ActionResponse response) {
     Map<String, Object> data = new HashMap<>();
+    data.put("soldTime", request.getData().get("soldTime"));
+    data.put("updatedTime", request.getData().get("updatedTime"));
+    data.put("plannedTime", request.getData().get("plannedTime"));
+    data.put("spentTime", request.getData().get("spentTime"));
+    data.put("unit", request.getData().get("displayUnit"));
     data.put("progress", request.getData().get("displayProgress"));
     data.put("consumption", request.getData().get("displayConsumption"));
-    data.put("remaining", request.getData().get("displayRemaining"));
+    data.put("remaining", request.getData().get("remainingAmountToDo"));
     response.setData(List.of(data));
   }
 
