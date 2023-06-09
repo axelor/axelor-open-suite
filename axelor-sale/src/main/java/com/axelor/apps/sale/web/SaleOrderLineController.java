@@ -95,6 +95,7 @@ public class SaleOrderLineController {
       SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
       PricingService pricingService = Beans.get(PricingService.class);
       SaleOrder saleOrder = saleOrderLineService.getSaleOrder(context);
+      saleOrderLine.setSaleOrder(saleOrder);
 
       Product product = saleOrderLine.getProduct();
 

@@ -36,7 +36,7 @@ public class AnalyticLineModelProjectServiceImpl extends AnalyticLineModelServic
       AnalyticLineModel analyticLineModel, Company company, AnalyticAccount analyticAccount)
       throws AxelorException {
     AnalyticLineProjectModel analyticLineProjectModel =
-        (AnalyticLineProjectModel) analyticLineModel;
+        analyticLineModel.getExtension(AnalyticLineProjectModel.class);
 
     AnalyticMoveLine analyticMoveLine =
         super.computeAnalyticMoveLine(analyticLineProjectModel, company, analyticAccount);
@@ -50,9 +50,10 @@ public class AnalyticLineModelProjectServiceImpl extends AnalyticLineModelServic
 
   @Override
   public AnalyticLineModel createAnalyticDistributionWithTemplate(
-      AnalyticLineModel analyticLineModel) {
+      AnalyticLineModel analyticLineModel) throws AxelorException {
     AnalyticLineProjectModel analyticLineProjectModel =
-        (AnalyticLineProjectModel) super.createAnalyticDistributionWithTemplate(analyticLineModel);
+        super.createAnalyticDistributionWithTemplate(analyticLineModel)
+            .getExtension(AnalyticLineProjectModel.class);
 
     if (analyticLineProjectModel.getProject() != null) {
       List<AnalyticMoveLine> analyticMoveLineList =

@@ -1,13 +1,16 @@
 package com.axelor.apps.contract.model;
 
 import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.db.ContractVersion;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Optional;
 
 public class AnalyticLineContractModel extends AnalyticLineModel {
@@ -34,6 +37,23 @@ public class AnalyticLineContractModel extends AnalyticLineModel {
     this.axis5AnalyticAccount = contractLine.getAxis5AnalyticAccount();
 
     this.exTaxTotal = contractLine.getExTaxTotal();
+  }
+
+  @Override
+  public <T extends AnalyticLineModel> T getExtension(Class<T> klass) throws AxelorException {
+    try {
+      if (contractLine != null) {
+        return klass.getDeclaredConstructor(ContractLine.class).newInstance(this.contractLine);
+      } else {
+        return super.getExtension(klass);
+      }
+    } catch (IllegalAccessException
+        | InstantiationException
+        | NoSuchMethodException
+        | InvocationTargetException e) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY, e.getLocalizedMessage());
+    }
   }
 
   @Override

@@ -23,6 +23,7 @@ import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Blocking;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
@@ -61,28 +62,36 @@ public class SaleOrderLineController {
   private final int endAxisPosition = 5;
 
   public void computeAnalyticDistribution(ActionRequest request, ActionResponse response) {
-    SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+    try {
+      SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
 
-    if (Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()) {
-      AnalyticLineModel analyticLineModel = new AnalyticLineModel(saleOrderLine);
+      if (Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()) {
+        AnalyticLineModel analyticLineModel = new AnalyticLineModel(saleOrderLine);
 
-      Beans.get(AnalyticLineModelSerivce.class).computeAnalyticDistribution(analyticLineModel);
+        Beans.get(AnalyticLineModelSerivce.class).computeAnalyticDistribution(analyticLineModel);
 
-      response.setValue(
-          "analyticDistributionTemplate", analyticLineModel.getAnalyticDistributionTemplate());
-      response.setValue("analyticMoveLineList", analyticLineModel.getAnalyticMoveLineList());
+        response.setValue(
+            "analyticDistributionTemplate", analyticLineModel.getAnalyticDistributionTemplate());
+        response.setValue("analyticMoveLineList", analyticLineModel.getAnalyticMoveLineList());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 
   public void createAnalyticDistributionWithTemplate(
       ActionRequest request, ActionResponse response) {
-    SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
-    AnalyticLineModel analyticLineModel = new AnalyticLineModel(saleOrderLine);
+    try {
+      SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+      AnalyticLineModel analyticLineModel = new AnalyticLineModel(saleOrderLine);
 
-    Beans.get(AnalyticLineModelSerivce.class)
-        .createAnalyticDistributionWithTemplate(analyticLineModel);
+      Beans.get(AnalyticLineModelSerivce.class)
+          .createAnalyticDistributionWithTemplate(analyticLineModel);
 
-    response.setValue("analyticMoveLineList", analyticLineModel.getAnalyticMoveLineList());
+      response.setValue("analyticMoveLineList", analyticLineModel.getAnalyticMoveLineList());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
   }
 
   public void checkStocks(ActionRequest request, ActionResponse response) {

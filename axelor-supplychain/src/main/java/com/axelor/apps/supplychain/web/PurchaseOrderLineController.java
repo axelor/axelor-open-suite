@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -43,26 +44,34 @@ public class PurchaseOrderLineController {
   private final int endAxisPosition = 5;
 
   public void computeAnalyticDistribution(ActionRequest request, ActionResponse response) {
-    PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
+    try {
+      PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
 
-    if (Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()) {
-      AnalyticLineModel analyticLineModel = new AnalyticLineModel(purchaseOrderLine);
+      if (Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()) {
+        AnalyticLineModel analyticLineModel = new AnalyticLineModel(purchaseOrderLine);
 
-      Beans.get(AnalyticLineModelSerivce.class).computeAnalyticDistribution(analyticLineModel);
+        Beans.get(AnalyticLineModelSerivce.class).computeAnalyticDistribution(analyticLineModel);
 
-      response.setValue("analyticMoveLineList", analyticLineModel.getAnalyticMoveLineList());
+        response.setValue("analyticMoveLineList", analyticLineModel.getAnalyticMoveLineList());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 
   public void createAnalyticDistributionWithTemplate(
       ActionRequest request, ActionResponse response) {
-    PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
-    AnalyticLineModel analyticLineModel = new AnalyticLineModel(purchaseOrderLine);
+    try {
+      PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
+      AnalyticLineModel analyticLineModel = new AnalyticLineModel(purchaseOrderLine);
 
-    Beans.get(AnalyticLineModelSerivce.class)
-        .createAnalyticDistributionWithTemplate(analyticLineModel);
+      Beans.get(AnalyticLineModelSerivce.class)
+          .createAnalyticDistributionWithTemplate(analyticLineModel);
 
-    response.setValue("analyticMoveLineList", analyticLineModel.getAnalyticMoveLineList());
+      response.setValue("analyticMoveLineList", analyticLineModel.getAnalyticMoveLineList());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
   }
 
   public void computeBudgetDistributionSumAmount(ActionRequest request, ActionResponse response) {

@@ -12,9 +12,11 @@ public interface AnalyticLineModelSerivce {
   AnalyticLineModel getAndComputeAnalyticDistribution(AnalyticLineModel analyticLineModel)
       throws AxelorException;
 
-  AnalyticLineModel computeAnalyticDistribution(AnalyticLineModel analyticLineModel);
+  AnalyticLineModel computeAnalyticDistribution(AnalyticLineModel analyticLineModel)
+      throws AxelorException;
 
-  AnalyticLineModel createAnalyticDistributionWithTemplate(AnalyticLineModel analyticLineModel);
+  AnalyticLineModel createAnalyticDistributionWithTemplate(AnalyticLineModel analyticLineModel)
+      throws AxelorException;
 
   void setInvoiceLineAnalyticInfo(AnalyticLineModel analyticLineModel, InvoiceLine invoiceLine);
 }

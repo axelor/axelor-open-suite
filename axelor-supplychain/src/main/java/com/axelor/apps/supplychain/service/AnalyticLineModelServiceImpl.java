@@ -127,7 +127,8 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelSerivce {
   }
 
   @Override
-  public AnalyticLineModel computeAnalyticDistribution(AnalyticLineModel analyticLineModel) {
+  public AnalyticLineModel computeAnalyticDistribution(AnalyticLineModel analyticLineModel)
+      throws AxelorException {
     List<AnalyticMoveLine> analyticMoveLineList = analyticLineModel.getAnalyticMoveLineList();
 
     if (CollectionUtils.isEmpty(analyticMoveLineList)) {
@@ -150,7 +151,7 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelSerivce {
 
   @Override
   public AnalyticLineModel createAnalyticDistributionWithTemplate(
-      AnalyticLineModel analyticLineModel) {
+      AnalyticLineModel analyticLineModel) throws AxelorException {
     this.clearAnalyticInLine(analyticLineModel);
 
     List<AnalyticMoveLine> analyticMoveLineList =

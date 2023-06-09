@@ -21,6 +21,7 @@ package com.axelor.apps.contract.web;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
+import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
@@ -55,14 +56,19 @@ public class ContractLineController {
 
   public void createAnalyticDistributionWithTemplate(
       ActionRequest request, ActionResponse response) {
-    ContractLine contractLine = request.getContext().asType(ContractLine.class);
-    AnalyticLineContractModel analyticLineContractModel =
-        new AnalyticLineContractModel(contractLine);
+    try {
+      ContractLine contractLine = request.getContext().asType(ContractLine.class);
+      AnalyticLineContractModel analyticLineContractModel =
+          new AnalyticLineContractModel(contractLine);
 
-    Beans.get(AnalyticLineModelSerivce.class)
-        .createAnalyticDistributionWithTemplate(analyticLineContractModel);
+      Beans.get(AnalyticLineModelSerivce.class)
+          .createAnalyticDistributionWithTemplate(analyticLineContractModel);
 
-    response.setValue("analyticMoveLineList", analyticLineContractModel.getAnalyticMoveLineList());
+      response.setValue(
+          "analyticMoveLineList", analyticLineContractModel.getAnalyticMoveLineList());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
   }
 
   public void setAxisDomains(ActionRequest request, ActionResponse response) {

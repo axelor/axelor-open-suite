@@ -5,11 +5,14 @@ import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.repo.AnalyticLine;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -65,6 +68,26 @@ public class AnalyticLineModel implements AnalyticLine {
     this.isPurchase = true;
     this.exTaxTotal = purchaseOrderLine.getExTaxTotal();
     this.companyExTaxTotal = purchaseOrderLine.getCompanyExTaxTotal();
+  }
+
+  public <T extends AnalyticLineModel> T getExtension(Class<T> klass) throws AxelorException {
+    try {
+      if (saleOrderLine != null) {
+        return klass.getDeclaredConstructor(SaleOrderLine.class).newInstance(this.saleOrderLine);
+      } else if (purchaseOrderLine != null) {
+        return klass
+            .getDeclaredConstructor(PurchaseOrderLine.class)
+            .newInstance(this.purchaseOrderLine);
+      }
+
+      return null;
+    } catch (IllegalAccessException
+        | InstantiationException
+        | NoSuchMethodException
+        | InvocationTargetException e) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY, e.getLocalizedMessage());
+    }
   }
 
   @Override

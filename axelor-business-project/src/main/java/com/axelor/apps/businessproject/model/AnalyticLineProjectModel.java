@@ -11,10 +11,14 @@ public class AnalyticLineProjectModel extends AnalyticLineContractModel {
 
   public AnalyticLineProjectModel(SaleOrderLine saleOrderLine) {
     super(saleOrderLine);
+
+    this.project = saleOrderLine.getProject();
   }
 
   public AnalyticLineProjectModel(PurchaseOrderLine purchaseOrderLine) {
     super(purchaseOrderLine);
+
+    this.project = purchaseOrderLine.getProject();
   }
 
   public AnalyticLineProjectModel(ContractLine contractLine) {
