@@ -115,6 +115,8 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     task.setInvoicingUnit(saleOrderLine.getUnit());
     task.setTimeUnit(saleOrderLine.getUnit());
     task.setCurrency(project.getClientPartner().getCurrency());
+    task.setProjectPlanningTimeList(new ArrayList<>());
+    task.setProjectTaskList(new ArrayList<>());
     if (project.getPriceList() != null) {
       PriceListLine line =
           priceListLineRepo.findByPriceListAndProduct(
