@@ -63,7 +63,7 @@
             <property name="dataType">string</property>
             <property name="distinct">true</property>
             <simple-property-list name="defaultValue">
-                <value type="constant">jdbc:postgresql://localhost:5432/axelor-open-suite</value>
+                <value type="constant">jdbc:postgresql://localhost:5432/</value>
             </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
@@ -77,9 +77,6 @@
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">axelor</value>
-            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -3309,8 +3306,7 @@ order by task_end_date]]></xml-property>
                     <row id="6004">
                         <cell id="6005">
                             <property name="verticalAlign">middle</property>
-                            <text id="4907">
-                                <property name="fontSize">8pt</property>
+                            <image id="6041">
                                 <property name="dataSet">Project</property>
                                 <list-property name="visibility">
                                     <structure>
@@ -3338,15 +3334,13 @@ order by task_end_date]]></xml-property>
                                         <property name="dataType">integer</property>
                                     </structure>
                                 </list-property>
-                                <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[<TABLE>
-	<TR>
-		<VALUE-OF format="HTML">
-			"<TD><IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='"+row["logo_height"]+"' width='"+row["logo_width"]+"'/></TD>"
-		</VALUE-OF>
-	</TR>
-</TABLE>]]></text-property>
-                            </text>
+                                <method name="onCreate"><![CDATA[if(row["logo_width"] &amp;&amp; row["logo_height"]){
+    this.width=row["logo_width"]+'px';
+    this.height=row["logo_height"]+'px';
+}]]></method>
+                                <property name="source">file</property>
+                                <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
+                            </image>
                         </cell>
                         <cell id="6006">
                             <property name="verticalAlign">middle</property>

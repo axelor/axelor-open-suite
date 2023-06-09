@@ -273,7 +273,7 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
         String.format(
             "self.isContact IS FALSE AND %d MEMBER OF self.companySet", move.getCompany().getId());
 
-    this.addAttr("account", "domain", domain, attrsMap);
+    this.addAttr("partner", "domain", domain, attrsMap);
   }
 
   @Override
@@ -287,6 +287,6 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
         String.format(
             "self.isSpecific IS FALSE AND self.company.id = %d", move.getCompany().getId());
 
-    this.addAttr("account", "domain", domain, attrsMap);
+    this.addAttr("analyticDistributionTemplate", "domain", domain, attrsMap);
   }
 }

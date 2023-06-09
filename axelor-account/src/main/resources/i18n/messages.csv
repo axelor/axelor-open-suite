@@ -1,5 +1,4 @@
 "key","message","comment","context"
-"$paymentConditionChangeError",,,
 "${label} move lines",,,
 "%",,,
 "% to match any character (one or more)",,,
@@ -204,6 +203,7 @@
 "A new record of fixed asset will be generated based on the split quantity. Current fixed asset will be recalculated based on the remaining quantity.",,,
 "A payment mode already exists with the same information.",,,
 "A previous result can be used with its code, but it can only be elements of the same type.",,,
+"A reverse charge tax is required on the fiscal position %s (From tax : %s - To tax : %s).",,,
 "A sequence already exists on this code for this company and this sequence have to be unique",,,
 "A tax line is missing",,,
 "A technical type is required on the journal type %s.",,,
@@ -3101,6 +3101,7 @@
 "The closure of a period will block the operations that can be carried out on the accounting journals for this period. The 'New' moves will be deleted, the 'Daybook' moves will be validated and the 'Simulated' moves will no longer be editable.",,,
 "The code defined here is already used by another record for the specified %s. Code must be unique by company. Please modify it accordingly.",,,
 "The code defined here is already used by another record. Code must be unique either by company or if shared. Please modify it accordingly.",,,
+"The company account configuration customer sales journal is required.",,,
 "The company is required and must be the same for all invoices",,,
 "The configuration to retrieve the account on the payment mode is missing:",,,
 "The configured distribution is incorrect, the sum of percentages for at least an axis is different than 100%",,,

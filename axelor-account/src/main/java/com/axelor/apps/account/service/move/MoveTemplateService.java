@@ -278,7 +278,7 @@ public class MoveTemplateService {
         Account taxAccount =
             this.getAccountTypeAccount(
                 moveTemplate.getMoveTemplateLineList(), AccountTypeRepository.TYPE_TAX);
-        moveLineTaxService.autoTaxLineGenerate(move, taxAccount);
+        moveLineTaxService.autoTaxLineGenerate(move, taxAccount, true);
         manageAccounting(moveTemplate, move);
 
         moveList.add(move.getId());
@@ -406,7 +406,7 @@ public class MoveTemplateService {
         }
 
         move.setDescription(taxLineDescription);
-        moveLineTaxService.autoTaxLineGenerate(move, null);
+        moveLineTaxService.autoTaxLineGenerate(move, null, false);
         manageAccounting(moveTemplate, move);
 
         move.setDescription(moveTemplate.getDescription());

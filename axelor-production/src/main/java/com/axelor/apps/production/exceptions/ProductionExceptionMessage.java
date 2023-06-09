@@ -105,9 +105,6 @@ public final class ProductionExceptionMessage {
   public static final String OPERATION_ORDER_1 = /*$$(*/
       "Please select the Operation order(s) to print." /*)*/;
 
-  /** Sale order line Controller */
-  public static final String SALE_ORDER_LINE_1 = /*$$(*/ "Personalized nomenclature created" /*)*/;
-
   /** Production Order Controller */
   public static final String PRODUCTION_ORDER_NO_GENERATION = /*$$(*/
       "No production order could be generated. Make sure that everything has been configured correctly. Reminder: check that the order lines that should be produced have their supply method set to 'produce' and that the chosen BoM has a production process associated to it." /*)*/;
