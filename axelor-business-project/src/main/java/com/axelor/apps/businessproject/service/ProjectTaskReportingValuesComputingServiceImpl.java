@@ -78,7 +78,7 @@ public class ProjectTaskReportingValuesComputingServiceImpl
     }
 
     computeProjectTaskTimes(projectTask);
-    computeFinancialReporting(projectTask);
+    computeFinancialReporting(projectTask, project);
 
     projectTaskRepo.save(projectTask);
   }
@@ -123,7 +123,7 @@ public class ProjectTaskReportingValuesComputingServiceImpl
    * @param projectTask
    * @throws AxelorException
    */
-  protected void computeFinancialReporting(ProjectTask projectTask) throws AxelorException {
+  protected void computeFinancialReporting(ProjectTask projectTask, Project project) throws AxelorException {
 
     projectTask.setTurnover(
         projectTask
@@ -184,7 +184,7 @@ public class ProjectTaskReportingValuesComputingServiceImpl
                   .divide(projectTask.getInitialCosts(), COMPUTATION_SCALE, RoundingMode.HALF_UP)));
     }
     // unitCost to compute other values
-    BigDecimal unitCost = computeUnitCost(projectTask);
+    BigDecimal unitCost = computeUnitCost(projectTask, project);
     projectTask.setUnitCost(unitCost);
 
     // Real
@@ -237,19 +237,10 @@ public class ProjectTaskReportingValuesComputingServiceImpl
    * @return
    * @throws AxelorException
    */
-  protected BigDecimal computeUnitCost(ProjectTask projectTask) throws AxelorException {
+  protected BigDecimal computeUnitCost(ProjectTask projectTask, Project project) throws AxelorException {
     BigDecimal unitCost = BigDecimal.ZERO;
 
     Unit timeUnit = projectTask.getTimeUnit();
-    Project project = projectTask.getProject();
-
-    if (Objects.isNull(project)) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          String.format(
-              I18n.get(BusinessProjectExceptionMessage.PROJECT_TASK_NO_PROJECT_FOUND),
-              projectTask.getName()));
-    }
 
     Integer spentTimeCostComputationMethod = project.getSpentTimeCostComputationMethod();
 
