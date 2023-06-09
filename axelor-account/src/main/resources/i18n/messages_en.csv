@@ -3226,7 +3226,7 @@
 "The journal %s is in the 'journals to close' of the period %s, please remove it.",,,
 "The journal : %s is inactive. Thus, the move can't be set to daybook/accounted.",,,
 "The journal with the code %s cannot be found. The move cannot be created.",,,
-"The limits can be used to avoid retrieving undesired records et fonctionnent en inclus-inclus. If the field is empty or displays 0.00, the limit(s) will not apply.",,,
+"The limits can be used to avoid retrieving undesired records et fonctionnent en inclus-inclus. If the field is empty or displays 0.00, the limit(s) will not apply.","he limits can be used to avoid retrieving undesired records. The limit values are included. If the field is empty or displays 0.00, the limit(s) will not apply.",,
 "The line can not be simulated because there is no journal or it does not authorize simulated move",,,
 "The move %s cannot be empty",,,
 "The move field description is empty, do you wish to continue ?",,,
