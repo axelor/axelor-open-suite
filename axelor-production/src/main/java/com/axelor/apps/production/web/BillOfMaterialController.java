@@ -92,8 +92,8 @@ public class BillOfMaterialController {
     BillOfMaterial billOfMaterial =
         billOfMaterialRepository.find(request.getContext().asType(BillOfMaterial.class).getId());
 
-    List<BillOfMaterial> BillOfMaterialSet = Lists.newArrayList();
-    BillOfMaterialSet =
+    List<BillOfMaterial> billOfMaterialList = Lists.newArrayList();
+    billOfMaterialList =
         billOfMaterialRepository
             .all()
             .filter("self.originalBillOfMaterial = :origin")
@@ -101,10 +101,10 @@ public class BillOfMaterialController {
             .fetch();
     String message;
 
-    if (!BillOfMaterialSet.isEmpty()) {
+    if (!billOfMaterialList.isEmpty()) {
 
       String existingVersions = "";
-      for (BillOfMaterial billOfMaterialVersion : BillOfMaterialSet) {
+      for (BillOfMaterial billOfMaterialVersion : billOfMaterialList) {
         existingVersions += "<li>" + billOfMaterialVersion.getFullName() + "</li>";
       }
       message =

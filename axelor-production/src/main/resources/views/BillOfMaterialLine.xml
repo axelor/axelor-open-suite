@@ -15,7 +15,9 @@
   </grid>
 
   <form name="bill-of-material-line-form" title="Bill of materials"
-    model="com.axelor.apps.production.db.BillOfMaterial" width="large">
+    model="com.axelor.apps.production.db.BillOfMaterialLine" width="large"
+    onNew="action-bill-of-material-line-default-record,action-bill-of-material-line-attrs-price-and-qty-digits"
+    onLoad="action-bill-of-material-attrs-price-and-qty-digits">
     <panel name="mainPanel">
       <field name="product" canEdit="false"
         onChange="action-method-bill-of-material-line-product-on-change"
@@ -30,6 +32,18 @@
       <field name="product.stockManaged" hidden="true"/>
     </panel>
   </form>
+
+  <action-record name="action-bill-of-material-line-default-record"
+    model="com.axelor.apps.production.db.BillOfMaterialLine">
+    <field name="qty" expr="1"/>
+    <field name="priority" if="__parent__?.billOfMaterialLineList?.size() > 0"
+      expr="eval:__parent__?.billOfMaterialLineList?.max{ it.getPriority() }?.getPriority() + 10"/>
+  </action-record>
+
+  <action-attrs name="action-bill-of-material-line-attrs-price-and-qty-digits">
+    <attribute name="scale" for="qty"
+      expr="eval: __config__.app.getApp('production')?.nbDecimalDigitForBomQty"/>
+  </action-attrs>
 
   <action-method name="action-method-bill-of-material-line-product-on-change">
     <call class="com.axelor.apps.production.web.BillOfMaterialLineController"

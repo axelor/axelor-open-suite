@@ -36,8 +36,6 @@ public interface BillOfMaterialService {
 
   static final String UNIT_DAY_CODE = "JR";
 
-  public List<BillOfMaterial> getBillOfMaterialSet(Product product);
-
   public void updateProductCostPrice(BillOfMaterial billOfMaterial) throws AxelorException;
 
   public BillOfMaterial customizeBillOfMaterial(SaleOrderLine saleOrderLine) throws AxelorException;

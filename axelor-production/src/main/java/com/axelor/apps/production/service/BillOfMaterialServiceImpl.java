@@ -95,12 +95,6 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
   private List<Long> processedBomLine;
 
   @Override
-  public List<BillOfMaterial> getBillOfMaterialSet(Product product) {
-
-    return billOfMaterialRepo.all().filter("self.product = ?1", product).fetch();
-  }
-
-  @Override
   @Transactional(rollbackOn = {Exception.class})
   public void updateProductCostPrice(BillOfMaterial billOfMaterial) throws AxelorException {
 
