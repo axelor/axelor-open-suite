@@ -56,7 +56,26 @@ public class ProjectTaskReportingValuesComputingServiceImpl
     // get AppBusinessProject config
     daysUnit = appBusinessProjectService.getDaysUnit();
     hoursUnit = appBusinessProjectService.getHoursUnit();
-    defaultHoursADay = appBusinessProjectService.getDefaultHoursADay();
+    Project project = projectTask.getProject();
+
+    if (Objects.isNull(project)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          String.format(
+              I18n.get(BusinessProjectExceptionMessage.PROJECT_TASK_NO_PROJECT_FOUND),
+              projectTask.getName()));
+    }
+
+    defaultHoursADay = project.getNumberHoursADay();
+
+    if (defaultHoursADay.signum() <= 0) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          String.format(
+              I18n.get(
+                  BusinessProjectExceptionMessage.PROJECT_CONFIG_DEFAULT_HOURS_PER_DAY_MISSING),
+              projectTask.getName()));
+    }
 
     computeProjectTaskTimes(projectTask);
     computeFinancialReporting(projectTask);
@@ -275,7 +294,7 @@ public class ProjectTaskReportingValuesComputingServiceImpl
    * @throws AxelorException
    */
   protected BigDecimal convertTimesheetLineDurationToTimeUnit(
-      TimesheetLine timesheetLine, Unit timeUnit) throws AxelorException {
+      TimesheetLine timesheetLine, Unit timeUnit) {
     String timeLoggingUnit = timesheetLine.getTimesheet().getTimeLoggingPreferenceSelect();
     BigDecimal duration = timesheetLine.getDuration();
     BigDecimal convertedDuration = BigDecimal.ZERO;
@@ -318,8 +337,7 @@ public class ProjectTaskReportingValuesComputingServiceImpl
    * @return
    * @throws AxelorException
    */
-  protected BigDecimal getAverageHourCostFromTimesheetLines(ProjectTask projectTask)
-      throws AxelorException {
+  protected BigDecimal getAverageHourCostFromTimesheetLines(ProjectTask projectTask) {
     BigDecimal totalCost = BigDecimal.ZERO;
     BigDecimal timeConsidered = BigDecimal.ZERO;
     List<TimesheetLine> timesheetLines = getValidatedTimesheetLinesForProjectTask(projectTask);
