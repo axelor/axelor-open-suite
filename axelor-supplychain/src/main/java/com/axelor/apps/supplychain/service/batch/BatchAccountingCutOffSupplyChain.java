@@ -88,9 +88,9 @@ public class BatchAccountingCutOffSupplyChain extends BatchAccountingCutOff {
     if (accountingCutOffTypeSelect
         < AccountingBatchRepository.ACCOUNTING_CUT_OFF_TYPE_PREPAID_EXPENSES) {
       if (this.recordIdList == null) {
-        this._processStockMovesByQuery(accountingBatch, lowerAmountLimit, upperAmountLimit, ati);
+        this._processStockMovesByQuery(accountingBatch);
       } else {
-        this._processStockMovesByIds(accountingBatch, lowerAmountLimit, upperAmountLimit, ati);
+        this._processStockMovesByIds(accountingBatch);
       }
     } else {
       if (this.recordIdList == null) {
@@ -101,11 +101,7 @@ public class BatchAccountingCutOffSupplyChain extends BatchAccountingCutOff {
     }
   }
 
-  protected void _processStockMovesByQuery(
-      AccountingBatch accountingBatch,
-      BigDecimal lowerAmountLimit,
-      BigDecimal upperAmountLimit,
-      boolean ati) {
+  protected void _processStockMovesByQuery(AccountingBatch accountingBatch) {
     Company company = accountingBatch.getCompany();
     LocalDate moveDate = accountingBatch.getMoveDate();
     int accountingCutOffTypeSelect = accountingBatch.getAccountingCutOffTypeSelect();
@@ -126,7 +122,11 @@ public class BatchAccountingCutOffSupplyChain extends BatchAccountingCutOff {
 
         try {
           if (!cutOffSupplyChainService.checkPriceLimit(
-              stockMove, lowerAmountLimit, upperAmountLimit, accountingCutOffTypeSelect, ati)) {
+              stockMove,
+              accountingBatch.getLowerAmountLimit(),
+              accountingBatch.getUpperAmountLimit(),
+              accountingCutOffTypeSelect,
+              accountingBatch.getAti())) {
             continue;
           }
         } catch (AxelorException e) {
@@ -144,7 +144,7 @@ public class BatchAccountingCutOffSupplyChain extends BatchAccountingCutOff {
     }
   }
 
-  protected void _processStockMovesByIds(AccountingBatch accountingBatch, BigDecimal lowerAmountLimit, BigDecimal upperAmountLimit, boolean ati) {
+  protected void _processStockMovesByIds(AccountingBatch accountingBatch) {
     int accountingCutOffTypeSelect = accountingBatch.getAccountingCutOffTypeSelect();
     List<StockMove> stockMoveList =
         recordIdList.stream()
@@ -155,15 +155,6 @@ public class BatchAccountingCutOffSupplyChain extends BatchAccountingCutOff {
             .collect(Collectors.toList());
 
     for (StockMove stockMove : stockMoveList) {
-
-      try {
-        if (!cutOffSupplyChainService.checkPriceLimit(stockMove, lowerAmountLimit, upperAmountLimit, accountingCutOffTypeSelect, ati)) {
-          continue;
-        }
-      } catch (AxelorException e) {
-        throw new RuntimeException(e);
-      }
-
       this._processStockMove(
           stockMoveRepository.find(stockMove.getId()),
           accountingBatchRepository.find(accountingBatch.getId()));
@@ -173,6 +164,14 @@ public class BatchAccountingCutOffSupplyChain extends BatchAccountingCutOff {
   @Transactional
   protected boolean _processStockMove(StockMove stockMove, AccountingBatch accountingBatch) {
     try {
+      if (!cutOffSupplyChainService.checkPriceLimit(
+              stockMove,
+              accountingBatch.getLowerAmountLimit(),
+              accountingBatch.getUpperAmountLimit(),
+              accountingCutOffTypeSelect,
+              accountingBatch.getAti())) {
+        return false;
+      }
       Journal miscOpeJournal = accountingBatch.getMiscOpeJournal();
       LocalDate reverseMoveDate = accountingBatch.getReverseMoveDate();
       LocalDate moveDate = accountingBatch.getMoveDate();
