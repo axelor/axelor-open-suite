@@ -123,7 +123,8 @@ public class ProjectTaskReportingValuesComputingServiceImpl
    * @param projectTask
    * @throws AxelorException
    */
-  protected void computeFinancialReporting(ProjectTask projectTask, Project project) throws AxelorException {
+  protected void computeFinancialReporting(ProjectTask projectTask, Project project)
+      throws AxelorException {
 
     projectTask.setTurnover(
         projectTask
@@ -237,7 +238,8 @@ public class ProjectTaskReportingValuesComputingServiceImpl
    * @return
    * @throws AxelorException
    */
-  protected BigDecimal computeUnitCost(ProjectTask projectTask, Project project) throws AxelorException {
+  protected BigDecimal computeUnitCost(ProjectTask projectTask, Project project)
+      throws AxelorException {
     BigDecimal unitCost = BigDecimal.ZERO;
 
     Unit timeUnit = projectTask.getTimeUnit();
