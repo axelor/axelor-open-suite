@@ -52,6 +52,8 @@ import com.axelor.apps.contract.db.repo.ContractRepository;
 import com.axelor.apps.contract.db.repo.ContractVersionRepository;
 import com.axelor.apps.contract.exception.ContractExceptionMessage;
 import com.axelor.apps.contract.generator.InvoiceGeneratorContract;
+import com.axelor.apps.contract.model.AnalyticLineContractModel;
+import com.axelor.apps.supplychain.service.AnalyticLineModelSerivce;
 import com.axelor.auth.AuthUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -88,6 +90,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
   protected ConsumptionLineRepository consumptionLineRepo;
   protected ContractRepository contractRepository;
   protected TaxService taxService;
+  protected AnalyticLineModelSerivce analyticLineModelSerivce;
 
   @Inject
   public ContractServiceImpl(
@@ -98,7 +101,8 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
       ContractLineRepository contractLineRepo,
       ConsumptionLineRepository consumptionLineRepo,
       ContractRepository contractRepository,
-      TaxService taxService) {
+      TaxService taxService,
+      AnalyticLineModelSerivce analyticLineModelSerivce) {
     this.appBaseService = appBaseService;
     this.versionService = versionService;
     this.contractLineService = contractLineService;
@@ -107,6 +111,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     this.consumptionLineRepo = consumptionLineRepo;
     this.contractRepository = contractRepository;
     this.taxService = taxService;
+    this.analyticLineModelSerivce = analyticLineModelSerivce;
   }
 
   @Override
@@ -607,13 +612,8 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     invoiceLine.setAccount(replacedAccount);
 
     if (CollectionUtils.isNotEmpty(line.getAnalyticMoveLineList())) {
-      invoiceLine.setAnalyticDistributionTemplate(line.getAnalyticDistributionTemplate());
-
-      invoiceLine.setAxis1AnalyticAccount(line.getAxis1AnalyticAccount());
-      invoiceLine.setAxis2AnalyticAccount(line.getAxis2AnalyticAccount());
-      invoiceLine.setAxis3AnalyticAccount(line.getAxis3AnalyticAccount());
-      invoiceLine.setAxis4AnalyticAccount(line.getAxis4AnalyticAccount());
-      invoiceLine.setAxis5AnalyticAccount(line.getAxis5AnalyticAccount());
+      analyticLineModelSerivce.setInvoiceLineAnalyticInfo(
+          new AnalyticLineContractModel(line), invoiceLine);
 
       this.copyAnalyticMoveLines(line.getAnalyticMoveLineList(), invoiceLine);
     }

@@ -4,6 +4,7 @@ import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
@@ -177,5 +178,18 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelSerivce {
     analyticLineModel.setAxis3AnalyticAccount(null);
     analyticLineModel.setAxis4AnalyticAccount(null);
     analyticLineModel.setAxis5AnalyticAccount(null);
+  }
+
+  @Override
+  public void setInvoiceLineAnalyticInfo(
+      AnalyticLineModel analyticLineModel, InvoiceLine invoiceLine) {
+    invoiceLine.setAnalyticDistributionTemplate(
+        analyticLineModel.getAnalyticDistributionTemplate());
+
+    invoiceLine.setAxis1AnalyticAccount(analyticLineModel.getAxis1AnalyticAccount());
+    invoiceLine.setAxis2AnalyticAccount(analyticLineModel.getAxis2AnalyticAccount());
+    invoiceLine.setAxis3AnalyticAccount(analyticLineModel.getAxis3AnalyticAccount());
+    invoiceLine.setAxis4AnalyticAccount(analyticLineModel.getAxis4AnalyticAccount());
+    invoiceLine.setAxis5AnalyticAccount(analyticLineModel.getAxis5AnalyticAccount());
   }
 }

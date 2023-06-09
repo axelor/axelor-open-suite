@@ -195,6 +195,7 @@ import com.axelor.apps.supplychain.service.config.SupplyChainConfigServiceImpl;
 import com.axelor.apps.supplychain.service.declarationofexchanges.DeclarationOfExchangesService;
 import com.axelor.apps.supplychain.service.declarationofexchanges.DeclarationOfExchangesServiceImpl;
 import com.axelor.apps.supplychain.service.fixedasset.FixedAssetServiceSupplyChainImpl;
+import com.axelor.apps.supplychain.service.invoice.InvoiceLineAnalyticSupplychainService;
 import com.axelor.apps.supplychain.service.invoice.InvoiceLineAnalyticSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.invoice.InvoiceMergingServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychain;
@@ -313,6 +314,8 @@ public class SupplychainModule extends AxelorModule {
     bind(StockProductRestServiceImpl.class).to(StockProductRestServiceSupplychainImpl.class);
     bind(AnalyticMoveLineServiceImpl.class).to(AnalyticMoveLineSupplychainServiceImpl.class);
     bind(InvoiceLineAnalyticServiceImpl.class).to(InvoiceLineAnalyticSupplychainServiceImpl.class);
+    bind(InvoiceLineAnalyticSupplychainService.class)
+        .to(InvoiceLineAnalyticSupplychainServiceImpl.class);
     bind(InvoiceLineOrderService.class).to(InvoiceLineOrderServiceImpl.class);
     bind(PurchaseOrderBudgetService.class).to(PurchaseOrderBudgetServiceImpl.class);
     bind(PurchaseOrderLineBudgetService.class).to(PurchaseOrderLineBudgetServiceImpl.class);
