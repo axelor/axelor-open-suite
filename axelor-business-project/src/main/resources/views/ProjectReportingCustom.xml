@@ -41,7 +41,8 @@
     <view type="custom" name="project-remaining-to-do-custom"/>
   </action-view>
 
-  <custom title="Sold time" name="project-sold-time-custom" css="report-box">
+  <custom title="Sold time" name="project-sold-time-custom"
+    css="report-box dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectTimeFollowUpData</dataset>
     <template>
       <![CDATA[
@@ -53,7 +54,8 @@
     </template>
   </custom>
 
-  <custom title="Updated time" name="project-updated-time-custom" css="report-box">
+  <custom title="Updated time" name="project-updated-time-custom"
+    css="report-box dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectTimeFollowUpData</dataset>
     <template>
       <![CDATA[
@@ -65,7 +67,8 @@
     </template>
   </custom>
 
-  <custom title="Planned time" name="project-planned-time-custom" css="report-box">
+  <custom title="Planned time" name="project-planned-time-custom"
+    css="report-box dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectTimeFollowUpData</dataset>
     <template>
       <![CDATA[
@@ -77,7 +80,8 @@
     </template>
   </custom>
 
-  <custom title="Spent time" name="project-spent-time-custom" css="report-box">
+  <custom title="Spent time" name="project-spent-time-custom"
+    css="report-box dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectTimeFollowUpData</dataset>
     <template>
       <![CDATA[
@@ -89,7 +93,8 @@
     </template>
   </custom>
 
-  <custom title="% of progress" name="project-percentage-progress-custom" css="report-box">
+  <custom title="% of progress" name="project-percentage-progress-custom"
+    css="report-box dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectTimeFollowUpData</dataset>
     <template>
       <![CDATA[
@@ -102,7 +107,7 @@
   </custom>
 
   <custom title="% of consumption" name="project-percentage-consumption-custom"
-    css="report-box">
+    css="report-box dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectTimeFollowUpData</dataset>
     <template>
       <![CDATA[
@@ -115,7 +120,7 @@
   </custom>
 
   <custom title="Remaining amount to do" name="project-remaining-to-do-custom"
-    css="report-box">
+    css="report-box dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectTimeFollowUpData</dataset>
     <template>
       <![CDATA[
@@ -128,7 +133,8 @@
   </custom>
   <!-- financial follow up -->
   <!-- INITIAL -->
-  <custom title="ProjectTask.Turnover" name="project-turnover-custom" css="report-box">
+  <custom title="ProjectTask.Turnover" name="project-turnover-custom"
+    css="report-box dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectFinancialFollowUpData</dataset>
     <template>
       <![CDATA[
@@ -140,7 +146,8 @@
     </template>
   </custom>
 
-  <custom title="ProjectTask.Costs" name="project-initial-costs-custom" css="report-box">
+  <custom title="ProjectTask.Costs" name="project-initial-costs-custom"
+    css="report-box dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectFinancialFollowUpData</dataset>
     <template>
       <![CDATA[
@@ -152,7 +159,8 @@
     </template>
   </custom>
 
-  <custom title="ProjectTask.Margin" name="project-initial-margin-custom" css="report-box">
+  <custom title="ProjectTask.Margin" name="project-initial-margin-custom"
+    css="report-box dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectFinancialFollowUpData</dataset>
     <template>
       <![CDATA[
@@ -164,7 +172,8 @@
     </template>
   </custom>
 
-  <custom title="ProjectTask.Markup" name="project-initial-markup-custom" css="report-box">
+  <custom title="ProjectTask.Markup" name="project-initial-markup-custom"
+    css="report-box dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectFinancialFollowUpData</dataset>
     <template>
       <![CDATA[
@@ -177,7 +186,8 @@
   </custom>
 
   <!-- REAL -->
-  <custom title="Real turnover" name="project-real-turnover-custom" css="report-box">
+  <custom title="Real turnover" name="project-real-turnover-custom"
+    css="report-box dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectFinancialFollowUpData</dataset>
     <template>
       <![CDATA[
@@ -189,7 +199,8 @@
     </template>
   </custom>
 
-  <custom title="ProjectTask.Costs" name="project-real-costs-custom" css="report-box">
+  <custom title="ProjectTask.Costs" name="project-real-costs-custom"
+    css="report-box dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectFinancialFollowUpData</dataset>
     <template>
       <![CDATA[
@@ -201,7 +212,8 @@
     </template>
   </custom>
 
-  <custom title="ProjectTask.Margin" name="project-real-margin-custom" css="report-box">
+  <custom title="ProjectTask.Margin" name="project-real-margin-custom"
+    css="report-box dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectFinancialFollowUpData</dataset>
     <template>
       <![CDATA[
@@ -213,7 +225,8 @@
     </template>
   </custom>
 
-  <custom title="ProjectTask.Markup" name="project-real-markup-custom" css="report-box">
+  <custom title="ProjectTask.Markup" name="project-real-markup-custom"
+    css="report-box dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectFinancialFollowUpData</dataset>
     <template>
       <![CDATA[
@@ -227,7 +240,8 @@
 
 
   <!-- FORECAST -->
-  <custom title="ProjectTask.Costs" name="project-forecast-costs-custom" css="report-box">
+  <custom title="ProjectTask.Costs" name="project-forecast-costs-custom"
+    css="report-box dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectFinancialFollowUpData</dataset>
     <template>
       <![CDATA[
@@ -239,7 +253,8 @@
     </template>
   </custom>
 
-  <custom title="ProjectTask.Margin" name="project-forecast-margin-custom" css="report-box">
+  <custom title="ProjectTask.Margin" name="project-forecast-margin-custom"
+    css="report-box dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectFinancialFollowUpData</dataset>
     <template>
       <![CDATA[
@@ -251,7 +266,8 @@
     </template>
   </custom>
 
-  <custom title="ProjectTask.Markup" name="project-forecast-markup-custom" css="report-box">
+  <custom title="ProjectTask.Markup" name="project-forecast-markup-custom"
+    css="report-box dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectFinancialFollowUpData</dataset>
     <template>
       <![CDATA[

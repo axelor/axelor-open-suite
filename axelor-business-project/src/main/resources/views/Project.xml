@@ -37,13 +37,13 @@
       <insert position="inside">
         <item title="Compute project totals"
           action="save,action-project-method-compute-project-totals"
-          if="__config__.app.isApp('business-project')" showIf="id"/>
+          if="__config__.app.isApp('business-project')" showIf="id &amp;&amp;isBusinessProject"/>
       </insert>
     </extend>
     <extend target="//panel[@name='salesPanel']">
       <insert position="before">
         <panel name="reportingPanel" title="Reporting" if-module="axelor-business-project"
-          if="__config__.app.isApp('business-project')">
+          if="__config__.app.isApp('business-project')" hidden="true" showIf="isBusinessProject">
           <panel title="Time follow-up" colSpan="12">
 
             <panel-dashlet action="action-project-view-sold-time-custom" colSpan="3"
