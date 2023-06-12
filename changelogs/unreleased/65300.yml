@@ -1,0 +1,3 @@
+---
+title: "Move : Fix tax computation when we have two financial accounts with the same VAT system"
+type: fix

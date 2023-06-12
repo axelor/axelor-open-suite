@@ -872,6 +872,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
                 AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
                 RoundingMode.HALF_UP);
     newOrUpdatedMoveLine.setCredit(newOrUpdatedMoveLine.getCredit().add(newMoveLineCredit));
+    newOrUpdatedMoveLine = this.checkOrUpdateTaxLineAmount(newOrUpdatedMoveLine);
 
     newOrUpdatedMoveLine.setOriginDate(move.getOriginDate());
     newOrUpdatedMoveLine = moveLineToolService.setCurrencyAmount(newOrUpdatedMoveLine);
@@ -883,7 +884,14 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     if (newOrUpdatedMoveLine.getDebit().signum() != 0
         || newOrUpdatedMoveLine.getCredit().signum() != 0) {
       newMap.put(newSourceTaxLineKey, newOrUpdatedMoveLine);
+    } else if (newOrUpdatedMoveLine
+            .getDebit()
+            .add(newOrUpdatedMoveLine.getCredit())
+            .compareTo(BigDecimal.ZERO)
+        == 0) {
+      newMap.remove(newSourceTaxLineKey, newOrUpdatedMoveLine);
     }
+
     if (newOrUpdatedMoveLineRC != null) {
       newOrUpdatedMoveLineRC.setMove(move);
       newOrUpdatedMoveLineRC = moveLineToolService.setCurrencyAmount(newOrUpdatedMoveLineRC);
@@ -909,6 +917,22 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       }
     }
     return newOrUpdatedMoveLine;
+  }
+
+  protected MoveLine checkOrUpdateTaxLineAmount(MoveLine moveLine) {
+    if (moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0
+        && moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0) {
+      BigDecimal taxLineDiff = moveLine.getDebit().subtract(moveLine.getCredit());
+      if (taxLineDiff.compareTo(BigDecimal.ZERO) > 0) {
+        moveLine.setDebit(taxLineDiff);
+        moveLine.setCredit(BigDecimal.ZERO);
+      } else {
+        moveLine.setDebit(BigDecimal.ZERO);
+        moveLine.setCredit(taxLineDiff.abs());
+      }
+    }
+
+    return moveLine;
   }
 
   protected BigDecimal sumMoveLinesByAccountType(List<MoveLine> moveLines, String accountType) {
