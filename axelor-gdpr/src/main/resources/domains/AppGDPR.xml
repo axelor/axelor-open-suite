@@ -24,6 +24,9 @@
     <many-to-one name="erasureResponseTemplate" ref="com.axelor.message.db.Template"
       title="Email template for erasure request response"
       help="Email template to send when responding to an erasure request."/>
+    <one-to-many name="relationsShipAnonymizer"
+      ref="com.axelor.apps.gdpr.db.RelationshipAnonymizer" mappedBy="appGdpr"
+      title="Relationship anonymizer"/>
 
     <track>
       <field name="maxRespondingDays" on="UPDATE"/>

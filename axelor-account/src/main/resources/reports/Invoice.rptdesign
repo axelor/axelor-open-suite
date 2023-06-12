@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.8.0.v201806261756</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -43,9 +43,6 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
             <property name="isRequired">true</property>
             <property name="dataType">decimal</property>
             <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">15</value>
-            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -223,9 +220,7 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/65-crm</property>
-            <property name="odaUser">arthur</property>
-            <encrypted-property name="odaPassword" encryptionID="base64">YXJ0aHVycHdk</encrypted-property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -700,6 +695,11 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
                     <text-property name="displayName">displayItemsCategoriesOnPrinting</text-property>
                     <text-property name="heading">displayItemsCategoriesOnPrinting</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">tableFontSize</property>
+                    <text-property name="displayName">tableFontSize</text-property>
+                    <text-property name="heading">tableFontSize</text-property>
+                </structure>
             </list-property>
             <list-property name="filter"/>
             <list-property name="parameters">
@@ -1055,6 +1055,11 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
                         <property name="position">68</property>
                         <property name="name">displayItemsCategoriesOnPrinting</property>
                         <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">69</property>
+                        <property name="name">tableFontSize</property>
+                        <property name="dataType">decimal</property>
                     </structure>
                 </list-property>
             </structure>
@@ -1536,6 +1541,13 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
+                <structure>
+                    <property name="position">69</property>
+                    <property name="name">tableFontSize</property>
+                    <property name="nativeName">tableFontSize</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select distinct Invoice.id as inv_id, 
 	coalesce(MetaFileTN.file_path, MetaFile.file_path) as logo_path, 
@@ -1604,7 +1616,8 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
 	CompanyAccountingSituation.vat_system_select as "companyVatSystemSelect",
 	(SELECT display_partner_siren_on_invoice_printing FROM account_account_config WHERE company = Company.id) as "display_siren",
 	Invoice.invoice_product_statement,
-	AccountConfig.display_items_categories_on_printing as "displayItemsCategoriesOnPrinting"
+	AccountConfig.display_items_categories_on_printing as "displayItemsCategoriesOnPrinting",
+	PrintingSettings.table_font_size as "tableFontSize"
 from account_invoice as Invoice 
 left outer join base_company as Company on (Invoice.company = Company.id)
 left outer join studio_app_sale as AppSale on true
@@ -4469,6 +4482,12 @@ where Invoice.id = ? AND InvoicePayment.status_select=1;]]></xml-property>
                     <expression name="expression" type="javascript">dataSetRow["displayItemsCategoriesOnPrinting"]</expression>
                     <property name="dataType">integer</property>
                 </structure>
+                <structure>
+                    <property name="name">tableFontSize</property>
+                    <text-property name="displayName">tableFontSize</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["tableFontSize"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
             </list-property>
             <method name="onPrepare"><![CDATA[String.prototype.repeat = String.prototype.repeat ||
   function(n) {
@@ -6248,6 +6267,13 @@ else {
                                 <property name="dataType">integer</property>
                                 <property name="allowExport">true</property>
                             </structure>
+                            <structure>
+                                <property name="name">tableFontSize</property>
+                                <text-property name="displayName">tableFontSize</text-property>
+                                <expression name="expression" type="javascript">row._outer["tableFontSize"]</expression>
+                                <property name="dataType">decimal</property>
+                                <property name="allowExport">true</property>
+                            </structure>
                         </list-property>
                         <list-property name="sort">
                             <structure>
@@ -6699,6 +6725,7 @@ else {
                                     <data id="5380">
                                         <property name="fontSize">8pt</property>
                                         <property name="textAlign">left</property>
+                                        <method name="onRender"><![CDATA[this.getStyle().fontSize = this.getRowData().getColumnValue("tableFontSize")]]></method>
                                         <property name="resultSetColumn">productCode</property>
                                     </data>
                                     <data id="5381">
@@ -6711,6 +6738,7 @@ else {
                                                 <expression name="valueExpr" type="javascript">!row["customerproductcode"] || row["typeselect"] != 0</expression>
                                             </structure>
                                         </list-property>
+                                        <method name="onRender"><![CDATA[this.getStyle().fontSize = this.getRowData().getColumnValue("tableFontSize")]]></method>
                                         <property name="resultSetColumn">customerproductcode</property>
                                     </data>
                                 </cell>
@@ -6749,7 +6777,15 @@ else {
                                                 <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
+                                            <structure>
+                                                <property name="name">tableFontSize</property>
+                                                <text-property name="displayName">tableFontSize</text-property>
+                                                <expression name="expression" type="javascript">row._outer["tableFontSize"]</expression>
+                                                <property name="dataType">decimal</property>
+                                                <property name="allowExport">true</property>
+                                            </structure>
                                         </list-property>
+                                        <method name="onRender"><![CDATA[this.getStyle().fontSize = this.getRowData().getColumnValue("tableFontSize")]]></method>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF> row._outer["product_name"]</VALUE-OF>]]></text-property>
                                     </text>
@@ -6763,6 +6799,7 @@ else {
                                                 <expression name="valueExpr" type="javascript">!row["customerproductname"] || row["typeselect"] != 0</expression>
                                             </structure>
                                         </list-property>
+                                        <method name="onRender"><![CDATA[this.getStyle().fontSize = this.getRowData().getColumnValue("tableFontSize")]]></method>
                                         <property name="resultSetColumn">customerproductname</property>
                                     </data>
                                     <text id="5385">
@@ -6773,6 +6810,7 @@ else {
                                                 <expression name="valueExpr" type="javascript">row["typeselect"] != 0 || row["description"] == null</expression>
                                             </structure>
                                         </list-property>
+                                        <method name="onRender"><![CDATA[this.getStyle().fontSize = this.getRowData().getColumnValue("tableFontSize")]]></method>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<SUB><I><VALUE-OF format="HTML">if(row["description"] != null ) row["description"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"")</VALUE-OF></I></SUB></br>]]></text-property>
                                     </text>
@@ -6811,8 +6849,16 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                                                 <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
+                                            <structure>
+                                                <property name="name">tableFontSize</property>
+                                                <text-property name="displayName">tableFontSize</text-property>
+                                                <expression name="expression" type="javascript">row._outer["tableFontSize"]</expression>
+                                                <property name="dataType">decimal</property>
+                                                <property name="allowExport">true</property>
+                                            </structure>
                                         </list-property>
                                         <structure name="toc"/>
+                                        <method name="onRender"><![CDATA[this.getStyle().fontSize = this.getRowData().getColumnValue("tableFontSize")]]></method>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF>row["translation"] != null ? row["translation"] : row._outer["product_name"]</VALUE-OF>]]></text-property>
                                     </text>
@@ -6826,6 +6872,7 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                                                 <expression name="valueExpr" type="javascript">row["typeselect"] == 0 || (row["enablePackMangement"] &amp;&amp; row["typeselect"] == 3 &amp;&amp; !row["showtotal"])</expression>
                                             </structure>
                                         </list-property>
+                                        <method name="onRender"><![CDATA[this.getStyle().fontSize = this.getRowData().getColumnValue("tableFontSize")]]></method>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<SUB><I><VALUE-OF format="HTML">if(row["description"] != null ) row["description"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"")</VALUE-OF></I></SUB>]]></text-property>
                                     </text>
@@ -6840,6 +6887,7 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                                     <text id="5390">
                                         <property name="fontSize">8pt</property>
                                         <property name="textAlign">center</property>
+                                        <method name="onRender"><![CDATA[this.getStyle().fontSize = this.getRowData().getColumnValue("tableFontSize")]]></method>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF format="###0.00' %'{RoundingMode=HALF_UP}">row["taxvalue"]</VALUE-OF>]]></text-property>
                                     </text>
@@ -6874,7 +6922,15 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                                                             <expression name="expression" type="javascript">dataSetRow["nb_decimal_digit_for_qty"]</expression>
                                                             <property name="dataType">integer</property>
                                                         </structure>
+                                                        <structure>
+                                                            <property name="name">tableFontSize</property>
+                                                            <text-property name="displayName">tableFontSize</text-property>
+                                                            <expression name="expression" type="javascript">row._outer["tableFontSize"]</expression>
+                                                            <property name="dataType">decimal</property>
+                                                            <property name="allowExport">true</property>
+                                                        </structure>
                                                     </list-property>
+                                                    <method name="onRender"><![CDATA[this.getStyle().fontSize = this.getRowData().getColumnValue("tableFontSize")]]></method>
                                                     <property name="contentType">html</property>
                                                     <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row._outer["qty"],"#,##0."+Array((row["nb_decimal_digit_for_qty"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
                                                 </text>
@@ -6905,7 +6961,15 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                                                             <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
                                                             <property name="dataType">string</property>
                                                         </structure>
+                                                        <structure>
+                                                            <property name="name">tableFontSize</property>
+                                                            <text-property name="displayName">tableFontSize</text-property>
+                                                            <expression name="expression" type="javascript">row._outer["tableFontSize"]</expression>
+                                                            <property name="dataType">decimal</property>
+                                                            <property name="allowExport">true</property>
+                                                        </structure>
                                                     </list-property>
+                                                    <method name="onRender"><![CDATA[this.getStyle().fontSize = this.getRowData().getColumnValue("tableFontSize")]]></method>
                                                     <property name="contentType">html</property>
                                                     <text-property name="content"><![CDATA[<VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>if(row["translation"] != null) {row["translation"]} else {row._outer["unitname"]}</VALUE-OF>
 ]]></text-property>
@@ -6938,7 +7002,15 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                                                             <expression name="expression" type="javascript">dataSetRow["nb_decimal_digit_for_qty"]</expression>
                                                             <property name="dataType">integer</property>
                                                         </structure>
+                                                        <structure>
+                                                            <property name="name">tableFontSize</property>
+                                                            <text-property name="displayName">tableFontSize</text-property>
+                                                            <expression name="expression" type="javascript">row._outer["tableFontSize"]</expression>
+                                                            <property name="dataType">decimal</property>
+                                                            <property name="allowExport">true</property>
+                                                        </structure>
                                                     </list-property>
+                                                    <method name="onRender"><![CDATA[this.getStyle().fontSize = this.getRowData().getColumnValue("tableFontSize")]]></method>
                                                     <property name="contentType">html</property>
                                                     <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row._outer["qty"],"#,##0."+Array((row["nb_decimal_digit_for_qty"] || 2)+1).join("0"))</VALUE-OF> <VALUE-OF format="^">"  "</VALUE-OF>]]></text-property>
                                                 </text>
@@ -6970,7 +7042,15 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                                                             <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
                                                             <property name="dataType">string</property>
                                                         </structure>
+                                                        <structure>
+                                                            <property name="name">tableFontSize</property>
+                                                            <text-property name="displayName">tableFontSize</text-property>
+                                                            <expression name="expression" type="javascript">row._outer["tableFontSize"]</expression>
+                                                            <property name="dataType">decimal</property>
+                                                            <property name="allowExport">true</property>
+                                                        </structure>
                                                     </list-property>
+                                                    <method name="onRender"><![CDATA[this.getStyle().fontSize = this.getRowData().getColumnValue("tableFontSize")]]></method>
                                                     <property name="contentType">html</property>
                                                     <text-property name="content"><![CDATA[<VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>if(row["translation"] != null) {row["translation"]} else {row._outer["unitname"]}</VALUE-OF>]]></text-property>
                                                 </text>
@@ -7002,7 +7082,15 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                                                 <expression name="expression" type="javascript">dataSetRow["nb_decimal_digit_for_unit_price"]</expression>
                                                 <property name="dataType">integer</property>
                                             </structure>
+                                            <structure>
+                                                <property name="name">tableFontSize</property>
+                                                <text-property name="displayName">tableFontSize</text-property>
+                                                <expression name="expression" type="javascript">row._outer["tableFontSize"]</expression>
+                                                <property name="dataType">decimal</property>
+                                                <property name="allowExport">true</property>
+                                            </structure>
                                         </list-property>
+                                        <method name="onRender"><![CDATA[this.getStyle().fontSize = this.getRowData().getColumnValue("tableFontSize")]]></method>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF>if( row._outer._outer["hideDiscount"]) {Formatter.format(row._outer["price"] + row._outer["totaldiscountamount"]/row._outer["qty"], "#,##0." + "0".repeat(row["nb_decimal_digit_for_unit_price"]))}</VALUE-OF>
 <VALUE-OF>if( !row._outer._outer["hideDiscount"]) {Formatter.format(row._outer["price"], "#,##0." + "0".repeat(row["nb_decimal_digit_for_unit_price"]))}</VALUE-OF>]]></text-property>
@@ -7023,6 +7111,7 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                                                 <expression name="valueExpr" type="javascript">row["totaldiscountamount"] >= 0 || row["typeselect"] != 0 || (row["enablePackMangement"] &amp;&amp; row["packhideunitamounts"])</expression>
                                             </structure>
                                         </list-property>
+                                        <method name="onRender"><![CDATA[this.getStyle().fontSize = this.getRowData().getColumnValue("tableFontSize")]]></method>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF format="#,###.00">row["totaldiscountamount"]</VALUE-OF>]]></text-property>
                                     </text>
@@ -7042,6 +7131,7 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                                                 <expression name="valueExpr" type="javascript">row["typeselect"] != 0 || (row["enablePackMangement"] &amp;&amp; row["packhideunitamounts"])</expression>
                                             </structure>
                                         </list-property>
+                                        <method name="onRender"><![CDATA[this.getStyle().fontSize = this.getRowData().getColumnValue("tableFontSize")]]></method>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">if(row["ex_tax_total"] != 0) {row["ex_tax_total"]}</VALUE-OF>]]></text-property>
                                     </text>
@@ -7056,6 +7146,7 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                                                 <expression name="valueExpr" type="javascript">!row["enablePackMangement"] || row["typeselect"] != 3 || !row["showtotal"] || row["ex_tax_total"] == 0</expression>
                                             </structure>
                                         </list-property>
+                                        <method name="onRender"><![CDATA[this.getStyle().fontSize = this.getRowData().getColumnValue("tableFontSize")]]></method>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row["ex_tax_total"]</VALUE-OF>]]></text-property>
                                     </text>
@@ -7075,6 +7166,7 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                                                 <expression name="valueExpr" type="javascript">row["typeselect"] != 0 || (row["enablePackMangement"] &amp;&amp; row["packhideunitamounts"])</expression>
                                             </structure>
                                         </list-property>
+                                        <method name="onRender"><![CDATA[this.getStyle().fontSize = this.getRowData().getColumnValue("tableFontSize")]]></method>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF>if(row["ex_tax_total"] != 0){row["currencycode"]}</VALUE-OF>]]></text-property>
                                     </text>
@@ -7088,6 +7180,7 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                                                 <expression name="valueExpr" type="javascript">!row["enablePackMangement"] || row["typeselect"] != 3 || !row["showtotal"] || row["ex_tax_total"] == 0</expression>
                                             </structure>
                                         </list-property>
+                                        <method name="onRender"><![CDATA[this.getStyle().fontSize = this.getRowData().getColumnValue("tableFontSize")]]></method>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF>row["currencycode"]</VALUE-OF>]]></text-property>
                                     </text>
@@ -7106,6 +7199,7 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                                                 <expression name="valueExpr" type="javascript">row["typeselect"] != 0 || (row["enablePackMangement"] &amp;&amp; row["packhideunitamounts"])</expression>
                                             </structure>
                                         </list-property>
+                                        <method name="onRender"><![CDATA[this.getStyle().fontSize = this.getRowData().getColumnValue("tableFontSize")]]></method>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row["in_tax_total"]</VALUE-OF>]]></text-property>
                                     </text>
@@ -7119,6 +7213,7 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                                                 <expression name="valueExpr" type="javascript">!row["enablePackMangement"] || row["typeselect"] != 3 || !row["showtotal"] || row["in_tax_total"] == 0</expression>
                                             </structure>
                                         </list-property>
+                                        <method name="onRender"><![CDATA[this.getStyle().fontSize = this.getRowData().getColumnValue("tableFontSize")]]></method>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row["in_tax_total"]</VALUE-OF>]]></text-property>
                                     </text>
@@ -7138,6 +7233,7 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                                                 <expression name="valueExpr" type="javascript">row["typeselect"] != 0 || (row["enablePackMangement"] &amp;&amp; row["packhideunitamounts"])</expression>
                                             </structure>
                                         </list-property>
+                                        <method name="onRender"><![CDATA[this.getStyle().fontSize = this.getRowData().getColumnValue("tableFontSize")]]></method>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[ <VALUE-OF>row["currencycode"] </VALUE-OF>]]></text-property>
                                     </text>
@@ -7151,6 +7247,7 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                                                 <expression name="valueExpr" type="javascript">!row["enablePackMangement"] || row["typeselect"] != 3 || !row["showtotal"] || row["in_tax_total"] == 0</expression>
                                             </structure>
                                         </list-property>
+                                        <method name="onRender"><![CDATA[this.getStyle().fontSize = this.getRowData().getColumnValue("tableFontSize")]]></method>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[ <VALUE-OF>row["currencycode"]</VALUE-OF>]]></text-property>
                                     </text>

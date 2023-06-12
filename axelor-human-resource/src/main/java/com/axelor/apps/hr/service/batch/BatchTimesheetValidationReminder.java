@@ -222,8 +222,7 @@ public class BatchTimesheetValidationReminder extends AbstractBatch {
 
     String comment = String.format("\t* %s Email(s) sent %n", batch.getDone());
     comment +=
-        String.format(
-            "\t" + I18n.get(BaseExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
+        String.format("\t" + I18n.get(BaseExceptionMessage.BASE_BATCH_3), batch.getAnomaly());
 
     super.stop();
     addComment(comment);
