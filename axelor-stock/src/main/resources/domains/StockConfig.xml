@@ -101,7 +101,8 @@
     <boolean name="displayPriceOnPrinting" title="Display price on printing" default="true"/>
     <boolean name="displayOrderReferenceAndOrderDate"
       title="Display order reference and order date" default="true"/>
-
+    <boolean name="displayCustomerContactOnPrinting"
+      title="Display customer contact on printing" default="true"/>
     <integer name="percentToleranceForWapChange" title="Tolerance on WAP changes (%)"
       min="0" nullable="true"/>
 

@@ -126,6 +126,7 @@
       <field name="displayOrderReferenceAndOrderDate" widget="boolean-switch"/>
       <field name="displayProductCodeOnPrinting" widget="boolean-switch"/>
       <field name="displayPriceOnPrinting" widget="boolean-switch"/>
+      <field name="displayCustomerContactOnPrinting" widget="boolean-switch"/>
     </panel>
 
     <panel-mail name="mailPanel">
