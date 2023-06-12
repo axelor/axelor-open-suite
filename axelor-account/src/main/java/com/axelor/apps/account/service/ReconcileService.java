@@ -18,13 +18,16 @@
  */
 package com.axelor.apps.account.service;
 
+import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.InvoiceTermPayment;
+import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -101,6 +104,17 @@ public interface ReconcileService {
         && (acc1.getAccount().equals(acc2.getAccount())
             || acc1.getAccount().getCompatibleAccountSet().contains(acc2.getAccount()));
   }
+
+  @Transactional(rollbackOn = {Exception.class})
+  void updatePayment(
+      Reconcile reconcile,
+      MoveLine moveLine,
+      Invoice invoice,
+      Move move,
+      Move otherMove,
+      BigDecimal amount,
+      boolean updateInvoiceTerms)
+      throws AxelorException;
 
   public List<InvoiceTermPayment> updateInvoiceTerms(
       List<InvoiceTerm> invoiceTermList,

@@ -1579,4 +1579,19 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     }
     return false;
   }
+
+  @Override
+  @Transactional
+  public void payInvoiceTerms(List<InvoiceTerm> invoiceTermList) {
+    if (ObjectUtils.isEmpty(invoiceTermList)) {
+      return;
+    }
+
+    for (InvoiceTerm invoiceTerm : invoiceTermList) {
+      invoiceTerm.setIsPaid(true);
+      invoiceTerm.setAmountRemaining(BigDecimal.ZERO);
+      invoiceTerm.setCompanyAmountRemaining(BigDecimal.ZERO);
+      this.computeAmountRemainingAfterFinDiscount(invoiceTerm);
+    }
+  }
 }

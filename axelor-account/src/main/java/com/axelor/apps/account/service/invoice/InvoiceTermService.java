@@ -330,4 +330,6 @@ public interface InvoiceTermService {
 
   boolean isThresholdNotOnLastInvoiceTerm(
       MoveLine moveLine, BigDecimal thresholdDistanceFromRegulation);
+
+  void payInvoiceTerms(List<InvoiceTerm> invoiceTermList);
 }

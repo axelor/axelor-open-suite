@@ -19,12 +19,15 @@
 package com.axelor.apps.account.service.payment.paymentsession;
 
 import com.axelor.apps.account.db.InvoiceTerm;
+import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import org.apache.commons.lang3.tuple.Pair;
 
 public interface PaymentSessionValidateService {
@@ -32,7 +35,8 @@ public interface PaymentSessionValidateService {
 
   public int processPaymentSession(
       PaymentSession paymentSession,
-      List<Pair<InvoiceTerm, Pair<InvoiceTerm, BigDecimal>>> invoiceTermLinkWithRefundList)
+      List<Pair<InvoiceTerm, Pair<InvoiceTerm, BigDecimal>>> invoiceTermLinkWithRefundList,
+      boolean isLcr)
       throws AxelorException;
 
   public StringBuilder generateFlashMessage(PaymentSession paymentSession, int moveCount);
@@ -57,4 +61,13 @@ public interface PaymentSessionValidateService {
       List<InvoiceTerm> invoiceTermList, PaymentSession paymentSession);
 
   public LocalDate getAccountingDate(PaymentSession paymentSession, InvoiceTerm invoiceTerm);
+
+  void processInvoiceTermLcr(
+      PaymentSession paymentSession,
+      InvoiceTerm invoiceTerm,
+      Map<LocalDate, Map<Partner, List<Move>>> moveDateMap)
+      throws AxelorException;
+
+  MoveLine processLcrPlacement(PaymentSession paymentSession, InvoiceTerm invoiceTerm)
+      throws AxelorException;
 }

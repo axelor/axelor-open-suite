@@ -371,6 +371,12 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
       if (this.isBlocking(invoice.getPartner(), paymentSession)) {
         return true;
       }
+
+      if (this.isLcrBlocking(invoice, invoiceTerm.getDueDate())
+          && paymentSession.getPaymentMode().getTypeSelect()
+              != PaymentModeRepository.TYPE_EXCHANGES) {
+        return true;
+      }
     }
 
     if (invoiceTerm.getMoveLine() != null) {
@@ -396,6 +402,12 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
     }
 
     return false;
+  }
+
+  protected boolean isLcrBlocking(Invoice invoice, LocalDate dueDate) {
+    return invoice.getBillOfExchangeBlockingOk()
+        && !invoice.getBillOfExchangeBlockingToDate().isBefore(dueDate)
+        && invoice.getLcrAccounted();
   }
 
   protected void fillEligibleTerm(PaymentSession paymentSession, InvoiceTerm invoiceTerm) {

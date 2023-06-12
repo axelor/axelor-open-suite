@@ -326,8 +326,14 @@ public class BankOrderServiceImpl implements BankOrderService {
           paymentSessionRepo.all().filter("self.bankOrder = ?", bankOrder).fetchOne();
 
       if (paymentSession != null) {
+        boolean isLcr =
+            paymentSession.getPaymentMode() != null
+                && paymentSession.getPaymentMode().getTypeSelect() != null
+                && paymentSession.getPaymentMode().getTypeSelect()
+                    == PaymentModeRepository.TYPE_EXCHANGES;
+
         Beans.get(PaymentSessionValidateService.class)
-            .processPaymentSession(paymentSession, new ArrayList());
+            .processPaymentSession(paymentSession, new ArrayList(), isLcr);
         bankOrder = bankOrderRepo.find(bankOrder.getId());
       }
     }
