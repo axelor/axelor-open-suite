@@ -57,7 +57,6 @@ import com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrService;
 import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanningTime;
-import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
@@ -728,15 +727,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
                         final Project updateProject = findProject(project.getId());
                         getEntityManager().lock(updateProject, LockModeType.PESSIMISTIC_WRITE);
 
-                        BigDecimal timeSpent =
-                            projectTimeSpentMap
-                                .get(updateProject)
-                                .add(this.computeSubTimeSpent(updateProject));
-                        updateProject.setTimeSpent(timeSpent);
-
                         projectRepo.save(updateProject);
-
-                        this.computeParentTimeSpent(updateProject);
                       });
                   done = true;
                 } catch (PersistenceException e) {
@@ -752,7 +743,6 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
             });
       }
     }
-    this.setProjectTaskTotalRealHrs(timesheet.getTimesheetLineList(), true);
   }
 
   protected Project findProject(Long projectId) {
@@ -788,17 +778,6 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
       sum = sum.add(this.computeSubTimeSpent(projectIt));
     }
     return sum;
-  }
-
-  @Override
-  public void computeParentTimeSpent(Project project) {
-    Project parentProject = project.getParentProject();
-    if (parentProject == null) {
-      return;
-    }
-    parentProject.setTimeSpent(project.getTimeSpent().add(this.computeTimeSpent(parentProject)));
-    projectRepo.save(parentProject);
-    this.computeParentTimeSpent(parentProject);
   }
 
   @Override
@@ -1163,23 +1142,6 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
               totalLeaveHours,
               I18n.get(HumanResourceExceptionMessage.TIMESHEET_DAY_LEAVE));
         }
-      }
-    }
-  }
-
-  @Override
-  @Transactional
-  public void setProjectTaskTotalRealHrs(List<TimesheetLine> timesheetLines, boolean isAdd) {
-    for (TimesheetLine timesheetLine : timesheetLines) {
-      ProjectTask projectTask = timesheetLine.getProjectTask();
-      if (projectTask != null) {
-        projectTask = projectTaskRepo.find(projectTask.getId());
-        BigDecimal totalrealhrs =
-            isAdd
-                ? projectTask.getTotalRealHrs().add(timesheetLine.getHoursDuration())
-                : projectTask.getTotalRealHrs().subtract(timesheetLine.getHoursDuration());
-        projectTask.setTotalRealHrs(totalrealhrs);
-        projectTaskRepo.save(projectTask);
       }
     }
   }
