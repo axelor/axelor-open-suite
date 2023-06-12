@@ -29,8 +29,6 @@ import com.axelor.apps.account.service.fixedasset.FixedAssetLineFiscalServiceImp
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineIfrsComputationServiceImpl;
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineIfrsServiceImpl;
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.inject.Beans;

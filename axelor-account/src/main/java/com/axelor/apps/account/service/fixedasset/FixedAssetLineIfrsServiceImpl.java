@@ -22,7 +22,6 @@ import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.YearService;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
@@ -32,12 +31,17 @@ import java.util.List;
 @RequestScoped
 public class FixedAssetLineIfrsServiceImpl extends AbstractFixedAssetLineServiceImpl {
 
+  protected FixedAssetLineIfrsComputationServiceImpl fixedAssetLineIfrsComputationService;
+
   @Inject
   public FixedAssetLineIfrsServiceImpl(
       FixedAssetLineRepository fixedAssetLineRepository,
+      FixedAssetDerogatoryLineService fixedAssetDerogatoryLineService,
       YearService yearService,
-      PeriodService periodService) {
-    super(fixedAssetLineRepository, yearService, periodService);
+      PeriodService periodService,
+      FixedAssetLineIfrsComputationServiceImpl fixedAssetLineIfrsComputationService) {
+    super(fixedAssetLineRepository, fixedAssetDerogatoryLineService, yearService, periodService);
+    this.fixedAssetLineIfrsComputationService = fixedAssetLineIfrsComputationService;
   }
 
   @Override
@@ -61,8 +65,8 @@ public class FixedAssetLineIfrsServiceImpl extends AbstractFixedAssetLineService
       LocalDate previousRealizedDate,
       LocalDate disposalDate,
       LocalDate nextPlannedDate) {
-    return Beans.get(FixedAssetLineIfrsComputationServiceImpl.class)
-        .computeProrataBetween(fixedAsset, previousRealizedDate, disposalDate, nextPlannedDate);
+    return fixedAssetLineIfrsComputationService.computeProrataBetween(
+        fixedAsset, previousRealizedDate, disposalDate, nextPlannedDate);
   }
 
   @Override

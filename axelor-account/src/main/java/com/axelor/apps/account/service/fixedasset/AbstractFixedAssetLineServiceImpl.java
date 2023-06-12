@@ -47,8 +47,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Abstract class of FixedAssetLineComputationService. This class is not supposed to be directly
- * used. Please use {@link FixedAssetLineEconomicServiceImpl} or {@link
+ * Abstract class of FixedAssetLineService. This class is not supposed to be directly used. Please
+ * use {@link FixedAssetLineEconomicServiceImpl}, {@link FixedAssetLineIfrsServiceImpl} or {@link
  * FixedAssetLineFiscalServiceImpl}.
  */
 public abstract class AbstractFixedAssetLineServiceImpl implements FixedAssetLineService {
@@ -74,7 +74,7 @@ public abstract class AbstractFixedAssetLineServiceImpl implements FixedAssetLin
   protected abstract int getTypeSelect();
 
   @Inject
-  public AbstractFixedAssetLineServiceImpl(
+  protected AbstractFixedAssetLineServiceImpl(
       FixedAssetLineRepository fixedAssetLineRepository,
       FixedAssetDerogatoryLineService fixedAssetDerogatoryLineService,
       YearService yearService,

@@ -443,7 +443,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
         && fixedAsset
             .getDepreciationPlanSelect()
             .contains(FixedAssetRepository.DEPRECIATION_PLAN_DEROGATION)) {
-      generateDerogatoryCessionMove(fixedAsset);
+      generateDerogatoryCessionMove(fixedAsset, disposalDate);
     }
     fixedAssetLineMoveService.generateDisposalMove(
         fixedAsset, correspondingFixedAssetLine, transferredReason, disposalDate);
@@ -625,8 +625,8 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       }
       filterListsByDates(fixedAsset, disposalDate);
     }
-    fixedAssetGenerationService.generateAndComputeFixedAssetDerogatoryLines(fixedAsset);
-    fixedAssetLineMoveService.realize(depreciationFixedAssetLine, false, true);
+    fixedAssetLineGenerationService.generateAndComputeFixedAssetDerogatoryLines(fixedAsset);
+    fixedAssetLineMoveService.realize(depreciationFixedAssetLine, false, true, true);
     fixedAsset.setAssetDisposalReason(assetDisposalReason);
     fixedAssetRepo.save(fixedAsset);
     if (createdFixedAsset != null) {
