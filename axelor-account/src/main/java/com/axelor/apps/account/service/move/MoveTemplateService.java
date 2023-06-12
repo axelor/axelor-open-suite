@@ -422,11 +422,14 @@ public class MoveTemplateService {
 
   protected Account getAccountTypeAccount(
       List<MoveTemplateLine> moveTemplateLines, String accountType) {
-    return moveTemplateLines.stream()
-        .filter(ml -> ml.getAccount().getAccountType().getTechnicalTypeSelect().equals(accountType))
-        .map(MoveTemplateLine::getAccount)
-        .findFirst()
-        .orElse(null);
+    return ObjectUtils.notEmpty(accountType)
+        ? moveTemplateLines.stream()
+            .map(MoveTemplateLine::getAccount)
+            .filter(
+                account -> account.getAccountType().getTechnicalTypeSelect().equals(accountType))
+            .findFirst()
+            .orElse(null)
+        : null;
   }
 
   protected void manageAccounting(MoveTemplate moveTemplate, Move move) {
