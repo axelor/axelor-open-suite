@@ -287,6 +287,6 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
         String.format(
             "self.isSpecific IS FALSE AND self.company.id = %d", move.getCompany().getId());
 
-    this.addAttr("account", "domain", domain, attrsMap);
+    this.addAttr("analyticDistributionTemplate", "domain", domain, attrsMap);
   }
 }

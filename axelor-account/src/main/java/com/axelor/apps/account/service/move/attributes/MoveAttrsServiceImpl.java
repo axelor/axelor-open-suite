@@ -191,7 +191,7 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
             "self.id IN (SELECT am.paymentMode FROM AccountManagement am WHERE am.company.id = %d)",
             move.getCompany().getId());
 
-    this.addAttr("partner", "domain", domain, attrsMap);
+    this.addAttr("paymentMode", "domain", domain, attrsMap);
   }
 
   @Override
@@ -211,7 +211,7 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
       domain = String.format("self.id IN (%s) AND self.active IS TRUE", bankDetailsIds);
     }
 
-    this.addAttr("partner", "domain", domain, attrsMap);
+    this.addAttr("partnerBankDetails", "domain", domain, attrsMap);
   }
 
   @Override
@@ -230,7 +230,7 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
 
     String domain = String.format("self.id IN (%s)", tradingNameIds);
 
-    this.addAttr("partner", "domain", domain, attrsMap);
+    this.addAttr("tradingName", "domain", domain, attrsMap);
   }
 
   @Override

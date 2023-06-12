@@ -107,7 +107,8 @@
             onSelect="action-move-partner-onselect" form-view="partner-form"
             grid-view="partner-grid"/>
           <field name="fiscalPosition" colSpan="2" canNew="false" canEdit="false"
-            form-view="fiscal-position-form" grid-view="fiscal-position-grid"/>
+            form-view="fiscal-position-form" grid-view="fiscal-position-grid"
+            onChange="action-move-method-fiscal-position-onchange"/>
           <field name="currency"
             readonlyIf="$validatePeriod || moveLineList.length &gt; 0 || statusSelect == 3"
             colSpan="2" onChange="action-move-method-currency-onchange" required="true"/>
@@ -724,6 +725,10 @@
 
   <action-method name="action-move-method-currency-onchange">
     <call class="com.axelor.apps.account.web.MoveController" method="onChangeCurrency"/>
+  </action-method>
+
+  <action-method name="action-move-method-fiscal-position-onchange">
+    <call class="com.axelor.apps.account.web.MoveController" method="onChangeFiscalPosition"/>
   </action-method>
 
   <action-method name="action-move-method-date-of-reversion-select-onchange"

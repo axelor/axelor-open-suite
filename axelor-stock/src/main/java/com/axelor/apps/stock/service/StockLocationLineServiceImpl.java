@@ -19,6 +19,7 @@
 package com.axelor.apps.stock.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
@@ -892,17 +893,23 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
     }
 
     if (dateT == null) {
-      dateT =
-          appBaseService
-              .getTodayDateTime(
-                  stockLocationLine.getStockLocation() != null
-                      ? stockLocationLine.getStockLocation().getCompany()
-                      : Optional.ofNullable(AuthUtils.getUser())
-                          .map(User::getActiveCompany)
-                          .orElse(null))
-              .toLocalDateTime();
+      Company company = getCompany(stockLocationLine);
+      dateT = appBaseService.getTodayDateTime(company).toLocalDateTime();
+    }
+    stockLocationLineHistoryService.saveHistory(stockLocationLine, dateT, origin, typeSelect);
+  }
+
+  protected Company getCompany(StockLocationLine stockLocationLine) {
+    StockLocation stockLocation = stockLocationLine.getStockLocation();
+    StockLocation detailsStockLocation = stockLocationLine.getDetailsStockLocation();
+
+    if (stockLocation != null) {
+      return stockLocation.getCompany();
     }
 
-    stockLocationLineHistoryService.saveHistory(stockLocationLine, dateT, origin, typeSelect);
+    if (detailsStockLocation != null) {
+      return detailsStockLocation.getCompany();
+    }
+    return Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null);
   }
 }

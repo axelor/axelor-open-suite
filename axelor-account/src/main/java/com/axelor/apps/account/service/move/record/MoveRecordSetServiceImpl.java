@@ -37,6 +37,7 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PeriodService;
+import com.axelor.common.StringUtils;
 import com.google.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
@@ -173,13 +174,13 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
 
   @Override
   public void setFunctionalOriginSelect(Move move) {
-    if (move.getJournal() != null
-        && move.getJournal().getAuthorizedFunctionalOriginSelect() != null
-        && move.getJournal().getAuthorizedFunctionalOriginSelect().split(",").length == 1) {
-      move.setFunctionalOriginSelect(
-          Integer.valueOf(move.getJournal().getAuthorizedFunctionalOriginSelect()));
-    } else {
-      move.setFunctionalOriginSelect(null);
+    String authorizedFunctionalOriginSelect =
+        move.getJournal().getAuthorizedFunctionalOriginSelect();
+    move.setFunctionalOriginSelect(null);
+    if (move.getJournal() != null && StringUtils.notEmpty(authorizedFunctionalOriginSelect)) {
+      if (authorizedFunctionalOriginSelect.split(",").length == 1) {
+        move.setFunctionalOriginSelect(Integer.valueOf(authorizedFunctionalOriginSelect));
+      }
     }
   }
 
