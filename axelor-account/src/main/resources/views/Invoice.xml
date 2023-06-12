@@ -546,6 +546,7 @@
       </panel>
 
       <field name="supplierInvoiceNb"
+        readonlyIf="statusSelect != 1 &amp;&amp; statusSelect != 2"
         showIf="operationTypeSelect == 1 || operationTypeSelect == 2"
         requiredIf="((operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; statusSelect == 2) || (operationSubTypeSelect == 2 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 2))"
         onChange="action-invoice-group-supplier-invoice-nb-onchange"/>
@@ -559,7 +560,8 @@
               	]]>
         </viewer>
       </field>
-      <field name="originDate" showIf="operationTypeSelect == 1 || operationTypeSelect == 2"
+      <field name="originDate" readonlyIf="statusSelect != 1 &amp;&amp; statusSelect != 2"
+        showIf="operationTypeSelect == 1 || operationTypeSelect == 2"
         requiredIf="((operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; statusSelect == 2) || (operationSubTypeSelect == 2 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 2))"
         onChange="action-invoice-group-payment-condition-onchange"/>
       <field name="$supplierInvoiceNbStatic" type="string" hidden="true"/>
@@ -1180,6 +1182,12 @@ InvoiceSet.length > 0))"
           onChange="action-invoice-method-compute" canMove="true" orderBy="sequence"/>
         <panel-related name="invoiceLineTaxListPanel" field="invoiceLineTaxList"
           colSpan="12" form-view="invoice-line-tax-form" grid-view="invoice-line-tax-grid"/>
+      </panel>
+      <panel title="Printing" name="printingPanel" colSpan="12" hidden="true">
+        <field name="displayTimesheetOnPrinting" if-module="axelor-business-project"
+          hidden="true"/>
+        <field name="displayExpenseOnPrinting" if-module="axelor-business-project"
+          hidden="true"/>
       </panel>
     </panel-tabs>
 
