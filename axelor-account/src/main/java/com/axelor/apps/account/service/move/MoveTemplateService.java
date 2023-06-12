@@ -57,7 +57,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -423,18 +422,11 @@ public class MoveTemplateService {
 
   protected Account getAccountTypeAccount(
       List<MoveTemplateLine> moveTemplateLines, String accountType) {
-    Account account = null;
-
-    Optional<MoveTemplateLine> moveTemplateLine =
-        moveTemplateLines.stream()
-            .filter(
-                ml -> ml.getAccount().getAccountType().getTechnicalTypeSelect().equals(accountType))
-            .findFirst();
-    if (moveTemplateLine.isPresent()) {
-      account = moveTemplateLine.get().getAccount();
-    }
-
-    return account;
+    return moveTemplateLines.stream()
+        .filter(ml -> ml.getAccount().getAccountType().getTechnicalTypeSelect().equals(accountType))
+        .map(MoveTemplateLine::getAccount)
+        .findFirst()
+        .orElse(null);
   }
 
   protected void manageAccounting(MoveTemplate moveTemplate, Move move) {
