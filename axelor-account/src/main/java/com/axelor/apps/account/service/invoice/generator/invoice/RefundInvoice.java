@@ -62,11 +62,7 @@ public class RefundInvoice extends InvoiceGenerator implements InvoiceStrategy {
       refundLines.addAll(refund.getInvoiceLineList());
     }
 
-    if (invoice.getOperationTypeSelect() == 1) { // Supplier
-      if (invoice.getOriginDate() != null) {
-        refund.setOriginDate(invoice.getOriginDate());
-      }
-    } else if (invoice.getOperationTypeSelect() == 3) { // Customer
+    if (invoice.getOperationTypeSelect() == 3) { // Customer
       if (invoice.getInvoiceDate() != null) {
         refund.setOriginDate(invoice.getInvoiceDate());
       }
