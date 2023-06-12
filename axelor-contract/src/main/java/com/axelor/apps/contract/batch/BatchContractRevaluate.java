@@ -2,6 +2,7 @@ package com.axelor.apps.contract.batch;
 
 import com.axelor.apps.account.service.batch.BatchStrategy;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Duration;
 import com.axelor.apps.base.db.repo.DurationRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -60,13 +61,6 @@ public class BatchContractRevaluate extends BatchStrategy {
     List<Long> idsReevaluated = new ArrayList<>();
     idsOk.add(0L);
     idsFail.add(0L);
-    long total =
-        contractRepository
-            .all()
-            .filter("self.isToRevaluate = true AND self.nextRevaluationDate = :today")
-            .bind("today", appBaseService.getTodayDate(null))
-            .count();
-    long processed = 0L;
     Query<Contract> query =
         contractRepository
             .all()
@@ -86,8 +80,6 @@ public class BatchContractRevaluate extends BatchStrategy {
       idsReevaluated.addAll(
           ids.get("REEVALUATED").stream().map(Contract::getId).collect(Collectors.toList()));
       JPA.clear();
-      processed += FETCH_LIMIT;
-      LOG.debug("Contracts reevaluation progress : {}%", processed * 100L / total);
     }
     LOG.debug("{} Reevaluated contracts : {}", idsReevaluated.size(), idsReevaluated);
   }
@@ -128,11 +120,11 @@ public class BatchContractRevaluate extends BatchStrategy {
     LocalDate todayDate = appBaseService.getTodayDate(contract.getCompany());
     LocalDate nextRevaluationDate = contract.getNextRevaluationDate();
     LocalDate lastRevaluationDate = contract.getLastRevaluationDate();
-    if (nextRevaluationDate != null && nextRevaluationDate.compareTo(todayDate) <= 0) {
+
+    if (launchBatch(todayDate, contract)) {
       contract = contractRevaluationService.applyFormula(contract);
-      contract.setLastRevaluationDate(appBaseService.getTodayDate(contract.getCompany()));
-      contract.setNextRevaluationDate(
-          computeNextRevaluationDate(contract, appBaseService.getTodayDate(contract.getCompany())));
+      contract.setLastRevaluationDate(todayDate);
+      contract.setNextRevaluationDate(computeNextRevaluationDate(contract, todayDate));
       idsReevaluated.add(contract);
       incrementDone();
     } else if (nextRevaluationDate == null && lastRevaluationDate != null) {
@@ -143,6 +135,39 @@ public class BatchContractRevaluate extends BatchStrategy {
     }
     idsOk.add(contract);
     contractRepository.save(contract);
+  }
+
+  protected boolean launchBatch(LocalDate todayDate, Contract contract) {
+    LocalDate nextRevaluationDate = contract.getNextRevaluationDate();
+    LocalDate lastRevaluationDate = contract.getLastRevaluationDate();
+    LocalDate startDate = contract.getStartDate();
+    Duration revaluationPeriod = contract.getRevaluationPeriod();
+    LocalDate computedLastRevaluationDate =
+        computeNewDateWithPeriod(revaluationPeriod, lastRevaluationDate);
+    LocalDate computedStartDate = computeNewDateWithPeriod(revaluationPeriod, startDate);
+
+    return nextRevaluationDate != null
+        && (todayDate.isEqual(nextRevaluationDate)
+            || (nextRevaluationDate.isBefore(todayDate)
+                && ((computedLastRevaluationDate != null
+                        && computedLastRevaluationDate.isBefore(nextRevaluationDate))
+                    || (computedStartDate != null && computedStartDate.isBefore(todayDate)))));
+  }
+
+  protected LocalDate computeNewDateWithPeriod(Duration revaluationPeriod, LocalDate date) {
+    if (date == null || revaluationPeriod == null) {
+      return null;
+    }
+
+    int revaluationPeriodType = revaluationPeriod.getTypeSelect();
+    Integer revaluationPeriodValue = revaluationPeriod.getValue();
+    LocalDate computedDate = null;
+    if (revaluationPeriodType == DurationRepository.TYPE_MONTH) {
+      computedDate = date.plusMonths(revaluationPeriodValue);
+    } else if (revaluationPeriodType == DurationRepository.TYPE_DAY) {
+      computedDate = date.plusDays(revaluationPeriodValue);
+    }
+    return computedDate;
   }
 
   /**

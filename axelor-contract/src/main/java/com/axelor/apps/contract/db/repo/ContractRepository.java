@@ -90,6 +90,8 @@ public class ContractRepository extends AbstractContractRepository {
   public Contract copy(Contract entity, boolean deep) {
     Contract contract = super.copy(entity, deep);
     ContractVersion version = Beans.get(ContractVersionRepository.class).copy(entity);
+    contract.setNextRevaluationDate(null);
+    contract.setLastRevaluationDate(null);
     contract.setCurrentContractVersion(version);
     return contract;
   }

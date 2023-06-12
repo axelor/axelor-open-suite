@@ -114,11 +114,11 @@ public class RevaluationFormulaService {
       formula = formula.replace("ind2f", ind2f.toString());
     }
     if (formula.contains("ind1py") && index1 != null) {
-      ind1nm1 = indexRevaluationService.getLastYearIndexValue(index1).getValue();
+      ind1nm1 = indexRevaluationService.getLastYearIndexValue(index1, date1).getValue();
       formula = formula.replace("ind1py", ind1nm1.toString());
     }
     if (formula.contains("ind2py") && index2 != null) {
-      ind2nm1 = indexRevaluationService.getLastYearIndexValue(index2).getValue();
+      ind2nm1 = indexRevaluationService.getLastYearIndexValue(index2, date2).getValue();
       formula = formula.replace("ind2py", ind2nm1.toString());
     }
     if (formula.contains("p0") && initialPrice != null) {

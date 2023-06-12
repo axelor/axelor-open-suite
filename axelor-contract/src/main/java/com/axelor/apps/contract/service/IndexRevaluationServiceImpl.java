@@ -35,6 +35,7 @@ public class IndexRevaluationServiceImpl implements IndexRevaluationService {
             index ->
                 (date.isAfter(index.getStartDate()) && date.isBefore(index.getEndDate()))
                     || index.getStartDate().isEqual(date)
+                    || index.getEndDate().isEqual(date)
                     || (index.getEndDate() == null && date.isAfter(index.getStartDate())))
         .max(Comparator.comparing(IndexValue::getStartDate))
         .orElseThrow(
@@ -52,9 +53,9 @@ public class IndexRevaluationServiceImpl implements IndexRevaluationService {
   }
 
   @Override
-  public IndexValue getLastYearIndexValue(IndexRevaluation index) throws AxelorException {
-    IndexValue mostRecentIndexValue = getMostRecentIndexValue(index);
-    return getIndexValue(index, mostRecentIndexValue.getStartDate().minusYears(1));
+  public IndexValue getLastYearIndexValue(IndexRevaluation index, LocalDate date)
+      throws AxelorException {
+    return getIndexValue(index, date.minusYears(1));
   }
 
   @Transactional

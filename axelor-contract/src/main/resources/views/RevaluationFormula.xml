@@ -21,16 +21,16 @@
         ind1i = value for the contract's index1 for date 1 \n ind2i = value for the contract's index 2 for date
         2 \n ind1f : value for the contract's index 1 for the most recent date \n ind2f :
         value for the contract's index 2 at the most recent date \n ind1py :
-        value for the contract's index 1 at the most recent date - 1 year \n ind2py :
-        value for the contract's index 2 at the most recent date - 1 year \n P0 : original price of the contract line
+        value for the contract's index 1 for (date 1) - (1 year) \n ind2py :
+        value for the contract's index 2 for (date 2) - (1 year) \n P0 : original price of the contract line
         \n Pf : last revaluated price of the contract line"/>
       <field name="invoiceComment" colSpan="12" widget="CodeEditor" x-code-syntax="groovy"
         help="Available variables :\n
         ind1i = value for the contract's index1 for date 1 \n ind2i = value for the contract's index 2 for date
         2 \n ind1f : value for the contract's index 1 for the most recent date \n ind2f :
         value for the contract's index 2 at the most recent date \n ind1py :
-        value for the contract's index 1 at the most recent date - 1 year \n ind2py :
-        value for the contract's index 2 at the most recent date - 1 year \n P0 : original price of the contract line
+        value for the contract's index 1 for (date 1) - (1 year) \n ind2py :
+        value for the contract's index 2 for (date 2) - (1 year) \n P0 : original price of the contract line
         \n Pf : last revaluated price of the contract line"/>
       <field name="description" widget="html" colSpan="12"/>
     </panel>
