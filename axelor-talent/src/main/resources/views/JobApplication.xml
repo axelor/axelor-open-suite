@@ -173,7 +173,8 @@
   </form>
 
   <kanban title="Job applications" name="job-application-kanban"
-    model="com.axelor.apps.talent.db.JobApplication" columnBy="hiringStage" sequenceBy="id">
+    model="com.axelor.apps.talent.db.JobApplication" columnBy="hiringStage"
+    sequenceBy="appreciation">
     <field name="fullName"/>
     <field name="emailAddress.address"/>
     <field name="fixedPhone"/>
