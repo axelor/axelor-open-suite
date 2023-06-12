@@ -211,7 +211,7 @@
     <view type="grid" name="stock-move-line-all-grid"/>
     <view type="form" name="stock-move-line-all-form"/>
     <domain>self.product.id = :_id and self.stockMove.statusSelect = 2 and
-      self.stockMove.stockMoveLineList.toStockLocation.typeSelect = 3</domain>
+      self.toStockLocation.typeSelect = 3</domain>
     <context name="_id" expr="eval: id"/>
   </action-view>
 
@@ -219,8 +219,7 @@
     title="Stock Moves consumption historical" model="com.axelor.apps.stock.db.StockMoveLine">
     <view type="grid" name="stock-move-line-all-grid"/>
     <view type="form" name="stock-move-line-all-form"/>
-    <domain>self.product.id = :_id and self.stockMove.stockMoveLineList.toStockLocation.typeSelect =
-      3</domain>
+    <domain>self.product.id = :_id and self.toStockLocation.typeSelect = 3</domain>
     <context name="_id" expr="eval: id"/>
   </action-view>
 

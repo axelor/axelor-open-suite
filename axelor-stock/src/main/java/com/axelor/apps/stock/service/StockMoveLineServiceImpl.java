@@ -1159,7 +1159,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     startUnit = product.getMassUnit();
     if (startUnit == null) {
 
-      if (!checkMassesRequired(stockMoveLine)) {
+      if (!checkMassesRequired(stockMove, stockMoveLine)) {
         return product.getNetMass();
       }
 
@@ -1182,9 +1182,9 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
   }
 
   @Override
-  public boolean checkMassesRequired(StockMoveLine stockMoveLine) {
-    Address fromAddress = stockMoveToolService.getFromAddress(stockMoveLine);
-    Address toAddress = stockMoveToolService.getToAddress(stockMoveLine);
+  public boolean checkMassesRequired(StockMove stockMove, StockMoveLine stockMoveLine) {
+    Address fromAddress = stockMoveToolService.getFromAddress(stockMove, stockMoveLine);
+    Address toAddress = stockMoveToolService.getToAddress(stockMove, stockMoveLine);
 
     Country fromCountry = fromAddress != null ? fromAddress.getAddressL7Country() : null;
     Country toCountry = toAddress != null ? toAddress.getAddressL7Country() : null;

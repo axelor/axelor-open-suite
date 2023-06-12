@@ -624,7 +624,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     for (StockMoveLine stockMoveLine : stockMoveLineList) {
       Product product = stockMoveLine.getProduct();
       boolean massesRequiredForStockMoveLine =
-          stockMoveLineService.checkMassesRequired(stockMoveLine);
+          stockMoveLineService.checkMassesRequired(stockMove, stockMoveLine);
 
       if (product == null
           || !ProductRepository.PRODUCT_TYPE_STORABLE.equals(product.getProductTypeSelect())) {
@@ -1091,7 +1091,7 @@ public class StockMoveServiceImpl implements StockMoveService {
         stockMoveLineRepo
             .all()
             .filter(
-                "self.product.id = ?1 AND self.stockMove.stockMoveLineList.toStockLocation.id = ?2 AND self.stockMove.statusSelect != ?3 AND (self.stockMove.estimatedDate <= ?4 OR self.stockMove.realDate <= ?4)",
+                "self.product.id = ?1 AND self.toStockLocation.id = ?2 AND self.stockMove.statusSelect != ?3 AND (self.stockMove.estimatedDate <= ?4 OR self.stockMove.realDate <= ?4)",
                 productId,
                 locationId,
                 StockMoveRepository.STATUS_CANCELED,
@@ -1102,7 +1102,7 @@ public class StockMoveServiceImpl implements StockMoveService {
         stockMoveLineRepo
             .all()
             .filter(
-                "self.product.id = ?1 AND self.stockMove.stockMoveLineList.fromStockLocation.id = ?2 AND self.stockMove.statusSelect != ?3 AND (self.stockMove.estimatedDate <= ?4 OR self.stockMove.realDate <= ?4)",
+                "self.product.id = ?1 AND self.fromStockLocation.id = ?2 AND self.stockMove.statusSelect != ?3 AND (self.stockMove.estimatedDate <= ?4 OR self.stockMove.realDate <= ?4)",
                 productId,
                 locationId,
                 StockMoveRepository.STATUS_CANCELED,

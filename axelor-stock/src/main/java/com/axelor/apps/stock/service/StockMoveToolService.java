@@ -72,7 +72,7 @@ public interface StockMoveToolService {
    * @param stockMoveLine
    * @return
    */
-  Address getFromAddress(StockMoveLine stockMoveLine);
+  Address getFromAddress(StockMove stockMove, StockMoveLine stockMoveLine);
 
   /**
    * Get to address from stock move or stock location.
@@ -80,7 +80,7 @@ public interface StockMoveToolService {
    * @param stockMoveLine
    * @return
    */
-  Address getToAddress(StockMoveLine stockMoveLine);
+  Address getToAddress(StockMove stockMove, StockMoveLine stockMoveLine);
 
   /**
    * Get partner address.
@@ -89,7 +89,8 @@ public interface StockMoveToolService {
    * @return
    * @throws AxelorException
    */
-  Address getPartnerAddress(StockMoveLine stockMoveLine) throws AxelorException;
+  Address getPartnerAddress(StockMove stockMove, StockMoveLine stockMoveLine)
+      throws AxelorException;
 
   /**
    * Get company address.
@@ -98,5 +99,6 @@ public interface StockMoveToolService {
    * @return
    * @throws AxelorException
    */
-  Address getCompanyAddress(StockMoveLine stockMoveLine) throws AxelorException;
+  Address getCompanyAddress(StockMove stockMove, StockMoveLine stockMoveLine)
+      throws AxelorException;
 }

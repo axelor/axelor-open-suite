@@ -716,8 +716,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       StockLocationLine stockLocationLine) {
     boolean isDetailsStockLocationLine = stockLocationLine.getDetailsStockLocation() != null;
     String incomingStockMoveLineFilter =
-        STOCK_MOVE_LINE_FILTER
-            + "AND self.stockMove.stockMoveLineList.toStockLocation.id = :stockLocationId";
+        STOCK_MOVE_LINE_FILTER + "AND self.toStockLocation.id = :stockLocationId";
     if (isDetailsStockLocationLine) {
       incomingStockMoveLineFilter =
           incomingStockMoveLineFilter + " AND self.trackingNumber.id = :trackingNumberId";
@@ -742,8 +741,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       StockLocationLine stockLocationLine) {
     boolean isDetailsStockLocationLine = stockLocationLine.getDetailsStockLocation() != null;
     String outgoingStockMoveLineFilter =
-        STOCK_MOVE_LINE_FILTER
-            + "AND self.stockMove.stockMoveLineList.fromStockLocation.id = :stockLocationId";
+        STOCK_MOVE_LINE_FILTER + "AND self.fromStockLocation.id = :stockLocationId";
     if (isDetailsStockLocationLine) {
       outgoingStockMoveLineFilter =
           outgoingStockMoveLineFilter + " AND self.trackingNumber.id = :trackingNumberId";

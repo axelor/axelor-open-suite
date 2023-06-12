@@ -77,7 +77,7 @@ public class LogisticalFormLineServiceImpl implements LogisticalFormLineService 
     if (logisticalForm.getStockLocation() != null) {
       domainList.add(
           String.format(
-              "self.stockMove.stockMoveLineList.fromStockLocation.id = %d",
+              "self.stockMove.fromStockLocation.id = %d",
               logisticalForm.getStockLocation().getId()));
     }
 

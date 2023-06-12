@@ -817,7 +817,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
             + productId
             + " AND self.stockMove.statusSelect = "
             + StockMoveRepository.STATUS_PLANNED
-            + " AND self.stockMove.stockMoveLineList.fromStockLocation.typeSelect != "
+            + " AND self.fromStockLocation.typeSelect != "
             + StockLocationRepository.TYPE_VIRTUAL
             + " AND ( (self.consumedManufOrder IS NOT NULL AND self.consumedManufOrder.statusSelect IN ("
             + statusListQuery
@@ -837,7 +837,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
           if (!stockLocationList.isEmpty()
               && stockLocation.getCompany().getId().equals(companyId)) {
             query +=
-                " AND self.stockMove.stockMoveLineList.fromStockLocation.id IN ("
+                " AND self.fromStockLocation.id IN ("
                     + StringTool.getIdListString(stockLocationList)
                     + ") ";
           }

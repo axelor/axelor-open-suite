@@ -221,13 +221,13 @@ public class DeclarationOfExchangesExporterGoods extends DeclarationOfExchangesE
     String srcDstCountry;
     String dept;
     try {
-      Address partnerAddress = stockMoveToolService.getPartnerAddress(stockMoveLine);
+      Address partnerAddress = stockMoveToolService.getPartnerAddress(stockMove, stockMoveLine);
       srcDstCountry = partnerAddress.getAddressL7Country().getAlpha2Code();
     } catch (AxelorException e) {
       srcDstCountry = e.getMessage();
     }
     try {
-      Address companyAddress = stockMoveToolService.getCompanyAddress(stockMoveLine);
+      Address companyAddress = stockMoveToolService.getCompanyAddress(stockMove, stockMoveLine);
       dept = companyAddress.getCity().getDepartment().getCode();
     } catch (AxelorException e) {
       dept = e.getMessage();

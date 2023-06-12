@@ -521,7 +521,7 @@
                 (self in
                     (select stockLocationLine.trackingNumber from StockLocationLine stockLocationLine
                     join StockLocation sl on sl.id = stockLocationLine.detailsStockLocation
-                    WHERE sl.id = ${__parent__._stockMove.stockMoveLineList.fromStockLocation.id}) OR
+                    WHERE sl.id = ${__parent__.fromStockLocation.id}) OR
                 self not in
                         (select stockLocationLine.trackingNumber from StockLocationLine stockLocationLine
                         join StockLocation sl on sl.id = stockLocationLine.detailsStockLocation))
@@ -774,7 +774,7 @@
 	                (self in
 	                    (select stockLocationLine.trackingNumber from StockLocationLine stockLocationLine
 	                    join StockLocation sl on sl.id = stockLocationLine.detailsStockLocation
-	                    WHERE sl.id = ${stockMove.stockMoveLineList.fromStockLocation?.id}) OR
+	                    WHERE sl.id = ${__self__.fromStockLocation?.id}) OR
                      self not in
                         (select stockLocationLine.trackingNumber from StockLocationLine stockLocationLine
                         join StockLocation sl on sl.id = stockLocationLine.detailsStockLocation))
@@ -813,8 +813,8 @@
     <view type="grid" name="stock-move-line-all-grid-planned"/>
     <view type="form" name="stock-move-line-all-form"/>
     <domain>self.stockMove.statusSelect = 2 and
-      (self.stockMove.stockMoveLineList.fromStockLocation.typeSelect = 1 or
-      self.stockMove.stockMoveLineList.toStockLocation.typeSelect = 1) and self.product.id = :_id</domain>
+      (self.fromStockLocation.typeSelect = 1 or
+      self.toStockLocation.typeSelect = 1) and self.product.id = :_id</domain>
   </action-view>
 
   <action-view name="action-stock-move-line-product-default-realized"
@@ -822,8 +822,8 @@
     <view type="grid" name="stock-move-line-all-grid"/>
     <view type="form" name="stock-move-line-all-form"/>
     <domain>self.stockMove.statusSelect = 3 and
-      (self.stockMove.stockMoveLineList.fromStockLocation.typeSelect = 1 or
-      self.stockMove.stockMoveLineList.toStockLocation.typeSelect = 1) and self.product.id = :_id</domain>
+      (self.fromStockLocation.typeSelect = 1 or
+      self.toStockLocation.typeSelect = 1) and self.product.id = :_id</domain>
   </action-view>
 
   <action-validate name="action-stock-move-line-validate-check-split-quantity">

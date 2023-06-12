@@ -432,7 +432,7 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
         stockMoveLineRepository
             .all()
             .filter(
-                "self.stockMove.stockMoveLineList.fromStockLocation.id = :stockLocationId "
+                "self.fromStockLocation.id = :stockLocationId "
                     + "AND self.product.id = :productId "
                     + "AND self.stockMove.statusSelect = :planned "
                     + "AND self.reservationDateTime IS NOT NULL "
@@ -891,7 +891,7 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
             .all()
             .filter(
                 "self.product.id = :productId "
-                    + "AND self.stockMove.stockMoveLineList.fromStockLocation.id = :stockLocationId "
+                    + "AND self.fromStockLocation.id = :stockLocationId "
                     + "AND self.stockMove.statusSelect = :planned")
             .bind("productId", stockLocationLine.getProduct().getId())
             .bind("stockLocationId", stockLocationLine.getStockLocation().getId())
@@ -943,7 +943,7 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
             .all()
             .filter(
                 "self.product.id = :productId "
-                    + "AND self.stockMove.stockMoveLineList.fromStockLocation.id = :stockLocationId "
+                    + "AND self.fromStockLocation.id = :stockLocationId "
                     + "AND self.stockMove.statusSelect = :planned")
             .bind("productId", stockLocationLine.getProduct().getId())
             .bind("stockLocationId", stockLocationLine.getStockLocation().getId())

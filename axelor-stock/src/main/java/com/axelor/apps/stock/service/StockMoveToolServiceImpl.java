@@ -163,8 +163,8 @@ public class StockMoveToolServiceImpl implements StockMoveToolService {
   }
 
   @Override
-  public Address getFromAddress(StockMoveLine stockMoveLine) {
-    Address fromAddress = stockMoveLine.getStockMove().getFromAddress();
+  public Address getFromAddress(StockMove stockMove, StockMoveLine stockMoveLine) {
+    Address fromAddress = stockMove.getFromAddress();
     if (fromAddress == null && stockMoveLine.getFromStockLocation() != null) {
       fromAddress = stockMoveLine.getFromStockLocation().getAddress();
     }
@@ -172,8 +172,8 @@ public class StockMoveToolServiceImpl implements StockMoveToolService {
   }
 
   @Override
-  public Address getToAddress(StockMoveLine stockMoveLine) {
-    Address toAddress = stockMoveLine.getStockMove().getToAddress();
+  public Address getToAddress(StockMove stockMove, StockMoveLine stockMoveLine) {
+    Address toAddress = stockMove.getToAddress();
     if (toAddress == null && stockMoveLine.getToStockLocation() != null) {
       toAddress = stockMoveLine.getToStockLocation().getAddress();
     }
@@ -218,13 +218,14 @@ public class StockMoveToolServiceImpl implements StockMoveToolService {
   }
 
   @Override
-  public Address getPartnerAddress(StockMoveLine stockMoveLine) throws AxelorException {
+  public Address getPartnerAddress(StockMove stockMove, StockMoveLine stockMoveLine)
+      throws AxelorException {
     Address address;
 
     if (stockMoveLine.getStockMove().getTypeSelect() == StockMoveRepository.TYPE_OUTGOING) {
-      address = getToAddress(stockMoveLine);
+      address = getToAddress(stockMove, stockMoveLine);
     } else if (stockMoveLine.getStockMove().getTypeSelect() == StockMoveRepository.TYPE_INCOMING) {
-      address = getFromAddress(stockMoveLine);
+      address = getFromAddress(stockMove, stockMoveLine);
     } else {
       throw new AxelorException(
           stockMoveLine,
@@ -240,13 +241,14 @@ public class StockMoveToolServiceImpl implements StockMoveToolService {
   }
 
   @Override
-  public Address getCompanyAddress(StockMoveLine stockMoveLine) throws AxelorException {
+  public Address getCompanyAddress(StockMove stockMove, StockMoveLine stockMoveLine)
+      throws AxelorException {
     Address address;
 
     if (stockMoveLine.getStockMove().getTypeSelect() == StockMoveRepository.TYPE_OUTGOING) {
-      address = getFromAddress(stockMoveLine);
+      address = getFromAddress(stockMove, stockMoveLine);
     } else if (stockMoveLine.getStockMove().getTypeSelect() == StockMoveRepository.TYPE_INCOMING) {
-      address = getToAddress(stockMoveLine);
+      address = getToAddress(stockMove, stockMoveLine);
     } else {
       throw new AxelorException(
           stockMoveLine,

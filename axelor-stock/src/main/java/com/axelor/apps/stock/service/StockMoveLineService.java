@@ -244,7 +244,7 @@ public interface StockMoveLineService {
    * @param stockMove
    * @return
    */
-  boolean checkMassesRequired(StockMoveLine stockMoveLine);
+  boolean checkMassesRequired(StockMove stockMove, StockMoveLine stockMoveLine);
 
   public void splitStockMoveLineByTrackingNumber(
       StockMoveLine stockMoveLine, List<LinkedHashMap<String, Object>> trackingNumbers);
