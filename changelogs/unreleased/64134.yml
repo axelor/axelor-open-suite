@@ -1,0 +1,3 @@
+---
+title: "Sale order: add missing case when computing invoicing state"
+type: fix
