@@ -25,6 +25,7 @@ import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
+import com.axelor.apps.contract.db.ContractVersion;
 import com.axelor.apps.contract.model.AnalyticLineContractModel;
 import com.axelor.apps.contract.service.ContractLineService;
 import com.axelor.apps.supplychain.service.AnalyticLineModelSerivce;
@@ -58,6 +59,13 @@ public class ContractLineController {
       ActionRequest request, ActionResponse response) {
     try {
       ContractLine contractLine = request.getContext().asType(ContractLine.class);
+
+      if (contractLine.getContractVersion() == null) {
+        ContractVersion contractVersion =
+            ContextTool.getContextParent(request.getContext(), ContractVersion.class, 1);
+        contractLine.setContractVersion(contractVersion);
+      }
+
       AnalyticLineContractModel analyticLineContractModel =
           new AnalyticLineContractModel(contractLine);
 
@@ -123,6 +131,11 @@ public class ContractLineController {
       }
 
       ContractLine contractLine = request.getContext().asType(ContractLine.class);
+
+      if (contractLine.getContractVersion() == null) {
+        contractLine.setContractVersion(contract.getCurrentContractVersion());
+      }
+
       AnalyticLineContractModel analyticLineContractModel =
           new AnalyticLineContractModel(contractLine);
 
@@ -161,6 +174,11 @@ public class ContractLineController {
       }
 
       ContractLine contractLine = request.getContext().asType(ContractLine.class);
+
+      if (contractLine.getContractVersion() == null) {
+        contractLine.setContractVersion(contract.getCurrentContractVersion());
+      }
+
       AnalyticLineContractModel analyticLineContractModel =
           new AnalyticLineContractModel(contractLine);
 

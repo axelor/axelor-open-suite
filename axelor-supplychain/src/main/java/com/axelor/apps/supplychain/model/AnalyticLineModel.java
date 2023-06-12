@@ -40,10 +40,10 @@ public class AnalyticLineModel implements AnalyticLine {
     this.saleOrderLine = saleOrderLine;
 
     this.axis1AnalyticAccount = saleOrderLine.getAxis1AnalyticAccount();
-    this.axis2AnalyticAccount = saleOrderLine.getAxis1AnalyticAccount();
-    this.axis3AnalyticAccount = saleOrderLine.getAxis1AnalyticAccount();
-    this.axis4AnalyticAccount = saleOrderLine.getAxis1AnalyticAccount();
-    this.axis5AnalyticAccount = saleOrderLine.getAxis1AnalyticAccount();
+    this.axis2AnalyticAccount = saleOrderLine.getAxis2AnalyticAccount();
+    this.axis3AnalyticAccount = saleOrderLine.getAxis3AnalyticAccount();
+    this.axis4AnalyticAccount = saleOrderLine.getAxis4AnalyticAccount();
+    this.axis5AnalyticAccount = saleOrderLine.getAxis5AnalyticAccount();
     this.analyticMoveLineList = saleOrderLine.getAnalyticMoveLineList();
     this.analyticDistributionTemplate = saleOrderLine.getAnalyticDistributionTemplate();
 
@@ -56,10 +56,10 @@ public class AnalyticLineModel implements AnalyticLine {
     this.purchaseOrderLine = purchaseOrderLine;
 
     this.axis1AnalyticAccount = purchaseOrderLine.getAxis1AnalyticAccount();
-    this.axis2AnalyticAccount = purchaseOrderLine.getAxis1AnalyticAccount();
-    this.axis3AnalyticAccount = purchaseOrderLine.getAxis1AnalyticAccount();
-    this.axis4AnalyticAccount = purchaseOrderLine.getAxis1AnalyticAccount();
-    this.axis5AnalyticAccount = purchaseOrderLine.getAxis1AnalyticAccount();
+    this.axis2AnalyticAccount = purchaseOrderLine.getAxis2AnalyticAccount();
+    this.axis3AnalyticAccount = purchaseOrderLine.getAxis3AnalyticAccount();
+    this.axis4AnalyticAccount = purchaseOrderLine.getAxis4AnalyticAccount();
+    this.axis5AnalyticAccount = purchaseOrderLine.getAxis5AnalyticAccount();
     this.analyticMoveLineList = purchaseOrderLine.getAnalyticMoveLineList();
     this.analyticDistributionTemplate = purchaseOrderLine.getAnalyticDistributionTemplate();
 
