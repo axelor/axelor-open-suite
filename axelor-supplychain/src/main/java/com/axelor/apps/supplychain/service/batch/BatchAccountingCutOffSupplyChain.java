@@ -120,19 +120,6 @@ public class BatchAccountingCutOffSupplyChain extends BatchAccountingCutOff {
       for (StockMove stockMove : stockMoveList) {
         ++offset;
 
-        try {
-          if (!cutOffSupplyChainService.checkPriceLimit(
-              stockMove,
-              accountingBatch.getLowerAmountLimit(),
-              accountingBatch.getUpperAmountLimit(),
-              accountingCutOffTypeSelect,
-              accountingBatch.getAti())) {
-            continue;
-          }
-        } catch (AxelorException e) {
-          throw new RuntimeException(e);
-        }
-
         if (this._processStockMove(
             stockMoveRepository.find(stockMove.getId()),
             accountingBatchRepository.find(accountingBatch.getId()))) {
