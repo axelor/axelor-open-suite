@@ -46,8 +46,6 @@ public interface ContractLineService {
 
   void updateContractLinesFromContractVersion(ContractVersion contractVersion);
 
-  void checkFromDateOnGoing(Contract contract);
-
   /**
    * Compute price and tax of Product to ContractLine.
    *

@@ -16,9 +16,8 @@
   </grid>
 
   <form name="contract-line-form" title="Contract line"
-    model="com.axelor.apps.contract.db.ContractLine"
-    onNew="action-contract-line-attrs-hide-consumption-line,action-contract-line-attrs-scale-and-precision,action-method-contract-line-fill-default"
-    onLoad="action-contract-line-attrs-hide-consumption-line,action-contract-line-attrs-scale-and-precision">
+    model="com.axelor.apps.contract.db.ContractLine" onNew="action-contract-line-group-onnew"
+    onLoad="action-contract-line-group-onload">
 
     <panel-tabs name="mainPanelTab">
       <panel name="informationsPanel" title="Information">
@@ -53,7 +52,7 @@
           onChange="action-analytic-move-line-group-analytic-move-line-list-onchange"/>
         <field name="$isValidAnalyticMoveLineList" type="boolean" hidden="true"/>
       </panel>
-      <panel name="datePanel" title="Date">
+      <panel name="datePanel" title="Date" hidden="true">
         <field name="fromDate" onChange="action-method-contract-line-check-from-date"/>
       </panel>
     </panel-tabs>
@@ -206,6 +205,23 @@
   </action-method>
   <action-method name="action-method-contract-line-check-from-date">
     <call class="com.axelor.apps.contract.web.ContractLineController" method="checkFromDate"/>
+  </action-method>
+
+  <action-group name="action-contract-line-group-onnew">
+    <action name="action-contract-line-attrs-hide-consumption-line"/>
+    <action name="action-contract-line-attrs-scale-and-precision"/>
+    <action name="action-method-contract-line-fill-default"/>
+    <action name="action-contract-line-method-hide-date-panel"/>
+  </action-group>
+
+  <action-group name="action-contract-line-group-onload">
+    <action name="action-contract-line-attrs-hide-consumption-line"/>
+    <action name="action-contract-line-attrs-scale-and-precision"/>
+    <action name="action-contract-line-method-hide-date-panel"/>
+  </action-group>
+
+  <action-method name="action-contract-line-method-hide-date-panel">
+    <call class="com.axelor.apps.contract.web.ContractLineController" method="hideDatePanel"/>
   </action-method>
 
 </object-views>

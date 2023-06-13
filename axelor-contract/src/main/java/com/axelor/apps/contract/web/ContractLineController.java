@@ -91,4 +91,13 @@ public class ContractLineController {
       response.setValue("fromDate", contractVersion.getSupposedActivationDate());
     }
   }
+
+  public void hideDatePanel(ActionRequest request, ActionResponse response) {
+    ContractVersion contract = request.getContext().getParent().asType(ContractVersion.class);
+    boolean hidePanel = false;
+    if (!contract.getIsPeriodicInvoicing()) {
+      hidePanel = true;
+    }
+    response.setAttr("datePanel", "hidden", hidePanel);
+  }
 }

@@ -44,7 +44,6 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.LocalDate;
 import java.util.List;
 
 public class ContractLineServiceImpl implements ContractLineService {
@@ -194,25 +193,6 @@ public class ContractLineServiceImpl implements ContractLineService {
 
     contractLine.setAnalyticMoveLineList(analyticMoveLineList);
     return contractLine;
-  }
-
-  @Override
-  @Transactional
-  public void checkFromDateOnGoing(Contract contract) {
-    ContractVersion contractVersion = contract.getCurrentContractVersion();
-    LocalDate today = Beans.get(AppBaseService.class).getTodayDate(contract.getCompany());
-    for (ContractLine line : contractVersion.getContractLineList()) {
-      if (line.getFromDate() == null) {
-        line.setFromDate(
-            contractVersion.getSupposedActivationDate() != null
-                    && contractVersion.getSupposedActivationDate().isAfter(today)
-                ? contractVersion.getSupposedActivationDate()
-                : today);
-      } else if (line.getFromDate().isBefore(today)) {
-        line.setFromDate(today);
-      }
-    }
-    contractVersionRepo.save(contractVersion);
   }
 
   @Override
