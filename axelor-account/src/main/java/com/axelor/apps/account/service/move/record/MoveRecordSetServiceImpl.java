@@ -174,14 +174,18 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
 
   @Override
   public void setFunctionalOriginSelect(Move move) {
+    if (move.getJournal() == null
+        || StringUtils.isEmpty(move.getJournal().getAuthorizedFunctionalOriginSelect())) {
+      return;
+    }
+
     String authorizedFunctionalOriginSelect =
         move.getJournal().getAuthorizedFunctionalOriginSelect();
-    if (move.getJournal() != null && StringUtils.notEmpty(authorizedFunctionalOriginSelect)) {
-      if (authorizedFunctionalOriginSelect.split(",").length == 1) {
-        move.setFunctionalOriginSelect(Integer.valueOf(authorizedFunctionalOriginSelect));
-      } else {
-        move.setFunctionalOriginSelect(null);
-      }
+
+    if (authorizedFunctionalOriginSelect.split(",").length == 1) {
+      move.setFunctionalOriginSelect(Integer.valueOf(authorizedFunctionalOriginSelect));
+    } else {
+      move.setFunctionalOriginSelect(null);
     }
   }
 

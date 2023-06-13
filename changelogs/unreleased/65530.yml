@@ -1,0 +1,3 @@
+---
+title: "Move : Fix error on creation when user doesn't have an active company"
+type: fix
