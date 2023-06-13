@@ -112,7 +112,6 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
             paymentDate,
             currency,
             paymentMode,
-            invoice,
             typeSelect,
             InvoicePaymentRepository.STATUS_DRAFT);
 
