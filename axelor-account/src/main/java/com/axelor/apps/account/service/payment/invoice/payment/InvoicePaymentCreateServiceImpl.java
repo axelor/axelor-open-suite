@@ -106,15 +106,19 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
       Currency currency,
       PaymentMode paymentMode,
       int typeSelect) {
+    InvoicePayment invoicePayment =
+        new InvoicePayment(
+            amount,
+            paymentDate,
+            currency,
+            paymentMode,
+            invoice,
+            typeSelect,
+            InvoicePaymentRepository.STATUS_DRAFT);
 
-    return new InvoicePayment(
-        amount,
-        paymentDate,
-        currency,
-        paymentMode,
-        invoice,
-        typeSelect,
-        InvoicePaymentRepository.STATUS_DRAFT);
+    invoice.addInvoicePaymentListItem(invoicePayment);
+
+    return invoicePayment;
   }
 
   /**
