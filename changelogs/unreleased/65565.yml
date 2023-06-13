@@ -1,0 +1,6 @@
+title: Improve layout of blockings
+type: change
+description: |
+  The layout of blockings in client form view has been improved.
+
+  Also, some parts of blocking feature previously defined in account module have been moved to base module.

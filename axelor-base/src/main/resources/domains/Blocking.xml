@@ -19,19 +19,20 @@
       title="Blocking reason"/>
     <many-to-one name="blockingByUser" ref="com.axelor.auth.db.User"
       title="Blocking done by"/>
+    <string name="blockingComment" title="Comment" large="true"/>
 
     <string name="name" title="Reference" search="partner">
         <![CDATA[return partner != null ? partner.getName() : "";]]>
     </string>
 
     <extra-code>
-          <![CDATA[
-              public static final Integer REMINDER_BLOCKING = 1;
-              public static final Integer INVOICING_BLOCKING = 2;
-              public static final Integer REIMBURSEMENT_BLOCKING = 3;
+      <![CDATA[
+        public static final Integer REMINDER_BLOCKING = 1;
+        public static final Integer INVOICING_BLOCKING = 2;
+        public static final Integer REIMBURSEMENT_BLOCKING = 3;
 
-              public static final int PURCHASE_BLOCKING = 6;
-          ]]>
+        public static final int PURCHASE_BLOCKING = 6;
+      ]]>
     </extra-code>
 
   </entity>
