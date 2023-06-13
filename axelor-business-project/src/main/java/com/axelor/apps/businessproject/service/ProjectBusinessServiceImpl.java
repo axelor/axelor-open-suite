@@ -66,7 +66,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
   protected ProjectTaskBusinessProjectService projectTaskBusinessProjectService;
   protected ProjectTaskReportingValuesComputingService projectTaskReportingValuesComputingService;
 
-  public static final int DIVIDE_SCALE = 2;
+  public static final int BIG_DECIMAL_SCALE = 2;
 
   @Inject
   public ProjectBusinessServiceImpl(
@@ -321,21 +321,29 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     for (ProjectTask projectTask : projectTaskList) {
       Unit projectTaskUnit = projectTask.getTimeUnit();
       totalSoldTime =
-          totalSoldTime.add(
-              getConvertedTime(
-                  projectTask.getSoldTime(), projectTaskUnit, projectUnit, numberHoursADay));
+          totalSoldTime
+              .add(
+                  getConvertedTime(
+                      projectTask.getSoldTime(), projectTaskUnit, projectUnit, numberHoursADay))
+              .setScale(BIG_DECIMAL_SCALE, RoundingMode.HALF_UP);
       totalUpdatedTime =
-          totalUpdatedTime.add(
-              getConvertedTime(
-                  projectTask.getUpdatedTime(), projectTaskUnit, projectUnit, numberHoursADay));
+          totalUpdatedTime
+              .add(
+                  getConvertedTime(
+                      projectTask.getUpdatedTime(), projectTaskUnit, projectUnit, numberHoursADay))
+              .setScale(BIG_DECIMAL_SCALE, RoundingMode.HALF_UP);
       totalPlannedTime =
-          totalPlannedTime.add(
-              getConvertedTime(
-                  projectTask.getPlannedTime(), projectTaskUnit, projectUnit, numberHoursADay));
+          totalPlannedTime
+              .add(
+                  getConvertedTime(
+                      projectTask.getPlannedTime(), projectTaskUnit, projectUnit, numberHoursADay))
+              .setScale(BIG_DECIMAL_SCALE, RoundingMode.HALF_UP);
       totalSpentTime =
-          totalSpentTime.add(
-              getConvertedTime(
-                  projectTask.getSpentTime(), projectTaskUnit, projectUnit, numberHoursADay));
+          totalSpentTime
+              .add(
+                  getConvertedTime(
+                      projectTask.getSpentTime(), projectTaskUnit, projectUnit, numberHoursADay))
+              .setScale(BIG_DECIMAL_SCALE, RoundingMode.HALF_UP);
     }
 
     project.setSoldTime(totalSoldTime);
@@ -347,17 +355,20 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
       project.setPercentageOfProgress(
           totalSpentTime
               .multiply(new BigDecimal("100"))
-              .divide(totalUpdatedTime, DIVIDE_SCALE, RoundingMode.HALF_UP));
+              .divide(totalUpdatedTime, BIG_DECIMAL_SCALE, RoundingMode.HALF_UP));
     }
 
     if (totalSoldTime.signum() > 0) {
       project.setPercentageOfConsumption(
           totalSpentTime
               .multiply(new BigDecimal("100"))
-              .divide(totalSoldTime, DIVIDE_SCALE, RoundingMode.HALF_UP));
+              .divide(totalSoldTime, BIG_DECIMAL_SCALE, RoundingMode.HALF_UP));
     }
 
-    project.setRemainingAmountToDo(totalUpdatedTime.subtract(totalSpentTime));
+    project.setRemainingAmountToDo(
+        totalUpdatedTime
+            .subtract(totalSpentTime)
+            .setScale(BIG_DECIMAL_SCALE, RoundingMode.HALF_UP));
   }
 
   protected void computeFinancialFollowUp(Project project, List<ProjectTask> projectTaskList) {
@@ -380,7 +391,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
       project.setInitialMarkup(
           initialMargin
               .multiply(new BigDecimal("100"))
-              .divide(initialCosts, DIVIDE_SCALE, RoundingMode.HALF_UP));
+              .divide(initialCosts, BIG_DECIMAL_SCALE, RoundingMode.HALF_UP));
     }
 
     BigDecimal realTurnover =
@@ -401,7 +412,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
       project.setRealMarkup(
           realMargin
               .multiply(new BigDecimal("100"))
-              .divide(realCosts, DIVIDE_SCALE, RoundingMode.HALF_UP));
+              .divide(realCosts, BIG_DECIMAL_SCALE, RoundingMode.HALF_UP));
     }
 
     BigDecimal forecastCosts =
@@ -417,7 +428,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
       project.setForecastMarkup(
           forecastMargin
               .multiply(new BigDecimal("100"))
-              .divide(forecastCosts, DIVIDE_SCALE, RoundingMode.HALF_UP));
+              .divide(forecastCosts, BIG_DECIMAL_SCALE, RoundingMode.HALF_UP));
     }
   }
 
@@ -429,7 +440,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
       return duration.multiply(numberHoursADay);
     } else if (fromUnit.equals(appBusinessProjectService.getHoursUnit())
         && toUnit.equals(appBusinessProjectService.getDaysUnit())) {
-      return duration.divide(numberHoursADay, DIVIDE_SCALE, RoundingMode.HALF_UP);
+      return duration.divide(numberHoursADay, BIG_DECIMAL_SCALE, RoundingMode.HALF_UP);
     } else {
       return duration;
     }
