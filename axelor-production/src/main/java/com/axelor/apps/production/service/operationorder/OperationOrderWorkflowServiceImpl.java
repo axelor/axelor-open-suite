@@ -284,8 +284,7 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
     ManufOrder manufOrder = operationOrder.getManufOrder();
 
     return manufOrder.getOperationOrderList().stream()
-        .filter(
-            oo -> oo.getPriority() >= operationOrder.getPriority() && !oo.equals(operationOrder))
+        .filter(oo -> oo.getPriority() > operationOrder.getPriority() && !oo.equals(operationOrder))
         .sorted((oo1, oo2) -> oo1.getPriority() - oo2.getPriority())
         .collect(Collectors.toList());
   }
