@@ -43,9 +43,6 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
             <property name="isRequired">true</property>
             <property name="dataType">decimal</property>
             <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">78</value>
-            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -58,9 +55,6 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">jdbc:postgresql://localhost:5432/axelor-open-suite</value>
-            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -73,9 +67,6 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">axelor</value>
-            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -88,9 +79,6 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">axelor</value>
-            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -9268,12 +9256,6 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                                         </row>
                                         <row id="5712">
                                             <property name="verticalAlign">middle</property>
-                                            <list-property name="visibility">
-                                                <structure>
-                                                    <property name="format">all</property>
-                                                    <expression name="valueExpr" type="javascript">params["ReportType"].value == 1</expression>
-                                                </structure>
-                                            </list-property>
                                             <cell id="5713">
                                                 <property name="backgroundAttachment">scroll</property>
                                                 <property name="backgroundImageType">url</property>
@@ -9327,8 +9309,7 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                                                 <property name="showIfBlank">false</property>
                                                 <property name="canShrink">false</property>
                                                 <property name="overflow">hidden</property>
-                                                <data id="5714">
-                                                    <property name="fontWeight">bold</property>
+                                                <grid id="6042">
                                                     <property name="dataSet">TranslateDS</property>
                                                     <list-property name="paramBindings">
                                                         <structure>
@@ -9340,21 +9321,57 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                                                     </list-property>
                                                     <list-property name="boundDataColumns">
                                                         <structure>
+                                                            <property name="name">message_key</property>
+                                                            <text-property name="displayName">message_key</text-property>
+                                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                            <property name="dataType">string</property>
+                                                        </structure>
+                                                        <structure>
                                                             <property name="name">translation</property>
                                                             <text-property name="displayName">translation</text-property>
                                                             <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
                                                             <property name="dataType">string</property>
                                                         </structure>
-                                                        <structure>
-                                                            <property name="name">TotalToPay</property>
-                                                            <text-property name="displayName">TranslationTotalToPay</text-property>
-                                                            <expression name="expression" type="javascript">row["translation"]</expression>
-                                                            <property name="dataType">string</property>
-                                                            <property name="allowExport">true</property>
-                                                        </structure>
                                                     </list-property>
-                                                    <property name="resultSetColumn">TotalToPay</property>
-                                                </data>
+                                                    <column id="6043"/>
+                                                    <row id="6044">
+                                                        <cell id="6045">
+                                                            <text id="6047">
+                                                                <property name="dataSet">TranslateDS</property>
+                                                                <list-property name="paramBindings">
+                                                                    <structure>
+                                                                        <property name="paramName">param_1</property>
+                                                                        <simple-property-list name="expression">
+                                                                            <value type="javascript">'Invoice.totalToPay'</value>
+                                                                        </simple-property-list>
+                                                                    </structure>
+                                                                </list-property>
+                                                                <list-property name="boundDataColumns">
+                                                                    <structure>
+                                                                        <property name="name">message_key</property>
+                                                                        <text-property name="displayName">message_key</text-property>
+                                                                        <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                                        <property name="dataType">string</property>
+                                                                    </structure>
+                                                                    <structure>
+                                                                        <property name="name">translation</property>
+                                                                        <text-property name="displayName">translation</text-property>
+                                                                        <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                                        <property name="dataType">string</property>
+                                                                    </structure>
+                                                                </list-property>
+                                                                <property name="contentType">html</property>
+                                                                <text-property name="content"><![CDATA[<VALUE-OF>
+		if(row._outer._outer._outer["operation_type_select"] == 2 || row._outer._outer._outer["operation_type_select"] == 4){
+			row._outer["translation"]
+		}else{
+			row["translation"]
+		}
+</VALUE-OF>]]></text-property>
+                                                            </text>
+                                                        </cell>
+                                                    </row>
+                                                </grid>
                                             </cell>
                                             <cell id="5715">
                                                 <property name="fontSize">9pt</property>
