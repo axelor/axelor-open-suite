@@ -18,6 +18,7 @@
 package com.axelor.apps.stock.service;
 
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.db.InventoryLine;
 import com.axelor.apps.stock.db.StockLocation;
@@ -39,15 +40,18 @@ public class InventoryLineService {
   protected StockConfigService stockConfigService;
   protected InventoryLineRepository inventoryLineRepository;
   protected StockLocationLineService stockLocationLineService;
+  protected ProductCompanyService productCompanyService;
 
   @Inject
   public InventoryLineService(
       StockConfigService stockConfigService,
       InventoryLineRepository inventoryLineRepository,
-      StockLocationLineService stockLocationLineService) {
+      StockLocationLineService stockLocationLineService,
+      ProductCompanyService productCompanyService) {
     this.stockConfigService = stockConfigService;
     this.inventoryLineRepository = inventoryLineRepository;
     this.stockLocationLineService = stockLocationLineService;
+    this.productCompanyService = productCompanyService;
   }
 
   public InventoryLine createInventoryLine(
@@ -150,7 +154,10 @@ public class InventoryLineService {
               .getStockConfig(stockLocation.getCompany())
               .getInventoryValuationTypeSelect();
 
-      BigDecimal productAvgPrice = product.getAvgPrice();
+      BigDecimal productAvgPrice =
+          (BigDecimal)
+              productCompanyService.get(
+                  product, "avgPrice", inventory.getStockLocation().getCompany());
 
       switch (inventoryValuationTypeSelect) {
         case StockConfigRepository.VALUATION_TYPE_WAP_VALUE:
@@ -173,7 +180,7 @@ public class InventoryLineService {
           }
           break;
         default:
-          price = product.getAvgPrice();
+          price = productAvgPrice;
           break;
       }
 
