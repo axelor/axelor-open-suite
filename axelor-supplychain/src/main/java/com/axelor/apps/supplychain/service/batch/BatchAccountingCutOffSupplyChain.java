@@ -82,9 +82,6 @@ public class BatchAccountingCutOffSupplyChain extends BatchAccountingCutOff {
     LocalDate moveDate = accountingBatch.getMoveDate();
     int accountingCutOffTypeSelect = accountingBatch.getAccountingCutOffTypeSelect();
     updateBatch(moveDate, accountingCutOffTypeSelect);
-    BigDecimal lowerAmountLimit = accountingBatch.getLowerAmountLimit();
-    BigDecimal upperAmountLimit = accountingBatch.getUpperAmountLimit();
-    boolean ati = accountingBatch.getAti();
     if (accountingCutOffTypeSelect
         < AccountingBatchRepository.ACCOUNTING_CUT_OFF_TYPE_PREPAID_EXPENSES) {
       if (this.recordIdList == null) {
