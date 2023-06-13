@@ -31,7 +31,7 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticServiceImpl;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
-import com.axelor.apps.supplychain.service.AnalyticLineModelSerivce;
+import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.utils.service.ListToolService;
 import com.google.inject.Inject;
 import java.util.List;
@@ -39,7 +39,7 @@ import org.apache.commons.collections.CollectionUtils;
 
 public class InvoiceLineAnalyticSupplychainServiceImpl extends InvoiceLineAnalyticServiceImpl
     implements InvoiceLineAnalyticSupplychainService {
-  protected AnalyticLineModelSerivce analyticLineModelSerivce;
+  protected AnalyticLineModelService analyticLineModelService;
   protected AnalyticMoveLineRepository analyticMoveLineRepo;
 
   @Inject
@@ -51,7 +51,7 @@ public class InvoiceLineAnalyticSupplychainServiceImpl extends InvoiceLineAnalyt
       AccountConfigService accountConfigService,
       ListToolService listToolService,
       AppAccountService appAccountService,
-      AnalyticLineModelSerivce analyticLineModelSerivce,
+      AnalyticLineModelService analyticLineModelService,
       AnalyticMoveLineRepository analyticMoveLineRepo) {
     super(
         analyticAccountRepository,
@@ -62,7 +62,7 @@ public class InvoiceLineAnalyticSupplychainServiceImpl extends InvoiceLineAnalyt
         listToolService,
         appAccountService);
 
-    this.analyticLineModelSerivce = analyticLineModelSerivce;
+    this.analyticLineModelService = analyticLineModelService;
     this.analyticMoveLineRepo = analyticMoveLineRepo;
   }
 
@@ -83,7 +83,7 @@ public class InvoiceLineAnalyticSupplychainServiceImpl extends InvoiceLineAnalyt
       throws AxelorException {
     if (analyticLineModel.getAnalyticDistributionTemplate() != null
         || CollectionUtils.isNotEmpty(analyticLineModel.getAnalyticMoveLineList())) {
-      analyticLineModelSerivce.setInvoiceLineAnalyticInfo(analyticLineModel, invoiceLine);
+      analyticLineModelService.setInvoiceLineAnalyticInfo(analyticLineModel, invoiceLine);
 
       this.copyAnalyticMoveLines(analyticLineModel.getAnalyticMoveLineList(), invoiceLine);
       this.computeAnalyticDistribution(invoiceLine);

@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.commons.collections.CollectionUtils;
 
-public class AnalyticLineModelServiceImpl implements AnalyticLineModelSerivce {
+public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
   protected AppBaseService appBaseService;
   protected AppAccountService appAccountService;
   protected AccountConfigService accountConfigService;

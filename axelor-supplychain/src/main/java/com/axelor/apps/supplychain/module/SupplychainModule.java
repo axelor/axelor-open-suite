@@ -92,7 +92,7 @@ import com.axelor.apps.supplychain.service.AccountingSituationInitSupplychainSer
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService;
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.AdvancePaymentServiceSupplychainImpl;
-import com.axelor.apps.supplychain.service.AnalyticLineModelSerivce;
+import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.apps.supplychain.service.AnalyticLineModelServiceImpl;
 import com.axelor.apps.supplychain.service.AnalyticMoveLineSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.BudgetSupplychainService;
@@ -321,6 +321,6 @@ public class SupplychainModule extends AxelorModule {
     bind(PurchaseOrderLineBudgetService.class).to(PurchaseOrderLineBudgetServiceImpl.class);
     bind(MrpProposalService.class).to(MrpProposalServiceImpl.class);
     bind(SaleInvoicingStateService.class).to(SaleInvoicingStateServiceImpl.class);
-    bind(AnalyticLineModelSerivce.class).to(AnalyticLineModelServiceImpl.class);
+    bind(AnalyticLineModelService.class).to(AnalyticLineModelServiceImpl.class);
   }
 }

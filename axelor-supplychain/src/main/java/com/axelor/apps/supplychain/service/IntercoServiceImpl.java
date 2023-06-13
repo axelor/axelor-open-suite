@@ -83,7 +83,7 @@ public class IntercoServiceImpl implements IntercoService {
 
   protected PurchaseConfigService purchaseConfigService;
   protected BankDetailsService bankDetailsService;
-  protected AnalyticLineModelSerivce analyticLineModelSerivce;
+  protected AnalyticLineModelService analyticLineModelService;
 
   protected static int DEFAULT_INVOICE_COPY = 1;
 
@@ -91,10 +91,10 @@ public class IntercoServiceImpl implements IntercoService {
   public IntercoServiceImpl(
       PurchaseConfigService purchaseConfigService,
       BankDetailsService bankDetailsService,
-      AnalyticLineModelSerivce analyticLineModelSerivce) {
+      AnalyticLineModelService analyticLineModelService) {
     this.purchaseConfigService = purchaseConfigService;
     this.bankDetailsService = bankDetailsService;
-    this.analyticLineModelSerivce = analyticLineModelSerivce;
+    this.analyticLineModelService = analyticLineModelService;
   }
 
   @Override
@@ -285,7 +285,7 @@ public class IntercoServiceImpl implements IntercoService {
 
     // analyticalDistribution
     AnalyticLineModel analyticLineModel = new AnalyticLineModel(purchaseOrderLine);
-    analyticLineModelSerivce.getAndComputeAnalyticDistribution(analyticLineModel);
+    analyticLineModelService.getAndComputeAnalyticDistribution(analyticLineModel);
 
     purchaseOrder.addPurchaseOrderLineListItem(purchaseOrderLine);
     return purchaseOrderLine;
@@ -330,7 +330,7 @@ public class IntercoServiceImpl implements IntercoService {
 
     // analyticDistribution
     AnalyticLineModel analyticLineModel = new AnalyticLineModel(saleOrderLine);
-    analyticLineModelSerivce.getAndComputeAnalyticDistribution(analyticLineModel);
+    analyticLineModelService.getAndComputeAnalyticDistribution(analyticLineModel);
 
     if (saleOrderLine.getAnalyticMoveLineList() != null) {
       for (AnalyticMoveLine obj : saleOrderLine.getAnalyticMoveLineList()) {

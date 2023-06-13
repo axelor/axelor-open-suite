@@ -53,7 +53,7 @@ import com.axelor.apps.contract.db.repo.ContractVersionRepository;
 import com.axelor.apps.contract.exception.ContractExceptionMessage;
 import com.axelor.apps.contract.generator.InvoiceGeneratorContract;
 import com.axelor.apps.contract.model.AnalyticLineContractModel;
-import com.axelor.apps.supplychain.service.AnalyticLineModelSerivce;
+import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -90,7 +90,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
   protected ConsumptionLineRepository consumptionLineRepo;
   protected ContractRepository contractRepository;
   protected TaxService taxService;
-  protected AnalyticLineModelSerivce analyticLineModelSerivce;
+  protected AnalyticLineModelService analyticLineModelService;
 
   @Inject
   public ContractServiceImpl(
@@ -102,7 +102,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
       ConsumptionLineRepository consumptionLineRepo,
       ContractRepository contractRepository,
       TaxService taxService,
-      AnalyticLineModelSerivce analyticLineModelSerivce) {
+      AnalyticLineModelService analyticLineModelService) {
     this.appBaseService = appBaseService;
     this.versionService = versionService;
     this.contractLineService = contractLineService;
@@ -111,7 +111,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     this.consumptionLineRepo = consumptionLineRepo;
     this.contractRepository = contractRepository;
     this.taxService = taxService;
-    this.analyticLineModelSerivce = analyticLineModelSerivce;
+    this.analyticLineModelService = analyticLineModelService;
   }
 
   @Override
@@ -612,7 +612,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     invoiceLine.setAccount(replacedAccount);
 
     if (CollectionUtils.isNotEmpty(line.getAnalyticMoveLineList())) {
-      analyticLineModelSerivce.setInvoiceLineAnalyticInfo(
+      analyticLineModelService.setInvoiceLineAnalyticInfo(
           new AnalyticLineContractModel(line), invoiceLine);
 
       this.copyAnalyticMoveLines(line.getAnalyticMoveLineList(), invoiceLine);

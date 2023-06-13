@@ -28,7 +28,7 @@ import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.db.ContractVersion;
 import com.axelor.apps.contract.model.AnalyticLineContractModel;
 import com.axelor.apps.contract.service.ContractLineService;
-import com.axelor.apps.supplychain.service.AnalyticLineModelSerivce;
+import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -69,7 +69,7 @@ public class ContractLineController {
       AnalyticLineContractModel analyticLineContractModel =
           new AnalyticLineContractModel(contractLine);
 
-      Beans.get(AnalyticLineModelSerivce.class)
+      Beans.get(AnalyticLineModelService.class)
           .createAnalyticDistributionWithTemplate(analyticLineContractModel);
 
       response.setValue(
@@ -139,7 +139,7 @@ public class ContractLineController {
       AnalyticLineContractModel analyticLineContractModel =
           new AnalyticLineContractModel(contractLine);
 
-      if (Beans.get(AnalyticLineModelSerivce.class)
+      if (Beans.get(AnalyticLineModelService.class)
           .analyzeAnalyticLineModel(analyticLineContractModel, contract.getCompany())) {
         response.setValue(
             "analyticMoveLineList", analyticLineContractModel.getAnalyticMoveLineList());

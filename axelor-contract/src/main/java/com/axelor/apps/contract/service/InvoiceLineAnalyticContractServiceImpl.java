@@ -27,7 +27,7 @@ import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.supplychain.service.AnalyticLineModelSerivce;
+import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.apps.supplychain.service.invoice.InvoiceLineAnalyticSupplychainServiceImpl;
 import com.axelor.utils.service.ListToolService;
 import com.google.inject.Inject;
@@ -45,7 +45,7 @@ public class InvoiceLineAnalyticContractServiceImpl
       AccountConfigService accountConfigService,
       ListToolService listToolService,
       AppAccountService appAccountService,
-      AnalyticLineModelSerivce analyticLineModelSerivce,
+      AnalyticLineModelService analyticLineModelService,
       AnalyticMoveLineRepository analyticMoveLineRepo) {
     super(
         analyticAccountRepository,
@@ -55,7 +55,7 @@ public class InvoiceLineAnalyticContractServiceImpl
         accountConfigService,
         listToolService,
         appAccountService,
-        analyticLineModelSerivce,
+        analyticLineModelService,
         analyticMoveLineRepo);
   }
 

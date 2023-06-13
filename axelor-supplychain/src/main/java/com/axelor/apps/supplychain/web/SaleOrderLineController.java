@@ -39,7 +39,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
-import com.axelor.apps.supplychain.service.AnalyticLineModelSerivce;
+import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.apps.supplychain.service.ReservedQtyService;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChain;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChainImpl;
@@ -68,7 +68,7 @@ public class SaleOrderLineController {
       if (Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()) {
         AnalyticLineModel analyticLineModel = new AnalyticLineModel(saleOrderLine);
 
-        Beans.get(AnalyticLineModelSerivce.class).computeAnalyticDistribution(analyticLineModel);
+        Beans.get(AnalyticLineModelService.class).computeAnalyticDistribution(analyticLineModel);
 
         response.setValue(
             "analyticDistributionTemplate", analyticLineModel.getAnalyticDistributionTemplate());
@@ -85,7 +85,7 @@ public class SaleOrderLineController {
       SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
       AnalyticLineModel analyticLineModel = new AnalyticLineModel(saleOrderLine);
 
-      Beans.get(AnalyticLineModelSerivce.class)
+      Beans.get(AnalyticLineModelService.class)
           .createAnalyticDistributionWithTemplate(analyticLineModel);
 
       response.setValue("analyticMoveLineList", analyticLineModel.getAnalyticMoveLineList());
@@ -463,7 +463,7 @@ public class SaleOrderLineController {
       SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
       AnalyticLineModel analyticLineModel = new AnalyticLineModel(saleOrderLine);
 
-      if (Beans.get(AnalyticLineModelSerivce.class)
+      if (Beans.get(AnalyticLineModelService.class)
           .analyzeAnalyticLineModel(analyticLineModel, saleOrder.getCompany())) {
         response.setValue("analyticMoveLineList", analyticLineModel.getAnalyticMoveLineList());
       }

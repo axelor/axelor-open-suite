@@ -27,7 +27,7 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
-import com.axelor.apps.supplychain.service.AnalyticLineModelSerivce;
+import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.apps.supplychain.service.PurchaseOrderLineBudgetService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.inject.Beans;
@@ -50,7 +50,7 @@ public class PurchaseOrderLineController {
       if (Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()) {
         AnalyticLineModel analyticLineModel = new AnalyticLineModel(purchaseOrderLine);
 
-        Beans.get(AnalyticLineModelSerivce.class).computeAnalyticDistribution(analyticLineModel);
+        Beans.get(AnalyticLineModelService.class).computeAnalyticDistribution(analyticLineModel);
 
         response.setValue("analyticMoveLineList", analyticLineModel.getAnalyticMoveLineList());
       }
@@ -65,7 +65,7 @@ public class PurchaseOrderLineController {
       PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
       AnalyticLineModel analyticLineModel = new AnalyticLineModel(purchaseOrderLine);
 
-      Beans.get(AnalyticLineModelSerivce.class)
+      Beans.get(AnalyticLineModelService.class)
           .createAnalyticDistributionWithTemplate(analyticLineModel);
 
       response.setValue("analyticMoveLineList", analyticLineModel.getAnalyticMoveLineList());
@@ -142,7 +142,7 @@ public class PurchaseOrderLineController {
       PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
       AnalyticLineModel analyticLineModel = new AnalyticLineModel(purchaseOrderLine);
 
-      if (Beans.get(AnalyticLineModelSerivce.class)
+      if (Beans.get(AnalyticLineModelService.class)
           .analyzeAnalyticLineModel(analyticLineModel, purchaseOrder.getCompany())) {
         response.setValue("analyticMoveLineList", analyticLineModel.getAnalyticMoveLineList());
       }

@@ -82,7 +82,7 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
   protected AccountConfigService accountConfigService;
   protected InvoiceLineRepository invoiceLineRepository;
   protected SaleInvoicingStateService saleInvoicingStateService;
-  protected AnalyticLineModelSerivce analyticLineModelSerivce;
+  protected AnalyticLineModelService analyticLineModelService;
 
   @Inject
   public SaleOrderLineServiceSupplyChainImpl(
@@ -103,7 +103,7 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
       SaleOrderMarginService saleOrderMarginService,
       InvoiceLineRepository invoiceLineRepository,
       SaleInvoicingStateService saleInvoicingStateService,
-      AnalyticLineModelSerivce analyticLineModelSerivce) {
+      AnalyticLineModelService analyticLineModelService) {
     super(
         currencyService,
         priceListService,
@@ -122,7 +122,7 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
     this.accountConfigService = accountConfigService;
     this.invoiceLineRepository = invoiceLineRepository;
     this.saleInvoicingStateService = saleInvoicingStateService;
-    this.analyticLineModelSerivce = analyticLineModelSerivce;
+    this.analyticLineModelService = analyticLineModelService;
   }
 
   @Override
@@ -135,7 +135,7 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
       saleOrderLine.setSaleSupplySelect(saleOrderLine.getProduct().getSaleSupplySelect());
 
       AnalyticLineModel analyticLineModel = new AnalyticLineModel(saleOrderLine);
-      analyticLineModelSerivce.getAndComputeAnalyticDistribution(analyticLineModel);
+      analyticLineModelService.getAndComputeAnalyticDistribution(analyticLineModel);
     }
   }
 
@@ -350,7 +350,7 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
     }
     if (appAccountService.getAppAccount().getManageAnalyticAccounting()) {
       AnalyticLineModel analyticLineModel = new AnalyticLineModel(saleOrderLine);
-      analyticLineModelSerivce.computeAnalyticDistribution(analyticLineModel);
+      analyticLineModelService.computeAnalyticDistribution(analyticLineModel);
     }
     if (appSupplychainService.getAppSupplychain().getManageStockReservation()
         && (saleOrderLine.getRequestedReservedQty().compareTo(qty) > 0
@@ -376,7 +376,7 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
       soLine.setSaleSupplySelect(soLine.getProduct().getSaleSupplySelect());
 
       AnalyticLineModel analyticLineModel = new AnalyticLineModel(soLine);
-      analyticLineModelSerivce.getAndComputeAnalyticDistribution(analyticLineModel);
+      analyticLineModelService.getAndComputeAnalyticDistribution(analyticLineModel);
 
       if (ObjectUtils.notEmpty(soLine.getAnalyticMoveLineList())) {
         soLine
