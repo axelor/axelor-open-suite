@@ -509,8 +509,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
     AppSupplychain appSupplychain = appSupplyChainService.getAppSupplychain();
     if (stockMove.getAvailabilityRequest()
         && stockMove.getStockMoveLineList() != null
-        && appSupplychain.getIsVerifyProductStock()
-    /*&& stockMove.getFromStockLocation() != null*/ ) {
+        && appSupplychain.getIsVerifyProductStock()) {
       StringJoiner notAvailableProducts = new StringJoiner(",");
       int counter = 1;
       for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
