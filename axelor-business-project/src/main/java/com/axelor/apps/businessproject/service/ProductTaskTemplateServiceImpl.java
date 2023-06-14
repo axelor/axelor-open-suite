@@ -104,7 +104,7 @@ public class ProductTaskTemplateServiceImpl implements ProductTaskTemplateServic
       throws AxelorException {
     task.setParentTask(parent);
     task.setProduct(product);
-    if(Objects.isNull(parent)) {
+    if (Objects.isNull(parent)) {
       task.setSaleOrderLine(saleOrderLine);
     }
     task.setPlannedTime(qty);
