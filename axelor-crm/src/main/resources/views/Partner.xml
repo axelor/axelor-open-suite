@@ -640,6 +640,7 @@
   <action-record name="action-partner-record-set-from-crm"
     model="com.axelor.apps.base.db.Partner">
     <field name="$isFromCrm" expr="eval: _isFromCrm"/>
+    <field name="partnerStatus" expr="eval: _partnerStatus"/>
   </action-record>
 
   <action-record name="action-partner-record-set-is-in-conversion-from-lead"

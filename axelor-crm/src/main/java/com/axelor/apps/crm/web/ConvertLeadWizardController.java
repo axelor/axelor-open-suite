@@ -32,7 +32,9 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.Opportunity;
+import com.axelor.apps.crm.db.PartnerStatus;
 import com.axelor.apps.crm.db.repo.LeadRepository;
+import com.axelor.apps.crm.db.repo.PartnerStatusRepository;
 import com.axelor.apps.crm.exception.CrmExceptionMessage;
 import com.axelor.apps.crm.service.ConvertLeadWizardService;
 import com.axelor.apps.crm.service.app.AppCrmService;
@@ -74,7 +76,15 @@ public class ConvertLeadWizardController {
       Integer leadToContactSelect = (Integer) context.get("leadToContactSelect");
 
       Partner partner = null;
+      PartnerStatus partnerStatus = null;
       List<Partner> contactPartnerList = new ArrayList<>();
+
+      if (crmProcessOnPartner) {
+        Map<String, Object> partnerStatusMap = (Map<String, Object>) context.get("partnerStatus");
+        partnerStatus =
+            Beans.get(PartnerStatusRepository.class)
+                .find(((Integer) partnerStatusMap.get("id")).longValue());
+      }
 
       if (leadToPartnerSelect == LeadRepository.CONVERT_LEAD_CREATE_PARTNER) {
         partnerMap = this.getPartnerMap(request, response);
@@ -109,7 +119,7 @@ public class ConvertLeadWizardController {
                     contactPartnerList,
                     contactPartnerMap);
       }
-      openPartner(response, partner, crmProcessOnPartner, leadToPartnerSelect, lead);
+      openPartner(response, partner, crmProcessOnPartner, leadToPartnerSelect, lead, partnerStatus);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -120,7 +130,8 @@ public class ConvertLeadWizardController {
       Partner partner,
       boolean crmProcessOnPartner,
       Integer leadToPartnerSelect,
-      Lead lead) {
+      Lead lead,
+      PartnerStatus partnerStatus) {
 
     String form = "partner-form";
     String grid = "partner-grid";
@@ -148,6 +159,7 @@ public class ConvertLeadWizardController {
                 .context("_isInConversionFromLead", true)
                 .context("_lead", lead)
                 .context("_isFromCrm", true)
+                .context("_partnerStatus", partnerStatus)
                 .map());
       } else if (leadToPartnerSelect == LeadRepository.CONVERT_LEAD_SELECT_PARTNER) {
         response.setView(
@@ -160,6 +172,7 @@ public class ConvertLeadWizardController {
                 .context("_isInConversionFromLead", true)
                 .context("_lead", lead)
                 .context("_isFromCrm", true)
+                .context("_partnerStatus", partnerStatus)
                 .map());
       }
     }

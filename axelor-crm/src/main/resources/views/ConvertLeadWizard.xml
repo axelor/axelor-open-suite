@@ -6,6 +6,10 @@
   <form name="convert-lead-wizard-form" title="Convert lead" model="com.axelor.utils.db.Wizard"
     width="large" canSave="false" onNew="action-convert-lead-wizard-record-set-defaults">
     <panel name="mainPanel" colSpan="12" itemSpan="12">
+      <field name="$partnerStatus" type="Many-to-one"
+        target="com.axelor.apps.crm.db.PartnerStatus" title="Partner status"
+        if=" __config__.app.getApp('crm')?.getCrmProcessOnPartner()"/>
+
       <field name="$leadToPartnerSelect" title="Convert lead into partner" required="true"
         type="integer" selection="crm.convert.lead.wizard.lead.to.partner.select"
         onChange="action-convert-lead-attrs-lead-to-contact-select-reset"/>
@@ -25,7 +29,7 @@
         domain="self.isContact = 'true'" grid-view="partner-contact-grid"
         form-view="partner-contact-form" target="com.axelor.apps.base.db.Partner"/>
       <button name="validateBtn"
-        hideIf="!$leadToPartnerSelect || $leadToPartnerSelect == 2 &amp;&amp; $selectPartner == null || $leadToContactSelect == 2 &amp;&amp; ($selectContactSet == null || $selectContactSet.length == 0)"
+        hideIf="$partnerStatus == null || !$leadToPartnerSelect || $leadToPartnerSelect == 2 &amp;&amp; $selectPartner == null || $leadToContactSelect == 2 &amp;&amp; ($selectContactSet == null || $selectContactSet.length == 0)"
         title="Validate"
         onClick="action-convert-lead-validate-confirm-validate-lead,action-lead-method-convert-lead"/>
       <field name="$selectPartner.partnerTypeSelect" hidden="true"/>
