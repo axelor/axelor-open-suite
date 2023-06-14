@@ -139,8 +139,8 @@
     <view-param name="search-filters" value="purchase-order-filters"/>
     <domain>self.statusSelect = 3 AND self IN (select p.purchaseOrder from PurchaseOrderLine as p
       where p.receiptState != 3 AND p.product.productTypeSelect = 'storable' AND
-      p.product.stockManaged = true) AND self.id NOT IN (SELECT s.originId FROM StockMove s WHERE
-      s.originTypeSelect LIKE 'com.axelor.apps.purchase.db.PurchaseOrder' AND s.statusSelect = 2)</domain>
+      p.product.stockManaged = true) AND self.id NOT IN (SELECT s.purchaseOrder.id FROM StockMove s
+      WHERE s.statusSelect = 2)</domain>
   </action-view>
 
   <menuitem name="sale-root-sale-orders-without-stock-move"
@@ -157,8 +157,7 @@
     <view-param name="search-filters" value="sale-order-filters"/>
     <domain>self.statusSelect = 3 AND self IN (select s.saleOrder from SaleOrderLine as s where
       s.deliveryState != 3 AND s.product.productTypeSelect = 'storable' AND s.product.stockManaged =
-      true) AND self.id NOT IN (SELECT s.originId FROM StockMove s WHERE s.originTypeSelect LIKE
-      'com.axelor.apps.sale.db.SaleOrder' AND s.statusSelect = 2)</domain>
+      true) AND self.id NOT IN (SELECT s.saleOrder.id FROM StockMove s WHERE s.statusSelect = 2)</domain>
   </action-view>
 
   <menuitem name="sale-configuration-timetable-template" title="Timetable templates"

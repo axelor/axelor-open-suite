@@ -28,7 +28,6 @@ import com.axelor.apps.stock.db.StockMoveLine;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 public interface SaleOrderStockService {
 
@@ -78,12 +77,4 @@ public interface SaleOrderStockService {
    * @throws AxelorException
    */
   void fullyUpdateDeliveryState(SaleOrder saleOrder) throws AxelorException;
-
-  /**
-   * Find the sale order linked to the stock move.
-   *
-   * @param stockMove a stock move
-   * @return the found sale order, or an empty optional if no sale order was found.
-   */
-  Optional<SaleOrder> findSaleOrder(StockMove stockMove);
 }

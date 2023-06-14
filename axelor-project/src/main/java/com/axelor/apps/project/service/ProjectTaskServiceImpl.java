@@ -121,7 +121,7 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
 
     nextProjectTask.setParentTask(projectTask.getParentTask());
     nextProjectTask.setProduct(projectTask.getProduct());
-    nextProjectTask.setUnit(projectTask.getUnit());
+    nextProjectTask.setInvoicingUnit(projectTask.getInvoicingUnit());
     nextProjectTask.setQuantity(projectTask.getQuantity());
     nextProjectTask.setUnitPrice(projectTask.getUnitPrice());
     nextProjectTask.setTaskEndDate(projectTask.getTaskEndDate());

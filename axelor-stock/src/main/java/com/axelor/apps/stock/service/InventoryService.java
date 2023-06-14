@@ -558,9 +558,8 @@ public class InventoryService {
     List<StockMove> stockMoveList =
         stockMoveRepo
             .all()
-            .filter("self.originTypeSelect = :originTypeSelect AND self.originId = :originId")
-            .bind("originTypeSelect", StockMoveRepository.ORIGIN_INVENTORY)
-            .bind("originId", inventory.getId())
+            .filter("self.inventory.id = :inventoryId")
+            .bind("inventoryId", inventory.getId())
             .fetch();
 
     for (StockMove stockMove : stockMoveList) {
@@ -705,8 +704,7 @@ public class InventoryService {
 
     stockMove.setName(inventorySeq);
 
-    stockMove.setOriginTypeSelect(StockMoveRepository.ORIGIN_INVENTORY);
-    stockMove.setOriginId(inventory.getId());
+    stockMove.setInventory(inventory);
     stockMove.setOrigin(inventorySeq);
 
     for (InventoryLine inventoryLine : inventoryLineList) {
@@ -1030,13 +1028,7 @@ public class InventoryService {
   }
 
   public List<StockMove> findStockMoves(Inventory inventory) {
-    return stockMoveRepo
-        .all()
-        .filter(
-            "self.originTypeSelect = ?1 AND self.originId = ?2",
-            StockMoveRepository.ORIGIN_INVENTORY,
-            inventory.getId())
-        .fetch();
+    return stockMoveRepo.all().filter("self.inventory.id = ?2", inventory.getId()).fetch();
   }
 
   public String computeTitle(Inventory entity) {

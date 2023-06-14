@@ -29,6 +29,8 @@
       <insert position="after">
         <field name="numberHoursADay" if="__config__.app.isApp('business-project')"/>
         <field name="projectTimeUnit" if="__config__.app.isApp('business-project')"/>
+        <field name="spentTimeCostComputationMethod"
+          if="__config__.app.isApp('business-project')"/>
       </insert>
     </extend>
     <extend target="//menu[@name='projectToolsMenu']">

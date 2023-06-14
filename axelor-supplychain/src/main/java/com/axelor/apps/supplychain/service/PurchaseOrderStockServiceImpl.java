@@ -235,14 +235,12 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
             null,
             StockMoveRepository.TYPE_INCOMING);
 
-    stockMove.setOriginId(purchaseOrder.getId());
-    stockMove.setOriginTypeSelect(StockMoveRepository.ORIGIN_PURCHASE_ORDER);
+    stockMove.setPurchaseOrder(purchaseOrder);
     stockMove.setOrigin(purchaseOrder.getPurchaseOrderSeq());
     stockMove.setTradingName(purchaseOrder.getTradingName());
     stockMove.setGroupProductsOnPrintings(purchaseOrder.getGroupProductsOnPrintings());
 
-    qualityStockMove.setOriginId(purchaseOrder.getId());
-    qualityStockMove.setOriginTypeSelect(StockMoveRepository.ORIGIN_PURCHASE_ORDER);
+    qualityStockMove.setPurchaseOrder(purchaseOrder);
     qualityStockMove.setOrigin(purchaseOrder.getPurchaseOrderSeq());
     qualityStockMove.setTradingName(purchaseOrder.getTradingName());
     qualityStockMove.setGroupProductsOnPrintings(purchaseOrder.getGroupProductsOnPrintings());
@@ -497,10 +495,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
     List<StockMove> stockMoveList =
         Beans.get(StockMoveRepository.class)
             .all()
-            .filter(
-                "self.originTypeSelect = ? AND self.originId = ? AND self.statusSelect = 2",
-                StockMoveRepository.ORIGIN_PURCHASE_ORDER,
-                purchaseOrder.getId())
+            .filter("self.purchaseOrder.id = ? AND self.statusSelect = 2", purchaseOrder.getId())
             .fetch();
 
     for (StockMove stockMove : stockMoveList) {
@@ -552,8 +547,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
         Beans.get(StockMoveRepository.class)
             .all()
             .filter(
-                "self.originTypeSelect LIKE ? AND self.originId = ? AND self.statusSelect <> ?",
-                StockMoveRepository.ORIGIN_PURCHASE_ORDER,
+                "self.purchaseOrder.id = ? AND self.statusSelect <> ?",
                 purchaseOrderId,
                 StockMoveRepository.STATUS_CANCELED)
             .count();

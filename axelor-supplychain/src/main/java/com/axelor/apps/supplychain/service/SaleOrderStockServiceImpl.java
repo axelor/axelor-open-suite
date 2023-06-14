@@ -311,8 +311,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
             StockMoveRepository.TYPE_OUTGOING);
 
     stockMove.setToAddressStr(saleOrder.getDeliveryAddressStr());
-    stockMove.setOriginId(saleOrder.getId());
-    stockMove.setOriginTypeSelect(StockMoveRepository.ORIGIN_SALE_ORDER);
+    stockMove.setSaleOrder(saleOrder);
     stockMove.setOrigin(saleOrder.getSaleOrderSeq());
     stockMove.setStockMoveLineList(new ArrayList<>());
     stockMove.setTradingName(saleOrder.getTradingName());
@@ -574,16 +573,6 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
       }
     }
     return deliveryState;
-  }
-
-  @Override
-  public Optional<SaleOrder> findSaleOrder(StockMove stockMove) {
-    if (StockMoveRepository.ORIGIN_SALE_ORDER.equals(stockMove.getOriginTypeSelect())
-        && stockMove.getOriginId() != null) {
-      return Optional.ofNullable(saleOrderRepository.find(stockMove.getOriginId()));
-    } else {
-      return Optional.empty();
-    }
   }
 
   /**

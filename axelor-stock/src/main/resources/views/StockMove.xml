@@ -581,7 +581,7 @@
           <field name="trackingNumber"/>
           <field name="modeOfTransport"/>
           <field name="deliveryCondition" height="3"
-            showIf="typeSelect == 2 &amp;&amp; originTypeSelect &amp;&amp; originTypeSelect=='com.axelor.apps.sale.db.SaleOrder'"/>
+            showIf="typeSelect == 2 &amp;&amp; saleOrder != null"/>
         </panel>
 
         <panel itemSpan="3">
@@ -623,9 +623,17 @@
       </panel>
       <panel name="linksPanel" title="Links" if-module="axelor-supplychain"
         if="__config__.app.isApp('supplychain')" showIf="id">
-        <panel name="OriginPanel" itemSpan="3" colSpan="12">
-          <field name="originTypeSelect" title="Origin" widget="RefSelect"
-            x-related="originId" readonly="true"/>
+        <panel name="OriginPanel" colSpan="12">
+          <panel colSpan="3" itemSpan="3" stacked="true" readonly="true">
+            <field name="inventory" hidden="true" showIf="inventory != null"/>
+            <field name="saleOrder" hidden="true" showIf="saleOrder != null"/>
+            <field name="purchaseOrder" hidden="true" showIf="purchaseOrder != null"/>
+            <field name="manufOrder" hidden="true" showIf="manufOrder != null"
+              if-module="axelor-production"/>
+            <field name="operationOrder" hidden="true" showIf="operationOrder != null"
+              if-module="axelor-production"/>
+            <field name="stockCorrection" hidden="true" showIf="stockCorrection != null"/>
+          </panel>
           <field name="reversionOriginStockMove" readonly="true" grid-view="stock-move-form"
             form-view="stock-move-form" showIf="reversionOriginStockMove"/>
           <field name="invoiceSet" readonly="true" grid-view="invoice-grid"
@@ -1282,7 +1290,6 @@
       if="!__config__.app.getApp('stock')?.isSeparateShipmentOperations"/>
     <field name="pfpValidateStatusSelect" hidden="true"
       if="!__config__.app.isApp('supplychain')"/>
-    <field name="originTypeSelect" hidden="true" if="!__config__.app.isApp('supplychain')"/>
     <field name="reversionOriginStockMove" hidden="true"
       if="!__config__.app.isApp('supplychain')"/>
     <field name="invoiceSet" hidden="true" if="!__config__.app.isApp('supplychain')"/>
@@ -1313,7 +1320,6 @@
       if="!__config__.app.getApp('stock')?.isSeparateShipmentOperations"/>
     <field name="pfpValidateStatusSelect" hidden="true"
       if="!__config__.app.isApp('supplychain')"/>
-    <field name="originTypeSelect" hidden="true" if="!__config__.app.isApp('supplychain')"/>
     <field name="reversionOriginStockMove" hidden="true"
       if="!__config__.app.isApp('supplychain')"/>
     <field name="invoiceSet" hidden="true" if="!__config__.app.isApp('supplychain')"/>
@@ -1344,7 +1350,6 @@
       if="!__config__.app.getApp('stock')?.isSeparateShipmentOperations"/>
     <field name="pfpValidateStatusSelect" hidden="true"
       if="!__config__.app.isApp('supplychain')"/>
-    <field name="originTypeSelect" hidden="true" if="!__config__.app.isApp('supplychain')"/>
     <field name="reversionOriginStockMove" hidden="true"
       if="!__config__.app.isApp('supplychain')"/>
     <field name="invoiceSet" hidden="true" if="!__config__.app.isApp('supplychain')"/>
