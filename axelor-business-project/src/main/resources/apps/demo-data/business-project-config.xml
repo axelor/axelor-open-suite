@@ -60,6 +60,20 @@
 
   <input file="sale_saleOrder.csv" separator=";" search="self.importId = :importId"
     type="com.axelor.apps.sale.db.SaleOrder"
+    call="com.axelor.csv.script.FinalizeAndConfirmSaleOrder:finalizeAndConfirmSaleOrder">
+    <bind to="creationDate"
+      eval="call:com.axelor.csv.script.ImportDateTime:importDate(creationDate)"
+      column="creationDate"/>
+    <bind to="confirmationDateTime"
+      eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(confirmationDateTime)"
+      column="confirmationDateTime"/>
+    <bind to="shipmentDate"
+      eval="call:com.axelor.csv.script.ImportDateTime:importDate(shipmentDate)"
+      column="shipmentDate"/>
+  </input>
+
+  <input file="sale_saleOrder.csv" separator=";" search="self.importId = :importId"
+    type="com.axelor.apps.sale.db.SaleOrder"
     call="com.axelor.csv.script.GenerateBusinessProject:generateBusinessProject">
     <bind to="creationDate"
       eval="call:com.axelor.csv.script.ImportDateTime:importDate(creationDate)"
@@ -123,4 +137,7 @@
       eval="call:com.axelor.csv.script.ImportDateTime:importDate(shipmentDate)"
       column="shipmentDate"/>
   </input>
+
+  <input file="project_project.csv" type="com.axelor.apps.project.db.Project" separator=";"
+         search="self.importId = :importId"/>
 </csv-inputs>
