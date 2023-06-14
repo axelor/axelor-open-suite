@@ -11,7 +11,8 @@
     </extend>
     <extend target="//field[@name='company']">
       <insert position="after">
-
+        <field name="lowerAmountLimit" default="0"/> 
+        <field name="upperAmountLimit" default="0"/> 
       </insert>
     </extend>
     <extend target="//field[@name='accountingCutOffTypeSelect']">
