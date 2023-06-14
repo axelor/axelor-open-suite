@@ -6,7 +6,8 @@
   <!-- MyRH -->
 
   <menuitem name="my-hr-root" order="-1600" title="My HR" icon="fa-user"
-    if="__config__.app.isApp('employee')" icon-background="#84429f"/>
+    if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee')?.isMyHrEnabled"
+    icon-background="#84429f"/>
 
   <menuitem name="my-hr-dashboard" parent="my-hr-root" title="My HR"
     action="my.hr.dashboard.view" order="100"/>
@@ -16,7 +17,7 @@
   </action-view>
 
   <menuitem name="all-leave-request" parent="my-hr-root" title="All my Leave Requests"
-    action="leave.all" order="200"/>
+    action="leave.all" order="200" if="__config__.app.isApp('leave')"/>
 
   <action-view name="leave.all" model="com.axelor.apps.hr.db.LeaveRequest"
     title="My Leave Requests">
@@ -30,7 +31,7 @@
   </action-view>
 
   <menuitem name="all-expense" parent="my-hr-root" title="All my Expenses"
-    action="expense.all" order="300"/>
+    action="expense.all" order="300" if="__config__.app.isApp('expense')"/>
 
   <action-view name="expense.all" model="com.axelor.apps.hr.db.Expense"
     title="My Expenses">
@@ -44,7 +45,7 @@
   </action-view>
 
   <menuitem name="all-my-timesheet" parent="my-hr-root" title="All my Timesheets"
-    action="action.timesheet.view.my.timesheet" order="400"/>
+    action="action.timesheet.view.my.timesheet" order="400" if="__config__.app.isApp('timesheet')"/>
 
   <action-view name="action.timesheet.view.my.timesheet"
     model="com.axelor.apps.hr.db.Timesheet" title="My Timesheets">
@@ -55,8 +56,8 @@
     <context name="user_id" expr="eval:__user__.id"/>
   </action-view>
 
-  <menuitem name="all-extra-hours" parent="my-hr-root" title="All my extra hours"
-    action="extra.hours.all" order="500"/>
+  <menuitem name="all-extra-hours" parent="my-hr-root" title="All my Extra hours"
+    action="extra.hours.all" order="500" if="__config__.app.isApp('timesheet')"/>
 
   <action-view name="extra.hours.all" model="com.axelor.apps.hr.db.ExtraHours"
     title="My Extra Hours">
