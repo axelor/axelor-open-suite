@@ -439,16 +439,29 @@ public class ExpenseServiceImpl implements ExpenseService {
                               .reduce(BigDecimal.ZERO, BigDecimal::add)));
 
       for (Map.Entry<LocalDate, BigDecimal> entry : expenseLinesTotalTax.entrySet()) {
+        Currency currency = move.getCurrency();
+        Currency companyCurrency = companyConfigService.getCompanyCurrency(move.getCompany());
+
+        BigDecimal currencyRate =
+            currencyService.getCurrencyConversionRate(currency, companyCurrency, entry.getKey());
+
+        BigDecimal amountConvertedInCompanyCurrency =
+            currencyService.getAmountCurrencyConvertedUsingExchangeRate(
+                entry.getValue(), currencyRate);
+
         moveLines.add(
             moveLineCreateService.createMoveLine(
                 move,
                 partner,
                 productAccount,
                 entry.getValue(),
+                amountConvertedInCompanyCurrency,
+                currencyRate,
                 true,
-                entry.getKey(),
                 moveDate,
-                moveLineCounter,
+                moveDate,
+                entry.getKey(),
+                moveLineCounter++,
                 expense.getExpenseSeq(),
                 expense.getFullName()));
       }
