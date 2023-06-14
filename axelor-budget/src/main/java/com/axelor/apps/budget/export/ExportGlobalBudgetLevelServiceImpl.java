@@ -10,6 +10,7 @@ import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetLevel;
 import com.axelor.apps.budget.db.repo.BudgetLevelRepository;
 import com.axelor.apps.budget.db.repo.BudgetManagementRepository;
+import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.i18n.I18n;
@@ -88,7 +89,7 @@ public class ExportGlobalBudgetLevelServiceImpl implements ExportGlobalBudgetLev
     if (purchaseOrderLineAdvanceExport == null || budgetAdvanceExport == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          com.axelor.apps.budget.exception.IExceptionMessage.MISSING_ADVANCED_EXPORT);
+          BudgetExceptionMessage.MISSING_ADVANCED_EXPORT);
     }
 
     List<AdvancedExport> advancedExportList =

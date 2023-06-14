@@ -2,7 +2,7 @@ package com.axelor.apps.budget.web;
 
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.apps.budget.exception.IExceptionMessage;
+import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.apps.budget.service.BudgetService;
 import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.budget.service.purchaseorder.PurchaseOrderBudgetService;
@@ -36,13 +36,14 @@ public class PurchaseOrderController {
                 .checkBudgetKeyAndRole(purchaseOrder.getCompany(), AuthUtils.getUser())
             && purchaseOrderBudgetService.isBudgetInLines(purchaseOrder)) {
           response.setInfo(
-              I18n.get(IExceptionMessage.BUDGET_ROLE_NOT_IN_BUDGET_DISTRIBUTION_AUTHORIZED_LIST));
+              I18n.get(
+                  BudgetExceptionMessage.BUDGET_ROLE_NOT_IN_BUDGET_DISTRIBUTION_AUTHORIZED_LIST));
           return;
         }
         String alertMessage = purchaseOrderBudgetService.computeBudgetDistribution(purchaseOrder);
         if (!Strings.isNullOrEmpty(alertMessage)) {
           response.setInfo(
-              String.format(I18n.get(IExceptionMessage.BUDGET_KEY_NOT_FOUND), alertMessage));
+              String.format(I18n.get(BudgetExceptionMessage.BUDGET_KEY_NOT_FOUND), alertMessage));
         }
         response.setReload(true);
       }
@@ -106,7 +107,8 @@ public class PurchaseOrderController {
         if (!Beans.get(BudgetToolsService.class)
             .checkBudgetKeyAndRole(purchaseOrder.getCompany(), AuthUtils.getUser())) {
           response.setInfo(
-              I18n.get(IExceptionMessage.BUDGET_ROLE_NOT_IN_BUDGET_DISTRIBUTION_AUTHORIZED_LIST));
+              I18n.get(
+                  BudgetExceptionMessage.BUDGET_ROLE_NOT_IN_BUDGET_DISTRIBUTION_AUTHORIZED_LIST));
           return;
         }
       }
@@ -137,7 +139,7 @@ public class PurchaseOrderController {
           }
         }
         if (!isBudgetFilled) {
-          response.setAlert(I18n.get(IExceptionMessage.NO_BUDGET_VALUES_FOUND));
+          response.setAlert(I18n.get(BudgetExceptionMessage.NO_BUDGET_VALUES_FOUND));
         }
       }
     } catch (Exception e) {

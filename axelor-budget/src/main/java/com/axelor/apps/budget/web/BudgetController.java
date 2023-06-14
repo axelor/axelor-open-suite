@@ -12,7 +12,7 @@ import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetLevel;
 import com.axelor.apps.budget.db.repo.BudgetLevelRepository;
 import com.axelor.apps.budget.db.repo.BudgetRepository;
-import com.axelor.apps.budget.exception.IExceptionMessage;
+import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.apps.budget.export.ExportGlobalBudgetLevelService;
 import com.axelor.apps.budget.service.BudgetService;
 import com.axelor.i18n.I18n;
@@ -45,7 +45,8 @@ public class BudgetController {
 
       if (context.get("_id") == null || Long.valueOf(String.valueOf(context.get("_id"))) == null) {
         throw new AxelorException(
-            TraceBackRepository.CATEGORY_NO_VALUE, I18n.get(IExceptionMessage.BUDGET_IS_MISSING));
+            TraceBackRepository.CATEGORY_NO_VALUE,
+            I18n.get(BudgetExceptionMessage.BUDGET_IS_MISSING));
       }
       Long budgetId = Long.valueOf(String.valueOf(context.get("_id")));
       Budget budget = Beans.get(BudgetRepository.class).find(budgetId);

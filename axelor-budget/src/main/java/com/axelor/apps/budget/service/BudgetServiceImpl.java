@@ -24,7 +24,7 @@ import com.axelor.apps.budget.db.repo.BudgetDistributionRepository;
 import com.axelor.apps.budget.db.repo.BudgetLevelRepository;
 import com.axelor.apps.budget.db.repo.BudgetLineRepository;
 import com.axelor.apps.budget.db.repo.BudgetRepository;
-import com.axelor.apps.budget.exception.IExceptionMessage;
+import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.i18n.I18n;
@@ -330,7 +330,7 @@ public class BudgetServiceImpl implements BudgetService {
       }
       if (c >= loopLimit) {
         throw new AxelorException(
-            TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.BUDGET_1));
+            TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(BudgetExceptionMessage.BUDGET_1));
       }
       c += 1;
       budgetLineToDate = duration == 0 ? toDate : fromDate.plusMonths(duration).minusDays(1);
@@ -395,7 +395,8 @@ public class BudgetServiceImpl implements BudgetService {
       if (checkBudgetKey && Strings.isNullOrEmpty(budget.getBudgetKey())) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_NO_VALUE,
-            String.format(I18n.get(IExceptionMessage.BUDGET_MISSING_BUDGET_KEY), budget.getCode()));
+            String.format(
+                I18n.get(BudgetExceptionMessage.BUDGET_MISSING_BUDGET_KEY), budget.getCode()));
       }
 
       budget.setStatusSelect(BudgetRepository.STATUS_VALIDATED);
@@ -416,11 +417,15 @@ public class BudgetServiceImpl implements BudgetService {
   public String checkPreconditions(Budget budget, Company company) {
     if (budget.getAnalyticAxis() == null || budget.getAnalyticAccount() == null) {
       return String.format(
-          I18n.get(IExceptionMessage.BUDGET_ANALYTIC_EMPTY), company.getName(), budget.getCode());
+          I18n.get(BudgetExceptionMessage.BUDGET_ANALYTIC_EMPTY),
+          company.getName(),
+          budget.getCode());
     }
     if (CollectionUtils.isEmpty(budget.getAccountSet())) {
       return String.format(
-          I18n.get(IExceptionMessage.BUDGET_ACCOUNT_EMPTY), company.getName(), budget.getCode());
+          I18n.get(BudgetExceptionMessage.BUDGET_ACCOUNT_EMPTY),
+          company.getName(),
+          budget.getCode());
     }
     return null;
   }
@@ -430,7 +435,8 @@ public class BudgetServiceImpl implements BudgetService {
     String key = computeKey(budget, company);
     if (!Strings.isNullOrEmpty(key)) {
       if (!checkUniqueKey(budget, key)) {
-        return String.format(I18n.get(IExceptionMessage.BUDGET_SAME_BUDGET_KEY), budget.getCode());
+        return String.format(
+            I18n.get(BudgetExceptionMessage.BUDGET_SAME_BUDGET_KEY), budget.getCode());
       } else {
         budget.setBudgetKey(key);
       }
@@ -758,7 +764,8 @@ public class BudgetServiceImpl implements BudgetService {
           || (budget.getToDate().isAfter(section.getToDate()))) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            String.format(I18n.get(IExceptionMessage.WRONG_DATES_ON_BUDGET), budget.getCode()));
+            String.format(
+                I18n.get(BudgetExceptionMessage.WRONG_DATES_ON_BUDGET), budget.getCode()));
       }
     }
   }
@@ -775,7 +782,7 @@ public class BudgetServiceImpl implements BudgetService {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
               String.format(
-                  I18n.get(IExceptionMessage.WRONG_DATES_ON_BUDGET_LINE), budget.getCode()));
+                  I18n.get(BudgetExceptionMessage.WRONG_DATES_ON_BUDGET_LINE), budget.getCode()));
         }
         budgetLineList.remove(budgetLine);
         if (!CollectionUtils.isEmpty(budgetLineList)) {
@@ -787,7 +794,8 @@ public class BudgetServiceImpl implements BudgetService {
               throw new AxelorException(
                   TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
                   String.format(
-                      I18n.get(IExceptionMessage.BUDGET_LINES_ON_SAME_PERIOD), budget.getCode()));
+                      I18n.get(BudgetExceptionMessage.BUDGET_LINES_ON_SAME_PERIOD),
+                      budget.getCode()));
             }
           }
         }
@@ -867,7 +875,7 @@ public class BudgetServiceImpl implements BudgetService {
         if (budgetDistribution.getAmount().compareTo(amount) > 0) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_INCONSISTENCY,
-              I18n.get(IExceptionMessage.BUDGET_EXCEED_ORDER_LINE_AMOUNT),
+              I18n.get(BudgetExceptionMessage.BUDGET_EXCEED_ORDER_LINE_AMOUNT),
               code);
         }
       }

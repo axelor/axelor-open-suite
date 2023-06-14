@@ -5,7 +5,7 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.apps.budget.exception.IExceptionMessage;
+import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.apps.budget.service.BudgetService;
 import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.budget.service.invoice.BudgetInvoiceLineService;
@@ -33,13 +33,14 @@ public class InvoiceController {
                 .checkBudgetKeyAndRole(invoice.getCompany(), AuthUtils.getUser())
             && budgetInvoiceService.isBudgetInLines(invoice)) {
           response.setInfo(
-              I18n.get(IExceptionMessage.BUDGET_ROLE_NOT_IN_BUDGET_DISTRIBUTION_AUTHORIZED_LIST));
+              I18n.get(
+                  BudgetExceptionMessage.BUDGET_ROLE_NOT_IN_BUDGET_DISTRIBUTION_AUTHORIZED_LIST));
           return;
         }
         String alertMessage = budgetInvoiceService.computeBudgetDistribution(invoice);
         if (!Strings.isNullOrEmpty(alertMessage)) {
           response.setInfo(
-              String.format(I18n.get(IExceptionMessage.BUDGET_KEY_NOT_FOUND), alertMessage));
+              String.format(I18n.get(BudgetExceptionMessage.BUDGET_KEY_NOT_FOUND), alertMessage));
         }
         response.setReload(true);
       }
@@ -80,7 +81,7 @@ public class InvoiceController {
           }
         }
         if (!isBudgetFilled) {
-          response.setAlert(I18n.get(IExceptionMessage.NO_BUDGET_VALUES_FOUND));
+          response.setAlert(I18n.get(BudgetExceptionMessage.NO_BUDGET_VALUES_FOUND));
         }
       }
     } catch (Exception e) {

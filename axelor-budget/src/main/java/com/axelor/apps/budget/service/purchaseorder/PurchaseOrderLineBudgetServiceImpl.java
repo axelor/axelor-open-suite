@@ -7,7 +7,7 @@ import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.db.repo.BudgetLevelRepository;
 import com.axelor.apps.budget.db.repo.BudgetRepository;
-import com.axelor.apps.budget.exception.IExceptionMessage;
+import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetDistributionService;
 import com.axelor.apps.budget.service.BudgetService;
@@ -188,7 +188,7 @@ public class PurchaseOrderLineBudgetServiceImpl implements PurchaseOrderLineBudg
             > 0) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(IExceptionMessage.BUDGET_DISTRIBUTION_LINE_SUM_GREATER_PO),
+              I18n.get(BudgetExceptionMessage.BUDGET_DISTRIBUTION_LINE_SUM_GREATER_PO),
               budgetDistribution.getBudget().getCode(),
               purchaseOrderLine.getProductCode());
         }

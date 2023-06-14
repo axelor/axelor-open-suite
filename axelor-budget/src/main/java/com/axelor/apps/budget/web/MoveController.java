@@ -3,7 +3,7 @@ package com.axelor.apps.budget.web;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.apps.budget.exception.IExceptionMessage;
+import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.apps.budget.service.BudgetService;
 import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.budget.service.move.MoveBudgetService;
@@ -28,7 +28,8 @@ public class MoveController {
                 .checkBudgetKeyAndRole(move.getCompany(), AuthUtils.getUser())
             && moveBudgetService.isBudgetInLines(move)) {
           response.setInfo(
-              I18n.get(IExceptionMessage.BUDGET_ROLE_NOT_IN_BUDGET_DISTRIBUTION_AUTHORIZED_LIST));
+              I18n.get(
+                  BudgetExceptionMessage.BUDGET_ROLE_NOT_IN_BUDGET_DISTRIBUTION_AUTHORIZED_LIST));
           return;
         }
         String alertMessage = moveBudgetService.computeBudgetDistribution(move);
@@ -38,7 +39,7 @@ public class MoveController {
 
         if (!Strings.isNullOrEmpty(alertMessage)) {
           response.setInfo(
-              String.format(I18n.get(IExceptionMessage.BUDGET_KEY_NOT_FOUND), alertMessage));
+              String.format(I18n.get(BudgetExceptionMessage.BUDGET_KEY_NOT_FOUND), alertMessage));
         }
       }
 
@@ -53,7 +54,7 @@ public class MoveController {
       Move move = request.getContext().asType(Move.class);
       MoveBudgetService moveBudgetService = Beans.get(MoveBudgetService.class);
       if (moveBudgetService.checkMissingBudgetDistributionOnAccountedMove(move)) {
-        response.setAlert(I18n.get(IExceptionMessage.NO_BUDGET_DISTRIBUTION_GENERATED));
+        response.setAlert(I18n.get(BudgetExceptionMessage.NO_BUDGET_DISTRIBUTION_GENERATED));
       }
 
     } catch (Exception e) {

@@ -17,6 +17,7 @@ import com.axelor.apps.budget.db.repo.BudgetLevelManagementRepository;
 import com.axelor.apps.budget.db.repo.BudgetLevelRepository;
 import com.axelor.apps.budget.db.repo.BudgetManagementRepository;
 import com.axelor.apps.budget.db.repo.BudgetRepository;
+import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.auth.AuthUtils;
@@ -504,8 +505,7 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             String.format(
-                I18n.get(
-                    com.axelor.apps.budget.exception.IExceptionMessage.WRONG_DATES_ON_BUDGET_LEVEL),
+                I18n.get(BudgetExceptionMessage.WRONG_DATES_ON_BUDGET_LEVEL),
                 budgetLevel.getCode()));
       }
     }

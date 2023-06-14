@@ -12,7 +12,7 @@ import com.axelor.apps.budget.db.BudgetLine;
 import com.axelor.apps.budget.db.repo.BudgetDistributionRepository;
 import com.axelor.apps.budget.db.repo.BudgetLevelRepository;
 import com.axelor.apps.budget.db.repo.BudgetRepository;
-import com.axelor.apps.budget.exception.IExceptionMessage;
+import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.auth.db.AuditableModel;
@@ -116,7 +116,7 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
     if (budgetToCompare.compareTo(amount) < 0) {
       budgetExceedAlert =
           String.format(
-              I18n.get(IExceptionMessage.BUGDET_EXCEED_ERROR),
+              I18n.get(BudgetExceptionMessage.BUGDET_EXCEED_ERROR),
               budgetName,
               budgetToCompare,
               budget
