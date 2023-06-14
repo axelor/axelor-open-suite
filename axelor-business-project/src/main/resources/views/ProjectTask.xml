@@ -197,7 +197,7 @@
             action="action-project-task-view-percentage-consumption-custom" colSpan="4"
             showTitle="false"/>
           <panel-dashlet action="action-project-task-view-remaining-to-do-custom"
-            colSpan="4" showTitle="false" showIf="$remainingAmountToDo"/>
+            colSpan="4" showTitle="false" showIf="$displayRemaining"/>
           <field name="$displayProgress" hidden="true"/>
           <field name="$displayConsumption" hidden="true"/>
           <field name="$displayRemaining" hidden="true"/>
