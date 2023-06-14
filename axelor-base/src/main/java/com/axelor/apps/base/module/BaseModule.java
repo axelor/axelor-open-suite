@@ -46,8 +46,6 @@ import com.axelor.apps.base.db.repo.MailBatchBaseRepository;
 import com.axelor.apps.base.db.repo.MailBatchRepository;
 import com.axelor.apps.base.db.repo.MailingListMessageBaseRepository;
 import com.axelor.apps.base.db.repo.MailingListMessageRepository;
-import com.axelor.apps.base.db.repo.ObjectDataConfigExportManagementRepository;
-import com.axelor.apps.base.db.repo.ObjectDataConfigExportRepository;
 import com.axelor.apps.base.db.repo.PartnerAddressRepository;
 import com.axelor.apps.base.db.repo.PartnerBaseRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
@@ -102,10 +100,6 @@ import com.axelor.apps.base.service.MapRestService;
 import com.axelor.apps.base.service.MapRestServiceImpl;
 import com.axelor.apps.base.service.ModelEmailLinkService;
 import com.axelor.apps.base.service.ModelEmailLinkServiceImpl;
-import com.axelor.apps.base.service.ObjectDataAnonymizeService;
-import com.axelor.apps.base.service.ObjectDataAnonymizeServiceImpl;
-import com.axelor.apps.base.service.ObjectDataExportService;
-import com.axelor.apps.base.service.ObjectDataExportServiceImpl;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerPriceListServiceImpl;
 import com.axelor.apps.base.service.PartnerService;
@@ -329,11 +323,7 @@ public class BaseModule extends AxelorModule {
     bind(SequenceVersionGeneratorQueryService.class)
         .to(SequenceVersionGeneratorQueryServiceImpl.class);
     bind(TranslationRestService.class).to(TranslationRestServiceImpl.class);
-    bind(ObjectDataExportService.class).to(ObjectDataExportServiceImpl.class);
-    bind(ObjectDataAnonymizeService.class).to(ObjectDataAnonymizeServiceImpl.class);
     bind(DataBackupService.class).to(DataBackupServiceImpl.class);
-    bind(ObjectDataConfigExportRepository.class)
-        .to(ObjectDataConfigExportManagementRepository.class);
     bind(AnonymizeService.class).to(AnonymizeServiceImpl.class);
     bind(FakerService.class).to(FakerServiceImpl.class);
     bind(DataBackupRepository.class).to(DataBackupManagementRepository.class);

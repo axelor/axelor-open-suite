@@ -27,8 +27,11 @@ import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
+import com.axelor.message.db.repo.TemplateRepository;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
+import com.axelor.text.GroovyTemplates;
 import com.axelor.text.StringTemplates;
 import com.axelor.text.Templates;
 import java.util.HashMap;
@@ -114,7 +117,7 @@ class BirtTemplateReportSettingsBuilder {
             convertValue(birtTemplateParameter.getType(), parseValue));
       } catch (BirtException e) {
         throw new AxelorException(
-            e.getCause(),
+            e,
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(BaseExceptionMessage.TEMPLATE_MESSAGE_BASE_2));
       }
@@ -122,7 +125,11 @@ class BirtTemplateReportSettingsBuilder {
   }
 
   private Templates getTemplateEngine() {
-    return new StringTemplates('$', '$');
+    Templates templates = new StringTemplates('$', '$');
+    if (template.getTemplateEngineSelect() == TemplateRepository.TEMPLATE_ENGINE_GROOVY_TEMPLATE) {
+      templates = Beans.get(GroovyTemplates.class);
+    }
+    return templates;
   }
 
   private Object convertValue(String type, String value) throws BirtException {

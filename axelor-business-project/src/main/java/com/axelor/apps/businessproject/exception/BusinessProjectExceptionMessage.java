@@ -78,7 +78,7 @@ public final class BusinessProjectExceptionMessage {
       "Sold time value error for project task %s." /*)*/;
 
   public static final String PROJECT_CONFIG_DEFAULT_HOURS_PER_DAY_MISSING = /*$$(*/
-      "Please set the default number of hours per day in the configuration of app Business Project." /*)*/;
+      "Please set the default number of hours per day in the project configuration." /*)*/;
 
   public static final String PROJECT_CONFIG_DAYS_UNIT_MISSING = /*$$(*/
       "Please set days unit in the configuration of app Business Project." /*)*/;
@@ -91,4 +91,7 @@ public final class BusinessProjectExceptionMessage {
 
   public static final String PROJECT_TASK_NO_PROJECT_FOUND = /*$$(*/
       "No project found for task %s." /*)*/;
+
+  public static final String PROJECT_TASK_NO_UNIT_FOUND = /*$$(*/
+      "Please set the unit for the task %s." /*)*/;
 }

@@ -129,14 +129,11 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       qtyToInvoiceMap = null;
     }
 
-    Long origin = stockMove.getOriginId();
-
-    if (StockMoveRepository.ORIGIN_SALE_ORDER.equals(stockMove.getOriginTypeSelect())) {
-      invoice = createInvoiceFromSaleOrder(stockMove, saleOrderRepo.find(origin), qtyToInvoiceMap);
-    } else if (StockMoveRepository.ORIGIN_PURCHASE_ORDER.equals(stockMove.getOriginTypeSelect())) {
+    if (stockMove.getSaleOrder() != null) {
+      invoice = createInvoiceFromSaleOrder(stockMove, stockMove.getSaleOrder(), qtyToInvoiceMap);
+    } else if (stockMove.getPurchaseOrder() != null) {
       invoice =
-          createInvoiceFromPurchaseOrder(
-              stockMove, purchaseOrderRepo.find(origin), qtyToInvoiceMap);
+          createInvoiceFromPurchaseOrder(stockMove, stockMove.getPurchaseOrder(), qtyToInvoiceMap);
     } else {
       invoice = createInvoiceFromOrderlessStockMove(stockMove, qtyToInvoiceMap);
     }
@@ -379,11 +376,11 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     List<InvoiceLine> invoiceLineList = new ArrayList<>();
 
     List<StockMoveLine> stockMoveLineToInvoiceList;
-    if ((StockMoveRepository.ORIGIN_PURCHASE_ORDER.equals(stockMove.getOriginTypeSelect())
+    if ((stockMove.getPurchaseOrder() != null
             && supplyChainConfigService
                 .getSupplyChainConfig(invoice.getCompany())
                 .getActivateIncStockMovePartialInvoicing())
-        || (StockMoveRepository.ORIGIN_SALE_ORDER.equals(stockMove.getOriginTypeSelect())
+        || (stockMove.getSaleOrder() != null
             && supplyChainConfigService
                 .getSupplyChainConfig(invoice.getCompany())
                 .getActivateOutStockMovePartialInvoicing())) {

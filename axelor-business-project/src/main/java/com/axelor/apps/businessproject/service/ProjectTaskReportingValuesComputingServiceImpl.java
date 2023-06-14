@@ -56,10 +56,29 @@ public class ProjectTaskReportingValuesComputingServiceImpl
     // get AppBusinessProject config
     daysUnit = appBusinessProjectService.getDaysUnit();
     hoursUnit = appBusinessProjectService.getHoursUnit();
-    defaultHoursADay = appBusinessProjectService.getDefaultHoursADay();
+    Project project = projectTask.getProject();
+
+    if (Objects.isNull(project)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          String.format(
+              I18n.get(BusinessProjectExceptionMessage.PROJECT_TASK_NO_PROJECT_FOUND),
+              projectTask.getName()));
+    }
+
+    defaultHoursADay = project.getNumberHoursADay();
+
+    if (defaultHoursADay.signum() <= 0) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          String.format(
+              I18n.get(
+                  BusinessProjectExceptionMessage.PROJECT_CONFIG_DEFAULT_HOURS_PER_DAY_MISSING),
+              projectTask.getName()));
+    }
 
     computeProjectTaskTimes(projectTask);
-    computeFinancialReporting(projectTask);
+    computeFinancialReporting(projectTask, project);
 
     projectTaskRepo.save(projectTask);
   }
@@ -104,7 +123,8 @@ public class ProjectTaskReportingValuesComputingServiceImpl
    * @param projectTask
    * @throws AxelorException
    */
-  protected void computeFinancialReporting(ProjectTask projectTask) throws AxelorException {
+  protected void computeFinancialReporting(ProjectTask projectTask, Project project)
+      throws AxelorException {
 
     projectTask.setTurnover(
         projectTask
@@ -165,7 +185,7 @@ public class ProjectTaskReportingValuesComputingServiceImpl
                   .divide(projectTask.getInitialCosts(), COMPUTATION_SCALE, RoundingMode.HALF_UP)));
     }
     // unitCost to compute other values
-    BigDecimal unitCost = computeUnitCost(projectTask);
+    BigDecimal unitCost = computeUnitCost(projectTask, project);
     projectTask.setUnitCost(unitCost);
 
     // Real
@@ -218,19 +238,11 @@ public class ProjectTaskReportingValuesComputingServiceImpl
    * @return
    * @throws AxelorException
    */
-  protected BigDecimal computeUnitCost(ProjectTask projectTask) throws AxelorException {
+  protected BigDecimal computeUnitCost(ProjectTask projectTask, Project project)
+      throws AxelorException {
     BigDecimal unitCost = BigDecimal.ZERO;
 
     Unit timeUnit = projectTask.getTimeUnit();
-    Project project = projectTask.getProject();
-
-    if (Objects.isNull(project)) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          String.format(
-              I18n.get(BusinessProjectExceptionMessage.PROJECT_TASK_NO_PROJECT_FOUND),
-              projectTask.getName()));
-    }
 
     Integer spentTimeCostComputationMethod = project.getSpentTimeCostComputationMethod();
 
@@ -275,7 +287,7 @@ public class ProjectTaskReportingValuesComputingServiceImpl
    * @throws AxelorException
    */
   protected BigDecimal convertTimesheetLineDurationToTimeUnit(
-      TimesheetLine timesheetLine, Unit timeUnit) throws AxelorException {
+      TimesheetLine timesheetLine, Unit timeUnit) {
     String timeLoggingUnit = timesheetLine.getTimesheet().getTimeLoggingPreferenceSelect();
     BigDecimal duration = timesheetLine.getDuration();
     BigDecimal convertedDuration = BigDecimal.ZERO;
@@ -318,8 +330,7 @@ public class ProjectTaskReportingValuesComputingServiceImpl
    * @return
    * @throws AxelorException
    */
-  protected BigDecimal getAverageHourCostFromTimesheetLines(ProjectTask projectTask)
-      throws AxelorException {
+  protected BigDecimal getAverageHourCostFromTimesheetLines(ProjectTask projectTask) {
     BigDecimal totalCost = BigDecimal.ZERO;
     BigDecimal timeConsidered = BigDecimal.ZERO;
     List<TimesheetLine> timesheetLines = getValidatedTimesheetLinesForProjectTask(projectTask);

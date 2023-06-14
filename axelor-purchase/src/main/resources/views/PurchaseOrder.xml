@@ -822,8 +822,7 @@
     model="com.axelor.apps.stock.db.StockMove" title="Stock move">
     <view name="stock-move-grid" type="grid"/>
     <view name="stock-move-form" type="form"/>
-    <domain>self.originTypeSelect LIKE 'com.axelor.apps.purchase.db.PurchaseOrder' AND self.originId
-      = :purchaseOrder</domain>
+    <domain>self.purchaseOrder.id = :purchaseOrder</domain>
     <context name="purchaseOrder" expr="eval: __this__.id"/>
   </action-view>
 
