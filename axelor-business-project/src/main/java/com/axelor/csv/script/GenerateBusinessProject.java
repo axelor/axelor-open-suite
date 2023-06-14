@@ -65,7 +65,10 @@ public class GenerateBusinessProject {
 
       String oldTaskName = project.getProjectTaskList().get(i).getName();
       project.getProjectTaskList().get(i).setImportId(importId.toString());
-      project.getProjectTaskList().get(i).setName(oldTaskName.substring(0, oldTaskName.length() - 5));
+      project
+          .getProjectTaskList()
+          .get(i)
+          .setName(oldTaskName.substring(0, oldTaskName.length() - 5));
     }
 
     projectBusinessService.computeProjectTotals(project);
