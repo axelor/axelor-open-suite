@@ -191,7 +191,7 @@ public interface MoveToolService {
 
   boolean checkMoveLinesCutOffDates(Move move);
 
-  List<Move> getMovesWithDuplicatedOrigin(Move move) throws AxelorException;
+  List<Move> getMovesWithDuplicatedOrigin(Move move);
 
   List<Move> findDaybookAndAccountingByYear(Set<Year> yearList);
 

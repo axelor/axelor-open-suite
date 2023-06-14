@@ -1,0 +1,3 @@
+---
+title: "Move : Fix duplicate origin verification when move isn't saved"
+type: fix
