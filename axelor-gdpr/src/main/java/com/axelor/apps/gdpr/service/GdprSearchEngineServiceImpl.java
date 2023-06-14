@@ -118,6 +118,10 @@ public class GdprSearchEngineServiceImpl implements GdprSearchEngineService {
 
       String query = buildSearchQuery(searchParams, searchConfig);
 
+      if (StringUtils.isBlank(query)) {
+        continue;
+      }
+
       //       apply search config query
       List<? extends AuditableModel> models =
           Query.of(modelClass).filter(query).bind(searchParams).fetch();
@@ -138,7 +142,7 @@ public class GdprSearchEngineServiceImpl implements GdprSearchEngineService {
               .map(Object::toString)
               .orElse("");
 
-      if (StringUtils.isEmpty(param)) {
+      if (StringUtils.isBlank(param)) {
         continue;
       }
 
@@ -146,7 +150,10 @@ public class GdprSearchEngineServiceImpl implements GdprSearchEngineService {
       query.append(" AND ");
     }
 
-    query.append(" 1 = 1");
+    if (query.length() > 0) {
+      query.append("1 = 1");
+    }
+
     return query.toString();
   }
 

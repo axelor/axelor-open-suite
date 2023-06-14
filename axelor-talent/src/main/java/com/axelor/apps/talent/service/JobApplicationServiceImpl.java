@@ -24,7 +24,6 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.talent.db.JobApplication;
-import com.axelor.apps.talent.db.Skill;
 import com.axelor.apps.talent.db.repo.JobApplicationRepository;
 import com.axelor.dms.db.DMSFile;
 import com.axelor.dms.db.repo.DMSFileRepository;
@@ -35,8 +34,6 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
 
 public class JobApplicationServiceImpl implements JobApplicationService {
 
@@ -84,9 +81,6 @@ public class JobApplicationServiceImpl implements JobApplicationService {
     Employee employee = new Employee();
     employee.setHireDate(appBaseService.getTodayDate(jobApplication.getJobPosition().getCompany()));
     employee.setContactPartner(createContact(jobApplication));
-    Set<Skill> tagSkillSet = new HashSet<Skill>();
-    tagSkillSet.addAll(jobApplication.getSkillSet());
-    employee.setSkillSet(tagSkillSet);
     if (employee.getMainEmploymentContract() != null)
       employee
           .getMainEmploymentContract()

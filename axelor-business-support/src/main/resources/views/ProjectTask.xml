@@ -119,8 +119,8 @@
           if-module="axelor-business-project"/>
         <panel name="pricingPanel" showIf="invoicingType == 2" colSpan="12">
           <field name="quantity" colSpan="4" onChange="action-project-task-group-qty-onchange"/>
-          <field name="unit" colSpan="4" domain="self.unitTypeSelect=3" form-view="unit-form"
-            grid-view="unit-grid" canEdit="false"/>
+          <field name="invoicingUnit" colSpan="4" domain="self.unitTypeSelect=3"
+            form-view="unit-form" grid-view="unit-grid" canEdit="false"/>
           <field name="unitPrice" colSpan="4"
             onChange="action-project-task-group-unit-price-onchange"/>
           <field name="exTaxTotal" readonly="true" colSpan="4"/>

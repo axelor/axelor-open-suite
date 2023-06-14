@@ -274,8 +274,7 @@
           showIf="statusSelect &gt;= 3 &amp;&amp; statusSelect &lt;= 4" readonly="true"/>
       </panel>
       <panel name="printingPanel" title="Printing">
-        <field name="printingSettings"
-          onSelect="action-purchase-order-method-filter-printing-settings" canEdit="false"/>
+        <field name="printingSettings" canEdit="false"/>
         <field name="groupProductsOnPrintings"
           if="__config__.app.getApp('base')?.getIsRegroupProductsOnPrintings()" colSpan="6"/>
         <field name="displayPriceOnQuotationRequest" colSpan="12"/>
@@ -853,8 +852,7 @@
     model="com.axelor.apps.stock.db.StockMove" title="Stock move">
     <view name="stock-move-grid" type="grid"/>
     <view name="stock-move-form" type="form"/>
-    <domain>self.originTypeSelect LIKE 'com.axelor.apps.purchase.db.PurchaseOrder' AND self.originId
-      = :purchaseOrder</domain>
+    <domain>self.purchaseOrder.id = :purchaseOrder</domain>
     <context name="purchaseOrder" expr="eval: __this__.id"/>
   </action-view>
 
@@ -989,11 +987,6 @@
       if="__config__.app.getApp('base')?.enableTradingNamesManagement"/>
     <field name="printingSettings" expr="eval: company?.printingSettings"/>
   </action-record>
-
-  <action-method name="action-purchase-order-method-filter-printing-settings">
-    <call class="com.axelor.apps.purchase.web.PurchaseOrderController"
-      method="filterPrintingSettings"/>
-  </action-method>
 
   <action-method name="action-purchase-order-method-finish-purchase-order">
     <call class="com.axelor.apps.purchase.web.PurchaseOrderController"

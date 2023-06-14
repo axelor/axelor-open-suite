@@ -19,9 +19,7 @@
 package com.axelor.apps.project.service;
 
 import com.axelor.apps.project.db.Project;
-import com.axelor.apps.project.db.ProjectStatus;
 import com.axelor.apps.project.db.ProjectTask;
-import com.axelor.apps.project.db.repo.ProjectStatusRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -30,20 +28,15 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.google.inject.Inject;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class ProjectMenuServiceImpl implements ProjectMenuService {
 
-  protected ProjectStatusRepository projectStatusRepo;
   protected ProjectService projectService;
   protected ProjectTaskRepository projectTaskRepo;
 
   @Inject
   public ProjectMenuServiceImpl(
-      ProjectStatusRepository projectStatusRepo,
-      ProjectService projectService,
-      ProjectTaskRepository projectTaskRepo) {
-    this.projectStatusRepo = projectStatusRepo;
+      ProjectService projectService, ProjectTaskRepository projectTaskRepo) {
     this.projectService = projectService;
     this.projectTaskRepo = projectTaskRepo;
   }
@@ -65,10 +58,7 @@ public class ProjectMenuServiceImpl implements ProjectMenuService {
             .context("_project", contextProject)
             .context("_projectIds", projectService.getContextProjectIds())
             .param("details-view", "true")
-            .param("search-filters", "project-task-filters")
-            .param(
-                "kanban-hide-columns",
-                getProjectStatusIds(ProjectStatusRepository.PROJECT_STATUS_PROJECT));
+            .param("search-filters", "project-task-filters");
 
     return builder.map();
   }
@@ -90,10 +80,7 @@ public class ProjectMenuServiceImpl implements ProjectMenuService {
             .context("_project", contextProject)
             .context("_projectIds", projectService.getContextProjectIds())
             .param("search-filters", "project-task-filters")
-            .param("forceTitle", "true")
-            .param(
-                "kanban-hide-columns",
-                getProjectStatusIds(ProjectStatusRepository.PROJECT_STATUS_PROJECT));
+            .param("forceTitle", "true");
 
     return builder.map();
   }
@@ -106,22 +93,9 @@ public class ProjectMenuServiceImpl implements ProjectMenuService {
             .add("grid", "project-grid")
             .add("form", "project-form")
             .add("kanban", "project-kanban")
-            .param("search-filters", "project-filters")
-            .param(
-                "kanban-hide-columns",
-                getProjectStatusIds(ProjectStatusRepository.PROJECT_STATUS_TASK));
+            .param("search-filters", "project-filters");
 
     return builder.map();
-  }
-
-  protected String getProjectStatusIds(int relatedToSelect) {
-    return projectStatusRepo
-        .all()
-        .filter("self.relatedToSelect = ?1", relatedToSelect)
-        .fetchStream()
-        .map(ProjectStatus::getId)
-        .map(String::valueOf)
-        .collect(Collectors.joining(","));
   }
 
   @Override
@@ -134,10 +108,7 @@ public class ProjectMenuServiceImpl implements ProjectMenuService {
             .add("form", "project-task-form")
             .domain("self.typeSelect = :_typeSelect")
             .context("_typeSelect", ProjectTaskRepository.TYPE_TASK)
-            .param("search-filters", "project-task-filters")
-            .param(
-                "kanban-hide-columns",
-                getProjectStatusIds(ProjectStatusRepository.PROJECT_STATUS_PROJECT));
+            .param("search-filters", "project-task-filters");
 
     return builder.map();
   }
@@ -153,10 +124,7 @@ public class ProjectMenuServiceImpl implements ProjectMenuService {
             .domain("self.typeSelect = :_typeSelect AND self.project.id = :_id")
             .context("_id", project.getId())
             .context("_typeSelect", ProjectTaskRepository.TYPE_TASK)
-            .param("search-filters", "project-task-filters")
-            .param(
-                "kanban-hide-columns",
-                getProjectStatusIds(ProjectStatusRepository.PROJECT_STATUS_PROJECT));
+            .param("search-filters", "project-task-filters");
 
     return builder.map();
   }

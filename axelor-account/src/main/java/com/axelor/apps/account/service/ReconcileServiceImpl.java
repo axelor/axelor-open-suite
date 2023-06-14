@@ -481,7 +481,6 @@ public class ReconcileServiceImpl implements ReconcileService {
       BigDecimal amount,
       boolean updateInvoiceTerms)
       throws AxelorException {
-    amount = this.getTotal(moveLine, amount);
 
     InvoicePayment invoicePayment = null;
     if (invoice != null
@@ -493,6 +492,20 @@ public class ReconcileServiceImpl implements ReconcileService {
                 .map(Reconcile::getInvoicePayment)
                 .filter(invPayment -> invoice.equals(invPayment.getInvoice()))
                 .orElse(this.getExistingInvoicePayment(invoice, otherMove));
+      }
+
+      Currency currency;
+      if (invoicePayment != null) {
+        currency = invoicePayment.getCurrency();
+      } else {
+        currency = otherMove.getCurrency();
+        if (currency == null) {
+          currency = otherMove.getCompanyCurrency();
+        }
+      }
+      boolean isCompanyCurrency = currency.equals(reconcile.getCompany().getCurrency());
+      if (!isCompanyCurrency) {
+        amount = this.getTotal(moveLine, amount);
       }
 
       if (invoicePayment == null) {
@@ -907,15 +920,19 @@ public class ReconcileServiceImpl implements ReconcileService {
                 .compareTo(accountConfig.getThresholdDistanceFromRegulation())
             <= 0) {
 
+          Account creditAccount =
+              accountConfigService.getCashPositionVariationCreditAccountDontThrow(accountConfig);
+
           if (invoiceTermService.isThresholdNotOnLastInvoiceTerm(
-              creditMoveLine, accountConfig.getThresholdDistanceFromRegulation())) {
+                  creditMoveLine, accountConfig.getThresholdDistanceFromRegulation())
+              || creditAccount == null) {
             return;
           }
 
           log.debug("Threshold respected");
 
           MoveLine debitAdjustmentMoveLine =
-              moveAdjustementService.createAdjustmentMove(creditMoveLine, false);
+              moveAdjustementService.createAdjustmentMove(creditMoveLine, creditAccount, false);
 
           // Création de la réconciliation
           Reconcile newReconcile =
@@ -953,16 +970,19 @@ public class ReconcileServiceImpl implements ReconcileService {
                 .compareTo(accountConfig.getThresholdDistanceFromRegulation())
             <= 0) {
 
+          Account debitAccount =
+              accountConfigService.getCashPositionVariationDebitAccountDontThrow(accountConfig);
+
           if (invoiceTermService.isThresholdNotOnLastInvoiceTerm(
-              debitMoveLine, accountConfig.getThresholdDistanceFromRegulation())) {
+                  debitMoveLine, accountConfig.getThresholdDistanceFromRegulation())
+              || debitAccount == null) {
             return;
           }
-          // || reconcile.getMustBeZeroBalanceOk()) {
 
           log.debug("Threshold respected");
 
           MoveLine creditAdjustMoveLine =
-              moveAdjustementService.createAdjustmentMove(debitMoveLine, true);
+              moveAdjustementService.createAdjustmentMove(debitMoveLine, debitAccount, true);
 
           // Création de la réconciliation
           Reconcile newReconcile =
@@ -1106,7 +1126,8 @@ public class ReconcileServiceImpl implements ReconcileService {
       isDebit = true;
     }
 
-    if (debitMoveLine.getMove().getPartner().equals(creditMoveLine.getMove().getPartner())) {
+    if (debitMoveLine.getMove().getPartner() != null
+        && debitMoveLine.getMove().getPartner().equals(creditMoveLine.getMove().getPartner())) {
       partner = debitMoveLine.getMove().getPartner();
     }
 

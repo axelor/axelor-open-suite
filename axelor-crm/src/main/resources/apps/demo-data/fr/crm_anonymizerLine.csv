@@ -12,10 +12,4 @@
 "Lead";"primaryAddress";"2";"true";"address.streetAddress"
 "Lead";"primaryPostalCode";"2";"true";"address.zipCode"
 "Lead";"enterpriseName";"2";"true";"company.name"
-"Lead";"name";"9";"false";""
-"Lead";"firstName";"9";"false";""
-"Lead";"fullName";"9";"false";""
-"Lead";"primaryAddress";"9";"false";""
-"Lead";"fixedPhone";"9";"false";""
-"Lead";"mobilePhone";"9";"false";""
-"Lead";"primaryPostalCode";"9";"false";""
+

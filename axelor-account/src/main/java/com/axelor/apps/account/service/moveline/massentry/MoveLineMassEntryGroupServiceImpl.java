@@ -62,8 +62,6 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
   public Map<String, Object> getOnNewValuesMap(MoveLineMassEntry moveLine, Move move)
       throws AxelorException {
 
-    moveLine.setTemporaryMoveNumber(1);
-    moveLine.setCounter(1);
     moveLine.setInputAction(MoveLineMassEntryRepository.MASS_ENTRY_INPUT_ACTION_LINE);
     moveLine =
         massEntryService.getFirstMoveLineMassEntryInformations(
@@ -127,6 +125,13 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
     moveLineMassEntryAttrsService.addMovePaymentModeReadOnly(attrsMap);
     moveLineMassEntryAttrsService.addPartnerBankDetailsReadOnly(moveLine, attrsMap);
     moveLineMassEntryAttrsService.addInputActionSelectionIn(move, attrsMap);
+    moveLineMassEntryAttrsService.addTemporaryMoveNumberFocus(move, attrsMap);
+    moveLineMassEntryAttrsService.addOriginRequired(moveLine, move.getJournal(), attrsMap);
+
+    if (move.getJournal() != null) {
+      moveLineMassEntryAttrsService.addMovePaymentConditionRequired(
+          move.getJournal().getJournalType(), attrsMap);
+    }
 
     return attrsMap;
   }
@@ -190,7 +195,7 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
       MoveLineMassEntry moveLine, Move move, LocalDate dueDate) throws AxelorException {
     moveLineComputeAnalyticService.computeAnalyticDistribution(moveLine, move);
     moveLineRecordService.setIsCutOffGeneratedFalse(moveLine);
-    moveLineRecordService.refreshAccountInformation(moveLine, move);
+    moveLineMassEntryRecordService.refreshAccountInformation(moveLine, move);
     moveLineDefaultService.setDefaultDistributionTemplate(moveLine, move);
     moveLineMassEntryRecordService.setMovePfpValidatorUser(moveLine, move.getCompany());
 
@@ -198,6 +203,7 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
         new HashMap<>(
             moveLineGroupService.getAnalyticDistributionTemplateOnChangeValuesMap(moveLine, move));
     moveLineInvoiceTermService.generateDefaultInvoiceTerm(move, moveLine, dueDate, false);
+    moveLineMassEntryRecordService.setCutOff(moveLine);
 
     valuesMap.put("partner", moveLine.getPartner());
     valuesMap.put("cutOffStartDate", moveLine.getCutOffStartDate());
@@ -225,6 +231,7 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
         moveLine.getAccount(), moveLine.getIsOtherCurrency(), attrsMap);
     moveLineMassEntryAttrsService.addMovePfpValidatorUserReadOnly(moveLine, attrsMap);
     moveLineMassEntryAttrsService.addMovePfpValidatorUserRequired(moveLine.getAccount(), attrsMap);
+    moveLineMassEntryAttrsService.addCutOffReadOnly(moveLine.getAccount(), attrsMap);
 
     return attrsMap;
   }
