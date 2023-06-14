@@ -57,6 +57,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.db.repo.YearBaseRepository;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.CompanyDateService;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -91,6 +92,13 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import wslite.json.JSONException;
@@ -117,6 +125,8 @@ public class ExpenseServiceImpl implements ExpenseService {
   protected BankDetailsService bankDetailsService;
   protected CompanyConfigService companyConfigService;
   protected CurrencyService currencyService;
+  protected ExpenseLineRepository expenseLineRepository;
+  protected CompanyDateService companyDateService;
 
   @Inject
   public ExpenseServiceImpl(
@@ -138,7 +148,9 @@ public class ExpenseServiceImpl implements ExpenseService {
       KilometricService kilometricService,
       BankDetailsService bankDetailsService,
       CompanyConfigService companyConfigService,
-      CurrencyService currencyService) {
+      CurrencyService currencyService,
+      ExpenseLineRepository expenseLineRepository,
+      CompanyDateService companyDateService) {
 
     this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;
@@ -159,6 +171,8 @@ public class ExpenseServiceImpl implements ExpenseService {
     this.bankDetailsService = bankDetailsService;
     this.companyConfigService = companyConfigService;
     this.currencyService = currencyService;
+    this.expenseLineRepository = expenseLineRepository;
+    this.companyDateService = companyDateService;
   }
 
   @Override
@@ -246,11 +260,49 @@ public class ExpenseServiceImpl implements ExpenseService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void confirm(Expense expense) throws AxelorException {
+    Employee employee = expense.getEmployee();
+    Set<String> invitedDates = new HashSet<>();
+    DateTimeFormatter dateFormat = companyDateService.getDateFormat(expense.getCompany());
 
+    for (ExpenseLine expenseLine : expense.getGeneralExpenseLineList()) {
+      LocalDate expenseDate = expenseLine.getExpenseDate();
+      if (!expenseLine.getExpenseProduct().getDeductLunchVoucher()) {
+        continue;
+      }
+      if (expenseLineRepository
+              .all()
+              .filter(
+                  "self.expenseDate = :date AND :employee MEMBER OF self.invitedCollaboratorSet AND self.id != :id")
+              .bind("date", expenseDate)
+              .bind("employee", employee)
+              .bind("id", expenseLine.getId())
+              .fetchOne()
+          != null) {
+        invitedDates.add(expenseDate.format(dateFormat));
+      }
+    }
+
+    if (!invitedDates.isEmpty()) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          formatMessage(
+              I18n.get(HumanResourceExceptionMessage.ALREADY_INVITED_TO_RESTAURANT),
+              new ArrayList<>(invitedDates)));
+    }
     expense.setStatusSelect(ExpenseRepository.STATUS_CONFIRMED);
     expense.setSentDateTime(
         appAccountService.getTodayDateTime(expense.getCompany()).toLocalDateTime());
     expenseRepository.save(expense);
+  }
+
+  protected String formatMessage(String title, List<String> messages) {
+    StringBuilder sb = new StringBuilder();
+    sb.append(String.format("<b>%s</b><br/>", title));
+    sb.append(
+        messages.stream()
+            .map(item -> String.format("<li>%s</li>", item))
+            .collect(Collectors.joining("", "<ul>", "</ul>")));
+    return sb.toString();
   }
 
   @Override

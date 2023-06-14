@@ -885,6 +885,11 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
   @Override
   public void updateRequestedReservedQty(StockLocationLine stockLocationLine)
       throws AxelorException {
+    StockLocation stockLocation = stockLocationLine.getStockLocation();
+    if (stockLocation == null) {
+      return;
+    }
+
     // compute from stock move lines
     List<StockMoveLine> stockMoveLineList =
         stockMoveLineRepository
@@ -894,7 +899,7 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
                     + "AND self.stockMove.fromStockLocation.id = :stockLocationId "
                     + "AND self.stockMove.statusSelect = :planned")
             .bind("productId", stockLocationLine.getProduct().getId())
-            .bind("stockLocationId", stockLocationLine.getStockLocation().getId())
+            .bind("stockLocationId", stockLocation.getId())
             .bind("planned", StockMoveRepository.STATUS_PLANNED)
             .fetch();
     BigDecimal requestedReservedQty = BigDecimal.ZERO;

@@ -28,8 +28,6 @@ import com.axelor.apps.base.db.repo.AddressBaseRepository;
 import com.axelor.apps.base.db.repo.AddressRepository;
 import com.axelor.apps.base.db.repo.AdvancedImportBaseRepository;
 import com.axelor.apps.base.db.repo.AdvancedImportRepository;
-import com.axelor.apps.base.db.repo.AlarmEngineBatchBaseRepository;
-import com.axelor.apps.base.db.repo.AlarmEngineBatchRepository;
 import com.axelor.apps.base.db.repo.BankAddressBaseRepository;
 import com.axelor.apps.base.db.repo.BankAddressRepository;
 import com.axelor.apps.base.db.repo.BankBaseRepository;
@@ -48,8 +46,6 @@ import com.axelor.apps.base.db.repo.MailBatchBaseRepository;
 import com.axelor.apps.base.db.repo.MailBatchRepository;
 import com.axelor.apps.base.db.repo.MailingListMessageBaseRepository;
 import com.axelor.apps.base.db.repo.MailingListMessageRepository;
-import com.axelor.apps.base.db.repo.ObjectDataConfigExportManagementRepository;
-import com.axelor.apps.base.db.repo.ObjectDataConfigExportRepository;
 import com.axelor.apps.base.db.repo.PartnerAddressRepository;
 import com.axelor.apps.base.db.repo.PartnerBaseRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
@@ -81,6 +77,8 @@ import com.axelor.apps.base.service.BankServiceImpl;
 import com.axelor.apps.base.service.BarcodeGeneratorService;
 import com.axelor.apps.base.service.BarcodeGeneratorServiceImpl;
 import com.axelor.apps.base.service.BaseReportGenerator;
+import com.axelor.apps.base.service.BirtTemplateViewService;
+import com.axelor.apps.base.service.BirtTemplateViewServiceImpl;
 import com.axelor.apps.base.service.CompanyService;
 import com.axelor.apps.base.service.CompanyServiceImpl;
 import com.axelor.apps.base.service.DMSImportWizardService;
@@ -102,10 +100,6 @@ import com.axelor.apps.base.service.MapRestService;
 import com.axelor.apps.base.service.MapRestServiceImpl;
 import com.axelor.apps.base.service.ModelEmailLinkService;
 import com.axelor.apps.base.service.ModelEmailLinkServiceImpl;
-import com.axelor.apps.base.service.ObjectDataAnonymizeService;
-import com.axelor.apps.base.service.ObjectDataAnonymizeServiceImpl;
-import com.axelor.apps.base.service.ObjectDataExportService;
-import com.axelor.apps.base.service.ObjectDataExportServiceImpl;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerPriceListServiceImpl;
 import com.axelor.apps.base.service.PartnerService;
@@ -275,7 +269,6 @@ public class BaseModule extends AxelorModule {
     bind(ImportCityService.class).to(ImportCityServiceImpl.class);
     bind(BaseBatchRepository.class).to(BaseBatchBaseRepository.class);
     bind(MailBatchRepository.class).to(MailBatchBaseRepository.class);
-    bind(AlarmEngineBatchRepository.class).to(AlarmEngineBatchBaseRepository.class);
     bind(TradingNameService.class).to(TradingNameServiceImpl.class);
     bind(PartnerPriceListService.class).to(PartnerPriceListServiceImpl.class);
     bind(ICalendarEventService.class).to(ICalendarEventServiceImpl.class);
@@ -330,11 +323,7 @@ public class BaseModule extends AxelorModule {
     bind(SequenceVersionGeneratorQueryService.class)
         .to(SequenceVersionGeneratorQueryServiceImpl.class);
     bind(TranslationRestService.class).to(TranslationRestServiceImpl.class);
-    bind(ObjectDataExportService.class).to(ObjectDataExportServiceImpl.class);
-    bind(ObjectDataAnonymizeService.class).to(ObjectDataAnonymizeServiceImpl.class);
     bind(DataBackupService.class).to(DataBackupServiceImpl.class);
-    bind(ObjectDataConfigExportRepository.class)
-        .to(ObjectDataConfigExportManagementRepository.class);
     bind(AnonymizeService.class).to(AnonymizeServiceImpl.class);
     bind(FakerService.class).to(FakerServiceImpl.class);
     bind(DataBackupRepository.class).to(DataBackupManagementRepository.class);
@@ -344,5 +333,6 @@ public class BaseModule extends AxelorModule {
     bind(BirtTemplateService.class).to(BirtTemplateServiceImpl.class);
     bind(BaseServerStartListener.class);
     bind(AosSwagger.class);
+    bind(BirtTemplateViewService.class).to(BirtTemplateViewServiceImpl.class);
   }
 }

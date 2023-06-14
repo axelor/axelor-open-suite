@@ -207,7 +207,7 @@
     <panel name="userPanel" title="User" showIf="stepByStepSelect == 4">
       <field name="user" title="Attach to" onSelect="action-employee-attrs-change-domain"/>
       <button name="createUserBtn" title="Create new user"
-        onClick="save,action-employee-view-open-user-creation-wizard" hideIf="user != null"
+        onClick="save,action-employee-view-open-user-creation-form" hideIf="user != null"
         hidden="true"/>
     </panel>
     <!-- END OF User creation -->
@@ -424,7 +424,10 @@
         <field name="companyCbSelect" onChange="action-hr-record-reset-company-cb-details"
           colSpan="3"/>
         <field name="companyCbDetails" colSpan="3" hidden="true" showIf="companyCbSelect > 1"/>
-
+        <field name="analyticDistributionTemplate"
+          grid-view="analytic-distribution-template-grid"
+          form-view="analytic-distribution-template-form"
+          if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()"/>
         <panel-related name="employeeAdvanceListPanel" title="Employee advances"
           field="employeeAdvanceList" colSpan="12" form-view="employee-advance-employee-form"
           grid-view="employee-advance-employee-grid"

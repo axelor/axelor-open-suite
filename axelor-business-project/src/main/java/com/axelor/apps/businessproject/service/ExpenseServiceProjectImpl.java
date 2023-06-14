@@ -35,7 +35,9 @@ import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.config.CompanyConfigService;
+import com.axelor.apps.base.service.CompanyDateService;
 import com.axelor.apps.hr.db.ExpenseLine;
+import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.service.KilometricService;
 import com.axelor.apps.hr.service.config.AccountConfigHRService;
@@ -68,7 +70,9 @@ public class ExpenseServiceProjectImpl extends ExpenseServiceImpl {
       KilometricService kilometricService,
       BankDetailsService bankDetailsService,
       CompanyConfigService companyConfigService,
-      CurrencyService currencyService) {
+      CurrencyService currencyService,
+      ExpenseLineRepository expenseLineRepository,
+      CompanyDateService companyDateService) {
     super(
         moveCreateService,
         moveValidateService,
@@ -88,7 +92,9 @@ public class ExpenseServiceProjectImpl extends ExpenseServiceImpl {
         kilometricService,
         bankDetailsService,
         companyConfigService,
-        currencyService);
+        currencyService,
+        expenseLineRepository,
+        companyDateService);
   }
 
   @Override
