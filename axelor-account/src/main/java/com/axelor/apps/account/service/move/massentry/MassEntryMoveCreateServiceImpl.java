@@ -25,9 +25,9 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateService {
 
@@ -77,18 +77,6 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
     boolean authorizeSimulatedMove = move.getJournal().getAuthorizeSimulatedMove();
 
     if (move.getJournal().getCompany() != null) {
-      int[] functionalOriginTab = new int[0];
-      if (!ObjectUtils.isEmpty(move.getJournal().getAuthorizedFunctionalOriginSelect())) {
-        functionalOriginTab =
-            Arrays.stream(
-                    move.getJournal()
-                        .getAuthorizedFunctionalOriginSelect()
-                        .replace(" ", "")
-                        .split(","))
-                .mapToInt(Integer::parseInt)
-                .toArray();
-      }
-
       newMove =
           moveCreateService.createMove(
               move.getJournal(),
@@ -98,10 +86,10 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
               move.getDate(),
               move.getOriginDate(),
               move.getPaymentMode(),
-              move.getPartner().getFiscalPosition(),
+              move.getPartner() != null ? move.getPartner().getFiscalPosition() : null,
               move.getPartnerBankDetails(),
-              MoveRepository.TECHNICAL_ORIGIN_TEMPLATE,
-              !ObjectUtils.isEmpty(functionalOriginTab) ? functionalOriginTab[0] : 0,
+              MoveRepository.TECHNICAL_ORIGIN_MASS_ENTRY,
+              move.getFunctionalOriginSelect(),
               false,
               false,
               false,
@@ -169,9 +157,12 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
     List<Move> moveList = new ArrayList();
     Move moveToAdd;
 
-    for (int i = 1;
-        i <= this.getMaxTemporaryMoveNumber(parentMove.getMoveLineMassEntryList());
-        i++) {
+    List<Integer> uniqueIdList =
+        parentMove.getMoveLineMassEntryList().stream()
+            .map(MoveLineMassEntry::getTemporaryMoveNumber)
+            .distinct()
+            .collect(Collectors.toList());
+    for (Integer i : uniqueIdList) {
       moveToAdd = this.createMoveFromMassEntryList(parentMove, i);
       moveList.add(moveToAdd);
     }

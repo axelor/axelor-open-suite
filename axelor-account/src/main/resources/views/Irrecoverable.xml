@@ -47,7 +47,7 @@
       <button name="createIrrecoverableReportBtn" title="Generate irrecoverable report"
         onClick="save,com.axelor.apps.account.web.IrrecoverableController:createIrrecoverableReport"
         showIf="statusSelect == 1"/>
-      <field name="exportTypeSelect" colSpan="4"/>
+      <field name="exportTypeSelect" colSpan="4" selection-in="['pdf','xlsx','ods']"/>
       <button name="printReportBtn" title="Print" icon="fa-print"
         onClick="save,com.axelor.apps.account.web.IrrecoverableController:printIrrecoverable"/>
     </panel>

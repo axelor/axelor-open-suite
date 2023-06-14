@@ -20,11 +20,13 @@ package com.axelor.apps.base.service.pac4j;
 
 import com.axelor.auth.db.User;
 import com.axelor.auth.pac4j.AuthPac4jUserService;
+import com.google.inject.persist.Transactional;
 import org.pac4j.core.profile.CommonProfile;
 
 public class BaseAuthPac4jUserService extends AuthPac4jUserService {
 
   @Override
+  @Transactional
   protected void updateUser(User user, CommonProfile profile) {
     super.updateUser(user, profile);
 

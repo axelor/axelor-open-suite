@@ -41,7 +41,7 @@
         onChange="action-group-account-accounting-report-reporttype-onchange"
         domain="self.reportExportTypeSelect = 1 AND self.company = :company"/>
       <field name="reportType.typeSelect" hidden="true"/>
-      <field name="exportTypeSelect"/>
+      <field name="exportTypeSelect" selection-in="['pdf','xlsx','ods']"/>
 
       <field name="reportType.comparison" hidden="true"/>
     </panel>

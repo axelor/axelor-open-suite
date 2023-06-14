@@ -50,6 +50,8 @@
       title="Analytic distribution template"
       ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"/>
 
+    <date name="fromDate"/>
+
 
     <decimal name="discountAmount" title="Discount amount"/>
     <integer name="discountTypeSelect" title="Discount type"

@@ -19,6 +19,7 @@
 package com.axelor.apps.account.service.move.record;
 
 import com.axelor.apps.account.db.Move;
+import com.axelor.apps.base.AxelorException;
 
 public interface MoveDefaultService {
 
@@ -44,4 +45,6 @@ public interface MoveDefaultService {
    * @param move
    */
   void setDefaultCurrencyOnChange(Move move);
+
+  void setDefaultFiscalPositionOnChange(Move move) throws AxelorException;
 }

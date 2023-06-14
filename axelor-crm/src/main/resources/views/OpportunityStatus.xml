@@ -7,6 +7,7 @@
     model="com.axelor.apps.crm.db.OpportunityStatus" editable="true" sortable="false">
     <field name="name"/>
     <field name="sequence"/>
+    <field name="isOpen"/>
   </grid>
 
   <form name="opportunity-status-form" title="Opportunity status"
@@ -18,6 +19,7 @@
         hidden="true" css="label-bold" name="opportunityStatusEssentialLabel"/>
       <field name="name"/>
       <field name="sequence"/>
+      <field name="isOpen"/>
     </panel>
   </form>
 
