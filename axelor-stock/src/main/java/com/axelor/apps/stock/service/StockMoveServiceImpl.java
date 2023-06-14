@@ -382,6 +382,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     updateLocations(stockMove, fromStockLocation, toStockLocation, initialStatus);
 
     stockMove.setCancelReason(null);
+    stockMove.setRealDate(null);
 
     stockMoveRepo.save(stockMove);
   }
