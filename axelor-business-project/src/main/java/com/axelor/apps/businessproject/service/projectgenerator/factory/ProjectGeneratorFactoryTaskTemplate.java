@@ -146,7 +146,6 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
                   startDate,
                   orderLine.getQty(),
                   orderLine);
-          convertedTasks.forEach(task -> task.setSaleOrderLine(orderLine));
           tasks.addAll(convertedTasks);
         } else {
           ProjectTask childTask =
@@ -197,7 +196,6 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
             : null);
     childTask.setTimeUnit(
         product != null ? (Unit) productCompanyService.get(product, "unit", company) : null);
-    childTask.setSaleOrderLine(orderLine);
     if (orderLine.getSaleOrder().getToInvoiceViaTask()) {
       childTask.setToInvoice(true);
       childTask.setInvoicingType(ProjectTaskRepository.INVOICING_TYPE_PACKAGE);

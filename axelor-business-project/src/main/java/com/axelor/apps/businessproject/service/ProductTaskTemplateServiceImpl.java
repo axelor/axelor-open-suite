@@ -32,6 +32,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class ProductTaskTemplateServiceImpl implements ProductTaskTemplateService {
 
@@ -103,7 +104,9 @@ public class ProductTaskTemplateServiceImpl implements ProductTaskTemplateServic
       throws AxelorException {
     task.setParentTask(parent);
     task.setProduct(product);
-    task.setSaleOrderLine(saleOrderLine);
+    if(Objects.isNull(parent)) {
+      task.setSaleOrderLine(saleOrderLine);
+    }
     task.setPlannedTime(qty);
     task.setTimeUnit(product.getUnit());
     task.setUnitPrice(
