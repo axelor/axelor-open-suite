@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.crm.exception;
 
@@ -61,8 +62,6 @@ public final class CrmExceptionMessage {
   /** Lead controller */
   public static final String LEAD_1 = /*$$(*/ "Please select the Lead(s) to print." /*)*/;
 
-  public static final String LEAD_4 = /*$$(*/ "No lead import configuration found" /*)*/;
-  public static final String LEAD_5 = /*$$(*/ "Import lead" /*)*/;
   public static final String LEAD_START_WRONG_STATUS = /*$$(*/
       "Can only start new or assigned lead." /*)*/;
   public static final String LEAD_RECYCLE_WRONG_STATUS = /*$$(*/
@@ -123,4 +122,13 @@ public final class CrmExceptionMessage {
 
   public static final String CRM_SALES_PROPOSITION_STATUS_MISSING = /*$$(*/
       "Please fill sales proposition status in App CRM configuration." /*)*/;
+
+  public static final String CRM_CLOSED_LOST_PARTNER_STATUS_MISSING = /*$$(*/
+      "Please fill closed lost partner status in App CRM configuration." /*)*/;
+
+  public static final String CRM_CLOSED_WIN_PARTNER_STATUS_MISSING = /*$$(*/
+      "Please fill closed win partner status in App CRM configuration." /*)*/;
+
+  public static final String PARTNER_LOSE_WRONG_STATUS = /*$$(*/
+      "Can not mark as lost an already lost partner." /*)*/;
 }

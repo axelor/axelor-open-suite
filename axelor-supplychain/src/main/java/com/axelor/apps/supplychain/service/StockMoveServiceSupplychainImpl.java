@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,11 +14,13 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -68,6 +71,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
 import javax.persistence.Query;
@@ -151,10 +155,10 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
     String newStockSeq = super.realizeStockMove(stockMove, check);
     AppSupplychain appSupplychain = appSupplyChainService.getAppSupplychain();
 
-    if (StockMoveRepository.ORIGIN_SALE_ORDER.equals(stockMove.getOriginTypeSelect())) {
+    if (stockMove.getSaleOrder() != null) {
       updateSaleOrderLinesDeliveryState(stockMove, !stockMove.getIsReversion());
       // Update linked saleOrder delivery state depending on BackOrder's existence
-      SaleOrder saleOrder = saleOrderRepo.find(stockMove.getOriginId());
+      SaleOrder saleOrder = stockMove.getSaleOrder();
       if (newStockSeq != null) {
         saleOrder.setDeliveryState(SaleOrderRepository.DELIVERY_STATE_PARTIALLY_DELIVERED);
       } else {
@@ -166,10 +170,10 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       }
 
       saleOrderRepo.save(saleOrder);
-    } else if (StockMoveRepository.ORIGIN_PURCHASE_ORDER.equals(stockMove.getOriginTypeSelect())) {
+    } else if (stockMove.getPurchaseOrder() != null) {
       updatePurchaseOrderLines(stockMove, !stockMove.getIsReversion());
       // Update linked purchaseOrder receipt state depending on BackOrder's existence
-      PurchaseOrder purchaseOrder = purchaseOrderRepo.find(stockMove.getOriginId());
+      PurchaseOrder purchaseOrder = stockMove.getPurchaseOrder();
       if (newStockSeq != null) {
         purchaseOrder.setReceiptState(PurchaseOrderRepository.STATE_PARTIALLY_RECEIVED);
       } else {
@@ -228,11 +232,17 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       return;
     }
 
+    if (stockMove.getInvoicingStatusSelect() == StockMoveRepository.STATUS_PARTIALLY_INVOICED
+        || stockMove.getInvoicingStatusSelect() == StockMoveRepository.STATUS_INVOICED) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(SupplychainExceptionMessage.STOCK_MOVE_CANCEL_WRONG_STATUS_ERROR));
+    }
     if (stockMove.getStatusSelect() == StockMoveRepository.STATUS_REALIZED) {
-      if (StockMoveRepository.ORIGIN_SALE_ORDER.equals(stockMove.getOriginTypeSelect())) {
+      if (stockMove.getSaleOrder() != null) {
         updateSaleOrderOnCancel(stockMove);
       }
-      if (StockMoveRepository.ORIGIN_PURCHASE_ORDER.equals(stockMove.getOriginTypeSelect())) {
+      if (stockMove.getPurchaseOrder() != null) {
         updatePurchaseOrderOnCancel(stockMove);
       }
     }
@@ -258,7 +268,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
 
   @Transactional(rollbackOn = {Exception.class})
   public void updateSaleOrderOnCancel(StockMove stockMove) throws AxelorException {
-    SaleOrder so = saleOrderRepo.find(stockMove.getOriginId());
+    SaleOrder so = stockMove.getSaleOrder();
 
     updateSaleOrderLinesDeliveryState(stockMove, stockMove.getIsReversion());
     Beans.get(SaleOrderStockService.class).updateDeliveryState(so);
@@ -320,7 +330,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
 
   @Transactional(rollbackOn = {Exception.class})
   public void updatePurchaseOrderOnCancel(StockMove stockMove) throws AxelorException {
-    PurchaseOrder po = purchaseOrderRepo.find(stockMove.getOriginId());
+    PurchaseOrder po = stockMove.getPurchaseOrder();
 
     updatePurchaseOrderLines(stockMove, stockMove.getIsReversion());
     Beans.get(PurchaseOrderStockService.class).updateReceiptState(po);
@@ -412,11 +422,61 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
   public StockMove splitInto2(
       StockMove originalStockMove, List<StockMoveLine> modifiedStockMoveLines)
       throws AxelorException {
+
+    checkAssociatedInvoiceLine(modifiedStockMoveLines);
     StockMove newStockMove = super.splitInto2(originalStockMove, modifiedStockMoveLines);
     newStockMove.setOrigin(originalStockMove.getOrigin());
-    newStockMove.setOriginTypeSelect(originalStockMove.getOriginTypeSelect());
-    newStockMove.setOriginId(originalStockMove.getOriginId());
+    setOrigin(originalStockMove, newStockMove);
     return newStockMove;
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public boolean splitStockMoveLines(
+      StockMove stockMove, List<StockMoveLine> stockMoveLines, BigDecimal splitQty)
+      throws AxelorException {
+    checkAssociatedInvoiceLine(stockMoveLines);
+    return super.splitStockMoveLines(stockMove, stockMoveLines, splitQty);
+  }
+
+  /**
+   * Methods that checks if any of the stock move lines are associated with a invoice line. Will
+   * throws a exception if it is the case
+   *
+   * @throws AxelorException if any stock move line is associated with invoice line.
+   * @param modifiedStockMoveLines
+   */
+  protected void checkAssociatedInvoiceLine(List<StockMoveLine> stockMoveLines)
+      throws AxelorException {
+    StringJoiner pairSMLInvoiceLineSj = new StringJoiner(" / ");
+    boolean isAssociated = false;
+    for (StockMoveLine stockMoveLine : stockMoveLines) {
+      if (stockMoveLine.getId() != null) {
+        List<InvoiceLine> associatedInvoiceLines =
+            stockMoveLineServiceSupplychain.getInvoiceLines(stockMoveLine);
+        if (!associatedInvoiceLines.isEmpty()) {
+          associatedInvoiceLines.stream()
+              .forEach(
+                  invoiceLine -> {
+                    pairSMLInvoiceLineSj.add(
+                        String.format(
+                            "%s -> %s (%s)",
+                            stockMoveLine.getName(),
+                            invoiceLine.getInvoice().getInvoiceId(),
+                            invoiceLine.getName()));
+                  });
+          isAssociated = true;
+        }
+      }
+    }
+    if (isAssociated) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(
+              SupplychainExceptionMessage
+                  .STOCK_MOVE_LINES_ASSOCIATED_WITH_INVOICE_LINES_CANNOT_SPLIT),
+          pairSMLInvoiceLineSj.toString());
+    }
   }
 
   @Override
@@ -581,5 +641,32 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       }
     }
     return stockMove;
+  }
+
+  @Override
+  public void checkInvoiceStatus(StockMove stockMove) throws AxelorException {
+    Set<Invoice> invoiceSet = stockMove.getInvoiceSet();
+    if (!CollectionUtils.isEmpty(invoiceSet)) {
+      for (Invoice invoice : invoiceSet) {
+        if (invoice.getStatusSelect() == InvoiceRepository.STATUS_DRAFT
+            || invoice.getStatusSelect() == InvoiceRepository.STATUS_VALIDATED) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_INCONSISTENCY,
+              I18n.get(SupplychainExceptionMessage.STOCK_MOVE_CANCEL_WRONG_INVOICE_STATUS_ALERT),
+              stockMove.getStockMoveSeq());
+        }
+      }
+    }
+  }
+
+  @Override
+  public void setOrigin(StockMove oldStockMove, StockMove newStockMove) {
+    if (oldStockMove.getSaleOrder() != null) {
+      newStockMove.setSaleOrder(oldStockMove.getSaleOrder());
+    } else if (oldStockMove.getPurchaseOrder() != null) {
+      newStockMove.setPurchaseOrder(oldStockMove.getPurchaseOrder());
+    } else {
+      super.setOrigin(oldStockMove, newStockMove);
+    }
   }
 }

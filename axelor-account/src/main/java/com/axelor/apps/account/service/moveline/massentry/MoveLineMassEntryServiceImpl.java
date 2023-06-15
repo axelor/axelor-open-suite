@@ -1,20 +1,24 @@
 package com.axelor.apps.account.service.moveline.massentry;
 
 import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLineMassEntry;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.AccountingSituationService;
+import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveCounterPartService;
 import com.axelor.apps.account.service.move.MoveLoadDefaultConfigService;
 import com.axelor.apps.account.service.move.massentry.MassEntryToolService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
+import com.axelor.apps.account.util.TaxAccountToolService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
@@ -38,6 +42,8 @@ public class MoveLineMassEntryServiceImpl implements MoveLineMassEntryService {
   protected CurrencyService currencyService;
   protected MoveLineMassEntryToolService moveLineMassEntryToolService;
   protected AccountingSituationService accountingSituationService;
+  protected InvoiceTermService invoiceTermService;
+  protected TaxAccountToolService taxAccountToolService;
 
   @Inject
   public MoveLineMassEntryServiceImpl(
@@ -47,7 +53,9 @@ public class MoveLineMassEntryServiceImpl implements MoveLineMassEntryService {
       MoveLoadDefaultConfigService moveLoadDefaultConfigService,
       CurrencyService currencyService,
       MoveLineMassEntryToolService moveLineMassEntryToolService,
-      AccountingSituationService accountingSituationService) {
+      AccountingSituationService accountingSituationService,
+      InvoiceTermService invoiceTermService,
+      TaxAccountToolService taxAccountToolService) {
     this.moveLineTaxService = moveLineTaxService;
     this.moveCounterPartService = moveCounterPartService;
     this.massEntryToolService = massEntryToolService;
@@ -55,6 +63,8 @@ public class MoveLineMassEntryServiceImpl implements MoveLineMassEntryService {
     this.currencyService = currencyService;
     this.moveLineMassEntryToolService = moveLineMassEntryToolService;
     this.accountingSituationService = accountingSituationService;
+    this.invoiceTermService = invoiceTermService;
+    this.taxAccountToolService = taxAccountToolService;
   }
 
   @Override
@@ -64,7 +74,7 @@ public class MoveLineMassEntryServiceImpl implements MoveLineMassEntryService {
     if (ObjectUtils.notEmpty(childMove.getMoveLineList())) {
       if (childMove.getStatusSelect().equals(MoveRepository.STATUS_NEW)
           || childMove.getStatusSelect().equals(MoveRepository.STATUS_SIMULATED)) {
-        moveLineTaxService.autoTaxLineGenerateNoSave(childMove, null);
+        moveLineTaxService.autoTaxLineGenerateNoSave(childMove);
         moveCounterPartService.generateCounterpartMoveLine(childMove, dueDate);
       }
       massEntryToolService.clearMoveLineMassEntryListAndAddNewLines(
@@ -182,13 +192,7 @@ public class MoveLineMassEntryServiceImpl implements MoveLineMassEntryService {
         this.loadAccountInformation(move, moveLine);
         move.setPartner(null);
 
-        AccountingSituation accountingSituation =
-            accountingSituationService.getAccountingSituation(
-                moveLine.getPartner(), move.getCompany());
-        moveLine.setVatSystemSelect(null);
-        if (accountingSituation != null) {
-          moveLine.setVatSystemSelect(accountingSituation.getVatSystemSelect());
-        }
+        moveLine.setVatSystemSelect(moveLineTaxService.getVatSystem(move, moveLine));
       }
 
       moveLine.setMovePartnerBankDetails(
@@ -200,6 +204,28 @@ public class MoveLineMassEntryServiceImpl implements MoveLineMassEntryService {
           moveLine.getPartner().getCurrency() != null
               ? moveLine.getPartner().getCurrency().getCodeISO()
               : null);
+    }
+  }
+
+  @Override
+  public User getPfpValidatorUserForInTaxAccount(
+      Account account, Company company, Partner partner) {
+    if (ObjectUtils.notEmpty(account) && account.getUseForPartnerBalance()) {
+      return invoiceTermService.getPfpValidatorUser(partner, company);
+    }
+    return null;
+  }
+
+  @Override
+  public void setPfpValidatorUserForInTaxAccount(
+      List<MoveLineMassEntry> moveLineMassEntryList, Company company, int temporaryMoveNumber) {
+    for (MoveLineMassEntry moveLine : moveLineMassEntryList) {
+      if (moveLine.getTemporaryMoveNumber() == temporaryMoveNumber
+          && ObjectUtils.isEmpty(moveLine.getMovePfpValidatorUser())) {
+        moveLine.setMovePfpValidatorUser(
+            getPfpValidatorUserForInTaxAccount(
+                moveLine.getAccount(), company, moveLine.getPartner()));
+      }
     }
   }
 }

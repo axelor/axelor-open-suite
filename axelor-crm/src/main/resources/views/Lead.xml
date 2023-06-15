@@ -3,6 +3,45 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
+  <kanban columnBy="leadStatus" model="com.axelor.apps.crm.db.Lead" sequenceBy="sequence"
+    title="Leads" name="lead-kanban" draggable="true" limit="10">
+    <field name="name"/>
+    <field name="firstName"/>
+    <field name="leadStatus"/>
+    <field name="enterpriseName"/>
+    <field name="nextScheduledEventDateT"/>
+    <field name="leadScoringSelect"/>
+    <field name="user"/>
+    <hilite color="default" if="leadScoringSelect == 0.00"/>
+    <hilite color="danger" if="leadScoringSelect == 1.00"/>
+    <hilite color="warning" if="leadScoringSelect == 2.00"/>
+    <hilite color="primary" if="leadScoringSelect == 3.00"/>
+    <hilite color="info" if="leadScoringSelect == 4.00"/>
+    <hilite color="success" if="leadScoringSelect == 5.00"/>
+    <template> <![CDATA[
+  <h4>{{record.firstName+" "+record.name}}</h4>
+          <img ng-if="user" ng-src="{{$image('user', 'image')}}">
+          <div class="card-body">
+              <dl>
+                  <dt ng-show="record.enterpriseName" x-translate>Enterprise Name</dt><dd ng-show="record.enterpriseName">{{record.enterpriseName}}</dd>
+                  <dt ng-show="record.nextScheduledEventDateT"><i class='fa fa-clock-o'></i> <span>{{nextScheduledEventDateT|date:'yyyy-MM-dd HH:mm:ss'}}</span></dt>
+                  <dt x-translate>Lead Scoring</dt> <dd ng-show="!record.leadScoringSelect"><i class='fa fa-star-o' style='color:#FFD700;'></i><span><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i></span></dd>
+                  <dd ng-show="record.leadScoringSelect && record.leadScoringSelect == 1.00"><i class='fa fa-star' style='color:#FFD700;'></i><span><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i></span></dd>
+                  <dd ng-show="record.leadScoringSelect && record.leadScoringSelect == 2.00"><i class='fa fa-star' style='color:#FFD700;'></i><span><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i></span></dd>
+                  <dd ng-show="record.leadScoringSelect && record.leadScoringSelect == 3.00"><i class='fa fa-star' style='color:#FFD700;'></i><span><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i></span></dd>
+                  <dd ng-show="record.leadScoringSelect && record.leadScoringSelect == 4.00"><i class='fa fa-star' style='color:#FFD700;'></i><span><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i></span></dd>
+                  <dd ng-show="record.leadScoringSelect && record.leadScoringSelect == 5.00"><i class='fa fa-star' style='color:#FFD700;'></i><span><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i></span></dd>
+              </dl>
+          </div>
+          <div class="card-summary popover">
+	  <p style="margin:2px;">
+            	<span style="word-break:break-all;max-width:250px;" ng-bind-html="description"></span>
+            </p>
+         </div>
+]]>
+    </template>
+  </kanban>
+
   <grid name="lead-grid" title="Leads" model="com.axelor.apps.crm.db.Lead"
     orderBy="-contactDate">
     <!-- <toolbar> <button name="showMap" title="Map" onClick="action-show-leads-on-map-page" /> </toolbar> -->
@@ -15,8 +54,6 @@
           action="action-lead-method-assign-to-me-multiple"/>
         <item name="checkDuplicateItem" title="Check duplicate"
           action="action-general-check-duplicate-records"/>
-        <item name="importLeadsItem" title="Import leads"
-          action="action-crm-method-lead-import-leads"/>
       </menu>
     </menubar>
     <hilite color="warning"
@@ -52,8 +89,6 @@
           action="action-lead-method-assign-to-me-multiple"/>
         <item name="checkDuplicateItem" title="Check duplicate"
           action="action-general-check-duplicate-records"/>
-        <item name="importLeadsItem" title="Import leads"
-          action="action-crm-method-lead-import-leads"/>
       </menu>
     </menubar>
     <hilite color="warning"
@@ -291,7 +326,7 @@
   </form>
 
   <form name="lead-lose-wizard-form" model="com.axelor.apps.crm.db.Lead"
-    title="Loss confirmation">
+    title="Loss confirmation" onSave="action-lead-record-set-lost-status">
     <panel name="mainPanel">
       <field name="lostReason" colOffset="4" colSpan="4" widget="SuggestBox" canNew="false"
         canEdit="false"/>
@@ -344,10 +379,10 @@
   </action-method>
 
   <action-group name="action-lead-group-lead-status-onchange">
-    <action name="save"
-      if="eval: __this__?.leadStatus?.id != __config__.app.getApp('crm')?.lostLeadStatus?.id"/>
     <action name="action-lead-view-lose"
       if="eval: __this__?.leadStatus?.id == __config__.app.getApp('crm')?.lostLeadStatus?.id"/>
+    <action name="action-lead-record-clear-lost-reason"
+      if="eval: __this__?.leadStatus?.id != __config__.app.getApp('crm')?.lostLeadStatus?.id"/>
   </action-group>
 
   <action-group name="action-group-crm-lead-onnew">
@@ -365,6 +400,16 @@
     <attribute name="hidden" for="lostReason"
       expr="eval: __this__?.leadStatus?.id != __config__.app.getApp('crm')?.lostLeadStatus?.id"/>
   </action-attrs>
+
+  <action-record name="action-lead-record-set-lost-status"
+    model="com.axelor.apps.crm.db.Lead">
+    <field name="leadStatus" expr="eval: __config__.app.getApp('crm')?.lostLeadStatus"/>
+  </action-record>
+
+  <action-record name="action-lead-record-clear-lost-reason"
+    model="com.axelor.apps.crm.db.Lead">
+    <field name="lostReason" expr="eval: null"/>
+  </action-record>
 
   <action-method name="action-lead-event-add-attendee">
     <call class="com.axelor.apps.crm.web.EventController" method="addLeadAttendee"/>
@@ -439,7 +484,7 @@
     title="Schedule Event(${ fullName})" model="com.axelor.apps.crm.db.Event">
     <view type="form" name="event-form"/>
     <view type="grid" name="event-grid"/>
-    <context name="_lead" expr="eval: __this__"/>
+    <context name="_eventLead" expr="eval: __this__"/>
   </action-view>
 
   <action-view name="action-lead-view-meeting-event" title="Meeting Event(${ fullName})"
@@ -447,7 +492,7 @@
     <view type="form" name="event-form"/>
     <view-param name="popup" value="reload"/>
     <view-param name="show-toolbar" value="false"/>
-    <context name="_lead" expr="eval: __this__"/>
+    <context name="_eventLead" expr="eval: __this__"/>
     <context name="_meeting" expr="eval: true"/>
   </action-view>
 
@@ -456,7 +501,7 @@
     <view type="form" name="event-form"/>
     <view-param name="popup" value="reload"/>
     <view-param name="show-toolbar" value="false"/>
-    <context name="_lead" expr="eval: __this__"/>
+    <context name="_eventLead" expr="eval: __this__"/>
     <context name="_call" expr="eval: true"/>
   </action-view>
 
@@ -465,7 +510,7 @@
     <view type="form" name="event-form"/>
     <view-param name="popup" value="reload"/>
     <view-param name="show-toolbar" value="false"/>
-    <context name="_lead" expr="eval: __this__"/>
+    <context name="_eventLead" expr="eval: __this__"/>
     <context name="_task" expr="eval: true"/>
   </action-view>
 
@@ -474,7 +519,7 @@
     <view type="form" name="event-form"/>
     <view-param name="popup" value="reload"/>
     <view-param name="show-toolbar" value="false"/>
-    <context name="_lead" expr="eval: __this__"/>
+    <context name="_eventLead" expr="eval: __this__"/>
     <context name="_note" expr="eval: true"/>
   </action-view>
 
@@ -509,10 +554,10 @@
 
   <action-view name="action-lead-view-events" title="Events"
     model="com.axelor.apps.crm.db.Event">
-    <view type="cards" name="event-cards"/>
     <view type="grid" name="list-event-grid"/>
     <view type="form" name="event-form"/>
-    <domain>self.lead.id = :_id</domain>
+    <domain>self.eventLead.id = :_leadId </domain>
+    <context name="_leadId" expr="eval: __id__"/>
   </action-view>
 
   <action-method name="action-show-leads-on-map-page">
@@ -521,10 +566,6 @@
 
   <action-method name="action-lead-method-set-social-network-url">
     <call class="com.axelor.apps.crm.web.LeadController" method="setSocialNetworkUrl"/>
-  </action-method>
-
-  <action-method name="action-crm-method-lead-import-leads">
-    <call class="com.axelor.apps.crm.web.LeadController" method="getLeadImportConfig"/>
   </action-method>
 
   <search-filters name="lead-filters" model="com.axelor.apps.crm.db.Lead"

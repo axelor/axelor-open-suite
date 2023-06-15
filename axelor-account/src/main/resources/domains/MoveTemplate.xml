@@ -8,10 +8,8 @@
   <entity name="MoveTemplate" cacheable="true">
     <string name="name" title="Name" required="true"/>
     <string name="code" title="Code" required="true"/>
-    <many-to-one name="moveTemplateType" ref="MoveTemplateType" title="Type"
-      required="1"/>
-    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"
-      required="1"/>
+    <many-to-one name="moveTemplateType" ref="MoveTemplateType" title="Type"/>
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
     <many-to-one name="journal" ref="Journal" title="Journal"/>
     <boolean name="isValid" title="Valid"/>
     <boolean name="automaticallyValidate" title="Validate automatically the generated moves"/>

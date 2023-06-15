@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.supplychain.service;
 
@@ -234,14 +235,12 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
             null,
             StockMoveRepository.TYPE_INCOMING);
 
-    stockMove.setOriginId(purchaseOrder.getId());
-    stockMove.setOriginTypeSelect(StockMoveRepository.ORIGIN_PURCHASE_ORDER);
+    stockMove.setPurchaseOrder(purchaseOrder);
     stockMove.setOrigin(purchaseOrder.getPurchaseOrderSeq());
     stockMove.setTradingName(purchaseOrder.getTradingName());
     stockMove.setGroupProductsOnPrintings(purchaseOrder.getGroupProductsOnPrintings());
 
-    qualityStockMove.setOriginId(purchaseOrder.getId());
-    qualityStockMove.setOriginTypeSelect(StockMoveRepository.ORIGIN_PURCHASE_ORDER);
+    qualityStockMove.setPurchaseOrder(purchaseOrder);
     qualityStockMove.setOrigin(purchaseOrder.getPurchaseOrderSeq());
     qualityStockMove.setTradingName(purchaseOrder.getTradingName());
     qualityStockMove.setGroupProductsOnPrintings(purchaseOrder.getGroupProductsOnPrintings());
@@ -481,10 +480,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
     List<StockMove> stockMoveList =
         Beans.get(StockMoveRepository.class)
             .all()
-            .filter(
-                "self.originTypeSelect = ? AND self.originId = ? AND self.statusSelect = 2",
-                StockMoveRepository.ORIGIN_PURCHASE_ORDER,
-                purchaseOrder.getId())
+            .filter("self.purchaseOrder.id = ? AND self.statusSelect = 2", purchaseOrder.getId())
             .fetch();
 
     for (StockMove stockMove : stockMoveList) {
@@ -536,8 +532,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
         Beans.get(StockMoveRepository.class)
             .all()
             .filter(
-                "self.originTypeSelect LIKE ? AND self.originId = ? AND self.statusSelect <> ?",
-                StockMoveRepository.ORIGIN_PURCHASE_ORDER,
+                "self.purchaseOrder.id = ? AND self.statusSelect <> ?",
                 purchaseOrderId,
                 StockMoveRepository.STATUS_CANCELED)
             .count();

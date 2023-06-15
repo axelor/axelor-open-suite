@@ -1,6 +1,6 @@
 def libs = ext.libs = [:]
 
-libs.axelor_studio = 'com.axelor.addons:axelor-studio:1.0.0'
+libs.axelor_studio = 'com.axelor.addons:axelor-studio:1.0.2'
 
 libs.bcpkix_jdk15on = 'org.bouncycastle:bcpkix-jdk15on:1.70'
 libs.bcprov_jdk15on = 'org.bouncycastle:bcprov-jdk15on:1.70'
@@ -50,11 +50,7 @@ libs.xalan = dependencies.create('xalan:xalan:2.7.2') {
 libs.xmlbeans = 'org.apache.xmlbeans:xmlbeans:3.1.0'
 libs.xmlsec = 'org.apache.santuario:xmlsec:1.4.3'
 
-libs.jaxb_api = 'javax.xml.bind:jaxb-api:2.3.1'
-
-libs.jaxb_impl = 'com.sun.xml.bind:jaxb-impl:4.0.0'
-libs.jaxb_xjc = 'com.sun.xml.bind:jaxb-xjc:4.0.0'
-libs.jakarta_api = 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.0'
+libs.jaxb_xjc = 'com.sun.xml.bind:jaxb-xjc:2.3.8'
 
 libs.google_oauth_client_jetty = 'com.google.oauth-client:google-oauth-client-jetty:1.34.1'
 libs.google_api_services_people = dependencies.create('com.google.apis:google-api-services-people:v1-rev20220531-2.0.0') {

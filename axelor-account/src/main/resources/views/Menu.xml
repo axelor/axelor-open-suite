@@ -166,18 +166,6 @@
       expr="eval:__user__?.activeCompany?.accountConfig?.isActivateSimulatedMove"/>
   </action-view>
 
-  <menuitem name="account-root-move-simplified-move" parent="account-root-move"
-    title="Simplified Moves" action="account.root.move.move.simplifed" order="200"/>
-
-  <action-view name="account.root.move.move.simplifed"
-    model="com.axelor.apps.account.db.Move" title="Simplified Moves">
-    <view name="move-grid" type="grid"/>
-    <view name="move-simplified-form" type="form"/>
-    <view-param name="search-filters" value="move-filters"/>
-    <context name="_isActivateSimulatedMoves"
-      expr="eval:__user__.activeCompany?.accountConfig?.isActivateSimulatedMove"/>
-  </action-view>
-
   <menuitem name="account-root-move-move-line" parent="account-root-move"
     title="Move lines" action="account.root.move.move.line" order="300"/>
 
@@ -330,7 +318,7 @@
 
   <menuitem name="account-root-periodic-processing-overpayment-clearances"
     parent="account-root-periodic-processing" title="Overpayments clearances"
-    action="account.root.periodic.processing.overpayment.clearances" order="500"/>
+    action="account.root.periodic.processing.overpayment.clearances" order="5"/>
 
   <action-view name="account.root.periodic.processing.overpayment.clearances"
     title="Overpayments clearances" model="com.axelor.apps.account.db.AccountClearance">
@@ -341,7 +329,7 @@
 
   <menuitem name="account-root-periodic-processing-shift-irrecoverable"
     parent="account-root-periodic-processing" title="Shift to irrecoverable"
-    action="account.root.periodic.processing.shift.irrecoverable" order="600"/>
+    action="account.root.periodic.processing.shift.irrecoverable" order="6"/>
 
   <action-view name="account.root.periodic.processing.shift.irrecoverable"
     title="Shift to irrecoverable" model="com.axelor.apps.account.db.Irrecoverable">
@@ -352,7 +340,7 @@
 
   <menuitem name="account-root-periodic-processing-cheque-reject"
     parent="account-root-periodic-processing" title="Rejects of cheques"
-    action="account.root.periodic.processing.cheque.reject" order="700"/>
+    action="account.root.periodic.processing.cheque.reject" order="7"/>
 
   <action-view name="account.root.periodic.processing.cheque.reject"
     title="Rejects of cheques" model="com.axelor.apps.account.db.ChequeRejection">
@@ -364,7 +352,7 @@
   </action-view>
 
   <menuitem name="account-root-periodic-processing-annual-processing"
-    parent="account-root-periodic-processing" title="Annual processing" order="800"/>
+    parent="account-root-periodic-processing" title="Annual processing" order="8"/>
 
   <menuitem name="account-root-periodic-processing-annual-processing-year-closure"
     parent="account-root-periodic-processing-annual-processing" title="Year closure"
@@ -526,34 +514,6 @@
     <domain>self.reportExportTypeSelect = 2</domain>
     <context name="_reportExportTypeSelect" expr="2"/>
   </action-view>
-
-  <menuitem name="account-root-budget-management" parent="account-root"
-    if="__config__.app.isApp('budget')" title="Budget Preparation" order="800"/>
-
-  <menuitem name="account-root-budget-management-my-budgets"
-    parent="account-root-budget-management" title="My budgets"
-    action="account.root.budget.management.my.budgets" order="100"/>
-
-  <action-view name="account.root.budget.management.my.budgets" title="My budgets"
-    model="com.axelor.apps.account.db.Budget">
-    <view type="grid" name="budget-grid"/>
-    <view type="form" name="budget-form"/>
-    <view-param name="search-filters" value="budget-filters"/>
-    <domain>self.inChargeUser.id = :_id</domain>
-    <context name="_id" expr="eval: __user__.id"/>
-  </action-view>
-
-  <menuitem name="account-root-budget-management-all-budgets"
-    parent="account-root-budget-management" title="All budgets"
-    action="account.root.budget.management.all.budgets" order="200"/>
-
-  <action-view name="account.root.budget.management.all.budgets" title="All budgets"
-    model="com.axelor.apps.account.db.Budget">
-    <view type="grid" name="budget-grid"/>
-    <view type="form" name="budget-form"/>
-    <view-param name="search-filters" value="budget-filters"/>
-  </action-view>
-
 
   <menuitem title="Fixed assets" name="account-root-asset-management" parent="account-root"
     order="1100"/>
