@@ -20,7 +20,6 @@ package com.axelor.apps.production.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.production.db.ProdHumanResource;
 import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.WorkCenterGroup;
 import com.axelor.apps.production.db.repo.WorkCenterRepository;
@@ -47,10 +46,8 @@ public class WorkCenterServiceImpl implements WorkCenterService {
 
     if (workCenter.getWorkCenterTypeSelect() == WorkCenterRepository.WORK_CENTER_TYPE_HUMAN
         || workCenter.getWorkCenterTypeSelect() == WorkCenterRepository.WORK_CENTER_TYPE_BOTH) {
-      if (workCenter.getProdHumanResourceList() != null) {
-        for (ProdHumanResource prodHumanResource : workCenter.getProdHumanResourceList()) {
-          durations.add(prodHumanResource.getDuration());
-        }
+      if (workCenter.getHrDurationPerCycle() != null) {
+        durations.add(workCenter.getHrDurationPerCycle());
       }
     }
 
