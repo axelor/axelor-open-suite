@@ -127,6 +127,11 @@
           onChange="action-operation-order-record-set-planned-start-date-time-and-duration"/>
         <field name="plannedDuration" colSpan="12" widget="duration" x-seconds="true"
           x-big="true" onChange="action-operation-order-record-set-planned-end-date-time"/>
+        <field name="plannedHumanDuration" colSpan="12" widget="duration" x-seconds="true"
+          x-big="true" hideIf="workCenter.workCenterTypeSelect == 2"/>
+        <field name="plannedMachineDuration" colSpan="12" widget="duration" x-seconds="true"
+          x-big="true" hideIf="workCenter.workCenterTypeSelect == 1"/>
+        <field name="workCenter.workCenterTypeSelect" hidden="true"/>
       </panel>
       <panel name="realDatesPanel" title="Real dates" colSpan="6">
         <field name="realStartDateT"
