@@ -37,6 +37,7 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.axelor.utils.ContextTool;
 import com.google.inject.Singleton;
 
 @Singleton
@@ -101,7 +102,8 @@ public class AnalyticDistributionLineController {
     }
   }
 
-  public void setAnalyticAxisDomain(ActionRequest request, ActionResponse response) {
+  public void setAnalyticAxisDomain(ActionRequest request, ActionResponse response)
+      throws AxelorException {
     AnalyticDistributionLine analyticDistributionLine =
         request.getContext().asType(AnalyticDistributionLine.class);
     AnalyticDistributionTemplate analyticDistributionTemplate =
@@ -110,10 +112,7 @@ public class AnalyticDistributionLineController {
     if (analyticDistributionTemplate != null && analyticDistributionTemplate.getCompany() != null) {
       company = analyticDistributionTemplate.getCompany();
     } else {
-      Context parent = request.getContext().getParent();
-      if (parent != null && parent.get("company") != null) {
-        company = (Company) parent.get("company");
-      }
+      company = ContextTool.getFieldContextParent(request.getContext(), "company");
     }
     if (company != null) {
       response.setAttr(
