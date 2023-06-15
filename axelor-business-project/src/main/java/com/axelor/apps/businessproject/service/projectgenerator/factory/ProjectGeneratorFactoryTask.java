@@ -42,7 +42,6 @@ import com.axelor.studio.db.AppBusinessProject;
 import com.axelor.utils.StringTool;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -174,10 +173,7 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
     }
 
     task.setTaskDate(startDate.toLocalDate());
-    task.setUnitPrice(
-        (BigDecimal)
-            productCompanyService.get(
-                saleOrderLine.getProduct(), "salePrice", saleOrder.getCompany()));
+    task.setUnitPrice(saleOrderLine.getPrice());
     task.setExTaxTotal(saleOrderLine.getExTaxTotal());
     task.setToInvoice(project.getIsInvoicingTimesheet());
     projectTaskRepo.save(task);

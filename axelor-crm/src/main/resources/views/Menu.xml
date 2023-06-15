@@ -6,10 +6,28 @@
   <menuitem name="crm-root" title="CRM" order="-2100" if="__config__.app.isApp('crm')"
     icon="fa-user" icon-background="#2fa042"/>
 
-  <menuitem name="crm-root-lead" parent="crm-root" title="Leads" action="crm.root.lead"
+  <menuitem name="crm-root-lead" parent="crm-root" title="Leads" order="100"/>
+
+  <menuitem name="crm-my-lead" parent="crm-root-lead" title="My leads" action="crm.my.lead"
     order="100"/>
 
-  <action-view name="crm.root.lead" title="Leads" model="com.axelor.apps.crm.db.Lead">
+  <action-view name="crm.my.lead" title="My leads" model="com.axelor.apps.crm.db.Lead">
+    <view type="kanban" name="lead-kanban"/>
+    <view type="grid" name="lead-grid"/>
+    <view type="form" name="lead-form"/>
+    <view-param name="search-filters" value="lead-filters"/>
+    <domain>self.user.id = :_internalUserId</domain>
+    <context name="_myActiveTeam"
+      expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
+    <context name="todayDate" expr="eval:__config__.date"/>
+    <context name="_internalUserId" expr="eval:__user__.id"/>
+  </action-view>
+
+  <menuitem name="crm-opened-lead" parent="crm-root-lead" title="Opened leads"
+    action="crm.opened.lead" order="200"/>
+
+  <action-view name="crm.opened.lead" title="Opened leads"
+    model="com.axelor.apps.crm.db.Lead">
     <view type="kanban" name="lead-kanban"/>
     <view type="grid" name="lead-grid"/>
     <view type="form" name="lead-form"/>
@@ -21,10 +39,46 @@
     <context name="_internalUserId" expr="eval:__user__.id"/>
   </action-view>
 
-  <menuitem name="crm-root-prospects" parent="crm-root" title="Prospects"
-    action="crm.root.prospects" order="200"/>
+  <menuitem name="crm-closed-lead" parent="crm-root-lead" title="Closed leads"
+    action="crm.closed.lead" order="300"/>
 
-  <action-view name="crm.root.prospects" title="Prospects"
+  <action-view name="crm.closed.lead" title="Closed leads"
+    model="com.axelor.apps.crm.db.Lead">
+    <view type="kanban" name="lead-kanban"/>
+    <view type="grid" name="lead-grid"/>
+    <view type="form" name="lead-form"/>
+    <view-param name="search-filters" value="lead-filters"/>
+    <domain>self.leadStatus.isOpen = false</domain>
+    <context name="_myActiveTeam"
+      expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
+    <context name="todayDate" expr="eval:__config__.date"/>
+    <context name="_internalUserId" expr="eval:__user__.id"/>
+  </action-view>
+
+  <menuitem name="crm-root-prospects" parent="crm-root" title="Prospects" order="200"/>
+
+  <menuitem name="crm-my-prospects" parent="crm-root-prospects" title="My prospects"
+    action="crm.my.prospects" order="100"/>
+
+  <action-view name="crm.my.prospects" title="My prospects"
+    model="com.axelor.apps.base.db.Partner">
+    <view type="cards" name="partner-cards"/>
+    <view type="grid" name="partner-prospect-grid"/>
+    <view type="form" name="partner-customer-form"/>
+    <view-param name="limit" value="39"/>
+    <view-param name="search-filters" value="partner-filters"/>
+    <view-param name="forceTitle" value="true"/>
+    <domain>self.isContact = false AND self.isProspect = true AND self.user.id = :_internalUserId</domain>
+    <context name="_isProspect" expr="true"/>
+    <context name="_domain" expr="self.isContact = false AND self.isProspect = true"/>
+    <context name="json-enhance" expr="eval:true"/>
+    <context name="_internalUserId" expr="eval:__user__.id"/>
+  </action-view>
+
+  <menuitem name="crm-opened-prospects" parent="crm-root-prospects"
+    title="Opened prospects" action="crm.opened.prospects" order="200"/>
+
+  <action-view name="crm.opened.prospects" title="Opened prospects"
     model="com.axelor.apps.base.db.Partner">
     <view type="kanban" name="partner-prospect-kanban"
       if="__config__.app.getApp('crm')?.getCrmProcessOnPartner()"/>
@@ -41,6 +95,22 @@
     <context name="_isFromCrm" expr="eval:true"/>
   </action-view>
 
+  <menuitem name="crm-closed-prospects" parent="crm-root-prospects"
+    title="Closed prospects" action="crm.closed.prospects" order="300"/>
+
+  <action-view name="crm.closed.prospects" title="Closed prospects"
+    model="com.axelor.apps.base.db.Partner">
+    <view type="cards" name="partner-cards"/>
+    <view type="grid" name="partner-prospect-grid"/>
+    <view type="form" name="partner-customer-form"/>
+    <view-param name="limit" value="39"/>
+    <view-param name="search-filters" value="partner-filters"/>
+    <view-param name="forceTitle" value="true"/>
+    <domain>self.isContact = false AND self.isProspect = true</domain>
+    <context name="_isProspect" expr="true"/>
+    <context name="_domain" expr="self.isContact = false AND self.isProspect = true"/>
+    <context name="json-enhance" expr="eval:true"/>
+  </action-view>
 
   <menuitem name="crm-root-customers" parent="crm-root" title="Customers"
     action="crm.root.customers" order="300"/>
@@ -85,14 +155,18 @@
     <view type="form" name="catalog-form"/>
   </action-view>
 
-  <menuitem name="crm-root-event" parent="crm-root" title="Events" action="crm.root.event"
-    order="600"/>
+  <menuitem name="crm-root-event" parent="crm-root" title="Events" order="600"/>
 
-  <action-view name="crm.root.event" title="Events" model="com.axelor.apps.crm.db.Event">
+  <menuitem name="crm-my-event" parent="crm-root-event" title="My events"
+    action="crm.my.event" order="100"/>
+
+  <action-view name="crm.my.event" title="My events"
+    model="com.axelor.apps.crm.db.Event">
     <view type="grid" name="event-grid"/>
     <view type="form" name="event-form"/>
     <view type="calendar" name="event-calendar-color-by-calendar"/>
     <view-param name="search-filters" value="event-filters"/>
+    <domain>self.user.id = :_internalUserId</domain>
     <context name="_currentDate" expr="eval:  __config__.date"/>
     <context name="_internalUserId" expr="eval: __user__.id"/>
     <context name="_myActiveTeam"
@@ -101,16 +175,86 @@
     <context name="_newDate" expr="eval: __datetime__.plusDays(5)"/>
   </action-view>
 
+  <menuitem name="crm-opened-event" parent="crm-root-event" title="Opened events"
+    action="crm.opened.event" order="200"/>
 
-  <menuitem name="crm-root-opportunity" parent="crm-root" title="Opportunities"
-    action="crm.root.opportunity" order="700"/>
+  <action-view name="crm.opened.event" title="Opened events"
+    model="com.axelor.apps.crm.db.Event">
+    <view type="grid" name="event-grid"/>
+    <view type="form" name="event-form"/>
+    <view type="calendar" name="event-calendar-color-by-calendar"/>
+    <view-param name="search-filters" value="event-filters"/>
+    <domain>self.statusSelect IN (1,2)</domain>
+    <context name="_currentDate" expr="eval:  __config__.date"/>
+    <context name="_internalUserId" expr="eval: __user__.id"/>
+    <context name="_myActiveTeam"
+      expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
+    <context name="_todayDateTime" expr="eval:__config__.app.getTodayDateTime()"/>
+    <context name="_newDate" expr="eval: __datetime__.plusDays(5)"/>
+  </action-view>
 
-  <action-view name="crm.root.opportunity" title="Opportunities"
+  <menuitem name="crm-closed-event" parent="crm-root-event" title="Closed events"
+    action="crm.closed.event" order="300"/>
+
+  <action-view name="crm.closed.event" title="Closed events"
+    model="com.axelor.apps.crm.db.Event">
+    <view type="grid" name="event-grid"/>
+    <view type="form" name="event-form"/>
+    <view type="calendar" name="event-calendar-color-by-calendar"/>
+    <view-param name="search-filters" value="event-filters"/>
+    <domain>self.statusSelect = 3</domain>
+    <context name="_currentDate" expr="eval:  __config__.date"/>
+    <context name="_internalUserId" expr="eval: __user__.id"/>
+    <context name="_myActiveTeam"
+      expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
+    <context name="_todayDateTime" expr="eval:__config__.app.getTodayDateTime()"/>
+    <context name="_newDate" expr="eval: __datetime__.plusDays(5)"/>
+  </action-view>
+
+  <menuitem name="crm-root-opportunity" parent="crm-root" title="Opportunities" order="700"/>
+
+  <menuitem name="crm-my-opportunity" parent="crm-root-opportunity"
+    title="My opportunities" action="crm.my.opportunity" order="100"/>
+
+  <action-view name="crm.my.opportunity" title="My opportunities"
     model="com.axelor.apps.crm.db.Opportunity" home="true">
     <view type="kanban" name="opportunity-kanban"/>
     <view type="grid" name="opportunity-grid"/>
     <view type="form" name="opportunity-form"/>
     <view-param name="search-filters" value="opportunity-filters"/>
+    <domain>self.user.id = :_internalUserId</domain>
+    <context name="_internalUserId" expr="eval:__user__.id"/>
+    <context name="_myActiveTeam"
+      expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
+    <context name="todayDate" expr="eval:__config__.date"/>
+  </action-view>
+
+  <menuitem name="crm-opened-opportunity" parent="crm-root-opportunity"
+    title="Opened opportunities" action="crm.opened.opportunity" order="200"/>
+
+  <action-view name="crm.opened.opportunity" title="Opened opportunities"
+    model="com.axelor.apps.crm.db.Opportunity" home="true">
+    <view type="kanban" name="opportunity-kanban"/>
+    <view type="grid" name="opportunity-grid"/>
+    <view type="form" name="opportunity-form"/>
+    <view-param name="search-filters" value="opportunity-filters"/>
+    <domain>self.opportunityStatus.isOpen = true</domain>
+    <context name="_internalUserId" expr="eval:__user__.id"/>
+    <context name="_myActiveTeam"
+      expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
+    <context name="todayDate" expr="eval:__config__.date"/>
+  </action-view>
+
+  <menuitem name="crm-closed-opportunity" parent="crm-root-opportunity"
+    title="Closed opportunities" action="crm.closed.opportunity" order="300"/>
+
+  <action-view name="crm.closed.opportunity" title="Closed opportunities"
+    model="com.axelor.apps.crm.db.Opportunity" home="true">
+    <view type="kanban" name="opportunity-kanban"/>
+    <view type="grid" name="opportunity-grid"/>
+    <view type="form" name="opportunity-form"/>
+    <view-param name="search-filters" value="opportunity-filters"/>
+    <domain>self.opportunityStatus.isOpen = false</domain>
     <context name="_internalUserId" expr="eval:__user__.id"/>
     <context name="_myActiveTeam"
       expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>

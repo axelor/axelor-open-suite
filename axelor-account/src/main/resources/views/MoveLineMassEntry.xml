@@ -136,7 +136,8 @@
     <field name="analyticMoveLineList" grid-view="analytic-move-line-move-line-grid"
       form-view="analytic-move-line-move-line-form"
       if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"
-      onChange="action-move-line-method-analytic-distribution-template-onchange-light,action-move-line-method-set-required-analytic-accounts">
+      onChange="action-move-line-method-analytic-distribution-template-onchange-light,action-move-line-method-set-required-analytic-accounts"
+      readonlyIf="!account || !account.analyticDistributionAuthorized">
       <hilite if="$contains(fieldsErrorList,'analytic:')" background="danger"/>
     </field>
     <field name="vatSystemSelect"

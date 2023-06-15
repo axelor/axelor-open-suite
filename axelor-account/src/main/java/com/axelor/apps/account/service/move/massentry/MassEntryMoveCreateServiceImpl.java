@@ -25,7 +25,6 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -87,18 +86,6 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
   @Transactional(rollbackOn = {Exception.class})
   public Move createMassEntryMove(Move move) throws AxelorException {
     User user = AuthUtils.getUser();
-    int[] functionalOriginTab = new int[0];
-
-    if (!ObjectUtils.isEmpty(move.getJournal().getAuthorizedFunctionalOriginSelect())) {
-      functionalOriginTab =
-          Arrays.stream(
-                  move.getJournal()
-                      .getAuthorizedFunctionalOriginSelect()
-                      .replace(" ", "")
-                      .split(","))
-              .mapToInt(Integer::parseInt)
-              .toArray();
-    }
 
     Move newMove =
         moveCreateService.createMove(
@@ -112,7 +99,7 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
             move.getPartner() != null ? move.getPartner().getFiscalPosition() : null,
             move.getPartnerBankDetails(),
             MoveRepository.TECHNICAL_ORIGIN_MASS_ENTRY,
-            !ObjectUtils.isEmpty(functionalOriginTab) ? functionalOriginTab[0] : 0,
+            move.getFunctionalOriginSelect(),
             false,
             false,
             false,

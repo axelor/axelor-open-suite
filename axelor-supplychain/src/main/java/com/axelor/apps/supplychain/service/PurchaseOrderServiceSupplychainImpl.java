@@ -71,7 +71,6 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
   protected AppAccountService appAccountService;
   protected AppBaseService appBaseService;
   protected PurchaseOrderStockService purchaseOrderStockService;
-  protected BudgetSupplychainService budgetSupplychainService;
   protected PurchaseOrderLineRepository purchaseOrderLineRepository;
   protected PurchaseOrderLineService purchaseOrderLineService;
   protected PartnerStockSettingsService partnerStockSettingsService;
@@ -84,7 +83,6 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
       AppAccountService appAccountService,
       AppBaseService appBaseService,
       PurchaseOrderStockService purchaseOrderStockService,
-      BudgetSupplychainService budgetSupplychainService,
       PurchaseOrderLineRepository purchaseOrderLineRepository,
       PurchaseOrderLineService purchaseOrderLineService,
       PartnerStockSettingsService partnerStockSettingsService,
@@ -95,7 +93,6 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
     this.appAccountService = appAccountService;
     this.appBaseService = appBaseService;
     this.purchaseOrderStockService = purchaseOrderStockService;
-    this.budgetSupplychainService = budgetSupplychainService;
     this.purchaseOrderLineRepository = purchaseOrderLineRepository;
     this.purchaseOrderLineService = purchaseOrderLineService;
     this.partnerStockSettingsService = partnerStockSettingsService;

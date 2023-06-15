@@ -169,8 +169,7 @@ public class ManufOrderStockMoveService {
             null,
             StockMoveRepository.TYPE_INTERNAL);
 
-    stockMove.setOriginId(manufOrder.getId());
-    stockMove.setOriginTypeSelect(StockMoveRepository.ORIGIN_MANUF_ORDER);
+    stockMove.setManufOrder(manufOrder);
     stockMove.setOrigin(manufOrder.getManufOrderSeq());
 
     return stockMove;
@@ -315,8 +314,7 @@ public class ManufOrderStockMoveService {
             plannedEndDate,
             null,
             StockMoveRepository.TYPE_INTERNAL);
-    stockMove.setOriginId(manufOrder.getId());
-    stockMove.setOriginTypeSelect(StockMoveRepository.ORIGIN_MANUF_ORDER);
+    stockMove.setManufOrder(manufOrder);
     stockMove.setOrigin(manufOrder.getManufOrderSeq());
     return stockMove;
   }
@@ -491,8 +489,7 @@ public class ManufOrderStockMoveService {
 
     newStockMove.setStockMoveLineList(new ArrayList<>());
     newStockMove.setOrigin(manufOrder.getManufOrderSeq());
-    newStockMove.setOriginId(manufOrder.getId());
-    newStockMove.setOriginTypeSelect(StockMoveRepository.ORIGIN_MANUF_ORDER);
+    newStockMove.setManufOrder(manufOrder);
     createNewStockMoveLines(manufOrder, newStockMove, inOrOut);
 
     if (!newStockMove.getStockMoveLineList().isEmpty()) {
