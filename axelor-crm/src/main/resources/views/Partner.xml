@@ -189,6 +189,16 @@
         <field name="$isFromCrm" hidden="true" readonly="true"/>
       </insert>
     </extend>
+    <extend target="//field[@name='emailAddress']">
+      <replace>
+        <field name="emailAddress">
+          <editor x-show-titles="false" x-viewer="true">
+            <field name="address" widget="email" colSpan="12"
+              placeholder="whatever@example.com"/>
+          </editor>
+        </field>
+      </replace>
+    </extend>
   </form>
 
   <form id="crm-partner-customer-form" name="partner-customer-form" title="Customer"
@@ -275,6 +285,16 @@
           action="action-contact-view-related-contacts" title="Related Contacts" colSpan="12"
           height="150" showIf="id"/>
       </insert>
+    </extend>
+    <extend target="//field[@name='emailAddress']">
+      <replace>
+        <field name="emailAddress">
+          <editor x-show-titles="false" x-viewer="true">
+            <field name="address" widget="email" colSpan="12"
+              placeholder="whatever@example.com"/>
+          </editor>
+        </field>
+      </replace>
     </extend>
   </form>
 
