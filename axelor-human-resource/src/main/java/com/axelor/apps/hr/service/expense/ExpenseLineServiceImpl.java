@@ -96,42 +96,62 @@ public class ExpenseLineServiceImpl implements ExpenseLineService {
   @Override
   public ExpenseLine getTotalTaxFromProductAndTotalAmount(ExpenseLine expenseLine) {
     AccountManagement accountManagement = null;
+    Tax tax = null;
     Product product = expenseLine.getExpenseProduct();
-    if(product != null){
-      accountManagement = product.getAccountManagementList().stream()
-              .filter(it -> (it.getPurchaseTax() != null))
-              .findFirst()
-              .orElse(null);
+    if (product != null) {
+      accountManagement =
+              product.getAccountManagementList().stream()
+                      .filter(it -> (it.getPurchaseTax() != null))
+                      .findFirst()
+                      .orElse(null);
       if (accountManagement == null) {
         ProductFamily productFamily = expenseLine.getExpenseProduct().getProductFamily();
-        if(productFamily != null){
-          accountManagement = productFamily.getAccountManagementList().stream()
-                  .filter(it -> (it.getPurchaseTax() != null))
-                  .findFirst()
-                  .orElse(null);
+        if (productFamily != null) {
+          accountManagement =
+                  productFamily.getAccountManagementList().stream()
+                          .filter(it -> (it.getPurchaseTax() != null))
+                          .findFirst()
+                          .orElse(null);
         }
-
+        if (accountManagement == null && expenseLine.getExpense().getCompany() != null) {
+          tax =
+                  expenseLine
+                          .getExpense()
+                          .getCompany()
+                          .getAccountConfig()
+                          .getExpenseTaxAccount()
+                          .getDefaultTax();
+        }
       }
     }
-    if (accountManagement != null) {
-      Tax tax = accountManagement.getPurchaseTax();
+    if (tax == null && accountManagement != null) {
+      tax = accountManagement.getPurchaseTax();
+    }
+    extractTotalTax(expenseLine, tax);
+    return expenseLine;
+  }
+
+  protected void extractTotalTax(ExpenseLine expenseLine, Tax tax) {
+    if (tax != null) {
       BigDecimal value =
               expenseLine
                       .getTotalAmount()
-                      .divide(
-                              (tax.getActiveTaxLine()
-                                      .getValue()
-                                      .add(BigDecimal.valueOf(100))
+                      .subtract(
+                              expenseLine
+                                      .getTotalAmount()
                                       .divide(
-                                              BigDecimal.valueOf(100),
+                                              BigDecimal.ONE.add(
+                                                      tax.getActiveTaxLine()
+                                                              .getValue()
+                                                              .divide(
+                                                                      BigDecimal.valueOf(100),
+                                                                      AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+                                                                      RoundingMode.DOWN)),
                                               AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
-                                              RoundingMode.HALF_UP)),
-                              AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
-                              RoundingMode.HALF_UP);
+                                              RoundingMode.HALF_DOWN));
       expenseLine.setTotalTax(value);
-    }else{
+    } else {
       expenseLine.setTotalTax(BigDecimal.ZERO);
     }
-    return expenseLine;
   }
 }
