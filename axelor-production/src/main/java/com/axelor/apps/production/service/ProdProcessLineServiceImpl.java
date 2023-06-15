@@ -54,7 +54,7 @@ public class ProdProcessLineServiceImpl implements ProdProcessLineService {
     WorkCenter workCenter =
         workCenterService.getMainWorkCenterFromGroup(prodProcessLine.getWorkCenterGroup());
     prodProcessLine.setWorkCenter(workCenter);
-    prodProcessLine.setDurationPerCycle(workCenterService.getDurationFromWorkCenter(workCenter));
+    prodProcessLine.setDurationPerCycle(workCenter.getDurationPerCycle());
     prodProcessLine.setMinCapacityPerCycle(
         workCenterService.getMinCapacityPerCycleFromWorkCenter(workCenter));
     prodProcessLine.setMaxCapacityPerCycle(
@@ -123,7 +123,8 @@ public class ProdProcessLineServiceImpl implements ProdProcessLineService {
               .longValue();
     }
 
-    BigDecimal durationPerCycle = new BigDecimal(prodProcessLine.getDurationPerCycle());
+    BigDecimal durationPerCycle =
+        new BigDecimal(workCenterService.getDurationFromWorkCenter(workCenter));
     duration += nbCycles.multiply(durationPerCycle).longValue();
 
     return duration;
