@@ -189,10 +189,8 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       return super.compute(stockMoveLine, null);
     }
 
-    if (stockMove.getOriginId() != null
-        && stockMove.getOriginId() != 0L
-        && (stockMoveLine.getSaleOrderLine() != null
-            || stockMoveLine.getPurchaseOrderLine() != null)) {
+    if ((stockMove.getSaleOrder() != null && stockMoveLine.getSaleOrderLine() != null)
+        || (stockMove.getPurchaseOrder() != null && stockMoveLine.getPurchaseOrderLine() != null)) {
       // the stock move comes from a sale or purchase order, we take the price from the order.
       stockMoveLine = computeFromOrder(stockMoveLine, stockMove);
     } else {
@@ -206,7 +204,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
     BigDecimal unitPriceUntaxed = stockMoveLine.getUnitPriceUntaxed();
     BigDecimal unitPriceTaxed = stockMoveLine.getUnitPriceTaxed();
     Unit orderUnit = null;
-    if (StockMoveRepository.ORIGIN_SALE_ORDER.equals(stockMove.getOriginTypeSelect())) {
+    if (stockMove.getSaleOrder() != null) {
       SaleOrderLine saleOrderLine = stockMoveLine.getSaleOrderLine();
       if (saleOrderLine == null) {
         // log the exception
@@ -214,14 +212,14 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
             new AxelorException(
                 TraceBackRepository.CATEGORY_MISSING_FIELD,
                 SupplychainExceptionMessage.STOCK_MOVE_MISSING_SALE_ORDER,
-                stockMove.getOriginId(),
+                stockMove.getSaleOrder(),
                 stockMove.getName()));
       } else {
         unitPriceUntaxed = saleOrderLine.getPriceDiscounted();
         unitPriceTaxed = saleOrderLine.getInTaxPrice();
         orderUnit = saleOrderLine.getUnit();
       }
-    } else if (StockMoveRepository.ORIGIN_PURCHASE_ORDER.equals(stockMove.getOriginTypeSelect())) {
+    } else if (stockMove.getPurchaseOrder() != null) {
       PurchaseOrderLine purchaseOrderLine = stockMoveLine.getPurchaseOrderLine();
       if (purchaseOrderLine == null) {
         // log the exception
@@ -229,7 +227,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
             new AxelorException(
                 TraceBackRepository.CATEGORY_MISSING_FIELD,
                 SupplychainExceptionMessage.STOCK_MOVE_MISSING_PURCHASE_ORDER,
-                stockMove.getOriginId(),
+                stockMove.getPurchaseOrder(),
                 stockMove.getName()));
       } else {
         unitPriceUntaxed = purchaseOrderLine.getPriceDiscounted();

@@ -188,7 +188,7 @@
     title="Payment session print wizard">
     <panel name="mainPanel">
       <field name="_exportTypeSelect" type="string" title="Export format"
-        selection="iadministration.export.type.select"/>
+        selection="iadministration.export.type.select" selection-in="['pdf','xlsx','ods']"/>
       <button name="printBtn" title="Export" readonlyIf="!_exportTypeSelect" onClick=""/>
     </panel>
   </form>

@@ -9,7 +9,6 @@
 
     <one-to-one ref="com.axelor.studio.db.AppAccount" name="appAccount" mappedBy="app"/>
     <one-to-one ref="com.axelor.studio.db.AppInvoice" name="appInvoice" mappedBy="app"/>
-    <one-to-one ref="com.axelor.studio.db.AppBudget" name="appBudget" mappedBy="app"/>
 
   </entity>
 

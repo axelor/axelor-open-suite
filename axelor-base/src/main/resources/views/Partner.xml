@@ -1063,7 +1063,7 @@
     </template>
   </cards>
 
-  <grid title="Employee List" name="partner-employee-grid"
+  <grid title="Contacts list" name="partner-employee-grid"
     model="com.axelor.apps.base.db.Partner">
     <!-- name/firstName/fixedPhone/mobilePhone/emailAddress.address -->
     <field name="name"/>

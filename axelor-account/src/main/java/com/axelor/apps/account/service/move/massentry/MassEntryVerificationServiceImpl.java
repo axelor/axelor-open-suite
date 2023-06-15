@@ -9,6 +9,7 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineMassEntryRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.PeriodServiceAccount;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveControlService;
 import com.axelor.apps.account.service.move.MoveLineControlService;
@@ -19,12 +20,12 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Period;
-import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
@@ -50,6 +51,7 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
   protected MoveControlService moveControlService;
   protected MoveLineMassEntryToolService moveLineMassEntryToolService;
   protected AppAccountService appAccountService;
+  protected PeriodServiceAccount periodServiceAccount;
 
   @Inject
   public MassEntryVerificationServiceImpl(
@@ -59,7 +61,8 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
       MoveValidateService moveValidateService,
       MoveControlService moveControlService,
       MoveLineMassEntryToolService moveLineMassEntryToolService,
-      AppAccountService appAccountService) {
+      AppAccountService appAccountService,
+      PeriodServiceAccount periodServiceAccount) {
     this.periodService = periodService;
     this.moveLineToolService = moveLineToolService;
     this.moveLineControlService = moveLineControlService;
@@ -67,11 +70,13 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
     this.moveControlService = moveControlService;
     this.moveLineMassEntryToolService = moveLineMassEntryToolService;
     this.appAccountService = appAccountService;
+    this.periodServiceAccount = periodServiceAccount;
   }
 
   @Override
   public void checkPreconditionsMassEntry(
-      Move move, int temporaryMoveNumber, List<Move> massEntryMoveList, boolean manageCutOff) {
+      Move move, int temporaryMoveNumber, List<Move> massEntryMoveList, boolean manageCutOff)
+      throws AxelorException {
     this.checkDateMassEntryMove(move, temporaryMoveNumber);
     this.checkOriginDateMassEntryMove(move, temporaryMoveNumber);
     this.checkOriginMassEntryMoveLines(move, temporaryMoveNumber, massEntryMoveList);
@@ -174,34 +179,13 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
   }
 
   @Override
-  public void checkDateMassEntryMove(Move move, int temporaryMoveNumber) {
-    boolean hasDateError;
-
+  public void checkDateMassEntryMove(Move move, int temporaryMoveNumber) throws AxelorException {
     MoveLineMassEntry firstMoveLine = move.getMoveLineMassEntryList().get(0);
 
+    boolean hasPeriodError = this.checkPeriod(move, temporaryMoveNumber);
+    boolean hasDateError = false;
     for (MoveLineMassEntry moveLine : move.getMoveLineMassEntryList()) {
-      hasDateError = false;
-      if (move.getPeriod() == null) {
-        hasDateError = true;
-        this.setMassEntryErrorMessage(
-            move,
-            String.format(
-                I18n.get(BaseExceptionMessage.PERIOD_1), move.getCompany(), move.getDate()),
-            true,
-            temporaryMoveNumber);
-      } else {
-        if (move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_CLOSED
-            || move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_CLOSURE_IN_PROGRESS) {
-          hasDateError = true;
-          this.setMassEntryErrorMessage(
-              move,
-              I18n.get(AccountExceptionMessage.MOVE_PERIOD_IS_CLOSED),
-              true,
-              temporaryMoveNumber);
-        }
-      }
-
-      if (!firstMoveLine.getDate().equals(moveLine.getDate())) {
+      if (!firstMoveLine.getDate().equals(moveLine.getDate()) && !hasDateError) {
         hasDateError = true;
         this.setMassEntryErrorMessage(
             move,
@@ -210,10 +194,28 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
             temporaryMoveNumber);
       }
 
-      if (hasDateError) {
+      if (hasDateError || hasPeriodError) {
         this.setFieldsErrorListMessage(moveLine, "date");
       }
     }
+  }
+
+  protected boolean checkPeriod(Move move, int temporaryMoveNumber) throws AxelorException {
+    if (move.getPeriod() == null) {
+      this.setMassEntryErrorMessage(
+          move,
+          String.format(
+              I18n.get(BaseExceptionMessage.PERIOD_1), move.getCompany().getName(), move.getDate()),
+          true,
+          temporaryMoveNumber);
+      return true;
+    } else if (!periodServiceAccount.isAuthorizedToAccountOnPeriod(
+        move.getPeriod(), AuthUtils.getUser())) {
+      this.setMassEntryErrorMessage(
+          move, I18n.get(AccountExceptionMessage.MOVE_PERIOD_IS_CLOSED), true, temporaryMoveNumber);
+      return true;
+    }
+    return false;
   }
 
   @Override
@@ -405,6 +407,7 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
   public void checkWellBalancedMove(Move move, int temporaryMoveNumber) {
     try {
       moveValidateService.validateWellBalancedMove(move);
+      moveValidateService.checkTaxAmount(move);
     } catch (AxelorException e) {
       this.setErrorMassEntryMoveLines(move, temporaryMoveNumber, "balance", e.getMessage());
     }
@@ -452,9 +455,14 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
   }
 
   @Override
-  public BankDetails verifyCompanyBankDetails(
-      Company company, BankDetails companyBankDetails, Journal journal) throws AxelorException {
-    int technicalTypeSelect = journal.getJournalType().getTechnicalTypeSelect();
+  public void verifyCompanyBankDetails(
+      Move move, Company company, BankDetails companyBankDetails, Journal journal)
+      throws AxelorException {
+    BankDetails newCompanyBankDetails = companyBankDetails;
+    int technicalTypeSelect =
+        journal.getJournalType() != null
+            ? journal.getJournalType().getTechnicalTypeSelect()
+            : JournalTypeRepository.TECHNICAL_TYPE_SELECT_EMPTY;
 
     if (company.getDefaultBankDetails() == null
         && (technicalTypeSelect == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE
@@ -465,8 +473,6 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
               I18n.get(AccountExceptionMessage.COMPANY_BANK_DETAILS_MISSING), company.getName()));
 
     } else if (company.getDefaultBankDetails() != null) {
-      BankDetails newCompanyBankDetails = companyBankDetails;
-
       if (newCompanyBankDetails == null
           && technicalTypeSelect != JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY) {
         newCompanyBankDetails = company.getDefaultBankDetails();
@@ -475,9 +481,8 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
           && newCompanyBankDetails.getJournal() != journal) {
         newCompanyBankDetails = null;
       }
-      return newCompanyBankDetails;
     }
 
-    return companyBankDetails;
+    move.setCompanyBankDetails(newCompanyBankDetails);
   }
 }

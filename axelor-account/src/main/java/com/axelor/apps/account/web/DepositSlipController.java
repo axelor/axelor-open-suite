@@ -32,6 +32,7 @@ import com.google.inject.Singleton;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
 public class DepositSlipController {
@@ -82,6 +83,40 @@ public class DepositSlipController {
       depositSlipService.validate(depositSlip);
       response.setNotify(I18n.get("The deposit slip is validated"));
       response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void loadPaymentVoucher(ActionRequest request, ActionResponse response) {
+    DepositSlipService depositSlipService = Beans.get(DepositSlipService.class);
+
+    List paymentVoucherDueList = (List) request.getContext().get("__paymentVoucherDueList");
+    if (CollectionUtils.isEmpty(paymentVoucherDueList)
+        || Integer.class.getName().equals(paymentVoucherDueList.get(0).getClass().getName())) {
+      return;
+    }
+
+    List<Integer> selectedPaymentVoucherDueIdList =
+        depositSlipService.getSelectedPaymentVoucherDueIdList(paymentVoucherDueList);
+    if (CollectionUtils.isEmpty(selectedPaymentVoucherDueIdList)) {
+      return;
+    }
+
+    response.setAttr("paymentVoucherList", "value:add", selectedPaymentVoucherDueIdList);
+  }
+
+  public void updateInvoicePayments(ActionRequest request, ActionResponse response) {
+    try {
+      DepositSlip depositSlip = request.getContext().asType(DepositSlip.class);
+      LocalDate depositDate =
+          (LocalDate)
+              Adapter.adapt(
+                  request.getContext().get("__depositDate"),
+                  LocalDate.class,
+                  LocalDate.class,
+                  null);
+      Beans.get(DepositSlipService.class).updateInvoicePayments(depositSlip, depositDate);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

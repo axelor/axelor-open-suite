@@ -31,6 +31,7 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
+import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -86,7 +87,8 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
   public void setCutOffDates(
       MoveLine moveLine, LocalDate cutOffStartDate, LocalDate cutOffEndDate) {
     if (!appAccountService.getAppAccount().getManageCutOffPeriod()
-        || !moveLine.getAccount().getManageCutOffPeriod()) {
+        || (ObjectUtils.notEmpty(moveLine.getAccount())
+            && !moveLine.getAccount().getManageCutOffPeriod())) {
       return;
     }
 
@@ -109,7 +111,7 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
 
     TaxLine taxLine = moveLoadDefaultConfigService.getTaxLine(move, moveLine, accountingAccount);
     TaxEquiv taxEquiv = null;
-
+    moveLine.setTaxLineBeforeReverse(null);
     if (taxLine != null) {
       if (move.getFiscalPosition() != null) {
         taxEquiv = fiscalPositionService.getTaxEquiv(move.getFiscalPosition(), taxLine.getTax());
@@ -119,7 +121,12 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
 
       if (taxEquiv != null) {
         moveLine.setTaxEquiv(taxEquiv);
+        moveLine.setTaxLineBeforeReverse(taxLine);
       }
+    }
+
+    if (ObjectUtils.notEmpty(accountingAccount.getVatSystemSelect())) {
+      moveLine.setVatSystemSelect(accountingAccount.getVatSystemSelect());
     }
   }
 

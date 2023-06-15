@@ -19,7 +19,7 @@
 package com.axelor.apps.account.service.move.record;
 
 import com.axelor.apps.account.db.Move;
-import java.util.Map;
+import com.axelor.apps.base.AxelorException;
 
 public interface MoveDefaultService {
 
@@ -29,7 +29,7 @@ public interface MoveDefaultService {
    * @param move
    * @return Map of modified fields.
    */
-  Map<String, Object> setDefaultMoveValues(Move move);
+  void setDefaultValues(Move move);
 
   /**
    * Set default currency value for move. Note: this method is called in setDefaultMoveValues method
@@ -37,5 +37,14 @@ public interface MoveDefaultService {
    * @param move
    * @return Map of modified fields.
    */
-  Map<String, Object> setDefaultCurrency(Move move);
+  void setDefaultCurrency(Move move);
+
+  /**
+   * Set default currency code for move.
+   *
+   * @param move
+   */
+  void setDefaultCurrencyOnChange(Move move);
+
+  void setDefaultFiscalPositionOnChange(Move move) throws AxelorException;
 }
