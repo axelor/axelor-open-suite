@@ -9,12 +9,13 @@
     <field name="qty" aggregate="sum" x-scale="2"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
     <field name="product"
-      domain="self.productSubTypeSelect = 1 OR self.productSubTypeSelect = 2"/>
-    <field name="billOfMaterial"/>
+      domain="self.productSubTypeSelect = 1 OR self.productSubTypeSelect = 2"
+      onChange="action-method-bill-of-material-line-product-on-change"/>
+    <field name="billOfMaterial" domain="self.product = :product"/>
     <field name="hasNoManageStock"/>
   </grid>
 
-  <form name="bill-of-material-line-form" title="Bill of materials"
+  <form name="bill-of-material-line-form" title="Components"
     model="com.axelor.apps.production.db.BillOfMaterialLine" width="large"
     onNew="action-bill-of-material-line-default-record,action-bill-of-material-line-attrs-price-and-qty-digits"
     onLoad="action-bill-of-material-attrs-price-and-qty-digits">
@@ -25,10 +26,11 @@
         form-view="product-form" grid-view="product-grid"/>
       <field name="billOfMaterial" showIf="product.productSubTypeSelect == 2"
         form-view="bill-of-material-form" grid-view="bill-of-material-grid" canNew="true"
-        canEdit="true"/>
+        canEdit="true" domain="self.product = :product"/>
       <field name="hasNoManageStock" colSpan="3" readonlyIf="product.stockManaged == false"/>
       <field name="qty" colSpan="3"/>
       <field name="unit" form-view="unit-form" grid-view="unit-grid" colSpan="3"/>
+      <field name="priority" colSpan="3"/>
       <field name="product.productSubTypeSelect" hidden="true"/>
       <field name="product.stockManaged" hidden="true"/>
     </panel>

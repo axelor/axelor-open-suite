@@ -16,7 +16,7 @@
     <many-to-one name="prodProcess" ref="com.axelor.apps.production.db.ProdProcess"
       title="Production process"/>
     <one-to-many ref="com.axelor.apps.production.db.BillOfMaterialLine"
-      name="billOfMaterialLineList"/>
+      name="billOfMaterialLineList" mappedBy="billOfMaterialParent"/>
     <one-to-many name="prodResidualProductList"
       ref="com.axelor.apps.production.db.ProdResidualProduct" title="Residual products"
       mappedBy="billOfMaterial"/>

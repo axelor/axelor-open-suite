@@ -52,9 +52,11 @@ public class BillOfMaterialLineController {
           billOfMaterialLine,
           Optional.ofNullable(billOfMaterial).map(BillOfMaterial::getCompany).orElse(null));
       billOfMaterialLineService.fillHasNoManageStock(billOfMaterialLine);
+      billOfMaterialLineService.fillUnit(billOfMaterialLine);
 
       response.setValue("billOfMaterial", billOfMaterialLine.getBillOfMaterial());
       response.setValue("hasNoManageStock", billOfMaterialLine.getHasNoManageStock());
+      response.setValue("unit", billOfMaterialLine.getUnit());
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);

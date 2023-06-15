@@ -90,4 +90,13 @@ public class BillOfMaterialLineServiceImpl implements BillOfMaterialLineService 
       billOfMaterialLine.setHasNoManageStock(true);
     }
   }
+
+  @Override
+  public void fillUnit(BillOfMaterialLine billOfMaterialLine) {
+
+    Product product = billOfMaterialLine.getProduct();
+    if (product != null && billOfMaterialLine.getUnit() != null) {
+      billOfMaterialLine.setUnit(product.getUnit());
+    }
+  }
 }

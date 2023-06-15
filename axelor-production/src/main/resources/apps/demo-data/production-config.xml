@@ -33,15 +33,13 @@
   <input file="production_prodProcessLine.csv" separator=";"
     type="com.axelor.apps.production.db.ProdProcessLine"/>
 
-  <input file="production_billOfMaterialLine.csv" separator=";"
-    type="com.axelor.apps.production.db.BillOfMaterialLine">
-  </input>
-
   <input file="production_billOfMaterial.csv" separator=";"
     type="com.axelor.apps.production.db.BillOfMaterial" search="self.importId = :importId">
-    <bind column="billOfMaterialLines" to="billOfMaterialLineList"
-      search="self.importId in :billOfMaterialLines" eval="billOfMaterialLines.split('\\|') as List"/>
     <bind to="fullName" column="name"/>
+  </input>
+
+  <input file="production_billOfMaterialLine.csv" separator=";"
+    type="com.axelor.apps.production.db.BillOfMaterialLine" search="self.importId = :importId">
   </input>
 
 

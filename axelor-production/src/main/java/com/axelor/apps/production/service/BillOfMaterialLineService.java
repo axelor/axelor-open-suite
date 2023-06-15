@@ -26,4 +26,6 @@ public interface BillOfMaterialLineService {
   void fillBom(BillOfMaterialLine billOfMaterialLine, Company company) throws AxelorException;
 
   void fillHasNoManageStock(BillOfMaterialLine billOfMaterialLine);
+
+  void fillUnit(BillOfMaterialLine billOfMaterialLine);
 }
