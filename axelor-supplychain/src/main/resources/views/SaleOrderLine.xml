@@ -117,11 +117,6 @@
       method="updateReservationDate"/>
   </action-method>
 
-  <action-method name="action-sale-order-line-supplychain-method-get-invoicing-state">
-    <call class="com.axelor.apps.supplychain.web.SaleOrderLineController"
-      method="getInvoicingState"/>
-  </action-method>
-
   <action-record
     name="action-sale-order-line-record-update-requested-reserved-qty-from-qty"
     model="com.axelor.apps.sale.db.SaleOrderLine">
@@ -245,7 +240,6 @@
     <action name="action-sale-order-line-attrs-hidden-analytic-distribution-panel"/>
     <action name="action-sale-order-line-attrs-hidden-fields-for-client"/>
     <action name="action-sale-order-line-group-manage-attrs"/>
-    <action name="action-sale-order-line-supplychain-method-get-invoicing-state" if="id"/>
   </action-group>
 
 </object-views>

@@ -18,13 +18,18 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import java.math.BigDecimal;
+import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.SaleOrderLine;
+import java.util.List;
 
 public interface SaleInvoicingStateService {
   int SALE_ORDER_INVOICE_NOT_INVOICED = 1;
   int SALE_ORDER_INVOICE_PARTIALLY_INVOICED = 2;
   int SALE_ORDER_INVOICE_INVOICED = 3;
 
-  int getInvoicingState(
-      BigDecimal amountInvoiced, BigDecimal exTaxTotal, boolean atLeastOneInvoiceIsVentilated);
+  int getSaleOrderLineInvoicingState(SaleOrderLine saleOrderLine);
+
+  int computeSaleOrderInvoicingState(SaleOrder saleOrder);
+
+  void updateSaleOrderLinesInvoicingState(List<SaleOrderLine> saleOrderLineList);
 }
