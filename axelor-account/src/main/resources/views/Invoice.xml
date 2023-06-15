@@ -1020,7 +1020,8 @@ InvoiceSet.length > 0))"
         <field name="invoiceDate" onChange="action-invoice-group-payment-condition-onchange"
           readonlyIf="ventilatedByUser || ventilatedDateTime"/>
         <spacer/>
-        <field name="dueDate" readonlyIf="!paymentCondition.isFree"/>
+        <field name="dueDate" readonlyIf="!paymentCondition.isFree"
+          onChange="action-invoice-method-estimated-payment-date"/>
         <field name="nextDueDate" showIf="invoiceTermList.length > 1"/>
         <field name="paymentCondition.isFree" hidden="true"/>
         <field name="paymentDelay" readonly="true" colSpan="12"/>
@@ -1188,7 +1189,8 @@ InvoiceSet.length > 0))"
       </panel>
       <panel name="datesPanel" title="Dates" readonlyIf="statusSelect == 3">
         <field name="invoiceDate" onChange="action-invoice-group-payment-condition-onchange"/>
-        <field name="dueDate" readonlyIf="!paymentCondition.isFree"/>
+        <field name="dueDate" readonlyIf="!paymentCondition.isFree"
+          onChange="action-invoice-method-estimated-payment-date"/>
         <field name="paymentCondition.isFree" hidden="true"/>
       </panel>
     </panel-stack>
@@ -1667,6 +1669,7 @@ InvoiceSet.length > 0))"
     <action name="action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"
       if="operationTypeSelect == 1 || operationTypeSelect == 2"/>
     <action name="action-invoice-method-update-invoice-terms"/>
+    <action name="action-invoice-method-estimated-payment-date"/>
   </action-group>
 
   <action-group name="action-invoice-onsave-group">
@@ -1727,6 +1730,7 @@ InvoiceSet.length > 0))"
     <action name="action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"/>
     <action name="action-invoice-method-update-invoice-terms"/>
     <action name="action-invoice-method-check-multi-currency"/>
+    <action name="action-invoice-method-estimated-payment-date"/>
   </action-group>
 
   <action-group name="action-invoice-group-supplier-invoice-nb-onchange">
@@ -2730,6 +2734,11 @@ InvoiceSet.length > 0))"
   <action-method name="action-supplier-invoice-line-menu">
     <call class="com.axelor.apps.account.web.InvoiceController"
       method="showSupplierInvoiceLines"/>
+  </action-method>
+
+  <action-method name="action-invoice-method-estimated-payment-date">
+    <call class="com.axelor.apps.account.web.InvoiceController"
+      method="fillEstimatedPaymentDate"/>
   </action-method>
 
   <action-group name="action-invoice-group-report-button">
