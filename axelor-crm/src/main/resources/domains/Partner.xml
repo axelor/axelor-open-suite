@@ -38,6 +38,7 @@
 
     <integer name="sequence" title="Sequence"/>
     <boolean name="isMainContact" title="Main Contact"/>
+    <boolean name="isAlreadyConvertFromLead"/>
 
     <boolean name="isCollaborator" title="Collaborator"/>
     <one-to-many name="collaboratorDomainList" title="Work Domain"
