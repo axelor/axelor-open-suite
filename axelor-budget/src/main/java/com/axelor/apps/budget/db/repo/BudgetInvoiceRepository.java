@@ -34,8 +34,10 @@ public class BudgetInvoiceRepository extends InvoiceProjectRepository {
   public Invoice save(Invoice invoice) {
     try {
       if (!CollectionUtils.isEmpty(invoice.getInvoiceLineList())) {
+        BudgetInvoiceLineService budgetInvoiceLineService =
+            Beans.get(BudgetInvoiceLineService.class);
         for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
-          Beans.get(BudgetInvoiceLineService.class).checkAmountForInvoiceLine(invoiceLine);
+          budgetInvoiceLineService.checkAmountForInvoiceLine(invoiceLine);
         }
       }
     } catch (AxelorException e) {
