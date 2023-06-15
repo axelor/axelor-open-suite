@@ -21,42 +21,48 @@ package com.axelor.apps.account.service.move.attributes;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.auth.db.User;
+import java.time.LocalDate;
 import java.util.Map;
 
 public interface MoveAttrsService {
 
-  /**
-   * This method generates a map of move fields that should be hide or not for the current move
-   *
-   * <p>The map form is as follow: (fieldName, (attribute("hidden" in our case), attributeValue))
-   *
-   * @param move
-   * @return generated map
-   */
-  Map<String, Map<String, Object>> getHiddenAttributeValues(Move move);
+  void addHidden(Move move, Map<String, Map<String, Object>> attrsMap);
 
-  /**
-   * This method generates a map of move fields for the selection attribute for the current move.
-   *
-   * <p>The map form is as follow: (fieldName, (attribute("selection-in" in our case),
-   * attributeValue))
-   *
-   * @param move
-   * @return generated map
-   */
-  Map<String, Map<String, Object>> getFunctionalOriginSelectDomain(Move move);
+  void addFunctionalOriginSelectDomain(Move move, Map<String, Map<String, Object>> attrsMap);
 
-  boolean isHiddenMoveLineListViewer(Move move);
+  void addMoveLineListViewerHidden(Move move, Map<String, Map<String, Object>> attrsMap);
 
-  Map<String, Map<String, Object>> getMoveLineAnalyticAttrs(Move move) throws AxelorException;
+  void addMoveLineAnalyticAttrs(Move move, Map<String, Map<String, Object>> attrsMap)
+      throws AxelorException;
 
-  boolean isHiddenDueDate(Move move);
+  void addPartnerDomain(Move move, Map<String, Map<String, Object>> attrsMap);
 
-  Map<String, Map<String, Object>> getPfpAttrs(Move move, User user) throws AxelorException;
+  void addPaymentModeDomain(Move move, Map<String, Map<String, Object>> attrsMap);
 
-  Map<String, Map<String, Object>> getMassEntryHiddenAttributeValues(Move move);
+  void addPartnerBankDetailsDomain(Move move, Map<String, Map<String, Object>> attrsMap);
 
-  Map<String, Map<String, Object>> getMassEntryRequiredAttributeValues(Move move);
+  void addTradingNameDomain(Move move, Map<String, Map<String, Object>> attrsMap);
 
-  Map<String, Map<String, Object>> getMassEntryBtnHiddenAttributeValues(Move move);
+  void addWizardDefault(LocalDate moveDate, Map<String, Map<String, Object>> attrsMap);
+
+  void addDueDateHidden(Move move, Map<String, Map<String, Object>> attrsMap);
+
+  void addDateChangeTrueValue(Map<String, Map<String, Object>> attrsMap);
+
+  void addDateChangeFalseValue(
+      Move move, boolean paymentConditionChange, Map<String, Map<String, Object>> attrsMap);
+
+  void addPaymentConditionChangeChangeValue(
+      boolean value, Map<String, Map<String, Object>> attrsMap);
+
+  void addHeaderChangeValue(boolean value, Map<String, Map<String, Object>> attrsMap);
+
+  void getPfpAttrs(Move move, User user, Map<String, Map<String, Object>> attrsMap)
+      throws AxelorException;
+
+  void addMassEntryHidden(Move move, Map<String, Map<String, Object>> attrsMap);
+
+  void addMassEntryPaymentConditionRequired(Move move, Map<String, Map<String, Object>> attrsMap);
+
+  void addMassEntryBtnHidden(Move move, Map<String, Map<String, Object>> attrsMap);
 }

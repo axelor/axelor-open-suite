@@ -37,10 +37,10 @@ public interface MassEntryService {
   void verifyFieldsChangeOnMoveLineMassEntry(Move move, boolean manageCutOff)
       throws AxelorException;
 
-  void checkMassEntryMoveGeneration(Move move);
+  void checkMassEntryMoveGeneration(Move move) throws AxelorException;
 
   Map<List<Long>, String> validateMassEntryMove(Move move);
 
-  int generatedTaxeAndCounterPart(
+  String generatedTaxeAndCounterPart(
       Move parentMove, Move workingMove, LocalDate dueDate, int temporaryMoveNumber);
 }

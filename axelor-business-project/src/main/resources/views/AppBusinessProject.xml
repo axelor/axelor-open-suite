@@ -27,8 +27,8 @@
       <field name="enableToInvoiceTimesheet" widget="boolean-switch"/>
       <field name="enableToInvoiceExpense" widget="boolean-switch"/>
       <field name="automaticInvoicing" widget="boolean-switch"/>
-      <field name="preTaskStatusSet" widget="TagSelect" domain="self.relatedToSelect = 2"/>
-      <field name="postTaskStatusSet" widget="TagSelect" domain="self.relatedToSelect = 2"/>
+      <field name="preTaskStatusSet" widget="TagSelect"/>
+      <field name="postTaskStatusSet" widget="TagSelect"/>
       <field name="excludeTaskInvoicing"/>
     </panel>
     <panel name="productPanel" title="Product" colSpan="12">

@@ -277,6 +277,7 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
             .bind(
                 "pfpValidateStatusPartiallyValidated",
                 InvoiceTermRepository.PFP_STATUS_PARTIALLY_VALIDATED)
+            .bind("pfpValidateStatusNoPfp", InvoiceTermRepository.PFP_STATUS_NO_PFP)
             .bind("partnerIds", partnerIdList)
             .bind("accountingMethodSelect", paymentSession.getAccountingMethodSelect())
             .order("id");
@@ -308,17 +309,10 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
             + " OR ( self.moveLine.partner.isSupplier = TRUE "
             + " AND (self.paymentMode = :paymentMode OR self.paymentMode.inOutSelect != :paymentModeInOutSelect)"
             + " AND :partnerTypeSelect = :partnerTypeSupplier "
-            + " AND self.moveLine.move.functionalOriginSelect = :functionalOriginSupplier "
-            + " AND (self.moveLine.move.company.accountConfig.isManagePassedForPayment is NULL "
-            + " OR self.moveLine.move.company.accountConfig.isManagePassedForPayment = FALSE  "
-            + " OR (self.moveLine.move.company.accountConfig.isManagePassedForPayment = TRUE "
-            + " AND (self.pfpValidateStatusSelect = :pfpValidateStatusValidated OR self.pfpValidateStatusSelect = :pfpValidateStatusPartiallyValidated)))) "
+            + " AND self.moveLine.move.functionalOriginSelect = :functionalOriginSupplier ) "
             + " OR ( :accountingMethodSelect in (2,3) AND self.moveLine.partner.isCustomer = TRUE AND self.moveLine.partner.isSupplier = TRUE AND self.moveLine.partner.isCompensation = TRUE "
-            + " AND (self.moveLine.move.functionalOriginSelect = :functionalOriginClient OR self.moveLine.move.functionalOriginSelect = :functionalOriginSupplier )"
-            + " AND (self.moveLine.move.company.accountConfig.isManagePassedForPayment is NULL "
-            + " OR self.moveLine.move.company.accountConfig.isManagePassedForPayment = FALSE  "
-            + " OR (self.moveLine.move.company.accountConfig.isManagePassedForPayment = TRUE "
-            + " AND (self.pfpValidateStatusSelect = :pfpValidateStatusValidated OR self.pfpValidateStatusSelect = :pfpValidateStatusPartiallyValidated)))))";
+            + " AND (self.moveLine.move.functionalOriginSelect = :functionalOriginClient OR self.moveLine.move.functionalOriginSelect = :functionalOriginSupplier )))"
+            + " AND (self.pfpValidateStatusSelect IN (:pfpValidateStatusNoPfp,:pfpValidateStatusValidated,:pfpValidateStatusPartiallyValidated))";
     String paymentHistoryCondition =
         " AND self.isPaid = FALSE"
             + " AND self.amountRemaining > 0"

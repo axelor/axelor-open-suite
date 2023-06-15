@@ -29,11 +29,11 @@
         icon="fa-import" onClick="action-group-account-config-installchart-click"/>
 
       <field name="hasChartImported"/>
-      <field name="generateMoveForAdvancePayment" colSpan="3"/>
+      <field name="generateMoveForAdvancePayment" colSpan="3"
+        if="!__config__.app.getApp('account')?.getManageAdvancePaymentInvoice()"/>
       <field name="isActivateSimulatedMove" colSpan="3"/>
       <field name="accountingDaybook" colSpan="3"
         onChange="action-account-config-attrs-accounting-daybook-onchange"/>
-      <field name="accountAtPayment" colSpan="3" showIf="accountingDaybook"/>
     </panel>
 
     <panel-tabs name="mainPanelTab">
@@ -193,8 +193,11 @@
           <field name="defPaymentCondition" grid-view="payment-condition-grid"
             form-view="payment-condition-form"/>
         </panel>
-        <panel name="paymentSessionPanel" title="Payment sessions" showIf="accountingDaybook">
+        <panel name="paymentSessionPanel" title="Payment sessions" showIf="accountingDaybook"
+          colSpan="12">
           <field name="retrieveDaybookMovesInPaymentSession" showIf="accountingDaybook"/>
+          <field name="accountAtPayment"
+            showIf="accountingDaybook &amp;&amp; retrieveDaybookMovesInPaymentSession"/>
         </panel>
         <panel name="expensePanel" title="Expense" colSpan="12">
           <field name="expenseTaxAccount"

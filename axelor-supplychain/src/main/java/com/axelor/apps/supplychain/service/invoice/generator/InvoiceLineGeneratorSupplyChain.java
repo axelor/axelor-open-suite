@@ -20,7 +20,6 @@ package com.axelor.apps.supplychain.service.invoice.generator;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AnalyticMoveLine;
-import com.axelor.apps.account.db.BudgetDistribution;
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.FixedAssetCategory;
 import com.axelor.apps.account.db.Invoice;
@@ -227,31 +226,31 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
       }
 
     } else if (purchaseOrderLine != null) {
-
-      if (purchaseOrderLine.getAnalyticDistributionTemplate() != null
-          || !ObjectUtils.isEmpty(purchaseOrderLine.getAnalyticMoveLineList())) {
-        invoiceLine.setAnalyticDistributionTemplate(
-            purchaseOrderLine.getAnalyticDistributionTemplate());
-        this.copyAnalyticMoveLines(purchaseOrderLine.getAnalyticMoveLineList(), invoiceLine);
-        analyticMoveLineList = invoiceLineAnalyticService.computeAnalyticDistribution(invoiceLine);
+      if (purchaseOrderLine.getIsTitleLine()) {
+        return invoiceLine;
       } else {
-        analyticMoveLineList =
-            invoiceLineAnalyticService.getAndComputeAnalyticDistribution(invoiceLine, invoice);
-        analyticMoveLineList.stream().forEach(invoiceLine::addAnalyticMoveLineListItem);
+
+        if (purchaseOrderLine.getAnalyticDistributionTemplate() != null
+            || !ObjectUtils.isEmpty(purchaseOrderLine.getAnalyticMoveLineList())) {
+          invoiceLine.setAnalyticDistributionTemplate(
+              purchaseOrderLine.getAnalyticDistributionTemplate());
+          this.copyAnalyticMoveLines(purchaseOrderLine.getAnalyticMoveLineList(), invoiceLine);
+          analyticMoveLineList =
+              invoiceLineAnalyticService.computeAnalyticDistribution(invoiceLine);
+        } else {
+          analyticMoveLineList =
+              invoiceLineAnalyticService.getAndComputeAnalyticDistribution(invoiceLine, invoice);
+          analyticMoveLineList.stream().forEach(invoiceLine::addAnalyticMoveLineListItem);
+        }
+
+        invoiceLine.setFixedAssets(purchaseOrderLine.getFixedAssets());
+
+        if (product != null && purchaseOrderLine.getFixedAssets()) {
+          FixedAssetCategory fixedAssetCategory =
+              accountManagementService.getProductFixedAssetCategory(product, invoice.getCompany());
+          invoiceLine.setFixedAssetCategory(fixedAssetCategory);
+        }
       }
-
-      this.copyBudgetDistributionList(purchaseOrderLine.getBudgetDistributionList(), invoiceLine);
-      invoiceLine.setBudget(purchaseOrderLine.getBudget());
-      invoiceLine.setBudgetDistributionSumAmount(
-          purchaseOrderLine.getBudgetDistributionSumAmount());
-      invoiceLine.setFixedAssets(purchaseOrderLine.getFixedAssets());
-
-      if (product != null && purchaseOrderLine.getFixedAssets()) {
-        FixedAssetCategory fixedAssetCategory =
-            accountManagementService.getProductFixedAssetCategory(product, invoice.getCompany());
-        invoiceLine.setFixedAssetCategory(fixedAssetCategory);
-      }
-
     } else if (stockMoveLine != null) {
 
       this.price = stockMoveLine.getUnitPriceUntaxed();
@@ -353,22 +352,6 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
       analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_FORECAST_INVOICE);
 
       invoiceLine.addAnalyticMoveLineListItem(analyticMoveLine);
-    }
-  }
-
-  public void copyBudgetDistributionList(
-      List<BudgetDistribution> originalBudgetDistributionList, InvoiceLine invoiceLine) {
-
-    if (originalBudgetDistributionList == null) {
-      return;
-    }
-
-    for (BudgetDistribution budgetDistributionIt : originalBudgetDistributionList) {
-      BudgetDistribution budgetDistribution = new BudgetDistribution();
-      budgetDistribution.setBudget(budgetDistributionIt.getBudget());
-      budgetDistribution.setAmount(budgetDistributionIt.getAmount());
-      budgetDistribution.setBudgetAmountAvailable(budgetDistributionIt.getBudgetAmountAvailable());
-      invoiceLine.addBudgetDistributionListItem(budgetDistribution);
     }
   }
 

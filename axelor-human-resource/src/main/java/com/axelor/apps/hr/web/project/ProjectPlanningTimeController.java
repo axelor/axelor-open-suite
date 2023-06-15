@@ -19,16 +19,13 @@
 package com.axelor.apps.hr.web.project;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeService;
 import com.axelor.apps.project.db.ProjectPlanningTime;
-import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
-import com.google.inject.persist.Transactional;
 import java.util.List;
 import java.util.Map;
 
@@ -44,35 +41,6 @@ public class ProjectPlanningTimeController {
     response.setCanClose(true);
   }
 
-  /**
-   * Invert value of 'isIncludeInTuronverForecast' field and save the record.
-   *
-   * @param request
-   * @param response
-   * @throws AxelorException
-   */
-  @Transactional
-  public void updateIsIncludeInTuronverForecast(ActionRequest request, ActionResponse response) {
-
-    try {
-      ProjectPlanningTime projectPlanningTime =
-          request.getContext().asType(ProjectPlanningTime.class);
-
-      projectPlanningTime =
-          Beans.get(ProjectPlanningTimeRepository.class).find(projectPlanningTime.getId());
-
-      projectPlanningTime.setIsIncludeInTurnoverForecast(
-          !projectPlanningTime.getIsIncludeInTurnoverForecast());
-
-      Beans.get(ProjectPlanningTimeRepository.class).save(projectPlanningTime);
-
-      response.setValue(
-          "isIncludeInTurnoverForecast", projectPlanningTime.getIsIncludeInTurnoverForecast());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
   @SuppressWarnings("unchecked")
   public void removeProjectPlanningTime(ActionRequest request, ActionResponse response) {
 
@@ -82,6 +50,18 @@ public class ProjectPlanningTimeController {
     if (projectPlanningTimeLines != null) {
       Beans.get(ProjectPlanningTimeService.class)
           .removeProjectPlanningLines(projectPlanningTimeLines);
+    }
+
+    response.setReload(true);
+  }
+
+  public void removeSingleProjectPlanningTime(ActionRequest request, ActionResponse response) {
+
+    ProjectPlanningTime projectPlanningTime =
+        request.getContext().asType(ProjectPlanningTime.class);
+
+    if (projectPlanningTime != null) {
+      Beans.get(ProjectPlanningTimeService.class).removeProjectPlanningLine(projectPlanningTime);
     }
 
     response.setReload(true);

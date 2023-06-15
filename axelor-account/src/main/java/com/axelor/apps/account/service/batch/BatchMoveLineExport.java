@@ -176,8 +176,7 @@ public class BatchMoveLineExport extends BatchStrategy {
     comment += String.format("\t* " + I18n.get("Credit") + " : %s\n", credit);
     comment += String.format("\t* " + I18n.get("Balance") + " : %s\n", balance);
     comment +=
-        String.format(
-            "\t" + I18n.get(BaseExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
+        String.format("\t" + I18n.get(BaseExceptionMessage.BASE_BATCH_3), batch.getAnomaly());
 
     super.stop();
     addComment(comment);
