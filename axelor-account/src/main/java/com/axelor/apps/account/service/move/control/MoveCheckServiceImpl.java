@@ -152,7 +152,7 @@ public class MoveCheckServiceImpl implements MoveCheckService {
   }
 
   @Override
-  public String getDuplicatedMoveOriginAlert(Move move) throws AxelorException {
+  public String getDuplicatedMoveOriginAlert(Move move) {
     if (move.getJournal() != null
         && move.getPartner() != null
         && move.getJournal().getHasDuplicateDetectionOnOrigin()) {
