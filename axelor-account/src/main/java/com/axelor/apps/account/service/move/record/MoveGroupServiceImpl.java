@@ -82,8 +82,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
       MoveRepository moveRepository,
       AppAccountService appAccountService,
       MassEntryService massEntryService,
-      MassEntryVerificationService massEntryVerificationService,
-      MoveLineMassEntryRecordService moveLineMassEntryRecordService) {
+      MassEntryVerificationService massEntryVerificationService) {
     this.moveDefaultService = moveDefaultService;
     this.moveAttrsService = moveAttrsService;
     this.periodAccountService = periodAccountService;
@@ -101,7 +100,6 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     this.appAccountService = appAccountService;
     this.massEntryService = massEntryService;
     this.massEntryVerificationService = massEntryVerificationService;
-    this.moveLineMassEntryRecordService = moveLineMassEntryRecordService;
   }
 
   protected void addPeriodDummyFields(Move move, Map<String, Object> valuesMap)
@@ -536,6 +534,17 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     valuesMap.put("companyCurrency", move.getCompanyCurrency());
     valuesMap.put("currencyCode", move.getCurrencyCode());
     valuesMap.put("companyCurrencyCode", move.getCompanyCurrencyCode());
+
+    return valuesMap;
+  }
+
+  @Override
+  public Map<String, Object> getFiscalPositionOnChangeValuesMap(Move move) throws AxelorException {
+    Map<String, Object> valuesMap = new HashMap<>();
+
+    moveDefaultService.setDefaultFiscalPositionOnChange(move);
+
+    valuesMap.put("moveLineList", move.getMoveLineList());
 
     return valuesMap;
   }

@@ -1,11 +1,17 @@
 package com.axelor.apps.account.service.moveline.massentry;
 
-import com.axelor.apps.account.db.*;
+import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AnalyticDistributionTemplate;
+import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.MoveLineMassEntry;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.move.MoveLoadDefaultConfigService;
 import com.axelor.apps.account.service.move.massentry.MassEntryMoveCreateService;
+import com.axelor.apps.account.service.moveline.MoveLineRecordService;
+import com.axelor.apps.account.service.moveline.MoveLineTaxService;
+import com.axelor.apps.account.util.TaxAccountToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -19,20 +25,26 @@ import java.util.Objects;
 public class MoveLineMassEntryRecordServiceImpl implements MoveLineMassEntryRecordService {
 
   protected MoveLineMassEntryService moveLineMassEntryService;
-  protected AccountingSituationService accountingSituationService;
+  protected MoveLineRecordService moveLineRecordService;
+  protected TaxAccountToolService taxAccountToolService;
   protected MoveLoadDefaultConfigService moveLoadDefaultConfigService;
   protected MassEntryMoveCreateService massEntryMoveCreateService;
+  protected MoveLineTaxService moveLineTaxService;
 
   @Inject
   public MoveLineMassEntryRecordServiceImpl(
       MoveLineMassEntryService moveLineMassEntryService,
-      AccountingSituationService accountingSituationService,
+      MoveLineRecordService moveLineRecordService,
+      TaxAccountToolService taxAccountToolService,
       MoveLoadDefaultConfigService moveLoadDefaultConfigService,
-      MassEntryMoveCreateService massEntryMoveCreateService) {
+      MassEntryMoveCreateService massEntryMoveCreateService,
+      MoveLineTaxService moveLineTaxService) {
     this.moveLineMassEntryService = moveLineMassEntryService;
-    this.accountingSituationService = accountingSituationService;
+    this.moveLineRecordService = moveLineRecordService;
+    this.taxAccountToolService = taxAccountToolService;
     this.moveLoadDefaultConfigService = moveLoadDefaultConfigService;
     this.massEntryMoveCreateService = massEntryMoveCreateService;
+    this.moveLineTaxService = moveLineTaxService;
   }
 
   @Override
@@ -78,6 +90,23 @@ public class MoveLineMassEntryRecordServiceImpl implements MoveLineMassEntryReco
         && ObjectUtils.notEmpty(moveLine.getAccount())) {
       moveLine.setCutOffStartDate(moveLine.getDate());
       moveLine.setCutOffEndDate(moveLine.getDate());
+    }
+  }
+
+  @Override
+  public void refreshAccountInformation(MoveLine moveLine, Move move) throws AxelorException {
+    moveLineRecordService.refreshAccountInformation(moveLine, move);
+
+    if (ObjectUtils.isEmpty(moveLine.getAccount())) {
+      moveLine.setVatSystemSelect(
+          taxAccountToolService.calculateVatSystem(
+              moveLine.getPartner(),
+              move.getCompany(),
+              null,
+              (move.getJournal().getJournalType().getTechnicalTypeSelect()
+                  == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE),
+              (move.getJournal().getJournalType().getTechnicalTypeSelect()
+                  == JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE)));
     }
   }
 
@@ -148,13 +177,8 @@ public class MoveLineMassEntryRecordServiceImpl implements MoveLineMassEntryReco
   }
 
   @Override
-  public void setVatSystemSelect(MoveLineMassEntry moveLine, Move move) {
-    AccountingSituation accountingSituation =
-        accountingSituationService.getAccountingSituation(moveLine.getPartner(), move.getCompany());
-    moveLine.setVatSystemSelect(null);
-    if (accountingSituation != null) {
-      moveLine.setVatSystemSelect(accountingSituation.getVatSystemSelect());
-    }
+  public void setVatSystemSelect(MoveLineMassEntry moveLine, Move move) throws AxelorException {
+    moveLine.setVatSystemSelect(moveLineTaxService.getVatSystem(move, moveLine));
   }
 
   @Override

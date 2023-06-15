@@ -34,7 +34,6 @@ import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.DurationService;
@@ -430,37 +429,34 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
                     : null)) {
           continue;
         }
-        LocalDate start =
-            version
-                    .getActivationDateTime()
-                    .toLocalDate()
-                    .isBefore(contract.getInvoicePeriodStartDate())
-                ? contract.getInvoicePeriodStartDate()
-                : version.getActivationDateTime().toLocalDate();
-        LocalDate end =
-            version.getEndDateTime() == null
-                    || (version.getEndDateTime() != null
-                        && contract
-                            .getInvoicePeriodEndDate()
-                            .isBefore(version.getEndDateTime().toLocalDate()))
-                ? contract.getInvoicePeriodEndDate()
-                : version.getEndDateTime().toLocalDate();
-        ratio =
-            durationService.computeRatio(
-                start, end, contract.getCurrentContractVersion().getInvoicingDuration());
       }
       List<ContractLine> lines =
           version.getContractLineList().stream()
               .filter(contractLine -> !contractLine.getIsConsumptionLine())
               .collect(Collectors.toList());
+      LocalDate end =
+          version.getEndDateTime() == null
+                  || contract
+                      .getInvoicePeriodEndDate()
+                      .isBefore(version.getEndDateTime().toLocalDate())
+              ? contract.getInvoicePeriodEndDate()
+              : version.getEndDateTime().toLocalDate();
 
       for (ContractLine line : lines) {
+        LocalDate start = computeStartDate(contract, line, version);
+        ratio =
+            contract.getCurrentContractVersion().getIsTimeProratedInvoice()
+                ? durationService.computeRatio(
+                    start, end, contract.getCurrentContractVersion().getInvoicingDuration())
+                : BigDecimal.ONE;
+
         ContractLine tmp = contractLineRepo.copy(line, false);
         tmp.setAnalyticMoveLineList(line.getAnalyticMoveLineList());
         tmp.setQty(
             tmp.getQty()
                 .multiply(ratio)
                 .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP));
+        tmp.setFromDate(start);
         tmp = this.contractLineService.computeTotal(tmp);
         InvoiceLine invLine = generate(invoice, tmp);
         invLine.setContractLine(line);
@@ -494,6 +490,23 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     increaseInvoiceDates(contract);
 
     return invoiceRepository.save(invoice);
+  }
+
+  protected LocalDate computeStartDate(
+      Contract contract, ContractLine contractLine, ContractVersion contractVersion) {
+    if (contractLine.getFromDate() != null
+        && contractLine.getFromDate().isAfter(contract.getInvoicePeriodStartDate())) {
+      return contractLine.getFromDate();
+    } else if (contractVersion.getActivationDateTime() == null) {
+      return null;
+    } else if (contractVersion
+        .getActivationDateTime()
+        .toLocalDate()
+        .isBefore(contract.getInvoicePeriodStartDate())) {
+      return contract.getInvoicePeriodStartDate();
+    } else {
+      return contractVersion.getActivationDateTime().toLocalDate();
+    }
   }
 
   public Invoice generateInvoice(Contract contract) throws AxelorException {
@@ -553,6 +566,22 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
             line.getTaxLine(),
             line.getPrice(),
             appBaseService.getNbDecimalDigitForUnitPrice());
+    String description =
+        line.getFromDate() != null
+                && line.getContractVersion() != null
+                && line.getContractVersion().getContract() != null
+                && line.getFromDate()
+                    .isAfter(line.getContractVersion().getContract().getInvoicePeriodStartDate())
+            ? line.getDescription()
+                + "<br>"
+                + I18n.get("From")
+                + " "
+                + line.getFromDate()
+                + " "
+                + I18n.get("to")
+                + " "
+                + line.getContractVersion().getContract().getInvoicePeriodEndDate()
+            : line.getDescription();
     InvoiceLineGenerator invoiceLineGenerator =
         new InvoiceLineGenerator(
             invoice,
@@ -560,14 +589,14 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
             line.getProductName(),
             line.getPrice(),
             inTaxPriceComputed,
-            invoice.getInAti() ? inTaxPriceComputed : line.getPrice(),
-            line.getDescription(),
+            line.getPriceDiscounted(),
+            description,
             line.getQty(),
             line.getUnit(),
             line.getTaxLine(),
             line.getSequence(),
-            BigDecimal.ZERO,
-            PriceListLineRepository.AMOUNT_TYPE_NONE,
+            line.getDiscountAmount(),
+            line.getDiscountTypeSelect(),
             line.getExTaxTotal(),
             line.getInTaxTotal(),
             false) {

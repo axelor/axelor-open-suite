@@ -731,9 +731,8 @@ public class StockMoveServiceImpl implements StockMoveService {
 
     stockMoveLines = MoreObjects.firstNonNull(stockMoveLines, Collections.emptyList());
     StockMove newStockMove = stockMoveRepo.copy(stockMove, false);
-    // In copy OriginTypeSelect set null.
-    newStockMove.setOriginTypeSelect(stockMove.getOriginTypeSelect());
-    newStockMove.setOriginId(stockMove.getOriginId());
+
+    setOrigin(stockMove, newStockMove);
     newStockMove.setOrigin(stockMove.getOrigin());
     for (StockMoveLine stockMoveLine : stockMoveLines) {
 
@@ -884,8 +883,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     newStockMove.setIsReversion(true);
     newStockMove.setIsWithBackorder(stockMove.getIsWithBackorder());
     newStockMove.setOrigin(stockMove.getOrigin());
-    newStockMove.setOriginId(stockMove.getOriginId());
-    newStockMove.setOriginTypeSelect(stockMove.getOriginTypeSelect());
+    setOrigin(stockMove, newStockMove);
     newStockMove.setGroupProductsOnPrintings(stockMove.getGroupProductsOnPrintings());
   }
 
@@ -1495,5 +1493,14 @@ public class StockMoveServiceImpl implements StockMoveService {
       }
     }
     return toStockLocation;
+  }
+
+  @Override
+  public void setOrigin(StockMove oldStockMove, StockMove newStockMove) {
+    if (oldStockMove.getInventory() != null) {
+      newStockMove.setInventory(oldStockMove.getInventory());
+    } else if (oldStockMove.getStockCorrection() != null) {
+      newStockMove.setStockCorrection(oldStockMove.getStockCorrection());
+    }
   }
 }

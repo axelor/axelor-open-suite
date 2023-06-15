@@ -17,6 +17,8 @@ public interface MoveLineMassEntryRecordService {
 
   void setCutOff(MoveLineMassEntry moveLine);
 
+  void refreshAccountInformation(MoveLine moveLine, Move move) throws AxelorException;
+
   void setMovePartnerBankDetails(MoveLineMassEntry moveLine);
 
   void setCurrencyCode(MoveLineMassEntry moveLine);
@@ -27,7 +29,7 @@ public interface MoveLineMassEntryRecordService {
 
   void setMovePaymentMode(MoveLineMassEntry line, Integer technicalTypeSelect);
 
-  void setVatSystemSelect(MoveLineMassEntry moveLine, Move move);
+  void setVatSystemSelect(MoveLineMassEntry moveLine, Move move) throws AxelorException;
 
   void loadAccountInformation(Move move, MoveLineMassEntry moveLine) throws AxelorException;
 

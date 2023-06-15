@@ -36,8 +36,7 @@
   <selection name="partner.title.type.select">
     <option value="1">M.</option>
     <option value="2">Ms.</option>
-    <option value="3">Dr</option>
-    <option value="4">Prof.</option>
+    <option value="3">Mx.</option>
   </selection>
 
   <selection name="partner.partner.type.select">
@@ -70,12 +69,6 @@
     <option value="1">From stock</option>
     <option value="2">Purchase</option>
     <option value="3">Produce</option>
-  </selection>
-
-  <selection name='ialarm.type.select'>
-    <option value='invoice'>Invoice</option>
-    <option value='payment'>Payment Schedule</option>
-    <option value='reject'>Reject</option>
   </selection>
 
   <selection name='iimport.type.select'>
@@ -659,7 +652,6 @@
 
   <selection name="batch.batch.type.select">
     <option value="100">Base batch</option>
-    <option value="101">Alarm engine batch</option>
     <option value="102">Mail batch</option>
     <option value="103">Import batch</option>
   </selection>

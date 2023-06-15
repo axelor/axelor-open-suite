@@ -339,7 +339,12 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
           I18n.get(ProductionExceptionMessage.UNIT_COST_CALCULATION_NO_PRODUCT));
     }
 
-    return productSet;
+    Set<Product> productSortedSet =
+        productSet.stream()
+            .sorted(Comparator.comparing(Product::getProductSubTypeSelect).reversed())
+            .collect(Collectors.toSet());
+
+    return productSortedSet;
   }
 
   /**
@@ -382,10 +387,12 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
         && (defaultBillOfMaterial.getStatusSelect() == BillOfMaterialRepository.STATUS_VALIDATED
             || defaultBillOfMaterial.getStatusSelect()
                 == BillOfMaterialRepository.STATUS_APPLICABLE)
-        && (product.getProcurementMethodSelect()
-                == ProductRepository.PROCUREMENT_METHOD_BUYANDPRODUCE
-            || product.getProcurementMethodSelect()
-                == ProductRepository.PROCUREMENT_METHOD_PRODUCE)) {
+        && (product
+                .getProcurementMethodSelect()
+                .equals(ProductRepository.PROCUREMENT_METHOD_BUYANDPRODUCE)
+            || product
+                .getProcurementMethodSelect()
+                .equals(ProductRepository.PROCUREMENT_METHOD_PRODUCE))) {
       return true;
     }
     return false;

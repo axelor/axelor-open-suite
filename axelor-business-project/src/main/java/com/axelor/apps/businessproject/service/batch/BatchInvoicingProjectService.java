@@ -112,8 +112,7 @@ public class BatchInvoicingProjectService extends AbstractBatch {
             batch.getDone());
 
     comment +=
-        String.format(
-            "\t" + I18n.get(BaseExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
+        String.format("\t" + I18n.get(BaseExceptionMessage.BASE_BATCH_3), batch.getAnomaly());
 
     addComment(comment);
     super.stop();

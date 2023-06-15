@@ -49,7 +49,7 @@ public class RefundInvoice extends InvoiceGenerator implements InvoiceStrategy {
   @Override
   public Invoice generate() throws AxelorException {
 
-    LOG.debug("Creating a refund for invoice {}", invoice.getInvoiceId());
+    LOG.debug("Creating a refund for invoice {} ", invoice.getInvoiceId());
 
     Invoice refund = JPA.copy(invoice, true);
     InvoiceToolService.resetInvoiceStatusOnCopy(refund);

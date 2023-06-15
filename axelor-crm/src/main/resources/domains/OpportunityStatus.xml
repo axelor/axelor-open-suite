@@ -9,6 +9,7 @@
 
     <string name="name" title="Name" required="true"/>
     <integer name="sequence" title="Sequence" unique="true"/>
+    <boolean name="isOpen" title="Open"/>
 
     <finder-method name="findByNextSequence" filter="self.sequence &gt; :sequence"
       using="sequence" orderBy="sequence"/>
