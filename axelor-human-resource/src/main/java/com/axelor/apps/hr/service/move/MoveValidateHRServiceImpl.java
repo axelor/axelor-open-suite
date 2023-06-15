@@ -59,6 +59,7 @@ public class MoveValidateHRServiceImpl extends MoveValidateServiceImpl
       MoveLineTaxService moveLineTaxService,
       PeriodServiceAccount periodServiceAccount,
       MoveControlService moveControlService,
+      MoveComputeService moveComputeService,
       ExpenseRepository expenseRepository) {
     super(
         moveLineControlService,
@@ -76,7 +77,8 @@ public class MoveValidateHRServiceImpl extends MoveValidateServiceImpl
         fixedAssetGenerationService,
         moveLineTaxService,
         periodServiceAccount,
-        moveControlService);
+        moveControlService,
+        moveComputeService);
     this.expenseRepository = expenseRepository;
   }
 
