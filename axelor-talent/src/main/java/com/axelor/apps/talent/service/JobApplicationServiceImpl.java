@@ -44,36 +44,40 @@ public class JobApplicationServiceImpl implements JobApplicationService {
   protected MetaFiles metaFiles;
 
   protected DMSFileRepository dmsFileRepo;
+  protected AppTalentService appTalentService;
 
   @Inject
   public JobApplicationServiceImpl(
       JobApplicationRepository jobApplicationRepo,
       AppBaseService appBaseService,
       MetaFiles metaFiles,
-      DMSFileRepository dmsFileRepo) {
+      DMSFileRepository dmsFileRepo,
+      AppTalentService appTalentService) {
     this.jobApplicationRepo = jobApplicationRepo;
     this.appBaseService = appBaseService;
     this.metaFiles = metaFiles;
     this.dmsFileRepo = dmsFileRepo;
+    this.appTalentService = appTalentService;
   }
 
   @Transactional
   @Override
-  public Employee hire(JobApplication jobApplication) {
-
+  public Employee createEmployeeFromJobApplication(JobApplication jobApplication) {
     Employee employee = createEmployee(jobApplication);
-
-    jobApplication.setStatusSelect(JobApplicationRepository.STATUS_HIRED);
     jobApplication.setEmployee(employee);
-    if (jobApplication.getJobPosition() != null) {
+    jobApplicationRepo.save(jobApplication);
+    hireCandidate(jobApplication);
+    return employee;
+  }
+
+  protected void hireCandidate(JobApplication jobApplication) {
+    if (jobApplication.getJobPosition() != null
+        && jobApplication.getHiringStage()
+            == appTalentService.getAppRecruitment().getHiringStatus()) {
       int nbPeopleHired = jobApplication.getJobPosition().getNbPeopleHired();
       nbPeopleHired += 1;
       jobApplication.getJobPosition().setNbPeopleHired(nbPeopleHired);
     }
-
-    jobApplicationRepo.save(jobApplication);
-
-    return employee;
   }
 
   protected Employee createEmployee(JobApplication jobApplication) {
@@ -146,5 +150,15 @@ public class JobApplicationServiceImpl implements JobApplicationService {
       jobApplication.setResumeId(resumeFile.getId());
     }
     jobApplicationRepo.save(jobApplication);
+  }
+
+  public String getInlineUrl(JobApplication jobApplication) {
+    Long resumeId = jobApplication.getResumeId();
+    if (resumeId == null || resumeId == 0) {
+      return "";
+    }
+
+    DMSFile dmsFile = dmsFileRepo.find(jobApplication.getResumeId());
+    return String.format("ws/dms/inline/%d", dmsFile.getId());
   }
 }
