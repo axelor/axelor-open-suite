@@ -1,0 +1,3 @@
+---
+title: "Move : Fix blocking error when we click on daybook button with a moveLine that doesn't contain any invoice term"
+type: fix
