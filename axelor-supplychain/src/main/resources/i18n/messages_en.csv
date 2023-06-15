@@ -587,6 +587,7 @@
 "Stock move type",,,
 "Stock move(s) processed",,,
 "Stock moves",,,
+"Stock reservation feature cannot be active when we are managing stock locations on stock move line.",,,
 "StockMove",,,
 "Subscription",,,
 "Subscription invoice generation report :",,,

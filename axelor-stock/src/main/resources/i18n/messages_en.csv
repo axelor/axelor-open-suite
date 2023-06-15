@@ -728,6 +728,7 @@
 "Stock move printing settings",,,
 "Stock moves",,,
 "Stock per day",,,
+"Stock reservation feature cannot be active when we are managing stock locations on stock move line.",,,
 "Stock rule",,,
 "Stock rule information",,,
 "Stock rules",,,

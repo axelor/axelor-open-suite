@@ -728,6 +728,7 @@
 "Stock move printing settings","Paramêtres d'impression des mouvements de stock",,
 "Stock moves","Mouvements de stock",,
 "Stock per day","Stock par jour",,
+"Stock reservation feature cannot be active when we are managing stock locations on stock move line.","La réservation des stocks ne peut pas être activée si la gestion des emplacements de stock sur les lignes de mouvements de stock est activée.",,
 "Stock rule","Règle de stock",,
 "Stock rule information","Informations règles de stock",,
 "Stock rules","Règles de stock",,
