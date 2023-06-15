@@ -153,7 +153,6 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     BigDecimal plannedHrs = template.getTotalPlannedHrs();
     if (template.getIsUniqueTaskForMultipleQuantity() && qty.compareTo(BigDecimal.ONE) > 0) {
       plannedHrs = plannedHrs.multiply(qty);
-      task.setName(task.getName() + " x" + qty.intValue());
     }
     task.setTotalPlannedHrs(plannedHrs);
 

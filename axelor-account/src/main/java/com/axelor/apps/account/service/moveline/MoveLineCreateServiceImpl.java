@@ -269,7 +269,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       }
     }
 
-    if (originDate == null) {
+    if (originDate == null && move.getJournal().getIsFillOriginDate()) {
       originDate = date;
     }
 

@@ -1096,9 +1096,6 @@ public final class AccountExceptionMessage {
   public static final String MOVE_MISSING_CUT_OFF_DATE = /*$$(*/
       "Please enter a Cut off start and end date for the move lines that have an account Cut off management" /*)*/;
 
-  /** Budget service */
-  public static final String BUDGET_1 = /*$$(*/ "Too much iterations." /*)*/;
-
   public static final String EMPLOYEE_PARTNER = /*$$(*/
       "You must create a contact for employee %s" /*)*/;
 

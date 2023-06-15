@@ -1,7 +1,6 @@
 package com.axelor.apps.account.service.moveline.massentry;
 
 import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLineMassEntry;
@@ -13,6 +12,7 @@ import com.axelor.apps.account.service.move.MoveCounterPartService;
 import com.axelor.apps.account.service.move.MoveLoadDefaultConfigService;
 import com.axelor.apps.account.service.move.massentry.MassEntryToolService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
+import com.axelor.apps.account.util.TaxAccountToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -43,6 +43,7 @@ public class MoveLineMassEntryServiceImpl implements MoveLineMassEntryService {
   protected MoveLineMassEntryToolService moveLineMassEntryToolService;
   protected AccountingSituationService accountingSituationService;
   protected InvoiceTermService invoiceTermService;
+  protected TaxAccountToolService taxAccountToolService;
 
   @Inject
   public MoveLineMassEntryServiceImpl(
@@ -53,7 +54,8 @@ public class MoveLineMassEntryServiceImpl implements MoveLineMassEntryService {
       CurrencyService currencyService,
       MoveLineMassEntryToolService moveLineMassEntryToolService,
       AccountingSituationService accountingSituationService,
-      InvoiceTermService invoiceTermService) {
+      InvoiceTermService invoiceTermService,
+      TaxAccountToolService taxAccountToolService) {
     this.moveLineTaxService = moveLineTaxService;
     this.moveCounterPartService = moveCounterPartService;
     this.massEntryToolService = massEntryToolService;
@@ -62,6 +64,7 @@ public class MoveLineMassEntryServiceImpl implements MoveLineMassEntryService {
     this.moveLineMassEntryToolService = moveLineMassEntryToolService;
     this.accountingSituationService = accountingSituationService;
     this.invoiceTermService = invoiceTermService;
+    this.taxAccountToolService = taxAccountToolService;
   }
 
   @Override
@@ -189,13 +192,7 @@ public class MoveLineMassEntryServiceImpl implements MoveLineMassEntryService {
         this.loadAccountInformation(move, moveLine);
         move.setPartner(null);
 
-        AccountingSituation accountingSituation =
-            accountingSituationService.getAccountingSituation(
-                moveLine.getPartner(), move.getCompany());
-        moveLine.setVatSystemSelect(null);
-        if (accountingSituation != null) {
-          moveLine.setVatSystemSelect(accountingSituation.getVatSystemSelect());
-        }
+        moveLine.setVatSystemSelect(moveLineTaxService.getVatSystem(move, moveLine));
       }
 
       moveLine.setMovePartnerBankDetails(

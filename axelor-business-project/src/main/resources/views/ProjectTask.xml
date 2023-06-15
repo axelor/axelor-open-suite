@@ -120,7 +120,7 @@
           <panel name="contentPanel" title="Content" colSpan="12">
             <field name="product" colSpan="6" canEdit="false"
               onChange="action-project-task-group-product-onchange"
-              domain="self.invoicingUnit.unitTypeSelect=3 AND self.dtype = 'Product'"
+              domain="self.unit.unitTypeSelect=3 AND self.dtype = 'Product'"
               form-view="product-form" grid-view="product-grid" readonlyIf="saleOrderLine"/>
             <field name="quantity" colSpan="3"
               onChange="action-project-task-group-qty-onchange" readonlyIf="saleOrderLine"/>
@@ -197,7 +197,7 @@
             action="action-project-task-view-percentage-consumption-custom" colSpan="4"
             showTitle="false"/>
           <panel-dashlet action="action-project-task-view-remaining-to-do-custom"
-            colSpan="4" showTitle="false" showIf="$remainingAmountToDo"/>
+            colSpan="4" showTitle="false" showIf="$displayRemaining"/>
           <field name="$displayProgress" hidden="true"/>
           <field name="$displayConsumption" hidden="true"/>
           <field name="$displayRemaining" hidden="true"/>

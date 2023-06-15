@@ -191,7 +191,6 @@
       </panel>
       <panel title="Log Times" name="logTimesPanel" if="__config__.app.isApp('timesheet')"
         if-module="axelor-human-resource" showIf="isShowTimeSpent">
-        <field name="timeSpent" title="Time Spent" readonly="true" colSpan="3"/>
         <panel-dashlet name="validatedTimesheetsPanel"
           if="__config__.app.getApp('timesheet')?.needValidation"
           action="action-project-dashlet-validated-timesheet-lines"
@@ -1115,7 +1114,6 @@
     <field name="contactPartner" hidden="true" if="!__config__.app.isApp('business-project')"/>
     <field name="customerAddress" hidden="true" if="!__config__.app.isApp('business-project')"/>
     <field name="totalPlannedHrs" hidden="true" if="!__config__.app.isApp('employee')"/>
-    <field name="timeSpent" hidden="true" if="!__config__.app.isApp('timesheet')"/>
     <field name="toInvoice" hidden="true" if="!__config__.app.isApp('business-project')"/>
     <field name="isInvoicingTimesheet" hidden="true"
       if="!__config__.app.isApp('business-project')"/>

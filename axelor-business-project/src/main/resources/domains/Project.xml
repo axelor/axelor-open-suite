@@ -120,6 +120,7 @@
     <item name="PROJECT_ALONE" title="Project alone"/>
     <item name="SUB_PROJECT_BY_LINE" title="Sub-project by line"/>
     <item name="TASK_BY_LINE" title="Task by line"/>
+    <item name="TASK_TEMPLATE" title="Task by line using subtasks models"/>
   </enum>
 
 </domain-models>
