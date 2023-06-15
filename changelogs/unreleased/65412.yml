@@ -1,0 +1,3 @@
+---
+title: "Payment session : add missing message when compensation is not available"
+type: fix
