@@ -95,7 +95,7 @@ public class BillOfMaterialLineServiceImpl implements BillOfMaterialLineService 
   public void fillUnit(BillOfMaterialLine billOfMaterialLine) {
 
     Product product = billOfMaterialLine.getProduct();
-    if (product != null && billOfMaterialLine.getUnit() != null) {
+    if (product != null && billOfMaterialLine.getUnit() == null) {
       billOfMaterialLine.setUnit(product.getUnit());
     }
   }
