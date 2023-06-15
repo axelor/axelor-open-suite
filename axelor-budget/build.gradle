@@ -15,7 +15,7 @@ axelor {
 }
 
 dependencies {
-  api project(":modules:axelor-cash-management")
+  api project(":modules:axelor-business-project")
 
   implementation libs.jdom
   implementation libs.xalan

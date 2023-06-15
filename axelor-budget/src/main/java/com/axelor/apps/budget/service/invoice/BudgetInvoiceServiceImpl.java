@@ -29,8 +29,7 @@ import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetDistributionService;
 import com.axelor.apps.budget.service.BudgetLineService;
 import com.axelor.apps.budget.service.BudgetService;
-import com.axelor.apps.cash.management.service.InvoiceEstimatedPaymentService;
-import com.axelor.apps.cash.management.service.InvoiceServiceManagementImpl;
+import com.axelor.apps.businessproject.service.InvoiceServiceProjectImpl;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.service.IntercoService;
 import com.axelor.common.ObjectUtils;
@@ -49,7 +48,7 @@ import java.util.Map;
 import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
 
-public class BudgetInvoiceServiceImpl extends InvoiceServiceManagementImpl
+public class BudgetInvoiceServiceImpl extends InvoiceServiceProjectImpl
     implements BudgetInvoiceService {
 
   protected BudgetDistributionRepository budgetDistributionRepo;
@@ -81,7 +80,6 @@ public class BudgetInvoiceServiceImpl extends InvoiceServiceManagementImpl
       TaxService taxService,
       InvoiceProductStatementService invoiceProductStatementService,
       StockMoveRepository stockMoveRepository,
-      InvoiceEstimatedPaymentService invoiceEstimatedPaymentService,
       BudgetDistributionRepository budgetDistributionRepo,
       BudgetRepository budgetRepository,
       BudgetInvoiceLineService budgetInvoiceLineService,
@@ -107,8 +105,7 @@ public class BudgetInvoiceServiceImpl extends InvoiceServiceManagementImpl
         templateMessageService,
         invoiceLineRepo,
         intercoService,
-        stockMoveRepository,
-        invoiceEstimatedPaymentService);
+        stockMoveRepository);
     this.budgetDistributionRepo = budgetDistributionRepo;
     this.budgetRepository = budgetRepository;
     this.budgetInvoiceLineService = budgetInvoiceLineService;
