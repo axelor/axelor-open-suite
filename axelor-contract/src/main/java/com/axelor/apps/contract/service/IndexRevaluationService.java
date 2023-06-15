@@ -8,8 +8,6 @@ import java.time.LocalDate;
 public interface IndexRevaluationService {
   IndexValue getIndexValue(IndexRevaluation index, LocalDate date) throws AxelorException;
 
-  IndexValue getMostRecentIndexValue(IndexRevaluation index) throws AxelorException;
-
   IndexValue getLastYearIndexValue(IndexRevaluation index, LocalDate date) throws AxelorException;
 
   void setIndexValueEndDate(IndexRevaluation indexRevaluation);

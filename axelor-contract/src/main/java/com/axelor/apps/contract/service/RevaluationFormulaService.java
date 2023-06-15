@@ -67,6 +67,7 @@ public class RevaluationFormulaService {
     return processingFormula(
         contract != null ? contract.getIndex1Date() : null,
         contract != null ? contract.getIndex2Date() : null,
+        contract != null ? contract.getNextRevaluationDate() : null,
         contract != null ? contract.getIndex1() : null,
         contract != null ? contract.getIndex2() : null,
         contractLine != null ? contractLine.getInitialUnitPrice() : null,
@@ -78,6 +79,7 @@ public class RevaluationFormulaService {
   public String processingFormula(
       LocalDate date1,
       LocalDate date2,
+      LocalDate nextRevaluationDate,
       IndexRevaluation index1,
       IndexRevaluation index2,
       BigDecimal initialPrice,
@@ -106,19 +108,21 @@ public class RevaluationFormulaService {
       formula = formula.replace("ind2i", ind2i.toString());
     }
     if (formula.contains("ind1f") && index1 != null) {
-      ind1f = indexRevaluationService.getMostRecentIndexValue(index1).getValue();
+      ind1f = indexRevaluationService.getIndexValue(index1, nextRevaluationDate).getValue();
       formula = formula.replace("ind1f", ind1f.toString());
     }
     if (formula.contains("ind2f") && index2 != null) {
-      ind2f = indexRevaluationService.getMostRecentIndexValue(index2).getValue();
+      ind2f = indexRevaluationService.getIndexValue(index2, nextRevaluationDate).getValue();
       formula = formula.replace("ind2f", ind2f.toString());
     }
     if (formula.contains("ind1py") && index1 != null) {
-      ind1nm1 = indexRevaluationService.getLastYearIndexValue(index1, date1).getValue();
+      ind1nm1 =
+          indexRevaluationService.getLastYearIndexValue(index1, nextRevaluationDate).getValue();
       formula = formula.replace("ind1py", ind1nm1.toString());
     }
     if (formula.contains("ind2py") && index2 != null) {
-      ind2nm1 = indexRevaluationService.getLastYearIndexValue(index2, date2).getValue();
+      ind2nm1 =
+          indexRevaluationService.getLastYearIndexValue(index2, nextRevaluationDate).getValue();
       formula = formula.replace("ind2py", ind2nm1.toString());
     }
     if (formula.contains("p0") && initialPrice != null) {
