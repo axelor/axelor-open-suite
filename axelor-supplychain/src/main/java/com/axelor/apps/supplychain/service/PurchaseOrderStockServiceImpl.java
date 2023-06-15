@@ -28,6 +28,7 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ShippingCoefService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -84,6 +85,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
   protected StockMoveService stockMoveService;
   protected PartnerStockSettingsService partnerStockSettingsService;
   protected StockConfigService stockConfigService;
+  protected ProductCompanyService productCompanyService;
 
   @Inject
   public PurchaseOrderStockServiceImpl(
@@ -95,7 +97,8 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
       StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain,
       StockMoveService stockMoveService,
       PartnerStockSettingsService partnerStockSettingsService,
-      StockConfigService stockConfigService) {
+      StockConfigService stockConfigService,
+      ProductCompanyService productCompanyService) {
 
     this.unitConversionService = unitConversionService;
     this.stockMoveLineRepository = stockMoveLineRepository;
@@ -106,6 +109,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
     this.stockMoveService = stockMoveService;
     this.partnerStockSettingsService = partnerStockSettingsService;
     this.stockConfigService = stockConfigService;
+    this.productCompanyService = productCompanyService;
   }
 
   /**
@@ -370,14 +374,18 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
    * @param purchaseOrder
    * @return true if product needs a control on receipt and if the purchase order is not a direct
    *     order
+   * @throws AxelorException
    */
-  protected boolean needControlOnReceipt(PurchaseOrderLine purchaseOrderLine) {
+  protected boolean needControlOnReceipt(PurchaseOrderLine purchaseOrderLine)
+      throws AxelorException {
 
     Product product = purchaseOrderLine.getProduct();
     PurchaseOrder purchaseOrder = purchaseOrderLine.getPurchaseOrder();
+    Boolean controlOnReceipt =
+        (Boolean)
+            productCompanyService.get(product, "controlOnReceipt", purchaseOrder.getCompany());
 
-    return product.getControlOnReceipt()
-        && !purchaseOrder.getStockLocation().getDirectOrderLocation();
+    return controlOnReceipt && !purchaseOrder.getStockLocation().getDirectOrderLocation();
   }
 
   protected StockMoveLine createProductStockMoveLine(
