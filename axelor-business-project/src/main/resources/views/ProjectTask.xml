@@ -222,7 +222,7 @@
   </action-view>
 
   <custom title="% of progress" name="project-task-percentage-progress-custom"
-    css="report-box">
+    css="report-box dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectTaskController:getPercentageOfProgress</dataset>
     <template>
       <![CDATA[
@@ -235,7 +235,7 @@
   </custom>
 
   <custom title="% of consumption" name="project-task-percentage-consumption-custom"
-    css="report-box">
+    css="report-box dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectTaskController:getPercentageOfConsumption</dataset>
     <template>
       <![CDATA[
@@ -248,7 +248,7 @@
   </custom>
 
   <custom title="Remaining amount to do" name="project-task-remaining-to-do-custom"
-    css="report-box">
+    css="report-box dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectTaskController:getRemainingToDo</dataset>
     <template>
       <![CDATA[
