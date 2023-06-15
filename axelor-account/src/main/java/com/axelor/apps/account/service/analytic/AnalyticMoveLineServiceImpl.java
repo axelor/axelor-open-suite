@@ -362,7 +362,10 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
   @Override
   public String getAnalyticAxisDomain(Company company) {
     StringBuilder domain = new StringBuilder();
-    domain.append("(self.company is null OR self.company.id = " + company.getId() + ")");
+    domain
+        .append("(self.company is null OR self.company.id = ")
+        .append(company.getId())
+        .append(")");
     AccountConfig accountConfig = accountConfigRepository.findByCompany(company);
     if (accountConfig != null) {
       List<AnalyticAxis> analyticAxisList =
@@ -370,7 +373,7 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
               .map(AnalyticAxisByCompany::getAnalyticAxis)
               .collect(Collectors.toList());
       String idList = StringTool.getIdListString(analyticAxisList);
-      domain.append(" AND self.id IN (" + idList + ")");
+      domain.append(" AND self.id IN (").append(idList).append(")");
     }
     return domain.toString();
   }
