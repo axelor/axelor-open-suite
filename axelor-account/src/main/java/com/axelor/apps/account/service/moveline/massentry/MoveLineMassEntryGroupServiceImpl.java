@@ -230,7 +230,8 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
     moveLineMassEntryAttrsService.addDebitCreditFocus(
         moveLine.getAccount(), moveLine.getIsOtherCurrency(), attrsMap);
     moveLineMassEntryAttrsService.addMovePfpValidatorUserReadOnly(moveLine, attrsMap);
-    moveLineMassEntryAttrsService.addMovePfpValidatorUserRequired(moveLine.getAccount(), attrsMap);
+    moveLineMassEntryAttrsService.addMovePfpValidatorUserRequired(
+        moveLine.getAccount(), move.getJournal(), attrsMap);
     moveLineMassEntryAttrsService.addCutOffReadOnly(moveLine.getAccount(), attrsMap);
 
     return attrsMap;
