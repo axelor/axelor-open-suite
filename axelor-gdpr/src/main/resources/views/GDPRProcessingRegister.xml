@@ -28,6 +28,7 @@
       <field name="code" colSpan="3"/>
       <field name="name" colSpan="3"/>
       <field name="retentionPeriod" colSpan="3"/>
+      <field name="isArchiveData" colSpan="3"/>
       <field name="gdprProcessingRegisterRuleList"
         grid-view="gdpr-processing-register-rule-grid"
         form-view="gdpr-processing-register-rule-form" colSpan="12"/>
