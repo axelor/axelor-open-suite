@@ -46,7 +46,6 @@ import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.PrintingSettings;
 import com.axelor.apps.base.db.repo.LanguageRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
@@ -732,28 +731,6 @@ public class InvoiceController {
   }
 
   /**
-   * Called on printing settings select. Set the domain for {@link Invoice#printingSettings}
-   *
-   * @param request
-   * @param response
-   */
-  public void filterPrintingSettings(ActionRequest request, ActionResponse response) {
-    Invoice invoice = request.getContext().asType(Invoice.class);
-
-    List<PrintingSettings> printingSettingsList =
-        Beans.get(TradingNameService.class)
-            .getPrintingSettingsList(invoice.getTradingName(), invoice.getCompany());
-    String domain =
-        String.format(
-            "self.id IN (%s)",
-            !printingSettingsList.isEmpty()
-                ? StringTool.getIdListString(printingSettingsList)
-                : "0");
-
-    response.setAttr("printingSettings", "domain", domain);
-  }
-
-  /**
    * Called on trading name change. Set the default value for {@link Invoice#printingSettings}
    *
    * @param request
@@ -1255,6 +1232,20 @@ public class InvoiceController {
         Beans.get(InvoiceTermPfpService.class).generateInvoiceTermsAfterPfpPartial(invoice);
       }
       response.setReload(true);
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void fillEstimatedPaymentDate(ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+    try {
+      if (invoice.getDueDate() == null) {
+        return;
+      }
+      invoice = Beans.get(InvoiceService.class).computeEstimatedPaymentDate(invoice);
+      response.setValues(invoice);
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);

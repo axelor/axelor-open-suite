@@ -688,7 +688,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       for (Partner partner : moveMap.keySet()) {
         for (Move move : moveMap.get(partner)) {
           move = moveRepo.find(move.getId());
-          moveLineTaxService.autoTaxLineGenerate(move, null);
+          moveLineTaxService.autoTaxLineGenerate(move, null, false);
         }
       }
     }
@@ -781,6 +781,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       moveValidateService.completeMoveLines(move);
       moveValidateService.freezeFieldsOnMoveLines(move);
     } else {
+      moveComputeService.autoApplyCutOffDates(move);
       moveValidateService.accounting(move);
     }
   }
@@ -1013,7 +1014,11 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     if (!CollectionUtils.isEmpty(move.getMoveLineList())) {
       moveLine =
           move.getMoveLineList().stream()
-              .filter(ml -> ml.getOrigin().equals(pair.getLeft().getMoveLine().getOrigin()))
+              .filter(
+                  ml ->
+                      ml.getOrigin() != null
+                          && pair.getLeft().getMoveLine().getOrigin() != null
+                          && ml.getOrigin().equals(pair.getLeft().getMoveLine().getOrigin()))
               .findFirst()
               .orElse(null);
     }

@@ -261,6 +261,8 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
             bankOrderLine.getReceiverLabel());
     senderMove.addMoveLineListItem(partnerMoveLine);
 
+    moveValidateService.accounting(senderMove);
+
     return senderMove;
   }
 
@@ -319,6 +321,8 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
             bankOrderLine.getReceiverReference(),
             bankOrderLine.getReceiverLabel());
     receiverMove.addMoveLineListItem(partnerMoveLine);
+
+    moveValidateService.accounting(receiverMove);
 
     return receiverMove;
   }

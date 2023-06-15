@@ -18,6 +18,7 @@
     <extra-code><![CDATA[
 
 		// TECHNICAL TYPE SELECT
+		public static final int TECHNICAL_TYPE_SELECT_EMPTY = 0;
 		public static final int TECHNICAL_TYPE_SELECT_EXPENSE = 1;
 		public static final int TECHNICAL_TYPE_SELECT_SALE = 2;
 		public static final int TECHNICAL_TYPE_SELECT_CREDIT_NOTE = 3;

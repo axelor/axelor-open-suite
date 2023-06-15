@@ -191,7 +191,6 @@ public class ProjectServiceImpl implements ProjectService {
     } else {
       builder.add("kanban", "project-task-kanban");
       builder.add("calendar", "project-task-per-status-calendar");
-      builder.param("kanban-hide-columns", getStatusColumnsTobeExcluded(project));
     }
 
     if (ObjectUtils.notEmpty(context)) {
@@ -275,8 +274,7 @@ public class ProjectServiceImpl implements ProjectService {
             .add("kanban", "project-task-kanban")
             .add("grid", "project-task-grid")
             .add("form", "project-task-form")
-            .domain("self.typeSelect = :_typeSelect AND self.project = :_project")
-            .param("kanban-hide-columns", getStatusColumnsTobeExcluded(project));
+            .domain("self.typeSelect = :_typeSelect AND self.project = :_project");
 
     if (ObjectUtils.notEmpty(context)) {
       context.forEach(builder::context);
@@ -312,17 +310,6 @@ public class ProjectServiceImpl implements ProjectService {
     return task;
   }
 
-  protected String getStatusColumnsTobeExcluded(Project project) {
-    return projectStatusRepository
-        .all()
-        .filter("self not in :allowedProjectTaskStatus")
-        .bind("allowedProjectTaskStatus", project.getProjectTaskStatusSet())
-        .fetchStream()
-        .map(ProjectStatus::getId)
-        .map(String::valueOf)
-        .collect(Collectors.joining(","));
-  }
-
   @Override
   public String getTimeZone(Project project) {
     return null;
@@ -330,11 +317,7 @@ public class ProjectServiceImpl implements ProjectService {
 
   @Override
   public ProjectStatus getDefaultProjectStatus() {
-    return projectStatusRepository
-        .all()
-        .filter("self.relatedToSelect = ?1", ProjectStatusRepository.PROJECT_STATUS_PROJECT)
-        .order("sequence")
-        .fetchOne();
+    return projectStatusRepository.all().order("sequence").fetchOne();
   }
 
   public boolean checkIfResourceBooked(Project project) {

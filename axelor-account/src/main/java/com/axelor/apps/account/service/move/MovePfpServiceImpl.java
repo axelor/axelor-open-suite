@@ -18,12 +18,14 @@
 package com.axelor.apps.account.service.move;
 
 import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
@@ -32,7 +34,6 @@ import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Company;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.ArrayList;
@@ -47,29 +48,33 @@ public class MovePfpServiceImpl implements MovePfpService {
   protected InvoiceTermPfpService invoiceTermPfpService;
   protected AppAccountService appAccountService;
   protected AccountConfigService accountConfigService;
+  protected AccountingSituationService accountingSituationService;
 
   @Inject
   public MovePfpServiceImpl(
       MoveRepository moveRepository,
       InvoiceTermPfpService invoiceTermPfpService,
       AppAccountService appAccountService,
-      AccountConfigService accountConfigService) {
+      AccountConfigService accountConfigService,
+      AccountingSituationService accountingSituationService) {
     this.moveRepository = moveRepository;
     this.invoiceTermPfpService = invoiceTermPfpService;
     this.appAccountService = appAccountService;
     this.accountConfigService = accountConfigService;
+    this.accountingSituationService = accountingSituationService;
   }
 
   @Transactional
   @Override
   public void validatePfp(Long moveId) {
     Move move = moveRepository.find(moveId);
-    User currentUser = AuthUtils.getUser();
+    User pfpValidatorUser =
+        move.getPfpValidatorUser() != null ? move.getPfpValidatorUser() : AuthUtils.getUser();
 
     _getInvoiceTermList(move)
-        .forEach(invoiceTerm -> invoiceTermPfpService.validatePfp(invoiceTerm, currentUser));
+        .forEach(invoiceTerm -> invoiceTermPfpService.validatePfp(invoiceTerm, pfpValidatorUser));
 
-    move.setPfpValidatorUser(currentUser);
+    move.setPfpValidatorUser(pfpValidatorUser);
     move.setPfpValidateStatusSelect(InvoiceRepository.PFP_STATUS_VALIDATED);
   }
 
@@ -123,11 +128,16 @@ public class MovePfpServiceImpl implements MovePfpService {
 
   @Override
   public void setPfpStatus(Move move) throws AxelorException {
-    AccountConfig accountConfig =
-        Beans.get(AccountConfigService.class).getAccountConfig(move.getCompany());
+    Company company = move.getCompany();
+    AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
 
     if (accountConfig.getIsManagePassedForPayment()
         && this._getJournalTypePurchaseCondition(move)) {
+      AccountingSituation accountingSituation =
+          accountingSituationService.getAccountingSituation(move.getPartner(), company);
+      if (accountingSituation != null) {
+        move.setPfpValidatorUser(accountingSituation.getPfpValidatorUser());
+      }
       move.setPfpValidateStatusSelect(MoveRepository.PFP_STATUS_AWAITING);
     } else {
       move.setPfpValidateStatusSelect(MoveRepository.PFP_NONE);

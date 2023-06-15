@@ -20,7 +20,10 @@ package com.axelor.apps.account.service;
 
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.DepositSlip;
+import com.axelor.apps.account.db.InvoicePayment;
+import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.PaymentVoucher;
+import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
@@ -38,12 +41,16 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.utils.QueryBuilder;
 import com.google.common.base.Strings;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -53,6 +60,16 @@ import org.slf4j.LoggerFactory;
 public class DepositSlipServiceImpl implements DepositSlipService {
 
   protected final Logger logger = LoggerFactory.getLogger(getClass());
+  protected InvoicePaymentRepository invoicePaymentRepository;
+  protected PaymentVoucherRepository paymentVoucherRepository;
+
+  @Inject
+  public DepositSlipServiceImpl(
+      InvoicePaymentRepository invoicePaymentRepository,
+      PaymentVoucherRepository paymentVoucherRepository) {
+    this.invoicePaymentRepository = invoicePaymentRepository;
+    this.paymentVoucherRepository = paymentVoucherRepository;
+  }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
@@ -78,6 +95,13 @@ public class DepositSlipServiceImpl implements DepositSlipService {
 
     List<Pair<LocalDate, BankDetails>> dateByBankDetailsList =
         new ArrayList<Pair<LocalDate, BankDetails>>();
+    paymentVouchers.stream()
+        .forEach(
+            paymentVoucher ->
+                updateInvoicePayment(
+                    paymentVoucher.getChequeDate(),
+                    depositSlip.getDepositNumber(),
+                    paymentVoucher.getGeneratedMove()));
 
     for (PaymentVoucher pv : paymentVouchers) {
       Pair<LocalDate, BankDetails> dateByBankDetails =
@@ -255,5 +279,56 @@ public class DepositSlipServiceImpl implements DepositSlipService {
     }
 
     depositSlip.setIsBankDepositMoveGenerated(true);
+  }
+
+  @Override
+  public List<Integer> getSelectedPaymentVoucherDueIdList(
+      List<Map<String, Object>> paymentVoucherDueList) {
+    return paymentVoucherDueList.stream()
+        .filter(o -> (Boolean) o.get("selected"))
+        .map(o -> (Integer) o.get("id"))
+        .collect(Collectors.toList());
+  }
+
+  @Override
+  public BigDecimal getTotalAmount(
+      DepositSlip depositSlip, List<Integer> selectedPaymentVoucherDueIdList) {
+    return depositSlip
+        .getTotalAmount()
+        .add(
+            selectedPaymentVoucherDueIdList.stream()
+                .map(integer -> paymentVoucherRepository.find(integer.longValue()).getPaidAmount())
+                .reduce(BigDecimal::add)
+                .orElse(BigDecimal.ZERO));
+  }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public void updateInvoicePayments(DepositSlip depositSlip, LocalDate depositDate) {
+    depositSlip.getPaymentVoucherList().stream()
+        .forEach(
+            paymentVoucher ->
+                updateInvoicePayment(
+                    depositDate,
+                    depositSlip.getDepositNumber(),
+                    paymentVoucher.getValueForCollectionMove()));
+  }
+
+  protected void updateInvoicePayment(LocalDate depositDate, String depositNumber, Move move) {
+    InvoicePayment invoicePayment =
+        invoicePaymentRepository
+            .all()
+            .filter(
+                "self.move = :move AND self.paymentMode.typeSelect = :paymentModeTypeSelect AND self.statusSelect = :statusSelect")
+            .bind("move", move)
+            .bind("paymentModeTypeSelect", PaymentModeRepository.TYPE_CHEQUE)
+            .bind("statusSelect", InvoicePaymentRepository.STATUS_VALIDATED)
+            .fetchOne();
+    if (invoicePayment == null) {
+      return;
+    }
+    invoicePayment.setBankDepositDate(depositDate);
+    invoicePayment.setDescription(invoicePayment.getDescription() + ":" + depositNumber);
+    invoicePaymentRepository.save(invoicePayment);
   }
 }

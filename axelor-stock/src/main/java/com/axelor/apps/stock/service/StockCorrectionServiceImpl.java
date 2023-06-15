@@ -199,8 +199,7 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
               StockMoveRepository.TYPE_INTERNAL);
     }
 
-    stockMove.setOriginTypeSelect(StockMoveRepository.ORIGIN_STOCK_CORRECTION);
-    stockMove.setOriginId(stockCorrection.getId());
+    stockMove.setStockCorrection(stockCorrection);
     stockMove.setStockCorrectionReason(stockCorrection.getStockCorrectionReason());
 
     BigDecimal productCostPrice =
