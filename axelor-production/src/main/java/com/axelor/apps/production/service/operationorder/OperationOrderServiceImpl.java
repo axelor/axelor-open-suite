@@ -28,7 +28,6 @@ import com.axelor.apps.production.db.Machine;
 import com.axelor.apps.production.db.MachineTool;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
-import com.axelor.apps.production.db.ProdHumanResource;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.WorkCenter;
@@ -124,30 +123,12 @@ public class OperationOrderServiceImpl implements OperationOrderService {
             prodProcessLine,
             machineTool);
 
-    this._createHumanResourceList(operationOrder, workCenter);
-
     operationOrder.setUseLineInGeneratedPurchaseOrder(
         prodProcessLine.getUseLineInGeneratedPurchaseOrder());
 
     operationOrder.setOutsourcing(prodProcessLine.getOutsourcing());
 
     return Beans.get(OperationOrderRepository.class).save(operationOrder);
-  }
-
-  protected void _createHumanResourceList(OperationOrder operationOrder, WorkCenter workCenter) {
-
-    if (workCenter != null && workCenter.getProdHumanResourceList() != null) {
-
-      for (ProdHumanResource prodHumanResource : workCenter.getProdHumanResourceList()) {
-
-        operationOrder.addProdHumanResourceListItem(this.copyProdHumanResource(prodHumanResource));
-      }
-    }
-  }
-
-  protected ProdHumanResource copyProdHumanResource(ProdHumanResource prodHumanResource) {
-
-    return new ProdHumanResource(prodHumanResource.getProduct(), prodHumanResource.getDuration());
   }
 
   public String computeName(ManufOrder manufOrder, int priority, String operationName) {

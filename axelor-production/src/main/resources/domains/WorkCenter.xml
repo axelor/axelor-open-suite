@@ -15,9 +15,11 @@
       selection="iproduction.work.center.type.select"/>
     <decimal name="minCapacityPerCycle" title="Min. capacity / cycle"/>
     <decimal name="maxCapacityPerCycle" title="Max. capacity / cycle"/>
-    <long name="durationPerCycle" title="Duration / cycle (hh:mm:ss)"/>
-    <long name="timingOfImplementation" title="Timing of implementation (hh:mm:ss)"/>
-    <boolean name="isRevaluationAtActualPrices" title="Revaluation at actual prices"/>
+    <long name="durationPerCycle" title="Duration / cycle (hhh:mm:ss)"/>
+    <long name="timingOfImplementation" title="Timing of implementation (hh:mm:ss)"
+      help="Time required for deployment of the machine"/>
+    <boolean name="isRevaluationAtActualPrices" title="Revaluation at actual prices"
+      help="By enabling this, the total cost price will be calculated by considering the real duration (including hours) of production cycle."/>
 
     <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
 
@@ -25,9 +27,11 @@
       selection="iproduction.work.center.cost.type.select"/>
     <decimal name="costAmount" title="Cost (W.T.)"/>
 
-    <one-to-many name="prodHumanResourceList"
-      ref="com.axelor.apps.production.db.ProdHumanResource" mappedBy="workCenter"
-      title="Human resources"/>
+    <many-to-one name="hrProduct" ref="com.axelor.apps.base.db.Product" title="Product"/>
+    <integer name="hrCostTypeSelect" title="Cost type"
+      selection="iproduction.work.center.cost.type.select"/>
+    <decimal name="hrCostAmount" title="Cost (W.T.)"/>
+    <long name="hrDurationPerCycle" title="HR Duration Per Cycle (hhh:mm:ss)"/>
 
     <many-to-one name="operationOrder"
       ref="com.axelor.apps.production.db.OperationOrder" title="Operation order"/>

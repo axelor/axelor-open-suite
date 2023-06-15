@@ -24,7 +24,6 @@ import com.axelor.apps.production.db.Machine;
 import com.axelor.apps.production.db.MachineTool;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
-import com.axelor.apps.production.db.ProdHumanResource;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
@@ -107,23 +106,6 @@ public class OperationOrderServiceBusinessImpl extends OperationOrderServiceImpl
 
     operationOrder.setIsToInvoice(isToInvoice);
 
-    this._createHumanResourceList(operationOrder, workCenter);
-
     return Beans.get(OperationOrderRepository.class).save(operationOrder);
-  }
-
-  @Override
-  protected ProdHumanResource copyProdHumanResource(ProdHumanResource prodHumanResource) {
-    AppProductionService appProductionService = Beans.get(AppProductionService.class);
-
-    if (!appProductionService.isApp("production")
-        || !appProductionService.getAppProduction().getManageBusinessProduction()) {
-      return super.copyProdHumanResource(prodHumanResource);
-    }
-
-    ProdHumanResource prodHumanResourceCopy =
-        new ProdHumanResource(prodHumanResource.getProduct(), prodHumanResource.getDuration());
-    prodHumanResourceCopy.setEmployee(prodHumanResource.getEmployee());
-    return prodHumanResourceCopy;
   }
 }
