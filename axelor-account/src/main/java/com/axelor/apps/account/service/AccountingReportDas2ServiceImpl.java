@@ -142,18 +142,18 @@ public class AccountingReportDas2ServiceImpl implements AccountingReportDas2Serv
             + "LEFT OUTER JOIN dMoveLine.move dMove "
             + "LEFT OUTER JOIN moveLine.account account "
             + "WHERE reconcile.statusSelect IN (:statusConfirmed, :statusCanceled)  "
-            //            + "AND dMove.statusSelect = :statusValidated "
-            //            + "AND move.statusSelect = :statusValidated "
-            //            + "AND pmvld.operationDate >= :dateFrom "
-            //            + "AND pmvld.operationDate <= :dateTo "
+            + "AND dMove.statusSelect = :statusValidated "
+            + "AND move.statusSelect = :statusValidated "
+            + "AND pmvld.operationDate >= :dateFrom "
+            + "AND pmvld.operationDate <= :dateTo "
             + "AND account.serviceType IS NOT NULL  "
             + "AND partner.das2Activity IS NOT NULL  "
             + "AND account.serviceType.isDas2Declarable IS TRUE "
-            //            + "AND account NOT IN (:supplierAccount, :customerAccount) "
-            //            + "AND journalType = :journalType "
-            //            + "AND company = :company "
-            //            + "AND (:currency is null OR currency = :currency) "
-            //            + "AND move.ignoreInAccountingOk != true "
+            + "AND account NOT IN (:supplierAccount, :customerAccount) "
+            + "AND journalType = :journalType "
+            + "AND company = :company "
+            + "AND (:currency is null OR currency = :currency) "
+            + "AND move.ignoreInAccountingOk != true "
             + "AND pmvld NOT IN (SELECT pmvld "
             + "FROM AccountingReportMoveLine history "
             + "LEFT OUTER JOIN history.paymentMoveLineDistribution pmvld "
@@ -174,14 +174,14 @@ public class AccountingReportDas2ServiceImpl implements AccountingReportDas2Serv
             .createQuery(partnerQueryStr)
             .setParameter("statusConfirmed", ReconcileRepository.STATUS_CONFIRMED)
             .setParameter("statusCanceled", ReconcileRepository.STATUS_CANCELED)
-            //            .setParameter("statusValidated", MoveRepository.STATUS_ACCOUNTED)
-            //            .setParameter("dateFrom", accountingReport.getDateFrom())
-            //            .setParameter("dateTo", accountingReport.getDateTo())
-            //            .setParameter("supplierAccount", supplierAccount)
-            //            .setParameter("customerAccount", customerAccount)
-            //            .setParameter("journalType", journalType)
-            //            .setParameter("company", accountingReport.getCompany())
-            //            .setParameter("currency", accountingReport.getCurrency())
+            .setParameter("statusValidated", MoveRepository.STATUS_ACCOUNTED)
+            .setParameter("dateFrom", accountingReport.getDateFrom())
+            .setParameter("dateTo", accountingReport.getDateTo())
+            .setParameter("supplierAccount", supplierAccount)
+            .setParameter("customerAccount", customerAccount)
+            .setParameter("journalType", journalType)
+            .setParameter("company", accountingReport.getCompany())
+            .setParameter("currency", accountingReport.getCurrency())
             .setParameter("accountingReport", accountingReport)
             .setParameter("reportType", accountingReport.getReportType().getTypeSelect())
             .setParameter("inAmountExcl", accountingReport.getMinAmountExcl());
