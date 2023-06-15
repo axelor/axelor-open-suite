@@ -437,4 +437,21 @@ public class PaymentSessionValidateBankPaymentServiceImpl
 
     return partnerQuery.getResultList();
   }
+
+  @Override
+  public void processInvoiceTermLcr(
+      PaymentSession paymentSession,
+      InvoiceTerm invoiceTerm,
+      Map<LocalDate, Map<Partner, List<Move>>> moveDateMap)
+      throws AxelorException {
+    super.processInvoiceTermLcr(paymentSession, invoiceTerm, moveDateMap);
+
+    if (paymentSession.getAccountingTriggerSelect()
+            != PaymentSessionRepository.ACCOUNTING_TRIGGER_IMMEDIATE
+        && paymentSession.getBankOrder() != null
+        && paymentSession.getStatusSelect() != PaymentSessionRepository.STATUS_AWAITING_PAYMENT) {
+      this.createOrUpdateBankOrderLineFromInvoiceTerm(
+          paymentSession, invoiceTerm, paymentSession.getBankOrder());
+    }
+  }
 }

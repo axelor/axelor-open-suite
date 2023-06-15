@@ -68,6 +68,9 @@ public interface PaymentSessionValidateService {
       Map<LocalDate, Map<Partner, List<Move>>> moveDateMap)
       throws AxelorException;
 
-  MoveLine processLcrPlacement(PaymentSession paymentSession, InvoiceTerm invoiceTerm)
+  MoveLine processLcrPlacement(
+      PaymentSession paymentSession,
+      InvoiceTerm invoiceTerm,
+      Map<LocalDate, Map<Partner, List<Move>>> moveDateMap)
       throws AxelorException;
 }

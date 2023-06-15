@@ -1137,28 +1137,35 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       Map<LocalDate, Map<Partner, List<Move>>> moveDateMap)
       throws AxelorException {
 
-    MoveLine placementMoveLine = processLcrPlacement(paymentSession, invoiceTerm);
+    if (this.generatePaymentsFirst(paymentSession)) {
+      this.generatePendingPaymentFromInvoiceTerm(paymentSession, invoiceTerm);
+    } else {
+      MoveLine placementMoveLine = processLcrPlacement(paymentSession, invoiceTerm, moveDateMap);
 
-    if (paymentSession.getAccountingTriggerSelect()
-        == PaymentSessionRepository.ACCOUNTING_TRIGGER_IMMEDIATE) {
-      Move paymentMove = processLcrPayment(paymentSession, invoiceTerm, placementMoveLine);
+      if (paymentSession.getAccountingTriggerSelect()
+          == PaymentSessionRepository.ACCOUNTING_TRIGGER_IMMEDIATE) {
+        Move paymentMove = processLcrPayment(paymentSession, invoiceTerm, placementMoveLine);
 
-      if (!moveDateMap.containsKey(paymentMove.getAccountingDate())) {
-        moveDateMap.put(paymentMove.getAccountingDate(), new HashMap<>());
+        if (!moveDateMap.containsKey(paymentMove.getAccountingDate())) {
+          moveDateMap.put(paymentMove.getAccountingDate(), new HashMap<>());
+        }
+
+        Map<Partner, List<Move>> moveMap = moveDateMap.get(paymentMove.getAccountingDate());
+
+        if (!moveMap.containsKey(paymentMove.getPartner())) {
+          moveMap.put(paymentMove.getPartner(), new ArrayList<>());
+        }
+
+        moveMap.get(paymentMove.getPartner()).add(paymentMove);
       }
-
-      Map<Partner, List<Move>> moveMap = moveDateMap.get(paymentMove.getAccountingDate());
-
-      if (!moveMap.containsKey(paymentMove.getPartner())) {
-        moveMap.put(paymentMove.getPartner(), new ArrayList<>());
-      }
-
-      moveMap.get(paymentMove.getPartner()).add(paymentMove);
     }
   }
 
   @Override
-  public MoveLine processLcrPlacement(PaymentSession paymentSession, InvoiceTerm invoiceTerm)
+  public MoveLine processLcrPlacement(
+      PaymentSession paymentSession,
+      InvoiceTerm invoiceTerm,
+      Map<LocalDate, Map<Partner, List<Move>>> moveDateMap)
       throws AxelorException {
 
     if (invoiceTerm.getMoveLine() == null
@@ -1179,14 +1186,12 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       }
     }
 
-    Partner partner = invoiceTerm.getMoveLine().getPartner();
+    Partner partner = null;
 
-    Move move =
-        this.createMove(
-            paymentSession,
-            partner,
-            this.getAccountingDate(paymentSession, invoiceTerm),
-            invoiceTerm.getBankDetails());
+    Map<Move, BigDecimal> paymentAmountMap = new HashMap<>();
+
+    Move move = this.getMove(paymentSession, partner, invoiceTerm, moveDateMap, paymentAmountMap);
+
     move.setDescription(
         this.getMoveDescription(paymentSession, invoiceTerm.getAmountPaid())
             .concat(String.format(" - %s", I18n.get("Placement"))));
@@ -1203,15 +1208,25 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
             this.getMoveLineDescription(paymentSession),
             out);
 
+    Account counterPartAccount = accountConfigService.getBillOfExchReceivAccount(accountConfig);
     MoveLine counterPartMoveLine =
-        this.generateMoveLine(
-            move,
-            invoiceTerm.getMoveLine().getPartner(),
-            accountConfigService.getBillOfExchReceivAccount(accountConfig),
-            invoiceTerm.getAmountPaid(),
-            invoiceTerm.getMoveLine().getOrigin(),
-            this.getMoveLineDescription(paymentSession),
-            !out);
+        move.getMoveLineList().stream()
+            .filter(ml -> ml.getAccount().equals(counterPartAccount))
+            .findFirst()
+            .orElse(null);
+    if (counterPartMoveLine != null) {
+
+    } else {
+      counterPartMoveLine =
+          this.generateMoveLine(
+              move,
+              invoiceTerm.getMoveLine().getPartner(),
+              accountConfigService.getBillOfExchReceivAccount(accountConfig),
+              invoiceTerm.getAmountPaid(),
+              invoiceTerm.getMoveLine().getOrigin(),
+              this.getMoveLineDescription(paymentSession),
+              !out);
+    }
 
     moveComputeService.autoApplyCutOffDates(move);
 

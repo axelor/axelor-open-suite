@@ -235,7 +235,7 @@
     <attribute for="accountingMethodSelect" name="selection-in"
       expr="eval: moveAccountingDateSelect != 3 ? [1,2,3] : [1,2]"
       if="paymentMode?.typeSelect != 10"/>
-    <attribute for="accountingMethodSelect" name="selection-in" expr="eval: [1]"
+    <attribute for="accountingMethodSelect" name="selection-in" expr="eval: [3]"
       if="paymentMode?.typeSelect == 10"/>
   </action-attrs>
 
