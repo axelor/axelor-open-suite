@@ -43,6 +43,12 @@
         onSelect="action-product-company-attrs-bill-of-material-domain"
         if="__config__.app.isApp('production') &amp;&amp;__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'defaultBillOfMaterial'})"
         if-module="axelor-production"/>
+      <field name="controlOnReceipt"
+        if="__config__.app.isApp('stock') &amp;&amp;__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'controlOnReceipt'})"
+        if-module="axelor-stock"/>
+      <field name="customsCodeNomenclature"
+        if="__config__.app.isApp('stock') &amp;&amp;__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'customsCodeNomenclature'})"
+        if-module="axelor-stock"/>
     </panel>
   </form>
 
