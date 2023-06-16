@@ -32,9 +32,6 @@ public final class SupplychainExceptionMessage {
   public static final String PURCHASE_ORDER_1 = /*$$(*/
       "%s please configure a virtual supplier stock location for the company %s" /*)*/;
 
-  public static final String PURCHASE_ORDER_2 = /*$$(*/
-      "Error : you have exceeded the budget %s for this period" /*)*/;
-
   public static final String PO_INVOICE_TOO_MUCH_INVOICED = /*$$(*/
       "The purchase order %s invoiced amount cannot be greater than its total amount." /*)*/;
   public static final String PURCHASE_ORDER_RETURN_TO_VALIDATE_WRONG_STATUS = /*$$(*/

@@ -17,11 +17,6 @@
       ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"/>
 
     <boolean name="invoiced" readonly="true"/>
-    <many-to-one name="budget" ref="com.axelor.apps.account.db.Budget" title="Budget"/>
-    <one-to-many name="budgetDistributionList"
-      ref="com.axelor.apps.account.db.BudgetDistribution" title="Budget Distribution"
-      mappedBy="purchaseOrderLine"/>
-    <decimal name="budgetDistributionSumAmount" title="Total amount attributed"/>
 
     <integer name="receiptState" title="Receipt state"
       selection="purchase.order.receipt.state" readonly="true" default="0"/>

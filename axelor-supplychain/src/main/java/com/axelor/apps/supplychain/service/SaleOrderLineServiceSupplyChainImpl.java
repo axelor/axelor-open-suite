@@ -140,25 +140,6 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
   }
 
   @Override
-  public int getSaleOrderLineInvoicingState(SaleOrderLine saleOrderLine) {
-    return saleInvoicingStateService.getInvoicingState(
-        saleOrderLine.getAmountInvoiced(),
-        saleOrderLine.getExTaxTotal(),
-        atLeastOneInvoiceVentilated(saleOrderLine));
-  }
-
-  protected boolean atLeastOneInvoiceVentilated(SaleOrderLine saleOrderLine) {
-    return invoiceLineRepository
-            .all()
-            .filter(
-                "self.saleOrderLine = :saleOrderLine AND self.invoice.statusSelect = :statusSelect")
-            .bind("saleOrderLine", saleOrderLine.getId())
-            .bind("statusSelect", InvoiceRepository.STATUS_VENTILATED)
-            .count()
-        > 0;
-  }
-
-  @Override
   public BigDecimal getAvailableStock(SaleOrder saleOrder, SaleOrderLine saleOrderLine) {
 
     if (!appAccountService.isApp("supplychain")) {

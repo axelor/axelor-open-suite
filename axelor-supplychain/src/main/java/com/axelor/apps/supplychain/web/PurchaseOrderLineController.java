@@ -28,7 +28,6 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
-import com.axelor.apps.supplychain.service.PurchaseOrderLineBudgetService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -72,18 +71,6 @@ public class PurchaseOrderLineController {
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
-  }
-
-  public void computeBudgetDistributionSumAmount(ActionRequest request, ActionResponse response) {
-    PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
-    PurchaseOrder purchaseOrder = request.getContext().getParent().asType(PurchaseOrder.class);
-
-    Beans.get(PurchaseOrderLineBudgetService.class)
-        .computeBudgetDistributionSumAmount(purchaseOrderLine, purchaseOrder);
-
-    response.setValue(
-        "budgetDistributionSumAmount", purchaseOrderLine.getBudgetDistributionSumAmount());
-    response.setValue("budgetDistributionList", purchaseOrderLine.getBudgetDistributionList());
   }
 
   public void setAxisDomains(ActionRequest request, ActionResponse response) {

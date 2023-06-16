@@ -32,16 +32,20 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
+import com.axelor.apps.contract.db.ContractVersion;
+import com.axelor.apps.contract.db.repo.ContractVersionRepository;
 import com.axelor.apps.contract.exception.ContractExceptionMessage;
 import com.axelor.i18n.I18n;
 import com.axelor.utils.service.ListToolService;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
@@ -58,6 +62,8 @@ public class ContractLineServiceImpl implements ContractLineService {
   protected MoveLineComputeAnalyticService moveLineComputeAnalyticService;
   protected AnalyticAccountRepository analyticAccountRepo;
   protected AccountAnalyticRulesRepository accountAnalyticRulesRepo;
+  protected ContractVersionRepository contractVersionRepo;
+  protected PriceListService priceListService;
 
   @Inject
   public ContractLineServiceImpl(
@@ -72,7 +78,9 @@ public class ContractLineServiceImpl implements ContractLineService {
       ListToolService listToolService,
       MoveLineComputeAnalyticService moveLineComputeAnalyticService,
       AnalyticAccountRepository analyticAccountRepo,
-      AccountAnalyticRulesRepository accountAnalyticRulesRepo) {
+      AccountAnalyticRulesRepository accountAnalyticRulesRepo,
+      PriceListService priceListService,
+      ContractVersionRepository contractVersionRepo) {
     this.appBaseService = appBaseService;
     this.appAccountService = appAccountService;
     this.accountManagementService = accountManagementService;
@@ -85,6 +93,8 @@ public class ContractLineServiceImpl implements ContractLineService {
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
     this.analyticAccountRepo = analyticAccountRepo;
     this.accountAnalyticRulesRepo = accountAnalyticRulesRepo;
+    this.priceListService = priceListService;
+    this.contractVersionRepo = contractVersionRepo;
   }
 
   @Override
@@ -121,6 +131,12 @@ public class ContractLineServiceImpl implements ContractLineService {
     contractLine.setPrice((BigDecimal) productCompanyService.get(product, "salePrice", company));
     contractLine.setDescription(
         (String) productCompanyService.get(product, "description", company));
+    return contractLine;
+  }
+
+  @Override
+  public ContractLine fillDefault(ContractLine contractLine, ContractVersion contractVersion) {
+    contractLine.setFromDate(contractVersion.getSupposedActivationDate());
     return contractLine;
   }
 
@@ -181,13 +197,28 @@ public class ContractLineServiceImpl implements ContractLineService {
     if (contractLine.getTaxLine() != null) {
       taxRate = contractLine.getTaxLine().getValue().divide(new BigDecimal(100));
     }
-
-    BigDecimal exTaxTotal =
-        contractLine.getQty().multiply(contractLine.getPrice()).setScale(2, RoundingMode.HALF_UP);
+    BigDecimal price =
+        priceListService.computeDiscount(
+            contractLine.getPrice(),
+            contractLine.getDiscountTypeSelect(),
+            contractLine.getDiscountAmount());
+    contractLine.setPriceDiscounted(price);
+    BigDecimal exTaxTotal = contractLine.getQty().multiply(price).setScale(2, RoundingMode.HALF_UP);
     contractLine.setExTaxTotal(exTaxTotal);
     BigDecimal inTaxTotal = exTaxTotal.add(exTaxTotal.multiply(taxRate));
     contractLine.setInTaxTotal(inTaxTotal);
 
     return contractLine;
+  }
+
+  @Override
+  @Transactional
+  public void updateContractLinesFromContractVersion(ContractVersion contractVersion) {
+    for (ContractLine line : contractVersion.getContractLineList()) {
+      if (line.getFromDate() == null) {
+        line.setFromDate(contractVersion.getSupposedActivationDate());
+      }
+    }
+    contractVersionRepo.save(contractVersion);
   }
 }

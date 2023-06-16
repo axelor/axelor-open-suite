@@ -228,11 +228,6 @@
 
       <panel name="timeSpentPanel" title="Time Spent" if-module="axelor-human-resource"
         if="__config__.app.isApp('timesheet')" showIf="project.isShowTimeSpent">
-        <field name="totalRealHrs" readonly="true" colSpan="4">
-          <viewer><![CDATA[
-                   	 <span>{{$fmt('totalRealHrs')}} </span><span x-translate>hours</span>
-       			]]></viewer>
-        </field>
         <panel-dashlet name="validatedTimesheetLinesPanel"
           action="action-project-task-dashlet-validated-timesheet-lines"
           title="Validated Timesheet lines" colSpan="12" canSearch="true"
@@ -862,7 +857,6 @@
     <field name="exTaxTotal" hidden="true" if="!__config__.app.isApp('business-project')"/>
     <field name="metaFile" hidden="true"
       if="!__config__.app.getApp('project')?.isEnableSignature"/>
-    <field name="totalRealHrs" hidden="true" if="!__config__.app.isApp('timesheet')"/>
   </search-filters>
 
 </object-views>

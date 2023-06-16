@@ -60,6 +60,14 @@
     <many-to-one name="axis5AnalyticAccount" title="Cpte Ana. AXIS5"
       ref="com.axelor.apps.account.db.AnalyticAccount"/>
 
+    <date name="fromDate"/>
+
+
+    <decimal name="discountAmount" title="Discount amount"/>
+    <integer name="discountTypeSelect" title="Discount type"
+      selection="base.price.list.line.amount.type.select" default="0"/>
+    <decimal name="priceDiscounted" title="Unit price discounted"/>
+
     <finder-method name="findOneBy"
       using="contractVersion, product, productName,
 					   isConsumptionLine"/>

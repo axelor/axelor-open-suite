@@ -317,4 +317,6 @@ public interface InvoiceService {
   boolean checkInvoiceTerms(Invoice invoice) throws AxelorException;
 
   void updateInvoiceTermsParentFields(Invoice invoice);
+
+  Invoice computeEstimatedPaymentDate(Invoice invoice);
 }

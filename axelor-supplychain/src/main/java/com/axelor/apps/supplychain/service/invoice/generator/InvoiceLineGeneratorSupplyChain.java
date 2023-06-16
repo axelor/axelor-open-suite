@@ -20,7 +20,6 @@ package com.axelor.apps.supplychain.service.invoice.generator;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AnalyticMoveLine;
-import com.axelor.apps.account.db.BudgetDistribution;
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.FixedAssetCategory;
 import com.axelor.apps.account.db.Invoice;
@@ -221,10 +220,6 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
       invoiceLineAnalyticService.setInvoiceLineAnalyticInfo(
           invoiceLine, invoice, new AnalyticLineModel(purchaseOrderLine));
 
-      this.copyBudgetDistributionList(purchaseOrderLine.getBudgetDistributionList(), invoiceLine);
-      invoiceLine.setBudget(purchaseOrderLine.getBudget());
-      invoiceLine.setBudgetDistributionSumAmount(
-          purchaseOrderLine.getBudgetDistributionSumAmount());
       invoiceLine.setFixedAssets(purchaseOrderLine.getFixedAssets());
 
       if (product != null && purchaseOrderLine.getFixedAssets()) {
@@ -315,22 +310,6 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
     }
     if (purchaseOrderLine != null) {
       invoiceLine.setPurchaseOrderLine(purchaseOrderLine);
-    }
-  }
-
-  public void copyBudgetDistributionList(
-      List<BudgetDistribution> originalBudgetDistributionList, InvoiceLine invoiceLine) {
-
-    if (originalBudgetDistributionList == null) {
-      return;
-    }
-
-    for (BudgetDistribution budgetDistributionIt : originalBudgetDistributionList) {
-      BudgetDistribution budgetDistribution = new BudgetDistribution();
-      budgetDistribution.setBudget(budgetDistributionIt.getBudget());
-      budgetDistribution.setAmount(budgetDistributionIt.getAmount());
-      budgetDistribution.setBudgetAmountAvailable(budgetDistributionIt.getBudgetAmountAvailable());
-      invoiceLine.addBudgetDistributionListItem(budgetDistribution);
     }
   }
 

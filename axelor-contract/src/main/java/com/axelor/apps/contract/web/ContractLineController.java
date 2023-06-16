@@ -199,4 +199,43 @@ public class ContractLineController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void fillDefault(ActionRequest request, ActionResponse response) {
+    ContractLineService contractLineService = Beans.get(ContractLineService.class);
+    ContractLine contractLine = new ContractLine();
+
+    try {
+      contractLine = request.getContext().asType(ContractLine.class);
+
+      ContractVersion contractVersion =
+          request.getContext().getParent().asType(ContractVersion.class);
+      if (contractVersion != null) {
+        contractLine = contractLineService.fillDefault(contractLine, contractVersion);
+      }
+      response.setValues(contractLine);
+    } catch (Exception e) {
+      response.setValues(contractLineService.reset(contractLine));
+    }
+  }
+
+  public void checkFromDate(ActionRequest request, ActionResponse response) {
+    ContractLine contractLine = request.getContext().asType(ContractLine.class);
+    ContractVersion contractVersion =
+        request.getContext().getParent().asType(ContractVersion.class);
+    if (contractVersion != null
+        && contractVersion.getSupposedActivationDate() != null
+        && contractLine.getFromDate() != null
+        && contractVersion.getSupposedActivationDate().isAfter(contractLine.getFromDate())) {
+      response.setValue("fromDate", contractVersion.getSupposedActivationDate());
+    }
+  }
+
+  public void hideDatePanel(ActionRequest request, ActionResponse response) {
+    ContractVersion contract = request.getContext().getParent().asType(ContractVersion.class);
+    boolean hidePanel = false;
+    if (!contract.getIsPeriodicInvoicing()) {
+      hidePanel = true;
+    }
+    response.setAttr("datePanel", "hidden", hidePanel);
+  }
 }
