@@ -30,4 +30,6 @@ public interface PartnerSupplychainLinkService {
    * @return the computed filter to be used as a JPQL domain attribute
    */
   String computePartnerFilter(Partner partner, String strFilter);
+
+  Partner getPartnerIfOnlyOne(Partner partner);
 }

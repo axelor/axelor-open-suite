@@ -19,20 +19,47 @@
 package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.supplychain.db.PartnerSupplychainLink;
+import com.axelor.apps.supplychain.db.repo.PartnerSupplychainLinkTypeRepository;
 import com.google.common.base.Joiner;
+import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class PartnerSupplychainLinkServiceImpl implements PartnerSupplychainLinkService {
 
+  protected PartnerRepository partnerRepository;
+
+  @Inject
+  public PartnerSupplychainLinkServiceImpl(PartnerRepository partnerRepository) {
+    this.partnerRepository = partnerRepository;
+  }
+
   @Override
   public String computePartnerFilter(Partner partner, String strFilter) {
+    List<Long> partnerIds = getPartnerIds(partner, strFilter);
+
+    return "self.id IN (" + Joiner.on(",").join(partnerIds) + ")";
+  }
+
+  @Override
+  public Partner getPartnerIfOnlyOne(Partner partner) {
+    List<Long> partnerIds =
+        getPartnerIds(partner, PartnerSupplychainLinkTypeRepository.TYPE_SELECT_INVOICED_BY);
+    partnerIds.remove(0L);
+    if (partnerIds.size() != 1) {
+      return null;
+    }
+
+    return partnerRepository.find(partnerIds.get(0));
+  }
+
+  public List<Long> getPartnerIds(Partner partner, String strFilter) {
     List<Long> partnerIds = new ArrayList<>();
     // manage the case where nothing is found
     partnerIds.add(0L);
-
     if (partner != null && partner.getPartner1SupplychainLinkList() != null) {
       // add current partner
       partnerIds.add(partner.getId());
@@ -50,7 +77,6 @@ public class PartnerSupplychainLinkServiceImpl implements PartnerSupplychainLink
               .map(Partner::getId)
               .collect(Collectors.toList()));
     }
-
-    return "self.id IN (" + Joiner.on(",").join(partnerIds) + ")";
+    return partnerIds;
   }
 }
