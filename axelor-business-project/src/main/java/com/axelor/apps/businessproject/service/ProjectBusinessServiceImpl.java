@@ -32,6 +32,7 @@ import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectHistoryLine;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.ProjectTemplate;
 import com.axelor.apps.project.db.repo.ProjectRepository;
@@ -444,5 +445,34 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     } else {
       return duration;
     }
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  @Override
+  public void backupToProjectHistory(Project project) {
+    ProjectHistoryLine projectHistoryLine = new ProjectHistoryLine();
+    projectHistoryLine.setSoldTime(project.getSoldTime());
+    projectHistoryLine.setUpdatedTime(project.getUpdatedTime());
+    projectHistoryLine.setPlannedTime(project.getPlannedTime());
+    projectHistoryLine.setSpentTime(project.getSpentTime());
+    projectHistoryLine.setPercentageOfProgress(project.getPercentageOfProgress());
+    projectHistoryLine.setPercentageOfConsumption(project.getPercentageOfConsumption());
+    projectHistoryLine.setRemainingAmountToDo(project.getRemainingAmountToDo());
+
+    projectHistoryLine.setTurnover(project.getTurnover());
+    projectHistoryLine.setInitialCosts(project.getInitialCosts());
+    projectHistoryLine.setInitialMargin(project.getInitialMargin());
+    projectHistoryLine.setInitialMarkup(project.getInitialMarkup());
+    projectHistoryLine.setRealTurnover(project.getRealTurnover());
+    projectHistoryLine.setRealCosts(project.getRealCosts());
+    projectHistoryLine.setRealMargin(project.getRealMargin());
+    projectHistoryLine.setRealMarkup(project.getRealMarkup());
+    projectHistoryLine.setForecastCosts(project.getForecastCosts());
+    projectHistoryLine.setForecastMargin(project.getForecastMargin());
+    projectHistoryLine.setForecastMarkup(project.getForecastMarkup());
+
+    project.addProjectHistoryLineListItem(projectHistoryLine);
+
+    projectRepository.save(project);
   }
 }

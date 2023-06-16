@@ -41,6 +41,8 @@
         onClick="save,action-business-project-batch-method-run-batch" showIf="actionSelect == 2"/>
       <button name="computeProjectTotalsBtn" title="Compute project totals"
         onClick="save,action-business-project-batch-method-run-batch" showIf="actionSelect == 3"/>
+      <button name="backupToProjectHistoryBtn" title="Backup project data to project history"
+        onClick="save,action-business-project-batch-method-run-batch" showIf="actionSelect == 4"/>
     </panel>
   </form>
 

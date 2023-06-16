@@ -114,6 +114,10 @@
               <field name="forecastMarkup" hidden="true"/>
             </panel>
           </panel>
+          <panel name="projectHistoryPanel" title="Project history" colSpan="12">
+            <field name="projectHistoryLineList" colSpan="12" canNew="false" canEdit="false"
+              canRemove="false" showTitle="false"/>
+          </panel>
         </panel>
       </insert>
     </extend>

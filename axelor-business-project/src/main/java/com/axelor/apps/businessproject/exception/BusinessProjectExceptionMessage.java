@@ -97,4 +97,9 @@ public final class BusinessProjectExceptionMessage {
 
   public static final String PROJECT_TASK_NO_UNIT_FOUND = /*$$(*/
       "Please set the unit for the task %s." /*)*/;
+
+  public static final String BATCH_BACKUP_TO_PROJECT_HISTORY = /*$$(*/
+      "Backup data to project history" /*)*/;
+  public static final String BATCH_BACKUP_TO_PROJECT_HISTORY_ERROR = /*$$(*/
+      "Error while trying to save to project history for project %s." /*)*/;
 }

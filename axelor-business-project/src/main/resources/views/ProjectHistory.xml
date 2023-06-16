@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid title="Project history" name="project-history-line-grid"
+    model="com.axelor.apps.project.db.ProjectHistoryLine">
+    <field name="createdOn" title="Date"/>
+  </grid>
+
+  <form title="Project history" name="project-history-line-form"
+    model="com.axelor.apps.project.db.ProjectHistoryLine"
+    onLoad="action-project-history-line-group-on-load">
+
+    <panel title="Time follow-up" colSpan="12">
+      <panel-dashlet action="action-project-view-sold-time-custom" colSpan="3"
+        showTitle="false"/>
+      <panel-dashlet action="action-project-view-updated-time-custom" colSpan="3"
+        showTitle="false"/>
+      <panel-dashlet action="action-project-view-planned-time-custom" colSpan="3"
+        showTitle="false"/>
+      <panel-dashlet action="action-project-view-spent-time-custom" colSpan="3"
+        showTitle="false"/>
+
+      <panel-dashlet action="action-project-view-percentage-progress-custom"
+        colSpan="3" showTitle="false"/>
+      <panel-dashlet action="action-project-view-percentage-consumption-custom"
+        colSpan="3" showTitle="false"/>
+      <panel-dashlet action="action-project-view-remaining-to-do-custom" colSpan="3"
+        showTitle="false"/>
+      <field name="$displayProgress" hidden="true"/>
+      <field name="$displayConsumption" hidden="true"/>
+      <field name="$displayUnit" hidden="true"/>
+      <field name="soldTime" hidden="true"/>
+      <field name="updatedTime" hidden="true"/>
+      <field name="plannedTime" hidden="true"/>
+      <field name="spentTime" hidden="true"/>
+      <field name="remainingAmountToDo" hidden="true"/>
+    </panel>
+
+    <panel title="Financial follow-up" colSpan="12">
+      <panel name="initialPanel" title="ProjectTask.Initial" colSpan="12" showIf="!parentTask">
+        <panel-dashlet action="action-project-view-turnover-custom" colSpan="3"/>
+        <panel-dashlet action="action-project-view-initial-costs-custom" colSpan="3"/>
+        <panel-dashlet action="action-project-view-initial-margin-custom" colSpan="3"/>
+        <panel-dashlet action="action-project-view-initial-markup-custom" colSpan="3"/>
+        <field name="turnover" hidden="true"/>
+        <field name="initialCosts" hidden="true"/>
+        <field name="initialMargin" hidden="true"/>
+        <field name="initialMarkup" hidden="true"/>
+        <field name="unitCost" hidden="true"/>
+      </panel>
+      <panel name="realPanel" title="ProjectTask.Real" colSpan="12">
+        <panel-dashlet action="action-project-view-real-turnover-custom" colSpan="3"/>
+        <panel-dashlet action="action-project-view-real-costs-custom" colSpan="3"/>
+        <panel-dashlet action="action-project-view-real-margin-custom" colSpan="3"/>
+        <panel-dashlet action="action-project-view-real-markup-custom" colSpan="3"/>
+        <field name="realTurnover" hidden="true"/>
+        <field name="realCosts" hidden="true"/>
+        <field name="realMargin" hidden="true"/>
+        <field name="realMarkup" hidden="true"/>
+        <field name="forecastUnitCost" hidden="true"/>
+      </panel>
+      <panel name="forecastPanel" title="ProjectTask.Forecast" colSpan="12">
+        <panel-dashlet action="action-project-view-forecast-costs-custom" colSpan="3"/>
+        <panel-dashlet action="action-project-view-forecast-margin-custom" colSpan="3"/>
+        <panel-dashlet action="action-project-view-forecast-markup-custom" colSpan="3"/>
+        <field name="forecastCosts" hidden="true"/>
+        <field name="forecastMargin" hidden="true"/>
+        <field name="forecastMarkup" hidden="true"/>
+      </panel>
+    </panel>
+  </form>
+
+  <action-group name="action-project-history-line-group-on-load">
+    <action name="action-project-attrs-set-time-reporting-values"/>
+  </action-group>
+
+</object-views>
