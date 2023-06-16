@@ -45,7 +45,6 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
@@ -149,11 +148,11 @@ public class BatchAccountingCutOffSupplyChain extends BatchAccountingCutOff {
   protected boolean _processStockMove(StockMove stockMove, AccountingBatch accountingBatch) {
     try {
       if (!cutOffSupplyChainService.checkPriceLimit(
-              stockMove,
-              accountingBatch.getLowerAmountLimit(),
-              accountingBatch.getUpperAmountLimit(),
-              accountingCutOffTypeSelect,
-              accountingBatch.getAti())) {
+          stockMove,
+          accountingBatch.getLowerAmountLimit(),
+          accountingBatch.getUpperAmountLimit(),
+          accountingBatch.getAccountingCutOffTypeSelect(),
+          accountingBatch.getAti())) {
         return false;
       }
       Journal miscOpeJournal = accountingBatch.getMiscOpeJournal();

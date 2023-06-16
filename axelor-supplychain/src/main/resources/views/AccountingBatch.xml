@@ -9,12 +9,6 @@
       <attribute name="onChange"
         value="action-supplychain-accounting-batch-group-onchange-company"/>
     </extend>
-    <extend target="//field[@name='company']">
-      <insert position="after">
-        <field name="lowerAmountLimit" default="0"/> 
-        <field name="upperAmountLimit" default="0"/> 
-      </insert>
-    </extend>
     <extend target="//field[@name='accountingCutOffTypeSelect']">
       <attribute name="onChange"
         value="supplychain-action-group-accounting-batch-onchange-accounting-type"/>
@@ -34,6 +28,18 @@
           showIf="accountingCutOffTypeSelect == 1" hidden="true"/>
         <spacer colSpan="6" showIf="accountingCutOffTypeSelect == 1" hidden="true"/>
 
+      </insert>
+    </extend>
+    <extend target="//field[@name='prefixOrigin']">
+      <insert position="after">
+        <help colSpan="12">
+        <![CDATA[
+        	The limits can be used to avoid retrieving undesired records et fonctionnent en inclus-inclus. If the field is empty or displays 0.00, the limit(s) will not apply.
+        ]]>
+        </help>
+        <field name="lowerAmountLimit" validIf="lowerAmountLimit >= 0"/>
+        <field name="upperAmountLimit"
+          validIf="+upperAmountLimit >= +lowerAmountLimit || +upperAmountLimit == 0"/>
       </insert>
     </extend>
   </form>
@@ -66,32 +72,36 @@
   </action-group>
 
   <action-view name="action-supplychain-batch-view-preview-stock-move-lines-to-process"
-    title="Stock move lines concerned by cut off" model="com.axelor.apps.stock.db.StockMoveLine">
+    title="Stock move lines concerned cut off" model="com.axelor.apps.stock.db.StockMoveLine">
     <view type="grid" name="stock-move-line-cut-off-grid"/>
     <view type="form" name="stock-move-line-form"/>
-    <domain>
-      (self.qtyInvoiced = 0 OR self.qtyInvoiced &lt;&gt; self.realQty)
-      AND
-      (self.product IS NULL
-      OR (:_includeNotStockManagedProduct IS TRUE AND (self.product.stockManaged IS FALSE OR
-      self.product.stockManaged IS TRUE))
-      OR (:_includeNotStockManagedProduct IS FALSE AND
-      self.product.stockManaged IS TRUE))
-      AND
-      self.stockMove.invoicingStatusSelect &lt;&gt; 2
-      AND
-      self.stockMove.statusSelect = 3
-      AND
-      ((:_accountingCutOffTypeSelect = 1 AND
-      self.stockMove.typeSelect = 3)
-      OR
-      (:_accountingCutOffTypeSelect = 2 AND
-      self.stockMove.typeSelect = 2))
-      AND
-      self.stockMove.realDate &lt;= :_moveDate
-      AND
-      self.stockMove.company.id =
-      :_company
+    <domain><![CDATA[(self.qtyInvoiced = 0 OR self.qtyInvoiced != self.realQty)
+      AND (self.product IS NULL
+          OR (:_includeNotStockManagedProduct IS TRUE AND (self.product.stockManaged IS NOT NULL))
+          OR (:_includeNotStockManagedProduct IS FALSE
+              AND self.product.stockManaged IS TRUE))
+      AND self.stockMove.invoicingStatusSelect != 2
+      AND self.stockMove.statusSelect = 3
+      AND ((:_accountingCutOffTypeSelect = 1
+          AND self.stockMove.typeSelect = 3)
+          OR (:_accountingCutOffTypeSelect = 2
+              AND self.stockMove.typeSelect = 2))
+      AND self.stockMove.realDate <= :_moveDate
+      AND self.stockMove.company.id = :_company
+      AND ((:_ati = false
+          AND (:_lowerAmountLimit <= 0.0
+              OR self.stockMove.exTaxTotal >= :_lowerAmountLimit)
+          AND (:_upperAmountLimit <= 0.0
+              OR self.stockMove.exTaxTotal <= :_upperAmountLimit))
+          OR (:_ati = true
+              AND (:_lowerAmountLimit <= 0.0
+                OR EXISTS (SELECT stockMoveLine.stockMove FROM StockMoveLine stockMoveLine
+                     WHERE stockMoveLine.stockMove = self.stockMove
+                     GROUP BY stockMoveLine.stockMove HAVING SUM(stockMoveLine.unitPriceTaxed * stockMoveLine.realQty) >= :_lowerAmountLimit))
+              AND (:_upperAmountLimit <= 0.0
+               OR EXISTS (SELECT stockMoveLine.stockMove FROM StockMoveLine stockMoveLine
+                     WHERE stockMoveLine.stockMove = self.stockMove
+                     GROUP BY stockMoveLine.stockMove HAVING SUM(stockMoveLine.unitPriceTaxed * stockMoveLine.realQty) <= :_upperAmountLimit))))]]>
     </domain>
     <context name="_company" expr="eval: company.id"/>
     <context name="_moveDate" expr="eval: moveDate"/>
@@ -102,6 +112,9 @@
     <context name="_ati" expr="eval: ati"/>
     <context name="_recoveredTax" expr="eval: recoveredTax"/>
     <context name="_batchId" expr="eval: id"/>
+    <context name="_lowerAmountLimit" expr="eval: lowerAmountLimit"/>
+    <context name="_upperAmountLimit" expr="eval: upperAmountLimit"/>
+    <context name="_ati" expr="eval: ati"/>
   </action-view>
 
   <action-view name="action-batch-show-stock-move" title="Stock moves"

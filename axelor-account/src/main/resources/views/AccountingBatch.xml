@@ -41,14 +41,6 @@
       <field name="archived" title="Archived"/>
       <field name="paymentMode.typeSelect"/>
       <field name="paymentMode.inOutSelect"/>
-      <help colSpan="12">
-        <![CDATA[
-        	The limits can be used to avoid retrieving undesired records et fonctionnent en inclus-inclus. If the field is empty or displays 0.00, the limit(s) will not apply.
-        ]]>
-      </help>
-      <field name="lowerAmountLimit" validIf="lowerAmountLimit >= 0"/>
-      <field name="upperAmountLimit"
-        validIf="upperAmountLimit >= lowerAmountLimit || upperAmountLimit == 0"/>
     </panel>
     <panel-tabs name="mainPanelTab">
       <panel name="reimbursementPagePanel" title="Reimbursement configuration"
@@ -330,17 +322,23 @@
   <action-group name="action-accounting-batch-group-accounting-cut-off">
     <action name="save"/>
     <action name="action-accounting-batch-validate-cut-off-move-status"/>
-    <action name="action-accounting-batch-group-accounting-cut-off-preview-records-to-process" if="previewRecordsToProcess"/>
-    <action name="action-accounting-batch-group-accounting-cut-off-not-preview-records-to-process" if="!previewRecordsToProcess"/>
+    <action
+      name="action-accounting-batch-group-accounting-cut-off-preview-records-to-process"
+      if="previewRecordsToProcess"/>
+    <action
+      name="action-accounting-batch-group-accounting-cut-off-not-preview-records-to-process"
+      if="!previewRecordsToProcess"/>
   </action-group>
 
-  <action-group name="action-accounting-batch-group-accounting-cut-off-preview-records-to-process">
+  <action-group
+    name="action-accounting-batch-group-accounting-cut-off-preview-records-to-process">
     <action name="action-accounting-batch-method-compute-move-line-cut-off-fields"
-            if="[3,4].contains(accountingCutOffTypeSelect)"/>
+      if="[3,4].contains(accountingCutOffTypeSelect)"/>
     <action name="action-accounting-batch-view-preview-move-lines-to-process"/>
   </action-group>
 
-  <action-group name="action-accounting-batch-group-accounting-cut-off-not-preview-records-to-process">
+  <action-group
+    name="action-accounting-batch-group-accounting-cut-off-not-preview-records-to-process">
     <action name="action-accounting-batch-validate-twice-in-a-month"/>
     <action name="action-accounting-batch-method-accounting-cut-off"/>
   </action-group>
