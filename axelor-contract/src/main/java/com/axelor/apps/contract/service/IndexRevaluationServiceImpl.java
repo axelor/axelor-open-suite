@@ -39,7 +39,7 @@ public class IndexRevaluationServiceImpl implements IndexRevaluationService {
                 new AxelorException(
                     TraceBackRepository.CATEGORY_NO_VALUE,
                     I18n.get(ContractExceptionMessage.CONTRACT_INDEX_VALUE_NO_DATA),
-                    IndexValue.class));
+                    date.toString()));
   }
 
   @Override

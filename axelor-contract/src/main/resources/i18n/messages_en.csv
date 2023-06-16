@@ -137,7 +137,7 @@
 "Linked invoice",,,
 "Manage invoices",,,
 "Meta file",,,
-"Missing index value for this date",,,
+"Missing index value for this date : %s",,,
 "Missing revaluation period for this contract.",,,
 "Name",,,
 "New version",,,

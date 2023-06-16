@@ -137,7 +137,7 @@
 "Linked invoice","Facture liée",,
 "Manage invoices","Gestion de la facturation",,
 "Meta file","Fichier méta",,
-"Missing index value for this date","Il manque une valeur d'indice pour cette date",,
+"Missing index value for this date : %s","Il manque une valeur d'indice pour cette date",,
 "Missing revaluation period for this contract.","Il manque une période de revalorisation pour ce contrat.",,
 "Name","Nom",,
 "New version","Nouvelle version",,

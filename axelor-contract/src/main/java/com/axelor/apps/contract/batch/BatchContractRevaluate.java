@@ -122,9 +122,10 @@ public class BatchContractRevaluate extends BatchStrategy {
     LocalDate lastRevaluationDate = contract.getLastRevaluationDate();
 
     if (launchBatch(todayDate, contract)) {
+      contract = contractRevaluationService.applyFormula(contract);
       contract.setLastRevaluationDate(todayDate);
       contract.setNextRevaluationDate(computeNextRevaluationDate(contract, todayDate));
-      contract = contractRevaluationService.applyFormula(contract);
+
       idsReevaluated.add(contract);
       incrementDone();
     } else if (nextRevaluationDate == null && lastRevaluationDate != null) {

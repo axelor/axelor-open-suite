@@ -47,7 +47,7 @@ public final class ContractExceptionMessage {
   public static final String CONTRACT_TERMINATE_WRONG_STATUS = /*$$(*/
       "Can only terminate ongoing contract." /*)*/;
   public static final String CONTRACT_INDEX_VALUE_NO_DATA = /*$$(*/
-      "Missing index value for this date" /*)*/;
+      "Missing index value for this date : %s" /*)*/;
 
   public static final String CONTRACT_FORMULA_ERROR_IN_FORMULA = /*$$(*/
       "There is an error in the formula." /*)*/;
