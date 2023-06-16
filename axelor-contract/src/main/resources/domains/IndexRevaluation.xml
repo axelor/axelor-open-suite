@@ -9,7 +9,7 @@
     <string name="code" title="Code" required="true"/>
     <string name="name" title="Name"/>
     <one-to-many name="indexValueList" ref="com.axelor.apps.contract.db.IndexValue"
-      required="true" mappedBy="indexRevaluation" title="Index value list"/>
+      mappedBy="indexRevaluation" title="Index value list"/>
   </entity>
 
 </domain-models>
