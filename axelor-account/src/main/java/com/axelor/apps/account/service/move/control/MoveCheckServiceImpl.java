@@ -240,15 +240,17 @@ public class MoveCheckServiceImpl implements MoveCheckService {
   @Override
   public void checkCurrencyAmountSum(Move move) throws AxelorException {
     List<MoveLine> moveLineList = move.getMoveLineList();
-    if (CollectionUtils.isEmpty(moveLineList)
-        || moveLineList.stream()
-                .map(MoveLine::getCurrencyAmount)
-                .reduce(BigDecimal.ZERO, BigDecimal::add)
-                .compareTo(BigDecimal.ZERO)
-            != 0) {
+    if (CollectionUtils.isEmpty(moveLineList)) {
+      return;
+    }
+    if (moveLineList.stream()
+            .map(MoveLine::getCurrencyAmount)
+            .reduce(BigDecimal.ZERO, BigDecimal::add)
+            .compareTo(BigDecimal.ZERO)
+        != 0) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get("The sum of the currency amounts is not 0"));
+          I18n.get(AccountExceptionMessage.MOVE_CHECK_CURRENCY_AMOUNT_SUM));
     }
   }
 }
