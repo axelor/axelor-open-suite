@@ -610,18 +610,18 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       boolean out,
       boolean isGlobal)
       throws AxelorException {
-
     for (LocalDate accountingDate : moveDateMap.keySet()) {
 
       Map<Partner, List<Move>> moveMapIt = moveDateMap.get(accountingDate);
-
       if (!moveMapIt.isEmpty()) {
         this.generateCashMoveLines(paymentSession, moveMapIt, paymentAmountMap, out, isGlobal);
 
         if (isGlobal && moveDateMap != null && moveDateMap.get(accountingDate) != null) {
           BigDecimal paymentAmount = BigDecimal.ZERO;
           for (Move move : paymentAmountMap.keySet()) {
-            paymentAmount = paymentAmount.add(paymentAmountMap.get(move));
+            if (accountingDate == null || accountingDate.equals(move.getDate())) {
+              paymentAmount = paymentAmount.add(paymentAmountMap.get(move));
+            }
           }
           this.generateCashMove(paymentSession, accountingDate, paymentAmount, out);
         }
