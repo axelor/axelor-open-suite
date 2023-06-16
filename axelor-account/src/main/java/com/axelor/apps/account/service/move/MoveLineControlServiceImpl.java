@@ -26,6 +26,7 @@ import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
@@ -142,7 +143,12 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
   protected boolean compareInvoiceTermAmountSumToTotal(
       List<InvoiceTerm> invoiceTermList, BigDecimal total) {
     return invoiceTermList.stream()
-            .map(InvoiceTerm::getAmount)
+            .map(
+                it ->
+                    it.getPfpValidateStatusSelect()
+                            == InvoiceTermRepository.PFP_STATUS_PARTIALLY_VALIDATED
+                        ? it.getInitialPfpAmount()
+                        : it.getAmount())
             .reduce(BigDecimal.ZERO, BigDecimal::add)
             .compareTo(total)
         != 0;
@@ -169,7 +175,12 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
     total = total.setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
     BigDecimal invoiceTermTotal =
         invoiceTermList.stream()
-            .map(it -> isCompanyAmount ? it.getCompanyAmount() : it.getAmount())
+            .map(
+                it ->
+                    it.getPfpValidateStatusSelect()
+                            == InvoiceTermRepository.PFP_STATUS_PARTIALLY_VALIDATED
+                        ? it.getInitialPfpAmount()
+                        : (isCompanyAmount ? it.getCompanyAmount() : it.getAmount()))
             .reduce(BigDecimal.ZERO, BigDecimal::add);
 
     if (invoiceTermTotal.compareTo(total) != 0) {

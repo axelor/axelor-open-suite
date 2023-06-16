@@ -1,0 +1,5 @@
+---
+title: "MOVE / PFP : can't account a move with a partial pfp"
+type: fix
+description: |
+  Ignore error messages for invoice terms with partial pfp
