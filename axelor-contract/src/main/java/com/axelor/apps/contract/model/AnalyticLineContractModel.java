@@ -35,6 +35,7 @@ public class AnalyticLineContractModel extends AnalyticLineModel {
     this.axis3AnalyticAccount = contractLine.getAxis3AnalyticAccount();
     this.axis4AnalyticAccount = contractLine.getAxis4AnalyticAccount();
     this.axis5AnalyticAccount = contractLine.getAxis5AnalyticAccount();
+    this.analyticDistributionTemplate = contractLine.getAnalyticDistributionTemplate();
 
     this.exTaxTotal = contractLine.getExTaxTotal();
   }
