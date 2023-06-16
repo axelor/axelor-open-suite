@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.stock.service;
 
@@ -557,9 +558,8 @@ public class InventoryService {
     List<StockMove> stockMoveList =
         stockMoveRepo
             .all()
-            .filter("self.originTypeSelect = :originTypeSelect AND self.originId = :originId")
-            .bind("originTypeSelect", StockMoveRepository.ORIGIN_INVENTORY)
-            .bind("originId", inventory.getId())
+            .filter("self.inventory.id = :inventoryId")
+            .bind("inventoryId", inventory.getId())
             .fetch();
 
     for (StockMove stockMove : stockMoveList) {
@@ -704,12 +704,12 @@ public class InventoryService {
 
     stockMove.setName(inventorySeq);
 
-    stockMove.setOriginTypeSelect(StockMoveRepository.ORIGIN_INVENTORY);
-    stockMove.setOriginId(inventory.getId());
+    stockMove.setInventory(inventory);
     stockMove.setOrigin(inventorySeq);
 
     for (InventoryLine inventoryLine : inventoryLineList) {
-      generateStockMoveLines(inventoryLine, stockMove, isEnteringStock);
+      generateStockMoveLines(
+          inventoryLine, stockMove, isEnteringStock, fromStockLocation, toStockLocation);
     }
     if (stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()) {
 
@@ -730,7 +730,11 @@ public class InventoryService {
    * @throws AxelorException
    */
   protected void generateStockMoveLines(
-      InventoryLine inventoryLine, StockMove stockMove, boolean isEnteringStock)
+      InventoryLine inventoryLine,
+      StockMove stockMove,
+      boolean isEnteringStock,
+      StockLocation fromStockLocation,
+      StockLocation toStockLocation)
       throws AxelorException {
     Product product = inventoryLine.getProduct();
     TrackingNumber trackingNumber = inventoryLine.getTrackingNumber();
@@ -741,7 +745,7 @@ public class InventoryService {
     if (diff.signum() > 0) {
       BigDecimal avgPrice;
       StockLocationLine stockLocationLine =
-          stockLocationLineService.getStockLocationLine(stockMove.getToStockLocation(), product);
+          stockLocationLineService.getStockLocationLine(toStockLocation, product);
       if (stockLocationLine != null) {
         avgPrice = stockLocationLine.getAvgPrice();
       } else {
@@ -760,7 +764,9 @@ public class InventoryService {
               stockMove,
               StockMoveLineService.TYPE_NULL,
               false,
-              BigDecimal.ZERO);
+              BigDecimal.ZERO,
+              fromStockLocation,
+              toStockLocation);
       if (stockMoveLine == null) {
         throw new AxelorException(
             inventoryLine.getInventory(),
@@ -1022,13 +1028,7 @@ public class InventoryService {
   }
 
   public List<StockMove> findStockMoves(Inventory inventory) {
-    return stockMoveRepo
-        .all()
-        .filter(
-            "self.originTypeSelect = ?1 AND self.originId = ?2",
-            StockMoveRepository.ORIGIN_INVENTORY,
-            inventory.getId())
-        .fetch();
+    return stockMoveRepo.all().filter("self.inventory.id = ?2", inventory.getId()).fetch();
   }
 
   public String computeTitle(Inventory entity) {

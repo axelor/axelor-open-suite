@@ -19,8 +19,8 @@
   </grid>
 
   <form name="contract-line-form" title="Contract line"
-    model="com.axelor.apps.contract.db.ContractLine" onNew="action-contract-line-group-edit-view"
-    onLoad="action-contract-line-group-edit-view">
+    model="com.axelor.apps.contract.db.ContractLine" onNew="action-contract-line-group-onnew"
+    onLoad="action-contract-line-group-onload">
 
     <panel-tabs name="mainPanelTab">
       <panel name="informationsPanel" title="Information">
@@ -32,11 +32,20 @@
           onChange="action-method-contract-line-compute-total"/>
         <field name="initialUnitPrice" readonly="true"/>
         <field name="price" onChange="action-method-contract-line-compute-total"/>
+        <panel name="discountPanel" colSpan="12">
+          <field name="discountTypeSelect" colSpan="3"
+            onChange="action-method-contract-line-compute-total"/>
+          <field name="discountAmount" hideIf="discountTypeSelect == 0" colSpan="3"
+            onChange="action-method-contract-line-compute-total"/>
+          <field name="priceDiscounted" hideIf="discountTypeSelect == 0" readonly="true"
+            colSpan="3" showIf="priceDiscounted != 0"/>
+        </panel>
         <field name="taxLine" canEdit="false"
           onChange="action-method-contract-line-compute-total"/>
         <field name="unit" canEdit="false"/>
         <field name="exTaxTotal" readonly="true"/>
         <field name="inTaxTotal" readonly="true"/>
+
         <field name="isConsumptionLine" hidden="true"
           onChange="action-method-contract-line-change-is-consumption-line,action-method-contract-line-compute-total"/>
         <field name="isInvoiced" readonly="true" showIf="isInvoiced"/>
@@ -62,6 +71,9 @@
           form-view="analytic-move-line-distribution-form" colSpan="12"
           onChange="action-analytic-move-line-group-analytic-move-line-list-onchange"/>
         <field name="$isValidAnalyticMoveLineList" type="boolean" hidden="true"/>
+      </panel>
+      <panel name="datePanel" title="Date" hidden="true">
+        <field name="fromDate" onChange="action-method-contract-line-check-from-date"/>
       </panel>
     </panel-tabs>
   </form>
@@ -110,12 +122,6 @@
     <attribute name="scale" for="price"
       expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
   </action-attrs>
-
-  <action-group name="action-contract-line-group-edit-view">
-    <action name="action-contract-line-attrs-hide-consumption-line"/>
-    <action name="action-contract-line-attrs-scale-and-precision"/>
-    <action name="action-contract-line-attrs-hide-is-to-revaluate"/>
-  </action-group>
 
   <grid name="additional-contract-line-grid" title="Additional benefit lines"
     model="com.axelor.apps.contract.db.ContractLine">
@@ -220,5 +226,32 @@
       <field name="description" colSpan="12" widget="html"/>
     </panel>
   </form>
+
+  <action-method name="action-method-contract-line-fill-default">
+    <call class="com.axelor.apps.contract.web.ContractLineController" method="fillDefault"/>
+  </action-method>
+  <action-method name="action-method-contract-line-check-from-date">
+    <call class="com.axelor.apps.contract.web.ContractLineController" method="checkFromDate"/>
+  </action-method>
+
+  <action-group name="action-contract-line-group-onnew">
+    <action name="action-method-contract-line-fill-default"/>
+    <action name="action-contract-line-group-edit-view"/>
+  </action-group>
+
+  <action-group name="action-contract-line-group-onload">
+    <action name="action-contract-line-group-edit-view"/>
+  </action-group>
+
+  <action-group name="action-contract-line-group-edit-view">
+    <action name="action-contract-line-attrs-hide-consumption-line"/>
+    <action name="action-contract-line-attrs-scale-and-precision"/>
+    <action name="action-contract-line-method-hide-date-panel"/>
+    <action name="action-contract-line-attrs-hide-is-to-revaluate"/>
+  </action-group>
+
+  <action-method name="action-contract-line-method-hide-date-panel">
+    <call class="com.axelor.apps.contract.web.ContractLineController" method="hideDatePanel"/>
+  </action-method>
 
 </object-views>

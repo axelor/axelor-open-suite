@@ -28,10 +28,9 @@
     <integer name="statusSelect" title="Status" default="1" readonly="true"
       selection="iaccount.move.status.select"/>
     <boolean name="rejectOk" title="Rejection" default="false"/>
-    <boolean name="getInfoFromFirstMoveLineOk" title="Get information from 1st Move line"
-      default="true"/>
     <string name="exportNumber" title="Accounting Export N°"/>
     <date name="exportDate" title="Export Date"/>
+    <date name="dueDate" title="Due date"/>
     <boolean name="accountingOk" title="Exported" default="false"/>
     <many-to-one name="accountingReport"
       ref="com.axelor.apps.account.db.AccountingReport" title="Accounting Export"/>
@@ -85,6 +84,7 @@
     <integer name="massEntryStatusSelect" title="Status" default="0"
       selection="iaccount.move.mass.entry.status.select"/>
     <string name="massEntryErrors" title="Error list"/>
+    <boolean name="massEntryManageCutOff" title="Manage Cut off period"/>
     <unique-constraint columns="reference,company"/>
 
     <finder-method name="findByPaymentVoucher" using="paymentVoucher" all="true"/>
@@ -103,6 +103,7 @@
 		public static final int TECHNICAL_ORIGIN_AUTOMATIC = 2;
 		public static final int TECHNICAL_ORIGIN_TEMPLATE = 3;
 		public static final int TECHNICAL_ORIGIN_IMPORT = 4;
+		public static final int TECHNICAL_ORIGIN_MASS_ENTRY = 5;
 
 		// REVERSE DATE OF REVERSION
 		public static final int DATE_OF_REVERSION_TODAY = 1;
@@ -134,19 +135,19 @@
 	]]></extra-code>
 
     <track>
-      <field name="statusSelect"/>
-      <field name="journal"/>
+      <field name="statusSelect" on="UPDATE"/>
+      <field name="journal" on="UPDATE"/>
       <field name="reference"/>
-      <field name="period"/>
-      <field name="partner"/>
+      <field name="period" on="UPDATE"/>
+      <field name="partner" on="UPDATE"/>
       <field name="fiscalPosition" on="UPDATE"/>
-      <field name="currency"/>
-      <field name="companyCurrency"/>
-      <field name="ignoreInAccountingOk"/>
-      <field name="ignoreInDebtRecoveryOk"/>
-      <field name="originDate"/>
-      <field name="origin"/>
-      <field name="description"/>
+      <field name="currency" on="UPDATE"/>
+      <field name="companyCurrency" on="UPDATE"/>
+      <field name="ignoreInAccountingOk" on="UPDATE"/>
+      <field name="ignoreInDebtRecoveryOk" on="UPDATE"/>
+      <field name="originDate" on="UPDATE"/>
+      <field name="origin" on="UPDATE"/>
+      <field name="description" on="UPDATE"/>
       <field name="pfpValidatorUser" on="UPDATE"/>
       <field name="pfpValidateStatusSelect" on="UPDATE"/>
       <field name="reasonOfRefusalToPay" on="UPDATE"/>

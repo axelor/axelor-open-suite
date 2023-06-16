@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.project.service;
 
@@ -190,7 +191,6 @@ public class ProjectServiceImpl implements ProjectService {
     } else {
       builder.add("kanban", "project-task-kanban");
       builder.add("calendar", "project-task-per-status-calendar");
-      builder.param("kanban-hide-columns", getStatusColumnsTobeExcluded(project));
     }
 
     if (ObjectUtils.notEmpty(context)) {
@@ -274,8 +274,7 @@ public class ProjectServiceImpl implements ProjectService {
             .add("kanban", "project-task-kanban")
             .add("grid", "project-task-grid")
             .add("form", "project-task-form")
-            .domain("self.typeSelect = :_typeSelect AND self.project = :_project")
-            .param("kanban-hide-columns", getStatusColumnsTobeExcluded(project));
+            .domain("self.typeSelect = :_typeSelect AND self.project = :_project");
 
     if (ObjectUtils.notEmpty(context)) {
       context.forEach(builder::context);
@@ -311,17 +310,6 @@ public class ProjectServiceImpl implements ProjectService {
     return task;
   }
 
-  protected String getStatusColumnsTobeExcluded(Project project) {
-    return projectStatusRepository
-        .all()
-        .filter("self not in :allowedProjectTaskStatus")
-        .bind("allowedProjectTaskStatus", project.getProjectTaskStatusSet())
-        .fetchStream()
-        .map(ProjectStatus::getId)
-        .map(String::valueOf)
-        .collect(Collectors.joining(","));
-  }
-
   @Override
   public String getTimeZone(Project project) {
     return null;
@@ -329,11 +317,7 @@ public class ProjectServiceImpl implements ProjectService {
 
   @Override
   public ProjectStatus getDefaultProjectStatus() {
-    return projectStatusRepository
-        .all()
-        .filter("self.relatedToSelect = ?1", ProjectStatusRepository.PROJECT_STATUS_PROJECT)
-        .order("sequence")
-        .fetchOne();
+    return projectStatusRepository.all().order("sequence").fetchOne();
   }
 
   public boolean checkIfResourceBooked(Project project) {

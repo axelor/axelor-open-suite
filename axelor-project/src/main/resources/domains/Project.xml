@@ -42,8 +42,6 @@
 
     <decimal name="estimatedTimeHrs" title="Estimated time (in hours)"/>
 
-    <decimal name="timeSpent" title="Time Spent"/>
-
     <decimal name="sequence" title="Sequence"/>
     <integer name="orderByState"/>
 
@@ -73,7 +71,7 @@
     <!-- Configuration fields -->
     <boolean name="isShowStatus" title="Status?" default="true"/>
     <many-to-many name="projectTaskStatusSet"
-      ref="com.axelor.apps.project.db.ProjectStatus" title="Type of authorized status"/>
+      ref="com.axelor.apps.project.db.TaskStatus" title="Type of authorized status"/>
     <boolean name="isShowPriority" title="Priorities?" default="true"/>
     <many-to-many name="projectTaskPrioritySet"
       ref="com.axelor.apps.project.db.ProjectPriority" title="Type of authorized priorities"/>

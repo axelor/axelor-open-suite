@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,12 +14,13 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.production.service.operationorder;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BarcodeTypeConfig;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.DayPlanning;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.BarcodeGeneratorService;
@@ -36,6 +38,7 @@ import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
+import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
@@ -63,10 +66,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class OperationOrderServiceImpl implements OperationOrderService {
+  protected BarcodeGeneratorService barcodeGeneratorService;
 
-  @Inject protected BarcodeGeneratorService barcodeGeneratorService;
+  protected AppProductionService appProductionService;
 
-  @Inject protected AppProductionService appProductionService;
+  protected ManufOrderStockMoveService manufOrderStockMoveService;
+
+  @Inject
+  public OperationOrderServiceImpl(
+      BarcodeGeneratorService barcodeGeneratorService,
+      AppProductionService appProductionService,
+      ManufOrderStockMoveService manufOrderStockMoveService) {
+    this.barcodeGeneratorService = barcodeGeneratorService;
+    this.appProductionService = appProductionService;
+    this.manufOrderStockMoveService = manufOrderStockMoveService;
+  }
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -167,14 +181,19 @@ public class OperationOrderServiceImpl implements OperationOrderService {
   }
 
   @Override
-  public void createToConsumeProdProductList(OperationOrder operationOrder) {
+  public void createToConsumeProdProductList(OperationOrder operationOrder) throws AxelorException {
 
     BigDecimal manufOrderQty = operationOrder.getManufOrder().getQty();
     BigDecimal bomQty = operationOrder.getManufOrder().getBillOfMaterial().getQty();
     ProdProcessLine prodProcessLine = operationOrder.getProdProcessLine();
 
-    if (prodProcessLine.getToConsumeProdProductList() != null) {
+    if (prodProcessLine == null) {
 
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          I18n.get(ProductionExceptionMessage.PRODUCTION_PROCESS_IS_EMPTY));
+    }
+    if (prodProcessLine.getToConsumeProdProductList() != null) {
       for (ProdProduct prodProduct : prodProcessLine.getToConsumeProdProductList()) {
 
         BigDecimal qty =
@@ -465,7 +484,13 @@ public class OperationOrderServiceImpl implements OperationOrderService {
   public void updateConsumedStockMoveFromOperationOrder(OperationOrder operationOrder)
       throws AxelorException {
     this.updateDiffProdProductList(operationOrder);
+    ManufOrder manufOrder = operationOrder.getManufOrder();
+    Company company = manufOrder.getCompany();
     List<StockMoveLine> consumedStockMoveLineList = operationOrder.getConsumedStockMoveLineList();
+    StockLocation fromStockLocation =
+        manufOrderStockMoveService.getFromStockLocationForConsumedStockMove(manufOrder, company);
+    StockLocation virtualStockLocation =
+        manufOrderStockMoveService.getVirtualStockLocationForConsumedStockMove(manufOrder, company);
     if (consumedStockMoveLineList == null) {
       return;
     }
@@ -480,7 +505,7 @@ public class OperationOrderServiceImpl implements OperationOrderService {
       stockMove =
           Beans.get(ManufOrderStockMoveService.class)
               ._createToConsumeStockMove(
-                  operationOrder.getManufOrder(), operationOrder.getManufOrder().getCompany());
+                  manufOrder, company, fromStockLocation, virtualStockLocation);
       operationOrder.addInStockMoveListItem(stockMove);
       Beans.get(StockMoveService.class).plan(stockMove);
     }
