@@ -6,6 +6,16 @@
   <grid title="Project history" name="project-history-line-grid"
     model="com.axelor.apps.project.db.ProjectHistoryLine">
     <field name="createdOn" title="Date"/>
+    <field name="soldTime" title="Project.sold"/>
+    <field name="updatedTime" title="Project.updated"/>
+    <field name="plannedTime" title="Project.planned"/>
+    <field name="spentTime" title="Project.spent"/>
+    <field name="percentageOfProgress" title="% prog"/>
+    <field name="percentageOfConsumption" title="% consump"/>
+    <field name="remainingAmountToDo" title="TBD"/>
+    <field name="forecastCosts"/>
+    <field name="forecastMargin"/>
+    <field name="forecastMarkup"/>
   </grid>
 
   <form title="Project history" name="project-history-line-form"
@@ -67,7 +77,7 @@
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectHistoryData</dataset>
     <template>
       <![CDATA[
-        <i class='report-icon fa fa-calendar-check-o' style='font-size:30px;top:40px;'></i>
+        <i class='report-icon fa fa-calendar-check-o'></i>
         <div style='display:inline-block;'>
           <h1>{{first.soldTime}} <span style="font-size:20px;">{{first.unit}}</span></h1>
         </div>
@@ -80,7 +90,7 @@
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectHistoryData</dataset>
     <template>
       <![CDATA[
-        <i class='report-icon fa fa-refresh' style='font-size:30px;top:40px;'></i>
+        <i class='report-icon fa fa-refresh'></i>
         <div style='display:inline-block;'>
           <h1>{{first.updatedTime}} <span style="font-size:20px;">{{first.unit}}</span></h1>
         </div>
@@ -93,7 +103,7 @@
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectHistoryData</dataset>
     <template>
       <![CDATA[
-        <i class='report-icon fa fa-calendar' style='font-size:30px;top:40px;'></i>
+        <i class='report-icon fa fa-calendar'></i>
         <div style='display:inline-block;'>
           <h1>{{first.plannedTime}} <span style="font-size:20px;">{{first.unit}}</span></h1>
         </div>
@@ -106,7 +116,7 @@
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectHistoryData</dataset>
     <template>
       <![CDATA[
-        <i class='report-icon fa fa-hourglass-end' style='font-size:30px;top:40px;'></i>
+        <i class='report-icon fa fa-hourglass-end'></i>
         <div style='display:inline-block;'>
           <h1>{{first.spentTime}} <span style="font-size:20px;">{{first.unit}}</span></h1>
         </div>
@@ -119,7 +129,7 @@
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectHistoryData</dataset>
     <template>
       <![CDATA[
-        <i class='report-icon fa fa-line-chart' style='font-size:30px;top:40px;'></i>
+        <i class='report-icon fa fa-line-chart'></i>
         <div style='display:inline-block;'>
           <h1>{{first.progress}}</h1>
         </div>
@@ -132,7 +142,7 @@
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectHistoryData</dataset>
     <template>
       <![CDATA[
-        <i class='report-icon fa fa-hourglass-half' style='font-size:30px;top:40px;'></i>
+        <i class='report-icon fa fa-hourglass-half'></i>
         <div style='display:inline-block;'>
           <h1>{{first.consumption}}</h1>
         </div>
@@ -145,7 +155,7 @@
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectHistoryData</dataset>
     <template>
       <![CDATA[
-        <i class='report-icon fa fa-tasks' style='font-size:30px;top:40px;'></i>
+        <i class='report-icon fa fa-tasks'></i>
         <div style='display:inline-block;'>
           <h1>{{first.remaining}} <span style="font-size:20px;">{{first.unit}}</span></h1>
         </div>
@@ -159,7 +169,7 @@
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectHistoryData</dataset>
     <template>
       <![CDATA[
-        <i class='report-icon fa fa-euro' style='font-size:30px;top:40px;'></i>
+        <i class='report-icon fa fa-euro'></i>
         <div style='display:inline-block;'>
           <h1>{{first.turnover}}</h1>
         </div>
@@ -172,7 +182,7 @@
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectHistoryData</dataset>
     <template>
       <![CDATA[
-        <i class='report-icon fa fa-euro' style='font-size:30px;top:40px;'></i>
+        <i class='report-icon fa fa-euro'></i>
         <div style='display:inline-block;'>
           <h1>{{first.initialCosts}}</h1>
         </div>
@@ -185,7 +195,7 @@
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectHistoryData</dataset>
     <template>
       <![CDATA[
-        <i class='report-icon fa fa-euro' style='font-size:30px;top:40px;'></i>
+        <i class='report-icon fa fa-euro'></i>
         <div style='display:inline-block;'>
           <h1>{{first.initialMargin}}</h1>
         </div>
@@ -198,7 +208,7 @@
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectHistoryData</dataset>
     <template>
       <![CDATA[
-        <i class='report-icon fa fa-percent' style='font-size:30px;top:40px;'></i>
+        <i class='report-icon fa fa-percent'></i>
         <div style='display:inline-block;'>
           <h1>{{first.initialMarkup}}</h1>
         </div>
@@ -212,7 +222,7 @@
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectHistoryData</dataset>
     <template>
       <![CDATA[
-        <i class='report-icon fa fa-euro' style='font-size:30px;top:40px;'></i>
+        <i class='report-icon fa fa-euro'></i>
         <div style='display:inline-block;'>
           <h1>{{first.realTurnover}}</h1>
         </div>
@@ -225,7 +235,7 @@
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectHistoryData</dataset>
     <template>
       <![CDATA[
-        <i class='report-icon fa fa-euro' style='font-size:30px;top:40px;'></i>
+        <i class='report-icon fa fa-euro'></i>
         <div style='display:inline-block;'>
           <h1>{{first.realCosts}}</h1>
         </div>
@@ -238,7 +248,7 @@
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectHistoryData</dataset>
     <template>
       <![CDATA[
-        <i class='report-icon fa fa-euro' style='font-size:30px;top:40px;'></i>
+        <i class='report-icon fa fa-euro'></i>
         <div style='display:inline-block;'>
           <h1>{{first.realMargin}}</h1>
         </div>
@@ -251,7 +261,7 @@
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectHistoryData</dataset>
     <template>
       <![CDATA[
-        <i class='report-icon fa fa-percent' style='font-size:30px;top:40px;'></i>
+        <i class='report-icon fa fa-percent'></i>
         <div style='display:inline-block;'>
           <h1>{{first.realMarkup}}</h1>
         </div>
@@ -266,7 +276,7 @@
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectHistoryData</dataset>
     <template>
       <![CDATA[
-        <i class='report-icon fa fa-euro' style='font-size:30px;top:40px;'></i>
+        <i class='report-icon fa fa-euro'></i>
         <div style='display:inline-block;'>
           <h1>{{first.forecastCosts}}</h1>
         </div>
@@ -279,7 +289,7 @@
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectHistoryData</dataset>
     <template>
       <![CDATA[
-        <i class='report-icon fa fa-euro' style='font-size:30px;top:40px;'></i>
+        <i class='report-icon fa fa-euro'></i>
         <div style='display:inline-block;'>
           <h1>{{first.forecastMargin}}</h1>
         </div>
@@ -292,7 +302,7 @@
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectHistoryData</dataset>
     <template>
       <![CDATA[
-        <i class='report-icon fa fa-percent' style='font-size:30px;top:40px;'></i>
+        <i class='report-icon fa fa-percent'></i>
         <div style='display:inline-block;'>
           <h1>{{first.forecastMarkup}}</h1>
         </div>

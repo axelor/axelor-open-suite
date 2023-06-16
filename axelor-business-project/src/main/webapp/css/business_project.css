@@ -1,7 +1,7 @@
 .dashlet-no-dropdown .dashlet-header li.dropdown {
     display: none;
 }
-.dashlet-no-dropdown .icon-equal:before{
+.report-box .icon-equal:before{
     content: "\003D";
     font-size: 24px;
     font-weight: bold;
@@ -9,9 +9,21 @@
 .dashlet-no-dropdown .fa-level-up{
     color: #079d07;
 }
+
 .dashlet-no-dropdown .fa-level-down{
-    color: #9d1e1e;
+    color: #cb2c2c;
 }
-.dashlet-no-dropdown.small{
-    zoom: 90%;
+
+.dashlet-no-dropdown.small .dashlet-body{
+    zoom: 80%;
+}
+
+.report-box.dashlet-no-dropdown .report-icon{
+    font-size:30px;
+    top:40px;
+}
+
+.report-box.dashlet-no-dropdown.small .report-icon{
+    font-size:30px;
+    top:48px;
 }

@@ -107,7 +107,7 @@
           </panel>
           <panel name="projectHistoryPanel" title="Project history" colSpan="12">
             <field name="projectHistoryLineList" colSpan="12" canNew="false" canEdit="false"
-              canRemove="false" showTitle="false"/>
+              canRemove="false" title=""/>
           </panel>
         </panel>
       </insert>
