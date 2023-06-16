@@ -57,7 +57,7 @@
   </action-view>
 
   <menuitem name="all-extra-hours" parent="my-hr-root" title="All my Extra hours"
-    action="extra.hours.all" order="500" if="__config__.app.isApp('timesheet')"/>
+    action="extra.hours.all" order="500" if="__config__.app.isApp('exthrs')"/>
 
   <action-view name="extra.hours.all" model="com.axelor.apps.hr.db.ExtraHours"
     title="My Extra Hours">
