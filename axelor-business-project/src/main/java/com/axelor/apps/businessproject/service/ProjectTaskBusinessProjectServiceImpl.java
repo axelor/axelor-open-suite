@@ -115,8 +115,6 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     task.setInvoicingUnit(saleOrderLine.getUnit());
     task.setTimeUnit(saleOrderLine.getUnit());
     task.setCurrency(project.getClientPartner().getCurrency());
-    task.setProjectPlanningTimeList(new ArrayList<>());
-    task.setProjectTaskList(new ArrayList<>());
     if (project.getPriceList() != null) {
       PriceListLine line =
           priceListLineRepo.findByPriceListAndProduct(
@@ -164,6 +162,8 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
   @Override
   public ProjectTask create(String subject, Project project, User assignedTo) {
     ProjectTask task = super.create(subject, project, assignedTo);
+    task.setProjectTaskList(new ArrayList<>());
+    task.setProjectPlanningTimeList(new ArrayList<>());
     task.setTaskDate(appBaseService.getTodayDate(project.getCompany()));
     return task;
   }

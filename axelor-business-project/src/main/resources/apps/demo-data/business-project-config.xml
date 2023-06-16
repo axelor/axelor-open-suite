@@ -25,6 +25,16 @@
       eval="call:com.axelor.apps.base.service.app.AppBaseService:getTodayDate(null)"/>
   </input>
 
+  <input file="project_taskTemplate.csv" separator=";" search="self.importId = :importId"
+    type="com.axelor.apps.project.db.TaskTemplate"/>
+
+  <input file="base_product.csv" separator=";" search="self.importId = :importId"
+    type="com.axelor.apps.base.db.Product">
+    <bind to="taskTemplateSet" column="taskTemplateSet_importId"
+      search="self.importId in :taskTemplateSet_importId"
+      eval="taskTemplateSet_importId.split('\\|') as List"/>
+  </input>
+
   <input file="sale_saleOrder.csv" separator=";" search="self.importId = :importId"
     type="com.axelor.apps.sale.db.SaleOrder">
     <bind to="creationDate"
