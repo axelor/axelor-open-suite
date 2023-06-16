@@ -216,33 +216,34 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
   @Override
   public boolean validateAnalyticMoveLinesAccountUnicity(
       List<AnalyticMoveLine> analyticMoveLineList) {
-    if (analyticMoveLineList != null) {
-      List<AnalyticAccount> distinctAccount =
-          analyticMoveLineList.stream()
-              .map(it -> it.getAnalyticAccount())
-              .distinct()
-              .collect(Collectors.toList());
-      for (AnalyticAccount account : distinctAccount) {
-        if (!analyticMoveLineList.stream()
-            .collect(
-                Collectors.groupingBy(
-                    AnalyticMoveLine::getAnalyticAxis,
-                    Collectors.reducing(
-                        BigDecimal.ZERO,
-                        it ->
-                            (account.equals(it.getAnalyticAccount())
-                                ? BigDecimal.ONE
-                                : BigDecimal.ZERO),
-                        BigDecimal::add)))
-            .values()
-            .stream()
-            .allMatch(total -> total.compareTo(BigDecimal.ONE) <= 0)) {
-          return false;
-        }
-      }
-      return true;
+    if (analyticMoveLineList == null) {
+      return false;
     }
-    return false;
+
+    List<AnalyticAccount> distinctAccount =
+        analyticMoveLineList.stream()
+            .map(it -> it.getAnalyticAccount())
+            .distinct()
+            .collect(Collectors.toList());
+    for (AnalyticAccount account : distinctAccount) {
+      if (!analyticMoveLineList.stream()
+          .collect(
+              Collectors.groupingBy(
+                  AnalyticMoveLine::getAnalyticAxis,
+                  Collectors.reducing(
+                      BigDecimal.ZERO,
+                      it ->
+                          (account.equals(it.getAnalyticAccount())
+                              ? BigDecimal.ONE
+                              : BigDecimal.ZERO),
+                      BigDecimal::add)))
+          .values()
+          .stream()
+          .allMatch(total -> total.compareTo(BigDecimal.ONE) <= 0)) {
+        return false;
+      }
+    }
+    return true;
   }
 
   @Override
