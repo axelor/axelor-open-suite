@@ -328,7 +328,9 @@ public class BankOrderServiceImpl implements BankOrderService {
         Beans.get(PaymentSessionValidateService.class).processPaymentSession(paymentSession);
         bankOrder = bankOrderRepo.find(bankOrder.getId());
       }
-    } else if (bankOrder.getFunctionalOriginSelect().equals(BankOrderRepository.FUNCTIONAL_ORIGIN_INVOICE_PAYMENT)) {
+    } else if (bankOrder
+        .getFunctionalOriginSelect()
+        .equals(BankOrderRepository.FUNCTIONAL_ORIGIN_INVOICE_PAYMENT)) {
       this.validatePayment(bankOrder);
     } else {
       bankOrderMoveService.generateMoves(bankOrder);
