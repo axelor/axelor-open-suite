@@ -25,6 +25,7 @@ import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.service.fixedasset.factory.FixedAssetLineServiceFactory;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.common.ObjectUtils;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
@@ -62,9 +63,10 @@ public class FixedAssetLineGenerationServiceImpl implements FixedAssetLineGenera
   @Override
   public void generateAndComputeFixedAssetDerogatoryLines(FixedAsset fixedAsset) {
     Objects.requireNonNull(fixedAsset);
-    if (fixedAsset
-        .getDepreciationPlanSelect()
-        .contains(FixedAssetRepository.DEPRECIATION_PLAN_DEROGATION)) {
+    if (ObjectUtils.notEmpty(fixedAsset.getDepreciationPlanSelect())
+        && fixedAsset
+            .getDepreciationPlanSelect()
+            .contains(FixedAssetRepository.DEPRECIATION_PLAN_DEROGATION)) {
 
       List<FixedAssetDerogatoryLine> fixedAssetDerogatoryLineList =
           fixedAssetDerogatoryLineService.computePlannedFixedAssetDerogatoryLineList(fixedAsset);
@@ -96,9 +98,10 @@ public class FixedAssetLineGenerationServiceImpl implements FixedAssetLineGenera
   @Override
   public void generateAndComputeIfrsFixedAssetLines(FixedAsset fixedAsset) throws AxelorException {
     Objects.requireNonNull(fixedAsset);
-    if (fixedAsset
-        .getDepreciationPlanSelect()
-        .contains(FixedAssetRepository.DEPRECIATION_PLAN_IFRS)) {
+    if (ObjectUtils.notEmpty(fixedAsset.getDepreciationPlanSelect())
+        && fixedAsset
+            .getDepreciationPlanSelect()
+            .contains(FixedAssetRepository.DEPRECIATION_PLAN_IFRS)) {
       FixedAssetLineComputationService fixedAssetLineComputationService =
           fixedAssetLineServiceFactory.getFixedAssetComputationService(
               fixedAsset, FixedAssetLineRepository.TYPE_SELECT_IFRS);
@@ -126,9 +129,10 @@ public class FixedAssetLineGenerationServiceImpl implements FixedAssetLineGenera
   public void generateAndComputeFiscalFixedAssetLines(FixedAsset fixedAsset)
       throws AxelorException {
     Objects.requireNonNull(fixedAsset);
-    if (fixedAsset
-        .getDepreciationPlanSelect()
-        .contains(FixedAssetRepository.DEPRECIATION_PLAN_FISCAL)) {
+    if (ObjectUtils.notEmpty(fixedAsset.getDepreciationPlanSelect())
+        && fixedAsset
+            .getDepreciationPlanSelect()
+            .contains(FixedAssetRepository.DEPRECIATION_PLAN_FISCAL)) {
       FixedAssetLineComputationService fixedAssetLineComputationService =
           fixedAssetLineServiceFactory.getFixedAssetComputationService(
               fixedAsset, FixedAssetLineRepository.TYPE_SELECT_FISCAL);
@@ -154,9 +158,10 @@ public class FixedAssetLineGenerationServiceImpl implements FixedAssetLineGenera
   @Override
   public void generateAndComputeFixedAssetLines(FixedAsset fixedAsset) throws AxelorException {
     Objects.requireNonNull(fixedAsset);
-    if (fixedAsset
-        .getDepreciationPlanSelect()
-        .contains(FixedAssetRepository.DEPRECIATION_PLAN_ECONOMIC)) {
+    if (ObjectUtils.notEmpty(fixedAsset.getDepreciationPlanSelect())
+        && fixedAsset
+            .getDepreciationPlanSelect()
+            .contains(FixedAssetRepository.DEPRECIATION_PLAN_ECONOMIC)) {
       FixedAssetLineComputationService fixedAssetLineComputationService =
           fixedAssetLineServiceFactory.getFixedAssetComputationService(
               fixedAsset, FixedAssetLineRepository.TYPE_SELECT_ECONOMIC);

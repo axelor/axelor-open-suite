@@ -1,0 +1,3 @@
+---
+title: "Invoice : Fix  error when we ventilate an invoice with fixed asset without depreciation plan"
+type: fix
