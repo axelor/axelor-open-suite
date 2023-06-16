@@ -333,30 +333,6 @@ public class StockMoveServiceImpl implements StockMoveService {
       stockMove.setExTaxTotal(stockMoveToolService.compute(stockMove));
     }
 
-    StockLocation fromStockLocation = stockMove.getFromStockLocation();
-    StockLocation toStockLocation = stockMove.getToStockLocation();
-
-    if (fromStockLocation == null) {
-      throw new AxelorException(
-          stockMove,
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(StockExceptionMessage.STOCK_MOVE_5),
-          stockMove.getName());
-    }
-    if (toStockLocation == null) {
-      throw new AxelorException(
-          stockMove,
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(StockExceptionMessage.STOCK_MOVE_6),
-          stockMove.getName());
-    }
-
-    // Set the type select
-    if (stockMove.getTypeSelect() == null || stockMove.getTypeSelect() == 0) {
-      stockMove.setTypeSelect(
-          stockMoveToolService.getStockMoveType(fromStockLocation, toStockLocation));
-    }
-
     String draftSeq;
 
     // Set the sequence.
@@ -379,7 +355,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 
     setPlannedStatus(stockMove);
 
-    updateLocations(stockMove, fromStockLocation, toStockLocation, initialStatus);
+    updateLocations(stockMove, initialStatus);
 
     stockMove.setCancelReason(null);
 
@@ -400,23 +376,14 @@ public class StockMoveServiceImpl implements StockMoveService {
    * updating locations.
    *
    * @param stockMove
-   * @param fromStockLocation
-   * @param toStockLocation
    * @param initialStatus the initial status of the stock move.
    * @throws AxelorException
    */
   @Override
-  public void updateLocations(
-      StockMove stockMove,
-      StockLocation fromStockLocation,
-      StockLocation toStockLocation,
-      int initialStatus)
-      throws AxelorException {
+  public void updateLocations(StockMove stockMove, int initialStatus) throws AxelorException {
 
     copyPlannedStockMovLines(stockMove);
     stockMoveLineService.updateLocations(
-        fromStockLocation,
-        toStockLocation,
         initialStatus,
         StockMoveRepository.STATUS_PLANNED,
         stockMove.getPlannedStockMoveLineList(),
@@ -478,15 +445,12 @@ public class StockMoveServiceImpl implements StockMoveService {
     String newStockSeq = null;
     stockMoveLineService.checkTrackingNumber(stockMove);
     stockMoveLineService.checkConformitySelection(stockMove);
-    if (stockMove.getFromStockLocation().getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
-      stockMove.getStockMoveLineList().forEach(stockMoveLineService::fillRealizeWapPrice);
-    }
+    stockMove.getStockMoveLineList().forEach(stockMoveLineService::fillRealizeWapPrice);
+
     stockMoveLineService.checkExpirationDates(stockMove);
 
     setRealizedStatus(stockMove);
     stockMoveLineService.updateLocations(
-        stockMove.getFromStockLocation(),
-        stockMove.getToStockLocation(),
         initialStatus,
         StockMoveRepository.STATUS_CANCELED,
         stockMove.getPlannedStockMoveLineList(),
@@ -495,8 +459,6 @@ public class StockMoveServiceImpl implements StockMoveService {
         false);
 
     stockMoveLineService.updateLocations(
-        stockMove.getFromStockLocation(),
-        stockMove.getToStockLocation(),
         StockMoveRepository.STATUS_DRAFT,
         StockMoveRepository.STATUS_REALIZED,
         stockMove.getStockMoveLineList(),
@@ -579,13 +541,22 @@ public class StockMoveServiceImpl implements StockMoveService {
   protected void checkOngoingInventory(StockMove stockMove) throws AxelorException {
     List<StockLocation> stockLocationList = new ArrayList<>();
 
-    if (stockMove.getFromStockLocation().getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
-      stockLocationList.add(stockMove.getFromStockLocation());
-    }
-
-    if (stockMove.getToStockLocation().getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
-      stockLocationList.add(stockMove.getToStockLocation());
-    }
+    stockLocationList.addAll(
+        stockMove.getStockMoveLineList().stream()
+            .map(StockMoveLine::getFromStockLocation)
+            .filter(
+                stockLocation ->
+                    stockLocation.getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL)
+            .distinct()
+            .collect(Collectors.toList()));
+    stockLocationList.addAll(
+        stockMove.getStockMoveLineList().stream()
+            .map(StockMoveLine::getToStockLocation)
+            .filter(
+                stockLocation ->
+                    stockLocation.getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL)
+            .distinct()
+            .collect(Collectors.toList()));
 
     if (stockLocationList.isEmpty()) {
       return;
@@ -911,8 +882,6 @@ public class StockMoveServiceImpl implements StockMoveService {
     setCancelStatus(stockMove);
     if (initialStatus == StockMoveRepository.STATUS_PLANNED) {
       stockMoveLineService.updateLocations(
-          stockMove.getFromStockLocation(),
-          stockMove.getToStockLocation(),
           initialStatus,
           StockMoveRepository.STATUS_CANCELED,
           stockMove.getPlannedStockMoveLineList(),
@@ -921,8 +890,6 @@ public class StockMoveServiceImpl implements StockMoveService {
           false);
     } else {
       stockMoveLineService.updateLocations(
-          stockMove.getFromStockLocation(),
-          stockMove.getToStockLocation(),
           initialStatus,
           StockMoveRepository.STATUS_CANCELED,
           stockMove.getStockMoveLineList(),
@@ -1122,7 +1089,7 @@ public class StockMoveServiceImpl implements StockMoveService {
         stockMoveLineRepo
             .all()
             .filter(
-                "self.product.id = ?1 AND self.stockMove.toStockLocation.id = ?2 AND self.stockMove.statusSelect != ?3 AND (self.stockMove.estimatedDate <= ?4 OR self.stockMove.realDate <= ?4)",
+                "self.product.id = ?1 AND self.toStockLocation.id = ?2 AND self.stockMove.statusSelect != ?3 AND (self.stockMove.estimatedDate <= ?4 OR self.stockMove.realDate <= ?4)",
                 productId,
                 locationId,
                 StockMoveRepository.STATUS_CANCELED,
@@ -1133,7 +1100,7 @@ public class StockMoveServiceImpl implements StockMoveService {
         stockMoveLineRepo
             .all()
             .filter(
-                "self.product.id = ?1 AND self.stockMove.fromStockLocation.id = ?2 AND self.stockMove.statusSelect != ?3 AND (self.stockMove.estimatedDate <= ?4 OR self.stockMove.realDate <= ?4)",
+                "self.product.id = ?1 AND self.fromStockLocation.id = ?2 AND self.stockMove.statusSelect != ?3 AND (self.stockMove.estimatedDate <= ?4 OR self.stockMove.realDate <= ?4)",
                 productId,
                 locationId,
                 StockMoveRepository.STATUS_CANCELED,
@@ -1395,8 +1362,6 @@ public class StockMoveServiceImpl implements StockMoveService {
         Optional.ofNullable(stockMove.getStockMoveLineList()).orElse(new ArrayList<>());
 
     stockMoveLineService.updateLocations(
-        stockMove.getFromStockLocation(),
-        stockMove.getToStockLocation(),
         StockMoveRepository.STATUS_PLANNED,
         StockMoveRepository.STATUS_CANCELED,
         savedStockMoveLineList,
@@ -1405,8 +1370,6 @@ public class StockMoveServiceImpl implements StockMoveService {
         false);
 
     stockMoveLineService.updateLocations(
-        stockMove.getFromStockLocation(),
-        stockMove.getToStockLocation(),
         StockMoveRepository.STATUS_DRAFT,
         StockMoveRepository.STATUS_PLANNED,
         stockMoveLineList,
