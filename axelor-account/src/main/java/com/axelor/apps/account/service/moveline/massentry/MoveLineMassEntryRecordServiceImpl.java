@@ -89,4 +89,17 @@ public class MoveLineMassEntryRecordServiceImpl implements MoveLineMassEntryReco
                   == JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE)));
     }
   }
+
+  @Override
+  public void refreshAnalyticMoveLineMassEntryList(MoveLineMassEntry moveLine) {
+    if (ObjectUtils.notEmpty(moveLine.getAnalyticMoveLineList())) {
+      moveLine
+          .getAnalyticMoveLineList()
+          .forEach(
+              analyticMoveLine -> {
+                analyticMoveLine.setMoveLine(null);
+                moveLine.addAnalyticMoveLineMassEntryListItem(analyticMoveLine);
+              });
+    }
+  }
 }

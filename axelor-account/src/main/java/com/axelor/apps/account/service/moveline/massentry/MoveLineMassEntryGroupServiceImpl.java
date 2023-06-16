@@ -204,12 +204,13 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
             moveLineGroupService.getAnalyticDistributionTemplateOnChangeValuesMap(moveLine, move));
     moveLineInvoiceTermService.generateDefaultInvoiceTerm(move, moveLine, dueDate, false);
     moveLineMassEntryRecordService.setCutOff(moveLine);
+    moveLineMassEntryRecordService.refreshAnalyticMoveLineMassEntryList(moveLine);
 
     valuesMap.put("partner", moveLine.getPartner());
     valuesMap.put("cutOffStartDate", moveLine.getCutOffStartDate());
     valuesMap.put("cutOffEndDate", moveLine.getCutOffEndDate());
     valuesMap.put("isCutOffGenerated", moveLine.getCutOffEndDate());
-    valuesMap.put("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
+    valuesMap.put("analyticMoveLineMassEntryList", moveLine.getAnalyticMoveLineMassEntryList());
     valuesMap.put("taxLine", moveLine.getTaxLine());
     valuesMap.put("taxEquiv", moveLine.getTaxEquiv());
     valuesMap.put("analyticDistributionTemplate", moveLine.getAnalyticDistributionTemplate());

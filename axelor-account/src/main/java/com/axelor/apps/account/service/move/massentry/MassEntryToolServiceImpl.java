@@ -1,19 +1,23 @@
 package com.axelor.apps.account.service.move.massentry;
 
+import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.MoveLineMassEntry;
+import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveLineMassEntryRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryToolService;
 import com.axelor.common.ObjectUtils;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -111,6 +115,17 @@ public class MassEntryToolServiceImpl implements MassEntryToolService {
       moveLineResult.setVatSystemSelect(moveLine.getVatSystemSelect());
 
       moveLineMassEntryToolService.setAnalyticsFields(moveLineResult, moveLine);
+
+      if (CollectionUtils.isNotEmpty(moveLine.getAnalyticMoveLineList())) {
+        moveLineResult.clearAnalyticMoveLineMassEntryList();
+        for (AnalyticMoveLine analyticMoveLine : moveLine.getAnalyticMoveLineList()) {
+          AnalyticMoveLine copyAnalyticMoveLine =
+              Beans.get(AnalyticMoveLineRepository.class).copy(analyticMoveLine, false);
+          moveLineResult.addAnalyticMoveLineMassEntryListItem(copyAnalyticMoveLine);
+        }
+      } else {
+        moveLineResult.clearAnalyticMoveLineMassEntryList();
+      }
     }
 
     return moveLineResult;

@@ -1,8 +1,10 @@
 package com.axelor.apps.account.service.move.massentry;
 
+import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.MoveLineMassEntry;
+import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveLineMassEntryRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
@@ -21,6 +23,7 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -28,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateService {
 
@@ -124,7 +128,6 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
 
         moveLine.setTaxLine(moveLineElement.getTaxLine());
 
-        moveLineComputeAnalyticService.generateAnalyticMoveLines(moveLine);
         moveLineMassEntryToolService.setAnalyticsFields(moveLine, moveLineElement);
 
         counter++;
@@ -220,6 +223,17 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
         }
         massEntryLine.setFieldsErrorList(null);
         MoveLineMassEntry copy = moveLineMassEntryRepository.copy(massEntryLine, false);
+
+        if (CollectionUtils.isNotEmpty(massEntryLine.getAnalyticMoveLineMassEntryList())) {
+          copy.clearAnalyticMoveLineList();
+          for (AnalyticMoveLine analyticMoveLine :
+              massEntryLine.getAnalyticMoveLineMassEntryList()) {
+            AnalyticMoveLine copyAnalyticMoveLine =
+                Beans.get(AnalyticMoveLineRepository.class).copy(analyticMoveLine, false);
+            copy.addAnalyticMoveLineListItem(copyAnalyticMoveLine);
+          }
+        }
+
         move.addMoveLineListItem(copy);
         move.addMoveLineMassEntryListItem(copy);
       }

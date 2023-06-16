@@ -17,4 +17,6 @@ public interface MoveLineMassEntryRecordService {
   void setCutOff(MoveLineMassEntry moveLine);
 
   void refreshAccountInformation(MoveLine moveLine, Move move) throws AxelorException;
+
+  void refreshAnalyticMoveLineMassEntryList(MoveLineMassEntry moveLine);
 }
