@@ -4,15 +4,6 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <!-- time follow up -->
-  <action-attrs name="action-project-attrs-set-time-reporting-values">
-    <attribute for="$displayUnit" name="value" expr="eval: projectTimeUnit.name + '(s)'"
-      if="projectTimeUnit"/>
-    <attribute for="$displayProgress" name="value"
-      expr="eval: percentageOfProgress + ' %'"/>
-    <attribute for="$displayConsumption" name="value"
-      expr="eval: percentageOfConsumption + ' %'"/>
-  </action-attrs>
-
   <action-view name="action-project-view-sold-time-custom" title="Sold time">
     <view type="custom" name="project-sold-time-custom"/>
   </action-view>
@@ -140,7 +131,7 @@
       <![CDATA[
         <i class='report-icon fa fa-euro' style='font-size:30px;top:40px;'></i>
         <div style='display:inline-block;'>
-          <h1>{{first.turnover}}</h1>
+          <h1>{{first.turnover}} <i class="fa {{first.turnoverProgress}}"></i></h1>
         </div>
       ]]>
     </template>
@@ -153,7 +144,7 @@
       <![CDATA[
         <i class='report-icon fa fa-euro' style='font-size:30px;top:40px;'></i>
         <div style='display:inline-block;'>
-          <h1>{{first.initialCosts}}</h1>
+          <h1>{{first.initialCosts}} <i class="fa {{first.initialCostsProgress}}"></i></h1>
         </div>
       ]]>
     </template>
@@ -166,7 +157,7 @@
       <![CDATA[
         <i class='report-icon fa fa-euro' style='font-size:30px;top:40px;'></i>
         <div style='display:inline-block;'>
-          <h1>{{first.initialMargin}}</h1>
+          <h1>{{first.initialMargin}} <i class="fa {{first.initialMarginProgress}}"></i></h1>
         </div>
       ]]>
     </template>
@@ -179,7 +170,7 @@
       <![CDATA[
         <i class='report-icon fa fa-percent' style='font-size:30px;top:40px;'></i>
         <div style='display:inline-block;'>
-          <h1>{{first.initialMarkup}}</h1>
+          <h1>{{first.initialMarkup}} <i class="fa {{first.initialMarkupProgress}}"></i></h1>
         </div>
       ]]>
     </template>
@@ -193,7 +184,7 @@
       <![CDATA[
         <i class='report-icon fa fa-euro' style='font-size:30px;top:40px;'></i>
         <div style='display:inline-block;'>
-          <h1>{{first.realTurnover}}</h1>
+          <h1>{{first.realTurnover}} <i class="fa {{first.realTurnoverProgress}}"></i></h1>
         </div>
       ]]>
     </template>
@@ -206,7 +197,7 @@
       <![CDATA[
         <i class='report-icon fa fa-euro' style='font-size:30px;top:40px;'></i>
         <div style='display:inline-block;'>
-          <h1>{{first.realCosts}}</h1>
+          <h1>{{first.realCosts}} <i class="fa {{first.realCostsProgress}}"></i></h1>
         </div>
       ]]>
     </template>
@@ -219,7 +210,7 @@
       <![CDATA[
         <i class='report-icon fa fa-euro' style='font-size:30px;top:40px;'></i>
         <div style='display:inline-block;'>
-          <h1>{{first.realMargin}}</h1>
+          <h1>{{first.realMargin}} <i class="fa {{first.realMarginProgress}}"></i></h1>
         </div>
       ]]>
     </template>
@@ -232,7 +223,7 @@
       <![CDATA[
         <i class='report-icon fa fa-percent' style='font-size:30px;top:40px;'></i>
         <div style='display:inline-block;'>
-          <h1>{{first.realMarkup}}</h1>
+          <h1>{{first.realMarkup}} <i class="fa {{first.realMarkupProgress}}"></i></h1>
         </div>
       ]]>
     </template>
@@ -247,7 +238,7 @@
       <![CDATA[
         <i class='report-icon fa fa-euro' style='font-size:30px;top:40px;'></i>
         <div style='display:inline-block;'>
-          <h1>{{first.forecastCosts}}</h1>
+          <h1>{{first.forecastCosts}} <i class="fa {{first.forecastCostsProgress}}"></i></h1>
         </div>
       ]]>
     </template>
@@ -260,7 +251,7 @@
       <![CDATA[
         <i class='report-icon fa fa-euro' style='font-size:30px;top:40px;'></i>
         <div style='display:inline-block;'>
-          <h1>{{first.forecastMargin}}</h1>
+          <h1>{{first.forecastMargin}} <i class="fa {{first.forecastMarginProgress}}"></i></h1>
         </div>
       ]]>
     </template>
@@ -273,7 +264,7 @@
       <![CDATA[
         <i class='report-icon fa fa-percent' style='font-size:30px;top:40px;'></i>
         <div style='display:inline-block;'>
-          <h1>{{first.forecastMarkup}}</h1>
+          <h1>{{first.forecastMarkup}} <i class="fa {{first.forecastMarkupProgress}}"></i></h1>
         </div>
       ]]>
     </template>

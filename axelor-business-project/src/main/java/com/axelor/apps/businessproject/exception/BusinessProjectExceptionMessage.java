@@ -102,4 +102,7 @@ public final class BusinessProjectExceptionMessage {
       "Backup data to project history" /*)*/;
   public static final String BATCH_BACKUP_TO_PROJECT_HISTORY_ERROR = /*$$(*/
       "Error while trying to save to project history for project %s." /*)*/;
+
+  public static final String PROJECT_REPORT_NO_ID_FOUND = /*$$(*/
+      "Could not find the project id." /*)*/;
 }

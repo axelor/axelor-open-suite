@@ -23,6 +23,7 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.service.ProjectService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import java.util.Map;
 
 public interface ProjectBusinessService extends ProjectService {
 
@@ -35,4 +36,8 @@ public interface ProjectBusinessService extends ProjectService {
   void computeProjectTotals(Project project) throws AxelorException;
 
   void backupToProjectHistory(Project project);
+
+  Map<String, Object> processRequestToDisplayTimeReporting(Long id) throws AxelorException;
+
+  Map<String, Object> processRequestToDisplayFinancialReporting(Long id) throws AxelorException;
 }

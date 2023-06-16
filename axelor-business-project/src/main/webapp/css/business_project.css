@@ -1,0 +1,17 @@
+.dashlet-no-dropdown .dashlet-header li.dropdown {
+    display: none;
+}
+.dashlet-no-dropdown .icon-equal:before{
+    content: "\003D";
+    font-size: 24px;
+    font-weight: bold;
+}
+.dashlet-no-dropdown .fa-level-up{
+    color: #079d07;
+}
+.dashlet-no-dropdown .fa-level-down{
+    color: #9d1e1e;
+}
+.dashlet-no-dropdown.small{
+    zoom: 90%;
+}
