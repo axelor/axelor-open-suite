@@ -10,15 +10,15 @@
     <!-- En-tête -->
     <many-to-one name="partnerCategory" ref="com.axelor.apps.base.db.PartnerCategory"
       title="Category" massUpdate="true"/>
-    <string name="partnerSeq" title="Reference" readonly="true" unique="true"
-      translatable="true"/>
+    <string name="partnerSeq" title="Reference" readonly="true" unique="true"/>
 
     <!-- ERP -->
     <integer name="partnerTypeSelect" title="Partner Type"
       selection="partner.partner.type.select"/>
     <integer name="titleSelect" title="Civility" selection="partner.title.type.select"
       massUpdate="true"/>
-    <string name="name" title="Name/Company Name" required="true" index="false"/>
+    <string name="name" title="Name/Company Name" required="true" index="false"
+      translatable="true"/>
     <string name="firstName" title="First Name"/>
     <many-to-one name="jobTitleFunction" title="Function"
       ref="com.axelor.apps.base.db.Function"/>
