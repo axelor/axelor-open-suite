@@ -1096,9 +1096,6 @@ public final class AccountExceptionMessage {
   public static final String MOVE_MISSING_CUT_OFF_DATE = /*$$(*/
       "Please enter a Cut off start and end date for the move lines that have an account Cut off management" /*)*/;
 
-  /** Budget service */
-  public static final String BUDGET_1 = /*$$(*/ "Too much iterations." /*)*/;
-
   public static final String EMPLOYEE_PARTNER = /*$$(*/
       "You must create a contact for employee %s" /*)*/;
 
@@ -1636,4 +1633,7 @@ public final class AccountExceptionMessage {
   public static final String
       IMMO_FIXED_ASSET_DISPOSAL_COMPANY_ACCOUNT_CONFIG_CUSTOMER_SALES_JOURNAL_EMPTY = /*$$(*/
           "The company account configuration customer sales journal is required." /*)*/;
+
+  public static final String REVERSE_CHARGE_TAX_MISSING_ON_FISCAL_POSITION = /*$$(*/
+      "A reverse charge tax is required on the fiscal position %s (From tax : %s - To tax : %s)." /*)*/;
 }

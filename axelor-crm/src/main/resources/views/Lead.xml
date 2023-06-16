@@ -215,9 +215,9 @@
           <field name="mobilePhone" widget="phone" colSpan="4"/>
           <field name="emailAddress" colSpan="4" canSelect="false"
             form-view="email-address-simple-form" x-show-icons="false">
-            <editor x-show-titles="false">
+            <editor x-show-titles="false" x-viewer="true">
               <field name="address" colSpan="12" placeholder="whatever@example.com"
-                pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$"/>
+                widget="email"/>
             </editor>
           </field>
           <field name="webSite" colSpan="6" placehosetLeadStatuslder="http://www.url.com"
@@ -283,7 +283,8 @@
       <button name="grabLeadBtn" title="Take in charge" hideIf="user.id == _internalUserId"
         icon="fa-suitcase" onClick="save,action-lead-method-assign-to-me"/>
       <button name="convertBtn" title="Convert" hideIf="!id || isConverted"
-        icon="fa-exchange" onClick="save,action-lead-view-convert-lead"/>
+        icon="fa-exchange"
+        onClick="save,action-lead-method-view-lead-with-same-domain-name,action-lead-view-convert-lead"/>
       <button name="showPartnerBtn" title="Show Partner" showIf="partner" colSpan="6"
         onClick="action-lead-view-show-partner"/>
     </panel>
@@ -335,6 +336,17 @@
         onClick="action-lead-lost-reason-check,action-lead-method-confirm-lost-reason" colOffset="4"
         colSpan="4"/>
       <field name="lostReason.freeText" hidden="true"/>
+    </panel>
+  </form>
+
+  <form model="com.axelor.apps.crm.db.Lead" title="Lead with same domain name"
+    name="lead-with-same-domain-name-form" onLoad="action-lead-record-init-same-domain-lead">
+    <panel name="mainPanel">
+      <label title="We found these other leads that may be linked to your partner."
+        colSpan="12"/>
+      <panel-related name="leadSet" field="$leadSet" title="Leads"
+        target="com.axelor.apps.crm.db.Lead" grid-view="lead-grid" form-view="lead-form"
+        type="one-to-many" canNew="false" canEdit="false" canSelect="false" colSpan="12" height="10"/>
     </panel>
   </form>
 
@@ -442,6 +454,11 @@
     <field name="agency" expr="eval:__user__.activeAgency"/>
   </action-record>
 
+  <action-record name="action-lead-record-init-same-domain-lead"
+    model="com.axelor.apps.crm.db.Lead">
+    <field name="$leadSet" expr="eval: _leadList"/>
+  </action-record>
+
   <action-attrs name="action-attrs-lead-set-primary-state-country-postal-code">
     <attribute if="eval: primaryCity?.department?.region" name="value"
       expr="eval: primaryCity.department.region" for="primaryState"/>
@@ -468,6 +485,10 @@
   <action-view name="action-lead-view-convert-lead" title="Convert lead (${ fullName })"
     model="com.axelor.utils.db.Wizard">
     <view type="form" name="convert-lead-wizard-form"/>
+    <view-param name="popup" value="true"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="popup-save" value="false"/>
     <context name="_lead" expr="eval: __self__"/>
     <context name="_primaryAddress" expr="eval: primaryAddress"/>
   </action-view>
@@ -566,6 +587,10 @@
 
   <action-method name="action-lead-method-set-social-network-url">
     <call class="com.axelor.apps.crm.web.LeadController" method="setSocialNetworkUrl"/>
+  </action-method>
+
+  <action-method name="action-lead-method-view-lead-with-same-domain-name">
+    <call class="com.axelor.apps.crm.web.LeadController" method="viewLeadWithSameDomainName"/>
   </action-method>
 
   <search-filters name="lead-filters" model="com.axelor.apps.crm.db.Lead"

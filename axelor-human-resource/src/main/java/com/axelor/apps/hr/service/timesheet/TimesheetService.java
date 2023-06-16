@@ -121,8 +121,6 @@ public interface TimesheetService {
 
   public BigDecimal computeSubTimeSpent(Project project);
 
-  public void computeParentTimeSpent(Project project);
-
   public BigDecimal computeTimeSpent(Project project);
 
   public List<Map<String, Object>> createDefaultLines(Timesheet timesheet);
@@ -148,8 +146,6 @@ public interface TimesheetService {
   public void generateLinesFromExpectedProjectPlanning(Timesheet timesheet) throws AxelorException;
 
   public void prefillLines(Timesheet timesheet) throws AxelorException;
-
-  public void setProjectTaskTotalRealHrs(List<TimesheetLine> timesheetLines, boolean isAdd);
 
   public void removeAfterToDateTimesheetLines(Timesheet timesheet);
 

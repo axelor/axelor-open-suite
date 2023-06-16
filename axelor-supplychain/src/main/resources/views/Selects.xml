@@ -183,4 +183,10 @@
     <option value="900">Supplychain batch</option>
   </selection>
 
+  <selection name="supplychain.sale.order.invoicing.state.select">
+    <option value="1">Not invoiced</option>
+    <option value="2">Partially invoiced</option>
+    <option value="3">Invoiced</option>
+  </selection>
+
 </object-views>

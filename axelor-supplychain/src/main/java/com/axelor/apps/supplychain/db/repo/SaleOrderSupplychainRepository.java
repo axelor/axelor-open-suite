@@ -24,11 +24,9 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderManagementRepository;
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService;
-import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.inject.Beans;
 import com.axelor.studio.app.service.AppService;
 import java.math.BigDecimal;
-import java.util.Map;
 
 public class SaleOrderSupplychainRepository extends SaleOrderManagementRepository {
 
@@ -44,11 +42,13 @@ public class SaleOrderSupplychainRepository extends SaleOrderManagementRepositor
     copy.setShipmentDate(null);
     copy.setDeliveryState(DELIVERY_STATE_NOT_DELIVERED);
     copy.setAmountInvoiced(null);
+    copy.setInvoicingState(INVOICING_STATE_NOT_INVOICED);
     copy.setStockMoveList(null);
 
     if (copy.getSaleOrderLineList() != null) {
       for (SaleOrderLine saleOrderLine : copy.getSaleOrderLineList()) {
         saleOrderLine.setDeliveryState(null);
+        saleOrderLine.setInvoicingState(null);
         saleOrderLine.setDeliveredQty(null);
         saleOrderLine.setAmountInvoiced(null);
         saleOrderLine.setInvoiced(null);
@@ -72,15 +72,5 @@ public class SaleOrderSupplychainRepository extends SaleOrderManagementRepositor
     } catch (AxelorException e) {
       e.printStackTrace();
     }
-  }
-
-  @Override
-  public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
-    Long saleOrderId = (Long) json.get("id");
-    SaleOrder saleOrder = find(saleOrderId);
-    json.put(
-        "$invoicingState",
-        Beans.get(SaleOrderInvoiceService.class).getSaleOrderInvoicingState(saleOrder));
-    return super.populate(json, context);
   }
 }

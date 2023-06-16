@@ -22,6 +22,7 @@
       <field name="format" colSpan="2"/>
       <field name="templateMetaFile" widget="binary-link" colSpan="5"/>
       <field name="metaModel" colSpan="5"/>
+      <field name="templateEngineSelect" colSpan="2"/>
       <panel name="parametersPanel" title="Parameters" colSpan="12">
         <field name="birtTemplateParameterList" showTitle="false" colSpan="12">
           <viewer depends="name,value">
@@ -65,7 +66,8 @@
     <view-param name="popup" value="reload"/>
     <view-param name="show-confirm" value="false"/>
     <view-param name="popup-save" value="false"/>
-    <context name="_templateMetaFile" expr="eval: templateMetaFile?.fileName"/>
+    <context name="_templateMetaFile"
+      expr="eval: templateLink ?: templateMetaFile?.fileName"/>
     <context name="_birtId" expr="eval: id"/>
   </action-view>
 

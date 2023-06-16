@@ -18,12 +18,20 @@
  */
 package com.axelor.apps.account.service.move.record;
 
+import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.TaxEquiv;
+import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.tax.FiscalPositionService;
+import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.base.service.user.UserService;
+import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 
 public class MoveDefaultServiceImpl implements MoveDefaultService {
@@ -31,13 +39,21 @@ public class MoveDefaultServiceImpl implements MoveDefaultService {
   protected UserService userService;
   protected CompanyRepository companyRepository;
   protected AppBaseService appBaseService;
+  protected FiscalPositionService fiscalPositionService;
+  protected TaxService taxService;
 
   @Inject
   public MoveDefaultServiceImpl(
-      UserService userService, CompanyRepository companyRepository, AppBaseService appBaseService) {
+      UserService userService,
+      CompanyRepository companyRepository,
+      AppBaseService appBaseService,
+      FiscalPositionService fiscalPositionService,
+      TaxService taxService) {
     this.userService = userService;
     this.companyRepository = companyRepository;
     this.appBaseService = appBaseService;
+    this.fiscalPositionService = fiscalPositionService;
+    this.taxService = taxService;
   }
 
   @Override
@@ -82,6 +98,33 @@ public class MoveDefaultServiceImpl implements MoveDefaultService {
   public void setDefaultCurrencyOnChange(Move move) {
     if (move.getCurrency() != null) {
       move.setCurrencyCode(move.getCurrency().getCodeISO());
+    }
+  }
+
+  @Override
+  public void setDefaultFiscalPositionOnChange(Move move) throws AxelorException {
+    if (ObjectUtils.isEmpty(move.getMoveLineList())) {
+      return;
+    }
+    FiscalPosition fiscalPosition = move.getFiscalPosition();
+
+    for (MoveLine moveLine : move.getMoveLineList()) {
+      TaxLine taxLine =
+          moveLine.getTaxLineBeforeReverse() != null
+              ? moveLine.getTaxLineBeforeReverse()
+              : moveLine.getTaxLine();
+      TaxEquiv taxEquiv = null;
+      moveLine.setTaxLineBeforeReverse(null);
+      if (fiscalPosition != null && taxLine != null) {
+        taxEquiv = fiscalPositionService.getTaxEquiv(fiscalPosition, taxLine.getTax());
+
+        if (taxEquiv != null) {
+          moveLine.setTaxLineBeforeReverse(taxLine);
+          taxLine = taxService.getTaxLine(taxEquiv.getToTax(), moveLine.getDate());
+        }
+      }
+      moveLine.setTaxLine(taxLine);
+      moveLine.setTaxEquiv(taxEquiv);
     }
   }
 }
