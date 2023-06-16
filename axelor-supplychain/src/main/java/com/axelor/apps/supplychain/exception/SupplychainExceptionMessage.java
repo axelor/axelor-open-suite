@@ -215,9 +215,6 @@ public final class SupplychainExceptionMessage {
   public static final String PO_MISSING_STOCK_LOCATION = /*$$(*/
       "Stock location is missing for the purchase order %s." /*)*/;
 
-  public static final String PO_MISSING_DEFAULT_STOCK_LOCATION = /*$$(*/
-      "Please add a quality control default stock location for company %s in the app stock configuration" /*)*/;
-
   /** Timetable Controller */
   public static final String TIMETABLE_INVOICE_ALREADY_GENERATED = /*$$(*/
       "The invoice has already been generated." /*)*/;
