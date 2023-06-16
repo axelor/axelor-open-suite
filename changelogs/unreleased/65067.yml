@@ -1,0 +1,5 @@
+---
+title: "ACCOUNTINGBATCH : Fixed cutoff batch for cca and pca"
+type: fix
+description: |
+  The tax line was copied on the cutOffMove which was preventing it from passing the test from MoveValidateService.checkTaxAmount(Move move)
