@@ -19,11 +19,13 @@
 package com.axelor.apps.crm.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.crm.db.LostReason;
 import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.db.OpportunityStatus;
 import com.axelor.meta.CallMethod;
 import com.google.inject.persist.Transactional;
 import java.util.List;
+import java.util.Map;
 
 public interface OpportunityService {
 
@@ -42,4 +44,11 @@ public interface OpportunityService {
 
   @CallMethod
   public List<Long> getClosedOpportunityStatusIdList();
+
+  public List<Opportunity> winningProcess(Opportunity opportunity, Map<String, Boolean> map)
+      throws AxelorException;
+
+  public void lostProcess(
+      List<Opportunity> otherOpportunities, LostReason lostReason, String lostReasonStr)
+      throws AxelorException;
 }
