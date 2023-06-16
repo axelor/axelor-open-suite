@@ -72,7 +72,11 @@ public class MovePfpServiceImpl implements MovePfpService {
         move.getPfpValidatorUser() != null ? move.getPfpValidatorUser() : AuthUtils.getUser();
 
     _getInvoiceTermList(move)
-        .forEach(invoiceTerm -> invoiceTermPfpService.validatePfp(invoiceTerm, pfpValidatorUser));
+        .forEach(
+            invoiceTerm -> {
+              invoiceTermPfpService.validatePfp(invoiceTerm, pfpValidatorUser);
+              invoiceTerm.setPfpValidatorUser(pfpValidatorUser);
+            });
 
     move.setPfpValidatorUser(pfpValidatorUser);
     move.setPfpValidateStatusSelect(InvoiceRepository.PFP_STATUS_VALIDATED);

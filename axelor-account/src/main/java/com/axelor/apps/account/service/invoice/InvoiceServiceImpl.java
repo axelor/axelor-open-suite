@@ -1139,6 +1139,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
     for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
       invoiceTermPfpService.validatePfp(invoiceTerm, pfpValidatorUser);
+      invoiceTerm.setPfpValidatorUser(pfpValidatorUser);
     }
 
     invoice.setPfpValidatorUser(pfpValidatorUser);
