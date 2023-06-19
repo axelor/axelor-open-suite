@@ -19,6 +19,7 @@
 package com.axelor.apps.stock.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
@@ -716,7 +717,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       StockLocationLine stockLocationLine) {
     boolean isDetailsStockLocationLine = stockLocationLine.getDetailsStockLocation() != null;
     String incomingStockMoveLineFilter =
-        STOCK_MOVE_LINE_FILTER + "AND self.stockMove.toStockLocation.id = :stockLocationId";
+        STOCK_MOVE_LINE_FILTER + "AND self.toStockLocation.id = :stockLocationId";
     if (isDetailsStockLocationLine) {
       incomingStockMoveLineFilter =
           incomingStockMoveLineFilter + " AND self.trackingNumber.id = :trackingNumberId";
@@ -741,7 +742,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       StockLocationLine stockLocationLine) {
     boolean isDetailsStockLocationLine = stockLocationLine.getDetailsStockLocation() != null;
     String outgoingStockMoveLineFilter =
-        STOCK_MOVE_LINE_FILTER + "AND self.stockMove.fromStockLocation.id = :stockLocationId";
+        STOCK_MOVE_LINE_FILTER + "AND self.fromStockLocation.id = :stockLocationId";
     if (isDetailsStockLocationLine) {
       outgoingStockMoveLineFilter =
           outgoingStockMoveLineFilter + " AND self.trackingNumber.id = :trackingNumberId";
@@ -888,17 +889,23 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
     }
 
     if (dateT == null) {
-      dateT =
-          appBaseService
-              .getTodayDateTime(
-                  stockLocationLine.getStockLocation() != null
-                      ? stockLocationLine.getStockLocation().getCompany()
-                      : Optional.ofNullable(AuthUtils.getUser())
-                          .map(User::getActiveCompany)
-                          .orElse(null))
-              .toLocalDateTime();
+      Company company = getCompany(stockLocationLine);
+      dateT = appBaseService.getTodayDateTime(company).toLocalDateTime();
+    }
+    stockLocationLineHistoryService.saveHistory(stockLocationLine, dateT, origin, typeSelect);
+  }
+
+  protected Company getCompany(StockLocationLine stockLocationLine) {
+    StockLocation stockLocation = stockLocationLine.getStockLocation();
+    StockLocation detailsStockLocation = stockLocationLine.getDetailsStockLocation();
+
+    if (stockLocation != null) {
+      return stockLocation.getCompany();
     }
 
-    stockLocationLineHistoryService.saveHistory(stockLocationLine, dateT, origin, typeSelect);
+    if (detailsStockLocation != null) {
+      return detailsStockLocation.getCompany();
+    }
+    return Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null);
   }
 }

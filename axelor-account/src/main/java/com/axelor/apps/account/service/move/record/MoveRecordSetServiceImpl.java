@@ -37,6 +37,7 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PeriodService;
+import com.axelor.common.StringUtils;
 import com.google.inject.Inject;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -171,11 +172,11 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
 
   @Override
   public void setFunctionalOriginSelect(Move move) {
-    if (move.getJournal() != null
-        && move.getJournal().getAuthorizedFunctionalOriginSelect() != null) {
-      if (move.getJournal().getAuthorizedFunctionalOriginSelect().split(",").length == 1) {
-        move.setFunctionalOriginSelect(
-            Integer.valueOf(move.getJournal().getAuthorizedFunctionalOriginSelect()));
+    String authorizedFunctionalOriginSelect =
+        move.getJournal().getAuthorizedFunctionalOriginSelect();
+    if (move.getJournal() != null && StringUtils.notEmpty(authorizedFunctionalOriginSelect)) {
+      if (authorizedFunctionalOriginSelect.split(",").length == 1) {
+        move.setFunctionalOriginSelect(Integer.valueOf(authorizedFunctionalOriginSelect));
       } else {
         if (move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL
             && Arrays.stream(move.getJournal().getAuthorizedFunctionalOriginSelect().split(","))
@@ -230,17 +231,19 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
 
   public void setPfpStatus(Move move) {
     Objects.requireNonNull(move);
-    JournalType journalType = move.getJournal().getJournalType();
 
-    if (move.getCompany() != null
-        && move.getCompany().getAccountConfig() != null
-        && move.getCompany().getAccountConfig().getIsManagePassedForPayment()
-        && move.getCompany().getAccountConfig().getIsManagePFPInRefund()
-        && (journalType.getTechnicalTypeSelect()
-                == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE
-            || journalType.getTechnicalTypeSelect()
-                == JournalTypeRepository.TECHNICAL_TYPE_SELECT_CREDIT_NOTE)) {
-      move.setPfpValidateStatusSelect(MoveRepository.PFP_STATUS_AWAITING);
+    if (move.getJournal() != null && move.getJournal().getJournalType() != null) {
+      JournalType journalType = move.getJournal().getJournalType();
+      if (move.getCompany() != null
+          && move.getCompany().getAccountConfig() != null
+          && move.getCompany().getAccountConfig().getIsManagePassedForPayment()
+          && move.getCompany().getAccountConfig().getIsManagePFPInRefund()
+          && (journalType.getTechnicalTypeSelect()
+                  == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE
+              || journalType.getTechnicalTypeSelect()
+                  == JournalTypeRepository.TECHNICAL_TYPE_SELECT_CREDIT_NOTE)) {
+        move.setPfpValidateStatusSelect(MoveRepository.PFP_STATUS_AWAITING);
+      }
     }
   }
 

@@ -125,8 +125,7 @@ public class BatchUpdateStockHistory extends BatchStrategy {
             "\t* %s " + I18n.get(SupplychainExceptionMessage.BATCH_UPDATE_STOCK_HISTORY_2) + "\n",
             batch.getDone());
     comment +=
-        String.format(
-            "\t" + I18n.get(BaseExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
+        String.format("\t" + I18n.get(BaseExceptionMessage.BASE_BATCH_3), batch.getAnomaly());
 
     super.stop();
     addComment(comment);

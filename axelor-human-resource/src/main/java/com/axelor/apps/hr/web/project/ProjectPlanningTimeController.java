@@ -20,6 +20,7 @@ package com.axelor.apps.hr.web.project;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeService;
+import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -49,6 +50,18 @@ public class ProjectPlanningTimeController {
     if (projectPlanningTimeLines != null) {
       Beans.get(ProjectPlanningTimeService.class)
           .removeProjectPlanningLines(projectPlanningTimeLines);
+    }
+
+    response.setReload(true);
+  }
+
+  public void removeSingleProjectPlanningTime(ActionRequest request, ActionResponse response) {
+
+    ProjectPlanningTime projectPlanningTime =
+        request.getContext().asType(ProjectPlanningTime.class);
+
+    if (projectPlanningTime != null) {
+      Beans.get(ProjectPlanningTimeService.class).removeProjectPlanningLine(projectPlanningTime);
     }
 
     response.setReload(true);

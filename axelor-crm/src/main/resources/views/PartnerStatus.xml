@@ -4,18 +4,18 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
   <grid model="com.axelor.apps.crm.db.PartnerStatus" title="Partner status"
-    name="partner-status-grid" orderBy="sequence">
+    name="partner-status-grid" orderBy="sequence" canMove="true">
     <field name="name"/>
-    <field name="sequence"/>
     <field name="isOpen"/>
+    <field name="sequence" hidden="true"/>
   </grid>
 
   <form model="com.axelor.apps.crm.db.PartnerStatus" title="Partner status"
     name="partner-status-form" onLoad="action-partner-status-attrs-set-isopen-readonly">
     <panel name="mainPanel">
       <field name="name"/>
-      <field name="sequence"/>
       <field name="isOpen"/>
+      <field name="sequence" hidden="true"/>
     </panel>
   </form>
 

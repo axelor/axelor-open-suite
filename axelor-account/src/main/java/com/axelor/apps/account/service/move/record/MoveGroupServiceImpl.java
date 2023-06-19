@@ -164,12 +164,6 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     valuesMap.put("period", move.getPeriod());
     valuesMap.put("originDate", move.getOriginDate());
 
-    valuesMap.put(
-        "$validatePeriod",
-        !periodAccountService.isAuthorizedToAccountOnPeriod(move, AuthUtils.getUser()));
-
-    this.addPeriodDummyFields(move, valuesMap);
-
     if (appAccountService.getAppAccount().getActivatePassedForPayment()) {
       moveRecordSetService.setPfpStatus(move);
       valuesMap.put("pfpValidateStatusSelect", move.getOriginDate());
@@ -178,6 +172,12 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     if (isMassEntry) {
       move.setMassEntryStatusSelect(MoveRepository.MASS_ENTRY_STATUS_ON_GOING);
       valuesMap.put("massEntryStatusSelect", move.getMassEntryStatusSelect());
+    } else {
+      valuesMap.put(
+          "$validatePeriod",
+          !periodAccountService.isAuthorizedToAccountOnPeriod(move, AuthUtils.getUser()));
+
+      this.addPeriodDummyFields(move, valuesMap);
     }
 
     return valuesMap;
@@ -476,7 +476,8 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     moveRecordSetService.setCompanyBankDetails(move);
     moveDefaultService.setDefaultCurrency(move);
 
-    if (move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL) {
+    if (move.getJournal() != null
+        && move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL) {
       massEntryVerificationService.verifyCompanyBankDetails(
           move, move.getCompany(), move.getCompanyBankDetails(), move.getJournal());
     }
@@ -535,6 +536,17 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     valuesMap.put("companyCurrency", move.getCompanyCurrency());
     valuesMap.put("currencyCode", move.getCurrencyCode());
     valuesMap.put("companyCurrencyCode", move.getCompanyCurrencyCode());
+
+    return valuesMap;
+  }
+
+  @Override
+  public Map<String, Object> getFiscalPositionOnChangeValuesMap(Move move) throws AxelorException {
+    Map<String, Object> valuesMap = new HashMap<>();
+
+    moveDefaultService.setDefaultFiscalPositionOnChange(move);
+
+    valuesMap.put("moveLineList", move.getMoveLineList());
 
     return valuesMap;
   }

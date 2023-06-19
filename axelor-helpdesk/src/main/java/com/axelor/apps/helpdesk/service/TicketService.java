@@ -20,6 +20,7 @@ package com.axelor.apps.helpdesk.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.helpdesk.db.Ticket;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface TicketService {
@@ -31,4 +32,10 @@ public interface TicketService {
   public void checkSLAcompleted(Ticket ticket);
 
   public void assignToMeTicket(Long id, List<?> ids);
+
+  public Long computeDuration(Ticket ticket);
+
+  public LocalDateTime computeEndDate(Ticket ticket);
+
+  public LocalDateTime computeStartDate(Ticket ticket);
 }
