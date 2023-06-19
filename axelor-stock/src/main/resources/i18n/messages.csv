@@ -524,6 +524,7 @@
 "Planned stock move",,,
 "Planned stock move line list",,,
 "Planned stock move lines",,,
+"Please add a quality control default stock location for company %s in the app stock configuration",,,
 "Please configure mass units for this product packing : %s",,,
 "Please enter a valid split quantity",,,
 "Please fill all inventory lines",,,
