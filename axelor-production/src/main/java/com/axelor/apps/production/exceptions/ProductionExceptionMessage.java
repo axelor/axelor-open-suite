@@ -289,4 +289,8 @@ public final class ProductionExceptionMessage {
   public static final String OPERATION_ORDER_NO_PERIOD_FOUND_FOR_PLAN_DATES =
       /*$$(*/
       "No period has been found in the weekly planning for the operation order %s" /*)*/;
+
+  public static final String OPERATION_ORDER_ALREADY_FINISHED =
+      /*$$(*/
+      "The operation order is already finished and cannot be moved." /*)*/;
 }
