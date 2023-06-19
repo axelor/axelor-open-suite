@@ -305,6 +305,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
 
       this.validateWellBalancedMove(move);
       this.checkMoveLineInvoiceTermBalance(move);
+      this.checkMoveLineDescription(move);
 
       if (move.getJournal() != null
           && move.getPartner() != null
@@ -830,6 +831,18 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     }
     for (MoveLine moveLine : move.getMoveLineList()) {
       moveLineControlService.checkPartner(moveLine);
+    }
+  }
+
+  protected void checkMoveLineDescription(Move move) throws AxelorException {
+    if (ObjectUtils.notEmpty(move.getMoveLineList())
+        && accountConfigService.getAccountConfig(move.getCompany()).getIsDescriptionRequired()
+        && move.getMoveLineList().stream()
+            .map(MoveLine::getDescription)
+            .anyMatch(ObjectUtils::isEmpty)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(AccountExceptionMessage.MOVE_LINE_DESCRIPTION_MISSING));
     }
   }
 }
