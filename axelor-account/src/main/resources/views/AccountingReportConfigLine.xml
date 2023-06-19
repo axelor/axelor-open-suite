@@ -73,7 +73,8 @@
       </panel>
       <panel name="infoPanel" colSpan="12" showIf="[1,2,4].includes(typeSelect)">
         <field name="label" requiredIf="[1,2,4].includes(typeSelect)"/>
-        <field name="code" requiredIf="[1,2,4].includes(typeSelect)"/>
+        <field name="code" requiredIf="[1,2,4].includes(typeSelect)"
+          pattern="^[A-Za-z_]{1}[A-Za-z0-9_]+"/>
       </panel>
       <panel name="specificConfigPanel" stacked="true" showIf="!$legacy" colSpan="12">
         <panel name="specificConfigLinePanel" showIf="reportType != null" colSpan="12">
