@@ -85,4 +85,6 @@ public interface LeadService {
   public String processFullName(String enterpriseName, String name, String firstName);
 
   public LeadStatus getDefaultLeadStatus();
+
+  public List<Lead> getLeadsWithSameDomainName(Lead lead);
 }

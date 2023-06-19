@@ -64,7 +64,8 @@
         target="com.axelor.apps.account.db.PaymentVoucher" canEdit="false" canNew="false"
         canRemove="false" grid-view="selector-payment-voucher-deposit-slip-grid"
         form-view="payment-voucher-deposit-slip-form" colSpan="12"/>
-      <button onClick="save,action-cheque-deposit-slip-attrs-load-payment-vouchers,save"
+      <button
+        onClick="action-deposit-slip-method-load-payment-voucher,action-deposit-slip-record-total-amount-cheque-count"
         name="loadSelectedLinesBtn" title="Load selected lines" colOffset="6" colSpan="3"
         readonlyIf="__paymentVoucherDueList.length == 0" css="btn-success"/>
       <button
@@ -127,18 +128,10 @@
     <field name="paymentModeTypeSelect" expr="eval: __repo__(PaymentMode).TYPE_CHEQUE"/>
   </action-record>
 
-  <action-attrs name="action-cheque-deposit-slip-attrs-load-payment-vouchers">
-    <attribute name="value:add" for="paymentVoucherList"
-      expr="eval: __paymentVoucherDueList?.findAll{ it.selected }"/>
-    <attribute name="value:del" for="__paymentVoucherDueList"
-      expr="eval: __paymentVoucherDueList?.findAll{ it.selected }"/>
-    <attribute name="value" for="totalAmount"
-      expr="eval: (__paymentVoucherDueList?.findAll{ it.selected }.sum{it.paidAmount as BigDecimal}) + totalAmount"
-      if="__paymentVoucherDueList?.findAll{ it.selected }.size() > 0"/>
-    <attribute name="value" for="chequeCount"
-      expr="eval: __paymentVoucherDueList?.findAll{ it.selected }?.size() + chequeCount"
-      if="__paymentVoucherDueList?.findAll{ it.selected }"/>
-  </action-attrs>
+  <action-method name="action-deposit-slip-method-load-payment-voucher"
+    model="com.axelor.apps.account.db.DepositSlip">
+    <call class="com.axelor.apps.account.web.DepositSlipController" method="loadPaymentVoucher"/>
+  </action-method>
 
   <action-record name="action-deposit-slip-record-total-amount-cheque-count"
     model="com.axelor.apps.account.db.DepositSlip">

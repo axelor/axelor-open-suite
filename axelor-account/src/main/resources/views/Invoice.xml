@@ -224,8 +224,6 @@
           action="action-invoice-method-register-mass-payment-on-supplier-invoices"/>
         <item name="seeSupplInvoicesLinesItem" title="See suppl. invoices lines"
           action="action-supplier-invoice-line-menu"/>
-        <item title="See budget distribution lines"
-          action="action-invoice-see-budget-distribution-lines"/>
         <item name="mergeSupplInvoicesItem" title="Merge Suppl. Invoices"
           action="action-invoice-mergesupplinvoices"/>
       </menu>
@@ -286,8 +284,6 @@
           action="action-invoice-method-register-mass-payment-on-supplier-invoices"/>
         <item name="seeSupplInvoicesLinesItem" title="See suppl. invoices lines"
           action="action-supplier-invoice-line-menu"/>
-        <item title="See budget distribution lines"
-          action="action-invoice-see-budget-overview-lines"/>
         <item name="mergeSupplInvoicesItem" title="Merge Suppl. Invoices"
           action="action-invoice-mergesupplinvoices"/>
       </menu>
@@ -546,6 +542,7 @@
       </panel>
 
       <field name="supplierInvoiceNb"
+        readonlyIf="statusSelect != 1 &amp;&amp; statusSelect != 2"
         showIf="operationTypeSelect == 1 || operationTypeSelect == 2"
         requiredIf="((operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; statusSelect == 2) || (operationSubTypeSelect == 2 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 2))"
         onChange="action-invoice-group-supplier-invoice-nb-onchange"/>
@@ -559,7 +556,8 @@
               	]]>
         </viewer>
       </field>
-      <field name="originDate" showIf="operationTypeSelect == 1 || operationTypeSelect == 2"
+      <field name="originDate" readonlyIf="statusSelect != 1 &amp;&amp; statusSelect != 2"
+        showIf="operationTypeSelect == 1 || operationTypeSelect == 2"
         requiredIf="((operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; statusSelect == 2) || (operationSubTypeSelect == 2 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 2))"
         onChange="action-invoice-group-payment-condition-onchange"/>
       <field name="$supplierInvoiceNbStatic" type="string" hidden="true"/>
@@ -838,11 +836,6 @@ InvoiceSet.length > 0))"
         <field name="company.accountConfig.isManagePFPInRefund"/>
         <field name="$isValidInvoiceTermPfpValidateStatus" type="boolean" hidden="true"/>
       </panel>
-      <panel name="budgetPanel" title="Budget"
-        showIf="operationTypeSelect == 1 &amp;&amp; statusSelect >= 2 &amp;&amp; statusSelect &lt; 4">
-        <panel-dashlet name="budgetDistributionPanel" title="Budget distribution"
-          action="action-budget-distribution-view-budget-distribution" colSpan="12" readonly="true"/>
-      </panel>
 
       <panel name="directDebitPanel" title="Direct debit"
         showIf="statusSelect == 3 &amp;&amp; schedulePaymentOk" showTitle="false">
@@ -1027,7 +1020,8 @@ InvoiceSet.length > 0))"
         <field name="invoiceDate" onChange="action-invoice-group-payment-condition-onchange"
           readonlyIf="ventilatedByUser || ventilatedDateTime"/>
         <spacer/>
-        <field name="dueDate" readonlyIf="!paymentCondition.isFree"/>
+        <field name="dueDate" readonlyIf="!paymentCondition.isFree"
+          onChange="action-invoice-method-estimated-payment-date"/>
         <field name="nextDueDate" showIf="invoiceTermList.length > 1"/>
         <field name="paymentCondition.isFree" hidden="true"/>
         <field name="paymentDelay" readonly="true" colSpan="12"/>
@@ -1180,6 +1174,12 @@ InvoiceSet.length > 0))"
         <panel-related name="invoiceLineTaxListPanel" field="invoiceLineTaxList"
           colSpan="12" form-view="invoice-line-tax-form" grid-view="invoice-line-tax-grid"/>
       </panel>
+      <panel title="Printing" name="printingPanel" colSpan="12" hidden="true">
+        <field name="displayTimesheetOnPrinting" if-module="axelor-business-project"
+          hidden="true"/>
+        <field name="displayExpenseOnPrinting" if-module="axelor-business-project"
+          hidden="true"/>
+      </panel>
     </panel-tabs>
 
     <panel-stack name="otherDetailsPanel" sidebar="true">
@@ -1189,7 +1189,8 @@ InvoiceSet.length > 0))"
       </panel>
       <panel name="datesPanel" title="Dates" readonlyIf="statusSelect == 3">
         <field name="invoiceDate" onChange="action-invoice-group-payment-condition-onchange"/>
-        <field name="dueDate" readonlyIf="!paymentCondition.isFree"/>
+        <field name="dueDate" readonlyIf="!paymentCondition.isFree"
+          onChange="action-invoice-method-estimated-payment-date"/>
         <field name="paymentCondition.isFree" hidden="true"/>
       </panel>
     </panel-stack>
@@ -1517,6 +1518,8 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-attrs-change-create-refund-title"/>
     <action name="action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"/>
     <action name="action-invoice-method-check-partner-bank-details-list"/>
+    <action name="action-invoice-record-set-pfp-status"
+      if="__config__.app.getApp('account')?.getActivatePassedForPayment() &amp;&amp; pfpValidateStatusSelect == 0"/>
     <action name="action-invoice-attrs-is-all-invoice-term-status-awaiting"/>
     <action name="action-invoice-attrs-is-valid-pfp-validator-user"
       if="__config__.app.getApp('account')?.getActivatePassedForPayment() &amp;&amp; (company.accountConfig.isManagePassedForPayment &amp;&amp; (operationTypeSelect == 1 || company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2))"/>
@@ -1666,6 +1669,7 @@ InvoiceSet.length > 0))"
     <action name="action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"
       if="operationTypeSelect == 1 || operationTypeSelect == 2"/>
     <action name="action-invoice-method-update-invoice-terms"/>
+    <action name="action-invoice-method-estimated-payment-date"/>
   </action-group>
 
   <action-group name="action-invoice-onsave-group">
@@ -1726,6 +1730,7 @@ InvoiceSet.length > 0))"
     <action name="action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"/>
     <action name="action-invoice-method-update-invoice-terms"/>
     <action name="action-invoice-method-check-multi-currency"/>
+    <action name="action-invoice-method-estimated-payment-date"/>
   </action-group>
 
   <action-group name="action-invoice-group-supplier-invoice-nb-onchange">
@@ -2729,6 +2734,11 @@ InvoiceSet.length > 0))"
   <action-method name="action-supplier-invoice-line-menu">
     <call class="com.axelor.apps.account.web.InvoiceController"
       method="showSupplierInvoiceLines"/>
+  </action-method>
+
+  <action-method name="action-invoice-method-estimated-payment-date">
+    <call class="com.axelor.apps.account.web.InvoiceController"
+      method="fillEstimatedPaymentDate"/>
   </action-method>
 
   <action-group name="action-invoice-group-report-button">
