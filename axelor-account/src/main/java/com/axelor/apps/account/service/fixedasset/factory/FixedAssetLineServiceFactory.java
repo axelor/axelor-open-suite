@@ -20,6 +20,7 @@ package com.axelor.apps.account.service.fixedasset.factory;
 
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineComputationService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineEconomicComputationServiceImpl;
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineEconomicServiceImpl;
@@ -31,9 +32,36 @@ import com.axelor.apps.account.service.fixedasset.FixedAssetLineIfrsServiceImpl;
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 
 public class FixedAssetLineServiceFactory {
+
+  protected FixedAssetLineEconomicUpdateComputationServiceImpl fixedAssetLineEconomicUpdateComputationService;
+  protected FixedAssetLineEconomicComputationServiceImpl fixedAssetLineEconomicComputationService;
+  protected FixedAssetLineFiscalComputationServiceImpl fixedAssetLineFiscalComputationService;
+  protected FixedAssetLineIfrsComputationServiceImpl fixedAssetLineIfrsComputationService;
+  protected FixedAssetLineEconomicServiceImpl fixedAssetLineEconomicService;
+  protected FixedAssetLineFiscalServiceImpl fixedAssetLineFiscalService;
+  protected FixedAssetLineIfrsServiceImpl fixedAssetLineIfrsService;
+
+@Inject
+  public FixedAssetLineServiceFactory(FixedAssetLineEconomicUpdateComputationServiceImpl fixedAssetLineEconomicUpdateComputationService,
+                                      FixedAssetLineEconomicComputationServiceImpl fixedAssetLineEconomicComputationService,
+                                      FixedAssetLineFiscalComputationServiceImpl fixedAssetLineFiscalComputationService,
+                                      FixedAssetLineIfrsComputationServiceImpl fixedAssetLineIfrsComputationService,
+                                      FixedAssetLineEconomicServiceImpl fixedAssetLineEconomicService,
+                                      FixedAssetLineFiscalServiceImpl fixedAssetLineFiscalService,
+                                      FixedAssetLineIfrsServiceImpl fixedAssetLineIfrsService) {
+    this.fixedAssetLineEconomicUpdateComputationService = fixedAssetLineEconomicUpdateComputationService;
+    this.fixedAssetLineEconomicComputationService = fixedAssetLineEconomicComputationService;
+    this.fixedAssetLineFiscalComputationService = fixedAssetLineFiscalComputationService;
+    this.fixedAssetLineIfrsComputationService = fixedAssetLineIfrsComputationService;
+    this.fixedAssetLineEconomicService = fixedAssetLineEconomicService;
+    this.fixedAssetLineFiscalService = fixedAssetLineFiscalService;
+    this.fixedAssetLineIfrsService = fixedAssetLineIfrsService;
+  }
 
   public FixedAssetLineComputationService getFixedAssetComputationService(
       FixedAsset fixedAsset, int typeSelect) throws AxelorException {
@@ -42,17 +70,17 @@ public class FixedAssetLineServiceFactory {
       case FixedAssetLineRepository.TYPE_SELECT_ECONOMIC:
         if (fixedAsset.getCorrectedAccountingValue() != null
             && fixedAsset.getCorrectedAccountingValue().signum() != 0) {
-          return Beans.get(FixedAssetLineEconomicUpdateComputationServiceImpl.class);
+          return fixedAssetLineEconomicUpdateComputationService;
         }
-        return Beans.get(FixedAssetLineEconomicComputationServiceImpl.class);
+        return fixedAssetLineEconomicComputationService;
       case FixedAssetLineRepository.TYPE_SELECT_FISCAL:
-        return Beans.get(FixedAssetLineFiscalComputationServiceImpl.class);
+        return fixedAssetLineFiscalComputationService;
       case FixedAssetLineRepository.TYPE_SELECT_IFRS:
-        return Beans.get(FixedAssetLineIfrsComputationServiceImpl.class);
+        return fixedAssetLineIfrsComputationService;
       default:
         throw new AxelorException(
             TraceBackRepository.CATEGORY_NO_VALUE,
-            "There is no implementation for this typeSelect");
+                I18n.get(AccountExceptionMessage.IMMO_FIXED_ASSET_LINE_COMPUTATION_SERVICE_NOT_FOUND));
     }
   }
 
@@ -60,15 +88,15 @@ public class FixedAssetLineServiceFactory {
 
     switch (typeSelect) {
       case FixedAssetLineRepository.TYPE_SELECT_ECONOMIC:
-        return Beans.get(FixedAssetLineEconomicServiceImpl.class);
+        return fixedAssetLineEconomicService;
       case FixedAssetLineRepository.TYPE_SELECT_FISCAL:
-        return Beans.get(FixedAssetLineFiscalServiceImpl.class);
+        return fixedAssetLineFiscalService;
       case FixedAssetLineRepository.TYPE_SELECT_IFRS:
-        return Beans.get(FixedAssetLineIfrsServiceImpl.class);
+        return fixedAssetLineIfrsService;
       default:
         throw new AxelorException(
             TraceBackRepository.CATEGORY_NO_VALUE,
-            "There is no implementation for this typeSelect");
+                I18n.get(AccountExceptionMessage.IMMO_FIXED_ASSET_LINE_SERVICE_NOT_FOUND));
     }
   }
 }

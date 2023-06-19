@@ -225,12 +225,7 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
                     fixedAssetLine.getStatusSelect() == FixedAssetLineRepository.STATUS_PLANNED
                         && !fixedAssetLine.equals(firstPlannedFixedAssetLine))
             .collect(Collectors.toList());
-
-    fixedAssetLineList.removeIf(
-        fixedAssetLine ->
-            fixedAssetLine.getStatusSelect() == FixedAssetLineRepository.STATUS_PLANNED
-                && !fixedAssetLine.equals(firstPlannedFixedAssetLine));
-    fixedAssetLineService.clear(linesToRemove);
+    fixedAssetLineService.clear(fixedAssetLineList, linesToRemove);
   }
 
   protected void recomputeFirstPlannedLine(

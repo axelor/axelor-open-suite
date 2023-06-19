@@ -97,7 +97,7 @@ public interface FixedAssetLineService {
    *
    * @param fixedAssetLineList
    */
-  void clear(List<FixedAssetLine> fixedAssetLineList);
+  void clear(List<FixedAssetLine> fixedAssetLineList, List<FixedAssetLine> linesToRemove);
 
   /**
    * Call {@link FixedAssetLineRepository#remove(FixedAssetLine)} on line
