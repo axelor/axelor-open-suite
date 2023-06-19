@@ -22,27 +22,21 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.FakerApiField;
 import com.axelor.apps.base.db.FakerApiFieldParameters;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.exceptions.AdminExceptionMessage;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.auth.AuthUtils;
 import com.axelor.i18n.I18n;
-import com.axelor.rpc.ActionResponse;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import net.datafaker.Faker;
 import org.apache.commons.lang3.ClassUtils;
 
 public class FakerServiceImpl implements FakerService {
-
-  public static final String KEY_SUCCESS = "success";
-  public static final String KEY_ERROR = "error";
 
   @Override
   public Object generateFakeData(FakerApiField fakerApiField) throws AxelorException {
@@ -56,12 +50,12 @@ public class FakerServiceImpl implements FakerService {
     } catch (NoSuchMethodException e) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(AdminExceptionMessage.FAKER_CLASS_DOES_NOT_EXIST),
+          I18n.get(BaseExceptionMessage.FAKER_CLASS_DOES_NOT_EXIST),
           fakerApiField.getClassName());
     } catch (IllegalAccessException | InvocationTargetException e) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(AdminExceptionMessage.FAKER_METHOD_ERROR),
+          I18n.get(BaseExceptionMessage.FAKER_METHOD_ERROR),
           fakerApiField.getClassName());
     }
     try {
@@ -82,17 +76,17 @@ public class FakerServiceImpl implements FakerService {
     } catch (NoSuchMethodException e) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(AdminExceptionMessage.FAKER_METHOD_DOES_NOT_EXIST),
+          I18n.get(BaseExceptionMessage.FAKER_METHOD_DOES_NOT_EXIST),
           fakerApiField.getMethodName());
     } catch (IllegalAccessException | InvocationTargetException e) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(AdminExceptionMessage.FAKER_METHOD_ERROR),
+          I18n.get(BaseExceptionMessage.FAKER_METHOD_ERROR),
           fakerApiField.getMethodName());
     } catch (ClassNotFoundException | ParseException e) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(AdminExceptionMessage.FAKER_METHOD_PARAMS_ERROR),
+          I18n.get(BaseExceptionMessage.FAKER_METHOD_PARAMS_ERROR),
           fakerApiField.getMethodName());
     }
   }
@@ -101,31 +95,26 @@ public class FakerServiceImpl implements FakerService {
    * Called to check if the faker field configuration is correct
    *
    * @param fakerApiField
-   * @param response
    */
   @Override
-  public void checkMethod(FakerApiField fakerApiField, ActionResponse response) {
+  public String checkMethod(FakerApiField fakerApiField) throws AxelorException {
     Faker faker = new Faker(new Locale(AuthUtils.getUser().getLanguage()));
 
     Object instance = getClassMethod(faker, fakerApiField);
 
     if (instance == null) {
-      response.setError(I18n.get("Error in class name. Please check."));
-      return;
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.FAKER_CLASS_NAME_ERROR));
     }
 
     if (Arrays.stream(instance.getClass().getDeclaredMethods())
         .noneMatch(method -> method.getName().equals(fakerApiField.getMethodName()))) {
-      response.setError(I18n.get("Error in method name. Please check."));
-      return;
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.FAKER_METHOD_NAME_ERROR));
     }
-    Map<String, String> results = checkParams(instance, fakerApiField);
-
-    if (results.containsKey(KEY_ERROR)) {
-      response.setError(results.get(KEY_ERROR));
-    } else if (results.containsKey(KEY_SUCCESS)) {
-      response.setAlert(results.get(KEY_SUCCESS));
-    }
+    return checkParams(instance, fakerApiField);
   }
 
   /**
@@ -216,9 +205,8 @@ public class FakerServiceImpl implements FakerService {
    * @param fakerApiField
    * @return
    */
-  public Map<String, String> checkParams(Object classMethod, FakerApiField fakerApiField) {
-    Map<String, String> resultMessage = new HashMap<>();
-
+  public String checkParams(Object classMethod, FakerApiField fakerApiField)
+      throws AxelorException {
     List<FakerApiFieldParameters> fakerApiFieldParameters =
         fakerApiField.getFakerFieldParametersList();
 
@@ -226,38 +214,34 @@ public class FakerServiceImpl implements FakerService {
       Method fakerMethod;
       if (fakerApiFieldParameters == null || fakerApiFieldParameters.isEmpty()) {
         fakerMethod = classMethod.getClass().getMethod(fakerApiField.getMethodName());
-        resultMessage.put(
-            KEY_SUCCESS,
-            String.format(
-                I18n.get("The faker API field is valide. An example output is : %s."),
-                fakerMethod.invoke(classMethod).toString()));
+        return fakerMethod.invoke(classMethod).toString();
       } else if (fakerApiFieldParameters.stream()
           .anyMatch(
               fieldParameters ->
                   fieldParameters.getParamValue() == null
                       || fieldParameters.getParamType() == null)) {
-
-        resultMessage.put(
-            KEY_ERROR, I18n.get("Please check yours params, both fields must be filled."));
-      } else {
-
-        Class[] params = convertParametersToParamsArray(fakerApiFieldParameters);
-        Object[] paramValues = convertParametersToValueArray(fakerApiFieldParameters);
-        fakerMethod = classMethod.getClass().getMethod(fakerApiField.getMethodName(), params);
-        resultMessage.put(
-            KEY_SUCCESS,
-            String.format(
-                I18n.get("The faker API field is valide. An example output is : %s."),
-                fakerMethod.invoke(classMethod, paramValues).toString()));
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(BaseExceptionMessage.FAKER_METHOD_MISSING_PARAMS));
       }
-    } catch (InvocationTargetException | IllegalAccessException e) {
-      resultMessage.put(KEY_ERROR, I18n.get("An error occured, please check your configuration."));
-    } catch (ClassNotFoundException | NoSuchMethodException e) {
-      resultMessage.put(KEY_ERROR, I18n.get("Please check your parameters configuration."));
-    } catch (ParseException | IllegalArgumentException e) {
-      resultMessage.put(KEY_ERROR, I18n.get("Please check your parameters value format."));
-    }
 
-    return resultMessage;
+      Class[] params = convertParametersToParamsArray(fakerApiFieldParameters);
+      Object[] paramValues = convertParametersToValueArray(fakerApiFieldParameters);
+      fakerMethod = classMethod.getClass().getMethod(fakerApiField.getMethodName(), params);
+      return fakerMethod.invoke(classMethod, paramValues).toString();
+
+    } catch (InvocationTargetException | IllegalAccessException e) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.FAKER_METHOD_CONFIGURATION_ERROR));
+    } catch (ClassNotFoundException | NoSuchMethodException e) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.FAKER_METHOD_PARAMETERS_CONFIGURATION_ERROR));
+    } catch (ParseException | IllegalArgumentException e) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.FAKER_METHOD_PARAMETERS_VALUE_ERROR));
+    }
   }
 }
