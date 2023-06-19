@@ -219,7 +219,11 @@
       hideIf="typeSelect == 5">
       <field name="$guestEmail" title="Add a guest" colSpan="12" type="many-to-one"
         target="com.axelor.message.db.EmailAddress" canNew="true"
-        onChange="action-event-method-add-email-guest"/>
+        onChange="action-event-method-add-email-guest">
+        <editor x-show-titles="false" x-viewer="true">
+          <field name="address" widget="email" colSpan="12" placeholder="whatever@example.com"/>
+        </editor>
+      </field>
       <field name="attendees" canNew="false" canSelect="false" colSpan="12" showTitle="false">
         <editor layout="table" x-show-titles="false">
           <field name="name" readonly="true"/>

@@ -21,8 +21,9 @@ public class MoveBudgetManagementRepository extends MoveBankPaymentRepository {
       if (!CollectionUtils.isEmpty(move.getMoveLineList())
           && move.getStatusSelect() != MoveRepository.STATUS_NEW
           && move.getStatusSelect() != MoveRepository.STATUS_CANCELED) {
+        MoveLineBudgetService moveLineBudgetService = Beans.get(MoveLineBudgetService.class);
         for (MoveLine moveLine : move.getMoveLineList()) {
-          Beans.get(MoveLineBudgetService.class).checkAmountForMoveLine(moveLine);
+          moveLineBudgetService.checkAmountForMoveLine(moveLine);
         }
       }
 

@@ -34,6 +34,8 @@ import com.axelor.apps.crm.db.repo.OpportunityManagementRepository;
 import com.axelor.apps.crm.db.repo.OpportunityRepository;
 import com.axelor.apps.crm.message.MessageServiceCrmImpl;
 import com.axelor.apps.crm.service.CalendarService;
+import com.axelor.apps.crm.service.CatalogService;
+import com.axelor.apps.crm.service.CatalogServiceImpl;
 import com.axelor.apps.crm.service.ConvertLeadWizardService;
 import com.axelor.apps.crm.service.ConvertLeadWizardServiceImpl;
 import com.axelor.apps.crm.service.ConvertWizardOpportunityService;
@@ -70,5 +72,6 @@ public class CrmModule extends AxelorModule {
     bind(ConvertLeadWizardService.class).to(ConvertLeadWizardServiceImpl.class);
     bind(ConvertWizardOpportunityService.class).to(ConvertWizardOpportunityServiceImpl.class);
     bind(PartnerCrmService.class).to(PartnerCrmServiceImpl.class);
+    bind(CatalogService.class).to(CatalogServiceImpl.class);
   }
 }
