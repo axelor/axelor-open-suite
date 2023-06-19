@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -569,7 +569,7 @@
             </list-property>
             <xml-property name="queryText"><![CDATA[select Partner.id, MetaFile.file_path as logo_path, Company.height as logo_height, Company.width as logo_width, Partner.title_select , Partner.partner_type_select, Partner.first_name as partner_first_name,
 Partner.name as partner_name, Partner.partner_seq, InvoicingAddress.full_name as invoicing_full_name,
-Partner.fixed_phone, Partner.fax, Partner.mobile_phone, EmailAddress.address as email_address, Partner.web_site, 
+Partner.fixed_phone, Partner.fax, Partner.mobile_phone, EmailAddress.address as email_address, Partner.web_site,
 AuthUser.name as internal_user_name, Team.name as team_name,
 AccountingSituation.balance_cust_account, AccountingSituation.balance_due_cust_account, AccountingSituation.balance_due_debt_recovery_cust_account
 from base_partner as Partner
@@ -2058,23 +2058,18 @@ $func$ LANGUAGE plpgsql;
                 <cell id="3350">
                     <property name="colSpan">2</property>
                     <property name="rowSpan">1</property>
-                    <text id="4574">
-                        <property name="fontSize">8pt</property>
+                    <image id="4686">
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
                                 <expression name="valueExpr" type="javascript">row["logo_path"] == null</expression>
                             </structure>
                         </list-property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<TABLE>
-	<TR>
-		<VALUE-OF format="HTML">
-			"<TD><IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='"+row["logo_height"]+"' width='"+row["logo_width"]+"'/></TD>"
-		</VALUE-OF>
-	</TR>
-</TABLE>]]></text-property>
-                    </text>
+                        <method name="onRender"><![CDATA[this.width=row["logo_width"];
+this.height=row["logo_height"];]]></method>
+                        <property name="source">file</property>
+                        <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
+                    </image>
                 </cell>
                 <cell id="4096">
                     <property name="colSpan">4</property>
