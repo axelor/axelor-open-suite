@@ -57,7 +57,7 @@ public class BatchControlMovesConsistency extends BatchStrategy {
         for (Move move : moveList) {
           try {
             move = moveRepo.find(move.getId());
-            moveValidateService.checkPreconditions(move);
+            moveValidateService.checkConsistencyPreconditions(move);
           } catch (AxelorException e) {
             TraceBackService.trace(
                 new AxelorException(move, e.getCategory(), I18n.get(e.getMessage())),
