@@ -29,6 +29,8 @@
       <field name="checkResourceAvailibility" on="UPDATE"/>
       <field name="isEnableSignature" on="UPDATE"/>
       <field name="isEnablePerProjectTaskSequence" on="UPDATE"/>
+      <field name="defaultTaskStatusSet" on="UPDATE"/>
+      <field name="defaultPrioritySet" on="UPDATE"/>
     </track>
   </entity>
 
