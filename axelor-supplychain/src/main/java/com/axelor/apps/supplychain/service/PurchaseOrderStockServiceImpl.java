@@ -211,8 +211,8 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
       }
 
     } else {
-      endLocation =
-          stockConfigService.getStockConfig(company).getQualityControlDefaultStockLocation();
+      StockConfig stockConfig = stockConfigService.getStockConfig(company);
+      endLocation = stockConfigService.getQualityControlDefaultStockLocation(stockConfig);
     }
 
     StockMove qualityStockMove =

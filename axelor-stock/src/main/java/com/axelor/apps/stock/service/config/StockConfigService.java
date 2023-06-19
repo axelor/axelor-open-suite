@@ -110,4 +110,15 @@ public class StockConfigService {
     }
     return stockConfig.getPickupDefaultStockLocation();
   }
+
+  public StockLocation getQualityControlDefaultStockLocation(StockConfig stockConfig)
+      throws AxelorException {
+    if (stockConfig.getQualityControlDefaultStockLocation() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.PO_MISSING_DEFAULT_STOCK_LOCATION),
+          stockConfig.getCompany().getName());
+    }
+    return stockConfig.getQualityControlDefaultStockLocation();
+  }
 }

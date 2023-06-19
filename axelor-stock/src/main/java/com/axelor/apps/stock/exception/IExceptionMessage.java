@@ -159,6 +159,9 @@ public interface IExceptionMessage {
   static final String STOCK_CONFIG_PICKUP = /*$$(*/
       "You must configure a default pickup stock location for the company %s" /*)*/;
 
+  static final String PO_MISSING_DEFAULT_STOCK_LOCATION = /*$$(*/
+      "Please add a quality control default stock location for company %s in the app stock configuration" /*)*/;
+
   /** Stock Location Controller */
   static final String LOCATION_1 = /*$$(*/
       "There's already an existing storage, you must deactivate it first" /*)*/;
