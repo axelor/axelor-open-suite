@@ -358,6 +358,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     moveRecordUpdateService.updateDueDate(move, paymentConditionChange, dateChange);
     if (move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL) {
       massEntryService.verifyFieldsAndGenerateTaxLineAndCounterpart(move, move.getDate());
+      valuesMap.put("massEntryErrors", move.getMassEntryErrors());
       valuesMap.put("moveLineMassEntryList", move.getMoveLineMassEntryList());
     }
 

@@ -137,10 +137,8 @@ public class MassEntryServiceImpl implements MassEntryService {
   }
 
   @Override
-  public Map<String, Object> verifyFieldsAndGenerateTaxLineAndCounterpart(
-      Move parentMove, LocalDate dueDate) throws AxelorException {
-    HashMap<String, Object> resultMap = new HashMap<>();
-
+  public void verifyFieldsAndGenerateTaxLineAndCounterpart(Move parentMove, LocalDate dueDate)
+      throws AxelorException {
     if (ObjectUtils.notEmpty(parentMove.getMoveLineMassEntryList())) {
       this.verifyFieldsChangeOnMoveLineMassEntry(parentMove, parentMove.getMassEntryManageCutOff());
 
@@ -180,13 +178,8 @@ public class MassEntryServiceImpl implements MassEntryService {
           massEntryVerificationService.setErrorMassEntryMoveLines(
               parentMove, temporaryMoveNumber, "paymentMode", categoryMessage);
         }
-
-        resultMap.put("massEntryErrors", parentMove.getMassEntryErrors());
-        resultMap.put("moveLineMassEntryList", parentMove.getMoveLineMassEntryList());
       }
     }
-
-    return resultMap;
   }
 
   @Override
