@@ -745,7 +745,7 @@
 "The manufacturing order was canceled.",,,
 "The merge must concern only manufacturing orders with Draft or Planned status, with the same products and same workshop stock location and with all bill of materials compatibles.",,,
 "The merge must concern only manufacturing orders with Draft or Planned status, with the same products and with all bill of materials compatibles.",,,
-"The operation order is already finished and can not be moved.",,,
+"The operation order is already finished and cannot be moved.",,,
 "The outsourcing receipt stock location is missing from the stock config",,,
 "The planned end date is inferior to the actual date",,,
 "The produced product stock location is missing in the prod process",,,

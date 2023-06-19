@@ -292,5 +292,5 @@ public final class ProductionExceptionMessage {
 
   public static final String OPERATION_ORDER_ALREADY_FINISHED =
       /*$$(*/
-      "The operation order is already finished and can not be moved." /*)*/;
+      "The operation order is already finished and cannot be moved." /*)*/;
 }
