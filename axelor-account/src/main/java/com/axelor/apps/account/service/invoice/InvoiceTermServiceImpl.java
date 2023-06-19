@@ -1581,7 +1581,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void payInvoiceTerms(List<InvoiceTerm> invoiceTermList) {
     if (ObjectUtils.isEmpty(invoiceTermList)) {
       return;

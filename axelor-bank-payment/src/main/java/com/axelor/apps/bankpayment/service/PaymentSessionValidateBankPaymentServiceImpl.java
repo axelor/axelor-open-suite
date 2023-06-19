@@ -442,9 +442,10 @@ public class PaymentSessionValidateBankPaymentServiceImpl
   public void processInvoiceTermLcr(
       PaymentSession paymentSession,
       InvoiceTerm invoiceTerm,
-      Map<LocalDate, Map<Partner, List<Move>>> moveDateMap)
+      Map<LocalDate, Map<Partner, List<Move>>> moveDateMap,
+      Map<Move, BigDecimal> paymentAmountMap)
       throws AxelorException {
-    super.processInvoiceTermLcr(paymentSession, invoiceTerm, moveDateMap);
+    super.processInvoiceTermLcr(paymentSession, invoiceTerm, moveDateMap, paymentAmountMap);
 
     if (paymentSession.getAccountingTriggerSelect()
             != PaymentSessionRepository.ACCOUNTING_TRIGGER_IMMEDIATE

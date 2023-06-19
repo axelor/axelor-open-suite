@@ -199,7 +199,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
           I18n.get(AccountExceptionMessage.MOVE_4),
           move.getReference());
     }
-    if (!CollectionUtils.isEmpty(move.getPeriod().getClosedJournalSet())
+    if (!ObjectUtils.isEmpty(move.getPeriod().getClosedJournalSet())
         && move.getPeriod().getClosedJournalSet().contains(move.getJournal())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
