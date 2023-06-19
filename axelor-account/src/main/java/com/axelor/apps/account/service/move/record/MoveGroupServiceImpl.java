@@ -394,7 +394,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
 
     valuesMap.put("journal", move.getJournal());
     valuesMap.put("companyBankDetails", move.getCompanyBankDetails());
-    valuesMap.put("currency", move.getCurrency());
+    valuesMap.put("currency", move.getCompany().getCurrency());
     valuesMap.put("companyCurrency", move.getCompanyCurrency());
     valuesMap.put("currencyCode", move.getCurrencyCode());
     valuesMap.put("companyCurrencyCode", move.getCompanyCurrencyCode());
