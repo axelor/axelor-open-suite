@@ -70,6 +70,7 @@
       <field name="paymentVouchersOnCustomerInvoice" on="UPDATE"/>
       <field name="activatePassedForPayment" on="UPDATE"/>
       <field name="manageFinancialDiscount" on="UPDATE"/>
+      <field name="allowMultiInvoiceTerms" on="UPDATE"/>
       <field name="defaultServiceTypeTypology" on="UPDATE"/>
       <field name="dasActiveNorm" on="UPDATE"/>
       <field name="activateFixedAssetBarCodeGeneration" on="UPDATE"/>
