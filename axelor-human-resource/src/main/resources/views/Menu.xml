@@ -430,20 +430,6 @@
       expr="eval: __user__.employee?.mainEmploymentContract?.payCompany ?: __user__.activeCompany"/>
   </action-view>
 
-  <menuitem name="multiple-users-expense" parent="expense-root"
-    title="Multiple users expenses" action="multiple.users.expense" order="300"/>
-
-  <action-view name="multiple.users.expense" title="Multiple users expenses"
-    model="com.axelor.apps.hr.db.Expense">
-    <view type="grid" name="expense-grid"/>
-    <view type="form" name="expense-form"/>
-    <view-param name="search-filters" value="expense-filters"/>
-    <domain>self.multipleUsers IS TRUE</domain>
-    <context name="setMultipleUsers" expr="eval: true"/>
-    <context name="_payCompany"
-      expr="eval: __user__.employee?.mainEmploymentContract?.payCompany ?: __user__.activeCompany"/>
-  </action-view>
-
   <menuitem name="historic-expense" parent="expense-root" title="Historic team Expenses"
     action="expense.historic" order="400"/>
 

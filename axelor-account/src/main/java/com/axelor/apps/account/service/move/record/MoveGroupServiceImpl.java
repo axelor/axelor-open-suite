@@ -541,6 +541,17 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   }
 
   @Override
+  public Map<String, Object> getFiscalPositionOnChangeValuesMap(Move move) throws AxelorException {
+    Map<String, Object> valuesMap = new HashMap<>();
+
+    moveDefaultService.setDefaultFiscalPositionOnChange(move);
+
+    valuesMap.put("moveLineList", move.getMoveLineList());
+
+    return valuesMap;
+  }
+
+  @Override
   public Map<String, Map<String, Object>> getCurrencyOnChangeAttrsMap(Move move) {
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 

@@ -66,6 +66,7 @@ import com.axelor.apps.production.service.RawMaterialRequirementServiceImpl;
 import com.axelor.apps.production.service.SaleOrderWorkflowServiceProductionImpl;
 import com.axelor.apps.production.service.SopService;
 import com.axelor.apps.production.service.SopServiceImpl;
+import com.axelor.apps.production.service.StockMoveServiceProductionImpl;
 import com.axelor.apps.production.service.StockRulesServiceProductionImpl;
 import com.axelor.apps.production.service.WorkCenterService;
 import com.axelor.apps.production.service.WorkCenterServiceImpl;
@@ -90,6 +91,8 @@ import com.axelor.apps.production.service.costsheet.UnitCostCalcLineService;
 import com.axelor.apps.production.service.costsheet.UnitCostCalcLineServiceImpl;
 import com.axelor.apps.production.service.costsheet.UnitCostCalculationService;
 import com.axelor.apps.production.service.costsheet.UnitCostCalculationServiceImpl;
+import com.axelor.apps.production.service.machine.MachineService;
+import com.axelor.apps.production.service.machine.MachineServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderPrintService;
 import com.axelor.apps.production.service.manuforder.ManufOrderPrintServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderReservedQtyService;
@@ -118,6 +121,7 @@ import com.axelor.apps.supplychain.service.ProductStockLocationServiceImpl;
 import com.axelor.apps.supplychain.service.ProductVariantServiceSupplyChainImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.SaleOrderWorkflowServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.StockMoveServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.StockRulesServiceSupplychainImpl;
 
 public class ProductionModule extends AxelorModule {
@@ -178,5 +182,7 @@ public class ProductionModule extends AxelorModule {
     bind(ManufOrderRestService.class).to(ManufOrderRestServiceImpl.class);
     bind(OperationOrderRestService.class).to(OperationOrderRestServiceImpl.class);
     bind(ManufOrderWorkflowService.class).to(ManufOrderWorkflowServiceImpl.class);
+    bind(StockMoveServiceSupplychainImpl.class).to(StockMoveServiceProductionImpl.class);
+    bind(MachineService.class).to(MachineServiceImpl.class);
   }
 }

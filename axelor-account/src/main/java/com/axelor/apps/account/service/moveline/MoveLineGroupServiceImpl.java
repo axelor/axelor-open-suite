@@ -266,8 +266,10 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
     valuesMap.put("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
     valuesMap.put("taxLine", moveLine.getTaxLine());
     valuesMap.put("taxEquiv", moveLine.getTaxEquiv());
+    valuesMap.put("taxLineBeforeReverse", moveLine.getTaxLineBeforeReverse());
     valuesMap.put("analyticDistributionTemplate", moveLine.getAnalyticDistributionTemplate());
     valuesMap.put("invoiceTermList", moveLine.getInvoiceTermList());
+    valuesMap.put("vatSystemSelect", moveLine.getVatSystemSelect());
 
     return valuesMap;
   }

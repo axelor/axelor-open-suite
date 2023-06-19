@@ -19,6 +19,7 @@ package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
@@ -40,6 +41,7 @@ import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class ProjectPlanningTimeBusinessProjectServiceImpl extends ProjectPlanningTimeServiceImpl {
 
@@ -90,7 +92,15 @@ public class ProjectPlanningTimeBusinessProjectServiceImpl extends ProjectPlanni
             dailyWorkHrs,
             taskEndDateTime);
     if (projectTask != null) {
-      planningTime.setTimeUnit(projectTask.getTimeUnit());
+      Unit timeUnit = projectTask.getTimeUnit();
+      if (Objects.isNull(timeUnit)) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(BusinessProjectExceptionMessage.PROJECT_TASK_NO_UNIT_FOUND),
+            projectTask.getName());
+      }
+      planningTime.setTimeUnit(timeUnit);
+
     } else {
       planningTime.setTimeUnit(appBusinessProjectService.getHoursUnit());
     }

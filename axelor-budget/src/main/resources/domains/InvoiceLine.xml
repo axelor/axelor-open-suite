@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="account" package="com.axelor.apps.account.db"/>
+
+  <entity name="InvoiceLine" implements="com.axelor.apps.account.db.repo.AnalyticLine">
+
+    <many-to-one name="budget" ref="com.axelor.apps.budget.db.Budget" title="Budget"/>
+    <one-to-many name="budgetDistributionList"
+      ref="com.axelor.apps.budget.db.BudgetDistribution" title="Budget Distribution"
+      mappedBy="invoiceLine"/>
+    <decimal name="budgetDistributionSumAmount" title="Total amount attributed"/>
+
+  </entity>
+
+</domain-models>
