@@ -74,6 +74,8 @@
       <field name="enableTaskTemplatesByProduct" on="UPDATE"/>
       <field name="generateProjectSequence" on="UPDATE"/>
       <field name="automaticInvoicing" on="UPDATE"/>
+      <field name="preTaskStatusSet" on="UPDATE"/>
+      <field name="postTaskStatusSet" on="UPDATE"/>
       <field name="excludeTaskInvoicing" on="UPDATE"/>
     </track>
 
