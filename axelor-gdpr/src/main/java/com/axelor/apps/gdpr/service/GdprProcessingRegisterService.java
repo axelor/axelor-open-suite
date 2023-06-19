@@ -122,7 +122,7 @@ public class GdprProcessingRegisterService implements Callable<List<GDPRProcessi
     List<GDPRProcessingRegisterRule> gdprProcessingRegisterRuleList =
         gdprProcessingRegister.getGdprProcessingRegisterRuleList();
 
-    Boolean isArchiveData = gdprProcessingRegister.getIsArchiveData();
+    boolean isArchiveData = gdprProcessingRegister.getIsArchiveData();
 
     Anonymizer anonymizer = gdprProcessingRegister.getAnonymizer();
 
