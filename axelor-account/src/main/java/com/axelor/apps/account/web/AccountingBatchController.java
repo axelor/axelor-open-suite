@@ -29,6 +29,7 @@ import com.axelor.apps.account.service.batch.BatchPrintAccountingReportService;
 import com.axelor.apps.base.callable.ControllerCallableTool;
 import com.axelor.apps.base.db.App;
 import com.axelor.apps.base.db.Batch;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -174,7 +175,7 @@ public class AccountingBatchController {
       ControllerCallableTool<Batch> batchControllerCallableTool = new ControllerCallableTool<>();
       Batch batch =
           batchControllerCallableTool.runInSeparateThread(accountingBatchService, response);
-      if (batch != null) {
+      if (batch != null && ObjectUtils.notEmpty(batch.getComments())) {
         response.setFlash(batch.getComments());
       }
       response.setReload(true);
