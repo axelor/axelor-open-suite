@@ -250,7 +250,7 @@
 
   <action-record name="action-expense-line-record-expenseDate-invalide"
     model="com.axelor.apps.hr.db.ExpenseLine">
-    <field name="expenseDate" expr="eval :__config__.date"/>
+    <field name="expenseDate" expr="eval: __config__.date"/>
   </action-record>
 
   <action-attrs name="action-expense-line-attrs-company"
