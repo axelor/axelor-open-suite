@@ -53,6 +53,7 @@
     <option value="1">Update Tasks</option>
     <option value="2">Generate invoicing projects</option>
     <option value="3">Compute project totals</option>
+    <option value="4">Backup project data to project history</option>
   </selection>
 
   <selection name="business.project.batch.consolidate.phase.select">

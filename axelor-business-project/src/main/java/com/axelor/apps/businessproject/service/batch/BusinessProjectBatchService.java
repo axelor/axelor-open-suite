@@ -64,6 +64,10 @@ public class BusinessProjectBatchService extends AbstractBatchService {
         batch = computeProjectTotals(businessProjectBatch);
         break;
 
+      case BusinessProjectBatchRepository.ACTION_BACKUP_TO_PROJECT_HISTORY:
+        batch = backuptoProjectHistory(businessProjectBatch);
+        break;
+
       default:
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -84,6 +88,10 @@ public class BusinessProjectBatchService extends AbstractBatchService {
 
   private Batch computeProjectTotals(BusinessProjectBatch businessProjectBatch) {
     return Beans.get(BatchComputeProjectTotalsService.class).run(businessProjectBatch);
+  }
+
+  protected Batch backuptoProjectHistory(BusinessProjectBatch businessProjectBatch) {
+    return Beans.get(BatchBackupToProjectHistoryService.class).run(businessProjectBatch);
   }
 
   @SuppressWarnings("unchecked")

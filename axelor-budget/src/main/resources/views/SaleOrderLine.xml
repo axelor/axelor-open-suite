@@ -114,7 +114,6 @@
     <action name="action-sale-order-line-attrs-hidden-analytic-distribution-panel"/>
     <action name="action-sale-order-line-attrs-hidden-fields-for-client"/>
     <action name="action-sale-order-line-group-manage-attrs"/>
-    <action name="action-sale-order-line-supplychain-method-get-invoicing-state"/>
     <action name="action-method-sale-order-line-budget-check-budget-key-roles"/>
   </action-group>
 

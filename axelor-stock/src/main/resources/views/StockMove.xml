@@ -557,7 +557,7 @@
         title="Stock move lines" height="12"
         readonlyIf="company == null || fromStockLocation == null || statusSelect == 3"
         onChange="action-stock-move-line-change-group"
-        onNew="action-stock-move-line-record-filter-on-available-products"
+        onNew="action-stock-move-line-record-filter-on-available-products, action-stock-move-line-record-fill-stock-location"
         grid-view="stock-move-line-grid" form-view="stock-move-line-form" canMove="true"
         orderBy="sequence" canRemove="!(statusSelect == 2 &amp;&amp; pickingIsEdited)" canNew="true"/>
       <panel name="freightCarrierPanel" title="Freight Carrier" itemSpan="12">
@@ -855,6 +855,7 @@
     <action name="action-stock-move-record-set-group-product-on-printing"/>
     <action name="action-stock-move-record-set-pfp-status"
       if="__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
+    <action name="action-stock-move-attrs-show-stock-location"/>
   </action-group>
 
   <action-group name="action-group-stock-stockmove-onload">
@@ -867,6 +868,7 @@
     <action name="action-stock-move-attrs-filter-on-available-products"/>
     <action name="action-stock-move-attrs-check-delivery-address"
       if="partner?.partnerAddressList?.size() > 1"/>
+    <action name="action-stock-move-attrs-show-stock-location"/>
   </action-group>
 
   <action-group name="action-stock-move-line-change-group">
@@ -1507,5 +1509,16 @@
   <action-method name="action-stock-move-method-check-wap">
     <call class="com.axelor.apps.stock.web.StockMoveController" method="checkWap"/>
   </action-method>
+
+  <action-method name="action-stock-move-method-hide-stock-location">
+    <call class="com.axelor.apps.stock.web.StockMoveController" method="hideFields"/>
+  </action-method>
+
+  <action-attrs name="action-stock-move-attrs-show-stock-location">
+    <attribute for="stockMoveLineList.fromStockLocation" name="hidden"
+      expr="eval: typeSelect != 2 || !__config__.app.getApp('stock')?.isManageStockLocationOnStockMoveLine"/>
+    <attribute for="stockMoveLineList.toStockLocation" name="hidden"
+      expr="eval: typeSelect != 3 || !__config__.app.getApp('stock')?.isManageStockLocationOnStockMoveLine"/>
+  </action-attrs>
 
 </object-views>

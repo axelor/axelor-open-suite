@@ -117,11 +117,18 @@ public class MoveLineMassEntryAttrsServiceImpl implements MoveLineMassEntryAttrs
 
   @Override
   public void addMovePfpValidatorUserRequired(
-      Account account, Map<String, Map<String, Object>> attrsMap) {
+      Account account, Journal journal, Map<String, Map<String, Object>> attrsMap) {
     if (appAccountService.getAppAccount().getActivatePassedForPayment()
         && account != null
-        && account.getUseForPartnerBalance()) {
-      this.addAttr("movePfpValidatorUser", "required", true, attrsMap);
+        && account.getUseForPartnerBalance()
+        && journal != null
+        && journal.getJournalType() != null) {
+      this.addAttr(
+          "movePfpValidatorUser",
+          "required",
+          journal.getJournalType().getTechnicalTypeSelect()
+              == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE,
+          attrsMap);
     }
   }
 
