@@ -1564,14 +1564,16 @@ as UnreconcileAmountTableSupSup
                         <structure>
                             <property name="name">logo_height</property>
                             <text-property name="displayName">logo_height</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["logo_height"]</expression>
-                            <property name="dataType">integer</property>
+                            <expression name="expression" type="javascript">if(dataSetRow["logo_height"]>0){dataSetRow["logo_height"]+'px'}else{'35px'}</expression>
+                            <property name="dataType">string</property>
+                            <property name="allowExport">true</property>
                         </structure>
                         <structure>
                             <property name="name">logo_width</property>
                             <text-property name="displayName">logo_width</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["logo_width"]</expression>
-                            <property name="dataType">integer</property>
+                            <expression name="expression" type="javascript">if(dataSetRow["logo_width"]>0){dataSetRow["logo_width"]+'px'}else{'154px'}</expression>
+                            <property name="dataType">string</property>
+                            <property name="allowExport">true</property>
                         </structure>
                     </list-property>
                     <column id="6199">
@@ -1614,44 +1616,13 @@ as UnreconcileAmountTableSupSup
                             <property name="borderRightStyle">none</property>
                             <property name="borderTopStyle">none</property>
                             <property name="textAlign">left</property>
-                            <text id="4245">
-                                <property name="fontSize">8pt</property>
-                                <property name="dataSet">AccountingReportDS</property>
-                                <list-property name="visibility">
-                                    <structure>
-                                        <property name="format">all</property>
-                                        <expression name="valueExpr" type="javascript">row["logo_path"] == null</expression>
-                                    </structure>
-                                </list-property>
-                                <list-property name="boundDataColumns">
-                                    <structure>
-                                        <property name="name">logo_path</property>
-                                        <text-property name="displayName">logo_path</text-property>
-                                        <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
-                                        <property name="dataType">string</property>
-                                    </structure>
-                                    <structure>
-                                        <property name="name">logo_height</property>
-                                        <text-property name="displayName">logo_height</text-property>
-                                        <expression name="expression" type="javascript">dataSetRow["logo_height"]</expression>
-                                        <property name="dataType">integer</property>
-                                    </structure>
-                                    <structure>
-                                        <property name="name">logo_width</property>
-                                        <text-property name="displayName">logo_width</text-property>
-                                        <expression name="expression" type="javascript">dataSetRow["logo_width"]</expression>
-                                        <property name="dataType">integer</property>
-                                    </structure>
-                                </list-property>
-                                <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[<TABLE>
-	<TR>
-		<VALUE-OF format="HTML">
-			"<TD><IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='"+row["logo_height"]+"' width='"+row["logo_width"]+"'/></TD>"
-		</VALUE-OF>
-	</TR>
-</TABLE>]]></text-property>
-                            </text>
+                            <image id="6890">
+                                <expression name="altText">""</expression>
+                                <method name="onCreate"><![CDATA[this.width = row["logo_width"];
+this.height = row["logo_height"];]]></method>
+                                <property name="source">file</property>
+                                <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
+                            </image>
                         </cell>
                         <cell id="6213">
                             <property name="verticalAlign">middle</property>
