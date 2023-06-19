@@ -18,7 +18,7 @@
       if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="fromDate"/>
     <field name="toDate"/>
-    <field name="sentDate"/>
+    <field name="sentDateTime"/>
     <field name="statusSelect" if="__config__.app.getApp('timesheet')?.needValidation"/>
     <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
   </grid>
@@ -39,13 +39,13 @@
       if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="fromDate"/>
     <field name="toDate"/>
-    <field name="sentDate"/>
+    <field name="sentDateTime"/>
     <field name="statusSelect" if="__config__.app.getApp('timesheet')?.needValidation"/>
     <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
   </grid>
 
   <grid name="my-timesheets-grid" title="My Timesheets" model="com.axelor.apps.hr.db.Timesheet"
-    canNew="false" orderBy="-fromDate">
+    canNew="true" orderBy="-fromDate">
     <menubar>
       <menu name="timesheetToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
         <item name="seeTimesheetLinesItem" action="action-timesheet-see-timesheet-lines"
@@ -59,7 +59,7 @@
       if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="fromDate"/>
     <field name="toDate"/>
-    <field name="sentDate"/>
+    <field name="sentDateTime"/>
     <field name="statusSelect" if="__config__.app.getApp('timesheet')?.needValidation"/>
   </grid>
 
@@ -76,12 +76,12 @@
     </menubar>
     <hilite background="danger" if="$moment(fromDate).diff(todayDate,'days') &lt;= 0"/>
     <hilite background="warning"
-      if="$moment(todayDate).diff(sentDate,'days') &gt;= 7 || $moment(todayDate).diff(fromDate,'days') &gt;= 15"/>
+      if="$moment(todayDate).diff(sentDateTime,'days') &gt;= 7 || $moment(todayDate).diff(fromDate,'days') &gt;= 15"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
       if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="fromDate"/>
     <field name="toDate"/>
-    <field name="sentDate"/>
+    <field name="sentDateTime"/>
     <field name="periodTotal"/>
     <field name="statusSelect" if="__config__.app.getApp('timesheet')?.needValidation"/>
     <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
@@ -226,15 +226,15 @@
     <panel-dashlet name="totalHoursPerDayPanel" title="Total Hours per Day"
       hidden="true" showIf="id &amp;&amp; employee.timesheetImputationSelect != 2"
       action="action-timesheet-view-total-hours-per-day"/>
-    <panel name="validationInfoPanel" showIf="sentDate != null"
+    <panel name="validationInfoPanel" showIf="sentDateTime != null"
       if="__config__.app.getApp('timesheet')?.needValidation">
-      <field name="sentDate"/>
+      <field name="sentDateTime"/>
       <field name="validatedBy" canEdit="false" form-view="user-form" grid-view="user-grid"
         showIf="validatedBy != null"/>
       <field name="refusedBy" canEdit="false" form-view="user-form" grid-view="user-grid"
         showIf="refusedBy != null"/>
-      <field name="validationDate" showIf="validationDate != null"/>
-      <field name="refusalDate" showIf="refusalDate != null"/>
+      <field name="validationDateTime" showIf="validationDateTime != null"/>
+      <field name="refusalDateTime" showIf="refusalDateTime != null"/>
       <field name="groundForRefusal" showIf="statusSelect == 4" colSpan="12"/>
     </panel>
     <panel name="attrsPanel">

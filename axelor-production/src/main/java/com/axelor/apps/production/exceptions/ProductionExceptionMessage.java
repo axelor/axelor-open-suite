@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.production.exceptions;
 
@@ -24,6 +25,10 @@ public final class ProductionExceptionMessage {
   /** Production order service */
   public static final String PRODUCTION_ORDER_SEQ = /*$$(*/
       "There's no configured sequence for production's orders" /*)*/;
+
+  /** Operation order service */
+  public static final String PRODUCTION_PROCESS_IS_EMPTY = /*$$(*/
+      "Your production process is empty." /*)*/;
 
   /** Production order sale order service */
   public static final String PRODUCTION_ORDER_SALES_ORDER_NO_BOM = /*$$(*/
@@ -99,9 +104,6 @@ public final class ProductionExceptionMessage {
   /** Operation Order Controller */
   public static final String OPERATION_ORDER_1 = /*$$(*/
       "Please select the Operation order(s) to print." /*)*/;
-
-  /** Sale order line Controller */
-  public static final String SALE_ORDER_LINE_1 = /*$$(*/ "Personalized nomenclature created" /*)*/;
 
   /** Production Order Controller */
   public static final String PRODUCTION_ORDER_NO_GENERATION = /*$$(*/
@@ -283,4 +285,8 @@ public final class ProductionExceptionMessage {
   public static final String GENERATE_MANUF_ORDER_BOM_DIVIDE_ZERO =
       /*$$(*/
       "The quantity of the bill of material %s is equal to zero." /*)*/;
+
+  public static final String OPERATION_ORDER_NO_PERIOD_FOUND_FOR_PLAN_DATES =
+      /*$$(*/
+      "No period has been found in the weekly planning for the operation order %s" /*)*/;
 }

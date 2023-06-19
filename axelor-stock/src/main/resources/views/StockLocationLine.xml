@@ -267,8 +267,7 @@
     <view type="grid" name="stock-move-line-all-grid-planned"/>
     <view type="form" name="stock-move-line-all-form"/>
     <domain>self.stockMove.statusSelect = 2 AND self.product.id = :productId AND
-      (self.stockMove.fromStockLocation.id = :locationId OR self.stockMove.toStockLocation.id =
-      :locationId)</domain>
+      (self.fromStockLocation.id = :locationId OR self.toStockLocation.id = :locationId)</domain>
     <context name="productId" expr="eval: product?.id"/>
     <context name="locationId" expr="eval: stockLocation?.id"/>
   </action-view>
@@ -278,8 +277,7 @@
     <view type="grid" name="stock-move-line-all-grid"/>
     <view type="form" name="stock-move-line-all-form"/>
     <domain>self.stockMove.statusSelect = 3 AND self.product.id = :productId AND
-      (self.stockMove.fromStockLocation.id = :locationId OR self.stockMove.toStockLocation.id =
-      :locationId)</domain>
+      (self.fromStockLocation.id = :locationId OR self.toStockLocation.id = :locationId)</domain>
     <context name="productId" expr="eval: product?.id"/>
     <context name="locationId" expr="eval: stockLocation?.id "/>
   </action-view>
@@ -339,14 +337,6 @@
     <context name="productId" expr="eval: product?.id"/>
     <context name="locationId" expr="eval: stockLocation?.id "/>
   </action-view>
-
-  <action-view name="action-stock-location-line-view-wap-history" title="WAP History"
-    model="com.axelor.apps.stock.db.WapHistory">
-    <view type="grid" name="wap-history-grid"/>
-    <view type="form" name="wap-history-form"/>
-    <domain>self.stockLocationLine.id = :id</domain>
-  </action-view>
-
 
   <action-view name="action-stock-location-line-view-stock-location-line-history"
     title="Stock location line history" model="com.axelor.apps.stock.db.StockLocationLineHistory">

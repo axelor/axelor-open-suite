@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.bankpayment.service.bankorder;
 
@@ -23,7 +24,6 @@ import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
-import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
 import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionCancelService;
 import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionValidateService;
 import com.axelor.apps.bankpayment.db.BankOrder;
@@ -47,6 +47,7 @@ import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFile
 import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFileAFB160ICTService;
 import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFileAFB320XCTService;
 import com.axelor.apps.bankpayment.service.config.BankPaymentConfigService;
+import com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentBankPaymentCancelService;
 import com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentValidateServiceBankPayImpl;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
@@ -87,7 +88,7 @@ public class BankOrderServiceImpl implements BankOrderService {
   protected InvoicePaymentRepository invoicePaymentRepo;
   protected BankOrderLineService bankOrderLineService;
   protected EbicsService ebicsService;
-  protected InvoicePaymentCancelService invoicePaymentCancelService;
+  protected InvoicePaymentBankPaymentCancelService invoicePaymentBankPaymentCancelService;
   protected BankPaymentConfigService bankPaymentConfigService;
   protected SequenceService sequenceService;
   protected BankOrderLineOriginService bankOrderLineOriginService;
@@ -102,7 +103,7 @@ public class BankOrderServiceImpl implements BankOrderService {
       InvoicePaymentRepository invoicePaymentRepo,
       BankOrderLineService bankOrderLineService,
       EbicsService ebicsService,
-      InvoicePaymentCancelService invoicePaymentCancelService,
+      InvoicePaymentBankPaymentCancelService invoicePaymentBankPaymentCancelService,
       BankPaymentConfigService bankPaymentConfigService,
       SequenceService sequenceService,
       BankOrderLineOriginService bankOrderLineOriginService,
@@ -115,7 +116,7 @@ public class BankOrderServiceImpl implements BankOrderService {
     this.invoicePaymentRepo = invoicePaymentRepo;
     this.bankOrderLineService = bankOrderLineService;
     this.ebicsService = ebicsService;
-    this.invoicePaymentCancelService = invoicePaymentCancelService;
+    this.invoicePaymentBankPaymentCancelService = invoicePaymentBankPaymentCancelService;
     this.bankPaymentConfigService = bankPaymentConfigService;
     this.sequenceService = sequenceService;
     this.bankOrderLineOriginService = bankOrderLineOriginService;
@@ -281,6 +282,7 @@ public class BankOrderServiceImpl implements BankOrderService {
         Beans.get(InvoicePaymentValidateServiceBankPayImpl.class);
 
     for (InvoicePayment invoicePayment : invoicePaymentList) {
+
       if (invoicePayment != null
           && invoicePayment.getStatusSelect() != InvoicePaymentRepository.STATUS_VALIDATED
           && invoicePayment.getInvoice() != null) {
@@ -295,14 +297,13 @@ public class BankOrderServiceImpl implements BankOrderService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
   public BankOrder cancelPayment(BankOrder bankOrder) throws AxelorException {
     List<InvoicePayment> invoicePaymentList = invoicePaymentRepo.findByBankOrder(bankOrder).fetch();
 
     for (InvoicePayment invoicePayment : invoicePaymentList) {
       if (invoicePayment != null
           && invoicePayment.getStatusSelect() != InvoicePaymentRepository.STATUS_CANCELED) {
-        invoicePaymentCancelService.cancel(invoicePayment);
+        invoicePaymentBankPaymentCancelService.cancelInvoicePayment(invoicePayment);
       }
     }
 
@@ -327,7 +328,7 @@ public class BankOrderServiceImpl implements BankOrderService {
       if (paymentSession != null) {
         Beans.get(PaymentSessionValidateService.class)
             .processPaymentSession(paymentSession, new ArrayList());
-        return bankOrderRepo.find(bankOrder.getId());
+        bankOrder = bankOrderRepo.find(bankOrder.getId());
       }
     }
 
@@ -387,7 +388,6 @@ public class BankOrderServiceImpl implements BankOrderService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void validate(BankOrder bankOrder) throws AxelorException {
-
     bankOrder.setValidationDateTime(LocalDateTime.now());
 
     bankOrder.setStatusSelect(BankOrderRepository.STATUS_VALIDATED);
@@ -520,12 +520,15 @@ public class BankOrderServiceImpl implements BankOrderService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
   public void cancelBankOrder(BankOrder bankOrder) throws AxelorException {
-    bankOrder.setStatusSelect(BankOrderRepository.STATUS_CANCELED);
-
     bankOrder = this.cancelPayment(bankOrder);
 
+    this.saveBankOrder(bankOrder);
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected void saveBankOrder(BankOrder bankOrder) {
+    bankOrder.setStatusSelect(BankOrderRepository.STATUS_CANCELED);
     bankOrderRepo.save(bankOrder);
   }
 

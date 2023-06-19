@@ -45,7 +45,7 @@
   </grid>
 
   <form name="bank-reconciliation-line-form" title="Bank reconciliation Line"
-    model="com.axelor.apps.bankpayment.db.BankReconciliationLine" width="large">
+    model="com.axelor.apps.bankpayment.db.BankReconciliationLine" width="large" canNew="false">
     <panel name="bankStatementPanel" title="Bank statement details">
       <field name="bankStatementLine" canEdit="false"
         onChange="action-bank-reconciliation-line-record-fill-bank-statement-details"/>

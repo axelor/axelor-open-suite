@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.project.service;
 
@@ -33,6 +34,7 @@ import com.axelor.mail.db.MailMessage;
 import com.axelor.mail.db.repo.MailMessageRepository;
 import com.axelor.meta.MetaStore;
 import com.axelor.meta.schema.views.Selection;
+import com.axelor.meta.schema.views.Selection.Option;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import java.time.LocalDate;
@@ -99,7 +101,7 @@ public class ProjectActivityDashboardServiceImpl implements ProjectActivityDashb
       activityMap.put("time", createdOn);
       activityMap.put("userId", message.getAuthor().getId());
       activityMap.put("user", message.getAuthor().getName());
-      activityMap.putAll(getModelWithUtilityClass(message.getRelatedModel()));
+      activityMap.putAll(getModelWithUtilityClass(message));
       try {
         activityMap.put("activity", getActivity(message));
       } catch (Exception e) {
@@ -161,11 +163,19 @@ public class ProjectActivityDashboardServiceImpl implements ProjectActivityDashb
     return null;
   }
 
-  protected Map<String, Object> getModelWithUtilityClass(String model) {
+  protected Map<String, Object> getModelWithUtilityClass(MailMessage message) {
+    String model = message.getRelatedModel();
     Map<String, Object> dataMap = new HashMap<>();
     if (ProjectTask.class.getName().equals(model)) {
-      dataMap.put("modelName", "Project task");
+      ProjectTask projectTask = projectTaskRepo.find(message.getRelatedId());
+      String modelName =
+          Optional.ofNullable(projectTask.getTypeSelect())
+              .map(typeSelect -> MetaStore.getSelectionItem("project.task.type.select", typeSelect))
+              .map(Option::getTitle)
+              .orElse("Project task");
+      dataMap.put("modelName", modelName);
       dataMap.put("utilityClass", "label-success");
+
     } else if (Wiki.class.getName().equals(model)) {
       dataMap.put("modelName", "Wiki");
       dataMap.put("utilityClass", "label-warning");

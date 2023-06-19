@@ -41,6 +41,12 @@
       if="__config__.app.isApp('leave')"/>
   </dashboard>
 
+  <!-- Dashboard MyRH -->
+  <dashboard title="My HR" name="my.hr.dashboard">
+    <dashlet action="hr.dashboard.leave.requests"/>
+    <dashlet action="hr.dashboard.timesheet"/>
+  </dashboard>
+
   <action-view name="hr.dashboard.my.extrahours" title="My extra hours"
     model="com.axelor.apps.hr.db.ExtraHours">
     <view type="grid" name="extra-hours-validate-grid"/>
@@ -70,6 +76,17 @@
     <view type="grid" name="timesheet-validate-grid"/>
     <view type="form" name="timesheet-form"/>
     <domain>self.employee.user.id = :userId</domain>
+    <context name="userId" expr="eval: __user__.id"/>
+  </action-view>
+
+  <action-view name="hr.dashboard.leave.requests" title="Leave requests"
+    model="com.axelor.apps.hr.db.LeaveLine">
+    <view type="chart" name="chart.leave.request.by.status"/>
+  </action-view>
+
+  <action-view name="hr.dashboard.timesheet" title="Timesheet by project"
+    model="com.axelor.apps.hr.db.TimesheetLine">
+    <view type="chart" name="chart.timesheet.by.project"/>
     <context name="userId" expr="eval: __user__.id"/>
   </action-view>
 

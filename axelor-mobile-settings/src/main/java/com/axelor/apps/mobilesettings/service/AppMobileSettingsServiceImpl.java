@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.mobilesettings.service;
 
 import com.axelor.apps.mobilesettings.db.MobileConfig;
@@ -19,8 +37,8 @@ public class AppMobileSettingsServiceImpl implements AppMobileSettingsService {
   public void updateMobileConfig(Boolean isAppActivated, String sequence) {
     MobileConfig mobileConfig =
         mobileConfigRepository.all().filter("self.sequence = ?", sequence).fetchOne();
-    if (!isAppActivated.equals(mobileConfig.getIsAppEnable())) {
-      mobileConfig.setIsAppEnable(isAppActivated);
+    if (!isAppActivated.equals(mobileConfig.getIsAppEnabled())) {
+      mobileConfig.setIsAppEnabled(isAppActivated);
       mobileConfigRepository.save(mobileConfig);
     }
   }
@@ -29,11 +47,13 @@ public class AppMobileSettingsServiceImpl implements AppMobileSettingsService {
   @Transactional(rollbackOn = {Exception.class})
   public void updateAllMobileConfig(AppMobileSettings appMobileSettings) {
     updateMobileConfig(
-        appMobileSettings.getIsStockAppEnable(), MobileConfigRepository.APP_SEQUENCE_STOCK);
+        appMobileSettings.getIsStockAppEnabled(), MobileConfigRepository.APP_SEQUENCE_STOCK);
     updateMobileConfig(
-        appMobileSettings.getIsProductionAppEnable(),
+        appMobileSettings.getIsProductionAppEnabled(),
         MobileConfigRepository.APP_SEQUENCE_MANUFACTURING);
     updateMobileConfig(
-        appMobileSettings.getIsCrmAppEnable(), MobileConfigRepository.APP_SEQUENCE_CRM);
+        appMobileSettings.getIsCrmAppEnabled(), MobileConfigRepository.APP_SEQUENCE_CRM);
+    updateMobileConfig(
+        appMobileSettings.getIsHelpdeskAppEnabled(), MobileConfigRepository.APP_SEQUENCE_HELPDESK);
   }
 }

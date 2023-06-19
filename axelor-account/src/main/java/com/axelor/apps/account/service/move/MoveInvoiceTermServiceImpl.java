@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service.move;
 
@@ -35,7 +36,6 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
@@ -74,7 +74,7 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
         if (moveLine.getAccount() != null
             && moveLine.getAccount().getUseForPartnerBalance()
             && CollectionUtils.isEmpty(moveLine.getInvoiceTermList())) {
-          moveLineInvoiceTermService.generateDefaultInvoiceTerm(moveLine, false);
+          moveLineInvoiceTermService.generateDefaultInvoiceTerm(move, moveLine, false);
         }
       }
     }
@@ -118,7 +118,7 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
     if (CollectionUtils.isNotEmpty(move.getMoveLineList())) {
       for (MoveLine moveLine : move.getMoveLineList()) {
         if (moveLine.getAccount().getUseForPartnerBalance()) {
-          moveLineInvoiceTermService.recreateInvoiceTerms(moveLine);
+          moveLineInvoiceTermService.recreateInvoiceTerms(move, moveLine);
         }
       }
     }
@@ -180,7 +180,6 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
   }
 
   @Override
-  @Transactional
   public void updateSingleInvoiceTermDueDate(Move move, LocalDate dueDate) {
     if (CollectionUtils.isEmpty(move.getMoveLineList()) || dueDate == null) {
       return;
@@ -193,7 +192,6 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
         && !Objects.equals(dueDate, singleInvoiceTerm.getDueDate())) {
       singleInvoiceTerm.setDueDate(dueDate);
       singleInvoiceTerm.getMoveLine().setDueDate(dueDate);
-      invoiceTermRepo.save(singleInvoiceTerm);
     }
   }
 
@@ -208,34 +206,49 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
 
   @Override
   public String checkIfInvoiceTermInPayment(Move move) {
-    String errorMessage = "";
+    String errorMessage;
+
     if (move != null
         && (move.getStatusSelect().equals(MoveRepository.STATUS_DAYBOOK)
             || move.getStatusSelect().equals(MoveRepository.STATUS_ACCOUNTED))
-        && !CollectionUtils.isEmpty(move.getMoveLineList())) {
+        && CollectionUtils.isNotEmpty(move.getMoveLineList())) {
+
+      // No check if not persisted
+      if (move.getMoveLineList().stream()
+          .map(MoveLine::getInvoiceTermList)
+          .flatMap(Collection::stream)
+          .anyMatch(it -> it.getId() == null)) {
+        return "";
+      }
+
       List<InvoiceTerm> invoiceTermList =
           move.getMoveLineList().stream()
               .map(MoveLine::getInvoiceTermList)
               .flatMap(Collection::stream)
               .collect(Collectors.toList());
-      if (!CollectionUtils.isEmpty(invoiceTermList)) {
+
+      if (CollectionUtils.isNotEmpty(invoiceTermList)) {
         errorMessage = this.checkInvoiceTermInPaymentVoucher(invoiceTermList);
-        if (!StringUtils.isEmpty(errorMessage)) {
+
+        if (StringUtils.notEmpty(errorMessage)) {
           return errorMessage;
         }
+
         errorMessage = this.checkInvoiceTermInPaymentSession(invoiceTermList);
-        if (!StringUtils.isEmpty(errorMessage)) {
+
+        if (StringUtils.notEmpty(errorMessage)) {
           return errorMessage;
         }
+
         for (InvoiceTerm invoiceTerm : invoiceTermList) {
           if (!invoiceTermService.isNotReadonlyExceptPfp(invoiceTerm)) {
-            errorMessage =
-                I18n.get(AccountExceptionMessage.MOVE_INVOICE_TERM_IN_PAYMENT_AWAITING_CHANGE);
+            return I18n.get(AccountExceptionMessage.MOVE_INVOICE_TERM_IN_PAYMENT_AWAITING_CHANGE);
           }
         }
       }
     }
-    return errorMessage;
+
+    return "";
   }
 
   public String checkInvoiceTermInPaymentVoucher(List<InvoiceTerm> invoiceTermList) {

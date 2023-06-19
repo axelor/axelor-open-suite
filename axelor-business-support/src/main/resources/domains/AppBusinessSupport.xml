@@ -9,6 +9,10 @@
     <one-to-one ref="com.axelor.studio.db.App" name="app"/>
     <many-to-one name="providerCompany" title="Provider Company"
       ref="com.axelor.apps.base.db.Company"/>
+
+    <track>
+      <field name="providerCompany" on="UPDATE"/>
+    </track>
   </entity>
 
 </domain-models>

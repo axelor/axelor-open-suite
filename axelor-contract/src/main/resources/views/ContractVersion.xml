@@ -8,7 +8,7 @@
     <field name="contract.contractId"/>
     <field name="contract.name"/>
     <field name="contract.partner"/>
-    <field name="activationDate"/>
+    <field name="activationDateTime"/>
     <field name="statusSelect"/>
   </grid>
 
@@ -63,12 +63,12 @@
             <panel name="activationDatesPanel" hidden="true" readonly="true"
               showIf="statusSelect >= 3" colSpan="12">
               <field name="activatedByUser" colSpan="4"/>
-              <field name="activationDate" colSpan="4"/>
+              <field name="activationDateTime" colSpan="4"/>
               <panel colSpan="4" name="endDatesPanel">
                 <field name="supposedEndDate" hidden="true" readonly="true"
                   showIf="statusSelect == 3" colSpan="12"/>
-                <field name="endDate" hidden="true" readonly="true" showIf="statusSelect == 4"
-                  colSpan="12"/>
+                <field name="endDateTime" hidden="true" readonly="true"
+                  showIf="statusSelect == 4" colSpan="12"/>
               </panel>
             </panel>
           </panel>
@@ -199,6 +199,11 @@
     <call class="com.axelor.apps.contract.web.ContractVersionController" method="active"/>
   </action-method>
 
+  <action-method name="action-method-contract-version-update-contract-lines">
+    <call class="com.axelor.apps.contract.web.ContractVersionController"
+      method="updateContractLines"/>
+  </action-method>
+
   <action-method name="action-contract-version-method-waiting">
     <call class="com.axelor.apps.contract.web.ContractVersionController" method="waiting"/>
   </action-method>
@@ -206,5 +211,11 @@
   <action-method name="action-method-contract-version-change-product">
     <call class="com.axelor.apps.contract.web.ContractVersionController" method="changeProduct"/>
   </action-method>
+
+  <action-method name="action-method-contract-version-check-supposed-activation-date">
+    <call class="com.axelor.apps.contract.web.ContractVersionController"
+      method="checkSupposedActivationDate"/>
+  </action-method>
+
 
 </object-views>

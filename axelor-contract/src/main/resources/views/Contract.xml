@@ -64,16 +64,17 @@
             <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
               <panel colSpan="6">
                 <panel hideIf="statusSelect >= 3" colSpan="12">
-                  <field name="supposedActivationDate"/>
+                  <field name="supposedActivationDate"
+                    onChange="action-method-contract-version-check-supposed-activation-date,save,action-method-contract-version-update-contract-lines"/>
                   <field name="supposedEndDate"/>
                 </panel>
                 <panel hidden="true" readonly="true" showIf="statusSelect >= 3" colSpan="12">
                   <field name="activatedByUser" colSpan="4"/>
-                  <field name="activationDate" colSpan="4"/>
+                  <field name="activationDateTime" colSpan="4"/>
                   <panel colSpan="4">
                     <field name="supposedEndDate" hidden="true" readonly="true"
                       showIf="statusSelect == 3" colSpan="12"/>
-                    <field name="endDate" hidden="true" readonly="true"
+                    <field name="endDateTime" hidden="true" readonly="true"
                       showIf="statusSelect == 4" colSpan="12"/>
                   </panel>
                 </panel>
@@ -330,8 +331,8 @@
         showIf="versionHistory &amp;&amp; versionHistory.length > 0" field="versionHistory"
         form-view="contract-archived-version-form">
         <field name="createdOn"/>
-        <field name="activationDate"/>
-        <field name="endDate"/>
+        <field name="activationDateTime"/>
+        <field name="endDateTime"/>
         <field name="statusSelect"/>
       </panel-related>
     </panel-tabs>
@@ -424,11 +425,11 @@
         <field name="createdBy"/>
       </panel>
       <panel name="activationPanel" showIf="statusSelect >= 3" colSpan="12" readonly="true">
-        <field name="activationDate"/>
+        <field name="activationDateTime"/>
         <field name="activatedByUser"/>
       </panel>
       <field name="supposedEndDate"/>
-      <field name="endDate" hidden="true" showIf="endDate" readonly="true"/>
+      <field name="endDateTime" hidden="true" showIf="endDateTime" readonly="true"/>
       <field name="description" widget="html"/>
       <field name="metaFile" widget="binary-link"/>
       <field name="contractLineList" showTitle="false" hidden="true"

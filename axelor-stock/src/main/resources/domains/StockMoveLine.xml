@@ -11,6 +11,11 @@
       ref="com.axelor.apps.stock.db.StockMove" title="Stock move"/>
     <many-to-one name="plannedStockMove" ref="com.axelor.apps.stock.db.StockMove"/>
 
+    <many-to-one name="fromStockLocation" ref="com.axelor.apps.stock.db.StockLocation"
+      required="true" title="From stock location"/>
+    <many-to-one name="toStockLocation" ref="com.axelor.apps.stock.db.StockLocation"
+      required="true" title="To stock location"/>
+
     <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
     <boolean name="filterOnAvailableProducts" title="Filter on available products"
       default="true" transient="true"/>

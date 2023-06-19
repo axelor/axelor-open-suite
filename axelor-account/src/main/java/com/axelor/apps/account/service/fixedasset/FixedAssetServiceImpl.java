@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service.fixedasset;
 
@@ -24,6 +25,7 @@ import com.axelor.apps.account.db.FixedAssetCategory;
 import com.axelor.apps.account.db.FixedAssetDerogatoryLine;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
@@ -106,6 +108,50 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
     this.fixedAssetDateService = fixedAssetDateService;
     this.dateService = dateService;
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public FixedAsset fullDisposal(
+      FixedAsset fixedAsset,
+      LocalDate disposalDate,
+      int disposalQtySelect,
+      BigDecimal disposalQty,
+      Boolean generateSaleMove,
+      TaxLine saleTaxLine,
+      Integer disposalTypeSelect,
+      BigDecimal disposalAmount,
+      AssetDisposalReason assetDisposalReason,
+      String comments)
+      throws AxelorException {
+
+    this.checkFixedAssetBeforeDisposal(
+        fixedAsset, disposalDate, disposalQtySelect, disposalQty, generateSaleMove, saleTaxLine);
+
+    int transferredReason =
+        this.computeTransferredReason(
+            disposalTypeSelect, disposalQtySelect, disposalQty, fixedAsset);
+
+    FixedAsset createdFixedAsset =
+        this.computeDisposal(
+            fixedAsset,
+            disposalDate,
+            disposalQty,
+            disposalAmount,
+            transferredReason,
+            assetDisposalReason,
+            comments);
+    if (generateSaleMove && saleTaxLine != null) {
+      if (createdFixedAsset != null) {
+
+        fixedAssetLineMoveService.generateSaleMove(
+            createdFixedAsset, saleTaxLine, disposalAmount, disposalDate);
+      } else {
+        fixedAssetLineMoveService.generateSaleMove(
+            fixedAsset, saleTaxLine, disposalAmount, disposalDate);
+      }
+    }
+    return createdFixedAsset;
   }
 
   @Override
@@ -426,7 +472,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       if (fixedAsset
           .getDepreciationPlanSelect()
           .contains(FixedAssetRepository.DEPRECIATION_PLAN_DEROGATION)) {
-        generateDerogatoryCessionMove(fixedAsset);
+        generateDerogatoryCessionMove(fixedAsset, disposalDate);
       }
       fixedAssetLineMoveService.realize(correspondingFixedAssetLine, false, false, true);
     }
@@ -437,7 +483,8 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     return fixedAsset;
   }
 
-  protected void generateDerogatoryCessionMove(FixedAsset fixedAsset) throws AxelorException {
+  protected void generateDerogatoryCessionMove(FixedAsset fixedAsset, LocalDate disposalDate)
+      throws AxelorException {
 
     List<FixedAssetDerogatoryLine> fixedAssetDerogatoryLineList =
         fixedAsset.getFixedAssetDerogatoryLineList();
@@ -461,7 +508,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
           I18n.get(AccountExceptionMessage.IMMO_FIXED_ASSET_MISSING_DEROGATORY_LINE));
     }
     fixedAssetDerogatoryLineService.generateDerogatoryCessionMove(
-        firstPlannedDerogatoryLine, lastRealizedDerogatoryLine);
+        firstPlannedDerogatoryLine, lastRealizedDerogatoryLine, disposalDate);
   }
 
   @Override
@@ -509,7 +556,12 @@ public class FixedAssetServiceImpl implements FixedAssetService {
 
   @Override
   public void checkFixedAssetBeforeDisposal(
-      FixedAsset fixedAsset, LocalDate disposalDate, int disposalQtySelect, BigDecimal disposalQty)
+      FixedAsset fixedAsset,
+      LocalDate disposalDate,
+      int disposalQtySelect,
+      BigDecimal disposalQty,
+      Boolean generateSaleMove,
+      TaxLine saleTaxLine)
       throws AxelorException {
     if (Stream.of(
                 fixedAsset.getFixedAssetLineList(),
@@ -540,6 +592,15 @@ public class FixedAssetServiceImpl implements FixedAssetService {
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(AccountExceptionMessage.IMMO_FIXED_ASSET_DISPOSAL_QTY_GREATER_ORIGINAL),
           fixedAsset.getQty().toString());
+    }
+    if (generateSaleMove
+        && saleTaxLine != null
+        && fixedAsset.getCompany().getAccountConfig().getCustomerSalesJournal() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(
+              AccountExceptionMessage
+                  .IMMO_FIXED_ASSET_DISPOSAL_COMPANY_ACCOUNT_CONFIG_CUSTOMER_SALES_JOURNAL_EMPTY));
     }
   }
 
