@@ -10,6 +10,8 @@
     <one-to-one ref="com.axelor.studio.db.App" name="app"/>
 
     <string name="lastEmailId" title="Last email sync id"/>
+    <many-to-one name="hiringStatus" ref="com.axelor.apps.talent.db.HiringStage"
+      title="Hiring status"/>
 
     <track>
       <field name="lastEmailId" on="UPDATE"/>

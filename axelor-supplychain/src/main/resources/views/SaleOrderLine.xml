@@ -5,11 +5,7 @@
 
   <form name="sale-order-line-form" id="supplychain-sale-order-line-form" title="SO line"
     model="com.axelor.apps.sale.db.SaleOrderLine" width="large" extension="true">
-    <extend target="/">
-      <attribute name="onNew"
-        value="action-group-sale-saleorderline-onnew, action-record-sale-order-line-fill-request-qty, action-sale-order-line-group-manage-attrs"/>
-      <attribute name="onLoad" value="action-sale-order-line-supplychain-group-onload"/>
-    </extend>
+
     <extend target="//panel[@name='statusPanel']">
       <insert position="inside">
         <field name="$_xFillProductAvailableQty" hidden="true" type="boolean" readonly="true"/>
@@ -46,6 +42,33 @@
       <field name="qty" hidden="true"/>
     </panel>
   </form>
+
+  <action-group name="action-group-sale-saleorderline-onnew"
+    id="action-supplychain-group-sale-saleorderline-onnew">
+    <action name="action-sale-order-line-record-is-form-readonly"/>
+    <action name="action-sale-order-line-record-non-negotiable"/>
+    <action name="action-sale-order-line-attrs-hide-qty-warning-label"/>
+    <action name="action-sale-order-line-attrs-title-project"/>
+    <action name="action-sale-order-line-attrs-show-priceDiscounted"/>
+    <action name="action-sale-order-line-attrs-scale-and-precision"/>
+    <action name="action-sale-order-line-record-new"/>
+    <action name="action-sale-order-line-record-project"/>
+    <action name="action-sale-order-line-attrs-hide-bill-of-material"/>
+    <action name="action-sale-order-line-attrs-set-company-currency"/>
+    <action name="action-sale-order-attrs-hide-ati"/>
+    <action name="action-supplychain-sale-order-line-attrs-hide-button"/>
+    <action name="action-sale-order-line-attrs-fill-estimated-date"/>
+    <action name="action-sale-order-line-attrs-is-requested-qty-readonly"
+      if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getManageStockReservation()"/>
+    <action name="action-sale-order-line-record-update-requested-reserved-qty-from-qty"
+      if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getManageStockReservation()"/>
+    <action name="action-sale-order-line-attrs-selection-in-type-select"/>
+    <action name="action-sale-order-line-attrs-delivered-qty-hidden"/>
+    <action name="action-sale-order-line-attrs-display-different-language-message"/>
+    <action name="action-sale-order-line-attrs-hidden-analytic-distribution-panel"/>
+    <action name="action-record-sale-order-line-fill-request-qty"/>
+    <action name="action-sale-order-line-group-manage-attrs"/>
+  </action-group>
 
 
   <action-method name="action-method-sale-order-line-available-and-allocated-stock"
@@ -92,11 +115,6 @@
     name="action-sale-order-line-supplychain-method-update-reservation-date">
     <call class="com.axelor.apps.supplychain.web.SaleOrderLineController"
       method="updateReservationDate"/>
-  </action-method>
-
-  <action-method name="action-sale-order-line-supplychain-method-get-invoicing-state">
-    <call class="com.axelor.apps.supplychain.web.SaleOrderLineController"
-      method="getInvoicingState"/>
   </action-method>
 
   <action-record
@@ -169,8 +187,8 @@
     <view type="form" name="stock-move-line-all-form"/>
     <view-param name="popup" value="true"/>
     <domain>self.stockMove.statusSelect = 2 AND self.product.id = :productId AND
-      (self.stockMove.fromStockLocation.id = :locationId OR self.stockMove.toStockLocation.id =
-      :locationId)</domain>
+      (self.stockMove.fromStockLocation.id = :locationId OR
+      self.toStockLocation.id = :locationId)</domain>
     <context name="productId" expr="eval: product?.id"/>
     <context name="locationId" expr="eval: __parent__.stockLocation?.id"/>
   </action-view>
@@ -194,11 +212,34 @@
     <action name="action-sale-order-line-attrs-fill-ctx"/>
   </action-group>
 
-  <action-group name="action-sale-order-line-supplychain-group-onload">
-    <action name="action-group-sale-saleorderline-onload"/>
+  <action-group name="action-group-sale-saleorderline-onload"
+    id="action-sale-order-line-supplychain-group-onload">
+    <action name="action-sale-order-line-attrs-show-availabilty-request"
+      if="__config__.app.isApp('supplychain')"/>
+    <action name="action-sale-order-line-record-is-form-readonly"/>
+    <action name="action-sale-order-line-record-non-negotiable"/>
+    <action name="action-sale-order-line-attrs-title-project"/>
+    <action name="action-sale-order-line-attrs-show-priceDiscounted"/>
+    <action name="action-sale-order-line-attrs-scale-and-precision"/>
+    <action name="action-sale-order-line-attrs-hide-bill-of-material"/>
+    <action name="action-sale-order-line-attrs-reserved-qty-visibility"/>
+    <action name="action-method-sale-order-line-available-and-allocated-stock"/>
+    <action name="action-sale-order-line-attrs-set-company-currency"/>
+    <action name="action-supplychain-sale-order-line-attrs-hide-button"/>
+    <action name="action-sale-order-line-method-check-qty"
+      if="__config__.app.getApp('sale')?.manageMultipleSaleQuantity"/>
+    <action name="action-sale-order-line-attrs-is-requested-qty-readonly"
+      if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getManageStockReservation()"/>
+    <action name="action-record-sale-order-line-future-qty"
+      if="__config__.app.isApp('supplychain')"/>
+    <action name="action-sale-order-attrs-hide-ati"/>
+    <action name="action-sale-order-line-method-fill-max-discount"/>
+    <action name="action-sale-order-line-attrs-selection-in-type-select"/>
+    <action name="action-sale-order-line-attrs-delivered-qty-hidden"/>
+    <action name="action-sale-order-line-attrs-display-different-language-message"/>
+    <action name="action-sale-order-line-attrs-hidden-analytic-distribution-panel"/>
     <action name="action-sale-order-line-attrs-hidden-fields-for-client"/>
     <action name="action-sale-order-line-group-manage-attrs"/>
-    <action name="action-sale-order-line-supplychain-method-get-invoicing-state" if="id"/>
   </action-group>
 
 </object-views>

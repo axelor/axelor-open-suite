@@ -803,16 +803,4 @@ public class SaleOrderController {
       TraceBackService.trace(response, e);
     }
   }
-
-  public void setInvoicingState(ActionRequest request, ActionResponse response) {
-    try {
-      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-      saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
-      response.setValue(
-          "$invoicingState",
-          Beans.get(SaleOrderInvoiceService.class).getSaleOrderInvoicingState(saleOrder));
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
 }

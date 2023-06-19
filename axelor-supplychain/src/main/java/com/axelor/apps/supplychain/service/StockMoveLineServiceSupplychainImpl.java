@@ -137,7 +137,9 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       boolean taxed,
       BigDecimal taxRate,
       SaleOrderLine saleOrderLine,
-      PurchaseOrderLine purchaseOrderLine)
+      PurchaseOrderLine purchaseOrderLine,
+      StockLocation fromStockLocation,
+      StockLocation toStockLocation)
       throws AxelorException {
     if (product != null) {
 
@@ -153,7 +155,9 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
               unit,
               stockMove,
               taxed,
-              taxRate);
+              taxRate,
+              fromStockLocation,
+              toStockLocation);
       stockMoveLine.setRequestedReservedQty(requestedReservedQty);
       stockMoveLine.setIsQtyRequested(
           requestedReservedQty != null && requestedReservedQty.signum() > 0);
@@ -176,7 +180,9 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
           BigDecimal.ZERO,
           unit,
           stockMove,
-          null);
+          null,
+          fromStockLocation,
+          toStockLocation);
     }
   }
 
@@ -401,6 +407,8 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
             BigDecimal.ZERO,
             unit,
             stockMove,
+            null,
+            null,
             null);
 
     generatedStockMoveLine.setSaleOrderLine(saleOrderLine);
@@ -470,12 +478,12 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
   }
 
   @Override
-  public boolean isAvailableProduct(StockMove stockMove, StockMoveLine stockMoveLine) {
+  public boolean isAvailableProduct(StockMoveLine stockMoveLine) {
     if (stockMoveLine.getProduct() == null
         || (stockMoveLine.getProduct() != null && !stockMoveLine.getProduct().getStockManaged())) {
       return true;
     }
-    updateAvailableQty(stockMoveLine, stockMove.getFromStockLocation());
+    updateAvailableQty(stockMoveLine, stockMoveLine.getFromStockLocation());
     BigDecimal availableQty = stockMoveLine.getAvailableQty();
     if (stockMoveLine.getProduct().getTrackingNumberConfiguration() != null
         && stockMoveLine.getTrackingNumber() == null) {

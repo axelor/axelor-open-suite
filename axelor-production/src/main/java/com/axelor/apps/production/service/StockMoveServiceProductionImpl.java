@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.production.service;
 
+import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.repo.ProductRepository;
@@ -58,7 +59,8 @@ public class StockMoveServiceProductionImpl extends StockMoveServiceSupplychainI
       PartnerSupplychainService partnerSupplychainService,
       AppAccountService appAccountService,
       PartnerStockSettingsService partnerStockSettingsService,
-      StockConfigService stockConfigService) {
+      StockConfigService stockConfigService,
+      FixedAssetRepository fixedAssetRepository) {
     super(
         stockMoveLineService,
         stockMoveToolService,
@@ -76,7 +78,8 @@ public class StockMoveServiceProductionImpl extends StockMoveServiceSupplychainI
         partnerSupplychainService,
         appAccountService,
         partnerStockSettingsService,
-        stockConfigService);
+        stockConfigService,
+        fixedAssetRepository);
   }
 
   @Override

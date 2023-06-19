@@ -153,7 +153,6 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     BigDecimal plannedHrs = template.getTotalPlannedHrs();
     if (template.getIsUniqueTaskForMultipleQuantity() && qty.compareTo(BigDecimal.ONE) > 0) {
       plannedHrs = plannedHrs.multiply(qty);
-      task.setName(task.getName() + " x" + qty.intValue());
     }
     task.setTotalPlannedHrs(plannedHrs);
 
@@ -163,6 +162,8 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
   @Override
   public ProjectTask create(String subject, Project project, User assignedTo) {
     ProjectTask task = super.create(subject, project, assignedTo);
+    task.setProjectTaskList(new ArrayList<>());
+    task.setProjectPlanningTimeList(new ArrayList<>());
     task.setTaskDate(appBaseService.getTodayDate(project.getCompany()));
     return task;
   }
