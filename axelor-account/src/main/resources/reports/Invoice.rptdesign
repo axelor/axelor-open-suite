@@ -3351,6 +3351,12 @@ group by AppBase.regroup_products_label_products, AppBase.regroup_products_label
                     <text-property name="displayName">InvoiceTermIsPaid</text-property>
                     <text-property name="heading">InvoiceTermIsPaid</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">AllowMultiInvoiceTerms</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">AllowMultiInvoiceTerms</text-property>
+                    <text-property name="heading">AllowMultiInvoiceTerms</text-property>
+                </structure>
             </list-property>
             <list-property name="filter"/>
             <list-property name="parameters">
@@ -3420,6 +3426,11 @@ group by AppBase.regroup_products_label_products, AppBase.regroup_products_label
                     <structure>
                         <property name="position">11</property>
                         <property name="name">InvoiceTermIsPaid</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">12</property>
+                        <property name="name">AllowMultiInvoiceTerms</property>
                         <property name="dataType">integer</property>
                     </structure>
                 </list-property>
@@ -3503,6 +3514,13 @@ group by AppBase.regroup_products_label_products, AppBase.regroup_products_label
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
+                <structure>
+                    <property name="position">12</property>
+                    <property name="name">AllowMultiInvoiceTerms</property>
+                    <property name="nativeName">AllowMultiInvoiceTerms</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select 
 PaymentMode.name as "PaymentModeName",
@@ -3515,9 +3533,11 @@ InvoiceTerm.due_date as "InvoiceTermDueDate",
 InvoiceTerm.estimated_payment_date as "InvoiceTermEstimatedPaymentDate",
 InvoiceTerm.percentage as "InvoiceTermPercentage",
 InvoiceTerm.is_hold_back as "InvoiceTermIsHoldBack",
-InvoiceTerm.is_paid as "InvoiceTermIsPaid"
+InvoiceTerm.is_paid as "InvoiceTermIsPaid",
+AppAccount.allow_multi_invoice_terms as "AllowMultiInvoiceTerms"
 from account_invoice_term as InvoiceTerm
 left outer join account_payment_mode as PaymentMode on (InvoiceTerm.payment_mode = PaymentMode.id)
+left outer join studio_app_account as AppAccount on true
 inner join account_invoice as Invoice on (InvoiceTerm.invoice = Invoice.id)
 left outer join base_currency as Currency on (Invoice.currency = Currency.id)
 left outer join account_financial_discount as FinancialDiscount on (InvoiceTerm.financial_discount = FinancialDiscount.id)
@@ -9710,9 +9730,22 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                                                 </list-property>
                                                 <property name="allowExport">true</property>
                                             </structure>
+                                            <structure>
+                                                <property name="name">AllowMultipleInvoiceTerms</property>
+                                                <text-property name="displayName">AllowMultipleInvoiceTerms</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["AllowMultiInvoiceTerms"]</expression>
+                                                <property name="dataType">boolean</property>
+                                                <property name="allowExport">true</property>
+                                            </structure>
                                         </list-property>
                                         <column id="5900"/>
                                         <row id="5901">
+                                            <list-property name="visibility">
+                                                <structure>
+                                                    <property name="format">all</property>
+                                                    <expression name="valueExpr" type="javascript">!row["AllowMultipleInvoiceTerms"]</expression>
+                                                </structure>
+                                            </list-property>
                                             <cell id="5902">
                                                 <text id="5890">
                                                     <property name="fontSize">13pt</property>
@@ -9753,6 +9786,12 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                                             </cell>
                                         </row>
                                         <row id="5903">
+                                            <list-property name="visibility">
+                                                <structure>
+                                                    <property name="format">all</property>
+                                                    <expression name="valueExpr" type="javascript">!row["AllowMultipleInvoiceTerms"]</expression>
+                                                </structure>
+                                            </list-property>
                                             <cell id="5904">
                                                 <table id="5959">
                                                     <property name="fontSize">8pt</property>
