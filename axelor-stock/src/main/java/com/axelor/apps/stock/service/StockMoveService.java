@@ -236,19 +236,14 @@ public interface StockMoveService {
    * updating locations.
    *
    * @param stockMove
-   * @param fromStockLocation
-   * @param toStockLocation
    * @param initialStatus the initial status of the stock move.
    * @throws AxelorException
    */
-  void updateLocations(
-      StockMove stockMove,
-      StockLocation fromStockLocation,
-      StockLocation toStockLocation,
-      int initialStatus)
-      throws AxelorException;
+  void updateLocations(StockMove stockMove, int initialStatus) throws AxelorException;
 
   StockLocation getFromStockLocation(StockMove stockMove) throws AxelorException;
 
   StockLocation getToStockLocation(StockMove stockMove) throws AxelorException;
+
+  void setOrigin(StockMove newStockMove, StockMove oldStockMove);
 }

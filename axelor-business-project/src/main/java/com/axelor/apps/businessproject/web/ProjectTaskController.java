@@ -121,4 +121,20 @@ public class ProjectTaskController {
     data.put("label", I18n.get("Remaining amount to do"));
     response.setData(List.of(data));
   }
+
+  public void getProjectTaskFinancialReportingData(ActionRequest request, ActionResponse response) {
+    Map<String, Object> data = new HashMap<>();
+    data.put("turnover", request.getData().get("turnover"));
+    data.put("initialCosts", request.getData().get("initialCosts"));
+    data.put("initialMargin", request.getData().get("initialMargin"));
+    data.put("initialMarkup", request.getData().get("initialMarkup"));
+    data.put("realTurnover", request.getData().get("realTurnover"));
+    data.put("realCosts", request.getData().get("realCosts"));
+    data.put("realMargin", request.getData().get("realMargin"));
+    data.put("realMarkup", request.getData().get("realMarkup"));
+    data.put("forecastCosts", request.getData().get("forecastCosts"));
+    data.put("forecastMargin", request.getData().get("forecastMargin"));
+    data.put("forecastMarkup", request.getData().get("forecastMarkup"));
+    response.setData(List.of(data));
+  }
 }

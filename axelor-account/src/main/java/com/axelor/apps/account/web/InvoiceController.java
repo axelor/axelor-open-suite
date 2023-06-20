@@ -1237,4 +1237,18 @@ public class InvoiceController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void fillEstimatedPaymentDate(ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+    try {
+      if (invoice.getDueDate() == null) {
+        return;
+      }
+      invoice = Beans.get(InvoiceService.class).computeEstimatedPaymentDate(invoice);
+      response.setValues(invoice);
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

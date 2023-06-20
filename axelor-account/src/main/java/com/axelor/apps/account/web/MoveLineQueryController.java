@@ -65,20 +65,22 @@ public class MoveLineQueryController {
       MoveLineQuery moveLineQuery = request.getContext().asType(MoveLineQuery.class);
       BigDecimal selectedCreditTotal = BigDecimal.ZERO;
       BigDecimal selectedDebitTotal = BigDecimal.ZERO;
-      BigDecimal selectedBalanceTotal = BigDecimal.ZERO;
 
       for (MoveLineQueryLine moveLineQueryLine : moveLineQuery.getMoveLineQueryLineList()) {
         if (moveLineQueryLine.getIsSelected()) {
           MoveLine moveLine = moveLineQueryLine.getMoveLine();
-          selectedCreditTotal = selectedCreditTotal.add(moveLine.getCredit());
-          selectedDebitTotal = selectedDebitTotal.add(moveLine.getDebit());
+
+          if (moveLine.getCredit().signum() > 0) {
+            selectedCreditTotal = selectedCreditTotal.add(moveLine.getAmountRemaining());
+          }
+
+          if (moveLine.getDebit().signum() > 0) {
+            selectedDebitTotal = selectedDebitTotal.add(moveLine.getAmountRemaining());
+          }
         }
       }
-      selectedBalanceTotal = selectedDebitTotal.subtract(selectedCreditTotal);
 
-      response.setValue("$selectedDebit", selectedDebitTotal);
-      response.setValue("$selectedCredit", selectedCreditTotal);
-      response.setValue("$selectedBalance", selectedBalanceTotal);
+      BigDecimal selectedBalanceTotal = selectedDebitTotal.subtract(selectedCreditTotal);
 
       String balanceTitle;
       if (selectedBalanceTotal.signum() > 0) {
@@ -88,6 +90,10 @@ public class MoveLineQueryController {
       } else {
         balanceTitle = I18n.get("Balance");
       }
+
+      response.setValue("$selectedDebit", selectedDebitTotal);
+      response.setValue("$selectedCredit", selectedCreditTotal);
+      response.setValue("$selectedBalance", selectedBalanceTotal);
       response.setAttr("$selectedBalance", "title", balanceTitle);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

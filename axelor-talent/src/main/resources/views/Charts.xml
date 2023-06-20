@@ -116,6 +116,20 @@
     <series key="_nbHours" type="bar" title="Nb Hours"/>
   </chart>
 
+  <custom name="my-trainings-custom-view" title="Training"
+    css="report-box dashlet-no-dropdown">
+    <dataset type="rpc">com.axelor.apps.talent.web.TrainingDashboardController:getTrainingData</dataset>
+    <template><![CDATA[
+	   <div ng-repeat = "item in data" style="display:flex; align-items:center; margin-block:1rem; justify-content:space-around; border:2px solid #D3D3D3; padding:0.5rem;background-color:#E8E8E8; border-radius:5px;">
+	  		<span><b>{{ item.date | date:'YYYY MMM ddd' }}</b></span>
+	  		<hr style="border-top: 1px solid black; flex-grow: 0.2;">
+	  		<span><b>{{ item.date | date:'h:mm A' }}</b></span>
+	  		<span>{{ item.training }}</span>
+	  		<a href="#/ds/training.register.all/edit/{{item.id}}"><i class="fa fa-arrow-right"/></a>
+		</div>
+	  ]]></template>
+  </custom>
+
   <action-attrs name="action-training-chart-set-default-from-to-dates">
     <attribute name="value" for="fromDate" expr="eval:__config__.date.withDayOfMonth(1)"/>
     <attribute name="value" for="toDate" expr="eval:__config__.date"/>

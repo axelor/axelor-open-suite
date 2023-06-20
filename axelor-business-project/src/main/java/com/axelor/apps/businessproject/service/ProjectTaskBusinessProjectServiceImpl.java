@@ -112,7 +112,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
       throws AxelorException {
     ProjectTask task = create(saleOrderLine.getFullName() + "_task", project, assignedTo);
     task.setProduct(saleOrderLine.getProduct());
-    task.setUnit(saleOrderLine.getUnit());
+    task.setInvoicingUnit(saleOrderLine.getUnit());
     task.setTimeUnit(saleOrderLine.getUnit());
     task.setCurrency(project.getClientPartner().getCurrency());
     if (project.getPriceList() != null) {
@@ -153,7 +153,6 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     BigDecimal plannedHrs = template.getTotalPlannedHrs();
     if (template.getIsUniqueTaskForMultipleQuantity() && qty.compareTo(BigDecimal.ONE) > 0) {
       plannedHrs = plannedHrs.multiply(qty);
-      task.setName(task.getName() + " x" + qty.intValue());
     }
     task.setTotalPlannedHrs(plannedHrs);
 
@@ -163,6 +162,8 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
   @Override
   public ProjectTask create(String subject, Project project, User assignedTo) {
     ProjectTask task = super.create(subject, project, assignedTo);
+    task.setProjectTaskList(new ArrayList<>());
+    task.setProjectPlanningTimeList(new ArrayList<>());
     task.setTaskDate(appBaseService.getTodayDate(project.getCompany()));
     return task;
   }
@@ -267,7 +268,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
             projectTask.getPriceDiscounted(),
             projectTask.getDescription(),
             projectTask.getQuantity(),
-            projectTask.getUnit(),
+            projectTask.getInvoicingUnit(),
             null,
             priority,
             projectTask.getDiscountAmount(),
@@ -339,7 +340,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     Company company =
         projectTask.getProject() != null ? projectTask.getProject().getCompany() : null;
     Unit salesUnit = (Unit) productCompanyService.get(product, "salesUnit", company);
-    projectTask.setUnit(
+    projectTask.setInvoicingUnit(
         salesUnit != null ? salesUnit : (Unit) productCompanyService.get(product, "unit", company));
     projectTask.setCurrency((Currency) productCompanyService.get(product, "saleCurrency", company));
     projectTask.setQuantity(projectTask.getBudgetedTime());
@@ -419,7 +420,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     projectTask.setInvoicingType(null);
     projectTask.setToInvoice(null);
     projectTask.setQuantity(null);
-    projectTask.setUnit(null);
+    projectTask.setInvoicingUnit(null);
     projectTask.setUnitPrice(null);
     projectTask.setCurrency(null);
     projectTask.setExTaxTotal(null);

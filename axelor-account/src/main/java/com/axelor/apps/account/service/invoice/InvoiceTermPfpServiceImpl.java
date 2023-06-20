@@ -76,7 +76,9 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
         Beans.get(AppBaseService.class).getTodayDateTime(company).toLocalDateTime());
     invoiceTerm.setInitialPfpAmount(invoiceTerm.getAmount());
     invoiceTerm.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_VALIDATED);
-    invoiceTerm.setPfpValidatorUser(currentUser);
+    if (invoiceTerm.getPfpValidatorUser() == null) {
+      invoiceTerm.setPfpValidatorUser(currentUser);
+    }
 
     if (!ObjectUtils.isEmpty(invoiceTerm.getReasonOfRefusalToPay())
         && !ObjectUtils.isEmpty(invoiceTerm.getReasonOfRefusalToPayStr())) {

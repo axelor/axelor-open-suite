@@ -95,6 +95,4 @@ public interface SaleOrderLineServiceSupplyChain extends SaleOrderLineService {
   void updateStockMoveReservationDateTime(SaleOrderLine saleOrderLine) throws AxelorException;
 
   public SaleOrderLine createAnalyticDistributionWithTemplate(SaleOrderLine saleOrderLine);
-
-  int getSaleOrderLineInvoicingState(SaleOrderLine saleOrderLine);
 }

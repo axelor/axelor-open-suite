@@ -11,7 +11,8 @@ import java.util.List;
 public interface MassEntryVerificationService {
 
   void checkPreconditionsMassEntry(
-      Move move, int temporaryMoveNumber, List<Move> massEntryMoveList, boolean manageCutOff);
+      Move move, int temporaryMoveNumber, List<Move> massEntryMoveList, boolean manageCutOff)
+      throws AxelorException;
 
   void checkChangesMassEntryMoveLine(
       MoveLineMassEntry moveLine,
@@ -20,7 +21,7 @@ public interface MassEntryVerificationService {
       boolean manageCutOff)
       throws AxelorException;
 
-  void checkDateMassEntryMove(Move move, int temporaryMoveNumber);
+  void checkDateMassEntryMove(Move move, int temporaryMoveNumber) throws AxelorException;
 
   void checkCurrencyRateMassEntryMove(Move move, int temporaryMoveNumber);
 
