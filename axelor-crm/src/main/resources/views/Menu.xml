@@ -44,7 +44,6 @@
 
   <action-view name="crm.closed.lead" title="Closed leads"
     model="com.axelor.apps.crm.db.Lead">
-    <view type="kanban" name="lead-kanban"/>
     <view type="grid" name="lead-grid"/>
     <view type="form" name="lead-form"/>
     <view-param name="search-filters" value="lead-filters"/>
@@ -102,8 +101,6 @@
 
   <action-view name="crm.closed.prospects" title="Closed prospects"
     model="com.axelor.apps.base.db.Partner">
-    <view type="kanban" name="partner-prospect-kanban"
-      if="__config__.app.getApp('crm')?.getCrmProcessOnPartner()"/>
     <view type="cards" name="partner-cards"/>
     <view type="grid" name="partner-prospect-grid"/>
     <view type="form" name="partner-customer-form"/>
@@ -254,7 +251,6 @@
 
   <action-view name="crm.closed.opportunity" title="Closed opportunities"
     model="com.axelor.apps.crm.db.Opportunity" home="true">
-    <view type="kanban" name="opportunity-kanban"/>
     <view type="grid" name="opportunity-grid"/>
     <view type="form" name="opportunity-form"/>
     <view-param name="search-filters" value="opportunity-filters"/>
@@ -263,25 +259,6 @@
     <context name="_myActiveTeam"
       expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
     <context name="todayDate" expr="eval:__config__.date"/>
-  </action-view>
-
-  <menuitem title="Leads historical" name="crm-root-leadHistorical" parent="crm-root"
-    action="crm.root.leadHistorical" order="900"/>
-  <action-view name="crm.root.leadHistorical" title="Leads historical"
-    model="com.axelor.apps.crm.db.Lead">
-    <view type="grid" name="lead-historical-grid"/>
-    <view type="form" name="lead-form"/>
-    <view-param name="search-filters" value="lead-filters"/>
-    <domain>self.leadStatus.id = :_convertedLeadStatusId OR self.leadStatus.id = :_lostLeadStatusId</domain>
-    <context name="_myActiveTeam"
-      expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
-    <context name="todayDate"
-      expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
-    <context name="_internalUserId" expr="eval:__user__.id"/>
-    <context name="_convertedLeadStatusId"
-      expr="eval: __config__.app.getApp('crm')?.getConvertedLeadStatus()?.id"/>
-    <context name="_lostLeadStatusId"
-      expr="eval: __config__.app.getApp('crm')?.getLostLeadStatus()?.id"/>
   </action-view>
 
   <menuitem name="crm-root-meeting-my-calendar" parent="menu-calendar"
@@ -352,8 +329,8 @@
     <view type="form" name="industry-sector-form"/>
   </action-view>
 
-  <menuitem name="crm-conf-opportunity-status" parent="crm-conf" title="Opportunity status"
-    action="crm.conf.opportunity.status" order="1100"/>
+  <menuitem name="crm-conf-opportunity-status" parent="crm-conf-custom-status"
+    title="Opportunity status" action="crm.conf.opportunity.status" order="200"/>
 
   <action-view name="crm.conf.opportunity.status" title="Opportunity status"
     model="com.axelor.apps.crm.db.OpportunityStatus">
@@ -361,10 +338,10 @@
     <view type="form" name="opportunity-status-form"/>
   </action-view>
 
-  <menuitem name="crm-conf-partner-status" parent="crm-conf" title="Partner status"
-    action="crm.conf.partner.status" order="1050"/>
+  <menuitem name="crm-conf-partner-status" parent="crm-conf-custom-status"
+    title="Prospect status" action="crm.conf.partner.status" order="300"/>
 
-  <action-view name="crm.conf.partner.status" title="Partner status"
+  <action-view name="crm.conf.partner.status" title="Prospect status"
     model="com.axelor.apps.crm.db.PartnerStatus">
     <view type="grid" name="partner-status-grid"/>
     <view type="form" name="partner-status-form"/>
@@ -581,8 +558,11 @@
     <view type="form" name="partner-category-form"/>
   </action-view>
 
-  <menuitem title="Lead status" name="crm-conf-lead-status" parent="crm-conf"
-    action="crm.conf.lead.status" order="1000"/>
+  <menuitem title="Custom status" name="crm-conf-custom-status" parent="crm-conf"
+    order="1000"/>
+
+  <menuitem title="Lead status" name="crm-conf-lead-status" parent="crm-conf-custom-status"
+    action="crm.conf.lead.status" order="100"/>
   <action-view name="crm.conf.lead.status" title="Lead status"
     model="com.axelor.apps.crm.db.LeadStatus">
     <view type="grid" name="lead-status-grid"/>
