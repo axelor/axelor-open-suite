@@ -35,7 +35,7 @@ public interface SaleOrderStockService {
    * Create a delivery stock move from a sale order.
    *
    * @param saleOrder
-   * @return
+   * @return List of stock move ids
    * @throws AxelorException
    */
   public List<Long> createStocksMovesFromSaleOrder(SaleOrder saleOrder) throws AxelorException;
@@ -67,6 +67,7 @@ public interface SaleOrderStockService {
    * Update delivery state by checking delivery states on the sale order lines.
    *
    * @param saleOrder
+   * @throws AxelorException
    */
   void updateDeliveryState(SaleOrder saleOrder) throws AxelorException;
 

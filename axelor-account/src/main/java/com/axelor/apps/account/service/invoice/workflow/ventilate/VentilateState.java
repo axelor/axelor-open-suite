@@ -291,11 +291,7 @@ public class VentilateState extends WorkflowInvoice {
     fixedAssetGenerationService.createFixedAssets(invoice);
   }
 
-  /**
-   * Détermine le numéro de facture
-   *
-   * @throws AxelorException
-   */
+  /** Détermine le numéro de facture. */
   protected void setStatus() {
     invoice.setStatusSelect(InvoiceRepository.STATUS_VENTILATED);
   }

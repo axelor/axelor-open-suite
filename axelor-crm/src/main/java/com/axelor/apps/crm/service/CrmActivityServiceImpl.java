@@ -218,7 +218,7 @@ public class CrmActivityServiceImpl implements CrmActivityService {
   /**
    * Filter tracking on leadStatus field
    *
-   * @param lead
+   * @param model
    * @return list of tracking data converted to a map
    * @throws JsonProcessingException
    */

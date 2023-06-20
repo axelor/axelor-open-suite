@@ -27,6 +27,7 @@ public interface ControlEntryPlanLineService {
    * Will evaluate the formula of controlEntryPlanLine
    *
    * @param controlEntryPlanLine
+   * @throws AxelorException
    */
   void conformityEval(ControlEntryPlanLine controlEntryPlanLine) throws AxelorException;
 

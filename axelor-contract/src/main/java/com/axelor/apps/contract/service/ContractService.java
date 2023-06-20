@@ -45,6 +45,7 @@ public interface ContractService {
    *
    * @param contract
    * @param date
+   * @throws AxelorException
    */
   void waitingCurrentVersion(Contract contract, LocalDate date) throws AxelorException;
 
@@ -54,6 +55,7 @@ public interface ContractService {
    *
    * @param contract
    * @param date
+   * @throws AxelorException
    */
   Invoice ongoingCurrentVersion(Contract contract, LocalDate date) throws AxelorException;
 
@@ -62,6 +64,7 @@ public interface ContractService {
    *
    * @param contract
    * @param date
+   * @throws AxelorException
    */
   void waitingNextVersion(Contract contract, LocalDate date) throws AxelorException;
 
@@ -71,6 +74,7 @@ public interface ContractService {
    *
    * @param contract
    * @param date
+   * @throws AxelorException
    */
   void activeNextVersion(Contract contract, LocalDate date) throws AxelorException;
 
@@ -96,17 +100,19 @@ public interface ContractService {
    * @param contract
    * @param isManual
    * @param date
+   * @throws AxelorException
    */
   void terminateContract(Contract contract, Boolean isManual, LocalDate date)
       throws AxelorException;
 
-  /** Closes the contract */
+  /** Closes the contract @Param contract @Param date @Throws AxelorException */
   void close(Contract contract, LocalDate date) throws AxelorException;
 
   /**
    * Invoicing the contract
    *
    * @param contract
+   * @return created invoice
    * @throws AxelorException
    */
   Invoice invoicingContract(Contract contract) throws AxelorException;
@@ -118,13 +124,17 @@ public interface ContractService {
    *
    * @param contract
    * @param date
+   * @throws AxelorException
    */
   void renewContract(Contract contract, LocalDate date) throws AxelorException;
 
   /**
    * Generate a new contract based on template
    *
+   * @param contract
    * @param template
+   * @return updated contract
+   * @throws AxelorException
    */
   Contract copyFromTemplate(Contract contract, ContractTemplate template) throws AxelorException;
 

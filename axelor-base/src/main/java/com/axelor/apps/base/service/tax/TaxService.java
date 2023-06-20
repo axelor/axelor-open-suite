@@ -37,6 +37,7 @@ public class TaxService {
    * Fonction permettant de récupérer le taux de TVA d'une TVA
    *
    * @param tax Une TVA
+   * @param localDate
    * @return Le taux de TVA
    * @throws AxelorException
    */
@@ -49,6 +50,7 @@ public class TaxService {
    * Fonction permettant de récupérer le taux de TVA d'une TVA
    *
    * @param tax Une TVA
+   * @param localDate
    * @return Le taux de TVA
    * @throws AxelorException
    */

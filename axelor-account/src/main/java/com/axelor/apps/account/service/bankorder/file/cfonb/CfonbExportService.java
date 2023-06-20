@@ -95,9 +95,10 @@ public class CfonbExportService {
   /**
    * Méthode permettant d'exporter les remboursements au format CFONB
    *
-   * @param reimbursementExport
-   * @param ZonedDateTime
+   * @param company
+   * @param datetime
    * @param reimbursementList
+   * @param bankDetails
    * @throws AxelorException
    */
   public void exportCFONB(
@@ -139,9 +140,11 @@ public class CfonbExportService {
   /**
    * Méthode permettant d'exporter les prélèvements d'échéance de mensu au format CFONB
    *
-   * @param paymentScheduleExport
+   * @param processingDateTime
+   * @param scheduleDate
    * @param paymentScheduleLineList
    * @param company
+   * @param bankDetails
    * @throws AxelorException
    */
   public void exportPaymentScheduleCFONB(
@@ -189,10 +192,11 @@ public class CfonbExportService {
   /**
    * Méthode permettant d'exporter les prélèvements de facture au format CFONB
    *
-   * @param paymentScheduleExport
-   * @param paymentScheduleLineList
+   * @param processingDateTime
+   * @param scheduleDate
    * @param invoiceList
    * @param company
+   * @param bankDetails
    * @throws AxelorException
    */
   public void exportInvoiceCFONB(
@@ -241,10 +245,12 @@ public class CfonbExportService {
    * Méthode permettant d'exporter les prélèvements de facture et d'échéance de paiement au format
    * CFONB
    *
-   * @param paymentScheduleExport
+   * @param processingDateTime
+   * @param scheduleDate
    * @param paymentScheduleLineList
    * @param invoiceList
    * @param company
+   * @param bankDetails
    * @throws AxelorException
    */
   public void exportCFONB(
@@ -303,8 +309,8 @@ public class CfonbExportService {
   /**
    * Fonction permettant de créer un enregistrement 'émetteur' pour un virement des remboursements
    *
-   * @param company Une société
    * @param ZonedDateTime Une heure
+   * @param bankDetails
    * @return Un enregistrement 'emetteur'
    * @throws AxelorException
    */
@@ -376,8 +382,8 @@ public class CfonbExportService {
    * Fonction permettant de créer un enregistrement 'émetteur' pour un export de prélèvement de
    * mensu
    *
-   * @param company Une société
    * @param localDate Une date
+   * @param bankDetails
    * @return Un enregistrement 'emetteur'
    * @throws AxelorException
    */
@@ -441,7 +447,6 @@ public class CfonbExportService {
   /**
    * Fonction permettant de créer un enregistrement 'destinataire' pour un virement de remboursement
    *
-   * @param company Une société
    * @param reimbursement Un remboursement
    * @return Un enregistrement 'destinataire'
    * @throws AxelorException
@@ -471,8 +476,8 @@ public class CfonbExportService {
    * Fonction permettant de créer un enregistrement 'destinataire' pour un export de prélèvement
    * d'une échéance
    *
-   * @param company Une société
    * @param paymentScheduleLine Une échéance
+   * @param mensu
    * @return Un enregistrement 'destinataire'
    * @throws AxelorException
    */
@@ -498,7 +503,7 @@ public class CfonbExportService {
    * d'une facture
    *
    * @param company Une société
-   * @param moveLine L' écriture d'export des prélèvement d'une facture
+   * @param invoice
    * @return Un enregistrement 'destinataire'
    * @throws AxelorException
    */
@@ -526,10 +531,8 @@ public class CfonbExportService {
   /**
    * Fonction permettant de créer un enregistrement 'destinataire'
    *
-   * @param company Une société
    * @param amount Le montant de l'enregistrement
    * @param ref Une référence de prélèvement
-   * @param label Un libellé
    * @param partner Un tiers payeur
    * @param bankDetails Un RIB
    * @param operationCode Le code d'opération défini par société
@@ -586,9 +589,8 @@ public class CfonbExportService {
   /**
    * Fonction permettant de créer un enregistrement 'total' au format CFONB pour un remboursement
    *
-   * @param company Une société
    * @param amount Le montant total des enregistrements 'destinataire'
-   * @return
+   * @return L'enregistrement 'total'
    */
   protected String createReimbursementTotalCFONB(BigDecimal amount) {
 
@@ -616,7 +618,6 @@ public class CfonbExportService {
   /**
    * Fonction permettant de créer un enregistrement 'total' au format CFONB
    *
-   * @param company Une société
    * @param amount Le montant total des enregistrements 'destinataire'
    * @param operationCode Le type d'opération :
    *     <ul>
@@ -697,7 +698,7 @@ public class CfonbExportService {
   /**
    * Méthode permettant de construire le Nom/Raison sociale du tiers payeur d'un mémoire
    *
-   * @param memory Un mémoire
+   * @param partner
    * @return Civilité + Nom + Prénom si c'est une personne physique Civilité + Nom sinon
    */
   protected String getPayeurPartnerName(Partner partner) {
@@ -746,7 +747,7 @@ public class CfonbExportService {
   /**
    * Fonction permettant de récupérer le montant total à prélever d'une liste d'échéance de mensu
    *
-   * @param paymentScheduleLineList Une liste d'échéance de mensu
+   * @param invoiceList
    * @return Le montant total à prélever
    */
   protected BigDecimal getTotalAmountInvoice(List<Invoice> invoiceList) {

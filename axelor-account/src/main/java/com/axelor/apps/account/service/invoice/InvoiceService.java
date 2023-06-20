@@ -65,6 +65,7 @@ public interface InvoiceService {
    * (Transaction)
    *
    * @param invoice Une facture.
+   * @return Invoice
    * @throws AxelorException
    */
   public Invoice compute(final Invoice invoice) throws AxelorException;
@@ -73,7 +74,6 @@ public interface InvoiceService {
    * Validate an invoice.
    *
    * @param invoice
-   * @param compute
    * @throws AxelorException
    */
   public void validate(Invoice invoice) throws AxelorException;
@@ -118,7 +118,7 @@ public interface InvoiceService {
    * <p>Un avoir est une facture "inversée". Tout le montant sont opposés à la facture originale.
    *
    * @param invoice
-   * @return
+   * @return refund invoice
    * @throws AxelorException
    */
   public Invoice createRefund(Invoice invoice) throws AxelorException;
@@ -193,7 +193,7 @@ public interface InvoiceService {
    * Create the domain for the field {@link Invoice#advancePaymentInvoiceSet}
    *
    * @param invoice
-   * @return
+   * @return domain query for advance payment invoice set
    * @throws AxelorException
    */
   String createAdvancePaymentInvoiceSetDomain(Invoice invoice) throws AxelorException;
@@ -202,7 +202,7 @@ public interface InvoiceService {
    * Return the set for the field {@link Invoice#advancePaymentInvoiceSet}
    *
    * @param invoice
-   * @return
+   * @return Set of invoice
    * @throws AxelorException
    */
   Set<Invoice> getDefaultAdvancePaymentInvoice(Invoice invoice) throws AxelorException;
@@ -211,7 +211,8 @@ public interface InvoiceService {
    * Return the move lines from the advance payments on sale orders
    *
    * @param invoice
-   * @return
+   * @return List of MoveLine
+   * @throws AxelorException
    */
   List<MoveLine> getMoveLinesFromAdvancePayments(Invoice invoice) throws AxelorException;
 
@@ -219,7 +220,7 @@ public interface InvoiceService {
    * Return the move lines from the advance payments from previous invoices
    *
    * @param invoice
-   * @return
+   * @return List of MoveLine
    * @throws AxelorException
    */
   List<MoveLine> getMoveLinesFromInvoiceAdvancePayments(Invoice invoice) throws AxelorException;
@@ -228,7 +229,7 @@ public interface InvoiceService {
    * Return the move line from the advance payment from related sale order lines.
    *
    * @param invoice
-   * @return
+   * @return List of MoveLine
    */
   List<MoveLine> getMoveLinesFromSOAdvancePayments(Invoice invoice);
   /**
@@ -248,7 +249,7 @@ public interface InvoiceService {
    * default.
    *
    * @param invoice
-   * @return
+   * @return bank details
    * @throws AxelorException
    */
   BankDetails getBankDetails(Invoice invoice) throws AxelorException;
@@ -313,6 +314,7 @@ public interface InvoiceService {
    *
    * @param invoice
    * @return true if there would be at least one invoice term in the invoice payment
+   * @throws AxelorException
    */
   boolean checkInvoiceTerms(Invoice invoice) throws AxelorException;
 

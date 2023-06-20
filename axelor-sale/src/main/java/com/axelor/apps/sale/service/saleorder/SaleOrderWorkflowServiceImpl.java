@@ -271,6 +271,7 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
    * Throws exceptions to block the finalization of given sale order.
    *
    * @param saleOrder a sale order being finalized
+   * @throws AxelorException
    */
   protected void checkSaleOrderBeforeFinalization(SaleOrder saleOrder) throws AxelorException {
     saleOrderService.checkUnauthorizedDiscounts(saleOrder);

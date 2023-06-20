@@ -147,6 +147,7 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
    *
    * @param map
    * @param languageNumber
+   * @param importExportTranslationHistory
    * @return List containing each row of records.
    */
   protected List<String[]> addRecordRowIntoList(
@@ -368,6 +369,7 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
    * @param dataLine
    * @param importExportTranslationHistory
    * @return total records imported or updated for the dataLine.
+   * @throws AxelorException
    */
   @Transactional
   protected int insertOrUpdateTranslation(

@@ -165,6 +165,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
    *
    * @param quantity Quantité.
    * @param price Le prix.
+   * @param scale
    * @return Le montant HT de la ligne.
    */
   public static BigDecimal computeAmount(BigDecimal quantity, BigDecimal price, int scale) {

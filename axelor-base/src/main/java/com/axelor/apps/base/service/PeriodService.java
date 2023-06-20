@@ -32,7 +32,8 @@ public interface PeriodService {
    *
    * @param date
    * @param company
-   * @return
+   * @param typeSelect
+   * @return active period
    * @throws AxelorException
    */
   public Period getActivePeriod(LocalDate date, Company company, int typeSelect)
@@ -66,6 +67,7 @@ public interface PeriodService {
    * @param company
    * @param fromDate
    * @param toDate
+   * @throws AxelorException
    */
   public void checkPeriod(Company company, LocalDate fromDate, LocalDate toDate)
       throws AxelorException;
@@ -78,6 +80,7 @@ public interface PeriodService {
 
   /**
    * @param period
+   * @return true is period is closed, else false
    * @throws AxelorException if the period is permanently or temporally closed
    */
   @CallMethod

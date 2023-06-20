@@ -32,7 +32,6 @@ public abstract class AbstractObservablePricing implements ObservablePricing {
   /**
    * Subscribe to the observable
    *
-   * @param eventType
    * @param observer
    */
   @Override
@@ -43,7 +42,6 @@ public abstract class AbstractObservablePricing implements ObservablePricing {
   /**
    * Unsubscribe from the observable
    *
-   * @param eventType
    * @param observer
    */
   @Override
@@ -87,8 +85,7 @@ public abstract class AbstractObservablePricing implements ObservablePricing {
   /**
    * Notify observers that field to populate is field
    *
-   * @param pricingRule
-   * @param result
+   * @param field
    */
   @Override
   public void notifyFieldToPopulate(MetaField field) {
@@ -110,8 +107,7 @@ public abstract class AbstractObservablePricing implements ObservablePricing {
   /**
    * Notify observers that field to populate is field
    *
-   * @param pricingRule
-   * @param result
+   * @param field
    */
   @Override
   public void notifyMetaJsonFieldToPopulate(MetaJsonField field) {

@@ -29,7 +29,6 @@ public interface ConfiguratorCreatorService {
    * Add default view attrs for configurator attributes
    *
    * @param creator
-   * @return
    */
   void updateAttributes(ConfiguratorCreator creator);
 
@@ -38,6 +37,7 @@ public interface ConfiguratorCreatorService {
    * {@link ConfiguratorCreator#indicators} many-to-one.
    *
    * @param creator
+   * @throws AxelorException
    */
   void updateIndicators(ConfiguratorCreator creator) throws AxelorException;
 
@@ -45,7 +45,7 @@ public interface ConfiguratorCreatorService {
    * Get the testing values in {@link ConfiguratorCreator#attributes}
    *
    * @param creator
-   * @return
+   * @return testing values
    * @throws AxelorException
    */
   ScriptBindings getTestingValues(ConfiguratorCreator creator) throws AxelorException;

@@ -28,7 +28,8 @@ public interface InvoiceMergingViewService {
   /**
    * Method that build a ActionViewBuilder for confirm view in the sale order merge process.
    *
-   * @param InvoiceMergingResult
+   * @param result
+   * @param invoicesToMerge
    * @return ActionViewBuilder
    */
   ActionViewBuilder buildConfirmView(InvoiceMergingResult result, List<Invoice> invoicesToMerge);

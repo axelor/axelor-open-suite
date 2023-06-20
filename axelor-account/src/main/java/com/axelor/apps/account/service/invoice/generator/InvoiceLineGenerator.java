@@ -175,7 +175,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
   public abstract List<InvoiceLine> creates() throws AxelorException;
 
   /**
-   * @return
+   * @return created invoice line
    * @throws AxelorException
    */
   protected InvoiceLine createInvoiceLine() throws AxelorException {
@@ -320,8 +320,8 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
   /**
    * Rembourser une ligne de facture.
    *
-   * @param invoice La facture concernée.
    * @param invoiceLine La ligne de facture.
+   * @param daysQty
    * @return La ligne de facture de remboursement.
    */
   protected InvoiceLine refundInvoiceLine(InvoiceLine invoiceLine, boolean daysQty) {
@@ -406,7 +406,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
   /**
    * Convertir le prix d'une unité de départ version une unité d'arrivée.
    *
-   * @param price
+   * @param value
    * @param startUnit
    * @param endUnit
    * @return Le prix converti

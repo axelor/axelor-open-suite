@@ -273,7 +273,7 @@ public class AccountCustomerServiceImpl implements AccountCustomerService {
    *
    * @param partner Un tiers
    * @param company Une société
-   * @return
+   * @return list of move lines
    */
   @Override
   public List<? extends MoveLine> getMoveLine(Partner partner, Company company) {
@@ -289,6 +289,10 @@ public class AccountCustomerServiceImpl implements AccountCustomerService {
    *
    * @param partnerList Une liste de tiers à mettre à jour
    * @param company Une société
+   * @param updateCustAccount
+   * @param updateDueCustAccount
+   * @param updateDueDebtRecoveryCustAccount
+   * @throws AxelorException
    */
   @Override
   public void updatePartnerAccountingSituation(

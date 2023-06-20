@@ -276,6 +276,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
    * the difference with the planned prodproducts.
    *
    * @param manufOrder
+   * @return true if mail has been sent else false
    * @throws AxelorException
    */
   @Override

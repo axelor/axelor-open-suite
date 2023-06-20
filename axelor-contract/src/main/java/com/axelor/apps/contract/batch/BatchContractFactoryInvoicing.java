@@ -67,7 +67,7 @@ public class BatchContractFactoryInvoicing extends BatchContractFactory {
    * <p>To display contracts that would be treated by the batch, set considerBatch = false
    *
    * @param considerBatch
-   * @return
+   * @return contract filter query
    */
   public String prepareFilter(boolean considerBatch) {
     StringBuilder filter = new StringBuilder();

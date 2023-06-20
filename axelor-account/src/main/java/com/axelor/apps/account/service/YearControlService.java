@@ -28,7 +28,7 @@ public interface YearControlService {
    * Method that controls dates (fromDate and toDate). In case a changement occured while this year
    * is used in a Period that is used in move it will throw a Exception.
    *
-   * @param asType
+   * @param year
    * @throws AxelorException
    */
   void controlDates(Year year) throws AxelorException;

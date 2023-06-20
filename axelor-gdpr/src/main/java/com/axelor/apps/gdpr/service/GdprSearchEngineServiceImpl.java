@@ -208,7 +208,7 @@ public class GdprSearchEngineServiceImpl implements GdprSearchEngineService {
    * @param mapper
    * @param reference
    * @param fieldName
-   * @return
+   * @return string value for given field name
    * @throws AxelorException
    * @throws ClassNotFoundException
    */

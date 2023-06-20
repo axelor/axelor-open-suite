@@ -36,6 +36,7 @@ public interface FixedAssetLineService {
    * @param fixedAsset
    * @param disposalDate
    * @return generated {@link FixedAssetLine}
+   * @throws AxelorException
    */
   FixedAssetLine generateProrataDepreciationLine(FixedAsset fixedAsset, LocalDate disposalDate)
       throws AxelorException;
@@ -117,6 +118,7 @@ public interface FixedAssetLineService {
    *
    * @param fixedAsset
    * @param fixedAssetLine
+   * @throws AxelorException
    */
   void setFixedAsset(FixedAsset fixedAsset, FixedAssetLine fixedAssetLine) throws AxelorException;
 

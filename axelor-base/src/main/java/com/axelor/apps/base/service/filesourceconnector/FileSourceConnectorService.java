@@ -32,6 +32,7 @@ public interface FileSourceConnectorService {
    *
    * @param fileSourceConnector : {@link FileSourceConnector}
    * @return true if connection is valid, else false.
+   * @throws AxelorException
    */
   boolean isValid(FileSourceConnector fileSourceConnector) throws AxelorException;
 
@@ -39,7 +40,7 @@ public interface FileSourceConnectorService {
    * Method to create a FileTransfertSession with fileSourceConnector
    *
    * @param fileSourceConnector
-   * @return
+   * @return file transfer session
    * @throws AxelorException
    */
   FileTransfertSession createSession(FileSourceConnector fileSourceConnector)
@@ -72,7 +73,6 @@ public interface FileSourceConnectorService {
    *
    * @param fileTransfertSession
    * @param parameter
-   * @param files
    * @return download files: List of {@link MetaFile}
    * @throws AxelorException
    */

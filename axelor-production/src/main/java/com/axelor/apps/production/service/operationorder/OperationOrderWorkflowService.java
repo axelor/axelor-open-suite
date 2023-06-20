@@ -31,7 +31,7 @@ public interface OperationOrderWorkflowService {
    * Reset the planned dates from the specified operation order list.
    *
    * @param operationOrderList
-   * @return
+   * @return List of operation orders
    */
   List<OperationOrder> resetPlannedDates(List<OperationOrder> operationOrderList);
 
@@ -39,6 +39,7 @@ public interface OperationOrderWorkflowService {
    * Plans the given {@link OperationOrder} and sets its planned dates
    *
    * @param operationOrder An operation order
+   * @throws AxelorException
    */
   void plan(OperationOrder operationOrder) throws AxelorException;
 
@@ -46,6 +47,7 @@ public interface OperationOrderWorkflowService {
    * re-plans the given {@link OperationOrder} and sets its planned dates
    *
    * @param operationOrder An operation order
+   * @throws AxelorException
    */
   void replan(OperationOrder operationOrder) throws AxelorException;
 
@@ -53,6 +55,7 @@ public interface OperationOrderWorkflowService {
    * Starts the given {@link OperationOrder} and sets its starting time
    *
    * @param operationOrder An operation order
+   * @throws AxelorException
    */
   void start(OperationOrder operationOrder) throws AxelorException;
 
@@ -76,6 +79,7 @@ public interface OperationOrderWorkflowService {
    * Realizes the linked stock moves
    *
    * @param operationOrder An operation order
+   * @throws AxelorException
    */
   void finish(OperationOrder operationOrder) throws AxelorException;
 
@@ -85,6 +89,7 @@ public interface OperationOrderWorkflowService {
    * Cancels the given {@link OperationOrder} and its linked stock moves And sets its stopping time
    *
    * @param operationOrder An operation order
+   * @throws AxelorException
    */
   void cancel(OperationOrder operationOrder) throws AxelorException;
 
@@ -113,6 +118,7 @@ public interface OperationOrderWorkflowService {
    * operationOrderDuration of the user.
    *
    * @param operationOrder
+   * @param user
    * @throws AxelorException
    */
   void pause(OperationOrder operationOrder, User user) throws AxelorException;
@@ -123,6 +129,7 @@ public interface OperationOrderWorkflowService {
    * Adds the real duration to the {@link Machine} linked to {@code operationOrder}
    *
    * @param operationOrder An operation order @Param user
+   * @param user
    * @throws AxelorException
    */
   void stopOperationOrderDuration(OperationOrder operationOrder, User user) throws AxelorException;
@@ -134,6 +141,7 @@ public interface OperationOrderWorkflowService {
    *
    * @param operationOrder
    * @param user
+   * @throws AxelorException
    */
   void finish(OperationOrder operationOrder, User user) throws AxelorException;
 

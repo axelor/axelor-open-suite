@@ -28,7 +28,6 @@ public interface ObservablePricing {
   /**
    * Subscribe to the observable
    *
-   * @param eventType
    * @param observer
    */
   void subscribe(PricingObserver observer);
@@ -36,7 +35,6 @@ public interface ObservablePricing {
   /**
    * Unsubscribe from the observable
    *
-   * @param eventType
    * @param observer
    */
   void unsubscribe(PricingObserver observer);
@@ -68,16 +66,14 @@ public interface ObservablePricing {
   /**
    * Notify observers that field to populate is field
    *
-   * @param pricingRule
-   * @param result
+   * @param field
    */
   void notifyFieldToPopulate(MetaField field);
 
   /**
    * Notify observers that MetaJsonfield to populate is field
    *
-   * @param pricingRule
-   * @param result
+   * @param field
    */
   void notifyMetaJsonFieldToPopulate(MetaJsonField field);
 

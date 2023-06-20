@@ -27,6 +27,7 @@ public interface FixedAssetFailOverControlService {
    * Method that controls values's consistency when on failOver.
    *
    * @param fixedAsset
+   * @throws AxelorException
    */
   void controlFailOver(FixedAsset fixedAsset) throws AxelorException;
 
@@ -34,7 +35,7 @@ public interface FixedAssetFailOverControlService {
    * Method that return true if fixedAsset is a failOver
    *
    * @param fixedAsset
-   * @return
+   * @return true if fixedAsset is a failOver, else false
    */
   boolean isFailOver(FixedAsset fixedAsset);
 }

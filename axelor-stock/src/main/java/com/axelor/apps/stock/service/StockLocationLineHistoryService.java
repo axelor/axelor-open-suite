@@ -29,8 +29,9 @@ public interface StockLocationLineHistoryService {
    * Method that create a stock location line history.
    *
    * @param stockLocationLine
-   * @param date
+   * @param dateTime
    * @param origin
+   * @param typeSelect
    * @return StockLocationLineHistory created.
    */
   StockLocationLineHistory saveHistory(

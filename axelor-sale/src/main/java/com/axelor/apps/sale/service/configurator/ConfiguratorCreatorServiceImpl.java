@@ -188,7 +188,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
    * Get a default value to test a script.
    *
    * @param attribute
-   * @return
+   * @return Optional default value
    */
   protected Optional<Object> getAttributesDefaultValue(MetaJsonField attribute) {
     switch (attribute.getType()) {
@@ -232,7 +232,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
    *
    * @param attribute
    * @param relation
-   * @return
+   * @return Object
    */
   protected Object getAttributeRelationalField(MetaJsonField attribute, String relation) {
     try {
@@ -258,6 +258,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
    *
    * @param formula
    * @param creator
+   * @throws AxelorException
    */
   protected void addIfMissing(ConfiguratorFormula formula, ConfiguratorCreator creator)
       throws AxelorException {
@@ -282,6 +283,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
    *
    * @param formula
    * @param creator
+   * @return MetaJsonField
    * @throws AxelorException
    */
   protected MetaJsonField createMetaJsonFieldFromMetaField(
@@ -315,6 +317,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
    *
    * @param formula
    * @param creator
+   * @return MetaJsonField
    */
   protected MetaJsonField copyMetaJsonFieldFromFormula(
       ConfiguratorFormula formula, ConfiguratorCreator creator) {
@@ -368,6 +371,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
   /**
    * @param field
    * @param creator
+   * @param formulas
    * @return false if the field is represented in the creator formula list, true if field is missing
    *     in the creator formula list
    */
@@ -447,6 +451,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
    * Update the indicators views attrs using the formulas.
    *
    * @param creator
+   * @param formulas
    */
   protected void updateIndicatorsAttrs(
       ConfiguratorCreator creator, List<? extends ConfiguratorFormula> formulas) {
@@ -462,6 +467,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
    * Update one indicator attrs in the view, using the corresponding formula. Do nothing if
    * indicator and formula do not represent the same field.
    *
+   * @param creator
    * @param indicator
    * @param formula
    */

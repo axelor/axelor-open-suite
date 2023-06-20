@@ -58,6 +58,7 @@ public class BankOrderCreateServiceHr extends BankOrderCreateService {
    * Method to create a bank order for an expense
    *
    * @param expense An expense
+   * @param bankDetails
    * @throws AxelorException
    */
   public BankOrder createBankOrder(Expense expense, BankDetails bankDetails)

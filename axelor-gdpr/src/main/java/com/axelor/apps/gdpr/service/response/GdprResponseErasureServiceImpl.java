@@ -142,6 +142,8 @@ public class GdprResponseErasureServiceImpl implements GdprResponseErasureServic
    * @param gdprResponse
    * @param reference
    * @param metaModel
+   * @param anonymizationResult
+   * @param depth
    * @throws ClassNotFoundException
    * @throws AxelorException
    */
@@ -206,6 +208,8 @@ public class GdprResponseErasureServiceImpl implements GdprResponseErasureServic
    * @param mapper
    * @param metaField
    * @param anonymizerLines
+   * @param anonymizationResult
+   * @param depth
    * @throws AxelorException
    * @throws ClassNotFoundException
    */
@@ -355,6 +359,7 @@ public class GdprResponseErasureServiceImpl implements GdprResponseErasureServic
    * @param metaField
    * @param relationshipAnonymizer
    * @throws ClassNotFoundException
+   * @throws AxelorException
    */
   protected void breakM2ORelationship(
       Property property,
@@ -407,7 +412,7 @@ public class GdprResponseErasureServiceImpl implements GdprResponseErasureServic
    * get actual model anonymizerLine parameterized in app config
    *
    * @param metaModel
-   * @return
+   * @return list of AnonymizerLine
    */
   protected List<AnonymizerLine> getMetaModelAnonymizerLines(MetaModel metaModel) {
 
@@ -434,7 +439,7 @@ public class GdprResponseErasureServiceImpl implements GdprResponseErasureServic
 
   /**
    * @param fullName
-   * @return
+   * @return meta model
    */
   protected MetaModel getMetaModelFromFullName(String fullName) {
     return metaModelRepo.all().filter("self.fullName = '" + fullName + "'").fetchOne();

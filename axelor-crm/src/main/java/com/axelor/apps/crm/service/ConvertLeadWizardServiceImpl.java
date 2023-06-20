@@ -107,7 +107,9 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
   /**
    * Create a partner from a lead
    *
-   * @return
+   * @param partner
+   * @param primaryAddress
+   * @return partner
    * @throws AxelorException
    */
   protected Partner createPartner(Partner partner, Address primaryAddress) throws AxelorException {
@@ -206,7 +208,9 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
    * Convert lead into a partner
    *
    * @param lead
-   * @return
+   * @param partner
+   * @param contactPartnerList
+   * @return partner
    * @throws AxelorException
    */
   @Transactional(rollbackOn = {Exception.class})

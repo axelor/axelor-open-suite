@@ -51,7 +51,7 @@ public interface AddressService {
    * Get or update latitude and longitude.
    *
    * @param address
-   * @return
+   * @return Optional pair of lat and long
    * @throws JSONException
    * @throws AxelorException
    */
@@ -62,6 +62,7 @@ public interface AddressService {
    * Update latitude and longitude.
    *
    * @param address
+   * @return Optional pair of lat and long
    * @throws AxelorException
    * @throws JSONException
    */
@@ -99,6 +100,7 @@ public interface AddressService {
    * Set formatted full name for the address from address template
    *
    * @param address
+   * @throws AxelorException
    */
   public void setFormattedFullName(Address address) throws AxelorException;
 }

@@ -39,7 +39,7 @@ public interface FixedAssetService {
    * @param amount
    * @param splittingDate
    * @param comments
-   * @return
+   * @return FixedAsset
    * @throws AxelorException
    */
   FixedAsset splitAndSaveFixedAsset(
@@ -71,6 +71,16 @@ public interface FixedAssetService {
   /**
    * Method that manage disposal action. The process will be different depending on the
    * transferredReason.
+   *
+   * @param fixedAsset
+   * @param disposalDate
+   * @param disposalQty
+   * @param disposalAmount
+   * @param transferredReason
+   * @param assetDisposalReason
+   * @param comments
+   * @return computed fixed asset
+   * @throws AxelorException
    */
   FixedAsset computeDisposal(
       FixedAsset fixedAsset,

@@ -41,7 +41,6 @@ public interface MoveLineExportService {
    * Export general balance to CSV file.
    *
    * @param accountingReport
-   * @return
    * @throws AxelorException
    * @throws IOException
    */

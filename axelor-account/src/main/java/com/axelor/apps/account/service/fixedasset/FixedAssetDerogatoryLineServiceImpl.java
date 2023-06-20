@@ -248,6 +248,8 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
   /**
    * {@inheritDoc}
    *
+   * @param firstPlannedDerogatoryLine
+   * @param lastRealizedDerogatoryLine
    * @throws NullPointerException if firstPlannedDerogatoryLine is null
    */
   @Override
@@ -329,6 +331,7 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
   /**
    * {@inheritDoc}
    *
+   * @param fixedAssetDerogatoryLineList
    * @throws NullPointerException if fixedAssetDerogatoryLineList is null
    */
   @Override

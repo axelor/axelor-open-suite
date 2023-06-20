@@ -75,6 +75,8 @@ public interface SaleOrderService {
    * Convert PackLines of pack into SaleOrderLines.
    *
    * @param saleOrder
+   * @param pack
+   * @param packQty
    * @throws AxelorException
    */
   SaleOrder addPack(SaleOrder saleOrder, Pack pack, BigDecimal packQty) throws AxelorException;

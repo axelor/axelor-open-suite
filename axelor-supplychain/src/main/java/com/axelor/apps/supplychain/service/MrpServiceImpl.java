@@ -306,7 +306,7 @@ public class MrpServiceImpl implements MrpService {
    * Get the list of product for a level
    *
    * @param level
-   * @return
+   * @return List of products
    */
   protected List<Product> getProductList(int level) {
 

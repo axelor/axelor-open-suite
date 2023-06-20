@@ -44,7 +44,7 @@ public interface AppBaseService extends AppService {
    * set in the user if it exists, otherwise retrieves the one from the general administration,
    * otherwise the current date.
    *
-   * @return
+   * @return zoned date time
    */
   public ZonedDateTime getTodayDateTime();
 
@@ -53,7 +53,8 @@ public interface AppBaseService extends AppService {
    * Returns the current date set in the user if it exists, otherwise retrieve the general
    * administration's one, otherwise current date.
    *
-   * @return
+   * @param company
+   * @return zoned date time
    */
   public ZonedDateTime getTodayDateTime(Company company);
 
@@ -62,7 +63,8 @@ public interface AppBaseService extends AppService {
    * current date set in the user if it exists, otherwise retrieves the one from the general
    * administration, otherwise the current date.
    *
-   * @return
+   * @param company
+   * @return locale date
    */
   public LocalDate getTodayDate(Company company);
 
@@ -79,7 +81,7 @@ public interface AppBaseService extends AppService {
   /**
    * Get 0% vat
    *
-   * @return
+   * @return currecny conversion line list
    */
   public List<CurrencyConversionLine> getCurrencyConfigurationLineList();
 

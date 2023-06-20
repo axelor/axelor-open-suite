@@ -31,6 +31,7 @@ public interface ConfiguratorCreatorImportService {
    *
    * @param filePath the path to the data file.
    * @return the import log file.
+   * @throws IOException
    */
   String importConfiguratorCreators(String filePath) throws IOException;
 
@@ -40,6 +41,7 @@ public interface ConfiguratorCreatorImportService {
    * @param filePath the path to the data file.
    * @param configFilePath the path to XML config file.
    * @return the import log file.
+   * @throws IOException
    */
   String importConfiguratorCreators(String filePath, String configFilePath) throws IOException;
 
@@ -49,6 +51,7 @@ public interface ConfiguratorCreatorImportService {
    *
    * @param xmlInputStream input stream to the data file.
    * @return the import log file.
+   * @throws IOException
    */
   String importConfiguratorCreators(InputStream xmlInputStream) throws IOException;
 
@@ -59,6 +62,7 @@ public interface ConfiguratorCreatorImportService {
    * @param xmlInputStream input stream to the data file.
    * @param configFilePath the path to XML config file.
    * @return the import log file.
+   * @throws IOException
    */
   String importConfiguratorCreators(InputStream xmlInputStream, String configFilePath)
       throws IOException;

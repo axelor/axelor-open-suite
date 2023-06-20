@@ -45,6 +45,10 @@ public interface FixedAssetDerogatoryLineService {
    * therefore the derogatoryBalanceAmount of computed derogatory lines might be shifted from lines
    * that are realized. (Because it depends of the previous line) It might be necessary to
    * recalculate derogatoryBalanceAmount.
+   *
+   * @param fixedAsset
+   * @return List of fixedAssetDerogatoryLine
+   * @throws AxelorException
    */
   List<FixedAssetDerogatoryLine> computePlannedFixedAssetDerogatoryLineList(FixedAsset fixedAsset)
       throws AxelorException;
@@ -69,7 +73,9 @@ public interface FixedAssetDerogatoryLineService {
    * @param fiscalFixedAssetLine
    * @param previousFixedAssetDerogatoryLine
    * @param date
+   * @param fixedAsset
    * @return generated {@link FixedAssetDerogatoryLine}
+   * @throws AxelorException
    */
   FixedAssetDerogatoryLine computePlannedDerogatoryLine(
       FixedAssetLine economicFixedAssetLine,

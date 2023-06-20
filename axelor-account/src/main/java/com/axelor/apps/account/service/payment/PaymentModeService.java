@@ -71,6 +71,9 @@ public interface PaymentModeService {
   /**
    * Returns a payment mode with the same type as the given payment mode, but with reversed in or
    * out status. Return null if no payment mode were found or if the given payment mode is null.
+   *
+   * @param paymentMode
+   * @return PaymentMode
    */
   public PaymentMode reverseInOut(PaymentMode paymentMode);
 

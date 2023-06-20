@@ -47,6 +47,7 @@ public class QualityControlServiceImpl implements QualityControlService {
    * Copy control point model to control point and set it to the quality control.
    *
    * @param qualityControl Set control point model to control point of this object.
+   * @param process
    * @throws AxelorException
    */
   @Override

@@ -18,7 +18,6 @@
  */
 package com.axelor.apps.hr.web;
 
-import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.callable.ControllerCallableTool;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -38,7 +37,6 @@ public class HrBatchController {
    *
    * @param request
    * @param response
-   * @throws AxelorException
    */
   public void launchHrBatch(ActionRequest request, ActionResponse response) {
 

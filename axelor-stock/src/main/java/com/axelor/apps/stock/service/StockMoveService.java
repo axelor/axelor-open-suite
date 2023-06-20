@@ -55,7 +55,7 @@ public interface StockMoveService {
    * @param forwarderPartner
    * @param incoterm
    * @param typeSelect
-   * @return
+   * @return StockMove
    * @throws AxelorException No Stock move sequence defined
    */
   public StockMove createStockMove(
@@ -88,7 +88,7 @@ public interface StockMoveService {
    * @param estimatedDate
    * @param note
    * @param typeSelect
-   * @return
+   * @return StockMove
    * @throws AxelorException No Stock move sequence defined
    */
   public StockMove createStockMove(
@@ -158,7 +158,7 @@ public interface StockMoveService {
    * Change conformity on each stock move line according to the stock move conformity.
    *
    * @param stockMove
-   * @return
+   * @return List of stock move lines
    */
   List<StockMoveLine> changeConformityStockMove(StockMove stockMove);
 
@@ -166,7 +166,7 @@ public interface StockMoveService {
    * Change stock move conformity according to the conformity on each stock move line.
    *
    * @param stockMove
-   * @return
+   * @return conformity select
    */
   Integer changeConformityStockMoveLine(StockMove stockMove);
 
@@ -175,6 +175,7 @@ public interface StockMoveService {
    *
    * @param stockMove
    * @return the direction for the google map API
+   * @throws AxelorException
    */
   Map<String, Object> viewDirection(StockMove stockMove) throws AxelorException;
 
@@ -208,6 +209,7 @@ public interface StockMoveService {
    * current stock move line list, replacing the saved list.
    *
    * @param stockMove
+   * @throws AxelorException
    */
   void updateStocks(StockMove stockMove) throws AxelorException;
 

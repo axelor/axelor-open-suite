@@ -34,7 +34,8 @@ public interface LunchVoucherMgtLineService {
    *
    * @param employee
    * @param lunchVoucherMgt
-   * @param lunchVoucherMgtLine @throws AxelorException
+   * @param lunchVoucherMgtLine
+   * @throws AxelorException
    */
   void fillLunchVoucherFormat(
       Employee employee, LunchVoucherMgt lunchVoucherMgt, LunchVoucherMgtLine lunchVoucherMgtLine)

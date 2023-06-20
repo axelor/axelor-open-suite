@@ -172,7 +172,7 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
    * Fonction permettant de tester et de récupérer une séquence de prélèvement
    *
    * @param company Une société
-   * @return
+   * @return payment schedule sequence
    * @throws AxelorException
    */
   @Override
@@ -263,6 +263,7 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
   /**
    * Création d'un échéancier avec ces lignes.
    *
+   * @param partner
    * @param company La société.
    * @param date Date de création.
    * @param firstTermDate Date de première échéance.
@@ -308,7 +309,7 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
    * invoice M2M content and gets the movelines which are to pay
    *
    * @param paymentSchedule
-   * @return
+   * @return List of move lines
    */
   @Override
   public List<MoveLine> getPaymentSchedulerMoveLineToPay(PaymentSchedule paymentSchedule) {
@@ -437,7 +438,7 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
    * Methode permettant de savoir si l'échéance passée en paramètre est la dernière de l'échéancier
    *
    * @param paymentScheduleLine
-   * @return
+   * @return true if paymentScheduleLine is last scheduled, else false
    */
   @Override
   public boolean isLastSchedule(PaymentScheduleLine paymentScheduleLine) {

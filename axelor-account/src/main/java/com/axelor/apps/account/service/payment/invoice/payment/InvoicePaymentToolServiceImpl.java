@@ -187,7 +187,8 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
    * invoice.
    *
    * @param invoice
-   * @return
+   * @return true if sum of pending payments equals or exceeds the remaining amount of invoice,
+   *     false otherwise
    */
   protected boolean checkPendingPayments(Invoice invoice) {
     BigDecimal pendingAmount = BigDecimal.ZERO;

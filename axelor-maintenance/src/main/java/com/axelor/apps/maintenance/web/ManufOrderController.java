@@ -28,11 +28,9 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
-import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,9 +44,6 @@ public class ManufOrderController {
    *
    * @param request
    * @param response
-   * @return
-   * @throws BirtException
-   * @throws IOException
    */
   public void print(ActionRequest request, ActionResponse response) {
 

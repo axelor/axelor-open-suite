@@ -222,7 +222,7 @@ public class AxelorException extends Exception {
   /**
    * Get reference class.
    *
-   * @return
+   * @return reference class
    */
   public Class<? extends Model> getRefClass() {
     return refClass;
@@ -231,7 +231,7 @@ public class AxelorException extends Exception {
   /**
    * Get reference ID.
    *
-   * @return
+   * @return reference ID
    */
   public Long getRefId() {
     return refId;

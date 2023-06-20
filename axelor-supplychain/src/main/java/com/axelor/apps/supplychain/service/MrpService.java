@@ -66,7 +66,7 @@ public interface MrpService extends Callable<Mrp> {
    * Methods that checks if mrp is currenctly started.
    *
    * @param mrp
-   * @return
+   * @return true if mrp is started, false otherwise
    * @throws AxelorException
    */
   boolean isOnGoing(Mrp mrp) throws AxelorException;

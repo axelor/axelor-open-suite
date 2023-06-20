@@ -50,7 +50,7 @@ public interface CommonInvoiceService {
    * @param inTaxTotal of the Order
    * @param invoicingProduct
    * @param percentToInvoice
-   * @return
+   * @return List if created InvoiceLines
    * @throws AxelorException
    */
   List<InvoiceLine> createInvoiceLinesFromOrder(

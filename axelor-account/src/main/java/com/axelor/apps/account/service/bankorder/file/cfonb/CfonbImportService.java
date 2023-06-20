@@ -113,6 +113,7 @@ public class CfonbImportService {
    *       <li>1 = Prélèvement
    *     </ul>
    *
+   * @param optionalOperation
    * @return
    * @throws AxelorException
    * @throws IOException
@@ -197,6 +198,7 @@ public class CfonbImportService {
    *       <li>1 = Prélèvement
    *     </ul>
    *
+   * @param optionalOperation
    * @return
    * @throws AxelorException
    * @throws IOException
@@ -366,7 +368,7 @@ public class CfonbImportService {
    * Fonction permettant de récupérer la date de rejet de l'en-tête d'un lot de rejet de prélèvement
    * ou virement
    *
-   * @param detailCFONB Un enregistrement 'détail' d'un rejet de prélèvement au format CFONB
+   * @param headerCFONB
    * @return Les infos de rejet d'un prélèvement ou virement
    */
   protected String getHeaderDate(String headerCFONB) {
@@ -393,14 +395,14 @@ public class CfonbImportService {
 
   /**
    * @param file
-   * @param company
    * @param operation Le type d'opération :
    *     <ul>
    *       <li>0 = Virement
    *       <li>1 = Prélèvement
    *     </ul>
    *
-   * @return
+   * @param optionalOperation
+   * @return cfonb header
    */
   protected String getHeaderCFONB(List<String> file, int operation, int optionalOperation) {
     String recordCode = this.getHeaderRecordCode(operation);
@@ -433,7 +435,6 @@ public class CfonbImportService {
   /**
    * Fonction permettant de récupérer le code d'enregistrement en-tête
    *
-   * @param company Une société
    * @param operation Le type d'opération :
    *     <ul>
    *       <li>0 = Virement
@@ -453,14 +454,14 @@ public class CfonbImportService {
 
   /**
    * @param file
-   * @param company
    * @param operation Le type d'opération :
    *     <ul>
    *       <li>0 = Virement
    *       <li>1 = Prélèvement
    *     </ul>
    *
-   * @return
+   * @param optionalOperation
+   * @return cfnob details
    */
   private List<String> getDetailsCFONB(List<String> file, int operation, int optionalOperation) {
 
@@ -492,7 +493,6 @@ public class CfonbImportService {
   /**
    * Fonction permettant de récupérer le code d'enregistrement détail
    *
-   * @param company Une société
    * @param operation Le type d'opération :
    *     <ul>
    *       <li>0 = Virement
@@ -512,14 +512,14 @@ public class CfonbImportService {
 
   /**
    * @param file
-   * @param company
    * @param operation Le type d'opération :
    *     <ul>
    *       <li>0 = Virement
    *       <li>1 = Prélèvement
    *     </ul>
    *
-   * @return
+   * @param optionalOperation
+   * @return cfonb ending
    */
   protected String getEndingCFONB(List<String> file, int operation, int optionalOperation) {
     String operationCode = this.getImportOperationCode(operation);
@@ -547,7 +547,6 @@ public class CfonbImportService {
   /**
    * Fonction permettant de récupérer le code d'enregistrement fin
    *
-   * @param company Une société
    * @param operation Le type d'opération :
    *     <ul>
    *       <li>0 = Virement
@@ -569,7 +568,6 @@ public class CfonbImportService {
    * Méthode permettant de récupérer le code "opération" défini par société en fonction du type
    * d'opération souhaité
    *
-   * @param company La société
    * @param operation Le type d'opération :
    *     <ul>
    *       <li>0 = Virement

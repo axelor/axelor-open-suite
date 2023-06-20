@@ -574,6 +574,7 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
    *
    * @param stockLocationLine
    * @param stockMoveLine
+   * @param toStatus
    * @throws AxelorException
    */
   protected void checkReservedQtyStocks(

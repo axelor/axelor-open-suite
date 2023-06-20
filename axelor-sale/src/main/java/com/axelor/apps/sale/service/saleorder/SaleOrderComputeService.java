@@ -43,8 +43,7 @@ public interface SaleOrderComputeService {
    *
    * <p>Le calcul est basé sur les lignes de TVA préalablement créées.
    *
-   * @param invoice
-   * @param vatLines
+   * @param saleOrder
    * @throws AxelorException
    */
   public void _computeSaleOrder(SaleOrder saleOrder) throws AxelorException;

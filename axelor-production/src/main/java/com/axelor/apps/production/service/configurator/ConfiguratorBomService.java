@@ -35,7 +35,8 @@ public interface ConfiguratorBomService {
    * @param attributes
    * @param level
    * @param generatedProduct
-   * @return
+   * @return optional bill of material
+   * @throws AxelorException
    */
   Optional<BillOfMaterial> generateBillOfMaterial(
       ConfiguratorBOM configuratorBOM, JsonContext attributes, int level, Product generatedProduct)

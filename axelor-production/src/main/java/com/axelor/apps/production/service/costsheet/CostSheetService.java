@@ -36,7 +36,7 @@ public interface CostSheetService {
    * @param origin 0 : ORIGIN_BILL_OF_MATERIAL 1 : ORIGIN_MANUF_ORDER 2 :
    *     ORIGIN_BULK_UNIT_COST_CALCULATION
    * @param unitCostCalculation Required if origin = ORIGIN_BULK_UNIT_COST_CALCULATION
-   * @return
+   * @return CostSheet
    * @throws AxelorException
    */
   public CostSheet computeCostPrice(

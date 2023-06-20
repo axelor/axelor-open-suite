@@ -116,7 +116,7 @@ public class ConfiguratorCreatorImportServiceProductionImpl
   /**
    * Update attribute name in formulas for a configurator prod process.
    *
-   * @param configuratorBom
+   * @param configuratorProdProcess
    * @param oldName
    * @param newName
    * @throws AxelorException

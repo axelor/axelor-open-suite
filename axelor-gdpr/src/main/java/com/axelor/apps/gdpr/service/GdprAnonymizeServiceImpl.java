@@ -24,8 +24,6 @@ import com.axelor.db.mapper.Mapper;
 import com.axelor.inject.Beans;
 import com.axelor.mail.db.MailMessage;
 import com.axelor.mail.db.repo.MailMessageRepository;
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -34,7 +32,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import wslite.json.JSONException;
 
 public class GdprAnonymizeServiceImpl implements GdprAnonymizeService {
 
@@ -54,10 +51,6 @@ public class GdprAnonymizeServiceImpl implements GdprAnonymizeService {
    * Anonymize tracking datas (track -> oldValue and value)
    *
    * @param reference
-   * @throws JSONException
-   * @throws ClassNotFoundException
-   * @throws JsonParseException
-   * @throws JsonMappingException
    * @throws IOException
    */
   @Transactional(rollbackOn = {Exception.class})
@@ -122,7 +115,7 @@ public class GdprAnonymizeServiceImpl implements GdprAnonymizeService {
    * return tracking datas for given model
    *
    * @param model
-   * @return
+   * @return list of tracking datas
    */
   @Override
   public List<MailMessage> searchTrackingDatas(AuditableModel model) {

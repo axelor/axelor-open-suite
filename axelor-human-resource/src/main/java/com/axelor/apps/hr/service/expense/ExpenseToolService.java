@@ -30,7 +30,7 @@ public interface ExpenseToolService {
    * Get the expense from employee, if no expense is found create one.
    *
    * @param employee
-   * @return
+   * @return expense
    */
   public Expense getOrCreateExpense(Employee employee);
 

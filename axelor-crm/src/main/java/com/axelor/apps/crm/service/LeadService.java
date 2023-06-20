@@ -31,7 +31,8 @@ public interface LeadService {
   /**
    * Get sequence for partner
    *
-   * @return
+   * @param partner
+   * @return sequence
    * @throws AxelorException
    */
   public String getSequence(Partner partner) throws AxelorException;
@@ -40,7 +41,7 @@ public interface LeadService {
    * Assign user company to partner
    *
    * @param partner
-   * @return
+   * @return updated partner
    */
   public Partner setPartnerCompany(Partner partner);
 
@@ -78,6 +79,8 @@ public interface LeadService {
    *
    * @param lead a context lead object
    * @param lostReason the specified lost reason
+   * @param lostReasonStr
+   * @throws AxelorException
    */
   public void loseLead(Lead lead, LostReason lostReason, String lostReasonStr)
       throws AxelorException;

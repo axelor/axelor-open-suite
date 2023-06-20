@@ -185,7 +185,9 @@ public abstract class BankOrderFileAFB160Service extends BankOrderFileService {
    * positions 80 à 82, code nature économique D2-3. (3 caractères) positions 83 à 85, code pays
    * D2-4. (1 caractère) position 86, zone réservée
    *
-   * @return
+   * @param bankOrderLine
+   * @return detail area
+   * @throws AxelorException
    */
   protected String getDetailD1Area(BankOrderLine bankOrderLine) throws AxelorException {
 
@@ -209,7 +211,7 @@ public abstract class BankOrderFileAFB160Service extends BankOrderFileService {
    * vérifier
    *
    * @param bankOrderLine
-   * @return
+   * @return bank order amount
    */
   protected BigDecimal getDetailEAreaAmount(BankOrderLine bankOrderLine) {
 
@@ -240,7 +242,8 @@ public abstract class BankOrderFileAFB160Service extends BankOrderFileService {
    *
    * <p>• 15 caractères : Numéro de l'allocataire
    *
-   * @return
+   * @param bankOrderLine
+   * @return receiver label
    */
   protected String getDetailFArea(BankOrderLine bankOrderLine) {
 
@@ -250,7 +253,7 @@ public abstract class BankOrderFileAFB160Service extends BankOrderFileService {
   /**
    * Method to create a sender record for national transfer AFB160
    *
-   * @return
+   * @return sender record
    * @throws AxelorException
    */
   protected String createSenderRecord() throws AxelorException {
@@ -429,7 +432,7 @@ public abstract class BankOrderFileAFB160Service extends BankOrderFileService {
    * Method to create a recipient record for national transfer AFB160
    *
    * @param bankOrderLine
-   * @return
+   * @return recipient record
    * @throws AxelorException
    */
   protected String createDetailRecord(BankOrderLine bankOrderLine) throws AxelorException {
@@ -574,7 +577,7 @@ public abstract class BankOrderFileAFB160Service extends BankOrderFileService {
    * Method to create an optional further information record for national transfer AFB160
    *
    * @param bankOrderLine
-   * @return
+   * @return optional further information record
    * @throws AxelorException
    */
   protected String createOptionalFurtherInformationRecord(BankOrderLine bankOrderLine)
@@ -723,7 +726,7 @@ public abstract class BankOrderFileAFB160Service extends BankOrderFileService {
    *
    * @param company
    * @param dateTime
-   * @return
+   * @return total record
    * @throws AxelorException
    */
   protected String createTotalRecord() throws AxelorException {

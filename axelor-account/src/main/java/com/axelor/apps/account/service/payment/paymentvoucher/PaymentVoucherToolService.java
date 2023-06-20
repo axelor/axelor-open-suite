@@ -33,7 +33,7 @@ public class PaymentVoucherToolService {
    * @param paymentVoucher : Une saisie Paiement
    *     <p>OperationTypeSelect 1 : Achat fournisseur 2 : Avoir fournisseur 3 : Vente client 4 :
    *     Avoir client
-   * @return
+   * @return true if payment voucher is of sales, false otherwise
    * @throws AxelorException
    */
   public boolean isDebitToPay(PaymentVoucher paymentVoucher) throws AxelorException {
@@ -68,7 +68,7 @@ public class PaymentVoucherToolService {
    * @param paymentVoucher : Une saisie Paiement
    *     <p>OperationTypeSelect 1 : Achat fournisseur 2 : Avoir fournisseur 3 : Vente client 4 :
    *     Avoir client
-   * @return
+   * @return true if payment voucher is of purchase, false otherwise
    * @throws AxelorException
    */
   public boolean isPurchase(PaymentVoucher paymentVoucher) throws AxelorException {

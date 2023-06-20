@@ -55,7 +55,7 @@ public interface StockMoveToolService {
    * Compute stock move name.
    *
    * @param stockMove
-   * @return
+   * @return computed stock move name
    */
   String computeName(StockMove stockMove);
 
@@ -64,23 +64,25 @@ public interface StockMoveToolService {
    *
    * @param stockMove
    * @param name
-   * @return
+   * @return computed stock move name
    */
   String computeName(StockMove stockMove, String name);
 
   /**
    * Get from address from stock move or stock location.
    *
+   * @param stockMove
    * @param stockMoveLine
-   * @return
+   * @return from address
    */
   Address getFromAddress(StockMove stockMove, StockMoveLine stockMoveLine);
 
   /**
    * Get to address from stock move or stock location.
    *
+   * @param stockMove
    * @param stockMoveLine
-   * @return
+   * @return to address
    */
   Address getToAddress(StockMove stockMove, StockMoveLine stockMoveLine);
 
@@ -88,7 +90,8 @@ public interface StockMoveToolService {
    * Get partner address.
    *
    * @param stockMove
-   * @return
+   * @param stockMoveLine
+   * @return partner address
    * @throws AxelorException
    */
   Address getPartnerAddress(StockMove stockMove, StockMoveLine stockMoveLine)
@@ -97,8 +100,9 @@ public interface StockMoveToolService {
   /**
    * Get company address.
    *
+   * @param stockMove
    * @param stockMoveLine
-   * @return
+   * @return company address
    * @throws AxelorException
    */
   Address getCompanyAddress(StockMove stockMove, StockMoveLine stockMoveLine)

@@ -34,11 +34,9 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.axelor.utils.db.Wizard;
 import com.google.inject.Singleton;
-import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.List;
 import org.apache.commons.lang3.ArrayUtils;
-import org.eclipse.birt.core.exception.BirtException;
 
 @Singleton
 public class StockLocationController {
@@ -48,9 +46,7 @@ public class StockLocationController {
    *
    * @param request
    * @param response
-   * @return
-   * @throws BirtException
-   * @throws IOException
+   * @throws AxelorException
    */
   public void print(ActionRequest request, ActionResponse response) throws AxelorException {
     try {

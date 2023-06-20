@@ -50,8 +50,7 @@ public interface FileTransfertSession {
    * Download files from host configured in parameters. The session must be configured and connected
    * before calling this method.
    *
-   * @param parameters
-   * @param files
+   * @param parameter
    * @return List of {@link MetaFile}
    * @throws AxelorException
    */

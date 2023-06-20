@@ -216,7 +216,7 @@ public class StockRulesSupplychainServiceImpl implements StockRulesSupplychainSe
    * Get minimum quantity from default supplier.
    *
    * @param product
-   * @return
+   * @return minimum quantity from default supplier
    */
   protected BigDecimal getDefaultSupplierMinQty(Product product) {
     Partner defaultSupplierPartner = product.getDefaultSupplierPartner();

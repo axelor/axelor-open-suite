@@ -295,6 +295,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
    * its delivery state. Should be called only if we terminate sale order on receipt.
    *
    * @param saleOrder
+   * @throws AxelorException
    */
   protected void terminateOrConfirmSaleOrderStatus(SaleOrder saleOrder) throws AxelorException {
     // have to use Beans.get because of circular dependency

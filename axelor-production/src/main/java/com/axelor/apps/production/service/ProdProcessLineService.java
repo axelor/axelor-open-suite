@@ -32,6 +32,7 @@ public interface ProdProcessLineService {
    * @param operationOrder
    * @param prodProcessLine
    * @param qty
+   * @return computed duration
    * @throws AxelorException
    */
   public long computeEntireCycleDuration(

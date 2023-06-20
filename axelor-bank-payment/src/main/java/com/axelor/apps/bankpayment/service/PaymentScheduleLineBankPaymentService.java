@@ -64,7 +64,7 @@ public interface PaymentScheduleLineBankPaymentService extends PaymentScheduleLi
    *
    * @param idMap
    * @param represent
-   * @return
+   * @return error count
    */
   int rejectFromIdMap(Map<Long, InterbankCodeLine> idMap, boolean represent);
 
@@ -73,14 +73,14 @@ public interface PaymentScheduleLineBankPaymentService extends PaymentScheduleLi
    *
    * @param nameMap
    * @param represent
-   * @return
+   * @return error count
    */
   int rejectFromNameMap(Map<String, InterbankCodeLine> nameMap, boolean represent);
 
   /**
    * Get default rejection reason.
    *
-   * @return
+   * @return InterbankCodeLine
    */
   @CallMethod
   InterbankCodeLine getDefaultRejectionReason();

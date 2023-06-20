@@ -96,7 +96,7 @@ public interface PaymentScheduleService {
    * Get partner's bank details.
    *
    * @param paymentSchedule
-   * @return
+   * @return partner's bank details
    * @throws AxelorException
    */
   BankDetails getBankDetails(PaymentSchedule paymentSchedule) throws AxelorException;
@@ -113,7 +113,7 @@ public interface PaymentScheduleService {
    * Get next payment schedule line sequence number.
    *
    * @param paymentSchedule
-   * @return
+   * @return next payment schedule line sequence
    */
   int getNextScheduleLineSeq(PaymentSchedule paymentSchedule);
 }

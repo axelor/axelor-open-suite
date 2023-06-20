@@ -27,6 +27,7 @@ public interface MoveControlService {
    * Method that checks if move.company is the same used in journal.
    *
    * @param move
+   * @throws AxelorException
    */
   void checkSameCompany(Move move) throws AxelorException;
 

@@ -64,7 +64,12 @@ public interface PaymentService {
    * @param remainingPaidAmount Le montant restant à payer
    * @param move Une écriture
    * @param moveLineNo Un numéro de ligne d'écriture
-   * @return
+   * @param partner
+   * @param company
+   * @param payVoucherElementToPay
+   * @param account
+   * @param paymentDate
+   * @return count
    * @throws AxelorException
    */
   int createExcessPaymentWithAmount(

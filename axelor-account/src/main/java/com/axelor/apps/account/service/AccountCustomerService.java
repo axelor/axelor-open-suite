@@ -64,8 +64,13 @@ public interface AccountCustomerService {
    * pas de prise en compte du délai d'acheminement **
    */
   /**
-   * solde des échéances rejetées qui ne sont pas bloqués
-   * *****************************************************
+   * solde des échéances rejetées qui ne sont pas bloqués *
+   *
+   * @param partner
+   * @param company
+   * @param tradingName
+   * @return The BalanceDueDebtRecovery due of this trading name, in the scope of the activities of
+   *     this company
    */
   public BigDecimal getBalanceDueDebtRecovery(
       Partner partner, Company company, TradingName tradingName);
@@ -75,7 +80,7 @@ public interface AccountCustomerService {
    *
    * @param partner Un tiers
    * @param company Une société
-   * @return
+   * @return list of move lines
    */
   public List<? extends MoveLine> getMoveLine(Partner partner, Company company);
 
@@ -84,6 +89,10 @@ public interface AccountCustomerService {
    *
    * @param partnerList Une liste de tiers à mettre à jour
    * @param company Une société
+   * @param updateCustAccount
+   * @param updateDueCustAccount
+   * @param updateDueDebtRecoveryCustAccount
+   * @throws AxelorException
    */
   public void updatePartnerAccountingSituation(
       List<Partner> partnerList,

@@ -31,6 +31,7 @@ public interface ProductCategoryService {
    *
    * @param productCategory a product category
    * @return a discount message describing discounts from other categories
+   * @throws AxelorException
    */
   String computeDiscountMessage(ProductCategory productCategory) throws AxelorException;
 
@@ -40,6 +41,7 @@ public interface ProductCategoryService {
    *
    * @param productCategory
    * @return an optional with the maximum applicable discount if found.
+   * @throws AxelorException
    */
   Optional<BigDecimal> computeMaxDiscount(ProductCategory productCategory) throws AxelorException;
 
@@ -48,6 +50,7 @@ public interface ProductCategoryService {
    *
    * @param productCategory a product category
    * @return all children of the category
+   * @throws AxelorException
    */
   List<ProductCategory> fetchChildrenCategoryList(ProductCategory productCategory)
       throws AxelorException;
@@ -57,6 +60,7 @@ public interface ProductCategoryService {
    *
    * @param productCategory a product category
    * @return all parents of the category
+   * @throws AxelorException
    */
   List<ProductCategory> fetchParentCategoryList(ProductCategory productCategory)
       throws AxelorException;

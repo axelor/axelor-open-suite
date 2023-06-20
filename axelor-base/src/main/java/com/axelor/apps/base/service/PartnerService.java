@@ -119,7 +119,7 @@ public interface PartnerService {
    * Get the partner Localization.code. If null, return the default partner locale.
    *
    * @param partner
-   * @return
+   * @return partner locale
    */
   String getPartnerLocale(Partner partner);
 
@@ -127,7 +127,7 @@ public interface PartnerService {
    * Normalize phone number.
    *
    * @param phoneNumber
-   * @return
+   * @return normalized phone number
    */
   String normalizePhoneNumber(String phoneNumber);
 
@@ -135,7 +135,7 @@ public interface PartnerService {
    * Check phone number.
    *
    * @param phoneNumber
-   * @return
+   * @return true if phone number is valid, else false
    */
   boolean checkPhoneNumber(String phoneNumber);
 
@@ -143,7 +143,7 @@ public interface PartnerService {
    * Get phone number field name.
    *
    * @param actionName
-   * @return
+   * @return phone number field name
    */
   String getPhoneNumberFieldName(String actionName);
 

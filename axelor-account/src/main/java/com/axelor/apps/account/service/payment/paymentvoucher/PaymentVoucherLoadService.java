@@ -223,11 +223,9 @@ public class PaymentVoucherLoadService {
 
   /**
    * Allows to load selected lines (from 1st 02M) to the 2nd O2M and dispatching amounts according
-   * to amountRemainnig for the loaded move and the paid amount remaining of the paymentVoucher
+   * to amountRemainig for the loaded move and the paid amount remaining of the paymentVoucher
    *
    * @param paymentVoucher
-   * @return
-   * @return
    * @return values Map of data
    * @throws AxelorException
    */
@@ -336,7 +334,8 @@ public class PaymentVoucherLoadService {
    *
    * @param payVoucherElementToPayList La liste des lignes à payer
    * @param moveLine Le trop-perçu à utiliser
-   * @return
+   * @return true if all payVoucherElementToPay moveline have same account as of moveline , else
+   *     false
    */
   public boolean checkIfSameAccount(
       List<PayVoucherElementToPay> payVoucherElementToPayList, MoveLine moveLine) {
@@ -378,7 +377,7 @@ public class PaymentVoucherLoadService {
   /**
    * @param moveLineInvoiceToPay Invoice lines fetched from invoice
    * @param amountToPay Amount of the payment
-   * @return
+   * @return list of movelines
    */
   public List<MoveLine> assignMaxAmountToReconcile(
       List<MoveLine> moveLineInvoiceToPay, BigDecimal amountToPay) {

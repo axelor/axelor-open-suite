@@ -30,8 +30,7 @@ public interface MoveCreateFromInvoiceService {
    * Créer une écriture comptable propre à la facture.
    *
    * @param invoice
-   * @param consolidate
-   * @return
+   * @return Move if move is created
    * @throws AxelorException
    */
   Move createMove(Invoice invoice) throws AxelorException;
@@ -42,7 +41,7 @@ public interface MoveCreateFromInvoiceService {
    * une O.D. de passage sur le bon compte
    *
    * @param invoice
-   * @return
+   * @return Move if created
    * @throws AxelorException
    */
   Move createMoveUseExcessPaymentOrDue(Invoice invoice) throws AxelorException;
@@ -55,7 +54,7 @@ public interface MoveCreateFromInvoiceService {
    * le compte n'est pas le même : on créée une O.D. de passage sur le bon compte
    *
    * @param invoice
-   * @return
+   * @return Move if created
    * @throws AxelorException
    */
   Move createMoveUseInvoiceDue(Invoice invoice) throws AxelorException;

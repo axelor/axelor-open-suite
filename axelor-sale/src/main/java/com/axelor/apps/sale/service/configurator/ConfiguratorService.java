@@ -37,7 +37,9 @@ public interface ConfiguratorService {
    * @param configurator
    * @param attributes
    * @param saleOrderId id of parent sale order, can be null.
-   * @param indicators @return the new values of indicators
+   * @param indicators
+   * @return the new values of indicators
+   * @throws AxelorException
    */
   void updateIndicators(
       Configurator configurator, JsonContext attributes, JsonContext indicators, Long saleOrderId)
@@ -48,7 +50,7 @@ public interface ConfiguratorService {
    *
    * @param groovyFormula
    * @param values
-   * @return
+   * @return result of a formula
    * @throws AxelorException
    */
   Object computeFormula(String groovyFormula, JsonContext values) throws AxelorException;
@@ -60,6 +62,12 @@ public interface ConfiguratorService {
    * @param jsonAttributes
    * @param jsonIndicators
    * @param saleOrderId
+   * @throws NoSuchMethodException
+   * @throws InvocationTargetException
+   * @throws IllegalAccessException
+   * @throws JSONException
+   * @throws ClassNotFoundException
+   * @throws AxelorException
    */
   void generateProduct(
       Configurator configurator,
@@ -77,6 +85,11 @@ public interface ConfiguratorService {
    * @param saleOrder
    * @param jsonAttributes
    * @param jsonIndicators
+   * @throws ClassNotFoundException
+   * @throws NoSuchMethodException
+   * @throws IllegalAccessException
+   * @throws InvocationTargetException
+   * @throws AxelorException
    */
   void addLineToSaleOrder(
       Configurator configurator,
@@ -99,6 +112,9 @@ public interface ConfiguratorService {
    * Return true if {@code fromClassName} is a class that can be converted to {@code
    * targetClassName}. <br>
    * Else return false.
+   *
+   * @param targetClassName
+   * @param fromClassName
    */
   boolean areCompatible(String targetClassName, String fromClassName);
 
@@ -107,6 +123,7 @@ public interface ConfiguratorService {
    * method may become useless on a future ADK update.
    *
    * @param model
+   * @throws AxelorException
    */
   void fixRelationalFields(Model model) throws AxelorException;
 }

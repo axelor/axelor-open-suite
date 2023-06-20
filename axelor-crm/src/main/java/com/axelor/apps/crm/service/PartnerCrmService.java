@@ -27,8 +27,10 @@ public interface PartnerCrmService {
   /**
    * Set the lead status to lost and set the lost reason with the given lost reason.
    *
-   * @param lead a context lead object
+   * @param partner
    * @param lostReason the specified lost reason
+   * @param lostReasonStr
+   * @throws AxelorException
    */
   public void losePartner(Partner partner, LostReason lostReason, String lostReasonStr)
       throws AxelorException;

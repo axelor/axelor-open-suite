@@ -28,6 +28,7 @@ public interface TrackingNumberConfigurationService {
    *
    * @param config the tracking number configuration config
    * @return true if it is consistent
+   * @throws AxelorException
    */
   public boolean checkSequenceAndBarcodeTypeConfigConsistency(TrackingNumberConfiguration config)
       throws AxelorException;

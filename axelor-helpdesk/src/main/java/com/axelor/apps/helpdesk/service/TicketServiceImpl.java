@@ -207,7 +207,7 @@ public class TicketServiceImpl implements TicketService {
    * checked.
    *
    * @param fromDate
-   * @param employee
+   * @param company
    * @param days
    * @throws AxelorException
    */

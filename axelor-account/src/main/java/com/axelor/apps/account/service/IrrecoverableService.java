@@ -415,6 +415,7 @@ public class IrrecoverableService {
    * Procédure permettant de
    *
    * @param irrecoverable
+   * @return error count
    * @throws AxelorException
    */
   public int passInIrrecoverable(Irrecoverable irrecoverable) throws AxelorException {
@@ -588,7 +589,7 @@ public class IrrecoverableService {
    * Function to create a rejected payment schedule line list
    *
    * @param icl a customer line
-   * @param invoiceList a partner payer rejected payment schedule line list
+   * @param paymentScheduleLineList
    * @return the created rejected payment schedule line list
    * @throws AxelorException
    */
@@ -666,7 +667,7 @@ public class IrrecoverableService {
    * irrecoverable have been passed into irrecoverable
    *
    * @param paymentSchedule a payment schedule
-   * @return is is all invoice passed in irrecoverable
+   * @return is all invoice passed in irrecoverable
    */
   public boolean isAllInvoicePassedInIrrecoverable(PaymentSchedule paymentSchedule) {
     for (Invoice invoiceScheduled : paymentSchedule.getInvoiceSet()) {
@@ -725,9 +726,9 @@ public class IrrecoverableService {
   /**
    * Function to create a list of reporting lines for a rejected payment schedule line
    *
-   * @param iil a rejected payment schedule line
+   * @param ipsll
    * @param paymentScheduleLine a rejected payment schedule
-   * @param prorataRate a remaining payment schedule rate
+   * @param tax
    * @return the created irrecoverable reporting line
    * @throws AxelorException
    */
@@ -791,7 +792,7 @@ public class IrrecoverableService {
   /**
    * Function to create a reporting line
    *
-   * @param iil a rejected payment schedule line
+   * @param ipsll
    * @param label a label
    * @param value a value
    * @param seq a sequence number
@@ -841,6 +842,8 @@ public class IrrecoverableService {
    * @param invoice an invoice
    * @param prorataRate the remaining invoice rate
    * @param isInvoiceReject is the invoice rejected?
+   * @param irrecoverableName
+   * @param reconcileList
    * @return the pass move
    * @throws AxelorException
    */
@@ -988,6 +991,7 @@ public class IrrecoverableService {
    * Function to create the pass move to irrecoverable of a payment schedule
    *
    * @param moveLine a payment schedule move line
+   * @param irrecoverableName
    * @return the irrecoverable move
    * @throws AxelorException
    */

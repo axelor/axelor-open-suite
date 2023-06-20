@@ -32,7 +32,7 @@ public interface BankOrderMergeService {
    * Merge bank orders from invoice payments.
    *
    * @param invoicePayments
-   * @return
+   * @return BankOrder
    * @throws AxelorException
    */
   BankOrder mergeFromInvoicePayments(Collection<InvoicePayment> invoicePayments)

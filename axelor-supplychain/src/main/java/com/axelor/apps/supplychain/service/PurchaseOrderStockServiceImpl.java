@@ -116,6 +116,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
    * Méthode permettant de créer un StockMove à partir d'un PurchaseOrder.
    *
    * @param purchaseOrder une commande
+   * @return List of stock move ids
    * @throws AxelorException Aucune séquence de StockMove n'a été configurée
    */
   public List<Long> createStockMoveFromPurchaseOrder(PurchaseOrder purchaseOrder)
@@ -375,8 +376,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
   }
 
   /**
-   * @param product
-   * @param purchaseOrder
+   * @param purchaseOrderLine
    * @return true if product needs a control on receipt and if the purchase order is not a direct
    *     order
    * @throws AxelorException

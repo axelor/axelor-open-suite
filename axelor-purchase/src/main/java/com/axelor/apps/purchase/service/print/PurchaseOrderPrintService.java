@@ -28,7 +28,8 @@ public interface PurchaseOrderPrintService {
   /**
    * Print a purchase order
    *
-   * @return ReportSettings
+   * @param ids
+   * @return url to the created file
    * @throws IOException
    * @throws AxelorException
    */

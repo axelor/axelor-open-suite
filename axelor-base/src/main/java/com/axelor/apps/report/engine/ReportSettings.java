@@ -259,7 +259,7 @@ public class ReportSettings {
   /**
    * Get the language select current connected user.
    *
-   * @return
+   * @return printing locale
    */
   public static String getPrintingLocale() {
     return getPrintingLocale(null);

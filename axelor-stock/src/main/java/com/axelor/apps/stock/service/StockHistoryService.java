@@ -37,6 +37,7 @@ public interface StockHistoryService {
    * @param beginDate mandatory date used for the generation.
    * @param endDate mandatory date used for the generation.
    * @return the computed lines.
+   * @throws AxelorException
    */
   List<StockHistoryLine> computeStockHistoryLineList(
       Long productId, Long companyId, Long stockLocationId, LocalDate beginDate, LocalDate endDate)
@@ -56,7 +57,7 @@ public interface StockHistoryService {
    * @param stockLocationId
    * @param beginDate
    * @param endDate
-   * @return
+   * @return List of stock history lines
    * @throws AxelorException
    */
   List<StockHistoryLine> computeAndSaveStockHistoryLineList(

@@ -43,6 +43,7 @@ public abstract class BatchWkf extends BatchStrategy {
    * Récupérer la liste des factures à traiter.
    *
    * @param invoiceBatch Le batch de facturation concerné.
+   * @param isTo
    * @return Une liste de facture.
    */
   protected static Collection<? extends Invoice> invoices(InvoiceBatch invoiceBatch, boolean isTo) {

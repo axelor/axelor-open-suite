@@ -21,7 +21,6 @@ package com.axelor.apps.account.service;
 import com.axelor.apps.account.db.DepositSlip;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.base.AxelorException;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -33,7 +32,7 @@ public interface DepositSlipService {
    * Get payments into deposit slip.
    *
    * @param depositSlip
-   * @throws AxelorException
+   * @return List of payment vouchers
    */
   List<PaymentVoucher> fetchPaymentVouchers(DepositSlip depositSlip);
 
@@ -41,9 +40,8 @@ public interface DepositSlipService {
    * Publish deposit slip.
    *
    * @param depositSlip
-   * @return
+   * @return today date
    * @throws AxelorException
-   * @throws IOException
    */
   LocalDate publish(DepositSlip depositSlip) throws AxelorException;
 
@@ -51,9 +49,7 @@ public interface DepositSlipService {
    * Validate deposit slip using value for collection account.
    *
    * @param depositSlip
-   * @return
    * @throws AxelorException
-   * @throws IOException
    */
   void validate(DepositSlip depositSlip) throws AxelorException;
 

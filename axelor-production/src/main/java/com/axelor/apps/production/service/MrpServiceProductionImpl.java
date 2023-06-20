@@ -506,7 +506,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
    * @param maturityDate
    * @param defaultBillOfMaterial
    * @param reorderQty
-   * @return
+   * @return maturity date
    * @throws AxelorException
    */
   protected LocalDate updateMaturityDate(
@@ -623,6 +623,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
    *
    * @param billOfMaterial
    * @param level
+   * @throws AxelorException
    */
   protected void assignProductLevel(BillOfMaterial billOfMaterial, int level)
       throws AxelorException {

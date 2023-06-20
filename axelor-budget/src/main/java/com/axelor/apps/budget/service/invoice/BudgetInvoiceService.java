@@ -35,6 +35,7 @@ public interface BudgetInvoiceService {
    *
    * @param invoice
    * @return String
+   * @throws AxelorException
    */
   public String computeBudgetDistribution(Invoice invoice) throws AxelorException;
 
@@ -75,7 +76,9 @@ public interface BudgetInvoiceService {
    * totals (realized with po, realized, to be committed, firm gap and available) as a without
    * purchase order line
    *
-   * @param budgetDistribution, invoice
+   * @param budgetDistribution
+   * @param invoice
+   * @param invoiceLine
    */
   public void updateLineWithPO(
       BudgetDistribution budgetDistribution, Invoice invoice, InvoiceLine invoiceLine);

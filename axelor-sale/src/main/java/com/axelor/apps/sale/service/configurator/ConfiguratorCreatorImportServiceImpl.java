@@ -214,6 +214,7 @@ public class ConfiguratorCreatorImportServiceImpl implements ConfiguratorCreator
    * @param creator
    * @param oldName
    * @param newName
+   * @throws AxelorException
    */
   protected void updateAttributeNameInFormulas(
       ConfiguratorCreator creator, String oldName, String newName) throws AxelorException {

@@ -28,6 +28,7 @@ public interface FindFixedAssetService {
    *
    * @param fixedAssetLine
    * @return fixedAsset : {@link FixedAsset}
+   * @throws AxelorException
    */
   FixedAsset getFixedAsset(FixedAssetLine fixedAssetLine) throws AxelorException;
 }

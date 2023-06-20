@@ -170,6 +170,7 @@ public class ReimbursementExportService {
    * Methode permettant de créer l'écriture de remboursement
    *
    * @param reimbursement Un objet d'export des prélèvements
+   * @param company
    * @throws AxelorException
    */
   public void createReimbursementMove(Reimbursement reimbursement, Company company)
@@ -317,6 +318,8 @@ public class ReimbursementExportService {
   /**
    * Checks if the partner can be reimbursed
    *
+   * @param partner
+   * @param company
    * @return true if partner can be reimbursed, false otherwise
    */
   public boolean canBeReimbursed(Partner partner, Company company) {
@@ -504,6 +507,11 @@ public class ReimbursementExportService {
   /**
    * *********************** Remboursement lors d'une facture fin de cycle
    * ********************************
+   *
+   * @param partner
+   * @param company
+   * @param moveLineList
+   * @throws AxelorException
    */
 
   /**

@@ -27,6 +27,7 @@ public interface TicketWorkflowService {
    * This method start a ticket by setting its status to on going status.
    *
    * @param ticket
+   * @throws AxelorException
    */
   void startTicket(Ticket ticket) throws AxelorException;
 
@@ -34,6 +35,7 @@ public interface TicketWorkflowService {
    * This method resolve a ticket by setting its status to resolved status.
    *
    * @param ticket
+   * @throws AxelorException
    */
   void resolveTicket(Ticket ticket) throws AxelorException;
 
@@ -41,6 +43,7 @@ public interface TicketWorkflowService {
    * This method close a ticket by setting its status to closed status.
    *
    * @param ticket
+   * @throws AxelorException
    */
   void closeTicket(Ticket ticket) throws AxelorException;
 
@@ -48,6 +51,7 @@ public interface TicketWorkflowService {
    * This method close a ticket by setting its status to open status.
    *
    * @param ticket
+   * @throws AxelorException
    */
   void openTicket(Ticket ticket) throws AxelorException;
 }

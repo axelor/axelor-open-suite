@@ -28,6 +28,7 @@ public interface StockLocationLineReservationService {
    * quantity in requesting stock move lines.
    *
    * @param stockLocationLine
+   * @throws AxelorException
    */
   void allocateAll(StockLocationLine stockLocationLine) throws AxelorException;
 

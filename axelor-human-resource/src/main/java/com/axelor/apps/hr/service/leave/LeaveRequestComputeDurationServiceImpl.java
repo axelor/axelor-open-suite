@@ -157,7 +157,7 @@ public class LeaveRequestComputeDurationServiceImpl implements LeaveRequestCompu
    * @param toDate
    * @param startOn
    * @param endOn
-   * @return
+   * @return duration in days
    * @throws AxelorException
    */
   protected BigDecimal computeDurationInDays(
@@ -233,7 +233,7 @@ public class LeaveRequestComputeDurationServiceImpl implements LeaveRequestCompu
    * @param employee
    * @param fromDateT
    * @param toDateT
-   * @return
+   * @return duration in hours
    * @throws AxelorException
    */
   protected BigDecimal computeDurationInHours(

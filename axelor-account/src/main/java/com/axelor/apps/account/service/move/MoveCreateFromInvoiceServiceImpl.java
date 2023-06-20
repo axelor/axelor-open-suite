@@ -111,7 +111,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
    * Create a Move from an Invoice
    *
    * @param invoice
-   * @return
+   * @return created move
    * @throws AxelorException
    */
   @Transactional(rollbackOn = {Exception.class})
@@ -223,7 +223,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
    * une O.D. de passage sur le bon compte
    *
    * @param invoice
-   * @return
+   * @return created move
    * @throws AxelorException
    */
   @Override
@@ -255,7 +255,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
    * le compte n'est pas le même : on créée une O.D. de passage sur le bon compte
    *
    * @param invoice
-   * @return
+   * @return created move
    * @throws AxelorException
    */
   @Override

@@ -52,7 +52,7 @@ public class ConfiguratorMetaJsonFieldServiceImpl implements ConfiguratorMetaJso
    *
    * @param formulas
    * @param jsonIndicators
-   * @return
+   * @return attrs map
    */
   protected Map<String, Map<String, Object>> generateAttrMap(
       List<? extends ConfiguratorFormula> formulas, JsonContext jsonIndicators) {
@@ -95,7 +95,7 @@ public class ConfiguratorMetaJsonFieldServiceImpl implements ConfiguratorMetaJso
    * form of <"id", model.id>
    *
    * @param model
-   * @return
+   * @return Map for id
    */
   protected Map<String, Object> modelToJson(Model model) {
     final Map<String, Object> manyToOneObject = new HashMap<>();
@@ -108,7 +108,7 @@ public class ConfiguratorMetaJsonFieldServiceImpl implements ConfiguratorMetaJso
    * <"id", model.id>
    *
    * @param map
-   * @return
+   * @return Map for id
    */
   protected Map<String, Object> objectMapToJson(Map<String, Object> map) {
 
@@ -137,7 +137,7 @@ public class ConfiguratorMetaJsonFieldServiceImpl implements ConfiguratorMetaJso
    * @param nameField
    * @param object
    * @param metaJsonField
-   * @return
+   * @return Map of nameField and mapped type
    */
   @SuppressWarnings("unchecked")
   protected Map.Entry<String, Object> adaptType(

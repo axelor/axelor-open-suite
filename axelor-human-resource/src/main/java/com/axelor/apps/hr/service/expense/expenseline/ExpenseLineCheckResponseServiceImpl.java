@@ -72,7 +72,7 @@ public class ExpenseLineCheckResponseServiceImpl implements ExpenseLineCheckResp
    * action-expense-line-validate-expenseDate
    *
    * @param expenseLine
-   * @return
+   * @return created check response line
    */
   protected CheckResponseLine checkExpenseDate(ExpenseLine expenseLine) {
     Expense expense = expenseLine.getExpense();
@@ -93,7 +93,7 @@ public class ExpenseLineCheckResponseServiceImpl implements ExpenseLineCheckResp
    * action-expense-line-validate-totalAmount
    *
    * @param expenseLine
-   * @return
+   * @return created check response line
    */
   protected CheckResponseLine checkTotalAmount(ExpenseLine expenseLine) {
     Product expenseProduct = expenseLine.getExpenseProduct();

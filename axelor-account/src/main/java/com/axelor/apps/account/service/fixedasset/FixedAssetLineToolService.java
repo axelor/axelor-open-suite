@@ -36,7 +36,6 @@ public interface FixedAssetLineToolService {
    *
    * @param fixedAsset
    * @return generated {@link LinkedHashMap}
-   * @throws NullPointerException if fixedAsset is null
    */
   LinkedHashMap<LocalDate, List<FixedAssetLine>> groupAndSortByDateFixedAssetLine(
       FixedAsset fixedAsset);

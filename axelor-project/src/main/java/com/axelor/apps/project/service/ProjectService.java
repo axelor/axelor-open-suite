@@ -41,7 +41,7 @@ public interface ProjectService {
    * Generate a project from a partner.
    *
    * @param partner
-   * @return
+   * @return Project
    */
   Project generateProject(Partner partner);
 

@@ -27,7 +27,6 @@ public interface MoveSimulateService {
    * Check if simulate conditions are met and set move to simulate status
    *
    * @param move
-   * @return
    * @throws AxelorException
    */
   void simulate(Move move) throws AxelorException;

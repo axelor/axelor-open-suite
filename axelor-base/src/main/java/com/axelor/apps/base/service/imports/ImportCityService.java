@@ -32,7 +32,9 @@ public interface ImportCityService {
    *
    * @param typeSelect
    * @param dataFile
-   * @return
+   * @return import city
+   * @throws AxelorException
+   * @throws IOException
    */
   public ImportHistory importCity(String typeSelect, MetaFile dataFile)
       throws AxelorException, IOException;

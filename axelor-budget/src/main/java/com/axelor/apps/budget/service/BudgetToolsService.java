@@ -40,6 +40,7 @@ public interface BudgetToolsService {
    *
    * @param company, user
    * @return boolean
+   * @throws AxelorException
    */
   boolean checkBudgetKeyAndRole(Company company, User user) throws AxelorException;
 

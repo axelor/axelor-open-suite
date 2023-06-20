@@ -37,12 +37,17 @@ public interface MoveCreateService {
    * Créer une écriture comptable à la date du jour impactant la compta.
    *
    * @param journal
-   * @param period
    * @param company
-   * @param invoice
+   * @param currency
    * @param partner
-   * @param isReject <code>true = écriture de rejet avec séquence spécifique</code>
-   * @return
+   * @param paymentMode
+   * @param fiscalPosition
+   * @param technicalOriginSelect
+   * @param functionalOriginSelect
+   * @param origin
+   * @param description
+   * @param companyBankDetails
+   * @return Move if created
    * @throws AxelorException
    */
   Move createMove(
@@ -84,9 +89,15 @@ public interface MoveCreateService {
    * @param currency
    * @param partner
    * @param date
+   * @param originDate
    * @param paymentMode
+   * @param fiscalPosition
    * @param technicalOriginSelect
-   * @return
+   * @param functionalOriginSelect
+   * @param origin
+   * @param description
+   * @param companyBankDetails
+   * @return Move if created
    * @throws AxelorException
    */
   Move createMove(
@@ -113,11 +124,19 @@ public interface MoveCreateService {
    * @param currency
    * @param partner
    * @param date
+   * @param originDate
    * @param paymentMode
+   * @param fiscalPosition
+   * @param bankDetails
    * @param technicalOriginSelect
+   * @param functionalOriginSelect
    * @param ignoreInDebtRecoveryOk
    * @param ignoreInAccountingOk
-   * @return
+   * @param autoYearClosureMove
+   * @param origin
+   * @param description
+   * @param companyBankDetails
+   * @return Move if created
    * @throws AxelorException
    */
   Move createMove(
@@ -144,13 +163,18 @@ public interface MoveCreateService {
    * Créer une écriture comptable de toute pièce spécifique à une saisie paiement.
    *
    * @param journal
-   * @param period
    * @param company
-   * @param invoice
+   * @param paymentVoucher
    * @param partner
-   * @param isReject <code>true = écriture de rejet avec séquence spécifique</code>
-   * @param agency L'agence dans laquelle s'effectue le paiement
-   * @return
+   * @param date
+   * @param paymentMode
+   * @param fiscalPosition
+   * @param technicalOriginSelect
+   * @param functionalOriginSelect
+   * @param origin
+   * @param description
+   * @param companyBankDetails
+   * @return Move if created
    * @throws AxelorException
    */
   Move createMoveWithPaymentVoucher(
@@ -177,10 +201,18 @@ public interface MoveCreateService {
    * @param partner
    * @param date
    * @param paymentMode
+   * @param fiscalPosition
    * @param technicalOriginSelect
+   * @param functionalOriginSelect
    * @param ignoreInDebtRecoveryOk
    * @param ignoreInAccountingOk
-   * @return
+   * @param autoYearClosureMove
+   * @param origin
+   * @param description
+   * @param invoice
+   * @param paymentVoucher
+   * @param companyBankDetails
+   * @return Move if created
    * @throws AxelorException
    */
   Move createMove(

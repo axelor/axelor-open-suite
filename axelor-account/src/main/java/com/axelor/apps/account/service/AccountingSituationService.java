@@ -42,7 +42,8 @@ public interface AccountingSituationService {
    *
    * @param partner
    * @param company
-   * @return
+   * @return CustomerAccount if found else null
+   * @throws AxelorException
    */
   Account getCustomerAccount(Partner partner, Company company) throws AxelorException;
 
@@ -51,7 +52,8 @@ public interface AccountingSituationService {
    *
    * @param partner
    * @param company
-   * @return
+   * @return SupplierAccount if found else null
+   * @throws AxelorException
    */
   Account getSupplierAccount(Partner partner, Company company) throws AxelorException;
 
@@ -60,7 +62,8 @@ public interface AccountingSituationService {
    *
    * @param partner
    * @param company
-   * @return
+   * @return EmployeeAccount if found else null
+   * @throws AxelorException
    */
   Account getEmployeeAccount(Partner partner, Company company) throws AxelorException;
 
@@ -69,7 +72,7 @@ public interface AccountingSituationService {
    *
    * @param company
    * @param partner
-   * @return
+   * @return CompanySalesBankDetails if found else null
    */
   @CallMethod
   BankDetails getCompanySalesBankDetails(Company company, Partner partner);
@@ -79,7 +82,8 @@ public interface AccountingSituationService {
    *
    * @param partner
    * @param company
-   * @return
+   * @return HoldBackCustomerAccount if found else null
+   * @throws AxelorException
    */
   Account getHoldBackCustomerAccount(Partner partner, Company company) throws AxelorException;
 
@@ -88,7 +92,8 @@ public interface AccountingSituationService {
    *
    * @param partner
    * @param company
-   * @return
+   * @return HoldBackSupplierAccount if found else null
+   * @throws AxelorException
    */
   Account getHoldBackSupplierAccount(Partner partner, Company company) throws AxelorException;
 
@@ -107,6 +112,7 @@ public interface AccountingSituationService {
    * type of invoice, and if holdback.
    *
    * @param invoice Invoice to fetch the partner account for
+   * @param isHoldback
    * @return null if the invoice does not contains enough information to determine the partner
    *     account.
    * @throws AxelorException

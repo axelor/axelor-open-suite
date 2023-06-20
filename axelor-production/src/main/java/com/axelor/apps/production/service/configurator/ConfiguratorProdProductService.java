@@ -31,7 +31,7 @@ public interface ConfiguratorProdProductService {
    *
    * @param confProdProcessLine
    * @param attributes
-   * @return
+   * @return generated prod product
    */
   ProdProduct generateProdProduct(ConfiguratorProdProduct confProdProduct, JsonContext attributes)
       throws AxelorException;

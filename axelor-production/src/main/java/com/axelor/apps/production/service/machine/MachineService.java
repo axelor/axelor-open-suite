@@ -32,7 +32,8 @@ public interface MachineService {
    * other operations order of the machine.
    *
    * @param machine
-   * @param duration
+   * @param startDateT
+   * @param endDateT
    * @param operationOrder
    * @return the closest available date
    * @throws AxelorException
@@ -49,7 +50,8 @@ public interface MachineService {
    * end at endDateT. It take into account the weekly planning, the days event planning.
    *
    * @param machine
-   * @param duration
+   * @param startDateT
+   * @param endDateT
    * @param operationOrder
    * @return the closest available date
    * @throws AxelorException

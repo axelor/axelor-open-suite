@@ -147,7 +147,6 @@ public class BatchImportData extends AbstractImportBatch {
    * Methods that created a tmp file if necessary. meaning if the file name imported is different
    * than the desired file name.
    *
-   * @param importConfiguration
    * @param importBatch
    * @param file
    * @return MetaFile

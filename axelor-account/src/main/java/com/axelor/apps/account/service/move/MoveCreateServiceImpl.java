@@ -86,8 +86,14 @@ public class MoveCreateServiceImpl implements MoveCreateService {
    * @param company
    * @param invoice
    * @param partner
-   * @param isReject <code>true = écriture de rejet avec séquence spécifique</code>
-   * @return
+   * @param paymentMode
+   * @param fiscalPosition
+   * @param technicalOriginSelect
+   * @param functionalOriginSelect
+   * @param origin
+   * @param description
+   * @param companyBankDetails
+   * @return created move
    * @throws AxelorException
    */
   @Override
@@ -165,10 +171,15 @@ public class MoveCreateServiceImpl implements MoveCreateService {
    * @param currency
    * @param partner
    * @param date
+   * @param originDate
    * @param paymentMode
    * @param fiscalPosition
    * @param technicalOriginSelect
-   * @return
+   * @param functionalOriginSelect
+   * @param origin
+   * @param description
+   * @param companyBankDetails
+   * @return created move
    * @throws AxelorException
    */
   @Override
@@ -215,12 +226,19 @@ public class MoveCreateServiceImpl implements MoveCreateService {
    * @param currency
    * @param partner
    * @param date
+   * @param originDate
    * @param paymentMode
    * @param fiscalPosition
+   * @param bankDetails
    * @param technicalOriginSelect
+   * @param functionalOriginSelect
    * @param ignoreInDebtRecoveryOk
    * @param ignoreInAccountingOk
-   * @return
+   * @param autoYearClosureMove
+   * @param origin
+   * @param description
+   * @param companyBankDetails
+   * @return created move
    * @throws AxelorException
    */
   @Override
@@ -316,13 +334,18 @@ public class MoveCreateServiceImpl implements MoveCreateService {
    * Créer une écriture comptable de toute pièce spécifique à une saisie paiement.
    *
    * @param journal
-   * @param period
    * @param company
-   * @param invoice
+   * @param paymentVoucher
    * @param partner
-   * @param isReject <code>true = écriture de rejet avec séquence spécifique</code>
-   * @param agency L'agence dans laquelle s'effectue le paiement
-   * @return
+   * @param date
+   * @param paymentMode
+   * @param fiscalPosition
+   * @param technicalOriginSelect
+   * @param functionalOriginSelect
+   * @param origin
+   * @param description
+   * @param companyBankDetails
+   * @return created move
    * @throws AxelorException
    */
   @Override

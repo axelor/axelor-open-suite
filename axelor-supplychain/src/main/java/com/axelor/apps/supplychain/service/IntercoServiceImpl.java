@@ -243,6 +243,7 @@ public class IntercoServiceImpl implements IntercoService {
    * @param saleOrderLine the sale order line needed to create the purchase order line
    * @param purchaseOrder the purchase order line belongs to this purchase order
    * @return the created purchase order line
+   * @throws AxelorException
    */
   protected PurchaseOrderLine createIntercoPurchaseLineFromSaleLine(
       SaleOrderLine saleOrderLine, PurchaseOrder purchaseOrder) throws AxelorException {
@@ -286,7 +287,7 @@ public class IntercoServiceImpl implements IntercoService {
   /**
    * @param purchaseOrderLine the purchase order line needed to create the sale order line
    * @param saleOrder the sale order line belongs to this purchase order
-   * @return the created purchase order line
+   * @return the created sale order line
    * @throws AxelorException
    */
   protected SaleOrderLine createIntercoSaleLineFromPurchaseLine(

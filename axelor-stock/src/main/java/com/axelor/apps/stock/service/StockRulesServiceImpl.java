@@ -174,7 +174,7 @@ public class StockRulesServiceImpl implements StockRulesService {
    *
    * @param stockLocation
    * @param product
-   * @return
+   * @return sum of all currentQty and all futureQty
    */
   @SuppressWarnings("unchecked")
   protected Pair<BigDecimal, BigDecimal>

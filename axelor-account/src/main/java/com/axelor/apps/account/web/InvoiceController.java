@@ -96,7 +96,6 @@ public class InvoiceController {
    *
    * @param request
    * @param response
-   * @return
    */
   public void compute(ActionRequest request, ActionResponse response) {
 
@@ -115,7 +114,7 @@ public class InvoiceController {
    *
    * @param request
    * @param response
-   * @return
+   * @throws AxelorException
    */
   public void validate(ActionRequest request, ActionResponse response) throws AxelorException {
 
@@ -703,7 +702,6 @@ public class InvoiceController {
    *
    * @param request
    * @param response
-   * @throws AxelorException
    */
   public void setDefaultMail(ActionRequest request, ActionResponse response) {
     Invoice invoice = request.getContext().asType(Invoice.class);

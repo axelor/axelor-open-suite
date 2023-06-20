@@ -76,14 +76,14 @@ public interface UserService {
   /**
    * Method that return the active team of the current connected user
    *
-   * @return Team the active team
+   * @return user active company logo
    */
   public MetaFile getUserActiveCompanyLogo();
 
   /**
    * Method that return company logo link
    *
-   * @return the logo Link
+   * @return the logo link
    */
   public String getUserActiveCompanyLogoLink();
 
@@ -121,7 +121,7 @@ public interface UserService {
   /**
    * Get user's active company address.
    *
-   * @return
+   * @return optional user's active company address
    */
   Optional<Address> getUserActiveCompanyAddress();
 
@@ -130,7 +130,7 @@ public interface UserService {
    *
    * @param user
    * @param values
-   * @return
+   * @return updated user
    * @throws ClassNotFoundException
    * @throws InstantiationException
    * @throws IllegalAccessException
@@ -149,6 +149,7 @@ public interface UserService {
    * @throws ClassNotFoundException
    * @throws IOException
    * @throws AxelorException
+   * @throws JSONException
    */
   void processChangedPassword(User user)
       throws AxelorException, ClassNotFoundException, IOException, JSONException;
@@ -157,21 +158,21 @@ public interface UserService {
    * Match password with configured pattern.
    *
    * @param password
-   * @return
+   * @return true if password is matched with pattern, else false
    */
   boolean matchPasswordPattern(CharSequence password);
 
   /**
    * Generate a random password.
    *
-   * @return
+   * @return random password
    */
   CharSequence generateRandomPassword();
 
   /**
    * Get password pattern description.
    *
-   * @return
+   * @return password pattern description
    */
   @CallMethod
   String getPasswordPatternDescription();
@@ -181,7 +182,7 @@ public interface UserService {
    *
    * @param partner
    * @param user
-   * @return
+   * @return updated partner
    */
   @Transactional
   public Partner setUserPartner(Partner partner, User user);

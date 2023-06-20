@@ -460,7 +460,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
    * <p>Un avoir est une facture "inversée". Tout le montant sont opposés à la facture originale.
    *
    * @param invoice
-   * @return
+   * @return refund invoice
    * @throws AxelorException
    */
   @Override

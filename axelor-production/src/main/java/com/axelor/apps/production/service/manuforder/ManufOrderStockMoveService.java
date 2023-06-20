@@ -99,6 +99,7 @@ public interface ManufOrderStockMoveService {
    * given manufacturing order.
    *
    * @param manufOrder
+   * @throws AxelorException
    */
   void partialFinish(ManufOrder manufOrder) throws AxelorException;
 
@@ -127,6 +128,9 @@ public interface ManufOrderStockMoveService {
    * @param stockMove
    * @param inOrOut can be {@link ManufOrderStockMoveService#PART_FINISH_IN} or {@link
    *     ManufOrderStockMoveService#PART_FINISH_OUT}
+   * @param fromStockLocation
+   * @param toStockLocation
+   * @throws AxelorException
    */
   void createNewStockMoveLines(
       ManufOrder manufOrder,
@@ -141,6 +145,8 @@ public interface ManufOrderStockMoveService {
    * @param diffProdProductList
    * @param stockMove
    * @param stockMoveLineType
+   * @param fromStockLocation
+   * @param toStockLocation
    * @throws AxelorException
    */
   void createNewStockMoveLines(
@@ -160,6 +166,7 @@ public interface ManufOrderStockMoveService {
    *
    * @param manufOrder
    * @param qtyToUpdate
+   * @throws AxelorException
    */
   void createNewConsumedStockMoveLineList(ManufOrder manufOrder, BigDecimal qtyToUpdate)
       throws AxelorException;
@@ -169,6 +176,7 @@ public interface ManufOrderStockMoveService {
    *
    * @param manufOrder
    * @param qtyToUpdate
+   * @throws AxelorException
    */
   void createNewProducedStockMoveLineList(ManufOrder manufOrder, BigDecimal qtyToUpdate)
       throws AxelorException;
@@ -179,7 +187,7 @@ public interface ManufOrderStockMoveService {
    * @param manufOrder
    * @param prodProduct
    * @param qtyToUpdate
-   * @return
+   * @return computed qty
    */
   BigDecimal getFractionQty(ManufOrder manufOrder, ProdProduct prodProduct, BigDecimal qtyToUpdate);
 

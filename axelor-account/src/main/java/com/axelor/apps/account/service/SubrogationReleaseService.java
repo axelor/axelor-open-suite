@@ -31,7 +31,7 @@ public interface SubrogationReleaseService {
    * Retrieve ventilated invoices from factorized customers.
    *
    * @param company
-   * @return
+   * @return List of invoices
    */
   List<Invoice> retrieveInvoices(Company company);
 
@@ -47,7 +47,7 @@ public interface SubrogationReleaseService {
    * Generate a CSV export.
    *
    * @param subrogationRelease
-   * @return
+   * @return export file path
    * @throws AxelorException
    * @throws IOException
    */
@@ -72,7 +72,7 @@ public interface SubrogationReleaseService {
    * Check if the all invoice of the subrogation release are completely cleared
    *
    * @param subrogationRelease
-   * @return
+   * @return true if all invoice of the subrogation release are completely cleared, else false
    */
   boolean isSubrogationReleaseCompletelyPaid(SubrogationRelease subrogationRelease);
 }

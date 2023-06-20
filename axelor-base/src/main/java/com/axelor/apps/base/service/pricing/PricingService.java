@@ -21,8 +21,6 @@ package com.axelor.apps.base.service.pricing;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Pricing;
-import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.ProductCategory;
 import com.axelor.db.Model;
 import java.util.List;
 import java.util.Optional;
@@ -34,9 +32,7 @@ public interface PricingService {
    * productCategory, modelName, previousPricing.
    *
    * @param company {@link Company}: can be null
-   * @param product {@link Product}: can be null
-   * @param productCategory {@link ProductCategory}: can be null
-   * @param modelName {@link String}: can be null or empty
+   * @param model {@link Model}: can be null or empty
    * @param pricing {@link Pricing}: can be null
    * @return a {@link Optional} of Pricing.
    */
@@ -49,9 +45,7 @@ public interface PricingService {
    * previousPricing.
    *
    * @param company {@link Company}: can be null
-   * @param product {@link Product}: can be null
-   * @param productCategory {@link ProductCategory}: can be null
-   * @param modelName {@link String}: can be null or empty
+   * @param model {@link Model}: can be null or empty
    * @param pricing {@link Pricing}: can be null
    * @return a {@link Optional} of Pricing.
    */

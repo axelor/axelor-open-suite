@@ -29,7 +29,7 @@ public interface TimesheetService {
    * Update {@link Timesheet#timeLoggingPreferenceSelect} and recompute all durations.
    *
    * @param timesheet a context timesheet
-   * @return the updated timesheet
+   * @throws AxelorException
    */
   void updateTimeLoggingPreference(Timesheet timesheet) throws AxelorException;
 
