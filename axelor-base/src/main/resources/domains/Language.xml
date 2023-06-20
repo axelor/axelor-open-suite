@@ -7,7 +7,7 @@
 
   <entity name="Language" cacheable="true">
 
-    <string name="name" title="Name" required="true"/>
+    <string name="name" title="Name" required="true" translatable="true"/>
     <string name="code" title="Code" required="true"/>
 
   </entity>

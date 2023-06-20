@@ -6,7 +6,7 @@
   <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="CancelReason">
-    <string name="name" namecolumn="true" required="true"/>
+    <string name="name" namecolumn="true" required="true" translatable="true"/>
     <boolean name="freeText" title="Free Text"/>
     <string name="applicationType" selection="base.cancel.reason.application.type.select"/>
   </entity>

@@ -7,7 +7,7 @@
 
   <entity name="Tax" cacheable="true">
 
-    <string name="name" title="Name" required="true"/>
+    <string name="name" title="Name" required="true" translatable="true"/>
     <string name="code" title="Code" required="true" unique="true"/>
     <many-to-one name="activeTaxLine" ref="com.axelor.apps.account.db.TaxLine"
       title="Tax active version"/>

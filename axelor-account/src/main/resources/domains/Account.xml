@@ -7,7 +7,7 @@
 
   <entity name="Account" cacheable="true">
 
-    <string name="name" title="Name" required="true"/>
+    <string name="name" title="Name" required="true" translatable="true"/>
     <string name="code" title="Code" required="true" equalsInclude="true"/>
     <many-to-one name="parentAccount" ref="Account" title="Parent Account"
       massUpdate="true"/>

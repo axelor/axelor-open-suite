@@ -9,7 +9,7 @@
     <string name="name" title="EmploymentContractType.name" required="true"/>
     <one-to-many name="employmentContractSubTypeList"
       ref="com.axelor.apps.hr.db.EmploymentContractSubType" title="Contract sub type"/>
-    <string name="description" title="EmploymentContractType.description"/>
+    <string name="description" title="EmploymentContractType.description" translatable="true"/>
     <boolean name="isNoLongerUsed" title="No longer used" default="false"/>
   </entity>
 

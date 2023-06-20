@@ -7,7 +7,7 @@
 
   <entity name="CompanyDepartment">
 
-    <string name="name" title="Name"/>
+    <string name="name" title="Name" translatable="true"/>
     <string name="code" title="Code"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company"/>
 

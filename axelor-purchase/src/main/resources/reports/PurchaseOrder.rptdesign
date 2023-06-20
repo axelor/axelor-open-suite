@@ -3883,8 +3883,31 @@ row._outer["first_name"]
                                 <text id="3684">
                                     <property name="fontSize">9pt</property>
                                     <property name="marginLeft">2pt</property>
+                                    <property name="dataSet">TranslateDS</property>
+                                    <list-property name="paramBindings">
+                                        <structure>
+                                            <property name="paramName">param_1</property>
+                                            <simple-property-list name="expression">
+                                                <value type="javascript">'value:'+row["countryName"]</value>
+                                            </simple-property-list>
+                                        </structure>
+                                    </list-property>
+                                    <list-property name="boundDataColumns">
+                                        <structure>
+                                            <property name="name">message_key</property>
+                                            <text-property name="displayName">message_key</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">translation</property>
+                                            <text-property name="displayName">translation</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                    </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>row["countryName"]</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"] != null ? row["translation"] : row._outer["countryName"]</VALUE-OF>]]></text-property>
                                 </text>
                                 <label id="3644">
                                     <property name="fontSize">1pt</property>
@@ -4078,8 +4101,31 @@ row["first_name"]
                                 <text id="4705">
                                     <property name="fontSize">9pt</property>
                                     <property name="marginLeft">2pt</property>
+                                    <property name="dataSet">TranslateDS</property>
+                                    <list-property name="paramBindings">
+                                        <structure>
+                                            <property name="paramName">param_1</property>
+                                            <simple-property-list name="expression">
+                                                <value type="javascript">'value:'+row["countryName"]</value>
+                                            </simple-property-list>
+                                        </structure>
+                                    </list-property>
+                                    <list-property name="boundDataColumns">
+                                        <structure>
+                                            <property name="name">message_key</property>
+                                            <text-property name="displayName">message_key</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">translation</property>
+                                            <text-property name="displayName">translation</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                    </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>row["countryName"]</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"] != null ? row["translation"] : row._outer["countryName"]</VALUE-OF>]]></text-property>
                                 </text>
                                 <label id="4706">
                                     <property name="fontSize">1pt</property>
@@ -4863,14 +4909,37 @@ else if (row["status_select"] == "5") { "PurchaseOrder.canceled" }</value>
                                             <text id="4546">
                                                 <property name="marginLeft">2pt</property>
                                                 <property name="display">inline</property>
+                                                <property name="dataSet">TranslateDS</property>
                                                 <list-property name="visibility">
                                                     <structure>
                                                         <property name="format">all</property>
                                                         <expression name="valueExpr" type="javascript">row["companyCountryName"] == null</expression>
                                                     </structure>
                                                 </list-property>
+                                                <list-property name="paramBindings">
+                                                    <structure>
+                                                        <property name="paramName">param_1</property>
+                                                        <simple-property-list name="expression">
+                                                            <value type="javascript">'value:'+row["companyCountryName"]</value>
+                                                        </simple-property-list>
+                                                    </structure>
+                                                </list-property>
+                                                <list-property name="boundDataColumns">
+                                                    <structure>
+                                                        <property name="name">message_key</property>
+                                                        <text-property name="displayName">message_key</text-property>
+                                                        <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                        <property name="dataType">string</property>
+                                                    </structure>
+                                                    <structure>
+                                                        <property name="name">translation</property>
+                                                        <text-property name="displayName">translation</text-property>
+                                                        <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                        <property name="dataType">string</property>
+                                                    </structure>
+                                                </list-property>
                                                 <property name="contentType">html</property>
-                                                <text-property name="content"><![CDATA[<VALUE-OF>row["companyCountryName"]</VALUE-OF>]]></text-property>
+                                                <text-property name="content"><![CDATA[<VALUE-OF>row["translation"] != null ? row["translation"] : row._outer["companyCountryName"]</VALUE-OF>]]></text-property>
                                             </text>
                                         </cell>
                                     </row>
@@ -4965,14 +5034,37 @@ else if (row["status_select"] == "5") { "PurchaseOrder.canceled" }</value>
                                             <text id="4566">
                                                 <property name="marginLeft">2pt</property>
                                                 <property name="display">inline</property>
+                                                <property name="dataSet">TranslateDS</property>
                                                 <list-property name="visibility">
                                                     <structure>
                                                         <property name="format">all</property>
                                                         <expression name="valueExpr" type="javascript">row["stockCountryName"] == null</expression>
                                                     </structure>
                                                 </list-property>
+                                                <list-property name="paramBindings">
+                                                    <structure>
+                                                        <property name="paramName">param_1</property>
+                                                        <simple-property-list name="expression">
+                                                            <value type="javascript">'value:'+row["stockCountryName"]</value>
+                                                        </simple-property-list>
+                                                    </structure>
+                                                </list-property>
+                                                <list-property name="boundDataColumns">
+                                                    <structure>
+                                                        <property name="name">message_key</property>
+                                                        <text-property name="displayName">message_key</text-property>
+                                                        <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                        <property name="dataType">string</property>
+                                                    </structure>
+                                                    <structure>
+                                                        <property name="name">translation</property>
+                                                        <text-property name="displayName">translation</text-property>
+                                                        <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                        <property name="dataType">string</property>
+                                                    </structure>
+                                                </list-property>
                                                 <property name="contentType">html</property>
-                                                <text-property name="content"><![CDATA[<VALUE-OF>row["stockCountryName"]</VALUE-OF>]]></text-property>
+                                                <text-property name="content"><![CDATA[<VALUE-OF>row["translation"] != null ? row["translation"] : row._outer["stockCountryName"]</VALUE-OF>]]></text-property>
                                             </text>
                                         </cell>
                                     </row>
@@ -7491,7 +7583,7 @@ else if (row["status_select"] == "5") { "PurchaseOrder.canceled" }</value>
                                                 <expression name="expression" type="javascript">dataSetRow["notes"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
-                                           <structure>
+                                            <structure>
                                                 <property name="name">tableFontSize</property>
                                                 <text-property name="displayName">tableFontSize</text-property>
                                                 <expression name="expression" type="javascript">dataSetRow["tableFontSize"]</expression>

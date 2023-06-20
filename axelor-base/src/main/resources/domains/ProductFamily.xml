@@ -8,7 +8,7 @@
   <entity name="ProductFamily" cacheable="true">
 
     <string name="code" title="Family Code" required="true" unique="true" index="true"/>
-    <string name="name" title="Family Name" required="true"/>
+    <string name="name" title="Family Name" required="true" translatable="true"/>
     <one-to-many name="accountManagementList"
       ref="com.axelor.apps.account.db.AccountManagement" mappedBy="productFamily"
       title="Accounts Configurations"/>

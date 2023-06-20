@@ -7,7 +7,7 @@
 
   <entity name="WorkCenter">
 
-    <string name="name" title="Label" required="true"/>
+    <string name="name" title="Label" required="true" translatable="true"/>
     <string name="code" title="Code"/>
     <many-to-one name="machine" ref="com.axelor.apps.production.db.Machine"
       title="Machine"/>

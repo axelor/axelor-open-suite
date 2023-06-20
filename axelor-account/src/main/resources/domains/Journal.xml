@@ -8,7 +8,7 @@
   <entity name="Journal" cacheable="true">
 
     <string name="code" title="Code"/>
-    <string name="name" title="Name" required="true"/>
+    <string name="name" title="Name" required="true" translatable="true"/>
     <many-to-one name="journalType" ref="JournalType" title="Journal Type"
       massUpdate="true" required="true"/>
     <string name="exportCode" title="Export code" massUpdate="true"/>

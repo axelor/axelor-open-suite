@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
     <simple-property-list name="includeResource">
         <value>translation_fr_FR</value>
         <value>translation_en_US</value>
@@ -1381,9 +1381,25 @@ WHERE message_key = ? AND language = ?]]></xml-property>
                     </text>
                 </cell>
             </row>
-            <row id="183">
-                <cell id="184">
+            <row id="4059">
+                <property name="borderBottomStyle">none</property>
+                <property name="borderLeftStyle">none</property>
+                <property name="borderRightStyle">none</property>
+                <property name="borderTopStyle">none</property>
+                <property name="height">39px</property>
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">all</property>
+                        <expression name="valueExpr" type="javascript">row["type"] != 'com.axelor.apps.stock.service.ABCAnalysisServiceStockImpl'</expression>
+                    </structure>
+                </list-property>
+                <cell id="4060">
+                    <property name="borderBottomStyle">none</property>
+                    <property name="borderLeftStyle">none</property>
+                    <property name="borderRightStyle">none</property>
+                    <property name="borderTopStyle">none</property>
                     <text id="188">
+                        <property name="display">inline</property>
                         <property name="dataSet">TranslationDS</property>
                         <list-property name="visibility">
                             <structure>
@@ -1414,8 +1430,47 @@ WHERE message_key = ? AND language = ?]]></xml-property>
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<b><VALUE-OF>row["translation"]||row["message_key"]</VALUE-OF></b> <VALUE-OF>row._outer["stock_location_name"]</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<b><VALUE-OF>row["translation"]||row["message_key"]</VALUE-OF></b>]]></text-property>
                     </text>
+                    <text id="4062">
+                        <property name="display">inline</property>
+                        <property name="dataSet">TranslationDS</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">pdf</property>
+                                <expression name="valueExpr" type="javascript">row._outer["type"] != "com.axelor.apps.stock.service.ABCAnalysisServiceStockImpl"</expression>
+                            </structure>
+                        </list-property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'value:'+row["stock_location_name"]</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">message_key</property>
+                                <text-property name="displayName">message_key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"] != null ? row["translation"] : row._outer["stock_location_name"]</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
+                <cell id="4061"/>
+            </row>
+            <row id="183">
+                <cell id="184">
                     <text id="186">
                         <property name="display">inline</property>
                         <property name="dataSet">TranslationDS</property>
@@ -3371,10 +3426,34 @@ WHERE message_key = ? AND language = ?]]></xml-property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
                         <property name="borderTopStyle">none</property>
-                        <data id="141">
+                        <text id="4063">
                             <property name="textAlign">left</property>
-                            <property name="resultSetColumn">category_name</property>
-                        </data>
+                            <property name="dataSet">TranslationDS</property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">'value:'+row["category_name"]</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">message_key</property>
+                                    <text-property name="displayName">message_key</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">translation</property>
+                                    <text-property name="displayName">translation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                            </list-property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>row["translation"] != null ? row["translation"] : row._outer["category_name"]</VALUE-OF>]]></text-property>
+                        </text>
                     </cell>
                     <cell id="4035">
                         <property name="borderBottomStyle">none</property>
