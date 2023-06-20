@@ -196,7 +196,7 @@ public class SaleOrderLineController {
       if (saleOrder != null && saleOrder.getCompany() != null) {
         query =
             Beans.get(SaleOrderLineBudgetService.class)
-                .getLineBudgetDomain(saleOrderLine, saleOrder);
+                .getLineBudgetDomain(saleOrderLine, saleOrder, false);
       }
 
       response.setAttr("line", "domain", query);
@@ -214,7 +214,8 @@ public class SaleOrderLineController {
 
       if (saleOrder != null && saleOrder.getCompany() != null) {
         query =
-            Beans.get(SaleOrderLineBudgetService.class).getBudgetDomain(saleOrderLine, saleOrder);
+            Beans.get(SaleOrderLineBudgetService.class)
+                .getLineBudgetDomain(saleOrderLine, saleOrder, true);
       }
 
       response.setAttr("budget", "domain", query);

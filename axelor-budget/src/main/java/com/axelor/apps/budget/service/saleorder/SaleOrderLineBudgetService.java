@@ -26,7 +26,5 @@ public interface SaleOrderLineBudgetService {
 
   String getSectionBudgetDomain(SaleOrderLine saleOrderLine, SaleOrder saleOrder);
 
-  String getLineBudgetDomain(SaleOrderLine saleOrderLine, SaleOrder saleOrder);
-
-  String getBudgetDomain(SaleOrderLine saleOrderLine, SaleOrder saleOrder);
+  String getLineBudgetDomain(SaleOrderLine saleOrderLine, SaleOrder saleOrder, boolean isBudget);
 }

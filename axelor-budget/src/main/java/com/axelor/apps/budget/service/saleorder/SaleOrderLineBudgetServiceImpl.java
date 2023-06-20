@@ -197,7 +197,7 @@ public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetServic
       query =
           query.concat(
               String.format(
-                  "AND self.parentBudgetLevel.company.id = %d", saleOrder.getCompany().getId()));
+                  " AND self.parentBudgetLevel.company.id = %d", saleOrder.getCompany().getId()));
     }
     return query;
   }
@@ -228,13 +228,14 @@ public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetServic
       query =
           query.concat(
               String.format(
-                  "AND self.parentBudgetLevel.company.id = %d", saleOrder.getCompany().getId()));
+                  " AND self.parentBudgetLevel.company.id = %d", saleOrder.getCompany().getId()));
     }
     return query;
   }
 
   @Override
-  public String getLineBudgetDomain(SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
+  public String getLineBudgetDomain(
+      SaleOrderLine saleOrderLine, SaleOrder saleOrder, boolean isBudget) {
 
     if (saleOrderLine == null || saleOrder == null || saleOrder.getCompany() == null) {
       return "self.id = 0";
@@ -242,44 +243,12 @@ public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetServic
 
     String query =
         String.format(
-            "self.budgetLevel IS NOT NULL AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect = %d AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.statusSelect = '%s'",
+            "self.budgetLevel.parentBudgetLevel.parentBudgetLevel IS NOT NULL AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect = %d AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.statusSelect = '%s'",
             BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_SALE,
             BudgetLevelRepository.BUDGET_LEVEL_STATUS_SELECT_VALID);
-    if (saleOrderLine.getBudget() != null) {
+    if (saleOrderLine.getBudget() != null && !isBudget) {
       query = query.concat(String.format(" AND self.id = %d", saleOrderLine.getBudget().getId()));
-    } else if (saleOrderLine.getSection() != null) {
-      query =
-          query.concat(
-              String.format(" AND self.budgetLevel.id = %d", saleOrderLine.getSection().getId()));
-    } else if (saleOrderLine.getGroupBudget() != null) {
-      query =
-          query.concat(
-              String.format(
-                  " AND self.budgetLevel.parentBudgetLevel.id = %d",
-                  saleOrderLine.getGroupBudget().getId()));
-    } else {
-      query =
-          query.concat(
-              String.format(
-                  "AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.company.id = %d",
-                  saleOrder.getCompany().getId()));
-    }
-    return query;
-  }
-
-  @Override
-  public String getBudgetDomain(SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
-
-    if (saleOrderLine == null || saleOrder == null || saleOrder.getCompany() == null) {
-      return "self.id = 0";
-    }
-
-    String query =
-        String.format(
-            "self.budgetLevel IS NOT NULL AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect = %d AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.statusSelect = '%s'",
-            BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_SALE,
-            BudgetLevelRepository.BUDGET_LEVEL_STATUS_SELECT_VALID);
-    if (saleOrderLine.getLine() != null) {
+    } else if (saleOrderLine.getLine() != null && isBudget) {
       query = query.concat(String.format(" AND self.id = %d", saleOrderLine.getLine().getId()));
     } else if (saleOrderLine.getSection() != null) {
       query =
@@ -295,7 +264,7 @@ public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetServic
       query =
           query.concat(
               String.format(
-                  "AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.company.id = %d",
+                  " AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.company.id = %d",
                   saleOrder.getCompany().getId()));
     }
     return query;
