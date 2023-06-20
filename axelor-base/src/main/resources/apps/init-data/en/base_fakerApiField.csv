@@ -29,5 +29,5 @@
 "","future","date","date.future","LocalDateTime","28"
 "","past","date","date.past","LocalDateTime","29"
 "","characters","lorem","lorem.characters","String","30"
-"","numberBetween","number","number.numberBetween","decimal","31"
+"","numberBetween","number","number.numberBetween","integer","31"
 "","nextInt","random","random.nextInt","integer","32"

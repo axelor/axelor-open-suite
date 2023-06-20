@@ -26,3 +26,8 @@
 "","sentence","lorem","lorem.sentence","String","25"
 "","word","lorem","lorem.word","String","26"
 "","department","commerce","commerce.department","String","27"
+"","future","date","date.future","LocalDateTime","28"
+"","past","date","date.past","LocalDateTime","29"
+"","characters","lorem","lorem.characters","String","30"
+"","numberBetween","number","number.numberBetween","integer","31"
+"","nextInt","random","random.nextInt","integer","32"
