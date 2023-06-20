@@ -19,6 +19,7 @@
 package com.axelor.apps.account.service.moveline;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
@@ -32,6 +33,7 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.TradingName;
 import com.axelor.utils.service.ListToolService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
@@ -157,21 +159,11 @@ public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyt
   }
 
   @Override
-  public MoveLine selectDefaultDistributionTemplate(MoveLine moveLine) throws AxelorException {
+  public MoveLine selectDefaultDistributionTemplate(MoveLine moveLine, Move move)
+      throws AxelorException {
     if (moveLine != null) {
-      Account account = moveLine.getAccount();
-      if (account != null
-          && account.getAnalyticDistributionAuthorized()
-          && account.getAnalyticDistributionTemplate() != null
-          && accountConfigService
-                  .getAccountConfig(account.getCompany())
-                  .getAnalyticDistributionTypeSelect()
-              == AccountConfigRepository.DISTRIBUTION_TYPE_PRODUCT) {
-        moveLine.setAnalyticDistributionTemplate(
-            moveLine.getAccount().getAnalyticDistributionTemplate());
-      } else {
-        moveLine.setAnalyticDistributionTemplate(null);
-      }
+      moveLine.setAnalyticDistributionTemplate(
+          getDistributionTemplate(moveLine, moveLine.getAccount(), move.getTradingName()));
     }
     List<AnalyticMoveLine> analyticMoveLineList = moveLine.getAnalyticMoveLineList();
     if (analyticMoveLineList != null) {
@@ -181,6 +173,28 @@ public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyt
     }
     moveLine = computeAnalyticDistribution(moveLine);
     return moveLine;
+  }
+
+  protected AnalyticDistributionTemplate getDistributionTemplate(
+      MoveLine moveLine, Account account, TradingName tradingName) throws AxelorException {
+    AnalyticDistributionTemplate analyticDistributionTemplate = null;
+    if (account != null && account.getAnalyticDistributionAuthorized()) {
+      if (account.getAnalyticDistributionTemplate() != null
+          && accountConfigService
+                  .getAccountConfig(account.getCompany())
+                  .getAnalyticDistributionTypeSelect()
+              == AccountConfigRepository.DISTRIBUTION_TYPE_PRODUCT) {
+        analyticDistributionTemplate = moveLine.getAccount().getAnalyticDistributionTemplate();
+      } else if (tradingName != null
+          && tradingName.getAnalyticDistributionTemplate() != null
+          && accountConfigService
+                  .getAccountConfig(account.getCompany())
+                  .getAnalyticDistributionTypeSelect()
+              == AccountConfigRepository.DISTRIBUTION_TYPE_TRADING_NAME) {
+        analyticDistributionTemplate = tradingName.getAnalyticDistributionTemplate();
+      }
+    }
+    return analyticDistributionTemplate;
   }
 
   @Override
