@@ -18,6 +18,8 @@
  */
 package com.axelor.apps.base.service;
 
+import static com.axelor.apps.base.db.repo.FakerApiFieldParametersRepository.*;
+
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.FakerApiField;
 import com.axelor.apps.base.db.FakerApiFieldParameters;
@@ -27,9 +29,11 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.i18n.I18n;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
@@ -37,6 +41,8 @@ import net.datafaker.Faker;
 import org.apache.commons.lang3.ClassUtils;
 
 public class FakerServiceImpl implements FakerService {
+
+  public static final String DATE_PATTERN = "yyyy-MM-dd";
 
   @Override
   public Object generateFakeData(FakerApiField fakerApiField) throws AxelorException {
@@ -49,11 +55,13 @@ public class FakerServiceImpl implements FakerService {
 
     } catch (NoSuchMethodException e) {
       throw new AxelorException(
+          e,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(BaseExceptionMessage.FAKER_CLASS_DOES_NOT_EXIST),
           fakerApiField.getClassName());
     } catch (IllegalAccessException | InvocationTargetException e) {
       throw new AxelorException(
+          e,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(BaseExceptionMessage.FAKER_METHOD_ERROR),
           fakerApiField.getClassName());
@@ -75,16 +83,19 @@ public class FakerServiceImpl implements FakerService {
 
     } catch (NoSuchMethodException e) {
       throw new AxelorException(
+          e,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(BaseExceptionMessage.FAKER_METHOD_DOES_NOT_EXIST),
           fakerApiField.getMethodName());
     } catch (IllegalAccessException | InvocationTargetException e) {
       throw new AxelorException(
+          e,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(BaseExceptionMessage.FAKER_METHOD_ERROR),
           fakerApiField.getMethodName());
     } catch (ClassNotFoundException | ParseException e) {
       throw new AxelorException(
+          e,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(BaseExceptionMessage.FAKER_METHOD_PARAMS_ERROR),
           fakerApiField.getMethodName());
@@ -163,20 +174,23 @@ public class FakerServiceImpl implements FakerService {
    */
   protected Object convertValueToType(FakerApiFieldParameters fieldParameters)
       throws ParseException, IllegalArgumentException {
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat(DATE_PATTERN);
     switch (fieldParameters.getParamType()) {
-      case "int":
+      case FAKER_API_FIELD_PARAM_TYPE_INT:
         return Integer.parseInt(fieldParameters.getParamValue());
-      case "double":
+      case FAKER_API_FIELD_PARAM_TYPE_DOUBLE:
         return Double.parseDouble(fieldParameters.getParamValue());
-      case "long":
+      case FAKER_API_FIELD_PARAM_TYPE_LONG:
         return Long.parseLong(fieldParameters.getParamValue());
-      case "boolean":
+      case FAKER_API_FIELD_PARAM_TYPE_BOOLEAN:
         return Boolean.parseBoolean(fieldParameters.getParamValue());
-      case "java.util.concurrent.TimeUnit":
+      case FAKER_API_FIELD_PARAM_TYPE_TIMEUNIT:
         return TimeUnit.valueOf(fieldParameters.getParamValue());
-      case "java.util.Date":
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");
+      case FAKER_API_FIELD_PARAM_TYPE_DATE:
         return simpleDateFormat.parse(fieldParameters.getParamValue());
+      case FAKER_API_FIELD_PARAM_TYPE_TIMESTAMP:
+        Date parsedDate = simpleDateFormat.parse(fieldParameters.getParamValue());
+        return new Timestamp(parsedDate.getTime());
       default:
         return fieldParameters.getParamValue();
     }
@@ -232,14 +246,17 @@ public class FakerServiceImpl implements FakerService {
 
     } catch (InvocationTargetException | IllegalAccessException e) {
       throw new AxelorException(
+          e,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(BaseExceptionMessage.FAKER_METHOD_CONFIGURATION_ERROR));
     } catch (ClassNotFoundException | NoSuchMethodException e) {
       throw new AxelorException(
+          e,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(BaseExceptionMessage.FAKER_METHOD_PARAMETERS_CONFIGURATION_ERROR));
     } catch (ParseException | IllegalArgumentException e) {
       throw new AxelorException(
+          e,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(BaseExceptionMessage.FAKER_METHOD_PARAMETERS_VALUE_ERROR));
     }
