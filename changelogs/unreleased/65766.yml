@@ -1,0 +1,3 @@
+---
+title: "[axelor-account] - fix if allowMultiInvoiceTerms is null, information on Invoice Term are displayed on invoice BIRT"
+type: fix
