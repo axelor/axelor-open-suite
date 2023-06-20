@@ -13,6 +13,7 @@ import com.axelor.apps.account.service.moveline.MoveLineGroupService;
 import com.axelor.apps.account.service.moveline.MoveLineRecordService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -366,7 +367,7 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
   public Map<String, Map<String, Object>> getTemporaryMoveNumberOnChangeAttrsMap(Move move) {
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
-    if (move.getMoveLineMassEntryList() != null && move.getMoveLineMassEntryList().size() != 0) {
+    if (ObjectUtils.notEmpty(move.getMoveLineMassEntryList())) {
       moveLineMassEntryAttrsService.addInputActionReadonly(false, attrsMap);
       moveLineMassEntryAttrsService.addTemporaryMoveNumberFocus(attrsMap);
     }
