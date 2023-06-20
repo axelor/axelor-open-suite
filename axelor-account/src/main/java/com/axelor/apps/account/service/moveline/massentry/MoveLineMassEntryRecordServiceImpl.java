@@ -6,9 +6,11 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.MoveLineMassEntry;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
+import com.axelor.apps.account.db.repo.MoveLineMassEntryRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.move.MoveLoadDefaultConfigService;
 import com.axelor.apps.account.service.move.massentry.MassEntryMoveCreateService;
+import com.axelor.apps.account.service.move.massentry.MassEntryService;
 import com.axelor.apps.account.service.moveline.MoveLineRecordService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.account.util.TaxAccountToolService;
@@ -29,6 +31,7 @@ public class MoveLineMassEntryRecordServiceImpl implements MoveLineMassEntryReco
   protected MoveLoadDefaultConfigService moveLoadDefaultConfigService;
   protected MassEntryMoveCreateService massEntryMoveCreateService;
   protected MoveLineTaxService moveLineTaxService;
+  protected MassEntryService massEntryService;
 
   @Inject
   public MoveLineMassEntryRecordServiceImpl(
@@ -37,13 +40,15 @@ public class MoveLineMassEntryRecordServiceImpl implements MoveLineMassEntryReco
       TaxAccountToolService taxAccountToolService,
       MoveLoadDefaultConfigService moveLoadDefaultConfigService,
       MassEntryMoveCreateService massEntryMoveCreateService,
-      MoveLineTaxService moveLineTaxService) {
+      MoveLineTaxService moveLineTaxService,
+      MassEntryService massEntryService) {
     this.moveLineMassEntryService = moveLineMassEntryService;
     this.moveLineRecordService = moveLineRecordService;
     this.taxAccountToolService = taxAccountToolService;
     this.moveLoadDefaultConfigService = moveLoadDefaultConfigService;
     this.massEntryMoveCreateService = massEntryMoveCreateService;
     this.moveLineTaxService = moveLineTaxService;
+    this.massEntryService = massEntryService;
   }
 
   @Override
@@ -222,5 +227,37 @@ public class MoveLineMassEntryRecordServiceImpl implements MoveLineMassEntryReco
   public void setNextTemporaryMoveNumber(MoveLineMassEntry moveLine, Move move) {
     moveLine.setTemporaryMoveNumber(
         massEntryMoveCreateService.getMaxTemporaryMoveNumber(move.getMoveLineMassEntryList()) + 1);
+  }
+
+  @Override
+  public void setPartner(MoveLineMassEntry moveLine, Move move) throws AxelorException {
+    if (moveLine.getPartner() == null) {
+      this.resetPartner(moveLine, null);
+    } else {
+      if (move != null && move.getJournal() != null) {
+        int journalTechnicalTypeSelect =
+            move.getJournal().getJournalType().getTechnicalTypeSelect();
+        this.setMovePaymentMode(moveLine, journalTechnicalTypeSelect);
+        move.setPartner(moveLine.getPartner());
+        this.setMovePaymentCondition(moveLine, journalTechnicalTypeSelect);
+        this.loadAccountInformation(move, moveLine);
+        move.setPartner(null);
+        this.setVatSystemSelect(moveLine, move);
+      }
+      this.setMovePartnerBankDetails(moveLine);
+      this.setCurrencyCode(moveLine);
+    }
+  }
+
+  @Override
+  public MoveLineMassEntry setInputAction(MoveLineMassEntry moveLine, Move move) {
+    if (moveLine.getInputAction() == MoveLineMassEntryRepository.MASS_ENTRY_INPUT_ACTION_MOVE) {
+      moveLine = new MoveLineMassEntry();
+      massEntryService.resetMoveLineMassEntry(moveLine);
+      this.setNextTemporaryMoveNumber(moveLine, move);
+
+      moveLine.setCounter(1);
+    }
+    return moveLine;
   }
 }

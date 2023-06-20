@@ -277,23 +277,7 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
       throws AxelorException {
     Map<String, Object> valuesMap = new HashMap<>();
 
-    if (moveLine.getPartner() == null) {
-      moveLineMassEntryRecordService.resetPartner(moveLine, null);
-    } else {
-      if (move != null && move.getJournal() != null) {
-        int journalTechnicalTypeSelect =
-            move.getJournal().getJournalType().getTechnicalTypeSelect();
-        moveLineMassEntryRecordService.setMovePaymentMode(moveLine, journalTechnicalTypeSelect);
-        move.setPartner(moveLine.getPartner());
-        moveLineMassEntryRecordService.setMovePaymentCondition(
-            moveLine, journalTechnicalTypeSelect);
-        moveLineMassEntryRecordService.loadAccountInformation(move, moveLine);
-        move.setPartner(null);
-        moveLineMassEntryRecordService.setVatSystemSelect(moveLine, move);
-      }
-      moveLineMassEntryRecordService.setMovePartnerBankDetails(moveLine);
-      moveLineMassEntryRecordService.setCurrencyCode(moveLine);
-    }
+    moveLineMassEntryRecordService.setPartner(moveLine, move);
 
     if (move != null) {
       moveLineMassEntryRecordService.setMovePfpValidatorUser(moveLine, move.getCompany());
@@ -331,14 +315,8 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
       MoveLineMassEntry moveLine, Move move) {
     Map<String, Object> valuesMap = new HashMap<>();
 
-    if (moveLine.getInputAction() == MoveLineMassEntryRepository.MASS_ENTRY_INPUT_ACTION_MOVE) {
-      moveLine = new MoveLineMassEntry();
-      massEntryService.resetMoveLineMassEntry(moveLine);
-      moveLineMassEntryRecordService.setNextTemporaryMoveNumber(moveLine, move);
-      moveLine.setCounter(1);
-
-      valuesMap = this.setAllMoveLineValuesMap(moveLine);
-    }
+    moveLine = moveLineMassEntryRecordService.setInputAction(moveLine, move);
+    this.setAllMoveLineValuesMap(moveLine, valuesMap);
 
     return valuesMap;
   }
@@ -357,10 +335,13 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
   @Override
   public Map<String, Object> getTemporaryMoveNumberOnChangeValuesMap(
       MoveLineMassEntry moveLine, Move move) {
+    Map<String, Object> valuesMap = new HashMap<>();
+
     massEntryService.getFirstMoveLineMassEntryInformations(
         move.getMoveLineMassEntryList(), moveLine);
 
-    return this.setAllMoveLineValuesMap(moveLine);
+    this.setAllMoveLineValuesMap(moveLine, valuesMap);
+    return valuesMap;
   }
 
   @Override
@@ -375,9 +356,8 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
     return attrsMap;
   }
 
-  public Map<String, Object> setAllMoveLineValuesMap(MoveLineMassEntry moveLine) {
-    Map<String, Object> valuesMap = new HashMap<>();
-
+  protected void setAllMoveLineValuesMap(
+      MoveLineMassEntry moveLine, Map<String, Object> valuesMap) {
     valuesMap.put("temporaryMoveNumber", moveLine.getTemporaryMoveNumber());
     valuesMap.put("counter", moveLine.getCounter());
     valuesMap.put("date", moveLine.getDate());
@@ -413,7 +393,5 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
     valuesMap.put("axis5AnalyticAccount", moveLine.getAxis5AnalyticAccount());
     valuesMap.put("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
     valuesMap.put("inputAction", moveLine.getInputAction());
-
-    return valuesMap;
   }
 }

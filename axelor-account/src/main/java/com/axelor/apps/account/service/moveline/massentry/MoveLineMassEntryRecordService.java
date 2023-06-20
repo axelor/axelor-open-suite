@@ -38,4 +38,8 @@ public interface MoveLineMassEntryRecordService {
   void setMoveStatusSelect(List<MoveLineMassEntry> massEntryLines, Integer newStatusSelect);
 
   void setNextTemporaryMoveNumber(MoveLineMassEntry moveLine, Move move);
+
+  void setPartner(MoveLineMassEntry moveLine, Move move) throws AxelorException;
+
+  MoveLineMassEntry setInputAction(MoveLineMassEntry moveLine, Move move);
 }
