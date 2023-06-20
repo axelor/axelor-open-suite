@@ -15,7 +15,7 @@
       <hilite if="$contains(fieldsErrorList,'date:'+date.toString())" background="danger"/>
     </field>
     <field name="originDate"
-      onChange="action-move-line-mass-entry-method-origin-date-onchange,action-move-line-mass-entry-attrs-set-cut-off-dates">
+      onChange="action-move-line-mass-entry-group-on-change-origin-date">
       <hilite if="$contains(fieldsErrorList,'originDate:'+originDate.toString())"
         background="danger"/>
     </field>
@@ -162,6 +162,11 @@
   <action-group name="action-move-line-mass-entry-group-on-change-payment-mode">
     <action name="action-move-line-mass-entry-attrs-set-partner-bank-details-readonly"/>
     <action name="action-move-line-mass-entry-record-set-is-edited"/>
+  </action-group>
+
+  <action-group name="action-move-line-mass-entry-group-on-change-origin-date">
+    <action name="action-move-line-mass-entry-method-origin-date-onchange"/>
+    <action name="action-move-line-mass-entry-attrs-set-cut-off-dates"/>
   </action-group>
 
   <!-- Action record -->
