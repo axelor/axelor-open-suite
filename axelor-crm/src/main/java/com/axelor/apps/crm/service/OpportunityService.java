@@ -32,7 +32,7 @@ public interface OpportunityService {
 
   public void setSequence(Opportunity opportunity) throws AxelorException;
 
-  public OpportunityStatus getDefaultOpportunityStatus();
+  public OpportunityStatus getDefaultOpportunityStatus() throws AxelorException;
 
   void setOpportunityStatusStagedClosedWon(Opportunity opportunity) throws AxelorException;
 
