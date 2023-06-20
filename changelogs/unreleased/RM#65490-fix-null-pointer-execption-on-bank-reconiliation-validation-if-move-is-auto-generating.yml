@@ -1,0 +1,3 @@
+---
+title: "BANK RECONCILIATION : corrected error on validation if auto move generation had account and journal missing in header."
+type: fix
