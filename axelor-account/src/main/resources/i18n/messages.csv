@@ -3149,6 +3149,7 @@
 "The code defined here is already used by another record. Code must be unique either by company or if shared. Please modify it accordingly.",,,
 "The company account configuration customer sales journal is required.",,,
 "The company is required and must be the same for all invoices",,,
+"The compensation process is not available when using this accounting method",,,
 "The configuration to retrieve the account on the payment mode is missing:",,,
 "The configured distribution is incorrect, the sum of percentages for at least an axis is different than 100%",,,
 "The currency is missing on the account move %s",,,
