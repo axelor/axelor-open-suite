@@ -13,7 +13,6 @@ import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.common.ObjectUtils;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,10 +21,13 @@ import org.apache.commons.lang3.ArrayUtils;
 public class MoveLineMassEntryAttrsServiceImpl implements MoveLineMassEntryAttrsService {
 
   protected AppAccountService appAccountService;
+  protected InvoiceTermService invoiceTermService;
 
   @Inject
-  public MoveLineMassEntryAttrsServiceImpl(AppAccountService appAccountService) {
+  public MoveLineMassEntryAttrsServiceImpl(
+      AppAccountService appAccountService, InvoiceTermService invoiceTermService) {
     this.appAccountService = appAccountService;
+    this.invoiceTermService = invoiceTermService;
   }
 
   protected void addAttr(
@@ -180,7 +182,7 @@ public class MoveLineMassEntryAttrsServiceImpl implements MoveLineMassEntryAttrs
     this.addAttr(
         "movePfpValidatorUser",
         "domain",
-        Beans.get(InvoiceTermService.class).getPfpValidatorUserDomain(partner, company),
+        invoiceTermService.getPfpValidatorUserDomain(partner, company),
         attrsMap);
   }
 
