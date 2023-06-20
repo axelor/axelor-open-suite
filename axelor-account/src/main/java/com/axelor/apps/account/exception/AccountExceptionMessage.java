@@ -100,7 +100,7 @@ public final class AccountExceptionMessage {
   public static final String NO_MOVE_TO_REMOVE_OR_ARCHIVE = /*$$(*/
       "Please select 'Draft' or 'Accounted' or 'Canceled' moves" /*)*/;
   public static final String MOVE_ARCHIVE_OR_REMOVE_OK = /*$$(*/
-      "Selected move(s) has/have been removed successfully" /*)*/;
+      "Selected move(s) successfully removed" /*)*/;
   public static final String MOVE_ARCHIVE_OR_REMOVE_NOT_OK = /*$$(*/
       "Error in move deleting or archiving, please check the log" /*)*/;
   public static final String MOVE_ARCHIVE_NOT_OK_BECAUSE_OF_LINK_WITH = /*$$(*/
@@ -861,6 +861,8 @@ public final class AccountExceptionMessage {
   public static final String INVOICE_MULTI_CURRENCY_FINANCIAL_DISCOUNT_PARTNER = /*$$(*/
       "Please be aware that the selected %s offers financial discounts but the system does not support at the moment financial discount on invoices/refunds in a currency different from the company currency." /*)*/;
 
+  public static final String INVOICE_PFP_VALIDATOR_USER_MISSING = /*$$(*/
+      "At least one pfp validator is missing, do you wish to continue ?" /*)*/;
   /** Invoice line generator */
   public static final String INVOICE_LINE_GENERATOR_1 = /*$$(*/
       "You must select a currency for partner %s (%s)" /*)*/;
@@ -1094,9 +1096,6 @@ public final class AccountExceptionMessage {
   public static final String MOVE_MISSING_CUT_OFF_DATE = /*$$(*/
       "Please enter a Cut off start and end date for the move lines that have an account Cut off management" /*)*/;
 
-  /** Budget service */
-  public static final String BUDGET_1 = /*$$(*/ "Too much iterations." /*)*/;
-
   public static final String EMPLOYEE_PARTNER = /*$$(*/
       "You must create a contact for employee %s" /*)*/;
 
@@ -1243,6 +1242,9 @@ public final class AccountExceptionMessage {
   public static final String MOVE_CHECK_DESCRIPTION = /*$$(*/
       "The move field description is empty, do you wish to continue ?" /*)*/;
 
+  public static final String MOVE_CHECK_ACCOUNTING = /*$$(*/
+      "By clicking on this button, move status will be updated to Accounted. Please be aware that accounting a move brings irrevocable integration of the move in its moves book. Do you wish to continue ?" /*)*/;
+
   public static final String DATE_NOT_IN_PERIOD_MOVE = /*$$(*/
       "The date input on the move line of %s %s on account %s is not belonging to the accounting period defined on the move." /*)*/;
 
@@ -1329,7 +1331,7 @@ public final class AccountExceptionMessage {
       "Tax lines can't be computed due to missing value in the field vat system configuration for the company %s in the accounting situation panel of the partner %s." /*)*/;
 
   public static final String COMPANY_PARTNER_NOT_FOUND = /*$$(*/
-      "Tax lines can't be computed due to missing value in partner field on the company %s configuration." /*)*/;
+      "Please create a partner for the company %s." /*)*/;
 
   public static final String COMPANY_PARTNER_ACCOUNTING_SITUATION_NOT_FOUND = /*$$(*/
       "Tax lines can't be computed due to missing configuration line for the company %s in the accounting situation panel of the partner %s (company own vat system option)." /*)*/;
@@ -1595,6 +1597,9 @@ public final class AccountExceptionMessage {
   public static final String ANALYTIC_DISTRIBUTION_TEMPLATE_CONTAINS_NOT_ALLOWED_ACCOUNTS = /*$$(*/
       "The selected Analytic Distribution template contains Analytic Accounts which are not allowed on this account. Please select an appropriate template or modify the analytic coherence rule for this account." /*)*/;
 
+  public static final String MOVE_INVOICE_DESCRIPTION_REQUIRED = /*$$(*/
+      "Description is required in moves for company %s but description of moves that are being generated will be empty. Please make sure a journal is set and fill a default description or enable document number to be used as such." /*)*/;
+
   /** Mass entry move control message */
   public static final String MASS_ENTRY_MOVE_IDENTIFICATION_MESSAGE = /*$$(*/
       "Errors in move : %s" /*)*/;
@@ -1615,4 +1620,17 @@ public final class AccountExceptionMessage {
 
   public static final String MOVE_TAX_NOT_EQUALS = /*$$(*/
       "Sum of tax amounts in charge and income lines is not the same as sum of tax lines." /*)*/;
+
+  public static final String PAYMENT_CONDITION_CONFIGURATION_ERROR = /*$$(*/
+      "The payment condition %s is not correctly configured." /*)*/;
+
+  public static final String JOURNAL_TYPE_MISSING_TECHNICAL_TYPE = /*$$(*/
+      "A technical type is required on the journal type %s." /*)*/;
+
+  public static final String
+      IMMO_FIXED_ASSET_DISPOSAL_COMPANY_ACCOUNT_CONFIG_CUSTOMER_SALES_JOURNAL_EMPTY = /*$$(*/
+          "The company account configuration customer sales journal is required." /*)*/;
+
+  public static final String REVERSE_CHARGE_TAX_MISSING_ON_FISCAL_POSITION = /*$$(*/
+      "A reverse charge tax is required on the fiscal position %s (From tax : %s - To tax : %s)." /*)*/;
 }

@@ -89,7 +89,6 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
   protected AppSupplychainService appSupplychainService;
   protected AccountConfigService accountConfigService;
   protected InvoiceLineRepository invoiceLineRepository;
-  protected SaleInvoicingStateService saleInvoicingStateService;
 
   @Inject
   public SaleOrderLineServiceSupplyChainImpl(
@@ -108,8 +107,7 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
       PricingService pricingService,
       TaxService taxService,
       SaleOrderMarginService saleOrderMarginService,
-      InvoiceLineRepository invoiceLineRepository,
-      SaleInvoicingStateService saleInvoicingStateService) {
+      InvoiceLineRepository invoiceLineRepository) {
     super(
         currencyService,
         priceListService,
@@ -127,7 +125,6 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
     this.appSupplychainService = appSupplychainService;
     this.accountConfigService = accountConfigService;
     this.invoiceLineRepository = invoiceLineRepository;
-    this.saleInvoicingStateService = saleInvoicingStateService;
   }
 
   @Override
@@ -215,25 +212,6 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
       saleOrderLine.setAnalyticMoveLineList(analyticMoveLineList);
     }
     return saleOrderLine;
-  }
-
-  @Override
-  public int getSaleOrderLineInvoicingState(SaleOrderLine saleOrderLine) {
-    return saleInvoicingStateService.getInvoicingState(
-        saleOrderLine.getAmountInvoiced(),
-        saleOrderLine.getExTaxTotal(),
-        atLeastOneInvoiceVentilated(saleOrderLine));
-  }
-
-  protected boolean atLeastOneInvoiceVentilated(SaleOrderLine saleOrderLine) {
-    return invoiceLineRepository
-            .all()
-            .filter(
-                "self.saleOrderLine = :saleOrderLine AND self.invoice.statusSelect = :statusSelect")
-            .bind("saleOrderLine", saleOrderLine.getId())
-            .bind("statusSelect", InvoiceRepository.STATUS_VENTILATED)
-            .count()
-        > 0;
   }
 
   @Override

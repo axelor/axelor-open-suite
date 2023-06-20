@@ -271,4 +271,13 @@ public interface ManufOrderService {
   List<ManufOrder> getChildrenManufOrder(ManufOrder manufOrder);
 
   public BigDecimal computeProducibleQty(ManufOrder manufOrder) throws AxelorException;
+
+  /**
+   * Method that will update planned dates of manuf order. Unlike the other methods, this will not
+   * reset planned dates of the operation orders of the manuf order. This method must be called when
+   * changement has occured in operation orders.
+   *
+   * @param manufOrder
+   */
+  public void updatePlannedDates(ManufOrder manufOrder);
 }

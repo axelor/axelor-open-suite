@@ -14,6 +14,7 @@
     <many-to-one name="dataFile" ref="com.axelor.meta.db.MetaFile" title="Data file"/>
     <one-to-many name="responseErasureLogList"
       ref="com.axelor.apps.gdpr.db.GDPRErasureLog" mappedBy="gdprResponse" title="GDPR erasure logs"/>
+    <string name="anonymizationResult" large="true" title="Anonymization result"/>
     <finder-method name="findByRequest" using="gdprRequest"/>
   </entity>
 

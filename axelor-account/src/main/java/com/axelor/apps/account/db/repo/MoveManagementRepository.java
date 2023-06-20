@@ -80,7 +80,6 @@ public class MoveManagementRepository extends MoveRepository {
       copy.setOrigin(origin);
       copy.setReasonOfRefusalToPay(null);
       copy.setReasonOfRefusalToPayStr(null);
-      copy.setPfpValidatorUser(null);
       Beans.get(MovePfpService.class).setPfpStatus(copy);
 
       List<MoveLine> moveLineList = copy.getMoveLineList();
@@ -152,7 +151,6 @@ public class MoveManagementRepository extends MoveRepository {
     invoiceTerm.setPfpPartialReason(null);
     invoiceTerm.setReasonOfRefusalToPay(null);
     invoiceTerm.setReasonOfRefusalToPayStr(null);
-    invoiceTerm.setPfpValidatorUser(null);
     invoiceTerm.setDecisionPfpTakenDateTime(null);
     invoiceTerm.setInvoice(null);
 

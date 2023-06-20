@@ -8,11 +8,16 @@
     <panel name="configPanel" title="Configurations">
       <field name="maxRespondingDays" colSpan="6"/>
       <spacer name="respondingDaysSpacer" colSpan="6"/>
-      <field name="accessResponseTemplate" colSpan="6"/>
-      <field name="erasureResponseTemplate" colSpan="6"/>
+      <field name="accessResponseTemplate" colSpan="6"
+        domain="self.metaModel.name = 'GDPRResponse' "/>
+      <field name="erasureResponseTemplate" colSpan="6"
+        domain="self.metaModel.name = 'GDPRResponse' "/>
       <field name="anonymizer" colSpan="12"/>
       <field name="requestOriginList" colSpan="12"/>
       <field name="searchConfigList" colSpan="12"/>
+      <field name="relationsShipAnonymizer" colSpan="12"/>
+      <field name="dataToExcludeConfig" colSpan="12"
+        grid-view="gdpr-data-to-exclude-config-grid" form-view="gdpr-data-to-exclude-config-form"/>
     </panel>
     <panel-mail name="mailPanel">
       <mail-messages limit="4"/>

@@ -202,6 +202,8 @@ public final class HumanResourceExceptionMessage {
   public static final String EXPENSE_MISSING_PERIOD = /*$$(*/ "Please fill the period" /*)*/;
   public static final String EXPENSE_MISSING_PAYMENT_MODE = /*$$(*/
       "Please fill the payment mode." /*)*/;
+  public static final String ALREADY_INVITED_TO_RESTAURANT = /*$$(*/
+      "You have already been invited to the restaurant for the following dates:" /*)*/;
 
   /** Timesheet Editor */
   public static final String NEW_PROJECT_LINE = /*$$(*/ "New project line" /*)*/;
@@ -240,4 +242,7 @@ public final class HumanResourceExceptionMessage {
 
   public static final String NO_USER_FOR_EMPLOYEE = /*$$(*/
       "Please fill a user for the employee %s" /*)*/;
+
+  public static final String EXPENSE_CAN_NOT_DELETE_VENTILATED = /*$$(*/
+      "Ventilated expense can not be deleted. %s can not be deleted." /*)*/;
 }

@@ -20,7 +20,6 @@ package com.axelor.apps.stock.web;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
-import com.axelor.apps.base.db.PrintingSettings;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.TraceBack;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
@@ -50,7 +49,6 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.axelor.utils.StringTool;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -568,32 +566,6 @@ public class StockMoveController {
   }
 
   /**
-   * Called on printing settings select. Set the the domain for {@link StockMove#printingSettings}
-   *
-   * @param request
-   * @param response
-   */
-  public void filterPrintingSettings(ActionRequest request, ActionResponse response) {
-    try {
-      StockMove stockMove = request.getContext().asType(StockMove.class);
-
-      List<PrintingSettings> printingSettingsList =
-          Beans.get(TradingNameService.class)
-              .getPrintingSettingsList(stockMove.getTradingName(), stockMove.getCompany());
-      String domain =
-          String.format(
-              "self.id IN (%s)",
-              !printingSettingsList.isEmpty()
-                  ? StringTool.getIdListString(printingSettingsList)
-                  : "0");
-
-      response.setAttr("printingSettings", "domain", domain);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  /**
    * Called on trading name change. Set the default value for {@link StockMove#printingSettings}
    *
    * @param request
@@ -698,7 +670,7 @@ public class StockMoveController {
 
       Integer percentToleranceForWapChange =
           Beans.get(StockConfigService.class)
-              .getStockConfig(stockMove.getToStockLocation().getCompany())
+              .getStockConfig(stockMove.getCompany())
               .getPercentToleranceForWapChange();
       response.setView(
           ActionView.define(I18n.get("Stock move"))

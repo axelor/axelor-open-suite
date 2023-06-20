@@ -26,6 +26,10 @@ public final class ProductionExceptionMessage {
   public static final String PRODUCTION_ORDER_SEQ = /*$$(*/
       "There's no configured sequence for production's orders" /*)*/;
 
+  /** Operation order service */
+  public static final String PRODUCTION_PROCESS_IS_EMPTY = /*$$(*/
+      "Your production process is empty." /*)*/;
+
   /** Production order sale order service */
   public static final String PRODUCTION_ORDER_SALES_ORDER_NO_BOM = /*$$(*/
       "There no's defined nomenclature for product %s (%s)" /*)*/;
@@ -100,9 +104,6 @@ public final class ProductionExceptionMessage {
   /** Operation Order Controller */
   public static final String OPERATION_ORDER_1 = /*$$(*/
       "Please select the Operation order(s) to print." /*)*/;
-
-  /** Sale order line Controller */
-  public static final String SALE_ORDER_LINE_1 = /*$$(*/ "Personalized nomenclature created" /*)*/;
 
   /** Production Order Controller */
   public static final String PRODUCTION_ORDER_NO_GENERATION = /*$$(*/
@@ -284,4 +285,12 @@ public final class ProductionExceptionMessage {
   public static final String GENERATE_MANUF_ORDER_BOM_DIVIDE_ZERO =
       /*$$(*/
       "The quantity of the bill of material %s is equal to zero." /*)*/;
+
+  public static final String OPERATION_ORDER_NO_PERIOD_FOUND_FOR_PLAN_DATES =
+      /*$$(*/
+      "No period has been found in the weekly planning for the operation order %s" /*)*/;
+
+  public static final String OPERATION_ORDER_ALREADY_FINISHED =
+      /*$$(*/
+      "The operation order is already finished and cannot be moved." /*)*/;
 }

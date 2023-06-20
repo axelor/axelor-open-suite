@@ -23,12 +23,14 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.PaymentConditionService;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.journal.JournalCheckPartnerTypeService;
 import com.axelor.apps.account.service.move.MoveInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveToolService;
-import com.axelor.apps.account.service.move.record.model.MoveContext;
 import com.axelor.apps.account.service.moveline.MoveLineCheckService;
+import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
@@ -38,9 +40,7 @@ import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
@@ -52,8 +52,11 @@ public class MoveCheckServiceImpl implements MoveCheckService {
   protected PeriodService periodService;
   protected AppAccountService appAccountService;
   protected MoveLineCheckService moveLineCheckService;
+  protected MoveLineService moveLineService;
   protected JournalCheckPartnerTypeService journalCheckPartnerTypeService;
   protected MoveInvoiceTermService moveInvoiceTermService;
+  protected InvoiceTermService invoiceTermService;
+  protected PaymentConditionService paymentConditionService;
 
   @Inject
   public MoveCheckServiceImpl(
@@ -62,44 +65,33 @@ public class MoveCheckServiceImpl implements MoveCheckService {
       PeriodService periodService,
       AppAccountService appAccountService,
       MoveLineCheckService moveLineCheckService,
+      MoveLineService moveLineService,
       JournalCheckPartnerTypeService journalCheckPartnerTypeService,
-      MoveInvoiceTermService moveInvoiceTermService) {
+      MoveInvoiceTermService moveInvoiceTermService,
+      PaymentConditionService paymentConditionService,
+      InvoiceTermService invoiceTermService) {
     this.moveRepository = moveRepository;
     this.moveToolService = moveToolService;
     this.periodService = periodService;
     this.appAccountService = appAccountService;
     this.moveLineCheckService = moveLineCheckService;
+    this.moveLineService = moveLineService;
     this.journalCheckPartnerTypeService = journalCheckPartnerTypeService;
     this.moveInvoiceTermService = moveInvoiceTermService;
+    this.paymentConditionService = paymentConditionService;
+    this.invoiceTermService = invoiceTermService;
   }
 
   @Override
-  public boolean checkRelatedCutoffMoves(Move move) {
-    Objects.requireNonNull(move);
-
-    if (appAccountService.getAppAccount().getManageCutOffPeriod()) {
-      if (move.getId() != null) {
-        return moveRepository
+  public boolean isRelatedCutoffMoves(Move move) {
+    return appAccountService.getAppAccount().getManageCutOffPeriod()
+        && move.getId() != null
+        && moveRepository
                 .all()
                 .filter("self.cutOffOriginMove = :id")
                 .bind("id", move.getId())
                 .count()
             > 0;
-      }
-    }
-
-    return false;
-  }
-
-  @Override
-  public Map<String, Object> checkPeriodAndStatus(Move move) throws AxelorException {
-
-    Objects.requireNonNull(move);
-    HashMap<String, Object> resultMap = new HashMap<>();
-
-    resultMap.put("$simulatedPeriodClosed", moveToolService.isSimulatedMovePeriodClosed(move));
-    resultMap.put("$periodClosed", periodService.isClosedPeriod(move.getPeriod()));
-    return resultMap;
   }
 
   @Override
@@ -154,62 +146,93 @@ public class MoveCheckServiceImpl implements MoveCheckService {
   }
 
   @Override
-  public void checkPartnerCompatible(Move move) throws AxelorException {
-    if (move.getPartner() != null) {
-      boolean isPartnerCompatible =
-          journalCheckPartnerTypeService.isPartnerCompatible(move.getJournal(), move.getPartner());
-      if (!isPartnerCompatible) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(AccountExceptionMessage.MOVE_PARTNER_IS_NOT_COMPATIBLE_WITH_SELECTED_JOURNAL));
-      }
-    }
+  public boolean isPartnerCompatible(Move move) {
+    return move.getPartner() == null
+        || journalCheckPartnerTypeService.isPartnerCompatible(move.getJournal(), move.getPartner());
   }
 
   @Override
-  public void checkDuplicatedMoveOrigin(Move move) throws AxelorException {
+  public String getDuplicatedMoveOriginAlert(Move move) throws AxelorException {
     if (move.getJournal() != null
         && move.getPartner() != null
         && move.getJournal().getHasDuplicateDetectionOnOrigin()) {
       List<Move> moveList = moveToolService.getMovesWithDuplicatedOrigin(move);
+
       if (ObjectUtils.notEmpty(moveList)) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_INCONSISTENCY,
-            String.format(
-                I18n.get(AccountExceptionMessage.MOVE_DUPLICATE_ORIGIN_NON_BLOCKING_MESSAGE),
-                moveList.stream().map(Move::getReference).collect(Collectors.joining(",")),
-                move.getPartner().getFullName(),
-                move.getPeriod().getYear().getName()));
+        return String.format(
+            I18n.get(AccountExceptionMessage.MOVE_DUPLICATE_ORIGIN_NON_BLOCKING_MESSAGE),
+            moveList.stream().map(Move::getReference).collect(Collectors.joining(",")),
+            move.getPartner().getFullName(),
+            move.getPeriod().getYear().getName());
       }
     }
+
+    return null;
   }
 
   @Override
-  public void checkOrigin(Move move) throws AxelorException {
+  public String getOriginAlert(Move move) {
     if (move.getOrigin() == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(AccountExceptionMessage.MOVE_CHECK_ORIGIN));
+      return I18n.get(AccountExceptionMessage.MOVE_CHECK_ORIGIN);
     }
+
+    return null;
   }
 
   @Override
-  public MoveContext checkTermsInPayment(Move move) throws AxelorException {
-
-    MoveContext moveContext = new MoveContext();
+  public void checkTermsInPayment(Move move) throws AxelorException {
     String errorMessage = moveInvoiceTermService.checkIfInvoiceTermInPayment(move);
 
     if (StringUtils.notEmpty(errorMessage)) {
       if (move.getId() != null) {
         PaymentCondition formerPaymentCondition =
             moveRepository.find(move.getId()).getPaymentCondition();
+        paymentConditionService.checkPaymentCondition(formerPaymentCondition);
         move.setPaymentCondition(formerPaymentCondition);
-        moveContext.putInValues("paymentCondition", formerPaymentCondition);
       }
 
-      moveContext.putInError(errorMessage);
+      throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, errorMessage);
+    }
+  }
+
+  @Override
+  public String getDescriptionAlert(Move move) {
+    if (move.getDescription() == null) {
+      return I18n.get(AccountExceptionMessage.MOVE_CHECK_DESCRIPTION);
     }
 
-    return moveContext;
+    return null;
+  }
+
+  @Override
+  public String getAccountingAlert(Move move) {
+    if (move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK
+        || ((!move.getCompany().getAccountConfig().getAccountingDaybook()
+                || !move.getJournal().getAllowAccountingDaybook())
+            && (move.getStatusSelect() == MoveRepository.STATUS_NEW
+                || move.getStatusSelect() == MoveRepository.STATUS_SIMULATED))) {
+      return I18n.get(AccountExceptionMessage.MOVE_CHECK_ACCOUNTING);
+    } else if (move.getMoveLineList().stream()
+        .anyMatch(
+            ml ->
+                ml.getMove() != null
+                    && invoiceTermService.getPfpValidatorUserCondition(
+                        ml.getMove().getInvoice(), ml)
+                    && ml.getInvoiceTermList().stream()
+                        .anyMatch(it -> it.getPfpValidatorUser() == null))) {
+      return I18n.get(AccountExceptionMessage.INVOICE_PFP_VALIDATOR_USER_MISSING);
+    }
+
+    return null;
+  }
+
+  @Override
+  public void checkManageCutOffDates(Move move) throws AxelorException {
+    if (!(CollectionUtils.isNotEmpty(move.getMoveLineList())
+        && move.getMoveLineList().stream().anyMatch(moveLineService::checkManageCutOffDates))) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(AccountExceptionMessage.NO_CUT_OFF_TO_APPLY));
+    }
   }
 }

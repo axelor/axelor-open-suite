@@ -1,0 +1,3 @@
+---
+title : "Hr : removed experienceSkillSet and skillSet from employee-form and added action to fill trainingSkill.endOfValidityDate."
+type : feature

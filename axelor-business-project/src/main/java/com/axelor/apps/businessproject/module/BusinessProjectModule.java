@@ -43,12 +43,15 @@ import com.axelor.apps.businessproject.service.ProjectAnalyticMoveLineServiceImp
 import com.axelor.apps.businessproject.service.ProjectBusinessService;
 import com.axelor.apps.businessproject.service.ProjectBusinessServiceImpl;
 import com.axelor.apps.businessproject.service.ProjectContractServiceImpl;
-import com.axelor.apps.businessproject.service.ProjectFolderService;
-import com.axelor.apps.businessproject.service.ProjectFolderServiceImpl;
+import com.axelor.apps.businessproject.service.ProjectHistoryService;
+import com.axelor.apps.businessproject.service.ProjectHistoryServiceImpl;
+import com.axelor.apps.businessproject.service.ProjectPlanningTimeBusinessProjectServiceImpl;
 import com.axelor.apps.businessproject.service.ProjectPurchaseServiceImpl;
 import com.axelor.apps.businessproject.service.ProjectStockMoveInvoiceServiceImpl;
 import com.axelor.apps.businessproject.service.ProjectTaskBusinessProjectService;
 import com.axelor.apps.businessproject.service.ProjectTaskBusinessProjectServiceImpl;
+import com.axelor.apps.businessproject.service.ProjectTaskReportingValuesComputingService;
+import com.axelor.apps.businessproject.service.ProjectTaskReportingValuesComputingServiceImpl;
 import com.axelor.apps.businessproject.service.PurchaseOrderInvoiceProjectServiceImpl;
 import com.axelor.apps.businessproject.service.PurchaseOrderLineProjectService;
 import com.axelor.apps.businessproject.service.PurchaseOrderLineServiceProjectImpl;
@@ -71,6 +74,7 @@ import com.axelor.apps.contract.service.ContractServiceImpl;
 import com.axelor.apps.contract.service.WorkflowCancelServiceContractImpl;
 import com.axelor.apps.hr.db.repo.ProjectTaskHRRepository;
 import com.axelor.apps.hr.service.expense.ExpenseServiceImpl;
+import com.axelor.apps.hr.service.project.ProjectPlanningTimeServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetServiceImpl;
 import com.axelor.apps.project.service.ProjectServiceImpl;
@@ -132,11 +136,15 @@ public class BusinessProjectModule extends AxelorModule {
     bind(AppBusinessProjectRepository.class).to(AppBusinessProjectManagementRepository.class);
     bind(InvoicePaymentValidateServiceBankPayImpl.class)
         .to(InvoicePaymentValidateProjectServiceImpl.class);
-    bind(ProjectFolderService.class).to(ProjectFolderServiceImpl.class);
     bind(ProjectAnalyticMoveLineService.class).to(ProjectAnalyticMoveLineServiceImpl.class);
     bind(PurchaseOrderWorkflowServiceSupplychainImpl.class)
         .to(PurchaseOrderWorkflowServiceProjectImpl.class);
     bind(InvoiceMergingServiceSupplychainImpl.class)
         .to(InvoiceMergingServiceBusinessProjectImpl.class);
+    bind(ProjectTaskReportingValuesComputingService.class)
+        .to(ProjectTaskReportingValuesComputingServiceImpl.class);
+    bind(ProjectPlanningTimeServiceImpl.class)
+        .to(ProjectPlanningTimeBusinessProjectServiceImpl.class);
+    bind(ProjectHistoryService.class).to(ProjectHistoryServiceImpl.class);
   }
 }
