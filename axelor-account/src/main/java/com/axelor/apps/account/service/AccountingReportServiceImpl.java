@@ -209,16 +209,20 @@ public class AccountingReportServiceImpl implements AccountingReportService {
       this.addParams("self.move.currency = ?%d", accountingReport.getCurrency());
     }
 
-    if (accountingReport.getDateFrom() != null) {
-      this.addParams("self.date >= ?%d", accountingReport.getDateFrom());
-    }
+    if (accountingReport.getReportType() == null
+        || accountingReport.getReportType().getTypeSelect()
+            != AccountingReportRepository.REPORT_FEES_DECLARATION_SUPPORT) {
+      if (accountingReport.getDateFrom() != null) {
+        this.addParams("self.date >= ?%d", accountingReport.getDateFrom());
+      }
 
-    if (accountingReport.getDateTo() != null) {
-      this.addParams("self.date <= ?%d", accountingReport.getDateTo());
-    }
+      if (accountingReport.getDateTo() != null) {
+        this.addParams("self.date <= ?%d", accountingReport.getDateTo());
+      }
 
-    if (accountingReport.getDate() != null) {
-      this.addParams("self.date <= ?%d", accountingReport.getDate());
+      if (accountingReport.getDate() != null) {
+        this.addParams("self.date <= ?%d", accountingReport.getDate());
+      }
     }
 
     if (accountingReport.getJournal() != null) {
