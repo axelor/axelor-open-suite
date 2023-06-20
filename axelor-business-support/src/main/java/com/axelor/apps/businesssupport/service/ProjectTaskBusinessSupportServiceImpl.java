@@ -29,6 +29,7 @@ import com.axelor.apps.businessproject.service.ProjectTaskBusinessProjectService
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.TaskTemplate;
+import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
@@ -43,6 +44,7 @@ public class ProjectTaskBusinessSupportServiceImpl extends ProjectTaskBusinessPr
       FrequencyRepository frequencyRepo,
       FrequencyService frequencyService,
       AppBaseService appBaseService,
+      ProjectRepository projectRepository,
       PriceListLineRepository priceListLineRepo,
       PriceListService priceListService,
       PartnerPriceListService partnerPriceListService,
@@ -52,10 +54,11 @@ public class ProjectTaskBusinessSupportServiceImpl extends ProjectTaskBusinessPr
         frequencyRepo,
         frequencyService,
         appBaseService,
+        projectRepository,
         priceListLineRepo,
         priceListService,
-        productCompanyService,
-        partnerPriceListService);
+        partnerPriceListService,
+        productCompanyService);
   }
 
   @Override

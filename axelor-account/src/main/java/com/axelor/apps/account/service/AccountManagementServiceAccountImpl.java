@@ -407,6 +407,15 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
         }
       }
 
+      if (journal != null
+          && (journal.getJournalType().getTechnicalTypeSelect() == null
+              || journal.getJournalType().getTechnicalTypeSelect() == 0)
+          && !isFixedAssets) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(AccountExceptionMessage.JOURNAL_TYPE_MISSING_TECHNICAL_TYPE),
+            journal.getJournalType().getName().toUpperCase());
+      }
       if (account == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
