@@ -227,7 +227,7 @@
   <action-attrs
     name="action-accounting-report-config-line-attrs-analytic-account-set-domain">
     <attribute name="domain" for="analyticAccountSet"
-      expr="eval: &quot; self.company = ${reportType?.company} &quot;"/>
+      expr="eval: &quot; self.company.id = ${__parent__?.company?.id} &quot;"/>
   </action-attrs>
 
   <action-view name="action-move-line-view-open-report-config-line" title="Config lines"
