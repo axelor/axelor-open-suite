@@ -14,6 +14,8 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.commons.lang3.ArrayUtils;
@@ -189,24 +191,32 @@ public class MoveLineMassEntryAttrsServiceImpl implements MoveLineMassEntryAttrs
   @Override
   public void addReadonly(
       boolean isCounterPartLine, Account account, Map<String, Map<String, Object>> attrsMap) {
-    this.addAttr("date", "readonly", isCounterPartLine, attrsMap);
-    this.addAttr("originDate", "readonly", isCounterPartLine, attrsMap);
-    this.addAttr("origin", "readonly", isCounterPartLine, attrsMap);
-    this.addAttr("moveDescription", "readonly", isCounterPartLine, attrsMap);
-    this.addAttr("movePaymentMode", "readonly", isCounterPartLine, attrsMap);
-    this.addAttr("movePaymentCondition", "readonly", isCounterPartLine, attrsMap);
-    this.addAttr("partner", "readonly", isCounterPartLine, attrsMap);
-    this.addAttr("description", "readonly", isCounterPartLine, attrsMap);
-    this.addAttr("currencyRate", "readonly", isCounterPartLine, attrsMap);
-    this.addAttr("currencyAmount", "readonly", isCounterPartLine, attrsMap);
-    this.addAttr("cutOffStartDate", "readonly", isCounterPartLine, attrsMap);
-    this.addAttr("cutOffEndDate", "readonly", isCounterPartLine, attrsMap);
-    this.addAttr("pfpValidatorUser", "readonly", isCounterPartLine, attrsMap);
-    this.addAttr("movePartnerBankDetails", "readonly", isCounterPartLine, attrsMap);
-    this.addAttr("vatSystemSelect", "readonly", isCounterPartLine, attrsMap);
-    this.addAttr("moveStatusSelect", "readonly", isCounterPartLine, attrsMap);
-    this.addAttr("account", "readonly", isCounterPartLine, attrsMap);
-    this.addAttr("analyticMoveLineList", "readonly", isCounterPartLine, attrsMap);
+    ArrayList<String> fieldsList =
+        new ArrayList(
+            Arrays.asList(
+                "date",
+                "originDate",
+                "origin",
+                "moveDescription",
+                "movePaymentMode",
+                "movePaymentCondition",
+                "partner",
+                "description",
+                "currencyRate",
+                "currencyAmount",
+                "cutOffStartDate",
+                "cutOffEndDate",
+                "pfpValidatorUser",
+                "movePartnerBankDetails",
+                "vatSystemSelect",
+                "moveStatusSelect",
+                "account",
+                "analyticMoveLineList"));
+
+    for (String field : fieldsList) {
+      this.addAttr(field, "readonly", isCounterPartLine, attrsMap);
+    }
+
     this.addAttr(
         "taxLine",
         "readonly",
