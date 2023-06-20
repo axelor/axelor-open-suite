@@ -184,7 +184,8 @@
           showIf="!isAlreadyConvertFromLead &amp;&amp; _isInConversionFromLead"/>
         <field name="partnerStatus" showTitle="false" colSpan="12" widget="NavSelect"
           x-order="sequence" onChange="action-partner-group-partner-status-onchange"
-          showIf="$isFromCrm " if=" __config__.app.getApp('crm')?.getCrmProcessOnPartner()"/>
+          showIf="$isFromCrm " if=" __config__.app.getApp('crm')?.getCrmProcessOnPartner()"
+          css="cursor-type-pointer"/>
       </insert>
     </extend>
     <extend target="//field[@name='sellerCode']">

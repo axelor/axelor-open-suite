@@ -128,7 +128,8 @@
     <panel name="mainPanel"
       readonlyIf="$get('opportunityStatus.id') == $closedWonId || $get('opportunityStatus.id') == $closedLostId">
       <field name="opportunityStatus" colSpan="12" widget="NavSelect" x-order="sequence"
-        showTitle="false" onChange="action-opportunity-group-status-onchange"/>
+        showTitle="false" onChange="action-opportunity-group-status-onchange"
+        css="cursor-type-pointer"/>
       <field name="opportunitySeq" showTitle="false" colSpan="2">
         <viewer depends="opportunitySeq"><![CDATA[
                  	<h3>
