@@ -62,7 +62,7 @@ public interface AddressService {
    * Get or update latitude and longitude.
    *
    * @param address
-   * @return
+   * @return Optional if getOrUpdateLatLong is found else null
    * @throws JSONException
    * @throws AxelorException
    */

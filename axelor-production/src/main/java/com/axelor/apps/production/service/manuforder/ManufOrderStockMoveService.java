@@ -414,6 +414,7 @@ public class ManufOrderStockMoveService {
    * given manufacturing order.
    *
    * @param manufOrder
+   * @throws AxelorException
    */
   @Transactional(rollbackOn = {Exception.class})
   public void partialFinish(ManufOrder manufOrder) throws AxelorException {
@@ -530,6 +531,7 @@ public class ManufOrderStockMoveService {
    * @param stockMove
    * @param inOrOut can be {@link ManufOrderStockMoveService#PART_FINISH_IN} or {@link
    *     ManufOrderStockMoveService#PART_FINISH_OUT}
+   * @throws AxelorException
    */
   public void createNewStockMoveLines(ManufOrder manufOrder, StockMove stockMove, int inOrOut)
       throws AxelorException {
@@ -693,7 +695,7 @@ public class ManufOrderStockMoveService {
    * @param manufOrder
    * @param prodProduct
    * @param qtyToUpdate
-   * @return
+   * @return BigDecimal if getFractionQtynis found else null
    */
   public BigDecimal getFractionQty(
       ManufOrder manufOrder, ProdProduct prodProduct, BigDecimal qtyToUpdate) {

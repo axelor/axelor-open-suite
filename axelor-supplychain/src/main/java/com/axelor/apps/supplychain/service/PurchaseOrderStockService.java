@@ -32,6 +32,7 @@ public interface PurchaseOrderStockService {
    * Méthode permettant de créer un StockMove à partir d'un PurchaseOrder.
    *
    * @param purchaseOrder une commande
+   * @return List if createStockMoveFromPurchaseOrder is found else null
    * @throws AxelorException Aucune séquence de StockMove n'a été configurée
    */
   public List<Long> createStockMoveFromPurchaseOrder(PurchaseOrder purchaseOrder)
@@ -63,7 +64,7 @@ public interface PurchaseOrderStockService {
    * @param productId
    * @param companyId
    * @param stockLocationId
-   * @return the query.
+   * @return String if getPurchaseOrderLineListForAProduct is found else null
    */
   public String getPurchaseOrderLineListForAProduct(
       Long productId, Long companyId, Long stockLocationId);

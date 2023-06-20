@@ -27,7 +27,7 @@ public interface ProductCategoryDomainCreatorService {
    * to filter the children from the parent category list.
    *
    * @param productCategory
-   * @return
+   * @return String if createProductCategoryDomainFilteringChildren is found else null
    * @throws AxelorException
    */
   String createProductCategoryDomainFilteringChildren(ProductCategory productCategory)

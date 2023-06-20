@@ -52,7 +52,7 @@ public interface EbicsElement {
   /**
    * Builds the <code>EbicsElement</code> XML fragment
    *
-   * @throws EbicsException
+   * @throws AxelorException
    */
   public void build() throws AxelorException;
 

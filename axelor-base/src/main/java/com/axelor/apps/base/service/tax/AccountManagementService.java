@@ -38,6 +38,7 @@ public interface AccountManagementService {
    *
    * @param product
    * @param company
+   * @param fiscalPosition
    * @param isPurchase specify if we want get the tax for purchase or sale
    * @return the tax equiv found for the product, null if nothing was found.
    * @throws AxelorException
@@ -49,9 +50,12 @@ public interface AccountManagementService {
   /**
    * Obtenir la version de taxe d'un produit.
    *
+   * @param date
    * @param product
-   * @param amendment
-   * @return
+   * @param company
+   * @param fiscalPosition
+   * @param isPurchase
+   * @return TaxLine if getTaxLine is found else null
    * @throws AxelorException
    */
   public TaxLine getTaxLine(

@@ -71,7 +71,7 @@ public class BankDetailsServiceImpl implements BankDetailsService {
    * @param ownerName
    * @param partner
    * @param sortCode
-   * @return
+   * @return BankDetails if createBankDetails is found else null
    */
   @Override
   public BankDetails createBankDetails(
@@ -101,7 +101,7 @@ public class BankDetailsServiceImpl implements BankDetailsService {
    *
    * @param company
    * @param paymentMode
-   * @return
+   * @return String if createCompanyBankDetailsDomain is found else null
    * @throws AxelorException
    */
   @Override

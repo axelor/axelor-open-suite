@@ -91,8 +91,8 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
    *     material product (Product variant)
    * @param billOfMaterial
    * @param qtyRequested
-   * @param businessProject
-   * @return
+   * @param startDate
+   * @return ProductionOrder if generateProductionOrder is found else null
    * @throws AxelorException
    */
   @Transactional(rollbackOn = {Exception.class})

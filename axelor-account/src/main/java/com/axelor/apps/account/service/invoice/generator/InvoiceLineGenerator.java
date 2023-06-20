@@ -168,7 +168,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
   public abstract List<InvoiceLine> creates() throws AxelorException;
 
   /**
-   * @return
+   * @return InvoiceLine if InvoiceLine is found else null
    * @throws AxelorException
    */
   protected InvoiceLine createInvoiceLine() throws AxelorException {
@@ -308,9 +308,10 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
   /**
    * Rembourser une ligne de facture.
    *
-   * @param invoice La facture concernée.
    * @param invoiceLine La ligne de facture.
-   * @return La ligne de facture de remboursement.
+   * @param daysQty
+   * @return InvoiceLine if refundInvoiceLine is found else null La ligne de facture de
+   *     remboursement.
    */
   protected InvoiceLine refundInvoiceLine(InvoiceLine invoiceLine, boolean daysQty) {
 
@@ -354,7 +355,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
    * @param price
    * @param startUnit
    * @param endUnit
-   * @return Le prix converti
+   * @return BigDecimal if Price is found else null Le prix converti
    */
   protected BigDecimal convertPrice(BigDecimal price, Unit startUnit, Unit endUnit) {
 
@@ -371,7 +372,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
    *
    * @param unit Unité de base.
    * @param displayUnit Unité à afficher.
-   * @return L'unité à utiliser.
+   * @return Unit if Unit is found else null L'unité à utiliser.
    */
   protected Unit unit(Unit unit, Unit displayUnit) {
 
@@ -392,10 +393,10 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
   /**
    * Convertir le prix d'une unité de départ version une unité d'arrivée.
    *
-   * @param price
+   * @param value
    * @param startUnit
    * @param endUnit
-   * @return Le prix converti
+   * @return BigDecimal if convert is found else null Le prix converti
    */
   protected BigDecimal convert(Unit startUnit, Unit endUnit, BigDecimal value) {
 
@@ -411,7 +412,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
    *
    * @param startUnit
    * @param endUnit
-   * @return Le coefficient de conversion.
+   * @return BigDecimal if convertCoef is found else null Le coefficient de conversion.
    */
   protected BigDecimal convertCoef(Unit startUnit, Unit endUnit) {
 

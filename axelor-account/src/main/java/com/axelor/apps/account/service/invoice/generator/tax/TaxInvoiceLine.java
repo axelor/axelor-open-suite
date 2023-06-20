@@ -58,7 +58,7 @@ public class TaxInvoiceLine extends TaxGenerator {
    * Créer les lignes de TVA de la facure. La création des lignes de TVA se basent sur les lignes de
    * factures
    *
-   * @return La liste des lignes de TVA de la facture.
+   * @return List if creates is found else null La liste des lignes de TVA de la facture.
    * @throws AxelorException
    */
   @Override

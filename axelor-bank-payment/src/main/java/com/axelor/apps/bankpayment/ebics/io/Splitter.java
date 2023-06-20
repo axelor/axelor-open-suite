@@ -81,7 +81,7 @@ public class Splitter {
    *
    * @param isCompressionEnabled enable compression?
    * @param keySpec the secret key spec
-   * @throws EbicsException
+   * @throws AxelorException
    */
   public final void readInput(boolean isCompressionEnabled, SecretKeySpec keySpec)
       throws AxelorException {
@@ -121,7 +121,7 @@ public class Splitter {
    * Returns the content of a data segment according to a given segment number.
    *
    * @param segmentNumber the segment number
-   * @return
+   * @return ContentFactory if getContent is found else null
    */
   public ContentFactory getContent(int segmentNumber) {
     byte[] segment;

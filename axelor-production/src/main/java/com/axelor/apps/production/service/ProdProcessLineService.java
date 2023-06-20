@@ -33,6 +33,7 @@ public interface ProdProcessLineService {
    *
    * @param prodProcessLine
    * @param qty
+   * @return long if computeEntireCycleDuration is found else null
    * @throws AxelorException
    */
   public long computeEntireCycleDuration(ProdProcessLine prodProcessLine, BigDecimal qty)

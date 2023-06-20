@@ -185,11 +185,9 @@ public class CurrencyService {
   /**
    * Convert the amount in start currency into the end currency according to the exchange rate
    *
-   * @param startCurrency
-   * @param endCurrency
    * @param amount
    * @param exchangeRate
-   * @return
+   * @return BigDecimal if getAmountCurrencyConvertedUsingExchangeRate is found else null
    * @throws AxelorException
    */
   public BigDecimal getAmountCurrencyConvertedUsingExchangeRate(

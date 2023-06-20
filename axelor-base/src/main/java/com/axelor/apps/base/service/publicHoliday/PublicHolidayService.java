@@ -74,7 +74,7 @@ public class PublicHolidayService {
    *
    * @param date
    * @param publicHolidayEventsPlanning
-   * @return
+   * @return boolean if checkPublicHolidayDay is found else null
    */
   public boolean checkPublicHolidayDay(LocalDate date, EventsPlanning publicHolidayEventsPlanning) {
 

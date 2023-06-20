@@ -180,7 +180,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
   }
 
   /**
-   * @return
+   * @return InvoiceLine if createInvoiceLine is found else null
    * @throws AxelorException
    */
   @Override

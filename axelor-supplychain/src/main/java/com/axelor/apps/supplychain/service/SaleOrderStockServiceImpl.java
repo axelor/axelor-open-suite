@@ -321,6 +321,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
    *
    * @param stockMove
    * @param saleOrder
+   * @throws AxelorException
    */
   protected void setReservationDateTime(StockMove stockMove, SaleOrder saleOrder)
       throws AxelorException {
@@ -364,6 +365,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
    * Set automatic mail configuration from the partner.
    *
    * @param stockMove
+   * @throws AxelorException
    */
   protected void setDefaultAutoMailSettings(StockMove stockMove) throws AxelorException {
     Partner partner = stockMove.getPartner();

@@ -27,6 +27,7 @@ public interface MrpFilterSaleOrderLineService {
    * A method that returns all the saleOrderLines that should be selectable in the MRP. That is, all
    * the sale order lines that comply with the existing mrp line types.
    *
+   * @param mrp
    * @return a list of ids of the sale order lines
    */
   List<Long> getSaleOrderLinesComplyingToMrpLineTypes(Mrp mrp);

@@ -45,8 +45,7 @@ public interface FixedAssetLineComputationService {
    *
    * @param fixedAsset a fixed asset with existing lines
    * @param previousFixedAssetLine the previous line
-   * @param typeSelect typeSelect of the fixedAssetLine
-   * @return the created fixed asset line
+   * @return FixedAssetLine if PlannedFixedAssetLine is found else null
    * @throws AxelorException
    */
   FixedAssetLine computePlannedFixedAssetLine(
@@ -63,7 +62,7 @@ public interface FixedAssetLineComputationService {
   /**
    * Multiply economic and fiscal lines by prorata
    *
-   * @param line
+   * @param fixedAssetLineList
    * @param prorata
    */
   void multiplyLinesBy(List<FixedAssetLine> fixedAssetLineList, BigDecimal prorata);

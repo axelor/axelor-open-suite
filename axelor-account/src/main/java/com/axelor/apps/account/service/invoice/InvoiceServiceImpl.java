@@ -169,7 +169,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
    * Lever l'ensemble des alarmes d'une facture.
    *
    * @param invoice Une facture.
-   * @throws Exception
+   * @param alarmEngineCode
    */
   @Override
   public void raisingAlarms(Invoice invoice, String alarmEngineCode) {
@@ -486,7 +486,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
    * <p>Un avoir est une facture "inversée". Tout le montant sont opposés à la facture originale.
    *
    * @param invoice
-   * @return
+   * @return Invoice if Refund is found else null
    * @throws AxelorException
    */
   @Override
@@ -738,7 +738,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
    * d'écriture de rejet de facture
    *
    * @param moveLine Une ligne d'écriture de facture ou une ligne d'écriture de rejet de facture
-   * @return La facture trouvée
+   * @return Invoice if Invoice is found else null
    */
   @Override
   public Invoice getInvoice(MoveLine moveLine) {

@@ -325,7 +325,8 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
   /**
    * Method only use in method computeProrataBetween
    *
-   * @return
+   * @param fixedAsset
+   * @return Integer if PeriodicityInMonthProrataTemporis is found else null
    */
   protected Integer getPeriodicityInMonthProrataTemporis(FixedAsset fixedAsset) {
     return getPeriodicityInMonth(fixedAsset);
@@ -334,7 +335,10 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
   /**
    * Method only use in method computeProrataBetween
    *
-   * @return
+   * @param isUsProrataTemporis
+   * @param startDate
+   * @param endDate
+   * @return Bigdecimal if nbDaysBetween is found else null
    */
   protected BigDecimal nbDaysBetween(
       boolean isUsProrataTemporis, LocalDate startDate, LocalDate endDate) {

@@ -108,7 +108,7 @@ public interface TimesheetLineService {
    * validated or confirmed.
    *
    * @param timesheetLineList a list of timesheet lines.
-   * @return a {@link java.time.Duration}.
+   * @return Duration if computeTotalDuration is found else null
    */
   Duration computeTotalDuration(List<TimesheetLine> timesheetLineList);
 
@@ -117,7 +117,7 @@ public interface TimesheetLineService {
    * Timesheet}.
    *
    * @param timesheetLineList
-   * @return {@link Map}
+   * @return Map if getProjectTimeSpentMap is found else null
    */
   Map<Project, BigDecimal> getProjectTimeSpentMap(List<TimesheetLine> timesheetLineList);
 }

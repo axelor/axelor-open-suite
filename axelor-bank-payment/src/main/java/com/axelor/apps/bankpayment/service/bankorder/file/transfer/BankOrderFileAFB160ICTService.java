@@ -35,7 +35,7 @@ public class BankOrderFileAFB160ICTService extends BankOrderFileAFB160Service {
    * "types de virements pouvant être émis par la clientèle". Les codes utilisés doivent faire
    * l'objet d'un accord contractuel avec la banque réceptrice.
    *
-   * @return
+   * @return String if getB1Area is found else null
    */
   @Override
   protected String getB1Area() {

@@ -48,7 +48,7 @@ public interface InvoiceTermService {
    *
    * @param invoice
    * @param paymentConditionLine
-   * @return
+   * @return InvoiceTerm if InvoiceTerm is found else null
    * @throws AxelorException
    */
   public InvoiceTerm computeInvoiceTerm(Invoice invoice, PaymentConditionLine paymentConditionLine)
@@ -67,7 +67,8 @@ public interface InvoiceTermService {
    * Method that creates a customized invoiceTerm
    *
    * @param invoice
-   * @return
+   * @param invoiceTerm
+   * @return InvoiceTerm if CustomizedInvoiceTerm is found else null
    * @throws AxelorException
    */
   public InvoiceTerm initCustomizedInvoiceTerm(Invoice invoice, InvoiceTerm invoiceTerm)
@@ -78,7 +79,7 @@ public interface InvoiceTermService {
    *
    * @param invoice
    * @param invoiceDate
-   * @return
+   * @return Invoice if DueDates is found else null
    */
   public Invoice setDueDates(Invoice invoice, LocalDate invoiceDate);
 
@@ -86,7 +87,8 @@ public interface InvoiceTermService {
    * Method that returns unpaid invoiceTerms (isPaid != true) of an invoice
    *
    * @param invoice
-   * @return
+   * @return List if UnpaidInvoiceTerms is found else null
+   * @throws AxelorException
    */
   public List<InvoiceTerm> getUnpaidInvoiceTerms(Invoice invoice) throws AxelorException;
 
@@ -95,7 +97,7 @@ public interface InvoiceTermService {
    * as first invoice term of the list.
    *
    * @param invoiceTerms
-   * @return
+   * @return List if InvoiceTermsByHoldBack is found else null
    */
   public List<InvoiceTerm> filterInvoiceTermsByHoldBack(List<InvoiceTerm> invoiceTerms);
 
@@ -104,7 +106,8 @@ public interface InvoiceTermService {
    * first returned invoice term
    *
    * @param invoice
-   * @return
+   * @return List if UnpaidInvoiceTermsFiltered is found else null
+   * @throws AxelorException
    */
   public List<InvoiceTerm> getUnpaidInvoiceTermsFiltered(Invoice invoice) throws AxelorException;
 
@@ -113,7 +116,7 @@ public interface InvoiceTermService {
    * date if no invoice terms found
    *
    * @param invoice
-   * @return
+   * @return LocalDate if LatestInvoiceTermDueDate is found else null
    */
   public LocalDate getLatestInvoiceTermDueDate(Invoice invoice);
 
@@ -121,6 +124,7 @@ public interface InvoiceTermService {
    * Update amount remaining and paid status
    *
    * @param invoicePayment
+   * @throws AxelorException
    */
   public void updateInvoiceTermsPaidAmount(InvoicePayment invoicePayment) throws AxelorException;
 
@@ -134,6 +138,7 @@ public interface InvoiceTermService {
    * Update amount remaining and paid status after unreconcile
    *
    * @param invoicePayment
+   * @throws AxelorException
    */
   public void updateInvoiceTermsAmountRemaining(InvoicePayment invoicePayment)
       throws AxelorException;
@@ -145,7 +150,7 @@ public interface InvoiceTermService {
    * Check if invoice term were customized
    *
    * @param invoice
-   * @return
+   * @return boolean if CustomizedInvoiceTerms is found else null
    */
   public boolean checkIfCustomizedInvoiceTerms(Invoice invoice);
 
@@ -153,6 +158,7 @@ public interface InvoiceTermService {
    * Check if the sum of invoice terms amounts equals invoice inTaxTotal
    *
    * @param invoice
+   * @return boolean if InvoiceTermsSum is found else null
    * @throws AxelorException
    */
   public boolean checkInvoiceTermsSum(Invoice invoice) throws AxelorException;
@@ -161,6 +167,7 @@ public interface InvoiceTermService {
    * Check if the sum of invoice terms percentage equals 100
    *
    * @param invoice
+   * @return boolean if InvoiceTermsPercentageSum is found else null
    * @throws AxelorException
    */
   public boolean checkInvoiceTermsPercentageSum(Invoice invoice) throws AxelorException;
@@ -169,6 +176,7 @@ public interface InvoiceTermService {
    * compute the sum of invoice terms percentages
    *
    * @param invoice
+   * @return BigDecimal if PercentageSum is found else null
    * @throws AxelorException
    */
   public BigDecimal computePercentageSum(Invoice invoice);
@@ -177,7 +185,7 @@ public interface InvoiceTermService {
    * Update invoice terms financial discount if not paid with invoice financial discount
    *
    * @param invoice
-   * @return
+   * @return List if FinancialDiscount is found else null
    */
   public List<InvoiceTerm> updateFinancialDiscount(Invoice invoice);
 
@@ -193,7 +201,7 @@ public interface InvoiceTermService {
    * check if invoice term creation is prohibited returns true if prohibited
    *
    * @param invoice
-   * @return
+   * @return boolean if InvoiceTermCreationConditions is found else null
    */
   public boolean checkInvoiceTermCreationConditions(Invoice invoice);
 
@@ -201,7 +209,7 @@ public interface InvoiceTermService {
    * check if invoice term deletion is prohibited returns true if prohibited
    *
    * @param invoice
-   * @return
+   * @return boolean if InvoiceTermDeletionConditions is found else null
    */
   public boolean checkInvoiceTermDeletionConditions(Invoice invoice);
 
@@ -209,7 +217,7 @@ public interface InvoiceTermService {
    * checks if there is deleted hold back invoice terms while invoice ventilated
    *
    * @param invoice
-   * @return
+   * @return boolean if checkIfThereIsDeletedHoldbackInvoiceTerms is found else null
    */
   public boolean checkIfThereIsDeletedHoldbackInvoiceTerms(Invoice invoice);
 
@@ -222,7 +230,7 @@ public interface InvoiceTermService {
    * return existing moveLine related to invoiceTerm with isHoldBack = false
    *
    * @param invoice
-   * @return
+   * @return MoveLine if getExistingInvoiceTermMoveLine is found else null
    */
   public MoveLine getExistingInvoiceTermMoveLine(Invoice invoice);
 

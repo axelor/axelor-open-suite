@@ -42,7 +42,6 @@ public class ImportCityController {
    *
    * @param request
    * @param response
-   * @throws InterruptedException
    */
   @SuppressWarnings("unchecked")
   public void importCity(ActionRequest request, ActionResponse response) {

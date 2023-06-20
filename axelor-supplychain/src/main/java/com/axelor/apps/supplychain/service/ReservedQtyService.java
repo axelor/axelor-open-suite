@@ -41,6 +41,8 @@ public interface ReservedQtyService {
    * qty.
    *
    * @param stockMove
+   * @param status
+   * @throws AxelorException
    */
   void updateReservedQuantity(StockMove stockMove, int status) throws AxelorException;
 
@@ -159,6 +161,7 @@ public interface ReservedQtyService {
    *
    * @param saleOrderLine
    * @param newReservedQty
+   * @throws AxelorException
    */
   void updateRequestedReservedQty(SaleOrderLine saleOrderLine, BigDecimal newReservedQty)
       throws AxelorException;
@@ -181,6 +184,7 @@ public interface ReservedQtyService {
    *
    * @param stockMoveLine
    * @param newReservedQty
+   * @throws AxelorException
    */
   void updateRequestedReservedQty(StockMoveLine stockMoveLine, BigDecimal newReservedQty)
       throws AxelorException;
@@ -191,6 +195,7 @@ public interface ReservedQtyService {
    * @param stockMoveLine
    * @param product
    * @param reservedQtyToAdd
+   * @throws AxelorException
    */
   void updateReservedQuantityFromStockMoveLine(
       StockMoveLine stockMoveLine, Product product, BigDecimal reservedQtyToAdd)
@@ -216,7 +221,7 @@ public interface ReservedQtyService {
    * @param saleOrderLine
    * @param product
    * @param newReservedQty
-   * @return the new allocated quantity
+   * @return BigDecimal if updateRequestedReservedQuantityInStockMoveLines is found else null
    * @throws AxelorException
    */
   BigDecimal updateRequestedReservedQuantityInStockMoveLines(
@@ -229,6 +234,7 @@ public interface ReservedQtyService {
    *
    * @param stockMoveLine
    * @param amountToDeallocate
+   * @throws AxelorException
    */
   void deallocateStockMoveLineAfterSplit(StockMoveLine stockMoveLine, BigDecimal amountToDeallocate)
       throws AxelorException;
@@ -293,6 +299,7 @@ public interface ReservedQtyService {
    * Create a reservation and allocate as much quantity as we can.
    *
    * @param saleOrderLine
+   * @throws AxelorException
    */
   void allocateAll(SaleOrderLine saleOrderLine) throws AxelorException;
 
@@ -300,6 +307,7 @@ public interface ReservedQtyService {
    * Create a reservation and allocate as much quantity as we can.
    *
    * @param stockMoveLine
+   * @throws AxelorException
    */
   void allocateAll(StockMoveLine stockMoveLine) throws AxelorException;
 }

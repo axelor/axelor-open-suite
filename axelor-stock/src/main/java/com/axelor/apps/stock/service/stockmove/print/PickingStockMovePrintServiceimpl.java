@@ -109,6 +109,8 @@ public class PickingStockMovePrintServiceimpl implements PickingStockMovePrintSe
    * Return the name for the printed stock move.
    *
    * @param plural if there is one or multiple stock moves.
+   * @param format
+   * @return String if getStockMoveFilesName is found else null
    */
   public String getStockMoveFilesName(boolean plural, String format) {
 

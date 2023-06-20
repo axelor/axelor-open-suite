@@ -29,7 +29,8 @@ public interface ManufOrderPrintService {
   /**
    * Print a list of manuf orders
    *
-   * @return ReportSettings
+   * @param ids
+   * @return String if printManufOrders is found else null
    * @throws IOException
    */
   String printManufOrders(List<Long> ids) throws IOException;

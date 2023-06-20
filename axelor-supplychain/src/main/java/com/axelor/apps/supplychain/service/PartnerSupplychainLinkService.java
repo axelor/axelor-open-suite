@@ -27,7 +27,7 @@ public interface PartnerSupplychainLinkService {
    *
    * @param partner the main partner to search for related partners
    * @param strFilter the type of the filter needed
-   * @return the computed filter to be used as a JPQL domain attribute
+   * @return String if computePartnerFilter is found else null
    */
   String computePartnerFilter(Partner partner, String strFilter);
 }

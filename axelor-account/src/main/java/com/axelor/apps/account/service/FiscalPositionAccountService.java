@@ -29,7 +29,7 @@ public interface FiscalPositionAccountService extends FiscalPositionService {
    *
    * @param fiscalPosition
    * @param account
-   * @return
+   * @return Account if found else null
    */
   public Account getAccount(FiscalPosition fiscalPosition, Account account);
 }

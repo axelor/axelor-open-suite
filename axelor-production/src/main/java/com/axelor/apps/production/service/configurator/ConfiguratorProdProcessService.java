@@ -33,7 +33,7 @@ public interface ConfiguratorProdProcessService {
    * @param confProdProcess
    * @param attributes
    * @param product the generated product in configurator BOM.
-   * @return
+   * @return ProdProcess if generateProdProcessService is found else null
    */
   ProdProcess generateProdProcessService(
       ConfiguratorProdProcess confProdProcess, JsonContext attributes, Product product)

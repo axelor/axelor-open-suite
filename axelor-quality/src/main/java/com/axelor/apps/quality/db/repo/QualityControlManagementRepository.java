@@ -34,6 +34,7 @@ public class QualityControlManagementRepository extends QualityControlRepository
    * Generate and set sequence in reference with predefined prefix.
    *
    * @param qualityControl Overridden quality control object to set reference on onSave event.
+   * @return QualityControl if save is found else null
    */
   @Override
   public QualityControl save(QualityControl qualityControl) {

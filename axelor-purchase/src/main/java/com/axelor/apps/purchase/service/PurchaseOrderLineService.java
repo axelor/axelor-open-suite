@@ -54,7 +54,7 @@ public interface PurchaseOrderLineService {
    *
    * @param purchaseOrder
    * @param purchaseOrderLine
-   * @return
+   * @return Optional if getOptionalTaxLine is found else null
    */
   Optional<TaxLine> getOptionalTaxLine(
       PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine);

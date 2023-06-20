@@ -48,10 +48,17 @@ public interface StockMoveLineService {
    * suivi en fonction du type d'opération.
    *
    * @param product le produit
+   * @param productName
+   * @param description
    * @param quantity la quantité
-   * @param parent le StockMove parent
-   * @param type 1 : Sales 2 : Purchases 3 : Productions
-   * @return l'objet StockMoveLine
+   * @param unitPrice
+   * @param companyUnitPriceUntaxed
+   * @param unit
+   * @param stockMove
+   * @param type
+   * @param taxed
+   * @param taxRate
+   * @return StockMoveLine if createStockMoveLine is found else null
    * @throws AxelorException
    */
   public StockMoveLine createStockMoveLine(
@@ -84,10 +91,12 @@ public interface StockMoveLineService {
    * @param quantity the line quantity
    * @param unitPriceUntaxed price untaxed of the line
    * @param unitPriceTaxed price taxed of the line
+   * @param companyUnitPriceUntaxed
+   * @param companyPurchasePrice
    * @param unit Unit of the line
    * @param stockMove parent stock move
    * @param trackingNumber tracking number used in the line
-   * @return the created stock move line
+   * @return StockMoveLine if createStockMoveLine is found else null
    * @throws AxelorException
    */
   public StockMoveLine createStockMoveLine(
@@ -182,12 +191,12 @@ public interface StockMoveLineService {
    * Check for warranty dates and expiration dates.
    *
    * @param stockMove
-   * @throws AxelorException
    */
   public void checkExpirationDates(StockMove stockMove);
 
   /**
-   * Return unit found in stock move line, or if the unit is empty, take the unit from the product.
+   * @param stockMoveLine Return unit found in stock move line, or if the unit is empty, take the
+   *     unit from the product.
    */
   Unit getStockUnit(StockMoveLine stockMoveLine);
 
@@ -205,7 +214,7 @@ public interface StockMoveLineService {
    * Check whether a stock move line is fully spread over logistical form lines.
    *
    * @param stockMoveLine
-   * @return
+   * @return boolean if computeFullySpreadOverLogisticalFormLinesFlag is found else null
    */
   boolean computeFullySpreadOverLogisticalFormLinesFlag(StockMoveLine stockMoveLine);
 
@@ -213,7 +222,7 @@ public interface StockMoveLineService {
    * Get the quantity spreadable over logistical form lines.
    *
    * @param stockMoveLine
-   * @return
+   * @return BigDecimal if computeSpreadableQtyOverLogisticalFormLines is found else null
    */
   BigDecimal computeSpreadableQtyOverLogisticalFormLines(StockMoveLine stockMoveLine);
 
@@ -223,7 +232,7 @@ public interface StockMoveLineService {
    *
    * @param stockMoveLine
    * @param logisticalForm
-   * @return
+   * @return BigDecimal if computeSpreadableQtyOverLogisticalFormLines is found else null
    */
   BigDecimal computeSpreadableQtyOverLogisticalFormLines(
       StockMoveLine stockMoveLine, LogisticalForm logisticalForm);
@@ -243,7 +252,8 @@ public interface StockMoveLineService {
    * Check whether mass information is required.
    *
    * @param stockMove
-   * @return
+   * @param stockMoveLine
+   * @return boolean if checkMassesRequired is found else null
    */
   boolean checkMassesRequired(StockMove stockMove, StockMoveLine stockMoveLine);
 
@@ -255,7 +265,6 @@ public interface StockMoveLineService {
    *
    * @param stockMoveLine
    * @param stockLocation
-   * @return
    */
   public void updateAvailableQty(StockMoveLine stockMoveLine, StockLocation stockLocation);
 
@@ -304,6 +313,7 @@ public interface StockMoveLineService {
    * @param lastFutureStockMoveDate
    * @param realQty
    * @param date
+   * @param origin
    * @throws AxelorException
    */
   void updateLocations(

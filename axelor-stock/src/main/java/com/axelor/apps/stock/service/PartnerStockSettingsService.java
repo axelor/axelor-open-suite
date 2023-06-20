@@ -32,6 +32,7 @@ public interface PartnerStockSettingsService {
    *
    * @param partner
    * @param company
+   * @throws AxelorException
    */
   PartnerStockSettings getOrCreateMailSettings(Partner partner, Company company)
       throws AxelorException;
@@ -41,6 +42,7 @@ public interface PartnerStockSettingsService {
    *
    * @param partner
    * @param company
+   * @throws AxelorException
    */
   PartnerStockSettings createMailSettings(Partner partner, Company company) throws AxelorException;
 
@@ -49,6 +51,7 @@ public interface PartnerStockSettingsService {
    *
    * @param partner
    * @param company
+   * @return StockLocation if getDefaultStockLocation is found else null
    */
   StockLocation getDefaultStockLocation(
       Partner partner, Company company, Predicate<? super StockLocation> predicate);
@@ -59,7 +62,8 @@ public interface PartnerStockSettingsService {
    *
    * @param partner
    * @param company
-   * @return null if the config is empty, else the found stock location.
+   * @param predicate
+   * @return StockLocation if getDefaultExternalStockLocation is found else null
    */
   StockLocation getDefaultExternalStockLocation(
       Partner partner, Company company, Predicate<? super StockLocation> predicate);

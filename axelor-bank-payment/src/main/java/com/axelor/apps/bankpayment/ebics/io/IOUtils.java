@@ -165,7 +165,7 @@ public class IOUtils {
    *
    * @param path the file path
    * @return the byte array content of the file
-   * @throws EbicsException
+   * @throws AxelorException
    */
   public static byte[] getFileContent(String path) throws AxelorException {
     try (InputStream input = new FileInputStream(path)) {
@@ -184,8 +184,8 @@ public class IOUtils {
    * Returns the content of a <code>ContentFactory</code> as a byte array
    *
    * @param content
-   * @return
-   * @throws EbicsException
+   * @return the byte array content of the array
+   * @throws AxelorException
    */
   public static byte[] getFactoryContent(ContentFactory content) throws AxelorException {
     try {

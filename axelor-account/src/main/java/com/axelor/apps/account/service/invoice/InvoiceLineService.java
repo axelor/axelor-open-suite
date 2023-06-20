@@ -76,7 +76,7 @@ public interface InvoiceLineService {
    * To check that invoiceLineList has "End of pack" type line.
    *
    * @param invoiceLineList
-   * @return
+   * @return boolean if EndOfPackTypeLine is found else null
    */
   public boolean hasEndOfPackTypeLine(List<InvoiceLine> invoiceLineList);
 
@@ -84,7 +84,7 @@ public interface InvoiceLineService {
    * To check that Start of pack type line quantity changed or not.
    *
    * @param invoiceLineList
-   * @return
+   * @return boolean if StartOfPackTypeLineQtyChanged is found else null
    */
   public boolean isStartOfPackTypeLineQtyChanged(List<InvoiceLine> invoiceLineList);
 

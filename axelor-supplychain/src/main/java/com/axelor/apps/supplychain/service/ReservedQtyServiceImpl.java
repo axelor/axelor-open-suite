@@ -328,7 +328,7 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
    * Check in the stock move for cancel reason and return the config in cancel reason.
    *
    * @param stockMoveLine
-   * @return the value of the boolean field on cancel reason if found else false.
+   * @return boolean if isReallocatingQtyOnCancel is found else null.
    */
   protected boolean isReallocatingQtyOnCancel(StockMoveLine stockMoveLine) {
     return Optional.of(stockMoveLine)
@@ -574,6 +574,7 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
    *
    * @param stockLocationLine
    * @param stockMoveLine
+   * @param toStatus
    * @throws AxelorException
    */
   protected void checkReservedQtyStocks(

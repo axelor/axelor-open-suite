@@ -75,9 +75,7 @@ public class AlarmEngineService<T extends Model> {
    *
    * @param klass Le modèle cible des requête.
    * @param params Liste de paramètre de la requête.
-   * @return Un dictionnaire contenant l'ensemble des éléments remonté par la requête avec la liste
-   *     des alarmes concernées.
-   * @throws Exception
+   * @return Map if get is found else null
    */
   @SuppressWarnings("unchecked")
   public Map<T, List<Alarm>> get(Class<T> klass, T... params) {
@@ -100,12 +98,8 @@ public class AlarmEngineService<T extends Model> {
    *
    * @param alarmEngineLines Une liste d'éléments (lignes) d'un ou plusieurs moteur d'alarme.
    * @param klass Le modèle cible des requête.
-   * @param inList Une liste d'éléments du modèle cible pré-établies limitant le champs de recherche
-   *     à ces éléments.
    * @param params Liste de paramètre de la requête.
-   * @return Un dictionnaire contenant l'ensemble des éléments remonté par la requête avec la liste
-   *     des alarmes concernées.
-   * @throws Exception
+   * @return Map if get is found else null
    */
   @SuppressWarnings("unchecked")
   protected Map<T, List<Alarm>> get(
@@ -135,15 +129,10 @@ public class AlarmEngineService<T extends Model> {
   /**
    * Obtenir le tuple model cible et alarme.
    *
-   * @param message Le message à attribuer à l'alarme.
-   * @param query La condition de la requête (Clause WHERE).
+   * @param alarmEngine
    * @param klass Le modèle cible de la requête.
-   * @param inList Une liste d'éléments du modèle cible pré-établies limitant le champs de recherche
-   *     à ces éléments.
    * @param params Liste de paramètre de la requête.
-   * @return Un dictionnaire contenant l'ensemble des éléments remonté par la requête avec l'alarme
-   *     concernée.
-   * @throws Exception
+   * @return Map if get is found else null
    */
   @SuppressWarnings("unchecked")
   protected Map<T, Alarm> get(AlarmEngine alarmEngine, Class<T> klass, T... params) {
@@ -167,11 +156,8 @@ public class AlarmEngineService<T extends Model> {
    *
    * @param query La condition de la requête (Clause WHERE).
    * @param klass Le modèle cible de la requête.
-   * @param inList Une liste d'éléments du modèle cible pré-établies limitant le champs de recherche
-   *     à ces éléments.
    * @param params Liste de paramètre de la requête.
-   * @return Liste d'élément correspondant au modèle cible.
-   * @throws Exception
+   * @return List if results is found else null Liste d'élément correspondant au modèle cible.
    */
   @SuppressWarnings("unchecked")
   public List<T> results(String query, Class<T> klass, T... params) {

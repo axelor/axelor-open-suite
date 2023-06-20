@@ -33,7 +33,8 @@ public interface StockMoveToolService {
    *
    * @param stockMoveType Type de mouvement de stock
    * @param company la société
-   * @return la chaine contenant la séquence du StockMove
+   * @return String if getSequenceStockMove is found else null la chaine contenant la séquence du
+   *     StockMove
    * @throws AxelorException Aucune séquence de StockMove n'a été configurée
    */
   public String getSequenceStockMove(int stockMoveType, Company company) throws AxelorException;
@@ -55,7 +56,7 @@ public interface StockMoveToolService {
    * Compute stock move name.
    *
    * @param stockMove
-   * @return
+   * @return String if computeName is found else null
    */
   String computeName(StockMove stockMove);
 
@@ -64,7 +65,7 @@ public interface StockMoveToolService {
    *
    * @param stockMove
    * @param name
-   * @return
+   * @return String if computeName is found else null
    */
   String computeName(StockMove stockMove, String name);
 
@@ -72,7 +73,7 @@ public interface StockMoveToolService {
    * Get from address from stock move or stock location.
    *
    * @param stockMove
-   * @return
+   * @return Address if getFromAddress is found else null
    */
   Address getFromAddress(StockMove stockMove);
 
@@ -80,7 +81,7 @@ public interface StockMoveToolService {
    * Get to address from stock move or stock location.
    *
    * @param stockMove
-   * @return
+   * @return Address if getToAddress is found else null
    */
   Address getToAddress(StockMove stockMove);
 
@@ -88,7 +89,7 @@ public interface StockMoveToolService {
    * Get partner address.
    *
    * @param stockMove
-   * @return
+   * @return Address if getPartnerAddress is found else null
    * @throws AxelorException
    */
   Address getPartnerAddress(StockMove stockMove) throws AxelorException;
@@ -97,7 +98,7 @@ public interface StockMoveToolService {
    * Get company address.
    *
    * @param stockMove
-   * @return
+   * @return Address if getCompanyAddress is found else null
    * @throws AxelorException
    */
   Address getCompanyAddress(StockMove stockMove) throws AxelorException;

@@ -109,7 +109,7 @@ public class PartnerProductQualityRatingServiceImpl implements PartnerProductQua
    *
    * @param partner
    * @param product
-   * @return
+   * @return optional if searchPartnerProductQualityRating is found else null
    */
   private Optional<PartnerProductQualityRating> searchPartnerProductQualityRating(
       Partner partner, Product product) {
@@ -140,7 +140,7 @@ public class PartnerProductQualityRatingServiceImpl implements PartnerProductQua
    *
    * @param partner
    * @param product
-   * @return
+   * @return PartnerProductQualityRating if createPartnerProductQualityRating is found else null
    */
   @Transactional
   protected PartnerProductQualityRating createPartnerProductQualityRating(
@@ -239,7 +239,7 @@ public class PartnerProductQualityRatingServiceImpl implements PartnerProductQua
    *
    * @param compliantArrivalProductQty
    * @param arrivalProductQty
-   * @return
+   * @return BigDecimal if computeQualityRating is found else null
    */
   protected BigDecimal computeQualityRating(
       BigDecimal compliantArrivalProductQty, BigDecimal arrivalProductQty) {
@@ -252,7 +252,7 @@ public class PartnerProductQualityRatingServiceImpl implements PartnerProductQua
    * Compute quality rating selection value (rounding to the nearest half).
    *
    * @param qualityRating
-   * @return
+   * @return BigDecimal if computeQualityRatingSelect is found else null
    */
   protected BigDecimal computeQualityRatingSelect(BigDecimal qualityRating) {
     final BigDecimal two = new BigDecimal(2);

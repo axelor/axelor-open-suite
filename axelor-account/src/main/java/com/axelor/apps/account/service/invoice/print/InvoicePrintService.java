@@ -40,6 +40,7 @@ public interface InvoicePrintService {
    * @param locale
    * @return the file link to the printed invoice.
    * @throws AxelorException
+   * @throws IOException
    */
   String printInvoice(
       Invoice invoice, boolean forceRefresh, String format, Integer reportType, String locale)
@@ -75,6 +76,7 @@ public interface InvoicePrintService {
    * @param format
    * @param locale
    * @return a file with the invoice as PDF.
+   * @throws AxelorException
    */
   File getPrintedInvoice(
       Invoice invoice, boolean forceRefresh, Integer reportType, String format, String locale)

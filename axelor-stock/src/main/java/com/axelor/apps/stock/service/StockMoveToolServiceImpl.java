@@ -94,7 +94,8 @@ public class StockMoveToolServiceImpl implements StockMoveToolService {
    *
    * @param stockMoveType Type de mouvement de stock
    * @param company la société
-   * @return la chaine contenant la séquence du StockMove
+   * @return String if getSequenceStockMove is found else null la chaine contenant la séquence du
+   *     StockMove
    * @throws AxelorException Aucune séquence de StockMove n'a été configurée
    */
   @Override

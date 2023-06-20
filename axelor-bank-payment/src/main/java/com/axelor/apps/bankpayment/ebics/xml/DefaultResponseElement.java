@@ -61,6 +61,7 @@ public abstract class DefaultResponseElement extends DefaultEbicsRootElement {
    *
    * @param factory the content factory containing the response.
    * @param name the element name
+   * @param ebicsUser
    */
   public DefaultResponseElement(ContentFactory factory, String name, EbicsUser ebicsUser) {
     this.factory = factory;
@@ -72,7 +73,7 @@ public abstract class DefaultResponseElement extends DefaultEbicsRootElement {
    * Parses the content of a <code>ContentFactory</code>
    *
    * @param factory the content factory
-   * @throws EbicsException parse error
+   * @throws AxelorException
    */
   protected void parse(ContentFactory factory) throws AxelorException {
     try {
@@ -86,7 +87,8 @@ public abstract class DefaultResponseElement extends DefaultEbicsRootElement {
   /**
    * Reports the return code to the user.
    *
-   * @throws EbicsException request fails.
+   * @param rootElements
+   * @throws AxelorException
    */
   public void report(EbicsRootElement[] rootElements) throws AxelorException {
 

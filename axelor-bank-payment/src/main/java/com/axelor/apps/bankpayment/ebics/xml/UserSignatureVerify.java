@@ -69,8 +69,8 @@ public class UserSignatureVerify {
    * Constructs a new <code>UserSignature</code> element for an Ebics user and a data to sign
    *
    * @param user the ebics user
-   * @param signatureVersion the signature version
-   * @param toSign the data to be signed
+   * @param bankOrderContent
+   * @param signature
    */
   public UserSignatureVerify(EbicsUser user, byte[] bankOrderContent, byte[] signature) {
     this.user = user;

@@ -358,6 +358,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
    * the difference with the planned prodproducts.
    *
    * @param manufOrder
+   * @return boolean if partialFinish is found else null
    * @throws AxelorException
    */
   @Override
@@ -511,6 +512,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
    *
    * @param manufOrder
    * @param plannedStartDateT
+   * @throws AxelorException
    */
   @Override
   @Transactional(rollbackOn = {Exception.class})
@@ -535,7 +537,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
    * order.
    *
    * @param manufOrder
-   * @return
+   * @return List if getSortedOperationOrderList is found else null
    */
   protected List<OperationOrder> getSortedOperationOrderList(ManufOrder manufOrder) {
     List<OperationOrder> operationOrderList =

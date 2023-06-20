@@ -257,7 +257,7 @@ public class GdprResponseErasureServiceImpl implements GdprResponseErasureServic
    * get actual model anonymizerLine parameterized in app config
    *
    * @param metaModel
-   * @return
+   * @return List if getMetaModelAnonymizerLines is found else null
    */
   protected List<AnonymizerLine> getMetaModelAnonymizerLines(MetaModel metaModel) {
 
@@ -269,7 +269,7 @@ public class GdprResponseErasureServiceImpl implements GdprResponseErasureServic
 
   /**
    * @param fullName
-   * @return
+   * @return MetaModel if getMetaModelFromFullName is found else null
    */
   protected MetaModel getMetaModelFromFullName(String fullName) {
     return metaModelRepo.all().filter("self.fullName = '" + fullName + "'").fetchOne();

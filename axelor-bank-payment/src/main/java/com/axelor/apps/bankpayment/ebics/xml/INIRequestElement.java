@@ -61,7 +61,6 @@ public class INIRequestElement extends DefaultEbicsRootElement {
    * Constructs a new INI request element.
    *
    * @param session the ebics session.
-   * @param orderId the order id, if null a random one is generated.
    */
   public INIRequestElement(EbicsSession session) {
     super(session);

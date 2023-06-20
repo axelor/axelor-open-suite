@@ -42,7 +42,7 @@ public interface InvoiceServiceSupplychain {
    * To update product qty with pack header qty.
    *
    * @param invoice
-   * @return {@link Invoice}
+   * @return Invoice if updateProductQtyWithPackHeaderQty is found else null
    * @throws AxelorException
    */
   public Invoice updateProductQtyWithPackHeaderQty(Invoice invoice) throws AxelorException;

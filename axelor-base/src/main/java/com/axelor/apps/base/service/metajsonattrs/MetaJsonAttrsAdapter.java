@@ -133,7 +133,7 @@ public class MetaJsonAttrsAdapter {
    * form of <"id", model.id>
    *
    * @param model
-   * @return
+   * @return Map if modelToJson is found else null
    */
   static Map<String, Object> modelToJson(Model model) {
     final Map<String, Object> manyToOneObject = new HashMap<>();

@@ -64,7 +64,6 @@ public class MoveAdjustementService {
    * Creating move of passage in gap regulation (on debit)
    *
    * @param debitMoveLine
-   * @return
    * @throws AxelorException
    */
   @Transactional(rollbackOn = {Exception.class})
@@ -131,7 +130,7 @@ public class MoveAdjustementService {
    * Creating move of passage in gap regulation (on credit)
    *
    * @param debitMoveLine
-   * @return
+   * @return MoveLine if AdjustmentCreditMove is found else null
    * @throws AxelorException
    */
   public MoveLine createAdjustmentCreditMove(MoveLine debitMoveLine) throws AxelorException {
@@ -200,8 +199,8 @@ public class MoveAdjustementService {
    * @param debitMoveLineToReconcile Ecriture au débit
    * @param creditMoveLineToReconcile Ecriture au crédit
    * @param amount Montant
-   * @return L'écriture de passage du compte de l'écriture au debit vers le compte de l'écriture au
-   *     credit.
+   * @return Move if MoveToPassOnTheOtherAccount is found else null L'écriture de passage du compte
+   *     de l'écriture au debit vers le compte de l'écriture au credit.
    * @throws AxelorException
    */
   public Move createMoveToPassOnTheOtherAccount(

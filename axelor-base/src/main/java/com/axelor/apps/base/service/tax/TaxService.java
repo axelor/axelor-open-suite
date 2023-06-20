@@ -37,7 +37,8 @@ public class TaxService {
    * Fonction permettant de récupérer le taux de TVA d'une TVA
    *
    * @param tax Une TVA
-   * @return Le taux de TVA
+   * @param localDate
+   * @return BigDecimal if getTaxRate is found else null
    * @throws AxelorException
    */
   public BigDecimal getTaxRate(Tax tax, LocalDate localDate) throws AxelorException {
@@ -49,7 +50,8 @@ public class TaxService {
    * Fonction permettant de récupérer le taux de TVA d'une TVA
    *
    * @param tax Une TVA
-   * @return Le taux de TVA
+   * @param localDate
+   * @return TaxLine if getTaxLine is found else null
    * @throws AxelorException
    */
   public TaxLine getTaxLine(Tax tax, LocalDate localDate) throws AxelorException {

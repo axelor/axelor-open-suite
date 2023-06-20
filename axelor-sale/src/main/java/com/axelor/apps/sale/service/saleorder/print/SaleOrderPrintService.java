@@ -31,7 +31,7 @@ public interface SaleOrderPrintService {
    * Print a list of sale orders in the same output.
    *
    * @param ids ids of the sale order.
-   * @return the link to the generated file.
+   * @return String if printSaleOrdersmis found else null
    * @throws IOException
    */
   String printSaleOrders(List<Long> ids) throws IOException;

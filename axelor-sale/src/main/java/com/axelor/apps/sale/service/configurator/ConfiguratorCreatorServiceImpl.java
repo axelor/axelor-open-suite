@@ -188,7 +188,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
    * Get a default value to test a script.
    *
    * @param attribute
-   * @return
+   * @return Optional if getAttributesDefaultValue is found else null
    */
   protected Optional<Object> getAttributesDefaultValue(MetaJsonField attribute) {
     switch (attribute.getType()) {
@@ -232,7 +232,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
    *
    * @param attribute
    * @param relation
-   * @return
+   * @return Object if getAttributeRelationalField is found else null
    */
   protected Object getAttributeRelationalField(MetaJsonField attribute, String relation) {
     try {
@@ -282,6 +282,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
    *
    * @param formula
    * @param creator
+   * @return MetaJsonField if createMetaJsonFieldFromMetaField is found else null
    * @throws AxelorException
    */
   protected MetaJsonField createMetaJsonFieldFromMetaField(
@@ -315,6 +316,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
    *
    * @param formula
    * @param creator
+   * @return MetaJsonField if copyMetaJsonFieldFromFormula is found else null
    */
   protected MetaJsonField copyMetaJsonFieldFromFormula(
       ConfiguratorFormula formula, ConfiguratorCreator creator) {
@@ -447,6 +449,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
    * Update the indicators views attrs using the formulas.
    *
    * @param creator
+   * @param formulas
    */
   protected void updateIndicatorsAttrs(
       ConfiguratorCreator creator, List<? extends ConfiguratorFormula> formulas) {
@@ -462,6 +465,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
    * Update one indicator attrs in the view, using the corresponding formula. Do nothing if
    * indicator and formula do not represent the same field.
    *
+   * @param creator
    * @param indicator
    * @param formula
    */

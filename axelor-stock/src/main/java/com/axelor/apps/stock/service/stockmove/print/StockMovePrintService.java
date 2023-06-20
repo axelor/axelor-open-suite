@@ -31,7 +31,7 @@ public interface StockMovePrintService {
    * Print a list of stock moves in the same output.
    *
    * @param ids ids of the stock move.
-   * @return the link to the generated file.
+   * @return String if printStockMoves is found else null
    * @throws IOException
    */
   String printStockMoves(List<Long> ids) throws IOException;

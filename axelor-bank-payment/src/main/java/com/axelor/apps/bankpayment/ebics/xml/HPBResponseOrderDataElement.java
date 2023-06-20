@@ -55,6 +55,7 @@ public class HPBResponseOrderDataElement extends DefaultResponseElement {
    * Creates a new <code>HPBResponseOrderDataElement</code> from a given content factory.
    *
    * @param factory the content factory.
+   * @param ebicsUser
    */
   public HPBResponseOrderDataElement(ContentFactory factory, EbicsUser ebicsUser) {
     super(factory, "HPBData", ebicsUser);

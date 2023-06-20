@@ -38,8 +38,8 @@ public class CfonbToolService {
   /**
    * Procédure permettant de vérifier que la chaine de caractère ne contient que des entier
    *
-   * @param s La chaine de caractère à tester
-   * @param company Une société
+   * @param value
+   * @param zone
    * @throws AxelorException
    */
   public void testDigital(String value, String zone) throws AxelorException {
@@ -56,17 +56,6 @@ public class CfonbToolService {
    * Procédure permettant de vérifier la longueur d'un enregistrement CFONB
    *
    * @param s Un enregistrement CFONB
-   * @param company Une société
-   * @param type Le type d'enregistrement :
-   *     <ul>
-   *       <li>0 = émetteur
-   *       <li>1 = destinataire
-   *       <li>2 = total
-   *       <li>3 = entête
-   *       <li>4 = détail
-   *       <li>5 = fin
-   *     </ul>
-   *
    * @param size La longueur de l'enregistrement
    * @throws AxelorException
    */
@@ -83,7 +72,7 @@ public class CfonbToolService {
    * Méthode permettant de mettre en majuscule et sans accent un CFONB
    *
    * @param cFONB
-   * @return Le CFONB nettoyé
+   * @return List if toUpperCase is found else null
    */
   public List<String> toUpperCase(List<String> cFONB) {
     List<String> upperCase = new ArrayList<String>();
@@ -96,8 +85,8 @@ public class CfonbToolService {
   /**
    * Méthode permettant de mettre en majuscule et sans accent un CFONB
    *
-   * @param cFONB
-   * @return Le CFONB nettoyé
+   * @param record
+   * @return String if toUpperCase is found else null
    */
   public String toUpperCase(String record) {
 
@@ -279,7 +268,7 @@ public class CfonbToolService {
    * @param senderCFONB Un enregistrement 'émetteur'
    * @param recipientCFONB Un liste d'enregistrement 'destinataire'
    * @param totalCFONB Un enregistrement 'total'
-   * @return Le CFONB
+   * @return List if createCFONBFile is found else null
    */
   public List<String> createCFONBFile(
       String senderRecord, List<String> recipientRecord, String totalRecord) {

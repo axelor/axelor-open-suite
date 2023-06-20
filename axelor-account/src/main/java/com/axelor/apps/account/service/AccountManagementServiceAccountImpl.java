@@ -120,7 +120,7 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
    * @param configObject Specify if we want get the tax from the product or its product family
    *     <li>1 : product
    *     <li>2 : product family
-   * @return
+   * @return Account if ProductAccount found else null
    * @throws AxelorException
    */
   @CallMethod
@@ -156,7 +156,7 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
    *
    * @param product
    * @param company
-   * @return
+   * @return AnalyticDistributionTemplate if found else null
    * @throws AxelorException
    */
   public AnalyticDistributionTemplate getAnalyticDistributionTemplate(
@@ -173,7 +173,7 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
    * @param configObject Specify if we want get the tax from the product or its product family
    *     <li>1 : product
    *     <li>2 : product family
-   * @return
+   * @return AnalyticDistributionTemplate if found else null
    * @throws AxelorException
    */
   protected AnalyticDistributionTemplate getAnalyticDistributionTemplate(
@@ -215,7 +215,7 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
    *
    * @param product
    * @param company
-   * @return
+   * @return FixedAssetCategory if ProductFixedAssetCategory found else null
    * @throws AxelorException
    */
   public FixedAssetCategory getProductFixedAssetCategory(Product product, Company company) {
@@ -232,7 +232,7 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
    *     product family
    *     <li>1 : product
    *     <li>2 : product family
-   * @return
+   * @return FixedAssetCategory if ProductFixedAssetCategory found else null
    * @throws AxelorException
    */
   protected FixedAssetCategory getProductFixedAssetCategory(

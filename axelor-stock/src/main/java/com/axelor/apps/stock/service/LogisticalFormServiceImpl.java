@@ -126,7 +126,7 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
    * Test for detail line (to be overridden).
    *
    * @param stockMoveLine
-   * @return
+   * @return boolean if testForDetailLine is found else null
    */
   @SuppressWarnings("all")
   protected boolean testForDetailLine(StockMoveLine stockMoveLine) {

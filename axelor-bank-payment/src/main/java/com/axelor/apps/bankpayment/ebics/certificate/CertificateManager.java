@@ -237,7 +237,6 @@ public class CertificateManager {
    * Saves the certificates in PKCS12 format
    *
    * @param path the certificates path
-   * @param pwdCallBack the password call back
    * @throws GeneralSecurityException
    * @throws IOException
    */
@@ -253,7 +252,6 @@ public class CertificateManager {
    * Loads user certificates from a given key store
    *
    * @param path the key store path
-   * @param pwdCallBack the password call back
    * @throws GeneralSecurityException
    * @throws IOException
    * @throws AxelorException
@@ -284,6 +282,7 @@ public class CertificateManager {
    *
    * @param filename the key store file name
    * @param password the key password
+   * @throws GeneralSecurityException
    * @throws IOException
    */
   public void writePKCS12Certificate(String filename, char[] password)

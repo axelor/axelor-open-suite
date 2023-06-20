@@ -130,6 +130,11 @@ public abstract class InvoiceGenerator {
    * @param company
    * @param partner
    * @param contactPartner
+   * @param priceList
+   * @param internalReference
+   * @param externalReference
+   * @param inAti
+   * @param tradingName
    * @throws AxelorException
    */
   protected InvoiceGenerator(

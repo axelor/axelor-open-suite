@@ -51,7 +51,8 @@ public class SaleOrderLineTaxService {
    *
    * @param saleOrder Le devis de vente.
    * @param saleOrderLineList Les lignes du devis de vente.
-   * @return La liste des lignes de taxe du devis de vente.
+   * @return List if createsSaleOrderLineTax is found else null La liste des lignes de taxe du devis
+   *     de vente.
    */
   public List<SaleOrderLineTax> createsSaleOrderLineTax(
       SaleOrder saleOrder, List<SaleOrderLine> saleOrderLineList) {

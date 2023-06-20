@@ -234,7 +234,7 @@ public class ManufOrderProductRestServiceImpl implements ManufOrderProductRestSe
    *
    * @param stockMoveLine
    * @param qty
-   * @return
+   * @return StockMoveLine if updateStockMoveLineQty is found else null
    * @throws AxelorException
    */
   @Transactional(rollbackOn = {Exception.class})
@@ -274,7 +274,8 @@ public class ManufOrderProductRestServiceImpl implements ManufOrderProductRestSe
    * @param trackingNumber
    * @param manufOrder
    * @param productType
-   * @return
+   * @return StockMoveLine if addManufOrderProduct is found else null
+   * @throws AxelorException
    */
   @Transactional(rollbackOn = {Exception.class})
   @Override

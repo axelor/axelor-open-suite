@@ -205,7 +205,7 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
   /**
    * {@inheritDoc}
    *
-   * @throws NullPointerException if fixedAssetDerogatoryLineList is null
+   * @param fixedAssetLineList
    */
   @Override
   public void clear(List<FixedAssetLine> fixedAssetLineList) {
@@ -360,8 +360,8 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
   /**
    * {@inheritDoc}
    *
+   * @param fixedAssetLine
    * @throws AxelorException
-   * @throws NullPointerException if fixedAssetLine is null.
    */
   @Override
   public FixedAsset getFixedAsset(FixedAssetLine fixedAssetLine) throws AxelorException {

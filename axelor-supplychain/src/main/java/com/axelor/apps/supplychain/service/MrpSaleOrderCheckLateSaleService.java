@@ -29,7 +29,7 @@ public interface MrpSaleOrderCheckLateSaleService {
    *
    * @param saleOrderLine
    * @param mrpLineType
-   * @return a boolean indicating if a line should be created
+   * @return boolean if checkLateSalesParameter is found else null
    */
   boolean checkLateSalesParameter(SaleOrderLine saleOrderLine, MrpLineType mrpLineType);
 }

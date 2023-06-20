@@ -52,6 +52,7 @@ public interface FixedAssetLineGenerationService {
    * asset line, it starts from fixedAssetLine.
    *
    * @param fixedAsset
+   * @param fixedAssetLine
    * @throws AxelorException
    */
   void generateAndComputeFixedAssetLinesStartingWith(
@@ -60,8 +61,8 @@ public interface FixedAssetLineGenerationService {
   /**
    * Generates and compute ifrs lines for fixedAsset
    *
+   * @param fixedAsset
    * @throws AxelorException
-   * @throws NullPointerException if fixedAsset is null
    */
   void generateAndComputeIfrsFixedAssetLines(FixedAsset fixedAsset) throws AxelorException;
 }

@@ -199,7 +199,7 @@ public class StockRulesServiceSupplychainImpl extends StockRulesServiceImpl {
    * Get minimum quantity from default supplier.
    *
    * @param product
-   * @return
+   * @return BigDecimal if getDefaultSupplierMinQty is found else null
    */
   protected BigDecimal getDefaultSupplierMinQty(Product product) {
     Partner defaultSupplierPartner = product.getDefaultSupplierPartner();

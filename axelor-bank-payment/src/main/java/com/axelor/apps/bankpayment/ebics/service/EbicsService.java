@@ -145,11 +145,9 @@ public class EbicsService {
   /**
    * Sends an INI request to the ebics bank server
    *
-   * @param userId the user ID
+   * @param ebicsUser
    * @param product the application product
    * @throws AxelorException
-   * @throws JDOMException
-   * @throws IOException
    */
   @Transactional(rollbackOn = {Exception.class})
   public void sendINIRequest(EbicsUser ebicsUser, EbicsProduct product) throws AxelorException {
@@ -182,7 +180,7 @@ public class EbicsService {
   /**
    * Sends a HIA request to the ebics server.
    *
-   * @param userId the user ID.
+   * @param ebicsUser
    * @param product the application product.
    * @throws AxelorException
    */
@@ -215,7 +213,7 @@ public class EbicsService {
   /**
    * Sends a HPB request to the ebics server.
    *
-   * @param userId the user ID.
+   * @param user
    * @param product the application product.
    * @throws AxelorException
    */
@@ -241,7 +239,7 @@ public class EbicsService {
   /**
    * Sends the SPR order to the bank.
    *
-   * @param userId the user ID
+   * @param ebicsUser
    * @param product the session product
    * @throws AxelorException
    */
@@ -324,9 +322,12 @@ public class EbicsService {
   /**
    * Sends a file to the ebics bank sever
    *
-   * @param path the file path to send
-   * @param userId the user ID that sends the file.
+   * @param transportUser
+   * @param signatoryUser
    * @param product the application product.
+   * @param file
+   * @param format
+   * @param signature
    * @throws AxelorException
    */
   private void sendFULRequest(

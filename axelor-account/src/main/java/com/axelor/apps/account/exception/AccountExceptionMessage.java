@@ -938,7 +938,7 @@ public final class AccountExceptionMessage {
   public static final String VENTILATE_STATE_MISSING_ORIGIN_DATE = /*$$(*/
       "Origin date is missing on the invoice" /*)*/;
 
-  /** Workflow ventilation */
+  /** Advance amount payments service */
   public static final String AMOUNT_ADVANCE_PAYMENTS_TOO_HIGH = /*$$(*/
       "Sum of advance payments amounts is higher than the total of this invoice." /*)*/;
 

@@ -80,7 +80,7 @@ public class Joiner {
    *
    * @param output the output stream.
    * @param transactionKey the transaction key
-   * @throws EbicsException
+   * @throws AxelorException
    */
   public void writeTo(OutputStream output, byte[] transactionKey) throws AxelorException {
     try {

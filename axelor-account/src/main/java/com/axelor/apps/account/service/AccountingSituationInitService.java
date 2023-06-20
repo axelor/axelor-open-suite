@@ -45,6 +45,7 @@ public interface AccountingSituationInitService {
    * configuration.
    *
    * @param situation Situation on which accounts should be created.
+   * @throws AxelorException
    */
   void createPartnerAccounts(AccountingSituation situation) throws AxelorException;
 }

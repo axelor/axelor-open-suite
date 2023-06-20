@@ -41,7 +41,6 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,9 +54,7 @@ public class LeadController {
    *
    * @param request
    * @param response
-   * @return
-   * @throws BirtException
-   * @throws IOException
+   * @throws AxelorException
    */
   public void print(ActionRequest request, ActionResponse response) throws AxelorException {
 

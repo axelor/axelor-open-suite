@@ -32,6 +32,7 @@ public class FixedAssetFailOverControlServiceImpl implements FixedAssetFailOverC
   /**
    * {@inheritDoc}
    *
+   * @param fixedAsset
    * @throws AxelorException
    */
   @Override

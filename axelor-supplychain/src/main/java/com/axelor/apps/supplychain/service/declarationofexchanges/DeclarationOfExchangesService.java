@@ -30,7 +30,7 @@ public interface DeclarationOfExchangesService {
    * Export declaration of exchanges.
    *
    * @param declarationOfExchanges
-   * @return
+   * @return Pair if export is found else null
    * @throws AxelorException
    */
   Pair<Path, String> export(DeclarationOfExchanges declarationOfExchanges) throws AxelorException;
@@ -39,7 +39,7 @@ public interface DeclarationOfExchangesService {
    * Override this method to use custom class for export.
    *
    * @param economicArea
-   * @return
+   * @return Map if DeclarationOfExchangesExporter is found else null
    */
   Map<String, Map<String, Class<? extends DeclarationOfExchangesExporter>>>
       getExportServiceClassMap(EconomicArea economicArea);

@@ -41,7 +41,7 @@ public class BankDetailsServiceAccountImpl extends BankDetailsServiceImpl {
    *
    * @param company
    * @param paymentMode
-   * @return
+   * @return String if CompanyBankDetailsDomain is found else null
    * @throws AxelorException
    */
   @Override

@@ -89,7 +89,7 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
    * @param company La société.
    * @param startDate Date de première échéance.
    * @param nbrTerm Nombre d'échéances.
-   * @return L'échéancier créé.
+   * @return PaymentSchedule if createPaymentSchedule is found else null L'échéancier créé.
    * @throws AxelorException
    */
   @Override
@@ -127,7 +127,7 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
    * @param nbrTerm Nombre d'échéances.
    * @param bankDetails RIB.
    * @param paymentMode Mode de paiement.
-   * @return L'échéancier créé.
+   * @return PaymentSchedule if PaymentSchedule is found else null L'échéancier créé.
    * @throws AxelorException
    */
   @Override
@@ -171,7 +171,7 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
    * Fonction permettant de tester et de récupérer une séquence de prélèvement
    *
    * @param company Une société
-   * @return
+   * @return String if PaymentScheduleSequence is found else null
    * @throws AxelorException
    */
   @Override
@@ -196,7 +196,8 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
    * Obtenir le total des factures des lignes d'un échéancier.
    *
    * @param paymentSchedule L'échéancier cible.
-   * @return Le somme des montants TTC des lignes de l'échéancier.
+   * @return BigDecimal if InvoiceTermTotal is found else null Le somme des montants TTC des lignes
+   *     de l'échéancier.
    */
   @Override
   public BigDecimal getInvoiceTermTotal(PaymentSchedule paymentSchedule) {
@@ -258,16 +259,15 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
   }
 
   /**
-   * Création d'un échéancier avec ces lignes.
-   *
-   * @param company La société.
-   * @param date Date de création.
-   * @param firstTermDate Date de première échéance.
-   * @param initialInTaxAmount Montant d'une échéance.
-   * @param nbrTerm Nombre d'échéances.
-   * @param bankDetails RIB.
-   * @param paymentMode Mode de paiement.
-   * @return L'échéancier créé.
+   * @param partner
+   * @param company
+   * @param date
+   * @param firstTermDate
+   * @param initialInTaxamount
+   * @param nbrTerm
+   * @param bankDetails
+   * @param paymentMode
+   * @return PaymentSchedule if PaymentSchedule is found else null
    * @throws AxelorException
    */
   @Override
@@ -305,7 +305,7 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
    * invoice M2M content and gets the movelines which are to pay
    *
    * @param paymentSchedule
-   * @return
+   * @return List if PaymentSchedulerMoveLineToPay is found else null
    */
   @Override
   public List<MoveLine> getPaymentSchedulerMoveLineToPay(PaymentSchedule paymentSchedule) {
@@ -434,7 +434,7 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
    * Methode permettant de savoir si l'échéance passée en paramètre est la dernière de l'échéancier
    *
    * @param paymentScheduleLine
-   * @return
+   * @return boolean if LastSchedule is found else null
    */
   @Override
   public boolean isLastSchedule(PaymentScheduleLine paymentScheduleLine) {

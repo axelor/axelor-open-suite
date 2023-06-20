@@ -119,7 +119,7 @@ public interface PartnerService {
    * Get the partner language code. If null, return the default partner language.
    *
    * @param partner
-   * @return
+   * @return String if getPartnerLanguageCode is found else null
    */
   String getPartnerLanguageCode(Partner partner);
 
@@ -127,7 +127,7 @@ public interface PartnerService {
    * Normalize phone number.
    *
    * @param phoneNumber
-   * @return
+   * @return String if normalizePhoneNumber is found else null
    */
   String normalizePhoneNumber(String phoneNumber);
 
@@ -135,7 +135,7 @@ public interface PartnerService {
    * Check phone number.
    *
    * @param phoneNumber
-   * @return
+   * @return boolean if checkPhoneNumber is found else null
    */
   boolean checkPhoneNumber(String phoneNumber);
 
@@ -143,7 +143,7 @@ public interface PartnerService {
    * Get phone number field name.
    *
    * @param actionName
-   * @return
+   * @return String if getPhoneNumberFieldName is found else null
    */
   String getPhoneNumberFieldName(String actionName);
 

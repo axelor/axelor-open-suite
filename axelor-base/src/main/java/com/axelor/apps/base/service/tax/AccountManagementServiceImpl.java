@@ -208,7 +208,7 @@ public class AccountManagementServiceImpl implements AccountManagementService {
    * @param configObject Specify if we want get the tax from the product or its product family
    *     <li>1 : product
    *     <li>2 : product family
-   * @return
+   * @return Tax if getProductTax is found else null
    * @throws AxelorException
    */
   protected Tax getProductTax(
@@ -236,9 +236,12 @@ public class AccountManagementServiceImpl implements AccountManagementService {
   /**
    * Obtenir la version de taxe d'un produit.
    *
+   * @param date
    * @param product
-   * @param amendment
-   * @return
+   * @param company
+   * @param fiscalPosition
+   * @param isPurchase
+   * @return TaxLine if getTaxLine is found else null
    * @throws AxelorException
    */
   @Override

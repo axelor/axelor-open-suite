@@ -88,10 +88,9 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
    * query.
    *
    * @param advancedExport
-   * @param criteria
-   * @return
+   * @param recordIds
+   * @return Query if getAdvancedExportQuery is found else null
    * @throws AxelorException
-   * @throws ClassNotFoundException
    */
   @Override
   public Query getAdvancedExportQuery(AdvancedExport advancedExport, List<Long> recordIds)
@@ -292,13 +291,11 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
   /**
    * This method build a dynamic query using <i>StringBuilder</i>.
    *
-   * @param metaModel
+   * @param advancedExport
    * @param selectFieldBuilder
-   * @param selectJoinFieldBuilder
-   * @param selectionFieldBuilder
-   * @param criteria
+   * @param recordIds
    * @param orderByFieldBuilder
-   * @return
+   * @return StringBuilder if createQueryBuilder is found else null
    */
   protected StringBuilder createQueryBuilder(
       AdvancedExport advancedExport,
@@ -342,7 +339,7 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
    *
    * @param metaModel
    * @param criteria
-   * @return
+   * @return String if getCriteria is found else null
    */
   protected String getCriteria(MetaModel metaModel, List<Long> recordIds) {
     String criteria = null;
@@ -428,6 +425,9 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
    * Initialize the object of <i>AdvancedExportGenerator</i> based on file type and generate the
    * export file.
    *
+   * @param advancedExport
+   * @param recordIds
+   * @param fileType
    * @throws AxelorException
    */
   @Override

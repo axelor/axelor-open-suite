@@ -37,7 +37,7 @@ public interface PricingService {
    * @param productCategory {@link ProductCategory}: can be null
    * @param modelName {@link String}: can be null or empty
    * @param previousPricing {@link Pricing}: can be null
-   * @return a {@link Optional} of Pricing.
+   * @return Optional<Pricing> if getRandomPricing is found else null
    */
   Optional<Pricing> getRandomPricing(
       Company company,
@@ -55,7 +55,7 @@ public interface PricingService {
    * @param productCategory {@link ProductCategory}: can be null
    * @param modelName {@link String}: can be null or empty
    * @param previousPricing {@link Pricing}: can be null
-   * @return a {@link Optional} of Pricing.
+   * @return List<Pricing> if getPricings is found else null
    */
   List<Pricing> getPricings(
       Company company,

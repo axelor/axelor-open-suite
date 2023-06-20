@@ -538,7 +538,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
    * Get a list of stock move lines consolidated by parent line (sale or purchase order).
    *
    * @param stockMoveLineList
-   * @return
+   * @return List if getConsolidatedStockMoveLineList is found else null
    * @throws AxelorException
    */
   protected List<StockMoveLine> getConsolidatedStockMoveLineList(

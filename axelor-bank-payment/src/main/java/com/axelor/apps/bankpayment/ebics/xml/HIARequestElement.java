@@ -56,7 +56,6 @@ public class HIARequestElement extends DefaultEbicsRootElement {
    * Constructs a new HIA Request root element
    *
    * @param session the current ebics session
-   * @param orderId the order id, if null a random one is generated.
    */
   public HIARequestElement(EbicsSession session) {
     super(session);

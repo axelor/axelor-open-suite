@@ -62,7 +62,7 @@ public interface SupplierCatalogService {
    * @param localDate
    * @param taxLine
    * @param resultInAti
-   * @return
+   * @return BigDecimal if getUnitPrice is found else null
    * @throws AxelorException
    */
   BigDecimal getUnitPrice(

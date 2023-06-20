@@ -231,7 +231,7 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
    * @param purchaseOrder
    * @param currentInvoiceId
    * @param excludeCurrentInvoice
-   * @return
+   * @return BigDecimal if getInvoicedAmount is found else null
    */
   @Override
   public BigDecimal getInvoicedAmount(

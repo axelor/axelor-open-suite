@@ -32,7 +32,7 @@ public interface FixedAssetGenerationService {
    * Allow to generate and compute the fixed asset lines
    *
    * @param fixedAsset
-   * @return
+   * @return FixedAsset if generateAndComputeLines is found else null
    * @throws AxelorException
    */
   FixedAsset generateAndComputeLines(FixedAsset fixedAsset) throws AxelorException;
@@ -47,8 +47,9 @@ public interface FixedAssetGenerationService {
    * = moveLine.fixedAsset.analyticDistributionTemplate fixedAsset.acquisitionDate = SI
    * moveLine.originDate != NULL = moveLine.originDate ELSE moveLine.date
    *
+   * @param move
    * @param moveLine
-   * @return generated {@link FixedAsset}
+   * @return FixedAsset if FixedAsset is found else null
    * @throws AxelorException
    */
   FixedAsset generateFixedAsset(Move move, MoveLine moveLine) throws AxelorException;
@@ -56,8 +57,9 @@ public interface FixedAssetGenerationService {
   /**
    * This method will call generateFixedAsset(MoveLine) and call save action.
    *
+   * @param move
    * @param moveLine
-   * @return Generated {@link FixedAsset}
+   * @return FixedAsset if FixedAsset is found else null
    * @throws AxelorException
    */
   FixedAsset generateAndSaveFixedAsset(Move move, MoveLine moveLine) throws AxelorException;
@@ -66,7 +68,7 @@ public interface FixedAssetGenerationService {
    * Generate sequence for fixedAsset.
    *
    * @param fixedAsset
-   * @return
+   * @return String if Sequence is found else null
    * @throws AxelorException
    */
   String generateSequence(FixedAsset fixedAsset) throws AxelorException;
@@ -75,7 +77,7 @@ public interface FixedAssetGenerationService {
    * Copy FixedAsset including all lines.
    *
    * @param fixedAsset
-   * @return
+   * @return FixedAsset if FixedAsset is found else null
    * @throws AxelorException
    */
   FixedAsset copyFixedAsset(FixedAsset fixedAsset) throws AxelorException;

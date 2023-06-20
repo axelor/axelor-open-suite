@@ -127,7 +127,6 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
    * passées en paramètres.
    *
    * @param purchaseOrder
-   * @throws AxelorException
    */
   @Override
   public void _populatePurchaseOrder(PurchaseOrder purchaseOrder) {

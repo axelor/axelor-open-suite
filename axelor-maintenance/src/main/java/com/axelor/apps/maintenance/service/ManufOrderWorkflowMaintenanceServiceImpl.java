@@ -118,7 +118,7 @@ public class ManufOrderWorkflowMaintenanceServiceImpl extends ManufOrderWorkflow
    * order.
    *
    * @param manufOrder
-   * @return
+   * @return List if getSortedOperationOrderList is found else null
    */
   @Override
   protected List<OperationOrder> getSortedOperationOrderList(ManufOrder manufOrder) {

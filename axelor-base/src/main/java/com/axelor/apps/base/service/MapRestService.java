@@ -49,7 +49,7 @@ public interface MapRestService {
    *
    * @param address
    * @param objectNode
-   * @return
+   * @return String if makeAddressString is found else null
    * @throws AxelorException
    * @throws JSONException
    */

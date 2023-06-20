@@ -280,6 +280,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
    * Fill fields of sale order line from its product
    *
    * @param saleOrderLine
+   * @throws AxelorException
    */
   protected void fillSaleOrderWithProduct(SaleOrderLine saleOrderLine) throws AxelorException {
     if (saleOrderLine.getProduct() != null) {
@@ -321,7 +322,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
    * @param configurator
    * @param indicatorName
    * @param jsonAttributes
-   * @return
+   * @return Object computeIndicatorValue if found else null
    */
   protected Object computeIndicatorValue(
       Configurator configurator, String indicatorName, JsonContext jsonAttributes) {
@@ -384,7 +385,8 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
    * @param jsonAttributes
    * @param jsonIndicators
    * @param saleOrder
-   * @return
+   * @return SaleOrderLine if generateSaleOrderLine is found else null
+   * @throws AxelorException
    */
   protected SaleOrderLine generateSaleOrderLine(
       Configurator configurator,
@@ -475,8 +477,9 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
    * "purchaseProduct", this method will return the method "setPurchaseProduct"
    *
    * @param oneToManyFormula a ConfiguratorFormula used to fill a one-to-many
-   * @return the found method
+   * @return Method if computeMappedByMethod is found else null
    * @throws AxelorException if the mapped by field in meta field is empty.
+   * @throws ClassNotFoundException
    */
   protected Method computeMappedByMethod(ConfiguratorFormula oneToManyFormula)
       throws AxelorException, ClassNotFoundException {
@@ -495,6 +498,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
    * method may become useless on a future ADK update.
    *
    * @param model
+   * @throws AxelorException
    */
   protected void fetchManyToManyFields(Model model) throws AxelorException {
     // get all many to many fields

@@ -658,6 +658,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
    *     invoice should be integrated in calculation For cancellation, the invoice shouldn't be
    *     integrated in calculation
    * @param excludeCurrentInvoice To know if the invoice should be or not integrated in calculation
+   * @return BigDecimal if getInvoicedAmount is found else null
    */
   @Override
   public BigDecimal getInvoicedAmount(

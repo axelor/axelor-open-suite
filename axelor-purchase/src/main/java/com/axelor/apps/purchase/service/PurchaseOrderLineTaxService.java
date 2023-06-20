@@ -49,7 +49,7 @@ public class PurchaseOrderLineTaxService {
    *
    * @param purchaseOrder La commande.
    * @param purchaseOrderLineList Les lignes de commandes.
-   * @return La liste des lignes de TVA de la commande.
+   * @return List if createsPurchaseOrderLineTax is found else null
    */
   public List<PurchaseOrderLineTax> createsPurchaseOrderLineTax(
       PurchaseOrder purchaseOrder, List<PurchaseOrderLine> purchaseOrderLineList) {

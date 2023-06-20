@@ -34,6 +34,7 @@ public class QualityAlertManagementRepository extends QualityAlertRepository {
    * Generate and set sequence in reference with predefined prefix.
    *
    * @param qualityAlert Overridden quality alert object to set reference on onSave event.
+   * @return QualityAlert if save is found else null
    */
   @Override
   public QualityAlert save(QualityAlert qualityAlert) {

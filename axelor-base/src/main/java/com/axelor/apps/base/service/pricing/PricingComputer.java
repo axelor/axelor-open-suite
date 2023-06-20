@@ -84,7 +84,7 @@ public class PricingComputer extends AbstractObservablePricing {
    *
    * @param key: non-null
    * @param value: non-null
-   * @return itself
+   * @return PricingComputer if putInContext is found else null
    */
   public PricingComputer putInContext(String key, Object value) {
     LOG.debug("Putting in context key {} with value {}", key, value);
@@ -296,8 +296,7 @@ public class PricingComputer extends AbstractObservablePricing {
    * This method will return every pricing lines that classify the model in the pricing.
    *
    * @param pricing: non-null
-   * @param model non-null
-   * @param classModel-null
+   * @return List if getMatchedPricingLines is found else null
    */
   protected List<PricingLine> getMatchedPricingLines(Pricing pricing) {
     if (context == null || model == null) {
@@ -320,9 +319,7 @@ public class PricingComputer extends AbstractObservablePricing {
   /**
    * This method will return every pricing lines that classify the model in the pricing configured.
    *
-   * @param pricing: non-null
-   * @param model non-null
-   * @param classModel-null
+   * @return List if getMatchedPricingLines is found else null
    */
   public List<PricingLine> getMatchedPricingLines() {
 

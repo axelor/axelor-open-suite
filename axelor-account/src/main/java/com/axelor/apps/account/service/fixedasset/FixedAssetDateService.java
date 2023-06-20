@@ -45,8 +45,9 @@ public interface FixedAssetDateService {
   /**
    * Compute and return the last day of the month/year depending on the periodicity type.
    *
-   * @param fixedAsset
+   * @param periodicityType
    * @param date
+   * @return LocalDate if LastDayOfPeriodicity is found else null
    */
   LocalDate computeLastDayOfPeriodicity(Integer periodicityType, LocalDate date);
 }

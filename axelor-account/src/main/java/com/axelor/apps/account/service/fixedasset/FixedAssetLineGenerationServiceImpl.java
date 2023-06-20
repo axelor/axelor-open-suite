@@ -90,8 +90,8 @@ public class FixedAssetLineGenerationServiceImpl implements FixedAssetLineGenera
   /**
    * {@inheritDoc}
    *
+   * @param fixedAsset
    * @throws AxelorException
-   * @throws NullPointerException if fixedAsset is null
    */
   @Override
   public void generateAndComputeIfrsFixedAssetLines(FixedAsset fixedAsset) throws AxelorException {
@@ -119,8 +119,8 @@ public class FixedAssetLineGenerationServiceImpl implements FixedAssetLineGenera
   /**
    * {@inheritDoc}
    *
+   * @param fixedAsset
    * @throws AxelorException
-   * @throws NullPointerException if fixedAsset is null
    */
   @Override
   public void generateAndComputeFiscalFixedAssetLines(FixedAsset fixedAsset)
@@ -148,8 +148,8 @@ public class FixedAssetLineGenerationServiceImpl implements FixedAssetLineGenera
   /**
    * {@inheritDoc}
    *
+   * @param fixedAsset
    * @throws AxelorException
-   * @throws NullPointerException if fixedAsset is null
    */
   @Override
   public void generateAndComputeFixedAssetLines(FixedAsset fixedAsset) throws AxelorException {
@@ -177,8 +177,9 @@ public class FixedAssetLineGenerationServiceImpl implements FixedAssetLineGenera
   /**
    * {@inheritDoc}
    *
+   * @param fixedAsset
+   * @param fixedAssetLine
    * @throws AxelorException
-   * @throws NullPointerException if fixedAsset is null
    */
   @Override
   public void generateAndComputeFixedAssetLinesStartingWith(

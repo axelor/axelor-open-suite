@@ -115,7 +115,7 @@ public interface StockLocationLineService {
    *
    * @param stockLocation A location
    * @param product A product
-   * @return The found or created location line
+   * @return StockLocationLine if getOrCreateStockLocationLine is found else null
    */
   public StockLocationLine getOrCreateStockLocationLine(
       StockLocation stockLocation, Product product);
@@ -128,7 +128,7 @@ public interface StockLocationLineService {
    * @param detailLocation A location
    * @param product A product
    * @param trackingNumber A tracking number
-   * @return The found or created detailed location line
+   * @return StockLocationLine if getOrCreateDetailLocationLine is found else null
    */
   public StockLocationLine getOrCreateDetailLocationLine(
       StockLocation detailLocation, Product product, TrackingNumber trackingNumber);
@@ -146,7 +146,7 @@ public interface StockLocationLineService {
    * Allow to get the location lines of a given product.
    *
    * @param product
-   * @return
+   * @return List if getStockLocationLines is found else null
    */
   public List<StockLocationLine> getStockLocationLines(Product product);
 
@@ -188,7 +188,7 @@ public interface StockLocationLineService {
    *
    * @param stockLocation
    * @param product
-   * @return
+   * @return BigDecimal if getAvailableQty is found else null
    */
   public BigDecimal getAvailableQty(StockLocation stockLocation, Product product);
 
@@ -197,7 +197,7 @@ public interface StockLocationLineService {
    *
    * @param stockLocation
    * @param trackingNumber
-   * @return
+   * @return BigDecimal if getTrackingNumberAvailableQty is found else null
    */
   public BigDecimal getTrackingNumberAvailableQty(
       StockLocation stockLocation, TrackingNumber trackingNumber);
@@ -208,6 +208,7 @@ public interface StockLocationLineService {
    *
    * @param stockLocationLine a stock location line with a product and a stock location.
    * @return the future quantity of the stock location line.
+   * @throws AxelorException
    */
   BigDecimal computeFutureQty(StockLocationLine stockLocationLine) throws AxelorException;
 
@@ -216,7 +217,7 @@ public interface StockLocationLineService {
    * specific/all stock location
    *
    * @param productId, companyId and stockLocationId
-   * @return the query.
+   * @return String if getStockLocationLineListForAProduct is found else null
    */
   public String getStockLocationLineListForAProduct(
       Long productId, Long companyId, Long stockLocationId);
@@ -226,7 +227,7 @@ public interface StockLocationLineService {
    * stock location
    *
    * @param productId, companyId and stockLocationId
-   * @return the query.
+   * @return String if getAvailableStockForAProduct is found else null
    */
   public String getAvailableStockForAProduct(Long productId, Long companyId, Long stockLocationId);
 
@@ -235,7 +236,7 @@ public interface StockLocationLineService {
    * specific/all stock location
    *
    * @param productId, companyId and stockLocationId
-   * @return the query.
+   * @return String if getRequestedReservedQtyForAProduct is found else null
    */
   public String getRequestedReservedQtyForAProduct(
       Long productId, Long companyId, Long stockLocationId);

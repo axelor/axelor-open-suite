@@ -70,7 +70,8 @@ public class UserSignature extends DefaultEbicsRootElement {
    *
    * @param user the ebics user
    * @param signatureVersion the signature version
-   * @param toSign the data to be signed
+   * @param data
+   * @param signature
    */
   public UserSignature(
       EbicsUser user, String name, String signatureVersion, byte[] data, byte[] signature) {

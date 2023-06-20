@@ -100,8 +100,9 @@ public class FileTransfer {
    *
    * @param content The bytes you want to send.
    * @param orderType As which order type
+   * @param signature
    * @throws IOException
-   * @throws EbicsException
+   * @throws AxelorException
    */
   public void sendFile(byte[] content, OrderType orderType, byte[] signature)
       throws IOException, AxelorException {
@@ -168,7 +169,7 @@ public class FileTransfer {
    * @param transactionId the transaction Id
    * @param orderType the order type
    * @throws IOException
-   * @throws EbicsException
+   * @throws AxelorException
    */
   public void sendFile(
       ContentFactory factory,
@@ -209,7 +210,7 @@ public class FileTransfer {
    * @param end optional end of fetch term
    * @param dest where to put the data
    * @throws IOException communication error
-   * @throws EbicsException server generated error
+   * @throws AxelorException
    */
   public void fetchFile(OrderType orderType, Date start, Date end, OutputStream dest)
       throws IOException, AxelorException {
@@ -281,7 +282,7 @@ public class FileTransfer {
    * @param transactionId the transaction ID
    * @param joiner the portions joiner
    * @throws IOException communication error
-   * @throws EbicsException server generated error
+   * @throws AxelorException
    */
   public void fetchFile(
       OrderType orderType,

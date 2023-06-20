@@ -1,12 +1,11 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -14,15 +13,13 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.base.service.advancedExport;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.AdvancedExport;
-import com.itextpdf.text.DocumentException;
 import java.io.File;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,8 +36,6 @@ public abstract class AdvancedExportGenerator {
   /**
    * This method generate the header of export file.
    *
-   * @throws IOException
-   * @throws DocumentException
    * @throws AxelorException
    */
   public abstract void generateHeader() throws AxelorException;
@@ -58,41 +53,36 @@ public abstract class AdvancedExportGenerator {
    * This method close the object.
    *
    * @throws AxelorException
-   * @throws IOException
-   * @throws DocumentException
    */
   public abstract void close() throws AxelorException;
 
   /**
    * This method return the object of <i>AdvancedExport</i>.
    *
-   * @return
+   * @return AdvancedExport if getAdvancedExport is found else null
    */
   public abstract AdvancedExport getAdvancedExport();
 
   /**
    * Get the export file.
    *
-   * @return
+   * @return File if getExportFile is found else null
    */
   public abstract File getExportFile();
 
   /**
    * Get the name of export file.
    *
-   * @return
+   * @return String if getFileName is found else null
    */
   public abstract String getFileName();
 
   /**
    * This method is used to generate the export file.
    *
-   * @param advancedExport
    * @param query
-   * @return
+   * @return File if generateFile is found else null
    * @throws AxelorException
-   * @throws IOException
-   * @throws DocumentException
    */
   @SuppressWarnings({"unchecked", "rawtypes"})
   public File generateFile(Query query) throws AxelorException {
@@ -142,7 +132,7 @@ public abstract class AdvancedExportGenerator {
    * Explicitly convert decimal value with it's scale.
    *
    * @param value
-   * @return
+   * @return String if convertDecimalValue is found else null
    */
   public String convertDecimalValue(Object value) {
     BigDecimal decimalVal = (BigDecimal) value;

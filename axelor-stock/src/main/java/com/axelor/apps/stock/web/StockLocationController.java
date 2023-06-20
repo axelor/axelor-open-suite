@@ -36,12 +36,10 @@ import com.axelor.rpc.Context;
 import com.axelor.utils.db.Wizard;
 import com.google.common.base.Joiner;
 import com.google.inject.Singleton;
-import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
-import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,9 +52,7 @@ public class StockLocationController {
    *
    * @param request
    * @param response
-   * @return
-   * @throws BirtException
-   * @throws IOException
+   * @throws AxelorException
    */
   public void print(ActionRequest request, ActionResponse response) throws AxelorException {
     try {

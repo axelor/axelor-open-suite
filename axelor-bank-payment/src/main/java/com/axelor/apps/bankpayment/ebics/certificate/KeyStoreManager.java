@@ -191,6 +191,8 @@ public class KeyStoreManager {
    * Saves the key store to a given output stream.
    *
    * @param output the output stream.
+   * @throws GeneralSecurityException
+   * @throws IOException
    */
   public void save(OutputStream output) throws GeneralSecurityException, IOException {
     keyStore.store(output, password);

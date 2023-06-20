@@ -74,6 +74,7 @@ public class SPRRequestElement extends InitializationRequestElement {
    * Constructs a new SPR request element.
    *
    * @param session the current ebic session.
+   * @throws AxelorException
    */
   public SPRRequestElement(EbicsSession session) throws AxelorException {
     super(session, com.axelor.apps.bankpayment.ebics.client.OrderType.SPR, "SPRRequest.xml");

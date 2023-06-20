@@ -35,7 +35,9 @@ public interface FixedAssetLineService {
    * @param fixedAsset
    * @param disposalDate
    * @param previousRealizedLine
+   * @param previousPlannedLine
    * @return generated {@link FixedAssetLine}
+   * @throws AxelorException
    */
   FixedAssetLine generateProrataDepreciationLine(
       FixedAsset fixedAsset,
@@ -50,6 +52,7 @@ public interface FixedAssetLineService {
    * @param fixedAsset
    * @param fixedAssetLine
    * @param previousRealizedLine
+   * @param previousPlannedLine
    * @param disposalDate
    */
   void computeDepreciationWithProrata(
@@ -128,15 +131,18 @@ public interface FixedAssetLineService {
   /**
    * Get Fixed asset of fixedAssetLine.
    *
-   * @param line
+   * @param fixedAssetLine
    * @return fixedAsset : {@link FixedAsset}
+   * @throws AxelorException
    */
   FixedAsset getFixedAsset(FixedAssetLine fixedAssetLine) throws AxelorException;
 
   /**
    * Set Fixed asset of fixedAssetLine.
    *
-   * @param line
+   * @param fixedAsset
+   * @param fixedAssetLine
+   * @throws AxelorException
    */
   void setFixedAsset(FixedAsset fixedAsset, FixedAssetLine fixedAssetLine) throws AxelorException;
 }

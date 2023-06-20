@@ -42,6 +42,7 @@ public interface SaleOrderLineService {
    *
    * @param saleOrderLine
    * @param saleOrder
+   * @throws AxelorException
    */
   void computeProductInformation(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException;
@@ -61,7 +62,7 @@ public interface SaleOrderLineService {
    *
    * @param saleOrder
    * @param saleOrderLine
-   * @return
+   * @return Map if computeValues is found else null
    * @throws AxelorException
    */
   public Map<String, BigDecimal> computeValues(SaleOrder saleOrder, SaleOrderLine saleOrderLine)
@@ -71,7 +72,7 @@ public interface SaleOrderLineService {
    * Compute the excluded tax total amount of a sale order line.
    *
    * @param saleOrderLine the sale order line which total amount you want to compute.
-   * @return The excluded tax total amount.
+   * @return BigDecimal if computeAmount is found else null
    */
   public BigDecimal computeAmount(SaleOrderLine saleOrderLine);
 
@@ -80,7 +81,7 @@ public interface SaleOrderLineService {
    *
    * @param quantity The quantity.
    * @param price The unit price.
-   * @return The excluded tax total amount.
+   * @return BigDecimal if computeAmount is found else null
    */
   public BigDecimal computeAmount(BigDecimal quantity, BigDecimal price);
 
@@ -156,7 +157,7 @@ public interface SaleOrderLineService {
    * Get unique values of type field from pack lines
    *
    * @param packLineList
-   * @return
+   * @return Set if getPackLineTypes is found else null
    */
   public Set<Integer> getPackLineTypes(List<PackLine> packLineList);
 
@@ -168,7 +169,7 @@ public interface SaleOrderLineService {
    * @param packQty
    * @param saleOrderLineList
    * @param sequence
-   * @return
+   * @return List if createNonStandardSOLineFromPack is found else null
    */
   public List<SaleOrderLine> createNonStandardSOLineFromPack(
       Pack pack,
@@ -183,6 +184,7 @@ public interface SaleOrderLineService {
    * @param saleOrder a sale order (from context or sale order line)
    * @param saleOrderLine a sale order line
    * @return The maximal discount or null if the value is not needed
+   * @throws AxelorException
    */
   BigDecimal computeMaxDiscount(SaleOrder saleOrder, SaleOrderLine saleOrderLine)
       throws AxelorException;
@@ -193,7 +195,7 @@ public interface SaleOrderLineService {
    *
    * @param saleOrderLine a sale order line
    * @param maxDiscount a max discount
-   * @return whether the discount is greather than the one authorized
+   * @return boolean if isSaleOrderLineDiscountGreaterThanMaxDiscount is found else null
    */
   boolean isSaleOrderLineDiscountGreaterThanMaxDiscount(
       SaleOrderLine saleOrderLine, BigDecimal maxDiscount);
@@ -207,7 +209,7 @@ public interface SaleOrderLineService {
    * @param packLine
    * @param typeSelect
    * @param sequence
-   * @return
+   * @return SaleOrderLine if createStartOfPackAndEndOfPackTypeSaleOrderLine is found else null
    */
   public SaleOrderLine createStartOfPackAndEndOfPackTypeSaleOrderLine(
       Pack pack,
@@ -221,7 +223,7 @@ public interface SaleOrderLineService {
    * To check that saleOrderLineList has "End of pack" type line.
    *
    * @param saleOrderLineList
-   * @return
+   * @return boolean if hasEndOfPackTypeLinemis found else null
    */
   public boolean hasEndOfPackTypeLine(List<SaleOrderLine> saleOrderLineList);
 
@@ -232,7 +234,7 @@ public interface SaleOrderLineService {
    * @param saleOrder
    * @param oldQty
    * @param newQty
-   * @return {@link SaleOrderLine}}
+   * @return SaleOrderLine if updateProductQty is found else null
    * @throws AxelorException
    */
   public SaleOrderLine updateProductQty(
@@ -243,7 +245,7 @@ public interface SaleOrderLineService {
    * To check that Start of pack type line quantity changed or not.
    *
    * @param saleOrderLineList
-   * @return
+   * @return boolean if isStartOfPackTypeLineQtyChanged is found else null
    */
   public boolean isStartOfPackTypeLineQtyChanged(List<SaleOrderLine> saleOrderLineList);
 
@@ -252,7 +254,6 @@ public interface SaleOrderLineService {
    *
    * @param saleOrderLine
    * @param saleOrder
-   * @return
    * @throws AxelorException
    */
   public void fillPriceFromPackLine(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
@@ -264,7 +265,7 @@ public interface SaleOrderLineService {
    * @param saleOrder the sale order containing the sale order line
    * @param saleOrderLine
    * @param taxLine
-   * @return the ex tax unit price of the sale order line
+   * @return BigDecimal if getExTaxUnitPriceFromPackLine is found else null
    * @throws AxelorException
    */
   public BigDecimal getExTaxUnitPriceFromPackLine(
@@ -297,7 +298,7 @@ public interface SaleOrderLineService {
    * @param complementaryProduct
    * @param saleOrder
    * @param saleOrderLine
-   * @return New complementary sales order lines
+   * @return List if manageComplementaryProductSaleOrderLine is found else null
    * @throws AxelorException
    */
   public List<SaleOrderLine> manageComplementaryProductSaleOrderLine(
@@ -314,6 +315,7 @@ public interface SaleOrderLineService {
    * more than one pricing matched may result on a unexpected result
    *
    * @param saleOrderLine
+   * @param saleOrder
    * @throws AxelorException
    */
   public void computePricingScale(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
@@ -328,7 +330,7 @@ public interface SaleOrderLineService {
    *
    * @param saleOrderLine
    * @param saleOrder
-   * @return true if it can be classified, else false
+   * @return boolean if hasPricingLine is found else null
    * @throws AxelorException
    */
   public boolean hasPricingLine(SaleOrderLine saleOrderLine, SaleOrder saleOrder)

@@ -34,7 +34,7 @@ public interface SaleOrderLineServiceSupplyChain extends SaleOrderLineService {
    * Compute undelivered quantity.
    *
    * @param saleOrderLine
-   * @return
+   * @return BigDecimal if computeUndeliveredQty is found else null
    */
   BigDecimal computeUndeliveredQty(SaleOrderLine saleOrderLine);
 
@@ -42,7 +42,7 @@ public interface SaleOrderLineServiceSupplyChain extends SaleOrderLineService {
    * Get a list of supplier partner ids available for the product in the sale order line.
    *
    * @param saleOrderLine
-   * @return the list of ids
+   * @return List if getSupplierPartnerList is found else null
    */
   List<Long> getSupplierPartnerList(SaleOrderLine saleOrderLine);
 
@@ -67,7 +67,7 @@ public interface SaleOrderLineServiceSupplyChain extends SaleOrderLineService {
    * @param productId
    * @param companyId
    * @param stockLocationId
-   * @return the query.
+   * @return String if getSaleOrderLineListForAProduct is found else null
    */
   String getSaleOrderLineListForAProduct(Long productId, Long companyId, Long stockLocationId);
 
@@ -75,6 +75,7 @@ public interface SaleOrderLineServiceSupplyChain extends SaleOrderLineService {
    * check qty when modifying saleOrderLine which is invoiced or delivered
    *
    * @param saleOrderLine
+   * @return BigDecimal if checkInvoicedOrDeliveredOrderQty is found else null
    */
   BigDecimal checkInvoicedOrDeliveredOrderQty(SaleOrderLine saleOrderLine);
 
@@ -82,6 +83,7 @@ public interface SaleOrderLineServiceSupplyChain extends SaleOrderLineService {
    * Compute analytic distribution for every analytic move line
    *
    * @param saleOrderLine
+   * @return SaleOrderLine if computeAnalyticDistribution is found else null
    */
   public SaleOrderLine computeAnalyticDistribution(SaleOrderLine saleOrderLine);
 
@@ -91,6 +93,7 @@ public interface SaleOrderLineServiceSupplyChain extends SaleOrderLineService {
    * date.
    *
    * @param saleOrderLine a sale order line managed by hibernate
+   * @throws AxelorException
    */
   void updateStockMoveReservationDateTime(SaleOrderLine saleOrderLine) throws AxelorException;
 

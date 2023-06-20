@@ -28,9 +28,8 @@ public interface PurchaseOrderPrintService {
   /**
    * Print a purchase order
    *
-   * @return ReportSettings
+   * @return String if printPurchaseOrders is found else null
    * @throws IOException
-   * @throws AxelorException
    */
   String printPurchaseOrders(List<Long> ids) throws IOException;
 

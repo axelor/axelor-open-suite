@@ -407,6 +407,8 @@ public class EbicsXmlFactory {
    *
    * @param x509SubjectName the subject name
    * @param x509Certificate the certificate
+   * @param x509IssuerName
+   * @param x509SerialNumber
    * @return the <code>X509DataType</code> XML object
    */
   public static X509DataType createX509DataType(
@@ -824,7 +826,8 @@ public class EbicsXmlFactory {
    * @param product the <code>ProductElementType</code> element
    * @param orderDetails the <code>OrderDetailsType</code> element
    * @param securityMedium the user security medium
-   * @return
+   * @return NoPubKeyDigestsRequestStaticHeaderType if createNoPubKeyDigestsRequestStaticHeaderType
+   *     is found else null
    */
   public static NoPubKeyDigestsRequestStaticHeaderType createNoPubKeyDigestsRequestStaticHeaderType(
       String hostId,
@@ -1184,7 +1187,6 @@ public class EbicsXmlFactory {
   /**
    * Creates a new <code>StandardOrderParamsType</code> XML object
    *
-   * @param fileFormat the <code>FileFormatType</code> element
    * @return the <code>StandardOrderParamsType</code> XML object
    */
   public static StandardOrderParamsType createStandardOrderParamsType() {
@@ -1262,7 +1264,6 @@ public class EbicsXmlFactory {
   /**
    * Create the <code>OrderType</code> XML object
    *
-   * @param orderType the order type
    * @return the <code>OrderType</code> XML object
    */
   public static OrderType createOrderType(String orderType) {
@@ -1344,6 +1345,7 @@ public class EbicsXmlFactory {
    * object
    *
    * @param dataTransfer the <code>DataTransferRequestType</code> element
+   * @param preValidation
    * @return the <code>
    *     com.axelor.apps.account.ebics.schema.h003.EbicsRequestDocument.EbicsRequest.Body</code> XML
    *     object

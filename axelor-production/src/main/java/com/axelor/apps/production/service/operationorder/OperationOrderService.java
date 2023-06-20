@@ -58,7 +58,7 @@ public interface OperationOrderService {
    * Updates the diff prod product list.
    *
    * @param operationOrder
-   * @return the updated operation order
+   * @return OperationOrder if updateDiffProdProductList is found else null
    * @throws AxelorException
    */
   OperationOrder updateDiffProdProductList(OperationOrder operationOrder) throws AxelorException;
@@ -75,7 +75,7 @@ public interface OperationOrderService {
    * @param operationOrder
    * @param prodProductList
    * @param stockMoveLineList
-   * @return
+   * @return List if createDiffProdProductList is found else null
    * @throws AxelorException
    */
   List<ProdProduct> createDiffProdProductList(

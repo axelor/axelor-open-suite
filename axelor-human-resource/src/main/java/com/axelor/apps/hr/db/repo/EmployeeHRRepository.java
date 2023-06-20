@@ -141,7 +141,7 @@ public class EmployeeHRRepository extends EmployeeRepository {
    *
    * @param employee
    * @param atDate
-   * @return
+   * @return boolean if isEmployeeFormerNewOrArchived is found else null
    */
   public static boolean isEmployeeFormerNewOrArchived(Employee employee, LocalDate atDate) {
     Objects.requireNonNull(employee);
@@ -155,7 +155,7 @@ public class EmployeeHRRepository extends EmployeeRepository {
    * according to hire date and leaving date, or if given employee is archived.
    *
    * @param employee
-   * @return
+   * @return boolean if isEmployeeFormerNewOrArchived is found else null
    */
   public static boolean isEmployeeFormerNewOrArchived(Employee employee) {
     Objects.requireNonNull(employee);

@@ -151,9 +151,7 @@ public class EbicsUserService {
    *
    * <p>All white-space characters should be removed from entry buffer {@code buf}.
    *
-   * @param buf the given byte buffer
-   * @param offset the offset
-   * @param length the length
+   * @param content
    * @return The byte buffer portion corresponding to the given length and offset
    */
   public static byte[] removeOSSpecificChars(byte[] content) {
@@ -224,8 +222,7 @@ public class EbicsUserService {
    * @param input The encrypted data
    * @param key The secret key.
    * @return The decrypted data sent from the EBICS bank.
-   * @throws GeneralSecurityException
-   * @throws IOException
+   * @throws AxelorException
    */
   private byte[] decryptData(byte[] input, byte[] key) throws AxelorException {
     return EbicsUtils.decrypt(input, new SecretKeySpec(key, "EAS"));

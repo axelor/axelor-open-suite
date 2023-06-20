@@ -93,7 +93,8 @@ public class UInitializationRequestElement extends InitializationRequestElement 
    * @param session the current ebics session.
    * @param orderType the upload order type
    * @param userData the user data to be uploaded
-   * @throws EbicsException
+   * @param userSignatureData
+   * @throws AxelorException
    */
   public UInitializationRequestElement(
       EbicsSession session,

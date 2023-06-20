@@ -215,6 +215,8 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
    *
    * @param fixedAsset
    * @param depreciationDate
+   * @param isBatch
+   * @param generateMove
    * @throws AxelorException
    */
   @Override

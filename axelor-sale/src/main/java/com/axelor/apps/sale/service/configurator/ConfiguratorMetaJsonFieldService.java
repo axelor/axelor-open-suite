@@ -30,7 +30,7 @@ public interface ConfiguratorMetaJsonFieldService {
    * contains attr customs fields. It needs the list of formulas used to create the jsonIndicators
    * and the jsonIndicators themselves.
    *
-   * @param list
+   * @param formulas
    * @param jsonIndicators
    * @param type
    * @param targetObject

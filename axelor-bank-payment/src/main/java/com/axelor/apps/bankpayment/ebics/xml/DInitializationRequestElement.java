@@ -79,7 +79,7 @@ public class DInitializationRequestElement extends InitializationRequestElement 
    * @param type the download order type (FDL, HTD, HPD)
    * @param startRange the start range download
    * @param endRange the end range download
-   * @throws EbicsException
+   * @throws AxelorException
    */
   public DInitializationRequestElement(
       EbicsSession session,

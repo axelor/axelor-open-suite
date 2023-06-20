@@ -77,6 +77,8 @@ public interface SaleOrderService {
    * Convert PackLines of pack into SaleOrderLines.
    *
    * @param saleOrder
+   * @param pack
+   * @param packQty
    * @throws AxelorException
    */
   SaleOrder addPack(SaleOrder saleOrder, Pack pack, BigDecimal packQty) throws AxelorException;
@@ -85,7 +87,7 @@ public interface SaleOrderService {
    * Handle the creation / updating of complementary products. Called onChange of saleOrderLineList.
    *
    * @param saleOrder
-   * @return
+   * @return List if handleComplementaryProducts is found else null
    */
   public List<SaleOrderLine> handleComplementaryProducts(SaleOrder saleOrder)
       throws AxelorException;
@@ -103,7 +105,7 @@ public interface SaleOrderService {
    * To update product quantity with pack header quantity.
    *
    * @param saleOrder
-   * @return {@link SaleOrder}
+   * @return SaleOrder if updateProductQtyWithPackHeaderQty is found else null
    * @throws AxelorException
    */
   public SaleOrder updateProductQtyWithPackHeaderQty(SaleOrder saleOrder) throws AxelorException;

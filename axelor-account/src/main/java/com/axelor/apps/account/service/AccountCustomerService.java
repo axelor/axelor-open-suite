@@ -25,6 +25,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.TradingName;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -37,7 +38,8 @@ public interface AccountCustomerService {
    *
    * @param partner Un tiers
    * @param company Une société
-   * @return Le solde total
+   * @return BigDecimal the balance due for a specific (company, trading name) combination else null
+   *     Le solde total
    */
   public BigDecimal getBalance(Partner partner, Company company);
 
@@ -64,8 +66,13 @@ public interface AccountCustomerService {
    * pas de prise en compte du délai d'acheminement **
    */
   /**
-   * solde des échéances rejetées qui ne sont pas bloqués
-   * *****************************************************
+   * solde des échéances rejetées qui ne sont pas bloqués *
+   *
+   * @param partner
+   * @param company
+   * @param tradingName
+   * @return The BalanceDueDebtRecovery due of this trading name, in the scope of the activities of
+   *     this company
    */
   public BigDecimal getBalanceDueDebtRecovery(
       Partner partner, Company company, TradingName tradingName);
@@ -75,7 +82,7 @@ public interface AccountCustomerService {
    *
    * @param partner Un tiers
    * @param company Une société
-   * @return
+   * @return list if getMoveLine is found else null
    */
   public List<? extends MoveLine> getMoveLine(Partner partner, Company company);
 
@@ -84,6 +91,10 @@ public interface AccountCustomerService {
    *
    * @param partnerList Une liste de tiers à mettre à jour
    * @param company Une société
+   * @param updateCustAccount
+   * @param updateDueCustAccount
+   * @param updateDueDebtRecoveryCustAccount
+   * @throws AxelorException
    */
   public void updatePartnerAccountingSituation(
       List<Partner> partnerList,
@@ -93,8 +104,23 @@ public interface AccountCustomerService {
       boolean updateDueDebtRecoveryCustAccount)
       throws AxelorException;
 
+  /**
+   * @param partnerList
+   * @param company
+   * @throws AxelorException
+   */
+  @Transactional(rollbackOn = {Exception.class})
   public void flagPartners(List<Partner> partnerList, Company company) throws AxelorException;
 
+  /**
+   * @param accountingSituation
+   * @param updateCustAccount
+   * @param updateDueCustAccount
+   * @param updateDueDebtRecoveryCustAccount
+   * @return updateAccountingSituationCustomerAccount if found else null
+   * @throws AxelorException
+   */
+  @Transactional(rollbackOn = {Exception.class})
   public AccountingSituation updateAccountingSituationCustomerAccount(
       AccountingSituation accountingSituation,
       boolean updateCustAccount,
@@ -102,6 +128,13 @@ public interface AccountCustomerService {
       boolean updateDueDebtRecoveryCustAccount)
       throws AxelorException;
 
+  /**
+   * @param partner
+   * @param company
+   * @param isSupplierInvoice
+   * @return getPartnerAccount if found else null
+   * @throws AxelorException
+   */
   public Account getPartnerAccount(Partner partner, Company company, boolean isSupplierInvoice)
       throws AxelorException;
 }

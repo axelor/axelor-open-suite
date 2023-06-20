@@ -77,7 +77,7 @@ public class ProductCompanyServiceImpl implements ProductCompanyService {
    * @param originalProduct
    * @param fieldName
    * @param company
-   * @return
+   * @return Product if findAppropriateProductCompany is found else null
    * @throws AxelorException
    */
   protected Product findAppropriateProductCompany(
@@ -109,7 +109,7 @@ public class ProductCompanyServiceImpl implements ProductCompanyService {
    * @param originalProduct
    * @param fieldName
    * @param company
-   * @return
+   * @return Product if findAppropriateProductCompanyWithNoDefault is found else null
    * @throws AxelorException
    */
   protected Product findAppropriateProductCompanyWithNoDefault(

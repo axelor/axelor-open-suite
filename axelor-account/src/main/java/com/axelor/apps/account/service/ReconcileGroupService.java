@@ -42,6 +42,8 @@ public interface ReconcileGroupService {
    * Check if the given reconcile lines are balanced.
    *
    * @param reconcileList a list of reconcile.
+   * @return boolean if Balanced is found else null
+   * @throws AxelorException
    */
   boolean isBalanced(List<Reconcile> reconcileList) throws AxelorException;
 
@@ -85,6 +87,7 @@ public interface ReconcileGroupService {
    *
    * @param reconcileGroup a reconcileGroup.
    * @param reconcile a reconcile.
+   * @throws AxelorException
    */
   void addAndValidate(ReconcileGroup reconcileGroup, Reconcile reconcile) throws AxelorException;
 
@@ -100,6 +103,7 @@ public interface ReconcileGroupService {
    * Remove a reconcile from a reconcile group then update the group.
    *
    * @param reconcile a reconcile with a reconcile group.
+   * @throws AxelorException
    */
   void remove(Reconcile reconcile) throws AxelorException;
 
@@ -107,6 +111,7 @@ public interface ReconcileGroupService {
    * Update the status and the sequence of a reconcile group.
    *
    * @param reconcileGroup
+   * @throws AxelorException
    */
   void updateStatus(ReconcileGroup reconcileGroup) throws AxelorException;
 

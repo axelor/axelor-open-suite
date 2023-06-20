@@ -103,6 +103,7 @@ public class HttpRequestSender {
    * @param request the ebics request
    * @return the HTTP return code
    * @throws AxelorException
+   * @throws IOException
    */
   public final int send(ContentFactory request) throws IOException, AxelorException {
 

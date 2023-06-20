@@ -57,8 +57,8 @@ public class FixedAssetValidateServiceImpl implements FixedAssetValidateService 
   /**
    * {@inheritDoc}
    *
+   * @param fixedAsset
    * @throws AxelorException
-   * @throws NullPointerException if fixedAsset is null
    */
   @Override
   @Transactional(rollbackOn = {Exception.class})

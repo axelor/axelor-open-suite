@@ -346,7 +346,7 @@ public class StockHistoryServiceImpl implements StockHistoryService {
    * Create a line labelled "Total", summing each field in the table.
    *
    * @param stockHistoryLineList
-   * @return the created line.
+   * @return StockHistoryLine if createStockHistoryTotalLine is found else null
    */
   protected StockHistoryLine createStockHistoryTotalLine(
       List<StockHistoryLine> stockHistoryLineList) {
@@ -409,7 +409,7 @@ public class StockHistoryServiceImpl implements StockHistoryService {
    *
    * @param stockHistoryLineList
    * @param totalStockHistoryLine
-   * @return the created line.
+   * @return StockHistoryLine if createStockHistoryAvgLine is found else null
    */
   protected StockHistoryLine createStockHistoryAvgLine(
       List<StockHistoryLine> stockHistoryLineList, StockHistoryLine totalStockHistoryLine) {

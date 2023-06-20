@@ -57,6 +57,7 @@ public class DInitializationResponseElement extends InitializationResponseElemen
    * @param factory the content factory
    * @param orderType the order type
    * @param name the element name
+   * @param ebicsUser
    */
   public DInitializationResponseElement(
       ContentFactory factory, OrderType orderType, String name, EbicsUser ebicsUser) {

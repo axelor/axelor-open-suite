@@ -77,21 +77,21 @@ public interface UserService {
   /**
    * Method that return the active team of the current connected user
    *
-   * @return Team the active team
+   * @return MetaFile if getUserActiveCompanyLogo is found else null
    */
   public MetaFile getUserActiveCompanyLogo();
 
   /**
    * Method that return company logo link
    *
-   * @return the logo Link
+   * @return String if getUserActiveCompanyLogoLink is found else null
    */
   public String getUserActiveCompanyLogoLink();
 
   /**
    * Method that return the active team of the current connected user
    *
-   * @return Team the active team
+   * @return Team if getUserActiveTeam is found else null
    */
   @CallMethod
   public Team getUserActiveTeam();
@@ -99,7 +99,7 @@ public interface UserService {
   /**
    * Method that return the active team of the current connected user
    *
-   * @return Team the active team id
+   * @return Long if getUserActiveTeamId is found else null
    */
   @CallMethod
   public Long getUserActiveTeamId();
@@ -120,7 +120,7 @@ public interface UserService {
   /**
    * Get user's active company address.
    *
-   * @return
+   * @return Optional<Address> if getUserActiveCompanyAddress is found else null
    */
   Optional<Address> getUserActiveCompanyAddress();
 
@@ -129,7 +129,7 @@ public interface UserService {
    *
    * @param user
    * @param values
-   * @return
+   * @return User if changeUserPassword is found else null
    * @throws ClassNotFoundException
    * @throws InstantiationException
    * @throws IllegalAccessException
@@ -148,6 +148,7 @@ public interface UserService {
    * @throws ClassNotFoundException
    * @throws IOException
    * @throws AxelorException
+   * @throws JSONException
    */
   void processChangedPassword(User user)
       throws AxelorException, ClassNotFoundException, IOException, JSONException;
@@ -156,21 +157,21 @@ public interface UserService {
    * Match password with configured pattern.
    *
    * @param password
-   * @return
+   * @return boolean if matchPasswordPattern is found else null
    */
   boolean matchPasswordPattern(CharSequence password);
 
   /**
    * Generate a random password.
    *
-   * @return
+   * @return CharSequence if generateRandomPassword is found else null
    */
   CharSequence generateRandomPassword();
 
   /**
    * Get password pattern description.
    *
-   * @return
+   * @return String if getPasswordPatternDescription is found else null
    */
   @CallMethod
   String getPasswordPatternDescription();
@@ -179,7 +180,7 @@ public interface UserService {
    * Verify current connected user's password
    *
    * @param password
-   * @return
+   * @return boolean if verifyCurrentUserPassword is found else null
    */
   boolean verifyCurrentUserPassword(String password);
 
@@ -191,7 +192,7 @@ public interface UserService {
    *
    * @param partner
    * @param user
-   * @return
+   * @return Partner if setUserPartner is found else null
    */
   @Transactional
   public Partner setUserPartner(Partner partner, User user);

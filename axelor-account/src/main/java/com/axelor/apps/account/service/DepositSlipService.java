@@ -33,6 +33,7 @@ public interface DepositSlipService {
    * Get payments into deposit slip.
    *
    * @param depositSlip
+   * @return List if fetchPaymentVouchers is found else null
    * @throws AxelorException
    */
   List<PaymentVoucher> fetchPaymentVouchers(DepositSlip depositSlip);
@@ -41,7 +42,7 @@ public interface DepositSlipService {
    * Publish deposit slip.
    *
    * @param depositSlip
-   * @return
+   * @return LocalDate if publish is found else null
    * @throws AxelorException
    * @throws IOException
    */
@@ -51,9 +52,7 @@ public interface DepositSlipService {
    * Validate deposit slip using value for collection account.
    *
    * @param depositSlip
-   * @return
    * @throws AxelorException
-   * @throws IOException
    */
   void validate(DepositSlip depositSlip) throws AxelorException;
 

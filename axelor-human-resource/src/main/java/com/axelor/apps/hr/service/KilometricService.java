@@ -234,7 +234,7 @@ public class KilometricService {
    *
    * @param fromCity
    * @param toCity
-   * @return
+   * @return BigDecimal if computeDistance is found else null
    * @throws AxelorException
    */
   protected BigDecimal computeDistance(String fromCity, String toCity) throws AxelorException {
@@ -338,7 +338,7 @@ public class KilometricService {
    * @param origins
    * @param destinations
    * @param language
-   * @return
+   * @return JSONObject if getGoogleMapsDistanceMatrixResponse is found else null
    * @throws URISyntaxException
    * @throws IOException
    * @throws JSONException
@@ -363,7 +363,7 @@ public class KilometricService {
    *
    * @param origins
    * @param destinations
-   * @return
+   * @return JSONObject if getOSRMApiResponse is found else null
    * @throws AxelorException
    * @throws JSONException
    * @throws URISyntaxException
@@ -391,7 +391,7 @@ public class KilometricService {
    *
    * @param origins
    * @param destinations
-   * @return
+   * @return JSONObject if getYOURSApiResponse is found else null
    * @throws AxelorException
    * @throws JSONException
    * @throws URISyntaxException

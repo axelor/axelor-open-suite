@@ -85,6 +85,10 @@ public class X509Generator {
    * @param issuer the certificate issuer
    * @param notBefore the begin validity date
    * @param notAfter the end validity date
+   * @param useX509ExtensionsBasicConstraints
+   * @param useX509ExtensionsSubjectKeyIdentifier
+   * @param useX509ExtensionsAuthorityKeyIdentifier
+   * @param useX509ExtensionsExtendedKeyUsage
    * @return the signature certificate
    * @throws GeneralSecurityException
    * @throws IOException
@@ -151,6 +155,10 @@ public class X509Generator {
    * @param issuer the certificate issuer
    * @param notBefore the begin validity date
    * @param notAfter the end validity date
+   * @param useX509ExtensionsBasicConstraints
+   * @param useX509ExtensionsSubjectKeyIdentifier
+   * @param useX509ExtensionsAuthorityKeyIdentifier
+   * @param useX509ExtensionsExtendedKeyUsage
    * @return the encryption certificate
    * @throws GeneralSecurityException
    * @throws IOException
@@ -186,6 +194,10 @@ public class X509Generator {
    * @param notBefore the begin validity date
    * @param notAfter the end validity date
    * @param keyusage the certificate key usage
+   * @param useX509ExtensionsBasicConstraints
+   * @param useX509ExtensionsSubjectKeyIdentifier
+   * @param useX509ExtensionsAuthorityKeyIdentifier
+   * @param useX509ExtensionsExtendedKeyUsage
    * @return the X509 certificate
    * @throws GeneralSecurityException
    * @throws IOException

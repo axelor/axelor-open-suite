@@ -153,7 +153,7 @@ public class ReconcileServiceImpl implements ReconcileService {
    * @param creditMoveLine Une ligne d'écriture au crédit
    * @param amount Le montant à reconciler
    * @param canBeZeroBalanceOk Peut être soldé?
-   * @return Une reconciliation
+   * @return Reconcile if Reconcile is found else null Une reconciliation
    */
   @Override
   @Transactional
@@ -198,7 +198,9 @@ public class ReconcileServiceImpl implements ReconcileService {
    * compte
    *
    * @param reconcile Une reconciliation
-   * @return L'etat de la reconciliation
+   * @param updateInvoicePayments
+   * @param updateInvoiceTerms
+   * @return Reconcile if Reconcile is found else null L'etat de la reconciliation
    * @throws AxelorException
    */
   @Override
@@ -646,6 +648,10 @@ public class ReconcileServiceImpl implements ReconcileService {
    *
    * @param debitMoveLine
    * @param creditMoveLine
+   * @param canBeZeroBalanceOk
+   * @param updateInvoicePayments
+   * @param invoicePayment
+   * @return Reconcile if reconcile is found else null
    * @throws AxelorException
    */
   @Override
@@ -685,6 +691,9 @@ public class ReconcileServiceImpl implements ReconcileService {
    *
    * @param debitMoveLine
    * @param creditMoveLine
+   * @param canBeZeroBalanceOk
+   * @param updateInvoicePayments
+   * @return Reconcile if reconcile is found else null
    * @throws AxelorException
    */
   public Reconcile reconcile(
@@ -701,7 +710,6 @@ public class ReconcileServiceImpl implements ReconcileService {
    * Permet de déréconcilier
    *
    * @param reconcile Une reconciliation
-   * @return L'etat de la réconciliation
    * @throws AxelorException
    */
   @Override

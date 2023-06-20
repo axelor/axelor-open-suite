@@ -27,7 +27,8 @@ public interface RawMaterialRequirementService {
    * Print the raw material requirement report.
    *
    * @param rawMaterialRequirement the user defined parameter of the report.
-   * @return URL to the printed report.
+   * @return String if print is found else null.
+   * @throws AxelorException
    */
   String print(RawMaterialRequirement rawMaterialRequirement) throws AxelorException;
 

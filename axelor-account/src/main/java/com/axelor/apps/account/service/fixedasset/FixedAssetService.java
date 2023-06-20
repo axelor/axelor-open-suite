@@ -34,6 +34,7 @@ public interface FixedAssetService {
    * @param disposalDate
    * @param disposalAmount
    * @param fixedAsset
+   * @param transferredReason
    * @throws AxelorException
    */
   void disposal(
@@ -61,6 +62,8 @@ public interface FixedAssetService {
    * @param fixedAsset
    * @param splitType
    * @param amount
+   * @param disposalDate
+   * @param comments
    * @return The new fixed asset created from split.
    * @throws AxelorException
    */
@@ -114,7 +117,7 @@ public interface FixedAssetService {
    * line.status = status. Line that doesn't match the status will be removed from database.
    *
    * @param fixedAsset
-   * @param statusPlanned
+   * @param status
    * @return filteredFixedAsset
    */
   FixedAsset filterListsByStatus(FixedAsset fixedAsset, int status);
@@ -122,6 +125,16 @@ public interface FixedAssetService {
   /**
    * Method that manage disposal action. The process will be different depending on the
    * transferredReason.
+   *
+   * @param fixedAsset
+   * @param disposalDate
+   * @param disposalQty
+   * @param disposalAmount
+   * @param transferredReason
+   * @param assetDisposalReason
+   * @param comments
+   * @return FixedAsset if Disposal is found else null
+   * @throws AxelorException
    */
   FixedAsset computeDisposal(
       FixedAsset fixedAsset,

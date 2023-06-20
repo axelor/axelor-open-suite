@@ -409,7 +409,8 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   /**
    * Compute the excluded tax total amount of a sale order line.
    *
-   * @return The excluded tax total amount.
+   * @param saleOrderLine
+   * @return BigDecimal if computeAmount is found else null
    */
   @Override
   public BigDecimal computeAmount(SaleOrderLine saleOrderLine) {

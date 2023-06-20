@@ -188,7 +188,7 @@ public class StockMoveServiceImpl implements StockMoveService {
    * @param estimatedDate
    * @param note
    * @param typeSelect
-   * @return
+   * @return StockMove if createStockMove is found else null
    * @throws AxelorException No Stock move sequence defined
    */
   @Override
@@ -1057,7 +1057,7 @@ public class StockMoveServiceImpl implements StockMoveService {
    * @param originalStockMoveLine the original stock move line
    * @param modifiedStockMoveLine the modified stock move line corresponding to the original stock
    *     move line
-   * @return the unsaved generated stock move line
+   * @return StockMoveLine if createSplitStockMoveLine is found else null
    */
   protected StockMoveLine createSplitStockMoveLine(
       StockMove originalStockMove,

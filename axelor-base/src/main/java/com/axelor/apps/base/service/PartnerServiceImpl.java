@@ -600,7 +600,7 @@ public class PartnerServiceImpl implements PartnerService {
    * Get the partner language code. If null, return the default partner language.
    *
    * @param partner
-   * @return
+   * @return String if getPartnerLanguageCode is found else null
    */
   @Override
   public String getPartnerLanguageCode(Partner partner) {
@@ -621,7 +621,7 @@ public class PartnerServiceImpl implements PartnerService {
    * Normalize phone number.
    *
    * @param phoneNumber
-   * @return
+   * @return String if normalizePhoneNumber is found else null
    */
   @Override
   public String normalizePhoneNumber(String phoneNumber) {
@@ -632,7 +632,7 @@ public class PartnerServiceImpl implements PartnerService {
    * Check phone number.
    *
    * @param phoneNumber
-   * @return
+   * @return boolean if checkPhoneNumber is found else null
    */
   @Override
   public boolean checkPhoneNumber(String phoneNumber) {
@@ -645,7 +645,7 @@ public class PartnerServiceImpl implements PartnerService {
    * Get phone number field name.
    *
    * @param actionName
-   * @return
+   * @return String if getPhoneNumberFieldName is found else null
    */
   @Override
   public String getPhoneNumberFieldName(String actionName) {

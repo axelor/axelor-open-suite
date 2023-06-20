@@ -78,7 +78,7 @@ public interface StockMoveLineServiceSupplychain {
    * Get a merged stock move line.
    *
    * @param stockMoveLineList
-   * @return
+   * @return StockMoveLine if getMergedStockMoveLine is found else null
    * @throws AxelorException
    */
   StockMoveLine getMergedStockMoveLine(List<StockMoveLine> stockMoveLineList)

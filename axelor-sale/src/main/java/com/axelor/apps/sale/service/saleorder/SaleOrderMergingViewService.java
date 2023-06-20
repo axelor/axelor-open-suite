@@ -28,7 +28,9 @@ public interface SaleOrderMergingViewService {
   /**
    * Method that build a ActionViewBuilder for confirm view in the sale order merge process.
    *
-   * @param SaleOrderMergingResult
+   * @param result
+   * @param lineToMerge
+   * @param saleOrdersToMerge
    * @return ActionViewBuilder
    */
   ActionViewBuilder buildConfirmView(

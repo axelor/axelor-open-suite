@@ -79,7 +79,7 @@ public class LeaveManagementService {
    * Reset leave management list by adding a new leave management line with negative quantity.
    *
    * @param leaveLine
-   * @param employee
+   * @param user
    * @param comments
    * @param date
    * @param fromDate

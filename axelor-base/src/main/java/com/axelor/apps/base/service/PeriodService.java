@@ -32,7 +32,8 @@ public interface PeriodService {
    *
    * @param date
    * @param company
-   * @return
+   * @param typeSelect
+   * @return Period if getActivePeriod is found else null
    * @throws AxelorException
    */
   public Period getActivePeriod(LocalDate date, Company company, int typeSelect)

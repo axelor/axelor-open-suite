@@ -40,7 +40,7 @@ public class SaleOrderToolService {
    *
    * @param quantity Quantité.
    * @param price Le prix.
-   * @return Le montant HT de la ligne.
+   * @return BigDecimal if computeAmount is found else null Le montant HT de la ligne.
    */
   public BigDecimal computeAmount(BigDecimal quantity, BigDecimal price) {
 

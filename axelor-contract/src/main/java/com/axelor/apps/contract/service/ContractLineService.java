@@ -38,6 +38,7 @@ public interface ContractLineService {
    * @param contractLine to fill.
    * @param product to get information.
    * @return ContractLine filled with Product information.
+   * @throws AxelorException
    */
   ContractLine fill(ContractLine contractLine, Product product) throws AxelorException;
 
@@ -77,6 +78,7 @@ public interface ContractLineService {
    * Create analytic move lines using analytic distribution template
    *
    * @param contractLine
+   * @param contract
    * @return ContractLine filled with analytic move lines
    */
   ContractLine createAnalyticDistributionWithTemplate(ContractLine contractLine, Contract contract);

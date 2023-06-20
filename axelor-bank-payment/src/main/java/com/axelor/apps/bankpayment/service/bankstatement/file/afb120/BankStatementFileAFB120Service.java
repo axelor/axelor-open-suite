@@ -821,6 +821,7 @@ public class BankStatementFileAFB120Service extends BankStatementFileService {
    * 9 }
    *
    * @param amount
+   * @param decimalDigitNumber
    * @return the correct amount
    */
   protected BigDecimal getAmount(String amount, int decimalDigitNumber) {

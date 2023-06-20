@@ -140,7 +140,7 @@ public class BankStatementService {
    * Print bank statement.
    *
    * @param bankStatement
-   * @return
+   * @return String if print is found else null
    * @throws AxelorException
    */
   public String print(BankStatement bankStatement) throws AxelorException {
@@ -192,7 +192,7 @@ public class BankStatementService {
    * Finds bank statement.
    *
    * @param bankStatement
-   * @return
+   * @return BankStatement if find is found else null
    */
   public BankStatement find(BankStatement bankStatement) {
     return JPA.em().contains(bankStatement)

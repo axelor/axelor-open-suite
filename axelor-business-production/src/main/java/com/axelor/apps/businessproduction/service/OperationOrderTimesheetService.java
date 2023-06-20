@@ -44,6 +44,7 @@ public interface OperationOrderTimesheetService {
    * timesheet lines in db.
    *
    * @param timesheet an unsaved timesheet.
+   * @throws AxelorException
    */
   void updateOperationOrders(Timesheet timesheet) throws AxelorException;
 

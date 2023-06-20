@@ -332,6 +332,10 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
   /**
    * Méthode réalisant l'export des FEC (Fichiers des écritures Comptables)
    *
+   * @param accountingReport
+   * @param administration
+   * @param replay
+   * @return MetaFile if exportMoveLineTypeSelect1000 is found else null
    * @throws AxelorException
    * @throws IOException
    */

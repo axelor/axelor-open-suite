@@ -192,7 +192,7 @@ public class BankPaymentConfigService {
    * Get ICS number.
    *
    * @param accountConfig
-   * @return
+   * @return String if getIcsNumber is found else null
    * @throws AxelorException
    */
   public String getIcsNumber(BankPaymentConfig bankPaymentConfig) throws AxelorException {

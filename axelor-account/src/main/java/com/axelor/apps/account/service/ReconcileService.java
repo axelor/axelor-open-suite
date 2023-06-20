@@ -81,6 +81,7 @@ public interface ReconcileService {
    * Add a reconcile to an existing or created reconcile group.
    *
    * @param reconcile a confirmed reconcile.
+   * @throws AxelorException
    */
   void addToReconcileGroup(Reconcile reconcile) throws AxelorException;
 

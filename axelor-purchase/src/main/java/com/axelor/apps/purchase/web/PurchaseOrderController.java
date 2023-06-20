@@ -117,7 +117,6 @@ public class PurchaseOrderController {
    *
    * @param request
    * @param response
-   * @return
    */
   @SuppressWarnings("unchecked")
   public void showPurchaseOrder(ActionRequest request, ActionResponse response) {

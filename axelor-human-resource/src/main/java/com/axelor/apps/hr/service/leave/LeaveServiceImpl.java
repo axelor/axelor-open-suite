@@ -200,7 +200,7 @@ public class LeaveServiceImpl implements LeaveService {
    * @param toDate
    * @param startOn
    * @param endOn
-   * @return
+   * @return BigDecimal if computeDurationInDays is found else null
    * @throws AxelorException
    */
   protected BigDecimal computeDurationInDays(
@@ -276,7 +276,7 @@ public class LeaveServiceImpl implements LeaveService {
    * @param employee
    * @param fromDateT
    * @param toDateT
-   * @return
+   * @return BigDecimal if computeDurationInHours is found else null
    * @throws AxelorException
    */
   protected BigDecimal computeDurationInHours(

@@ -71,7 +71,7 @@ public interface StockMoveInvoiceService {
    * Sum the total of non canceled invoice qty in every stock move lines of the stock move.
    *
    * @param stockMove a stock move
-   * @return the computed sum.
+   * @return BigDecimal if computeNonCanceledInvoiceQty is found else null.
    * @throws AxelorException
    */
   BigDecimal computeNonCanceledInvoiceQty(StockMove stockMove) throws AxelorException;
@@ -82,7 +82,8 @@ public interface StockMoveInvoiceService {
    * ventilated qty.
    *
    * @param stockMoveLine a stock move line
-   * @return the invoiced quantity
+   * @return BigDecimal if computeNonCanceledInvoiceQty is found else null
+   * @throws AxelorException
    */
   BigDecimal computeNonCanceledInvoiceQty(StockMoveLine stockMoveLine) throws AxelorException;
 

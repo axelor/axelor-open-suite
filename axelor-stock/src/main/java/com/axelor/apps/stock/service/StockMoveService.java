@@ -58,7 +58,7 @@ public interface StockMoveService {
    * @param forwarderPartner
    * @param incoterm
    * @param typeSelect
-   * @return
+   * @return StockMove if createStockMove is found else null
    * @throws AxelorException No Stock move sequence defined
    */
   public StockMove createStockMove(
@@ -91,7 +91,7 @@ public interface StockMoveService {
    * @param estimatedDate
    * @param note
    * @param typeSelect
-   * @return
+   * @return StockMove if createStockMove is found else null
    * @throws AxelorException No Stock move sequence defined
    */
   public StockMove createStockMove(
@@ -164,7 +164,7 @@ public interface StockMoveService {
    * Change conformity on each stock move line according to the stock move conformity.
    *
    * @param stockMove
-   * @return
+   * @return List if changeConformityStockMove is found else null
    */
   List<StockMoveLine> changeConformityStockMove(StockMove stockMove);
 
@@ -172,7 +172,7 @@ public interface StockMoveService {
    * Change stock move conformity according to the conformity on each stock move line.
    *
    * @param stockMove
-   * @return
+   * @return Integer if changeConformityStockMoveLine is found else null
    */
   Integer changeConformityStockMoveLine(StockMove stockMove);
 
@@ -181,6 +181,7 @@ public interface StockMoveService {
    *
    * @param stockMove
    * @return the direction for the google map API
+   * @throws AxelorException
    */
   Map<String, Object> viewDirection(StockMove stockMove) throws AxelorException;
 
@@ -190,7 +191,7 @@ public interface StockMoveService {
    * @param stockMove
    * @param lstSelectedMove
    * @param reportType true if we print a picking order
-   * @return the link to the PDF file
+   * @return String if printStockMove is found else null
    * @throws AxelorException
    */
   String printStockMove(StockMove stockMove, List<Integer> lstSelectedMove, String reportType)
@@ -226,6 +227,7 @@ public interface StockMoveService {
    * current stock move line list, replacing the saved list.
    *
    * @param stockMove
+   * @throws AxelorException
    */
   void updateStocks(StockMove stockMove) throws AxelorException;
 

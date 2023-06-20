@@ -31,7 +31,7 @@ public interface ConformityCertificatePrintService {
    * Print a Conformity certificates for list of stock moves in the same output.
    *
    * @param ids ids of the stock move.
-   * @return the link to the generated file.
+   * @return String if printConformityCertificates is found else null
    * @throws IOException
    */
   String printConformityCertificates(List<Long> ids) throws IOException;

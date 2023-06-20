@@ -37,7 +37,7 @@ public interface CommonInvoiceService {
    * @param total
    * @throws AxelorException if there is a inconsistency with amount and total. (For example if
    *     total is 0 and amount is not)
-   * @return amount% of total if isPercent and amount if not
+   * @return BigDecimal if computeAmountToInvoicePercent is found else null
    */
   BigDecimal computeAmountToInvoicePercent(
       Model model, BigDecimal amount, boolean isPercent, BigDecimal total) throws AxelorException;
@@ -50,7 +50,7 @@ public interface CommonInvoiceService {
    * @param inTaxTotal of the Order
    * @param invoicingProduct
    * @param percentToInvoice
-   * @return
+   * @return List if createInvoiceLinesFromOrder is found else null
    * @throws AxelorException
    */
   List<InvoiceLine> createInvoiceLinesFromOrder(

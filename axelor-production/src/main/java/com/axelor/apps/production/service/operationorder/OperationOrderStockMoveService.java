@@ -280,6 +280,7 @@ public class OperationOrderStockMoveService {
    *
    * @param operationOrder
    * @param qtyToUpdate
+   * @throws AxelorException
    */
   public void createNewConsumedStockMoveLineList(
       OperationOrder operationOrder, BigDecimal qtyToUpdate) throws AxelorException {

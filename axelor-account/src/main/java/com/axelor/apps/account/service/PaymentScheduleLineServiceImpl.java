@@ -113,7 +113,7 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
    * @param inTaxAmount Le montant TTC.
    * @param scheduleLineSeq Le numéro d'échéance.
    * @param scheduleDate La date d'échéance.
-   * @return
+   * @return PaymentScheduleLine if PaymentScheduleLine is found else null
    */
   @Override
   public PaymentScheduleLine createPaymentScheduleLine(
@@ -145,6 +145,7 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
    * En fonction des infos d'entête d'un échéancier, crée les lignes d'échéances
    *
    * @param paymentSchedule
+   * @return List if PaymentScheduleLines is found else null
    */
   @Override
   public List<PaymentScheduleLine> createPaymentScheduleLines(PaymentSchedule paymentSchedule) {

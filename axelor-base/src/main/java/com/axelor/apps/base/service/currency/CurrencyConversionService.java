@@ -64,7 +64,7 @@ public abstract class CurrencyConversionService {
    *
    * @param currencyFrom
    * @param currencyTo
-   * @return
+   * @return BigDecimal if convert is found else null
    * @throws MalformedURLException
    * @throws JSONException
    * @throws AxelorException
@@ -79,7 +79,7 @@ public abstract class CurrencyConversionService {
    * @param currencyFrom
    * @param currencyTo
    * @param date
-   * @return
+   * @return Float if validateAndGetRate is found else null
    * @throws AxelorException
    */
   public abstract Float validateAndGetRate(
@@ -92,7 +92,7 @@ public abstract class CurrencyConversionService {
    * @param currencyFrom
    * @param currencyTo
    * @param response
-   * @return
+   * @return Float if getRateFromJson is found else null
    * @throws AxelorException
    */
   public abstract Float getRateFromJson(
@@ -104,7 +104,7 @@ public abstract class CurrencyConversionService {
    * @param date
    * @param currencyFromCode
    * @param currencyToCode
-   * @return
+   * @return String if getUrlString is found else null
    */
   public abstract String getUrlString(
       LocalDate date, String currencyFromCode, String currencyToCode);
@@ -114,7 +114,7 @@ public abstract class CurrencyConversionService {
    *
    * @param currentRate
    * @param previousRate
-   * @return
+   * @return String if getVariations is found else null
    */
   public String getVariations(BigDecimal currentRate, BigDecimal previousRate) {
     String variations = "0";

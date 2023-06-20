@@ -60,7 +60,7 @@ public abstract class InvoiceLineManagement {
    * @param quantity
    * @param price The unit price.
    * @param scale Scale to apply on the result
-   * @return The Excluded tax total amount.
+   * @return BigDecimal if Amount is found else null
    */
   public static BigDecimal computeAmount(BigDecimal quantity, BigDecimal price, int scale) {
 

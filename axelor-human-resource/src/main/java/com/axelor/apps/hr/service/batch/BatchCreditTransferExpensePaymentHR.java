@@ -106,7 +106,7 @@ public class BatchCreditTransferExpensePaymentHR extends BatchCreditTransferExpe
   /**
    * Process expenses that need to be paid.
    *
-   * @return
+   * @return List if processExpenses is found else null
    */
   protected List<Expense> processExpenses() {
     List<Expense> doneList = new ArrayList<>();

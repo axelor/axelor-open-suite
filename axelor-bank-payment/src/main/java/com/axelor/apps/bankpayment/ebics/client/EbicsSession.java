@@ -1,12 +1,11 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -14,7 +13,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.bankpayment.ebics.client;
 
@@ -41,7 +40,6 @@ import com.axelor.apps.bankpayment.db.EbicsUser;
 import com.axelor.apps.bankpayment.db.repo.EbicsCertificateRepository;
 import com.axelor.apps.bankpayment.ebics.service.EbicsCertificateService;
 import com.axelor.apps.base.AxelorException;
-import java.io.IOException;
 import java.security.interfaces.RSAPublicKey;
 import java.util.HashMap;
 import java.util.Map;
@@ -57,7 +55,6 @@ public class EbicsSession {
    * Constructs a new ebics session
    *
    * @param user the ebics user
-   * @param the ebics client configuration
    */
   public EbicsSession(EbicsUser user) {
     this.user = user;
@@ -68,7 +65,7 @@ public class EbicsSession {
    * Constructs a new ebics session
    *
    * @param user the ebics user
-   * @param the ebics client configuration
+   * @param signatoryUser
    */
   public EbicsSession(EbicsUser user, EbicsUser signatoryUser) {
     this.user = user;
@@ -81,8 +78,7 @@ public class EbicsSession {
    * needed.
    *
    * @return the banks encryption key.
-   * @throws IOException Communication error during key retrieval.
-   * @throws EbicsException Server error message generated during key retrieval.
+   * @throws AxelorException
    */
   public RSAPublicKey getBankE002Key() throws AxelorException {
 
@@ -97,8 +93,7 @@ public class EbicsSession {
    * needed.
    *
    * @return the banks authentication key.
-   * @throws IOException Communication error during key retrieval.
-   * @throws EbicsException Server error message generated during key retrieval.
+   * @throws AxelorException
    */
   public RSAPublicKey getBankX002Key() throws AxelorException {
     return (RSAPublicKey)
@@ -112,7 +107,7 @@ public class EbicsSession {
    * Returns the bank id.
    *
    * @return the bank id.
-   * @throws EbicsException
+   * @throws AxelorException
    */
   public String getBankID() throws AxelorException {
     return user.getEbicsPartner().getEbicsBank().getHostId();

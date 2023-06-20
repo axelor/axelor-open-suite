@@ -89,6 +89,7 @@ public interface PurchaseOrderInvoiceService {
    * @param amountToInvoice : the amount of the advance payment
    * @param isPercent : if the amount specified is in percent or not
    * @return Invoice : The generated supplier advance payment
+   * @throws AxelorException
    */
   Invoice generateSupplierAdvancePayment(
       PurchaseOrder purchaseOrder, BigDecimal amountToInvoice, boolean isPercent)

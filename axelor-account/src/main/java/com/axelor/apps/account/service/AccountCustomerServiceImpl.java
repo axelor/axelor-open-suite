@@ -79,7 +79,7 @@ public class AccountCustomerServiceImpl implements AccountCustomerService {
    *
    * @param partner Un tiers
    * @param company Une société
-   * @return Le solde total
+   * @return getBalance if found else null Le solde
    */
   @Override
   public BigDecimal getBalance(Partner partner, Company company) {
@@ -168,10 +168,7 @@ public class AccountCustomerServiceImpl implements AccountCustomerService {
     return balance;
   }
 
-  /**
-   * **************************************** 2. Calcul du solde exigible (relançable) du tiers
-   * *****************************************
-   */
+  /** Calcul du solde exigible (relançable) du tiers ***************************************** */
   /**
    * solde des factures exigibles non bloquées en relance et dont « la date de facture » + « délai
    * d’acheminement(X) » <« date du jour » si la date de facture = date d'échéance de facture, sinon
@@ -273,7 +270,7 @@ public class AccountCustomerServiceImpl implements AccountCustomerService {
    *
    * @param partner Un tiers
    * @param company Une société
-   * @return
+   * @return list if getMoveLine is found else null
    */
   @Override
   public List<? extends MoveLine> getMoveLine(Partner partner, Company company) {
@@ -289,6 +286,10 @@ public class AccountCustomerServiceImpl implements AccountCustomerService {
    *
    * @param partnerList Une liste de tiers à mettre à jour
    * @param company Une société
+   * @param updateCustAccount
+   * @param updateDueCustAccount
+   * @param updateDueDebtRecoveryCustAccount
+   * @throws AxelorException
    */
   @Override
   public void updatePartnerAccountingSituation(
@@ -315,6 +316,11 @@ public class AccountCustomerServiceImpl implements AccountCustomerService {
     }
   }
 
+  /**
+   * @param partnerList
+   * @param company
+   * @throws AxelorException
+   */
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void flagPartners(List<Partner> partnerList, Company company) throws AxelorException {
@@ -332,6 +338,13 @@ public class AccountCustomerServiceImpl implements AccountCustomerService {
     }
   }
 
+  /**
+   * @param accountingSituation
+   * @param updateCustAccount
+   * @param updateDueCustAccount
+   * @param updateDueDebtRecoveryCustAccount
+   * @throws AxelorException
+   */
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public AccountingSituation updateAccountingSituationCustomerAccount(
@@ -367,6 +380,12 @@ public class AccountCustomerServiceImpl implements AccountCustomerService {
     return accountingSituation;
   }
 
+  /**
+   * @param partner
+   * @param company
+   * @param isSupplierInvoice
+   * @throws AxelorException
+   */
   @Override
   public Account getPartnerAccount(Partner partner, Company company, boolean isSupplierInvoice)
       throws AxelorException {
@@ -375,6 +394,11 @@ public class AccountCustomerServiceImpl implements AccountCustomerService {
         : getCustomerAccount(partner, company);
   }
 
+  /**
+   * @param partner
+   * @param company
+   * @throws AxelorException
+   */
   protected Account getCustomerAccount(Partner partner, Company company) throws AxelorException {
     Account customerAccount = accountingSituationService.getCustomerAccount(partner, company);
 
@@ -390,6 +414,11 @@ public class AccountCustomerServiceImpl implements AccountCustomerService {
     return customerAccount;
   }
 
+  /**
+   * @param partner
+   * @param company
+   * @throws AxelorException
+   */
   protected Account getSupplierAccount(Partner partner, Company company) throws AxelorException {
     Account supplierAccount = accountingSituationService.getSupplierAccount(partner, company);
 

@@ -93,7 +93,7 @@ public class EbicsUtils {
    *
    * @param toZip the input to be compressed
    * @return the compressed input data
-   * @throws IOException compression failed
+   * @throws AxelorException
    */
   public static byte[] zip(byte[] toZip) throws AxelorException {
 
@@ -142,8 +142,8 @@ public class EbicsUtils {
    * have been initialized with a real random number (seed). The entropy of the seed should be at
    * least 100 bits.
    *
-   * @return a random nonce.
-   * @throws EbicsException nonce generation fails.
+   * @return byte[] if generateNonce is found else null
+   * @throws AxelorException
    */
   public static byte[] generateNonce() throws AxelorException {
     SecureRandom secureRandom;
@@ -165,6 +165,7 @@ public class EbicsUtils {
    *
    * @param zip the zipped input.
    * @return the uncompressed data.
+   * @throws AxelorException
    */
   public static byte[] unzip(byte[] zip) throws AxelorException {
     Inflater decompressor;
@@ -216,7 +217,7 @@ public class EbicsUtils {
    *
    * @param input the byte array XML input.
    * @return the canonized form of the given XML
-   * @throws EbicsException
+   * @throws AxelorException
    */
   public static byte[] canonize(byte[] input) throws AxelorException {
     DocumentBuilderFactory factory;
@@ -284,7 +285,7 @@ public class EbicsUtils {
    * @param input the input to encrypt
    * @param keySpec the key spec
    * @return the encrypted input
-   * @throws EbicsException
+   * @throws AxelorException
    */
   public static byte[] encrypt(byte[] input, SecretKeySpec keySpec) throws AxelorException {
     return encryptOrDecrypt(Cipher.ENCRYPT_MODE, input, keySpec);
@@ -296,7 +297,7 @@ public class EbicsUtils {
    * @param input the input to decrypt
    * @param keySpec the key spec
    * @return the decrypted input
-   * @throws EbicsException
+   * @throws AxelorException
    */
   public static byte[] decrypt(byte[] input, SecretKeySpec keySpec) throws AxelorException {
     return encryptOrDecrypt(Cipher.DECRYPT_MODE, input, keySpec);
@@ -309,7 +310,7 @@ public class EbicsUtils {
    * @param input the input to encrypt or decrypt.
    * @param keySpec the key spec.
    * @return the encrypted or decrypted data.
-   * @throws GeneralSecurityException
+   * @throws AxelorException
    */
   private static byte[] encryptOrDecrypt(int mode, byte[] input, SecretKeySpec keySpec)
       throws AxelorException {
@@ -331,7 +332,7 @@ public class EbicsUtils {
    * Checks for the returned http code
    *
    * @param httpCode the http code
-   * @throws EbicsException
+   * @throws AxelorException
    */
   public static void checkHttpCode(int httpCode) throws AxelorException {
     if (httpCode != 200) {

@@ -55,7 +55,6 @@ import com.axelor.utils.db.Wizard;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.inject.Singleton;
-import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -64,7 +63,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -287,9 +285,6 @@ public class ManufOrderController {
    *
    * @param request
    * @param response
-   * @return
-   * @throws BirtException
-   * @throws IOException
    */
   public void print(ActionRequest request, ActionResponse response) {
 

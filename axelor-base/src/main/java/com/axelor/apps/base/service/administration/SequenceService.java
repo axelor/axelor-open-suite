@@ -181,7 +181,7 @@ public class SequenceService {
    *
    * @param sequence
    * @param refDate
-   * @return
+   * @return String if getSequenceNumber is found else null
    */
   @Transactional(rollbackOn = {Exception.class})
   public String getSequenceNumber(
@@ -318,7 +318,7 @@ public class SequenceService {
    * Get draft sequence number.
    *
    * @param model
-   * @return
+   * @return String if getDraftSequenceNumber is found else null
    * @throws AxelorException
    */
   public String getDraftSequenceNumber(Model model) throws AxelorException {
@@ -336,7 +336,7 @@ public class SequenceService {
    *
    * @param model
    * @param padding
-   * @return
+   * @return String if getDraftSequenceNumber is found else null
    */
   public String getDraftSequenceNumber(Model model, int zeroPadding) throws AxelorException {
     if (model.getId() == null) {
@@ -356,7 +356,7 @@ public class SequenceService {
    * <p>Also consider '*' as draft character for backward compatibility.
    *
    * @param sequenceNumber
-   * @return
+   * @return boolean if isEmptyOrDraftSequenceNumber is found else null
    */
   public boolean isEmptyOrDraftSequenceNumber(String sequenceNumber) {
     return Strings.isNullOrEmpty(sequenceNumber)
@@ -367,6 +367,7 @@ public class SequenceService {
    * Computes sequence full name
    *
    * @param sequence Sequence to compute full name
+   * @return String if computeFullName is found else null
    */
   public String computeFullName(Sequence sequence) {
     StringBuilder fn = new StringBuilder();

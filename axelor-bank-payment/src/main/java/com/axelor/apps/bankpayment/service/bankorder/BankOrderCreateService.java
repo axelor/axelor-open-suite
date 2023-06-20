@@ -69,8 +69,18 @@ public class BankOrderCreateService {
   /**
    * Créer un ordre bancaire avec tous les paramètres
    *
-   * @param
-   * @return
+   * @param paymentMode
+   * @param partnerType
+   * @param bankOrderDate
+   * @param senderCompany
+   * @param senderBankDetails
+   * @param currency
+   * @param senderReference
+   * @param senderLabel
+   * @param technicalOriginSelect
+   * @param functionalOriginSelect
+   * @param accountingTriggerSelect
+   * @return BankOrder if createBankOrder is found else null
    * @throws AxelorException
    */
   public BankOrder createBankOrder(

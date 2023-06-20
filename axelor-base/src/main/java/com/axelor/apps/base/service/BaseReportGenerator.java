@@ -190,8 +190,6 @@ public class BaseReportGenerator extends ReportGenerator {
    * @param designName report design name
    * @param format output format
    * @param params report parameters
-   * @param locale report output language
-   * @return {@link Path} to the generated file
    * @throws IOException if an I/O exception occurs
    * @throws BirtException if rendering fails
    */

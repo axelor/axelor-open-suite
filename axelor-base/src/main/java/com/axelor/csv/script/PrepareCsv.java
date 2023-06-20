@@ -117,7 +117,7 @@ public class PrepareCsv {
    * Get namecolumn field of entity
    *
    * @param fileName
-   * @return
+   * @return String if getNameColumn is found else null
    * @throws SAXException
    * @throws IOException
    * @throws ParserConfigurationException

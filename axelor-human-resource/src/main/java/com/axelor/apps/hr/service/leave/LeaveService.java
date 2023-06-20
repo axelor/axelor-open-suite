@@ -90,18 +90,18 @@ public interface LeaveService {
   /**
    * Checks if the given day is a leave day.
    *
-   * @param user
+   * @param employee
    * @param date
-   * @return
+   * @return boolean if isLeaveDay is found else null
    */
   public boolean isLeaveDay(Employee employee, LocalDate date);
 
   /**
    * Gets the leaves for the given user for the given date.
    *
-   * @param user
+   * @param employee
    * @param date
-   * @return
+   * @return List if getLeaves is found else null
    */
   public List<LeaveRequest> getLeaves(Employee employee, LocalDate date);
 
@@ -109,7 +109,7 @@ public interface LeaveService {
    * Get the LeaveLine associated with the leaveRequest
    *
    * @param leaveRequest
-   * @return
+   * @return LeaveLine if getLeaveLine is found else null
    */
   LeaveLine getLeaveLine(LeaveRequest leaveRequest);
 

@@ -88,7 +88,7 @@ public interface FixedAssetDerogatoryLineService {
    * Filter list with statusSelect = status. Filtered lines will be remove from database by calling
    * {@link FixedAssetDerogatoryLineRepository#remove(FixedAssetLine)}
    *
-   * @param fixedAssetLineList
+   * @param fixedAssetDerogatoryLineList
    * @param status
    */
   void filterListByStatus(List<FixedAssetDerogatoryLine> fixedAssetDerogatoryLineList, int status);

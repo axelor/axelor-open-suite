@@ -59,6 +59,7 @@ public class KeyManagementResponseElement extends DefaultResponseElement {
    *
    * @param factory the content factory enclosing the ebics response
    * @param name the element name
+   * @param ebicsUser
    */
   public KeyManagementResponseElement(ContentFactory factory, String name, EbicsUser ebicsUser) {
     super(factory, name, ebicsUser);

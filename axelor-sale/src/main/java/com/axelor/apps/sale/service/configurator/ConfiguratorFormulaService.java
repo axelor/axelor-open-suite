@@ -31,6 +31,7 @@ public interface ConfiguratorFormulaService {
    *
    * @param formula
    * @param creator
+   * @throws AxelorException
    */
   void checkFormula(ConfiguratorFormula formula, ConfiguratorCreator creator)
       throws AxelorException;
@@ -40,7 +41,7 @@ public interface ConfiguratorFormulaService {
    * classes.
    *
    * @param calculatedValue a result from groovy script.
-   * @return the name of the class.
+   * @return String if getCalculatedClassName is found else null
    */
   String getCalculatedClassName(Object calculatedValue);
 }

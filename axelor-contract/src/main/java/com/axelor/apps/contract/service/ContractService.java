@@ -45,6 +45,7 @@ public interface ContractService {
    *
    * @param contract
    * @param date
+   * @throws AxelorException
    */
   void waitingCurrentVersion(Contract contract, LocalDate date) throws AxelorException;
 
@@ -54,6 +55,7 @@ public interface ContractService {
    *
    * @param contract
    * @param date
+   * @throws AxelorException
    */
   Invoice ongoingCurrentVersion(Contract contract, LocalDate date) throws AxelorException;
 
@@ -62,6 +64,7 @@ public interface ContractService {
    *
    * @param contract
    * @param date
+   * @throws AxelorException
    */
   void waitingNextVersion(Contract contract, LocalDate date) throws AxelorException;
 
@@ -71,6 +74,7 @@ public interface ContractService {
    *
    * @param contract
    * @param date
+   * @throws AxelorException
    */
   void activeNextVersion(Contract contract, LocalDate date) throws AxelorException;
 
@@ -100,13 +104,14 @@ public interface ContractService {
   void terminateContract(Contract contract, Boolean isManual, LocalDate date)
       throws AxelorException;
 
-  /** Closes the contract */
+  /** Closes the contract @Param contract @Param date @Throws AxelorException */
   void close(Contract contract, LocalDate date) throws AxelorException;
 
   /**
    * Invoicing the contract
    *
    * @param contract
+   * @return Invoice if invoicingContract is found else null
    * @throws AxelorException
    */
   Invoice invoicingContract(Contract contract) throws AxelorException;
@@ -116,13 +121,17 @@ public interface ContractService {
    *
    * @param contract
    * @param date
+   * @throws AxelorException
    */
   void renewContract(Contract contract, LocalDate date) throws AxelorException;
 
   /**
    * Generate a new contract based on template
    *
+   * @param contract
    * @param template
+   * @return Contract if copyFromTemplate is found else null
+   * @throws AxelorException
    */
   Contract copyFromTemplate(Contract contract, ContractTemplate template) throws AxelorException;
 

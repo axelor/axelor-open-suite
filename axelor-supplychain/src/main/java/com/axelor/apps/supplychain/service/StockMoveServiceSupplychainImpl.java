@@ -391,7 +391,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
    * reallocated when the generated stock move is planned.
    *
    * @param stockMoveLine the previous stock move line
-   * @return the generated stock move line
+   * @return StockMoveLine if copySplittedStockMoveLine is found else null
    * @throws AxelorException
    */
   @Override

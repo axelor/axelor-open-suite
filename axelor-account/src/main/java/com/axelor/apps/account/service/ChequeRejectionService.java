@@ -107,7 +107,7 @@ public class ChequeRejectionService {
    *
    * @param chequeRejection Un rejet de cheque brouillon
    * @param company Une société
-   * @return L'écriture de rejet de chèque
+   * @return Move if ChequeRejectionMove is found else null L'écriture de rejet de chèque
    * @throws AxelorException
    */
   public Move createChequeRejectionMove(ChequeRejection chequeRejection, Company company)

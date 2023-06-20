@@ -351,7 +351,7 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
    * Get the list of product for a level
    *
    * @param level
-   * @return
+   * @return List if getProductList is found else null
    */
   protected List<Product> getProductList(int level) {
 

@@ -55,7 +55,8 @@ public class DTransferResponseElement extends TransferResponseElement {
    *
    * @param factory the content factory
    * @param orderType the order type
-   * @param name the element name.
+   * @param name the element name.@
+   * @param ebicsUser
    */
   public DTransferResponseElement(
       ContentFactory factory, OrderType orderType, String name, EbicsUser ebicsUser) {

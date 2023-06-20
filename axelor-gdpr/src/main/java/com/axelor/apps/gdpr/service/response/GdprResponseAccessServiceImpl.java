@@ -176,7 +176,10 @@ public class GdprResponseAccessServiceImpl implements GdprResponseAccessService 
    * generate csv file for choosed model (lead/partner)
    *
    * @param gdprRequest
-   * @return
+   * @param modelSelectKlass
+   * @param metaModel
+   * @param selectedModel
+   * @return List if generateCSVForThePerson is found else null
    * @throws AxelorException
    * @throws ClassNotFoundException
    * @throws IOException
@@ -232,9 +235,8 @@ public class GdprResponseAccessServiceImpl implements GdprResponseAccessService 
    * generate csv file for related objects
    *
    * @param gdprRequest
-   * @return
+   * @return List if generateRelatedObjectsCSV is found else null
    * @throws ClassNotFoundException
-   * @throws IOException
    * @throws AxelorException
    */
   @SuppressWarnings("unchecked")
@@ -392,7 +394,7 @@ public class GdprResponseAccessServiceImpl implements GdprResponseAccessService 
    * add linked dmsFiles
    *
    * @param gdprRequest
-   * @return
+   * @return List if searchDMSFile is found else null
    */
   protected List<File> searchDMSFile(GDPRRequest gdprRequest) {
 

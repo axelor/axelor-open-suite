@@ -54,7 +54,7 @@ public class ReturnCode {
    *
    * @param code the given standard code.
    * @param symbolicName the symbolic name.
-   * @param the code text
+   * @param text
    */
   public ReturnCode(String code, String symbolicName, String text) {
     this.code = code;
@@ -65,7 +65,7 @@ public class ReturnCode {
   /**
    * Throws an equivalent <code>EbicsException</code>
    *
-   * @throws EbicsException
+   * @throws AxelorException
    */
   public void throwException() throws AxelorException {
     throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(text));

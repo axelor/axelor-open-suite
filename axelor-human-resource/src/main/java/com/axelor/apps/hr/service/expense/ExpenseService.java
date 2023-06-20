@@ -90,7 +90,7 @@ public interface ExpenseService {
    * Get the expense from employee, if no expense is found create one.
    *
    * @param employee
-   * @return
+   * @return Expense if getOrCreateExpense is found else null
    */
   public Expense getOrCreateExpense(Employee employee);
 

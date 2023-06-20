@@ -65,6 +65,7 @@ public class ReceiptRequestElement extends DefaultEbicsRootElement {
    * Construct a new <code>ReceiptRequestElement</code> element.
    *
    * @param session the current ebics session
+   * @param transactionId
    * @param name the element name
    */
   public ReceiptRequestElement(EbicsSession session, byte[] transactionId, String name) {
@@ -118,7 +119,7 @@ public class ReceiptRequestElement extends DefaultEbicsRootElement {
    * Returns the digest value of the authenticated XML portions.
    *
    * @return the digest value.
-   * @throws EbicsException Failed to retrieve the digest value.
+   * @throws AxelorException
    */
   public byte[] getDigest() throws AxelorException {
     addNamespaceDecl("ds", "http://www.w3.org/2000/09/xmldsig#");

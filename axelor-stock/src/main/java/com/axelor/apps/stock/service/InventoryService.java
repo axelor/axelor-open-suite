@@ -663,6 +663,7 @@ public class InventoryService {
    * Generate a stock move from an inventory.
    *
    * @param inventory a realized inventory.
+   * @param inventoryLineList
    * @param isEnteringStock whether we want to create incoming or upcoming stock move of this
    *     inventory.
    * @return the generated stock move.

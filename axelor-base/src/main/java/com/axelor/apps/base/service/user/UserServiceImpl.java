@@ -164,7 +164,7 @@ public class UserServiceImpl implements UserService {
   /**
    * Method that return the active team of the current connected user
    *
-   * @return Team the active team
+   * @return MetaFile if getUserActiveCompanyLogo is found else null
    */
   @Override
   public MetaFile getUserActiveCompanyLogo() {

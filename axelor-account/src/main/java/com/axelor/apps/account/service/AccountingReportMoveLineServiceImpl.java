@@ -186,7 +186,7 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
    * Replace unauthorized characters for identity fields
    *
    * @param value
-   * @return value
+   * @return compileIdentityValue if found else null
    */
   protected String compileIdentityValue(String value) {
 
@@ -200,7 +200,7 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
    * Replace unauthorized characters for address fields
    *
    * @param value
-   * @return value
+   * @return compileAddressValue if found else null
    */
   protected String compileAddressValue(String value) {
 

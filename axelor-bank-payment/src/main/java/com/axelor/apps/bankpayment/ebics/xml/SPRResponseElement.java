@@ -55,6 +55,7 @@ public class SPRResponseElement extends DefaultResponseElement {
    * Constructs a new SPR response element.
    *
    * @param factory the content factory
+   * @param ebicsUser
    */
   public SPRResponseElement(ContentFactory factory, EbicsUser ebicsUser) {
     super(factory, "SPRResponse.xml", ebicsUser);

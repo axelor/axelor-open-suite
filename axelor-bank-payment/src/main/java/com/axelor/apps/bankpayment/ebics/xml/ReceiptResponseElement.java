@@ -57,6 +57,7 @@ public class ReceiptResponseElement extends DefaultResponseElement {
    *
    * @param factory the content factory
    * @param name the element name
+   * @param ebicsUser
    */
   public ReceiptResponseElement(ContentFactory factory, String name, EbicsUser ebicsUser) {
     super(factory, name, ebicsUser);

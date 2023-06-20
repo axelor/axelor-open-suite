@@ -29,7 +29,7 @@ public interface LogisticalFormLineService {
    * Get domain for stockMoveLine.
    *
    * @param logisticalFormLine
-   * @return
+   * @return String if getStockMoveLineDomain is found else null
    */
   String getStockMoveLineDomain(LogisticalFormLine logisticalFormLine);
 
@@ -37,7 +37,7 @@ public interface LogisticalFormLineService {
    * Get unspread quantity.
    *
    * @param logisticalFormLine
-   * @return
+   * @return BigDecimal if getUnspreadQty is found else null
    */
   BigDecimal getUnspreadQty(LogisticalFormLine logisticalFormLine);
 
@@ -54,7 +54,7 @@ public interface LogisticalFormLineService {
    *
    * @param logisticalFormLine
    * @param scriptHelper
-   * @return
+   * @return BigDecimal if evalVolume is found else null
    * @throws LogisticalFormError
    */
   BigDecimal evalVolume(LogisticalFormLine logisticalFormLine, ScriptHelper scriptHelper)

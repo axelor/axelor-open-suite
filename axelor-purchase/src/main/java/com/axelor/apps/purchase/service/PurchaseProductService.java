@@ -27,7 +27,7 @@ public interface PurchaseProductService {
    * Search for the last shipping coef in purchase order line.
    *
    * @param product a product
-   * @return An optional with the shippingCoef
+   * @return BigDecimal if getLastShippingCoef is found else null
    */
   BigDecimal getLastShippingCoef(Product product) throws AxelorException;
 }

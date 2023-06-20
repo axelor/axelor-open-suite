@@ -221,7 +221,8 @@ public class OperationOrderWorkflowService {
    * priority.
    *
    * @param operationOrder
-   * @return
+   * @param cumulatedDuration
+   * @return OperationOrder if plan is found else null
    * @throws AxelorException
    */
   @Transactional(rollbackOn = {Exception.class})
@@ -312,7 +313,7 @@ public class OperationOrderWorkflowService {
    * order of operation order priority.
    *
    * @param operationOrder
-   * @return
+   * @return OperationOrder if replan is found else null
    * @throws AxelorException
    */
   @Transactional(rollbackOn = {Exception.class})
@@ -334,7 +335,7 @@ public class OperationOrderWorkflowService {
    * Reset the planned dates from the specified operation order list.
    *
    * @param operationOrderList
-   * @return
+   * @return List if resetPlannedDates is found else null
    */
   @Transactional
   public List<OperationOrder> resetPlannedDates(List<OperationOrder> operationOrderList) {
@@ -389,6 +390,7 @@ public class OperationOrderWorkflowService {
    * Starts the given {@link OperationOrder} and sets its starting time
    *
    * @param operationOrder An operation order
+   * @throws AxelorException
    */
   @Transactional(rollbackOn = {Exception.class})
   public void start(OperationOrder operationOrder) throws AxelorException {
@@ -456,6 +458,7 @@ public class OperationOrderWorkflowService {
    * Realizes the linked stock moves
    *
    * @param operationOrder An operation order
+   * @throws AxelorException
    */
   @Transactional(rollbackOn = {Exception.class})
   public void finish(OperationOrder operationOrder) throws AxelorException {
@@ -479,6 +482,7 @@ public class OperationOrderWorkflowService {
    * Cancels the given {@link OperationOrder} and its linked stock moves And sets its stopping time
    *
    * @param operationOrder An operation order
+   * @throws AxelorException
    */
   @Transactional(rollbackOn = {Exception.class})
   public void cancel(OperationOrder operationOrder) throws AxelorException {
@@ -589,7 +593,7 @@ public class OperationOrderWorkflowService {
    * @param operationOrder
    * @param plannedStartDateT
    * @param plannedEndDateT
-   * @return
+   * @return OperationOrder if setPlannedDates is found else null
    */
   @Transactional
   public OperationOrder setPlannedDates(
@@ -608,7 +612,7 @@ public class OperationOrderWorkflowService {
    * @param operationOrder
    * @param realStartDateT
    * @param realEndDateT
-   * @return
+   * @return OperationOrder ifsetRealDates is found else null
    */
   @Transactional
   public OperationOrder setRealDates(

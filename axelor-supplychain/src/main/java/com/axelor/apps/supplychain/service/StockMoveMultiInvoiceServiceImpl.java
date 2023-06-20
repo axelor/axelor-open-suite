@@ -568,6 +568,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
    *
    * @param invoice an invoice
    * @return the refund invoice
+   * @throws AxelorException
    */
   protected Invoice transformToRefund(Invoice invoice) throws AxelorException {
     Invoice refund = new RefundInvoice(invoice).generate();

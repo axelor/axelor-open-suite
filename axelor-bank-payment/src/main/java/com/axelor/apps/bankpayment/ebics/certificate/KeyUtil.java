@@ -106,7 +106,7 @@ public class KeyUtil {
    *
    * @param publicKey the public key
    * @return the digest value
-   * @throws EbicsException
+   * @throws AxelorException
    */
   public static byte[] getKeyDigest(RSAPublicKey publicKey) throws AxelorException {
     String modulus;
@@ -135,6 +135,7 @@ public class KeyUtil {
   /**
    * Remove the first byte of an byte array
    *
+   * @param byteArray
    * @return the array
    */
   private static byte[] removeFirstByte(byte[] byteArray) {

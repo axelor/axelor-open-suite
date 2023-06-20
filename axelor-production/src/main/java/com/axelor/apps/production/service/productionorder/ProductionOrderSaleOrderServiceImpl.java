@@ -156,7 +156,8 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
    * @param qtyRequested the quantity requested of the parent manufacturing order.
    * @param startDate startDate of creation
    * @param saleOrder a sale order
-   * @return the updated production order with all generated manufacturing orders.
+   * @param saleOrderLine
+   * @return ProductionOrder if generateManufOrders is found else null
    * @throws AxelorException
    */
   protected ProductionOrder generateManufOrders(

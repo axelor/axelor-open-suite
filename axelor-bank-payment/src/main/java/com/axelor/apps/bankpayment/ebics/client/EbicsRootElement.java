@@ -58,7 +58,7 @@ public interface EbicsRootElement extends EbicsElement {
   /**
    * Validates the request element according to the EBICS XML schema specification
    *
-   * @throws EbicsException throws an EbicsException when validation fails
+   * @throws AxelorException throws an AxelorException when validation fails
    */
   public void validate() throws AxelorException;
 
@@ -74,7 +74,8 @@ public interface EbicsRootElement extends EbicsElement {
    * Saves the <code>EbicsElement</code> into a given output stream.
    *
    * @param out the output stream
-   * @throws EbicsException the save operation fails
+   * @throws AxelorException the save operation fails
+   * @throws JDOMException
    */
   public void save(OutputStream out) throws AxelorException, JDOMException;
 }
