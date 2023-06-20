@@ -104,8 +104,10 @@ public class FakerServiceImpl implements FakerService {
 
   /**
    * Called to check if the faker field configuration is correct
+   * if correct, return an example output
    *
    * @param fakerApiField
+   * @return an example output
    */
   @Override
   public String checkMethod(FakerApiField fakerApiField) throws AxelorException {
@@ -217,7 +219,7 @@ public class FakerServiceImpl implements FakerService {
    *
    * @param classMethod
    * @param fakerApiField
-   * @return
+   * @return an example output
    */
   public String checkParams(Object classMethod, FakerApiField fakerApiField)
       throws AxelorException {
