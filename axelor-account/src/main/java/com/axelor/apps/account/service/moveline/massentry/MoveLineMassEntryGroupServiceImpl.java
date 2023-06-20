@@ -59,16 +59,21 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
     this.moveLineRecordService = moveLineRecordService;
   }
 
-  @Override
-  public Map<String, Object> getOnNewValuesMap(MoveLineMassEntry moveLine, Move move)
+  public MoveLineMassEntry initializeValues(MoveLineMassEntry moveLine, Move move)
       throws AxelorException {
-
     moveLine.setInputAction(MoveLineMassEntryRepository.MASS_ENTRY_INPUT_ACTION_LINE);
     moveLine =
         massEntryService.getFirstMoveLineMassEntryInformations(
             move.getMoveLineMassEntryList(), moveLine);
     moveLineDefaultService.setAccountInformation(moveLine, move);
     moveLineComputeAnalyticService.computeAnalyticDistribution(moveLine, move);
+
+    return moveLine;
+  }
+
+  @Override
+  public Map<String, Object> getOnNewValuesMap(MoveLineMassEntry moveLine, Move move)
+      throws AxelorException {
 
     Map<String, Object> valuesMap =
         new HashMap<>(
@@ -337,8 +342,9 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
       MoveLineMassEntry moveLine, Move move) {
     Map<String, Object> valuesMap = new HashMap<>();
 
-    massEntryService.getFirstMoveLineMassEntryInformations(
-        move.getMoveLineMassEntryList(), moveLine);
+    moveLine =
+        massEntryService.getFirstMoveLineMassEntryInformations(
+            move.getMoveLineMassEntryList(), moveLine);
 
     this.setAllMoveLineValuesMap(moveLine, valuesMap);
     return valuesMap;

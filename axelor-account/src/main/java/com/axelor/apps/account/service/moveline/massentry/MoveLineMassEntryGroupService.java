@@ -8,6 +8,8 @@ import java.util.Map;
 
 public interface MoveLineMassEntryGroupService {
 
+  MoveLineMassEntry initializeValues(MoveLineMassEntry moveLine, Move move) throws AxelorException;
+
   Map<String, Object> getOnNewValuesMap(MoveLineMassEntry moveLine, Move move)
       throws AxelorException;
 

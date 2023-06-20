@@ -153,6 +153,7 @@ public class MoveLineMassEntryController {
       MoveLineMassEntryGroupService moveLineMassEntryGroupService =
           Beans.get(MoveLineMassEntryGroupService.class);
 
+      moveLine = moveLineMassEntryGroupService.initializeValues(moveLine, move);
       response.setValues(moveLineMassEntryGroupService.getOnNewValuesMap(moveLine, move));
       response.setAttrs(moveLineMassEntryGroupService.getOnNewAttrsMap(moveLine, move));
     } catch (Exception e) {
