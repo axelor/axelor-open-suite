@@ -20,7 +20,6 @@ import com.axelor.apps.supplychain.service.PurchaseOrderStockService;
 import com.axelor.apps.supplychain.service.PurchaseOrderSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.meta.CallMethod;
-import com.axelor.studio.db.AppBudget;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -136,7 +135,6 @@ public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderWorkflowService
   @Override
   public void generateBudgetDistribution(PurchaseOrder purchaseOrder) {
     if (CollectionUtils.isNotEmpty(purchaseOrder.getPurchaseOrderLineList())) {
-      AppBudget appBudget = appBudgetService.getAppBudget();
       for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
         if (purchaseOrderLine.getBudget() != null) {
           BudgetDistribution budgetDistribution = null;
@@ -153,8 +151,6 @@ public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderWorkflowService
           }
 
           if (budgetDistribution == null) {
-            purchaseOrderLine.clearBudgetDistributionList();
-
             budgetDistribution = new BudgetDistribution();
             budgetDistribution.setBudget(purchaseOrderLine.getBudget());
             budgetDistribution.setBudgetAmountAvailable(
@@ -167,10 +163,6 @@ public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderWorkflowService
           }
 
           budgetDistribution.setAmount(purchaseOrderLine.getCompanyExTaxTotal());
-        } else if (purchaseOrderLine.getBudget() == null
-            && appBudget != null
-            && !appBudget.getManageMultiBudget()) {
-          purchaseOrderLine.clearBudgetDistributionList();
         }
       }
     }
