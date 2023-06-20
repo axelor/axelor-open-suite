@@ -25,6 +25,7 @@ import com.axelor.apps.account.db.repo.MoveLineMassEntryRepository;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.massentry.MassEntryMoveCreateService;
 import com.axelor.apps.account.service.move.massentry.MassEntryService;
+import com.axelor.apps.account.service.moveline.MoveLineGroupService;
 import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryGroupService;
 import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryService;
 import com.axelor.apps.base.AxelorException;
@@ -284,6 +285,54 @@ public class MoveLineMassEntryController {
             Beans.get(InvoiceTermService.class)
                 .getPfpValidatorUserDomain(line.getPartner(), move.getCompany()));
       }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void analyticDistributionTemplateOnChange(ActionRequest request, ActionResponse response) {
+    try {
+      MoveLineMassEntry moveLine = request.getContext().asType(MoveLineMassEntry.class);
+      Move move = this.getMove(request, moveLine);
+
+      response.setValues(
+          Beans.get(MoveLineMassEntryGroupService.class)
+              .getAnalyticDistributionTemplateOnChangeValuesMap(moveLine, move));
+      response.setAttrs(
+          Beans.get(MoveLineGroupService.class)
+              .getAnalyticDistributionTemplateOnChangeAttrsMap(moveLine, move));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void analyticDistributionTemplateOnChangeLight(
+      ActionRequest request, ActionResponse response) {
+    try {
+      MoveLineMassEntry moveLine = request.getContext().asType(MoveLineMassEntry.class);
+      Move move = this.getMove(request, moveLine);
+
+      response.setValues(
+          Beans.get(MoveLineMassEntryGroupService.class)
+              .getAnalyticDistributionTemplateOnChangeLightValuesMap(moveLine));
+      response.setAttrs(
+          Beans.get(MoveLineGroupService.class)
+              .getAnalyticDistributionTemplateOnChangeAttrsMap(moveLine, move));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void analyticAxisOnChange(ActionRequest request, ActionResponse response) {
+    try {
+      MoveLineMassEntry moveLine = request.getContext().asType(MoveLineMassEntry.class);
+      Move move = this.getMove(request, moveLine);
+
+      response.setValues(
+          Beans.get(MoveLineMassEntryGroupService.class)
+              .getAnalyticAxisOnChangeValuesMap(moveLine, move));
+      response.setAttrs(
+          Beans.get(MoveLineGroupService.class).getAnalyticAxisOnChangeAttrsMap(moveLine, move));
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

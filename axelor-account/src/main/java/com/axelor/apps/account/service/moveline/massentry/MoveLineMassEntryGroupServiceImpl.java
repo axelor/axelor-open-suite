@@ -236,4 +236,40 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
 
     return attrsMap;
   }
+
+  @Override
+  public Map<String, Object> getAnalyticDistributionTemplateOnChangeValuesMap(
+      MoveLineMassEntry moveLine, Move move) throws AxelorException {
+    Map<String, Object> valuesMap =
+        moveLineGroupService.getAnalyticDistributionTemplateOnChangeValuesMap(moveLine, move);
+    moveLineMassEntryRecordService.refreshAnalyticMoveLineMassEntryList(moveLine);
+
+    valuesMap.put("analyticMoveLineMassEntryList", moveLine.getAnalyticMoveLineMassEntryList());
+
+    return valuesMap;
+  }
+
+  @Override
+  public Map<String, Object> getAnalyticDistributionTemplateOnChangeLightValuesMap(
+      MoveLineMassEntry moveLine) {
+    Map<String, Object> valuesMap =
+        moveLineGroupService.getAnalyticDistributionTemplateOnChangeLightValuesMap(moveLine);
+    moveLineMassEntryRecordService.refreshAnalyticMoveLineMassEntryList(moveLine);
+
+    valuesMap.put("analyticMoveLineMassEntryList", moveLine.getAnalyticMoveLineMassEntryList());
+
+    return valuesMap;
+  }
+
+  @Override
+  public Map<String, Object> getAnalyticAxisOnChangeValuesMap(MoveLineMassEntry moveLine, Move move)
+      throws AxelorException {
+    Map<String, Object> valuesMap =
+        moveLineGroupService.getAnalyticAxisOnChangeValuesMap(moveLine, move);
+    moveLineMassEntryRecordService.refreshAnalyticMoveLineMassEntryList(moveLine);
+
+    valuesMap.put("analyticMoveLineMassEntryList", moveLine.getAnalyticMoveLineMassEntryList());
+
+    return valuesMap;
+  }
 }

@@ -28,4 +28,13 @@ public interface MoveLineMassEntryGroupService {
 
   Map<String, Map<String, Object>> getAccountOnChangeAttrsMap(MoveLineMassEntry moveLine, Move move)
       throws AxelorException;
+
+  Map<String, Object> getAnalyticDistributionTemplateOnChangeValuesMap(
+      MoveLineMassEntry moveLine, Move move) throws AxelorException;
+
+  Map<String, Object> getAnalyticDistributionTemplateOnChangeLightValuesMap(
+      MoveLineMassEntry moveLine);
+
+  Map<String, Object> getAnalyticAxisOnChangeValuesMap(MoveLineMassEntry moveLine, Move move)
+      throws AxelorException;
 }
