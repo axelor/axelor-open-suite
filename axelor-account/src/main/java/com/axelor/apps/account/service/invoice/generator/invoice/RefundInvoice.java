@@ -21,6 +21,7 @@ package com.axelor.apps.account.service.invoice.generator.invoice;
 import com.axelor.apps.account.db.BudgetDistribution;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
@@ -62,7 +63,7 @@ public class RefundInvoice extends InvoiceGenerator implements InvoiceStrategy {
       refundLines.addAll(refund.getInvoiceLineList());
     }
 
-    if (invoice.getOperationTypeSelect() == 3) { // Customer
+    if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE) { // Customer
       if (invoice.getInvoiceDate() != null) {
         refund.setOriginDate(invoice.getInvoiceDate());
       }
