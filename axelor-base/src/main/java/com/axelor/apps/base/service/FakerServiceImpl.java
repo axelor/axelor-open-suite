@@ -103,8 +103,8 @@ public class FakerServiceImpl implements FakerService {
   }
 
   /**
-   * Called to check if the faker field configuration is correct
-   * if correct, return an example output
+   * Called to check if the faker field configuration is correct if correct, return an example
+   * output
    *
    * @param fakerApiField
    * @return an example output
