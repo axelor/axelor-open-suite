@@ -30,7 +30,6 @@ import com.axelor.apps.account.service.move.attributes.MoveAttrsService;
 import com.axelor.apps.account.service.move.control.MoveCheckService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.auth.AuthUtils;
 import com.google.inject.Inject;
@@ -400,8 +399,8 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     valuesMap.put("currencyCode", move.getCurrencyCode());
     valuesMap.put("companyCurrencyCode", move.getCompanyCurrencyCode());
 
-    if(move.getPartner() != null){
-      if(!move.getPartner().getCompanySet().contains(move.getCompany())){
+    if (move.getPartner() != null) {
+      if (!move.getPartner().getCompanySet().contains(move.getCompany())) {
         valuesMap.put("partner", null);
         valuesMap.put("currency", move.getCompany().getCurrency());
         valuesMap.put("companyBankDetails", null);
