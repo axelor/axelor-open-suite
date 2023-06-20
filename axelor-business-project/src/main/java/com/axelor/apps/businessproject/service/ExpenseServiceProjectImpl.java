@@ -20,22 +20,33 @@ package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AccountingSituationService;
+import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineGenerateRealService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.move.MoveCancelService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineConsolidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
+import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
+import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.service.BankDetailsService;
+import com.axelor.apps.base.service.PeriodService;
+import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.ExpenseLine;
+import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
+import com.axelor.apps.hr.service.EmployeeAdvanceService;
 import com.axelor.apps.hr.service.KilometricService;
+import com.axelor.apps.hr.service.bankorder.BankOrderCreateServiceHr;
 import com.axelor.apps.hr.service.config.AccountConfigHRService;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.hr.service.expense.ExpenseServiceImpl;
@@ -51,6 +62,7 @@ public class ExpenseServiceProjectImpl extends ExpenseServiceImpl {
       MoveCreateService moveCreateService,
       MoveValidateService moveValidateService,
       ExpenseRepository expenseRepository,
+      ExpenseLineRepository expenseLineRepository,
       MoveLineCreateService moveLineCreateService,
       AccountManagementAccountService accountManagementService,
       AppAccountService appAccountService,
@@ -62,13 +74,24 @@ public class ExpenseServiceProjectImpl extends ExpenseServiceImpl {
       TemplateMessageService templateMessageService,
       PaymentModeService paymentModeService,
       PeriodRepository periodRepository,
+      PeriodService periodService,
       MoveLineConsolidateService moveLineConsolidateService,
       KilometricService kilometricService,
-      BankDetailsService bankDetailsService) {
+      BankDetailsService bankDetailsService,
+      EmployeeAdvanceService employeeAdvanceService,
+      MoveRepository moveRepository,
+      BankOrderCreateServiceHr bankOrderCreateServiceHr,
+      BankOrderRepository bankOrderRepository,
+      ReconcileService reconcileService,
+      BankOrderService bankOrderService,
+      MoveCancelService moveCancelService,
+      AppBaseService appBaseService,
+      SequenceService sequenceService) {
     super(
         moveCreateService,
         moveValidateService,
         expenseRepository,
+        expenseLineRepository,
         moveLineCreateService,
         accountManagementService,
         appAccountService,
@@ -80,9 +103,19 @@ public class ExpenseServiceProjectImpl extends ExpenseServiceImpl {
         templateMessageService,
         paymentModeService,
         periodRepository,
+        periodService,
         moveLineConsolidateService,
         kilometricService,
-        bankDetailsService);
+        bankDetailsService,
+        employeeAdvanceService,
+        moveRepository,
+        bankOrderCreateServiceHr,
+        bankOrderRepository,
+        reconcileService,
+        bankOrderService,
+        moveCancelService,
+        appBaseService,
+        sequenceService);
   }
 
   @Override
