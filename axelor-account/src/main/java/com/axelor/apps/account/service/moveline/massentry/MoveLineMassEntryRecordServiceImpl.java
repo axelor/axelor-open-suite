@@ -153,9 +153,10 @@ public class MoveLineMassEntryRecordServiceImpl implements MoveLineMassEntryReco
 
   @Override
   public void setMovePaymentCondition(MoveLineMassEntry moveLine, int journalTechnicalTypeSelect) {
-    moveLine.setMovePaymentCondition(null);
     if (journalTechnicalTypeSelect != JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY) {
       moveLine.setMovePaymentCondition(moveLine.getPartner().getPaymentCondition());
+    } else {
+      moveLine.setMovePaymentCondition(null);
     }
   }
 
