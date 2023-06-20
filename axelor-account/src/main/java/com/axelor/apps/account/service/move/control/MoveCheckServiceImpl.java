@@ -240,7 +240,8 @@ public class MoveCheckServiceImpl implements MoveCheckService {
   @Override
   public void checkCurrencyAmountSum(Move move) throws AxelorException {
     List<MoveLine> moveLineList = move.getMoveLineList();
-    if (CollectionUtils.isEmpty(moveLineList)) {
+    if (CollectionUtils.isEmpty(moveLineList)
+        || move.getStatusSelect() == MoveRepository.STATUS_NEW) {
       return;
     }
     if (moveLineList.stream()
