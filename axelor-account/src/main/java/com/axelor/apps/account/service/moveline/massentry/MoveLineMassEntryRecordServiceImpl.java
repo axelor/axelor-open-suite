@@ -16,7 +16,6 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.common.ObjectUtils;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
@@ -74,9 +73,8 @@ public class MoveLineMassEntryRecordServiceImpl implements MoveLineMassEntryReco
   public void setMovePfpValidatorUser(MoveLineMassEntry moveLine, Company company) {
     if (ObjectUtils.notEmpty(company)) {
       moveLine.setMovePfpValidatorUser(
-          Beans.get(MoveLineMassEntryService.class)
-              .getPfpValidatorUserForInTaxAccount(
-                  moveLine.getAccount(), company, moveLine.getPartner()));
+          moveLineMassEntryService.getPfpValidatorUserForInTaxAccount(
+              moveLine.getAccount(), company, moveLine.getPartner()));
     }
   }
 
