@@ -162,10 +162,10 @@ public class MoveLineMassEntryRecordServiceImpl implements MoveLineMassEntryReco
   @Override
   public void setMovePaymentMode(MoveLineMassEntry moveLine, Integer technicalTypeSelect) {
     switch (technicalTypeSelect) {
-      case 1:
+      case JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE:
         moveLine.setMovePaymentMode(moveLine.getPartner().getOutPaymentMode());
         break;
-      case 2:
+      case JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE:
         moveLine.setMovePaymentMode(moveLine.getPartner().getInPaymentMode());
         break;
       default:
