@@ -1,0 +1,2 @@
+title: "Invoice : Fix invoice term generation when skip ventilation is enable in invoicing configuration"
+type: fix
