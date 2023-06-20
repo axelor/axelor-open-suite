@@ -721,4 +721,15 @@
     <option value="3">Generate new random passwords and force password change</option>
   </selection>
 
+  <selection name="base.faker.api.field.param.type.select">
+    <option value="int">int</option>
+    <option value="long">long</option>
+    <option value="double">double</option>
+    <option value="boolean">boolean</option>
+    <option value="java.lang.String">String</option>
+    <option value="java.util.Date">Date (YYYY-MM-DD)</option>
+    <option value="java.sql.Timestamp">Timestamp (YYYY-MM-DD)</option>
+    <option value="java.util.concurrent.TimeUnit">TimeUnit</option>
+  </selection>
+
 </object-views>

@@ -606,6 +606,13 @@
     <view type="dashboard" name="hr.user.dashboard.sample"/>
   </action-view>
 
+  <menuitem name="menu-hr-employee-dashboard" parent="hr-report-root"
+    title="Employee dashboard" action="hr.employee.dashboard.view" order="300"/>
+
+  <action-view name="hr.employee.dashboard.view" title="Employee dashboard">
+    <view type="dashboard" name="hr.employee.dashboard.sample"/>
+  </action-view>
+
   <menuitem name="project-spent-time" parent="project-current-project" title="Spent time"
     order="300" action="project.spent.time"/>
   <action-view name="project.spent.time" title="Spent time"

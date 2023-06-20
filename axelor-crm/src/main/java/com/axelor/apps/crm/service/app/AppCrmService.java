@@ -44,4 +44,10 @@ public interface AppCrmService extends AppBaseService {
   PartnerStatus getClosedWinPartnerStatus() throws AxelorException;
 
   PartnerStatus getClosedLostPartnerStatus() throws AxelorException;
+
+  LeadStatus getLeadDefaultStatus() throws AxelorException;
+
+  OpportunityStatus getOpportunityDefaultStatus() throws AxelorException;
+
+  PartnerStatus getPartnerDefaultStatus() throws AxelorException;
 }

@@ -33,6 +33,12 @@
       ref="com.axelor.apps.crm.db.PartnerStatus" title="Closed win partner status"/>
     <many-to-one name="closedLostPartnerStatus"
       ref="com.axelor.apps.crm.db.PartnerStatus" title="Closed lost partner status"/>
+    <many-to-one name="leadDefaultStatus" ref="com.axelor.apps.crm.db.LeadStatus"
+      title="Default lead status"/>
+    <many-to-one name="opportunityDefaultStatus"
+      ref="com.axelor.apps.crm.db.OpportunityStatus" title="Default opportunity status"/>
+    <many-to-one name="partnerDefaultStatus" ref="com.axelor.apps.crm.db.PartnerStatus"
+      title="Default partner status"/>
 
     <track>
       <field name="assignableUsers" on="UPDATE"/>
