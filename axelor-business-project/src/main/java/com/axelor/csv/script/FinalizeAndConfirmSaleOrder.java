@@ -20,8 +20,11 @@ package com.axelor.csv.script;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
+
 import java.util.Map;
 
 public class FinalizeAndConfirmSaleOrder {
@@ -39,10 +42,11 @@ public class FinalizeAndConfirmSaleOrder {
 
     SaleOrder saleOrder = (SaleOrder) bean;
 
-    saleOrderWorkflowService.finalizeQuotation(saleOrder);
-
-    saleOrderWorkflowService.confirmSaleOrder(saleOrder);
-
+    if (saleOrder.getStatusSelect().equals(SaleOrderRepository.STATUS_ORDER_CONFIRMED)) {
+      saleOrder.setStatusSelect(SaleOrderRepository.STATUS_DRAFT_QUOTATION);
+      saleOrderWorkflowService.finalizeQuotation(saleOrder);
+      saleOrderWorkflowService.confirmSaleOrder(saleOrder);
+    }
     return saleOrder;
   }
 }
