@@ -208,7 +208,8 @@ public class BudgetDistributionController {
           && SaleOrderLine.class.equals(parentContext.getContextClass())) {
         SaleOrderLine saleOrderLine = parentContext.asType(SaleOrderLine.class);
         SaleOrder saleOrder = parentContext.getParent().asType(SaleOrder.class);
-        query = Beans.get(SaleOrderLineBudgetService.class).getBudgetDomain(saleOrderLine, saleOrder);
+        query =
+            Beans.get(SaleOrderLineBudgetService.class).getBudgetDomain(saleOrderLine, saleOrder);
       }
 
       response.setAttr("budget", "domain", query);

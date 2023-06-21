@@ -124,11 +124,11 @@ public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetServic
                     saleOrderLine.getGroupBudget().getId()));
       }
       LocalDate date = null;
-      if (saleOrder != null){
+      if (saleOrder != null) {
         date =
-                saleOrderLine.getSaleOrder().getOrderDate() != null
-                        ? saleOrderLine.getSaleOrder().getOrderDate()
-                        : saleOrderLine.getSaleOrder().getCreationDate();
+            saleOrderLine.getSaleOrder().getOrderDate() != null
+                ? saleOrderLine.getSaleOrder().getOrderDate()
+                : saleOrderLine.getSaleOrder().getCreationDate();
       }
       if (date != null) {
         query =
