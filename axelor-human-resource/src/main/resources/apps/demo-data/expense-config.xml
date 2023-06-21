@@ -8,7 +8,8 @@
   <input file="hr_expenseLine.csv" separator=";" type="com.axelor.apps.hr.db.ExpenseLine"
     search="self.importId = :importId">
     <bind to="expense" column="expense_importId" search="self.importId = :expense_importId"/>
-    <bind to="generalExpense" column="generalExpense_importId" search="self.importId = :expense_importId"/>
+    <bind to="generalExpense" column="generalExpense_importId"
+      search="self.importId = :expense_importId"/>
     <bind to="expenseDate"
       eval="call:com.axelor.csv.script.ImportDateTime:importDate(expenseDate)" column="expenseDate"/>
   </input>
