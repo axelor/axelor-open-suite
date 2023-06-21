@@ -72,9 +72,11 @@
     <view-param name="forceTitle" value="true"/>
     <domain>self.isContact = false AND self.isProspect = true AND self.user.id = :_internalUserId</domain>
     <context name="_isProspect" expr="true"/>
-    <context name="_domain" expr="self.isContact = false AND self.isProspect = true"/>
+    <context name="_domain"
+      expr="self.isContact = false AND self.isProspect = true AND self.user.id = :_internalUserId"/>
     <context name="json-enhance" expr="eval:true"/>
     <context name="_internalUserId" expr="eval:__user__.id"/>
+    <context name="_isFromCrm" expr="eval:true"/>
   </action-view>
 
   <menuitem name="crm-opened-prospects" parent="crm-root-prospects"
@@ -90,9 +92,10 @@
     <view-param name="limit" value="39"/>
     <view-param name="search-filters" value="partner-filters"/>
     <view-param name="forceTitle" value="true"/>
-    <domain>self.isContact = false AND self.isProspect = true</domain>
+    <domain>self.isContact = false AND self.isProspect = true AND self.partnerStatus.isOpen = true</domain>
     <context name="_isProspect" expr="true"/>
-    <context name="_domain" expr="self.isContact = false AND self.isProspect = true"/>
+    <context name="_domain"
+      expr="self.isContact = false AND self.isProspect = true AND self.partnerStatus.isOpen = true"/>
     <context name="json-enhance" expr="eval:true"/>
     <context name="_isFromCrm" expr="eval:true"/>
   </action-view>
@@ -110,10 +113,12 @@
     <view-param name="limit" value="39"/>
     <view-param name="search-filters" value="partner-filters"/>
     <view-param name="forceTitle" value="true"/>
-    <domain>self.isContact = false AND self.isProspect = true</domain>
+    <domain>self.isContact = false AND self.isProspect = true AND self.partnerStatus.isOpen = false</domain>
     <context name="_isProspect" expr="true"/>
-    <context name="_domain" expr="self.isContact = false AND self.isProspect = true"/>
+    <context name="_domain"
+      expr="self.isContact = false AND self.isProspect = true AND self.partnerStatus.isOpen = false"/>
     <context name="json-enhance" expr="eval:true"/>
+    <context name="_isFromCrm" expr="eval:true"/>
   </action-view>
 
   <menuitem name="crm-root-customers" parent="crm-root" title="Customers"

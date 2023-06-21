@@ -9,6 +9,7 @@ import com.axelor.apps.crm.exception.CrmExceptionMessage;
 import com.axelor.apps.crm.service.app.AppCrmService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 
 public class PartnerCrmServiceImpl implements PartnerCrmService {
 
@@ -20,7 +21,8 @@ public class PartnerCrmServiceImpl implements PartnerCrmService {
   }
 
   @Override
-  public void loseLead(Partner partner, LostReason lostReason, String lostReasonStr)
+  @Transactional(rollbackOn = {Exception.class})
+  public void losePartner(Partner partner, LostReason lostReason, String lostReasonStr)
       throws AxelorException {
     PartnerStatus partnerStatus = partner.getPartnerStatus();
 
