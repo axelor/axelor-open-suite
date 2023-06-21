@@ -1,25 +1,22 @@
 package com.axelor.apps.account.service;
 
-import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticLevel;
-import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
+import com.axelor.apps.account.db.repo.AnalyticLevelRepository;
 import com.google.inject.Inject;
 
 public class AccountingReportAnalyticConfigLineServiceImpl
     implements AccountingReportAnalyticConfigLineService {
-  protected AnalyticAccountRepository analyticAccountRepo;
+  protected AnalyticLevelRepository analyticLevelRepo;
 
   @Inject
-  public AccountingReportAnalyticConfigLineServiceImpl(
-      AnalyticAccountRepository analyticAccountRepo) {
-    this.analyticAccountRepo = analyticAccountRepo;
+  public AccountingReportAnalyticConfigLineServiceImpl(AnalyticLevelRepository analyticLevelRepo) {
+    this.analyticLevelRepo = analyticLevelRepo;
   }
 
   @Override
   public boolean getIsNotValidRuleLevel(int ruleLevel) {
     int maxLevel =
-        analyticAccountRepo.all().fetch().stream()
-            .map(AnalyticAccount::getAnalyticLevel)
+        analyticLevelRepo.all().fetch().stream()
             .map(AnalyticLevel::getNbr)
             .max(Integer::compareTo)
             .orElse(1);
