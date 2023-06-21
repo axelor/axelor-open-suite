@@ -26,7 +26,8 @@ import com.axelor.apps.base.AxelorException;
 
 public interface MoveLineTaxService {
 
-  void autoTaxLineGenerate(Move move, Account account) throws AxelorException;
+  void autoTaxLineGenerate(Move move, Account account, boolean percentMoveTemplate)
+      throws AxelorException;
 
   void autoTaxLineGenerateNoSave(Move move) throws AxelorException;
 
@@ -36,7 +37,8 @@ public interface MoveLineTaxService {
    * @param move
    * @throws AxelorException
    */
-  void autoTaxLineGenerateNoSave(Move move, Account account) throws AxelorException;
+  void autoTaxLineGenerateNoSave(Move move, Account account, boolean percentMoveTemplate)
+      throws AxelorException;
 
   MoveLine computeTaxAmount(MoveLine moveLine) throws AxelorException;
 

@@ -640,9 +640,20 @@ public class MoveController {
     }
   }
 
+  public void onChangeFiscalPosition(ActionRequest request, ActionResponse response) {
+    try {
+      Move move = request.getContext().asType(Move.class);
+
+      response.setValues(
+          Beans.get(MoveGroupService.class).getFiscalPositionOnChangeValuesMap(move));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   public void onChangeDateOfReversionSelect(ActionRequest request, ActionResponse response) {
     try {
-      LocalDate moveDate = (LocalDate) request.getContext().get("_moveDate");
+      LocalDate moveDate = LocalDate.parse((String) request.getContext().get("_moveDate"));
       int dateOfReversionSelect = (int) request.getContext().get("dateOfReversionSelect");
 
       response.setValues(
@@ -694,7 +705,7 @@ public class MoveController {
 
   public void wizardDefault(ActionRequest request, ActionResponse response) {
     try {
-      LocalDate moveDate = (LocalDate) request.getContext().get("_moveDate");
+      LocalDate moveDate = LocalDate.parse((String) request.getContext().get("_moveDate"));
 
       response.setAttrs(Beans.get(MoveGroupService.class).getWizardDefaultAttrsMap(moveDate));
     } catch (Exception e) {

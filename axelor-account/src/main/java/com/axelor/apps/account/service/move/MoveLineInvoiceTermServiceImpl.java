@@ -80,13 +80,10 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
   public void generateDefaultInvoiceTerm(
       Move move, MoveLine moveLine, LocalDate singleTermDueDate, boolean canCreateHolbackMoveLine)
       throws AxelorException {
-    if (moveLine == null
+    if (move == null
+        || moveLine == null
         || moveLine.getAccount() == null
         || !moveLine.getAccount().getUseForPartnerBalance()) {
-      return;
-    }
-
-    if (move == null) {
       return;
     }
 
@@ -103,6 +100,8 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
                 MoveRepository.FUNCTIONAL_ORIGIN_FIXED_ASSET,
                 MoveRepository.FUNCTIONAL_ORIGIN_SALE)
             .contains(move.getFunctionalOriginSelect());
+
+    moveLine.clearInvoiceTermList();
 
     if (paymentCondition == null
         || CollectionUtils.isEmpty(paymentCondition.getPaymentConditionLineList())
@@ -125,8 +124,6 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
           I18n.get(AccountExceptionMessage.INVOICE_INVOICE_TERM_MULTIPLE_LINES_NO_MULTI));
     }
 
-    moveLine.clearInvoiceTermList();
-
     Account holdbackAccount = containsHoldback ? this.getHoldbackAccount(moveLine, move) : null;
     boolean isHoldback = moveLine.getAccount().equals(holdbackAccount);
     BigDecimal total =
@@ -137,10 +134,9 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
         paymentCondition.getPaymentConditionLineList().stream()
             .sorted(Comparator.comparing(PaymentConditionLine::getSequence))
             .collect(Collectors.toList())) {
-      if (paymentConditionLine.getIsHoldback() == isHoldback) {
-        this.computeInvoiceTerm(moveLine, move, paymentConditionLine, singleTermDueDate, total);
-      } else if (paymentConditionLine.getIsHoldback()
-          && !this.isHoldbackAlreadyGenerated(move, holdbackAccount)) {
+      if ((paymentConditionLine.getIsHoldback()
+              && !this.isHoldbackAlreadyGenerated(move, holdbackAccount))
+          || isHoldback) {
         holdbackMoveLine =
             this.computeInvoiceTermWithHoldback(
                 move,
@@ -150,6 +146,8 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
                 singleTermDueDate,
                 total,
                 canCreateHolbackMoveLine);
+      } else if (!paymentConditionLine.getIsHoldback()) {
+        this.computeInvoiceTerm(moveLine, move, paymentConditionLine, singleTermDueDate, total);
       }
     }
 
@@ -208,7 +206,13 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
       BigDecimal total,
       boolean canCreateHolbackMoveLine)
       throws AxelorException {
-    MoveLine holdbackMoveLine = this.getHoldbackMoveLine(moveLine, move, holdbackAccount);
+    MoveLine holdbackMoveLine = null;
+
+    if (!moveLine.getAccount().equals(holdbackAccount)
+        || !paymentConditionLine.getIsHoldback()
+        || !this.isHoldbackAlreadyGenerated(move, holdbackAccount)) {
+      holdbackMoveLine = this.getHoldbackMoveLine(moveLine, move, holdbackAccount);
+    }
 
     BigDecimal holdbackAmount =
         total
