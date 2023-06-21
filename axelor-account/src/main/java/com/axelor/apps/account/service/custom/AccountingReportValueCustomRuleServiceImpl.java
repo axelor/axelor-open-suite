@@ -27,6 +27,7 @@ import com.axelor.apps.account.db.repo.AccountingReportConfigLineRepository;
 import com.axelor.apps.account.db.repo.AccountingReportValueRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.DateService;
 import com.axelor.common.StringUtils;
 import com.axelor.rpc.Context;
@@ -246,7 +247,8 @@ public class AccountingReportValueCustomRuleServiceImpl extends AccountingReport
       Map<String, Map<String, AccountingReportValue>> valuesMapByLine,
       AnalyticAccount configAnalyticAccount,
       String parentTitle,
-      String lineCode) {
+      String lineCode)
+      throws AxelorException {
     String rule = this.getRule(column, line, groupColumn);
     Map<String, Object> contextMap =
         this.createRuleContextMap(
@@ -258,16 +260,21 @@ public class AccountingReportValueCustomRuleServiceImpl extends AccountingReport
     try {
       return (BigDecimal) scriptHelper.eval(rule);
     } catch (Exception e) {
-      this.addNullValue(
-          column,
-          groupColumn,
-          valuesMapByColumn,
-          valuesMapByLine,
-          configAnalyticAccount,
-          parentTitle,
-          lineCode);
+      if (AccountingReportValueServiceImpl.getShowFirstError()) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY, e.getLocalizedMessage());
+      } else {
+        this.addNullValue(
+            column,
+            groupColumn,
+            valuesMapByColumn,
+            valuesMapByLine,
+            configAnalyticAccount,
+            parentTitle,
+            lineCode);
 
-      return null;
+        return null;
+      }
     }
   }
 

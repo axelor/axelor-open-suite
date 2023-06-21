@@ -1534,6 +1534,9 @@ public final class AccountExceptionMessage {
   public static final String MISSING_VAT_SYSTEM_ON_MISSING_ACCOUNTING_SITUATION = /*$$(*/
       "Please create an accounting situation for partner %s and company %s and select a vat system in order to compute it" /*)*/;
 
+  public static final String CUSTOM_REPORT_TIMEOUT_WITH_ERROR = /*$$(*/
+      "Custom report %s couldn't be computed due to the following error: %s (group: %s, column: %s, line: %s)." /*)*/;
+
   public static final String CUSTOM_REPORT_TIMEOUT = /*$$(*/
       "Custom report %s couldn't be computed (timeout)." /*)*/;
 

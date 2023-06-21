@@ -71,6 +71,7 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
   protected AppBaseService appBaseService;
 
   protected static int lineOffset = 0;
+  protected static boolean showFirstError = false;
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Inject
@@ -96,6 +97,14 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
 
   public static synchronized int getLineOffset() {
     return lineOffset;
+  }
+
+  public static synchronized void setShowFirstErrorTrue() {
+    showFirstError = true;
+  }
+
+  public static synchronized boolean getShowFirstError() {
+    return showFirstError;
   }
 
   @Override
@@ -255,9 +264,20 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
               analyticCounter);
 
       if (nullCount == previousNullCount) {
+        AccountingReportValueServiceImpl.setShowFirstErrorTrue();
+
+        this.createReportValues(
+            accountingReport,
+            valuesMapByColumn,
+            valuesMapByLine,
+            configAnalyticAccount,
+            startDate,
+            endDate,
+            analyticCounter);
+
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            AccountExceptionMessage.CUSTOM_REPORT_TIMEOUT,
+            I18n.get(AccountExceptionMessage.CUSTOM_REPORT_TIMEOUT),
             accountingReport.getRef());
       }
     }
@@ -590,8 +610,9 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
           e,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           String.format(
-              I18n.get(
-                  "An exception occured while computing the following elements: group: %s, column: %s, line %s"),
+              I18n.get(AccountExceptionMessage.CUSTOM_REPORT_TIMEOUT_WITH_ERROR),
+              accountingReport.getRef(),
+              e.getLocalizedMessage(),
               groupColumn != null ? groupColumn.getCode() : "",
               column.getCode(),
               line.getCode()));
