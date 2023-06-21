@@ -243,7 +243,7 @@
     <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
     <field name="operationSubTypeSelect" width="160"/>
     <field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form"/>
-    <field name="originDate" showIf="statusSelect == 2 || statusSelect == 4"/>
+    <field name="originDate"/>
     <field name="invoiceDate"/>
     <field name="dueDate"/>
     <field name="exTaxTotal" aggregate="sum"/>
