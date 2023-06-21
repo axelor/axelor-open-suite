@@ -117,8 +117,7 @@ public class MoveLineMassEntryServiceImpl implements MoveLineMassEntryService {
     }
   }
 
-  @Override
-  public void resetMoveLineMassEntry(MoveLineMassEntry moveLine) {
+  protected void setDefaultValues(MoveLineMassEntry moveLine) {
     moveLine.setTemporaryMoveNumber(1);
     moveLine.setCounter(1);
     moveLine.setDate(LocalDate.now());
@@ -137,7 +136,7 @@ public class MoveLineMassEntryServiceImpl implements MoveLineMassEntryService {
   @Override
   public MoveLineMassEntry createMoveLineMassEntry() {
     MoveLineMassEntry newMoveLine = new MoveLineMassEntry();
-    resetMoveLineMassEntry(newMoveLine);
+    setDefaultValues(newMoveLine);
 
     return newMoveLine;
   }
