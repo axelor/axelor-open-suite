@@ -68,6 +68,8 @@ import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.AddressServiceImpl;
 import com.axelor.apps.base.service.AnonymizeService;
 import com.axelor.apps.base.service.AnonymizeServiceImpl;
+import com.axelor.apps.base.service.AnonymizerLineService;
+import com.axelor.apps.base.service.AnonymizerLineServiceImpl;
 import com.axelor.apps.base.service.BankDetailsFullNameComputeService;
 import com.axelor.apps.base.service.BankDetailsFullNameComputeServiceImpl;
 import com.axelor.apps.base.service.BankDetailsService;
@@ -156,6 +158,8 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.apps.base.service.birt.template.BirtTemplateService;
 import com.axelor.apps.base.service.birt.template.BirtTemplateServiceImpl;
+import com.axelor.apps.base.service.dayplanning.DayPlanningService;
+import com.axelor.apps.base.service.dayplanning.DayPlanningServiceImpl;
 import com.axelor.apps.base.service.exception.HandleExceptionResponse;
 import com.axelor.apps.base.service.exception.HandleExceptionResponseImpl;
 import com.axelor.apps.base.service.filesourceconnector.FileSourceConnectorService;
@@ -334,5 +338,7 @@ public class BaseModule extends AxelorModule {
     bind(BaseServerStartListener.class);
     bind(AosSwagger.class);
     bind(BirtTemplateViewService.class).to(BirtTemplateViewServiceImpl.class);
+    bind(DayPlanningService.class).to(DayPlanningServiceImpl.class);
+    bind(AnonymizerLineService.class).to(AnonymizerLineServiceImpl.class);
   }
 }

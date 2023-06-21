@@ -531,6 +531,22 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
   }
 
   /**
+   * Method that will update planned dates of manuf order. Unlike the other methods, this will not
+   * reset planned dates of the operation orders of the manuf order. This method must be called when
+   * changement has occured in operation orders.
+   *
+   * @param manufOrder
+   */
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void updatePlannedDates(ManufOrder manufOrder) {
+
+    manufOrder.setPlannedStartDateT(computePlannedStartDateT(manufOrder));
+    ;
+    manufOrder.setPlannedEndDateT(computePlannedEndDateT(manufOrder));
+  }
+
+  /**
    * Get a list of operation orders sorted by priority and id from the specified manufacturing
    * order.
    *

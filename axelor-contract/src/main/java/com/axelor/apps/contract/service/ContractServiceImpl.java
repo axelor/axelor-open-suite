@@ -402,6 +402,8 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     Invoice invoice = generateInvoice(contract);
     InvoiceRepository invoiceRepository = Beans.get(InvoiceRepository.class);
     invoiceRepository.save(invoice);
+    boolean isTimeProratedInvoice = contract.getCurrentContractVersion().getIsTimeProratedInvoice();
+    boolean isPeriodicInvoicing = contract.getCurrentContractVersion().getIsPeriodicInvoicing();
 
     // Compute all additional lines
     List<ContractLine> additionalLines =
@@ -423,7 +425,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     // Compute all classic contract lines
     for (ContractVersion version : getVersions(contract)) {
       BigDecimal ratio = BigDecimal.ONE;
-      if (contract.getCurrentContractVersion().getIsTimeProratedInvoice()) {
+      if (isTimeProratedInvoice) {
         if (isFullProrated(contract)
             && !DateTool.isProrata(
                 contract.getInvoicePeriodStartDate(),
@@ -448,20 +450,20 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
               : version.getEndDateTime().toLocalDate();
 
       for (ContractLine line : lines) {
-        LocalDate start = computeStartDate(contract, line, version);
-        ratio =
-            contract.getCurrentContractVersion().getIsTimeProratedInvoice()
-                ? durationService.computeRatio(
-                    start, end, contract.getCurrentContractVersion().getInvoicingDuration())
-                : BigDecimal.ONE;
-
         ContractLine tmp = contractLineRepo.copy(line, false);
+        if (isPeriodicInvoicing) {
+          LocalDate start = computeStartDate(contract, line, version);
+          tmp.setFromDate(start);
+          ratio =
+              durationService.computeRatio(
+                  start, end, contract.getCurrentContractVersion().getInvoicingDuration());
+        }
+
         tmp.setAnalyticMoveLineList(line.getAnalyticMoveLineList());
         tmp.setQty(
             tmp.getQty()
                 .multiply(ratio)
                 .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP));
-        tmp.setFromDate(start);
         tmp = this.contractLineService.computeTotal(tmp);
         InvoiceLine invLine = generate(invoice, tmp);
         invLine.setContractLine(line);

@@ -708,7 +708,8 @@ public class InventoryService {
     stockMove.setOrigin(inventorySeq);
 
     for (InventoryLine inventoryLine : inventoryLineList) {
-      generateStockMoveLines(inventoryLine, stockMove, isEnteringStock);
+      generateStockMoveLines(
+          inventoryLine, stockMove, isEnteringStock, fromStockLocation, toStockLocation);
     }
     if (stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()) {
 
@@ -729,7 +730,11 @@ public class InventoryService {
    * @throws AxelorException
    */
   protected void generateStockMoveLines(
-      InventoryLine inventoryLine, StockMove stockMove, boolean isEnteringStock)
+      InventoryLine inventoryLine,
+      StockMove stockMove,
+      boolean isEnteringStock,
+      StockLocation fromStockLocation,
+      StockLocation toStockLocation)
       throws AxelorException {
     Product product = inventoryLine.getProduct();
     TrackingNumber trackingNumber = inventoryLine.getTrackingNumber();
@@ -740,7 +745,7 @@ public class InventoryService {
     if (diff.signum() > 0) {
       BigDecimal avgPrice;
       StockLocationLine stockLocationLine =
-          stockLocationLineService.getStockLocationLine(stockMove.getToStockLocation(), product);
+          stockLocationLineService.getStockLocationLine(toStockLocation, product);
       if (stockLocationLine != null) {
         avgPrice = stockLocationLine.getAvgPrice();
       } else {
@@ -759,7 +764,9 @@ public class InventoryService {
               stockMove,
               StockMoveLineService.TYPE_NULL,
               false,
-              BigDecimal.ZERO);
+              BigDecimal.ZERO,
+              fromStockLocation,
+              toStockLocation);
       if (stockMoveLine == null) {
         throw new AxelorException(
             inventoryLine.getInventory(),

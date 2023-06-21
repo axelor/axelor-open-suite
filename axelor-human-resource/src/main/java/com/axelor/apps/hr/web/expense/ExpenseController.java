@@ -127,7 +127,7 @@ public class ExpenseController {
         Beans.get(ExpenseRepository.class)
             .all()
             .filter(
-                "self.employee.user.id = ?1 AND self.company = ?2 AND self.statusSelect = 1 AND (self.multipleUsers is false OR self.multipleUsers is null)",
+                "self.employee.user.id = ?1 AND self.company = ?2 AND self.statusSelect = 1",
                 user.getId(),
                 activeCompany)
             .fetch();

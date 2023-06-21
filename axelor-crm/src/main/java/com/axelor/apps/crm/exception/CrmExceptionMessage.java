@@ -131,4 +131,13 @@ public final class CrmExceptionMessage {
 
   public static final String PARTNER_LOSE_WRONG_STATUS = /*$$(*/
       "Can not mark as lost an already lost partner." /*)*/;
+
+  public static final String CRM_DEFAULT_LEAD_STATUS_MISSING = /*$$(*/
+      "Please fill default lead status in App CRM configuration." /*)*/;
+
+  public static final String CRM_DEFAULT_OPPORTUNITY_STATUS_MISSING = /*$$(*/
+      "Please fill default opportunity status in App CRM configuration." /*)*/;
+
+  public static final String CRM_DEFAULT_PARTNER_STATUS_MISSING = /*$$(*/
+      "Please fill default partner status in App CRM configuration." /*)*/;
 }

@@ -577,6 +577,7 @@
 "Stock move type","Type de mouvement de stock",,
 "Stock move(s) processed","Ligne(s) de mouvement de stock",,
 "Stock moves","Mouvements de stock",,
+"Stock reservation feature cannot be active when we are managing stock locations on stock move line.","La réservation des stocks ne peut pas être activée si la gestion des emplacements de stock sur les lignes de mouvements de stock est activée.",,
 "StockMove","Mouvement de stock",,
 "Subscription","Abonnement",,
 "Subscription invoice generation report :","Génération du rapport des factures d’abonnement",,
