@@ -3,7 +3,9 @@ package com.axelor.apps.account.service.moveline.massentry;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLineMassEntry;
+import com.axelor.apps.account.db.repo.MoveLineMassEntryRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveCounterPartService;
 import com.axelor.apps.account.service.move.massentry.MassEntryToolService;
@@ -28,6 +30,7 @@ public class MoveLineMassEntryServiceImpl implements MoveLineMassEntryService {
   protected MassEntryToolService massEntryToolService;
   protected CurrencyService currencyService;
   protected InvoiceTermService invoiceTermService;
+  protected AppAccountService appAccountService;
 
   @Inject
   public MoveLineMassEntryServiceImpl(
@@ -35,12 +38,14 @@ public class MoveLineMassEntryServiceImpl implements MoveLineMassEntryService {
       MoveCounterPartService moveCounterPartService,
       MassEntryToolService massEntryToolService,
       CurrencyService currencyService,
-      InvoiceTermService invoiceTermService) {
+      InvoiceTermService invoiceTermService,
+      AppAccountService appAccountService) {
     this.moveLineTaxService = moveLineTaxService;
     this.moveCounterPartService = moveCounterPartService;
     this.massEntryToolService = massEntryToolService;
     this.currencyService = currencyService;
     this.invoiceTermService = invoiceTermService;
+    this.appAccountService = appAccountService;
   }
 
   @Override
@@ -110,5 +115,30 @@ public class MoveLineMassEntryServiceImpl implements MoveLineMassEntryService {
                 moveLine.getAccount(), company, moveLine.getPartner()));
       }
     }
+  }
+
+  @Override
+  public void resetMoveLineMassEntry(MoveLineMassEntry moveLine) {
+    moveLine.setTemporaryMoveNumber(1);
+    moveLine.setCounter(1);
+    moveLine.setDate(LocalDate.now());
+    moveLine.setOriginDate(LocalDate.now());
+    moveLine.setCurrencyRate(BigDecimal.ONE);
+    moveLine.setIsEdited(MoveLineMassEntryRepository.MASS_ENTRY_IS_EDITED_NULL);
+    moveLine.setInputAction(MoveLineMassEntryRepository.MASS_ENTRY_INPUT_ACTION_LINE);
+
+    if (appAccountService.getAppAccount().getManageCutOffPeriod()) {
+      moveLine.setCutOffStartDate(LocalDate.now());
+      moveLine.setCutOffEndDate(LocalDate.now());
+      moveLine.setDeliveryDate(LocalDate.now());
+    }
+  }
+
+  @Override
+  public MoveLineMassEntry createMoveLineMassEntry() {
+    MoveLineMassEntry newMoveLine = new MoveLineMassEntry();
+    resetMoveLineMassEntry(newMoveLine);
+
+    return newMoveLine;
   }
 }

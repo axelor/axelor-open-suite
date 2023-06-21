@@ -22,7 +22,6 @@ import com.axelor.apps.account.db.MoveLineMassEntry;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineMassEntryRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryRecordService;
 import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryService;
@@ -34,7 +33,6 @@ import com.axelor.db.JPA;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,7 +48,6 @@ public class MassEntryServiceImpl implements MassEntryService {
   protected MoveToolService moveToolService;
   protected MoveLineMassEntryService moveLineMassEntryService;
   protected MassEntryMoveCreateService massEntryMoveCreateService;
-  protected AppAccountService appAccountService;
   protected MoveRepository moveRepository;
   protected MoveLineMassEntryRecordService moveLineMassEntryRecordService;
 
@@ -61,7 +58,6 @@ public class MassEntryServiceImpl implements MassEntryService {
       MoveToolService moveToolService,
       MoveLineMassEntryService moveLineMassEntryService,
       MassEntryMoveCreateService massEntryMoveCreateService,
-      AppAccountService appAccountService,
       MoveRepository moveRepository,
       MoveLineMassEntryRecordService moveLineMassEntryRecordService) {
     this.massEntryToolService = massEntryToolService;
@@ -69,7 +65,6 @@ public class MassEntryServiceImpl implements MassEntryService {
     this.moveToolService = moveToolService;
     this.moveLineMassEntryService = moveLineMassEntryService;
     this.massEntryMoveCreateService = massEntryMoveCreateService;
-    this.appAccountService = appAccountService;
     this.moveRepository = moveRepository;
     this.moveLineMassEntryRecordService = moveLineMassEntryRecordService;
   }
@@ -113,27 +108,9 @@ public class MassEntryServiceImpl implements MassEntryService {
         }
       }
     } else {
-      inputLine = new MoveLineMassEntry();
-      resetMoveLineMassEntry(inputLine);
+      inputLine = moveLineMassEntryService.createMoveLineMassEntry();
     }
     return inputLine;
-  }
-
-  @Override
-  public void resetMoveLineMassEntry(MoveLineMassEntry moveLine) {
-    moveLine.setTemporaryMoveNumber(1);
-    moveLine.setCounter(1);
-    moveLine.setDate(LocalDate.now());
-    moveLine.setOriginDate(LocalDate.now());
-    moveLine.setCurrencyRate(BigDecimal.ONE);
-    moveLine.setIsEdited(MoveLineMassEntryRepository.MASS_ENTRY_IS_EDITED_NULL);
-    moveLine.setInputAction(MoveLineMassEntryRepository.MASS_ENTRY_INPUT_ACTION_LINE);
-
-    if (appAccountService.getAppAccount().getManageCutOffPeriod()) {
-      moveLine.setCutOffStartDate(LocalDate.now());
-      moveLine.setCutOffEndDate(LocalDate.now());
-      moveLine.setDeliveryDate(LocalDate.now());
-    }
   }
 
   @Override

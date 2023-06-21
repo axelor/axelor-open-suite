@@ -37,7 +37,6 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
   protected PeriodServiceAccount periodServiceAccount;
   protected MoveValidateService moveValidateService;
   protected PeriodService periodService;
-  protected MassEntryToolService massEntryToolService;
   protected MoveLineMassEntryRepository moveLineMassEntryRepository;
   protected MoveSimulateService moveSimulateService;
   protected MoveRepository moveRepository;
@@ -51,7 +50,6 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
       PeriodServiceAccount periodServiceAccount,
       MoveValidateService moveValidateService,
       PeriodService periodService,
-      MassEntryToolService massEntryToolService,
       MoveLineMassEntryRepository moveLineMassEntryRepository,
       MoveSimulateService moveSimulateService,
       MoveRepository moveRepository,
@@ -62,7 +60,6 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
     this.periodServiceAccount = periodServiceAccount;
     this.moveValidateService = moveValidateService;
     this.periodService = periodService;
-    this.massEntryToolService = massEntryToolService;
     this.moveLineMassEntryRepository = moveLineMassEntryRepository;
     this.moveSimulateService = moveSimulateService;
     this.moveRepository = moveRepository;
