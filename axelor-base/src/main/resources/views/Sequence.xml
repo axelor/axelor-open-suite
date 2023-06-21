@@ -64,9 +64,9 @@
 
   <grid editable="true" name="sequence-version-grid" title="Versions"
     model="com.axelor.apps.base.db.SequenceVersion" orderBy="-startDate">
-    <field name="startDate" validIf="startDate &lt; endDate"
+    <field name="startDate" validIf="(startDate &lt; endDate) || (endDate == null)"
       onChange="action-sequence-version-start-date-onchange-validate"/>
-    <field name="endDate" validIf="endDate &gt; startDate"
+    <field name="endDate" validIf="(endDate &gt; startDate) || (endDate == null)"
       onChange="action-sequence-version-form-on-change-date-group"/>
     <field name="nextNum"/>
   </grid>
@@ -74,9 +74,9 @@
   <form name="sequence-version-form" title="Version"
     model="com.axelor.apps.base.db.SequenceVersion">
     <panel name="mainPanel" itemSpan="4">
-      <field name="startDate" validIf="startDate &lt; endDate"
+      <field name="startDate" validIf="(startDate &lt; endDate) || (endDate == null)"
         onChange="action-sequence-version-start-date-onchange-validate"/>
-      <field name="endDate" validIf="endDate &gt; startDate"
+      <field name="endDate" validIf="(endDate &gt; startDate) || (endDate == null)"
         onChange="action-sequence-version-form-on-change-date-group"/>
       <field name="nextNum"/>
     </panel>
@@ -171,12 +171,12 @@
   </action-validate>
 
   <action-validate name="action-sequence-version-start-date-onchange-validate">
-    <error if="endDate &amp;&amp; (startDate &gt; endDate)"
+    <error if="(endDate &amp;&amp; startDate) &amp;&amp; (startDate &gt; endDate)"
       message="Start date must be lower than end date"/>
   </action-validate>
 
   <action-validate name="action-sequence-version-end-date-onchange-validate">
-    <error if="startDate &amp;&amp; (endDate &lt; startDate)"
+    <error if="(startDate &amp;&amp; endDate) &amp;&amp; (endDate &lt; startDate)"
       message="End date must be greater than start date"/>
   </action-validate>
 
