@@ -8,7 +8,7 @@
     <panel name="mainPanel" colSpan="12" itemSpan="12">
       <field name="$partnerStatus" type="Many-to-one"
         target="com.axelor.apps.crm.db.PartnerStatus" title="Partner status"
-        if=" __config__.app.getApp('crm')?.getCrmProcessOnPartner()"/>
+        if=" __config__.app.getApp('crm')?.getCrmProcessOnPartner()" x-order="sequence"/>
 
       <field name="$leadToPartnerSelect" title="Convert lead into partner" required="true"
         type="integer" selection="crm.convert.lead.wizard.lead.to.partner.select"
