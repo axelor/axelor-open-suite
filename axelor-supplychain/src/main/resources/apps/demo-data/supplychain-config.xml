@@ -81,12 +81,12 @@
   <input file="purchase_purchaseOrderLine.csv" separator=";"
     search="self.importId = :importId" type="com.axelor.apps.purchase.db.PurchaseOrderLine"
     call="com.axelor.apps.purchase.script.ImportPurchaseOrderLine:importPurchaseOrderLine">
-    <bind to="desiredDelivDate"
-      eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(desiredDelivDate)"
-      column="desiredDelivDate"/>
-    <bind to="estimatedDelivDate"
-      eval="call:com.axelor.csv.script.ImportDateTime:importDate(estimatedDelivDate)"
-      column="estimatedDelivDate"/>
+    <bind to="desiredReceiptDate"
+      eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(desiredReceiptDate)"
+      column="desiredReceiptDate"/>
+    <bind to="estimatedReceiptDate"
+      eval="call:com.axelor.csv.script.ImportDateTime:importDate(estimatedReceiptDate)"
+      column="estimatedReceiptDate"/>
   </input>
 
   <input file="purchase_purchaseOrder.csv" separator=";" search="self.importId = :importId"
@@ -100,12 +100,6 @@
       column="deliveryDate"/>
     <bind to="orderDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(orderDate)"
       column="orderDate"/>
-  </input>
-
-  <input file="account_budgetDistribution.csv" separator=";"
-    type="com.axelor.apps.account.db.BudgetDistribution" search="self.importId = :importId">
-    <bind to="createdOn" eval="call:com.axelor.csv.script.ImportDateTime:importDate(createdOn)"
-      column="createdOn"/>
   </input>
 
   <input file="account_accountConfig.csv" separator=";"

@@ -7,6 +7,10 @@
 
   <entity name="User" sequential="true">
     <many-to-one name="qrCode" title="Barcode" ref="com.axelor.meta.db.MetaFile"/>
+
+    <track>
+      <field name="qrCode" on="UPDATE"/>
+    </track>
   </entity>
 
 </domain-models>

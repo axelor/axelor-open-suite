@@ -5,7 +5,7 @@
 
   <module name="studio" package="com.axelor.studio.db"/>
 
-  <entity name="AppBase">
+  <entity name="AppBase" cacheable="true">
 
     <one-to-one ref="com.axelor.studio.db.App" name="app"/>
 
@@ -214,6 +214,30 @@
       <field name="generatePartnerSequence" on="UPDATE"/>
       <field name="checkExistingSequenceOnGeneration" on="UPDATE"/>
       <field name="checkRegistrationCode" on="UPDATE"/>
+      <field name="storeStreets" on="UPDATE"/>
+      <field name="osmRoutingServiceApiSelect" on="UPDATE"/>
+      <field name="fixerApiKey" on="UPDATE"/>
+      <field name="isFixerAPIPaid" on="UPDATE"/>
+      <field name="nbDecimalDigitForQty" on="UPDATE"/>
+      <field name="nbDecimalDigitForTaxRate" on="UPDATE"/>
+      <field name="globalTrackingLogPersistence" on="UPDATE"/>
+      <field name="isRegroupProductsOnPrintings" on="UPDATE"/>
+      <field name="regroupProductsTypeSelect" on="UPDATE"/>
+      <field name="regroupProductsLevelSelect" on="UPDATE"/>
+      <field name="regroupProductsLabelServices" on="UPDATE"/>
+      <field name="regroupProductsLabelProducts" on="UPDATE"/>
+      <field name="enableMultiCompany" on="UPDATE"/>
+      <field name="limitNumberTasksGenerated" on="UPDATE"/>
+      <field name="isSharedAddress" on="UPDATE"/>
+      <field name="productSequenceTypeSelect" on="UPDATE"/>
+      <field name="productSequence" on="UPDATE"/>
+      <field name="defaultMailMessageTemplate" on="UPDATE"/>
+      <field name="geoNamesDumpUrl" on="UPDATE"/>
+      <field name="geoNamesZipUrl" on="UPDATE"/>
+      <field name="manageSubsidiaryPartner" on="UPDATE"/>
+      <field name="manageCcBccRelatedTo" on="UPDATE"/>
+      <field name="customAppStyle" on="UPDATE"/>
+      <field name="processTimeout" on="UPDATE"/>
       <!-- 31 fields -->
     </track>
 

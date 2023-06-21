@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="Batch" lang="java" sequential="true">
+  <entity name="Batch" sequential="true">
 
     <!-- NOT DISPLAY -->
     <many-to-one name="stockBatch" ref="com.axelor.apps.stock.db.StockBatch"/>

@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.hr.exception;
 
@@ -201,6 +202,8 @@ public final class HumanResourceExceptionMessage {
   public static final String EXPENSE_MISSING_PERIOD = /*$$(*/ "Please fill the period" /*)*/;
   public static final String EXPENSE_MISSING_PAYMENT_MODE = /*$$(*/
       "Please fill the payment mode." /*)*/;
+  public static final String ALREADY_INVITED_TO_RESTAURANT = /*$$(*/
+      "You have already been invited to the restaurant for the following dates:" /*)*/;
 
   /** Timesheet Editor */
   public static final String NEW_PROJECT_LINE = /*$$(*/ "New project line" /*)*/;
@@ -239,4 +242,7 @@ public final class HumanResourceExceptionMessage {
 
   public static final String NO_USER_FOR_EMPLOYEE = /*$$(*/
       "Please fill a user for the employee %s" /*)*/;
+
+  public static final String EXPENSE_CAN_NOT_DELETE_VENTILATED = /*$$(*/
+      "Ventilated expense can not be deleted. %s can not be deleted." /*)*/;
 }

@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.production.service.manuforder;
 
@@ -495,7 +496,9 @@ public class ManufOrderServiceImpl implements ManufOrderService {
           wasteStockMove,
           StockMoveLineService.TYPE_WASTE_PRODUCTIONS,
           false,
-          BigDecimal.ZERO);
+          BigDecimal.ZERO,
+          virtualStockLocation,
+          wasteStockLocation);
     }
 
     stockMoveService.validate(wasteStockMove);
@@ -642,12 +645,19 @@ public class ManufOrderServiceImpl implements ManufOrderService {
         Beans.get(ManufOrderStockMoveService.class);
     Optional<StockMove> stockMoveOpt =
         manufOrderStockMoveService.getPlannedStockMove(manufOrder.getInStockMoveList());
+    Company company = manufOrder.getCompany();
+
+    StockLocation fromStockLocation =
+        manufOrderStockMoveService.getFromStockLocationForConsumedStockMove(manufOrder, company);
+    StockLocation virtualStockLocation =
+        manufOrderStockMoveService.getVirtualStockLocationForConsumedStockMove(manufOrder, company);
     StockMove stockMove;
     if (stockMoveOpt.isPresent()) {
       stockMove = stockMoveOpt.get();
     } else {
       stockMove =
-          manufOrderStockMoveService._createToConsumeStockMove(manufOrder, manufOrder.getCompany());
+          manufOrderStockMoveService._createToConsumeStockMove(
+              manufOrder, company, fromStockLocation, virtualStockLocation);
       manufOrder.addInStockMoveListItem(stockMove);
       Beans.get(StockMoveService.class).plan(stockMove);
     }
@@ -671,12 +681,23 @@ public class ManufOrderServiceImpl implements ManufOrderService {
         Beans.get(ManufOrderStockMoveService.class);
     Optional<StockMove> stockMoveOpt =
         manufOrderStockMoveService.getPlannedStockMove(manufOrder.getOutStockMoveList());
+
+    Company company = manufOrder.getCompany();
+    StockLocation virtualStockLocation =
+        manufOrderStockMoveService.getVirtualStockLocationForProducedStockMove(manufOrder, company);
+    StockLocation producedProductStockLocation =
+        manufOrderStockMoveService.getProducedProductStockLocation(manufOrder, company);
+
     StockMove stockMove;
     if (stockMoveOpt.isPresent()) {
       stockMove = stockMoveOpt.get();
     } else {
       stockMove =
-          manufOrderStockMoveService._createToProduceStockMove(manufOrder, manufOrder.getCompany());
+          manufOrderStockMoveService._createToProduceStockMove(
+              manufOrder,
+              manufOrder.getCompany(),
+              virtualStockLocation,
+              producedProductStockLocation);
       manufOrder.addOutStockMoveListItem(stockMove);
       Beans.get(StockMoveService.class).plan(stockMove);
     }
@@ -796,7 +817,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
             + productId
             + " AND self.stockMove.statusSelect = "
             + StockMoveRepository.STATUS_PLANNED
-            + " AND self.stockMove.fromStockLocation.typeSelect != "
+            + " AND self.fromStockLocation.typeSelect != "
             + StockLocationRepository.TYPE_VIRTUAL
             + " AND ( (self.consumedManufOrder IS NOT NULL AND self.consumedManufOrder.statusSelect IN ("
             + statusListQuery
@@ -816,7 +837,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
           if (!stockLocationList.isEmpty()
               && stockLocation.getCompany().getId().equals(companyId)) {
             query +=
-                " AND self.stockMove.fromStockLocation.id IN ("
+                " AND self.fromStockLocation.id IN ("
                     + StringTool.getIdListString(stockLocationList)
                     + ") ";
           }
@@ -878,7 +899,6 @@ public class ManufOrderServiceImpl implements ManufOrderService {
    * Called by generateMultiLevelManufOrder controller to generate all manuf order for a given bill
    * of material list from a given manuf order.
    *
-   * @param billOfMaterialList
    * @param manufOrder
    * @throws AxelorException
    * @return
@@ -1324,5 +1344,20 @@ public class ManufOrderServiceImpl implements ManufOrderService {
                 .multiply(bomQty)
                 .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP);
     return producibleQty;
+  }
+
+  /**
+   * Method that will update planned dates of manuf order. Unlike the other methods, this will not
+   * reset planned dates of the operation orders of the manuf order. This method must be called when
+   * changement has occured in operation orders.
+   *
+   * @param manufOrder
+   */
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void updatePlannedDates(ManufOrder manufOrder) {
+
+    manufOrder.setPlannedStartDateT(manufOrderWorkflowService.computePlannedStartDateT(manufOrder));
+    manufOrder.setPlannedEndDateT(manufOrderWorkflowService.computePlannedEndDateT(manufOrder));
   }
 }

@@ -1,0 +1,3 @@
+---
+title : "CRM opportunity : Forbided negative values for amount, bestcase, worstcase and force values between 0 and 100 for probability"
+type : feature

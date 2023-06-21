@@ -36,14 +36,20 @@
       WHERE
       self.product = product
       AND
-      self.purchaseOrder.validationDate &gt;= :fromDate
-      AND self.purchaseOrder.validationDate &lt;=
-      :toDate
-      AND self.purchaseOrder.statusSelect &gt; 3
-      AND self.purchaseOrder.statusSelect &lt; 6
-      AND self.purchaseOrder.buyerUser = :__user__
+      DATE(self.purchaseOrder.validationDateTime) &gt;= DATE(:fromDate)
+      AND
+      DATE(self.purchaseOrder.validationDateTime)
+      &lt;=
+      DATE(:toDate)
+      AND
+      self.purchaseOrder.statusSelect &gt; 3
+      AND self.purchaseOrder.statusSelect &lt;
+      6
+      AND
+      self.purchaseOrder.buyerUser = :__user__
       AND self.purchaseOrder.company = :activeCompany
-      GROUP BY
+      GROUP
+      BY
       product.productFamily.name
       ORDER BY
       product.productFamily.name
@@ -75,12 +81,17 @@
       self.purchaseOrder.buyerUser =
       :__user__
       AND self.purchaseOrder.company = :activeCompany
-      AND self.purchaseOrder.validationDate
-      &gt;= :fromDate AND self.purchaseOrder.validationDate &lt;=
-      :toDate
       AND
-      self.purchaseOrder.createdOn &lt;= CURRENT_TIMESTAMP
-      AND self.purchaseOrder.statusSelect IN
+      DATE(self.purchaseOrder.validationDateTime)
+      &gt;= DATE(:fromDate) AND
+      DATE(self.purchaseOrder.validationDateTime)
+      &lt;=
+      DATE(:toDate)
+      AND
+      self.purchaseOrder.createdOn
+      &lt;= CURRENT_TIMESTAMP
+      AND
+      self.purchaseOrder.statusSelect IN
       (4,5)
       AND self.product = product
       GROUP BY
@@ -132,7 +143,8 @@
       base_product_family family
       ON product.product_family=family.id
       where
-      self.validation_date &gt;= DATE(:fromDate) AND self.validation_date &lt;= DATE(:toDate)
+      DATE(self.validation_date_time) &gt;= DATE(:fromDate) AND DATE(self.validation_date_time)
+      &lt;= DATE(:toDate)
       AND self.status_select in(4,5)
       group by buyer_name, family_name
 
@@ -174,7 +186,9 @@
       ON product.product_family=family.id
       WHERE
       self.status_select in(4,5)
-      AND self.validation_date &gt;= DATE(:fromDate) AND self.validation_date &lt;= DATE(:toDate)
+      AND DATE(self.validation_date_time) &gt;= DATE(:fromDate) AND DATE(self.validation_date_time)
+      &lt;=
+      DATE(:toDate)
       GROUP BY
       family_name
 
@@ -209,11 +223,13 @@
       LEFT JOIN
       purchase_purchase_order_line ON purchase_purchase_order_line.purchase_order = self.id
       WHERE
-      self.validation_date &gt;= DATE(:fromDate) AND self.validation_date &lt;= DATE(:toDate)
+      DATE(self.validation_date_time) &gt;= DATE(:fromDate) AND DATE(self.validation_date_time)
+      &lt;= DATE(:toDate)
       AND
       self.status_select IN (4,5)),2) AS _percent
       FROM
-      purchase_purchase_order self
+      purchase_purchase_order
+      self
       JOIN
       auth_user _user
       ON _user.id = :__user__
@@ -225,7 +241,8 @@
       LEFT JOIN
       base_product_family ON base_product_family.id = base_product.product_family
       WHERE
-      self.validation_date &gt;= DATE(:fromDate) AND self.validation_date &lt;= DATE(:toDate)
+      DATE(self.validation_date_time) &gt;= DATE(:fromDate) AND DATE(self.validation_date_time)
+      &lt;= DATE(:toDate)
       AND
       self.status_select IN (4,5)
       GROUP BY
@@ -246,7 +263,7 @@
     </search-fields>
     <dataset type="sql">
       SELECT
-      to_char(_order.validation_date,'yyyy-MM') AS _month,
+      to_char(_order.validation_date_time,'yyyy-MM') AS _month,
       SUM(_order.ex_tax_total) AS _amount
       FROM
       purchase_purchase_order AS _order
@@ -255,9 +272,10 @@
       ON _user.id = :__user__
       AND _order.company = _user.active_company
       WHERE
-      _order.validation_date
+      DATE(_order.validation_date_time)
       BETWEEN DATE(:fromDate) AND DATE(:toDate)
-      AND _order.status_select IN (4,5)
+      AND
+      _order.status_select IN (4,5)
       GROUP BY
       _month
       ORDER
@@ -278,24 +296,27 @@
     </search-fields>
     <dataset type="sql">
       SELECT
-      to_char(_order.validation_date,'yyyy-MM') AS _month,
+      to_char(_order.validation_date_time,'yyyy-MM') AS _month,
       SUM(_line.qty)
       AS _qty
       FROM
       purchase_purchase_order AS _order
       JOIN
       auth_user AS _user
-      ON _user.id = :__user__
+      ON _user.id =
+      :__user__
       AND
       _order.company = _user.active_company
       JOIN
       purchase_purchase_order_line AS _line
-      ON _order.id =
+      ON
+      _order.id =
       _line.purchase_order
       WHERE
-      _order.validation_date &gt;= DATE(:fromDate)
+      DATE(_order.validation_date_time) &gt;= DATE(:fromDate)
       AND
-      _order.validation_date &lt;= DATE(:fromDate) + CAST(:monthSelect as int) * INTERVAL '1 month'
+      DATE(_order.validation_date_time) &lt;= DATE(:fromDate) + CAST(:monthSelect as int) *
+      INTERVAL '1 month'
       AND _order.status_select IN (4,5)
       GROUP BY
       _month
@@ -316,7 +337,7 @@
     <dataset type="sql">
       SELECT
       COUNT(_order.id) as _orders,
-      to_char(_order.validation_date,'yyyy-MM') AS _month
+      to_char(_order.validation_date_time,'yyyy-MM') AS _month
       FROM
       purchase_purchase_order AS _order
       JOIN
@@ -324,8 +345,9 @@
       ON _user.id = :__user__
       AND _order.company = _user.active_company
       WHERE
-      _order.validation_date BETWEEN DATE(:fromDate) AND DATE(:toDate)
-      AND _order.status_select IN
+      DATE(_order.validation_date_time) BETWEEN DATE(:fromDate) AND DATE(:toDate)
+      AND
+      _order.status_select IN
       (4,5)
       GROUP BY
       _month
@@ -357,14 +379,17 @@
       WHERE
       line.purchaseOrder = self
       AND line.product = product
-      AND self.validationDate &gt;= :fromDate
+      AND DATE(self.validationDateTime) &gt;=
+      DATE(:fromDate)
       AND
-      self.validationDate &lt;= :toDate
-      AND self.createdOn &lt;= CURRENT_TIMESTAMP
+      DATE(self.validationDateTime) &lt;= DATE(:toDate)
+      AND self.createdOn &lt;=
+      CURRENT_TIMESTAMP
       AND
       self.statusSelect &gt; 3
       AND self.statusSelect &lt; 6
-      AND self.company = :activeCompany
+      AND self.company =
+      :activeCompany
       GROUP BY
       product.productFamily.name
       ORDER BY

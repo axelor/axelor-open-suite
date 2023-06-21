@@ -173,8 +173,8 @@
     </panel>
     <panel-related name="stockMoveLineListPanel" field="$stockMoveLines"
       canNew="false" target="com.axelor.apps.stock.db.StockMoveLine" type="one-to-many"
-      editable="true" showIf="operationSelect == 2">
-      <field name="productCode"/>
+      editable="true" showIf="operationSelect == 2" form-view="partial-invoice-stock-move-line-form">
+      <field name="productCode" readonly="true"/>
       <field name="productName" readonly="true"/>
       <field name="realQty" readonly="true" aggregate="sum" title="Real Qty"/>
       <field name="qtyInvoiced" readonly="true" title="Invoiced Qty"/>
@@ -343,6 +343,10 @@
       if="invoiceBlocking &amp;&amp; (!invoiceBlockedToDate || invoiceBlockedToDate &gt;  __date__)"/>
   </action-validate>
 
+  <action-method name="action-supplychain-stock-move-method-check-invoice-status">
+    <call class="com.axelor.apps.supplychain.web.StockMoveController"
+      method="checkInvoiceStatus"/>
+  </action-method>
 
   <search-filters id="supplychain-customer-deliveries-filter"
     name="customer-deliveries-filters" model="com.axelor.apps.stock.db.StockMove"

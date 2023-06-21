@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.production.service.app;
 
@@ -21,6 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ConfiguratorBOM;
 import com.axelor.apps.production.service.configurator.ConfiguratorBomService;
 import com.axelor.apps.sale.db.Configurator;
@@ -106,5 +108,40 @@ public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
           .ifPresent(saleOrderLine::setBillOfMaterial);
     }
     return saleOrderLine;
+  }
+
+  @Override
+  protected void fillSaleOrderWithProduct(SaleOrderLine saleOrderLine) throws AxelorException {
+    if (saleOrderLine.getProduct() == null) {
+      return;
+    }
+    super.fillSaleOrderWithProduct(saleOrderLine);
+    setProductionInformation(saleOrderLine);
+  }
+
+  protected void setProductionInformation(SaleOrderLine saleOrderLine) {
+    saleOrderLine.setBillOfMaterial(getDefaultBOM(saleOrderLine));
+
+    if (saleOrderLine.getSaleSupplySelect() == ProductRepository.SALE_SUPPLY_PURCHASE
+        || saleOrderLine.getSaleSupplySelect() == ProductRepository.SALE_SUPPLY_PRODUCE) {
+      saleOrderLine.setStandardDelay(saleOrderLine.getProduct().getStandardDelay());
+    }
+  }
+
+  protected BillOfMaterial getDefaultBOM(SaleOrderLine saleOrderLine) {
+    Product product = saleOrderLine.getProduct();
+    BillOfMaterial defaultBillOfMaterial = null;
+
+    if (saleOrderLine.getSaleSupplySelect() != ProductRepository.SALE_SUPPLY_PRODUCE) {
+      return defaultBillOfMaterial;
+    }
+
+    if (product.getDefaultBillOfMaterial() != null) {
+      defaultBillOfMaterial = product.getDefaultBillOfMaterial();
+    } else if (product.getParentProduct() != null) {
+      defaultBillOfMaterial = product.getParentProduct().getDefaultBillOfMaterial();
+    }
+
+    return defaultBillOfMaterial;
   }
 }

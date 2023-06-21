@@ -3,6 +3,45 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
+  <kanban columnBy="leadStatus" model="com.axelor.apps.crm.db.Lead" sequenceBy="sequence"
+    title="Leads" name="lead-kanban" draggable="true" limit="10">
+    <field name="name"/>
+    <field name="firstName"/>
+    <field name="leadStatus"/>
+    <field name="enterpriseName"/>
+    <field name="nextScheduledEventDateT"/>
+    <field name="leadScoringSelect"/>
+    <field name="user"/>
+    <hilite color="default" if="leadScoringSelect == 0.00"/>
+    <hilite color="danger" if="leadScoringSelect == 1.00"/>
+    <hilite color="warning" if="leadScoringSelect == 2.00"/>
+    <hilite color="primary" if="leadScoringSelect == 3.00"/>
+    <hilite color="info" if="leadScoringSelect == 4.00"/>
+    <hilite color="success" if="leadScoringSelect == 5.00"/>
+    <template> <![CDATA[
+  <h4>{{record.firstName+" "+record.name}}</h4>
+          <img ng-if="user" ng-src="{{$image('user', 'image')}}">
+          <div class="card-body">
+              <dl>
+                  <dt ng-show="record.enterpriseName" x-translate>Enterprise Name</dt><dd ng-show="record.enterpriseName">{{record.enterpriseName}}</dd>
+                  <dt ng-show="record.nextScheduledEventDateT"><i class='fa fa-clock-o'></i> <span>{{nextScheduledEventDateT|date:'yyyy-MM-dd HH:mm:ss'}}</span></dt>
+                  <dt x-translate>Lead Scoring</dt> <dd ng-show="!record.leadScoringSelect"><i class='fa fa-star-o' style='color:#FFD700;'></i><span><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i></span></dd>
+                  <dd ng-show="record.leadScoringSelect && record.leadScoringSelect == 1.00"><i class='fa fa-star' style='color:#FFD700;'></i><span><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i></span></dd>
+                  <dd ng-show="record.leadScoringSelect && record.leadScoringSelect == 2.00"><i class='fa fa-star' style='color:#FFD700;'></i><span><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i></span></dd>
+                  <dd ng-show="record.leadScoringSelect && record.leadScoringSelect == 3.00"><i class='fa fa-star' style='color:#FFD700;'></i><span><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i></span></dd>
+                  <dd ng-show="record.leadScoringSelect && record.leadScoringSelect == 4.00"><i class='fa fa-star' style='color:#FFD700;'></i><span><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i></span></dd>
+                  <dd ng-show="record.leadScoringSelect && record.leadScoringSelect == 5.00"><i class='fa fa-star' style='color:#FFD700;'></i><span><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i></span></dd>
+              </dl>
+          </div>
+          <div class="card-summary popover">
+	  <p style="margin:2px;">
+            	<span style="word-break:break-all;max-width:250px;" ng-bind-html="description"></span>
+            </p>
+         </div>
+]]>
+    </template>
+  </kanban>
+
   <grid name="lead-grid" title="Leads" model="com.axelor.apps.crm.db.Lead"
     orderBy="-contactDate">
     <!-- <toolbar> <button name="showMap" title="Map" onClick="action-show-leads-on-map-page" /> </toolbar> -->
@@ -15,8 +54,6 @@
           action="action-lead-method-assign-to-me-multiple"/>
         <item name="checkDuplicateItem" title="Check duplicate"
           action="action-general-check-duplicate-records"/>
-        <item name="importLeadsItem" title="Import leads"
-          action="action-crm-method-lead-import-leads"/>
       </menu>
     </menubar>
     <hilite color="warning"
@@ -31,44 +68,6 @@
     <field name="contactDate"/>
     <field name="user" form-view="user-form" grid-view="user-grid"/>
     <field name="leadStatus" title="Status"/>
-    <field name="leadScoringSelect" widget="ImageSelect" x-labels="false"/>
-    <button name="grabLeadBtn" hideIf="user.id == _internalUserId" icon="fa-suitcase"
-      help="Take charge" onClick="action-lead-method-assign-to-me"/>
-    <button name="scheduleEventBtn" title="Schedule Event" icon="fa-group"
-      onClick="action-lead-view-schedule-event"/>
-    <button name="sendByEmailBtn" title="Send Email" icon="fa-envelope"
-      onClick="action-send-by-email-with-template"/>
-  </grid>
-
-  <grid name="lead-historical-grid" title="Leads" model="com.axelor.apps.crm.db.Lead"
-    orderBy="-contactDate">
-    <!-- <toolbar> <button name="showMap" title="Map" onClick="action-show-leads-on-map-page" /> </toolbar> -->
-    <menubar>
-      <menu name="leadReportsMenu" title="Reports" icon="fa-files-o">
-        <item name="printItem" title="Print" action="action-crm-lead-method-print"/>
-      </menu>
-      <menu name="leadToolsMenu" title="Tools" icon="fa-wrench">
-        <item name="assignToMeItem" title="Assign to me"
-          action="action-lead-method-assign-to-me-multiple"/>
-        <item name="checkDuplicateItem" title="Check duplicate"
-          action="action-general-check-duplicate-records"/>
-        <item name="importLeadsItem" title="Import leads"
-          action="action-crm-method-lead-import-leads"/>
-      </menu>
-    </menubar>
-    <hilite color="warning"
-      if="(user == null || contactDate == null) &amp;&amp; $moment(todayDate).diff(createdOn,'days') &gt;= 15"/>
-    <hilite color="danger" if="$moment(todayDate).diff(updatedOn,'days') &gt;= 15"/>
-    <field name="createdOn" hidden="true"/>
-    <field name="updatedOn" hidden="true"/>
-    <field name="simpleFullName"/>
-    <field name="enterpriseName"/>
-    <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
-    <field name="emailAddress.address"/>
-    <field name="contactDate"/>
-    <field name="user" form-view="user-form" grid-view="user-grid"/>
-    <field name="leadStatus" title="Status"/>
-    <field name="isConverted"/>
     <field name="leadScoringSelect" widget="ImageSelect" x-labels="false"/>
     <button name="grabLeadBtn" hideIf="user.id == _internalUserId" icon="fa-suitcase"
       help="Take charge" onClick="action-lead-method-assign-to-me"/>
@@ -90,7 +89,7 @@
     <panel name="mainPanel">
       <panel name="statusPanel" colSpan="12">
         <field name="leadStatus" showTitle="false" colSpan="12" widget="NavSelect"
-          x-order="sequence" onChange="action-lead-group-lead-status-onchange"/>
+          x-order="sequence" onChange="action-lead-group-lead-status-onchange" readonlyIf="!id"/>
         <panel name="viewerDetailsPanel" colSpan="12" showIf="$readonly()">
           <field name="$viewerTagsLeft" showTitle="false">
             <viewer depends="industrySector">
@@ -180,9 +179,9 @@
           <field name="mobilePhone" widget="phone" colSpan="4"/>
           <field name="emailAddress" colSpan="4" canSelect="false"
             form-view="email-address-simple-form" x-show-icons="false">
-            <editor x-show-titles="false">
+            <editor x-show-titles="false" x-viewer="true">
               <field name="address" colSpan="12" placeholder="whatever@example.com"
-                pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$"/>
+                widget="email"/>
             </editor>
           </field>
           <field name="webSite" colSpan="6" placehosetLeadStatuslder="http://www.url.com"
@@ -248,7 +247,7 @@
       <button name="grabLeadBtn" title="Take in charge" hideIf="user.id == _internalUserId"
         icon="fa-suitcase" onClick="save,action-lead-method-assign-to-me"/>
       <button name="convertBtn" title="Convert" hideIf="!id || isConverted"
-        icon="fa-exchange" onClick="save,action-lead-view-convert-lead"/>
+        icon="fa-exchange" onClick="action-lead-group-lead-convert"/>
       <button name="showPartnerBtn" title="Show Partner" showIf="partner" colSpan="6"
         onClick="action-lead-view-show-partner"/>
     </panel>
@@ -303,6 +302,17 @@
     </panel>
   </form>
 
+  <form model="com.axelor.apps.crm.db.Lead" title="Lead with same domain name"
+    name="lead-with-same-domain-name-form" onLoad="action-lead-record-init-same-domain-lead">
+    <panel name="mainPanel">
+      <label title="We found these other leads that may be linked to your partner."
+        colSpan="12"/>
+      <panel-related name="leadSet" field="$leadSet" title="Leads"
+        target="com.axelor.apps.crm.db.Lead" grid-view="lead-grid" form-view="lead-form"
+        type="one-to-many" canNew="false" canEdit="false" canSelect="false" colSpan="12" height="10"/>
+    </panel>
+  </form>
+
   <grid name="event-lead-grid" title="Leads" model="com.axelor.apps.crm.db.Lead"
     orderBy="enterpriseName">
     <field name="name"/>
@@ -344,13 +354,22 @@
   </action-method>
 
   <action-group name="action-lead-group-lead-status-onchange">
-    <action name="save"
-      if="eval: __this__?.leadStatus?.id != __config__.app.getApp('crm')?.lostLeadStatus?.id"/>
     <action name="action-lead-view-lose"
       if="eval: __this__?.leadStatus?.id == __config__.app.getApp('crm')?.lostLeadStatus?.id"/>
+    <action name="action-lead-record-clear-lost-reason"
+      if="eval: __this__?.leadStatus?.id != __config__.app.getApp('crm')?.lostLeadStatus?.id"/>
+    <action name="action-lead-group-lead-convert"
+      if="eval: __this__?.leadStatus?.id == __config__.app.getApp('crm')?.convertedLeadStatus?.id"/>
+  </action-group>
+
+  <action-group name="action-lead-group-lead-convert">
+    <action name="save"/>
+    <action name="action-lead-method-view-lead-with-same-domain-name"/>
+    <action name="action-lead-view-convert-lead"/>
   </action-group>
 
   <action-group name="action-group-crm-lead-onnew">
+    <action name="action-lead-validate-default-status"/>
     <action name="action-account-record-new"/>
     <action name="action-lead-default-record-new"/>
   </action-group>
@@ -365,6 +384,11 @@
     <attribute name="hidden" for="lostReason"
       expr="eval: __this__?.leadStatus?.id != __config__.app.getApp('crm')?.lostLeadStatus?.id"/>
   </action-attrs>
+
+  <action-record name="action-lead-record-clear-lost-reason"
+    model="com.axelor.apps.crm.db.Lead">
+    <field name="lostReason" expr="eval: null"/>
+  </action-record>
 
   <action-method name="action-lead-event-add-attendee">
     <call class="com.axelor.apps.crm.web.EventController" method="addLeadAttendee"/>
@@ -393,8 +417,13 @@
     <field name="user" expr="eval:__user__"/>
     <field name="team"
       expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
-    <field name="leadStatus" expr="eval: __repo__(LeadStatus).getDefaultStatus()"/>
+    <field name="leadStatus" expr="eval: __config__.app.getApp('crm')?.leadDefaultStatus"/>
     <field name="agency" expr="eval:__user__.activeAgency"/>
+  </action-record>
+
+  <action-record name="action-lead-record-init-same-domain-lead"
+    model="com.axelor.apps.crm.db.Lead">
+    <field name="$leadSet" expr="eval: _leadList"/>
   </action-record>
 
   <action-attrs name="action-attrs-lead-set-primary-state-country-postal-code">
@@ -423,6 +452,10 @@
   <action-view name="action-lead-view-convert-lead" title="Convert lead (${ fullName })"
     model="com.axelor.utils.db.Wizard">
     <view type="form" name="convert-lead-wizard-form"/>
+    <view-param name="popup" value="true"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="popup-save" value="false"/>
     <context name="_lead" expr="eval: __self__"/>
     <context name="_primaryAddress" expr="eval: primaryAddress"/>
   </action-view>
@@ -439,7 +472,7 @@
     title="Schedule Event(${ fullName})" model="com.axelor.apps.crm.db.Event">
     <view type="form" name="event-form"/>
     <view type="grid" name="event-grid"/>
-    <context name="_lead" expr="eval: __this__"/>
+    <context name="_eventLead" expr="eval: __this__"/>
   </action-view>
 
   <action-view name="action-lead-view-meeting-event" title="Meeting Event(${ fullName})"
@@ -447,7 +480,7 @@
     <view type="form" name="event-form"/>
     <view-param name="popup" value="reload"/>
     <view-param name="show-toolbar" value="false"/>
-    <context name="_lead" expr="eval: __this__"/>
+    <context name="_eventLead" expr="eval: __this__"/>
     <context name="_meeting" expr="eval: true"/>
   </action-view>
 
@@ -456,7 +489,7 @@
     <view type="form" name="event-form"/>
     <view-param name="popup" value="reload"/>
     <view-param name="show-toolbar" value="false"/>
-    <context name="_lead" expr="eval: __this__"/>
+    <context name="_eventLead" expr="eval: __this__"/>
     <context name="_call" expr="eval: true"/>
   </action-view>
 
@@ -465,7 +498,7 @@
     <view type="form" name="event-form"/>
     <view-param name="popup" value="reload"/>
     <view-param name="show-toolbar" value="false"/>
-    <context name="_lead" expr="eval: __this__"/>
+    <context name="_eventLead" expr="eval: __this__"/>
     <context name="_task" expr="eval: true"/>
   </action-view>
 
@@ -474,7 +507,7 @@
     <view type="form" name="event-form"/>
     <view-param name="popup" value="reload"/>
     <view-param name="show-toolbar" value="false"/>
-    <context name="_lead" expr="eval: __this__"/>
+    <context name="_eventLead" expr="eval: __this__"/>
     <context name="_note" expr="eval: true"/>
   </action-view>
 
@@ -509,10 +542,10 @@
 
   <action-view name="action-lead-view-events" title="Events"
     model="com.axelor.apps.crm.db.Event">
-    <view type="cards" name="event-cards"/>
     <view type="grid" name="list-event-grid"/>
     <view type="form" name="event-form"/>
-    <domain>self.lead.id = :_id</domain>
+    <domain>self.eventLead.id = :_leadId </domain>
+    <context name="_leadId" expr="eval: __id__"/>
   </action-view>
 
   <action-method name="action-show-leads-on-map-page">
@@ -523,8 +556,8 @@
     <call class="com.axelor.apps.crm.web.LeadController" method="setSocialNetworkUrl"/>
   </action-method>
 
-  <action-method name="action-crm-method-lead-import-leads">
-    <call class="com.axelor.apps.crm.web.LeadController" method="getLeadImportConfig"/>
+  <action-method name="action-lead-method-view-lead-with-same-domain-name">
+    <call class="com.axelor.apps.crm.web.LeadController" method="viewLeadWithSameDomainName"/>
   </action-method>
 
   <search-filters name="lead-filters" model="com.axelor.apps.crm.db.Lead"
@@ -541,4 +574,8 @@
     </filter>
   </search-filters>
 
+  <action-validate name="action-lead-validate-default-status">
+    <error message="Please fill default lead status in App CRM configuration."
+      if="!__config__.app.getApp('crm')?.leadDefaultStatus"/>
+  </action-validate>
 </object-views>

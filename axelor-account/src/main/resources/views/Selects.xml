@@ -144,25 +144,27 @@
 
   <selection name='accounting.report.config.line.sum.of.account.select'>
     <option value="1">Debit - Credit</option>
-    <option value="2">Credit - Debit</option>
-    <option value="3">Same as column</option>
-    <option value="4">Same as line</option>
-    <option value="5">Same as group</option>
+    <option value="2">Debit</option>
+    <option value="6" order="3">Credit</option>
+    <option value="3" order="4">Same as column</option>
+    <option value="4" order="5">Same as line</option>
+    <option value="5" order="6">Same as group</option>
   </selection>
 
   <selection name='iaccount.move.status.select'>
-    <option value='1' order="10">Move.New</option>
-    <option value='2' order="30">DayBook</option>
-    <option value='3' order="40">Move.Accounted</option>
-    <option value='4' order="50">Move.Canceled</option>
-    <option value='5' order="20">Simulated</option>
+    <option value='1' order="10" color="lightblue">Move.New</option>
+    <option value='2' order="30" color="deeporange">DayBook</option>
+    <option value='3' order="40" color="green">Move.Accounted</option>
+    <option value='4' order="50" color="red">Move.Canceled</option>
+    <option value='5' order="20" color="blue">Simulated</option>
   </selection>
 
   <selection name='iaccount.move.technical.origin.select'>
-    <option value='1'>Entry</option>
-    <option value='2'>Automatic</option>
-    <option value='3'>Template</option>
-    <option value='4'>Import</option>
+    <option value='1' color="blue">Entry</option>
+    <option value='2' color="blue">Automatic</option>
+    <option value='3' color="blue">Template</option>
+    <option value='4' color="blue">Import</option>
+    <option value='5' color="blue">Mass entry</option>
   </selection>
 
   <selection name='payer.quality.config.line.incident.type.select'>
@@ -210,7 +212,6 @@
   <selection name="iinvoice.batch.action.select">
     <option value="0">Invoicing</option>
     <option value="1">Status</option>
-    <option value="2">Alarm</option>
   </selection>
 
   <selection name="iaccounting.batch.action.select">
@@ -506,12 +507,6 @@
     <option value="4" order="2">Partially validated</option>
   </selection>
 
-  <selection name="account.budget.status.select">
-    <option value="1">Draft</option>
-    <option value="2">Validated</option>
-  </selection>
-
-
   <selection name='move.line.reimbursement.status.select'>
     <option value='0'></option>
     <option value='1'>Reimbursement ongoing</option>
@@ -551,6 +546,24 @@
     <option value='7'>Fixed asset</option>
     <option value='8'>Doubtful customer</option>
     <option value='9'>Irrecoverable</option>
+  </selection>
+
+  <selection name='iaccount.move.line.mass.entry.input.action.select'>
+    <option value='1'>Line</option>
+    <option value='2'>Counterpart</option>
+    <option value='3'>Move</option>
+  </selection>
+
+  <selection name='iaccount.move.line.mass.entry.edited.field.select'>
+    <option value='0'/>
+    <option value='1'>Except VAT System</option>
+    <option value='2'>All</option>
+  </selection>
+
+  <selection name='iaccount.move.mass.entry.status.select'>
+    <option value='0'/>
+    <option value='1'>Ongoing</option>
+    <option value='2'>Closed</option>
   </selection>
 
   <selection name="account.year.period.duration.select">

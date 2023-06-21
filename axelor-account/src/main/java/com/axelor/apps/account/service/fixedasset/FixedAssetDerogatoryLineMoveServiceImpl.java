@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service.fixedasset;
 
@@ -30,7 +31,6 @@ import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.move.MoveCreateService;
-import com.axelor.apps.account.service.move.MoveStatusService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.base.AxelorException;
@@ -69,7 +69,6 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
   protected BatchRepository batchRepository;
   protected BankDetailsService bankDetailsService;
   protected FixedAssetDateService fixedAssetDateService;
-  protected MoveStatusService moveStatusService;
   private Batch batch;
 
   @Inject
@@ -82,8 +81,7 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
       MoveLineCreateService moveLineCreateService,
       BatchRepository batchRepository,
       BankDetailsService bankDetailsService,
-      FixedAssetDateService fixedAssetDateService,
-      MoveStatusService moveStatusService) {
+      FixedAssetDateService fixedAssetDateService) {
     this.fixedAssetDerogatoryLineRepository = fixedAssetDerogatoryLineRepository;
     this.moveCreateService = moveCreateService;
     this.moveRepo = moveRepo;
@@ -93,7 +91,6 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
     this.batchRepository = batchRepository;
     this.bankDetailsService = bankDetailsService;
     this.fixedAssetDateService = fixedAssetDateService;
-    this.moveStatusService = moveStatusService;
   }
 
   @Override
@@ -136,7 +133,8 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
               computeDebitAccount(fixedAssetDerogatoryLine),
               amount,
               false,
-              false);
+              false,
+              null);
       if (fixedAssetDerogatoryLine.getIsSimulated() && deragotaryDepreciationMove != null) {
         this.moveValidateService.accounting(deragotaryDepreciationMove);
       }
@@ -217,7 +215,8 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
       Account debitLineAccount,
       BigDecimal amount,
       Boolean isSimulated,
-      Boolean isDisposal)
+      Boolean isDisposal,
+      LocalDate disposalDate)
       throws AxelorException {
     FixedAsset fixedAsset = fixedAssetDerogatoryLine.getFixedAsset();
 
@@ -234,7 +233,7 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
             fixedAssetDateService.computeLastDayOfFiscalYear(company, date, periodicityTypeSelect);
       }
     } else {
-      date = fixedAsset.getDisposalDate();
+      date = disposalDate;
     }
 
     String origin =
@@ -273,7 +272,7 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
     if (move != null) {
 
       if (isSimulated) {
-        moveStatusService.update(move, MoveRepository.STATUS_SIMULATED);
+        move.setStatusSelect(MoveRepository.STATUS_SIMULATED);
       }
       List<MoveLine> moveLines = new ArrayList<>();
 
@@ -350,7 +349,8 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
               computeDebitAccount(fixedAssetDerogatoryLine),
               amount,
               true,
-              false));
+              false,
+              null));
     }
 
     fixedAssetDerogatoryLine.setIsSimulated(true);

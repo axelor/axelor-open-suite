@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="Partner" lang="java">
+  <entity name="Partner">
 
     <integer name="sizeSelect" title="Size" selection="crm.lead.size.select"/>
     <integer name="leadScoringSelect" title="Lead scoring"
@@ -28,6 +28,28 @@
       title="partner.manager" massUpdate="true" index="false"/>
     <many-to-one name="agency" ref="com.axelor.apps.crm.db.Agency" title="Agency"/>
 
+    <many-to-one ref="com.axelor.apps.crm.db.PartnerStatus" name="partnerStatus"
+      title="Partner status"/>
+
+    <many-to-one name="lostReason" ref="com.axelor.apps.crm.db.LostReason"
+      title="Lost reason"/>
+
+    <string name="lostReasonStr" title="Lost reason" large="true"/>
+
+    <integer name="sequence" title="Sequence"/>
+    <boolean name="isMainContact" title="Main Contact"/>
+    <boolean name="isAlreadyConvertFromLead"/>
+
+    <boolean name="isCollaborator" title="Collaborator"/>
+    <one-to-many name="collaboratorDomainList" title="Work Domain"
+      ref="com.axelor.apps.crm.db.CollaboratorDomain" mappedBy="partner"/>
+    <many-to-many name="workAreaSet" title="Work Area"
+      ref="com.axelor.apps.base.db.Country"/>
+    <many-to-one name="fidelity" title="Fidelity" ref="com.axelor.apps.crm.db.Fidelity"/>
+    <date name="collaboratorSince" title="Collaborator since"/>
+    <integer name="takenOpportunities" title="Sent opportunities"/>
+    <integer name="wonOpportunities" title="Won opportunities"/>
+
     <extra-code>
     <![CDATA[
 		//partner size select
@@ -39,6 +61,10 @@
 		public static final int PARTNER_SIZE_OVER_TWO_THOUSAND = 6;
 	]]>
     </extra-code>
+
+    <track>
+      <field name="partnerStatus"/>
+    </track>
   </entity>
 
 </domain-models>

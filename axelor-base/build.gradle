@@ -9,6 +9,11 @@ apply {
 	version = openSuiteVersion
 }
 
+
+license {
+  exclude "**/swagger/**"
+}
+
 axelor {
 	title "Axelor Base"
 	description "Axelor Base Module"
@@ -45,11 +50,13 @@ dependencies {
 		api project(":modules:axelor-studio")
 	}
 	else {
-		api "com.axelor.addons:axelor-studio:1.0.0-SNAPSHOT"
+		api libs.axelor_studio
 	}
 	implementation libs.faker
-	api libs.opencsv
+	api libs.commons_csv
 	api libs.wslite
 
 	implementation libs.logback
+
+	implementation libs.swagger_jaxrs;
 }

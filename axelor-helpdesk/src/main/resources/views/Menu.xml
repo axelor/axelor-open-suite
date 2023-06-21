@@ -3,11 +3,11 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
-  <menuitem name="helpdesk-root" title="Helpdesk" order="-80"
+  <menuitem name="helpdesk-root" title="Helpdesk" order="-300"
     if="__config__.app.isApp('helpdesk')" icon="fa-life-ring" icon-background="#b6473f"/>
 
   <menuitem title="Current tickets" name="helpdesk-ticket-current"
-    action="helpdesk.ticket.current" order="-100" parent="helpdesk-root"/>
+    action="helpdesk.ticket.current" order="100" parent="helpdesk-root"/>
 
   <action-view name="helpdesk.ticket.current" title="Tickets"
     model="com.axelor.apps.helpdesk.db.Ticket">
@@ -21,7 +21,7 @@
   </action-view>
 
   <menuitem title="My tickets" name="helpdesk-my-ticket-all"
-    action="helpdesk.my.ticket.all" order="-90" parent="helpdesk-root"/>
+    action="helpdesk.my.ticket.all" order="200" parent="helpdesk-root"/>
 
   <action-view name="helpdesk.my.ticket.all" title="My tickets"
     model="com.axelor.apps.helpdesk.db.Ticket">
@@ -35,7 +35,7 @@
   </action-view>
 
   <menuitem title="My team tickets" name="helpdesk-my-team-ticket-all"
-    action="helpdesk.my.team.ticket.all" order="-80" parent="helpdesk-root"/>
+    action="helpdesk.my.team.ticket.all" order="300" parent="helpdesk-root"/>
 
   <action-view name="helpdesk.my.team.ticket.all" title="My team tickets"
     model="com.axelor.apps.helpdesk.db.Ticket">
@@ -51,7 +51,7 @@
   </action-view>
 
   <menuitem title="Not assigned tickets" name="helpdesk-not-assigned-ticket"
-    action="helpdesk.not.assigned.ticket" order="-70" parent="helpdesk-root"/>
+    action="helpdesk.not.assigned.ticket" order="400" parent="helpdesk-root"/>
 
   <action-view name="helpdesk.not.assigned.ticket" title="Not assigned tickets"
     model="com.axelor.apps.helpdesk.db.Ticket">
@@ -65,7 +65,7 @@
   </action-view>
 
   <menuitem title="Late tickets" name="helpdesk-late-ticket" action="helpdesk.late.ticket"
-    order="-60" parent="helpdesk-root"/>
+    order="500" parent="helpdesk-root"/>
 
   <action-view name="helpdesk.late.ticket" title="Late tickets"
     model="com.axelor.apps.helpdesk.db.Ticket">
@@ -81,7 +81,7 @@
   </action-view>
 
   <menuitem title="All tickets" name="helpdesk-ticket-all" action="helpdesk.ticket.all"
-    order="-50" parent="helpdesk-root"/>
+    order="600" parent="helpdesk-root"/>
 
   <action-view name="helpdesk.ticket.all" title="All tickets"
     model="com.axelor.apps.helpdesk.db.Ticket">
@@ -93,11 +93,11 @@
     <context name="_user" expr="eval: __user__"/>
   </action-view>
 
-  <menuitem title="Reportings" name="helpdesk-reporting" order="-20" parent="helpdesk-root"
+  <menuitem title="Reportings" name="helpdesk-reporting" order="700" parent="helpdesk-root"
     icon="fa-bar-chart"/>
 
   <menuitem title="Tickets" name="helpdesk-report-ticket" action="helpdesk.report.ticket"
-    parent="helpdesk-reporting"/>
+    parent="helpdesk-reporting" order="100"/>
 
   <action-view name="helpdesk.report.ticket" title="Tickets">
     <view type="dashboard" name="helpdesk.ticket.dashboard"/>
@@ -108,7 +108,7 @@
   </action-view>
 
   <menuitem title="SLA" name="helpdesk-report-sla" action="helpdesk.report.sla"
-    parent="helpdesk-reporting" if="__config__.app.getApp('helpdesk')?.getIsSla()"/>
+    parent="helpdesk-reporting" if="__config__.app.getApp('helpdesk')?.getIsSla()" order="200"/>
 
   <action-view name="helpdesk.report.sla" title="SLA">
     <view name="helpdesk.sla.dashboard" type="dashboard"/>
@@ -116,12 +116,12 @@
     <context name="_user_id" expr="eval:__user__.id"/>
   </action-view>
 
-  <menuitem title="Configuration" name="helpdesk-config" order="-10" parent="helpdesk-root"
+  <menuitem title="Configuration" name="helpdesk-config" order="800" parent="helpdesk-root"
     icon="fa-cog"/>
 
   <menuitem title="SLA policies" name="helpdesk-sla-policies-all"
     action="helpdesk.sla.policies.all" parent="helpdesk-config"
-    if="__config__.app.getApp('helpdesk')?.getIsSla()"/>
+    if="__config__.app.getApp('helpdesk')?.getIsSla()" order="100"/>
 
   <action-view name="helpdesk.sla.policies.all" title="SLA policies"
     model="com.axelor.apps.helpdesk.db.Sla">
@@ -130,7 +130,7 @@
   </action-view>
 
   <menuitem title="Ticket types" name="helpdesk-ticket-types-all"
-    action="helpdesk-ticket-types-all" parent="helpdesk-config"/>
+    action="helpdesk-ticket-types-all" parent="helpdesk-config" order="200"/>
 
   <action-view name="helpdesk-ticket-types-all" title="Ticket types"
     model="com.axelor.apps.helpdesk.db.TicketType">

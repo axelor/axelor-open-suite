@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.meta.service;
 
@@ -24,6 +25,7 @@ import com.axelor.auth.db.IMessage;
 import com.axelor.auth.db.Role;
 import com.axelor.auth.db.repo.GroupRepository;
 import com.axelor.auth.db.repo.RoleRepository;
+import com.axelor.common.csv.CSVFile;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
@@ -35,12 +37,8 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import com.opencsv.CSVReader;
-import com.opencsv.CSVWriter;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.lang.invoke.MethodHandles;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
@@ -56,7 +54,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
-import org.apache.commons.io.output.FileWriterWithEncoding;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVPrinter;
+import org.apache.commons.csv.CSVRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -102,6 +102,12 @@ public class MetaGroupMenuAssistantService {
     return "GroupMenu" + "-" + userCode + "-" + dateString + ".csv";
   }
 
+  protected MetaFile getMetaFile(String fileName, File groupMenuFile) throws IOException {
+    MetaFile metaFile = new MetaFile();
+    metaFile.setFileName(fileName);
+    return metaFiles.upload(groupMenuFile, metaFile);
+  }
+
   protected void setBundle(Locale locale) {
     bundle = I18n.getBundle(locale);
   }
@@ -127,13 +133,12 @@ public class MetaGroupMenuAssistantService {
 
       addGroupAccess(rows);
 
-      try (CSVWriter csvWriter =
-              new CSVWriter(new FileWriterWithEncoding(groupMenuFile, "utf-8"), ';');
-          FileInputStream fis = new FileInputStream(groupMenuFile)) {
-        csvWriter.writeAll(rows);
-
-        groupMenuAssistant.setMetaFile(metaFiles.upload(fis, getFileName(groupMenuAssistant)));
+      CSVFile csvFormat = CSVFile.DEFAULT.withDelimiter(';').withQuoteAll();
+      try (CSVPrinter printer = csvFormat.write(groupMenuFile)) {
+        printer.printRecords(rows);
       }
+
+      groupMenuAssistant.setMetaFile(getMetaFile(getFileName(groupMenuAssistant), groupMenuFile));
       menuAssistantRepository.save(groupMenuAssistant);
     } catch (Exception e) {
       TraceBackService.trace(e);
@@ -149,13 +154,14 @@ public class MetaGroupMenuAssistantService {
       File csvFile = MetaFiles.getPath(metaFile).toFile();
       logger.debug("File name: {}", csvFile.getAbsolutePath());
       logger.debug("File length: {}", csvFile.length());
-      try (CSVReader csvReader =
-          new CSVReader(
-              new InputStreamReader(new FileInputStream(csvFile), StandardCharsets.UTF_8), ';')) {
-        rows = csvReader.readAll();
-        logger.debug("Rows size: {}", rows.size());
+      CSVFile csvFormat = CSVFile.DEFAULT.withDelimiter(';').withQuoteAll();
+      CSVParser csvParser = csvFormat.parse(csvFile, StandardCharsets.UTF_8);
+      for (CSVRecord record : csvParser.getRecords()) {
+        rows.add(CSVFile.values(record));
       }
+      logger.debug("Rows size: {}", rows.size());
     }
+
     if (!rows.isEmpty()) {
       rows.set(0, getGroupRow(rows.get(0), groupMenuAssistant));
     } else {
@@ -295,38 +301,41 @@ public class MetaGroupMenuAssistantService {
   }
 
   public String importGroupMenu(MetaGroupMenuAssistant groupMenuAssistant) {
+    try {
+      MetaFile metaFile = groupMenuAssistant.getMetaFile();
 
-    try (CSVReader csvReader =
-        new CSVReader(
-            new InputStreamReader(
-                new FileInputStream(MetaFiles.getPath(groupMenuAssistant.getMetaFile()).toFile()),
-                StandardCharsets.UTF_8),
-            ';')) {
-      setBundle(new Locale(groupMenuAssistant.getLanguage()));
+      if (metaFile != null) {
+        File csvFile = MetaFiles.getPath(metaFile).toFile();
 
-      String[] groupRow = csvReader.readNext();
-      if (groupRow == null || groupRow.length < 3) {
-        return I18n.get(IMessage.BAD_FILE);
+        CSVFile csvFormat =
+            CSVFile.DEFAULT.withDelimiter(';').withQuoteAll().withFirstRecordAsHeader();
+        CSVParser csvParser = csvFormat.parse(csvFile);
+
+        setBundle(new Locale(groupMenuAssistant.getLanguage()));
+
+        List<String> headerNames = csvParser.getHeaderNames();
+        String[] groupRow = headerNames.toArray(new String[headerNames.size()]);
+        if (groupRow == null || groupRow.length < 3) {
+          return I18n.get(IMessage.BAD_FILE);
+        }
+
+        Map<String, Object> groupMap = checkGroups(groupRow);
+        groupMap.putAll(checkRoles(groupRow));
+        badGroups.removeAll(groupMap.keySet());
+        badRoles.removeAll(groupMap.keySet());
+        if (!badGroups.isEmpty()) {
+          errorLog += "\n" + String.format(I18n.get(IMessage.NO_GROUP), badGroups);
+        }
+        if (!badRoles.isEmpty()) {
+          errorLog += "\n" + String.format(I18n.get(IMessage.NO_ROLE), badRoles);
+        }
+        Group admin = groupRepository.findByCode("admins");
+
+        for (CSVRecord record : csvParser.getRecords()) {
+          importMenus(CSVFile.values(record), groupRow, groupMap, admin);
+        }
+        saveMenus();
       }
-
-      Map<String, Object> groupMap = checkGroups(groupRow);
-      groupMap.putAll(checkRoles(groupRow));
-      badGroups.removeAll(groupMap.keySet());
-      badRoles.removeAll(groupMap.keySet());
-      if (!badGroups.isEmpty()) {
-        errorLog += "\n" + String.format(I18n.get(IMessage.NO_GROUP), badGroups);
-      }
-      if (!badRoles.isEmpty()) {
-        errorLog += "\n" + String.format(I18n.get(IMessage.NO_ROLE), badRoles);
-      }
-      Group admin = groupRepository.findByCode("admins");
-
-      for (String[] row : csvReader.readAll()) {
-        importMenus(row, groupRow, groupMap, admin);
-      }
-
-      saveMenus();
-
     } catch (Exception e) {
       TraceBackService.trace(e);
       errorLog += "\n" + String.format(I18n.get(IMessage.ERR_IMPORT_WITH_MSG), e.getMessage());

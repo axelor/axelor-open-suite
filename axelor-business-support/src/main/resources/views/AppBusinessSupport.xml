@@ -8,6 +8,9 @@
     <panel name="mainPanel" title="Configuration">
       <field name="providerCompany" form-view="company-form" grid-view="company-grid"/>
     </panel>
+    <panel-mail name="mailPanel">
+      <mail-messages limit="4"/>
+    </panel-mail>
   </form>
 
 </object-views>

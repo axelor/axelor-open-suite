@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.hr.service.timesheet;
 
@@ -120,8 +121,6 @@ public interface TimesheetService {
 
   public BigDecimal computeSubTimeSpent(Project project);
 
-  public void computeParentTimeSpent(Project project);
-
   public BigDecimal computeTimeSpent(Project project);
 
   public List<Map<String, Object>> createDefaultLines(Timesheet timesheet);
@@ -147,8 +146,6 @@ public interface TimesheetService {
   public void generateLinesFromExpectedProjectPlanning(Timesheet timesheet) throws AxelorException;
 
   public void prefillLines(Timesheet timesheet) throws AxelorException;
-
-  public void setProjectTaskTotalRealHrs(List<TimesheetLine> timesheetLines, boolean isAdd);
 
   public void removeAfterToDateTimesheetLines(Timesheet timesheet);
 

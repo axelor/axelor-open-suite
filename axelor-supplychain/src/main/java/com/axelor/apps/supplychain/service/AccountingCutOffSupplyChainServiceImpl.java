@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.supplychain.service;
 
@@ -39,7 +40,6 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveSimulateService;
-import com.axelor.apps.account.service.move.MoveStatusService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
@@ -120,8 +120,7 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
       CurrencyService currencyService,
       TaxAccountToolService taxAccountToolService,
       BankDetailsService bankDetailsService,
-      MoveLineRepository moveLineRepository,
-      MoveStatusService moveStatusService) {
+      MoveLineRepository moveLineRepository) {
 
     super(
         moveCreateService,
@@ -143,8 +142,7 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
         moveLineService,
         currencyService,
         taxAccountToolService,
-        moveLineRepository,
-        moveStatusService);
+        moveLineRepository);
     this.stockMoverepository = stockMoverepository;
     this.stockMoveLineRepository = stockMoveLineRepository;
     this.saleOrderRepository = saleOrderRepository;
@@ -300,9 +298,7 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
       String prefixOrigin)
       throws AxelorException {
 
-    if (moveDate == null
-        || stockMove.getOriginTypeSelect() == null
-        || stockMove.getOriginId() == null) {
+    if (moveDate == null) {
       return null;
     }
 
@@ -313,9 +309,8 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
     Account partnerAccount = null;
 
     Currency currency = null;
-    if (StockMoveRepository.ORIGIN_SALE_ORDER.equals(stockMove.getOriginTypeSelect())
-        && stockMove.getOriginId() != null) {
-      SaleOrder saleOrder = saleOrderRepository.find(stockMove.getOriginId());
+    if (stockMove.getSaleOrder() != null) {
+      SaleOrder saleOrder = stockMove.getSaleOrder();
       currency = saleOrder.getCurrency();
       if (partner == null) {
         partner = saleOrder.getClientPartner();
@@ -328,9 +323,8 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
             I18n.get(SupplychainExceptionMessage.MISSING_FORECASTED_INV_CUST_ACCOUNT));
       }
     }
-    if (StockMoveRepository.ORIGIN_PURCHASE_ORDER.equals(stockMove.getOriginTypeSelect())
-        && stockMove.getOriginId() != null) {
-      PurchaseOrder purchaseOrder = purchaseOrderRepository.find(stockMove.getOriginId());
+    if (stockMove.getPurchaseOrder() != null) {
+      PurchaseOrder purchaseOrder = stockMove.getPurchaseOrder();
       currency = purchaseOrder.getCurrency();
       if (partner == null) {
         partner = purchaseOrder.getSupplierPartner();

@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.crm.db.repo;
 
@@ -32,8 +33,13 @@ public class OpportunityManagementRepository extends OpportunityRepository {
   @Override
   public Opportunity copy(Opportunity entity, boolean deep) {
     Opportunity copy = super.copy(entity, deep);
-    OpportunityStatus status = Beans.get(OpportunityStatusRepository.class).getDefaultStatus();
-    copy.setOpportunityStatus(status);
+    try {
+      OpportunityStatus status = Beans.get(AppCrmService.class).getOpportunityDefaultStatus();
+      copy.setOpportunityStatus(status);
+    } catch (Exception e) {
+      TraceBackService.traceExceptionFromSaveMethod(e);
+      throw new PersistenceException(e.getMessage(), e);
+    }
     copy.setLostReason(null);
     copy.setOpportunitySeq(null);
     return copy;

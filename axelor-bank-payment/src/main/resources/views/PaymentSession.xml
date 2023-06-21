@@ -5,9 +5,9 @@
 
   <form id="bank-payment-payment-session-form" name="payment-session-form"
     title="Payment session" model="com.axelor.apps.account.db.PaymentSession" extension="true">
-    <extend target="//panel[@name='emailPanel']">
+    <extend target="//panel[@name='datesPanel']">
       <insert position="after">
-        <panel name="bankOrderPanel" sidebar="true" title="Bank order"
+        <panel name="bankOrderPanel" colSpan="4"
           showIf="paymentMode &amp;&amp; paymentMode.generateBankOrder &amp;&amp; statusSelect &gt; 1">
           <field name="bankOrder" colSpan="12" readonly="true"/>
           <field name="paymentMode.generateBankOrder" hidden="true" colSpan="12"/>

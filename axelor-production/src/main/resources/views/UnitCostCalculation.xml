@@ -7,8 +7,8 @@
     model="com.axelor.apps.production.db.UnitCostCalculation" orderBy="-statusSelect,-createdOn">
     <field name="unitCostCalcSeq"/>
     <field name="name"/>
-    <field name="calculationDate"/>
-    <field name="updateCostDate"/>
+    <field name="calculationDateTime"/>
+    <field name="updateCostDateTime"/>
     <field name="allBomLevels"/>
     <field name="statusSelect"/>
   </grid>
@@ -74,8 +74,8 @@
         onClick="save,action-unit-cost-calculation-view-import-csv" showIf="statusSelect == 2"/>
     </panel>
     <panel name="datePanel" sidebar="true" showIf="statusSelect != 1">
-      <field name="calculationDate" readonly="true"/>
-      <field name="updateCostDate" readonly="true"/>
+      <field name="calculationDateTime" readonly="true"/>
+      <field name="updateCostDateTime" readonly="true"/>
     </panel>
     <panel-mail name="mailPanel">
       <mail-messages limit="4"/>

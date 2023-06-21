@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.supplychain.service.declarationofexchanges;
 
@@ -220,13 +221,13 @@ public class DeclarationOfExchangesExporterGoods extends DeclarationOfExchangesE
     String srcDstCountry;
     String dept;
     try {
-      Address partnerAddress = stockMoveToolService.getPartnerAddress(stockMoveLine.getStockMove());
+      Address partnerAddress = stockMoveToolService.getPartnerAddress(stockMove, stockMoveLine);
       srcDstCountry = partnerAddress.getAddressL7Country().getAlpha2Code();
     } catch (AxelorException e) {
       srcDstCountry = e.getMessage();
     }
     try {
-      Address companyAddress = stockMoveToolService.getCompanyAddress(stockMoveLine.getStockMove());
+      Address companyAddress = stockMoveToolService.getCompanyAddress(stockMove, stockMoveLine);
       dept = companyAddress.getCity().getDepartment().getCode();
     } catch (AxelorException e) {
       dept = e.getMessage();
@@ -240,9 +241,9 @@ public class DeclarationOfExchangesExporterGoods extends DeclarationOfExchangesE
       if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING) {
         countryOrigCode = srcDstCountry;
       } else if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
-          && ObjectUtils.notEmpty(stockMove.getFromStockLocation().getAddress())) {
+          && ObjectUtils.notEmpty(stockMoveLine.getFromStockLocation().getAddress())) {
         countryOrigCode =
-            stockMove.getFromStockLocation().getAddress().getAddressL7Country().getAlpha2Code();
+            stockMoveLine.getFromStockLocation().getAddress().getAddressL7Country().getAlpha2Code();
       } else {
         countryOrigCode = "";
       }

@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.hr.module;
 
@@ -22,6 +23,7 @@ import com.axelor.apps.account.db.repo.PartnerAccountRepository;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineGenerateRealServiceImpl;
 import com.axelor.apps.account.service.batch.BatchCreditTransferExpensePayment;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.move.MoveValidateServiceImpl;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineOriginServiceImpl;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMergeServiceImpl;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderServiceImpl;
@@ -47,6 +49,8 @@ import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.db.repo.TimesheetTimerHRRepository;
 import com.axelor.apps.hr.db.repo.UserHRRepository;
+import com.axelor.apps.hr.service.EmployeeDashboardService;
+import com.axelor.apps.hr.service.EmployeeDashboardServiceImpl;
 import com.axelor.apps.hr.service.analytic.AnalyticMoveLineGenerateRealServiceHrImpl;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.app.AppHumanResourceServiceImpl;
@@ -77,8 +81,11 @@ import com.axelor.apps.hr.service.lunch.voucher.LunchVoucherMgtLineService;
 import com.axelor.apps.hr.service.lunch.voucher.LunchVoucherMgtLineServiceImpl;
 import com.axelor.apps.hr.service.lunch.voucher.LunchVoucherMgtService;
 import com.axelor.apps.hr.service.lunch.voucher.LunchVoucherMgtServiceImpl;
+import com.axelor.apps.hr.service.move.MoveValidateHRServiceImpl;
 import com.axelor.apps.hr.service.project.ProjectActivityDashboardServiceHRImpl;
 import com.axelor.apps.hr.service.project.ProjectDashboardHRServiceImpl;
+import com.axelor.apps.hr.service.project.ProjectPlanningTimeComputeNameService;
+import com.axelor.apps.hr.service.project.ProjectPlanningTimeComputeNameServiceImpl;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeService;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetComputeNameService;
@@ -145,5 +152,9 @@ public class HumanResourceModule extends AxelorModule {
     bind(ExpenseFetchPeriodService.class).to(ExpenseFetchPeriodServiceImpl.class);
     bind(TimesheetComputeNameService.class).to(TimesheetComputeNameServiceImpl.class);
     bind(MoveReverseServiceBankPaymentImpl.class).to(ExpenseMoveReverseServiceImpl.class);
+    bind(ProjectPlanningTimeComputeNameService.class)
+        .to(ProjectPlanningTimeComputeNameServiceImpl.class);
+    bind(MoveValidateServiceImpl.class).to(MoveValidateHRServiceImpl.class);
+    bind(EmployeeDashboardService.class).to(EmployeeDashboardServiceImpl.class);
   }
 }

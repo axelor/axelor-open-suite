@@ -8,12 +8,14 @@
     onLoad="action-app-mobile-settings-config-group-on-load" canNew="false" canDelete="false">
     <panel name="mainPanel">
       <panel name="applicationsPanel" title="Mobile apps" colSpan="10">
-        <field name="isStockAppEnable" colSpan="3" widget="boolean-switch"
-          readonlyIf="isProductionAppEnable"
+        <field name="isStockAppEnabled" colSpan="3" widget="boolean-switch"
+          readonlyIf="isProductionAppEnabled"
           onChange="action-app-mobile-settings-boolean-group-on-change"/>
-        <field name="isProductionAppEnable" colSpan="3" widget="boolean-switch"
+        <field name="isProductionAppEnabled" colSpan="3" widget="boolean-switch"
           onChange="action-app-mobile-settings-production-boolean-group-on-change"/>
-        <field name="isCrmAppEnable" colSpan="3" widget="boolean-switch"
+        <field name="isCrmAppEnabled" colSpan="3" widget="boolean-switch"
+          onChange="action-app-mobile-settings-boolean-group-on-change"/>
+        <field name="isHelpdeskAppEnabled" colSpan="3" widget="boolean-switch"
           onChange="action-app-mobile-settings-boolean-group-on-change"/>
       </panel>
       <panel name="qrCodePanel" colSpan="2">
@@ -21,8 +23,12 @@
           hideIf="qrCode == null" widget="Image"/>
       </panel>
       <panel name="generalConfigPanel" title="General configuration" colSpan="12">
-        <field name="isLoginUserQrcodeEnable" widget="boolean-switch" colSpan="4"/>
+        <field name="isLoginUserQrcodeEnabled" widget="boolean-switch" colSpan="4"/>
+        <field name="isTrackerMessageEnabled" widget="boolean-switch" colSpan="4"/>
       </panel>
+    </panel>
+    <panel name="versionPanel" sidebar="true">
+      <field name="minimalRequiredMobileAppVersion"/>
     </panel>
     <panel name="configPanel" sidebar="true">
       <panel name="configBasePanel" title="General">
@@ -35,25 +41,45 @@
       </panel>
       <panel name="configAppPanel" title="App configuration">
         <button name="stockAppBtn" title="Config Stock" hidden="true"
-          hideIf="!isStockAppEnable" onClick="action.stock.config.view"/>
+          hideIf="!isStockAppEnabled" onClick="action.stock.config.view"/>
         <button name="prodAppBtn" title="Config Production" hidden="true"
-          hideIf="!isProductionAppEnable" onClick="action.production.config.view"/>
-        <button name="crmAppBtn" title="Config CRM" hidden="true" hideIf="!isCrmAppEnable"
+          hideIf="!isProductionAppEnabled" onClick="action.production.config.view"/>
+        <button name="crmAppBtn" title="Config CRM" hidden="true" hideIf="!isCrmAppEnabled"
           onClick="action.crm.config.view"/>
+        <button name="helpdeskAppBtn" title="Config Helpdesk" hidden="true"
+          hideIf="!isHelpdeskAppEnabled" onClick="action.helpdesk.config.view"/>
       </panel>
     </panel>
     <panel-tabs name="appConfigPanelTab">
-      <panel name="stockConfigPanel" title="Stock" hideIf="!isStockAppEnable">
-        <field name="isTrackerMessageOnStockApp" widget="boolean-switch" colSpan="4"/>
-        <field name="manageCarrierOption" widget="boolean-switch" colSpan="4" hidden="true"/>
+      <panel name="stockValidationPanel" title="Stock" hideIf="!isStockAppEnabled">
+        <panel name="generalStockConfigPanel" title="Enable validation" colSpan="6"
+          help="If this configuration is enabled, users will be able to directly validate the enabled feature on mobile application.">
+          <field name="isInventoryValidationEnabled" widget="boolean-switch" colSpan="6"
+            title="On inventories"/>
+          <field name="isStockCorrectionValidationEnabled" widget="boolean-switch" colSpan="6"
+            title="On stock corrections"/>
+        </panel>
+        <panel name="stockAdditionPanel" title="Enable line addition" colSpan="6"
+          help="If this configuration is enabled, users can add new lines to the enabled feature on mobile application.">
+          <field name="isCustomerDeliveryLineAdditionEnabled" widget="boolean-switch"
+            colSpan="6" title="On customer deliveries"/>
+          <field name="isSupplierArrivalLineAdditionEnabled" widget="boolean-switch"
+            colSpan="6" title="On supplier arrivals"/>
+        </panel>
+        <panel name="stockLineConfigPanel" title="Enable line verification" colSpan="6"
+          help="For each of the following features, if configuration is enabled, users will be asked to confirm the tracking number or product of the line before accessing the details screen. If the setting is disabled, they will be able to access the details screen directly.">
+          <field name="isVerifyCustomerDeliveryLineEnabled" title="On customer deliveries"
+            widget="boolean-switch" colSpan="6"/>
+          <field name="isVerifySupplierArrivalLineEnabled" title="On supplier arrivals"
+            widget="boolean-switch" colSpan="6"/>
+          <field name="isVerifyInternalMoveLineEnabled" title="On internal moves"
+            widget="boolean-switch" colSpan="6"/>
+          <field name="isVerifyInventoryLineEnabled" title="On inventories"
+            widget="boolean-switch" colSpan="6"/>
+        </panel>
+        <field name="manageCarrierOption" widget="boolean-switch" colSpan="12" hidden="true"/>
         <!-- This field manageCarrierOption will be used later when carrier mode is implemented in AOS
           and App mobile -->
-      </panel>
-      <panel name="productionConfigPanel" title="Production" hideIf="!isProductionAppEnable">
-        <field name="isTrackerMessageOnProductionApp" widget="boolean-switch" colSpan="4"/>
-      </panel>
-      <panel name="crmConfigPanel" title="CRM" hideIf="!isCrmAppEnable">
-        <field name="isTrackerMessageOnCrmApp" widget="boolean-switch" colSpan="4"/>
       </panel>
     </panel-tabs>
 
@@ -107,12 +133,24 @@
       expr="eval: __repo__(MobileConfig).all().filter('self.sequence = ?', 'app-crm').fetchOne()?.id"/>
   </action-view>
 
+  <action-view name="action.helpdesk.config.view" title="Helpdesk config"
+    model="com.axelor.apps.mobilesettings.db.MobileConfig">
+    <view type="form" name="mobile-config-form"/>
+    <view-param name="popup" value="true"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="forceEdit" value="true"/>
+    <context name="_showRecord"
+      expr="eval: __repo__(MobileConfig).all().filter('self.sequence = ?', 'app-helpdesk').fetchOne()?.id"/>
+  </action-view>
+
   <action-attrs name="action-app-mobile-settings-config-attrs-boolean-readonly">
-    <attribute for="isStockAppEnable" name="readonly"
+    <attribute for="isStockAppEnabled" name="readonly"
       expr="!__config__.app.isApp('stock')"/>
-    <attribute for="isProductionAppEnable" name="readonly"
+    <attribute for="isProductionAppEnabled" name="readonly"
       expr="!__config__.app.isApp('production')"/>
-    <attribute for="isCrmAppEnable" name="readonly" expr="!__config__.app.isApp('crm')"/>
+    <attribute for="isCrmAppEnabled" name="readonly" expr="!__config__.app.isApp('crm')"/>
+    <attribute for="isHelpdeskAppEnabled" name="readonly"
+      expr="!__config__.app.isApp('helpdesk')"/>
   </action-attrs>
 
   <action-group name="action-app-mobile-settings-config-group-on-load">
@@ -120,8 +158,8 @@
   </action-group>
 
   <action-attrs name="action-app-mobile-settings-attrs-update-stock-boolean">
-    <attribute for="isStockAppEnable" name="value" expr="true"
-      if="!isStockAppEnable &amp;&amp; isProductionAppEnable"/>
+    <attribute for="isStockAppEnabled" name="value" expr="true"
+      if="!isStockAppEnabled &amp;&amp; isProductionAppEnabled"/>
   </action-attrs>
 
   <action-group name="action-app-mobile-settings-production-boolean-group-on-change">
