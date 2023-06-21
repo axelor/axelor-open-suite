@@ -508,7 +508,9 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
   protected void setRevaluationFormulaDescription(Contract contract, Invoice invoice) {
     RevaluationFormula revaluationFormula = contract.getRevaluationFormula();
     if (contract.getIsToRevaluate() && revaluationFormula != null) {
-      invoice.setNote(revaluationFormula.getInvoiceComment());
+      String invoiceComment = revaluationFormula.getInvoiceComment();
+      invoice.setNote(invoiceComment);
+      invoice.setProformaComments(invoiceComment);
     }
   }
 
