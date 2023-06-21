@@ -125,7 +125,7 @@
     <panel name="mainPanel">
       <panel name="statusPanel" colSpan="12">
         <field name="leadStatus" showTitle="false" colSpan="12" widget="NavSelect"
-          x-order="sequence" onChange="action-lead-group-lead-status-onchange"/>
+          x-order="sequence" onChange="action-lead-group-lead-status-onchange" readonlyIf="!id"/>
         <panel name="viewerDetailsPanel" colSpan="12" showIf="$readonly()">
           <field name="$viewerTagsLeft" showTitle="false">
             <viewer depends="industrySector">
@@ -327,7 +327,7 @@
   </form>
 
   <form name="lead-lose-wizard-form" model="com.axelor.apps.crm.db.Lead"
-    title="Loss confirmation" onSave="action-lead-record-set-lost-status">
+    title="Loss confirmation">
     <panel name="mainPanel">
       <field name="lostReason" colOffset="4" colSpan="4" widget="SuggestBox" canNew="false"
         canEdit="false"/>
@@ -413,11 +413,6 @@
     <attribute name="hidden" for="lostReason"
       expr="eval: __this__?.leadStatus?.id != __config__.app.getApp('crm')?.lostLeadStatus?.id"/>
   </action-attrs>
-
-  <action-record name="action-lead-record-set-lost-status"
-    model="com.axelor.apps.crm.db.Lead">
-    <field name="leadStatus" expr="eval: __config__.app.getApp('crm')?.lostLeadStatus"/>
-  </action-record>
 
   <action-record name="action-lead-record-clear-lost-reason"
     model="com.axelor.apps.crm.db.Lead">
