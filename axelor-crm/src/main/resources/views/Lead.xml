@@ -247,8 +247,7 @@
       <button name="grabLeadBtn" title="Take in charge" hideIf="user.id == _internalUserId"
         icon="fa-suitcase" onClick="save,action-lead-method-assign-to-me"/>
       <button name="convertBtn" title="Convert" hideIf="!id || isConverted"
-        icon="fa-exchange"
-        onClick="save,action-lead-method-view-lead-with-same-domain-name,action-lead-view-convert-lead"/>
+        icon="fa-exchange" onClick="action-lead-group-lead-convert"/>
       <button name="showPartnerBtn" title="Show Partner" showIf="partner" colSpan="6"
         onClick="action-lead-view-show-partner"/>
     </panel>
@@ -359,6 +358,14 @@
       if="eval: __this__?.leadStatus?.id == __config__.app.getApp('crm')?.lostLeadStatus?.id"/>
     <action name="action-lead-record-clear-lost-reason"
       if="eval: __this__?.leadStatus?.id != __config__.app.getApp('crm')?.lostLeadStatus?.id"/>
+    <action name="action-lead-group-lead-convert"
+      if="eval: __this__?.leadStatus?.id == __config__.app.getApp('crm')?.convertedLeadStatus?.id"/>
+  </action-group>
+
+  <action-group name="action-lead-group-lead-convert">
+    <action name="save"/>
+    <action name="action-lead-method-view-lead-with-same-domain-name"/>
+    <action name="action-lead-view-convert-lead"/>
   </action-group>
 
   <action-group name="action-group-crm-lead-onnew">
