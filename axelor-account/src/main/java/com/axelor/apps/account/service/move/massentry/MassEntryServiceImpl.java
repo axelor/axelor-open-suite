@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.repo.MoveLineMassEntryRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveToolService;
+import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryRecordService;
 import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryService;
 import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryToolService;
 import com.axelor.apps.base.AxelorException;
@@ -58,6 +59,7 @@ public class MassEntryServiceImpl implements MassEntryService {
   protected AppAccountService appAccountService;
   protected MoveRepository moveRepository;
   protected MoveLineMassEntryToolService moveLineMassEntryToolService;
+  protected MoveLineMassEntryRecordService moveLineMassEntryRecordService;
 
   @Inject
   public MassEntryServiceImpl(
@@ -68,7 +70,8 @@ public class MassEntryServiceImpl implements MassEntryService {
       MassEntryMoveCreateService massEntryMoveCreateService,
       AppAccountService appAccountService,
       MoveRepository moveRepository,
-      MoveLineMassEntryToolService moveLineMassEntryToolService) {
+      MoveLineMassEntryToolService moveLineMassEntryToolService,
+      MoveLineMassEntryRecordService moveLineMassEntryRecordService) {
     this.massEntryToolService = massEntryToolService;
     this.massEntryVerificationService = massEntryVerificationService;
     this.moveToolService = moveToolService;
@@ -77,6 +80,7 @@ public class MassEntryServiceImpl implements MassEntryService {
     this.appAccountService = appAccountService;
     this.moveRepository = moveRepository;
     this.moveLineMassEntryToolService = moveLineMassEntryToolService;
+    this.moveLineMassEntryRecordService = moveLineMassEntryRecordService;
   }
 
   @Override
@@ -114,6 +118,7 @@ public class MassEntryServiceImpl implements MassEntryService {
           inputLine.setVatSystemSelect(moveLine.getVatSystemSelect());
           inputLine.setIsEdited(MoveLineMassEntryRepository.MASS_ENTRY_IS_EDITED_NULL);
           moveLineMassEntryToolService.setAnalyticsFields(inputLine, moveLine);
+          moveLineMassEntryRecordService.setAnalyticMoveLineList(inputLine, moveLine);
           break;
         }
       }

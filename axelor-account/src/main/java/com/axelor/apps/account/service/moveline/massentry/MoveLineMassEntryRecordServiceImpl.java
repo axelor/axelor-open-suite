@@ -1,8 +1,10 @@
 package com.axelor.apps.account.service.moveline.massentry;
 
+import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.MoveLineMassEntry;
+import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.service.moveline.MoveLineRecordService;
 import com.axelor.apps.account.util.TaxAccountToolService;
@@ -12,21 +14,25 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
+import org.apache.commons.collections.CollectionUtils;
 
 public class MoveLineMassEntryRecordServiceImpl implements MoveLineMassEntryRecordService {
 
   protected MoveLineMassEntryService moveLineMassEntryService;
   protected MoveLineRecordService moveLineRecordService;
   protected TaxAccountToolService taxAccountToolService;
+  protected AnalyticMoveLineRepository analyticMoveLineRepository;
 
   @Inject
   public MoveLineMassEntryRecordServiceImpl(
       MoveLineMassEntryService moveLineMassEntryService,
       MoveLineRecordService moveLineRecordService,
-      TaxAccountToolService taxAccountToolService) {
+      TaxAccountToolService taxAccountToolService,
+      AnalyticMoveLineRepository analyticMoveLineRepository) {
     this.moveLineMassEntryService = moveLineMassEntryService;
     this.moveLineRecordService = moveLineRecordService;
     this.taxAccountToolService = taxAccountToolService;
+    this.analyticMoveLineRepository = analyticMoveLineRepository;
   }
 
   @Override
@@ -91,15 +97,41 @@ public class MoveLineMassEntryRecordServiceImpl implements MoveLineMassEntryReco
   }
 
   @Override
-  public void refreshAnalyticMoveLineMassEntryList(MoveLineMassEntry moveLine) {
+  public void setAnalyticMoveLineMassEntryList(
+      MoveLineMassEntry moveLineMassEntry, MoveLine moveLine) {
+    moveLineMassEntry.clearAnalyticMoveLineMassEntryList();
+    if (CollectionUtils.isNotEmpty(moveLine.getAnalyticMoveLineList())) {
+      for (AnalyticMoveLine analyticMoveLine : moveLine.getAnalyticMoveLineList()) {
+        AnalyticMoveLine copyAnalyticMoveLine =
+            analyticMoveLineRepository.copy(analyticMoveLine, false);
+        moveLineMassEntry.addAnalyticMoveLineMassEntryListItem(copyAnalyticMoveLine);
+      }
+    }
+  }
+
+  @Override
+  public void setAnalyticMoveLineList(MoveLineMassEntry moveLineMassEntry, MoveLine moveLine) {
+    moveLine.clearAnalyticMoveLineList();
+    if (CollectionUtils.isNotEmpty(moveLineMassEntry.getAnalyticMoveLineMassEntryList())) {
+      for (AnalyticMoveLine analyticMoveLine :
+          moveLineMassEntry.getAnalyticMoveLineMassEntryList()) {
+        AnalyticMoveLine copyAnalyticMoveLine =
+            analyticMoveLineRepository.copy(analyticMoveLine, false);
+        moveLine.addAnalyticMoveLineListItem(copyAnalyticMoveLine);
+      }
+    }
+  }
+
+  @Override
+  public void setAnalyticMoveLineMassEntryList(MoveLineMassEntry moveLine) {
     moveLine.clearAnalyticMoveLineMassEntryList();
     if (ObjectUtils.notEmpty(moveLine.getAnalyticMoveLineList())) {
       moveLine
           .getAnalyticMoveLineList()
           .forEach(
               analyticMoveLine -> {
-                analyticMoveLine.setMoveLine(null);
-                moveLine.addAnalyticMoveLineMassEntryListItem(analyticMoveLine);
+                moveLine.addAnalyticMoveLineMassEntryListItem(
+                    analyticMoveLineRepository.copy(analyticMoveLine, false));
               });
     }
   }

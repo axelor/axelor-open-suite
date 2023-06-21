@@ -204,7 +204,7 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
             moveLineGroupService.getAnalyticDistributionTemplateOnChangeValuesMap(moveLine, move));
     moveLineInvoiceTermService.generateDefaultInvoiceTerm(move, moveLine, dueDate, false);
     moveLineMassEntryRecordService.setCutOff(moveLine);
-    moveLineMassEntryRecordService.refreshAnalyticMoveLineMassEntryList(moveLine);
+    moveLineMassEntryRecordService.setAnalyticMoveLineMassEntryList(moveLine);
 
     valuesMap.put("partner", moveLine.getPartner());
     valuesMap.put("cutOffStartDate", moveLine.getCutOffStartDate());
@@ -242,7 +242,7 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
       MoveLineMassEntry moveLine, Move move) throws AxelorException {
     Map<String, Object> valuesMap =
         moveLineGroupService.getAnalyticDistributionTemplateOnChangeValuesMap(moveLine, move);
-    moveLineMassEntryRecordService.refreshAnalyticMoveLineMassEntryList(moveLine);
+    moveLineMassEntryRecordService.setAnalyticMoveLineMassEntryList(moveLine);
 
     valuesMap.put("analyticMoveLineMassEntryList", moveLine.getAnalyticMoveLineMassEntryList());
 
@@ -254,7 +254,7 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
       MoveLineMassEntry moveLine) {
     Map<String, Object> valuesMap =
         moveLineGroupService.getAnalyticDistributionTemplateOnChangeLightValuesMap(moveLine);
-    moveLineMassEntryRecordService.refreshAnalyticMoveLineMassEntryList(moveLine);
+    moveLineMassEntryRecordService.setAnalyticMoveLineMassEntryList(moveLine);
 
     valuesMap.put("analyticMoveLineMassEntryList", moveLine.getAnalyticMoveLineMassEntryList());
 
@@ -266,7 +266,7 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
       throws AxelorException {
     Map<String, Object> valuesMap =
         moveLineGroupService.getAnalyticAxisOnChangeValuesMap(moveLine, move);
-    moveLineMassEntryRecordService.refreshAnalyticMoveLineMassEntryList(moveLine);
+    moveLineMassEntryRecordService.setAnalyticMoveLineMassEntryList(moveLine);
 
     valuesMap.put("analyticMoveLineMassEntryList", moveLine.getAnalyticMoveLineMassEntryList());
 
