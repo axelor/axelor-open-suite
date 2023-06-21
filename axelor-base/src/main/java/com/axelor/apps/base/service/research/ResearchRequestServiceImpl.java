@@ -67,7 +67,7 @@ public class ResearchRequestServiceImpl implements ResearchRequestService {
 
       } catch (ClassNotFoundException e) {
         throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get("Can not find object."));
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(BaseExceptionMessage.ERROR_MISSING_CANNOT_FIND_OBJECT));
       }
     }
     return researchResultLineList;
@@ -244,7 +244,7 @@ public class ResearchRequestServiceImpl implements ResearchRequestService {
                   () ->
                       new AxelorException(
                           TraceBackRepository.CATEGORY_INCONSISTENCY,
-                          I18n.get(BaseExceptionMessage.FIELD_NOT_FOUND)));
+                          String.format(I18n.get(BaseExceptionMessage.FIELD_NOT_FOUND),fields[0])));
 
       String fullName = metaField.getPackageName() + "." + metaField.getTypeName();
       Class<? extends AuditableModel> subObjectClass =
