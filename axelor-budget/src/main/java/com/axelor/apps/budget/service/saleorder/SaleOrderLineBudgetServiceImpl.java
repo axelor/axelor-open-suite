@@ -106,7 +106,7 @@ public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetServic
   }
 
   @Override
-  public String getBudgetDomain(SaleOrderLine saleOrderLine) {
+  public String getBudgetDomain(SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
     String query =
         "self.totalAmountExpected > 0 AND self.statusSelect = 2 AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect = 2";
     if (saleOrderLine != null) {
@@ -123,10 +123,13 @@ public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetServic
                     " AND self.budgetLevel.parentBudgetLevel.id = %d",
                     saleOrderLine.getGroupBudget().getId()));
       }
-      LocalDate date =
-          saleOrderLine.getSaleOrder().getOrderDate() != null
-              ? saleOrderLine.getSaleOrder().getOrderDate()
-              : saleOrderLine.getSaleOrder().getCreationDate();
+      LocalDate date = null;
+      if (saleOrder != null){
+        date =
+                saleOrderLine.getSaleOrder().getOrderDate() != null
+                        ? saleOrderLine.getSaleOrder().getOrderDate()
+                        : saleOrderLine.getSaleOrder().getCreationDate();
+      }
       if (date != null) {
         query =
             query.concat(

@@ -18,6 +18,8 @@
 
     <extend target="/">
       <attribute name="onSave" value="action-budget-purchase-order-group-on-save"/>
+      <attribute name="onNew" value="action-budget-group-purchase-order-on-new-actions"/>
+      <attribute name="onLoad" value="action-budget-purchase-order-group-onload"/>
       <attribute name="width" value="large"/>
     </extend>
 
@@ -64,6 +66,11 @@
       <attribute name="onClick" value="action-group-budget-purchase-order-request-onclick"/>
     </extend>
 
+    <extend target="//button[@name='validateBtn']">
+      <attribute name="onClick"
+        value="action-budget-group-purchase-order-on-validate-actions"/>
+    </extend>
+
     <extend target="//button[@name='cancelBtn']">
       <insert position="before">
         <button name="computeBudgetDistributionBtn" title="Compute budget distribution"
@@ -90,17 +97,10 @@
     <action name="action-purchase-order-budget-distribution-apply-to-all"/>
   </action-group>
 
-  <action-group id="budget-action-group-purchase-order-on-validate-actions"
-    name="action-group-purchase-order-on-validate-actions">
-    <action name="action-purchase-order-method-check-analytic-distribution-template"/>
-    <action name="action-purchase-order-validate-purchase-order-line"/>
-    <action name="action-purchase-order-validate-stock-location"/>
+  <action-group name="action-budget-group-purchase-order-on-validate-actions">
     <action name="action-method-purchase-order-validate-budget-distribution-list"
       if="__config__.app.getApp('budget')?.manageMultiBudget"/>
-    <action name="action-budget-purchase-order-group-get-and-validate-budget-balance"/>
-    <action name="save"/>
-    <action name="action-purchase-order-method-validate"/>
-    <action name="save"/>
+    <action name="action-group-purchase-order-on-validate-actions"/>
   </action-group>
 
   <action-group name="action-budget-purchase-order-group-on-save">
@@ -109,30 +109,8 @@
     <action name="action-budget-purchase-order-method-fill-budget-str"/>
   </action-group>
 
-  <action-group name="action-group-purchase-order-on-new-actions"
-    id="action-budget-group-purchase-order-on-new-actions">
-    <action name="action-purchase-order-record-new"/>
-    <action name="action-purchase-order-record-company-configuration"/>
-    <action name="action-purchase-order-method-get-stock-location"
-      if="!tradingName?.receiptDefaultStockLocation || !stockLocation"/>
-    <action name="action-purchase-order-method-get-from-stock-location"
-      if="__config__.app.isApp('supplychain')"/>
-    <action name="action-purchase-order-record-in-ati"/>
-    <action name="action-purchase-order-attrs-in-ati"/>
-    <action name="action-purchase-order-record-display-price"/>
-    <action name="action-contract-purchase-order-record-new"
-      if="__config__.app.isApp('contract')"/>
-    <action name="action-purchase-order-record-payment-mode"/>
-    <action name="action-attrs-po-hidden-bank-details"/>
-    <action name="action-purchase-order-method-fill-company-bank-details"/>
-    <action name="action-purchase-order-attrs-interco"/>
-    <action name="action-purchase-order-record-interco"/>
-    <action name="action-purchase-order-attrs-external-reference"/>
-    <action name="action-purchase-order-record-set-supplier-partner-from-partner"
-      if="_partner!=null"/>
-    <action name="action-group-purchase-order-partner-onchange" if="_partner!=null"/>
-    <action name="action-purchase-order-record-load-trading-name-config"/>
-    <action name="supplychain-action-create-shipment-cost-line-purchase"/>
+  <action-group name="action-budget-group-purchase-order-on-new-actions">
+    <action name="action-supplychain-group-purchase-order-on-new-actions"/>
     <action name="action-budget-purchase-order-record-load-budget-key-config"/>
   </action-group>
 
@@ -174,14 +152,8 @@
     <action name="save"/>
   </action-group>
 
-  <action-group name="action-group-purchase-order-on-load-actions"
-    id="action-budget-purchase-order-group-onload">
-    <action name="action-purchase-order-attrs-hide-contact-partner"/>
-    <action name="action-purchase-order-attrs-in-ati"/>
-    <action name="action-attrs-po-hidden-bank-details"/>
-    <action name="action-purchase-order-attrs-interco"/>
-    <action name="action-purchase-order-attrs-external-reference"/>
-    <action name="action-purchase-order-record-load-trading-name-config"/>
+  <action-group name="action-budget-purchase-order-group-onload">
+    <action name="action-group-purchase-order-on-load-actions"/>
     <action name="action-budget-purchase-order-record-load-budget-key-config"/>
     <action
       name="action-purchase-order-supplychain-method-update-budget-distribution-amount-available"
