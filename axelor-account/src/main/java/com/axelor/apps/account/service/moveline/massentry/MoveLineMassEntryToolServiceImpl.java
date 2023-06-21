@@ -33,6 +33,7 @@ public class MoveLineMassEntryToolServiceImpl implements MoveLineMassEntryToolSe
   @Override
   public void setPartnerChanges(MoveLineMassEntry moveLine, MoveLineMassEntry newMoveLine) {
     if (newMoveLine == null) {
+      moveLine.setAccount(null);
       moveLine.setPartner(null);
       moveLine.setPartnerId(null);
       moveLine.setPartnerSeq(null);

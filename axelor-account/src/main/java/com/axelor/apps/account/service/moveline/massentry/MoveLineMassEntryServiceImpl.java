@@ -96,6 +96,8 @@ public class MoveLineMassEntryServiceImpl implements MoveLineMassEntryService {
           && analyticDistributionTemplate != null) {
         moveLine.setAnalyticDistributionTemplate(analyticDistributionTemplate);
       }
+    } else {
+      moveLine.setAccount(null);
     }
     moveLine.setTaxLine(moveLoadDefaultConfigService.getTaxLine(move, moveLine, accountingAccount));
   }
