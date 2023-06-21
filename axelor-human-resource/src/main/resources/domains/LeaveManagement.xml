@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
@@ -13,8 +13,6 @@
     <date name="fromDate" title="From"/>
     <date name="toDate" title="To (included)"/>
     <string name="comments" title="Comments" large="true" multiline="true"/>
-    <many-to-one name="user" ref="com.axelor.auth.db.User" title="User" required="true"
-      column="user_id"/>
     <boolean name="counted"/>
   </entity>
 

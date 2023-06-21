@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <!-- Dashboard Manager -->
   <dashboard title="Dashboard" name="training.dashboard">
@@ -11,6 +11,10 @@
     <dashlet action="chart:chart.nb.training.hours.per.month" height="350"/>
   </dashboard>
 
+  <action-view name="hr.employee.training" title="Training"
+    model="com.axelor.apps.talent.db.TrainingRegister">
+    <view type="custom" name="my-trainings-custom-view"/>
+  </action-view>
 
 </object-views>
 

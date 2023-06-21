@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service;
 
@@ -26,10 +27,10 @@ import com.axelor.apps.account.db.repo.ReconcileGroupRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.moveline.MoveLineService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -77,10 +78,51 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
           reconcileGroup);
     }
 
-    reconcileGroup.setStatusSelect(ReconcileGroupRepository.STATUS_FINAL);
-    reconcileGroup.setDateOfLettering(appBaseService.getTodayDate(reconcileGroup.getCompany()));
+    reconcileGroup.setStatusSelect(ReconcileGroupRepository.STATUS_BALANCED);
+    reconcileGroup.setLetteringDateTime(
+        appBaseService.getTodayDateTime(reconcileGroup.getCompany()).toLocalDateTime());
 
     reconcileGroupSequenceService.fillCodeFromSequence(reconcileGroup);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void cancelProposal(ReconcileGroup reconcileGroup) {
+    if (reconcileGroup != null) {
+      if (reconcileGroup.getStatusSelect() == ReconcileGroupRepository.STATUS_PROPOSAL) {
+        remove(reconcileGroup);
+      } else if (reconcileGroup.getStatusSelect() == ReconcileGroupRepository.STATUS_PARTIAL) {
+        List<Reconcile> reconcileList =
+            reconcileRepository
+                .all()
+                .filter(
+                    "self.reconcileGroup.id = :reconcileGroupId AND self.statusSelect = :statusDraft")
+                .bind("reconcileGroupId", reconcileGroup.getId())
+                .bind("statusDraft", ReconcileRepository.STATUS_DRAFT)
+                .fetch();
+        for (Reconcile reconcile : reconcileList) {
+          reconcile.getCreditMoveLine().setReconcileGroup(null);
+          reconcile.getDebitMoveLine().setReconcileGroup(null);
+          reconcileGroup.setIsProposal(false);
+          reconcileRepository.remove(reconcile);
+        }
+      }
+    }
+  }
+
+  protected void remove(ReconcileGroup reconcileGroup) {
+    List<Reconcile> reconcileList =
+        reconcileRepository
+            .all()
+            .filter("self.reconcileGroup.id = :reconcileGroupId")
+            .bind("reconcileGroupId", reconcileGroup.getId())
+            .fetch();
+    for (Reconcile reconcile : reconcileList) {
+      reconcile.getDebitMoveLine().setReconcileGroup(null);
+      reconcile.getCreditMoveLine().setReconcileGroup(null);
+      reconcileRepository.remove(reconcile);
+    }
+    reconcileGroupRepository.remove(reconcileGroup);
   }
 
   @Override
@@ -237,16 +279,18 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
     int status = reconcileGroup.getStatusSelect();
     if (CollectionUtils.isNotEmpty(reconcileList)
         && isBalanced(reconcileList)
-        && status == ReconcileGroupRepository.STATUS_TEMPORARY) {
+        && status == ReconcileGroupRepository.STATUS_PARTIAL) {
       validate(reconcileGroup, reconcileList);
-    } else if (status == ReconcileGroupRepository.STATUS_FINAL) {
+    } else if ((CollectionUtils.isEmpty(reconcileList) || !isBalanced(reconcileList))
+        && status == ReconcileGroupRepository.STATUS_BALANCED) {
       // it is not balanced or the collection is empty.
       if (CollectionUtils.isEmpty(reconcileList)) {
         reconcileGroup.setStatusSelect(ReconcileGroupRepository.STATUS_UNLETTERED);
-        reconcileGroup.setUnletteringDate(appBaseService.getTodayDate(reconcileGroup.getCompany()));
+        reconcileGroup.setUnletteringDateTime(
+            appBaseService.getTodayDateTime(reconcileGroup.getCompany()).toLocalDateTime());
         reconcileGroupRepository.save(reconcileGroup);
       } else {
-        reconcileGroup.setStatusSelect(ReconcileGroupRepository.STATUS_TEMPORARY);
+        reconcileGroup.setStatusSelect(ReconcileGroupRepository.STATUS_PARTIAL);
         reconcileGroupSequenceService.fillCodeFromSequence(reconcileGroup);
       }
     }
@@ -273,17 +317,73 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
       reconcileService.unreconcile(reconcile);
     }
 
-    reconcileGroup.setUnletteringDate(appBaseService.getTodayDate(reconcileGroup.getCompany()));
+    reconcileGroup.setUnletteringDateTime(
+        appBaseService.getTodayDateTime(reconcileGroup.getCompany()).toLocalDateTime());
     reconcileGroup.setStatusSelect(ReconcileGroupRepository.STATUS_UNLETTERED);
     reconcileGroupRepository.save(reconcileGroup);
   }
 
-  protected List<Reconcile> getReconcileList(ReconcileGroup reconcileGroup) {
+  @Override
+  public List<Reconcile> getReconcileList(ReconcileGroup reconcileGroup) {
     return reconcileRepository
         .all()
         .filter("self.reconcileGroup.id = :reconcileGroupId AND self.statusSelect = :confirmed")
         .bind("reconcileGroupId", reconcileGroup.getId())
         .bind("confirmed", ReconcileRepository.STATUS_CONFIRMED)
         .fetch();
+  }
+
+  @Override
+  @Transactional
+  public void createProposal(List<MoveLine> moveLineList) {
+    ReconcileGroup reconcileGroup =
+        moveLineList.stream()
+            .filter(
+                moveLine ->
+                    moveLine.getReconcileGroup() != null
+                        && moveLine.getReconcileGroup().getStatusSelect()
+                            == ReconcileGroupRepository.STATUS_PARTIAL)
+            .map(MoveLine::getReconcileGroup)
+            .findFirst()
+            .orElse(null);
+    if (reconcileGroup == null) {
+      reconcileGroup = createReconcileGroup(moveLineList.get(0).getMove().getCompany());
+      reconcileGroup.setStatusSelect(ReconcileGroupRepository.STATUS_PROPOSAL);
+    }
+    reconcileGroup.setIsProposal(true);
+
+    for (MoveLine moveLine : moveLineList) {
+      if (moveLine.getReconcileGroup() == null) {
+        moveLine.setReconcileGroup(reconcileGroup);
+        moveLineRepository.save(moveLine);
+      }
+    }
+  }
+
+  @Override
+  @Transactional
+  public void removeDraftReconciles(ReconcileGroup reconcileGroup) {
+    List<Reconcile> reconcilesToRemove =
+        reconcileRepository
+            .all()
+            .filter("self.reconcileGroup.id = :reconcileGroupId AND self.statusSelect = :draft")
+            .bind("reconcileGroupId", reconcileGroup.getId())
+            .bind("draft", ReconcileRepository.STATUS_DRAFT)
+            .fetch();
+
+    for (Reconcile reconcile : reconcilesToRemove) {
+      reconcileRepository.remove(reconcile);
+    }
+  }
+
+  @Override
+  public void validateProposal(ReconcileGroup reconcileGroup) throws AxelorException {
+    if (reconcileGroup != null && reconcileGroup.getIsProposal()) {
+      letter(reconcileGroup);
+      reconcileGroup = reconcileGroupRepository.find(reconcileGroup.getId());
+      reconcileGroup.setIsProposal(false);
+      removeDraftReconciles(reconcileGroup);
+      updateStatus(reconcileGroup);
+    }
   }
 }

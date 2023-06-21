@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <form name="sale-order-form" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder"
     id="supplychain-sale-order-form" extension="true">
@@ -47,11 +47,13 @@
   </form>
 
   <form name="sale-order-form-client" id="supplychain-sale-order-form-client"
-    title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" cols="4"
+    title="Sale order" model="com.axelor.apps.sale.db.SaleOrder"
     onNew="action-group-supplychain-saleorder-onnew"
     onSave="save,action-sale-order-method-compute,save"
     onLoad="action-group-supplychain-saleorder-onload" width="large">
-    <panel-include view="sale-order-form-client" from="axelor-sale"/>
+    <panel name="mainPanel" colSpan="4">
+      <panel-include view="sale-order-form-client" from="axelor-sale"/>
+    </panel>
   </form>
 
   <form name="sale-order-template-form" title="Template"
@@ -247,13 +249,13 @@
   <action-attrs name="action-sale-order-attrs-set-stock-location-domain">
     <attribute name="domain" for="stockLocation"
       if="!tradingName?.stockLocationList &amp;&amp; !directOrderLocation"
-      expr="eval: &quot;self.company = :company and self.typeSelect != 3 and self.usableOnSaleOrder = true and self.directOrderLocation = false&quot;"/>
+      expr="eval: &quot;self.company = :company and self.typeSelect != 3 and self.usableOnSaleOrder = true&quot;"/>
     <attribute name="domain" for="stockLocation"
       if="!tradingName?.stockLocationList &amp;&amp; directOrderLocation"
       expr="eval: &quot;self.typeSelect != 3 and self.usableOnSaleOrder = true and self.directOrderLocation = true&quot;"/>
     <attribute name="domain" for="stockLocation"
       if="tradingName?.stockLocationList &amp;&amp; !directOrderLocation"
-      expr="eval: &quot;self.company = :company AND ((self.typeSelect != 3 and self.usableOnSaleOrder = true AND self.directOrderLocation = false) OR self.id IN (${tradingName?.stockLocationList?.collect{it.id+[0]}.join(',')}))&quot;"/>
+      expr="eval: &quot;self.company = :company AND ((self.typeSelect != 3 and self.usableOnSaleOrder = true) OR self.id IN (${tradingName?.stockLocationList?.collect{it.id+[0]}.join(',')}))&quot;"/>
     <attribute name="domain" for="stockLocation"
       if="tradingName?.stockLocationList &amp;&amp; directOrderLocation"
       expr="eval: &quot;(self.typeSelect != 3 and self.usableOnSaleOrder = true and self.directOrderLocation = true) OR self.id IN (${tradingName?.stockLocationList?.collect{it.id+[0]}.join(',')})&quot;"/>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="training-skill-grid" title="Training skills"
     model="com.axelor.apps.talent.db.TrainingSkill">
@@ -16,9 +16,20 @@
     <panel name="mainPanel">
       <field name="skill"/>
       <field name="skill.typeSelect"/>
-      <field name="graduationDate"/>
+      <field name="graduationDate"
+        onChange="action-training-skills-record-set-end-of-validity-date"/>
       <field name="endOfValidityDate"/>
     </panel>
   </form>
+
+  <action-record name="action-training-skills-record-set-end-of-validity-date"
+    model="com.axelor.apps.talent.db.TrainingSkill">
+    <field name="endOfValidityDate"
+      if="skill?.validityDuration?.typeSelect == __repo__(Duration).TYPE_MONTH"
+      expr="eval: graduationDate?.plusMonths(skill?.validityDuration?.value)"/>
+    <field name="endOfValidityDate"
+      if="skill?.validityDuration?.typeSelect == __repo__(Duration).TYPE_DAY"
+      expr="eval: graduationDate?.plusDays(skill?.validityDuration?.value)"/>
+  </action-record>
 
 </object-views>

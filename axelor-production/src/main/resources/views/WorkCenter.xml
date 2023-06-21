@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="work-center-grid" title="Work centers"
     model="com.axelor.apps.production.db.WorkCenter">
@@ -34,6 +34,7 @@
       <field name="workCenterTypeSelect" required="true"
         onChange="action-work-center-record-type-select-onchange"/>
       <field name="machine"
+        domain="self.id NOT IN (SELECT w.machine.id FROM WorkCenter w where w.machine is not null)"
         requiredIf="workCenterTypeSelect == 2 || workCenterTypeSelect == 3"
         showIf="workCenterTypeSelect == 2 || workCenterTypeSelect == 3" form-view="machine-form"
         grid-view="machine-grid"/>

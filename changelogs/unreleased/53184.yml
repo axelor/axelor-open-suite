@@ -1,8 +1,0 @@
----
-title: "Payment: cancelling a payment from an Invoice or an Expense must go through the reverse of the move"
-type: fix
-description: |
-  When registering a payment in an invoice or an expense, the move generated will often be in Daybook mode.
-  So the cancel button of the payment will indicate to the user that cancelling this Invoice/Expense payment must 
-  be done by reversing the corresponding move.
-  If the move generated from the payment is not accounted, it will be deleted, and the Invoice/Expense payment will be cancelled.

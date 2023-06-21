@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.hr.service.expense;
 
@@ -47,19 +48,25 @@ import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.db.repo.YearBaseRepository;
 import com.axelor.apps.base.service.BankDetailsService;
+import com.axelor.apps.base.service.CompanyDateService;
+import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.config.CompanyConfigService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.EmployeeAdvanceUsage;
 import com.axelor.apps.hr.db.EmployeeVehicle;
@@ -75,15 +82,13 @@ import com.axelor.apps.hr.service.KilometricService;
 import com.axelor.apps.hr.service.bankorder.BankOrderCreateServiceHr;
 import com.axelor.apps.hr.service.config.AccountConfigHRService;
 import com.axelor.apps.hr.service.config.HRConfigService;
-import com.axelor.apps.message.db.Message;
-import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.message.db.Message;
+import com.axelor.message.service.TemplateMessageService;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -91,11 +96,16 @@ import com.google.inject.persist.Transactional;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import javax.mail.MessagingException;
+import java.util.Set;
+import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 import wslite.json.JSONException;
 
 @Singleton
@@ -118,6 +128,10 @@ public class ExpenseServiceImpl implements ExpenseService {
   protected KilometricService kilometricService;
   protected PeriodRepository periodRepository;
   protected BankDetailsService bankDetailsService;
+  protected CompanyConfigService companyConfigService;
+  protected CurrencyService currencyService;
+  protected ExpenseLineRepository expenseLineRepository;
+  protected CompanyDateService companyDateService;
 
   @Inject
   public ExpenseServiceImpl(
@@ -137,7 +151,11 @@ public class ExpenseServiceImpl implements ExpenseService {
       PeriodRepository periodRepository,
       MoveLineConsolidateService moveLineConsolidateService,
       KilometricService kilometricService,
-      BankDetailsService bankDetailsService) {
+      BankDetailsService bankDetailsService,
+      CompanyConfigService companyConfigService,
+      CurrencyService currencyService,
+      ExpenseLineRepository expenseLineRepository,
+      CompanyDateService companyDateService) {
 
     this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;
@@ -156,6 +174,10 @@ public class ExpenseServiceImpl implements ExpenseService {
     this.moveLineConsolidateService = moveLineConsolidateService;
     this.kilometricService = kilometricService;
     this.bankDetailsService = bankDetailsService;
+    this.companyConfigService = companyConfigService;
+    this.currencyService = currencyService;
+    this.expenseLineRepository = expenseLineRepository;
+    this.companyDateService = companyDateService;
   }
 
   @Override
@@ -243,16 +265,54 @@ public class ExpenseServiceImpl implements ExpenseService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void confirm(Expense expense) throws AxelorException {
+    Employee employee = expense.getEmployee();
+    Set<String> invitedDates = new HashSet<>();
+    DateTimeFormatter dateFormat = companyDateService.getDateFormat(expense.getCompany());
 
+    for (ExpenseLine expenseLine : expense.getGeneralExpenseLineList()) {
+      LocalDate expenseDate = expenseLine.getExpenseDate();
+      if (!expenseLine.getExpenseProduct().getDeductLunchVoucher()) {
+        continue;
+      }
+      if (expenseLineRepository
+              .all()
+              .filter(
+                  "self.expenseDate = :date AND :employee MEMBER OF self.invitedCollaboratorSet AND self.id != :id")
+              .bind("date", expenseDate)
+              .bind("employee", employee)
+              .bind("id", expenseLine.getId())
+              .fetchOne()
+          != null) {
+        invitedDates.add(expenseDate.format(dateFormat));
+      }
+    }
+
+    if (!invitedDates.isEmpty()) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          formatMessage(
+              I18n.get(HumanResourceExceptionMessage.ALREADY_INVITED_TO_RESTAURANT),
+              new ArrayList<>(invitedDates)));
+    }
     expense.setStatusSelect(ExpenseRepository.STATUS_CONFIRMED);
-    expense.setSentDate(appAccountService.getTodayDate(expense.getCompany()));
+    expense.setSentDateTime(
+        appAccountService.getTodayDateTime(expense.getCompany()).toLocalDateTime());
     expenseRepository.save(expense);
+  }
+
+  protected String formatMessage(String title, List<String> messages) {
+    StringBuilder sb = new StringBuilder();
+    sb.append(String.format("<b>%s</b><br/>", title));
+    sb.append(
+        messages.stream()
+            .map(item -> String.format("<li>%s</li>", item))
+            .collect(Collectors.joining("", "<ul>", "</ul>")));
+    return sb.toString();
   }
 
   @Override
   public Message sendConfirmationEmail(Expense expense)
-      throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException, JSONException {
+      throws AxelorException, ClassNotFoundException, IOException, JSONException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(expense.getCompany());
 
@@ -290,7 +350,8 @@ public class ExpenseServiceImpl implements ExpenseService {
     Beans.get(EmployeeAdvanceService.class).fillExpenseWithAdvances(expense);
     expense.setStatusSelect(ExpenseRepository.STATUS_VALIDATED);
     expense.setValidatedBy(AuthUtils.getUser());
-    expense.setValidationDate(appAccountService.getTodayDate(expense.getCompany()));
+    expense.setValidationDateTime(
+        appAccountService.getTodayDateTime(expense.getCompany()).toLocalDateTime());
 
     if (expense.getEmployee().getContactPartner() != null) {
       PaymentMode paymentMode = expense.getEmployee().getContactPartner().getOutPaymentMode();
@@ -301,8 +362,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
   @Override
   public Message sendValidationEmail(Expense expense)
-      throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException, JSONException {
+      throws AxelorException, ClassNotFoundException, IOException, JSONException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(expense.getCompany());
 
@@ -321,14 +381,14 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     expense.setStatusSelect(ExpenseRepository.STATUS_REFUSED);
     expense.setRefusedBy(AuthUtils.getUser());
-    expense.setRefusalDate(appAccountService.getTodayDate(expense.getCompany()));
+    expense.setRefusalDateTime(
+        appAccountService.getTodayDateTime(expense.getCompany()).toLocalDateTime());
     expenseRepository.save(expense);
   }
 
   @Override
   public Message sendRefusalEmail(Expense expense)
-      throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException, JSONException {
+      throws AxelorException, ClassNotFoundException, IOException, JSONException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(expense.getCompany());
 
@@ -389,7 +449,7 @@ public class ExpenseServiceImpl implements ExpenseService {
         moveCreateService.createMove(
             accountConfigService.getExpenseJournal(accountConfig),
             company,
-            null,
+            expense.getCurrency(),
             partner,
             moveDate,
             moveDate,
@@ -405,20 +465,6 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     int moveLineCounter = 1;
 
-    Account employeeAccount = accountingSituationService.getEmployeeAccount(partner, company);
-    moveLines.add(
-        moveLineCreateService.createMoveLine(
-            move,
-            partner,
-            employeeAccount,
-            expense.getInTaxTotal(),
-            false,
-            moveDate,
-            moveDate,
-            moveLineCounter++,
-            expense.getExpenseSeq(),
-            expense.getFullName()));
-
     List<ExpenseLine> expenseLineList = getExpenseLineList(expense);
     for (ExpenseLine expenseLine : expenseLineList) {
       moveLines.add(
@@ -426,30 +472,77 @@ public class ExpenseServiceImpl implements ExpenseService {
       moveLineCounter++;
     }
 
-    moveLineConsolidateService.consolidateMoveLines(moveLines);
-    Account productAccount = accountConfigService.getExpenseTaxAccount(accountConfig);
-
     BigDecimal taxTotal =
         expenseLineList.stream()
             .map(ExpenseLine::getTotalTax)
             .reduce(BigDecimal::add)
             .orElse(BigDecimal.ZERO);
 
+    moveLineConsolidateService.consolidateMoveLines(moveLines);
+    Account productAccount = accountConfigService.getExpenseTaxAccount(accountConfig);
+
     if (taxTotal.signum() != 0) {
-      MoveLine moveLine =
-          moveLineCreateService.createMoveLine(
-              move,
-              partner,
-              productAccount,
-              taxTotal,
-              true,
-              moveDate,
-              moveDate,
-              moveLineCounter,
-              expense.getExpenseSeq(),
-              expense.getFullName());
-      moveLines.add(moveLine);
+      Map<LocalDate, List<ExpenseLine>> expenseLinesByExpenseDate =
+          expenseLineList.stream().collect(Collectors.groupingBy(ExpenseLine::getExpenseDate));
+
+      Map<LocalDate, BigDecimal> expenseLinesTotalTax =
+          expenseLinesByExpenseDate.entrySet().stream()
+              .collect(
+                  Collectors.toMap(
+                      Map.Entry::getKey,
+                      entry ->
+                          entry.getValue().stream()
+                              .map(ExpenseLine::getTotalTax)
+                              .reduce(BigDecimal.ZERO, BigDecimal::add)));
+
+      for (Map.Entry<LocalDate, BigDecimal> entry : expenseLinesTotalTax.entrySet()) {
+        Currency currency = move.getCurrency();
+        Currency companyCurrency = companyConfigService.getCompanyCurrency(move.getCompany());
+
+        BigDecimal currencyRate =
+            currencyService.getCurrencyConversionRate(currency, companyCurrency, entry.getKey());
+
+        BigDecimal amountConvertedInCompanyCurrency =
+            currencyService.getAmountCurrencyConvertedUsingExchangeRate(
+                entry.getValue(), currencyRate);
+
+        moveLines.add(
+            moveLineCreateService.createMoveLine(
+                move,
+                partner,
+                productAccount,
+                entry.getValue(),
+                amountConvertedInCompanyCurrency,
+                currencyRate,
+                true,
+                moveDate,
+                moveDate,
+                entry.getKey(),
+                moveLineCounter++,
+                expense.getExpenseSeq(),
+                expense.getFullName()));
+      }
     }
+
+    BigDecimal totalMoveLines =
+        moveLines.stream().map(MoveLine::getDebit).reduce(BigDecimal::add).orElse(BigDecimal.ZERO);
+
+    Account employeeAccount = accountingSituationService.getEmployeeAccount(partner, company);
+    moveLines.add(
+        moveLineCreateService.createMoveLine(
+            move,
+            partner,
+            employeeAccount,
+            totalMoveLines,
+            totalMoveLines,
+            BigDecimal.ONE,
+            false,
+            moveDate,
+            moveDate,
+            moveDate,
+            moveLineCounter++,
+            expense.getExpenseSeq(),
+            expense.getFullName()));
 
     move.getMoveLineList().addAll(moveLines);
 
@@ -495,21 +588,41 @@ public class ExpenseServiceImpl implements ExpenseService {
           company.getName());
     }
 
+    Currency currency = move.getCurrency();
+    Currency companyCurrency = companyConfigService.getCompanyCurrency(move.getCompany());
+
+    BigDecimal currencyRate =
+        currencyService.getCurrencyConversionRate(
+            currency, companyCurrency, expenseLine.getExpenseDate());
+
+    BigDecimal amountConvertedInCompanyCurrency =
+        currencyService.getAmountCurrencyConvertedUsingExchangeRate(
+            expenseLine.getUntaxedAmount(), currencyRate);
+
     MoveLine moveLine =
         moveLineCreateService.createMoveLine(
             move,
             partner,
             productAccount,
             expenseLine.getUntaxedAmount(),
+            amountConvertedInCompanyCurrency,
+            currencyRate,
             true,
             moveDate,
             moveDate,
+            expenseLine.getExpenseDate(),
             count,
             expense.getExpenseSeq(),
             expenseLine.getComments() != null
                 ? expenseLine.getComments().replaceAll("(\r\n|\n\r|\r|\n)", " ")
                 : "");
+
     moveLine.setAnalyticDistributionTemplate(expenseLine.getAnalyticDistributionTemplate());
+    List<AnalyticMoveLine> analyticMoveLineList =
+        CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())
+            ? new ArrayList<>()
+            : new ArrayList<>(moveLine.getAnalyticMoveLineList());
+    moveLine.clearAnalyticMoveLineList();
     expenseLine
         .getAnalyticMoveLineList()
         .forEach(
@@ -517,6 +630,9 @@ public class ExpenseServiceImpl implements ExpenseService {
                 moveLine.addAnalyticMoveLineListItem(
                     analyticMoveLineGenerateRealService.createFromForecast(
                         analyticMoveLine, moveLine)));
+    if (CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())) {
+      moveLine.setAnalyticMoveLineList(analyticMoveLineList);
+    }
     return moveLine;
   }
 
@@ -548,8 +664,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
   @Override
   public Message sendCancellationEmail(Expense expense)
-      throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, MessagingException, IOException, JSONException {
+      throws AxelorException, ClassNotFoundException, IOException, JSONException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(expense.getCompany());
 
@@ -735,7 +850,7 @@ public class ExpenseServiceImpl implements ExpenseService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public void resetExpensePaymentAfterCancellation(Expense expense) {
     expense.setPaymentStatusSelect(InvoicePaymentRepository.STATUS_CANCELED);
     expense.setStatusSelect(ExpenseRepository.STATUS_VALIDATED);
@@ -919,7 +1034,7 @@ public class ExpenseServiceImpl implements ExpenseService {
     }
   }
 
-  private void setExpenseSeq(Expense expense) throws AxelorException {
+  protected void setExpenseSeq(Expense expense) throws AxelorException {
     if (!Beans.get(SequenceService.class).isEmptyOrDraftSequenceNumber(expense.getExpenseSeq())) {
       return;
     }
@@ -930,7 +1045,8 @@ public class ExpenseServiceImpl implements ExpenseService {
     if (sequence != null) {
       expense.setExpenseSeq(
           Beans.get(SequenceService.class)
-              .getSequenceNumber(sequence, expense.getSentDate(), Expense.class, "expenseSeq"));
+              .getSequenceNumber(
+                  sequence, expense.getSentDateTime().toLocalDate(), Expense.class, "expenseSeq"));
       if (expense.getExpenseSeq() != null) {
         return;
       }

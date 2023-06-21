@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="PaymentVoucher" sequential="true" lang="java">
+  <entity name="PaymentVoucher" sequential="true">
 
     <string name="ref" title="Reference" namecolumn="true" required="false"/>
     <many-to-one name="partner" title="Partner" ref="com.axelor.apps.base.db.Partner"
@@ -79,12 +79,15 @@
     <string name="chequeNumber"/>
     <string name="chequeBank"/>
     <string name="chequeOwner"/>
-    <date name="chequeDate" title="Bank deposit date"/>
+    <date name="chequeDate" title="Date of the deposit slip"/>
     <date name="chequeDueDate"/>
     <boolean name="bankEntryGenWithoutValEntryCollectionOk"
       title="Generation of bank entry without value entry at collection"/>
     <many-to-one name="depositSlip" ref="com.axelor.apps.account.db.DepositSlip"
       copy="false"/>
+
+    <many-to-one name="depositBankDetails" ref="com.axelor.apps.base.db.BankDetails"
+      title="Deposit bank details"/>
 
     <unique-constraint columns="ref,company"/>
     <unique-constraint columns="receiptNo,company"/>

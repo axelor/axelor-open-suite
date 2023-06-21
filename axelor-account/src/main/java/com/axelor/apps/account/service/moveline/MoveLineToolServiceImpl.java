@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service.moveline;
 
@@ -25,13 +26,14 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.rpc.Context;
 import com.google.common.collect.Lists;
@@ -42,6 +44,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import javax.persistence.Query;
 
@@ -321,7 +324,7 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
     return moveLine == null
         || moveLine.getAccount() == null
         || !moveLine.getAccount().getManageCutOffPeriod()
-        || (moveLine.getCutOffStartDate() != null && moveLine.getCutOffEndDate() != null);
+        || this.isCutOffActive(moveLine);
   }
 
   @Override
@@ -364,7 +367,7 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public void setAmountRemainingReconciliableMoveLines(Context context) {
     Long accountId = Long.valueOf(context.get("_accountId").toString());
     String startDate = (String) context.get("startDate");
@@ -381,5 +384,18 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
       update.setParameter("startDate", LocalDate.parse(startDate));
     }
     update.executeUpdate();
+  }
+
+  @Override
+  public boolean isCutOffActive(MoveLine moveLine) {
+    List<Integer> functionalOriginList =
+        Arrays.asList(
+            MoveRepository.FUNCTIONAL_ORIGIN_OPENING,
+            MoveRepository.FUNCTIONAL_ORIGIN_CLOSURE,
+            MoveRepository.FUNCTIONAL_ORIGIN_CUT_OFF);
+
+    return moveLine.getCutOffStartDate() != null
+        && moveLine.getCutOffEndDate() != null
+        && !functionalOriginList.contains(moveLine.getMove().getFunctionalOriginSelect());
   }
 }

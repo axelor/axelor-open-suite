@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,14 +14,16 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.crm.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.SequenceRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.user.UserService;
@@ -32,15 +35,15 @@ import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.apps.crm.db.repo.LeadStatusRepository;
 import com.axelor.apps.crm.exception.CrmExceptionMessage;
 import com.axelor.apps.crm.service.app.AppCrmService;
-import com.axelor.apps.message.db.repo.MultiRelatedRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
+import com.axelor.message.db.repo.MultiRelatedRepository;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -212,7 +215,7 @@ public class LeadServiceImpl implements LeadService {
     }
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void loseLead(Lead lead, LostReason lostReason, String lostReasonStr)
       throws AxelorException {
     LeadStatus leadStatus = lead.getLeadStatus();
@@ -247,7 +250,28 @@ public class LeadServiceImpl implements LeadService {
   }
 
   @Override
-  public LeadStatus getDefaultLeadStatus() {
-    return leadStatusRepo.getDefaultStatus();
+  public LeadStatus getDefaultLeadStatus() throws AxelorException {
+    return appCrmService.getLeadDefaultStatus();
+  }
+
+  @Override
+  public List<Lead> getLeadsWithSameDomainName(Lead lead) {
+    List<Lead> leadsWithSameDomainNameList = new ArrayList<>();
+    if (lead.getEmailAddress() != null) {
+      String leadDomainNameStr = lead.getEmailAddress().getName().split("@")[1].replace("]", "");
+
+      List<Lead> leadsWithSameDomainNameListTemp =
+          leadRepo
+              .all()
+              .filter(
+                  "self.emailAddress is not null and self.emailAddress.name like :domainName and self.id !=  :leadId")
+              .bind("domainName", "%" + leadDomainNameStr + "%")
+              .bind("leadId", lead.getId())
+              .fetch();
+      if (ObjectUtils.notEmpty(leadsWithSameDomainNameListTemp)) {
+        leadsWithSameDomainNameList.addAll(leadsWithSameDomainNameListTemp);
+      }
+    }
+    return leadsWithSameDomainNameList;
   }
 }

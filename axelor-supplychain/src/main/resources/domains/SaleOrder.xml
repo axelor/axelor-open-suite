@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="sale" package="com.axelor.apps.sale.db"/>
 
-  <entity name="SaleOrder" lang="java">
+  <entity name="SaleOrder">
 
     <many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode"
       title="Payment mode"/>
@@ -14,6 +14,8 @@
 
     <integer name="deliveryState" title="Delivery State"
       selection="sale.order.delivery.state" readonly="true" default="1"/>
+    <integer name="invoicingState" title="Invoicing State"
+      selection="supplychain.sale.order.invoicing.state.select" readonly="true" default="1"/>
 
     <many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation"
       title="Stock location"/>
@@ -75,6 +77,11 @@
                 public static final int DELIVERY_STATE_NOT_DELIVERED = 1;
    				public static final int DELIVERY_STATE_PARTIALLY_DELIVERED = 2;
    				public static final int DELIVERY_STATE_DELIVERED = 3;
+
+   				// INVOICING STATE SELECT
+                public static final int INVOICING_STATE_NOT_INVOICED = 1;
+   				public static final int INVOICING_STATE_PARTIALLY_INVOICED = 2;
+   				public static final int INVOICING_STATE_INVOICED = 3;
             ]]>
     </extra-code>
 

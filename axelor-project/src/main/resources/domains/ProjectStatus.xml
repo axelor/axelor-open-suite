@@ -1,29 +1,22 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="project" package="com.axelor.apps.project.db"/>
 
   <entity name="ProjectStatus">
+
     <integer name="sequence" title="Sequence"/>
     <string name="name" translatable="true"/>
     <boolean name="isDefaultCompleted" title="Default completed"/>
     <boolean name="isCompleted" title="Completed ?"/>
-    <integer name="relatedToSelect" title="Related to"
-      selection="project.status.related.to.select"/>
     <finder-method name="getDefaultCompleted" using=""
       filter="self.isDefaultCompleted = true"/>
     <finder-method name="getCompleted" using=""
       filter="self.isCompleted = true AND self.isDefaultCompleted = false"/>
     <finder-method name="getNotCompleted" using="" filter="self.isCompleted = false"/>
 
-    <extra-code>
-   		 <![CDATA[
-   			public static final int PROJECT_STATUS_PROJECT = 1;
-   			public static final int PROJECT_STATUS_TASK = 2;
-   		 ]]>
-    </extra-code>
   </entity>
 
 </domain-models>

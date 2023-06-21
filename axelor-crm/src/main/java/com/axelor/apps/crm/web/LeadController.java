@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,23 +14,21 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.crm.web;
 
 import com.axelor.apps.ReportFactory;
-import com.axelor.apps.base.db.ImportConfiguration;
-import com.axelor.apps.base.db.repo.ImportConfigurationRepository;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.MapService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.apps.crm.db.report.IReport;
 import com.axelor.apps.crm.exception.CrmExceptionMessage;
 import com.axelor.apps.crm.service.LeadService;
 import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.csv.script.ImportLeadConfiguration;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -105,11 +104,11 @@ public class LeadController {
       response.setView(ActionView.define(title).add("html", fileLink).map());
 
     } else {
-      response.setFlash(I18n.get(CrmExceptionMessage.LEAD_1));
+      response.setInfo(I18n.get(CrmExceptionMessage.LEAD_1));
     }
   }
 
-  private String getTimezone(Lead lead) {
+  protected String getTimezone(Lead lead) {
     if (lead.getUser() == null || lead.getUser().getActiveCompany() == null) {
       return null;
     }
@@ -136,32 +135,6 @@ public class LeadController {
             .getSocialNetworkUrl(lead.getName(), lead.getFirstName(), lead.getEnterpriseName());
     response.setAttr("googleLabel", "title", urlMap.get("google"));
     response.setAttr("linkedinLabel", "title", urlMap.get("linkedin"));
-  }
-
-  public void getLeadImportConfig(ActionRequest request, ActionResponse response) {
-
-    ImportConfiguration leadImportConfig =
-        Beans.get(ImportConfigurationRepository.class)
-            .all()
-            .filter("self.bindMetaFile.fileName = ?1", ImportLeadConfiguration.IMPORT_LEAD_CONFIG)
-            .fetchOne();
-
-    logger.debug("ImportConfig for lead: {}", leadImportConfig);
-
-    if (leadImportConfig == null) {
-      response.setFlash(I18n.get(CrmExceptionMessage.LEAD_4));
-    } else {
-      response.setView(
-          ActionView.define(I18n.get(CrmExceptionMessage.LEAD_5))
-              .model("com.axelor.apps.base.db.ImportConfiguration")
-              .add("form", "import-configuration-form")
-              .param("popup", "reload")
-              .param("forceEdit", "true")
-              .param("popup-save", "false")
-              .param("show-toolbar", "false")
-              .context("_showRecord", leadImportConfig.getId().toString())
-              .map());
-    }
   }
 
   /**
@@ -209,6 +182,35 @@ public class LeadController {
           .assignToMeMultipleLead(
               leadRepo.all().filter("id in ?1", request.getContext().get("_ids")).fetch());
       response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void viewLeadWithSameDomainName(ActionRequest request, ActionResponse response) {
+    try {
+      Lead lead = request.getContext().asType(Lead.class);
+      lead = Beans.get(LeadRepository.class).find(lead.getId());
+
+      List<Lead> leadList = Beans.get(LeadService.class).getLeadsWithSameDomainName(lead);
+
+      if (ObjectUtils.notEmpty(leadList)) {
+        response.setView(null);
+
+        response.setView(
+            ActionView.define(I18n.get("Lead with same domain name"))
+                .model(Lead.class.getName())
+                .add("form", "lead-with-same-domain-name-form")
+                .param("popup", "true")
+                .param("show-toolbar", "false")
+                .param("show-confirm", "true")
+                .param("popup-save", "false")
+                .param("forceEdit", "false")
+                .context("_leadList", leadList)
+                .context("_showRecord", lead.getId())
+                .map());
+      }
+
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

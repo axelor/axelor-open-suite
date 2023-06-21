@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="project-grid" title="Projects" model="com.axelor.apps.project.db.Project"
     orderBy="projectStatus, name">
@@ -14,6 +14,8 @@
       </menu>
     </menubar>
     <field name="name"/>
+    <field name="company" form-view="company-form" grid-view="company-grid"
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="code"/>
     <field name="parentProject"/>
     <field name="clientPartner"/>
@@ -36,13 +38,6 @@
     onLoad="action-project-on-load-group" onNew="action-project-group-on-new-project"
     onSave="action-project-method-check-resource-availibility">
     <menubar>
-      <menu name="projectReportsMenu" title="Reports" showTitle="true" icon="fa-files-o">
-        <item if-module="axelor-business-project" name="planificationAndCostsItem"
-          title="Planification and costs" action="save,action-project-method-print-planif-and-cost"/>
-        <item if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
-          name="financialReportItem" title="Financial Report" showIf="isBusinessProject"
-          action="save,action-project-method-print-project"/>
-      </menu>
       <menu name="taskMenu" title="Tasks" showTitle="true" icon="fa-tasks">
         <item name="myOpenTasks" title="My open tasks"
           action="save,action-project-method-my-open-tasks" showIf="id &amp;&amp; isShowStatus"/>
@@ -103,11 +98,10 @@
           <editor x-show-titles="false">
             <panel name="seq" colSpan="3">
               <field name="code" showTitle="false" colSpan="12" readonly="true"
-                if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project')?.generateProjectSequence"
-                css="label-bold bold large" x-bind="{{code|unaccent|uppercase}}"
-                if-module="axelor-business-project"/>
+                if="__config__.app.getApp('project')?.generateProjectSequence"
+                css="label-bold bold large" x-bind="{{code|unaccent|uppercase}}"/>
               <field name="code" showTitle="false" colSpan="12" required="true"
-                if="!(__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project')?.generateProjectSequence)"
+                if="!__config__.app.getApp('project')?.generateProjectSequence"
                 css="label-bold bold large" x-bind="{{code|unaccent|uppercase}}"/>
             </panel>
             <field name="name" showTitle="false" colSpan="6" required="true"
@@ -119,8 +113,7 @@
     <panel name="detailsPanel">
       <panel name="generalInfoPanel" colSpan="12">
         <field name="company" form-view="company-form" grid-view="company-grid" colSpan="3"
-          canEdit="false" if="__config__.app.isApp('business-project')"
-          if-module="axelor-business-project"/>
+          canEdit="false" if-module="axelor-business-project"/>
         <field name="clientPartner"
           domain="self.isCustomer = true AND :company member of self.companySet"
           onChange="action-project-method-get-partner-data" requiredIf="isBusinessProject"
@@ -174,12 +167,6 @@
       </panel>
       <panel title="Planning" name="planningPanel" colSpan="12" hideIf="!isShowPlanning"
         if="__config__.app.isApp('employee')" if-module="axelor-human-resource">
-        <field name="totalPlannedHrs" readonly="true">
-          <viewer><![CDATA[
-		                   	<span>{{$fmt('totalPlannedHrs')}} </span><span x-translate>hours</span>
-		       			]]></viewer>
-        </field>
-        <spacer name="totalPlannedHrsSpacer" colSpan="6"/>
         <button name="addMultipleLinesBtn" title="Add multiple lines"
           css="btn-custom text-left"
           onClick="save,action-project-view-add-multiple-project-planning-time" colSpan="4"
@@ -204,7 +191,6 @@
       </panel>
       <panel title="Log Times" name="logTimesPanel" if="__config__.app.isApp('timesheet')"
         if-module="axelor-human-resource" showIf="isShowTimeSpent">
-        <field name="timeSpent" title="Time Spent" readonly="true" colSpan="3"/>
         <panel-dashlet name="validatedTimesheetsPanel"
           if="__config__.app.getApp('timesheet')?.needValidation"
           action="action-project-dashlet-validated-timesheet-lines"
@@ -473,12 +459,13 @@
         <field name="sequence" hidden="true"/>
         <field name="imputable" colSpan="4" widget="boolean-switch"
           if="__config__.app.isApp('employee') &amp;&amp; __config__.app.isApp('timesheet')"
-          if-module="axelor-human-resource"/>
+          if-module="axelor-human-resource"
+          onChange="action-project-record-reset-value-is-show-timespent,action-project-record-is-show-timespent-reset-values"/>
         <panel name="fieldsToDisplay" title="Fields to display" colSpan="12">
           <field name="isShowStatus" colSpan="4" widget="inline-checkbox"
             onChange="action-project-record-status-reset-values"/>
           <field name="projectTaskStatusSet" widget="TagSelect" colSpan="12"
-            showIf="isShowStatus" requiredIf="isShowStatus" domain="self.relatedToSelect = 2"/>
+            showIf="isShowStatus" requiredIf="isShowStatus"/>
           <field name="isShowPriority" colSpan="4" widget="inline-checkbox"
             onChange="action-project-record-priority-reset-values"/>
           <field name="projectTaskPrioritySet" widget="TagSelect" colSpan="12"
@@ -493,7 +480,7 @@
           <field name="isShowFrequency" colSpan="4" widget="inline-checkbox"/>
           <field name="isShowTimeSpent" colSpan="4" widget="inline-checkbox"
             onChange="action-project-record-is-show-timespent-reset-values"
-            if="__config__.app.isApp('timesheet')"/>
+            if="__config__.app.isApp('timesheet')" readonlyIf="!imputable"/>
           <field name="isShowSection" colSpan="4" widget="inline-checkbox"
             onChange="action-project-record-section-reset-values"/>
           <field name="isShowTopic" colSpan="4" widget="inline-checkbox"/>
@@ -583,7 +570,7 @@
 
 
   <form name="project-select-wizard-form" title="Select Projects"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.utils.db.Wizard">
     <panel name="mainPanel">
       <field name="projectSet" title="Projects" type="many-to-many" colSpan="12"
         target="com.axelor.apps.project.db.Project" canNew="false"/>
@@ -592,8 +579,7 @@
     </panel>
   </form>
 
-  <form name="user-select-wizard-form" title="Select Users"
-    model="com.axelor.apps.base.db.Wizard">
+  <form name="user-select-wizard-form" title="Select Users" model="com.axelor.utils.db.Wizard">
     <panel name="mainPanel">
       <field name="userSet" title="Users" type="many-to-many" colSpan="12"
         target="com.axelor.auth.db.User" canNew="false"
@@ -613,7 +599,7 @@
 		<![CDATA[
 		<h4>{{fullName}}</h4>
 		<div class="card-body">
-		{{description}}
+		 <div ng-bind-html="description"></div>
 	    </div>
 		]]>
     </template>
@@ -629,7 +615,7 @@
 		<![CDATA[
 		<h4>{{fullName}}</h4>
 		<div class="card-body">
-		{{description}}
+		 <div ng-bind-html="description"></div>
 	    </div>
 		]]>
     </template>
@@ -866,7 +852,7 @@
   </action-view>
 
   <action-view name="action-project-open-popup-select-users" title="Select Users"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.utils.db.Wizard">
     <view type="form" name="user-select-wizard-form"/>
     <view-param name="show-toolbar" value="false"/>
     <view-param name="show-confirm" value="false"/>
@@ -874,7 +860,7 @@
   </action-view>
 
   <action-view name="action-project-open-popup-select-projects" title="Select Projects"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.utils.db.Wizard">
     <view type="form" name="project-select-wizard-form"/>
     <view-param name="show-toolbar" value="false"/>
     <view-param name="show-confirm" value="false"/>
@@ -925,7 +911,7 @@
 
   <action-attrs name="action-project-attrs-on-new-load">
     <attribute name="selection-in" for="projectStatus"
-      expr="eval: __repo__(ProjectStatus).all()?.filter('self.relatedToSelect = ?1',__repo__(ProjectStatus).PROJECT_STATUS_PROJECT)?.fetch()?.collect{it.id}?.join(',')"/>
+      expr="eval: __repo__(ProjectStatus).all()?.fetch()?.collect{it.id}?.join(',')"/>
     <attribute name="scale" for="price"
       expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
   </action-attrs>
@@ -958,7 +944,7 @@
   <action-record name="action-project-record-status-new"
     model="com.axelor.apps.project.db.Project">
     <field name="projectStatus"
-      expr="eval: __repo__(ProjectStatus).all().filter('self.relatedToSelect = ?1',__repo__(ProjectStatus).PROJECT_STATUS_PROJECT).order('sequence').fetchOne()"/>
+      expr="eval: __repo__(ProjectStatus).all().order('sequence').fetchOne()"/>
     <field name="projectTaskStatusSet"
       expr="eval: __config__.app.getApp('project')?.getDefaultTaskStatusSet()"/>
     <field name="projectTaskPrioritySet"
@@ -971,6 +957,10 @@
 
   <action-validate name="action-wizard-validate-project-select">
     <error message="Please select project" if="eval: projectSet == null || projectSet  == 0"/>
+  </action-validate>
+
+  <action-validate name="action-project-task-validate-delete-team-task-confirmation">
+    <alert message="Are you sure you want to delete this task ?"/>
   </action-validate>
 
   <action-attrs name="action-business-support-attrs-project-default">
@@ -1105,10 +1095,15 @@
     <field name="isInvoicingTimesheet" expr="eval: false" if="!isShowTimeSpent"/>
   </action-record>
 
+  <action-record name="action-project-record-reset-value-is-show-timespent"
+    model="com.axelor.apps.project.db.Project">
+    <field name="isShowTimeSpent" expr="eval: false" if="!imputable"/>
+  </action-record>
+
   <search-filters name="project-filters" model="com.axelor.apps.project.db.Project"
     title="Project filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base')?.getEnableMultiCompany() || !__config__.app.isApp('business-project')"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="resourceBookingList" hidden="true"
       if="!__config__.app.getApp('project')?.resourceManagement"/>
     <field name="productionOrderList" hidden="true"
@@ -1119,7 +1114,6 @@
     <field name="contactPartner" hidden="true" if="!__config__.app.isApp('business-project')"/>
     <field name="customerAddress" hidden="true" if="!__config__.app.isApp('business-project')"/>
     <field name="totalPlannedHrs" hidden="true" if="!__config__.app.isApp('employee')"/>
-    <field name="timeSpent" hidden="true" if="!__config__.app.isApp('timesheet')"/>
     <field name="toInvoice" hidden="true" if="!__config__.app.isApp('business-project')"/>
     <field name="isInvoicingTimesheet" hidden="true"
       if="!__config__.app.isApp('business-project')"/>

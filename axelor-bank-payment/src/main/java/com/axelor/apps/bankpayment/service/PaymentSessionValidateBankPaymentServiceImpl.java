@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.bankpayment.service;
 
@@ -31,6 +32,7 @@ import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.apps.account.service.move.MoveComputeService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
@@ -43,20 +45,21 @@ import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderFileFormat;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
-import com.axelor.apps.bankpayment.exception.IExceptionMessage;
+import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderCreateService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineOriginService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.DateService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -64,13 +67,13 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import javax.persistence.TypedQuery;
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class PaymentSessionValidateBankPaymentServiceImpl
     extends PaymentSessionValidateServiceImpl {
@@ -81,12 +84,14 @@ public class PaymentSessionValidateBankPaymentServiceImpl
   protected BankOrderRepository bankOrderRepo;
   protected CurrencyService currencyService;
   protected AppAccountService appAccountService;
+  protected DateService dateService;
 
   @Inject
   public PaymentSessionValidateBankPaymentServiceImpl(
       AppBaseService appBaseService,
       MoveCreateService moveCreateService,
       MoveValidateService moveValidateService,
+      MoveComputeService moveComputeService,
       MoveLineCreateService moveLineCreateService,
       ReconcileService reconcileService,
       InvoiceTermService invoiceTermService,
@@ -107,11 +112,13 @@ public class PaymentSessionValidateBankPaymentServiceImpl
       BankOrderRepository bankOrderRepo,
       CurrencyService currencyService,
       AppAccountService appAccountService,
-      InvoicePaymentRepository invoicePaymentRepo) {
+      InvoicePaymentRepository invoicePaymentRepo,
+      DateService dateService) {
     super(
         appBaseService,
         moveCreateService,
         moveValidateService,
+        moveComputeService,
         moveLineCreateService,
         reconcileService,
         invoiceTermService,
@@ -133,18 +140,22 @@ public class PaymentSessionValidateBankPaymentServiceImpl
     this.bankOrderRepo = bankOrderRepo;
     this.currencyService = currencyService;
     this.appAccountService = appAccountService;
+    this.dateService = dateService;
   }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public int processPaymentSession(PaymentSession paymentSession) throws AxelorException {
+  public int processPaymentSession(
+      PaymentSession paymentSession,
+      List<Pair<InvoiceTerm, Pair<InvoiceTerm, BigDecimal>>> invoiceTermLinkWithRefundList)
+      throws AxelorException {
     if (paymentSession.getPaymentMode() != null
         && paymentSession.getPaymentMode().getGenerateBankOrder()
         && paymentSession.getBankOrder() == null) {
       this.generateBankOrderFromPaymentSession(paymentSession);
     }
 
-    return super.processPaymentSession(paymentSession);
+    return super.processPaymentSession(paymentSession, invoiceTermLinkWithRefundList);
   }
 
   @Override
@@ -227,12 +238,19 @@ public class PaymentSessionValidateBankPaymentServiceImpl
       InvoiceTerm invoiceTerm,
       Map<LocalDate, Map<Partner, List<Move>>> moveDateMap,
       Map<Move, BigDecimal> paymentAmountMap,
+      List<Pair<InvoiceTerm, Pair<InvoiceTerm, BigDecimal>>> invoiceTermLinkWithRefundList,
       boolean out,
       boolean isGlobal)
       throws AxelorException {
     paymentSession =
         super.processInvoiceTerm(
-            paymentSession, invoiceTerm, moveDateMap, paymentAmountMap, out, isGlobal);
+            paymentSession,
+            invoiceTerm,
+            moveDateMap,
+            paymentAmountMap,
+            invoiceTermLinkWithRefundList,
+            out,
+            isGlobal);
     if (paymentSession.getBankOrder() != null
         && paymentSession.getStatusSelect() != PaymentSessionRepository.STATUS_AWAITING_PAYMENT) {
       this.createOrUpdateBankOrderLineFromInvoiceTerm(
@@ -252,7 +270,7 @@ public class PaymentSessionValidateBankPaymentServiceImpl
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   protected InvoicePayment generatePendingPaymentFromInvoiceTerm(
       PaymentSession paymentSession, InvoiceTerm invoiceTerm) {
     InvoicePayment invoicePayment =
@@ -346,17 +364,18 @@ public class PaymentSessionValidateBankPaymentServiceImpl
         paymentSession.getPaymentMode().getName(), paymentSession.getCompany().getName());
   }
 
-  protected String getReference(InvoiceTerm invoiceTerm) {
+  protected String getReference(InvoiceTerm invoiceTerm) throws AxelorException {
     if (StringUtils.isEmpty(invoiceTerm.getMoveLine().getOrigin())) {
       return null;
     }
     return String.format(
         "%s (%s)",
         invoiceTerm.getMoveLine().getOrigin(),
-        invoiceTerm.getDueDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+        invoiceTerm.getDueDate().format(dateService.getDateFormat()));
   }
 
-  protected void updateReference(InvoiceTerm invoiceTerm, BankOrderLine bankOrderLine) {
+  protected void updateReference(InvoiceTerm invoiceTerm, BankOrderLine bankOrderLine)
+      throws AxelorException {
     String newReference =
         String.format(
             "%s/%s", bankOrderLine.getReceiverReference(), this.getReference(invoiceTerm));
@@ -386,7 +405,7 @@ public class PaymentSessionValidateBankPaymentServiceImpl
     if (paymentSession.getBankOrder() != null) {
       flashMessage.append(
           String.format(
-              I18n.get(IExceptionMessage.PAYMENT_SESSION_GENERATED_BANK_ORDER),
+              I18n.get(BankPaymentExceptionMessage.PAYMENT_SESSION_GENERATED_BANK_ORDER),
               paymentSession.getBankOrder().getBankOrderSeq()));
     }
 

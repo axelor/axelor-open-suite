@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="partner-grid" title="Partners" model="com.axelor.apps.base.db.Partner"
     orderBy="name">
@@ -178,7 +178,7 @@
       <panel name="imagePanel" colSpan="2">
         <field name="picture" showTitle="false" widget="Image" colSpan="12">
           <viewer>
-						<![CDATA[
+            <![CDATA[
 					    <div>
 			    			<img width="80%" ng-show="record.picture" ng-src="{{$image('picture', 'content')}}" />
           					<img width="80%" ng-show="!record.picture && record.partnerTypeSelect != 2" src="img/company-default.jpg" />
@@ -237,12 +237,13 @@
             title="Balance" colSpan="3" icon="fa-balance-scale"
             onClick="action-partner-view-show-move-lines" widget="info-button" showIf="id"/>
           <field name="$balance" hidden="true"/>
-          <static name="duplicatePartnerText" hidden="true" colSpan="12"><![CDATA[<span class='label label-warning'>There is already a partner with this name.</span>]]></static>
+          <static name="duplicatePartnerText" hidden="true" colSpan="12">
+            <![CDATA[<span class='label label-warning'>There is already a partner with this name.</span>]]></static>
           <field name="fullName" hidden="true"/>
         </panel>
         <field name="isProspect" colSpan="2" widget="InlineCheckbox"
           hideIf="isContact || $readonly()"
-          onChange="action-partner-attrs-unset-customer,action-partner-record-unset-factor"/>
+          onChange="action-partner-group-unset-customer,action-partner-record-unset-factor"/>
         <field name="isEmployee" colSpan="2" widget="InlineCheckbox"
           hideIf="$readonly() || isCustomer || isSupplier || isCarrier || isFactor || partnerTypeSelect != 2"
           onChange="action-partner-account-attrs-hide-employee-account,action-partner-record-unset-factor"/>
@@ -262,13 +263,16 @@
           onChange="action-partner-record-unset-factor"/>
         <field name="isFactor" colSpan="2" widget="InlineCheckbox"
           hideIf="isContact || $readonly() || isEmployee"
-          if="__config__.app.getApp('account')?.manageFactors"
+          if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.manageFactors"
+          if-module="axelor-account"
           onChange="action-partner-group-check-can-change-factor,action-partner-record-set-factor"/>
+        <field name="isCollaborator" colSpan="2" widget="InlineCheckbox" hideIf="$readonly()"
+          if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
         <field name="$viewerPartnerType" showTitle="false" hideIf="isContact || !$readonly()"
           colSpan="12">
           <viewer
-            depends="isProspect,isEmployee,isCustomer,isSupplier,isSubcontractor,isFactor,isCarrier">
-						<![CDATA[
+            depends="isProspect,isEmployee,isCustomer,isSupplier,isSubcontractor,isFactor,isCarrier,isCollaborator">
+            <![CDATA[
 							<h4 style="text-align: right;">
 								<span class="label label-default" style="background-color: #FC6355; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isProspect" x-translate>Prospect</span>
 								<span class="label label-default" style="background-color: #5680FC; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isEmployee" x-translate>Employee</span>
@@ -277,6 +281,7 @@
 								<span class="label label-default" style="background-color: #000080; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isSubcontractor" x-translate>Subcontractor</span>
 								<span class="label label-default" style="background-color: #54FC62; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isFactor" x-translate>Factor</span>
 								<span class="label label-default" style="background-color: #FF0000; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isCarrier" x-translate>Carrier</span>
+								<span class="label label-default" style="background-color: #BC3772; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isCollaborator" x-translate>Collaborator</span>
 							</h4>
                         ]]>
           </viewer>
@@ -297,7 +302,7 @@
                                 	<span x-translate style="display:none">Sale_block</span>
                                 	<span x-translate style="display:none">Purch._block</span>
                                 	<i class="fa fa-caret-right" style="margin: 0 4px;"/>
-                                	{{ $fmt('item.blockingToDate') }}
+                                	{{ item.blockingToDate | date : 'L' }}
                                 </span>
                             </h4>
                         ]]></viewer>
@@ -342,7 +347,8 @@
           domain="self.isContact = false AND self.partnerTypeSelect = 1 AND self in (SELECT p FROM Partner p join p.companySet c where c in :companySet)"
           form-view="partner-form" grid-view="partner-grid"/>
         <field name="sellerCode" showIf="isFactor"
-          if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageFactors()"/>
+          if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageFactors()"
+          if-module="axelor-account"/>
       </panel>
     </panel>
     <panel colSpan="12" itemSpan="6" name="partnerSupplyChainLinkListPanel"
@@ -386,7 +392,8 @@
         </panel>
         <panel name="postalAddressesPanel" title="Postal addresses" colSpan="12"
           hideIf="isEmployee">
-          <static name="invoiceAndDeliveryAddressText" hidden="true" colSpan="12"><![CDATA[<span class='label label-warning'>Please add an invoice address and a delivery address by default.</span>]]></static>
+          <static name="invoiceAndDeliveryAddressText" hidden="true" colSpan="12">
+            <![CDATA[<span class='label label-warning'>Please add an invoice address and a delivery address by default.</span>]]></static>
           <field name="partnerAddressList" colSpan="12" form-view="partner-address-form"
             grid-view="partner-address-grid">
             <editor x-show-titles="false" onNew="action-partner-address-attrs-set-canselect">
@@ -581,7 +588,7 @@
         </panel>
       </panel>
       <panel name="carrierPanel" title="Carrier" showIf="isCarrier">
-        <field name="freightCarrierModeList" title="Freight Carrier Mode"
+        <field name="freightCarrierModeList"
           form-view="freight-carrier-mode-freight-carrier-form"
           grid-view="freight-carrier-mode-freight-carrier-grid" colSpan="12"/>
       </panel>
@@ -595,8 +602,7 @@
           title="Shipment Mode"/>
         <field name="freightCarrierMode" domain="self.shipmentMode = :shipmentMode"
           onChange="action-partner-record-freight-carrier" form-view="freight-carrier-mode-form"
-          grid-view="freight-carrier-mode-grid" readonlyIf="shipmentMode == null"
-          title="Freight Carrier Mode"/>
+          grid-view="freight-carrier-mode-grid" readonlyIf="shipmentMode == null"/>
         <field name="carrierPartner" form-view="partner-form" grid-view="partner-grid"
           title="Freight Carrier" readonly="true"/>
         <field name="isIspmRequired" hidden="true" showIf="isCustomer || isProspect"/>
@@ -647,7 +653,7 @@
       <panel name="imagePanel" colSpan="3">
         <field name="picture" widget="Image" showTitle="false" colSpan="12">
           <viewer>
-						<![CDATA[
+            <![CDATA[
 					    <div>
 			    			<img width="80%" ng-show="record.picture" ng-src="{{$image('picture', 'content')}}" />
           					<img width="80%" ng-show="!record.picture && record.titleSelect == 1" src="img/partner-m-default.png" />
@@ -685,11 +691,12 @@
               onChange="action-group-base-partner-contact-name-onchange" colSpan="5"/>
           </editor>
         </field>
-        <static name="duplicatePartnerText" hidden="true" colSpan="12"><![CDATA[<span class='label label-warning'>There is already a contact with this name.</span>]]></static>
+        <static name="duplicatePartnerText" hidden="true" colSpan="12">
+          <![CDATA[<span class='label label-warning'>There is already a contact with this name.</span>]]></static>
         <field name="$duplicatePartnerInArchiveText" hidden="true" type="string"
           showTitle="false" readonly="true">
           <viewer depends="$duplicatePartnerInArchiveText">
-					<![CDATA[
+            <![CDATA[
 						<span class='label label-warning' style="margin: 5px 0 !important; display: inline-table; line-height: initial;"><span x-translate>There is an archived partner with this name.</span> ({{record.$duplicatePartnerInArchiveText}})</span>
 					]]>
           </viewer>
@@ -697,7 +704,7 @@
         <panel name="companyPanel" title="Company" colSpan="12">
           <field name="mainPartner"
             domain="self.isContact = false  AND self in (SELECT p FROM Partner p join p.companySet c where c in :companySet)"
-            form-view="partner-form" grid-view="partner-grid"/>
+            form-view="partner-form" grid-view="partner-grid" required="true"/>
         </panel>
         <field name="isContact" hidden="true" colSpan="12"/>
       </panel>
@@ -813,7 +820,7 @@
     <field name="isCustomer"/>
     <field name="isSupplier"/>
     <field name="isSubcontractor"/>
-    <field name="isFactor"/>
+    <field name="isFactor" if-module="axelor-account" if="__config__.app.isApp('account')"/>
     <field name="isCarrier"/>
     <template><![CDATA[
 			<div>
@@ -1056,7 +1063,7 @@
     </template>
   </cards>
 
-  <grid title="Employee List" name="partner-employee-grid"
+  <grid title="Contacts list" name="partner-employee-grid"
     model="com.axelor.apps.base.db.Partner">
     <!-- name/firstName/fixedPhone/mobilePhone/emailAddress.address -->
     <field name="name"/>
@@ -1107,7 +1114,8 @@
           onChange="action-group-base-partner-contact-name-onchange" colSpan="5"/>
         <field name="firstName" showTitle="false" css="highlight" placeholder="First name"
           onChange="action-group-base-partner-contact-name-onchange" colSpan="5"/>
-        <static name="duplicatePartnerText" hidden="true" colSpan="12"><![CDATA[<span class='label label-warning'>There is already a partner with this name.</span>]]></static>
+        <static name="duplicatePartnerText" hidden="true" colSpan="12">
+          <![CDATA[<span class='label label-warning'>There is already a partner with this name.</span>]]></static>
         <panel name="companyPanel" title="Company" colSpan="12">
           <field name="mainPartner"
             domain="self.isContact = false  AND self in (SELECT p FROM Partner p join p.companySet c where c in :companySet)"
@@ -1288,7 +1296,7 @@
 
   <action-record name="action-partner-record-reset-factor-true"
     model="com.axelor.apps.base.db.Partner">
-    <field name="isFactor" expr="eval:true"/>
+    <field name="isFactor" expr="eval:true" if="__config__.app.isApp('account')"/>
     <field name="factorCantBeRemoved" expr="eval:false"/>
   </action-record>
 
@@ -1400,12 +1408,25 @@
   </action-group>
 
   <action-group name="action-group-partner-contact-onload">
-    <action name="action-partner-attrs-hide-employee-panel"/>
+    <action name="action-partner-attrs-hide-employee-panel"
+      if="__config__.app.isApp('employee')"/>
     <action name="action-partner-method-check-name"/>
     <action name="action-partner-method-check-name-in-archive"/>
     <action name="action-partner-attrs-change-name"/>
     <action name="action-partner-method-set-social-network-url"/>
     <action name="action-partner-attrs-partner-seq-editable"/>
+  </action-group>
+
+  <action-group name="action-partner-group-unset-customer">
+    <action name="action-partner-record-factor-supplier-customer-no-error"/>
+    <action name="action-partner-attrs-unset-customer"/>
+    <action name="action-partner-method-check-any-sale-order-attached"
+      if="__config__.app.isApp('sale')"/>
+    <action name="action-partner-method-check-any-invoice-client-sale-attached"
+      if="__config__.app.isApp('invoice')"/>
+    <action name="action-partner-method-check-any-receivable-move-line-attached"
+      if="__config__.app.isApp('account')"/>
+    <action name="action-partner-attrs-set-customer"/>
   </action-group>
 
   <action-record name="action-partner-empty-first-name"
@@ -1424,6 +1445,10 @@
 
   <action-attrs name="action-partner-attrs-unset-customer">
     <attribute name="value" for="isCustomer" expr="eval:false" if="isProspect"/>
+  </action-attrs>
+
+  <action-attrs name="action-partner-attrs-set-customer">
+    <attribute name="value" for="isCustomer" expr="eval:true" if="customerCantBeRemoved"/>
   </action-attrs>
 
   <action-attrs name="action-partner-attrs-name-balance">
@@ -1598,14 +1623,6 @@
     <call class="com.axelor.apps.base.web.PartnerController" method="printContactPhonebook"/>
   </action-method>
 
-  <action-method name="action-partner-method-view-emails">
-    <call class="com.axelor.apps.base.web.PartnerController" method="findPartnerMails"/>
-  </action-method>
-
-  <action-method name="action-partner-method-view-emails-contact">
-    <call class="com.axelor.apps.base.web.PartnerController" method="findContactMails"/>
-  </action-method>
-
   <action-method name="action-partner-method-view-sent-emails">
     <call class="com.axelor.apps.base.web.PartnerController" method="findSentMails"/>
   </action-method>
@@ -1660,7 +1677,7 @@
 
   <action-record name="action-partner-record-unset-factor"
     model="com.axelor.apps.base.db.Partner">
-    <field name="isFactor" expr="eval: false"/>
+    <field name="isFactor" expr="eval: false" if="__config__.app.isApp('account')"/>
   </action-record>
 
   <action-record name="action-partner-record-set-factor"

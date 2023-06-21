@@ -1,0 +1,13 @@
+---
+name: Purchase Request
+code: purchase-request
+typeSelect: standard
+installOrder: 2070
+description: |
+   Purchase Request Configuration
+image: app-purchase-request.png
+modules: 
+   axelor-purchase
+dependsOn:
+   - purchase
+sequence: 4

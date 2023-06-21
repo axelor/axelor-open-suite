@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid title="Search configurations" name="gdpr-search-config-grid"
+    model="com.axelor.apps.gdpr.db.GDPRSearchConfig">
+    <field name="metaModel"/>
+  </grid>
+
+  <form title="Search configuration" name="gdpr-search-config-form"
+    model="com.axelor.apps.gdpr.db.GDPRSearchConfig">
+    <panel name="mainPanel">
+      <field name="metaModel"/>
+
+      <help>
+        <![CDATA[
+          <br>Mapping for the query :<br>First Name -> :firstName <br>Last Name -> :lastName <br>Email -> :email <br>Phone -> :phone <br>
+        ]]>
+      </help>
+
+      <field name="searchConfigLineList" colSpan="12" showTitle="false">
+        <editor colSpan="12">
+          <field name="key" colSpan="4"/>
+          <field name="query" colSpan="4"/>
+          <field name="mapping" colSpan="4"/>
+        </editor>
+      </field>
+    </panel>
+  </form>
+</object-views>

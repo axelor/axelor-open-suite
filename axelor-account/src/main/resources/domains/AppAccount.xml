@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
-  <module name="base" package="com.axelor.apps.base.db"/>
+  <module name="studio" package="com.axelor.studio.db"/>
 
-  <entity name="AppAccount" lang="java">
+  <entity name="AppAccount" cacheable="true">
 
-    <one-to-one ref="com.axelor.apps.base.db.App" name="app"/>
+    <one-to-one ref="com.axelor.studio.db.App" name="app"/>
 
     <!-- Comptabilité -->
     <many-to-one name="transferAndDirectDebitInterbankCode"
@@ -34,6 +34,7 @@
     <boolean name="activatePassedForPayment" title="Activate passed for payment"/>
     <boolean name="manageFinancialDiscount" title="Manage financial discount"
       help="Field allowing to activate the financial discounts"/>
+    <boolean name="allowMultiInvoiceTerms" title="Allow multi invoice terms"/>
 
     <!-- DAS2 - N4DS -->
     <many-to-one name="defaultServiceTypeTypology"
@@ -59,17 +60,21 @@
     <track>
       <field name="transferAndDirectDebitInterbankCode" on="UPDATE"/>
       <field name="chequeInterbankCode" on="UPDATE"/>
-
       <field name="manageCustomerCredit" on="UPDATE"/>
-
       <field name="manageAnalyticAccounting" on="UPDATE"/>
-
       <field name="manageFactors" on="UPDATE"/>
+      <field name="manageCutOffPeriod" on="UPDATE"/>
       <field name="partnerBalConfigSelect" on="UPDATE"/>
       <field name="manageAdvancePaymentInvoice" on="UPDATE"/>
       <field name="paymentVouchersOnSupplierInvoice" on="UPDATE"/>
       <field name="paymentVouchersOnCustomerInvoice" on="UPDATE"/>
+      <field name="activatePassedForPayment" on="UPDATE"/>
       <field name="manageFinancialDiscount" on="UPDATE"/>
+      <field name="defaultServiceTypeTypology" on="UPDATE"/>
+      <field name="dasActiveNorm" on="UPDATE"/>
+      <field name="activateFixedAssetBarCodeGeneration" on="UPDATE"/>
+      <field name="editFixedAssetBarcodeType" on="UPDATE"/>
+      <field name="fixedAssetBarcodeTypeConfig" on="UPDATE"/>
     </track>
   </entity>
 

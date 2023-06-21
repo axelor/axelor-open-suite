@@ -60,13 +60,13 @@
     <property name="bidiLayoutOrientation">ltr</property>
     <property name="imageDPI">96</property>
     <parameters>
-        <scalar-parameter name="DBname" id="5">
+        <scalar-parameter name="DBName" id="5">
             <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
             <simple-property-list name="defaultValue">
-                <value type="constant">jdbc:postgresql://localhost:5432/axelor-open-suite</value>
+                <value type="constant">jdbc:postgresql://localhost:5432/</value>
             </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
@@ -90,14 +90,11 @@
                 <property name="category">Unformatted</property>
             </structure>
         </scalar-parameter>
-        <scalar-parameter name="Username" id="7">
+        <scalar-parameter name="UserName" id="7">
             <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">axelor</value>
-            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -186,9 +183,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/aos</property>
-            <property name="odaUser">axelor</property>
-            <encrypted-property name="odaPassword" encryptionID="base64">bG1kcGRsYWE=</encrypted-property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -1008,7 +1003,7 @@ CASE when InvoiceTerm.invoice IS NOT NULL THEN (SELECT invoice_id from account_i
 when InvoiceTerm.invoice IS NULL THEN Move.origin
 end as IDCode,
 InvoiceTerm.due_date as DueDate,
-DATE_PART('day',  coalesce ((select today_datet from base_app_base), NOW())-InvoiceTerm.due_date) as LatePaymentDays,
+DATE_PART('day',  coalesce ((select today_datet from studio_app_base), NOW())-InvoiceTerm.due_date) as LatePaymentDays,
 InvoiceTerm.amount as Amount,
 (InvoiceTerm.amount - InvoiceTerm.amount_remaining) as AmountPaid,
 InvoiceTerm.amount_remaining as ToPay,
@@ -1024,7 +1019,7 @@ join base_currency Currency on Move.currency = Currency.id
 left join account_account_config AccConf on AccConf.company = Move.company
 where DebtRecoveryHistory.id = ?
 and Currency.code is not null
-and InvoiceTerm.due_date + INTERVAL '1 day' * coalesce(AccConf.mail_transit_time,1) < coalesce ((select today_datet from base_app_base), NOW()) )
+and InvoiceTerm.due_date + INTERVAL '1 day' * coalesce(AccConf.mail_transit_time,1) < coalesce ((select today_datet from studio_app_base), NOW()) )
 order by InvoiceTerm.sequence]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="TranslateDS" id="3669">

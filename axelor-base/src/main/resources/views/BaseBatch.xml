@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="base-batch-grid" title="Base batches" model="com.axelor.apps.base.db.BaseBatch">
     <field name="actionSelect"/>
@@ -13,9 +13,9 @@
   </grid>
 
   <form name="base-batch-form" title="Base Batch" model="com.axelor.apps.base.db.BaseBatch"
-    onLoad="action-base-batch-attrs-action-select" onNew="action-group-base-basebatch-onnew">
+    onNew="action-base-batch-record-on-new">
     <panel name="mainPanel">
-      <field name="actionSelect" onChange="action-base-batch-attrs-action-select"/>
+      <field name="actionSelect"/>
       <field name="code" x-bind="{{code|unaccent|uppercase}}"
         onChange="action-base-batch-condition-check-unique-code"/>
       <field name="company" widget="SuggestBox" form-view="company-form"
@@ -24,31 +24,29 @@
         showIf="actionSelect == 2"/>
       <field name="allEvents" widget="boolean-switch" showIf="actionSelect == 2"/>
     </panel>
-    <panel-tabs name="targetPanelTab">
-      <panel name="targetPagePanel" title="Target page">
-        <!-- <panel-related field="targetConfigurationSet" colSpan="12"/> -->
-        <button name="targetBatchBtn" title="Target batch"
-          onClick="save,action-base-batch-method-action-target"/>
-      </panel>
-      <panel name="informationPanel" title="Information">
-        <field name="createdOn" title="Created on"/>
-        <field name="createdBy" title="Created by" form-view="user-form" grid-view="user-grid"/>
-        <field name="description" showTitle="false" colSpan="12"/>
-        <panel-related name="batchListPanel" field="batchList" colSpan="12"
-          form-view="batch-form" grid-view="batch-grid"/>
-      </panel>
-    </panel-tabs>
-    <panel name="synchronizeBtnPanel" sidebar="true">
-      <button name="synchronizeBtn" showIf="actionSelect == 2"
-        title="Batch calendar synchronization" onClick="save,action-base-batch-method-run-batch"/>
+    <panel name="passwordChangePanel" title="Password change" showIf="actionSelect == 3">
+      <field name="passwordChangeActionSelect"/>
+      <field name="allUsers" widget="boolean-switch"
+        readonlyIf="(userSet != null &amp;&amp; userSet.length != 0) || (groupSet != null &amp;&amp; groupSet.length != 0)"/>
+      <field name="nbOfDaySinceLastUpdate"/>
+      <field name="userSet" canNew="false" canEdit="false" form-view="user-form"
+        grid-view="user-grid" colSpan="12" hideIf="allUsers"/>
+      <field name="groupSet" canNew="false" canEdit="false" form-view="group-form"
+        grid-view="group-grid" colSpan="12" hideIf="allUsers"/>
+    </panel>
+    <panel name="informationPanel" title="Information">
+      <field name="createdOn" title="Created on"/>
+      <field name="createdBy" title="Created by" form-view="user-form" grid-view="user-grid"/>
+      <field name="description" showTitle="false" colSpan="12"/>
+      <panel-related name="batchListPanel" field="batchList" colSpan="12"
+        form-view="batch-form" grid-view="batch-grid"/>
+    </panel>
+    <panel name="actionPanel" sidebar="true">
+      <button name="runBatchBtn" showIf="actionSelect == 2 || actionSelect == 3"
+        readonlyIf="actionSelect == 3 &amp;&amp; !passwordChangeActionSelect" title="Run batch"
+        onClick="save,action-base-batch-method-run-batch"/>
     </panel>
   </form>
-
-  <!-- ACTION GROUP -->
-  <action-group name="action-group-base-basebatch-onnew">
-    <action name="action-base-batch-record-on-new"/>
-    <action name="action-base-batch-attrs-action-select"/>
-  </action-group>
 
   <!-- ACTION RECORD -->
   <action-record name="action-base-batch-record-on-new"
@@ -65,20 +63,9 @@
       if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
   </action-record>
 
-  <!-- ACTION METHOD -->
-  <action-method name="action-base-batch-method-action-target">
-    <call class="com.axelor.apps.base.web.BaseBatchController" method="actionTarget"/>
-  </action-method>
-
   <action-method name="action-base-batch-method-run-batch">
     <call class="com.axelor.apps.base.web.BaseBatchController" method="runBatch"/>
   </action-method>
-
-  <!-- ACTION ATTRS -->
-  <action-attrs name="action-base-batch-attrs-action-select">
-    <attribute name="hidden" expr="eval: actionSelect != 1" for="targetPagePanel"/>
-    <attribute name="hidden" expr="eval: actionSelect != 1" for="targetConfigurationSet"/>
-  </action-attrs>
 
   <action-condition name="action-base-batch-condition-check-unique-code">
     <check field="code"

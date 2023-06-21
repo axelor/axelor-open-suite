@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
-  <module name="base" package="com.axelor.apps.base.db"/>
+  <module name="studio" package="com.axelor.studio.db"/>
 
-  <entity name="AppStock" lang="java" cacheable="true">
+  <entity name="AppStock" cacheable="true">
 
-    <one-to-one ref="com.axelor.apps.base.db.App" name="app"/>
+    <one-to-one ref="com.axelor.studio.db.App" name="app"/>
 
     <boolean name="isEnabledProductDescriptionCopy" title="Enable product description copy"/>
     <boolean name="requireToFillConformityOnReceipt"
@@ -32,6 +32,8 @@
     <many-to-one name="stockLocationBarcodeTypeConfig"
       title="Stock location barcode type" ref="com.axelor.apps.base.db.BarcodeTypeConfig"
       default="EAN_13"/>
+    <boolean name="isManageStockLocationOnStockMoveLine"
+      title="Manage stock location on stock move lines"/>
 
     <track>
       <field name="isEnabledProductDescriptionCopy" on="UPDATE"/>
@@ -39,6 +41,14 @@
       <field name="isSeparateShipmentOperations" on="UPDATE"/>
       <field name="isRequiredShipmentSupplierDetails" on="UPDATE"/>
       <field name="economicArea" on="UPDATE"/>
+      <field name="stockUnit" on="UPDATE"/>
+      <field name="activateTrackingNumberBarCodeGeneration" on="UPDATE"/>
+      <field name="editTrackingNumberBarcodeType" on="UPDATE"/>
+      <field name="trackingNumberBarcodeTypeConfig" on="UPDATE"/>
+      <field name="activateStockLocationBarCodeGeneration" on="UPDATE"/>
+      <field name="editStockLocationBarcodeType" on="UPDATE"/>
+      <field name="stockLocationBarcodeTypeConfig" on="UPDATE"/>
+      <field name="isManageStockLocationOnStockMoveLine" on="UPDATE"/>
     </track>
   </entity>
 

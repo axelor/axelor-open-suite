@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="timesheet-line-project-grid" title="Log Times"
     model="com.axelor.apps.hr.db.TimesheetLine" editable="true"
@@ -13,7 +13,7 @@
     <field name="product" if="__config__.app.getApp('timesheet')?.enableActivity"
       requiredIf="toInvoice" onSelect="action-hr-timesheet-line-attrs-domain-product"
       widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
-    <field name="hoursDuration" width="62%" min="0.01"/>
+    <field name="hoursDuration" width="62%" min="0.01" title="Duration (hours)"/>
     <field name="durationForCustomer" if-module="axelor-business-project"
       if="__config__.app.isApp('business-project')"/>
     <field name="toInvoice" readonly="true" if-module="axelor-business-project"
@@ -259,7 +259,7 @@
         requiredIf="toInvoice" canEdit="false"
         onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox"
         form-view="product-activity-form" grid-view="product-activity-grid"/>
-      <field name="hoursDuration" width="62%" colSpan="2" min="0.01"/>
+      <field name="duration" width="62%" colSpan="2" min="0.01"/>
       <label name="durationLabel" colSpan="4"/>
       <field name="durationForCustomer" colSpan="3" if-module="axelor-business-project"
         if="__config__.app.isApp('business-project')"/>

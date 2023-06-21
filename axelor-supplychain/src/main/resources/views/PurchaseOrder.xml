@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
 
   <form name="purchase-order-form" title="Purchase order"
     model="com.axelor.apps.purchase.db.PurchaseOrder" id="supplychain-purchase-order-form"
     extension="true">
-    <extend target="/">
-      <attribute name="onNew"
-        value="action-group-purchase-order-on-new-actions,supplychain-action-create-shipment-cost-line-purchase"/>
-    </extend>
+
     <extend target="//field[@name='shipmentMode']">
       <attribute name="onChange"
         value="action-purchase-order-record-empty-freight-carrier-mode,supplychain-action-create-shipment-cost-line-purchase"/>
@@ -21,6 +18,32 @@
         value="action-purchase-order-method-compute,supplychain-action-create-shipment-cost-line-purchase"/>
     </extend>
   </form>
+
+  <action-group name="action-group-purchase-order-on-new-actions"
+    id="action-supplychain-group-purchase-order-on-new-actions">
+    <action name="action-purchase-order-record-new"/>
+    <action name="action-purchase-order-record-company-configuration"/>
+    <action name="action-purchase-order-method-get-stock-location"
+      if="!tradingName?.receiptDefaultStockLocation || !stockLocation"/>
+    <action name="action-purchase-order-method-get-from-stock-location"
+      if="__config__.app.isApp('supplychain')"/>
+    <action name="action-purchase-order-record-in-ati"/>
+    <action name="action-purchase-order-attrs-in-ati"/>
+    <action name="action-purchase-order-record-display-price"/>
+    <action name="action-contract-purchase-order-record-new"
+      if="__config__.app.isApp('contract')"/>
+    <action name="action-purchase-order-record-payment-mode"/>
+    <action name="action-attrs-po-hidden-bank-details"/>
+    <action name="action-purchase-order-method-fill-company-bank-details"/>
+    <action name="action-purchase-order-attrs-interco"/>
+    <action name="action-purchase-order-record-interco"/>
+    <action name="action-purchase-order-attrs-external-reference"/>
+    <action name="action-purchase-order-record-set-supplier-partner-from-partner"
+      if="_partner!=null"/>
+    <action name="action-group-purchase-order-partner-onchange" if="_partner!=null"/>
+    <action name="action-purchase-order-record-load-trading-name-config"/>
+    <action name="supplychain-action-create-shipment-cost-line-purchase"/>
+  </action-group>
 
   <action-method name="action-purchase-order-method-generate-control-invoice">
     <call class="com.axelor.apps.supplychain.web.PurchaseOrderInvoiceController"
@@ -73,11 +96,7 @@
       method="createShipmentCostLine"/>
   </action-method>
 
-  <action-method
-    name="action-purchase-order-supplychain-method-update-budget-distribution-amount-available">
-    <call class="com.axelor.apps.supplychain.web.PurchaseOrderController"
-      method="updateBudgetDistributionAmountAvailable"/>
-  </action-method>
+
 
   <action-method name="action-purchase-order-method-get-from-stock-location">
     <call class="com.axelor.apps.supplychain.web.PurchaseOrderController"
