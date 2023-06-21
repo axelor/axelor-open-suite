@@ -101,6 +101,10 @@ public class BudgetController {
 
   public void manageBudgetKey(ActionRequest request, ActionResponse response) {
     try {
+      if (request.getContext() == null) {
+        return;
+      }
+
       Budget budget = request.getContext().asType(Budget.class);
       Company company = null;
       if (budget.getBudgetLevel() != null && budget.getBudgetLevel().getCompany() != null) {
@@ -116,7 +120,8 @@ public class BudgetController {
               != null) {
         company =
             budget.getBudgetLevel().getParentBudgetLevel().getParentBudgetLevel().getCompany();
-      } else if (request.getContext().getParent() != null
+      } else if (budget.getId() != null
+          && request.getContext().getParent() != null
           && request.getContext().getParent().getParent() != null
           && request.getContext().getParent().getParent().getParent() != null) {
         company =
