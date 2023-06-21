@@ -45,6 +45,7 @@ import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.db.ContractTemplate;
 import com.axelor.apps.contract.db.ContractVersion;
+import com.axelor.apps.contract.db.RevaluationFormula;
 import com.axelor.apps.contract.db.repo.ConsumptionLineRepository;
 import com.axelor.apps.contract.db.repo.ContractLineRepository;
 import com.axelor.apps.contract.db.repo.ContractRepository;
@@ -499,7 +500,16 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     // Increase invoice period date
     increaseInvoiceDates(contract);
 
+    setRevaluationFormulaDescription(contract, invoice);
+
     return invoiceRepository.save(invoice);
+  }
+
+  protected void setRevaluationFormulaDescription(Contract contract, Invoice invoice) {
+    RevaluationFormula revaluationFormula = contract.getRevaluationFormula();
+    if (contract.getIsToRevaluate() && revaluationFormula != null) {
+      invoice.setNote(revaluationFormula.getInvoiceComment());
+    }
   }
 
   protected LocalDate computeStartDate(
