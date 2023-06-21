@@ -17,6 +17,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -162,7 +163,9 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
             appBaseService.getTodayDate(this.getCompany(analyticLineModel)));
 
     analyticLineModel.clearAnalyticMoveLineList();
-    analyticMoveLineList.forEach(analyticLineModel::addAnalyticMoveLineListItem);
+    if (ObjectUtils.notEmpty(analyticMoveLineList)) {
+      analyticMoveLineList.forEach(analyticLineModel::addAnalyticMoveLineListItem);
+    }
 
     return analyticLineModel;
   }

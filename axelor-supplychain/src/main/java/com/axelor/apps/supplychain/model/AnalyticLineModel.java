@@ -14,6 +14,7 @@ import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 public class AnalyticLineModel implements AnalyticLine {
@@ -134,6 +135,8 @@ public class AnalyticLineModel implements AnalyticLine {
   public void clearAnalyticMoveLineList() {
     if (getAnalyticMoveLineList() != null) {
       getAnalyticMoveLineList().clear();
+    } else {
+      setAnalyticMoveLineList(new ArrayList<>());
     }
   }
 
