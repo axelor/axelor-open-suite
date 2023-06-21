@@ -79,8 +79,8 @@ public class OpportunityServiceImpl implements OpportunityService {
   }
 
   @Override
-  public OpportunityStatus getDefaultOpportunityStatus() {
-    return opportunityStatusRepo.getDefaultStatus();
+  public OpportunityStatus getDefaultOpportunityStatus() throws AxelorException {
+    return appCrmService.getOpportunityDefaultStatus();
   }
 
   @Override

@@ -41,6 +41,12 @@
       if="__config__.app.isApp('leave')"/>
   </dashboard>
 
+  <!-- Dashboard MyRH -->
+  <dashboard title="My HR" name="my.hr.dashboard">
+    <dashlet action="hr.dashboard.leave.requests"/>
+    <dashlet action="hr.dashboard.timesheet"/>
+  </dashboard>
+
   <action-view name="hr.dashboard.my.extrahours" title="My extra hours"
     model="com.axelor.apps.hr.db.ExtraHours">
     <view type="grid" name="extra-hours-validate-grid"/>
@@ -73,6 +79,46 @@
     <context name="userId" expr="eval: __user__.id"/>
   </action-view>
 
+  <action-view name="hr.dashboard.leave.requests" title="Leave requests"
+    model="com.axelor.apps.hr.db.LeaveLine">
+    <view type="chart" name="chart.leave.request.by.status"/>
+  </action-view>
+
+  <action-view name="hr.dashboard.timesheet" title="Timesheet by project"
+    model="com.axelor.apps.hr.db.TimesheetLine">
+    <view type="chart" name="chart.timesheet.by.project"/>
+    <context name="userId" expr="eval: __user__.id"/>
+  </action-view>
+
+  <!-- Employee Dashboard -->
+  <dashboard title="Employee dashboard" name="hr.employee.dashboard.sample">
+    <dashlet action="hr.employee.expenses" colSpan="4" height="300"/>
+    <dashlet action="hr.employee.leave.request" colSpan="8" height="300"/>
+    <dashlet action="hr.employee.training" colSpan="4" height="265"
+      if-module="axelor-talent"/>
+    <dashlet action="hr.employee.timesheets" colSpan="4" height="300"/>
+    <dashlet action="hr.employee.extra.hours" colSpan="4" height="265"/>
+  </dashboard>
+
+  <action-view name="hr.employee.leave.request" title="Leave Requests"
+    model="com.axelor.apps.hr.db.LeaveRequest">
+    <view type="custom" name="my-leave-request-custom-view"/>
+  </action-view>
+
+  <action-view name="hr.employee.expenses" title="Expenses"
+    model="com.axelor.apps.hr.db.Expense">
+    <view type="custom" name="my-expenses-custom-view"/>
+  </action-view>
+
+  <action-view name="hr.employee.timesheets" title="Time Sheet"
+    model="com.axelor.apps.hr.db.Timesheet">
+    <view type="custom" name="my-timesheets-custom-view"/>
+  </action-view>
+
+  <action-view name="hr.employee.extra.hours" title="Extra Hours"
+    model="com.axelor.apps.hr.db.LeaveRequest">
+    <view type="custom" name="my-extra-hours-custom-view"/>
+  </action-view>
 
 </object-views>
 

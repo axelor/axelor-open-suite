@@ -7,6 +7,6 @@ public class BusinessProjectStaticResources implements StaticResourceProvider {
 
   @Override
   public void register(List<String> resources) {
-    resources.add("css/dashlet-header-custom.css");
+    resources.add("css/business_project.css");
   }
 }

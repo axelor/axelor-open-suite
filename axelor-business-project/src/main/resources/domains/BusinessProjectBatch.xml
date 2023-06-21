@@ -27,6 +27,7 @@
 		public static final int ACTION_UPDATE_TASKS = 1;
 		public static final int ACTION_GENERATE_INVOICING_PROJECT = 2;
 		public static final int ACTION_COMPUTE_PROJECT_TOTALS = 3;
+		public static final int ACTION_BACKUP_TO_PROJECT_HISTORY = 4;
 
 		//CONSOLIDATE PHASE SELECT
 		public static final int CONSOLIDATE_PHASE_CONSOLIDATE_ALL = 1;

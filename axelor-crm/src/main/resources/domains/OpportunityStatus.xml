@@ -15,7 +15,6 @@
       using="sequence" orderBy="sequence"/>
     <finder-method name="findByPreviousSequence" filter="self.sequence &lt; :sequence"
       using="sequence" orderBy="-sequence"/>
-    <finder-method name="getDefaultStatus" using="" orderBy="sequence" filter="1 = 1"/>
 
   </entity>
 

@@ -1345,4 +1345,19 @@ public class ManufOrderServiceImpl implements ManufOrderService {
                 .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP);
     return producibleQty;
   }
+
+  /**
+   * Method that will update planned dates of manuf order. Unlike the other methods, this will not
+   * reset planned dates of the operation orders of the manuf order. This method must be called when
+   * changement has occured in operation orders.
+   *
+   * @param manufOrder
+   */
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void updatePlannedDates(ManufOrder manufOrder) {
+
+    manufOrder.setPlannedStartDateT(manufOrderWorkflowService.computePlannedStartDateT(manufOrder));
+    manufOrder.setPlannedEndDateT(manufOrderWorkflowService.computePlannedEndDateT(manufOrder));
+  }
 }

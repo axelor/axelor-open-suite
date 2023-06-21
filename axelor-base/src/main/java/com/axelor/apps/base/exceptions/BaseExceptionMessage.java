@@ -535,6 +535,44 @@ public final class BaseExceptionMessage {
   public static final String SWAGGER_NO_RESOURCE_PACKAGES = /*$$(*/
       "Swagger is enabled but not resource packages is specified." /*)*/;
 
+  public static final String FAKER_METHOD_DOES_NOT_EXIST = /*$$(*/
+      "The method '%s' doesn't exist in the Faker API." /*)*/;
+
+  public static final String FAKER_CLASS_DOES_NOT_EXIST = /*$$(*/
+      "The class '%s' doesn't exist in the Faker API." /*)*/;
+
+  public static final String FAKER_METHOD_ERROR = /*$$(*/
+      "An error occured while executing '%s'." /*)*/;
+
+  public static final String JSON_FIELD_CAN_NOT_BE_ANONYMIZED = /*$$(*/
+      "Json field can not be anonymized" /*)*/;
+
+  public static final String FAKER_FIELDS_EMPTY = /*$$(*/ "The fields are empty" /*)*/;
+
+  public static final String FAKER_METHOD_PARAMS_ERROR = /*$$(*/
+      "There is a type error on parameters of the method '%s'." /*)*/;
+
+  public static final String FAKER_CLASS_NAME_ERROR = /*$$(*/
+      "Error in class name. Please check." /*)*/;
+
+  public static final String FAKER_METHOD_NAME_ERROR = /*$$(*/
+      "Error in method name. Please check." /*)*/;
+
+  public static final String FAKER_METHOD_MISSING_PARAMS = /*$$(*/
+      "Please check yours params, both fields must be filled." /*)*/;
+
+  public static final String FAKER_METHOD_CONFIGURATION_ERROR = /*$$(*/
+      "An error occurred, please check your configuration." /*)*/;
+
+  public static final String FAKER_METHOD_PARAMETERS_CONFIGURATION_ERROR = /*$$(*/
+      "Please check your parameters configuration." /*)*/;
+
+  public static final String FAKER_METHOD_PARAMETERS_VALUE_ERROR = /*$$(*/
+      "Please check your parameters value format." /*)*/;
+
+  public static final String FAKER_METHOD_EXAMPLE_OUTPUT = /*$$(*/
+      "The faker API field is valide. An example output is : %s." /*)*/;
+
   public static final String UNKNOWN_DURATION = /*$$(*/
       "The duration '%s' is unknown. Valid durations are in months or years." /*)*/;
 }

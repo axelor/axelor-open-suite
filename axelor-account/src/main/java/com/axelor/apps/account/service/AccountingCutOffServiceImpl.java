@@ -431,7 +431,12 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
                   ++counter,
                   origin,
                   moveDescription);
-          cutOffMoveLine.setTaxLine(moveLine.getTaxLine());
+          if (accountingCutOffTypeSelect
+                  != AccountingBatchRepository.ACCOUNTING_CUT_OFF_TYPE_DEFERRED_INCOMES
+              && accountingCutOffTypeSelect
+                  != AccountingBatchRepository.ACCOUNTING_CUT_OFF_TYPE_PREPAID_EXPENSES) {
+            cutOffMoveLine.setTaxLine(moveLine.getTaxLine());
+          }
           cutOffMoveLine.setOriginDate(originDate);
 
           cutOffMoveLineMap.put(moveLineAccount, cutOffMoveLine);
