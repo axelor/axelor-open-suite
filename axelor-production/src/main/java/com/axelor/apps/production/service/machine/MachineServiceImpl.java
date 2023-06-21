@@ -8,10 +8,12 @@ import com.axelor.apps.base.service.dayplanning.DayPlanningService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.production.db.Machine;
 import com.axelor.apps.production.db.OperationOrder;
+import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.model.machine.MachineTimeSlot;
+import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.utils.date.DurationTool;
 import com.google.inject.Inject;
@@ -53,6 +55,7 @@ public class MachineServiceImpl implements MachineService {
         DurationTool.getSecondsDuration(Duration.between(startDateT, endDateT)));
   }
 
+  @SuppressWarnings("unchecked")
   protected MachineTimeSlot getClosestAvailableTimeSlotFrom(
       Machine machine,
       LocalDateTime startDateT,
@@ -125,35 +128,48 @@ public class MachineServiceImpl implements MachineService {
       plannedEndDateT = endDateT;
     }
 
+    long timeBeforeNextOperation =
+        Optional.ofNullable(operationOrder.getWorkCenter())
+            .map(WorkCenter::getTimeBeforeNextOperation)
+            .orElse(0l);
     // Must check if dates are occupied by other operation orders
     // The first one of the list will be the last to finish
+
     List<OperationOrder> concurrentOperationOrders =
-        operationOrderRepository
-            .all()
-            .filter(
-                "self.machine = :machine"
-                    + " AND ((self.plannedStartDateT <= :startDate AND self.plannedEndDateT > :startDate)"
-                    + " OR (self.plannedStartDateT <= :endDate AND self.plannedEndDateT > :endDate))"
-                    + " AND (self.manufOrder.statusSelect != :cancelled AND self.manufOrder.statusSelect != :finished)"
-                    + " AND self.id != :operationOrderId")
-            .bind("startDate", plannedStartDateT)
-            .bind("endDate", plannedEndDateT)
-            .bind("machine", machine)
-            .bind("cancelled", ManufOrderRepository.STATUS_CANCELED)
-            .bind("finished", ManufOrderRepository.STATUS_FINISHED)
-            .bind("operationOrderId", operationOrder.getId())
-            .order("-plannedEndDateT")
-            .fetch();
+        JPA.em()
+            .createNativeQuery(
+                "SELECT * FROM public.production_operation_order AS self"
+                    + " LEFT OUTER JOIN public.production_manuf_order as manufOrder ON (self.manuf_order = manufOrder.id)"
+                    + " WHERE self.machine = :machine"
+                    + " AND ((self.planned_start_datet <= :startDate AND self.planned_end_datet + INTERVAL '"
+                    + timeBeforeNextOperation
+                    + " seconds' > :startDate)"
+                    + " OR (self.planned_start_datet <= :endDate AND self.planned_end_datet  + INTERVAL '"
+                    + timeBeforeNextOperation
+                    + " seconds' > :endDate))"
+                    + " AND (manufOrder.status_select != :cancelled AND manufOrder.status_select != :finished)"
+                    + " AND self.id != :operationOrderId ORDER BY self.planned_end_datet DESC",
+                OperationOrder.class)
+            .setParameter("startDate", plannedStartDateT)
+            .setParameter("endDate", plannedEndDateT)
+            .setParameter("machine", machine.getId())
+            .setParameter("cancelled", ManufOrderRepository.STATUS_CANCELED)
+            .setParameter("finished", ManufOrderRepository.STATUS_FINISHED)
+            .setParameter("operationOrderId", operationOrder.getId())
+            .getResultList();
 
     if (concurrentOperationOrders.isEmpty()) {
       MachineTimeSlot timeSlot = new MachineTimeSlot(plannedStartDateT, plannedEndDateT);
       return timeSlot;
     } else {
       OperationOrder lastOperationOrder = concurrentOperationOrders.get(0);
+
       return getClosestAvailableTimeSlotFrom(
           machine,
-          lastOperationOrder.getPlannedEndDateT(),
-          lastOperationOrder.getPlannedEndDateT().plusSeconds(initialDuration),
+          lastOperationOrder.getPlannedEndDateT().plusSeconds(timeBeforeNextOperation),
+          lastOperationOrder
+              .getPlannedEndDateT()
+              .plusSeconds(timeBeforeNextOperation + initialDuration),
           operationOrder,
           initialDuration);
     }

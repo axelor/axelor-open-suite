@@ -39,6 +39,7 @@
     <long name="startingDuration" title="Starting duration (hhh:mm:ss)"/>
     <long name="setupDuration" title="Duration between two cycles (hhh:mm:ss)"/>
     <long name="endingDuration" title="Ending duration (hhh:mm:ss)"/>
+    <long name="timeBeforeNextOperation" title="Time between two operations (hhh:mm:ss)"/>
     <extra-code>
 		<![CDATA[
 

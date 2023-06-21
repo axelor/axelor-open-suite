@@ -196,9 +196,9 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
             I18n.get(ProductionExceptionMessage.WORKCENTER_NO_MACHINE),
             workCenter.getName());
       }
-      duration += machine.getStartingDuration();
-      duration += machine.getEndingDuration();
-      duration += machine.getSetupDuration();
+      duration += workCenter.getStartingDuration();
+      duration += workCenter.getEndingDuration();
+      duration += workCenter.getSetupDuration();
     }
 
     return duration;
