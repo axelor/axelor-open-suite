@@ -23,8 +23,6 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
-
 import java.util.Map;
 
 public class FinalizeAndConfirmSaleOrder {
