@@ -92,6 +92,7 @@ public class MoveLineMassEntryRecordServiceImpl implements MoveLineMassEntryReco
 
   @Override
   public void refreshAnalyticMoveLineMassEntryList(MoveLineMassEntry moveLine) {
+    moveLine.clearAnalyticMoveLineMassEntryList();
     if (ObjectUtils.notEmpty(moveLine.getAnalyticMoveLineList())) {
       moveLine
           .getAnalyticMoveLineList()
