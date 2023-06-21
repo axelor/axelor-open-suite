@@ -115,6 +115,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     moveCheckService.checkPeriodPermission(move);
     moveCheckService.checkRemovedLines(move);
     moveCheckService.checkAnalyticAccount(move);
+    moveCheckService.checkCurrencyAmountSum(move);
   }
 
   @Override
