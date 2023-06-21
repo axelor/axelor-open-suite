@@ -1405,11 +1405,12 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                                     <property name="levelType">dynamic</property>
                                     <list-property name="attributes">
                                         <structure>
-                                            <property name="name">periodNb</property>
-                                            <property name="dataType">integer</property>
+                                            <property name="name">period</property>
+                                            <property name="dataType">string</property>
                                         </structure>
                                     </list-property>
-                                    <property name="columnName">period</property>
+                                    <property name="columnName">periodNb</property>
+                                    <expression name="displayColumnName" type="javascript">dataSetRow["period"]</expression>
                                 </tabular-level>
                             </property>
                         </tabular-hierarchy>
@@ -2710,7 +2711,7 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                                                                 <property name="sort">
                                                                     <sort-element>
                                                                         <expression name="key" type="javascript">dimension["Period"]["period"]["periodNb"]</expression>
-                                                                        <property name="direction">desc</property>
+                                                                        <property name="direction">asc</property>
                                                                         <property name="strength">-1</property>
                                                                         <property name="member">
                                                                             <member-value>
@@ -3094,7 +3095,7 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                                             </structure>
                                             <structure>
                                                 <property name="name">period</property>
-                                                <expression name="expression">dimension["Period"]["period"]</expression>
+                                                <expression name="expression" type="javascript">dimension["Period"]["period"]["period"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>
