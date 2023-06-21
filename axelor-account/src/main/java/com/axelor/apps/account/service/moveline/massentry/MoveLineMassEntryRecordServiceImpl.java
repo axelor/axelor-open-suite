@@ -129,6 +129,7 @@ public class MoveLineMassEntryRecordServiceImpl implements MoveLineMassEntryReco
   @Override
   public void resetPartner(MoveLineMassEntry moveLine, MoveLineMassEntry newMoveLine) {
     if (newMoveLine == null) {
+      moveLine.setAccount(null);
       moveLine.setPartner(null);
       moveLine.setPartnerId(null);
       moveLine.setPartnerSeq(null);
@@ -195,6 +196,8 @@ public class MoveLineMassEntryRecordServiceImpl implements MoveLineMassEntryReco
           && analyticDistributionTemplate != null) {
         moveLine.setAnalyticDistributionTemplate(analyticDistributionTemplate);
       }
+    } else {
+      moveLine.setAccount(null);
     }
     moveLine.setTaxLine(moveLoadDefaultConfigService.getTaxLine(move, moveLine, accountingAccount));
   }
