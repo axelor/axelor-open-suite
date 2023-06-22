@@ -23,15 +23,13 @@ import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.stock.db.FreightCarrierMode;
 import com.axelor.apps.stock.db.Incoterm;
 import com.axelor.apps.stock.db.ShipmentMode;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
-import com.axelor.apps.stock.db.TrackingNumber;
+import com.axelor.apps.stock.rest.dto.StockMoveLinePostDTO;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -111,10 +109,7 @@ public interface StockMoveService {
       StockLocation fromStockLocation,
       StockLocation toStockLocation,
       Company company,
-      Product product,
-      TrackingNumber trackNb,
-      BigDecimal movedQty,
-      Unit unit)
+      List<StockMoveLinePostDTO> stockMoveLines)
       throws AxelorException;
 
   public void validate(StockMove stockMove) throws AxelorException;

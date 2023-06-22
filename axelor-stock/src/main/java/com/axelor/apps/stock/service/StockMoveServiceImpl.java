@@ -45,7 +45,6 @@ import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
-import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.repo.InventoryLineRepository;
 import com.axelor.apps.stock.db.repo.InventoryRepository;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
@@ -53,6 +52,7 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.report.IReport;
+import com.axelor.apps.stock.rest.dto.StockMoveLinePostDTO;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
@@ -237,10 +237,7 @@ public class StockMoveServiceImpl implements StockMoveService {
       StockLocation fromStockLocation,
       StockLocation toStockLocation,
       Company company,
-      Product product,
-      TrackingNumber trackNb,
-      BigDecimal movedQty,
-      Unit unit)
+      List<StockMoveLinePostDTO> stockMoveLines)
       throws AxelorException {
 
     StockMove stockMove = new StockMove();
@@ -257,31 +254,48 @@ public class StockMoveServiceImpl implements StockMoveService {
     stockMove.setEstimatedDate(LocalDate.now());
     stockMoveRepo.save(stockMove);
 
-    StockMoveLine line = new StockMoveLine();
-    line.setStockMove(stockMove);
-    line.setProduct(product);
-    stockMoveLineService.setProductInfo(stockMove, line, company);
-    if (product.getTrackingNumberConfiguration() != null) {
-      line.setTrackingNumber(trackNb);
-    }
-    line.setQty(movedQty);
-    line.setRealQty(movedQty);
-    line.setIsRealQtyModifiedByUser(true);
-    line.setUnitPriceUntaxed(product.getLastPurchasePrice());
-    line.setUnit(unit);
-    stockMoveLineRepo.save(line);
-    stockMoveLineService.setAvailableStatus(line);
-    stockMoveLineService.compute(line, stockMove);
-    stockMoveLineRepo.save(line);
-
     ArrayList<StockMoveLine> stockMoveLineList = new ArrayList<>();
-    stockMoveLineList.add(line);
+    if (stockMoveLines != null) {
+      for (StockMoveLinePostDTO stockMoveLinePostDTO : stockMoveLines) {
+        stockMoveLineList.add(createStockMoveLine(stockMove, stockMoveLinePostDTO));
+      }
+    }
+
     stockMove.setStockMoveLineList(stockMoveLineList);
     stockMoveRepo.save(stockMove);
 
     this.validate(stockMove);
 
     return stockMove;
+  }
+
+  /**
+   * Usage mostly for mobile aos
+   *
+   * @param stockMove
+   * @param stockMoveLinePostDTO
+   * @throws AxelorException
+   */
+  protected StockMoveLine createStockMoveLine(
+      StockMove stockMove, StockMoveLinePostDTO stockMoveLinePostDTO) throws AxelorException {
+    StockMoveLine line = new StockMoveLine();
+    line.setStockMove(stockMove);
+    Product product = stockMoveLinePostDTO.getProduct();
+    line.setProduct(product);
+    stockMoveLineService.setProductInfo(stockMove, line, stockMove.getCompany());
+
+    if (product.getTrackingNumberConfiguration() != null) {
+      line.setTrackingNumber(stockMoveLinePostDTO.getTrackingNumber());
+    }
+    line.setQty(stockMoveLinePostDTO.getExpectedQty());
+    line.setRealQty(stockMoveLinePostDTO.getRealQty());
+    line.setIsRealQtyModifiedByUser(true);
+    line.setUnitPriceUntaxed(product.getLastPurchasePrice());
+    line.setUnit(stockMoveLinePostDTO.getUnit());
+    stockMoveLineRepo.save(line);
+    stockMoveLineService.setAvailableStatus(line);
+    stockMoveLineService.compute(line, stockMove);
+    return stockMoveLineRepo.save(line);
   }
 
   @Override
