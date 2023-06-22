@@ -67,6 +67,12 @@
 
   <grid name="move-line-account-reconcile-group-grid" title="Move lines"
     model="com.axelor.apps.account.db.MoveLine">
+    <toolbar>
+      <button name="accountingReconcileBtn" title="Accounting Reconcile"
+        onClick="action-method-accounting-reconcile"/>
+      <button name="calculateBtn" title="Calculation of totals"
+        onClick="action-account-move-line-method-calculate-balance"/>
+    </toolbar>
     <field name="name"/>
     <field name="date"/>
     <field name="move.period"/>
