@@ -831,7 +831,9 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     ContractVersion contractVersion = contract.getCurrentContractVersion();
     if (CollectionUtils.isNotEmpty(contractVersion.getContractLineList())) {
       for (ContractLine contractLine : contractVersion.getContractLineList()) {
-        contractLine.setInitialUnitPrice(contractLine.getPrice());
+        if (contractLine.getInitialUnitPrice() == null) {
+          contractLine.setInitialUnitPrice(contractLine.getPrice());
+        }
         contractLineRepo.save(contractLine);
       }
     }

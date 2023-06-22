@@ -30,7 +30,7 @@
         <field name="productName"/>
         <field name="qty" readonlyIf="isConsumptionLine"
           onChange="action-method-contract-line-compute-total"/>
-        <field name="initialUnitPrice" readonly="true"/>
+        <field name="initialUnitPrice" readonly="true" showIf="initialUnitPrice"/>
         <field name="price" onChange="action-method-contract-line-compute-total"/>
         <panel name="discountPanel" colSpan="12">
           <field name="discountTypeSelect" colSpan="3"
