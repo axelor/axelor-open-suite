@@ -1,3 +1,30 @@
+## [6.4.17] (2023-06-22)
+
+#### Fixed
+
+* Sale order line: fixed the view, move the hidden fields to a separate panel which avoids unnecessary blank space and the product field appears in its proper position.
+* Accounting batch: removed period check on consistency accounting batch.
+* Stock move: date of realisation of the stock move will be emptied when planning a stock move.
+* Move template: fixed invoice terms not being created when generating a move from a template.
+* Move: added missing translation when a move is deleted.
+* Bank reconciliation line: prevent new line creation outside of a bank reconciliation.
+* Job position: fixed english title "Responsible" instead of "Hiring manager".
+* Account: fixed misleading error message when company has no partner.
+* Base printings: fixed an issue were pictures with specific filenames were not displayed in the printings.
+* Invoice: fixed an issue where invoice terms information were displayed on the invoice printing even when the invoice term feature was disabled.
+* Base printings: fixed an issue were pictures with specific filenames were not displayed in the printings.
+* Invoice: do not set financial discount on refunds.
+* Reconcile: fixed an issue where letter button was shown if the group was unlettered.
+* Invoice: added missing translation on an error message that can be shown during invoice ventilation.
+* Sale order: fixed discount information missing on reports.
+* Invoice: fixed an issue happening when we try to save an invoice with an analytic move line on invoice line.
+* Stock Move: fixed a bug where future quantity was not correctly updated.
+* Partner: fixed an issue where blocking date was not displayed
+* Move: fixed currency exchange rate wrongly set on counterpart generation.
+* Accounting Batch: accounting cut-off batch now takes into account 'include not stock managed product' boolean for the preview.
+* Sale order: fixed an issue when computing invoicing state where the invoiced was marked as not invoiced instead of partially invoiced.
+* Trading name: fixed wrong french translation for trading name ('Nom commercial' -> 'Enseigne').
+
 ## [6.4.16] (2023-06-08)
 
 #### Fixed
@@ -793,6 +820,7 @@ A new mobile application for stock and production modules are now available, the
 * Account budget: Remove checkAvailableBudget in budget, which was unused.
 * Accounting report: removed old specific export format for Sale, Purchase, Treasury, Refund (1006 to 1009 accounting report type). Already replaced per the generic Journal entry export with a filter on the journal.
 
+[6.4.17]: https://github.com/axelor/axelor-open-suite/compare/v6.4.16...v6.4.17
 [6.4.16]: https://github.com/axelor/axelor-open-suite/compare/v6.4.15...v6.4.16
 [6.4.15]: https://github.com/axelor/axelor-open-suite/compare/v6.4.14...v6.4.15
 [6.4.14]: https://github.com/axelor/axelor-open-suite/compare/v6.4.13...v6.4.14
