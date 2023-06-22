@@ -218,8 +218,6 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
             <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
-            <property name="odaUser"></property>
-            <encrypted-property name="odaPassword" encryptionID="base64"></encrypted-property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -10548,13 +10546,7 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
 
 &amp;nbsp;<VALUE-OF>row._outer["translation"]</VALUE-OF>&amp;nbsp;
 
-<VALUE-OF>
-			if(params["Locale"].value != 'en') {
-				Formatter.format( row._outer._outer["origin_date"],  "dd/MM/yyyy");
-			} else {
-				Formatter.format( row._outer._outer["origin_date"],  "MM/dd/yyyy");
-			}
-</VALUE-OF>]]></text-property>
+<VALUE-OF format="Short Date">row._outer._outer["origin_date"]</VALUE-OF>]]></text-property>
                                                 </text>
                                             </cell>
                                         </row>
