@@ -192,15 +192,18 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
       return null;
     }
 
-    Optional<String> firstAuthorizedOriginOpt =
-        Arrays.stream(authorizedFunctionalOriginSelect.split(",")).findFirst();
-
-    if (move.getMassEntryStatusSelect() == MoveRepository.MASS_ENTRY_STATUS_NULL
-        || firstAuthorizedOriginOpt.isEmpty()) {
-      return null;
+    if (move.getMassEntryStatusSelect() == MoveRepository.MASS_ENTRY_STATUS_NULL) {
+      // standard behavior: fill an origin if there is only one authorized
+      return authorizedFunctionalOriginSelect.split(",").length == 1
+          ? Integer.valueOf(authorizedFunctionalOriginSelect)
+          : null;
+    } else {
+      // behavior for mass entry: take the first authorized functional origin select
+      return Arrays.stream(authorizedFunctionalOriginSelect.split(","))
+          .findFirst()
+          .map(Integer::valueOf)
+          .orElse(null);
     }
-
-    return Integer.valueOf(firstAuthorizedOriginOpt.get());
   }
 
   @Override
