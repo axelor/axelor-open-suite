@@ -265,7 +265,8 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
           purchaseOrderLineServiceSupplychainImpl.computeUndeliveredQty(purchaseOrderLine);
 
       if (qty.signum() > 0 && !existActiveStockMoveForPurchaseOrderLine(purchaseOrderLine)) {
-        this.createStockMoveLine(stockMove, qualityStockMove, purchaseOrderLine, qty);
+        this.createStockMoveLine(
+            stockMove, qualityStockMove, purchaseOrderLine, qty, startLocation, endLocation);
       }
     }
     if (stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()) {
@@ -344,7 +345,9 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
       StockMove stockMove,
       StockMove qualityStockMove,
       PurchaseOrderLine purchaseOrderLine,
-      BigDecimal qty)
+      BigDecimal qty,
+      StockLocation fromStockLocation,
+      StockLocation toStockLocation)
       throws AxelorException {
 
     StockMoveLine stockMoveLine = null;
@@ -355,7 +358,11 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
           createProductStockMoveLine(
               purchaseOrderLine,
               qty,
-              needControlOnReceipt(purchaseOrderLine) ? qualityStockMove : stockMove);
+              needControlOnReceipt(purchaseOrderLine) ? qualityStockMove : stockMove,
+              fromStockLocation,
+              needControlOnReceipt(purchaseOrderLine)
+                  ? toStockLocation
+                  : purchaseOrderLine.getPurchaseOrder().getStockLocation());
 
     } else if (purchaseOrderLine.getIsTitleLine()) {
       stockMoveLine = createTitleStockMoveLine(purchaseOrderLine, stockMove);
@@ -379,7 +386,11 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
   }
 
   protected StockMoveLine createProductStockMoveLine(
-      PurchaseOrderLine purchaseOrderLine, BigDecimal qty, StockMove stockMove)
+      PurchaseOrderLine purchaseOrderLine,
+      BigDecimal qty,
+      StockMove stockMove,
+      StockLocation fromStockLocation,
+      StockLocation toStockLocation)
       throws AxelorException {
 
     PurchaseOrder purchaseOrder = purchaseOrderLine.getPurchaseOrder();
@@ -451,7 +462,9 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
         purchaseOrder.getInAti(),
         taxRate,
         null,
-        purchaseOrderLine);
+        purchaseOrderLine,
+        fromStockLocation,
+        toStockLocation);
   }
 
   protected StockMoveLine createTitleStockMoveLine(
@@ -472,7 +485,9 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
         purchaseOrderLine.getPurchaseOrder().getInAti(),
         null,
         null,
-        purchaseOrderLine);
+        purchaseOrderLine,
+        null,
+        null);
   }
 
   public void cancelReceipt(PurchaseOrder purchaseOrder) throws AxelorException {

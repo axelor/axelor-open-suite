@@ -15,7 +15,7 @@ import com.axelor.apps.account.service.move.MoveControlService;
 import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
-import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryToolService;
+import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryRecordService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
@@ -49,9 +49,9 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
   protected MoveLineControlService moveLineControlService;
   protected MoveValidateService moveValidateService;
   protected MoveControlService moveControlService;
-  protected MoveLineMassEntryToolService moveLineMassEntryToolService;
   protected AppAccountService appAccountService;
   protected PeriodServiceAccount periodServiceAccount;
+  protected MoveLineMassEntryRecordService moveLineMassEntryRecordService;
 
   @Inject
   public MassEntryVerificationServiceImpl(
@@ -60,17 +60,17 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
       MoveLineControlService moveLineControlService,
       MoveValidateService moveValidateService,
       MoveControlService moveControlService,
-      MoveLineMassEntryToolService moveLineMassEntryToolService,
       AppAccountService appAccountService,
-      PeriodServiceAccount periodServiceAccount) {
+      PeriodServiceAccount periodServiceAccount,
+      MoveLineMassEntryRecordService moveLineMassEntryRecordService) {
     this.periodService = periodService;
     this.moveLineToolService = moveLineToolService;
     this.moveLineControlService = moveLineControlService;
     this.moveValidateService = moveValidateService;
     this.moveControlService = moveControlService;
-    this.moveLineMassEntryToolService = moveLineMassEntryToolService;
     this.appAccountService = appAccountService;
     this.periodServiceAccount = periodServiceAccount;
+    this.moveLineMassEntryRecordService = moveLineMassEntryRecordService;
   }
 
   @Override
@@ -167,7 +167,7 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
     if (parentMove.getJournal().getJournalType().getTechnicalTypeSelect()
             == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE
         && !moveLine.getPartner().equals(newMoveLine.getPartner())) {
-      moveLineMassEntryToolService.setPartnerChanges(moveLine, newMoveLine);
+      moveLineMassEntryRecordService.resetPartner(moveLine, newMoveLine);
     }
 
     // Check move line mass entry partner bank details

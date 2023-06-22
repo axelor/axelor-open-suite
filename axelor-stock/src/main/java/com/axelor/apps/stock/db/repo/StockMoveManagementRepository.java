@@ -98,11 +98,7 @@ public class StockMoveManagementRepository extends StockMoveRepository {
     Long stockMoveId = (Long) json.get("id");
     StockMove stockMove = find(stockMoveId);
 
-    if (stockMove.getStatusSelect() > STATUS_PLANNED
-        || stockMove.getStockMoveLineList() == null
-        || (stockMove.getFromStockLocation() != null
-            && stockMove.getFromStockLocation().getTypeSelect()
-                == StockLocationRepository.TYPE_VIRTUAL)) {
+    if (stockMove.getStatusSelect() > STATUS_PLANNED || stockMove.getStockMoveLineList() == null) {
       return super.populate(json, context);
     }
 
@@ -110,16 +106,19 @@ public class StockMoveManagementRepository extends StockMoveRepository {
     for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
 
       if (stockMoveLine != null
-          && stockMoveLine.getProduct() != null
-          && stockMoveLine.getProduct().getProductTypeSelect() != null
-          && stockMoveLine
-              .getProduct()
-              .getProductTypeSelect()
-              .equals(ProductRepository.PRODUCT_TYPE_SERVICE)) {
+              && stockMoveLine.getProduct() != null
+              && stockMoveLine.getProduct().getProductTypeSelect() != null
+              && stockMoveLine
+                  .getProduct()
+                  .getProductTypeSelect()
+                  .equals(ProductRepository.PRODUCT_TYPE_SERVICE)
+          || (stockMoveLine.getFromStockLocation() != null
+              && stockMoveLine.getFromStockLocation().getTypeSelect()
+                  == StockLocationRepository.TYPE_VIRTUAL)) {
         continue;
       }
       Beans.get(StockMoveLineService.class)
-          .updateAvailableQty(stockMoveLine, stockMove.getFromStockLocation());
+          .updateAvailableQty(stockMoveLine, stockMoveLine.getFromStockLocation());
       Product product = stockMoveLine.getProduct();
       if (stockMoveLine.getAvailableQty().compareTo(stockMoveLine.getRealQty()) >= 0
           || product != null && !product.getStockManaged()) {

@@ -60,4 +60,6 @@ public interface MoveLineAttrsService {
   void addAnalyticDistributionTemplateDomain(Move move, Map<String, Map<String, Object>> attrsMap);
 
   void addPartnerRequired(Move move, Map<String, Map<String, Object>> attrsMap);
+
+  void changeFocus(Move move, MoveLine moveLine, Map<String, Map<String, Object>> attrsMap);
 }

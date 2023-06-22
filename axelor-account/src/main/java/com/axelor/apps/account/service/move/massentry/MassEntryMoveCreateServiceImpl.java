@@ -14,7 +14,6 @@ import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryRecordService;
-import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
@@ -39,13 +38,11 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
   protected PeriodServiceAccount periodServiceAccount;
   protected MoveValidateService moveValidateService;
   protected PeriodService periodService;
-  protected MassEntryToolService massEntryToolService;
-  protected MoveLineMassEntryToolService moveLineMassEntryToolService;
   protected MoveLineMassEntryRepository moveLineMassEntryRepository;
   protected MoveSimulateService moveSimulateService;
   protected MoveRepository moveRepository;
-  protected AnalyticMoveLineRepository analyticMoveLineRepository;
   protected MoveLineMassEntryRecordService moveLineMassEntryRecordService;
+  protected AnalyticMoveLineRepository analyticMoveLineRepository;
 
   @Inject
   public MassEntryMoveCreateServiceImpl(
@@ -55,26 +52,22 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
       PeriodServiceAccount periodServiceAccount,
       MoveValidateService moveValidateService,
       PeriodService periodService,
-      MassEntryToolService massEntryToolService,
-      MoveLineMassEntryToolService moveLineMassEntryToolService,
       MoveLineMassEntryRepository moveLineMassEntryRepository,
       MoveSimulateService moveSimulateService,
       MoveRepository moveRepository,
-      AnalyticMoveLineRepository analyticMoveLineRepository,
-      MoveLineMassEntryRecordService moveLineMassEntryRecordService) {
+      MoveLineMassEntryRecordService moveLineMassEntryRecordService,
+      AnalyticMoveLineRepository analyticMoveLineRepository) {
     this.moveCreateService = moveCreateService;
     this.moveLineCreateService = moveLineCreateService;
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
     this.periodServiceAccount = periodServiceAccount;
     this.moveValidateService = moveValidateService;
     this.periodService = periodService;
-    this.massEntryToolService = massEntryToolService;
-    this.moveLineMassEntryToolService = moveLineMassEntryToolService;
     this.moveLineMassEntryRepository = moveLineMassEntryRepository;
     this.moveSimulateService = moveSimulateService;
     this.moveRepository = moveRepository;
-    this.analyticMoveLineRepository = analyticMoveLineRepository;
     this.moveLineMassEntryRecordService = moveLineMassEntryRecordService;
+    this.analyticMoveLineRepository = analyticMoveLineRepository;
   }
 
   @Override
@@ -132,7 +125,8 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
 
         moveLine.setTaxLine(moveLineElement.getTaxLine());
 
-        moveLineMassEntryToolService.setAnalyticsFields(moveLine, moveLineElement);
+        moveLineComputeAnalyticService.generateAnalyticMoveLines(moveLine);
+        moveLineMassEntryRecordService.setAnalytics(moveLine, moveLineElement);
         if (ObjectUtils.notEmpty(moveLineElement.getAnalyticMoveLineList())) {
           moveLineElement
               .getAnalyticMoveLineList()

@@ -28,6 +28,7 @@ import com.axelor.apps.crm.db.report.IReport;
 import com.axelor.apps.crm.exception.CrmExceptionMessage;
 import com.axelor.apps.crm.service.LeadService;
 import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -181,6 +182,35 @@ public class LeadController {
           .assignToMeMultipleLead(
               leadRepo.all().filter("id in ?1", request.getContext().get("_ids")).fetch());
       response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void viewLeadWithSameDomainName(ActionRequest request, ActionResponse response) {
+    try {
+      Lead lead = request.getContext().asType(Lead.class);
+      lead = Beans.get(LeadRepository.class).find(lead.getId());
+
+      List<Lead> leadList = Beans.get(LeadService.class).getLeadsWithSameDomainName(lead);
+
+      if (ObjectUtils.notEmpty(leadList)) {
+        response.setView(null);
+
+        response.setView(
+            ActionView.define(I18n.get("Lead with same domain name"))
+                .model(Lead.class.getName())
+                .add("form", "lead-with-same-domain-name-form")
+                .param("popup", "true")
+                .param("show-toolbar", "false")
+                .param("show-confirm", "true")
+                .param("popup-save", "false")
+                .param("forceEdit", "false")
+                .context("_leadList", leadList)
+                .context("_showRecord", lead.getId())
+                .map());
+      }
+
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

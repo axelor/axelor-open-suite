@@ -164,4 +164,10 @@
     <view type="form" name="appraisal-type-form"/>
   </action-view>
 
+  <!-- My HR -->
+
+  <menuitem name="my-hr-appraisal-all-appraisals" title="All my Appraisals"
+    action="appraisal.all.appraisals" parent="my-hr-root" order="600"
+    if="__config__.app.isApp('appraisal')"/>
+
 </object-views>

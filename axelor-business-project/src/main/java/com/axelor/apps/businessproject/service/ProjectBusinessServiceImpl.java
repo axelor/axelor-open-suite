@@ -32,6 +32,7 @@ import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectHistoryLine;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.ProjectTemplate;
 import com.axelor.apps.project.db.repo.ProjectRepository;
@@ -53,8 +54,12 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class ProjectBusinessServiceImpl extends ProjectServiceImpl
@@ -67,6 +72,9 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
   protected ProjectTaskReportingValuesComputingService projectTaskReportingValuesComputingService;
 
   public static final int BIG_DECIMAL_SCALE = 2;
+  public static final String FA_LEVEL_UP = "fa-level-up";
+  public static final String FA_LEVEL_DOWN = "fa-level-down";
+  public static final String ICON_EQUAL = "icon-equal";
 
   @Inject
   public ProjectBusinessServiceImpl(
@@ -443,6 +451,150 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
       return duration.divide(numberHoursADay, BIG_DECIMAL_SCALE, RoundingMode.HALF_UP);
     } else {
       return duration;
+    }
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  @Override
+  public void backupToProjectHistory(Project project) {
+    ProjectHistoryLine projectHistoryLine = new ProjectHistoryLine();
+    projectHistoryLine.setSoldTime(project.getSoldTime());
+    projectHistoryLine.setUpdatedTime(project.getUpdatedTime());
+    projectHistoryLine.setPlannedTime(project.getPlannedTime());
+    projectHistoryLine.setSpentTime(project.getSpentTime());
+    projectHistoryLine.setPercentageOfProgress(project.getPercentageOfProgress());
+    projectHistoryLine.setPercentageOfConsumption(project.getPercentageOfConsumption());
+    projectHistoryLine.setRemainingAmountToDo(project.getRemainingAmountToDo());
+
+    projectHistoryLine.setTurnover(project.getTurnover());
+    projectHistoryLine.setInitialCosts(project.getInitialCosts());
+    projectHistoryLine.setInitialMargin(project.getInitialMargin());
+    projectHistoryLine.setInitialMarkup(project.getInitialMarkup());
+    projectHistoryLine.setRealTurnover(project.getRealTurnover());
+    projectHistoryLine.setRealCosts(project.getRealCosts());
+    projectHistoryLine.setRealMargin(project.getRealMargin());
+    projectHistoryLine.setRealMarkup(project.getRealMarkup());
+    projectHistoryLine.setForecastCosts(project.getForecastCosts());
+    projectHistoryLine.setForecastMargin(project.getForecastMargin());
+    projectHistoryLine.setForecastMarkup(project.getForecastMarkup());
+
+    project.addProjectHistoryLineListItem(projectHistoryLine);
+
+    projectRepository.save(project);
+  }
+
+  @Override
+  public Map<String, Object> processRequestToDisplayTimeReporting(Long id) throws AxelorException {
+
+    Project project = projectRepository.find(id);
+
+    Map<String, Object> data = new HashMap<>();
+    data.put("soldTime", project.getSoldTime());
+    data.put("updatedTime", project.getUpdatedTime());
+    data.put("plannedTime", project.getPlannedTime());
+    data.put("spentTime", project.getSpentTime());
+    data.put(
+        "unit",
+        Optional.ofNullable(project.getProjectTimeUnit())
+            .map(unit -> unit.getName() + "(s)")
+            .orElse(""));
+    data.put("progress", project.getPercentageOfProgress() + " %");
+    data.put("consumption", project.getPercentageOfConsumption() + " %");
+    data.put("remaining", project.getRemainingAmountToDo());
+
+    return data;
+  }
+
+  @Override
+  public Map<String, Object> processRequestToDisplayFinancialReporting(Long id)
+      throws AxelorException {
+
+    Project project = projectRepository.find(id);
+
+    Map<String, Object> data = new HashMap<>();
+    BigDecimal turnover = project.getTurnover();
+    BigDecimal initialCosts = project.getInitialCosts();
+    BigDecimal initialMargin = project.getInitialMargin();
+    BigDecimal initialMarkup = project.getInitialMarkup();
+    BigDecimal realTurnover = project.getRealTurnover();
+    BigDecimal realCosts = project.getRealCosts();
+    BigDecimal realMargin = project.getRealMargin();
+    BigDecimal realMarkup = project.getRealMarkup();
+    BigDecimal forecastCosts = project.getForecastCosts();
+    BigDecimal forecastMargin = project.getForecastMargin();
+    BigDecimal forecastMarkup = project.getForecastMarkup();
+
+    data.put("turnover", turnover);
+    data.put("initialCosts", initialCosts);
+    data.put("initialMargin", initialMargin);
+    data.put("initialMarkup", initialMarkup);
+    data.put("realTurnover", realTurnover);
+    data.put("realCosts", realCosts);
+    data.put("realMargin", realMargin);
+    data.put("realMarkup", realMarkup);
+    data.put("forecastCosts", forecastCosts);
+    data.put("forecastMargin", forecastMargin);
+    data.put("forecastMarkup", forecastMarkup);
+
+    List<ProjectHistoryLine> projectHistoryLineList = project.getProjectHistoryLineList();
+
+    if (projectHistoryLineList.isEmpty()) {
+      return data;
+    }
+
+    // compare to previous data
+    Comparator<ProjectHistoryLine> projectHistoryLineComparator =
+        Comparator.comparing(ProjectHistoryLine::getCreatedOn);
+
+    ProjectHistoryLine projectHistoryLine =
+        projectHistoryLineList.stream().max(projectHistoryLineComparator).get();
+
+    data.put(
+        "turnoverProgress", getProgressIcon(projectHistoryLine.getTurnover().compareTo(turnover)));
+    data.put(
+        "initialCostsProgress",
+        getProgressIcon(projectHistoryLine.getInitialCosts().compareTo(initialCosts)));
+    data.put(
+        "initialMarginProgress",
+        getProgressIcon(projectHistoryLine.getInitialMargin().compareTo(initialMargin)));
+    data.put(
+        "initialMarkupProgress",
+        getProgressIcon(projectHistoryLine.getInitialMarkup().compareTo(initialMarkup)));
+    data.put(
+        "realTurnoverProgress",
+        getProgressIcon(projectHistoryLine.getRealTurnover().compareTo(realTurnover)));
+    data.put(
+        "realCostsProgress",
+        getProgressIcon(projectHistoryLine.getRealCosts().compareTo(realCosts)));
+    data.put(
+        "realMarginProgress",
+        getProgressIcon(projectHistoryLine.getRealMargin().compareTo(realMargin)));
+    data.put(
+        "realMarkupProgress",
+        getProgressIcon(projectHistoryLine.getRealMarkup().compareTo(realMarkup)));
+    data.put(
+        "forecastCostsProgress",
+        getProgressIcon(projectHistoryLine.getForecastCosts().compareTo(forecastCosts)));
+    data.put(
+        "forecastMarginProgress",
+        getProgressIcon(projectHistoryLine.getForecastMargin().compareTo(forecastMargin)));
+    data.put(
+        "forecastMarkupProgress",
+        getProgressIcon(projectHistoryLine.getForecastMarkup().compareTo(forecastMarkup)));
+
+    return data;
+  }
+
+  protected String getProgressIcon(int comparisonResult) {
+    switch (comparisonResult) {
+      case 0:
+        return ICON_EQUAL;
+      case 1:
+        return FA_LEVEL_DOWN;
+      case -1:
+        return FA_LEVEL_UP;
+      default:
+        return "";
     }
   }
 }
