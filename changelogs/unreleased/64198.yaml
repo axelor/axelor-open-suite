@@ -1,0 +1,8 @@
+---
+title: 'INVOICE : mandatory reference to the original invoice on the printing'
+type: feature
+description:
+  The credit invoice include all the compulsory information on the original invoice.
+  It also contain the credit note referring to the invoice it cancels or modifies. For example -  "In reimbursement of Invoice n°XXXX, issued on DD/MM/YYYY".
+
+
