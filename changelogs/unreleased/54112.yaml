@@ -1,4 +1,0 @@
-title: Dates priorities in a sequence.
-type: fix
-description:
-  When configuring a sequence, end date of a sequence cannot be prior to the starting date and vice versa.
