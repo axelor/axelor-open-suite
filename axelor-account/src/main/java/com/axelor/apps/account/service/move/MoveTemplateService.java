@@ -272,7 +272,7 @@ public class MoveTemplateService {
               moveLine.setAnalyticMoveLineList(analyticMoveLineList);
             }
 
-            moveLineInvoiceTermService.generateDefaultInvoiceTerm(move, moveLine, false);
+            moveLineInvoiceTermService.generateDefaultInvoiceTerm(moveLine, false);
 
             counter++;
           }
