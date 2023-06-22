@@ -133,6 +133,7 @@ public class MoveLineMassEntryRecordServiceImpl implements MoveLineMassEntryReco
                 moveLine.addAnalyticMoveLineMassEntryListItem(
                     analyticMoveLineRepository.copy(analyticMoveLine, false));
               });
+      moveLine.clearAnalyticMoveLineList();
     }
   }
 }
