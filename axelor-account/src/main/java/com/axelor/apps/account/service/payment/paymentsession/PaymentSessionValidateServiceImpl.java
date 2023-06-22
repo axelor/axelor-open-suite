@@ -1147,17 +1147,14 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       Map<LocalDate, Map<Partner, List<Move>>> moveDateMap,
       Map<Move, BigDecimal> paymentAmountMap)
       throws AxelorException {
-
+    MoveLine placementMoveLine = null;
     if (this.generatePaymentsFirst(paymentSession)) {
       this.generatePendingPaymentFromInvoiceTerm(paymentSession, invoiceTerm);
-    } else {
-      MoveLine placementMoveLine = processLcrPlacement(paymentSession, invoiceTerm, moveDateMap);
-
-      if (paymentSession.getAccountingTriggerSelect()
-          == PaymentSessionRepository.ACCOUNTING_TRIGGER_IMMEDIATE) {
-        Move paymentMove =
-            processLcrPayment(paymentSession, invoiceTerm, placementMoveLine, paymentAmountMap);
-      }
+    }
+    processLcrPlacement(paymentSession, invoiceTerm, moveDateMap);
+    if (paymentSession.getAccountingTriggerSelect()
+        == PaymentSessionRepository.ACCOUNTING_TRIGGER_IMMEDIATE) {
+      processLcrPayment(paymentSession, invoiceTerm, paymentAmountMap);
     }
   }
 
@@ -1197,7 +1194,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
   }
 
   @Override
-  public MoveLine processLcrPlacement(
+  public void processLcrPlacement(
       PaymentSession paymentSession,
       InvoiceTerm invoiceTerm,
       Map<LocalDate, Map<Partner, List<Move>>> moveDateMap)
@@ -1206,7 +1203,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     if (invoiceTerm.getMoveLine() == null
         || invoiceTerm.getMoveLine().getMove() == null
         || invoiceTerm.getMoveLine().getMove().getCompany() == null) {
-      return null;
+      return;
     }
 
     AccountConfig accountConfig =
@@ -1267,6 +1264,8 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
               !out);
     }
 
+    invoiceTerm.setPlacementMoveLine(counterPartMoveLine);
+
     move.setDescription(
         this.getMoveDescription(paymentSession, counterPartMoveLine.getCurrencyAmount())
             .concat(String.format(" - %s", I18n.get("Placement"))));
@@ -1278,16 +1277,18 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
 
     invoiceTermService.payInvoiceTerms(moveLine.getInvoiceTermList());
     invoiceTermService.payInvoiceTerms(List.of(invoiceTerm));
-
-    return counterPartMoveLine;
   }
 
-  public Move processLcrPayment(
+  @Override
+  public void processLcrPayment(
       PaymentSession paymentSession,
       InvoiceTerm invoiceTerm,
-      MoveLine placementMoveLine,
       Map<Move, BigDecimal> paymentAmountMap)
       throws AxelorException {
+
+    if (invoiceTerm.getPlacementMoveLine() == null) {
+      return;
+    }
 
     Move move =
         paymentAmountMap.size() == 1 ? paymentAmountMap.keySet().stream().findFirst().get() : null;
@@ -1308,10 +1309,10 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     MoveLine moveLine =
         this.generateMoveLine(
             move,
-            placementMoveLine.getPartner(),
-            placementMoveLine.getAccount(),
+            invoiceTerm.getPlacementMoveLine().getPartner(),
+            invoiceTerm.getPlacementMoveLine().getAccount(),
             invoiceTerm.getAmountPaid(),
-            placementMoveLine.getOrigin(),
+            invoiceTerm.getPlacementMoveLine().getOrigin(),
             this.getMoveLineDescription(paymentSession),
             out);
 
@@ -1328,32 +1329,43 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
             .findFirst()
             .orElse(null);
 
-    BigDecimal currencyAmount = BigDecimal.ZERO;
     if (cashPartMoveLine != null) {
-      currencyAmount = cashPartMoveLine.getCurrencyAmount();
-      move.removeMoveLineListItem(cashPartMoveLine);
+
+      if (cashPartMoveLine.getCredit().signum() != 0) {
+        cashPartMoveLine.setCredit(cashPartMoveLine.getCredit().add(invoiceTerm.getAmountPaid()));
+      } else {
+        cashPartMoveLine.setDebit(cashPartMoveLine.getDebit().add(invoiceTerm.getAmountPaid()));
+      }
+      cashPartMoveLine.setCurrencyAmount(
+          cashPartMoveLine.getCurrencyAmount().add(invoiceTerm.getAmountPaid()));
+
+    } else {
+      cashPartMoveLine =
+          this.generateMoveLine(
+              move,
+              invoiceTerm.getMoveLine().getPartner(),
+              account,
+              invoiceTerm.getAmountPaid(),
+              invoiceTerm.getMoveLine().getOrigin(),
+              this.getMoveLineDescription(paymentSession),
+              !out);
+    }
+
+    if (paymentAmountMap.get(move) != null) {
+      paymentAmountMap.replace(move, cashPartMoveLine.getCurrencyAmount());
     }
 
     move.setDescription(
-        this.getMoveDescription(paymentSession, invoiceTerm.getAmountPaid().add(currencyAmount))
+        this.getMoveDescription(paymentSession, cashPartMoveLine.getCurrencyAmount())
             .concat(String.format(" - %s", I18n.get("Payment"))));
-
-    cashPartMoveLine =
-        this.generateMoveLine(
-            move,
-            invoiceTerm.getMoveLine().getPartner(),
-            account,
-            invoiceTerm.getAmountPaid().add(currencyAmount),
-            invoiceTerm.getMoveLine().getOrigin(),
-            this.getMoveLineDescription(paymentSession),
-            !out);
 
     moveComputeService.autoApplyCutOffDates(move);
 
     Reconcile reconcile =
-        reconcileService.reconcile(moveLine, placementMoveLine, null, false, false);
+        reconcileService.reconcile(
+            moveLine, invoiceTerm.getPlacementMoveLine(), null, false, false);
 
-    invoiceTermService.payInvoiceTerms(placementMoveLine.getInvoiceTermList());
+    invoiceTermService.payInvoiceTerms(invoiceTerm.getPlacementMoveLine().getInvoiceTermList());
     invoiceTermService.payInvoiceTerms(moveLine.getInvoiceTermList());
 
     reconcileService.updatePayment(
@@ -1364,7 +1376,5 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
         move,
         invoiceTerm.getAmountPaid(),
         true);
-
-    return move;
   }
 }

@@ -447,9 +447,7 @@ public class PaymentSessionValidateBankPaymentServiceImpl
       throws AxelorException {
     super.processInvoiceTermLcr(paymentSession, invoiceTerm, moveDateMap, paymentAmountMap);
 
-    if (paymentSession.getAccountingTriggerSelect()
-            != PaymentSessionRepository.ACCOUNTING_TRIGGER_IMMEDIATE
-        && paymentSession.getBankOrder() != null
+    if (paymentSession.getBankOrder() != null
         && paymentSession.getStatusSelect() != PaymentSessionRepository.STATUS_AWAITING_PAYMENT) {
       this.createOrUpdateBankOrderLineFromInvoiceTerm(
           paymentSession, invoiceTerm, paymentSession.getBankOrder());

@@ -20,7 +20,6 @@ package com.axelor.apps.account.service.payment.paymentsession;
 
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
-import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
@@ -69,9 +68,15 @@ public interface PaymentSessionValidateService {
       Map<Move, BigDecimal> paymentAmountMap)
       throws AxelorException;
 
-  MoveLine processLcrPlacement(
+  void processLcrPlacement(
       PaymentSession paymentSession,
       InvoiceTerm invoiceTerm,
       Map<LocalDate, Map<Partner, List<Move>>> moveDateMap)
+      throws AxelorException;
+
+  void processLcrPayment(
+      PaymentSession paymentSession,
+      InvoiceTerm invoiceTerm,
+      Map<Move, BigDecimal> paymentAmountMap)
       throws AxelorException;
 }
