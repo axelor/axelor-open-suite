@@ -1,3 +1,19 @@
+## [6.2.30] (2023-06-22)
+
+#### Fixed
+
+* Base printings: fixed an issue were pictures with specific filenames were not displayed in the printings.
+* Sale order line: fixed the view, move the hidden fields to a separate panel which avoids unnecessary blank space and the product field appears in its proper position.
+* Stock move: date of realisation of the stock move will be emptied when planning a stock move.
+* Bank reconciliation line: prevent new line creation outside of a bank reconciliation.
+* Job position: fixed english title "Responsible" instead of "Hiring manager".
+* Invoice: do not set financial discount on refunds.
+* Sale order: fixed discount information missing on reports.
+* Stock Move: fixed a bug where future quantity was not correctly updated.
+* Partner: fixed an issue where blocking date was not displayed
+* Move: fixed currency exchange rate wrongly set on counterpart generation.
+* Sale order: added missing case when computing invoicing state.
+
 ## [6.2.29] (2023-06-08)
 
 #### Fixed
@@ -1094,6 +1110,7 @@ will be equal to the reason for manual forecasts.
 * Territory: Remove object
 
 
+[6.2.30]: https://github.com/axelor/axelor-open-suite/compare/v6.2.29...v6.2.30
 [6.2.29]: https://github.com/axelor/axelor-open-suite/compare/v6.2.28...v6.2.29
 [6.2.28]: https://github.com/axelor/axelor-open-suite/compare/v6.2.27...v6.2.28
 [6.2.27]: https://github.com/axelor/axelor-open-suite/compare/v6.2.26...v6.2.27
