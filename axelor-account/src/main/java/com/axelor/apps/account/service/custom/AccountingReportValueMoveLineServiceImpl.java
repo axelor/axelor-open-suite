@@ -306,7 +306,7 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
     }
 
     if (detailByAnalyticAccount != null) {
-      lineAnalyticAccountSet = new HashSet<>(Collections.singletonList(detailByAnalyticAccount));
+      lineAnalyticAccountSet = this.getParentAnalyticAccountSet(detailByAnalyticAccount);
     }
 
     Set<Account> accountSet;
@@ -344,6 +344,20 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
         lineTitle,
         lineCode,
         analyticCounter);
+  }
+
+  protected Set<AnalyticAccount> getParentAnalyticAccountSet(AnalyticAccount analyticAccount) {
+    List<AnalyticAccount> parentAnalyticAccountList =
+        analyticAccountRepo.findByParent(analyticAccount).fetch();
+
+    if (parentAnalyticAccountList.isEmpty()) {
+      return new HashSet<>(Collections.singletonList(analyticAccount));
+    } else {
+      return parentAnalyticAccountList.stream()
+          .map(this::getParentAnalyticAccountSet)
+          .flatMap(Collection::stream)
+          .collect(Collectors.toSet());
+    }
   }
 
   protected void checkResultSelects(
