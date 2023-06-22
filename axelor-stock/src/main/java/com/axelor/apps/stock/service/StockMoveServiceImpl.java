@@ -393,6 +393,7 @@ public class StockMoveServiceImpl implements StockMoveService {
    */
   protected void setPlannedStatus(StockMove stockMove) {
     stockMove.setStatusSelect(StockMoveRepository.STATUS_PLANNED);
+    stockMoveRepo.save(stockMove);
   }
 
   /**
