@@ -2,14 +2,15 @@ package com.axelor.apps.helpdesk.rest.dto;
 
 import com.axelor.apps.helpdesk.db.Ticket;
 import com.axelor.utils.api.ResponseStructure;
+import java.time.LocalDateTime;
 
 public class TicketResponse extends ResponseStructure {
 
   private final Long id;
   private final String ticketSeq;
   private final Integer statusSelect;
-  private final String startDateT;
-  private final String endDateT;
+  private final LocalDateTime startDateT;
+  private final LocalDateTime endDateT;
   private final Long duration;
 
   public TicketResponse(Ticket ticket) {
@@ -17,8 +18,8 @@ public class TicketResponse extends ResponseStructure {
     this.id = ticket.getId();
     this.ticketSeq = ticket.getTicketSeq();
     this.statusSelect = ticket.getStatusSelect();
-    this.startDateT = ticket.getStartDateT().toString();
-    this.endDateT = ticket.getEndDateT().toString();
+    this.startDateT = ticket.getStartDateT();
+    this.endDateT = ticket.getEndDateT();
     this.duration = ticket.getDuration();
   }
 
@@ -34,11 +35,11 @@ public class TicketResponse extends ResponseStructure {
     return statusSelect;
   }
 
-  public String getStartDateT() {
+  public LocalDateTime getStartDateT() {
     return startDateT;
   }
 
-  public String getEndDateT() {
+  public LocalDateTime getEndDateT() {
     return endDateT;
   }
 
