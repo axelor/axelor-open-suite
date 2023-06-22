@@ -18,6 +18,7 @@ import com.axelor.apps.account.service.move.record.MoveGroupServiceImpl;
 import com.axelor.apps.account.service.move.record.MoveRecordSetService;
 import com.axelor.apps.account.service.move.record.MoveRecordUpdateService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
+import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryRecordService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.inject.Beans;
@@ -46,6 +47,7 @@ public class MoveRecordBudgetServiceImpl extends MoveGroupServiceImpl {
       AppAccountService appAccountService,
       MassEntryService massEntryService,
       MassEntryVerificationService massEntryVerificationService,
+      MoveLineMassEntryRecordService moveLineMassEntryRecordService,
       MoveBudgetService moveBudgetService) {
     super(
         moveDefaultService,
@@ -64,7 +66,8 @@ public class MoveRecordBudgetServiceImpl extends MoveGroupServiceImpl {
         moveRepository,
         appAccountService,
         massEntryService,
-        massEntryVerificationService);
+        massEntryVerificationService,
+        moveLineMassEntryRecordService);
     this.moveBudgetService = moveBudgetService;
   }
 

@@ -82,7 +82,8 @@ public class MoveGroupServiceImpl implements MoveGroupService {
       MoveRepository moveRepository,
       AppAccountService appAccountService,
       MassEntryService massEntryService,
-      MassEntryVerificationService massEntryVerificationService) {
+      MassEntryVerificationService massEntryVerificationService,
+      MoveLineMassEntryRecordService moveLineMassEntryRecordService) {
     this.moveDefaultService = moveDefaultService;
     this.moveAttrsService = moveAttrsService;
     this.periodAccountService = periodAccountService;
@@ -100,6 +101,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     this.appAccountService = appAccountService;
     this.massEntryService = massEntryService;
     this.massEntryVerificationService = massEntryVerificationService;
+    this.moveLineMassEntryRecordService = moveLineMassEntryRecordService;
   }
 
   protected void addPeriodDummyFields(Move move, Map<String, Object> valuesMap)
