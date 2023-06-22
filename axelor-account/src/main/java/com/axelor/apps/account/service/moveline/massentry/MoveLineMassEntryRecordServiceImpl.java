@@ -266,7 +266,7 @@ public class MoveLineMassEntryRecordServiceImpl implements MoveLineMassEntryReco
   }
 
   @Override
-  public void setAnalyticMoveLineMassEntryList(
+  public void fillAnalyticMoveLineMassEntryList(
       MoveLineMassEntry moveLineMassEntry, MoveLine moveLine) {
     moveLineMassEntry.clearAnalyticMoveLineMassEntryList();
     if (CollectionUtils.isNotEmpty(moveLine.getAnalyticMoveLineList())) {
@@ -279,7 +279,7 @@ public class MoveLineMassEntryRecordServiceImpl implements MoveLineMassEntryReco
   }
 
   @Override
-  public void setAnalyticMoveLineList(MoveLineMassEntry moveLineMassEntry, MoveLine moveLine) {
+  public void fillAnalyticMoveLineList(MoveLineMassEntry moveLineMassEntry, MoveLine moveLine) {
     moveLine.clearAnalyticMoveLineList();
     if (CollectionUtils.isNotEmpty(moveLineMassEntry.getAnalyticMoveLineMassEntryList())) {
       for (AnalyticMoveLine analyticMoveLine :
@@ -292,17 +292,17 @@ public class MoveLineMassEntryRecordServiceImpl implements MoveLineMassEntryReco
   }
 
   @Override
-  public void setAnalyticMoveLineMassEntryList(MoveLineMassEntry moveLine) {
-    moveLine.clearAnalyticMoveLineMassEntryList();
-    if (ObjectUtils.notEmpty(moveLine.getAnalyticMoveLineList())) {
-      moveLine
+  public void fillAnalyticMoveLineMassEntryList(MoveLineMassEntry moveLineMassEntry) {
+    moveLineMassEntry.clearAnalyticMoveLineMassEntryList();
+    if (ObjectUtils.notEmpty(moveLineMassEntry.getAnalyticMoveLineList())) {
+      moveLineMassEntry
           .getAnalyticMoveLineList()
           .forEach(
               analyticMoveLine -> {
-                moveLine.addAnalyticMoveLineMassEntryListItem(
+                moveLineMassEntry.addAnalyticMoveLineMassEntryListItem(
                     analyticMoveLineRepository.copy(analyticMoveLine, false));
               });
-      moveLine.clearAnalyticMoveLineList();
+      moveLineMassEntry.clearAnalyticMoveLineList();
     }
   }
 }

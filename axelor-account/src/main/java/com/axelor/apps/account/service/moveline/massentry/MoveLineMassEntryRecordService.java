@@ -43,9 +43,9 @@ public interface MoveLineMassEntryRecordService {
 
   MoveLineMassEntry setInputAction(MoveLineMassEntry moveLine, Move move);
 
-  void setAnalyticMoveLineMassEntryList(MoveLineMassEntry moveLineMassEntry, MoveLine moveLine);
+  void fillAnalyticMoveLineMassEntryList(MoveLineMassEntry moveLineMassEntry, MoveLine moveLine);
 
-  void setAnalyticMoveLineList(MoveLineMassEntry moveLineMassEntry, MoveLine moveLine);
+  void fillAnalyticMoveLineList(MoveLineMassEntry moveLineMassEntry, MoveLine moveLine);
 
-  void setAnalyticMoveLineMassEntryList(MoveLineMassEntry moveLine);
+  void fillAnalyticMoveLineMassEntryList(MoveLineMassEntry moveLine);
 }

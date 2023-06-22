@@ -103,36 +103,36 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
 
       int counter = 1;
 
-      for (MoveLine moveLineElement : move.getMoveLineList()) {
-        BigDecimal amount = moveLineElement.getDebit().add(moveLineElement.getCredit());
+      for (MoveLine moveLine : move.getMoveLineList()) {
+        BigDecimal amount = moveLine.getDebit().add(moveLine.getCredit());
 
-        MoveLine moveLine =
+        MoveLine newMoveLine =
             moveLineCreateService.createMoveLine(
                 newMove,
-                moveLineElement.getPartner(),
-                moveLineElement.getAccount(),
+                moveLine.getPartner(),
+                moveLine.getAccount(),
                 amount,
-                moveLineElement.getDebit().compareTo(BigDecimal.ZERO) > 0,
-                moveLineElement.getDate(),
-                moveLineElement.getOriginDate(),
+                moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0,
+                moveLine.getDate(),
+                moveLine.getOriginDate(),
                 counter,
-                moveLineElement.getOrigin(),
-                moveLineElement.getName());
-        moveLine.setVatSystemSelect(moveLineElement.getVatSystemSelect());
-        moveLine.setCutOffStartDate(moveLineElement.getCutOffStartDate());
-        moveLine.setCutOffEndDate(moveLineElement.getCutOffEndDate());
-        newMove.getMoveLineList().add(moveLine);
+                moveLine.getOrigin(),
+                moveLine.getName());
+        newMoveLine.setVatSystemSelect(moveLine.getVatSystemSelect());
+        newMoveLine.setCutOffStartDate(moveLine.getCutOffStartDate());
+        newMoveLine.setCutOffEndDate(moveLine.getCutOffEndDate());
+        newMove.getMoveLineList().add(newMoveLine);
 
-        moveLine.setTaxLine(moveLineElement.getTaxLine());
+        newMoveLine.setTaxLine(moveLine.getTaxLine());
 
-        moveLineComputeAnalyticService.generateAnalyticMoveLines(moveLine);
-        moveLineMassEntryRecordService.setAnalytics(moveLine, moveLineElement);
-        if (ObjectUtils.notEmpty(moveLineElement.getAnalyticMoveLineList())) {
-          moveLineElement
+        moveLineComputeAnalyticService.generateAnalyticMoveLines(newMoveLine);
+        moveLineMassEntryRecordService.setAnalytics(newMoveLine, moveLine);
+        if (ObjectUtils.notEmpty(moveLine.getAnalyticMoveLineList())) {
+          moveLine
               .getAnalyticMoveLineList()
               .forEach(
                   analyticMoveLine ->
-                      moveLine.addAnalyticMoveLineListItem(
+                      newMoveLine.addAnalyticMoveLineListItem(
                           analyticMoveLineRepository.copy(analyticMoveLine, false)));
         }
 
@@ -229,7 +229,7 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
         }
         massEntryLine.setFieldsErrorList(null);
         MoveLineMassEntry copy = moveLineMassEntryRepository.copy(massEntryLine, false);
-        moveLineMassEntryRecordService.setAnalyticMoveLineList(massEntryLine, copy);
+        moveLineMassEntryRecordService.fillAnalyticMoveLineList(massEntryLine, copy);
 
         move.addMoveLineListItem(copy);
         move.addMoveLineMassEntryListItem(copy);
