@@ -37,7 +37,7 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PeriodService;
-import com.axelor.common.StringUtils;
+import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
@@ -174,15 +174,28 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
 
   @Override
   public void setFunctionalOriginSelect(Move move) {
+    move.setFunctionalOriginSelect(computeFunctionalOriginSelect(move));
+  }
+
+  /**
+   * Compute the default functional origin select of the move.
+   *
+   * @param move any move, cannot be null
+   * @return the default functional origin select if there is one, else return null
+   */
+  protected Integer computeFunctionalOriginSelect(Move move) {
+    if (move.getJournal() == null) {
+      return null;
+    }
     String authorizedFunctionalOriginSelect =
         move.getJournal().getAuthorizedFunctionalOriginSelect();
-    if (move.getJournal() != null && StringUtils.notEmpty(authorizedFunctionalOriginSelect)) {
-      if (authorizedFunctionalOriginSelect.split(",").length == 1) {
-        move.setFunctionalOriginSelect(Integer.valueOf(authorizedFunctionalOriginSelect));
-      } else {
-        move.setFunctionalOriginSelect(null);
-      }
+
+    if (ObjectUtils.isEmpty(authorizedFunctionalOriginSelect)
+        || authorizedFunctionalOriginSelect.split(",").length != 1) {
+      return null;
     }
+
+    return Integer.valueOf(authorizedFunctionalOriginSelect);
   }
 
   @Override
