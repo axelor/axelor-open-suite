@@ -19,7 +19,6 @@ package com.axelor.apps.supplychain.service.invoice;
 
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.repo.AccountAnalyticRulesRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
@@ -35,7 +34,6 @@ public class InvoiceLineAnalyticSupplychainServiceImpl extends InvoiceLineAnalyt
   @Inject
   public InvoiceLineAnalyticSupplychainServiceImpl(
       AnalyticAccountRepository analyticAccountRepository,
-      AccountAnalyticRulesRepository accountAnalyticRulesRepository,
       AnalyticMoveLineService analyticMoveLineService,
       AnalyticToolService analyticToolService,
       AccountConfigService accountConfigService,
@@ -43,7 +41,6 @@ public class InvoiceLineAnalyticSupplychainServiceImpl extends InvoiceLineAnalyt
       AppAccountService appAccountService) {
     super(
         analyticAccountRepository,
-        accountAnalyticRulesRepository,
         analyticMoveLineService,
         analyticToolService,
         accountConfigService,
