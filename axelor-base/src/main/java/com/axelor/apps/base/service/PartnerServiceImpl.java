@@ -25,7 +25,6 @@ import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
-import com.axelor.apps.base.db.DomainName;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerAddress;
 import com.axelor.apps.base.db.PartnerPriceList;
@@ -39,7 +38,6 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
@@ -821,49 +819,10 @@ public class PartnerServiceImpl implements PartnerService {
     return sum % 10 == 0;
   }
 
-  @Transactional(rollbackOn = {Exception.class})
   @Override
-  public List<Partner> getUpdateAndCheckDomainName(Partner partner) {
-    List<Partner> contactWithSameDomainNameList = new ArrayList<>();
-    Set<Partner> contactList = partner.getContactPartnerSet();
-    List<String> partnerDomainNameStrList =
-        partner.getDomainNameList().stream().map(dm -> dm.getName()).collect(Collectors.toList());
-    List<Long> idList = contactList.stream().map(c -> c.getId()).collect(Collectors.toList());
-    idList.add(partner.getId());
-    List<String> contactsDomainNameStrList =
-        partner.getContactPartnerSet().stream()
-            .filter(cp -> cp.getEmailAddress() != null)
-            .map(cp -> cp.getEmailAddress().getName().split("@")[1].replace("]", ""))
-            .collect(Collectors.toList());
-    for (String contactDomainNameStr : contactsDomainNameStrList) {
-      if (!partnerDomainNameStrList.contains(contactDomainNameStr)) {
-        List<Partner> contactWithSameDomainNameListTemp =
-            partnerRepo
-                .all()
-                .filter(
-                    "self.isContact is true and self.emailAddress is not null and self.emailAddress.name like :domainName and self.id not in ( :idList )")
-                .bind("domainName", "%" + contactDomainNameStr + "%")
-                .bind("idList", idList)
-                .fetch();
-        if (ObjectUtils.notEmpty(contactWithSameDomainNameListTemp)) {
-          contactWithSameDomainNameList.addAll(contactWithSameDomainNameListTemp);
-        }
-        partner.addDomainNameListItem(new DomainName(contactDomainNameStr, partner));
-      }
-    }
-    List<DomainName> partnerdomainNameList = partner.getDomainNameList();
-    for (int i = 0; i < partnerdomainNameList.size(); i++) {
-      if (!contactsDomainNameStrList.contains(partnerdomainNameList.get(i).getName())) {
-        partner.removeDomainNameListItem(partnerdomainNameList.get(i));
-        i--;
-      }
-    }
-    return contactWithSameDomainNameList;
-  }
-
-  @Override
-  public void addContactListToPartner(Partner partner, List<Partner> contactPartnerList) {
+  @Transactional
+  public Partner addContactListToPartner(Partner partner, List<Partner> contactPartnerList) {
     partner.getContactPartnerSet().addAll(contactPartnerList);
-    savePartner(partner);
+    return partner;
   }
 }

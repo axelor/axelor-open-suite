@@ -106,6 +106,8 @@ import com.axelor.apps.base.service.ObjectDataAnonymizeService;
 import com.axelor.apps.base.service.ObjectDataAnonymizeServiceImpl;
 import com.axelor.apps.base.service.ObjectDataExportService;
 import com.axelor.apps.base.service.ObjectDataExportServiceImpl;
+import com.axelor.apps.base.service.PartnerDomainNameService;
+import com.axelor.apps.base.service.PartnerDomainNameServiceImpl;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerPriceListServiceImpl;
 import com.axelor.apps.base.service.PartnerService;
@@ -341,5 +343,6 @@ public class BaseModule extends AxelorModule {
     bind(BankDetailsFullNameComputeService.class).to(BankDetailsFullNameComputeServiceImpl.class);
     bind(BaseServerStartListener.class);
     bind(AosSwagger.class);
+    bind(PartnerDomainNameService.class).to(PartnerDomainNameServiceImpl.class);
   }
 }

@@ -159,7 +159,5 @@ public interface PartnerService {
 
   boolean isRegistrationCodeValid(Partner partner);
 
-  List<Partner> getUpdateAndCheckDomainName(Partner partner);
-
-  public void addContactListToPartner(Partner partner, List<Partner> contactPartnerList);
+  public Partner addContactListToPartner(Partner partner, List<Partner> contactPartnerList);
 }

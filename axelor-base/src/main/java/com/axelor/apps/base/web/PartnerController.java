@@ -33,6 +33,7 @@ import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.report.IReport;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.MapService;
+import com.axelor.apps.base.service.PartnerDomainNameService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -421,8 +422,9 @@ public class PartnerController {
       Partner partner = request.getContext().asType(Partner.class);
       partner = Beans.get(PartnerRepository.class).find(partner.getId());
 
-      PartnerService partnerService = Beans.get(PartnerService.class);
-      List<Partner> contactList = partnerService.getUpdateAndCheckDomainName(partner);
+      PartnerDomainNameService partnerDomainNameService = Beans.get(PartnerDomainNameService.class);
+      List<Partner> contactList =
+          partnerDomainNameService.getPartnersWithSameDomainNameAndUpdateDomainNameList(partner);
 
       if (ObjectUtils.notEmpty(contactList)) {
         response.setView(null);
