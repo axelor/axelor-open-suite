@@ -37,7 +37,7 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PeriodService;
-import com.axelor.common.StringUtils;
+import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -172,26 +172,35 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
 
   @Override
   public void setFunctionalOriginSelect(Move move) {
+    move.setFunctionalOriginSelect(computeFunctionalOriginSelect(move));
+  }
+
+  /**
+   * Compute the default functional origin select of the move.
+   *
+   * @param move any move, cannot be null
+   * @return the default functional origin select if there is one, else return null
+   */
+  protected Integer computeFunctionalOriginSelect(Move move) {
+    if (move.getJournal() == null) {
+      return null;
+    }
     String authorizedFunctionalOriginSelect =
         move.getJournal().getAuthorizedFunctionalOriginSelect();
-    if (move.getJournal() != null && StringUtils.notEmpty(authorizedFunctionalOriginSelect)) {
-      if (authorizedFunctionalOriginSelect.split(",").length == 1) {
-        move.setFunctionalOriginSelect(Integer.valueOf(authorizedFunctionalOriginSelect));
-      } else {
-        if (move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL
-            && Arrays.stream(move.getJournal().getAuthorizedFunctionalOriginSelect().split(","))
-                .findFirst()
-                .isPresent()) {
-          move.setFunctionalOriginSelect(
-              Integer.valueOf(
-                  Arrays.stream(move.getJournal().getAuthorizedFunctionalOriginSelect().split(","))
-                      .findFirst()
-                      .get()));
-        } else {
-          move.setFunctionalOriginSelect(null);
-        }
-      }
+
+    if (ObjectUtils.isEmpty(authorizedFunctionalOriginSelect)) {
+      return null;
     }
+
+    Optional<String> firstAuthorizedOriginOpt =
+        Arrays.stream(authorizedFunctionalOriginSelect.split(",")).findFirst();
+
+    if (move.getMassEntryStatusSelect() == MoveRepository.MASS_ENTRY_STATUS_NULL
+        || firstAuthorizedOriginOpt.isEmpty()) {
+      return null;
+    }
+
+    return Integer.valueOf(firstAuthorizedOriginOpt.get());
   }
 
   @Override
