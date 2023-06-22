@@ -6,26 +6,21 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.MoveLineMassEntry;
 import com.axelor.apps.account.db.repo.MoveLineMassEntryRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryToolService;
+import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryRecordService;
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
-import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class MassEntryToolServiceImpl implements MassEntryToolService {
 
-  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-
-  protected MoveLineMassEntryToolService moveLineMassEntryToolService;
+  protected MoveLineMassEntryRecordService moveLineMassEntryRecordService;
 
   @Inject
-  public MassEntryToolServiceImpl(MoveLineMassEntryToolService moveLineMassEntryToolService) {
-    this.moveLineMassEntryToolService = moveLineMassEntryToolService;
+  public MassEntryToolServiceImpl(MoveLineMassEntryRecordService moveLineMassEntryRecordService) {
+    this.moveLineMassEntryRecordService = moveLineMassEntryRecordService;
   }
 
   @Override
@@ -110,7 +105,7 @@ public class MassEntryToolServiceImpl implements MassEntryToolService {
       moveLineResult.setSourceTaxLine(moveLine.getSourceTaxLine());
       moveLineResult.setVatSystemSelect(moveLine.getVatSystemSelect());
 
-      moveLineMassEntryToolService.setAnalyticsFields(moveLineResult, moveLine);
+      moveLineMassEntryRecordService.setAnalytics(moveLineResult, moveLine);
     }
 
     return moveLineResult;

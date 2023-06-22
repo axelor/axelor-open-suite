@@ -21,4 +21,7 @@
   <input file="base_fakerApiField.csv" type="com.axelor.apps.base.db.FakerApiField"
     search="self.importId = :importId" update="false"/>
 
+  <input file="base_fakerApiFieldParameters.csv"
+    type="com.axelor.apps.base.db.FakerApiFieldParameters"/>
+
 </csv-inputs>

@@ -77,42 +77,6 @@
       onClick="action-send-by-email-with-template"/>
   </grid>
 
-  <grid name="lead-historical-grid" title="Leads" model="com.axelor.apps.crm.db.Lead"
-    orderBy="-contactDate">
-    <!-- <toolbar> <button name="showMap" title="Map" onClick="action-show-leads-on-map-page" /> </toolbar> -->
-    <menubar>
-      <menu name="leadReportsMenu" title="Reports" icon="fa-files-o">
-        <item name="printItem" title="Print" action="action-crm-lead-method-print"/>
-      </menu>
-      <menu name="leadToolsMenu" title="Tools" icon="fa-wrench">
-        <item name="assignToMeItem" title="Assign to me"
-          action="action-lead-method-assign-to-me-multiple"/>
-        <item name="checkDuplicateItem" title="Check duplicate"
-          action="action-general-check-duplicate-records"/>
-      </menu>
-    </menubar>
-    <hilite color="warning"
-      if="(user == null || contactDate == null) &amp;&amp; $moment(todayDate).diff(createdOn,'days') &gt;= 15"/>
-    <hilite color="danger" if="$moment(todayDate).diff(updatedOn,'days') &gt;= 15"/>
-    <field name="createdOn" hidden="true"/>
-    <field name="updatedOn" hidden="true"/>
-    <field name="simpleFullName"/>
-    <field name="enterpriseName"/>
-    <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
-    <field name="emailAddress.address"/>
-    <field name="contactDate"/>
-    <field name="user" form-view="user-form" grid-view="user-grid"/>
-    <field name="leadStatus" title="Status"/>
-    <field name="isConverted"/>
-    <field name="leadScoringSelect" widget="ImageSelect" x-labels="false"/>
-    <button name="grabLeadBtn" hideIf="user.id == _internalUserId" icon="fa-suitcase"
-      help="Take charge" onClick="action-lead-method-assign-to-me"/>
-    <button name="scheduleEventBtn" title="Schedule Event" icon="fa-group"
-      onClick="action-lead-view-schedule-event"/>
-    <button name="sendByEmailBtn" title="Send Email" icon="fa-envelope"
-      onClick="action-send-by-email-with-template"/>
-  </grid>
-
   <form name="lead-form" title="Lead" model="com.axelor.apps.crm.db.Lead"
     onLoad="action-group-crm-lead-onload" onNew="action-group-crm-lead-onnew"
     onSave="action-crm-lead-method-check-name">
@@ -125,7 +89,7 @@
     <panel name="mainPanel">
       <panel name="statusPanel" colSpan="12">
         <field name="leadStatus" showTitle="false" colSpan="12" widget="NavSelect"
-          x-order="sequence" onChange="action-lead-group-lead-status-onchange"/>
+          x-order="sequence" onChange="action-lead-group-lead-status-onchange" readonlyIf="!id"/>
         <panel name="viewerDetailsPanel" colSpan="12" showIf="$readonly()">
           <field name="$viewerTagsLeft" showTitle="false">
             <viewer depends="industrySector">
@@ -215,9 +179,9 @@
           <field name="mobilePhone" widget="phone" colSpan="4"/>
           <field name="emailAddress" colSpan="4" canSelect="false"
             form-view="email-address-simple-form" x-show-icons="false">
-            <editor x-show-titles="false">
+            <editor x-show-titles="false" x-viewer="true">
               <field name="address" colSpan="12" placeholder="whatever@example.com"
-                pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$"/>
+                widget="email"/>
             </editor>
           </field>
           <field name="webSite" colSpan="6" placehosetLeadStatuslder="http://www.url.com"
@@ -283,7 +247,7 @@
       <button name="grabLeadBtn" title="Take in charge" hideIf="user.id == _internalUserId"
         icon="fa-suitcase" onClick="save,action-lead-method-assign-to-me"/>
       <button name="convertBtn" title="Convert" hideIf="!id || isConverted"
-        icon="fa-exchange" onClick="save,action-lead-view-convert-lead"/>
+        icon="fa-exchange" onClick="action-lead-group-lead-convert"/>
       <button name="showPartnerBtn" title="Show Partner" showIf="partner" colSpan="6"
         onClick="action-lead-view-show-partner"/>
     </panel>
@@ -326,7 +290,7 @@
   </form>
 
   <form name="lead-lose-wizard-form" model="com.axelor.apps.crm.db.Lead"
-    title="Loss confirmation" onSave="action-lead-record-set-lost-status">
+    title="Loss confirmation">
     <panel name="mainPanel">
       <field name="lostReason" colOffset="4" colSpan="4" widget="SuggestBox" canNew="false"
         canEdit="false"/>
@@ -335,6 +299,17 @@
         onClick="action-lead-lost-reason-check,action-lead-method-confirm-lost-reason" colOffset="4"
         colSpan="4"/>
       <field name="lostReason.freeText" hidden="true"/>
+    </panel>
+  </form>
+
+  <form model="com.axelor.apps.crm.db.Lead" title="Lead with same domain name"
+    name="lead-with-same-domain-name-form" onLoad="action-lead-record-init-same-domain-lead">
+    <panel name="mainPanel">
+      <label title="We found these other leads that may be linked to your partner."
+        colSpan="12"/>
+      <panel-related name="leadSet" field="$leadSet" title="Leads"
+        target="com.axelor.apps.crm.db.Lead" grid-view="lead-grid" form-view="lead-form"
+        type="one-to-many" canNew="false" canEdit="false" canSelect="false" colSpan="12" height="10"/>
     </panel>
   </form>
 
@@ -383,9 +358,18 @@
       if="eval: __this__?.leadStatus?.id == __config__.app.getApp('crm')?.lostLeadStatus?.id"/>
     <action name="action-lead-record-clear-lost-reason"
       if="eval: __this__?.leadStatus?.id != __config__.app.getApp('crm')?.lostLeadStatus?.id"/>
+    <action name="action-lead-group-lead-convert"
+      if="eval: __this__?.leadStatus?.id == __config__.app.getApp('crm')?.convertedLeadStatus?.id"/>
+  </action-group>
+
+  <action-group name="action-lead-group-lead-convert">
+    <action name="save"/>
+    <action name="action-lead-method-view-lead-with-same-domain-name"/>
+    <action name="action-lead-view-convert-lead"/>
   </action-group>
 
   <action-group name="action-group-crm-lead-onnew">
+    <action name="action-lead-validate-default-status"/>
     <action name="action-account-record-new"/>
     <action name="action-lead-default-record-new"/>
   </action-group>
@@ -400,11 +384,6 @@
     <attribute name="hidden" for="lostReason"
       expr="eval: __this__?.leadStatus?.id != __config__.app.getApp('crm')?.lostLeadStatus?.id"/>
   </action-attrs>
-
-  <action-record name="action-lead-record-set-lost-status"
-    model="com.axelor.apps.crm.db.Lead">
-    <field name="leadStatus" expr="eval: __config__.app.getApp('crm')?.lostLeadStatus"/>
-  </action-record>
 
   <action-record name="action-lead-record-clear-lost-reason"
     model="com.axelor.apps.crm.db.Lead">
@@ -438,8 +417,13 @@
     <field name="user" expr="eval:__user__"/>
     <field name="team"
       expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
-    <field name="leadStatus" expr="eval: __repo__(LeadStatus).getDefaultStatus()"/>
+    <field name="leadStatus" expr="eval: __config__.app.getApp('crm')?.leadDefaultStatus"/>
     <field name="agency" expr="eval:__user__.activeAgency"/>
+  </action-record>
+
+  <action-record name="action-lead-record-init-same-domain-lead"
+    model="com.axelor.apps.crm.db.Lead">
+    <field name="$leadSet" expr="eval: _leadList"/>
   </action-record>
 
   <action-attrs name="action-attrs-lead-set-primary-state-country-postal-code">
@@ -468,6 +452,10 @@
   <action-view name="action-lead-view-convert-lead" title="Convert lead (${ fullName })"
     model="com.axelor.utils.db.Wizard">
     <view type="form" name="convert-lead-wizard-form"/>
+    <view-param name="popup" value="true"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="popup-save" value="false"/>
     <context name="_lead" expr="eval: __self__"/>
     <context name="_primaryAddress" expr="eval: primaryAddress"/>
   </action-view>
@@ -568,6 +556,10 @@
     <call class="com.axelor.apps.crm.web.LeadController" method="setSocialNetworkUrl"/>
   </action-method>
 
+  <action-method name="action-lead-method-view-lead-with-same-domain-name">
+    <call class="com.axelor.apps.crm.web.LeadController" method="viewLeadWithSameDomainName"/>
+  </action-method>
+
   <search-filters name="lead-filters" model="com.axelor.apps.crm.db.Lead"
     title="Lead filters">
     <field name="team" hidden="true" if="!__config__.app.getApp('base')?.getTeamManagement()"/>
@@ -582,4 +574,8 @@
     </filter>
   </search-filters>
 
+  <action-validate name="action-lead-validate-default-status">
+    <error message="Please fill default lead status in App CRM configuration."
+      if="!__config__.app.getApp('crm')?.leadDefaultStatus"/>
+  </action-validate>
 </object-views>

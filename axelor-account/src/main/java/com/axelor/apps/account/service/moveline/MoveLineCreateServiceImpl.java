@@ -273,6 +273,10 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       originDate = date;
     }
 
+    if (!isDebit) {
+      amountInSpecificMoveCurrency = amountInSpecificMoveCurrency.negate();
+    }
+
     MoveLine moveLine =
         new MoveLine(
             move,
@@ -702,14 +706,16 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
                   origin,
                   null);
         } else {
+          BigDecimal currencyAmount = moveLine.getCurrencyAmount().add(invoiceTerm.getAmount());
           if (moveLine.getDebit().compareTo(BigDecimal.ZERO) != 0) {
             // Debit
             moveLine.setDebit(moveLine.getDebit().add(companyAmount));
+            moveLine.setCurrencyAmount(currencyAmount.abs());
           } else {
             // Credit
             moveLine.setCredit(moveLine.getCredit().add(companyAmount));
+            moveLine.setCurrencyAmount(currencyAmount.negate());
           }
-          moveLine.setCurrencyAmount(moveLine.getCurrencyAmount().add(invoiceTerm.getAmount()));
         }
       }
     }

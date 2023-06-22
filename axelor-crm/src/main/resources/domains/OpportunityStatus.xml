@@ -8,14 +8,13 @@
   <entity name="OpportunityStatus">
 
     <string name="name" title="Name" required="true"/>
-    <integer name="sequence" title="Sequence" unique="true"/>
+    <integer name="sequence" title="Sequence"/>
     <boolean name="isOpen" title="Open"/>
 
     <finder-method name="findByNextSequence" filter="self.sequence &gt; :sequence"
       using="sequence" orderBy="sequence"/>
     <finder-method name="findByPreviousSequence" filter="self.sequence &lt; :sequence"
       using="sequence" orderBy="-sequence"/>
-    <finder-method name="getDefaultStatus" using="" orderBy="sequence" filter="1 = 1"/>
 
   </entity>
 

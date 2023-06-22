@@ -142,6 +142,9 @@
           readonlyIf="statusSelect == 4"/>
         <field name="accountingMethodSelect" showIf="moveAccountingDateSelect == 3"
           selection-in="[1,2]" readonlyIf="statusSelect == 4"/>
+        <label name="accountingMethodSelectCompensationLabel"
+          showIf="accountingMethodSelect == 1" css="label-danger"
+          title="The compensation process is not available when using this accounting method"/>
       </panel>
       <panel name="moveAccountingDatePanel" stacked="true">
         <field name="moveAccountingDateSelect" showIf="accountingMethodSelect != 3"

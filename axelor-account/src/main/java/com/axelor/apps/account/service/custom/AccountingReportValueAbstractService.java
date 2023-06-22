@@ -108,6 +108,7 @@ public abstract class AccountingReportValueAbstractService {
             groupNumber,
             columnNumber,
             lineNumber + AccountingReportValueServiceImpl.getLineOffset(),
+            AccountingReportValueServiceImpl.getPeriodNumber(),
             analyticCounter,
             this.getStyleSelect(groupColumn, column, line),
             groupColumn == null

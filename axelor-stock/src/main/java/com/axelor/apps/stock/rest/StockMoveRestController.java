@@ -96,7 +96,9 @@ public class StockMoveRestController {
             requestBody.getExpectedQty(),
             requestBody.getRealQty(),
             requestBody.fetchUnit(),
-            requestBody.getConformity());
+            requestBody.getConformity(),
+            requestBody.fetchFromStockLocation(),
+            requestBody.fetchtoStockLocation());
 
     Beans.get(StockMoveService.class).updateStocks(stockmove);
 

@@ -128,7 +128,7 @@
     <panel name="mainPanel"
       readonlyIf="$get('opportunityStatus.id') == $closedWonId || $get('opportunityStatus.id') == $closedLostId">
       <field name="opportunityStatus" colSpan="12" widget="NavSelect" x-order="sequence"
-        showTitle="false" onChange="action-opportunity-group-status-onchange"/>
+        showTitle="false" onChange="action-opportunity-group-status-onchange" readonlyIf="!id"/>
       <field name="opportunitySeq" showTitle="false" colSpan="2">
         <viewer depends="opportunitySeq"><![CDATA[
                  	<h3>
@@ -419,12 +419,15 @@
   </action-view>
 
   <action-group name="action-opportunity-group-new">
+    <action name="action-opportunity-validate-default-status"/>
     <action name="action-opportunity-record-new"/>
     <action name="action-opportunity-record-currency"/>
     <action name="action-opportunity-record-default" if="_partner == null"/>
     <action name="action-opportunity-record-from-partner" if="_partner != null"/>
     <action name="action-opportunity-record-set-name" if="_partner != null"/>
     <action name="action-opportunity-attrs-set-attrs-on-load"/>
+    <action name="action-opportunity-method-set-fields-from-partner"
+      if="_isGeneratedFromPartner"/>
   </action-group>
 
   <action-view name="action-opportunity-view-schedule-event"
@@ -455,7 +458,7 @@
       if="__config__.app.getApp('crm').isManageRecurrent &amp;&amp; __config__.app.getApp('crm').defaultRecurringDuration
       != null"/>
     <field name="opportunityStatus"
-      expr="eval: __repo__(OpportunityStatus).getDefaultStatus()"/>
+      expr="eval: __config__.app.getApp('crm')?.opportunityDefaultStatus"/>
   </action-record>
 
   <action-record name="action-opportunity-record-currency"
@@ -554,6 +557,11 @@
     <call method="setStageClosedWon" class="com.axelor.apps.crm.web.OpportunityController"/>
   </action-method>
 
+  <action-method name="action-opportunity-method-set-fields-from-partner">
+    <call class="com.axelor.apps.crm.web.ConvertLeadWizardController"
+      method="setFieldsForOpportunityGenerationFromPartner"/>
+  </action-method>
+
   <action-group name="action-opportunity-group-status-onchange">
     <action name="action-opportunity-view-opportunity-lost-popup-view"
       if="opportunityStatus.id == __config__.app.getApp('crm')?.closedLostOpportunityStatus?.id"/>
@@ -571,5 +579,10 @@
     <action name="action-opportunity-record-set-closed-lost-status"/>
     <action name="action-opportunity-method-cancel-saleorders"/>
   </action-group>
+
+  <action-validate name="action-opportunity-validate-default-status">
+    <error message="Please fill default opportunity status in App CRM configuration."
+      if="!__config__.app.getApp('crm')?.opportunityDefaultStatus"/>
+  </action-validate>
 
 </object-views>
