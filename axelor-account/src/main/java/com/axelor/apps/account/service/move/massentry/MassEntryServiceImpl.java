@@ -104,6 +104,7 @@ public class MassEntryServiceImpl implements MassEntryService {
           inputLine.setVatSystemSelect(moveLine.getVatSystemSelect());
           inputLine.setIsEdited(MoveLineMassEntryRepository.MASS_ENTRY_IS_EDITED_NULL);
           moveLineMassEntryRecordService.setAnalytics(inputLine, moveLine);
+          moveLineMassEntryRecordService.fillAnalyticMoveLineList(inputLine, moveLine);
           break;
         }
       }

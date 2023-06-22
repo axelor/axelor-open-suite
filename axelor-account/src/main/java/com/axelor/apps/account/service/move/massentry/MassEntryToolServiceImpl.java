@@ -106,6 +106,7 @@ public class MassEntryToolServiceImpl implements MassEntryToolService {
       moveLineResult.setVatSystemSelect(moveLine.getVatSystemSelect());
 
       moveLineMassEntryRecordService.setAnalytics(moveLineResult, moveLine);
+      moveLineMassEntryRecordService.fillAnalyticMoveLineMassEntryList(moveLineResult, moveLine);
     }
 
     return moveLineResult;

@@ -42,4 +42,10 @@ public interface MoveLineMassEntryRecordService {
   void setPartner(MoveLineMassEntry moveLine, Move move) throws AxelorException;
 
   MoveLineMassEntry setInputAction(MoveLineMassEntry moveLine, Move move);
+
+  void fillAnalyticMoveLineMassEntryList(MoveLineMassEntry moveLineMassEntry, MoveLine moveLine);
+
+  void fillAnalyticMoveLineList(MoveLineMassEntry moveLineMassEntry, MoveLine moveLine);
+
+  void fillAnalyticMoveLineMassEntryList(MoveLineMassEntry moveLine);
 }
