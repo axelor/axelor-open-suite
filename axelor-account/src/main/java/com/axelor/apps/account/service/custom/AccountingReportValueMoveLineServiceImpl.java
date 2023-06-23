@@ -313,11 +313,14 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
     Set<AccountType> accountTypeSet = null;
     Set<AnalyticAccount> analyticAccountSet =
         this.mergeSets(column.getAnalyticAccountSet(), lineAnalyticAccountSet);
+    analyticAccountSet =
+        this.mergeSets(analyticAccountSet, accountingReport.getAnalyticAccountSet());
 
     if (groupAccount != null) {
       accountSet = new HashSet<>(Collections.singletonList(groupAccount));
     } else {
       accountSet = this.mergeSets(column.getAccountSet(), lineAccountSet);
+      accountSet = this.mergeSets(accountSet, accountingReport.getAccountSet());
       accountTypeSet = this.mergeSets(column.getAccountTypeSet(), lineAccountTypeSet);
     }
 
