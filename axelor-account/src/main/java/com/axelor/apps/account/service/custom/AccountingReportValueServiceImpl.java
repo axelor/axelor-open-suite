@@ -89,6 +89,7 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
     this.accountingReportValueMoveLineService = accountingReportValueMoveLineService;
     this.accountingReportValuePercentageService = accountingReportValuePercentageService;
     this.appBaseService = appBaseService;
+    AccountingReportValueServiceImpl.setShowFirstError(false);
   }
 
   public static synchronized void incrementLineOffset() {
@@ -99,8 +100,8 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
     return lineOffset;
   }
 
-  public static synchronized void setShowFirstErrorTrue() {
-    showFirstError = true;
+  public static synchronized void setShowFirstError(boolean value) {
+    showFirstError = value;
   }
 
   public static synchronized boolean getShowFirstError() {
@@ -264,7 +265,7 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
               analyticCounter);
 
       if (nullCount == previousNullCount) {
-        AccountingReportValueServiceImpl.setShowFirstErrorTrue();
+        AccountingReportValueServiceImpl.setShowFirstError(true);
 
         this.createReportValues(
             accountingReport,
