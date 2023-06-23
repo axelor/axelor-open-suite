@@ -926,9 +926,9 @@
 
   <action-attrs name="action-stock-move-line-attrs-hide-stock-location">
     <attribute for="fromStockLocation" name="hidden"
-      expr="eval: __parent__?.typeSelect != 2 || !__config__.app.getApp('stock')?.isManageStockLocationOnStockMoveLine"/>
+      expr="eval: __parent__?.typeSelect == __repo__(StockMove).TYPE_INCOMING || !__config__.app.getApp('stock')?.isManageStockLocationOnStockMoveLine"/>
     <attribute for="toStockLocation" name="hidden"
-      expr="eval: __parent__?.typeSelect != 3 || !__config__.app.getApp('stock')?.isManageStockLocationOnStockMoveLine"/>
+      expr="eval: __parent__?.typeSelect == __repo__(StockMove).TYPE_OUTGOING || !__config__.app.getApp('stock')?.isManageStockLocationOnStockMoveLine"/>
   </action-attrs>
 
   <action-method
