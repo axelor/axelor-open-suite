@@ -127,7 +127,7 @@ public class StockMoveRestController {
                 requestBody.fetchFromStockLocation(),
                 requestBody.fetchToStockLocation(),
                 requestBody.fetchCompany(),
-                StockMoveLinePostDTOMapper.map(requestBody.getStockMoveLines()));
+                StockMoveLinePostDTOMapper.map(requestBody.getLineList()));
 
     return ResponseConstructor.build(
         Response.Status.CREATED,

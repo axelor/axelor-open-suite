@@ -40,7 +40,7 @@ public class StockInternalMovePostRequest extends RequestPostStructure {
   @Min(0)
   private Long companyId;
 
-  private List<StockMoveLinePostRequest> stockMoveLines;
+  private List<StockInternalMoveStockMoveLinePostRequest> lineList;
 
   public StockInternalMovePostRequest() {}
 
@@ -68,12 +68,12 @@ public class StockInternalMovePostRequest extends RequestPostStructure {
     this.toStockLocationId = toStockLocationId;
   }
 
-  public List<StockMoveLinePostRequest> getStockMoveLines() {
-    return stockMoveLines;
+  public List<StockInternalMoveStockMoveLinePostRequest> getLineList() {
+    return lineList;
   }
 
-  public void setStockMoveLines(List<StockMoveLinePostRequest> stockMoveLines) {
-    this.stockMoveLines = stockMoveLines;
+  public void setLineList(List<StockInternalMoveStockMoveLinePostRequest> lineList) {
+    this.lineList = lineList;
   }
 
   public StockLocation fetchFromStockLocation() {

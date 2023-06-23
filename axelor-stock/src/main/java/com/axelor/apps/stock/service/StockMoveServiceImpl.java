@@ -287,7 +287,11 @@ public class StockMoveServiceImpl implements StockMoveService {
     if (product.getTrackingNumberConfiguration() != null) {
       line.setTrackingNumber(stockMoveLinePostDTO.getTrackingNumber());
     }
-    line.setQty(stockMoveLinePostDTO.getExpectedQty());
+
+    line.setFromStockLocation(stockMoveLinePostDTO.getFromStockLocation());
+    line.setToStockLocation(stockMoveLinePostDTO.getToStockLocation());
+    line.setConformitySelect(stockMoveLinePostDTO.getConformity());
+    line.setQty(stockMoveLinePostDTO.getRealQty());
     line.setRealQty(stockMoveLinePostDTO.getRealQty());
     line.setIsRealQtyModifiedByUser(true);
     line.setUnitPriceUntaxed(product.getLastPurchasePrice());

@@ -1,20 +1,19 @@
 package com.axelor.apps.stock.rest.mapper;
 
+import com.axelor.apps.stock.rest.dto.StockInternalMoveStockMoveLinePostRequest;
 import com.axelor.apps.stock.rest.dto.StockMoveLinePostDTO;
-import com.axelor.apps.stock.rest.dto.StockMoveLinePostRequest;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class StockMoveLinePostDTOMapper {
 
-  public static StockMoveLinePostDTO map(StockMoveLinePostRequest stockMoveLinePostRequest) {
+  public static StockMoveLinePostDTO map(
+      StockInternalMoveStockMoveLinePostRequest stockMoveLinePostRequest) {
 
     StockMoveLinePostDTO stockMoveLineResult = new StockMoveLinePostDTO();
     stockMoveLineResult.setProduct(stockMoveLinePostRequest.fetchProduct());
-    stockMoveLineResult.setConformity(stockMoveLinePostRequest.getConformity());
     stockMoveLineResult.setUnit(stockMoveLinePostRequest.fetchUnit());
-    stockMoveLineResult.setTrackingNumber(stockMoveLinePostRequest.fetchTrackingNumber());
-    stockMoveLineResult.setExpectedQty(stockMoveLinePostRequest.getExpectedQty());
+    stockMoveLineResult.setExpectedQty(stockMoveLinePostRequest.getRealQty());
     stockMoveLineResult.setRealQty(stockMoveLinePostRequest.getRealQty());
     stockMoveLineResult.setFromStockLocation(stockMoveLinePostRequest.fetchFromStockLocation());
     stockMoveLineResult.setToStockLocation(stockMoveLinePostRequest.fetchtoStockLocation());
@@ -23,7 +22,7 @@ public class StockMoveLinePostDTOMapper {
   }
 
   public static List<StockMoveLinePostDTO> map(
-      List<StockMoveLinePostRequest> stockMoveLinePostRequestList) {
+      List<StockInternalMoveStockMoveLinePostRequest> stockMoveLinePostRequestList) {
 
     if (stockMoveLinePostRequestList != null) {
       return stockMoveLinePostRequestList.stream()
