@@ -39,6 +39,19 @@
   <form id="budget-purchase-order-line-form" name="purchase-order-line-form" title="PO line"
     model="com.axelor.apps.purchase.db.PurchaseOrderLine" extension="true">
 
+    <extend target="/">
+      <attribute name="onNew"
+        value="action-budget-purchase-purchase-orderline-group-onnew"/>
+      <attribute name="onLoad"
+        value="action-budget-purchase-purchase-orderline-group-onload"/>
+
+    </extend>
+
+    <extend target="//field[@name='product']">
+      <attribute name="onChange"
+        value="action-budget-group-purchase-purchase-orderline-product-onchange"/>
+    </extend>
+
     <extend target="//panel[@name='analyticDistributionPanel']">
       <insert position="after">
         <panel name="budgetDistributionPanel" title="Budget"
@@ -94,29 +107,13 @@
     </extend>
   </form>
 
-  <action-group name="action-group-purchase-purchase-orderline-product-onchange"
-    id="action-budget-group-purchase-purchase-orderline-product-onchange">
-    <action name="action-purchase-order-line-attrs-delivery-panel"/>
-    <action name="action-purchase-order-line-method-get-product-information"/>
-    <action name="action-purchase-order-line-method-compute" if="price != 0"/>
-    <action name="action-purchase-order-line-method-check-qty" if="price != 0"/>
-    <action name="action-purchase-order-line-method-check-different-supplier"/>
-    <action name="action-purchase-order-line-method-translate-product-description-and-name"/>
+  <action-group name="action-budget-group-purchase-purchase-orderline-product-onchange">
+    <action name="action-group-purchase-purchase-orderline-product-onchange"/>
     <action name="action-method-budget-purchase-orderline-set-product-account"/>
   </action-group>
 
-  <action-group name="action-group-purchase-purchase-orderline-onnew"
-    id="action-budget-purchase-purchase-orderline-group-onnew">
-    <action name="action-purchase-order-line-attrs-title-project"/>
-    <action name="action-purchase-order-line-attrs-scale-and-precision"/>
-    <action name="action-purchase-order-line-record-new"/>
-    <action name="action-purchase-order-line-record-project"/>
-    <action name="action-purchase-order-attrs-hide-ati"/>
-    <action name="action-purchase-order-line-attrs-show-priceDiscounted"/>
-    <action name="action-purchase-order-line-attrs-hide-qty-warning-label"/>
-    <action name="action-purchase-order-line-attrs-hide-different-supplier-warning-label"/>
-    <action name="action-purchase-order-line-attrs-display-different-language-message"/>
-    <action name="action-purchase-order-line-attrs-hidden-analytic-distribution-panel"/>
+  <action-group name="action-budget-purchase-purchase-orderline-group-onnew">
+    <action name="action-group-purchase-purchase-orderline-onnew"/>
     <action name="action-budget-purchase-orderline-record-set-global-budget"/>
     <action name="action-method-purchase-order-line-budget-check-budget-key-roles"/>
   </action-group>
@@ -126,18 +123,8 @@
     <field name="$global" expr="eval: _parent?.budgetLevel" if="_parent"/>
   </action-record>
 
-  <action-group name="action-group-purchase-purchase-orderline-onload"
-    id="action-budget-purchase-purchase-orderline-group-onload">
-    <action name="action-purchase-order-line-attrs-readonly-form"/>
-    <action name="action-purchase-order-line-method-check-qty"/>
-    <action name="action-purchase-order-line-attrs-title-project"/>
-    <action name="action-purchase-order-line-attrs-scale-and-precision"/>
-    <action name="action-purchase-order-attrs-hide-ati"/>
-    <action name="action-purchase-order-line-attrs-show-priceDiscounted"/>
-    <action name="action-purchase-order-line-attrs-delivery-panel"/>
-    <action name="action-purchase-order-line-attrs-set-isFilterOnSupplier"/>
-    <action name="action-purchase-order-line-attrs-display-different-language-message"/>
-    <action name="action-purchase-order-line-attrs-hidden-analytic-distribution-panel"/>
+  <action-group name="action-budget-purchase-purchase-orderline-group-onload">
+    <action name="action-group-purchase-purchase-orderline-onload"/>
     <action name="action-budget-purchase-order-line-record-set-budget-level"/>
     <action name="action-method-purchase-order-line-budget-check-budget-key-roles"/>
   </action-group>
