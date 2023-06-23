@@ -524,6 +524,14 @@ public final class BaseExceptionMessage {
   public static final String ADVANCED_IMPORT_NOT_VALIDATED = /*$$(*/
       "Advanced import is not validated" /*)*/;
 
+  public static final String FIELD_NOT_FOUND = /*$$(*/ "This field %s doesn't exist." /*)*/;
+
+  public static final String ERROR_MISSING_RESEARCH_PARAMETER_CONFIGURATION = /*$$(*/
+      "Missing parameter configuration for model %s." /*)*/;
+
+  public static final String ERROR_MISSING_CANNOT_FIND_OBJECT = /*$$(*/
+      "Can not find object." /*)*/;
+
   public static final String COMPANY_INVALID_LOCALE = /*$$(*/
       "Warning: locale %s is invalid, please enter a valid locale." /*)*/;
 
