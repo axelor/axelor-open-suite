@@ -48,6 +48,8 @@ public class AnalyticLineModel implements AnalyticLine {
     this.analyticMoveLineList = saleOrderLine.getAnalyticMoveLineList();
     this.analyticDistributionTemplate = saleOrderLine.getAnalyticDistributionTemplate();
 
+    this.product = saleOrderLine.getProduct();
+
     this.isPurchase = false;
     this.exTaxTotal = saleOrderLine.getExTaxTotal();
     this.companyExTaxTotal = saleOrderLine.getCompanyExTaxTotal();
