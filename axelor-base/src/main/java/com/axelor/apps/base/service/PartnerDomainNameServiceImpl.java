@@ -1,9 +1,11 @@
 package com.axelor.apps.base.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.DomainName;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.common.ObjectUtils;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,13 +16,15 @@ public class PartnerDomainNameServiceImpl implements PartnerDomainNameService {
 
   PartnerRepository partnerRepo;
 
+  @Inject
   public PartnerDomainNameServiceImpl(PartnerRepository partnerRepo) {
     this.partnerRepo = partnerRepo;
   }
 
   @Transactional(rollbackOn = {Exception.class})
   @Override
-  public List<Partner> getPartnersWithSameDomainNameAndUpdateDomainNameList(Partner partner) {
+  public List<Partner> getPartnersWithSameDomainNameAndUpdateDomainNameList(Partner partner)
+      throws AxelorException {
     List<Partner> contactWithSameDomainNameList = new ArrayList<>();
     Set<Partner> contactList = partner.getContactPartnerSet();
     List<String> partnerDomainNameStrList =

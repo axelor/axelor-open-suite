@@ -159,5 +159,6 @@ public interface PartnerService {
 
   boolean isRegistrationCodeValid(Partner partner);
 
-  public Partner addContactListToPartner(Partner partner, List<Partner> contactPartnerList);
+  public Partner addContactListToPartner(Partner partner, List<Partner> contactPartnerList)
+      throws AxelorException;
 }

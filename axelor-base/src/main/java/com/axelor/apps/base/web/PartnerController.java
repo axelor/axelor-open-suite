@@ -446,7 +446,7 @@ public class PartnerController {
       }
 
     } catch (Exception e) {
-      TraceBackService.trace(e);
+      TraceBackService.trace(response, e);
     }
   }
 
@@ -467,7 +467,7 @@ public class PartnerController {
       response.setCanClose(true);
 
     } catch (Exception e) {
-      TraceBackService.trace(e);
+      TraceBackService.trace(response, e);
     }
   }
 }
