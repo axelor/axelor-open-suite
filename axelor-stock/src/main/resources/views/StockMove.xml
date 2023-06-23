@@ -1516,9 +1516,9 @@
 
   <action-attrs name="action-stock-move-attrs-show-stock-location">
     <attribute for="stockMoveLineList.fromStockLocation" name="hidden"
-      expr="eval: typeSelect != 2 || !__config__.app.getApp('stock')?.isManageStockLocationOnStockMoveLine"/>
+      expr="eval: typeSelect == __repo__(StockMove).TYPE_INCOMING || !__config__.app.getApp('stock')?.isManageStockLocationOnStockMoveLine"/>
     <attribute for="stockMoveLineList.toStockLocation" name="hidden"
-      expr="eval: typeSelect != 3 || !__config__.app.getApp('stock')?.isManageStockLocationOnStockMoveLine"/>
+      expr="eval: typeSelect == __repo__(StockMove).TYPE_OUTGOING || !__config__.app.getApp('stock')?.isManageStockLocationOnStockMoveLine"/>
   </action-attrs>
 
 </object-views>
