@@ -107,7 +107,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
-public class BankReconciliationService {
+public class BankReconciliationServiceImpl implements BankReconciliationService {
 
   protected static final int RETURNED_SCALE = 2;
 
@@ -142,7 +142,7 @@ public class BankReconciliationService {
   protected TaxAccountService taxAccountService;
 
   @Inject
-  public BankReconciliationService(
+  public BankReconciliationServiceImpl(
       BankReconciliationRepository bankReconciliationRepository,
       AccountService accountService,
       AccountManagementRepository accountManagementRepository,
@@ -204,6 +204,7 @@ public class BankReconciliationService {
     this.dateService = dateService;
   }
 
+  @Override
   public void generateMovesAutoAccounting(BankReconciliation bankReconciliation)
       throws AxelorException {
     Context scriptContext;
@@ -312,6 +313,7 @@ public class BankReconciliationService {
     }
   }
 
+  @Override
   @Transactional(rollbackOn = {Exception.class})
   public Move generateMove(
       BankReconciliationLine bankReconciliationLine, BankStatementRule bankStatementRule)
@@ -513,6 +515,7 @@ public class BankReconciliationService {
     return moveLine;
   }
 
+  @Override
   public BankReconciliation computeBalances(BankReconciliation bankReconciliation) {
     int limit = 10;
     int offset = 0;
@@ -691,6 +694,7 @@ public class BankReconciliationService {
     return movesOngoingReconciledBalance;
   }
 
+  @Override
   public void compute(BankReconciliation bankReconciliation) {
     BigDecimal totalPaid = BigDecimal.ZERO;
     BigDecimal totalCashed = BigDecimal.ZERO;
@@ -708,22 +712,26 @@ public class BankReconciliationService {
     saveBR(bankReconciliation);
   }
 
+  @Override
   @Transactional
   public BankReconciliation saveBR(BankReconciliation bankReconciliation) {
     return bankReconciliationRepository.save(bankReconciliation);
   }
 
+  @Override
   public String createDomainForBankDetails(BankReconciliation bankReconciliation) {
 
     return bankDetailsService.getActiveCompanyBankDetails(
         bankReconciliation.getCompany(), bankReconciliation.getCurrency());
   }
 
+  @Override
   @Transactional
   public void loadBankStatement(BankReconciliation bankReconciliation) {
     loadBankStatement(bankReconciliation, true);
   }
 
+  @Override
   @Transactional
   public void loadBankStatement(
       BankReconciliation bankReconciliation, boolean includeBankStatement) {
@@ -748,6 +756,7 @@ public class BankReconciliationService {
     bankReconciliationRepository.save(bankReconciliation);
   }
 
+  @Override
   public String getJournalDomain(BankReconciliation bankReconciliation) {
 
     String journalIds = null;
@@ -794,6 +803,7 @@ public class BankReconciliationService {
     return journalIdSet;
   }
 
+  @Override
   public Journal getJournal(BankReconciliation bankReconciliation) {
 
     Journal journal = null;
@@ -806,6 +816,7 @@ public class BankReconciliationService {
     return journal;
   }
 
+  @Override
   public String getCashAccountDomain(BankReconciliation bankReconciliation) {
 
     String cashAccountIds = null;
@@ -850,6 +861,7 @@ public class BankReconciliationService {
     return cashAccountIdSet;
   }
 
+  @Override
   public Account getCashAccount(BankReconciliation bankReconciliation) {
 
     Account cashAccount = null;
@@ -863,6 +875,7 @@ public class BankReconciliationService {
     return cashAccount;
   }
 
+  @Override
   public String getAccountDomain(BankReconciliation bankReconciliation) {
     if (bankReconciliation != null) {
       String domain = "self.statusSelect = " + AccountRepository.STATUS_ACTIVE;
@@ -904,6 +917,7 @@ public class BankReconciliationService {
     return "self.id = 0";
   }
 
+  @Override
   public String getRequestMoveLines(BankReconciliation bankReconciliation) {
     String query =
         "(self.move.statusSelect = :statusDaybook OR self.move.statusSelect = :statusAccounted)"
@@ -938,6 +952,7 @@ public class BankReconciliationService {
     return query;
   }
 
+  @Override
   public Map<String, Object> getBindRequestMoveLine(BankReconciliation bankReconciliation)
       throws AxelorException {
     Map<String, Object> params = new HashMap<>();
@@ -963,6 +978,7 @@ public class BankReconciliationService {
     return params;
   }
 
+  @Override
   @Transactional(rollbackOn = {Exception.class})
   public BankReconciliation reconciliateAccordingToQueries(BankReconciliation bankReconciliation)
       throws AxelorException {
@@ -1057,6 +1073,7 @@ public class BankReconciliationService {
     return query;
   }
 
+  @Override
   public void unreconcileLines(List<BankReconciliationLine> bankReconciliationLines) {
     for (BankReconciliationLine bankReconciliationLine : bankReconciliationLines) {
       if (StringUtils.notEmpty((bankReconciliationLine.getPostedNbr()))) {
@@ -1065,6 +1082,7 @@ public class BankReconciliationService {
     }
   }
 
+  @Override
   @Transactional
   public void unreconcileLine(BankReconciliationLine bankReconciliationLine) {
     bankReconciliationLine.setBankStatementQuery(null);
@@ -1096,6 +1114,7 @@ public class BankReconciliationService {
     bankReconciliationLine.setPostedNbr(null);
   }
 
+  @Override
   @Transactional
   public BankReconciliation computeInitialBalance(BankReconciliation bankReconciliation) {
     BankDetails bankDetails = bankReconciliation.getBankDetails();
@@ -1134,6 +1153,7 @@ public class BankReconciliationService {
     return bankReconciliation;
   }
 
+  @Override
   public BankReconciliation computeEndingBalance(BankReconciliation bankReconciliation) {
     BigDecimal endingBalance = BigDecimal.ZERO;
     BigDecimal amount = BigDecimal.ZERO;
@@ -1154,6 +1174,7 @@ public class BankReconciliationService {
     return bankReconciliation;
   }
 
+  @Override
   public String printNewBankReconciliation(BankReconciliation bankReconciliation)
       throws AxelorException {
     if (bankReconciliation.getCompany() == null) {
@@ -1201,6 +1222,7 @@ public class BankReconciliationService {
     return fileLink;
   }
 
+  @Override
   @Transactional
   public BankReconciliationLine setSelected(BankReconciliationLine bankReconciliationLineContext) {
     BankReconciliationLine bankReconciliationLine =
@@ -1214,6 +1236,7 @@ public class BankReconciliationService {
     return bankReconciliationLineRepository.save(bankReconciliationLine);
   }
 
+  @Override
   public String createDomainForMoveLine(BankReconciliation bankReconciliation)
       throws AxelorException {
     String domain = "";
@@ -1233,6 +1256,7 @@ public class BankReconciliationService {
     return domain;
   }
 
+  @Override
   public BankReconciliation onChangeBankStatement(BankReconciliation bankReconciliation)
       throws AxelorException {
     boolean uniqueBankDetails = true;
@@ -1268,6 +1292,7 @@ public class BankReconciliationService {
     return bankReconciliation;
   }
 
+  @Override
   public void checkReconciliation(List<MoveLine> moveLines, BankReconciliation br)
       throws AxelorException {
 
@@ -1336,6 +1361,7 @@ public class BankReconciliationService {
     }
   }
 
+  @Override
   @Transactional(rollbackOn = {Exception.class})
   public BankReconciliation reconcileSelected(BankReconciliation bankReconciliation)
       throws AxelorException {
@@ -1369,6 +1395,7 @@ public class BankReconciliationService {
     return bankReconciliation;
   }
 
+  @Override
   public String getDomainForWizard(
       BankReconciliation bankReconciliation,
       BigDecimal bankStatementCredit,
@@ -1422,6 +1449,7 @@ public class BankReconciliationService {
     return "self id in (0)";
   }
 
+  @Override
   public BigDecimal getSelectedMoveLineTotal(
       BankReconciliation bankReconciliation, List<LinkedHashMap> toReconcileMoveLineSet) {
     BigDecimal selectedMoveLineTotal = BigDecimal.ZERO;
@@ -1442,6 +1470,7 @@ public class BankReconciliationService {
     return selectedMoveLineTotal;
   }
 
+  @Override
   public boolean getIsCorrectButtonHidden(BankReconciliation bankReconciliation)
       throws AxelorException {
     String onClosedPeriodClause =
@@ -1461,6 +1490,7 @@ public class BankReconciliationService {
         || haveMoveLineOnClosedPeriod;
   }
 
+  @Override
   public String getCorrectedLabel(LocalDateTime correctedDateTime, User correctedUser)
       throws AxelorException {
     String space = " ";
@@ -1475,6 +1505,7 @@ public class BankReconciliationService {
     return correctedLabel.toString();
   }
 
+  @Override
   public void correct(BankReconciliation bankReconciliation, User user) {
     bankReconciliation.setStatusSelect(BankReconciliationRepository.STATUS_UNDER_CORRECTION);
     bankReconciliation.setHasBeenCorrected(true);
@@ -1482,6 +1513,7 @@ public class BankReconciliationService {
     bankReconciliation.setCorrectedUser(user);
   }
 
+  @Override
   public BigDecimal computeBankReconciliationLinesSelection(BankReconciliation bankReconciliation) {
     return bankReconciliation.getBankReconciliationLineList().stream()
         .filter(BankReconciliationLine::getIsSelectedBankReconciliation)
@@ -1489,6 +1521,7 @@ public class BankReconciliationService {
         .reduce(BigDecimal.ZERO, BigDecimal::add);
   }
 
+  @Override
   public BigDecimal computeUnreconciledMoveLinesSelection(BankReconciliation bankReconciliation)
       throws AxelorException {
     String filter = getRequestMoveLines(bankReconciliation);
@@ -1505,6 +1538,7 @@ public class BankReconciliationService {
         .reduce(BigDecimal.ZERO, BigDecimal::add);
   }
 
+  @Override
   public void checkAccountBeforeAutoAccounting(
       BankStatementRule bankStatementRule, BankReconciliation bankReconciliation)
       throws AxelorException {
