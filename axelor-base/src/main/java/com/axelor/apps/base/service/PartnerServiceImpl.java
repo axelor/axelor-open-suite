@@ -821,7 +821,8 @@ public class PartnerServiceImpl implements PartnerService {
 
   @Override
   @Transactional
-  public Partner addContactListToPartner(Partner partner, List<Partner> contactPartnerList) {
+  public Partner addContactListToPartner(Partner partner, List<Partner> contactPartnerList)
+      throws AxelorException {
     partner.getContactPartnerSet().addAll(contactPartnerList);
     return partner;
   }
