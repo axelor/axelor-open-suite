@@ -300,12 +300,14 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   }
 
   @Override
-  public Map<String, Map<String, Object>> getJournalOnChangeAttrsMap(Move move) {
+  public Map<String, Map<String, Object>> getJournalOnChangeAttrsMap(Move move)
+      throws AxelorException {
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
     moveAttrsService.addFunctionalOriginSelectDomain(move, attrsMap);
 
     if (move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL) {
+      moveAttrsService.addMoveLineAnalyticAttrs(move, attrsMap);
       moveAttrsService.addMassEntryHidden(move, attrsMap);
     }
 
