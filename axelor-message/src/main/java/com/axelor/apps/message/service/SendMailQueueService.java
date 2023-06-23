@@ -19,7 +19,6 @@ package com.axelor.apps.message.service;
 
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.repo.MessageRepository;
-import com.axelor.auth.AuthUtils;
 import com.axelor.db.JpaSupport;
 import com.axelor.event.Observes;
 import com.axelor.events.ShutdownEvent;
