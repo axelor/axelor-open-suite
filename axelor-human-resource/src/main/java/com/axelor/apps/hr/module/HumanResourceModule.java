@@ -97,8 +97,18 @@ import com.axelor.apps.hr.service.expense.ExpenseVentilateService;
 import com.axelor.apps.hr.service.expense.ExpenseVentilateServiceImpl;
 import com.axelor.apps.hr.service.extra.hours.ExtraHoursService;
 import com.axelor.apps.hr.service.extra.hours.ExtraHoursServiceImpl;
-import com.axelor.apps.hr.service.leave.LeaveService;
-import com.axelor.apps.hr.service.leave.LeaveServiceImpl;
+import com.axelor.apps.hr.service.leave.LeaveLineService;
+import com.axelor.apps.hr.service.leave.LeaveLineServiceImpl;
+import com.axelor.apps.hr.service.leave.LeaveRequestComputeDurationService;
+import com.axelor.apps.hr.service.leave.LeaveRequestComputeDurationServiceImpl;
+import com.axelor.apps.hr.service.leave.LeaveRequestEventService;
+import com.axelor.apps.hr.service.leave.LeaveRequestEventServiceImpl;
+import com.axelor.apps.hr.service.leave.LeaveRequestMailService;
+import com.axelor.apps.hr.service.leave.LeaveRequestMailServiceImpl;
+import com.axelor.apps.hr.service.leave.LeaveRequestManagementService;
+import com.axelor.apps.hr.service.leave.LeaveRequestManagementServiceImpl;
+import com.axelor.apps.hr.service.leave.LeaveRequestService;
+import com.axelor.apps.hr.service.leave.LeaveRequestServiceImpl;
 import com.axelor.apps.hr.service.lunch.voucher.LunchVoucherAdvanceService;
 import com.axelor.apps.hr.service.lunch.voucher.LunchVoucherAdvanceServiceImpl;
 import com.axelor.apps.hr.service.lunch.voucher.LunchVoucherMgtLineService;
@@ -145,7 +155,6 @@ public class HumanResourceModule extends AxelorModule {
     bind(MailBatchService.class).to(MailBatchServiceHR.class);
     bind(AccountConfigService.class).to(AccountConfigHRService.class);
     bind(ExtraHoursService.class).to(ExtraHoursServiceImpl.class);
-    bind(LeaveService.class).to(LeaveServiceImpl.class);
     bind(LunchVoucherMgtService.class).to(LunchVoucherMgtServiceImpl.class);
     bind(LunchVoucherMgtLineService.class).to(LunchVoucherMgtLineServiceImpl.class);
     bind(AppHumanResourceService.class).to(AppHumanResourceServiceImpl.class);
@@ -192,5 +201,11 @@ public class HumanResourceModule extends AxelorModule {
     bind(ExpenseToolService.class).to(ExpenseToolServiceImpl.class);
     bind(ExpenseComputationService.class).to(ExpenseComputationServiceImpl.class);
     bind(EmployeeFileDMSService.class).to(EmployeeFileDMSServiceImpl.class);
+    bind(LeaveLineService.class).to(LeaveLineServiceImpl.class);
+    bind(LeaveRequestService.class).to(LeaveRequestServiceImpl.class);
+    bind(LeaveRequestComputeDurationService.class).to(LeaveRequestComputeDurationServiceImpl.class);
+    bind(LeaveRequestEventService.class).to(LeaveRequestEventServiceImpl.class);
+    bind(LeaveRequestMailService.class).to(LeaveRequestMailServiceImpl.class);
+    bind(LeaveRequestManagementService.class).to(LeaveRequestManagementServiceImpl.class);
   }
 }
