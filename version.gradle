@@ -7,4 +7,5 @@ if(project.hasProperty("mavenRepository") && !project.hasProperty("finalRelease"
   version += "-SNAPSHOT"
 }
 
+
 ext.openSuiteVersion = version
