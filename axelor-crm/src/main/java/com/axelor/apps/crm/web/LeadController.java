@@ -29,7 +29,7 @@ import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.apps.crm.db.report.IReport;
 import com.axelor.apps.crm.exception.CrmExceptionMessage;
 import com.axelor.apps.crm.service.EmailDomainToolService;
-import com.axelor.apps.crm.service.LeadActivityService;
+import com.axelor.apps.crm.service.CrmActivityService;
 import com.axelor.apps.crm.service.LeadService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.common.ObjectUtils;
@@ -263,9 +263,9 @@ public class LeadController {
     if (StringUtils.isBlank(id)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(CrmExceptionMessage.CRM_NO_LEAD_FOUND));
+          I18n.get(CrmExceptionMessage.CRM_LEAD_NOT_FOUND));
     }
-    dataList = Beans.get(LeadActivityService.class).getLeadActivityData(Long.valueOf(id));
+    dataList = Beans.get(CrmActivityService.class).getLeadActivityData(Long.valueOf(id));
     response.setData(dataList);
   }
 }

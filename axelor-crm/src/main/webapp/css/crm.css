@@ -1,27 +1,30 @@
-.lead-activity-dashlet .dashlet-header{
+.crm-activity-dashlet .dashlet-header{
     display: none;
 }
-.lead-activity-dashlet .lead-activity-card {
+.crm-activity-dashlet .dashlet-body{
+    border: 0;
+}
+.crm-activity-dashlet .crm-activity-card {
     border:1px solid #0285D8;
     border-radius:5px;
     margin:10px;
     padding:10px;
 }
-.lead-activity-dashlet hr {
+.crm-activity-dashlet hr {
     margin: 2px 0;
 }
 
-.lead-activity-card .lead-activity-date {
+.crm-activity-card .crm-activity-date {
     font-weight:bold;
     font-size:16px;
 }
 
-.lead-activity-card .lead-activity-content {
+.crm-activity-card .crm-activity-content {
     margin:5px 1px;
     display:flex;
     justify-content: space-between;
 }
-.lead-activity-card .lead-activity-icon .fa {
+.crm-activity-card .crm-activity-icon .fa {
     font-size:28px;
     color:#0285D8;
 }
