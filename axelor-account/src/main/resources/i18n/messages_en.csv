@@ -3191,6 +3191,7 @@
 "The sum of line amounts (%s) must match the amount of the payment schedule (%s).",,,
 "The sum of line percentages (payment percentage) must be equal to 100",,,
 "The sum of the percentage(s) displayed in the table below are not equal to 100% due to the existence of another move line which also contains invoice terms from the same invoice.",,,
+"The tax line is required.",,,
 "The tax move lines will be recalculated and validity checks will be done taking into consideration other lines taxes",,,
 "The to date is incorrect",,,
 "The total amount is greater than the budget distribution total.",,,

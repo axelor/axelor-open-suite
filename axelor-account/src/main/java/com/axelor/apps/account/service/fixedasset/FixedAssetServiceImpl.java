@@ -593,6 +593,12 @@ public class FixedAssetServiceImpl implements FixedAssetService {
           I18n.get(AccountExceptionMessage.IMMO_FIXED_ASSET_DISPOSAL_QTY_GREATER_ORIGINAL),
           fixedAsset.getQty().toString());
     }
+    if (generateSaleMove && saleTaxLine == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(AccountExceptionMessage.IMMO_FIXED_ASSET_DISPOSAL_SALE_TAXE_LINE_EMPTY));
+    }
+
     if (generateSaleMove
         && saleTaxLine != null
         && fixedAsset.getCompany().getAccountConfig().getCustomerSalesJournal() == null) {
