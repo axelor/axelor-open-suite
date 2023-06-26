@@ -149,7 +149,7 @@
               showIf="partner == null" placeholder="Enterprise name"
               onChange="action-lead-method-set-social-network-url"/>
             <field name="industrySector" colSpan="6" form-view="industry-sector-form"
-              grid-view="industry-sector-grid" canEdit="false"/>
+              grid-view="industry-sector-grid" canEdit="false" canNew="true"/>
             <field name="partner" colSpan="12" domain="self.isContact = false"
               form-view="partner-form" grid-view="partner-grid"/>
           </editor>
@@ -205,9 +205,9 @@
 
         <panel name="primaryAddress" title="Primary address" colSpan="12" hideIf="$readonly()">
           <field name="primaryAddress" colSpan="12"/>
-          <field name="primaryPostalCode" colSpan="6"/>
           <field name="primaryCity" colSpan="6" form-view="city-form" grid-view="city-grid"
             onChange="action-attrs-lead-set-primary-state-country-postal-code" canNew="true"/>
+          <field name="primaryPostalCode" colSpan="6"/>
           <field name="primaryState" colSpan="6" form-view="region-form"
             grid-view="region-grid" canNew="true"/>
           <field name="primaryCountry" colSpan="6" form-view="country-form"
@@ -243,12 +243,13 @@
         action="action-lead-view-marketing-campaigns" colSpan="12" height="500"/>
     </panel-tabs>
 
-    <panel name="actionsPanel" sidebar="true">
+    <panel name="actionsPanel" sidebar="true"
+      hideIf="user.id == _internalUserId &amp;&amp; (!id || isConverted) &amp;&amp; !partner">
       <button name="grabLeadBtn" title="Take in charge" hideIf="user.id == _internalUserId"
         icon="fa-suitcase" onClick="save,action-lead-method-assign-to-me"/>
       <button name="convertBtn" title="Convert" hideIf="!id || isConverted"
         icon="fa-exchange" onClick="action-lead-group-lead-convert"/>
-      <button name="showPartnerBtn" title="Show Partner" showIf="partner" colSpan="6"
+      <button name="showPartnerBtn" title="Show Partner" showIf="partner"
         onClick="action-lead-view-show-partner"/>
     </panel>
 
@@ -262,8 +263,8 @@
       <field name="agency" colSpan="6" form-view="agency-form" grid-view="agency-grid"
         if="__config__.app.getApp('crm')?.getAgenciesManagement()"/>
       <field name="contactDate" colSpan="6"/>
-      <field name="lastEventDateT" readonly="true"/>
-      <field name="nextScheduledEventDateT" readonly="true"/>
+      <field name="lastEventDateT" readonly="true" hideIf="!lastEventDateT"/>
+      <field name="nextScheduledEventDateT" readonly="true" hideIf="!nextScheduledEventDateT"/>
       <field name="lostReason" hidden="true" colSpan="6"/>
       <field name="lostReasonStr" showIf="lostReason.freeText" colSpan="6"/>
       <field name="lostReason.freeText" hidden="true"/>
