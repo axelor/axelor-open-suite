@@ -36,9 +36,11 @@
         <field name="unitHours" form-view="unit-form" grid-view="unit-grid"/>
         <field name="unitMinutes" form-view="unit-form" grid-view="unit-grid"/>
         <field name="teamManagement" widget="boolean-switch"/>
-        <field name="manageSubsidiaryPartner" widget="boolean-switch"/>
-        <field name="checkExistingSequenceOnGeneration" widget="boolean-switch"/>
-        <field name="draftPrefix"/>
+        <field name="manageSubsidiaryPartner" widget="boolean-switch" colSpan="4"/>
+        <field name="checkExistingSequenceOnGeneration" widget="boolean-switch" colSpan="4"/>
+        <field name="draftPrefix" colSpan="4"/>
+
+
         <panel name="productBarCodePanel" title="Product BarCode" colSpan="12">
           <field name="activateBarCodeGeneration" widget="Boolean-switch"/>
           <field name="editProductBarcodeType" showIf="activateBarCodeGeneration==true"

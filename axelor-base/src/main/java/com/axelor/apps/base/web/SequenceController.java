@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.base.web;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.service.administration.SequenceService;
@@ -39,6 +40,14 @@ public class SequenceController {
     if (!Strings.isNullOrEmpty(sequence.getCodeSelect())) {
       String defautlTitle = Beans.get(SequenceService.class).getDefaultTitle(sequence);
       response.setValue("name", I18n.get(defautlTitle));
+    }
+  }
+
+  public void validateSequence(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Sequence sequence = request.getContext().asType(Sequence.class);
+    if (!Strings.isNullOrEmpty(sequence.getCodeSelect())) {
+      Beans.get(SequenceService.class).validateSequence(sequence);
     }
   }
 
