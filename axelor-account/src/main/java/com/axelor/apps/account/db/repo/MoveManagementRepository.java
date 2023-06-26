@@ -29,6 +29,7 @@ import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
 import com.axelor.apps.account.service.move.MovePfpService;
 import com.axelor.apps.account.service.move.MoveRemoveService;
 import com.axelor.apps.account.service.move.MoveSequenceService;
+import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
@@ -159,14 +160,14 @@ public class MoveManagementRepository extends MoveRepository {
   @Override
   public Move save(Move move) {
     try {
-      /*MoveValidateService moveValidateService = Beans.get(MoveValidateService.class);
+      MoveValidateService moveValidateService = Beans.get(MoveValidateService.class);
 
       moveValidateService.checkMoveLinesPartner(move);
       if (move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED
           || move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK
           || move.getStatusSelect() == MoveRepository.STATUS_SIMULATED) {
         moveValidateService.checkPreconditions(move);
-      }*/
+      }
       if (move.getCurrency() != null) {
         move.setCurrencyCode(move.getCurrency().getCodeISO());
       }

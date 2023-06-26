@@ -1375,6 +1375,6 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
         invoiceTerm.getMoveLine().getMove(),
         move,
         invoiceTerm.getAmountPaid(),
-        true);
+        false);
   }
 }

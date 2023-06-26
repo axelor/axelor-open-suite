@@ -45,6 +45,7 @@ import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionVali
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderFileFormat;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
+import com.axelor.apps.bankpayment.db.BankOrderLineOrigin;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderCreateService;
@@ -59,6 +60,7 @@ import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.DateService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
@@ -68,9 +70,11 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import javax.persistence.TypedQuery;
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -445,12 +449,30 @@ public class PaymentSessionValidateBankPaymentServiceImpl
       Map<LocalDate, Map<Partner, List<Move>>> moveDateMap,
       Map<Move, BigDecimal> paymentAmountMap)
       throws AxelorException {
-    super.processInvoiceTermLcr(paymentSession, invoiceTerm, moveDateMap, paymentAmountMap);
+
+    if (!this.bankOrderCreatedForInvoiceTerm(invoiceTerm, paymentSession)) {
+      super.processInvoiceTermLcr(paymentSession, invoiceTerm, moveDateMap, paymentAmountMap);
+    }
 
     if (paymentSession.getBankOrder() != null
         && paymentSession.getStatusSelect() != PaymentSessionRepository.STATUS_AWAITING_PAYMENT) {
       this.createOrUpdateBankOrderLineFromInvoiceTerm(
           paymentSession, invoiceTerm, paymentSession.getBankOrder());
     }
+  }
+
+  public boolean bankOrderCreatedForInvoiceTerm(
+      InvoiceTerm invoiceTerm, PaymentSession paymentSession) {
+
+    if (paymentSession.getBankOrder() != null
+        && !ObjectUtils.isEmpty(paymentSession.getBankOrder().getBankOrderLineList())) {
+      return paymentSession.getBankOrder().getBankOrderLineList().stream()
+          .map(BankOrderLine::getBankOrderLineOriginList)
+          .flatMap(Collection::stream)
+          .map(BankOrderLineOrigin::getRelatedToSelectId)
+          .collect(Collectors.toList())
+          .contains(invoiceTerm.getId());
+    }
+    return false;
   }
 }
