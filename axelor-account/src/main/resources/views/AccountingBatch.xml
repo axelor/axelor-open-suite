@@ -322,14 +322,19 @@
   <action-group name="action-accounting-batch-group-accounting-cut-off">
     <action name="save"/>
     <action name="action-accounting-batch-validate-cut-off-move-status"/>
+    <action name="action-accounting-batch-group-accounting-cut-off-preview-records-to-process" if="previewRecordsToProcess"/>
+    <action name="action-accounting-batch-group-accounting-cut-off-not-preview-records-to-process" if="!previewRecordsToProcess"/>
+  </action-group>
+
+  <action-group name="action-accounting-batch-group-accounting-cut-off-preview-records-to-process">
     <action name="action-accounting-batch-method-compute-move-line-cut-off-fields"
-      if="previewRecordsToProcess &amp;&amp; [3,4].contains(accountingCutOffTypeSelect)"/>
-    <action name="action-accounting-batch-view-preview-move-lines-to-process"
-      if="previewRecordsToProcess"/>
-    <action name="action-accounting-batch-validate-twice-in-a-month"
-      if="!previewRecordsToProcess"/>
-    <action name="action-accounting-batch-method-accounting-cut-off"
-      if="!previewRecordsToProcess"/>
+            if="[3,4].contains(accountingCutOffTypeSelect)"/>
+    <action name="action-accounting-batch-view-preview-move-lines-to-process"/>
+  </action-group>
+
+  <action-group name="action-accounting-batch-group-accounting-cut-off-not-preview-records-to-process">
+    <action name="action-accounting-batch-validate-twice-in-a-month"/>
+    <action name="action-accounting-batch-method-accounting-cut-off"/>
   </action-group>
 
   <action-group name="action-group-accounting-batch-onchange-accounting-type">
