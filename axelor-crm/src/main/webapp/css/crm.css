@@ -1,0 +1,27 @@
+.lead-activity-dashlet .dashlet-header{
+    display: none;
+}
+.lead-activity-dashlet .lead-activity-card {
+    border:1px solid #0285D8;
+    border-radius:5px;
+    margin:10px;
+    padding:10px;
+}
+.lead-activity-dashlet hr {
+    margin: 2px 0;
+}
+
+.lead-activity-card .lead-activity-date {
+    font-weight:bold;
+    font-size:16px;
+}
+
+.lead-activity-card .lead-activity-content {
+    margin:5px 1px;
+    display:flex;
+    justify-content: space-between;
+}
+.lead-activity-card .lead-activity-icon .fa {
+    font-size:28px;
+    color:#0285D8;
+}
