@@ -19,8 +19,7 @@
     onNew="action-forecast-generator-record-default-on-new">
     <panel name="mainPanel">
       <button name="generateBtn" title="Generate"
-        onClick="action-forecast-generator-validate-dates,save,action-forecast-generator-method-generate,action-forecast-generator-attrs-title-generate"
-        colSpan="3" colOffset="9"/>
+        onClick="action-forecast-generator-group-generate" colSpan="3" colOffset="9"/>
       <field name="company" canEdit="false" onChange="action-forecast-generator-record-bank"/>
       <field name="bankDetails" onSelect="action-accounting-batch-attrs-bank-details-domain"/>
       <field name="typeSelect"/>
@@ -34,6 +33,13 @@
         action="action-forecast-generator-view-show-forecast-list" showIf="id" colSpan="12"/>
     </panel>
   </form>
+
+  <action-group name="action-forecast-generator-group-generate">
+    <action name="action-forecast-generator-validate-dates"/>
+    <action name="save"/>
+    <action name="action-forecast-generator-method-generate"/>
+    <action name="action-forecast-generator-attrs-title-generate"/>
+  </action-group>
 
   <action-record name="action-forecast-generator-record-default-on-new"
     model="com.axelor.apps.cash.management.db.ForecastGenerator">
@@ -49,7 +55,8 @@
   </action-record>
 
   <action-attrs name="action-forecast-generator-attrs-title-generate">
-    <attribute name="title" for="generateBtn" expr="Actualize"/>
+    <attribute name="title" for="generateBtn"
+      expr="eval:com.axelor.i18n.I18n.get('Actualize')"/>
   </action-attrs>
 
   <action-method name="action-forecast-generator-method-generate">
