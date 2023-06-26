@@ -1,5 +1,6 @@
 package com.axelor.apps.account.service.move.massentry;
 
+import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.MoveLineMassEntry;
@@ -128,12 +129,12 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
         moveLineComputeAnalyticService.generateAnalyticMoveLines(newMoveLine);
         moveLineMassEntryRecordService.setAnalytics(newMoveLine, moveLine);
         if (ObjectUtils.notEmpty(moveLine.getAnalyticMoveLineList())) {
-          moveLine
-              .getAnalyticMoveLineList()
-              .forEach(
-                  analyticMoveLine ->
-                      newMoveLine.addAnalyticMoveLineListItem(
-                          analyticMoveLineRepository.copy(analyticMoveLine, false)));
+          moveLine.clearAnalyticMoveLineList();
+          for (AnalyticMoveLine analyticMoveLine : moveLine.getAnalyticMoveLineList()) {
+            AnalyticMoveLine copyAnalyticMoveLine =
+                analyticMoveLineRepository.copy(analyticMoveLine, false);
+            newMoveLine.addAnalyticMoveLineListItem(copyAnalyticMoveLine);
+          }
         }
 
         counter++;
