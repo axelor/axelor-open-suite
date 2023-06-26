@@ -1,0 +1,5 @@
+---
+title: [CRM - Partner/Prospect] Fix for partner-customer-form with Partner isProspect
+type: fix
+description: |
+  Totally remove isEmployee from 'partner-form' and children.
