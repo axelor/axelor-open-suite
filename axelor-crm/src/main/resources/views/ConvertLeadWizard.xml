@@ -8,7 +8,7 @@
     <panel name="mainPanel" colSpan="12" itemSpan="12">
       <field name="$partnerStatus" type="Many-to-one"
         target="com.axelor.apps.crm.db.PartnerStatus" title="Partner status"
-        if=" __config__.app.getApp('crm')?.getCrmProcessOnPartner()" x-order="sequence"/>
+        if="__config__.app.getApp('crm')?.getCrmProcessOnPartner()" x-order="sequence"/>
 
       <field name="$leadToPartnerSelect" title="Convert lead into partner" required="true"
         type="integer" selection="crm.convert.lead.wizard.lead.to.partner.select"
@@ -18,21 +18,24 @@
         domain="self.isContact = 'false'" form-view="partner-form" grid-view="partner-grid"
         target="com.axelor.apps.base.db.Partner"/>
       <spacer name="leadContactSelectSpacer"
-        showIf="$selectPartner.partnerTypeSelect != 2 &amp;&amp; !__config__.app.getApp('crm')?.crmProcessOnPartner"/>
+        if="!__config__.app.getApp('crm')?.getCrmProcessOnPartner()"
+        showIf="$selectPartner.partnerTypeSelect != 2"/>
       <field name="$leadToContactSelect"
-        showIf="$selectPartner.partnerTypeSelect != 2 &amp;&amp; !__config__.app.getApp('crm')?.crmProcessOnPartner"
-        title="Convert lead into contact" type="integer"
-        selection="crm.convert.lead.wizard.lead.to.contact.select"/>
+        if="!__config__.app.getApp('crm')?.getCrmProcessOnPartner()"
+        showIf="$selectPartner.partnerTypeSelect != 2" title="Convert lead into contact"
+        type="integer" selection="crm.convert.lead.wizard.lead.to.contact.select"/>
       <field name="$selectContactSet"
-        showIf="$leadToContactSelect == 2 &amp;&amp; $selectPartner.partnerTypeSelect != 2 &amp;&amp; !__config__.app.getApp('crm')?.crmProcessOnPartner"
+        if="!__config__.app.getApp('crm')?.getCrmProcessOnPartner()"
+        showIf="$leadToContactSelect == 2 &amp;&amp; $selectPartner.partnerTypeSelect != 2"
         requiredIf="$leadToContactSelect == 2" title="Select Contact" widget="ManyToMany"
         domain="self.isContact = 'true'" grid-view="partner-contact-grid"
         form-view="partner-contact-form" target="com.axelor.apps.base.db.Partner"/>
       <button name="validateBtn"
-        hideIf="$partnerStatus == null || !$leadToPartnerSelect || $leadToPartnerSelect == 2 &amp;&amp; $selectPartner == null || $leadToContactSelect == 2 &amp;&amp; ($selectContactSet == null || $selectContactSet.length == 0)"
+        hideIf="($crmProcessOnPartner &amp;&amp; $partnerStatus == null)|| !$leadToPartnerSelect || $leadToPartnerSelect == 2 &amp;&amp; $selectPartner == null || $leadToContactSelect == 2 &amp;&amp; ($selectContactSet == null || $selectContactSet.length == 0)"
         title="Validate"
         onClick="action-convert-lead-validate-confirm-validate-lead,action-lead-method-convert-lead"/>
       <field name="$selectPartner.partnerTypeSelect" hidden="true"/>
+      <field name="$crmProcessOnPartner" hidden="true"/>
     </panel>
   </form>
 
@@ -40,6 +43,8 @@
     model="com.axelor.utils.db.Wizard">
     <field name="$leadToPartnerSelect" expr="eval:1"/>
     <field name="$leadToContactSelect" expr="eval:1"/>
+    <field name="$crmProcessOnPartner"
+      expr="eval:__config__.app.getApp('crm')?.getCrmProcessOnPartner()"/>
   </action-record>
 
   <action-validate name="action-convert-lead-validate-confirm-validate-lead">
