@@ -415,4 +415,12 @@ public class SequenceService {
 
     return sequenceVersionList;
   }
+
+  public void validateSequence(Sequence sequence) throws AxelorException {
+    if (sequence.getPrefixe().startsWith(appBaseService.getAppBase().getDraftPrefix()))
+      throw new AxelorException(
+          appBaseService.getAppBase(),
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get("Sequence prefix cannot contain draft prefix"));
+  }
 }
