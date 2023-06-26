@@ -16,6 +16,15 @@ import javax.script.ScriptException;
 public class RevaluationFormulaService {
   protected IndexRevaluationService indexRevaluationService;
 
+  public static final String REVALUATION_INDEX_1 = "ind1i";
+  public static final String REVALUATION_INDEX_2 = "ind2i";
+  public static final String REVALUATION_NEXT_INDEX_1 = "ind1f";
+  public static final String REVALUATION_NEXT_INDEX_2 = "ind2f";
+  public static final String REVALUATION_PREVIOUS_YEAR_INDEX_1 = "ind1py";
+  public static final String REVALUATION_PREVIOUS_YEAR_INDEX_2 = "ind2py";
+  public static final String REVALUATION_ORIGINAL_PRICE = "p0";
+  public static final String REVALUATION_LAST_REVALUATED_PRICE = "pf";
+
   @Inject
   public RevaluationFormulaService(IndexRevaluationService indexRevaluationService) {
     this.indexRevaluationService = indexRevaluationService;
@@ -24,29 +33,29 @@ public class RevaluationFormulaService {
   public void checkFormula(RevaluationFormula revaluationFormula) throws ScriptException {
     String formula = revaluationFormula.getFormula();
     formula = formula.toLowerCase();
-    if (formula.contains("ind1i")) {
-      formula = formula.replace("ind1i", "1");
+    if (formula.contains(REVALUATION_INDEX_1)) {
+      formula = formula.replace(REVALUATION_INDEX_1, "1");
     }
-    if (formula.contains("ind2i")) {
-      formula = formula.replace("ind2i", "1");
+    if (formula.contains(REVALUATION_INDEX_2)) {
+      formula = formula.replace(REVALUATION_INDEX_2, "1");
     }
-    if (formula.contains("ind1f")) {
-      formula = formula.replace("ind1f", "1");
+    if (formula.contains(REVALUATION_NEXT_INDEX_1)) {
+      formula = formula.replace(REVALUATION_NEXT_INDEX_1, "1");
     }
-    if (formula.contains("ind2f")) {
-      formula = formula.replace("ind2f", "1");
+    if (formula.contains(REVALUATION_NEXT_INDEX_2)) {
+      formula = formula.replace(REVALUATION_NEXT_INDEX_2, "1");
     }
-    if (formula.contains("ind1py")) {
-      formula = formula.replace("ind1py", "1");
+    if (formula.contains(REVALUATION_PREVIOUS_YEAR_INDEX_1)) {
+      formula = formula.replace(REVALUATION_PREVIOUS_YEAR_INDEX_1, "1");
     }
-    if (formula.contains("ind2py")) {
-      formula = formula.replace("ind2py", "1");
+    if (formula.contains(REVALUATION_PREVIOUS_YEAR_INDEX_2)) {
+      formula = formula.replace(REVALUATION_PREVIOUS_YEAR_INDEX_2, "1");
     }
-    if (formula.contains("p0")) {
-      formula = formula.replace("p0", "1");
+    if (formula.contains(REVALUATION_ORIGINAL_PRICE)) {
+      formula = formula.replace(REVALUATION_ORIGINAL_PRICE, "1");
     }
-    if (formula.contains("pf")) {
-      formula = formula.replace("pf", "1");
+    if (formula.contains(REVALUATION_LAST_REVALUATED_PRICE)) {
+      formula = formula.replace(REVALUATION_LAST_REVALUATED_PRICE, "1");
     }
     ScriptEngineManager mgr = new ScriptEngineManager();
     ScriptEngine engine = mgr.getEngineByName("JavaScript");
@@ -99,37 +108,37 @@ public class RevaluationFormulaService {
     BigDecimal ind1nm1 = null;
     BigDecimal ind2nm1 = null;
 
-    if (formula.contains("ind1i") && index1 != null && date1 != null) {
+    if (formula.contains(REVALUATION_INDEX_1) && index1 != null && date1 != null) {
       ind1i = indexRevaluationService.getIndexValue(index1, date1).getValue();
-      formula = formula.replace("ind1i", ind1i.toString());
+      formula = formula.replace(REVALUATION_INDEX_1, ind1i.toString());
     }
-    if (formula.contains("ind2i") && index2 != null && date2 != null) {
+    if (formula.contains(REVALUATION_INDEX_2) && index2 != null && date2 != null) {
       ind2i = indexRevaluationService.getIndexValue(index2, date2).getValue();
-      formula = formula.replace("ind2i", ind2i.toString());
+      formula = formula.replace(REVALUATION_INDEX_2, ind2i.toString());
     }
-    if (formula.contains("ind1f") && index1 != null) {
+    if (formula.contains(REVALUATION_NEXT_INDEX_1) && index1 != null) {
       ind1f = indexRevaluationService.getIndexValue(index1, nextRevaluationDate).getValue();
-      formula = formula.replace("ind1f", ind1f.toString());
+      formula = formula.replace(REVALUATION_NEXT_INDEX_1, ind1f.toString());
     }
-    if (formula.contains("ind2f") && index2 != null) {
+    if (formula.contains(REVALUATION_NEXT_INDEX_2) && index2 != null) {
       ind2f = indexRevaluationService.getIndexValue(index2, nextRevaluationDate).getValue();
-      formula = formula.replace("ind2f", ind2f.toString());
+      formula = formula.replace(REVALUATION_NEXT_INDEX_2, ind2f.toString());
     }
-    if (formula.contains("ind1py") && index1 != null) {
+    if (formula.contains(REVALUATION_PREVIOUS_YEAR_INDEX_1) && index1 != null) {
       ind1nm1 =
           indexRevaluationService.getLastYearIndexValue(index1, nextRevaluationDate).getValue();
-      formula = formula.replace("ind1py", ind1nm1.toString());
+      formula = formula.replace(REVALUATION_PREVIOUS_YEAR_INDEX_1, ind1nm1.toString());
     }
-    if (formula.contains("ind2py") && index2 != null) {
+    if (formula.contains(REVALUATION_PREVIOUS_YEAR_INDEX_2) && index2 != null) {
       ind2nm1 =
           indexRevaluationService.getLastYearIndexValue(index2, nextRevaluationDate).getValue();
-      formula = formula.replace("ind2py", ind2nm1.toString());
+      formula = formula.replace(REVALUATION_PREVIOUS_YEAR_INDEX_2, ind2nm1.toString());
     }
-    if (formula.contains("p0") && initialPrice != null) {
-      formula = formula.replace("p0", initialPrice.toString());
+    if (formula.contains(REVALUATION_ORIGINAL_PRICE) && initialPrice != null) {
+      formula = formula.replace(REVALUATION_ORIGINAL_PRICE, initialPrice.toString());
     }
-    if (formula.contains("pf") && price != null) {
-      formula = formula.replace("pf", price.toString());
+    if (formula.contains(REVALUATION_LAST_REVALUATED_PRICE) && price != null) {
+      formula = formula.replace(REVALUATION_LAST_REVALUATED_PRICE, price.toString());
     }
 
     if (function != null) {

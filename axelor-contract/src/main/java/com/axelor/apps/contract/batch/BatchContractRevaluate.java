@@ -37,6 +37,8 @@ public class BatchContractRevaluate extends BatchStrategy {
   protected ContractRepository contractRepository;
   protected ContractVersionService contractVersionService;
   protected ContractRevaluationService contractRevaluationService;
+
+  protected static final int REVALUATION_DATE_DAYS_TO_SUBTRACT = 5;
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Inject
@@ -105,7 +107,6 @@ public class BatchContractRevaluate extends BatchStrategy {
       List<Contract> idsReevaluated,
       Contract contract) {
     try {
-      contract = contractRepository.find(contract.getId());
       Contract newContract = contractService.getNextContract(contract);
       processContract(newContract, idsOk, idsReevaluated);
     } catch (Exception e) {
@@ -115,7 +116,8 @@ public class BatchContractRevaluate extends BatchStrategy {
     }
   }
 
-  void processContract(Contract contract, List<Contract> idsOk, List<Contract> idsReevaluated)
+  protected void processContract(
+      Contract contract, List<Contract> idsOk, List<Contract> idsReevaluated)
       throws AxelorException, ScriptException {
     LocalDate todayDate = appBaseService.getTodayDate(contract.getCompany());
     LocalDate nextRevaluationDate = contract.getNextRevaluationDate();
@@ -130,9 +132,11 @@ public class BatchContractRevaluate extends BatchStrategy {
       incrementDone();
     } else if (nextRevaluationDate == null && lastRevaluationDate != null) {
       contract.setNextRevaluationDate(
-          computeNextRevaluationDate(contract, lastRevaluationDate).minusDays(5));
+          computeNextRevaluationDate(contract, lastRevaluationDate)
+              .minusDays(REVALUATION_DATE_DAYS_TO_SUBTRACT));
     } else if (nextRevaluationDate == null) {
-      contract.setNextRevaluationDate(computeNextRevaluationDate(contract, null).minusDays(5));
+      contract.setNextRevaluationDate(
+          computeNextRevaluationDate(contract, null).minusDays(REVALUATION_DATE_DAYS_TO_SUBTRACT));
     }
     idsOk.add(contract);
     contractRepository.save(contract);
@@ -140,19 +144,32 @@ public class BatchContractRevaluate extends BatchStrategy {
 
   protected boolean launchBatch(LocalDate todayDate, Contract contract) {
     LocalDate nextRevaluationDate = contract.getNextRevaluationDate();
-    LocalDate lastRevaluationDate = contract.getLastRevaluationDate();
-    LocalDate startDate = contract.getStartDate();
+    if (nextRevaluationDate == null) {
+      return false;
+    }
+
+    return todayDate.isEqual(nextRevaluationDate)
+        || launchBatchIfNextRevaluationDateIsBeforeToday(todayDate, nextRevaluationDate, contract);
+  }
+
+  protected boolean launchBatchIfNextRevaluationDateIsBeforeToday(
+      LocalDate todayDate, LocalDate nextRevaluationDate, Contract contract) {
     Duration revaluationPeriod = contract.getRevaluationPeriod();
     LocalDate computedLastRevaluationDate =
-        computeNewDateWithPeriod(revaluationPeriod, lastRevaluationDate);
-    LocalDate computedStartDate = computeNewDateWithPeriod(revaluationPeriod, startDate);
+        computeNewDateWithPeriod(revaluationPeriod, contract.getLastRevaluationDate());
+    LocalDate computedStartDate =
+        computeNewDateWithPeriod(revaluationPeriod, contract.getStartDate());
 
-    return nextRevaluationDate != null
-        && (todayDate.isEqual(nextRevaluationDate)
-            || (nextRevaluationDate.isBefore(todayDate)
-                && ((computedLastRevaluationDate != null
-                        && computedLastRevaluationDate.isBefore(nextRevaluationDate))
-                    || (computedStartDate != null && computedStartDate.isBefore(todayDate)))));
+    boolean computedLastRevaluationDateIsBeforeNextRevaluationDate =
+        computedLastRevaluationDate != null
+            && computedLastRevaluationDate.isBefore(nextRevaluationDate);
+
+    boolean computedStartDateIsBeforeToday =
+        computedStartDate != null && computedStartDate.isBefore(todayDate);
+
+    return nextRevaluationDate.isBefore(todayDate)
+        && (computedLastRevaluationDateIsBeforeNextRevaluationDate
+            || computedStartDateIsBeforeToday);
   }
 
   protected LocalDate computeNewDateWithPeriod(Duration revaluationPeriod, LocalDate date) {

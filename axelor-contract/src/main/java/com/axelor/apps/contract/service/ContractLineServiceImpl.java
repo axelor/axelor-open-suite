@@ -29,14 +29,11 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Duration;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
-import com.axelor.apps.base.db.repo.DurationRepository;
-import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
@@ -59,6 +56,7 @@ public class ContractLineServiceImpl implements ContractLineService {
   protected ProductCompanyService productCompanyService;
   protected ContractVersionRepository contractVersionRepo;
   protected PriceListService priceListService;
+  protected DurationService durationService;
 
   @Inject
   public ContractLineServiceImpl(
@@ -67,13 +65,15 @@ public class ContractLineServiceImpl implements ContractLineService {
       CurrencyService currencyService,
       ProductCompanyService productCompanyService,
       PriceListService priceListService,
-      ContractVersionRepository contractVersionRepo) {
+      ContractVersionRepository contractVersionRepo,
+      DurationService durationService) {
     this.appBaseService = appBaseService;
     this.accountManagementService = accountManagementService;
     this.currencyService = currencyService;
     this.productCompanyService = productCompanyService;
     this.priceListService = priceListService;
     this.contractVersionRepo = contractVersionRepo;
+    this.durationService = durationService;
   }
 
   @Override
@@ -170,7 +170,7 @@ public class ContractLineServiceImpl implements ContractLineService {
   }
 
   @Override
-  public ContractLine computeTotal(ContractLine contractLine) {
+  public ContractLine computeTotal(ContractLine contractLine) throws AxelorException {
     BigDecimal taxRate = BigDecimal.ZERO;
 
     if (contractLine.getTaxLine() != null) {
@@ -178,11 +178,7 @@ public class ContractLineServiceImpl implements ContractLineService {
     }
 
     if (contractLine.getContractVersion() != null) {
-      try {
-        contractLine = computePricesPerYear(contractLine, contractLine.getContractVersion());
-      } catch (Exception e) {
-        TraceBackService.trace(e);
-      }
+      contractLine = computePricesPerYear(contractLine, contractLine.getContractVersion());
     }
 
     BigDecimal price =
@@ -239,33 +235,25 @@ public class ContractLineServiceImpl implements ContractLineService {
       BigDecimal exTaxTotal = contractLine.getExTaxTotal();
       int durationType = duration.getTypeSelect();
       Integer durationValue = duration.getValue();
-      if (initialUnitPrice != null && qty != null && durationValue != null) {
+      BigDecimal ratio =
+          durationService
+              .getFactor(durationType)
+              .divide(BigDecimal.valueOf(durationValue), RoundingMode.HALF_UP);
+      if (initialUnitPrice != null && qty != null) {
         contractLine.setInitialPricePerYear(
             initialUnitPrice
                 .multiply(qty)
-                .multiply(BigDecimal.valueOf(getFactor(durationType) / durationValue.doubleValue()))
+                .multiply(ratio)
                 .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
       }
-      if (exTaxTotal != null && durationValue != null) {
+      if (exTaxTotal != null) {
         contractLine.setYearlyPriceRevalued(
             exTaxTotal
-                .multiply(BigDecimal.valueOf(getFactor(durationType) / durationValue.doubleValue()))
+                .multiply(ratio)
                 .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
       }
     }
 
     return contractLine;
-  }
-
-  protected double getFactor(int durationType) throws AxelorException {
-    if (durationType == DurationRepository.TYPE_MONTH) {
-      return 12.0;
-    } else if (durationType == DurationRepository.TYPE_DAY) {
-      return 365.0;
-    } else {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          String.format(I18n.get(BaseExceptionMessage.UNKNOWN_DURATION), durationType));
-    }
   }
 }

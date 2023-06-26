@@ -70,7 +70,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -539,42 +538,46 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
   }
 
   @Override
-  public Multimap<ContractLine, ConsumptionLine> mergeConsumptionLines(Contract contract) {
+  public Multimap<ContractLine, ConsumptionLine> mergeConsumptionLines(Contract contract)
+      throws AxelorException {
     Multimap<ContractLine, ConsumptionLine> mergedLines = HashMultimap.create();
-
-    Stream<ConsumptionLine> lineStream =
-        contract.getConsumptionLineList().stream().filter(c -> !c.getIsInvoiced());
+    List<ConsumptionLine> consumptionLineList =
+        contract.getConsumptionLineList().stream()
+            .filter(c -> !c.getIsInvoiced())
+            .collect(Collectors.toList());
 
     if (contract.getCurrentContractVersion().getIsConsumptionBeforeEndDate()) {
-      lineStream =
-          lineStream.filter(
-              line -> line.getLineDate().isBefore(contract.getInvoicePeriodEndDate()));
+      consumptionLineList =
+          consumptionLineList.stream()
+              .filter(line -> line.getLineDate().isBefore(contract.getInvoicePeriodEndDate()))
+              .collect(Collectors.toList());
     }
 
-    lineStream.forEach(
-        line -> {
-          ContractVersion version = contract.getCurrentContractVersion();
+    for (ConsumptionLine consumptionLine : consumptionLineList) {
+      ContractVersion version = contract.getCurrentContractVersion();
 
-          if (isFullProrated(contract)) {
-            version = versionService.getContractVersion(contract, line.getLineDate());
-          }
+      if (isFullProrated(contract)) {
+        version = versionService.getContractVersion(contract, consumptionLine.getLineDate());
+      }
 
-          if (version == null) {
-            line.setIsError(true);
-          } else {
-            ContractLine matchLine =
-                contractLineRepo.findOneBy(version, line.getProduct(), line.getReference(), true);
-            if (matchLine == null) {
-              line.setIsError(true);
-            } else {
-              matchLine.setQty(matchLine.getQty().add(line.getQty()));
-              contractLineService.computeTotal(matchLine);
-              line.setIsError(false);
-              line.setContractLine(matchLine);
-              mergedLines.put(matchLine, line);
-            }
-          }
-        });
+      if (version == null) {
+        consumptionLine.setIsError(true);
+      } else {
+        ContractLine matchLine =
+            contractLineRepo.findOneBy(
+                version, consumptionLine.getProduct(), consumptionLine.getReference(), true);
+        if (matchLine == null) {
+          consumptionLine.setIsError(true);
+        } else {
+          matchLine.setQty(matchLine.getQty().add(consumptionLine.getQty()));
+          contractLineService.computeTotal(matchLine);
+          consumptionLine.setIsError(false);
+          consumptionLine.setContractLine(matchLine);
+          mergedLines.put(matchLine, consumptionLine);
+        }
+      }
+    }
+
     return mergedLines;
   }
 

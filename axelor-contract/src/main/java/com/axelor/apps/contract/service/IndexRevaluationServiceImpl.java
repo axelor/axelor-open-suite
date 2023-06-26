@@ -27,12 +27,7 @@ public class IndexRevaluationServiceImpl implements IndexRevaluationService {
   public IndexValue getIndexValue(IndexRevaluation indexRevaluation, LocalDate date)
       throws AxelorException {
     return indexRevaluation.getIndexValueList().stream()
-        .filter(
-            index ->
-                (date.isAfter(index.getStartDate()) && date.isBefore(index.getEndDate()))
-                    || index.getStartDate().isEqual(date)
-                    || index.getEndDate().isEqual(date)
-                    || (index.getEndDate() == null && date.isAfter(index.getStartDate())))
+        .filter(index -> indexDateFilter(index, date))
         .max(Comparator.comparing(IndexValue::getStartDate))
         .orElseThrow(
             () ->
@@ -40,6 +35,16 @@ public class IndexRevaluationServiceImpl implements IndexRevaluationService {
                     TraceBackRepository.CATEGORY_NO_VALUE,
                     I18n.get(ContractExceptionMessage.CONTRACT_INDEX_VALUE_NO_DATA),
                     date.toString()));
+  }
+
+  protected boolean indexDateFilter(IndexValue indexValue, LocalDate date) {
+    LocalDate startDate = indexValue.getStartDate();
+    LocalDate endDate = indexValue.getEndDate();
+
+    return startDate.isEqual(date)
+        || date.isAfter(startDate)
+        || (endDate != null
+            && ((date.isAfter(startDate) && date.isBefore(endDate)) || endDate.isEqual(date)));
   }
 
   @Override
