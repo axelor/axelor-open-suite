@@ -311,12 +311,14 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
     Account account = moveLine.getAccount();
     Company company = move.getCompany();
 
-    if (account.getCommonPosition() == AccountRepository.COMMON_POSITION_CREDIT) {
-      this.addAttr("credit", "focus", true, attrsMap);
-    }
+    if (account != null) {
+      if (account.getCommonPosition() == AccountRepository.COMMON_POSITION_CREDIT) {
+        this.addAttr("credit", "focus", true, attrsMap);
+      }
 
-    if (account.getCommonPosition() == AccountRepository.COMMON_POSITION_DEBIT) {
-      this.addAttr("debit", "focus", true, attrsMap);
+      if (account.getCommonPosition() == AccountRepository.COMMON_POSITION_DEBIT) {
+        this.addAttr("debit", "focus", true, attrsMap);
+      }
     }
 
     if (company.getCurrency() != move.getCurrency()) {
