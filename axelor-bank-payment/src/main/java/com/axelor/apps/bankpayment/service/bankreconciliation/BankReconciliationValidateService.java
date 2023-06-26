@@ -135,7 +135,7 @@ public class BankReconciliationValidateService {
               BankPaymentExceptionMessage
                   .BANK_RECONCILIATION_HEADER_CASH_ACCOUNT_OR_JOURNAL_MISSING),
           bankReconciliationLinePartnerOrAccountErrorList.stream()
-              .map(brl -> brl.getReference())
+              .map(brl -> brl.getReference() != null ? brl.getReference() : "")
               .collect(Collectors.joining(",")));
     }
   }
