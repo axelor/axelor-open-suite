@@ -412,7 +412,8 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     // Compute all classic contract lines
     for (ContractVersion version : getVersions(contract)) {
       BigDecimal ratio = BigDecimal.ONE;
-      if (contract.getCurrentContractVersion().getIsTimeProratedInvoice()) {
+      ContractVersion contractVersion = contract.getCurrentContractVersion();
+      if (contractVersion.getIsPeriodicInvoicing() && contractVersion.getIsTimeProratedInvoice()) {
         if (isFullProrated(contract)
             && !DateTool.isProrata(
                 contract.getInvoicePeriodStartDate(),
