@@ -561,8 +561,8 @@
         </viewer>
       </field>
       <field name="originDate" readonlyIf="statusSelect != 1 &amp;&amp; statusSelect != 2"
-        showIf="operationTypeSelect == 1 || operationTypeSelect == 2"
-        requiredIf="((operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; statusSelect == 2) || (operationSubTypeSelect == 2 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 2))"
+        showIf="operationTypeSelect == 1 || operationTypeSelect == 2 || operationTypeSelect == 4"
+        requiredIf="((operationTypeSelect == 1 || operationTypeSelect == 2 || operationTypeSelect == 4) &amp;&amp; statusSelect == 2) || (operationSubTypeSelect == 2 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 2))"
         onChange="action-invoice-group-payment-condition-onchange"/>
       <field name="$supplierInvoiceNbStatic" type="string" hidden="true"/>
     </panel>
@@ -1554,7 +1554,8 @@ InvoiceSet.length > 0))"
   </action-group>
 
   <action-group name="action-group-account-invoice-partner-onchange">
-    <action name="action-record-invoice-set-discount-values"/>
+    <action name="action-record-invoice-set-discount-values"
+      if="[1,3].contains(operationTypeSelect)"/>
     <action name="action-group-account-invoice-partner-onchange-client"/>
     <action name="action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"/>
   </action-group>
@@ -1582,7 +1583,7 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-record-set-payment-condition"/>
     <action name="action-method-invoice-address-str"/>
     <action name="action-record-invoice-set-discount-values"
-      if="__config__.app.getApp('account')?.getManageFinancialDiscount()"/>
+      if="__config__.app.getApp('account')?.getManageFinancialDiscount() &amp;&amp; [1,3].contains(operationTypeSelect)"/>
     <action name="action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"/>
     <action name="action-invoice-method-fiscal-position-on-change"/>
     <action name="action-invoice-method-compute"/>
@@ -1657,7 +1658,7 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-line-check-distribution-template-account"/>
     <action name="action-invoice-method-validate"/>
     <action name="action-record-invoice-set-discount-values"
-      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
+      if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; [1,3].contains(operationTypeSelect)"/>
   </action-group>
 
   <action-group name="action-invoice-group-payment-condition-onchange">
@@ -1722,7 +1723,8 @@ InvoiceSet.length > 0))"
   <action-group name="action-invoice-group-partner-onchange">
     <action name="action-group-account-invoice-partner-onchange"/>
     <action name="action-method-invoice-address-str"/>
-    <action name="action-record-invoice-set-discount-values"/>
+    <action name="action-record-invoice-set-discount-values"
+      if="[1,3].contains(operationTypeSelect)"/>
     <action name="action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"/>
     <action name="action-invoice-method-update-invoice-terms"/>
     <action name="action-invoice-method-check-multi-currency"/>

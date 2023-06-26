@@ -38,6 +38,8 @@ public class SaleInvoicingStateServiceImpl implements SaleInvoicingStateService 
     if (amountInvoiced.compareTo(BigDecimal.ZERO) == 0) {
       if (atLeastOneInvoiceIsVentilated && exTaxTotal.compareTo(BigDecimal.ZERO) == 0) {
         invoicingState = SALE_ORDER_INVOICE_INVOICED;
+      } else if (atLeastOneInvoiceIsVentilated) {
+        invoicingState = SALE_ORDER_INVOICE_PARTIALLY_INVOICED;
       } else {
         invoicingState = SALE_ORDER_INVOICE_NOT_INVOICED;
       }

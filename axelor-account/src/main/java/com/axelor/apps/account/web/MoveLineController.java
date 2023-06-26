@@ -442,17 +442,21 @@ public class MoveLineController {
   }
 
   protected LocalDate extractDueDate(ActionRequest request) {
+    return this.extractDateFromParent(request, "dueDate");
+  }
+
+  protected LocalDate extractDateFromParent(ActionRequest request, String fieldName) {
     Context parentContext = request.getContext().getParent();
 
     if (parentContext == null) {
       return null;
     }
 
-    if (!parentContext.containsKey("dueDate") || parentContext.get("dueDate") == null) {
+    if (!parentContext.containsKey(fieldName) || parentContext.get(fieldName) == null) {
       return null;
     }
 
-    Object dueDateObj = parentContext.get("dueDate");
+    Object dueDateObj = parentContext.get(fieldName);
     if (LocalDate.class.equals(EntityHelper.getEntityClass(dueDateObj))) {
       return (LocalDate) dueDateObj;
     } else {
@@ -582,17 +586,9 @@ public class MoveLineController {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
       Move move = this.getMove(request, moveLine);
-      LocalDate cutOffStartDate = null;
-      LocalDate cutOffEndDate = null;
+      LocalDate cutOffStartDate = this.extractDateFromParent(request, "cutOffStartDate");
+      LocalDate cutOffEndDate = this.extractDateFromParent(request, "cutOffEndDate");
       LocalDate dueDate = this.extractDueDate(request);
-
-      if (request.getContext().getParent() != null
-          && Move.class.equals(request.getContext().getParent().getContextClass())) {
-        cutOffStartDate =
-            LocalDate.parse((String) request.getContext().getParent().get("cutOffStartDate"));
-        cutOffEndDate =
-            LocalDate.parse((String) request.getContext().getParent().get("cutOffEndDate"));
-      }
 
       MoveLineGroupService moveLineGroupService = Beans.get(MoveLineGroupService.class);
 
