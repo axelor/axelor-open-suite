@@ -736,11 +736,13 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       throws AxelorException {
     Product product = stockMoveLine.getProduct();
     // check if the product configuration forces to select a conformity
-    if ((product == null) || !product.getControlOnReceipt()) {
+    if (product == null) {
       return;
     }
+    Boolean controlOnReceipt =
+        (Boolean) productCompanyService.get(product, "controlOnReceipt", stockMove.getCompany());
     // check the stock move type
-    if (stockMove.getTypeSelect() != StockMoveRepository.TYPE_INCOMING) {
+    if (!controlOnReceipt || stockMove.getTypeSelect() != StockMoveRepository.TYPE_INCOMING) {
       return;
     }
 
@@ -1082,7 +1084,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
   }
 
   @Override
-  public void storeCustomsCodes(List<StockMoveLine> stockMoveLineList) {
+  public void storeCustomsCodes(List<StockMoveLine> stockMoveLineList) throws AxelorException {
     if (stockMoveLineList == null) {
       return;
     }
@@ -1090,7 +1092,11 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     for (StockMoveLine stockMoveLine : stockMoveLineList) {
       Product product = stockMoveLine.getProduct();
       CustomsCodeNomenclature customsCodeNomenclature =
-          product != null ? product.getCustomsCodeNomenclature() : null;
+          product != null
+              ? (CustomsCodeNomenclature)
+                  productCompanyService.get(
+                      product, "customsCodeNomenclature", stockMoveLine.getStockMove().getCompany())
+              : null;
       stockMoveLine.setCustomsCodeNomenclature(customsCodeNomenclature);
       stockMoveLine.setCustomsCode(
           customsCodeNomenclature != null ? customsCodeNomenclature.getCode() : null);

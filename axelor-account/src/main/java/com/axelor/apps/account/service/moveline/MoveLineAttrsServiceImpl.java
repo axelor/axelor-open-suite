@@ -27,6 +27,7 @@ import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.StringUtils;
 import com.google.inject.Inject;
@@ -162,7 +163,7 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
   }
 
   @Override
-  public void addReadonly(Move move, Map<String, Map<String, Object>> attrsMap) {
+  public void addReadonly(MoveLine moveLine, Move move, Map<String, Map<String, Object>> attrsMap) {
     boolean statusCondition =
         move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED
             || move.getStatusSelect() == MoveRepository.STATUS_CANCELED;
@@ -173,6 +174,11 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
     this.addAttr("irrecoverableDetailsPanel", "readonly", singleStatusCondition, attrsMap);
     this.addAttr("currency", "readonly", singleStatusCondition, attrsMap);
     this.addAttr("otherPanel", "readonly", singleStatusCondition, attrsMap);
+    this.addAttr(
+        "partner",
+        "readonly",
+        moveLine.getAmountPaid().signum() > 0 || move.getPartner() != null,
+        attrsMap);
 
     if (move.getPaymentCondition() != null) {
       this.addAttr("dueDate", "readonly", !move.getPaymentCondition().getIsFree(), attrsMap);
@@ -298,5 +304,23 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
                 == JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE;
 
     this.addAttr("partner", "required", required, attrsMap);
+  }
+
+  @Override
+  public void changeFocus(Move move, MoveLine moveLine, Map<String, Map<String, Object>> attrsMap) {
+    Account account = moveLine.getAccount();
+    Company company = move.getCompany();
+
+    if (account.getCommonPosition() == AccountRepository.COMMON_POSITION_CREDIT) {
+      this.addAttr("credit", "focus", true, attrsMap);
+    }
+
+    if (account.getCommonPosition() == AccountRepository.COMMON_POSITION_DEBIT) {
+      this.addAttr("debit", "focus", true, attrsMap);
+    }
+
+    if (company.getCurrency() != move.getCurrency()) {
+      this.addAttr("currencyAmount", "focus", true, attrsMap);
+    }
   }
 }

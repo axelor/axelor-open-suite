@@ -29,10 +29,8 @@ public interface MassEntryService {
   MoveLineMassEntry getFirstMoveLineMassEntryInformations(
       List<MoveLineMassEntry> moveLineMassEntryList, MoveLineMassEntry moveLineMassEntry);
 
-  void resetMoveLineMassEntry(MoveLineMassEntry moveLineMassEntry);
-
-  Map<String, Object> verifyFieldsAndGenerateTaxLineAndCounterpart(
-      Move parentMove, LocalDate dueDate) throws AxelorException;
+  void verifyFieldsAndGenerateTaxLineAndCounterpart(Move parentMove, LocalDate dueDate)
+      throws AxelorException;
 
   void verifyFieldsChangeOnMoveLineMassEntry(Move move, boolean manageCutOff)
       throws AxelorException;

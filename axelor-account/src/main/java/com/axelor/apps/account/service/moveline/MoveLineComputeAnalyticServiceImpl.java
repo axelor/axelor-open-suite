@@ -22,7 +22,6 @@ import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.repo.AccountAnalyticRulesRepository;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
@@ -46,7 +45,6 @@ public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyt
   protected AnalyticMoveLineService analyticMoveLineService;
   protected AccountConfigService accountConfigService;
   protected AnalyticAccountRepository analyticAccountRepository;
-  protected AccountAnalyticRulesRepository accountAnalyticRulesRepository;
   protected ListToolService listToolService;
   protected AnalyticToolService analyticToolService;
   protected AppAccountService appAccountService;
@@ -57,14 +55,12 @@ public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyt
       AnalyticMoveLineService analyticMoveLineService,
       AccountConfigService accountConfigService,
       AnalyticAccountRepository analyticAccountRepository,
-      AccountAnalyticRulesRepository accountAnalyticRulesRepository,
       ListToolService listToolService,
       AnalyticToolService analyticToolService,
       AppAccountService appAccountService) {
     this.analyticMoveLineService = analyticMoveLineService;
     this.accountConfigService = accountConfigService;
     this.analyticAccountRepository = analyticAccountRepository;
-    this.accountAnalyticRulesRepository = accountAnalyticRulesRepository;
     this.listToolService = listToolService;
     this.analyticToolService = analyticToolService;
     this.appAccountService = appAccountService;

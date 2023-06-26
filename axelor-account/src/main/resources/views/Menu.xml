@@ -758,6 +758,7 @@
     <view type="grid" name="analytic-move-line-grid"/>
     <view type="form" name="analytic-move-line-form"/>
     <view-param name="search-filters" value="analytic-move-line-filters"/>
+    <domain>self.moveLine is not null</domain>
   </action-view>
 
   <menuitem name="account-conf-analytic-distribution-template"

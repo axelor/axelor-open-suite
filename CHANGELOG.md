@@ -1,3 +1,43 @@
+## [7.0.4] (2023-06-22)
+
+#### Features
+
+* INVOICE : mandatory reference to the original invoice on the printing
+
+The credit invoice include all the compulsory information on the original invoice. It also contain the credit note referring to the invoice it cancels or modifies. For example -  "In reimbursement of Invoice n°XXXX, issued on DD/MM/YYYY".
+
+
+#### Fixed
+
+* Analytic rules: fixed issue when retrieving analytic rules from the company to check which analytics accounts are authorized.
+* Sale order line: fixed the view, move the hidden fields to a separate panel which avoids unnecessary blank space and the product field appears in its proper position.
+* Accounting batch: removed period check on consistency accounting batch.
+* Stock move: date of realisation of the stock move will be emptied when planning a stock move.
+* Move template: fixed invoice terms not being created when generating a move from a template.
+* Move: added missing translation when a move is deleted.
+* Bank reconciliation line: prevent new line creation outside of a bank reconciliation.
+* Job position: fixed english title "Responsible" instead of "Hiring manager".
+* Account: fixed misleading error message when company has no partner.
+* Stock quality control: when default stock location for quality control is not set and needed, a proper error message is now displayed.
+* Sequence: when configuring a sequence, end date of a sequence now cannot be prior to the starting date and vice versa.
+* Invoice: fixed an issue where invoice terms information were displayed on the invoice printing even when the invoice term feature was disabled.
+* Stock location history batch: deactivate re-computation stock location history batch.
+* Move line: prevent from updating partner when move has a partner already set.
+* Product: "Control on receipt" and "custom codes" are now correctly managed per company (if the configuration is activated).
+* Invoice: do not set financial discount on refunds.
+* Move: fixed functional origin error when emptying the journal on a move form view.
+* Reconcile: fixed an issue where letter button was shown if the group was unlettered.
+* Invoice: added missing translation on an error message that can be shown during invoice ventilation.
+* Sale order: fixed discount information missing on reports.
+* Invoice: fixed an issue happening when we try to save an invoice with an analytic move line on invoice line.
+* Stock Move: fixed a bug where future quantity was not correctly updated.
+* Partner: fixed an issue where blocking date was not displayed.
+* Accounting report VAT invoicing/payment: fixed differences in display between reports.
+* Move: fixed currency exchange rate wrongly set on counterpart generation.
+* Accounting Batch: accounting cut-off batch now takes into account 'include not stock managed product' boolean for the preview.
+* Sale order: fixed an issue when computing invoicing state where the invoiced was marked as not invoiced instead of partially invoiced.
+* Trading name: fixed wrong french translation for trading name ('Nom commercial' -> 'Enseigne').
+
 ## [7.0.3] (2023-06-08)
 
 #### Fixed
@@ -242,6 +282,7 @@ closedWinOpportunityStatus, closedLostOpportunityStatus, salesPropositionStatus 
     </details>
 
 
+[7.0.4]: https://github.com/axelor/axelor-open-suite/compare/v7.0.3...v7.0.4
 [7.0.3]: https://github.com/axelor/axelor-open-suite/compare/v7.0.2...v7.0.3
 [7.0.2]: https://github.com/axelor/axelor-open-suite/compare/v7.0.1...v7.0.2
 [7.0.1]: https://github.com/axelor/axelor-open-suite/compare/v7.0.0...v7.0.1

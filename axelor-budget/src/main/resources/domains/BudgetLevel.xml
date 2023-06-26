@@ -95,7 +95,7 @@
 
     </string>
 
-    <unique-constraint columns="code,parentId,fromDate,toDate"/>
+    <unique-constraint columns="code,parentId,company,fromDate,toDate"/>
 
     <extra-code>
 	      <![CDATA[
