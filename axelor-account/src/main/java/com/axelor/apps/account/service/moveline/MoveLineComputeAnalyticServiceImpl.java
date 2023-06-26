@@ -163,7 +163,7 @@ public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyt
       throws AxelorException {
     if (moveLine != null) {
       moveLine.setAnalyticDistributionTemplate(
-          getDistributionTemplate(moveLine, moveLine.getAccount(), move.getTradingName()));
+          getDistributionTemplate(moveLine.getAccount(), move.getTradingName()));
     }
     List<AnalyticMoveLine> analyticMoveLineList = moveLine.getAnalyticMoveLineList();
     if (analyticMoveLineList != null) {
@@ -176,24 +176,27 @@ public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyt
   }
 
   protected AnalyticDistributionTemplate getDistributionTemplate(
-      MoveLine moveLine, Account account, TradingName tradingName) throws AxelorException {
+      Account account, TradingName tradingName) throws AxelorException {
     AnalyticDistributionTemplate analyticDistributionTemplate = null;
-    if (account != null && account.getAnalyticDistributionAuthorized()) {
-      if (account.getAnalyticDistributionTemplate() != null
-          && accountConfigService
-                  .getAccountConfig(account.getCompany())
-                  .getAnalyticDistributionTypeSelect()
-              == AccountConfigRepository.DISTRIBUTION_TYPE_PRODUCT) {
-        analyticDistributionTemplate = moveLine.getAccount().getAnalyticDistributionTemplate();
-      } else if (tradingName != null
-          && tradingName.getAnalyticDistributionTemplate() != null
-          && accountConfigService
-                  .getAccountConfig(account.getCompany())
-                  .getAnalyticDistributionTypeSelect()
-              == AccountConfigRepository.DISTRIBUTION_TYPE_TRADING_NAME) {
-        analyticDistributionTemplate = tradingName.getAnalyticDistributionTemplate();
-      }
+    if (account == null || !account.getAnalyticDistributionAuthorized()) {
+      return null;
     }
+
+    if (account.getAnalyticDistributionTemplate() != null
+        && accountConfigService
+                .getAccountConfig(account.getCompany())
+                .getAnalyticDistributionTypeSelect()
+            == AccountConfigRepository.DISTRIBUTION_TYPE_PRODUCT) {
+      analyticDistributionTemplate = account.getAnalyticDistributionTemplate();
+    } else if (tradingName != null
+        && tradingName.getAnalyticDistributionTemplate() != null
+        && accountConfigService
+                .getAccountConfig(account.getCompany())
+                .getAnalyticDistributionTypeSelect()
+            == AccountConfigRepository.DISTRIBUTION_TYPE_TRADING_NAME) {
+      analyticDistributionTemplate = tradingName.getAnalyticDistributionTemplate();
+    }
+
     return analyticDistributionTemplate;
   }
 

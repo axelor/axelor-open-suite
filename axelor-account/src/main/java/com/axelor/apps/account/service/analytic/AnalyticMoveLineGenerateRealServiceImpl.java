@@ -30,6 +30,7 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.studio.db.AppAccount;
 import com.google.inject.Inject;
@@ -88,6 +89,7 @@ public class AnalyticMoveLineGenerateRealServiceImpl
         && moveLine.getAccount().getAnalyticDistributionAuthorized()) {
       AccountConfig accountConfig = accountConfigService.getAccountConfig(move.getCompany());
       AppAccount appAccount = appAccountService.getAppAccount();
+      TradingName tradingName = move.getTradingName();
       if (appAccount != null
           && appAccount.getManageAnalyticAccounting()
           && accountConfig != null
@@ -103,8 +105,9 @@ public class AnalyticMoveLineGenerateRealServiceImpl
         } else if (appBaseService.getAppBase().getEnableTradingNamesManagement()
             && accountConfig.getAnalyticDistributionTypeSelect()
                 == AccountConfigRepository.DISTRIBUTION_TYPE_TRADING_NAME
-            && move.getTradingName().getAnalyticDistributionTemplate() != null) {
-          analyticDistributionTemplate = move.getTradingName().getAnalyticDistributionTemplate();
+            && tradingName != null
+            && tradingName.getAnalyticDistributionTemplate() != null) {
+          analyticDistributionTemplate = tradingName.getAnalyticDistributionTemplate();
         }
 
         if (analyticDistributionTemplate != null) {
