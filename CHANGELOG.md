@@ -1,3 +1,88 @@
+## [7.0.4] (2023-06-22)
+
+#### Features
+
+* INVOICE : mandatory reference to the original invoice on the printing
+
+The credit invoice include all the compulsory information on the original invoice. It also contain the credit note referring to the invoice it cancels or modifies. For example -  "In reimbursement of Invoice n°XXXX, issued on DD/MM/YYYY".
+
+
+#### Fixed
+
+* Analytic rules: fixed issue when retrieving analytic rules from the company to check which analytics accounts are authorized.
+* Sale order line: fixed the view, move the hidden fields to a separate panel which avoids unnecessary blank space and the product field appears in its proper position.
+* Accounting batch: removed period check on consistency accounting batch.
+* Stock move: date of realisation of the stock move will be emptied when planning a stock move.
+* Move template: fixed invoice terms not being created when generating a move from a template.
+* Move: added missing translation when a move is deleted.
+* Bank reconciliation line: prevent new line creation outside of a bank reconciliation.
+* Job position: fixed english title "Responsible" instead of "Hiring manager".
+* Account: fixed misleading error message when company has no partner.
+* Stock quality control: when default stock location for quality control is not set and needed, a proper error message is now displayed.
+* Sequence: when configuring a sequence, end date of a sequence now cannot be prior to the starting date and vice versa.
+* Invoice: fixed an issue where invoice terms information were displayed on the invoice printing even when the invoice term feature was disabled.
+* Stock location history batch: deactivate re-computation stock location history batch.
+* Move line: prevent from updating partner when move has a partner already set.
+* Product: "Control on receipt" and "custom codes" are now correctly managed per company (if the configuration is activated).
+* Invoice: do not set financial discount on refunds.
+* Move: fixed functional origin error when emptying the journal on a move form view.
+* Reconcile: fixed an issue where letter button was shown if the group was unlettered.
+* Invoice: added missing translation on an error message that can be shown during invoice ventilation.
+* Sale order: fixed discount information missing on reports.
+* Invoice: fixed an issue happening when we try to save an invoice with an analytic move line on invoice line.
+* Stock Move: fixed a bug where future quantity was not correctly updated.
+* Partner: fixed an issue where blocking date was not displayed.
+* Accounting report VAT invoicing/payment: fixed differences in display between reports.
+* Move: fixed currency exchange rate wrongly set on counterpart generation.
+* Accounting Batch: accounting cut-off batch now takes into account 'include not stock managed product' boolean for the preview.
+* Sale order: fixed an issue when computing invoicing state where the invoiced was marked as not invoiced instead of partially invoiced.
+* Trading name: fixed wrong french translation for trading name ('Nom commercial' -> 'Enseigne').
+
+## [7.0.3] (2023-06-08)
+
+#### Fixed
+
+* Business project, HR printings: fixed an issue were pictures with specific filenames were not displayed in the printings.
+* Configurator: fixed issue where sale order line generated from the configurator did not have a bill of materials.
+* Deposit slip: fixed errors when loading selected lines.
+* Move: fixed error when selecting a journal with no authorized functional origin.
+* Invoice: allow supplier references (supplier invoice number and origin date) to be filled on a ventilated invoice.
+* Move: fixed move lines tax computation on fiscal position change.
+* Invoice/Stock move: fixed an issue where invoice terms were not present on an invoice generated from a stock move.
+* Invoice: fixed an issue where the button to print the annex was not displayed.
+* Account config: hide 'Generate move for advance payment' field when 'Manage advance payment invoice' is enabled.
+* Invoice: fixed JNPE on invoice term form when the form is openened from the invoice.
+* Lead: fixed event tab display on lead form view.
+* Move line: fixed duplicate invoice terms when move has no payment condition.
+* Move: fill automatically vat system when we change account.
+* Move template: fixed creation of unbalanced move with a move template of type percent.
+* GDPR: fixed demo data error for anonymizer configuration.
+* Leave request: fixed an issue on hilite color in leave request validate grid.
+* Birt template parameter: fixed french translation issue where two distinct technical terms were both translated as 'Décimal'.
+* Budget distribution: fixed an issue where the budget were not negated on refund.
+* Move: fixed auto tax generation via fiscal position when no reverse charge tax is configured.
+* Sale order line form: fixed an UI issue on form view where the product field was not displayed.
+* Move line query: fixed balance computation.
+* Supplier portal and customer portal: add missing permissions on demo data.
+* Move line: fixed an issue where analytic distribution template were not filtered per company.
+* Project: when creating a new resource booking from a project form, the booking is now correctly filled with information from the project.
+* Partner: correctly select a default value for tax system on a generated accounting situation.
+* Move line: prevent from changing analytic account when a template is set.
+* Move/Holdback: fixed invoice term generation at counterpart generation with holdback payment condition.
+* MRP: UI improvements on form view by hiding unnecessary fields.
+* Stock: fixed an error occurring when updating stock location on a product with tracking number.
+* Move: fixed reverse process.
+* Move: fixed multiple errors when opening a move line.
+* Move: fixed due date not filled when generating moves from an invoice.
+* Move: fixed not being able to select a company when it is not automatically set.
+* Cost calculation: fixed calculation issue when computing cost from a bill of materials.
+* Tracking number: fixed an issue preventing to select a product on a manually created tracking number.
+* Reconcile: fixed an issue were it was possible to unreconcile already unreconciled move lines.
+* Fixed asset: fixed JNPE error on disposal if account config customer sales journal is empty.
+* Move/move line: fixed filter when we select analytic distribution template in move line or payment mode/partner bank details/trading name in move.
+* Move: fixed exception when selecting an account on a move line where cutoff dates are filled.
+* Accouting report view: fixed an issue where the filter on payment mode was displayed on an analytic report type.
+
 ## [7.0.2] (2023-05-25)
 
 #### Fixed
@@ -197,6 +282,8 @@ closedWinOpportunityStatus, closedLostOpportunityStatus, salesPropositionStatus 
     </details>
 
 
+[7.0.4]: https://github.com/axelor/axelor-open-suite/compare/v7.0.3...v7.0.4
+[7.0.3]: https://github.com/axelor/axelor-open-suite/compare/v7.0.2...v7.0.3
 [7.0.2]: https://github.com/axelor/axelor-open-suite/compare/v7.0.1...v7.0.2
 [7.0.1]: https://github.com/axelor/axelor-open-suite/compare/v7.0.0...v7.0.1
 [7.0.0]: https://github.com/axelor/axelor-open-suite/compare/v6.5.7...v7.0.0

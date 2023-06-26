@@ -176,6 +176,8 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
         paymentConditionService.checkPaymentCondition(invoice.getPaymentCondition());
         move.setPaymentCondition(invoice.getPaymentCondition());
 
+        move.setDueDate(invoice.getDueDate());
+
         boolean isDebitCustomer = moveToolService.isDebitCustomer(invoice, false);
 
         move.getMoveLineList()

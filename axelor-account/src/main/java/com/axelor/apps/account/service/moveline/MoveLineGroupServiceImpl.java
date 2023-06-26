@@ -133,7 +133,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
 
     if (move != null) {
       moveLineAttrsService.addAnalyticDistributionTypeSelect(move, attrsMap);
-      moveLineAttrsService.addReadonly(move, attrsMap);
+      moveLineAttrsService.addReadonly(moveLine, move, attrsMap);
       moveLineAttrsService.addDescriptionRequired(move, attrsMap);
       moveLineAttrsService.addAnalyticAxisAttrs(move, attrsMap);
     }
@@ -151,7 +151,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
     moveLineAttrsService.addShowTaxAmount(moveLine, attrsMap);
 
     if (move != null) {
-      moveLineAttrsService.addReadonly(move, attrsMap);
+      moveLineAttrsService.addReadonly(moveLine, move, attrsMap);
       moveLineAttrsService.addDescriptionRequired(move, attrsMap);
       moveLineAttrsService.addAnalyticAxisAttrs(move, attrsMap);
       moveLineAttrsService.addValidatePeriod(move, attrsMap);
@@ -262,8 +262,10 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
     valuesMap.put("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
     valuesMap.put("taxLine", moveLine.getTaxLine());
     valuesMap.put("taxEquiv", moveLine.getTaxEquiv());
+    valuesMap.put("taxLineBeforeReverse", moveLine.getTaxLineBeforeReverse());
     valuesMap.put("analyticDistributionTemplate", moveLine.getAnalyticDistributionTemplate());
     valuesMap.put("invoiceTermList", moveLine.getInvoiceTermList());
+    valuesMap.put("vatSystemSelect", moveLine.getVatSystemSelect());
 
     return valuesMap;
   }
@@ -321,10 +323,9 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
 
   @Override
   public Map<String, Object> getCurrencyAmountRateOnChangeValuesMap(
-      MoveLine moveLine, LocalDate dueDate) throws AxelorException {
+      MoveLine moveLine, Move move, LocalDate dueDate) throws AxelorException {
     moveLineRecordService.setDebitCredit(moveLine);
-    moveLineInvoiceTermService.generateDefaultInvoiceTerm(
-        moveLine.getMove(), moveLine, dueDate, false);
+    moveLineInvoiceTermService.generateDefaultInvoiceTerm(move, moveLine, dueDate, false);
 
     Map<String, Object> valuesMap = new HashMap<>();
 

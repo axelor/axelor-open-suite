@@ -198,8 +198,9 @@ public interface StockMoveLineService {
    * Store customs code information on each stock move line from its product.
    *
    * @param stockMoveLineList List of StockMoveLines on which to operate
+   * @throws AxelorException
    */
-  public void storeCustomsCodes(List<StockMoveLine> stockMoveLineList);
+  public void storeCustomsCodes(List<StockMoveLine> stockMoveLineList) throws AxelorException;
 
   /**
    * Check whether a stock move line is fully spread over logistical form lines.

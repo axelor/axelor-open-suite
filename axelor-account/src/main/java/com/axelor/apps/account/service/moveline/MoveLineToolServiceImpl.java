@@ -303,7 +303,8 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
       try {
         moveLine.setCurrencyRate(
             currencyService
-                .getCurrencyConversionRate(move.getCurrency(), move.getCompanyCurrency())
+                .getCurrencyConversionRate(
+                    move.getCurrency(), move.getCompanyCurrency(), move.getDate())
                 .setScale(CURRENCY_RATE_SCALE, RoundingMode.HALF_UP));
       } catch (AxelorException e1) {
         TraceBackService.trace(e1);

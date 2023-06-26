@@ -546,6 +546,7 @@
       </panel>
 
       <field name="supplierInvoiceNb"
+        readonlyIf="statusSelect != 1 &amp;&amp; statusSelect != 2"
         showIf="operationTypeSelect == 1 || operationTypeSelect == 2"
         requiredIf="((operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; statusSelect == 2) || (operationSubTypeSelect == 2 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 2))"
         onChange="action-invoice-group-supplier-invoice-nb-onchange"/>
@@ -559,8 +560,9 @@
               	]]>
         </viewer>
       </field>
-      <field name="originDate" showIf="operationTypeSelect == 1 || operationTypeSelect == 2"
-        requiredIf="((operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; statusSelect == 2) || (operationSubTypeSelect == 2 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 2))"
+      <field name="originDate" readonlyIf="statusSelect != 1 &amp;&amp; statusSelect != 2"
+        showIf="operationTypeSelect == 1 || operationTypeSelect == 2 || operationTypeSelect == 4"
+        requiredIf="((operationTypeSelect == 1 || operationTypeSelect == 2 || operationTypeSelect == 4) &amp;&amp; statusSelect == 2) || (operationSubTypeSelect == 2 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 2))"
         onChange="action-invoice-group-payment-condition-onchange"/>
       <field name="$supplierInvoiceNbStatic" type="string" hidden="true"/>
     </panel>
@@ -1181,6 +1183,12 @@ InvoiceSet.length > 0))"
         <panel-related name="invoiceLineTaxListPanel" field="invoiceLineTaxList"
           colSpan="12" form-view="invoice-line-tax-form" grid-view="invoice-line-tax-grid"/>
       </panel>
+      <panel title="Printing" name="printingPanel" colSpan="12" hidden="true">
+        <field name="displayTimesheetOnPrinting" if-module="axelor-business-project"
+          hidden="true"/>
+        <field name="displayExpenseOnPrinting" if-module="axelor-business-project"
+          hidden="true"/>
+      </panel>
     </panel-tabs>
 
     <panel-stack name="otherDetailsPanel" sidebar="true">
@@ -1546,7 +1554,8 @@ InvoiceSet.length > 0))"
   </action-group>
 
   <action-group name="action-group-account-invoice-partner-onchange">
-    <action name="action-record-invoice-set-discount-values"/>
+    <action name="action-record-invoice-set-discount-values"
+      if="[1,3].contains(operationTypeSelect)"/>
     <action name="action-group-account-invoice-partner-onchange-client"/>
     <action name="action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"/>
   </action-group>
@@ -1574,7 +1583,7 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-record-set-payment-condition"/>
     <action name="action-method-invoice-address-str"/>
     <action name="action-record-invoice-set-discount-values"
-      if="__config__.app.getApp('account')?.getManageFinancialDiscount()"/>
+      if="__config__.app.getApp('account')?.getManageFinancialDiscount() &amp;&amp; [1,3].contains(operationTypeSelect)"/>
     <action name="action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"/>
     <action name="action-invoice-method-fiscal-position-on-change"/>
     <action name="action-invoice-method-compute"/>
@@ -1649,7 +1658,7 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-line-check-distribution-template-account"/>
     <action name="action-invoice-method-validate"/>
     <action name="action-record-invoice-set-discount-values"
-      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
+      if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; [1,3].contains(operationTypeSelect)"/>
   </action-group>
 
   <action-group name="action-invoice-group-payment-condition-onchange">
@@ -1714,7 +1723,8 @@ InvoiceSet.length > 0))"
   <action-group name="action-invoice-group-partner-onchange">
     <action name="action-group-account-invoice-partner-onchange"/>
     <action name="action-method-invoice-address-str"/>
-    <action name="action-record-invoice-set-discount-values"/>
+    <action name="action-record-invoice-set-discount-values"
+      if="[1,3].contains(operationTypeSelect)"/>
     <action name="action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"/>
     <action name="action-invoice-method-update-invoice-terms"/>
     <action name="action-invoice-method-check-multi-currency"/>

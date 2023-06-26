@@ -448,6 +448,17 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   }
 
   @Override
+  public Map<String, Object> getFiscalPositionOnChangeValuesMap(Move move) throws AxelorException {
+    Map<String, Object> valuesMap = new HashMap<>();
+
+    moveDefaultService.setDefaultFiscalPositionOnChange(move);
+
+    valuesMap.put("moveLineList", move.getMoveLineList());
+
+    return valuesMap;
+  }
+
+  @Override
   public Map<String, Object> getDateOfReversionSelectOnChangeValuesMap(
       LocalDate moveDate, int dateOfReversionSelect) {
     Map<String, Object> valuesMap = new HashMap<>();

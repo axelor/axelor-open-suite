@@ -18,8 +18,10 @@
  */
 package com.axelor.apps.account.service.invoice.generator.invoice;
 
+import com.axelor.apps.account.db.BudgetDistribution;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
@@ -61,6 +63,15 @@ public class RefundInvoice extends InvoiceGenerator implements InvoiceStrategy {
       refundLines.addAll(refund.getInvoiceLineList());
     }
 
+    if (invoice.getOperationTypeSelect()
+        == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE) { // Customer
+      if (invoice.getInvoiceDate() != null) {
+        refund.setOriginDate(invoice.getInvoiceDate());
+      }
+    }
+
+    refund.setInternalReference(invoice.getInvoiceId());
+
     populate(refund, refundLines);
 
     // Payment mode should not be the invoice payment mode. It must come
@@ -74,7 +85,21 @@ public class RefundInvoice extends InvoiceGenerator implements InvoiceStrategy {
           I18n.get(BaseExceptionMessage.EXCEPTION));
     }
 
+    refund.getInvoiceLineList().forEach(this::negateBudget);
+
     return refund;
+  }
+
+  protected void negateBudget(InvoiceLine invoiceLine) {
+    List<BudgetDistribution> budgetDistributionList = invoiceLine.getBudgetDistributionList();
+    if (budgetDistributionList == null) {
+      return;
+    }
+    budgetDistributionList.forEach(
+        budgetDistribution ->
+            budgetDistribution.setAmount(budgetDistribution.getAmount().negate()));
+    invoiceLine.setBudgetDistributionSumAmount(
+        invoiceLine.getBudgetDistributionSumAmount().negate());
   }
 
   @Override
