@@ -305,6 +305,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
     moveAttrsService.addFunctionalOriginSelectDomain(move, attrsMap);
+    moveAttrsService.addPartnerRequired(move, attrsMap);
 
     if (move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL) {
       moveAttrsService.addMassEntryHidden(move, attrsMap);
@@ -501,6 +502,8 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
     moveAttrsService.addMoveLineAnalyticAttrs(move, attrsMap);
+    moveAttrsService.addPartnerRequired(move, attrsMap);
+
     if (move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL) {
       moveAttrsService.addMassEntryBtnHidden(move, attrsMap);
     }

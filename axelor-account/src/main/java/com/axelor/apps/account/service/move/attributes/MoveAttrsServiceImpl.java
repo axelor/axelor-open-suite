@@ -398,4 +398,18 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
         attrsMap);
     this.addAttr("validateMassEntryMoves", "hidden", true, attrsMap);
   }
+
+  @Override
+  public void addPartnerRequired(Move move, Map<String, Map<String, Object>> attrsMap) {
+    Objects.requireNonNull(move);
+    boolean required =
+        move.getJournal() != null
+            && move.getJournal().getJournalType() != null
+            && (move.getJournal().getJournalType().getTechnicalTypeSelect()
+                    == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE
+                || move.getJournal().getJournalType().getTechnicalTypeSelect()
+                    == JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE);
+
+    this.addAttr("partner", "required", required, attrsMap);
+  }
 }
