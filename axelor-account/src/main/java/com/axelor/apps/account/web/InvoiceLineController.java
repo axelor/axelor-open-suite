@@ -35,10 +35,7 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
 import com.axelor.apps.account.service.AccountService;
-import com.axelor.apps.account.service.analytic.AnalyticDistributionTemplateService;
-import com.axelor.apps.account.service.analytic.AnalyticLineService;
-import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
-import com.axelor.apps.account.service.analytic.AnalyticToolService;
+import com.axelor.apps.account.service.analytic.*;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticService;
@@ -474,7 +471,10 @@ public class InvoiceLineController {
               response.setAttr(
                   "axis".concat(Integer.toString(i)).concat("AnalyticAccount"),
                   "domain",
-                  "self.analyticLevel.nbr = 1 AND self.id IN (" + idList + ")");
+                  String.format(
+                      "%s AND self.id IN (%s)",
+                      Beans.get(AnalyticAccountService.class).getIsNotParentAnalyticAccountQuery(),
+                      idList));
             }
           }
         }

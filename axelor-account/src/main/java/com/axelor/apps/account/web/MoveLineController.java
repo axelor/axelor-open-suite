@@ -31,6 +31,7 @@ import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.IrrecoverableService;
+import com.axelor.apps.account.service.analytic.AnalyticAccountService;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -253,7 +254,8 @@ public class MoveLineController {
               response.setAttr(
                   "axis" + i + "AnalyticAccount",
                   "domain",
-                  "self.analyticLevel.nbr = 1 AND self.id IN ("
+                  Beans.get(AnalyticAccountService.class).getIsNotParentAnalyticAccountQuery()
+                      + " AND self.id IN ("
                       + idList
                       + ") AND self.statusSelect = "
                       + AnalyticAccountRepository.STATUS_ACTIVE
