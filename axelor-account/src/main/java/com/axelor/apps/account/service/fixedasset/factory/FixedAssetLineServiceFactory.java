@@ -20,6 +20,7 @@ package com.axelor.apps.account.service.fixedasset.factory;
 
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
+import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineComputationService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineEconomicComputationServiceImpl;
@@ -33,12 +34,14 @@ import com.axelor.apps.account.service.fixedasset.FixedAssetLineService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FixedAssetLineServiceFactory {
 
-  protected FixedAssetLineEconomicUpdateComputationServiceImpl fixedAssetLineEconomicUpdateComputationService;
+  protected FixedAssetLineEconomicUpdateComputationServiceImpl
+      fixedAssetLineEconomicUpdateComputationService;
   protected FixedAssetLineEconomicComputationServiceImpl fixedAssetLineEconomicComputationService;
   protected FixedAssetLineFiscalComputationServiceImpl fixedAssetLineFiscalComputationService;
   protected FixedAssetLineIfrsComputationServiceImpl fixedAssetLineIfrsComputationService;
@@ -46,15 +49,18 @@ public class FixedAssetLineServiceFactory {
   protected FixedAssetLineFiscalServiceImpl fixedAssetLineFiscalService;
   protected FixedAssetLineIfrsServiceImpl fixedAssetLineIfrsService;
 
-@Inject
-  public FixedAssetLineServiceFactory(FixedAssetLineEconomicUpdateComputationServiceImpl fixedAssetLineEconomicUpdateComputationService,
-                                      FixedAssetLineEconomicComputationServiceImpl fixedAssetLineEconomicComputationService,
-                                      FixedAssetLineFiscalComputationServiceImpl fixedAssetLineFiscalComputationService,
-                                      FixedAssetLineIfrsComputationServiceImpl fixedAssetLineIfrsComputationService,
-                                      FixedAssetLineEconomicServiceImpl fixedAssetLineEconomicService,
-                                      FixedAssetLineFiscalServiceImpl fixedAssetLineFiscalService,
-                                      FixedAssetLineIfrsServiceImpl fixedAssetLineIfrsService) {
-    this.fixedAssetLineEconomicUpdateComputationService = fixedAssetLineEconomicUpdateComputationService;
+  @Inject
+  public FixedAssetLineServiceFactory(
+      FixedAssetLineEconomicUpdateComputationServiceImpl
+          fixedAssetLineEconomicUpdateComputationService,
+      FixedAssetLineEconomicComputationServiceImpl fixedAssetLineEconomicComputationService,
+      FixedAssetLineFiscalComputationServiceImpl fixedAssetLineFiscalComputationService,
+      FixedAssetLineIfrsComputationServiceImpl fixedAssetLineIfrsComputationService,
+      FixedAssetLineEconomicServiceImpl fixedAssetLineEconomicService,
+      FixedAssetLineFiscalServiceImpl fixedAssetLineFiscalService,
+      FixedAssetLineIfrsServiceImpl fixedAssetLineIfrsService) {
+    this.fixedAssetLineEconomicUpdateComputationService =
+        fixedAssetLineEconomicUpdateComputationService;
     this.fixedAssetLineEconomicComputationService = fixedAssetLineEconomicComputationService;
     this.fixedAssetLineFiscalComputationService = fixedAssetLineFiscalComputationService;
     this.fixedAssetLineIfrsComputationService = fixedAssetLineIfrsComputationService;
@@ -80,7 +86,7 @@ public class FixedAssetLineServiceFactory {
       default:
         throw new AxelorException(
             TraceBackRepository.CATEGORY_NO_VALUE,
-                I18n.get(AccountExceptionMessage.IMMO_FIXED_ASSET_LINE_COMPUTATION_SERVICE_NOT_FOUND));
+            I18n.get(AccountExceptionMessage.IMMO_FIXED_ASSET_LINE_COMPUTATION_SERVICE_NOT_FOUND));
     }
   }
 
@@ -96,7 +102,20 @@ public class FixedAssetLineServiceFactory {
       default:
         throw new AxelorException(
             TraceBackRepository.CATEGORY_NO_VALUE,
-                I18n.get(AccountExceptionMessage.IMMO_FIXED_ASSET_LINE_SERVICE_NOT_FOUND));
+            I18n.get(AccountExceptionMessage.IMMO_FIXED_ASSET_LINE_SERVICE_NOT_FOUND));
     }
+  }
+
+  public List<Integer> getTypeSelectList(FixedAsset fixedAsset) {
+    String depreciationPlanSelect = fixedAsset.getDepreciationPlanSelect();
+    List<Integer> typeSelectList = new ArrayList<>();
+    if (depreciationPlanSelect.contains(FixedAssetRepository.DEPRECIATION_PLAN_FISCAL)) {
+      typeSelectList.add(FixedAssetLineRepository.TYPE_SELECT_FISCAL);
+    }
+    if (depreciationPlanSelect.contains(FixedAssetRepository.DEPRECIATION_PLAN_IFRS)) {
+      typeSelectList.add(FixedAssetLineRepository.TYPE_SELECT_IFRS);
+    }
+    typeSelectList.add(FixedAssetLineRepository.TYPE_SELECT_ECONOMIC);
+    return typeSelectList;
   }
 }

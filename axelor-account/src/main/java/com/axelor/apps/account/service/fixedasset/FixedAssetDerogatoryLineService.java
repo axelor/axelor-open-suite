@@ -94,5 +94,15 @@ public interface FixedAssetDerogatoryLineService {
   void filterListByDate(
       List<FixedAssetDerogatoryLine> fixedAssetDerogatoryLineList, LocalDate date);
 
+  /**
+   * This method will remove every linesToRemove from database and from fixedAssetDerogatoryLineList
+   *
+   * @param fixedAssetDerogatoryLineList
+   * @param linesToRemove
+   */
+  void clear(
+      List<FixedAssetDerogatoryLine> fixedAssetDerogatoryLineList,
+      List<FixedAssetDerogatoryLine> linesToRemove);
+
   void remove(FixedAssetDerogatoryLine line);
 }

@@ -47,9 +47,9 @@ public final class AccountExceptionMessage {
   public static final String IMMO_FIXED_ASSET_LINE_PREVIOUS_NOT_REALIZED =
       /*$$(*/ "Line can't be realized because previous line is still planned" /*)*/;
   public static final String IMMO_FIXED_ASSET_LINE_COMPUTATION_SERVICE_NOT_FOUND =
-          /*$$(*/ "No implementation of FixedAssetLineComputationService found" /*)*/;
+      /*$$(*/ "No implementation of FixedAssetLineComputationService found" /*)*/;
   public static final String IMMO_FIXED_ASSET_LINE_SERVICE_NOT_FOUND =
-          /*$$(*/ "No implementation of FixedAssetLineService found" /*)*/;
+      /*$$(*/ "No implementation of FixedAssetLineService found" /*)*/;
   public static final String IMMO_FIXED_ASSET_GENERATE_SALE_MOVE_CATEGORY_ACCOUNTS_MISSING =
       /*$$(*/ "Fixed asset: sale move could not be generated because fixed category is missing one of these accounts : %s" /*)*/;
   public static final String IMMO_FIXED_ASSET_GENERATE_DISPOSAL_MOVE_CATEGORY_ACCOUNTS_MISSING =

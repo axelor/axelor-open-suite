@@ -30,7 +30,6 @@ import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.YearService;
-import com.axelor.db.mapper.types.ListAdapter;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -45,9 +44,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections4.ListUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -135,7 +132,6 @@ public abstract class AbstractFixedAssetLineServiceImpl implements FixedAssetLin
           previousRealizedLine != null
               ? previousRealizedLine.getDepreciationDate()
               : firstServiceDate;
-
       BigDecimal prorataTemporis =
           computeProrataBetween(
               fixedAsset, previousRealizedDate, disposalDate.minusDays(1), nextPlannedDate);
@@ -203,10 +199,15 @@ public abstract class AbstractFixedAssetLineServiceImpl implements FixedAssetLin
     if (fixedAssetLineList == null || fixedAssetLineList.isEmpty()) {
       return Optional.empty();
     }
-    fixedAssetLineList.sort(Comparator.comparing(FixedAssetLine::getDepreciationDate, Comparator.nullsFirst(Comparator.naturalOrder())));
+    fixedAssetLineList.sort(
+        Comparator.comparing(
+            FixedAssetLine::getDepreciationDate, Comparator.nullsFirst(Comparator.naturalOrder())));
     return fixedAssetLineList.stream()
         .filter(fixedAssetLine -> fixedAssetLine.getStatusSelect() == status)
-            .sorted(Comparator.comparing(FixedAssetLine::getDepreciationDate, Comparator.nullsFirst(Comparator.naturalOrder())))
+        .sorted(
+            Comparator.comparing(
+                FixedAssetLine::getDepreciationDate,
+                Comparator.nullsFirst(Comparator.naturalOrder())))
         .findFirst();
   }
 
@@ -221,7 +222,10 @@ public abstract class AbstractFixedAssetLineServiceImpl implements FixedAssetLin
     Optional<FixedAssetLine> optFixedAssetLine =
         fixedAssetLineList.stream()
             .filter(fixedAssetLine -> fixedAssetLine.getStatusSelect() == status)
-                .sorted(Comparator.comparing(FixedAssetLine::getDepreciationDate, Comparator.nullsFirst(Comparator.naturalOrder())))
+            .sorted(
+                Comparator.comparing(
+                    FixedAssetLine::getDepreciationDate,
+                    Comparator.nullsFirst(Comparator.naturalOrder())))
             .skip(nbLineToSkip)
             .findFirst();
     return optFixedAssetLine;
@@ -230,10 +234,26 @@ public abstract class AbstractFixedAssetLineServiceImpl implements FixedAssetLin
   /**
    * {@inheritDoc}
    *
-   * @throws NullPointerException if fixedAssetDerogatoryLineList is null
+   * @throws NullPointerException if fixedAssetLineList is null
+   */
+  @Override
+  public void clear(List<FixedAssetLine> fixedAssetLineList) {
+    Objects.requireNonNull(fixedAssetLineList);
+    fixedAssetLineList.forEach(
+        line -> {
+          remove(line);
+        });
+    fixedAssetLineList.clear();
+  }
+
+  /**
+   * {@inheritDoc}
+   *
+   * @throws NullPointerException if fixedAssetLineList or linesToRemove is null
    */
   @Override
   public void clear(List<FixedAssetLine> fixedAssetLineList, List<FixedAssetLine> linesToRemove) {
+    Objects.requireNonNull(fixedAssetLineList);
     Objects.requireNonNull(linesToRemove);
     linesToRemove.forEach(
         line -> {
@@ -269,10 +289,13 @@ public abstract class AbstractFixedAssetLineServiceImpl implements FixedAssetLin
     if (CollectionUtils.isEmpty(fixedAssetLineList) || date == null) {
       return;
     }
-      fixedAssetLineList.stream()
-          .filter(line -> line.getDepreciationDate() == null || line.getDepreciationDate().isAfter(date))
-          .forEach(line -> {linesToRemove.add(line);
-          });
+    fixedAssetLineList.stream()
+        .filter(
+            line -> line.getDepreciationDate() == null || line.getDepreciationDate().isAfter(date))
+        .forEach(
+            line -> {
+              linesToRemove.add(line);
+            });
     clear(fixedAssetLineList, linesToRemove);
   }
 
@@ -281,7 +304,8 @@ public abstract class AbstractFixedAssetLineServiceImpl implements FixedAssetLin
       throws AxelorException {
     FixedAssetLine correspondingFixedAssetLine;
     correspondingFixedAssetLine = getLineFromDate(fixedAsset, disposalDate);
-    if (correspondingFixedAssetLine != null && correspondingFixedAssetLine.getDepreciationDate() != null
+    if (correspondingFixedAssetLine != null
+        && correspondingFixedAssetLine.getDepreciationDate() != null
         && !correspondingFixedAssetLine.getDepreciationDate().equals(disposalDate)) {
       computeLineProrata(fixedAsset, disposalDate, correspondingFixedAssetLine);
     }
@@ -296,7 +320,8 @@ public abstract class AbstractFixedAssetLineServiceImpl implements FixedAssetLin
         findNewestFixedAssetLine(
                 getFixedAssetLineList(fixedAsset), FixedAssetLineRepository.STATUS_REALIZED, 0)
             .orElse(null);
-    if (previousRealizedLine != null && previousRealizedLine.getDepreciationDate() != null
+    if (previousRealizedLine != null
+        && previousRealizedLine.getDepreciationDate() != null
         && disposalDate.isBefore(previousRealizedLine.getDepreciationDate())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -363,19 +388,20 @@ public abstract class AbstractFixedAssetLineServiceImpl implements FixedAssetLin
       LocalDate toDate) {
 
     if (CollectionUtils.isEmpty(fixedAssetLineList) || fromDate == null) {
-return null;
+      return null;
     }
-      return fixedAssetLineList.stream()
-          .filter(
-              line -> line.getDepreciationDate() != null &&
-                  (line.getDepreciationDate().isAfter(fromDate)
-                          || line.getDepreciationDate().equals(fromDate))
-                      && (line.getDepreciationDate().isBefore(toDate)
-                          || line.getDepreciationDate().equals(toDate))
-                      && line.getStatusSelect() == lineStatus)
-          .sorted(Comparator.comparing(FixedAssetLine::getDepreciationDate))
-          .findFirst()
-          .orElse(null);
+    return fixedAssetLineList.stream()
+        .filter(
+            line ->
+                line.getDepreciationDate() != null
+                    && (line.getDepreciationDate().isAfter(fromDate)
+                        || line.getDepreciationDate().equals(fromDate))
+                    && (line.getDepreciationDate().isBefore(toDate)
+                        || line.getDepreciationDate().equals(toDate))
+                    && line.getStatusSelect() == lineStatus)
+        .sorted(Comparator.comparing(FixedAssetLine::getDepreciationDate))
+        .findFirst()
+        .orElse(null);
   }
 
   protected boolean isLastDayOfTheYear(LocalDate disposalDate) {
@@ -387,14 +413,15 @@ return null;
     if (CollectionUtils.isEmpty(fixedAssetLineList) || disposalDate == null) {
       return null;
     }
-      return fixedAssetLineList.stream()
-          .filter(
-              line -> line.getDepreciationDate() != null &&
-                  line.getDepreciationDate().getMonth() == disposalDate.getMonth()
-                      && line.getDepreciationDate().getYear() == disposalDate.getYear()
-                      && line.getStatusSelect() == lineStatus)
-          .findAny()
-          .orElse(null);
+    return fixedAssetLineList.stream()
+        .filter(
+            line ->
+                line.getDepreciationDate() != null
+                    && line.getDepreciationDate().getMonth() == disposalDate.getMonth()
+                    && line.getDepreciationDate().getYear() == disposalDate.getYear()
+                    && line.getStatusSelect() == lineStatus)
+        .findAny()
+        .orElse(null);
   }
 
   /**

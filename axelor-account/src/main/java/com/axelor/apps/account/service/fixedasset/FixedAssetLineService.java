@@ -97,6 +97,14 @@ public interface FixedAssetLineService {
    *
    * @param fixedAssetLineList
    */
+  void clear(List<FixedAssetLine> fixedAssetLineList);
+
+  /**
+   * This method will remove every linesToRemove from database and from fixedAssetLineList
+   *
+   * @param fixedAssetLineList
+   * @param linesToRemove
+   */
   void clear(List<FixedAssetLine> fixedAssetLineList, List<FixedAssetLine> linesToRemove);
 
   /**

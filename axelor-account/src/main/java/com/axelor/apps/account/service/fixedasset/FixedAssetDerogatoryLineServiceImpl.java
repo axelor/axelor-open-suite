@@ -37,6 +37,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Objects;
+import org.apache.commons.collections.CollectionUtils;
 
 public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatoryLineService {
 
@@ -330,6 +331,25 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
     fixedAssetDerogatoryLineList.clear();
   }
 
+  /**
+   * {@inheritDoc}
+   *
+   * @throws NullPointerException if fixedAssetDerogatoryLineList or linesToRemove is null
+   */
+  @Override
+  public void clear(
+      List<FixedAssetDerogatoryLine> fixedAssetDerogatoryLineList,
+      List<FixedAssetDerogatoryLine> linesToRemove) {
+    Objects.requireNonNull(fixedAssetDerogatoryLineList);
+    Objects.requireNonNull(linesToRemove);
+    linesToRemove.forEach(
+        line -> {
+          fixedAssetDerogatoryLineList.remove(line);
+          remove(line);
+        });
+    linesToRemove.clear();
+  }
+
   @Override
   @Transactional
   public void remove(FixedAssetDerogatoryLine line) {
@@ -341,12 +361,13 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
   public void filterListByDate(
       List<FixedAssetDerogatoryLine> fixedAssetDerogatoryLineList, LocalDate date) {
     List<FixedAssetDerogatoryLine> derogatoryLinesToRemove = new ArrayList<>();
-    if (fixedAssetDerogatoryLineList != null) {
-      fixedAssetDerogatoryLineList.stream()
-          .filter(line -> line.getDepreciationDate().isAfter(date))
-          .forEach(line -> derogatoryLinesToRemove.add(line));
-      fixedAssetDerogatoryLineList.removeIf(line -> line.getDepreciationDate().isAfter(date));
+    if (CollectionUtils.isEmpty(fixedAssetDerogatoryLineList) || date == null) {
+      return;
     }
-    clear(derogatoryLinesToRemove);
+    fixedAssetDerogatoryLineList.stream()
+        .filter(
+            line -> line.getDepreciationDate() == null || line.getDepreciationDate().isAfter(date))
+        .forEach(line -> derogatoryLinesToRemove.add(line));
+    clear(fixedAssetDerogatoryLineList, derogatoryLinesToRemove);
   }
 }
