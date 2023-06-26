@@ -671,14 +671,14 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
 
     queryList.addAll(
         this.getAccountFilters(
-            accountSet,
             accountTypeSet,
             groupColumn == null ? null : groupColumn.getAccountCode(),
             column.getAccountCode(),
             line.getAccountCode(),
-            true));
+            true,
+            this.areAllAccountSetsEmpty(accountingReport, groupColumn, column, line)));
 
-    if (CollectionUtils.isNotEmpty(analyticAccountSet)) {
+    if (!this.areAllAnalyticAccountSetsEmpty(accountingReport, groupColumn, column, line)) {
       queryList.add(
           "EXISTS(SELECT 1 FROM AnalyticMoveLine aml WHERE aml.analyticAccount IN :analyticAccountSet AND aml.moveLine = self)");
     }
