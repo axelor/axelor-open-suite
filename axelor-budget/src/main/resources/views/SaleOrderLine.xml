@@ -139,6 +139,7 @@
     <action name="action-sale-order-line-method-fill-max-discount"/>
     <action name="action-sale-order-line-method-translate-product-description-and-name"/>
     <action name="action-method-budget-sale-orderline-set-product-account"/>
+    <action name="action-sale-order-line-method-compute-analytic-distribution"/>
   </action-group>
 
   <action-attrs name="action-budget-sale-order-line-attrs-group-domain">

@@ -51,6 +51,8 @@ public class PurchaseOrderLineController {
 
         Beans.get(AnalyticLineModelService.class).computeAnalyticDistribution(analyticLineModel);
 
+        response.setValue(
+            "analyticDistributionTemplate", analyticLineModel.getAnalyticDistributionTemplate());
         response.setValue("analyticMoveLineList", analyticLineModel.getAnalyticMoveLineList());
       }
     } catch (Exception e) {
