@@ -159,6 +159,9 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
             this.mergeWithAccounts(detailByAccountTypeSet, line.getAccountSet());
       }
 
+      detailByAccountTypeSet =
+          this.sortSet(detailByAccountTypeSet, Comparator.comparing(AccountType::getName));
+
       for (AccountType accountType : detailByAccountTypeSet) {
         String lineCode = String.format("%s_%d", line.getCode(), counter++);
 
