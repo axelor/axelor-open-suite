@@ -22,11 +22,9 @@ public class StockInternalMoveStockMoveLinePostRequest {
   @Min(0)
   private BigDecimal realQty;
 
-  @NotNull
   @Min(0)
   private Long fromStockLocationId;
 
-  @NotNull
   @Min(0)
   private Long toStockLocationId;
 
@@ -82,10 +80,16 @@ public class StockInternalMoveStockMoveLinePostRequest {
   }
 
   public StockLocation fetchFromStockLocation() {
-    return ObjectFinder.find(StockLocation.class, fromStockLocationId, ObjectFinder.NO_VERSION);
+	  if (fromStockLocationId != null) {
+		  return ObjectFinder.find(StockLocation.class, fromStockLocationId, ObjectFinder.NO_VERSION);
+	  }
+      return null;
   }
 
   public StockLocation fetchtoStockLocation() {
-    return ObjectFinder.find(StockLocation.class, toStockLocationId, ObjectFinder.NO_VERSION);
+	  if (toStockLocationId != null) {
+		  return ObjectFinder.find(StockLocation.class, toStockLocationId, ObjectFinder.NO_VERSION);
+	  }
+    return null;
   }
 }

@@ -370,6 +370,13 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     stockMoveLine.setCompanyPurchasePrice(companyPurchasePrice);
     stockMoveLine.setFromStockLocation(fromStockLocation);
     stockMoveLine.setToStockLocation(toStockLocation);
+    
+    if (fromStockLocation == null) {
+    	stockMoveLine.setFromStockLocation(stockMove.getFromStockLocation());
+    }
+    if (toStockLocation == null) {
+    	stockMoveLine.setToStockLocation(stockMove.getToStockLocation());
+    }
 
     if (stockMove != null) {
       stockMove.addStockMoveLineListItem(stockMoveLine);
