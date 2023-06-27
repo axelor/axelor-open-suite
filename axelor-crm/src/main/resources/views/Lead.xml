@@ -82,7 +82,7 @@
 
   <form name="lead-form" title="Lead" model="com.axelor.apps.crm.db.Lead"
     onLoad="action-group-crm-lead-onload" onNew="action-group-crm-lead-onnew"
-    onSave="action-crm-lead-method-check-name">
+    onSave="action-crm-lead-method-check-name,action-lead-method-show-duplicate-records-fullname">
 
     <menubar>
       <menu name="leadReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
@@ -623,6 +623,10 @@
 
   <action-method name="action-lead-method-view-lead-with-same-domain-name">
     <call class="com.axelor.apps.crm.web.LeadController" method="viewLeadWithSameDomainName"/>
+  </action-method>
+
+  <action-method name="action-lead-method-show-duplicate-records-fullname">
+    <call class="com.axelor.apps.crm.web.LeadController" method="showDuplicateRecordsFullName"/>
   </action-method>
 
   <search-filters name="lead-filters" model="com.axelor.apps.crm.db.Lead"

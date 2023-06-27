@@ -16,14 +16,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.crm.translation;
+package com.axelor.apps.crm.service;
 
-public interface ITranslation {
+import com.axelor.apps.crm.db.Lead;
 
-  public static final String CRM_APP_NAME = /*$$(*/ "value:CRM"; /*)*/
-  public static final String SALE_QUOTATION = /*$$(*/ "Sale quotation" /*)*/;
-  public static final String CRM_DUPLICATE_RECORDS_FOUND = /*$$(*/ "Duplicate records found" /*)*/;
-  public static final String CRM_DUPLICATE_LEADS = /*$$(*/ "Duplicate leads :" /*)*/;
-  public static final String CRM_DUPLICATE_CONTACTS = /*$$(*/ "Duplicate contacts :" /*)*/;
-  public static final String CRM_DUPLICATE_PROSPECTS = /*$$(*/ "Duplicate prospects :" /*)*/;
+public interface LeadDuplicateService {
+
+  public String getDuplicateRecordsFullName(Lead lead);
 }

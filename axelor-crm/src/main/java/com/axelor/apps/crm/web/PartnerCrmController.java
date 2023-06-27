@@ -92,7 +92,7 @@ public class PartnerCrmController {
       params =
           emailDomainToolServiceProvider
               .get()
-              .computeParameterForFilter(partner, partner.getEmailAddress());
+              .computeParameterForFilter(partner.getId(), partner.getEmailAddress());
     }
     ActionView.ActionViewBuilder actionViewBuilder = ActionView.define(I18n.get("Contacts"));
     actionViewBuilder.model(Partner.class.getName());

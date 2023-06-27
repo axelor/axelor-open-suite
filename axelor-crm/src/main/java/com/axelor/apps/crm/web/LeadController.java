@@ -30,7 +30,9 @@ import com.axelor.apps.crm.db.report.IReport;
 import com.axelor.apps.crm.exception.CrmExceptionMessage;
 import com.axelor.apps.crm.service.CrmActivityService;
 import com.axelor.apps.crm.service.EmailDomainToolService;
+import com.axelor.apps.crm.service.LeadDuplicateService;
 import com.axelor.apps.crm.service.LeadService;
+import com.axelor.apps.crm.translation.ITranslation;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
@@ -207,7 +209,8 @@ public class LeadController {
       List<Lead> leadList =
           emailDomainToolServiceProvider
               .get()
-              .getEntitiesWithSameEmailAddress(lead, lead.getEmailAddress(), null);
+              .getEntitiesWithSameEmailAddress(
+                  Lead.class, lead.getId(), lead.getEmailAddress(), null);
 
       if (ObjectUtils.notEmpty(leadList)) {
         response.setView(null);
@@ -267,5 +270,19 @@ public class LeadController {
     }
     dataList = Beans.get(CrmActivityService.class).getLeadActivityData(Long.valueOf(id));
     response.setData(dataList);
+  }
+
+  public void showDuplicateRecordsFullName(ActionRequest request, ActionResponse response) {
+    Lead lead = request.getContext().asType(Lead.class);
+    if (lead.getId() == null) {
+      String fullNamesStr = Beans.get(LeadDuplicateService.class).getDuplicateRecordsFullName(lead);
+      if (StringUtils.notBlank(fullNamesStr)) {
+        response.setAlert(
+            String.format(
+                "%s<br/><br/>%s",
+                I18n.get(CrmExceptionMessage.CRM_EMAIL_DOMAIN_ALREADY_EXISTS), fullNamesStr),
+            I18n.get(ITranslation.CRM_DUPLICATE_RECORDS_FOUND));
+      }
+    }
   }
 }
