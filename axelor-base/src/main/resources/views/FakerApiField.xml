@@ -8,6 +8,7 @@
     <field name="name"/>
     <field name="className"/>
     <field name="methodName" title="FakerApiField.methodName"/>
+    <field name="dataType"/>
   </grid>
 
   <form model="com.axelor.apps.base.db.FakerApiField" title="Faker API fields"
@@ -22,6 +23,7 @@
       <field name="name" readonly="true" showIf="id!=null" colSpan="12"/>
       <field name="className"/>
       <field name="methodName" title="FakerApiField.methodName"/>
+      <field name="dataType"/>
 
       <panel name="paramPanel" title="Method parameters" colSpan="12" hidden="true"
         canCollapse="true"

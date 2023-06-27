@@ -39,6 +39,19 @@
   <form id="budget-purchase-order-line-form" name="purchase-order-line-form" title="PO line"
     model="com.axelor.apps.purchase.db.PurchaseOrderLine" extension="true">
 
+    <extend target="/">
+      <attribute name="onNew"
+        value="action-budget-purchase-purchase-orderline-group-onnew"/>
+      <attribute name="onLoad"
+        value="action-budget-purchase-purchase-orderline-group-onload"/>
+
+    </extend>
+
+    <extend target="//field[@name='product']">
+      <attribute name="onChange"
+        value="action-budget-group-purchase-purchase-orderline-product-onchange"/>
+    </extend>
+
     <extend target="//panel[@name='analyticDistributionPanel']">
       <insert position="after">
         <panel name="budgetDistributionPanel" title="Budget"
@@ -55,23 +68,23 @@
           <field name="budgetDistributionSumAmount" colSpan="6"
             if="__config__.app.getApp('budget')?.getManageMultiBudget()" readonly="true"/>
           <field name="account"
-            onSelect="action-budget-purchase-order-line-set-account-domain"/>
+            onSelect="action-budget-purchase-order-line-set-account-domain"
+            onChange="action-purchase-order-line-attrs-hidden-analytic-distribution-panel"/>
           <field name="groupBudget" title="Group" colSpan="4" showIf="account"
-            onSelect="action-budget-purchase-order-line-attrs-group-domain"
+            onSelect="action-budget-purchase-order-line-method-group-domain"
             form-view="budget-group-budget-level-form" grid-view="budget-level-included-grid"/>
           <field name="section" title="Section" colSpan="4" showIf="account"
-            onSelect="action-budget-purchase-order-line-attrs-section-domain"
+            onSelect="action-budget-purchase-order-line-method-section-domain"
             form-view="budget-section-budget-level-form" grid-view="budget-level-node-grid"/>
           <field name="line" title="Line" colSpan="4" showIf="account"
-            onSelect="action-budget-purchase-order-line-attrs-line-domain"
+            onSelect="action-budget-purchase-order-line-method-line-domain"
             form-view="budget-line-form" grid-view="budget-line-grid"/>
           <field name="$global" title="Global budget" type="many-to-one"
             target="com.axelor.apps.budget.db.BudgetLevel" readonly="true" colSpan="12"
             hidden="true"/>
           <field name="budget" if="!__config__.app.getApp('budget')?.getManageMultiBudget()"
-            domain="self.statusSelect = 2 and self.budgetLineList IS NOT EMPTY"
             showIf="product != null"
-            onSelect="action-budget-purchase-order-line-attrs-budget-domain"
+            onSelect="action-budget-purchase-order-line-method-budget-domain"
             onChange="action-budget-purchase-order-line-method-set-account,action-budget-purchase-order-line-method-fill-budget-str"/>
           <panel-related name="budgetDistributionListPanel"
             field="budgetDistributionList" form-view="purchase-order-budget-distribution-form"
@@ -94,50 +107,31 @@
     </extend>
   </form>
 
-  <action-group name="action-group-purchase-purchase-orderline-product-onchange"
-    id="action-budget-group-purchase-purchase-orderline-product-onchange">
-    <action name="action-purchase-order-line-attrs-delivery-panel"/>
-    <action name="action-purchase-order-line-method-get-product-information"/>
-    <action name="action-purchase-order-line-method-compute" if="price != 0"/>
-    <action name="action-purchase-order-line-method-check-qty" if="price != 0"/>
-    <action name="action-purchase-order-line-method-check-different-supplier"/>
-    <action name="action-purchase-order-line-method-translate-product-description-and-name"/>
+  <action-group name="action-budget-group-purchase-purchase-orderline-product-onchange">
+    <action name="action-group-purchase-purchase-orderline-product-onchange"/>
     <action name="action-method-budget-purchase-orderline-set-product-account"/>
   </action-group>
 
-  <action-group name="action-group-purchase-purchase-orderline-onnew"
-    id="action-budget-purchase-purchase-orderline-group-onnew">
-    <action name="action-purchase-order-line-attrs-title-project"/>
-    <action name="action-purchase-order-line-attrs-scale-and-precision"/>
-    <action name="action-purchase-order-line-record-new"/>
-    <action name="action-purchase-order-line-record-project"/>
-    <action name="action-purchase-order-attrs-hide-ati"/>
-    <action name="action-purchase-order-line-attrs-show-priceDiscounted"/>
-    <action name="action-purchase-order-line-attrs-hide-qty-warning-label"/>
-    <action name="action-purchase-order-line-attrs-hide-different-supplier-warning-label"/>
-    <action name="action-purchase-order-line-attrs-display-different-language-message"/>
-    <action name="action-purchase-order-line-attrs-hidden-analytic-distribution-panel"/>
+  <action-group name="action-budget-purchase-purchase-orderline-group-onnew">
+    <action name="action-group-purchase-purchase-orderline-onnew"/>
     <action name="action-budget-purchase-orderline-record-set-global-budget"/>
     <action name="action-method-purchase-order-line-budget-check-budget-key-roles"/>
   </action-group>
+
+  <action-attrs
+    name="action-purchase-order-line-attrs-hidden-analytic-distribution-panel"
+    id="action-budget-purchase-order-line-attrs-hidden-analytic-distribution-panel">
+    <attribute name="hidden" for="analyticDistributionPanel"
+      expr="eval: !__config__.app.isApp('supplychain') || !__config__.app.getApp('account')?.getManageAnalyticAccounting() || !__parent__?.company?.accountConfig?.getManageAnalyticAccounting() || (__config__.app.isApp('budget') &amp;&amp; account &amp;&amp; !account.analyticDistributionAuthorized)"/>
+  </action-attrs>
 
   <action-record name="action-budget-purchase-orderline-record-set-global-budget"
     model="com.axelor.apps.purchase.db.PurchaseOrderLine">
     <field name="$global" expr="eval: _parent?.budgetLevel" if="_parent"/>
   </action-record>
 
-  <action-group name="action-group-purchase-purchase-orderline-onload"
-    id="action-budget-purchase-purchase-orderline-group-onload">
-    <action name="action-purchase-order-line-attrs-readonly-form"/>
-    <action name="action-purchase-order-line-method-check-qty"/>
-    <action name="action-purchase-order-line-attrs-title-project"/>
-    <action name="action-purchase-order-line-attrs-scale-and-precision"/>
-    <action name="action-purchase-order-attrs-hide-ati"/>
-    <action name="action-purchase-order-line-attrs-show-priceDiscounted"/>
-    <action name="action-purchase-order-line-attrs-delivery-panel"/>
-    <action name="action-purchase-order-line-attrs-set-isFilterOnSupplier"/>
-    <action name="action-purchase-order-line-attrs-display-different-language-message"/>
-    <action name="action-purchase-order-line-attrs-hidden-analytic-distribution-panel"/>
+  <action-group name="action-budget-purchase-purchase-orderline-group-onload">
+    <action name="action-group-purchase-purchase-orderline-onload"/>
     <action name="action-budget-purchase-order-line-record-set-budget-level"/>
     <action name="action-method-purchase-order-line-budget-check-budget-key-roles"/>
   </action-group>
@@ -150,113 +144,25 @@
     <field name="$section" expr="eval: budget?.budgetLevel" if="budget != null"/>
   </action-record>
 
-  <action-attrs name="action-budget-purchase-order-line-attrs-group-domain">
-    <attribute name="domain" for="groupBudget"
-      expr="eval:&quot;self.parentBudgetLevel IS NOT NULL AND self.parentBudgetLevel.parentBudgetLevel IS NULL AND self.parentBudgetLevel.budgetTypeSelect in (1,4) AND self.parentBudgetLevel.id = ${global?.id} AND self.statusSelect = 'valid'&quot;"
-      if="global &amp;&amp; account &amp;&amp; account?.accountType?.technicalTypeSelect == 'charge'"/>
-    <attribute name="domain" for="groupBudget"
-      expr="eval:&quot;self.parentBudgetLevel IS NOT NULL AND self.parentBudgetLevel.parentBudgetLevel IS NULL AND self.parentBudgetLevel.budgetTypeSelect in (3,4) AND self.parentBudgetLevel.id = ${global?.id} AND self.statusSelect = 'valid'&quot;"
-      if="global &amp;&amp; account?.accountType?.technicalTypeSelect == 'immobilisation'"/>
-    <attribute name="domain" for="groupBudget"
-      expr="eval:&quot;self.parentBudgetLevel IS NOT NULL AND self.parentBudgetLevel.parentBudgetLevel IS NULL AND self.parentBudgetLevel.budgetTypeSelect in (1,4) AND self.statusSelect = 'valid' AND self.parentBudgetLevel.company.id = ${_parent?.company?.id}&quot;"
-      if="!global &amp;&amp; _parent?.company &amp;&amp; account?.accountType?.technicalTypeSelect == 'charge'"/>
-    <attribute name="domain" for="groupBudget"
-      expr="eval:&quot;self.parentBudgetLevel IS NOT NULL AND self.parentBudgetLevel.parentBudgetLevel IS NULL AND self.parentBudgetLevel.budgetTypeSelect in (3,4) AND self.statusSelect = 'valid' AND self.parentBudgetLevel.company.id = ${_parent?.company?.id}&quot;"
-      if="!global &amp;&amp; _parent?.company &amp;&amp; account?.accountType?.technicalTypeSelect == 'immobilisation'"/>
-    <attribute name="domain" for="groupBudget"
-      expr="eval:&quot;self.parentBudgetLevel IS NOT NULL AND self.parentBudgetLevel.parentBudgetLevel IS NULL AND self.parentBudgetLevel.budgetTypeSelect in (1,4) AND self.statusSelect = 'valid'&quot;"
-      if="!global &amp;&amp; !_parent?.company &amp;&amp; account?.accountType?.technicalTypeSelect == 'charge'"/>
-    <attribute name="domain" for="groupBudget"
-      expr="eval:&quot;self.parentBudgetLevel IS NOT NULL AND self.parentBudgetLevel.parentBudgetLevel IS NULL AND self.parentBudgetLevel.budgetTypeSelect in (3,4) AND self.statusSelect = 'valid'&quot;"
-      if="!global &amp;&amp; !_parent?.company &amp;&amp; account?.accountType?.technicalTypeSelect == 'immobilisation'"/>
-    <attribute name="domain" for="groupBudget" expr="eval: self.id = 0"
-      if="account?.accountType?.technicalTypeSelect != 'charge' &amp;&amp; account?.accountType?.technicalTypeSelect != 'immobilisation'"/>
-  </action-attrs>
+  <action-method name="action-budget-purchase-order-line-method-group-domain">
+    <call class="com.axelor.apps.budget.web.PurchaseOrderLineController"
+      method="setGroupBudgetDomain"/>
+  </action-method>
 
-  <action-attrs name="action-budget-purchase-order-line-attrs-section-domain">
-    <attribute name="domain"
-      expr="eval: &quot;self.parentBudgetLevel IS NOT NULL AND self.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect in (1,4) AND self.parentBudgetLevel.id = ${groupBudget?.id} AND self.statusSelect = 'valid' &quot;"
-      for="section"
-      if="groupBudget &amp;&amp; account?.accountType?.technicalTypeSelect == 'charge'"/>
-    <attribute name="domain"
-      expr="eval: &quot;self.parentBudgetLevel IS NOT NULL AND self.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect in (3,4) AND self.parentBudgetLevel.id = ${groupBudget?.id} AND self.statusSelect = 'valid' &quot;"
-      for="section"
-      if="groupBudget &amp;&amp; account?.accountType?.technicalTypeSelect == 'immobilisation'"/>
-    <attribute for="section" name="domain"
-      expr="eval: &quot;self.parentBudgetLevel IS NOT NULL AND self.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect in (1,4) AND self.parentBudgetLevel.parentBudgetLevel.id = ${__parent__?.budgetLevel?.id} AND self.statusSelect = 'valid' &quot;"
-      if="!groupBudget &amp;&amp; __parent__?.budgetLevel &amp;&amp; account?.accountType?.technicalTypeSelect == 'charge'"/>
-    <attribute for="section" name="domain"
-      expr="eval: &quot;self.parentBudgetLevel IS NOT NULL AND self.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect in (3,4) AND self.parentBudgetLevel.parentBudgetLevel.id = ${__parent__?.budgetLevel?.id} AND self.statusSelect = 'valid' &quot;"
-      if="!groupBudget &amp;&amp; __parent__?.budgetLevel &amp;&amp; account?.accountType?.technicalTypeSelect == 'immobilisation'"/>
-    <attribute for="section" name="domain"
-      expr="eval: &quot;self.parentBudgetLevel IS NOT NULL AND self.parentBudgetLevel.parentBudgetLevel IS NOT NULL AND self.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect in (1,4) AND self.statusSelect = 'valid' AND self.parentBudgetLevel.parentBudgetLevel.company.id = ${_parent?.company?.id}&quot;"
-      if="!groupBudget &amp;&amp; !__parent__?.budgetLevel &amp;&amp; __parent__?.company &amp;&amp; account?.accountType?.technicalTypeSelect == 'charge'"/>
-    <attribute for="section" name="domain"
-      expr="eval: &quot;self.parentBudgetLevel IS NOT NULL AND self.parentBudgetLevel.parentBudgetLevel IS NOT NULL AND self.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect in (3,4) AND self.statusSelect = 'valid' AND self.parentBudgetLevel.parentBudgetLevel.company.id = ${_parent?.company?.id}&quot;"
-      if="!groupBudget &amp;&amp; !__parent__?.budgetLevel &amp;&amp; __parent__?.company &amp;&amp; account?.accountType?.technicalTypeSelect == 'immobilisation'"/>
-    <attribute for="section" name="domain"
-      expr="eval: &quot;self.parentBudgetLevel IS NOT NULL AND self.parentBudgetLevel.parentBudgetLevel IS NOT NULL AND self.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect in (1,4) AND self.statusSelect = 'valid'&quot;"
-      if="!groupBudget &amp;&amp; !__parent__?.budgetLevel &amp;&amp; !__parent__?.company &amp;&amp; account?.accountType?.technicalTypeSelect == 'charge'"/>
-    <attribute for="section" name="domain"
-      expr="eval: &quot;self.parentBudgetLevel IS NOT NULL AND self.parentBudgetLevel.parentBudgetLevel IS NOT NULL AND self.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect in (3,4) AND self.statusSelect = 'valid'&quot;"
-      if="!groupBudget &amp;&amp; !__parent__?.budgetLevel &amp;&amp; !__parent__?.company &amp;&amp; account?.accountType?.technicalTypeSelect == 'immobilisation'"/>
-    <attribute name="domain" for="section" expr="eval: self.id = 0"
-      if="account?.accountType?.technicalTypeSelect != 'charge' &amp;&amp; account?.accountType?.technicalTypeSelect != 'immobilisation'"/>
-  </action-attrs>
+  <action-method name="action-budget-purchase-order-line-method-section-domain">
+    <call class="com.axelor.apps.budget.web.PurchaseOrderLineController"
+      method="setSectionBudgetDomain"/>
+  </action-method>
 
-  <action-attrs name="action-budget-purchase-order-line-attrs-line-domain">
-    <attribute name="domain" for="line"
-      expr="eval: &quot;self.budgetLevel IS NOT NULL AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect in (1,4) AND self.budgetLevel.id = ${section?.id} AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.statusSelect = 'valid' &quot;"
-      if="section &amp;&amp; account?.accountType?.technicalTypeSelect == 'charge'"/>
-    <attribute name="domain" for="line"
-      expr="eval: &quot;self.budgetLevel IS NOT NULL AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect in (3,4) AND self.budgetLevel.id = ${section?.id} AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.statusSelect = 'valid' &quot;"
-      if="section &amp;&amp; account?.accountType?.technicalTypeSelect == 'immobilisation'"/>
-    <attribute name="domain" for="line"
-      expr="eval: &quot;self.budgetLevel IS NOT NULL AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect in (1,4) AND self.budgetLevel.parentBudgetLevel.id = ${groupBudget?.id} AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.statusSelect = 'valid' &quot;"
-      if="!section &amp;&amp; groupBudget &amp;&amp; account?.accountType?.technicalTypeSelect == 'charge'"/>
-    <attribute name="domain" for="line"
-      expr="eval: &quot;self.budgetLevel IS NOT NULL AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect in (3,4) AND self.budgetLevel.parentBudgetLevel.id = ${groupBudget?.id} AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.statusSelect = 'valid' &quot;"
-      if="!section &amp;&amp; groupBudget &amp;&amp; account?.accountType?.technicalTypeSelect == 'immobilisation'"/>
-    <attribute name="domain" for="line"
-      expr="eval: &quot;self.budgetLevel IS NOT NULL AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect in (1,4) AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.id = ${__parent__?.budgetLevel?.id} AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.statusSelect = 'valid' &quot;"
-      if="!section &amp;&amp; !groupBudget &amp;&amp; __parent__?.budgetLevel &amp;&amp; account?.accountType?.technicalTypeSelect == 'charge'"/>
-    <attribute name="domain" for="line"
-      expr="eval: &quot;self.budgetLevel IS NOT NULL AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect in (3,4) AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.id = ${__parent__?.budgetLevel?.id} AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.statusSelect = 'valid' &quot;"
-      if="!section &amp;&amp; !groupBudget &amp;&amp; __parent__?.budgetLevel &amp;&amp; account?.accountType?.technicalTypeSelect == 'immobilisation'"/>
-    <attribute name="domain" for="line"
-      expr="eval: &quot;self.budgetLevel IS NOT NULL AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect in (1,4) AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.statusSelect = 'valid' AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.company.id = ${_parent?.company?.id} &quot;"
-      if="!section &amp;&amp; !groupBudget &amp;&amp; !__parent__?.budgetLevel &amp;&amp; __parent__?.company &amp;&amp; account?.accountType?.technicalTypeSelect == 'charge'"/>
-    <attribute name="domain" for="line"
-      expr="eval: &quot;self.budgetLevel IS NOT NULL AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect in (3,4) AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.statusSelect = 'valid' AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.company.id = ${_parent?.company?.id} &quot;"
-      if="!section &amp;&amp; !groupBudget &amp;&amp; !__parent__?.budgetLevel &amp;&amp; __parent__?.company &amp;&amp; account?.accountType?.technicalTypeSelect == 'immobilisation'"/>
-    <attribute name="domain" for="line"
-      expr="eval: &quot;self.budgetLevel IS NOT NULL AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect in (1,4) AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.statusSelect = 'valid'&quot;"
-      if="!section &amp;&amp; !groupBudget &amp;&amp; !__parent__?.budgetLevel &amp;&amp; !__parent__?.company &amp;&amp; account?.accountType?.technicalTypeSelect == 'charge'"/>
-    <attribute name="domain" for="line"
-      expr="eval: &quot;self.budgetLevel IS NOT NULL AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect in (3,4) AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.statusSelect = 'valid'&quot;"
-      if="!section &amp;&amp; !groupBudget &amp;&amp; !__parent__?.budgetLevel &amp;&amp; !__parent__?.company &amp;&amp; account?.accountType?.technicalTypeSelect == 'immobilisation'"/>
-    <attribute name="domain" for="line" expr="eval: self.id = 0"
-      if="account?.accountType?.technicalTypeSelect != 'charge' &amp;&amp; account?.accountType?.technicalTypeSelect != 'immobilisation'"/>
-  </action-attrs>
+  <action-method name="action-budget-purchase-order-line-method-line-domain">
+    <call class="com.axelor.apps.budget.web.PurchaseOrderLineController"
+      method="setLineBudgetDomain"/>
+  </action-method>
 
-  <action-attrs name="action-budget-purchase-order-line-attrs-budget-domain">
-    <attribute name="domain" for="budget"
-      expr="eval:&quot;self.budgetLevel.parentBudgetLevel.parentBudgetLevel IS NOT NULL AND ((${account.accountType.technicalTypeSelect} = 'charge' AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect in (1,4)) OR (${account.accountType.technicalTypeSelect} = 'immobilisation' AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect in (3,4))) AND self.budgetLevel.id = ${section?.id}&quot;"
-      if="section &amp;&amp; account"/>
-    <attribute name="domain" for="budget"
-      expr="eval:&quot;self.budgetLevel.parentBudgetLevel.parentBudgetLevel IS NOT NULL AND ((${account.accountType.technicalTypeSelect} = 'charge' AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect in (1,4)) OR (${account.accountType.technicalTypeSelect} = 'immobilisation' AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect in (3,4))) AND self.budgetLevel.parentBudgetLevel.id = ${groupBudget?.id}&quot;"
-      if="!section &amp;&amp; groupBudget &amp;&amp; account"/>
-    <attribute name="domain" for="budget"
-      expr="eval:&quot;self.budgetLevel.parentBudgetLevel.parentBudgetLevel IS NOT NULL AND ((${account.accountType.technicalTypeSelect} = 'charge' AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect in (1,4)) OR (${account.accountType.technicalTypeSelect} = 'immobilisation' AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect in (3,4))) AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.id = ${global?.id}&quot;"
-      if="global &amp;&amp; !groupBudget &amp;&amp; !section &amp;&amp; account"/>
-    <attribute name="domain" for="budget"
-      expr="eval: self.budgetLevel.parentBudgetLevel.parentBudgetLevel IS NOT NULL AND ((${account.accountType.technicalTypeSelect} = 'charge' AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect in (1,4)) OR (${account.accountType.technicalTypeSelect} = 'immobilisation' AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect in (3,4))) AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.company.id = ${_parent?.company?.id} "
-      if="!global &amp;&amp; !groupBudget &amp;&amp; !section &amp;&amp; __parent__?.company &amp;&amp; account"/>
-    <attribute name="domain" for="budget"
-      expr="eval: self.budgetLevel.parentBudgetLevel.parentBudgetLevel IS NOT NULL AND ((${account.accountType.technicalTypeSelect} = 'charge' AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect in (1,4)) OR (${account.accountType.technicalTypeSelect} = 'immobilisation' AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect in (3,4)))"
-      if="!global &amp;&amp; !groupBudget &amp;&amp; !section &amp;&amp; !__parent__?.company &amp;&amp; account"/>
-    <attribute name="domain" for="budget" expr="eval: self.id = 0" if="!account"/>
-  </action-attrs>
+  <action-method name="action-budget-purchase-order-line-method-budget-domain">
+    <call class="com.axelor.apps.budget.web.PurchaseOrderLineController"
+      method="setBudgetDomain"/>
+  </action-method>
 
   <action-method name="action-budget-purchase-order-line-method-account-domain">
     <call class="com.axelor.apps.budget.web.PurchaseOrderLineController"

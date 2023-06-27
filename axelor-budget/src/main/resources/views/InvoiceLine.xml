@@ -6,6 +6,11 @@
   <form id="budget-invoice-line-form" name="invoice-line-form" title="Invoice line"
     model="com.axelor.apps.account.db.InvoiceLine" extension="true">
 
+    <extend target="/">
+      <attribute name="onLoad" value="action-group-budget-invoice-line-onload"/>
+      <attribute name="onNew" value="action-group-budget-invoice-line-onnew"/>
+    </extend>
+
     <extend target="//panel[@name='accountingPanel']">
       <insert position="after">
         <panel name="budgetPanel" title="Budget" if="__config__.app.isApp('budget')">
@@ -54,30 +59,14 @@
     <call class="com.axelor.apps.budget.web.InvoiceLineController" method="checkBudget"/>
   </action-method>
 
-  <action-group name="action-group-account-invoice-line-onload"
-    id="action-group-budget-invoice-line-onload">
-    <action name="action-attrs-account-invoice-line-onnew-onload"/>
-    <action name="action-invoice-line-attrs-readonly-form"/>
-    <action name="action-invoice-line-record-operation-type"/>
-    <action name="action-invoice-line-attrs-set-isFilterOnSupplier"/>
-    <action name="action-invoice-line-attrs-display-different-language-message"/>
-    <action name="action-invoice-line-method-manage-invoice-line-axis"/>
-    <action name="action-attrs-account-invoice-line-cut-off-dates-required"/>
-    <action name="action-invoice-line-attrs-set-hidden-analytic-distribution-panel"/>
+  <action-group name="action-group-budget-invoice-line-onload">
+    <action name="action-group-account-invoice-line-onload"/>
     <action name="action-budget-distribution-attrs-budget-amount-available"/>
     <action name="action-method-invoice-line-budget-check-budget-key-roles"/>
   </action-group>
 
-  <action-group name="action-account-invoice-line-onnew-group"
-    id="action-group-budget-invoice-line-onnew">
-    <action name="action-invoice-line-record-new"/>
-    <action name="action-invoice-line-record-project"/>
-    <action name="action-invoice-line-record-operation-type"/>
-    <action name="action-attrs-account-invoice-line-onnew-onload"/>
-    <action name="action-invoice-line-attrs-display-different-language-message"/>
-    <action name="action-invoice-line-method-manage-invoice-line-axis"/>
-    <action name="action-attrs-account-invoice-line-cut-off-dates-required"/>
-    <action name="action-invoice-line-attrs-set-hidden-analytic-distribution-panel"/>
+  <action-group name="action-group-budget-invoice-line-onnew">
+    <action name="action-account-invoice-line-onnew-group"/>
     <action name="action-budget-distribution-attrs-budget-amount-available"/>
     <action name="action-method-invoice-line-budget-check-budget-key-roles"/>
   </action-group>

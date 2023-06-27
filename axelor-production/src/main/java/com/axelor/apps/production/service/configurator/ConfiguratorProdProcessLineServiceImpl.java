@@ -81,6 +81,7 @@ public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdP
     BigDecimal minCapacityPerCycle;
     BigDecimal maxCapacityPerCycle;
     long durationPerCycle;
+    long humanDuration;
     long timingOfImplementation;
 
     if (confProdProcessLine.getDefNameAsFormula()) {
@@ -208,6 +209,15 @@ public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdP
     } else {
       durationPerCycle = confProdProcessLine.getDurationPerCycle();
     }
+    if (confProdProcessLine.getDefHrDurationFormula()) {
+      humanDuration =
+          Long.decode(
+              configuratorService
+                  .computeFormula(confProdProcessLine.getHumanDurationFormula(), attributes)
+                  .toString());
+    } else {
+      humanDuration = confProdProcessLine.getHumanDuration();
+    }
     if (confProdProcessLine.getDefTimingOfImplementationFormula()) {
       timingOfImplementation =
           Long.decode(
@@ -296,8 +306,8 @@ public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdP
     WorkCenter workCenter =
         workCenterService.getMainWorkCenterFromGroup(confProdProcessLine.getWorkCenterGroup());
     confProdProcessLine.setWorkCenter(workCenter);
-    confProdProcessLine.setDurationPerCycle(
-        workCenterService.getDurationFromWorkCenter(workCenter));
+    confProdProcessLine.setDurationPerCycle(workCenter.getDurationPerCycle());
+    confProdProcessLine.setHumanDuration(workCenter.getHrDurationPerCycle());
     confProdProcessLine.setMinCapacityPerCycle(
         workCenterService.getMinCapacityPerCycleFromWorkCenter(workCenter));
     confProdProcessLine.setMaxCapacityPerCycle(

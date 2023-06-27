@@ -32,7 +32,7 @@ import com.axelor.apps.account.service.move.control.MoveCheckService;
 import com.axelor.apps.account.service.move.massentry.MassEntryService;
 import com.axelor.apps.account.service.move.massentry.MassEntryVerificationService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
-import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryToolService;
+import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryRecordService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.auth.AuthUtils;
@@ -59,10 +59,10 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   protected MoveLineTaxService moveLineTaxService;
   protected PeriodService periodService;
   protected MoveRepository moveRepository;
-  protected MoveLineMassEntryToolService moveLineMassEntryToolService;
   protected AppAccountService appAccountService;
   protected MassEntryService massEntryService;
   protected MassEntryVerificationService massEntryVerificationService;
+  protected MoveLineMassEntryRecordService moveLineMassEntryRecordService;
 
   @Inject
   public MoveGroupServiceImpl(
@@ -80,10 +80,10 @@ public class MoveGroupServiceImpl implements MoveGroupService {
       MoveLineTaxService moveLineTaxService,
       PeriodService periodService,
       MoveRepository moveRepository,
-      MoveLineMassEntryToolService moveLineMassEntryToolService,
       AppAccountService appAccountService,
       MassEntryService massEntryService,
-      MassEntryVerificationService massEntryVerificationService) {
+      MassEntryVerificationService massEntryVerificationService,
+      MoveLineMassEntryRecordService moveLineMassEntryRecordService) {
     this.moveDefaultService = moveDefaultService;
     this.moveAttrsService = moveAttrsService;
     this.periodAccountService = periodAccountService;
@@ -98,10 +98,10 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     this.moveLineTaxService = moveLineTaxService;
     this.periodService = periodService;
     this.moveRepository = moveRepository;
-    this.moveLineMassEntryToolService = moveLineMassEntryToolService;
     this.appAccountService = appAccountService;
     this.massEntryService = massEntryService;
     this.massEntryVerificationService = massEntryVerificationService;
+    this.moveLineMassEntryRecordService = moveLineMassEntryRecordService;
   }
 
   protected void addPeriodDummyFields(Move move, Map<String, Object> valuesMap)
@@ -115,6 +115,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     moveCheckService.checkPeriodPermission(move);
     moveCheckService.checkRemovedLines(move);
     moveCheckService.checkAnalyticAccount(move);
+    moveCheckService.checkCurrencyAmountSum(move);
   }
 
   @Override
@@ -126,7 +127,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     if (move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL) {
       move.setMassEntryErrors(null);
     } else if (move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_ON_GOING) {
-      moveLineMassEntryToolService.setNewMoveStatusSelectMassEntryLines(
+      moveLineMassEntryRecordService.setMoveStatusSelect(
           move.getMoveLineMassEntryList(), MoveRepository.STATUS_NEW);
     }
 
@@ -300,12 +301,14 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   }
 
   @Override
-  public Map<String, Map<String, Object>> getJournalOnChangeAttrsMap(Move move) {
+  public Map<String, Map<String, Object>> getJournalOnChangeAttrsMap(Move move)
+      throws AxelorException {
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
     moveAttrsService.addFunctionalOriginSelectDomain(move, attrsMap);
 
     if (move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL) {
+      moveAttrsService.addMoveLineAnalyticAttrs(move, attrsMap);
       moveAttrsService.addMassEntryHidden(move, attrsMap);
     }
 
@@ -360,6 +363,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     moveRecordUpdateService.updateDueDate(move, paymentConditionChange, dateChange);
     if (move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL) {
       massEntryService.verifyFieldsAndGenerateTaxLineAndCounterpart(move, move.getDate());
+      valuesMap.put("massEntryErrors", move.getMassEntryErrors());
       valuesMap.put("moveLineMassEntryList", move.getMoveLineMassEntryList());
     }
 

@@ -715,6 +715,16 @@
     <option value="5">EXPORT</option>
   </selection>
 
+  <selection name="research.model.selection">
+    <option value="com.axelor.apps.base.db.Partner">Partner</option>
+    <option value="com.axelor.apps.base.db.Partner.Contact">Contact</option>
+  </selection>
+
+  <selection name="research.primary.key.type.select">
+    <option value="String">String</option>
+    <option value="LocalDate">Date</option>
+  </selection>
+
   <selection name="base.batch.password.change.action.select">
     <option value="1">Generate new random passwords</option>
     <option value="2">Force the users to update password the next login</option>
@@ -730,6 +740,16 @@
     <option value="java.util.Date">Date (YYYY-MM-DD)</option>
     <option value="java.sql.Timestamp">Timestamp (YYYY-MM-DD)</option>
     <option value="java.util.concurrent.TimeUnit">TimeUnit</option>
+  </selection>
+
+  <selection name="base.faker.api.field.data.type.select">
+    <option value="Integer">Integer</option>
+    <option value="Long">Long</option>
+    <option value="BigDecimal">BigDecimal</option>
+    <option value="LocalDate">LocalDate</option>
+    <option value="LocalDateTime">LocalDateTime</option>
+    <option value="String">String</option>
+    <option value="Boolean">Boolean</option>
   </selection>
 
 </object-views>

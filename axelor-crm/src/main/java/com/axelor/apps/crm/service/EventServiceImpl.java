@@ -742,10 +742,11 @@ public class EventServiceImpl implements EventService {
   protected void updateLeadLastEventDate(Event event) {
     Lead lead = event.getEventLead();
     if (lead != null
-        && event.getEndDateTime() != null
+        && event.getStartDateTime() != null
         && (lead.getLastEventDateT() == null
-            || !lead.getLastEventDateT().isAfter(event.getEndDateTime()))) {
-      lead.setLastEventDateT(event.getEndDateTime());
+            || (event.getStartDateTime().isBefore(LocalDateTime.now())
+                && event.getStartDateTime().isAfter(lead.getLastEventDateT())))) {
+      lead.setLastEventDateT(event.getStartDateTime());
     }
   }
 
@@ -753,10 +754,11 @@ public class EventServiceImpl implements EventService {
   protected void updateOpportunityLastEventDate(Event event) {
     Opportunity opportunity = event.getOpportunity();
     if (opportunity != null
-        && event.getEndDateTime() != null
+        && event.getStartDateTime() != null
         && (opportunity.getLastEventDateT() == null
-            || !opportunity.getLastEventDateT().isAfter(event.getEndDateTime()))) {
-      opportunity.setLastEventDateT(event.getEndDateTime());
+            || (event.getStartDateTime().isBefore(LocalDateTime.now())
+                && event.getStartDateTime().isAfter(opportunity.getLastEventDateT())))) {
+      opportunity.setLastEventDateT(event.getStartDateTime());
     }
   }
 
@@ -787,26 +789,26 @@ public class EventServiceImpl implements EventService {
   @Transactional
   protected void updateLeadScheduledEventDate(Event event) {
     Lead lead = event.getEventLead();
-    LocalDateTime startDateTime = event.getStartDateTime();
     if (lead != null
-        && startDateTime != null
+        && event.getStartDateTime() != null
         && event.getStatusSelect() == EventRepository.STATUS_PLANNED
         && (lead.getNextScheduledEventDateT() == null
-            || lead.getNextScheduledEventDateT().isAfter(event.getEndDateTime()))) {
-      lead.setNextScheduledEventDateT(startDateTime);
+            || (event.getStartDateTime().isAfter(LocalDateTime.now())
+                && event.getStartDateTime().isBefore(lead.getNextScheduledEventDateT())))) {
+      lead.setNextScheduledEventDateT(event.getStartDateTime());
     }
   }
 
   @Transactional
   protected void updateOpportunityScheduledEventDate(Event event) {
     Opportunity opportunity = event.getOpportunity();
-    LocalDateTime startDateTime = event.getStartDateTime();
     if (opportunity != null
-        && startDateTime != null
+        && event.getStartDateTime() != null
         && event.getStatusSelect() == EventRepository.STATUS_PLANNED
         && (opportunity.getNextScheduledEventDateT() == null
-            || opportunity.getNextScheduledEventDateT().isAfter(event.getEndDateTime()))) {
-      opportunity.setNextScheduledEventDateT(startDateTime);
+            || (event.getStartDateTime().isAfter(LocalDateTime.now())
+                && event.getStartDateTime().isBefore(opportunity.getNextScheduledEventDateT())))) {
+      opportunity.setNextScheduledEventDateT(event.getStartDateTime());
     }
   }
 

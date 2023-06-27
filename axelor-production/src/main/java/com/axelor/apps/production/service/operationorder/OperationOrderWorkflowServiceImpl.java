@@ -593,7 +593,7 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
       throws AxelorException {
     ProdProcessLine prodProcessLine = operationOrder.getProdProcessLine();
 
-    return prodProcessLineService.computeEntireCycleDuration(prodProcessLine, qty);
+    return prodProcessLineService.computeEntireCycleDuration(operationOrder, prodProcessLine, qty);
   }
 
   protected void calculateHoursOfUse(OperationOrder operationOrder) {
