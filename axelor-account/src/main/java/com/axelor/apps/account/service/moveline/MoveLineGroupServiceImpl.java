@@ -136,7 +136,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
 
     if (move != null) {
       moveLineAttrsService.addAnalyticDistributionTypeSelect(move, attrsMap);
-      moveLineAttrsService.addReadonly(move, attrsMap);
+      moveLineAttrsService.addReadonly(moveLine, move, attrsMap);
       moveLineAttrsService.addDescriptionRequired(move, attrsMap);
       moveLineAttrsService.addAnalyticAxisAttrs(move, attrsMap);
     }
@@ -155,7 +155,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
     moveLineAttrsService.addPartnerRequired(move, attrsMap);
 
     if (move != null) {
-      moveLineAttrsService.addReadonly(move, attrsMap);
+      moveLineAttrsService.addReadonly(moveLine, move, attrsMap);
       moveLineAttrsService.addDescriptionRequired(move, attrsMap);
       moveLineAttrsService.addAnalyticAxisAttrs(move, attrsMap);
       moveLineAttrsService.addValidatePeriod(move, attrsMap);

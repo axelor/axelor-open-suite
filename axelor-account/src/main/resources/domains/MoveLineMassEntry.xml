@@ -25,6 +25,9 @@
     <string name="fieldsErrorList"/>
     <many-to-one name="movePfpValidatorUser" ref="com.axelor.auth.db.User"
       title="PFP Validator"/>
+    <one-to-many name="analyticMoveLineMassEntryList"
+      ref="com.axelor.apps.account.db.AnalyticMoveLine" title="Analytic distribution lines"
+      mappedBy="moveLineMassEntry"/>
 
     <extra-code><![CDATA[
 

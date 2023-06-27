@@ -647,11 +647,11 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
     return String.join(
         " AND ",
         this.getAccountFilters(
-            configLine.getAccountSet(),
             configLine.getAccountTypeSet(),
             configLine.getAccountCode(),
             null,
             null,
-            false));
+            false,
+            CollectionUtils.isEmpty(configLine.getAccountSet())));
   }
 }

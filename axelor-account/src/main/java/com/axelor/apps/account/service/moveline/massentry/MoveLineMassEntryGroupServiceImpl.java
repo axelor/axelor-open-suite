@@ -209,12 +209,13 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
             moveLineGroupService.getAnalyticDistributionTemplateOnChangeValuesMap(moveLine, move));
     moveLineInvoiceTermService.generateDefaultInvoiceTerm(move, moveLine, dueDate, false);
     moveLineMassEntryRecordService.setCutOff(moveLine);
+    moveLineMassEntryRecordService.fillAnalyticMoveLineMassEntryList(moveLine);
 
     valuesMap.put("partner", moveLine.getPartner());
     valuesMap.put("cutOffStartDate", moveLine.getCutOffStartDate());
     valuesMap.put("cutOffEndDate", moveLine.getCutOffEndDate());
     valuesMap.put("isCutOffGenerated", moveLine.getCutOffEndDate());
-    valuesMap.put("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
+    valuesMap.put("analyticMoveLineMassEntryList", moveLine.getAnalyticMoveLineMassEntryList());
     valuesMap.put("taxLine", moveLine.getTaxLine());
     valuesMap.put("taxEquiv", moveLine.getTaxEquiv());
     valuesMap.put("analyticDistributionTemplate", moveLine.getAnalyticDistributionTemplate());
@@ -398,5 +399,41 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
     valuesMap.put("axis5AnalyticAccount", moveLine.getAxis5AnalyticAccount());
     valuesMap.put("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
     valuesMap.put("inputAction", moveLine.getInputAction());
+  }
+
+  @Override
+  public Map<String, Object> getAnalyticDistributionTemplateOnChangeValuesMap(
+      MoveLineMassEntry moveLine, Move move) throws AxelorException {
+    Map<String, Object> valuesMap =
+        moveLineGroupService.getAnalyticDistributionTemplateOnChangeValuesMap(moveLine, move);
+    moveLineMassEntryRecordService.fillAnalyticMoveLineMassEntryList(moveLine);
+
+    valuesMap.put("analyticMoveLineMassEntryList", moveLine.getAnalyticMoveLineMassEntryList());
+
+    return valuesMap;
+  }
+
+  @Override
+  public Map<String, Object> getAnalyticDistributionTemplateOnChangeLightValuesMap(
+      MoveLineMassEntry moveLine) {
+    Map<String, Object> valuesMap =
+        moveLineGroupService.getAnalyticDistributionTemplateOnChangeLightValuesMap(moveLine);
+    moveLineMassEntryRecordService.fillAnalyticMoveLineMassEntryList(moveLine);
+
+    valuesMap.put("analyticMoveLineMassEntryList", moveLine.getAnalyticMoveLineMassEntryList());
+
+    return valuesMap;
+  }
+
+  @Override
+  public Map<String, Object> getAnalyticAxisOnChangeValuesMap(MoveLineMassEntry moveLine, Move move)
+      throws AxelorException {
+    Map<String, Object> valuesMap =
+        moveLineGroupService.getAnalyticAxisOnChangeValuesMap(moveLine, move);
+    moveLineMassEntryRecordService.fillAnalyticMoveLineMassEntryList(moveLine);
+
+    valuesMap.put("analyticMoveLineMassEntryList", moveLine.getAnalyticMoveLineMassEntryList());
+
+    return valuesMap;
   }
 }

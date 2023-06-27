@@ -82,7 +82,8 @@ public class MoveGroupServiceImpl implements MoveGroupService {
       MoveRepository moveRepository,
       AppAccountService appAccountService,
       MassEntryService massEntryService,
-      MassEntryVerificationService massEntryVerificationService) {
+      MassEntryVerificationService massEntryVerificationService,
+      MoveLineMassEntryRecordService moveLineMassEntryRecordService) {
     this.moveDefaultService = moveDefaultService;
     this.moveAttrsService = moveAttrsService;
     this.periodAccountService = periodAccountService;
@@ -100,6 +101,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     this.appAccountService = appAccountService;
     this.massEntryService = massEntryService;
     this.massEntryVerificationService = massEntryVerificationService;
+    this.moveLineMassEntryRecordService = moveLineMassEntryRecordService;
   }
 
   protected void addPeriodDummyFields(Move move, Map<String, Object> valuesMap)
@@ -299,12 +301,14 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   }
 
   @Override
-  public Map<String, Map<String, Object>> getJournalOnChangeAttrsMap(Move move) {
+  public Map<String, Map<String, Object>> getJournalOnChangeAttrsMap(Move move)
+      throws AxelorException {
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
     moveAttrsService.addFunctionalOriginSelectDomain(move, attrsMap);
 
     if (move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL) {
+      moveAttrsService.addMoveLineAnalyticAttrs(move, attrsMap);
       moveAttrsService.addMassEntryHidden(move, attrsMap);
     }
 

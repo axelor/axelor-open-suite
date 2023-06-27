@@ -26,7 +26,9 @@ import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.apps.stock.db.CustomsCodeNomenclature;
 import com.axelor.apps.stock.db.ModeOfTransport;
 import com.axelor.apps.stock.db.NatureOfTransaction;
 import com.axelor.apps.stock.db.Regime;
@@ -164,10 +166,14 @@ public class DeclarationOfExchangesExporterGoods extends DeclarationOfExchangesE
     if (StringUtils.isBlank(customsCode)) {
       if (product == null) {
         customsCode = I18n.get("Product is missing.");
-      }
-
-      if (product != null && product.getCustomsCodeNomenclature() != null) {
-        customsCode = product.getCustomsCodeNomenclature().getCode();
+      } else {
+        CustomsCodeNomenclature customsCodeNomenclature =
+            (CustomsCodeNomenclature)
+                Beans.get(ProductCompanyService.class)
+                    .get(product, "customsCodeNomenclature", stockMove.getCompany());
+        if (customsCodeNomenclature != null) {
+          customsCode = customsCodeNomenclature.getCode();
+        }
       }
 
       if (StringUtils.isBlank(customsCode)) {

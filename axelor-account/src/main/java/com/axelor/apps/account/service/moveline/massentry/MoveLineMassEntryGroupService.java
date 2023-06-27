@@ -54,4 +54,13 @@ public interface MoveLineMassEntryGroupService {
       MoveLineMassEntry moveLine, Move move);
 
   Map<String, Map<String, Object>> getTemporaryMoveNumberOnChangeAttrsMap(Move move);
+
+  Map<String, Object> getAnalyticDistributionTemplateOnChangeValuesMap(
+      MoveLineMassEntry moveLine, Move move) throws AxelorException;
+
+  Map<String, Object> getAnalyticDistributionTemplateOnChangeLightValuesMap(
+      MoveLineMassEntry moveLine);
+
+  Map<String, Object> getAnalyticAxisOnChangeValuesMap(MoveLineMassEntry moveLine, Move move)
+      throws AxelorException;
 }

@@ -87,8 +87,8 @@
       if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"
       grid-view="analytic-distribution-template-grid"
       form-view="analytic-distribution-template-form"
-      onChange="action-move-line-method-analytic-distribution-template-onchange"
-      onSelect="action-move-line-group-set-analytic-distribution-template-onselect"
+      onChange="action-move-line-mass-entry-method-analytic-distribution-template-onchange"
+      onSelect="action-move-line-method-analytic-distribution-template-onselect"
       readonlyIf="!account || !account.analyticDistributionAuthorized"
       requiredIf="(!analyticMoveLineList || !analyticMoveLineList.length) &amp;&amp; account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines &amp;&amp; (axis1AnalyticAccount == null &amp;&amp; axis2AnalyticAccount == null &amp;&amp; axis3AnalyticAccount == null &amp;&amp; axis4AnalyticAccount == null &amp;&amp; axis5AnalyticAccount == null)">
       <hilite if="$contains(fieldsErrorList,'analytic:')" background="danger"/>
@@ -98,7 +98,7 @@
       if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"
       readonlyIf="!account || !account.analyticDistributionAuthorized"
       onSelect="action-move-line-attrs-set-domain-axis"
-      onChange="action-move-line-method-analytic-axis-onchange">
+      onChange="action-move-line-mass-entry-method-analytic-axis-onchange">
       <hilite if="$contains(fieldsErrorList,'analytic:')" background="danger"/>
     </field>
     <field name="axis2AnalyticAccount" grid-view="analytic-account-grid"
@@ -106,7 +106,7 @@
       if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"
       readonlyIf="!account || !account.analyticDistributionAuthorized"
       onSelect="action-move-line-attrs-set-domain-axis"
-      onChange="action-move-line-method-analytic-axis-onchange">
+      onChange="action-move-line-mass-entry-method-analytic-axis-onchange">
       <hilite if="$contains(fieldsErrorList,'analytic:')" background="danger"/>
     </field>
     <field name="axis3AnalyticAccount" grid-view="analytic-account-grid"
@@ -114,7 +114,7 @@
       if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"
       readonlyIf="!account || !account.analyticDistributionAuthorized"
       onSelect="action-move-line-attrs-set-domain-axis"
-      onChange="action-move-line-method-analytic-axis-onchange">
+      onChange="action-move-line-mass-entry-method-analytic-axis-onchange">
       <hilite if="$contains(fieldsErrorList,'analytic:')" background="danger"/>
     </field>
     <field name="axis4AnalyticAccount" grid-view="analytic-account-grid"
@@ -122,7 +122,7 @@
       if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"
       readonlyIf="!account || !account.analyticDistributionAuthorized"
       onSelect="action-move-line-attrs-set-domain-axis"
-      onChange="action-move-line-method-analytic-axis-onchange">
+      onChange="action-move-line-mass-entry-method-analytic-axis-onchange">
       <hilite if="$contains(fieldsErrorList,'analytic:')" background="danger"/>
     </field>
     <field name="axis5AnalyticAccount" grid-view="analytic-account-grid"
@@ -130,13 +130,13 @@
       if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"
       readonlyIf="!account || !account.analyticDistributionAuthorized"
       onSelect="action-move-line-attrs-set-domain-axis"
-      onChange="action-move-line-method-analytic-axis-onchange">
+      onChange="action-move-line-mass-entry-method-analytic-axis-onchange">
       <hilite if="$contains(fieldsErrorList,'analytic:')" background="danger"/>
     </field>
-    <field name="analyticMoveLineList" grid-view="analytic-move-line-move-line-grid"
+    <field name="analyticMoveLineMassEntryList" grid-view="analytic-move-line-move-line-grid"
       form-view="analytic-move-line-move-line-form"
       if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"
-      onChange="action-move-line-method-analytic-distribution-template-onchange-light,action-move-line-method-set-required-analytic-accounts"
+      onChange="action-move-line-mass-entry-method-analytic-distribution-template-onchange-light,action-move-line-method-set-required-analytic-accounts"
       readonlyIf="!account || !account.analyticDistributionAuthorized">
       <hilite if="$contains(fieldsErrorList,'analytic:')" background="danger"/>
     </field>
@@ -254,6 +254,23 @@
     name="action-move-line-mass-entry-method-domain-pfp-validator-user-on-select">
     <call class="com.axelor.apps.account.web.MoveLineMassEntryController"
       method="pfpValidatorUserOnSelect"/>
+  </action-method>
+
+  <action-method
+    name="action-move-line-mass-entry-method-analytic-distribution-template-onchange">
+    <call class="com.axelor.apps.account.web.MoveLineMassEntryController"
+      method="analyticDistributionTemplateOnChange"/>
+  </action-method>
+
+  <action-method
+    name="action-move-line-mass-entry-method-analytic-distribution-template-onchange-light">
+    <call class="com.axelor.apps.account.web.MoveLineMassEntryController"
+      method="analyticDistributionTemplateOnChangeLight"/>
+  </action-method>
+
+  <action-method name="action-move-line-mass-entry-method-analytic-axis-onchange">
+    <call class="com.axelor.apps.account.web.MoveLineMassEntryController"
+      method="analyticAxisOnChange"/>
   </action-method>
 
 </object-views>

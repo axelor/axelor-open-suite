@@ -335,6 +335,7 @@
     <option value='1'>Free</option>
     <option value='2'>Per partner</option>
     <option value='3'>Per product/family/account</option>
+    <option value="4">Per trading name</option>
   </selection>
 
   <selection name="invoice.payment.type.select">

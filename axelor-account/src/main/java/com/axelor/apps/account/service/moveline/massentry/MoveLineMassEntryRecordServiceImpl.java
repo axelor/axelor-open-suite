@@ -2,9 +2,11 @@ package com.axelor.apps.account.service.moveline.massentry;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
+import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.MoveLineMassEntry;
+import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineMassEntryRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
@@ -21,6 +23,7 @@ import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
+import org.apache.commons.collections.CollectionUtils;
 
 public class MoveLineMassEntryRecordServiceImpl implements MoveLineMassEntryRecordService {
 
@@ -30,6 +33,7 @@ public class MoveLineMassEntryRecordServiceImpl implements MoveLineMassEntryReco
   protected MoveLoadDefaultConfigService moveLoadDefaultConfigService;
   protected MassEntryMoveCreateService massEntryMoveCreateService;
   protected MoveLineTaxService moveLineTaxService;
+  protected AnalyticMoveLineRepository analyticMoveLineRepository;
 
   @Inject
   public MoveLineMassEntryRecordServiceImpl(
@@ -38,13 +42,15 @@ public class MoveLineMassEntryRecordServiceImpl implements MoveLineMassEntryReco
       TaxAccountToolService taxAccountToolService,
       MoveLoadDefaultConfigService moveLoadDefaultConfigService,
       MassEntryMoveCreateService massEntryMoveCreateService,
-      MoveLineTaxService moveLineTaxService) {
+      MoveLineTaxService moveLineTaxService,
+      AnalyticMoveLineRepository analyticMoveLineRepository) {
     this.moveLineMassEntryService = moveLineMassEntryService;
     this.moveLineRecordService = moveLineRecordService;
     this.taxAccountToolService = taxAccountToolService;
     this.moveLoadDefaultConfigService = moveLoadDefaultConfigService;
     this.massEntryMoveCreateService = massEntryMoveCreateService;
     this.moveLineTaxService = moveLineTaxService;
+    this.analyticMoveLineRepository = analyticMoveLineRepository;
   }
 
   @Override
@@ -257,5 +263,46 @@ public class MoveLineMassEntryRecordServiceImpl implements MoveLineMassEntryReco
       moveLine.setCounter(1);
     }
     return moveLine;
+  }
+
+  @Override
+  public void fillAnalyticMoveLineMassEntryList(
+      MoveLineMassEntry moveLineMassEntry, MoveLine moveLine) {
+    moveLineMassEntry.clearAnalyticMoveLineMassEntryList();
+    if (CollectionUtils.isNotEmpty(moveLine.getAnalyticMoveLineList())) {
+      for (AnalyticMoveLine analyticMoveLine : moveLine.getAnalyticMoveLineList()) {
+        AnalyticMoveLine copyAnalyticMoveLine =
+            analyticMoveLineRepository.copy(analyticMoveLine, false);
+        moveLineMassEntry.addAnalyticMoveLineMassEntryListItem(copyAnalyticMoveLine);
+      }
+    }
+  }
+
+  @Override
+  public void fillAnalyticMoveLineList(MoveLineMassEntry moveLineMassEntry, MoveLine moveLine) {
+    moveLine.clearAnalyticMoveLineList();
+    if (CollectionUtils.isNotEmpty(moveLineMassEntry.getAnalyticMoveLineMassEntryList())) {
+      for (AnalyticMoveLine analyticMoveLine :
+          moveLineMassEntry.getAnalyticMoveLineMassEntryList()) {
+        AnalyticMoveLine copyAnalyticMoveLine =
+            analyticMoveLineRepository.copy(analyticMoveLine, false);
+        moveLine.addAnalyticMoveLineListItem(copyAnalyticMoveLine);
+      }
+    }
+  }
+
+  @Override
+  public void fillAnalyticMoveLineMassEntryList(MoveLineMassEntry moveLineMassEntry) {
+    moveLineMassEntry.clearAnalyticMoveLineMassEntryList();
+    if (ObjectUtils.notEmpty(moveLineMassEntry.getAnalyticMoveLineList())) {
+      moveLineMassEntry
+          .getAnalyticMoveLineList()
+          .forEach(
+              analyticMoveLine -> {
+                moveLineMassEntry.addAnalyticMoveLineMassEntryListItem(
+                    analyticMoveLineRepository.copy(analyticMoveLine, false));
+              });
+      moveLineMassEntry.clearAnalyticMoveLineList();
+    }
   }
 }
