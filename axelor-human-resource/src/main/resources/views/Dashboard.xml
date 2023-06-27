@@ -42,9 +42,13 @@
   </dashboard>
 
   <!-- Dashboard MyRH -->
-  <dashboard title="My HR" name="my.hr.dashboard">
-    <dashlet action="hr.dashboard.leave.requests"/>
-    <dashlet action="hr.dashboard.timesheet"/>
+  <dashboard title="MyHR" name="my.hr.dashboard">
+    <dashlet action="hr.employee.expenses" colSpan="4" height="300"/>
+    <dashlet action="hr.employee.leave.request" colSpan="8" height="300"/>
+    <dashlet action="hr.employee.training" colSpan="4" height="265"
+      if-module="axelor-talent"/>
+    <dashlet action="hr.employee.timesheets" colSpan="4" height="300"/>
+    <dashlet action="hr.employee.extra.hours" colSpan="4" height="265"/>
   </dashboard>
 
   <action-view name="hr.dashboard.my.extrahours" title="My extra hours"
@@ -78,27 +82,6 @@
     <domain>self.employee.user.id = :userId</domain>
     <context name="userId" expr="eval: __user__.id"/>
   </action-view>
-
-  <action-view name="hr.dashboard.leave.requests" title="Leave requests"
-    model="com.axelor.apps.hr.db.LeaveLine">
-    <view type="chart" name="chart.leave.request.by.status"/>
-  </action-view>
-
-  <action-view name="hr.dashboard.timesheet" title="Timesheet by project"
-    model="com.axelor.apps.hr.db.TimesheetLine">
-    <view type="chart" name="chart.timesheet.by.project"/>
-    <context name="userId" expr="eval: __user__.id"/>
-  </action-view>
-
-  <!-- Employee Dashboard -->
-  <dashboard title="Employee dashboard" name="hr.employee.dashboard.sample">
-    <dashlet action="hr.employee.expenses" colSpan="4" height="300"/>
-    <dashlet action="hr.employee.leave.request" colSpan="8" height="300"/>
-    <dashlet action="hr.employee.training" colSpan="4" height="265"
-      if-module="axelor-talent"/>
-    <dashlet action="hr.employee.timesheets" colSpan="4" height="300"/>
-    <dashlet action="hr.employee.extra.hours" colSpan="4" height="265"/>
-  </dashboard>
 
   <action-view name="hr.employee.leave.request" title="Leave Requests"
     model="com.axelor.apps.hr.db.LeaveRequest">
