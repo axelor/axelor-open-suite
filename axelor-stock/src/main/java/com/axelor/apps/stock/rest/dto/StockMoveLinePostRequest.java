@@ -148,17 +148,16 @@ public class StockMoveLinePostRequest extends RequestStructure {
   }
 
   public StockLocation fetchFromStockLocation() {
-	  if (fromStockLocationId != null) {
-		  return ObjectFinder.find(StockLocation.class, fromStockLocationId, ObjectFinder.NO_VERSION);
-	  }
-	  return null;
-    
+    if (fromStockLocationId != null) {
+      return ObjectFinder.find(StockLocation.class, fromStockLocationId, ObjectFinder.NO_VERSION);
+    }
+    return null;
   }
 
   public StockLocation fetchtoStockLocation() {
-	  if (toStockLocationId != null) {
-		  return ObjectFinder.find(StockLocation.class, toStockLocationId, ObjectFinder.NO_VERSION);
-	  }
-      return null;
+    if (toStockLocationId != null) {
+      return ObjectFinder.find(StockLocation.class, toStockLocationId, ObjectFinder.NO_VERSION);
+    }
+    return null;
   }
 }

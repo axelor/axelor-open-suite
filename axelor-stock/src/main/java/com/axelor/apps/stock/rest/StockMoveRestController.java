@@ -88,11 +88,13 @@ public class StockMoveRestController {
       throws AxelorException {
     RequestValidator.validateBody(requestBody);
     new SecurityCheck().writeAccess(StockMove.class).createAccess(StockMoveLine.class).check();
-   
+
     StockMove stockmove = ObjectFinder.find(StockMove.class, stockMoveId, requestBody.getVersion());
-    new StockMoveLineRequestValidator(Beans.get(AppStockService.class).getAppStock().getIsManageStockLocationOnStockMoveLine())
-    .validate(requestBody, stockmove);
-    
+    new StockMoveLineRequestValidator(
+            Beans.get(AppStockService.class)
+                .getAppStock()
+                .getIsManageStockLocationOnStockMoveLine())
+        .validate(requestBody, stockmove);
 
     Beans.get(StockMoveLineService.class)
         .createStockMoveLine(

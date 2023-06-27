@@ -286,12 +286,12 @@ public class StockMoveServiceImpl implements StockMoveService {
     }
 
     if (stockMoveLine.getToStockLocation() == null) {
-    	stockMoveLine.setToStockLocation(stockMove.getToStockLocation());
+      stockMoveLine.setToStockLocation(stockMove.getToStockLocation());
     }
     if (stockMoveLine.getFromStockLocation() == null) {
-    	stockMoveLine.setFromStockLocation(stockMove.getFromStockLocation());
+      stockMoveLine.setFromStockLocation(stockMove.getFromStockLocation());
     }
-    
+
     stockMoveLine.setIsRealQtyModifiedByUser(true);
     stockMoveLine.setUnitPriceUntaxed(product.getLastPurchasePrice());
     stockMoveLineRepo.save(stockMoveLine);
