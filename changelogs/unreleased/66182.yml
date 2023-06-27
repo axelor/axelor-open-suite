@@ -1,8 +1,0 @@
----
-title: "[Lead] lead-form: improvement"
-type: fix
-description: |
-  Add a canNew on industrySector
-  Inverse primaryPostalCode and primaryCity
-  Hide lastEventDateT and nextScheduledEventDateT if empty
-  ActionsPanel hide it if grabLeadBtn, convertBtn, showPartnerBtn are hidden
