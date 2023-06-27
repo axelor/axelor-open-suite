@@ -221,7 +221,8 @@
     </extend>
     <extend target="/">
       <insert position="after">
-        <panel name="activityPanel" sidebar="true" showIf="isProspect" hidden="true">
+        <panel name="activityPanel" sidebar="true" showIf="id &amp;&amp; isProspect"
+          hidden="true">
           <panel-dashlet action="action-partner-view-prospect-activity-custom"
             title="Activity" height="550"/>
         </panel>

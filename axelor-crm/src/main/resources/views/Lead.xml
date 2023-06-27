@@ -260,7 +260,7 @@
         onClick="action-lead-view-lose" css="btn-danger" icon="fa-times-circle"/>
     </panel>
 
-    <panel sidebar="true" name="activityPanel" title="Activity" colSpan="12">
+    <panel sidebar="true" name="activityPanel" title="Activity" colSpan="12" showIf="id">
       <panel-dashlet action="action-lead-view-lead-activity-custom" height="550"/>
     </panel>
 
