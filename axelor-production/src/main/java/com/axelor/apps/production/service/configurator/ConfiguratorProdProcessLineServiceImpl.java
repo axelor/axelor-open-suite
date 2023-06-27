@@ -249,7 +249,6 @@ public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdP
     prodProcessLine.setMinCapacityPerCycle(minCapacityPerCycle);
     prodProcessLine.setMaxCapacityPerCycle(maxCapacityPerCycle);
     prodProcessLine.setDurationPerCycle(durationPerCycle);
-    prodProcessLine.setTimingOfImplementation(timingOfImplementation);
 
     if (isConsProOnOperation) {
       List<ConfiguratorProdProduct> confProdProductLines =
@@ -313,7 +312,6 @@ public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdP
         workCenterService.getMinCapacityPerCycleFromWorkCenter(workCenter));
     confProdProcessLine.setMaxCapacityPerCycle(
         workCenterService.getMaxCapacityPerCycleFromWorkCenter(workCenter));
-    confProdProcessLine.setTimingOfImplementation(workCenter.getTimingOfImplementation());
   }
 
   /**
