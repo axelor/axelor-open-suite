@@ -322,6 +322,7 @@
 "The company %s doesn't have any configured sequence for Project",,,
 "The project is configured to be alone","Le projet est configuré pour être seul",,
 "There is no customer for this project/task","Le projet/tâche sélectionné(e) ne contient pas de client",,
+"This option allows you to link an order to a new or existing project.","Activer cette option permet de lier une commande à un projet nouveau ou existant.",,
 "Time spent","Temps passé",,
 "Timesheet Line",,,
 "Timesheet line %s","Ligne de Feuille de temps %s",,
