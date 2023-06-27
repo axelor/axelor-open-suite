@@ -7,7 +7,8 @@
     model="com.axelor.apps.base.db.AppBusinessProject" canDelete="false" canNew="false"
     width="large">
     <panel name="mainPanel">
-      <field name="generateProjectOrder" widget="boolean-switch"/>
+      <field name="generateProjectOrder" widget="boolean-switch"
+        onChange="action-app-business-project-attrs-generate-project-onchange"/>
       <field name="automaticProject" widget="boolean-switch"/>
       <field name="generatedElementTypeSelect"/>
       <field name="projectSaleOrderLines" widget="boolean-switch"/>
@@ -36,6 +37,12 @@
     </panel-mail>
 
   </form>
+
+  <action-attrs name="action-app-business-project-attrs-generate-project-onchange">
+    <attribute for="automaticProject" name="hidden" expr="eval: !generateProjectOrder"/>
+    <attribute for="automaticProject" name="value" expr="eval: false"
+      if="!generateProjectOrder"/>
+  </action-attrs>
 
 
 </object-views>

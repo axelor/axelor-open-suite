@@ -317,6 +317,7 @@
 "The company %s doesn't have any configured sequence for Project",,,
 "The project is configured to be alone",,,
 "There is no customer for this project/task",,,
+"This option allows you to link an order to a new or existing project.",,,
 "Time spent",,,
 "Timesheet Line",,,
 "Timesheet line %s",,,
