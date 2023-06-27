@@ -776,19 +776,27 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
     String groupColumnAnalyticAccountCode =
         groupColumn == null ? null : groupColumn.getAnalyticAccountCode();
 
+    BigDecimal value = BigDecimal.ZERO;
+
     if (CollectionUtils.isNotEmpty(analyticAccountSet)
         || StringUtils.notEmpty(groupColumnAnalyticAccountCode)
         || StringUtils.notEmpty(column.getAnalyticAccountCode())
         || StringUtils.notEmpty(line.getAnalyticAccountCode())) {
-      return this.getAnalyticAmount(moveLine, analyticAccountSet);
-    }
-
-    BigDecimal value = moveLine.getDebit();
-
-    if (resultSelect == AccountingReportConfigLineRepository.RESULT_CREDIT) {
-      value = moveLine.getCredit();
-    } else if (resultSelect == AccountingReportConfigLineRepository.RESULT_DEBIT_MINUS_CREDIT) {
-      value = value.subtract(moveLine.getCredit());
+      value =
+          this.getAnalyticAmount(
+              moveLine, analyticAccountSet, resultSelect, moveLine.getDebit().signum() > 0);
+    } else {
+      switch (resultSelect) {
+        case AccountingReportConfigLineRepository.RESULT_DEBIT_MINUS_CREDIT:
+          value = moveLine.getDebit().subtract(moveLine.getCredit());
+          break;
+        case AccountingReportConfigLineRepository.RESULT_DEBIT:
+          value = moveLine.getDebit();
+          break;
+        case AccountingReportConfigLineRepository.RESULT_CREDIT:
+          value = moveLine.getCredit();
+          break;
+      }
     }
 
     if ((groupColumn != null && groupColumn.getNegateValue())
@@ -801,16 +809,31 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
   }
 
   protected BigDecimal getAnalyticAmount(
-      MoveLine moveLine, Set<AnalyticAccount> analyticAccountSet) {
+      MoveLine moveLine,
+      Set<AnalyticAccount> analyticAccountSet,
+      int resultSelect,
+      boolean isDebit) {
     if (CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())) {
       return BigDecimal.ZERO;
     }
 
-    return moveLine.getAnalyticMoveLineList().stream()
-        .filter(it -> this.containsAnalyticAccount(it.getAnalyticAccount(), analyticAccountSet))
-        .map(AnalyticMoveLine::getAmount)
-        .reduce(BigDecimal::add)
-        .orElse(BigDecimal.ZERO);
+    BigDecimal value =
+        moveLine.getAnalyticMoveLineList().stream()
+            .filter(it -> this.containsAnalyticAccount(it.getAnalyticAccount(), analyticAccountSet))
+            .map(AnalyticMoveLine::getAmount)
+            .reduce(BigDecimal::add)
+            .orElse(BigDecimal.ZERO);
+
+    switch (resultSelect) {
+      case AccountingReportConfigLineRepository.RESULT_DEBIT_MINUS_CREDIT:
+        return isDebit ? value : value.negate();
+      case AccountingReportConfigLineRepository.RESULT_DEBIT:
+        return isDebit ? value : BigDecimal.ZERO;
+      case AccountingReportConfigLineRepository.RESULT_CREDIT:
+        return isDebit ? BigDecimal.ZERO : value;
+    }
+
+    return BigDecimal.ZERO;
   }
 
   protected boolean containsAnalyticAccount(
