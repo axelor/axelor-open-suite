@@ -29,7 +29,6 @@ import com.axelor.apps.stock.db.ShipmentMode;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
-import com.axelor.apps.stock.rest.dto.StockMoveLinePostDTO;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -109,7 +108,7 @@ public interface StockMoveService {
       StockLocation fromStockLocation,
       StockLocation toStockLocation,
       Company company,
-      List<StockMoveLinePostDTO> stockMoveLines)
+      List<StockMoveLine> stockMoveLines)
       throws AxelorException;
 
   public void validate(StockMove stockMove) throws AxelorException;

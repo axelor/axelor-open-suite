@@ -52,7 +52,6 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.report.IReport;
-import com.axelor.apps.stock.rest.dto.StockMoveLinePostDTO;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
@@ -237,7 +236,7 @@ public class StockMoveServiceImpl implements StockMoveService {
       StockLocation fromStockLocation,
       StockLocation toStockLocation,
       Company company,
-      List<StockMoveLinePostDTO> stockMoveLines)
+      List<StockMoveLine> stockMoveLines)
       throws AxelorException {
 
     StockMove stockMove = new StockMove();
@@ -256,8 +255,8 @@ public class StockMoveServiceImpl implements StockMoveService {
 
     ArrayList<StockMoveLine> stockMoveLineList = new ArrayList<>();
     if (stockMoveLines != null) {
-      for (StockMoveLinePostDTO stockMoveLinePostDTO : stockMoveLines) {
-        stockMoveLineList.add(createStockMoveLine(stockMove, stockMoveLinePostDTO));
+      for (StockMoveLine stockMoveLine : stockMoveLines) {
+        stockMoveLineList.add(createStockMoveLine(stockMove, stockMoveLine));
       }
     }
 
@@ -273,33 +272,25 @@ public class StockMoveServiceImpl implements StockMoveService {
    * Usage mostly for mobile aos
    *
    * @param stockMove
-   * @param stockMoveLinePostDTO
+   * @param stockMoveLine
    * @throws AxelorException
    */
-  protected StockMoveLine createStockMoveLine(
-      StockMove stockMove, StockMoveLinePostDTO stockMoveLinePostDTO) throws AxelorException {
-    StockMoveLine line = new StockMoveLine();
-    line.setStockMove(stockMove);
-    Product product = stockMoveLinePostDTO.getProduct();
-    line.setProduct(product);
-    stockMoveLineService.setProductInfo(stockMove, line, stockMove.getCompany());
+  protected StockMoveLine createStockMoveLine(StockMove stockMove, StockMoveLine stockMoveLine)
+      throws AxelorException {
+    stockMoveLine.setStockMove(stockMove);
+    Product product = stockMoveLine.getProduct();
+    stockMoveLineService.setProductInfo(stockMove, stockMoveLine, stockMove.getCompany());
 
     if (product.getTrackingNumberConfiguration() != null) {
-      line.setTrackingNumber(stockMoveLinePostDTO.getTrackingNumber());
+      stockMoveLine.setTrackingNumber(stockMoveLine.getTrackingNumber());
     }
 
-    line.setFromStockLocation(stockMoveLinePostDTO.getFromStockLocation());
-    line.setToStockLocation(stockMoveLinePostDTO.getToStockLocation());
-    line.setConformitySelect(stockMoveLinePostDTO.getConformity());
-    line.setQty(stockMoveLinePostDTO.getRealQty());
-    line.setRealQty(stockMoveLinePostDTO.getRealQty());
-    line.setIsRealQtyModifiedByUser(true);
-    line.setUnitPriceUntaxed(product.getLastPurchasePrice());
-    line.setUnit(stockMoveLinePostDTO.getUnit());
-    stockMoveLineRepo.save(line);
-    stockMoveLineService.setAvailableStatus(line);
-    stockMoveLineService.compute(line, stockMove);
-    return stockMoveLineRepo.save(line);
+    stockMoveLine.setIsRealQtyModifiedByUser(true);
+    stockMoveLine.setUnitPriceUntaxed(product.getLastPurchasePrice());
+    stockMoveLineRepo.save(stockMoveLine);
+    stockMoveLineService.setAvailableStatus(stockMoveLine);
+    stockMoveLineService.compute(stockMoveLine, stockMove);
+    return stockMoveLineRepo.save(stockMoveLine);
   }
 
   @Override

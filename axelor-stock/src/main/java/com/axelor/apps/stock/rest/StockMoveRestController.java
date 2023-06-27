@@ -25,7 +25,7 @@ import com.axelor.apps.stock.rest.dto.StockInternalMovePostRequest;
 import com.axelor.apps.stock.rest.dto.StockInternalMovePutRequest;
 import com.axelor.apps.stock.rest.dto.StockInternalMoveResponse;
 import com.axelor.apps.stock.rest.dto.StockMoveLinePostRequest;
-import com.axelor.apps.stock.rest.mapper.StockMoveLinePostDTOMapper;
+import com.axelor.apps.stock.rest.mapper.StockInternalMoveStockMoveLinePostRequestMapper;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.StockMoveUpdateService;
@@ -127,7 +127,7 @@ public class StockMoveRestController {
                 requestBody.fetchFromStockLocation(),
                 requestBody.fetchToStockLocation(),
                 requestBody.fetchCompany(),
-                StockMoveLinePostDTOMapper.map(requestBody.getLineList()));
+                StockInternalMoveStockMoveLinePostRequestMapper.map(requestBody.getLineList()));
 
     return ResponseConstructor.build(
         Response.Status.CREATED,
