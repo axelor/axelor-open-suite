@@ -257,19 +257,22 @@ public class LeadServiceImpl implements LeadService {
   @Override
   public List<Lead> getLeadsWithSameDomainName(Lead lead) {
     List<Lead> leadsWithSameDomainNameList = new ArrayList<>();
+    String emailDomainToIgnore = appCrmService.getAppCrm().getEmailDomainToIgnore();
     if (lead.getEmailAddress() != null) {
       String leadDomainNameStr = lead.getEmailAddress().getName().split("@")[1].replace("]", "");
-
-      List<Lead> leadsWithSameDomainNameListTemp =
-          leadRepo
-              .all()
-              .filter(
-                  "self.emailAddress is not null and self.emailAddress.name like :domainName and self.id !=  :leadId")
-              .bind("domainName", "%" + leadDomainNameStr + "%")
-              .bind("leadId", lead.getId())
-              .fetch();
-      if (ObjectUtils.notEmpty(leadsWithSameDomainNameListTemp)) {
-        leadsWithSameDomainNameList.addAll(leadsWithSameDomainNameListTemp);
+      if (ObjectUtils.isEmpty(emailDomainToIgnore)
+          || !emailDomainToIgnore.contains(leadDomainNameStr)) {
+        List<Lead> leadsWithSameDomainNameListTemp =
+            leadRepo
+                .all()
+                .filter(
+                    "self.emailAddress is not null and self.emailAddress.name like :domainName and self.id !=  :leadId")
+                .bind("domainName", "%" + leadDomainNameStr + "%")
+                .bind("leadId", lead.getId())
+                .fetch();
+        if (ObjectUtils.notEmpty(leadsWithSameDomainNameListTemp)) {
+          leadsWithSameDomainNameList.addAll(leadsWithSameDomainNameListTemp);
+        }
       }
     }
     return leadsWithSameDomainNameList;

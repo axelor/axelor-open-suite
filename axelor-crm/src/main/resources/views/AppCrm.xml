@@ -26,6 +26,7 @@
       <field name="partnerDefaultStatus"/>
       <field name="closedWinPartnerStatus"/>
       <field name="closedLostPartnerStatus"/>
+      <field name="emailDomainToIgnore"/>
     </panel>
     <panel name="actionPanel">
       <button name="generateCRMConfigurationsBtn" title="Generate CRM configurations"
