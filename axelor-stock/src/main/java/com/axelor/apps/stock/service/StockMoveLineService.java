@@ -33,6 +33,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public interface StockMoveLineService {
 
@@ -319,4 +320,6 @@ public interface StockMoveLineService {
 
   public BigDecimal computeNewAveragePriceLocationLine(
       StockLocationLine stockLocationLine, StockMoveLine stockMoveLine) throws AxelorException;
+
+  Map<String, Object> getClearedStockMoveLineMap();
 }

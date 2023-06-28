@@ -110,6 +110,12 @@ public class StockMoveLineController {
     }
   }
 
+  public void clearLine(ActionRequest request, ActionResponse response) {
+    Map<String, Object> clearedStockMoveLineMap =
+        Beans.get(StockMoveLineService.class).getClearedStockMoveLineMap();
+    response.setValues(clearedStockMoveLineMap);
+  }
+
   public void splitStockMoveLineByTrackingNumber(ActionRequest request, ActionResponse response) {
     Context context = request.getContext();
 

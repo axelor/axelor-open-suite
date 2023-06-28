@@ -407,10 +407,12 @@
           grid-view="trading-name-grid"/>
         <field name="fromStockLocation" canEdit="false" domain="self.company = :company"
           onChange="action-stock-move-group-from-location-onchange" grid-view="stock-location-grid"
-          form-view="stock-location-form" readonlyIf="statusSelect != 1"/>
+          form-view="stock-location-form"
+          readonlyIf="statusSelect != 1 || stockMoveLineList.length > 0"/>
         <field name="toStockLocation" canEdit="false" domain="self.company = :company"
           onChange="action-stock-move-group-to-location-onchange" grid-view="stock-location-grid"
-          form-view="stock-location-form" readonlyIf="statusSelect != 1"/>
+          form-view="stock-location-form"
+          readonlyIf="statusSelect != 1 || stockMoveLineList.length > 0"/>
         <field name="filterOnAvailableProducts" hidden="true" widget="boolean-switch"
           onChange="action-stock-move-method-update-stock-move-line"/>
         <field name="estimatedDate"
@@ -464,7 +466,8 @@
           onSelect="action-stock-move-supplychain-method-set-invoiced-partner-domain"
           grid-view="partner-grid" form-view="partner-form"/>
         <field name="fromStockLocation" canEdit="false" domain="self.company = :company"
-          onChange="action-stock-move-group-from-location-onchange" readonlyIf="statusSelect != 1"
+          onChange="action-stock-move-group-from-location-onchange"
+          readonlyIf="statusSelect != 1 || stockMoveLineList.length > 0"
           grid-view="stock-location-grid" form-view="stock-location-form"/>
         <field name="toAddress" onSelect="action-stock-move-attrs-domain-address"
           onChange="action-stock-move-method-set-addresses-str,action-stock-move-record-ispm-field"
@@ -519,7 +522,8 @@
           readonlyIf="statusSelect != 1" onChange="action-stock-move-group-partner-onchange"
           grid-view="partner-grid" form-view="partner-form"/>
         <field name="toStockLocation" canEdit="false" domain="self.company = :company"
-          onChange="action-stock-move-group-to-location-onchange" readonlyIf="statusSelect != 1"
+          onChange="action-stock-move-group-to-location-onchange"
+          readonlyIf="statusSelect != 1 || stockMoveLineList.length > 0"
           grid-view="stock-location-grid" form-view="stock-location-form"/>
         <field name="fromAddress" onSelect="action-stock-move-attrs-domain-address"
           onChange="action-stock-move-method-set-addresses-str"
@@ -555,7 +559,7 @@
     <panel-tabs name="mainPanelTab">
       <panel-related name="stockMoveLineListPanel" field="stockMoveLineList"
         title="Stock move lines" height="12"
-        readonlyIf="company == null || fromStockLocation == null || statusSelect == 3"
+        readonlyIf="company == null || fromStockLocation == null || toStockLocation == null || statusSelect == 3"
         onChange="action-stock-move-line-change-group"
         onNew="action-stock-move-line-record-filter-on-available-products, action-stock-move-line-record-fill-stock-location"
         grid-view="stock-move-line-grid" form-view="stock-move-line-form" canMove="true"
@@ -674,11 +678,13 @@
         <field name="fromStockLocation" showIf="typeSelect == 3" canEdit="false"
           domain="self.company = :company AND self.typeSelect IN (2, 3)"
           onChange="action-stock-move-group-from-location-onchange" grid-view="stock-location-grid"
-          form-view="stock-location-form" readonlyIf="statusSelect != 1"/>
+          form-view="stock-location-form"
+          readonlyIf="statusSelect != 1 || stockMoveLineList.length > 0"/>
         <field name="toStockLocation" showIf="typeSelect == 2" canEdit="false"
           domain="self.company = :company AND self.typeSelect IN (2, 3)"
           onChange="action-stock-move-group-to-location-onchange" grid-view="stock-location-grid"
-          form-view="stock-location-form" readonlyIf="statusSelect != 1"/>
+          form-view="stock-location-form"
+          readonlyIf="statusSelect != 1 || stockMoveLineList.length > 0"/>
         <panel name="realStockMovePanel" colSpan="12" showIf="typeSelect == 2">
           <field name="plannedStockMoveMessageTemplate" readonlyIf="statusSelect == 3"
             requiredIf="plannedStockMoveAutomaticMail" showIf="plannedStockMoveAutomaticMail"
