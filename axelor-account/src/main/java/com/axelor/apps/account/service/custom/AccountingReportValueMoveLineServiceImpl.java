@@ -783,7 +783,8 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
         || StringUtils.notEmpty(groupColumnAnalyticAccountCode)
         || StringUtils.notEmpty(column.getAnalyticAccountCode())
         || StringUtils.notEmpty(line.getAnalyticAccountCode())) {
-      return this.getAnalyticAmount(moveLine, analyticAccountSet);
+      return this.getAnalyticAmount(
+          moveLine, analyticAccountSet, resultSelect, moveLine.getDebit().signum() > 0);
     }
 
     BigDecimal value = moveLine.getDebit();
@@ -804,16 +805,26 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
   }
 
   protected BigDecimal getAnalyticAmount(
-      MoveLine moveLine, Set<AnalyticAccount> analyticAccountSet) {
+      MoveLine moveLine,
+      Set<AnalyticAccount> analyticAccountSet,
+      int resultSelect,
+      boolean isDebit) {
     if (CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())) {
       return BigDecimal.ZERO;
     }
 
-    return moveLine.getAnalyticMoveLineList().stream()
-        .filter(it -> this.containsAnalyticAccount(it.getAnalyticAccount(), analyticAccountSet))
-        .map(AnalyticMoveLine::getAmount)
-        .reduce(BigDecimal::add)
-        .orElse(BigDecimal.ZERO);
+    BigDecimal value =
+        moveLine.getAnalyticMoveLineList().stream()
+            .filter(it -> this.containsAnalyticAccount(it.getAnalyticAccount(), analyticAccountSet))
+            .map(AnalyticMoveLine::getAmount)
+            .reduce(BigDecimal::add)
+            .orElse(BigDecimal.ZERO);
+
+    if (resultSelect == AccountingReportConfigLineRepository.RESULT_DEBIT_MINUS_CREDIT) {
+      return isDebit ? value : value.negate();
+    } else {
+      return isDebit ? value.negate() : value;
+    }
   }
 
   protected boolean containsAnalyticAccount(
