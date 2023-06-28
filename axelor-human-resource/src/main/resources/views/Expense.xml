@@ -102,6 +102,7 @@
             showIf="employee != null &amp;&amp; companyCbSelect &gt; 1"/>
           <field name="personalExpenseAmount" hidden="true"/>
           <field name="advanceAmount" hidden="true"/>
+          <field name="company.currency" hidden="true"/>
         </panel>
       </panel>
       <panel name="sidePanel" itemSpan="12" colSpan="3">
@@ -179,7 +180,7 @@
         field="kilometricExpenseLineList" title="Kilometric Allowances"
         readonlyIf="statusSelect &gt; 1" colSpan="12" editable="true"
         form-view="expense-line-kilometric-form" grid-view="expense-line-kilometric-grid"
-        onChange="action-expense-group-expense-line-on-change"/>
+        onChange="action-expense-group-expense-line-on-change" hideIf="currency != company.currency"/>
       <panel-related name="employeeAdvanceUsageListPanel"
         showIf="employeeAdvanceUsageList &amp;&amp; employeeAdvanceUsageList.length > 0"
         field="employeeAdvanceUsageList" title="Employee advance list" readonly="false"
