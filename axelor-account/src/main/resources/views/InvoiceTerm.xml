@@ -157,12 +157,10 @@
       onClick="action-invoice-term-method-unselect-terms-btn,save" icon="fa-minus-circle"
       readonlyIf="!isSelectedOnPaymentSession || $statusSelectPaymentSession &gt; 1"/>
     <button name="selectPartnerBtn" title="Select all terms of this Partner"
-      icon="fa-user-plus"
-      onClick="action-invoice-term-method-select-partner-terms-btn,action-invoice-term-method-compute-total-payment-session"
+      icon="fa-user-plus" onClick="action-invoice-term-method-select-partner-terms-btn"
       readonlyIf="isSelectedOnPaymentSession || $statusSelectPaymentSession &gt; 1"/>
     <button name="unselectPartnerBtn" title="Unselect all terms of this Partner"
-      icon="fa-user-times"
-      onClick="action-invoice-term-method-unselect-partner-terms-btn,action-invoice-term-method-compute-total-payment-session"
+      icon="fa-user-times" onClick="action-invoice-term-method-unselect-partner-terms-btn"
       readonlyIf="!isSelectedOnPaymentSession || $statusSelectPaymentSession &gt; 1"/>
     <field name="paymentSession.name" hidden="true"/>
     <field name="$statusSelectPaymentSession" hidden="true"/>
@@ -1102,11 +1100,6 @@
   <action-method name="action-invoice-term-method-pfp-partial-reason-confirm-btn">
     <call class="com.axelor.apps.account.web.InvoiceTermController"
       method="pfpPartialReasonConfirm"/>
-  </action-method>
-
-  <action-method name="action-invoice-term-method-compute-total-payment-session">
-    <call class="com.axelor.apps.account.web.InvoiceTermController"
-      method="computeTotalPaymentSession"/>
   </action-method>
 
   <action-method name="action-invoice-term-method-compute-financial-discount">

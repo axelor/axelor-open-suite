@@ -71,7 +71,7 @@
 	                       </h4>
 	        ]]></viewer>
         </field>
-        <button name="$sessionTotalAmountBtn" title="Session total amount" icon="fa-money"
+        <button name="sessionTotalAmount" title="Session total amount" icon="fa-money"
           widget="info-button" onClick="action-payment-session-view-invoice-terms"
           showIf="sessionTotalAmount &gt; 0 || $hasUnselectedInvoiceTerm"
           x-currency="company.currency.symbol"/>
@@ -224,14 +224,12 @@
     <action name="action-payment-session-validate-cancel"/>
     <action name="save"/>
     <action name="action-payment-session-method-cancel"/>
-    <action name="action-method-payment-session-compute-total"/>
   </action-group>
 
   <action-group name="action-group-payment-session-on-load">
     <action name="action-method-payment-session-show-invoice-term-dashlet"/>
     <action name="action-payment-session-method-set-has-invoice-term-selected"/>
     <action name="action-payment-session-method-set-has-invoice-term"/>
-    <action name="action-payment-session-record-set-session-total-amount-btn"/>
     <action name="action-payment-session-method-set-button-attrs"/>
   </action-group>
 
@@ -311,21 +309,12 @@
     <field name="moveAccountingDateSelect" expr="eval: paymentMode?.moveAccountingDateSelect"/>
   </action-record>
 
-  <action-record name="action-payment-session-record-set-session-total-amount-btn"
-    model="com.axelor.apps.account.db.PaymentSession">
-    <field name="$sessionTotalAmountBtn" expr="eval: sessionTotalAmount"/>
-  </action-record>
-
   <action-method name="action-method-payment-session-set-bank-details">
     <call class="com.axelor.apps.account.web.PaymentSessionController" method="setBankDetails"/>
   </action-method>
 
   <action-method name="action-method-payment-session-set-journal">
     <call class="com.axelor.apps.account.web.PaymentSessionController" method="setJournal"/>
-  </action-method>
-
-  <action-method name="action-method-payment-session-compute-total">
-    <call class="com.axelor.apps.account.web.PaymentSessionController" method="computeTotal"/>
   </action-method>
 
   <action-method name="action-method-payment-session-search-eligible-terms">

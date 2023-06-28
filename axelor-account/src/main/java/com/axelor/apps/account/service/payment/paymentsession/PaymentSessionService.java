@@ -32,8 +32,6 @@ public interface PaymentSessionService {
 
   public void setJournal(PaymentSession paymentSession);
 
-  public void computeTotalPaymentSession(PaymentSession paymentSession);
-
   public boolean hasUnselectedInvoiceTerm(PaymentSession paymentSession);
 
   List<BankDetails> getBankDetails(PaymentSession paymentSession);
