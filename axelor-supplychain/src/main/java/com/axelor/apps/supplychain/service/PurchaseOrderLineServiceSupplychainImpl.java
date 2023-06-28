@@ -27,6 +27,7 @@ import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -144,8 +145,13 @@ public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineSe
     if ((analyticMoveLineList == null || analyticMoveLineList.isEmpty())) {
       createAnalyticDistributionWithTemplate(purchaseOrderLine);
     } else {
-      LocalDate date =
-          appAccountService.getTodayDate(purchaseOrderLine.getPurchaseOrder().getCompany());
+      Company company =
+          Optional.of(purchaseOrderLine)
+              .map(PurchaseOrderLine::getPurchaseOrder)
+              .map(PurchaseOrder::getCompany)
+              .orElse(null);
+      LocalDate date = appAccountService.getTodayDate(company);
+
       for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
         analyticMoveLineService.updateAnalyticMoveLine(
             analyticMoveLine, purchaseOrderLine.getCompanyExTaxTotal(), date);
