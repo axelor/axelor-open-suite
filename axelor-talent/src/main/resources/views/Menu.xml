@@ -166,7 +166,7 @@
 
   <!-- My HR -->
 
-  <menuitem name="my-hr-appraisal-all-appraisals" title="All my Appraisals"
+  <menuitem name="my-hr-appraisal-all-appraisals" title="Appraisals"
     action="appraisal.all.appraisals" parent="my-hr-root" order="600"
     if="__config__.app.isApp('appraisal')"/>
 
