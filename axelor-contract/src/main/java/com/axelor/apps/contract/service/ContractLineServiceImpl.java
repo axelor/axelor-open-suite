@@ -19,7 +19,6 @@
 package com.axelor.apps.contract.service;
 
 import com.axelor.apps.account.db.TaxLine;
-import com.axelor.apps.account.db.repo.AccountAnalyticRulesRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
@@ -29,9 +28,11 @@ import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.Duration;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -61,9 +62,9 @@ public class ContractLineServiceImpl implements ContractLineService {
   protected ListToolService listToolService;
   protected MoveLineComputeAnalyticService moveLineComputeAnalyticService;
   protected AnalyticAccountRepository analyticAccountRepo;
-  protected AccountAnalyticRulesRepository accountAnalyticRulesRepo;
   protected ContractVersionRepository contractVersionRepo;
   protected PriceListService priceListService;
+  protected DurationService durationService;
 
   @Inject
   public ContractLineServiceImpl(
@@ -78,9 +79,9 @@ public class ContractLineServiceImpl implements ContractLineService {
       ListToolService listToolService,
       MoveLineComputeAnalyticService moveLineComputeAnalyticService,
       AnalyticAccountRepository analyticAccountRepo,
-      AccountAnalyticRulesRepository accountAnalyticRulesRepo,
       PriceListService priceListService,
-      ContractVersionRepository contractVersionRepo) {
+      ContractVersionRepository contractVersionRepo,
+      DurationService durationService) {
     this.appBaseService = appBaseService;
     this.appAccountService = appAccountService;
     this.accountManagementService = accountManagementService;
@@ -92,9 +93,9 @@ public class ContractLineServiceImpl implements ContractLineService {
     this.listToolService = listToolService;
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
     this.analyticAccountRepo = analyticAccountRepo;
-    this.accountAnalyticRulesRepo = accountAnalyticRulesRepo;
     this.priceListService = priceListService;
     this.contractVersionRepo = contractVersionRepo;
+    this.durationService = durationService;
   }
 
   @Override
@@ -191,12 +192,17 @@ public class ContractLineServiceImpl implements ContractLineService {
   }
 
   @Override
-  public ContractLine computeTotal(ContractLine contractLine) {
+  public ContractLine computeTotal(ContractLine contractLine) throws AxelorException {
     BigDecimal taxRate = BigDecimal.ZERO;
 
     if (contractLine.getTaxLine() != null) {
       taxRate = contractLine.getTaxLine().getValue().divide(new BigDecimal(100));
     }
+
+    if (contractLine.getContractVersion() != null) {
+      contractLine = computePricesPerYear(contractLine, contractLine.getContractVersion());
+    }
+
     BigDecimal price =
         priceListService.computeDiscount(
             contractLine.getPrice(),
@@ -220,5 +226,38 @@ public class ContractLineServiceImpl implements ContractLineService {
       }
     }
     contractVersionRepo.save(contractVersion);
+  }
+
+  @Override
+  public ContractLine computePricesPerYear(
+      ContractLine contractLine, ContractVersion contractVersion) throws AxelorException {
+    Duration duration = contractVersion.getInvoicingDuration();
+
+    if (duration != null) {
+      BigDecimal initialUnitPrice = contractLine.getInitialUnitPrice();
+      BigDecimal qty = contractLine.getQty();
+      BigDecimal exTaxTotal = contractLine.getExTaxTotal();
+      int durationType = duration.getTypeSelect();
+      Integer durationValue = duration.getValue();
+      BigDecimal ratio =
+          durationService
+              .getFactor(durationType)
+              .divide(BigDecimal.valueOf(durationValue), RoundingMode.HALF_UP);
+      if (initialUnitPrice != null && qty != null) {
+        contractLine.setInitialPricePerYear(
+            initialUnitPrice
+                .multiply(qty)
+                .multiply(ratio)
+                .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
+      }
+      if (exTaxTotal != null) {
+        contractLine.setYearlyPriceRevalued(
+            exTaxTotal
+                .multiply(ratio)
+                .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
+      }
+    }
+
+    return contractLine;
   }
 }

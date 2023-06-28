@@ -9,18 +9,27 @@ import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import org.apache.commons.lang3.ArrayUtils;
 
 public class MoveLineMassEntryAttrsServiceImpl implements MoveLineMassEntryAttrsService {
 
   protected AppAccountService appAccountService;
+  protected InvoiceTermService invoiceTermService;
 
   @Inject
-  public MoveLineMassEntryAttrsServiceImpl(AppAccountService appAccountService) {
+  public MoveLineMassEntryAttrsServiceImpl(
+      AppAccountService appAccountService, InvoiceTermService invoiceTermService) {
     this.appAccountService = appAccountService;
+    this.invoiceTermService = invoiceTermService;
   }
 
   protected void addAttr(
@@ -33,7 +42,7 @@ public class MoveLineMassEntryAttrsServiceImpl implements MoveLineMassEntryAttrs
   }
 
   @Override
-  public void addCutOffReadOnly(Account account, Map<String, Map<String, Object>> attrsMap) {
+  public void addCutOffReadonly(Account account, Map<String, Map<String, Object>> attrsMap) {
     if (account != null) {
       this.addAttr("cutOffStartDate", "readonly", !account.getManageCutOffPeriod(), attrsMap);
       this.addAttr("cutOffEndDate", "readonly", !account.getManageCutOffPeriod(), attrsMap);
@@ -87,8 +96,8 @@ public class MoveLineMassEntryAttrsServiceImpl implements MoveLineMassEntryAttrs
   public void addPartnerBankDetailsReadOnly(
       MoveLineMassEntry moveLine, Map<String, Map<String, Object>> attrsMap) {
     this.addAttr(
-        "credit",
-        "focus",
+        "movePartnerBankDetails",
+        "readonly",
         moveLine != null
             && moveLine.getMovePaymentMode() != null
             && moveLine.getMovePaymentMode().getTypeSelect() != null
@@ -151,10 +160,82 @@ public class MoveLineMassEntryAttrsServiceImpl implements MoveLineMassEntryAttrs
   @Override
   public void addOriginRequired(
       MoveLineMassEntry moveLine, Journal journal, Map<String, Map<String, Object>> attrsMap) {
+    int[] technicalTypeSelectArray = {
+      JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE,
+      JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE,
+      JournalTypeRepository.TECHNICAL_TYPE_SELECT_CREDIT_NOTE
+    };
+
     this.addAttr(
         "origin",
         "required",
-        moveLine.getOriginDate() != null && journal != null && journal.getHasRequiredOrigin(),
+        moveLine.getOriginDate() != null
+            && journal != null
+            && journal.getHasRequiredOrigin()
+            && ArrayUtils.contains(
+                technicalTypeSelectArray, journal.getJournalType().getTechnicalTypeSelect()),
         attrsMap);
+  }
+
+  @Override
+  public void addPfpValidatorUserDomain(
+      Partner partner, Company company, Map<String, Map<String, Object>> attrsMap) {
+
+    this.addAttr(
+        "movePfpValidatorUser",
+        "domain",
+        invoiceTermService.getPfpValidatorUserDomain(partner, company),
+        attrsMap);
+  }
+
+  @Override
+  public void addReadonly(
+      boolean isCounterPartLine, Account account, Map<String, Map<String, Object>> attrsMap) {
+    ArrayList<String> fieldsList =
+        new ArrayList(
+            Arrays.asList(
+                "date",
+                "originDate",
+                "origin",
+                "moveDescription",
+                "movePaymentMode",
+                "movePaymentCondition",
+                "partner",
+                "description",
+                "currencyRate",
+                "currencyAmount",
+                "cutOffStartDate",
+                "cutOffEndDate",
+                "pfpValidatorUser",
+                "movePartnerBankDetails",
+                "vatSystemSelect",
+                "moveStatusSelect",
+                "account",
+                "analyticMoveLineList"));
+
+    for (String field : fieldsList) {
+      this.addAttr(field, "readonly", isCounterPartLine, attrsMap);
+    }
+
+    this.addAttr(
+        "taxLine",
+        "readonly",
+        isCounterPartLine && account != null && !account.getIsTaxAuthorizedOnMoveLine(),
+        attrsMap);
+  }
+
+  @Override
+  public void addRequired(boolean isCounterPartLine, Map<String, Map<String, Object>> attrsMap) {
+    this.addAttr("account", "required", !isCounterPartLine, attrsMap);
+  }
+
+  @Override
+  public void addInputActionReadonly(boolean readonly, Map<String, Map<String, Object>> attrsMap) {
+    this.addAttr("inputAction", "required", readonly, attrsMap);
+  }
+
+  @Override
+  public void addTemporaryMoveNumberFocus(Map<String, Map<String, Object>> attrsMap) {
+    this.addAttr("temporaryMoveNumber", "focus", true, attrsMap);
   }
 }

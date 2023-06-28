@@ -112,6 +112,7 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
             analyticLineModel.getPartner(),
             analyticLineModel.getProduct(),
             analyticLineModel.getCompany(),
+            analyticLineModel.getTradingName(),
             analyticLineModel.getIsPurchase());
 
     analyticLineModel.setAnalyticDistributionTemplate(analyticDistributionTemplate);

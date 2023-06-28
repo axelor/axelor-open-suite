@@ -378,7 +378,7 @@ public final class AccountExceptionMessage {
       "Account move %s has a total debit different than total credit : %s <> %s" /*)*/;
   public static final String MOVE_8 = /*$$(*/ "The move %s cannot be empty" /*)*/;
   public static final String MOVE_9 = /*$$(*/
-      "Tax is mandatory for the account %s on the move line %s" /*)*/;
+      "Tax is mandatory for the account %s (%s) on the move line %s" /*)*/;
   public static final String MOVE_10 = /*$$(*/
       "Analytic distribution template is mandatory for the account %s on the move line %s." /*)*/;
   public static final String MOVE_11 = /*$$(*/
@@ -1244,6 +1244,9 @@ public final class AccountExceptionMessage {
 
   public static final String MOVE_CHECK_ACCOUNTING = /*$$(*/
       "By clicking on this button, move status will be updated to Accounted. Please be aware that accounting a move brings irrevocable integration of the move in its moves book. Do you wish to continue ?" /*)*/;
+
+  public static final String MOVE_CHECK_CURRENCY_AMOUNT_SUM = /*$$(*/
+      "The sum of the currency amounts is not 0" /*)*/;
 
   public static final String DATE_NOT_IN_PERIOD_MOVE = /*$$(*/
       "The date input on the move line of %s %s on account %s is not belonging to the accounting period defined on the move." /*)*/;

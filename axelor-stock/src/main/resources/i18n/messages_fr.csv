@@ -528,6 +528,7 @@
 "Planned stock move","Mvt stock planifié",,
 "Planned stock move line list","Liste des lignes de mvt de stock ",,
 "Planned stock move lines","Lignes de mvt de stock ",,
+"Please add a quality control default stock location for company %s in the app stock configuration","Merci d'ajouter un emplacement de contrôle qualité pour la société %s dans la configuration de l'app stock",,
 "Please configure mass units for this product packing : %s","Veuillez configurer une unité de masse pour cet emballage de produit : %s",,
 "Please enter a valid split quantity","Veuillez entrer une quantité valide pour la scission",,
 "Please fill all inventory lines","Veuillez compléter toutes les lignes d’inventaire",,

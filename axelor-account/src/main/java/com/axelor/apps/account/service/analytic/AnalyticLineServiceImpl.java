@@ -26,9 +26,9 @@ import com.axelor.apps.account.db.AnalyticAxisByCompany;
 import com.axelor.apps.account.db.AnalyticJournal;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.repo.AccountAnalyticRulesRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.db.repo.AnalyticLine;
+import com.axelor.apps.account.service.AccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.base.AxelorException;
@@ -55,7 +55,7 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
   protected AppBaseService appBaseService;
   protected AnalyticToolService analyticToolService;
   protected AnalyticAccountRepository analyticAccountRepository;
-  protected AccountAnalyticRulesRepository accountAnalyticRulesRepository;
+  protected AccountService accountService;
   protected ListToolService listToolService;
   protected MoveLineComputeAnalyticService moveLineComputeAnalyticService;
   protected AnalyticAccountRepository analyticAccountRepo;
@@ -66,7 +66,7 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
       AppBaseService appBaseService,
       AnalyticToolService analyticToolService,
       AnalyticAccountRepository analyticAccountRepository,
-      AccountAnalyticRulesRepository accountAnalyticRulesRepository,
+      AccountService accountService,
       ListToolService listToolService,
       MoveLineComputeAnalyticService moveLineComputeAnalyticService,
       AnalyticAccountRepository analyticAccountRepo) {
@@ -74,7 +74,7 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
     this.appBaseService = appBaseService;
     this.analyticToolService = analyticToolService;
     this.analyticAccountRepository = analyticAccountRepository;
-    this.accountAnalyticRulesRepository = accountAnalyticRulesRepository;
+    this.accountService = accountService;
     this.listToolService = listToolService;
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
     this.analyticAccountRepo = analyticAccountRepo;
@@ -148,11 +148,10 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
       analyticAccountListByAxis.add(analyticAccount.getId());
     }
     if (line.getAccount() != null) {
-      List<AnalyticAccount> analyticAccountList =
-          accountAnalyticRulesRepository.findAnalyticAccountByAccounts(line.getAccount());
-      if (!analyticAccountList.isEmpty()) {
-        for (AnalyticAccount analyticAccount : analyticAccountList) {
-          analyticAccountListByRules.add(analyticAccount.getId());
+      List<Long> analyticAccountIdList = accountService.getAnalyticAccountsIds(line.getAccount());
+      if (CollectionUtils.isNotEmpty(analyticAccountIdList)) {
+        for (Long analyticAccountId : analyticAccountIdList) {
+          analyticAccountListByRules.add(analyticAccountId);
         }
         if (!CollectionUtils.isEmpty(analyticAccountListByRules)) {
           analyticAccountListByAxis =

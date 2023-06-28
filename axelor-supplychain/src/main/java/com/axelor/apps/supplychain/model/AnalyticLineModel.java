@@ -9,6 +9,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -206,6 +207,18 @@ public class AnalyticLineModel implements AnalyticLine {
 
   public BigDecimal getCompanyExTaxTotal() {
     return this.companyExTaxTotal;
+  }
+
+  public TradingName getTradingName() {
+    if (this.saleOrderLine != null && this.saleOrderLine.getSaleOrder() != null) {
+      return this.saleOrderLine.getSaleOrder().getTradingName();
+    }
+
+    if (this.purchaseOrderLine != null && this.purchaseOrderLine.getPurchaseOrder() != null) {
+      return this.purchaseOrderLine.getPurchaseOrder().getTradingName();
+    }
+
+    return null;
   }
 
   public Company getCompany() {

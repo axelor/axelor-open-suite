@@ -76,5 +76,8 @@ public interface ContractLineService {
    * @param contractLine to compute ex/in tax total.
    * @return ContractLine with ex/in tax total computed.
    */
-  ContractLine computeTotal(ContractLine contractLine);
+  ContractLine computeTotal(ContractLine contractLine) throws AxelorException;
+
+  ContractLine computePricesPerYear(ContractLine contractLine, ContractVersion contractVersion)
+      throws AxelorException;
 }

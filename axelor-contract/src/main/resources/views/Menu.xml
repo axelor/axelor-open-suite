@@ -65,6 +65,24 @@
     <context name="_applicatioTypeSelect" expr="2"/>
   </action-view>
 
+  <menuitem name="index-revaluation-all" title="Indexes revaluation"
+    parent="contracts-root-conf-all" action="index.revaluation.all" order="400"/>
+
+  <action-view name="index.revaluation.all" title="Index revaluation"
+    model="com.axelor.apps.contract.db.IndexRevaluation">
+    <view type="grid" name="index-revaluation-grid"/>
+    <view type="form" name="index-revaluation-form"/>
+  </action-view>
+
+  <menuitem name="revaluation-formula-all" title="Revaluation formulas"
+    parent="contracts-root-conf-all" action="revaluation.formula.all" order="500"/>
+
+  <action-view name="revaluation.formula.all" title="Revaluation formula"
+    model="com.axelor.apps.contract.db.RevaluationFormula">
+    <view type="grid" name="revaluation-formula-grid"/>
+    <view type="form" name="revaluation-formula-form"/>
+  </action-view>
+
   <menuitem name="admin-root-batch-contract" parent="admin-root-batch"
     title="Contract batches" action="admin.root.batch.contract"
     if="__config__.app.isApp('contract')" order="1200"/>

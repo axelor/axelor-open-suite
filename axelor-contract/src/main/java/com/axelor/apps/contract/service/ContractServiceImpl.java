@@ -45,6 +45,7 @@ import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.db.ContractTemplate;
 import com.axelor.apps.contract.db.ContractVersion;
+import com.axelor.apps.contract.db.RevaluationFormula;
 import com.axelor.apps.contract.db.repo.ConsumptionLineRepository;
 import com.axelor.apps.contract.db.repo.ContractLineRepository;
 import com.axelor.apps.contract.db.repo.ContractRepository;
@@ -71,7 +72,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -89,6 +89,8 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
   protected ConsumptionLineRepository consumptionLineRepo;
   protected ContractRepository contractRepository;
   protected TaxService taxService;
+  protected RevaluationFormulaService revaluationFormulaService;
+  protected ContractVersionRepository contractVersionRepository;
   protected AnalyticLineModelService analyticLineModelService;
 
   @Inject
@@ -101,6 +103,8 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
       ConsumptionLineRepository consumptionLineRepo,
       ContractRepository contractRepository,
       TaxService taxService,
+      RevaluationFormulaService revaluationFormulaService,
+      ContractVersionRepository contractVersionRepository,
       AnalyticLineModelService analyticLineModelService) {
     this.appBaseService = appBaseService;
     this.versionService = versionService;
@@ -110,6 +114,8 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     this.consumptionLineRepo = consumptionLineRepo;
     this.contractRepository = contractRepository;
     this.taxService = taxService;
+    this.revaluationFormulaService = revaluationFormulaService;
+    this.contractVersionRepository = contractVersionRepository;
     this.analyticLineModelService = analyticLineModelService;
   }
 
@@ -167,6 +173,8 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
         fillInvoicingDateByInvoicingMoment(contract);
       }
     }
+
+    setInitialPriceOnContractLines(contract);
 
     return invoice;
   }
@@ -496,7 +504,18 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     // Increase invoice period date
     increaseInvoiceDates(contract);
 
+    setRevaluationFormulaDescription(contract, invoice);
+
     return invoiceRepository.save(invoice);
+  }
+
+  protected void setRevaluationFormulaDescription(Contract contract, Invoice invoice) {
+    RevaluationFormula revaluationFormula = contract.getRevaluationFormula();
+    if (contract.getIsToRevaluate() && revaluationFormula != null) {
+      String invoiceComment = revaluationFormula.getInvoiceComment();
+      invoice.setNote(invoiceComment);
+      invoice.setProformaComments(invoiceComment);
+    }
   }
 
   protected LocalDate computeStartDate(
@@ -524,42 +543,46 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
   }
 
   @Override
-  public Multimap<ContractLine, ConsumptionLine> mergeConsumptionLines(Contract contract) {
+  public Multimap<ContractLine, ConsumptionLine> mergeConsumptionLines(Contract contract)
+      throws AxelorException {
     Multimap<ContractLine, ConsumptionLine> mergedLines = HashMultimap.create();
-
-    Stream<ConsumptionLine> lineStream =
-        contract.getConsumptionLineList().stream().filter(c -> !c.getIsInvoiced());
+    List<ConsumptionLine> consumptionLineList =
+        contract.getConsumptionLineList().stream()
+            .filter(c -> !c.getIsInvoiced())
+            .collect(Collectors.toList());
 
     if (contract.getCurrentContractVersion().getIsConsumptionBeforeEndDate()) {
-      lineStream =
-          lineStream.filter(
-              line -> line.getLineDate().isBefore(contract.getInvoicePeriodEndDate()));
+      consumptionLineList =
+          consumptionLineList.stream()
+              .filter(line -> line.getLineDate().isBefore(contract.getInvoicePeriodEndDate()))
+              .collect(Collectors.toList());
     }
 
-    lineStream.forEach(
-        line -> {
-          ContractVersion version = contract.getCurrentContractVersion();
+    for (ConsumptionLine consumptionLine : consumptionLineList) {
+      ContractVersion version = contract.getCurrentContractVersion();
 
-          if (isFullProrated(contract)) {
-            version = versionService.getContractVersion(contract, line.getLineDate());
-          }
+      if (isFullProrated(contract)) {
+        version = versionService.getContractVersion(contract, consumptionLine.getLineDate());
+      }
 
-          if (version == null) {
-            line.setIsError(true);
-          } else {
-            ContractLine matchLine =
-                contractLineRepo.findOneBy(version, line.getProduct(), line.getReference(), true);
-            if (matchLine == null) {
-              line.setIsError(true);
-            } else {
-              matchLine.setQty(matchLine.getQty().add(line.getQty()));
-              contractLineService.computeTotal(matchLine);
-              line.setIsError(false);
-              line.setContractLine(matchLine);
-              mergedLines.put(matchLine, line);
-            }
-          }
-        });
+      if (version == null) {
+        consumptionLine.setIsError(true);
+      } else {
+        ContractLine matchLine =
+            contractLineRepo.findOneBy(
+                version, consumptionLine.getProduct(), consumptionLine.getReference(), true);
+        if (matchLine == null) {
+          consumptionLine.setIsError(true);
+        } else {
+          matchLine.setQty(matchLine.getQty().add(consumptionLine.getQty()));
+          contractLineService.computeTotal(matchLine);
+          consumptionLine.setIsError(false);
+          consumptionLine.setContractLine(matchLine);
+          mergedLines.put(matchLine, consumptionLine);
+        }
+      }
+    }
+
     return mergedLines;
   }
 
@@ -800,5 +823,30 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     } else {
       return Collections.singletonList(contract.getCurrentContractVersion());
     }
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  public Contract getNextContract(Contract contract) throws AxelorException {
+    ContractVersion newVersion = versionService.newDraft(contract);
+    Contract nextContract = newVersion.getNextContract();
+    LocalDate todayDate = appBaseService.getTodayDate(contract.getCompany());
+    waitingNextVersion(nextContract, todayDate);
+    activeNextVersion(nextContract, todayDate);
+    return newVersion.getContract();
+  }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public void setInitialPriceOnContractLines(Contract contract) {
+    ContractVersion contractVersion = contract.getCurrentContractVersion();
+    if (CollectionUtils.isNotEmpty(contractVersion.getContractLineList())) {
+      for (ContractLine contractLine : contractVersion.getContractLineList()) {
+        if (contractLine.getInitialUnitPrice() == null) {
+          contractLine.setInitialUnitPrice(contractLine.getPrice());
+        }
+        contractLineRepo.save(contractLine);
+      }
+    }
+    contractRepository.save(contract);
   }
 }

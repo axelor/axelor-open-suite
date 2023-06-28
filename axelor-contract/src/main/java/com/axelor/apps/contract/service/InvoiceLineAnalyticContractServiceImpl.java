@@ -20,7 +20,6 @@ package com.axelor.apps.contract.service;
 
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.repo.AccountAnalyticRulesRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
@@ -39,7 +38,6 @@ public class InvoiceLineAnalyticContractServiceImpl
   @Inject
   public InvoiceLineAnalyticContractServiceImpl(
       AnalyticAccountRepository analyticAccountRepository,
-      AccountAnalyticRulesRepository accountAnalyticRulesRepository,
       AnalyticMoveLineService analyticMoveLineService,
       AnalyticToolService analyticToolService,
       AccountConfigService accountConfigService,
@@ -49,7 +47,6 @@ public class InvoiceLineAnalyticContractServiceImpl
       AnalyticMoveLineRepository analyticMoveLineRepo) {
     super(
         analyticAccountRepository,
-        accountAnalyticRulesRepository,
         analyticMoveLineService,
         analyticToolService,
         accountConfigService,

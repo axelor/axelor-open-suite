@@ -15,6 +15,7 @@ import com.axelor.apps.budget.service.purchaseorder.PurchaseOrderLineBudgetServi
 import com.axelor.apps.budget.service.saleorder.SaleOrderLineBudgetService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -206,8 +207,9 @@ public class BudgetDistributionController {
       } else if (parentContext != null
           && SaleOrderLine.class.equals(parentContext.getContextClass())) {
         SaleOrderLine saleOrderLine = parentContext.asType(SaleOrderLine.class);
-
-        query = Beans.get(SaleOrderLineBudgetService.class).getBudgetDomain(saleOrderLine);
+        SaleOrder saleOrder = parentContext.getParent().asType(SaleOrder.class);
+        query =
+            Beans.get(SaleOrderLineBudgetService.class).getBudgetDomain(saleOrderLine, saleOrder);
       }
 
       response.setAttr("budget", "domain", query);

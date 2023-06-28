@@ -360,9 +360,9 @@ public class MoveToolServiceImpl implements MoveToolService {
 
     for (MoveLine moveLine : moveLineList) {
       if (moveLine.getDebit().compareTo(moveLine.getCredit()) == 1) {
-        balance = balance.add(moveLine.getCurrencyAmount());
+        balance = balance.add(moveLine.getCurrencyAmount().abs());
       } else {
-        balance = balance.subtract(moveLine.getCurrencyAmount());
+        balance = balance.subtract(moveLine.getCurrencyAmount().abs());
       }
     }
     return balance;
@@ -514,6 +514,17 @@ public class MoveToolServiceImpl implements MoveToolService {
       if (moveLine != null) {
         moveLine.setDescription(move.getDescription());
       }
+    }
+  }
+
+  @Override
+  public BigDecimal computeCurrencyAmountSign(BigDecimal currencyAmount, boolean isDebit) {
+    if (isDebit) {
+      return currencyAmount.abs();
+    } else {
+      return currencyAmount.compareTo(BigDecimal.ZERO) < 0
+          ? currencyAmount
+          : currencyAmount.negate();
     }
   }
 

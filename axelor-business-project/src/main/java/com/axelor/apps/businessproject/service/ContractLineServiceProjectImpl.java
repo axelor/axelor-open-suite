@@ -18,7 +18,6 @@
  */
 package com.axelor.apps.businessproject.service;
 
-import com.axelor.apps.account.db.repo.AccountAnalyticRulesRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
@@ -26,6 +25,7 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -50,9 +50,9 @@ public class ContractLineServiceProjectImpl extends ContractLineServiceImpl {
       ListToolService listToolService,
       MoveLineComputeAnalyticService moveLineComputeAnalyticService,
       AnalyticAccountRepository analyticAccountRepo,
-      AccountAnalyticRulesRepository accountAnalyticRulesRepo,
       PriceListService priceListService,
-      ContractVersionRepository contractVersionRepo) {
+      ContractVersionRepository contractVersionRepo,
+      DurationService durationService) {
     super(
         appBaseService,
         appAccountService,
@@ -65,8 +65,8 @@ public class ContractLineServiceProjectImpl extends ContractLineServiceImpl {
         listToolService,
         moveLineComputeAnalyticService,
         analyticAccountRepo,
-        accountAnalyticRulesRepo,
         priceListService,
-        contractVersionRepo);
+        contractVersionRepo,
+        durationService);
   }
 }
