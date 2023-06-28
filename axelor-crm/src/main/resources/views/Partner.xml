@@ -221,7 +221,7 @@
     </extend>
     <extend target="/">
       <insert position="after">
-        <panel name="followUpPanel" title="Collaborator monitoring" showIf="isCollaborator"
+        <panel name="followUpPanel" title="Partner follow up" showIf="isCollaborator"
           sidebar="true" colSpan="12">
           <field name="takenOpportunities"/>
           <field name="wonOpportunities"/>
