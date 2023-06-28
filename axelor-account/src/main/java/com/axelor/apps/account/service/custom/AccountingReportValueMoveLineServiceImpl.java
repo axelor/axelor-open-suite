@@ -36,6 +36,7 @@ import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.DateService;
+import com.axelor.auth.db.AuditableModel;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
@@ -48,12 +49,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -110,6 +113,9 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
         detailByAccountSet = this.mergeWithAccountCode(detailByAccountSet, line.getAccountCode());
       }
 
+      detailByAccountSet =
+          this.sortSet(detailByAccountSet, Comparator.comparing(Account::getLabel));
+
       for (Account account : detailByAccountSet) {
         String lineCode = String.format("%s_%d", line.getCode(), counter++);
 
@@ -164,6 +170,9 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
             this.mergeWithAccounts(detailByAccountTypeSet, line.getAccountSet());
       }
 
+      detailByAccountTypeSet =
+          this.sortSet(detailByAccountTypeSet, Comparator.comparing(AccountType::getName));
+
       for (AccountType accountType : detailByAccountTypeSet) {
         String lineCode = String.format("%s_%d", line.getCode(), counter++);
 
@@ -209,8 +218,11 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
         && line.getDetailBySelect()
             == AccountingReportConfigLineRepository.DETAIL_BY_ANALYTIC_ACCOUNT) {
       int counter = 1;
+      Set<AnalyticAccount> sortedAnalyticAccountSet =
+          this.sortSet(
+              line.getAnalyticAccountSet(), Comparator.comparing(AnalyticAccount::getFullName));
 
-      for (AnalyticAccount analyticAccount : line.getAnalyticAccountSet()) {
+      for (AnalyticAccount analyticAccount : sortedAnalyticAccountSet) {
         String lineCode = String.format("%s_%d", line.getCode(), counter++);
 
         if (!valuesMapByLine.containsKey(lineCode)) {
@@ -271,6 +283,13 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
           endDate,
           analyticCounter);
     }
+  }
+
+  protected <T extends AuditableModel> Set<T> sortSet(Set<T> set, Comparator<T> comparator) {
+    Set<T> sortedSet = new TreeSet<>(comparator);
+    sortedSet.addAll(set);
+
+    return sortedSet;
   }
 
   protected void mergeSetsAndCreateValueFromMoveLines(
@@ -754,7 +773,8 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
         || StringUtils.notEmpty(groupColumnAnalyticAccountCode)
         || StringUtils.notEmpty(column.getAnalyticAccountCode())
         || StringUtils.notEmpty(line.getAnalyticAccountCode())) {
-      return this.getAnalyticAmount(moveLine, analyticAccountSet);
+      return this.getAnalyticAmount(
+          moveLine, analyticAccountSet, resultSelect, moveLine.getDebit().signum() > 0);
     }
 
     BigDecimal value = moveLine.getDebit().subtract(moveLine.getCredit());
@@ -765,16 +785,26 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
   }
 
   protected BigDecimal getAnalyticAmount(
-      MoveLine moveLine, Set<AnalyticAccount> analyticAccountSet) {
+      MoveLine moveLine,
+      Set<AnalyticAccount> analyticAccountSet,
+      int resultSelect,
+      boolean isDebit) {
     if (CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())) {
       return BigDecimal.ZERO;
     }
 
-    return moveLine.getAnalyticMoveLineList().stream()
-        .filter(it -> this.containsAnalyticAccount(it.getAnalyticAccount(), analyticAccountSet))
-        .map(AnalyticMoveLine::getAmount)
-        .reduce(BigDecimal::add)
-        .orElse(BigDecimal.ZERO);
+    BigDecimal value =
+        moveLine.getAnalyticMoveLineList().stream()
+            .filter(it -> this.containsAnalyticAccount(it.getAnalyticAccount(), analyticAccountSet))
+            .map(AnalyticMoveLine::getAmount)
+            .reduce(BigDecimal::add)
+            .orElse(BigDecimal.ZERO);
+
+    if (resultSelect == AccountingReportConfigLineRepository.RESULT_DEBIT_MINUS_CREDIT) {
+      return isDebit ? value : value.negate();
+    } else {
+      return isDebit ? value.negate() : value;
+    }
   }
 
   protected boolean containsAnalyticAccount(
