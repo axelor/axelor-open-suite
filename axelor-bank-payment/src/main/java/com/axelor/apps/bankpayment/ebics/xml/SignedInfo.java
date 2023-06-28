@@ -53,6 +53,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.xml.XPathParse;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -160,6 +161,7 @@ public class SignedInfo extends DefaultEbicsRootElement {
       Document document;
       Node node;
       Canonicalizer canonicalizer;
+      ByteArrayOutputStream output;
 
       factory = Beans.get(XPathParse.class).getDocumentBuilderFactory();
       factory.setNamespaceAware(true);
@@ -169,8 +171,10 @@ public class SignedInfo extends DefaultEbicsRootElement {
       document = builder.parse(new ByteArrayInputStream(toSign));
       node = XPathAPI.selectSingleNode(document, "//ds:SignedInfo");
       canonicalizer = Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS);
-      return Beans.get(EbicsUserService.class)
-          .authenticate(user, canonicalizer.canonicalizeSubtree(node));
+      output = new ByteArrayOutputStream();
+
+      canonicalizer.canonicalizeSubtree(node, output);
+      return Beans.get(EbicsUserService.class).authenticate(user, output.toByteArray());
     } catch (Exception e) {
       e.printStackTrace();
       throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
