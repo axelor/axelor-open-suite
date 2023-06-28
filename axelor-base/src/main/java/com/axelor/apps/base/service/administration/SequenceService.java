@@ -246,8 +246,8 @@ public class SequenceService {
           StringUtils.leftPad(
               sequenceVersion.getNextNum().toString(), sequence.getPadding(), PADDING_DIGIT);
     } else {
-      String letterSequence = findNextLetterSequence(sequenceVersion);
-      sequenceValue = StringUtils.leftPad(letterSequence, sequence.getPadding(), PADDING_LETTER);
+
+      sequenceValue = findNextLetterSequence(sequenceVersion, sequence);
     }
     String nextSeq =
         (seqPrefixe + sequenceValue + seqSuffixe)
@@ -277,24 +277,29 @@ public class SequenceService {
     return computeNextSeq(sequenceVersion, sequence, refDate);
   }
 
-  protected String findNextLetterSequence(SequenceVersion sequenceVersion) {
-    long n = sequenceVersion.getNextNum();
-    char[] buf =
-        new char
-            [(int)
-                Math.floor(
-                    Math.log((NUMBER_OF_LETTERS - 1) * (n + 1)) / Math.log(NUMBER_OF_LETTERS))];
-    for (int i = buf.length - 1; i >= 0; i--) {
-      n--;
-      buf[i] = (char) ('A' + n % NUMBER_OF_LETTERS);
-      n /= 26;
+  protected String findNextLetterSequence(SequenceVersion sequenceVersion, Sequence sequence) {
+
+    char[] buf = sequence.getLastLetterSequence().toCharArray();
+    buf[buf.length - 1] = (char) (buf[buf.length - 1] + 1);
+    for (int i = buf.length - 2; i >= 0; i--) {
+      if (buf[i + 1] > 'Z') {
+        buf[i + 1] = 'A';
+        buf[i] = (char) (buf[i] + 1);
+      } else break;
     }
 
+    String seq;
+    if (buf[0] > 'Z') {
+      buf[0] = 'A';
+      seq = 'A' + new String(buf);
+    } else seq = new String(buf);
+
+    sequence.setLastLetterSequence(seq);
     if (sequenceVersion.getSequence().getSequenceLettersTypeSelect()
         == SequenceLettersTypeSelect.UPPERCASE) {
-      return new String(buf);
+      return seq;
     }
-    return new String(buf).toLowerCase();
+    return seq.toLowerCase();
   }
 
   public SequenceVersion getVersion(Sequence sequence, LocalDate refDate) {
@@ -369,6 +374,14 @@ public class SequenceService {
   public boolean isEmptyOrDraftSequenceNumber(String sequenceNumber) {
     return Strings.isNullOrEmpty(sequenceNumber)
         || sequenceNumber.matches(String.format("[\\%s\\*]\\d+", DRAFT_PREFIX));
+  }
+
+  @Transactional
+  public void changeSequenceLetter(Sequence sequence) {
+    sequence.setLastLetterSequence(
+        StringUtils.leftPad(
+            sequence.getLastLetterSequence(), sequence.getPadding(), PADDING_LETTER));
+    sequenceRepo.save(sequence);
   }
 
   /**

@@ -43,7 +43,8 @@
       <field name="sequenceTypeSelect"/>
       <field name="sequenceLettersTypeSelect" showIf="sequenceTypeSelect == 'LETTERS'"
         requiredIf="sequenceTypeSelect == 'LETTERS'"/>
-      <field name="padding" onChange="action-sequence-method-compute-fullname"/>
+      <field name="padding"
+        onChange=" action-sequence-method-compute-fullname,save,action-sequence-method-change-sequence-letter"/>
       <field name="toBeAdded" showIf="sequenceTypeSelect == 'NUMBERS'"/>
       <field name="prefixe" pattern="^[^\/\\?*:\|&quot;&lt;>]*$"
         onChange="action-sequence-method-compute-fullname"/>
@@ -52,6 +53,7 @@
       <field name="yearlyResetOk" readonlyIf="monthlyResetOk"
         onChange="action-sequence-group-yearly-reset-on-change"/>
       <field name="monthlyResetOk" onChange="action-sequence-group-monthly-reset-on-change"/>
+      <field name="lastLetterSequence"/>
     </panel>
     <panel-related name="sequenceVersionListPanel" field="sequenceVersionList"
       grid-view="sequence-version-grid" form-view="sequence-version-form"/>
@@ -136,10 +138,12 @@
     <call class="com.axelor.apps.base.web.SequenceController" method="getDefaultTitle"/>
   </action-method>
 
+  <action-method name="action-sequence-method-change-sequence-letter">
+    <call class="com.axelor.apps.base.web.SequenceController" method="changeSequenceLetter"/>
+  </action-method>
   <action-method name="action-sequence-method-compute-fullname">
     <call class="com.axelor.apps.base.web.SequenceController" method="computeFullName"/>
   </action-method>
-
   <action-method name="action-sequence-method-is-length-valid">
     <call class="com.axelor.apps.base.web.SequenceController" method="isLengthValid"/>
   </action-method>

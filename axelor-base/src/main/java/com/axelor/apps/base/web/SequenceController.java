@@ -20,6 +20,7 @@ package com.axelor.apps.base.web;
 
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Sequence;
+import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -44,8 +45,16 @@ public class SequenceController {
 
   public void computeFullName(ActionRequest request, ActionResponse response) {
     Sequence sequence = request.getContext().asType(Sequence.class);
+
     String fullName = Beans.get(SequenceService.class).computeFullName(sequence);
     response.setValue("fullName", fullName);
+  }
+
+  public void changeSequenceLetter(ActionRequest request, ActionResponse response) {
+    Sequence sequence = request.getContext().asType(Sequence.class);
+    sequence = Beans.get(SequenceRepository.class).find(sequence.getId());
+    Beans.get(SequenceService.class).changeSequenceLetter(sequence);
+    response.setReload(true);
   }
 
   public void updateSequenceVersionsMonthly(ActionRequest request, ActionResponse response) {
@@ -67,6 +76,7 @@ public class SequenceController {
   public void updateSequenceVersionsYearly(ActionRequest request, ActionResponse response) {
     try {
       Sequence sequence = request.getContext().asType(Sequence.class);
+
       SequenceService sequenceService = Beans.get(SequenceService.class);
       LocalDate todayDate = Beans.get(AppBaseService.class).getTodayDate(sequence.getCompany());
       LocalDate endOfDate = todayDate.withDayOfYear(todayDate.lengthOfYear());

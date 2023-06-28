@@ -22,6 +22,7 @@
     <integer name="toBeAdded" title="Increment" required="true" min="1"/>
     <boolean name="yearlyResetOk" title="Yearly reset"/>
     <boolean name="monthlyResetOk" title="Monthly reset"/>
+    <string name="lastLetterSequence" title="Last Letter Sequence " unique="true"/>
 
     <one-to-many name="sequenceVersionList"
       ref="com.axelor.apps.base.db.SequenceVersion" mappedBy="sequence" title="Versions"/>
