@@ -345,6 +345,7 @@
     <action name="action-purchase-order-line-method-check-different-supplier"/>
     <action name="action-purchase-order-line-method-translate-product-description-and-name"/>
     <action name="action-purchase-order-line-method-compute-analytic-distribution"/>
+    <action name="action-purchase-order-line-method-print-analytic-account"/>
   </action-group>
 
   <action-group name="action-group-purchase-purchase-orderline-qty-onchange">

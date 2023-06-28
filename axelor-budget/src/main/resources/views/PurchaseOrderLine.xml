@@ -103,6 +103,7 @@
     <action name="action-purchase-order-line-method-check-different-supplier"/>
     <action name="action-purchase-order-line-method-translate-product-description-and-name"/>
     <action name="action-purchase-order-line-method-compute-analytic-distribution"/>
+    <action name="action-purchase-order-line-method-print-analytic-account"/>
     <action name="action-method-budget-purchase-orderline-set-product-account"/>
   </action-group>
 

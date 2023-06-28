@@ -140,6 +140,7 @@
     <action name="action-sale-order-line-method-translate-product-description-and-name"/>
     <action name="action-method-budget-sale-orderline-set-product-account"/>
     <action name="action-sale-order-line-method-compute-analytic-distribution"/>
+    <action name="action-sale-order-line-method-print-analytic-account"/>
   </action-group>
 
   <action-attrs name="action-budget-sale-order-line-attrs-group-domain">
