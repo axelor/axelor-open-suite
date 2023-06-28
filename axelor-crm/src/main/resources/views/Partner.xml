@@ -498,7 +498,7 @@
   </cards>
 
   <form name="partner-form-lost-popup" model="com.axelor.apps.base.db.Partner"
-    title="Lost reason" width="large" onSave="action-crm-group-close-lost-partner">
+    title="Lost reason" width="large">
     <panel name="mainPanel">
       <field name="lostReason" canEdit="false" colOffset="4" colSpan="4"/>
       <field name="lostReasonStr" hideIf="!lostReason.freeText" colOffset="4" colSpan="4"/>
@@ -683,7 +683,8 @@
   <action-record name="action-partner-record-set-from-crm"
     model="com.axelor.apps.base.db.Partner">
     <field name="$isFromCrm" expr="eval: _isFromCrm"/>
-    <field name="partnerStatus" expr="eval: _partnerStatus"/>
+    <field name="partnerStatus" expr="eval: _partnerStatus"
+      if="_partnerStatus != null &amp;&amp; partnerStatus == null"/>
   </action-record>
 
   <action-record name="action-partner-record-set-is-in-conversion-from-lead"
@@ -749,8 +750,6 @@
   </action-validate>
 
   <action-group name="action-partner-group-partner-status-onchange">
-    <action name="save"
-      if="eval: __this__?.partnerStatus?.id != __config__.app.getApp('crm')?.closedWinPartnerStatus?.id || __this__?.partnerStatus?.id != __config__.app.getApp('crm')?.closedLostPartnerStatus?.id"/>
     <action name="action-partner-view-partner-popup-view"
       if="eval: __this__?.partnerStatus?.id
       == __config__.app.getApp('crm')?.closedLostPartnerStatus?.id"/>
@@ -764,9 +763,9 @@
     <view-param name="popup" value="reload"/>
     <view-param name="show-toolbar" value="false"/>
     <view-param name="show-confirm" value="false"/>
-    <view-param name="popup-save" value="true"/>
+    <view-param name="popup-save" value="false"/>
     <view-param name="forceEdit" value="true"/>
-    <context name="_showRecord" expr="eval: id"/>
+    <context name="_showRecord" expr="eval: __this__.id"/>
   </action-view>
 
   <action-record name="action-partner-record-win"
@@ -781,7 +780,7 @@
   </action-condition>
 
   <action-method name="action-partner-method-confirm-lost-reason">
-    <call class="com.axelor.apps.crm.web.PartnerCrmController" method="loseLead"/>
+    <call class="com.axelor.apps.crm.web.PartnerCrmController" method="losePartner"/>
   </action-method>
 
   <action-view name="action-contact-view-related-contacts" title="Contacts"
