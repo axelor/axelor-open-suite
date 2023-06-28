@@ -71,9 +71,11 @@
     <view-param name="forceTitle" value="true"/>
     <domain>self.isContact = false AND self.isProspect = true AND self.user.id = :_internalUserId</domain>
     <context name="_isProspect" expr="true"/>
-    <context name="_domain" expr="self.isContact = false AND self.isProspect = true"/>
+    <context name="_domain"
+      expr="self.isContact = false AND self.isProspect = true AND self.user.id = :_internalUserId"/>
     <context name="json-enhance" expr="eval:true"/>
     <context name="_internalUserId" expr="eval:__user__.id"/>
+    <context name="_isFromCrm" expr="eval:true"/>
   </action-view>
 
   <menuitem name="crm-opened-prospects" parent="crm-root-prospects"
@@ -89,9 +91,10 @@
     <view-param name="limit" value="39"/>
     <view-param name="search-filters" value="partner-filters"/>
     <view-param name="forceTitle" value="true"/>
-    <domain>self.isContact = false AND self.isProspect = true</domain>
+    <domain>self.isContact = false AND self.isProspect = true AND self.partnerStatus.isOpen = true</domain>
     <context name="_isProspect" expr="true"/>
-    <context name="_domain" expr="self.isContact = false AND self.isProspect = true"/>
+    <context name="_domain"
+      expr="self.isContact = false AND self.isProspect = true AND self.partnerStatus.isOpen = true"/>
     <context name="json-enhance" expr="eval:true"/>
     <context name="_isFromCrm" expr="eval:true"/>
   </action-view>
@@ -107,10 +110,12 @@
     <view-param name="limit" value="39"/>
     <view-param name="search-filters" value="partner-filters"/>
     <view-param name="forceTitle" value="true"/>
-    <domain>self.isContact = false AND self.isProspect = true</domain>
+    <domain>self.isContact = false AND self.isProspect = true AND self.partnerStatus.isOpen = false</domain>
     <context name="_isProspect" expr="true"/>
-    <context name="_domain" expr="self.isContact = false AND self.isProspect = true"/>
+    <context name="_domain"
+      expr="self.isContact = false AND self.isProspect = true AND self.partnerStatus.isOpen = false"/>
     <context name="json-enhance" expr="eval:true"/>
+    <context name="_isFromCrm" expr="eval:true"/>
   </action-view>
 
   <menuitem name="crm-root-customers" parent="crm-root" title="Customers"
@@ -127,7 +132,6 @@
     <context name="_isCustomer" expr="true"/>
     <context name="_domain" expr="self.isContact = false AND self.isCustomer = true"/>
     <context name="json-enhance" expr="eval:true"/>
-    <context name="_isFromCrm" expr="eval:true"/>
   </action-view>
 
   <menuitem name="crm-root-contacts" parent="crm-root" title="Contacts"
@@ -618,18 +622,18 @@
 
 
   <menuitem name="crm-conf-collaborator-domain" parent="crm-conf"
-    title="Collaborator work domain" action="crm.conf.collaborator.domain" order="1200"/>
+    title="Partner work domain" action="crm.conf.collaborator.domain" order="1200"/>
 
-  <action-view name="crm.conf.collaborator.domain" title="Collaborator work domain"
+  <action-view name="crm.conf.collaborator.domain" title="Partner work domain"
     model="com.axelor.apps.crm.db.CollaboratorDomain">
     <view type="grid" name="collaborator-domain-grid"/>
     <view type="form" name="collaborator-domain-form"/>
   </action-view>
 
-  <menuitem name="crm-conf-fidelity" parent="crm-conf" title="Collaborator Fidelity"
+  <menuitem name="crm-conf-fidelity" parent="crm-conf" title="Partner Fidelity"
     action="crm.conf.fidelity" order="1300"/>
 
-  <action-view name="crm.conf.fidelity" title="Collaborator Fidelity"
+  <action-view name="crm.conf.fidelity" title="Partner Fidelity"
     model="com.axelor.apps.crm.db.Fidelity">
     <view type="grid" name="fidelity-grid"/>
     <view type="form" name="fidelity-form"/>

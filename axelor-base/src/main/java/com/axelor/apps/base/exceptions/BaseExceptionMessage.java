@@ -580,4 +580,7 @@ public final class BaseExceptionMessage {
 
   public static final String FAKER_METHOD_EXAMPLE_OUTPUT = /*$$(*/
       "The faker API field is valide. An example output is : %s." /*)*/;
+
+  public static final String UNKNOWN_DURATION = /*$$(*/
+      "The duration '%s' is unknown. Valid durations are in months or years." /*)*/;
 }

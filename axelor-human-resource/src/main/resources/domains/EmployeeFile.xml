@@ -24,6 +24,7 @@
     		return fullName;
     		 ]]>
     </string>
+    <string name="fileDescription" title="Description" large="true"/>
   </entity>
 
 </domain-models>

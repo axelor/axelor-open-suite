@@ -5,9 +5,8 @@
 
   <module name="production" package="com.axelor.apps.production.db"/>
 
-  <entity name="ProdHumanResource">
-
-    <many-to-one name="employee" ref="com.axelor.apps.hr.db.Employee" title="Employee"/>
-
+  <entity name="WorkCenter">
+    <many-to-many name="hrSkillSet" title="Skill needed"
+      ref="com.axelor.apps.talent.db.Skill"/>
   </entity>
 </domain-models>

@@ -313,11 +313,14 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
     Set<AccountType> accountTypeSet = null;
     Set<AnalyticAccount> analyticAccountSet =
         this.mergeSets(column.getAnalyticAccountSet(), lineAnalyticAccountSet);
+    analyticAccountSet =
+        this.mergeSets(analyticAccountSet, accountingReport.getAnalyticAccountSet());
 
     if (groupAccount != null) {
       accountSet = new HashSet<>(Collections.singletonList(groupAccount));
     } else {
       accountSet = this.mergeSets(column.getAccountSet(), lineAccountSet);
+      accountSet = this.mergeSets(accountSet, accountingReport.getAccountSet());
       accountTypeSet = this.mergeSets(column.getAccountTypeSet(), lineAccountTypeSet);
     }
 
@@ -668,14 +671,14 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
 
     queryList.addAll(
         this.getAccountFilters(
-            accountSet,
             accountTypeSet,
             groupColumn == null ? null : groupColumn.getAccountCode(),
             column.getAccountCode(),
             line.getAccountCode(),
-            true));
+            true,
+            this.areAllAccountSetsEmpty(accountingReport, groupColumn, column, line)));
 
-    if (CollectionUtils.isNotEmpty(analyticAccountSet)) {
+    if (!this.areAllAnalyticAccountSetsEmpty(accountingReport, groupColumn, column, line)) {
       queryList.add(
           "EXISTS(SELECT 1 FROM AnalyticMoveLine aml WHERE aml.analyticAccount IN :analyticAccountSet AND aml.moveLine = self)");
     }
