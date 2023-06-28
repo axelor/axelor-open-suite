@@ -149,7 +149,7 @@ public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineSe
           Optional.of(purchaseOrderLine)
               .map(PurchaseOrderLine::getPurchaseOrder)
               .map(PurchaseOrder::getCompany)
-              .orElse(null);
+              .orElse(AuthUtils.getUser().getActiveCompany());
       LocalDate date = appAccountService.getTodayDate(company);
 
       for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
