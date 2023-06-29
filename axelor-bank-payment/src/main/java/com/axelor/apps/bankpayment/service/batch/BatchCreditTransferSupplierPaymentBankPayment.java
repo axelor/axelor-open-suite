@@ -33,7 +33,6 @@ import com.axelor.apps.base.db.repo.ExceptionOriginRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
@@ -94,7 +93,16 @@ public class BatchCreditTransferSupplierPaymentBankPayment
 
   public void testCreditTransferBatchField() throws AxelorException {
     AccountingBatch accountingBatch = batch.getAccountingBatch();
-    if (ObjectUtils.isEmpty(accountingBatch.getBankDetails())
+
+    if (accountingBatch.getPaymentMode() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(AccountExceptionMessage.BATCH_CREDIT_TRANSFER_PAYMENT_MODE_MISSING),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
+          accountingBatch.getCode());
+    }
+
+    if (accountingBatch.getBankDetails() == null
         && accountingBatch.getPaymentMode().getTypeSelect() == PaymentModeRepository.TYPE_TRANSFER
         && accountingBatch.getPaymentMode().getInOutSelect() == PaymentModeRepository.OUT) {
       throw new AxelorException(
