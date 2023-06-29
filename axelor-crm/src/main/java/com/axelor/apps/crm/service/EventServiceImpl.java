@@ -669,6 +669,7 @@ public class EventServiceImpl implements EventService {
   }
 
   protected void afterPlanned(Event event) {
+    this.updateLeadLastEventDate(event);
     this.updateLeadScheduledEventDate(event);
     this.updatePartnerScheduledEventDate(event);
     this.updateOpportunityScheduledEventDate(event);
@@ -792,9 +793,9 @@ public class EventServiceImpl implements EventService {
     if (lead != null
         && event.getStartDateTime() != null
         && event.getStatusSelect() == EventRepository.STATUS_PLANNED
-        && (lead.getNextScheduledEventDateT() == null
-            || (event.getStartDateTime().isAfter(LocalDateTime.now())
-                && event.getStartDateTime().isBefore(lead.getNextScheduledEventDateT())))) {
+        && (event.getStartDateTime().isAfter(LocalDateTime.now())
+            && (lead.getNextScheduledEventDateT() == null
+                || event.getStartDateTime().isBefore(lead.getNextScheduledEventDateT())))) {
       lead.setNextScheduledEventDateT(event.getStartDateTime());
     }
   }
