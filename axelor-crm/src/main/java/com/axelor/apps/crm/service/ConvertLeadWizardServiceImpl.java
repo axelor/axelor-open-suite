@@ -130,7 +130,7 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
     EmailAddress emailAddress = partner.getEmailAddress();
 
     if (emailAddress != null) {
-      partner.setEmailAddress(this.createEmailAddress(emailAddress.getAddress(), null, partner));
+      partner.setEmailAddress(this.createEmailAddress(emailAddress.getAddress(), partner));
     }
   }
 
@@ -172,10 +172,11 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
     return address;
   }
 
-  protected EmailAddress createEmailAddress(String address, Lead lead, Partner partner) {
+  protected EmailAddress createEmailAddress(String address, Partner partner) {
     EmailAddress emailAddress = new EmailAddress();
+
     emailAddress.setAddress(address);
-    emailAddress.setEmailAddressLead(lead);
+
     emailAddress.setPartner(partner);
 
     return emailAddress;
