@@ -1,0 +1,3 @@
+---
+title: "Invoice : Fix tax not being taken from the account during ventilation when it's required but empty on invoice line"
+type: fix
