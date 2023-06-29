@@ -638,20 +638,20 @@ public class MoveToolServiceImpl implements MoveToolService {
         new StringBuilder("self.origin = :origin AND self.period.year = :periodYear");
     Map<String, Object> params = new HashMap<>();
 
-    params.put("origin", move.getOrigin());
-    params.put("periodYear", move.getPeriod().getYear());
-
-    if (move.getId() != null) {
-      query.append(" AND self.id != :moveId");
-      params.put("moveId", move.getId());
-    }
-
-    if (ObjectUtils.notEmpty(move.getPartner())) {
-      query.append(" AND self.partner = :partner");
-      params.put("partner", move.getPartner());
-    }
-
     if (!ObjectUtils.isEmpty(move.getOrigin()) && !ObjectUtils.isEmpty(move.getPeriod())) {
+      params.put("origin", move.getOrigin());
+      params.put("periodYear", move.getPeriod().getYear());
+
+      if (move.getId() != null) {
+        query.append(" AND self.id != :moveId");
+        params.put("moveId", move.getId());
+      }
+
+      if (ObjectUtils.notEmpty(move.getPartner())) {
+        query.append(" AND self.partner = :partner");
+        params.put("partner", move.getPartner());
+      }
+
       moveList = moveRepository.all().filter(query.toString()).bind(params).fetch();
     }
     return moveList;
