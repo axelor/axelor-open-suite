@@ -401,7 +401,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     if (move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL) {
       moveAttrsService.addMassEntryBtnHidden(move, attrsMap);
     }
-    if (move.getStatusSelect() == MoveRepository.STATUS_NEW) {
+    if (move.getStatusSelect() != MoveRepository.STATUS_NEW) {
       moveAttrsService.getPfpAttrs(move, AuthUtils.getUser(), attrsMap);
     }
 
