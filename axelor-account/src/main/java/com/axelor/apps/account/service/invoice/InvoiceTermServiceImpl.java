@@ -1022,7 +1022,6 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   public void setParentFields(
       InvoiceTerm invoiceTerm, Move move, MoveLine moveLine, Invoice invoice) {
     if (invoice != null) {
-
       invoiceTerm.setCompany(invoice.getCompany());
       invoiceTerm.setPartner(invoice.getPartner());
       invoiceTerm.setCurrency(invoice.getCurrency());

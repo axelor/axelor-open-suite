@@ -41,5 +41,5 @@ public interface MoveInvoiceTermService {
 
   String checkIfInvoiceTermInPayment(Move move);
 
-  void checkOtherInvoiceTerms(Move move);
+  Integer checkOtherInvoiceTerms(Move move);
 }

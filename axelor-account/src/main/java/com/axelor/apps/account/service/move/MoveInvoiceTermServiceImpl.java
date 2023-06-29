@@ -296,9 +296,9 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
   }
 
   @Override
-  public void checkOtherInvoiceTerms(Move move) {
-    if (move == null) {
-      return;
+  public Integer checkOtherInvoiceTerms(Move move) {
+    if (move == null || CollectionUtils.isEmpty(move.getMoveLineList())) {
+      return null;
     }
     List<InvoiceTerm> invoiceTermList =
         move.getMoveLineList().stream()
@@ -306,25 +306,9 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
             .filter(Objects::nonNull)
             .flatMap(Collection::stream)
             .collect(Collectors.toList());
-    if (CollectionUtils.isEmpty(invoiceTermList)) {
-      return;
+    if (!CollectionUtils.isEmpty(invoiceTermList)) {
+      return invoiceTermPfpService.checkOtherInvoiceTerms(invoiceTermList);
     }
-    InvoiceTerm firstInvoiceTerm = invoiceTermList.get(0);
-    int pfpStatus = invoiceTermPfpService.getPfpValidateStatusSelect(firstInvoiceTerm);
-    int otherPfpStatus;
-    for (InvoiceTerm otherInvoiceTerm : invoiceTermList) {
-      if (otherInvoiceTerm.getId() != null
-          && firstInvoiceTerm.getId() != null
-          && !otherInvoiceTerm.getId().equals(firstInvoiceTerm.getId())) {
-        otherPfpStatus = invoiceTermPfpService.getPfpValidateStatusSelect(otherInvoiceTerm);
-
-        if (otherPfpStatus != pfpStatus) {
-          pfpStatus = InvoiceTermRepository.PFP_STATUS_AWAITING;
-          break;
-        }
-      }
-    }
-
-    move.setPfpValidateStatusSelect(pfpStatus);
+    return null;
   }
 }

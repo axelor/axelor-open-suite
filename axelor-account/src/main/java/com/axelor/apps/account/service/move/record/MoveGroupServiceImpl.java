@@ -373,8 +373,10 @@ public class MoveGroupServiceImpl implements MoveGroupService {
             .contains(move.getStatusSelect())
         && appAccountService.getAppAccount() != null
         && appAccountService.getAppAccount().getActivatePassedForPayment()) {
-      moveInvoiceTermService.checkOtherInvoiceTerms(move);
-      valuesMap.put("pfpValidateStatusSelect", move.getPfpValidateStatusSelect());
+      Integer pfpStatus = moveInvoiceTermService.checkOtherInvoiceTerms(move);
+      if (pfpStatus != null) {
+        valuesMap.put("pfpValidateStatusSelect", move.getPfpValidateStatusSelect());
+      }
     }
 
     valuesMap.put("dueDate", move.getDueDate());

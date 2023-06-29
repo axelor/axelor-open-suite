@@ -90,7 +90,10 @@ public class MoveRecordUpdateServiceImpl implements MoveRecordUpdateService {
       }
     }
 
-    moveInvoiceTermService.checkOtherInvoiceTerms(move);
+    Integer pfpStatus = moveInvoiceTermService.checkOtherInvoiceTerms(move);
+    if (pfpStatus != null) {
+      move.setPfpValidateStatusSelect(pfpStatus);
+    }
 
     return flashMessage;
   }
