@@ -106,18 +106,14 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
       Currency currency,
       PaymentMode paymentMode,
       int typeSelect) {
-    InvoicePayment invoicePayment =
-        new InvoicePayment(
-            amount,
-            paymentDate,
-            currency,
-            paymentMode,
-            typeSelect,
-            InvoicePaymentRepository.STATUS_DRAFT);
-
-    invoice.addInvoicePaymentListItem(invoicePayment);
-
-    return invoicePayment;
+    return new InvoicePayment(
+        amount,
+        paymentDate,
+        currency,
+        paymentMode,
+        invoice,
+        typeSelect,
+        InvoicePaymentRepository.STATUS_DRAFT);
   }
 
   /**
@@ -323,7 +319,11 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
   @Transactional(rollbackOn = {Exception.class})
   public InvoicePayment createInvoicePayment(Invoice invoice, BankDetails companyBankDetails)
       throws AxelorException {
-    return this.createInvoicePayment(invoice, companyBankDetails, null);
+    InvoicePayment invoicePayment = this.createInvoicePayment(invoice, companyBankDetails, null);
+
+    invoice.addInvoicePaymentListItem(invoicePayment);
+
+    return invoicePayment;
   }
 
   @Override
