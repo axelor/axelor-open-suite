@@ -452,6 +452,7 @@
     <action name="action-attrs-account-invoice-line-onnew-onload"/>
     <action name="action-invoice-line-method-translate-product-description-and-name"/>
     <action name="action-attrs-account-invoice-line-cut-off-dates-required"/>
+    <action name="action-invoice-line-attrs-set-hidden-analytic-distribution-panel"/>
   </action-group>
 
   <action-group name="action-group-account-invoice-line-qty-onchange">
@@ -478,6 +479,7 @@
     <action name="action-invoice-line-method-axis-create-analytic-line"/>
     <action name="action-invoice-line-group-analytic-distribution-template-onchange"/>
     <action name="action-attrs-account-invoice-line-cut-off-dates-required"/>
+    <action name="action-invoice-line-attrs-set-hidden-analytic-distribution-panel"/>
   </action-group>
 
   <action-group

@@ -174,7 +174,8 @@ public class AccountingReportValuePercentageServiceImpl extends AccountingReport
       BigDecimal result,
       int analyticCounter)
       throws AxelorException {
-    if (baseValue == null) {
+    if (baseValue == null
+        || (totalValue == null && StringUtils.notEmpty(line.getPercentageTotalLine()))) {
       this.addNullValue(
           column,
           groupColumn,

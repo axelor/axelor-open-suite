@@ -1,3 +1,0 @@
----
-title: "Accounting Batch: Accounting cut-off batch now take into account 'include not stock managed product' boolean for the preview"
-type: fix

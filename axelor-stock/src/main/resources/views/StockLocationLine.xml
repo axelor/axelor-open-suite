@@ -219,7 +219,7 @@
       <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
       <field name="avgPrice" onChange="action-stock-location-line-group-avg-price-onchange"/>
       <field name="reservedQty" if-module="axelor-supplychain"
-        if="__config__.app.getApp('supplychain')?.getManageStockReservation()"/>
+        if="__config__.app.getApp('supplychain')?.getManageStockReservation()" hidden="true"/>
       <field name="trackingNumber" domain="self.product = :product"/>
       <field name="rack"/>
       <field name="detailsStockLocation"/>
