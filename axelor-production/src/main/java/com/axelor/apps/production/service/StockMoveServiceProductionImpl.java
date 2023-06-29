@@ -32,9 +32,11 @@ import com.axelor.apps.stock.service.PartnerProductQualityRatingService;
 import com.axelor.apps.stock.service.PartnerStockSettingsService;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveToolService;
+import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.supplychain.service.PartnerSupplychainService;
 import com.axelor.apps.supplychain.service.ReservedQtyService;
+import com.axelor.apps.supplychain.service.StockMoveLineServiceSupplychain;
 import com.axelor.apps.supplychain.service.StockMoveServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.google.inject.Inject;
@@ -49,18 +51,20 @@ public class StockMoveServiceProductionImpl extends StockMoveServiceSupplychainI
       AppBaseService appBaseService,
       StockMoveRepository stockMoveRepository,
       PartnerProductQualityRatingService partnerProductQualityRatingService,
+      ProductRepository productRepository,
+      PartnerStockSettingsService partnerStockSettingsService,
+      StockConfigService stockConfigService,
+      AppStockService appStockService,
       AppSupplychainService appSupplyChainService,
+      AppAccountService appAccountService,
       AccountConfigService accountConfigService,
       PurchaseOrderRepository purchaseOrderRepo,
       SaleOrderRepository saleOrderRepo,
       UnitConversionService unitConversionService,
       ReservedQtyService reservedQtyService,
-      ProductRepository productRepository,
       PartnerSupplychainService partnerSupplychainService,
-      AppAccountService appAccountService,
-      PartnerStockSettingsService partnerStockSettingsService,
-      StockConfigService stockConfigService,
-      FixedAssetRepository fixedAssetRepository) {
+      FixedAssetRepository fixedAssetRepository,
+      StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain) {
     super(
         stockMoveLineService,
         stockMoveToolService,
@@ -68,18 +72,20 @@ public class StockMoveServiceProductionImpl extends StockMoveServiceSupplychainI
         appBaseService,
         stockMoveRepository,
         partnerProductQualityRatingService,
+        productRepository,
+        partnerStockSettingsService,
+        stockConfigService,
+        appStockService,
         appSupplyChainService,
+        appAccountService,
         accountConfigService,
         purchaseOrderRepo,
         saleOrderRepo,
         unitConversionService,
         reservedQtyService,
-        productRepository,
         partnerSupplychainService,
-        appAccountService,
-        partnerStockSettingsService,
-        stockConfigService,
-        fixedAssetRepository);
+        fixedAssetRepository,
+        stockMoveLineServiceSupplychain);
   }
 
   @Override

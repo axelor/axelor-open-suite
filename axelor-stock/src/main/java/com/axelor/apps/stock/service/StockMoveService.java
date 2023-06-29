@@ -246,4 +246,8 @@ public interface StockMoveService {
   StockLocation getToStockLocation(StockMove stockMove) throws AxelorException;
 
   void setOrigin(StockMove newStockMove, StockMove oldStockMove);
+
+  void changeLinesFromStockLocation(StockMove stockMove, StockLocation stockLocation);
+
+  void changeLinesToStockLocation(StockMove stockMove, StockLocation stockLocation);
 }
