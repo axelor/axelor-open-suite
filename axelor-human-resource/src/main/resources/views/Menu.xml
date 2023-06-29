@@ -5,14 +5,14 @@
 
   <!-- MyRH -->
 
-  <menuitem name="my-hr-root" order="-1600" title="My HR" icon="fa-user"
+  <menuitem name="my-hr-root" order="-1600" title="MyHR" icon="fa-user"
     if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee')?.isMyHrEnabled"
     icon-background="#84429f"/>
 
-  <menuitem name="my-hr-dashboard" parent="my-hr-root" title="My HR"
+  <menuitem name="my-hr-dashboard" parent="my-hr-root" title="MyHR"
     action="my.hr.dashboard.view" order="100"/>
 
-  <action-view name="my.hr.dashboard.view" title="My HR">
+  <action-view name="my.hr.dashboard.view" title="MyHR">
     <view type="dashboard" name="my.hr.dashboard"/>
   </action-view>
 
@@ -604,13 +604,6 @@
 
   <action-view name="hr.user.dashboard.view" title="Human Resources Employee">
     <view type="dashboard" name="hr.user.dashboard.sample"/>
-  </action-view>
-
-  <menuitem name="menu-hr-employee-dashboard" parent="hr-report-root"
-    title="Employee dashboard" action="hr.employee.dashboard.view" order="300"/>
-
-  <action-view name="hr.employee.dashboard.view" title="Employee dashboard">
-    <view type="dashboard" name="hr.employee.dashboard.sample"/>
   </action-view>
 
   <menuitem name="project-spent-time" parent="project-current-project" title="Spent time"

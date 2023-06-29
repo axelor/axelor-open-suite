@@ -196,9 +196,9 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
             I18n.get(ProductionExceptionMessage.WORKCENTER_NO_MACHINE),
             workCenter.getName());
       }
-      duration += machine.getStartingDuration();
-      duration += machine.getEndingDuration();
-      duration += machine.getSetupDuration();
+      duration += workCenter.getStartingDuration();
+      duration += workCenter.getEndingDuration();
+      duration += workCenter.getSetupDuration();
     }
 
     return duration;
@@ -593,7 +593,7 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
       throws AxelorException {
     ProdProcessLine prodProcessLine = operationOrder.getProdProcessLine();
 
-    return prodProcessLineService.computeEntireCycleDuration(prodProcessLine, qty);
+    return prodProcessLineService.computeEntireCycleDuration(operationOrder, prodProcessLine, qty);
   }
 
   protected void calculateHoursOfUse(OperationOrder operationOrder) {

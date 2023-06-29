@@ -46,11 +46,11 @@ public class PartnerCrmController {
     }
   }
 
-  public void loseLead(ActionRequest request, ActionResponse response) {
+  public void losePartner(ActionRequest request, ActionResponse response) {
     try {
       Partner partner = request.getContext().asType(Partner.class);
       Beans.get(PartnerCrmService.class)
-          .loseLead(
+          .losePartner(
               Beans.get(PartnerRepository.class).find(partner.getId()),
               partner.getLostReason(),
               partner.getLostReasonStr());

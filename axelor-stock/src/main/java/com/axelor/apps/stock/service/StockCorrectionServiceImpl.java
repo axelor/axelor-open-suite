@@ -139,72 +139,67 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
 
   public StockMove generateStockMove(StockCorrection stockCorrection) throws AxelorException {
     StockLocation toStockLocation = stockCorrection.getStockLocation();
-
     Company company = toStockLocation.getCompany();
     StockLocation fromStockLocation =
         stockConfigService.getInventoryVirtualStockLocation(
             stockConfigService.getStockConfig(company));
 
-    StockLocationLine stockLocationLine = null;
     BigDecimal realQty = stockCorrection.getRealQty();
     Product product = stockCorrection.getProduct();
     TrackingNumber trackingNumber = stockCorrection.getTrackingNumber();
-
-    if (stockCorrection.getTrackingNumber() == null) {
-      stockLocationLine =
-          stockLocationLineService.getOrCreateStockLocationLine(
-              stockCorrection.getStockLocation(), stockCorrection.getProduct());
-    } else {
-      stockLocationLine =
-          stockLocationLineService.getOrCreateDetailLocationLine(
-              stockCorrection.getStockLocation(),
-              stockCorrection.getProduct(),
-              stockCorrection.getTrackingNumber());
-    }
-
-    if (stockLocationLine == null) {
-      stockLocationLine =
-          stockLocationLineService.getOrCreateStockLocationLine(toStockLocation, product);
-    }
-
+    StockLocationLine stockLocationLine =
+        getStockLocationLine(stockCorrection, toStockLocation, product);
     BigDecimal diff = realQty.subtract(stockLocationLine.getCurrentQty());
-
-    StockMove stockMove = null;
-
-    if (diff.compareTo(BigDecimal.ZERO) == 0) {
-      return null;
-    } else if (diff.compareTo(BigDecimal.ZERO) > 0) {
-      stockMove =
-          stockMoveService.createStockMove(
-              null,
-              null,
-              company,
-              fromStockLocation,
-              toStockLocation,
-              null,
-              null,
-              null,
-              StockMoveRepository.TYPE_INTERNAL);
-    } else {
-      stockMove =
-          stockMoveService.createStockMove(
-              null,
-              null,
-              company,
-              toStockLocation,
-              fromStockLocation,
-              null,
-              null,
-              null,
-              StockMoveRepository.TYPE_INTERNAL);
-    }
-
-    stockMove.setStockCorrection(stockCorrection);
-    stockMove.setStockCorrectionReason(stockCorrection.getStockCorrectionReason());
 
     BigDecimal productCostPrice =
         (BigDecimal) productCompanyService.get(product, "costPrice", company);
 
+    StockLocation computedFromStockLocation;
+    StockLocation computedToStockLocation;
+
+    if (diff.compareTo(BigDecimal.ZERO) == 0) {
+      return null;
+    } else if (diff.compareTo(BigDecimal.ZERO) > 0) {
+      computedFromStockLocation = fromStockLocation;
+      computedToStockLocation = toStockLocation;
+
+    } else {
+      computedFromStockLocation = toStockLocation;
+      computedToStockLocation = fromStockLocation;
+    }
+
+    StockMove stockMove =
+        getStockMove(stockCorrection, company, computedFromStockLocation, computedToStockLocation);
+
+    createStockMoveLine(
+        stockCorrection,
+        product,
+        trackingNumber,
+        stockLocationLine,
+        diff,
+        productCostPrice,
+        computedFromStockLocation,
+        computedToStockLocation,
+        stockMove);
+
+    stockMoveService.plan(stockMove);
+    stockMoveService.copyQtyToRealQty(stockMove);
+    stockMoveService.realize(stockMove, false);
+
+    return stockMove;
+  }
+
+  protected void createStockMoveLine(
+      StockCorrection stockCorrection,
+      Product product,
+      TrackingNumber trackingNumber,
+      StockLocationLine stockLocationLine,
+      BigDecimal diff,
+      BigDecimal productCostPrice,
+      StockLocation computedFromStockLocation,
+      StockLocation computedToStockLocation,
+      StockMove stockMove)
+      throws AxelorException {
     StockMoveLine stockMoveLine =
         stockMoveLineService.createStockMoveLine(
             product,
@@ -218,8 +213,8 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
             StockMoveLineService.TYPE_NULL,
             false,
             BigDecimal.ZERO,
-            fromStockLocation,
-            toStockLocation);
+            computedFromStockLocation,
+            computedToStockLocation);
 
     if (stockMoveLine == null) {
       throw new AxelorException(
@@ -230,12 +225,50 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
     if (trackingNumber != null && stockMoveLine.getTrackingNumber() == null) {
       stockMoveLine.setTrackingNumber(trackingNumber);
     }
+  }
 
-    stockMoveService.plan(stockMove);
-    stockMoveService.copyQtyToRealQty(stockMove);
-    stockMoveService.realize(stockMove, false);
+  protected StockMove getStockMove(
+      StockCorrection stockCorrection,
+      Company company,
+      StockLocation computedFromStockLocation,
+      StockLocation computedToStockLocation)
+      throws AxelorException {
+    StockMove stockMove =
+        stockMoveService.createStockMove(
+            null,
+            null,
+            company,
+            computedFromStockLocation,
+            computedToStockLocation,
+            null,
+            null,
+            null,
+            StockMoveRepository.TYPE_INTERNAL);
 
+    stockMove.setStockCorrection(stockCorrection);
+    stockMove.setStockCorrectionReason(stockCorrection.getStockCorrectionReason());
     return stockMove;
+  }
+
+  protected StockLocationLine getStockLocationLine(
+      StockCorrection stockCorrection, StockLocation toStockLocation, Product product) {
+    StockLocationLine stockLocationLine;
+    if (stockCorrection.getTrackingNumber() == null) {
+      stockLocationLine =
+          stockLocationLineService.getOrCreateStockLocationLine(
+              stockCorrection.getStockLocation(), stockCorrection.getProduct());
+    } else {
+      stockLocationLine =
+          stockLocationLineService.getOrCreateDetailLocationLine(
+              stockCorrection.getStockLocation(),
+              stockCorrection.getProduct(),
+              stockCorrection.getTrackingNumber());
+    }
+    if (stockLocationLine == null) {
+      stockLocationLine =
+          stockLocationLineService.getOrCreateStockLocationLine(toStockLocation, product);
+    }
+    return stockLocationLine;
   }
 
   @Override
