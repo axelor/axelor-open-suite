@@ -180,6 +180,7 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
   }
 
   @Override
+  @Transactional(rollbackOn = {Exception.class})
   public void refusalToPay(
       InvoiceTerm invoiceTerm, CancelReason reasonOfRefusalToPay, String reasonOfRefusalToPayStr) {
     invoiceTerm.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_LITIGATION);
@@ -305,7 +306,9 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
     int pfpStatus = this.getPfpValidateStatusSelect(firstInvoiceTerm);
     int otherPfpStatus;
     for (InvoiceTerm otherInvoiceTerm : invoiceTermList) {
-      if (!otherInvoiceTerm.getId().equals(firstInvoiceTerm.getId())) {
+      if (otherInvoiceTerm.getId() != null
+          && firstInvoiceTerm.getId() != null
+          && !otherInvoiceTerm.getId().equals(firstInvoiceTerm.getId())) {
         otherPfpStatus = this.getPfpValidateStatusSelect(otherInvoiceTerm);
 
         if (otherPfpStatus != pfpStatus) {
