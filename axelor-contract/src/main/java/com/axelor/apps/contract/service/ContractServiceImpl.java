@@ -665,6 +665,8 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     invoiceLine.setTaxLine(taxLine);
     invoiceLine.setAccount(replacedAccount);
 
+    invoiceLine.setAnalyticDistributionTemplate(line.getAnalyticDistributionTemplate());
+
     if (CollectionUtils.isNotEmpty(line.getAnalyticMoveLineList())) {
       analyticLineModelService.setInvoiceLineAnalyticInfo(
           new AnalyticLineContractModel(line), invoiceLine);

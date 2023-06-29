@@ -235,7 +235,7 @@
         <panel-related name="analyticMoveLineListPanel" field="analyticMoveLineList"
           grid-view="analytic-move-line-distribution-grid"
           form-view="analytic-move-line-distribution-form" colSpan="12"
-          onChange="action-analytic-move-line-group-analytic-move-line-list-onchange"/>
+          onChange="action-purchase-order-line-group-analytic-move-line-list-onchange"/>
         <field name="$isValidAnalyticMoveLineList" type="boolean" hidden="true"/>
       </panel>
     </panel-tabs>
@@ -370,6 +370,12 @@
     <action name="action-purchase-order-line-method-compute"/>
     <action name="action-purchase-order-line-method-compute-analytic-distribution"
       if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()"/>
+  </action-group>
+
+  <action-group
+    name="action-purchase-order-line-group-analytic-move-line-list-onchange">
+    <action name="action-analytic-move-line-group-analytic-move-line-list-onchange"/>
+    <action name="action-purchase-order-line-method-print-analytic-account"/>
   </action-group>
 
   <action-attrs name="action-purchase-order-line-attrs-delivery-panel">

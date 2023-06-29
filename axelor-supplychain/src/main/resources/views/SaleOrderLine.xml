@@ -73,6 +73,11 @@
     </panel>
   </form>
 
+  <action-group name="action-sale-order-line-group-analytic-move-line-list-onchange">
+    <action name="action-analytic-move-line-group-analytic-move-line-list-onchange"/>
+    <action name="action-sale-order-line-method-print-analytic-account"/>
+  </action-group>
+
   <action-group name="action-supplychain-group-sale-saleorderline-onnew">
     <action name="action-group-sale-saleorderline-onnew"/>
     <action name="action-record-sale-order-line-fill-request-qty"/>

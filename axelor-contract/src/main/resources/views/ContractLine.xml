@@ -118,7 +118,7 @@
         <panel-related name="analyticMoveLineListPanel" field="analyticMoveLineList"
           grid-view="analytic-move-line-distribution-grid"
           form-view="analytic-move-line-distribution-form" colSpan="12"
-          onChange="action-analytic-move-line-group-analytic-move-line-list-onchange"/>
+          onChange="action-contract-line-group-analytic-move-line-list-onchange"/>
         <field name="$isValidAnalyticMoveLineList" type="boolean" hidden="true"/>
       </panel>
       <panel name="datePanel" title="Date" hidden="true">
@@ -179,7 +179,7 @@
         <panel-related name="analyticMoveLineListPanel" field="analyticMoveLineList"
           colSpan="12" grid-view="analytic-move-line-distribution-grid"
           form-view="analytic-move-line-distribution-form"
-          onChange="action-analytic-move-line-group-analytic-move-line-list-onchange"/>
+          onChange="action-contract-line-group-analytic-move-line-list-onchange"/>
         <field name="$isValidAnalyticMoveLineList" type="boolean" hidden="true"/>
       </panel>
     </panel-tabs>
@@ -242,11 +242,18 @@
   <action-group name="action-contract-line-group-additional-onnew-onload">
     <action name="action-contract-line-attrs-scale-and-precision"/>
     <action name="action-contract-line-attrs-hide-consumption-line"/>
+    <action name="action-contract-line-method-hide-axis-analytic-account"/>
+    <action name="action-contract-line-method-print-analytic-account"/>
   </action-group>
 
   <action-group
     name="action-contract-line-group-analytic-distribution-template-onchange">
     <action name="action-contract-line-method-create-distribution"/>
+    <action name="action-contract-line-method-print-analytic-account"/>
+  </action-group>
+
+  <action-group name="action-contract-line-group-analytic-move-line-list-onchange">
+    <action name="action-analytic-move-line-group-analytic-move-line-list-onchange"/>
     <action name="action-contract-line-method-print-analytic-account"/>
   </action-group>
 

@@ -224,6 +224,7 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
   public AnalyticLine printAnalyticAccount(AnalyticLine analyticLine, Company company)
       throws AxelorException {
     if (CollectionUtils.isEmpty(analyticLine.getAnalyticMoveLineList()) || company == null) {
+      this.resetAxisAnalyticAccount(analyticLine);
       return analyticLine;
     }
 
@@ -240,6 +241,8 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
       if (analyticMoveLineList.size() == 1) {
         AnalyticMoveLine analyticMoveLine = analyticMoveLineList.get(0);
         this.setAxisAccount(analyticLine, analyticAxisByCompany, analyticMoveLine);
+      } else {
+        this.setAxisAccount(analyticLine, analyticAxisByCompany, null);
       }
     }
 
@@ -250,7 +253,10 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
       AnalyticLine analyticLine,
       AnalyticAxisByCompany analyticAxisByCompany,
       AnalyticMoveLine analyticMoveLine) {
-    AnalyticAccount analyticAccount = analyticMoveLine.getAnalyticAccount();
+    AnalyticAccount analyticAccount = null;
+    if (analyticMoveLine != null) {
+      analyticAccount = analyticMoveLine.getAnalyticAccount();
+    }
 
     switch (analyticAxisByCompany.getSequence()) {
       case 0:
@@ -323,5 +329,13 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
     }
 
     attrsMap.get(field).put(attr, value);
+  }
+
+  protected void resetAxisAnalyticAccount(AnalyticLine analyticLine) {
+    analyticLine.setAxis1AnalyticAccount(null);
+    analyticLine.setAxis2AnalyticAccount(null);
+    analyticLine.setAxis3AnalyticAccount(null);
+    analyticLine.setAxis4AnalyticAccount(null);
+    analyticLine.setAxis5AnalyticAccount(null);
   }
 }
