@@ -41,6 +41,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MoveGroupServiceImpl implements MoveGroupService {
@@ -372,6 +373,19 @@ public class MoveGroupServiceImpl implements MoveGroupService {
       valuesMap.put("moveLineMassEntryList", move.getMoveLineMassEntryList());
     }
 
+    if (List.of(
+                MoveRepository.STATUS_DAYBOOK,
+                MoveRepository.STATUS_ACCOUNTED,
+                MoveRepository.STATUS_SIMULATED)
+            .contains(move.getStatusSelect())
+        && appAccountService.getAppAccount() != null
+        && appAccountService.getAppAccount().getActivatePassedForPayment()) {
+      Integer pfpStatus = moveInvoiceTermService.checkOtherInvoiceTerms(move);
+      if (pfpStatus != null) {
+        valuesMap.put("pfpValidateStatusSelect", move.getPfpValidateStatusSelect());
+      }
+    }
+
     valuesMap.put("dueDate", move.getDueDate());
 
     return valuesMap;
@@ -386,6 +400,9 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     moveAttrsService.addDateChangeFalseValue(move, paymentConditionChange, attrsMap);
     if (move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL) {
       moveAttrsService.addMassEntryBtnHidden(move, attrsMap);
+    }
+    if (move.getStatusSelect() != MoveRepository.STATUS_NEW) {
+      moveAttrsService.getPfpAttrs(move, AuthUtils.getUser(), attrsMap);
     }
 
     return attrsMap;
@@ -454,13 +471,15 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   }
 
   @Override
-  public Map<String, Map<String, Object>> getPaymentConditionOnChangeAttrsMap(Move move) {
+  public Map<String, Map<String, Object>> getPaymentConditionOnChangeAttrsMap(Move move)
+      throws AxelorException {
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
     moveAttrsService.addPaymentConditionChangeChangeValue(false, attrsMap);
     moveAttrsService.addHeaderChangeValue(false, attrsMap);
     moveAttrsService.addDateChangeFalseValue(move, true, attrsMap);
     moveAttrsService.addDueDateHidden(move, attrsMap);
+    moveAttrsService.getPfpAttrs(move, AuthUtils.getUser(), attrsMap);
 
     return attrsMap;
   }
