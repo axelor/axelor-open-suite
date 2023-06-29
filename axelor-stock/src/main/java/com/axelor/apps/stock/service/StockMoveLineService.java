@@ -288,7 +288,12 @@ public interface StockMoveLineService {
 
   /** To update realQty and conformity of a stock move line (API AOS) */
   void updateStockMoveLine(
-      StockMoveLine stockMoveLine, BigDecimal realQty, Integer conformity, Unit unit)
+      StockMoveLine stockMoveLine,
+      BigDecimal realQty,
+      Integer conformity,
+      Unit unit,
+      StockLocation fromStockLocation,
+      StockLocation toStockLocation)
       throws AxelorException;
 
   /**
