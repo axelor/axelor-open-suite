@@ -90,6 +90,8 @@ public class MoveRecordUpdateServiceImpl implements MoveRecordUpdateService {
       }
     }
 
+    moveInvoiceTermService.checkOtherInvoiceTerms(move);
+
     return flashMessage;
   }
 

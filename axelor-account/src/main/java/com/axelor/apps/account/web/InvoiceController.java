@@ -1229,9 +1229,11 @@ public class InvoiceController {
       invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
 
       if (invoice != null && !CollectionUtils.isEmpty(invoice.getInvoiceTermList())) {
-        Beans.get(InvoiceTermPfpService.class).generateInvoiceTermsAfterPfpPartial(invoice);
+        if (Beans.get(InvoiceTermPfpService.class)
+            .generateInvoiceTermsAfterPfpPartial(invoice.getInvoiceTermList())) {
+          response.setReload(true);
+        }
       }
-      response.setReload(true);
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -1246,6 +1248,17 @@ public class InvoiceController {
       }
       invoice = Beans.get(InvoiceService.class).computeEstimatedPaymentDate(invoice);
       response.setValues(invoice);
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void managePfpStatusOnInvoiceTerm(ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+    try {
+      Beans.get(InvoiceTermPfpService.class).checkOtherInvoiceTerms(invoice);
+      response.setValue("pfpValidateStatusSelect", invoice.getPfpValidateStatusSelect());
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);

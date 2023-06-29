@@ -25,6 +25,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Company;
 import com.axelor.auth.db.User;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -46,6 +47,11 @@ public interface InvoiceTermPfpService {
       PfpPartialReason partialReason)
       throws AxelorException;
 
+  @Transactional
+  void checkOtherInvoiceTerms(Invoice invoice);
+
+  int getPfpValidateStatusSelect(InvoiceTerm invoiceTerm);
+
   boolean getManagePfpCondition(Company company) throws AxelorException;
 
   boolean getUserCondition(User pfpValidatorUser, User user);
@@ -55,5 +61,6 @@ public interface InvoiceTermPfpService {
   void initPftPartialValidation(
       InvoiceTerm originalInvoiceTerm, BigDecimal grantedAmount, PfpPartialReason partialReason);
 
-  void generateInvoiceTermsAfterPfpPartial(Invoice originalInvoice) throws AxelorException;
+  boolean generateInvoiceTermsAfterPfpPartial(List<InvoiceTerm> invoiceTermList)
+      throws AxelorException;
 }
