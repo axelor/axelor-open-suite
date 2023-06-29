@@ -20,6 +20,7 @@ package com.axelor.apps.account.service.invoice;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceTerm;
+import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PfpPartialReason;
 import com.axelor.apps.account.db.SubstitutePfpValidator;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
@@ -183,6 +184,7 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
   @Transactional(rollbackOn = {Exception.class})
   public void refusalToPay(
       InvoiceTerm invoiceTerm, CancelReason reasonOfRefusalToPay, String reasonOfRefusalToPayStr) {
+    User currentUser = AuthUtils.getUser();
     invoiceTerm.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_LITIGATION);
     invoiceTerm.setDecisionPfpTakenDateTime(
         Beans.get(AppBaseService.class)
@@ -190,10 +192,11 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
             .toLocalDateTime());
     invoiceTerm.setInitialPfpAmount(BigDecimal.ZERO);
     invoiceTerm.setRemainingPfpAmount(invoiceTerm.getAmount());
-    invoiceTerm.setPfpValidatorUser(AuthUtils.getUser());
     invoiceTerm.setReasonOfRefusalToPay(reasonOfRefusalToPay);
     invoiceTerm.setReasonOfRefusalToPayStr(
         reasonOfRefusalToPayStr != null ? reasonOfRefusalToPayStr : reasonOfRefusalToPay.getName());
+
+    updatePfpValidatorUser(invoiceTerm);
   }
 
   @Override
@@ -405,5 +408,25 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
       invoiceTermRepo.save(it);
     }
     return true;
+  }
+
+  protected void updatePfpValidatorUser(InvoiceTerm invoiceTerm) {
+    Invoice invoice = invoiceTerm.getInvoice();
+    MoveLine moveLine = invoiceTerm.getMoveLine();
+    User pfpValidator = AuthUtils.getUser();
+    if (invoiceTerm.getPfpValidatorUser() != null) {
+      pfpValidator = invoiceTerm.getPfpValidatorUser();
+    } else if (invoice != null && invoice.getPfpValidatorUser() != null) {
+      pfpValidator = invoice.getPfpValidatorUser();
+    } else if (moveLine != null && moveLine.getMove().getPfpValidatorUser() != null) {
+      pfpValidator = moveLine.getMove().getPfpValidatorUser();
+    }
+
+    invoiceTerm.setPfpValidatorUser(pfpValidator);
+    if (invoice != null) {
+      invoice.setPfpValidatorUser(pfpValidator);
+    } else if (moveLine != null) {
+      moveLine.getMove().setPfpValidatorUser(pfpValidator);
+    }
   }
 }
