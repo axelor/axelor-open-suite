@@ -1,5 +1,3 @@
 ---
-title: "[CRM - Partner/Prospect] Fix for partner-customer-form with Partner isProspect"
+title: "Partner: hide the config 'Is Employee' in partner form view when it is not necessary."
 type: fix
-description: |
-  Totally remove isEmployee from 'partner-form' and children.
