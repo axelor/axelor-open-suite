@@ -286,9 +286,9 @@
     <extend target="//field[@name='jobTitleFunction']">
       <attribute name="x-create" value="function"/>
       <insert position="before">
+        <field name="isMainContact" colSpan="4"/>
         <field name="isDoNotCall" colSpan="4" hideIf="$readonly()"/>
         <field name="isDoNotEmail" colSpan="4" hideIf="$readonly()"/>
-        <field name="isMainContact" colSpan="4"/>
         <field name="$viewerCallAndEmail" showTitle="false" showIf="$readonly()" colSpan="12">
           <viewer><![CDATA[
 			<h4>
