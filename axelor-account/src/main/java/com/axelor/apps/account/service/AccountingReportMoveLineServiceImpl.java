@@ -363,16 +363,24 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
       }
 
       if (title.equals(String.valueOf(PartnerRepository.PARTNER_TYPE_COMPANY))) {
-        String declarantRegistrationCode = listObj[4].toString().replaceAll(" ", "");
+        if (listObj[4] != null) {
+          String declarantRegistrationCode = listObj[4].toString().replaceAll(" ", "");
 
-        String declarantSiren = computeSiren(declarantRegistrationCode, countryAlpha2code);
-        String declarantNic = computeNic(declarantRegistrationCode, countryAlpha2code);
-        lines.add(setN4DSLine("S70.G10.00.003.001", declarantSiren));
-        lines.add(setN4DSLine("S70.G10.00.003.002", declarantNic));
-        lines.add(setN4DSLine("S70.G10.00.003.003", listObj[2].toString()));
+          String declarantSiren = computeSiren(declarantRegistrationCode, countryAlpha2code);
+          String declarantNic = computeNic(declarantRegistrationCode, countryAlpha2code);
+          lines.add(setN4DSLine("S70.G10.00.003.001", declarantSiren));
+          lines.add(setN4DSLine("S70.G10.00.003.002", declarantNic));
+        }
+        if (listObj[2] != null) {
+          lines.add(setN4DSLine("S70.G10.00.003.003", listObj[2].toString()));
+        }
       } else {
-        lines.add(setN4DSLine("S70.G10.00.002.001", compileIdentityValue(listObj[2].toString())));
-        lines.add(setN4DSLine("S70.G10.00.002.002", compileIdentityValue(listObj[3].toString())));
+        if (listObj[2] != null) {
+          lines.add(setN4DSLine("S70.G10.00.002.001", compileIdentityValue(listObj[2].toString())));
+        }
+        if (listObj[3] != null) {
+          lines.add(setN4DSLine("S70.G10.00.002.002", compileIdentityValue(listObj[3].toString())));
+        }
       }
       if (listObj[5] != null && !Strings.isNullOrEmpty(listObj[5].toString())) {
         lines.add(setN4DSLine("S70.G10.00.004.001", compileAddressValue(listObj[5].toString())));
@@ -380,7 +388,7 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
       if (listObj[6] != null && !Strings.isNullOrEmpty(listObj[6].toString())) {
         lines.add(setN4DSLine("S70.G10.00.004.006", compileAddressValue(listObj[6].toString())));
       }
-      if (countryAlpha2code.equals("FR")) {
+      if (listObj[8] != null && countryAlpha2code.equals("FR")) {
         lines.add(setN4DSLine("S70.G10.00.004.010", zip));
         lines.add(
             setN4DSLine(
