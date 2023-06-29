@@ -21,6 +21,7 @@ package com.axelor.apps.account.service.move.attributes;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticAxisByCompany;
+import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
@@ -397,5 +398,32 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
         move.getMassEntryStatusSelect() == MoveRepository.MASS_ENTRY_STATUS_VALIDATED,
         attrsMap);
     this.addAttr("validateMassEntryMoves", "hidden", true, attrsMap);
+  }
+
+  @Override
+  public void addPartnerRequired(Move move, Map<String, Map<String, Object>> attrsMap) {
+    Objects.requireNonNull(move);
+    this.addAttr("partner", "required", isPartnerRequired(move.getJournal()), attrsMap);
+  }
+
+  @Override
+  public void addMainPanelTabHiddenValue(Move move, Map<String, Map<String, Object>> attrsMap) {
+    Objects.requireNonNull(move);
+
+    this.addAttr(
+        "$mainPanelTabHidden",
+        "value",
+        move.getJournal() == null
+            || (isPartnerRequired(move.getJournal()) && move.getPartner() == null),
+        attrsMap);
+  }
+
+  protected boolean isPartnerRequired(Journal journal) {
+    return journal != null
+        && journal.getJournalType() != null
+        && (journal.getJournalType().getTechnicalTypeSelect()
+                == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE
+            || journal.getJournalType().getTechnicalTypeSelect()
+                == JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE);
   }
 }

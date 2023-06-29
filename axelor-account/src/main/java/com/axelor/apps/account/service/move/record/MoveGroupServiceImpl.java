@@ -193,6 +193,8 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     moveAttrsService.addMoveLineListViewerHidden(move, attrsMap);
     moveAttrsService.addFunctionalOriginSelectDomain(move, attrsMap);
     moveAttrsService.addMoveLineAnalyticAttrs(move, attrsMap);
+    moveAttrsService.addPartnerRequired(move, attrsMap);
+    moveAttrsService.addMainPanelTabHiddenValue(move, attrsMap);
 
     if (appAccountService.getAppAccount().getActivatePassedForPayment()) {
       moveAttrsService.getPfpAttrs(move, user, attrsMap);
@@ -306,6 +308,8 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
     moveAttrsService.addFunctionalOriginSelectDomain(move, attrsMap);
+    moveAttrsService.addPartnerRequired(move, attrsMap);
+    moveAttrsService.addMainPanelTabHiddenValue(move, attrsMap);
 
     if (move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL) {
       moveAttrsService.addMoveLineAnalyticAttrs(move, attrsMap);
@@ -351,6 +355,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
 
     moveAttrsService.addHidden(move, attrsMap);
     moveAttrsService.addDateChangeFalseValue(move, paymentConditionChange, attrsMap);
+    moveAttrsService.addMainPanelTabHiddenValue(move, attrsMap);
 
     return attrsMap;
   }
@@ -503,6 +508,9 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
     moveAttrsService.addMoveLineAnalyticAttrs(move, attrsMap);
+    moveAttrsService.addPartnerRequired(move, attrsMap);
+    moveAttrsService.addMainPanelTabHiddenValue(move, attrsMap);
+
     if (move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL) {
       moveAttrsService.addMassEntryBtnHidden(move, attrsMap);
     }
