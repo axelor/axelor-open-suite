@@ -67,6 +67,12 @@
 
   <grid name="move-line-account-reconcile-group-grid" title="Move lines"
     model="com.axelor.apps.account.db.MoveLine">
+    <toolbar>
+      <button name="accountingReconcileBtn" title="Accounting Reconcile"
+        onClick="action-method-accounting-reconcile"/>
+      <button name="calculateBtn" title="Calculation of totals"
+        onClick="action-account-move-line-method-calculate-balance"/>
+    </toolbar>
     <field name="name"/>
     <field name="date"/>
     <field name="move.period"/>
@@ -599,7 +605,7 @@
         readonlyIf="amountPaid &gt; 0" onChange="action-move-line-method-account-onchange"/>
       <field name="partner" form-view="partner-form" grid-view="partner-grid"
         onSelect="action-move-line-method-partner-onselect" canEdit="false"
-        readonlyIf="amountPaid &gt; 0" onChange="action-move-line-method-partner-onchange"
+        onChange="action-move-line-method-partner-onchange"
         requiredIf="account.useForPartnerBalance"/>
       <field name="currencyAmount"
         onChange="action-move-line-method-currency-amount-rate-onchange"

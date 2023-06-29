@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
     <list-property name="userProperties">
         <structure>
             <property name="name">ReportValues.ValuesDS.x</property>
@@ -1498,8 +1498,9 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                     </column>
                     <row id="14">
                         <cell id="5522">
-                            <text id="5524">
-                                <property name="fontSize">8pt</property>
+                            <image id="6058">
+                                <property name="height">25px</property>
+                                <property name="width">50px</property>
                                 <property name="dataSet">ReportDS</property>
                                 <list-property name="visibility">
                                     <structure>
@@ -1515,15 +1516,9 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                                         <property name="dataType">string</property>
                                     </structure>
                                 </list-property>
-                                <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[<TABLE>
-	<TR>
-		<VALUE-OF format="HTML">
-			"<TD><IMG src='" + params["AttachmentPath"].value + row["logo_path"] + "' alt='' height='25' width='50'/></TD>"
-		</VALUE-OF>
-	</TR>
-</TABLE>]]></text-property>
-                            </text>
+                                <property name="source">file</property>
+                                <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
+                            </image>
                         </cell>
                         <cell id="5487">
                             <text id="5499">
@@ -1776,32 +1771,18 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                 <cell id="5510">
                     <property name="fontSize">24pt</property>
                     <property name="textAlign">center</property>
-                    <text id="4220">
-                        <property name="fontSize">8pt</property>
-                        <property name="dataSet">ReportDS</property>
+                    <image id="6056">
+                        <property name="height">50px</property>
+                        <property name="width">100px</property>
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
                                 <expression name="valueExpr" type="javascript">row["logo_path"] == null</expression>
                             </structure>
                         </list-property>
-                        <list-property name="boundDataColumns">
-                            <structure>
-                                <property name="name">logo_path</property>
-                                <text-property name="displayName">logo_path</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                        </list-property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<TABLE>
-	<TR>
-		<VALUE-OF format="HTML">
-			"<TD><IMG src='" + params["AttachmentPath"].value + row["logo_path"] + "' alt='' height='50' width='100'/></TD>"
-		</VALUE-OF>
-	</TR>
-</TABLE>]]></text-property>
-                    </text>
+                        <property name="source">file</property>
+                        <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
+                    </image>
                 </cell>
                 <cell id="5511">
                     <property name="colSpan">5</property>

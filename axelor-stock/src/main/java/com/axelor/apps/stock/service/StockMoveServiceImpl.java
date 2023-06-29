@@ -382,6 +382,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     updateLocations(stockMove, fromStockLocation, toStockLocation, initialStatus);
 
     stockMove.setCancelReason(null);
+    stockMove.setRealDate(null);
 
     stockMoveRepo.save(stockMove);
   }
@@ -393,6 +394,7 @@ public class StockMoveServiceImpl implements StockMoveService {
    */
   protected void setPlannedStatus(StockMove stockMove) {
     stockMove.setStatusSelect(StockMoveRepository.STATUS_PLANNED);
+    stockMoveRepo.save(stockMove);
   }
 
   /**
