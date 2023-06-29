@@ -1,3 +1,0 @@
----
-title: "ForeCastController use equals instead of == or != between two Integer"
-type: fix
