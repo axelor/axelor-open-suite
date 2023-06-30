@@ -49,8 +49,8 @@ import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.db.repo.TimesheetTimerHRRepository;
 import com.axelor.apps.hr.db.repo.UserHRRepository;
-import com.axelor.apps.hr.service.EmployeeDashboardService;
-import com.axelor.apps.hr.service.EmployeeDashboardServiceImpl;
+import com.axelor.apps.hr.service.HRDashboardService;
+import com.axelor.apps.hr.service.HRDashboardServiceImpl;
 import com.axelor.apps.hr.service.analytic.AnalyticMoveLineGenerateRealServiceHrImpl;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.app.AppHumanResourceServiceImpl;
@@ -176,7 +176,7 @@ public class HumanResourceModule extends AxelorModule {
     bind(ProjectPlanningTimeComputeNameService.class)
         .to(ProjectPlanningTimeComputeNameServiceImpl.class);
     bind(MoveValidateServiceImpl.class).to(MoveValidateHRServiceImpl.class);
-    bind(EmployeeDashboardService.class).to(EmployeeDashboardServiceImpl.class);
+    bind(HRDashboardService.class).to(HRDashboardServiceImpl.class);
     bind(ExpenseCancellationService.class).to(ExpenseCancellationServiceImpl.class);
     bind(ExpenseConfirmationService.class).to(ExpenseConfirmationServiceImpl.class);
     bind(ExpenseRefusalService.class).to(ExpenseRefusalServiceImpl.class);

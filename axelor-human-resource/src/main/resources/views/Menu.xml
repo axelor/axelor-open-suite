@@ -601,6 +601,15 @@
     <view type="dashboard" name="hr.user.dashboard.sample"/>
   </action-view>
 
+  <menuitem name="menu-hr-manager-dashboard1" parent="hr-report-root"
+    title="Manager dashboard" action="hr.manager.dashboard.view1" order="300"/>
+
+  <action-view name="hr.manager.dashboard.view1" title="Manager dashboard"
+    model="com.axelor.utils.db.Wizard">
+    <view type="form" name="hr-manager-dashboard-form"/>
+    <view-param name="show-toolbar" value="false"/>
+  </action-view>
+
   <menuitem name="project-spent-time" parent="project-current-project" title="Spent time"
     order="300" action="project.spent.time"/>
   <action-view name="project.spent.time" title="Spent time"
