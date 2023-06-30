@@ -626,9 +626,11 @@
     <view type="form" name="research-parameter-config-form"/>
   </action-view>
 
+  <menuitem name="crm-conf-partner-companies" parent="crm-conf"
+    title="Partner Companies" order="1200" if="eval:  __config__.app.getApp('crm')?.getIsManagePartnerCompany()"/>
 
-  <menuitem name="crm-conf-collaborator-domain" parent="crm-conf"
-    title="Partner work domain" action="crm.conf.collaborator.domain" order="1200"/>
+  <menuitem name="crm-conf-collaborator-domain" parent="crm-conf-partner-companies"
+    title="Partner work domain" action="crm.conf.collaborator.domain" order="100"/>
 
   <action-view name="crm.conf.collaborator.domain" title="Partner work domain"
     model="com.axelor.apps.crm.db.CollaboratorDomain">
@@ -636,8 +638,8 @@
     <view type="form" name="collaborator-domain-form"/>
   </action-view>
 
-  <menuitem name="crm-conf-fidelity" parent="crm-conf" title="Partner Fidelity"
-    action="crm.conf.fidelity" order="1300"/>
+  <menuitem name="crm-conf-fidelity" parent="crm-conf-partner-companies" title="Partner Fidelity"
+    action="crm.conf.fidelity" order="200"/>
 
   <action-view name="crm.conf.fidelity" title="Partner Fidelity"
     model="com.axelor.apps.crm.db.Fidelity">
