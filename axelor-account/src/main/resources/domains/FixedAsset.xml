@@ -74,7 +74,6 @@
 
     <date name="firstServiceDate" title="First Service Date"/>
     <date name="failoverDate" title="Failover Date"/>
-    <decimal name="pastDepreciation" title="Past Depreciation"/>
     <decimal name="accountingValue" title="Accounting value"/>
     <decimal name="correctedAccountingValue" title="Corrected Accounting Value"/>
 
