@@ -18,26 +18,19 @@
  */
 package com.axelor.apps.hr.service.expense;
 
-import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Expense;
-import java.math.BigDecimal;
+import com.axelor.apps.hr.db.ExpenseLine;
+import java.util.List;
 
-public interface ExpenseService {
+public interface ExpenseLineService {
+
+  public List<ExpenseLine> getExpenseLineList(Expense expense);
 
   /**
-   * Get the expense from employee, if no expense is found create one.
+   * fill {@link ExpenseLine#expense} in {@link Expense#generalExpenseLineList} and {@link
+   * Expense#kilometricExpenseLineList}
    *
-   * @param employee
-   * @return
+   * @param expense
    */
-  public Expense getOrCreateExpense(Employee employee);
-
-  public BigDecimal computePersonalExpenseAmount(Expense expense);
-
-  public BigDecimal computeAdvanceAmount(Expense expense);
-
-  public void setDraftSequence(Expense expense) throws AxelorException;
-
-  public Expense updateMoveDateAndPeriod(Expense expense);
+  void completeExpenseLines(Expense expense);
 }

@@ -19,25 +19,25 @@
 package com.axelor.apps.hr.service.expense;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Expense;
-import java.math.BigDecimal;
+import com.axelor.message.db.Message;
+import java.io.IOException;
+import wslite.json.JSONException;
 
-public interface ExpenseService {
+public interface ExpenseActionService {
 
-  /**
-   * Get the expense from employee, if no expense is found create one.
-   *
-   * @param employee
-   * @return
-   */
-  public Expense getOrCreateExpense(Employee employee);
+  public void confirm(Expense expense) throws AxelorException;
 
-  public BigDecimal computePersonalExpenseAmount(Expense expense);
+  public Message sendConfirmationEmail(Expense expense)
+      throws AxelorException, ClassNotFoundException, IOException, JSONException;
 
-  public BigDecimal computeAdvanceAmount(Expense expense);
+  public void refuse(Expense expense) throws AxelorException;
 
-  public void setDraftSequence(Expense expense) throws AxelorException;
+  public Message sendRefusalEmail(Expense expense)
+      throws AxelorException, ClassNotFoundException, IOException, JSONException;
 
-  public Expense updateMoveDateAndPeriod(Expense expense);
+  public void cancel(Expense expense) throws AxelorException;
+
+  public Message sendCancellationEmail(Expense expense)
+      throws AxelorException, ClassNotFoundException, IOException, JSONException;
 }

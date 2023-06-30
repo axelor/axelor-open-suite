@@ -59,7 +59,14 @@ import com.axelor.apps.hr.service.HRMenuTagService;
 import com.axelor.apps.hr.service.HRMenuValidateService;
 import com.axelor.apps.hr.service.KilometricService;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
+import com.axelor.apps.hr.service.expense.ExpenseActionService;
+import com.axelor.apps.hr.service.expense.ExpenseAnalyticService;
+import com.axelor.apps.hr.service.expense.ExpenseKilometricService;
+import com.axelor.apps.hr.service.expense.ExpenseLineService;
+import com.axelor.apps.hr.service.expense.ExpensePaymentService;
 import com.axelor.apps.hr.service.expense.ExpenseService;
+import com.axelor.apps.hr.service.expense.ExpenseValidateService;
+import com.axelor.apps.hr.service.expense.ExpenseVentilateService;
 import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
@@ -101,7 +108,7 @@ public class ExpenseController {
     ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
 
     expenseLine =
-        Beans.get(ExpenseService.class).createAnalyticDistributionWithTemplate(expenseLine);
+        Beans.get(ExpenseAnalyticService.class).createAnalyticDistributionWithTemplate(expenseLine);
     response.setValue("analyticMoveLineList", expenseLine.getAnalyticMoveLineList());
   }
 
@@ -113,7 +120,8 @@ public class ExpenseController {
       setExpense(request, expenseLine);
     }
     if (Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()) {
-      expenseLine = Beans.get(ExpenseService.class).computeAnalyticDistribution(expenseLine);
+      expenseLine =
+          Beans.get(ExpenseAnalyticService.class).computeAnalyticDistribution(expenseLine);
       response.setValue("analyticMoveLineList", expenseLine.getAnalyticMoveLineList());
     }
   }
@@ -265,14 +273,15 @@ public class ExpenseController {
   }
 
   /**
-   * Called from expense form, on expense lines change. Call {@link ExpenseService#compute(Expense)}
+   * Called from expense form, on expense lines change. Call {@link
+   * ExpenseValidateService#compute(Expense)}
    *
    * @param request
    * @param response
    */
   public void compute(ActionRequest request, ActionResponse response) {
     Expense expense = request.getContext().asType(Expense.class);
-    expense = Beans.get(ExpenseService.class).compute(expense);
+    expense = Beans.get(ExpenseValidateService.class).compute(expense);
     response.setValues(expense);
   }
 
@@ -287,7 +296,7 @@ public class ExpenseController {
     try {
       Expense expense = request.getContext().asType(Expense.class);
       expense = Beans.get(ExpenseRepository.class).find(expense.getId());
-      Move move = Beans.get(ExpenseService.class).ventilate(expense);
+      Move move = Beans.get(ExpenseVentilateService.class).ventilate(expense);
       response.setReload(true);
       if (move != null) {
         response.setView(
@@ -345,11 +354,11 @@ public class ExpenseController {
     try {
       Expense expense = request.getContext().asType(Expense.class);
       expense = Beans.get(ExpenseRepository.class).find(expense.getId());
-      ExpenseService expenseService = Beans.get(ExpenseService.class);
+      ExpenseActionService expenseActionService = Beans.get(ExpenseActionService.class);
 
-      expenseService.cancel(expense);
+      expenseActionService.cancel(expense);
 
-      Message message = expenseService.sendCancellationEmail(expense);
+      Message message = expenseActionService.sendCancellationEmail(expense);
       if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
         response.setInfo(
             String.format(
@@ -367,7 +376,7 @@ public class ExpenseController {
     Expense expense = request.getContext().asType(Expense.class);
     expense = Beans.get(ExpenseRepository.class).find(expense.getId());
     try {
-      Beans.get(ExpenseService.class).addPayment(expense);
+      Beans.get(ExpensePaymentService.class).addPayment(expense);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -375,7 +384,8 @@ public class ExpenseController {
   }
 
   /**
-   * Called on clicking cancelPaymentButton, call {@link ExpenseService#cancelPayment(Expense)}.
+   * Called on clicking cancelPaymentButton, call {@link
+   * ExpensePaymentService#cancelPayment(Expense)}.
    *
    * @param request
    * @param response
@@ -384,7 +394,7 @@ public class ExpenseController {
     Expense expense = request.getContext().asType(Expense.class);
     expense = Beans.get(ExpenseRepository.class).find(expense.getId());
     try {
-      Beans.get(ExpenseService.class).cancelPayment(expense);
+      Beans.get(ExpensePaymentService.class).cancelPayment(expense);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -397,11 +407,11 @@ public class ExpenseController {
     try {
       Expense expense = request.getContext().asType(Expense.class);
       expense = Beans.get(ExpenseRepository.class).find(expense.getId());
-      ExpenseService expenseService = Beans.get(ExpenseService.class);
+      ExpenseActionService expenseActionService = Beans.get(ExpenseActionService.class);
 
-      expenseService.confirm(expense);
+      expenseActionService.confirm(expense);
 
-      Message message = expenseService.sendConfirmationEmail(expense);
+      Message message = expenseActionService.sendConfirmationEmail(expense);
       if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
         response.setInfo(
             String.format(
@@ -433,11 +443,11 @@ public class ExpenseController {
     try {
       Expense expense = request.getContext().asType(Expense.class);
       expense = Beans.get(ExpenseRepository.class).find(expense.getId());
-      ExpenseService expenseService = Beans.get(ExpenseService.class);
+      ExpenseValidateService expenseValidateService = Beans.get(ExpenseValidateService.class);
 
-      expenseService.validate(expense);
+      expenseValidateService.validate(expense);
 
-      Message message = expenseService.sendValidationEmail(expense);
+      Message message = expenseValidateService.sendValidationEmail(expense);
       if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
         response.setInfo(
             String.format(
@@ -458,11 +468,11 @@ public class ExpenseController {
     try {
       Expense expense = request.getContext().asType(Expense.class);
       expense = Beans.get(ExpenseRepository.class).find(expense.getId());
-      ExpenseService expenseService = Beans.get(ExpenseService.class);
+      ExpenseActionService expenseActionService = Beans.get(ExpenseActionService.class);
 
-      expenseService.refuse(expense);
+      expenseActionService.refuse(expense);
 
-      Message message = expenseService.sendRefusalEmail(expense);
+      Message message = expenseActionService.sendRefusalEmail(expense);
       if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
         response.setInfo(
             String.format(
@@ -482,7 +492,8 @@ public class ExpenseController {
 
     try {
       Expense expense = request.getContext().getParent().asType(Expense.class);
-      Product expenseProduct = Beans.get(ExpenseService.class).getKilometricExpenseProduct(expense);
+      Product expenseProduct =
+          Beans.get(ExpenseKilometricService.class).getKilometricExpenseProduct(expense);
       logger.debug("Get Kilometric expense product : {}", expenseProduct);
       response.setValue("expenseProduct", expenseProduct);
     } catch (Exception e) {
@@ -493,12 +504,13 @@ public class ExpenseController {
   public void validateAndCompute(ActionRequest request, ActionResponse response) {
 
     Expense expense = request.getContext().asType(Expense.class);
+    ExpenseLineService expenseLineService = Beans.get(ExpenseLineService.class);
     ExpenseService expenseService = Beans.get(ExpenseService.class);
 
     List<Integer> expenseLineListId = new ArrayList<>();
     int compt = 0;
     LocalDate todayDate = Beans.get(AppBaseService.class).getTodayDate(expense.getCompany());
-    for (ExpenseLine expenseLine : expenseService.getExpenseLineList(expense)) {
+    for (ExpenseLine expenseLine : expenseLineService.getExpenseLineList(expense)) {
       compt++;
       if (expenseLine.getExpenseDate() != null && expenseLine.getExpenseDate().isAfter(todayDate)) {
         expenseLineListId.add(compt);
@@ -574,7 +586,8 @@ public class ExpenseController {
 
     try {
       List<KilometricAllowParam> kilometricAllowParamList =
-          Beans.get(ExpenseService.class).getListOfKilometricAllowParamVehicleFilter(expenseLine);
+          Beans.get(ExpenseKilometricService.class)
+              .getListOfKilometricAllowParamVehicleFilter(expenseLine);
       if (kilometricAllowParamList == null || kilometricAllowParamList.isEmpty()) {
         response.setAttr("kilometricAllowParam", "domain", "self.id IN (0)");
       } else {
@@ -630,7 +643,8 @@ public class ExpenseController {
 
     try {
       List<KilometricAllowParam> kilometricAllowParamList =
-          Beans.get(ExpenseService.class).getListOfKilometricAllowParamVehicleFilter(expenseLine);
+          Beans.get(ExpenseKilometricService.class)
+              .getListOfKilometricAllowParamVehicleFilter(expenseLine);
       response.setAttr(
           "kilometricAllowParam",
           "domain",

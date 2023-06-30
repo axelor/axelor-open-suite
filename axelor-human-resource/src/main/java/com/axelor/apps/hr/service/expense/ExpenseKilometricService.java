@@ -19,25 +19,18 @@
 package com.axelor.apps.hr.service.expense;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.hr.db.Expense;
-import java.math.BigDecimal;
+import com.axelor.apps.hr.db.ExpenseLine;
+import com.axelor.apps.hr.db.KilometricAllowParam;
+import java.util.List;
 
-public interface ExpenseService {
+public interface ExpenseKilometricService {
+  public Product getKilometricExpenseProduct(Expense expense) throws AxelorException;
 
-  /**
-   * Get the expense from employee, if no expense is found create one.
-   *
-   * @param employee
-   * @return
-   */
-  public Expense getOrCreateExpense(Employee employee);
+  public List<KilometricAllowParam> getListOfKilometricAllowParamVehicleFilter(
+      ExpenseLine expenseLine) throws AxelorException;
 
-  public BigDecimal computePersonalExpenseAmount(Expense expense);
-
-  public BigDecimal computeAdvanceAmount(Expense expense);
-
-  public void setDraftSequence(Expense expense) throws AxelorException;
-
-  public Expense updateMoveDateAndPeriod(Expense expense);
+  public List<KilometricAllowParam> getListOfKilometricAllowParamVehicleFilter(
+      ExpenseLine expenseLine, Expense expense) throws AxelorException;
 }

@@ -18,26 +18,27 @@
  */
 package com.axelor.apps.hr.service.expense;
 
+import com.axelor.apps.account.db.Move;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.hr.db.Expense;
-import java.math.BigDecimal;
 
-public interface ExpenseService {
+public interface ExpensePaymentService {
+
+  public void addPayment(Expense expense, BankDetails bankDetails) throws AxelorException;
+
+  public void addPayment(Expense expense) throws AxelorException;
 
   /**
-   * Get the expense from employee, if no expense is found create one.
+   * Cancel the payment in the expense in argument. Revert the payment status and clear all payment
+   * fields.
    *
-   * @param employee
-   * @return
+   * @param expense
+   * @throws AxelorException
    */
-  public Expense getOrCreateExpense(Employee employee);
+  void cancelPayment(Expense expense) throws AxelorException;
 
-  public BigDecimal computePersonalExpenseAmount(Expense expense);
+  void resetExpensePaymentAfterCancellation(Expense expense);
 
-  public BigDecimal computeAdvanceAmount(Expense expense);
-
-  public void setDraftSequence(Expense expense) throws AxelorException;
-
-  public Expense updateMoveDateAndPeriod(Expense expense);
+  public Move createMoveForExpensePayment(Expense expense) throws AxelorException;
 }

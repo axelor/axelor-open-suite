@@ -26,6 +26,7 @@ import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.expense.ExpenseFetchPeriodService;
+import com.axelor.apps.hr.service.expense.ExpenseLineService;
 import com.axelor.apps.hr.service.expense.ExpenseService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -48,7 +49,7 @@ public class ExpenseHRRepository extends ExpenseRepository {
       expense = super.save(expense);
       Beans.get(ExpenseService.class).setDraftSequence(expense);
       if (expense.getStatusSelect() == ExpenseRepository.STATUS_DRAFT) {
-        Beans.get(ExpenseService.class).completeExpenseLines(expense);
+        Beans.get(ExpenseLineService.class).completeExpenseLines(expense);
       }
 
       return expense;

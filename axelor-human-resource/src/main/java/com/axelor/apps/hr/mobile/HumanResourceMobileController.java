@@ -48,7 +48,9 @@ import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.KilometricService;
 import com.axelor.apps.hr.service.config.HRConfigService;
+import com.axelor.apps.hr.service.expense.ExpenseLineService;
 import com.axelor.apps.hr.service.expense.ExpenseService;
+import com.axelor.apps.hr.service.expense.ExpenseValidateService;
 import com.axelor.apps.hr.service.leave.LeaveService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
 import com.axelor.apps.hr.service.timesheet.TimesheetService;
@@ -191,7 +193,7 @@ public class HumanResourceMobileController {
       }
 
       List<ExpenseLine> expenseLineList =
-          Beans.get(ExpenseService.class).getExpenseLineList(expense);
+          Beans.get(ExpenseLineService.class).getExpenseLineList(expense);
       if (expenseLineList != null && !expenseLineList.isEmpty()) {
         Iterator<ExpenseLine> expenseLineIter = expenseLineList.iterator();
         while (expenseLineIter.hasNext()) {
@@ -259,6 +261,7 @@ public class HumanResourceMobileController {
         }
 
         ExpenseService expenseService = Beans.get(ExpenseService.class);
+        ExpenseValidateService expenseValidateService = Beans.get(ExpenseValidateService.class);
         Expense expense = expenseService.getOrCreateExpense(employee);
 
         ExpenseLine expenseLine;
@@ -313,7 +316,7 @@ public class HumanResourceMobileController {
           }
         }
         expense.addGeneralExpenseLineListItem(expenseLine);
-        expense = expenseService.compute(expense);
+        expense = expenseValidateService.compute(expense);
 
         Beans.get(ExpenseRepository.class).save(expense);
         HashMap<String, Object> data = new HashMap<>();
