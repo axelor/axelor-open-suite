@@ -140,7 +140,6 @@
           <field name="description" readonlyIf="$validatePeriod"
             requiredIf="company.accountConfig.isDescriptionRequired"
             onChange="action-move-group-description-onchange" colSpan="6"/>
-          <field name="company.accountConfig.isDescriptionRequired"/>
         </panel>
       </panel>
       <panel name="otherDetailsPanel" colSpan="3">
