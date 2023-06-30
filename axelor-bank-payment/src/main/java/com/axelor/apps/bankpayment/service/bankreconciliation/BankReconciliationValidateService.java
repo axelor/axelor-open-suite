@@ -121,11 +121,10 @@ public class BankReconciliationValidateService {
         bankReconciliation.getBankReconciliationLineList()) {
       if (!bankReconciliationLine.getIsPosted()
           && bankReconciliationLine.getMoveLine() == null
-          && bankReconciliationLine.getAccount() != null) {
-        if (bankReconciliation.getCashAccount() == null
-            || bankReconciliation.getJournal() == null) {
-          bankReconciliationLinePartnerOrAccountErrorList.add(bankReconciliationLine);
-        }
+          && bankReconciliationLine.getAccount() != null
+          && (bankReconciliation.getCashAccount() == null
+              || bankReconciliation.getJournal() == null)) {
+        bankReconciliationLinePartnerOrAccountErrorList.add(bankReconciliationLine);
       }
     }
     if (ObjectUtils.notEmpty(bankReconciliationLinePartnerOrAccountErrorList)) {
