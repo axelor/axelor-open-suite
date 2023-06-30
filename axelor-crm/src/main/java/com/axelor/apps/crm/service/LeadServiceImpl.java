@@ -59,6 +59,7 @@ public class LeadServiceImpl implements LeadService {
   protected MultiRelatedRepository multiRelatedRepository;
   protected LeadStatusRepository leadStatusRepo;
   protected AppCrmService appCrmService;
+  protected DomainNameToolService<Lead> domainNameToolService;
 
   @Inject
   public LeadServiceImpl(
@@ -69,7 +70,8 @@ public class LeadServiceImpl implements LeadService {
       EventRepository eventRepo,
       MultiRelatedRepository multiRelatedRepository,
       LeadStatusRepository leadStatusRepo,
-      AppCrmService appCrmService) {
+      AppCrmService appCrmService,
+      DomainNameToolService domainNameToolService) {
     this.sequenceService = sequenceService;
     this.userService = userService;
     this.partnerRepo = partnerRepo;
@@ -78,6 +80,7 @@ public class LeadServiceImpl implements LeadService {
     this.multiRelatedRepository = multiRelatedRepository;
     this.leadStatusRepo = leadStatusRepo;
     this.appCrmService = appCrmService;
+    this.domainNameToolService = domainNameToolService;
   }
 
   /**
@@ -255,26 +258,17 @@ public class LeadServiceImpl implements LeadService {
   }
 
   @Override
-  public List<Lead> getLeadsWithSameDomainName(Lead lead) {
-    List<Lead> leadsWithSameDomainNameList = new ArrayList<>();
-    String emailDomainToIgnore = appCrmService.getAppCrm().getEmailDomainToIgnore();
-    if (lead.getEmailAddress() != null) {
-      String leadDomainNameStr = lead.getEmailAddress().getName().split("@")[1].replace("]", "");
-      if (ObjectUtils.isEmpty(emailDomainToIgnore)
-          || !emailDomainToIgnore.contains(leadDomainNameStr)) {
-        List<Lead> leadsWithSameDomainNameListTemp =
-            leadRepo
-                .all()
-                .filter(
-                    "self.emailAddress is not null and self.emailAddress.name like :domainName and self.id !=  :leadId")
-                .bind("domainName", "%" + leadDomainNameStr + "%")
-                .bind("leadId", lead.getId())
-                .fetch();
-        if (ObjectUtils.notEmpty(leadsWithSameDomainNameListTemp)) {
-          leadsWithSameDomainNameList.addAll(leadsWithSameDomainNameListTemp);
-        }
-      }
+  public List<Lead> getLeadsWithSameDomainName(Lead lead)
+      throws ClassNotFoundException, AxelorException {
+    List<Long> idToIgnoreList = new ArrayList<>();
+    idToIgnoreList.add(lead.getId());
+    domainNameToolService.set(lead);
+    List<Lead> leadList = new ArrayList<Lead>();
+    if (ObjectUtils.notEmpty(lead.getEmailAddress())) {
+      leadList =
+          domainNameToolService.getEntitiesVithSameEmailAddress(
+              lead.getEmailAddress().getName(), idToIgnoreList, null);
     }
-    return leadsWithSameDomainNameList;
+    return leadList;
   }
 }

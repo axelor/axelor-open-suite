@@ -266,6 +266,7 @@
 "Historical Period","Historique",,
 "Hours","Heures",,
 "Image",,,
+"In order to make this field working a format is needed, see example: example1.com,example2.fr,example.exemple.com","Pour faire fonctionner ce champ, un format est nécessaire, voir exemple : example1.com,example2.fr,example.exemple.com",,
 "Inbound","Entrant",,
 "Industry","Secteurs d'activité",,
 "Industry Sector","Secteur d'activité",,

@@ -789,9 +789,17 @@
     <view type="grid" name="partner-related-contact-grid"/>
     <view type="form" name="partner-contact-form"/>
     <domain>SUBSTRING(self.emailAddress.address, LOCATE('@',self.emailAddress.address)+1) =
-      :_emailAddress AND self.id != :id AND self.isContact = true</domain>
+      :_emailAddress
+      AND self.id != :id
+      AND self.isContact = true
+      AND
+      SUBSTRING(self.emailAddress.address,
+      LOCATE('@',self.emailAddress.address)+1) not in
+      (:_emailDomainToIgnore )</domain>
     <context name="_emailAddress" expr="eval: emailAddress?.address?.split('@')[1]"
       if="emailAddress?.address"/>
+    <context name="_emailDomainToIgnore"
+      expr="eval:__config__.app.getApp('crm')?.emailDomainToIgnore"/>
   </action-view>
 
   <action-view name="action-partner-view-generate-opporunity-popup"

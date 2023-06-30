@@ -42,6 +42,8 @@ import com.axelor.apps.crm.service.ConvertWizardOpportunityService;
 import com.axelor.apps.crm.service.ConvertWizardOpportunityServiceImpl;
 import com.axelor.apps.crm.service.CrmReportingService;
 import com.axelor.apps.crm.service.CrmReportingServiceImpl;
+import com.axelor.apps.crm.service.DomainNameToolService;
+import com.axelor.apps.crm.service.DomainNameToolServiceImpl;
 import com.axelor.apps.crm.service.EventService;
 import com.axelor.apps.crm.service.EventServiceImpl;
 import com.axelor.apps.crm.service.LeadService;
@@ -73,5 +75,6 @@ public class CrmModule extends AxelorModule {
     bind(ConvertWizardOpportunityService.class).to(ConvertWizardOpportunityServiceImpl.class);
     bind(PartnerCrmService.class).to(PartnerCrmServiceImpl.class);
     bind(CatalogService.class).to(CatalogServiceImpl.class);
+    bind(DomainNameToolService.class).to(DomainNameToolServiceImpl.class);
   }
 }
