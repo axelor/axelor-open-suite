@@ -233,7 +233,10 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
     InvoiceTerm invoiceTerm =
         invoiceTermService.createInvoiceTerm(
             invoice,
-            originalInvoiceTerm.getMoveLine().getMove(),
+            originalInvoiceTerm.getMoveLine() != null
+                    && originalInvoiceTerm.getMoveLine().getMove() != null
+                ? originalInvoiceTerm.getMoveLine().getMove()
+                : null,
             originalInvoiceTerm.getMoveLine(),
             originalInvoiceTerm.getBankDetails(),
             originalInvoiceTerm.getPfpValidatorUser(),
@@ -280,7 +283,7 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
     originalInvoiceTerm.setPfpPartialReason(partialReason);
     originalInvoiceTerm.setCompanyAmount(
         originalInvoiceTerm.getCompanyAmount().subtract(newInvoiceTerm.getCompanyAmount()));
-    originalInvoiceTerm.setCompanyAmount(
+    originalInvoiceTerm.setCompanyAmountRemaining(
         originalInvoiceTerm
             .getCompanyAmountRemaining()
             .subtract(newInvoiceTerm.getCompanyAmountRemaining()));
