@@ -20,18 +20,25 @@ package com.axelor.apps.hr.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Period;
+import com.axelor.apps.hr.db.Employee;
 import java.util.List;
 import java.util.Map;
 
-public interface EmployeeDashboardService {
+public interface HRDashboardService {
 
   Period getCurrentPeriod() throws AxelorException;
 
-  List<Map<String, Object>> getLeaveData() throws AxelorException;
+  List<Map<String, Object>> getConnectedEmployeeLeaveData(Employee employee, Period period)
+      throws AxelorException;
 
-  List<Map<String, Object>> getExpenseData() throws AxelorException;
+  List<Map<String, Object>> getExpenseData(Employee employee, Period period) throws AxelorException;
 
-  List<Map<String, Object>> getTimesheetData() throws AxelorException;
+  List<Map<String, Object>> getTimesheetData(Employee employee, Period period)
+      throws AxelorException;
 
-  List<Map<String, Object>> getExtraHrsData() throws AxelorException;
+  List<Map<String, Object>> getExtraHrsData(Employee employee, Period period)
+      throws AxelorException;
+
+  List<Map<String, Object>> getEmployeeLeaveData(Employee employee, Period period)
+      throws AxelorException;
 }
