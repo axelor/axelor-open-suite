@@ -580,6 +580,8 @@
 "These statuses are essential to the operation of the process, they can be renamed but cannot be deleted.",,,
 "This configuration enables catalog management. It allows you to add sales catalogs in pdf format that can be consulted from the application.",,,
 "To Date",,,
+"To convert lead, please use the Convert button.",,,
+"To lose lead, please use the Lose button.",,,
 "Tools",,,
 "Trading name",,,
 "Treated objectives reporting",,,

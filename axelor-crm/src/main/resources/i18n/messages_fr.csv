@@ -580,6 +580,8 @@
 "These statuses are essential to the operation of the process, they can be renamed but cannot be deleted.","Ces statuts sont indispensables au fonctionnement du processus, ils peuvent être renommés mais ne peuvent pas être supprimés.",,
 "This configuration enables catalog management. It allows you to add sales catalogs in pdf format that can be consulted from the application.","Cette configuration permet d'activer la gestion des catalogues. Elle permet d'ajouter des catalogues de vente au format pdf qui sont consultables depuis l'application.",,
 "To Date","A",,
+"To convert lead, please use the Convert button.","Afin de convertir une piste, veuillez utiliser le bouton Convertir.",,
+"To lose lead, please use the Lose button.","Afin de perdre une piste, veuillez utiliser le bouton Perdre.",,
 "Tools","Outils",,
 "Trading name","Enseigne",,
 "Treated objectives reporting","Configuration des objectifs(s) traité(s)",,
