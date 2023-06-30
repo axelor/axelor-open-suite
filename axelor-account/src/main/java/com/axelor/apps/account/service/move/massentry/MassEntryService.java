@@ -38,7 +38,4 @@ public interface MassEntryService {
   void checkMassEntryMoveGeneration(Move move) throws AxelorException;
 
   Map<List<Long>, String> validateMassEntryMove(Move move);
-
-  String generatedTaxeAndCounterPart(
-      Move parentMove, Move workingMove, LocalDate dueDate, int temporaryMoveNumber);
 }
