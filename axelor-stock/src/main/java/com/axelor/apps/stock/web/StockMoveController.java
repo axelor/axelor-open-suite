@@ -670,7 +670,7 @@ public class StockMoveController {
 
       Integer percentToleranceForWapChange =
           Beans.get(StockConfigService.class)
-              .getStockConfig(stockMove.getToStockLocation().getCompany())
+              .getStockConfig(stockMove.getCompany())
               .getPercentToleranceForWapChange();
       response.setView(
           ActionView.define(I18n.get("Stock move"))

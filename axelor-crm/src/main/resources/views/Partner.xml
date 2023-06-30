@@ -221,7 +221,7 @@
     </extend>
     <extend target="/">
       <insert position="after">
-        <panel name="followUpPanel" title="Collaborator monitoring" showIf="isCollaborator"
+        <panel name="followUpPanel" title="Partner follow up" showIf="isCollaborator"
           sidebar="true" colSpan="12">
           <field name="takenOpportunities"/>
           <field name="wonOpportunities"/>
@@ -498,7 +498,7 @@
   </cards>
 
   <form name="partner-form-lost-popup" model="com.axelor.apps.base.db.Partner"
-    title="Lost reason" width="large" onSave="action-crm-group-close-lost-partner">
+    title="Lost reason" width="large">
     <panel name="mainPanel">
       <field name="lostReason" canEdit="false" colOffset="4" colSpan="4"/>
       <field name="lostReasonStr" hideIf="!lostReason.freeText" colOffset="4" colSpan="4"/>
@@ -676,13 +676,15 @@
 
   <action-record name="action-partner-record-set-partner-status"
     model="com.axelor.apps.base.db.Partner">
-    <field name="partnerStatus" expr="eval: __repo__(PartnerStatus).getDefaultStatus()"/>
+    <field name="partnerStatus"
+      expr="eval: __config__.app.getApp('crm')?.partnerDefaultStatus"/>
   </action-record>
 
   <action-record name="action-partner-record-set-from-crm"
     model="com.axelor.apps.base.db.Partner">
     <field name="$isFromCrm" expr="eval: _isFromCrm"/>
-    <field name="partnerStatus" expr="eval: _partnerStatus"/>
+    <field name="partnerStatus" expr="eval: _partnerStatus"
+      if="_partnerStatus != null &amp;&amp; partnerStatus == null"/>
   </action-record>
 
   <action-record name="action-partner-record-set-is-in-conversion-from-lead"
@@ -693,6 +695,7 @@
 
 
   <action-group name="crm-action-group-partner-onnew">
+    <action name="action-partner-validate-default-status"/>
     <action name="action-group-base-partner-onnew"/>
     <action name="action-partner-record-set-is-prospect"/>
     <action name="action-partner-method-set-fields-for-conversion-from-lead"
@@ -747,8 +750,6 @@
   </action-validate>
 
   <action-group name="action-partner-group-partner-status-onchange">
-    <action name="save"
-      if="eval: __this__?.partnerStatus?.id != __config__.app.getApp('crm')?.closedWinPartnerStatus?.id || __this__?.partnerStatus?.id != __config__.app.getApp('crm')?.closedLostPartnerStatus?.id"/>
     <action name="action-partner-view-partner-popup-view"
       if="eval: __this__?.partnerStatus?.id
       == __config__.app.getApp('crm')?.closedLostPartnerStatus?.id"/>
@@ -762,9 +763,9 @@
     <view-param name="popup" value="reload"/>
     <view-param name="show-toolbar" value="false"/>
     <view-param name="show-confirm" value="false"/>
-    <view-param name="popup-save" value="true"/>
+    <view-param name="popup-save" value="false"/>
     <view-param name="forceEdit" value="true"/>
-    <context name="_showRecord" expr="eval: id"/>
+    <context name="_showRecord" expr="eval: __this__.id"/>
   </action-view>
 
   <action-record name="action-partner-record-win"
@@ -779,7 +780,7 @@
   </action-condition>
 
   <action-method name="action-partner-method-confirm-lost-reason">
-    <call class="com.axelor.apps.crm.web.PartnerCrmController" method="loseLead"/>
+    <call class="com.axelor.apps.crm.web.PartnerCrmController" method="losePartner"/>
   </action-method>
 
   <action-view name="action-contact-view-related-contacts" title="Contacts"
@@ -804,4 +805,8 @@
     <context name="_lead" expr="eval: _lead"/>
   </action-view>
 
+  <action-validate name="action-partner-validate-default-status">
+    <error message="Please fill default partner status in App CRM configuration."
+      if="!__config__.app.getApp('crm')?.partnerDefaultStatus"/>
+  </action-validate>
 </object-views>

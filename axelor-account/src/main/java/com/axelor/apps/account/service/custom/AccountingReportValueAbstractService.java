@@ -18,12 +18,7 @@
  */
 package com.axelor.apps.account.service.custom;
 
-import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.AccountType;
-import com.axelor.apps.account.db.AccountingReport;
-import com.axelor.apps.account.db.AccountingReportConfigLine;
-import com.axelor.apps.account.db.AccountingReportValue;
-import com.axelor.apps.account.db.AnalyticAccount;
+import com.axelor.apps.account.db.*;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountingReportConfigLineRepository;
 import com.axelor.apps.account.db.repo.AccountingReportValueRepository;
@@ -108,6 +103,7 @@ public abstract class AccountingReportValueAbstractService {
             groupNumber,
             columnNumber,
             lineNumber + AccountingReportValueServiceImpl.getLineOffset(),
+            AccountingReportValueServiceImpl.getPeriodNumber(),
             analyticCounter,
             this.getStyleSelect(groupColumn, column, line),
             groupColumn == null
@@ -194,15 +190,15 @@ public abstract class AccountingReportValueAbstractService {
   }
 
   protected List<String> getAccountFilters(
-      Set<Account> accountSet,
       Set<AccountType> accountTypeSet,
       String groupColumnFilter,
       String columnAccountFilter,
       String lineAccountFilter,
-      boolean moveLine) {
+      boolean moveLine,
+      boolean areAllAccountSetsEmpty) {
     List<String> queryList = new ArrayList<>();
 
-    if (CollectionUtils.isNotEmpty(accountSet)) {
+    if (!areAllAccountSetsEmpty) {
       queryList.add(
           String.format(
               "(self%1$s IS NULL OR self%1$s IN :accountSet)", moveLine ? ".account" : ""));
@@ -232,6 +228,28 @@ public abstract class AccountingReportValueAbstractService {
     }
 
     return queryList;
+  }
+
+  protected boolean areAllAccountSetsEmpty(
+      AccountingReport accountingReport,
+      AccountingReportConfigLine groupColumn,
+      AccountingReportConfigLine column,
+      AccountingReportConfigLine line) {
+    return CollectionUtils.isEmpty(accountingReport.getAccountSet())
+        && (groupColumn == null || CollectionUtils.isEmpty(groupColumn.getAccountSet()))
+        && CollectionUtils.isEmpty(column.getAccountSet())
+        && CollectionUtils.isEmpty(line.getAccountSet());
+  }
+
+  protected boolean areAllAnalyticAccountSetsEmpty(
+      AccountingReport accountingReport,
+      AccountingReportConfigLine groupColumn,
+      AccountingReportConfigLine column,
+      AccountingReportConfigLine line) {
+    return CollectionUtils.isEmpty(accountingReport.getAnalyticAccountSet())
+        && (groupColumn == null || CollectionUtils.isEmpty(groupColumn.getAnalyticAccountSet()))
+        && CollectionUtils.isEmpty(column.getAnalyticAccountSet())
+        && CollectionUtils.isEmpty(line.getAnalyticAccountSet());
   }
 
   protected String getAccountFilterQueryList(String accountFilter, String type, boolean moveLine) {

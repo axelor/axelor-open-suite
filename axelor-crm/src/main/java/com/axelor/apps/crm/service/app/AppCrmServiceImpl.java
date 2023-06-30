@@ -143,7 +143,7 @@ public class AppCrmServiceImpl extends AppBaseServiceImpl implements AppCrmServi
   }
 
   @Override
-  public PartnerStatus getClosedWinPartnerStatus() throws AxelorException {
+  public PartnerStatus getClosedLostPartnerStatus() throws AxelorException {
     PartnerStatus closedLostPartnerStatus = getAppCrm().getClosedLostPartnerStatus();
 
     if (closedLostPartnerStatus == null) {
@@ -156,7 +156,7 @@ public class AppCrmServiceImpl extends AppBaseServiceImpl implements AppCrmServi
   }
 
   @Override
-  public PartnerStatus getClosedLostPartnerStatus() throws AxelorException {
+  public PartnerStatus getClosedWinPartnerStatus() throws AxelorException {
     PartnerStatus closedWinPartnerStatus = getAppCrm().getClosedWinPartnerStatus();
 
     if (closedWinPartnerStatus == null) {
@@ -166,5 +166,44 @@ public class AppCrmServiceImpl extends AppBaseServiceImpl implements AppCrmServi
     }
 
     return closedWinPartnerStatus;
+  }
+
+  @Override
+  public LeadStatus getLeadDefaultStatus() throws AxelorException {
+    LeadStatus leadDefaultStatus = getAppCrm().getLeadDefaultStatus();
+
+    if (leadDefaultStatus == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(CrmExceptionMessage.CRM_DEFAULT_LEAD_STATUS_MISSING));
+    }
+
+    return leadDefaultStatus;
+  }
+
+  @Override
+  public OpportunityStatus getOpportunityDefaultStatus() throws AxelorException {
+    OpportunityStatus opportunityDefaultStatus = getAppCrm().getOpportunityDefaultStatus();
+
+    if (opportunityDefaultStatus == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(CrmExceptionMessage.CRM_DEFAULT_OPPORTUNITY_STATUS_MISSING));
+    }
+
+    return opportunityDefaultStatus;
+  }
+
+  @Override
+  public PartnerStatus getPartnerDefaultStatus() throws AxelorException {
+    PartnerStatus partnerDefaultStatus = getAppCrm().getPartnerDefaultStatus();
+
+    if (partnerDefaultStatus == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(CrmExceptionMessage.CRM_DEFAULT_PARTNER_STATUS_MISSING));
+    }
+
+    return partnerDefaultStatus;
   }
 }

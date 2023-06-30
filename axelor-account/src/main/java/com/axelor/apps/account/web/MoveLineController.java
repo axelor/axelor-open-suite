@@ -34,6 +34,7 @@ import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
@@ -757,6 +758,23 @@ public class MoveLineController {
       return parentContext.asType(Move.class);
     } else {
       return moveLine.getMove();
+    }
+  }
+
+  public void generatePfpPartialTerms(ActionRequest request, ActionResponse response) {
+    try {
+      MoveLine moveLine = request.getContext().asType(MoveLine.class);
+      moveLine = Beans.get(MoveLineRepository.class).find(moveLine.getId());
+
+      if (moveLine != null && !CollectionUtils.isEmpty(moveLine.getInvoiceTermList())) {
+        if (Beans.get(InvoiceTermPfpService.class)
+            .generateInvoiceTermsAfterPfpPartial(moveLine.getInvoiceTermList())) {
+          response.setReload(true);
+        }
+      }
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }

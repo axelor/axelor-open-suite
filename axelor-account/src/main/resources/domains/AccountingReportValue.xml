@@ -9,6 +9,7 @@
     <integer name="groupNumber" initParam="true"/>
     <integer name="columnNumber" initParam="true"/>
     <integer name="lineNumber" initParam="true"/>
+    <integer name="periodNumber" initParam="true"/>
     <integer name="analyticOrder" initParam="true"/>
     <integer name="styleSelect" initParam="true"/>
     <integer name="groupStyleSelect" initParam="true"/>

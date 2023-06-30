@@ -407,14 +407,16 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
         // Check if move line already exists with that account
         if (cutOffMoveLineMap.containsKey(moveLineAccount)) {
           cutOffMoveLine = cutOffMoveLineMap.get(moveLineAccount);
-          cutOffMoveLine.setCurrencyAmount(
-              cutOffMoveLine.getCurrencyAmount().add(amountInCurrency));
+          BigDecimal currencyAmount = cutOffMoveLine.getCurrencyAmount().add(amountInCurrency);
           if (isReverse
               != (accountingCutOffTypeSelect
                   == AccountingBatchRepository.ACCOUNTING_CUT_OFF_TYPE_DEFERRED_INCOMES)) {
             cutOffMoveLine.setDebit(cutOffMoveLine.getDebit().add(convertedAmount));
+            cutOffMoveLine.setCurrencyAmount(currencyAmount.abs());
           } else {
             cutOffMoveLine.setCredit(cutOffMoveLine.getCredit().add(convertedAmount));
+            currencyAmount = moveToolService.computeCurrencyAmountSign(currencyAmount, false);
+            cutOffMoveLine.setCurrencyAmount(currencyAmount);
           }
 
         } else {
@@ -431,7 +433,12 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
                   ++counter,
                   origin,
                   moveDescription);
-          cutOffMoveLine.setTaxLine(moveLine.getTaxLine());
+          if (accountingCutOffTypeSelect
+                  != AccountingBatchRepository.ACCOUNTING_CUT_OFF_TYPE_DEFERRED_INCOMES
+              && accountingCutOffTypeSelect
+                  != AccountingBatchRepository.ACCOUNTING_CUT_OFF_TYPE_PREPAID_EXPENSES) {
+            cutOffMoveLine.setTaxLine(moveLine.getTaxLine());
+          }
           cutOffMoveLine.setOriginDate(originDate);
 
           cutOffMoveLineMap.put(moveLineAccount, cutOffMoveLine);
@@ -572,6 +579,10 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
     BigDecimal currencyTaxAmount =
         InvoiceLineManagement.computeAmount(
             productMoveLine.getCurrencyAmount(), taxLine.getValue().divide(new BigDecimal(100)));
+    boolean isDebit = productMoveLine.getDebit().signum() > 0;
+
+    currencyTaxAmount = moveToolService.computeCurrencyAmountSign(currencyTaxAmount, isDebit);
+
     Integer vatSystem =
         taxAccountToolService.calculateVatSystem(
             move.getPartner(),
@@ -583,9 +594,9 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
     MoveLine moveLine = this.getMoveLineWithSameTax(move, taxAccount, taxLine, vatSystem);
 
     if (moveLine != null && (moveLine.getDebit().compareTo(new BigDecimal(0)) > 0)) {
-      moveLine.setDebit(moveLine.getDebit().add(currencyTaxAmount));
+      moveLine.setDebit(moveLine.getDebit().add(currencyTaxAmount.abs()));
     } else if (moveLine != null) {
-      moveLine.setCredit(moveLine.getCredit().add(currencyTaxAmount));
+      moveLine.setCredit(moveLine.getCredit().add(currencyTaxAmount.abs()));
     } else {
       MoveLine taxMoveLine =
           moveLineCreateService.createMoveLine(
@@ -593,7 +604,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
               move.getPartner(),
               taxAccount,
               currencyTaxAmount,
-              productMoveLine.getDebit().signum() > 0,
+              isDebit,
               move.getDate(),
               ++counter,
               origin,
@@ -654,7 +665,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
 
     AnalyticDistributionTemplate analyticDistributionTemplate =
         analyticMoveLineService.getAnalyticDistributionTemplate(
-            move.getPartner(), product, move.getCompany(), isPurchase);
+            move.getPartner(), product, move.getCompany(), move.getTradingName(), isPurchase);
 
     moveLine.setAnalyticDistributionTemplate(analyticDistributionTemplate);
 

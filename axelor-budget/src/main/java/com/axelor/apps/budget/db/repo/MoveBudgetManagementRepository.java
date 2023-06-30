@@ -5,6 +5,8 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.bankpayment.db.repo.MoveBankPaymentRepository;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.budget.db.BudgetDistribution;
+import com.axelor.apps.budget.service.BudgetDistributionService;
 import com.axelor.apps.budget.service.BudgetService;
 import com.axelor.apps.budget.service.move.MoveLineBudgetService;
 import com.axelor.inject.Beans;
@@ -39,8 +41,15 @@ public class MoveBudgetManagementRepository extends MoveBankPaymentRepository {
     Move copy = super.copy(entity, deep);
 
     if (!CollectionUtils.isEmpty(copy.getMoveLineList())) {
+      BudgetDistributionService budgetDistributionService =
+          Beans.get(BudgetDistributionService.class);
       for (MoveLine ml : copy.getMoveLineList()) {
         ml.setIsBudgetImputed(false);
+        if (!CollectionUtils.isEmpty(ml.getBudgetDistributionList())) {
+          for (BudgetDistribution bd : ml.getBudgetDistributionList()) {
+            budgetDistributionService.computeBudgetDistributionSumAmount(bd, copy.getDate());
+          }
+        }
       }
     }
     return copy;

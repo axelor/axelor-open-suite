@@ -13,6 +13,7 @@ import com.axelor.apps.account.service.moveline.MoveLineGroupService;
 import com.axelor.apps.account.service.moveline.MoveLineRecordService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -58,16 +59,21 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
     this.moveLineRecordService = moveLineRecordService;
   }
 
-  @Override
-  public Map<String, Object> getOnNewValuesMap(MoveLineMassEntry moveLine, Move move)
+  public MoveLineMassEntry initializeValues(MoveLineMassEntry moveLine, Move move)
       throws AxelorException {
-
     moveLine.setInputAction(MoveLineMassEntryRepository.MASS_ENTRY_INPUT_ACTION_LINE);
     moveLine =
         massEntryService.getFirstMoveLineMassEntryInformations(
             move.getMoveLineMassEntryList(), moveLine);
     moveLineDefaultService.setAccountInformation(moveLine, move);
     moveLineComputeAnalyticService.computeAnalyticDistribution(moveLine, move);
+
+    return moveLine;
+  }
+
+  @Override
+  public Map<String, Object> getOnNewValuesMap(MoveLineMassEntry moveLine, Move move)
+      throws AxelorException {
 
     Map<String, Object> valuesMap =
         new HashMap<>(
@@ -121,7 +127,7 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
       throws AxelorException {
     Map<String, Map<String, Object>> attrsMap =
         new HashMap<>(moveLineGroupService.getOnNewAttrsMap(moveLine, move));
-    moveLineMassEntryAttrsService.addCutOffReadOnly(moveLine.getAccount(), attrsMap);
+    moveLineMassEntryAttrsService.addCutOffReadonly(moveLine.getAccount(), attrsMap);
     moveLineMassEntryAttrsService.addMovePaymentModeReadOnly(attrsMap);
     moveLineMassEntryAttrsService.addPartnerBankDetailsReadOnly(moveLine, attrsMap);
     moveLineMassEntryAttrsService.addInputActionSelectionIn(move, attrsMap);
@@ -204,12 +210,13 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
             moveLineGroupService.getAnalyticDistributionTemplateOnChangeValuesMap(moveLine, move));
     moveLineInvoiceTermService.generateDefaultInvoiceTerm(move, moveLine, dueDate, false);
     moveLineMassEntryRecordService.setCutOff(moveLine);
+    moveLineMassEntryRecordService.fillAnalyticMoveLineMassEntryList(moveLine);
 
     valuesMap.put("partner", moveLine.getPartner());
     valuesMap.put("cutOffStartDate", moveLine.getCutOffStartDate());
     valuesMap.put("cutOffEndDate", moveLine.getCutOffEndDate());
     valuesMap.put("isCutOffGenerated", moveLine.getCutOffEndDate());
-    valuesMap.put("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
+    valuesMap.put("analyticMoveLineMassEntryList", moveLine.getAnalyticMoveLineMassEntryList());
     valuesMap.put("taxLine", moveLine.getTaxLine());
     valuesMap.put("taxEquiv", moveLine.getTaxEquiv());
     valuesMap.put("analyticDistributionTemplate", moveLine.getAnalyticDistributionTemplate());
@@ -232,8 +239,202 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
     moveLineMassEntryAttrsService.addMovePfpValidatorUserReadOnly(moveLine, attrsMap);
     moveLineMassEntryAttrsService.addMovePfpValidatorUserRequired(
         moveLine.getAccount(), move.getJournal(), attrsMap);
-    moveLineMassEntryAttrsService.addCutOffReadOnly(moveLine.getAccount(), attrsMap);
+    moveLineMassEntryAttrsService.addCutOffReadonly(moveLine.getAccount(), attrsMap);
 
     return attrsMap;
+  }
+
+  @Override
+  public Map<String, Map<String, Object>> getPfpValidatorOnSelectAttrsMap(
+      MoveLineMassEntry moveLine, Move move) {
+    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+
+    moveLineMassEntryAttrsService.addPfpValidatorUserDomain(
+        moveLine.getPartner(), move.getCompany(), attrsMap);
+
+    return attrsMap;
+  }
+
+  @Override
+  public Map<String, Object> getOriginDateOnChangeValuesMap(MoveLineMassEntry moveLine, Move move)
+      throws AxelorException {
+    Map<String, Object> valuesMap = new HashMap<>();
+
+    moveLineMassEntryRecordService.setCurrencyRate(move, moveLine);
+
+    valuesMap.put("isEdited", MoveLineMassEntryRepository.MASS_ENTRY_IS_EDITED_EXCEPT_VAT_SYSTEM);
+    valuesMap.put("currencyRate", moveLine.getCurrencyRate());
+
+    return valuesMap;
+  }
+
+  @Override
+  public Map<String, Map<String, Object>> getOriginDateOnChangeAttrsMap(
+      MoveLineMassEntry moveLine, Move move) {
+    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+
+    moveLineMassEntryAttrsService.addOriginRequired(moveLine, move.getJournal(), attrsMap);
+
+    return attrsMap;
+  }
+
+  @Override
+  public Map<String, Object> getPartnerOnChangeValuesMap(MoveLineMassEntry moveLine, Move move)
+      throws AxelorException {
+    Map<String, Object> valuesMap = new HashMap<>();
+
+    moveLineMassEntryRecordService.setPartner(moveLine, move);
+
+    if (move != null) {
+      moveLineMassEntryRecordService.setMovePfpValidatorUser(moveLine, move.getCompany());
+      valuesMap.put("movePfpValidatorUser", moveLine.getMovePfpValidatorUser());
+    }
+
+    valuesMap.put("isEdited", MoveLineMassEntryRepository.MASS_ENTRY_IS_EDITED_ALL);
+    valuesMap.put("partner", moveLine.getPartner());
+    valuesMap.put("partnerId", moveLine.getPartnerId());
+    valuesMap.put("partnerSeq", moveLine.getPartnerSeq());
+    valuesMap.put("partnerFullName", moveLine.getPartnerFullName());
+    valuesMap.put("movePartnerBankDetails", moveLine.getMovePartnerBankDetails());
+    valuesMap.put("vatSystemSelect", moveLine.getVatSystemSelect());
+    valuesMap.put("taxLine", moveLine.getTaxLine());
+    valuesMap.put("analyticDistributionTemplate", moveLine.getAnalyticDistributionTemplate());
+    valuesMap.put("currencyCode", moveLine.getCurrencyCode());
+    valuesMap.put("movePaymentMode", moveLine.getMovePaymentMode());
+    valuesMap.put("movePaymentCondition", moveLine.getMovePaymentCondition());
+    valuesMap.put("account", moveLine.getAccount());
+
+    return valuesMap;
+  }
+
+  @Override
+  public Map<String, Map<String, Object>> getPartnerOnChangeAttrsMap(MoveLineMassEntry moveLine) {
+    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+
+    moveLineMassEntryAttrsService.addMovePfpValidatorUserReadOnly(moveLine, attrsMap);
+
+    return attrsMap;
+  }
+
+  @Override
+  public Map<String, Object> getInputActionOnChangeValuesMap(
+      MoveLineMassEntry moveLine, Move move) {
+    Map<String, Object> valuesMap = new HashMap<>();
+
+    moveLine = moveLineMassEntryRecordService.setInputAction(moveLine, move);
+    this.setAllMoveLineValuesMap(moveLine, valuesMap);
+
+    return valuesMap;
+  }
+
+  @Override
+  public Map<String, Map<String, Object>> getInputActionOnChangeAttrsMap(
+      boolean isCounterpartLine, MoveLineMassEntry moveLine) {
+    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+
+    moveLineMassEntryAttrsService.addReadonly(isCounterpartLine, moveLine.getAccount(), attrsMap);
+    moveLineMassEntryAttrsService.addRequired(isCounterpartLine, attrsMap);
+
+    return attrsMap;
+  }
+
+  @Override
+  public Map<String, Object> getTemporaryMoveNumberOnChangeValuesMap(
+      MoveLineMassEntry moveLine, Move move) {
+    Map<String, Object> valuesMap = new HashMap<>();
+
+    moveLine =
+        massEntryService.getFirstMoveLineMassEntryInformations(
+            move.getMoveLineMassEntryList(), moveLine);
+
+    this.setAllMoveLineValuesMap(moveLine, valuesMap);
+    return valuesMap;
+  }
+
+  @Override
+  public Map<String, Map<String, Object>> getTemporaryMoveNumberOnChangeAttrsMap(Move move) {
+    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+
+    if (ObjectUtils.notEmpty(move.getMoveLineMassEntryList())) {
+      moveLineMassEntryAttrsService.addInputActionReadonly(false, attrsMap);
+      moveLineMassEntryAttrsService.addTemporaryMoveNumberFocus(attrsMap);
+    }
+
+    return attrsMap;
+  }
+
+  protected void setAllMoveLineValuesMap(
+      MoveLineMassEntry moveLine, Map<String, Object> valuesMap) {
+    valuesMap.put("temporaryMoveNumber", moveLine.getTemporaryMoveNumber());
+    valuesMap.put("counter", moveLine.getCounter());
+    valuesMap.put("date", moveLine.getDate());
+    valuesMap.put("origin", moveLine.getOrigin());
+    valuesMap.put("originDate", moveLine.getOriginDate());
+    valuesMap.put("partner", moveLine.getPartner());
+    valuesMap.put("partnerId", moveLine.getPartnerId());
+    valuesMap.put("partnerSeq", moveLine.getPartnerSeq());
+    valuesMap.put("partnerFullName", moveLine.getPartnerFullName());
+    valuesMap.put("moveDescription", moveLine.getMoveDescription());
+    valuesMap.put("movePaymentCondition", moveLine.getMovePaymentCondition());
+    valuesMap.put("movePaymentMode", moveLine.getMovePaymentMode());
+    valuesMap.put("movePartnerBankDetails", moveLine.getMovePartnerBankDetails());
+    valuesMap.put("account", moveLine.getAccount());
+    valuesMap.put("taxLine", moveLine.getTaxLine());
+    valuesMap.put("description", moveLine.getDescription());
+    valuesMap.put("debit", moveLine.getDebit());
+    valuesMap.put("credit", moveLine.getCredit());
+    valuesMap.put("currencyRate", moveLine.getCurrencyRate());
+    valuesMap.put("currencyAmount", moveLine.getCurrencyAmount());
+    valuesMap.put("moveStatusSelect", moveLine.getMoveStatusSelect());
+    valuesMap.put("vatSystemSelect", moveLine.getVatSystemSelect());
+    valuesMap.put("movePfpValidatorUser", moveLine.getMovePfpValidatorUser());
+    valuesMap.put("cutOffStartDate", moveLine.getCutOffStartDate());
+    valuesMap.put("cutOffEndDate", moveLine.getCutOffEndDate());
+    valuesMap.put("isEdited", moveLine.getIsEdited());
+    valuesMap.put("fieldsErrorList", moveLine.getFieldsErrorList());
+    valuesMap.put("analyticDistributionTemplate", moveLine.getAnalyticDistributionTemplate());
+    valuesMap.put("axis1AnalyticAccount", moveLine.getAxis1AnalyticAccount());
+    valuesMap.put("axis2AnalyticAccount", moveLine.getAxis2AnalyticAccount());
+    valuesMap.put("axis3AnalyticAccount", moveLine.getAxis3AnalyticAccount());
+    valuesMap.put("axis4AnalyticAccount", moveLine.getAxis4AnalyticAccount());
+    valuesMap.put("axis5AnalyticAccount", moveLine.getAxis5AnalyticAccount());
+    valuesMap.put("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
+    valuesMap.put("inputAction", moveLine.getInputAction());
+  }
+
+  @Override
+  public Map<String, Object> getAnalyticDistributionTemplateOnChangeValuesMap(
+      MoveLineMassEntry moveLine, Move move) throws AxelorException {
+    Map<String, Object> valuesMap =
+        moveLineGroupService.getAnalyticDistributionTemplateOnChangeValuesMap(moveLine, move);
+    moveLineMassEntryRecordService.fillAnalyticMoveLineMassEntryList(moveLine);
+
+    valuesMap.put("analyticMoveLineMassEntryList", moveLine.getAnalyticMoveLineMassEntryList());
+
+    return valuesMap;
+  }
+
+  @Override
+  public Map<String, Object> getAnalyticDistributionTemplateOnChangeLightValuesMap(
+      MoveLineMassEntry moveLine) {
+    Map<String, Object> valuesMap =
+        moveLineGroupService.getAnalyticDistributionTemplateOnChangeLightValuesMap(moveLine);
+    moveLineMassEntryRecordService.fillAnalyticMoveLineMassEntryList(moveLine);
+
+    valuesMap.put("analyticMoveLineMassEntryList", moveLine.getAnalyticMoveLineMassEntryList());
+
+    return valuesMap;
+  }
+
+  @Override
+  public Map<String, Object> getAnalyticAxisOnChangeValuesMap(MoveLineMassEntry moveLine, Move move)
+      throws AxelorException {
+    Map<String, Object> valuesMap =
+        moveLineGroupService.getAnalyticAxisOnChangeValuesMap(moveLine, move);
+    moveLineMassEntryRecordService.fillAnalyticMoveLineMassEntryList(moveLine);
+
+    valuesMap.put("analyticMoveLineMassEntryList", moveLine.getAnalyticMoveLineMassEntryList());
+
+    return valuesMap;
   }
 }

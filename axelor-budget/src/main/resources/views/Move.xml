@@ -18,6 +18,10 @@
       </insert>
     </extend>
 
+    <extend target="//button[@name='accountingBtn']">
+      <attribute name="onClick" value="action-budget-move-accounting-click"/>
+    </extend>
+
     <extend target="//field[@name='rejectOk']">
       <insert position="after">
         <field name="budgetDistributionGenerated" hidden="true"/>
@@ -42,15 +46,9 @@
     <action name="action-method-budget-move-validate-budget-balance"/>
   </action-group>
 
-  <action-group name="action-account-move-group-accounting-click"
-    id="action-budget-move-accounting-click">
+  <action-group name="action-budget-move-accounting-click">
     <action name="action-budget-move-accounting-validate-group"/>
-    <action name="action-account-accounting-prompt"
-      if="statusSelect == 2 || ((!company?.accountConfig?.accountingDaybook || !journal?.allowAccountingDaybook) &amp;&amp; (statusSelect == 1 || statusSelect == 5))"/>
-    <action name="action-move-validate-check-pfp-validator-user"/>
-    <action name="action-move-method-apply-cut-off-dates-in-empty-lines"/>
-    <action name="action-account-move-group-onsave"/>
-    <action name="action-move-method-accounting"/>
+    <action name="action-account-move-group-accounting-click"/>
   </action-group>
 
   <action-method name="action-method-budget-move-validate-budget-balance">

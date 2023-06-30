@@ -21,9 +21,6 @@
   <input file="production_workCenter.csv" separator=";"
     type="com.axelor.apps.production.db.WorkCenter"/>
 
-  <input file="production_prodHumanResource.csv" separator=";"
-    type="com.axelor.apps.production.db.ProdHumanResource"/>
-
   <input file="production_prodProcess.csv" separator=";"
     type="com.axelor.apps.production.db.ProdProcess">
     <bind to="name" column="name"/>

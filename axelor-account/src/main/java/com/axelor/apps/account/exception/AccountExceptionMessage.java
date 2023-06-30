@@ -100,7 +100,7 @@ public final class AccountExceptionMessage {
   public static final String NO_MOVE_TO_REMOVE_OR_ARCHIVE = /*$$(*/
       "Please select 'Draft' or 'Accounted' or 'Canceled' moves" /*)*/;
   public static final String MOVE_ARCHIVE_OR_REMOVE_OK = /*$$(*/
-      "Selected move(s) has/have been removed successfully" /*)*/;
+      "Selected move(s) successfully removed" /*)*/;
   public static final String MOVE_ARCHIVE_OR_REMOVE_NOT_OK = /*$$(*/
       "Error in move deleting or archiving, please check the log" /*)*/;
   public static final String MOVE_ARCHIVE_NOT_OK_BECAUSE_OF_LINK_WITH = /*$$(*/
@@ -378,7 +378,7 @@ public final class AccountExceptionMessage {
       "Account move %s has a total debit different than total credit : %s <> %s" /*)*/;
   public static final String MOVE_8 = /*$$(*/ "The move %s cannot be empty" /*)*/;
   public static final String MOVE_9 = /*$$(*/
-      "Tax is mandatory for the account %s on the move line %s" /*)*/;
+      "Tax is mandatory for the account %s (%s) on the move line %s" /*)*/;
   public static final String MOVE_10 = /*$$(*/
       "Analytic distribution template is mandatory for the account %s on the move line %s." /*)*/;
   public static final String MOVE_11 = /*$$(*/
@@ -1245,6 +1245,9 @@ public final class AccountExceptionMessage {
   public static final String MOVE_CHECK_ACCOUNTING = /*$$(*/
       "By clicking on this button, move status will be updated to Accounted. Please be aware that accounting a move brings irrevocable integration of the move in its moves book. Do you wish to continue ?" /*)*/;
 
+  public static final String MOVE_CHECK_CURRENCY_AMOUNT_SUM = /*$$(*/
+      "The sum of the currency amounts is not 0" /*)*/;
+
   public static final String DATE_NOT_IN_PERIOD_MOVE = /*$$(*/
       "The date input on the move line of %s %s on account %s is not belonging to the accounting period defined on the move." /*)*/;
 
@@ -1331,7 +1334,7 @@ public final class AccountExceptionMessage {
       "Tax lines can't be computed due to missing value in the field vat system configuration for the company %s in the accounting situation panel of the partner %s." /*)*/;
 
   public static final String COMPANY_PARTNER_NOT_FOUND = /*$$(*/
-      "Tax lines can't be computed due to missing value in partner field on the company %s configuration." /*)*/;
+      "Please create a partner for the company %s." /*)*/;
 
   public static final String COMPANY_PARTNER_ACCOUNTING_SITUATION_NOT_FOUND = /*$$(*/
       "Tax lines can't be computed due to missing configuration line for the company %s in the accounting situation panel of the partner %s (company own vat system option)." /*)*/;

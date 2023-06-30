@@ -351,6 +351,7 @@
 		public static final int DISTRIBUTION_TYPE_FREE = 1;
 		public static final int DISTRIBUTION_TYPE_PARTNER = 2;
 		public static final int DISTRIBUTION_TYPE_PRODUCT = 3;
+        public static final int DISTRIBUTION_TYPE_TRADING_NAME = 4;
 
 	]]></extra-code>
 

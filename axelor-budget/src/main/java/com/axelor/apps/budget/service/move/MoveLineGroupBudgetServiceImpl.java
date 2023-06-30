@@ -5,6 +5,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveToolService;
+import com.axelor.apps.account.service.move.attributes.MoveAttrsService;
 import com.axelor.apps.account.service.moveline.MoveLineAttrsService;
 import com.axelor.apps.account.service.moveline.MoveLineCheckService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
@@ -37,6 +38,7 @@ public class MoveLineGroupBudgetServiceImpl extends MoveLineGroupBankPaymentServ
       MoveLineToolService moveLineToolService,
       MoveToolService moveToolService,
       AnalyticLineService analyticLineService,
+      MoveAttrsService moveAttrsService,
       MoveLineCheckBankPaymentService moveLineCheckBankPaymentService,
       MoveLineRecordBankPaymentService moveLineRecordBankPaymentService,
       BudgetToolsService budgetToolsService) {
@@ -51,6 +53,7 @@ public class MoveLineGroupBudgetServiceImpl extends MoveLineGroupBankPaymentServ
         moveLineToolService,
         moveToolService,
         analyticLineService,
+        moveAttrsService,
         moveLineCheckBankPaymentService,
         moveLineRecordBankPaymentService);
     this.budgetToolsService = budgetToolsService;
@@ -62,7 +65,7 @@ public class MoveLineGroupBudgetServiceImpl extends MoveLineGroupBankPaymentServ
     Map<String, Map<String, Object>> attrsMap = super.getOnLoadMoveAttrsMap(moveLine, move);
     if (move != null) {
       boolean condition = budgetToolsService.checkBudgetKeyAndRoleForMove(move);
-      this.addAttr("budgetDistributionList", "readonly", !condition, attrsMap);
+      this.addAttr("budgetDistributionList", "readonly", condition, attrsMap);
     }
 
     return attrsMap;
@@ -74,7 +77,7 @@ public class MoveLineGroupBudgetServiceImpl extends MoveLineGroupBankPaymentServ
     Map<String, Map<String, Object>> attrsMap = super.getOnLoadAttrsMap(moveLine, move);
     if (move != null) {
       boolean condition = budgetToolsService.checkBudgetKeyAndRoleForMove(move);
-      this.addAttr("budgetDistributionList", "readonly", !condition, attrsMap);
+      this.addAttr("budgetDistributionList", "readonly", condition, attrsMap);
     }
 
     return attrsMap;
@@ -88,7 +91,7 @@ public class MoveLineGroupBudgetServiceImpl extends MoveLineGroupBankPaymentServ
 
     if (move != null) {
       boolean condition = budgetToolsService.checkBudgetKeyAndRoleForMove(move);
-      this.addAttr("budgetDistributionList", "readonly", !condition, attrsMap);
+      this.addAttr("budgetDistributionList", "readonly", condition, attrsMap);
     }
 
     return attrsMap;

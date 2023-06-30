@@ -47,7 +47,7 @@ public interface MoveGroupService {
 
   Map<String, Object> getJournalOnChangeValuesMap(Move move) throws AxelorException;
 
-  Map<String, Map<String, Object>> getJournalOnChangeAttrsMap(Move move);
+  Map<String, Map<String, Object>> getJournalOnChangeAttrsMap(Move move) throws AxelorException;
 
   Map<String, Object> getPartnerOnChangeValuesMap(
       Move move, boolean paymentConditionChange, boolean dateChange) throws AxelorException;
@@ -72,7 +72,8 @@ public interface MoveGroupService {
   Map<String, Object> getPaymentConditionOnChangeValuesMap(
       Move move, boolean dateChange, boolean headerChange) throws AxelorException;
 
-  Map<String, Map<String, Object>> getPaymentConditionOnChangeAttrsMap(Move move);
+  Map<String, Map<String, Object>> getPaymentConditionOnChangeAttrsMap(Move move)
+      throws AxelorException;
 
   Map<String, Object> getDescriptionOnChangeValuesMap(Move move);
 

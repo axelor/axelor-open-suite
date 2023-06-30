@@ -5,11 +5,13 @@ import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.JournalType;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLineMassEntry;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
 import java.util.Map;
 
 public interface MoveLineMassEntryAttrsService {
 
-  void addCutOffReadOnly(Account account, Map<String, Map<String, Object>> attrsMap);
+  void addCutOffReadonly(Account account, Map<String, Map<String, Object>> attrsMap);
 
   void addMovePaymentModeReadOnly(Map<String, Map<String, Object>> attrsMap);
 
@@ -34,4 +36,16 @@ public interface MoveLineMassEntryAttrsService {
 
   void addOriginRequired(
       MoveLineMassEntry moveLine, Journal journal, Map<String, Map<String, Object>> attrsMap);
+
+  void addPfpValidatorUserDomain(
+      Partner partner, Company company, Map<String, Map<String, Object>> attrsMap);
+
+  void addReadonly(
+      boolean isCounterPartLine, Account account, Map<String, Map<String, Object>> attrsMap);
+
+  void addRequired(boolean isCounterPartLine, Map<String, Map<String, Object>> attrsMap);
+
+  void addInputActionReadonly(boolean readonly, Map<String, Map<String, Object>> attrsMap);
+
+  void addTemporaryMoveNumberFocus(Map<String, Map<String, Object>> attrsMap);
 }
