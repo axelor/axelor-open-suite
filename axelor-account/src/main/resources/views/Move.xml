@@ -138,7 +138,9 @@
             readonlyIf="$validatePeriod || moveLineList.length  &gt; 0 &amp;&amp; statusSelect == 3"
             onChange="action-move-group-origin-date-onchange" colSpan="2"/>
           <field name="description" readonlyIf="$validatePeriod"
+            requiredIf="company.accountConfig.isDescriptionRequired"
             onChange="action-move-group-description-onchange" colSpan="6"/>
+          <field name="company.accountConfig.isDescriptionRequired"/>
         </panel>
       </panel>
       <panel name="otherDetailsPanel" colSpan="3">
@@ -327,6 +329,7 @@
           <field name="journal.journalType.technicalTypeSelect" hidden="true" type="integer"/>
           <field name="company.accountConfig" hidden="true"/>
           <field name="company.accountConfig.accountingDaybook" hidden="true"/>
+          <field name="company.accountConfig.isDescriptionRequired" hidden="true"/>
         </panel>
       </panel>
     </panel-tabs>
