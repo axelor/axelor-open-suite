@@ -29,6 +29,7 @@ import com.axelor.apps.base.db.ProductVariantAttr;
 import com.axelor.apps.base.db.ProductVariantConfig;
 import com.axelor.apps.base.db.ProductVariantValue;
 import com.axelor.apps.base.db.Sequence;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.ProductVariantRepository;
@@ -48,6 +49,8 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
+
 import org.apache.commons.lang3.StringUtils;
 
 public class ProductServiceImpl implements ProductService {
@@ -564,4 +567,35 @@ public class ProductServiceImpl implements ProductService {
     copy.setLastPurchaseDate(null);
     copy.setCode(null);
   }
+
+	@Override
+	public void updateCostPriceFromView(Product product) throws AxelorException {
+		
+		switch(product.getCostTypeSelect()) {
+		case ProductRepository.COST_TYPE_LAST_PURCHASE_PRICE:
+			computeWithLastPurchasePrice(product);
+			break;
+		case ProductRepository.COST_TYPE_AVERAGE_PRICE:
+			break;
+		case ProductRepository.COST_TYPE_LAST_PRODUCTION_PRICE:
+			break;
+			
+		}
+		
+	}
+
+	protected void computeWithLastPurchasePrice(Product product) throws AxelorException{
+		
+		BigDecimal shippingCoef = product.getShippingCoef() != null && product.getShippingCoef().signum() > 0 ?
+				product.getShippingCoef() : BigDecimal.ONE;
+		
+		UnitConversionService unitConversionService;
+		
+		unitConversionService.convert(null, null, shippingCoef, 0, product)
+		if (product.getLastPurchasePrice().compareTo(BigDecimal.ZERO) > 0) {
+			if (product.getLastPurchasePrice() != null && product.getLastPurchasePrice().signum() > 0) {
+				product.setCostPrice(product.getLastPurchasePrice());
+			}
+		}
+	}
 }
