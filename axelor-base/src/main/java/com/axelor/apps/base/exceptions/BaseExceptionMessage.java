@@ -37,6 +37,9 @@ public final class BaseExceptionMessage {
   public static final String CURRENCY_1 = /*$$(*/
       "No currency conversion found from '%s' to '%s' for date %s" /*)*/;
 
+  public static final String SEQUENCE_PREFIX = /*$$(*/
+      "Sequence prefix cannot start with the draft prefix '%s'." /*)*/;
+
   public static final String CURRENCY_2 = /*$$(*/
       "The currency exchange rate from '%s' to '%s' for date %s must be different from zero." /*)*/;
   public static final String CURRENCY_3 = /*$$(*/
