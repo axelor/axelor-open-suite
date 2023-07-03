@@ -492,9 +492,9 @@
   </action-group>
 
   <action-group name="action-invoice-line-group-analytic-move-line-onchange">
-    <action name="action-analytic-move-line-group-analytic-move-line-list-onchange"/>
     <action name="action-invoice-line-method-check-analytic-account-on-invoice-line"/>
     <action name="action-invoice-line-method-print-analytic-account-on-invoice-line"/>
+    <action name="action-analytic-move-line-group-analytic-move-line-list-onchange"/>
   </action-group>
 
   <!-- ACTION RECORDS -->
