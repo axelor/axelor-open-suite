@@ -176,16 +176,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
 
     moveLineCheckService.checkAnalyticAxes(moveLine);
 
-    Map<String, Object> valuesMap = new HashMap<>();
-
-    valuesMap.put("axis1AnalyticAccount", moveLine.getAxis1AnalyticAccount());
-    valuesMap.put("axis2AnalyticAccount", moveLine.getAxis2AnalyticAccount());
-    valuesMap.put("axis3AnalyticAccount", moveLine.getAxis3AnalyticAccount());
-    valuesMap.put("axis4AnalyticAccount", moveLine.getAxis4AnalyticAccount());
-    valuesMap.put("axis5AnalyticAccount", moveLine.getAxis5AnalyticAccount());
-    valuesMap.put("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
-
-    return valuesMap;
+    return createAnalyticValuesMap(moveLine);
   }
 
   @Override
@@ -440,6 +431,28 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
       MoveLine moveLine) {
     analyticLineService.checkAnalyticLineForAxis(moveLine);
 
+    return createAnalyticValuesMap(moveLine);
+  }
+
+  @Override
+  public Map<String, Object> getAnalyticMoveLineValuesMap(MoveLine moveLine, Move move)
+      throws AxelorException {
+    analyticLineService.printAnalyticAccount(moveLine, move.getCompany());
+
+    return createAnalyticValuesMap(moveLine);
+  }
+
+  @Override
+  public Map<String, Map<String, Object>> getAnalyticMoveLineAttrsMap(MoveLine moveLine, Move move)
+      throws AxelorException {
+    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+
+    moveLineAttrsService.addAnalyticAccountRequired(moveLine, move, attrsMap);
+
+    return attrsMap;
+  }
+
+  protected Map<String, Object> createAnalyticValuesMap(MoveLine moveLine) {
     Map<String, Object> valuesMap = new HashMap<>();
 
     valuesMap.put("axis1AnalyticAccount", moveLine.getAxis1AnalyticAccount());

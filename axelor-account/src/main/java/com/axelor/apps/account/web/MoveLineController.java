@@ -269,25 +269,6 @@ public class MoveLineController {
     }
   }
 
-  public void setRequiredAnalyticAccount(ActionRequest request, ActionResponse response) {
-    try {
-      MoveLine moveLine = request.getContext().asType(MoveLine.class);
-
-      Move move = this.getMove(request, moveLine);
-
-      AnalyticLineService analyticLineService = Beans.get(AnalyticLineService.class);
-      for (int i = startAxisPosition; i <= endAxisPosition; i++) {
-        response.setAttr(
-            "axis".concat(Integer.toString(i)).concat("AnalyticAccount"),
-            "required",
-            analyticLineService.isAxisRequired(
-                moveLine, move != null ? move.getCompany() : null, i));
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
   public void manageAxis(ActionRequest request, ActionResponse response) {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
@@ -763,6 +744,20 @@ public class MoveLineController {
       return parentContext.asType(Move.class);
     } else {
       return moveLine.getMove();
+    }
+  }
+
+  public void analyticMoveLineOnChange(ActionRequest request, ActionResponse response) {
+    try {
+      MoveLine moveLine = request.getContext().asType(MoveLine.class);
+      Move move = this.getMove(request, moveLine);
+
+      MoveLineGroupService moveLineGroupService = Beans.get(MoveLineGroupService.class);
+
+      response.setValues(moveLineGroupService.getAnalyticMoveLineValuesMap(moveLine, move));
+      response.setAttrs(moveLineGroupService.getAnalyticMoveLineAttrsMap(moveLine, move));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 }
