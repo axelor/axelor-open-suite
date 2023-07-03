@@ -28,7 +28,8 @@
       <field name="convertedLeadStatus"/>
       <field name="lostLeadStatus"/>
     </panel>
-    <panel name="prospectStatusMgtPanel" title="Prospects status managment">
+    <panel name="prospectStatusMgtPanel" title="Prospects status managment"
+      if="__config__.app.getApp('crm')?.getCrmProcessOnPartner()">
       <field name="partnerDefaultStatus"/>
       <field name="closedWinPartnerStatus"/>
       <field name="closedLostPartnerStatus"/>
