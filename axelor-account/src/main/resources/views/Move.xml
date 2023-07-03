@@ -457,12 +457,10 @@
       </panel>
     </panel>
 
-    <panel hideIf="!journal">
-      <panel-related name="moveLineMassEntryListPanel" field="moveLineMassEntryList"
-        editable="true" colSpan="12" height="20" canNew="true" canRemove="true"
-        grid-view="move-line-mass-entry-move-grid"
-        onChange="action-account-move-method-move-line-list-onchange"/>
-    </panel>
+    <panel-related name="moveLineMassEntryListPanel" field="moveLineMassEntryList"
+      editable="true" colSpan="12" height="20" canNew="true" canRemove="true"
+      grid-view="move-line-mass-entry-move-grid"
+      onChange="action-account-move-method-move-line-list-onchange" hideIf="!journal"/>
 
     <panel name="errorPanel" colSpan="12" hideIf="!journal">
       <field name="massEntryErrors" readonly="true" widget="Text" colSpan="12"/>
