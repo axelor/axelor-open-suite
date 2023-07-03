@@ -17,13 +17,19 @@
       <field name="agenciesManagement" widget="boolean-switch"/>
       <field name="crmProcessOnPartner" widget="boolean-switch"/>
       <field name="emailDomainToIgnore"/>
+    </panel>
+    <panel name="opportunityStatusMgtPanel" title="Opportunitities status managment">
       <field name="opportunityDefaultStatus"/>
+      <field name="salesPropositionStatus"/>
       <field name="closedWinOpportunityStatus"/>
       <field name="closedLostOpportunityStatus"/>
-      <field name="salesPropositionStatus"/>
+    </panel>
+    <panel name="leadStatusMgtPanel" title="Leads status managment">
       <field name="leadDefaultStatus"/>
       <field name="convertedLeadStatus"/>
       <field name="lostLeadStatus"/>
+    </panel>
+    <panel name="prospectStatusMgtPanel" title="Prospects status managment">
       <field name="partnerDefaultStatus"/>
       <field name="closedWinPartnerStatus"/>
       <field name="closedLostPartnerStatus"/>

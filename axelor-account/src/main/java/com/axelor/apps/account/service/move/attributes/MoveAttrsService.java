@@ -65,4 +65,8 @@ public interface MoveAttrsService {
   void addMassEntryPaymentConditionRequired(Move move, Map<String, Map<String, Object>> attrsMap);
 
   void addMassEntryBtnHidden(Move move, Map<String, Map<String, Object>> attrsMap);
+
+  void addPartnerRequired(Move move, Map<String, Map<String, Object>> attrsMap);
+
+  void addMainPanelTabHiddenValue(Move move, Map<String, Map<String, Object>> attrsMap);
 }

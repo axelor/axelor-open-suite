@@ -86,7 +86,6 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.axelor.message.db.Message;
 import com.axelor.message.service.TemplateMessageService;
 import com.google.common.base.Strings;
@@ -114,6 +113,7 @@ public class ExpenseServiceImpl implements ExpenseService {
   protected MoveCreateService moveCreateService;
   protected MoveValidateService moveValidateService;
   protected ExpenseRepository expenseRepository;
+  protected ExpenseLineRepository expenseLineRepository;
   protected MoveLineCreateService moveLineCreateService;
   protected MoveLineConsolidateService moveLineConsolidateService;
   protected AccountManagementAccountService accountManagementService;
@@ -128,9 +128,18 @@ public class ExpenseServiceImpl implements ExpenseService {
   protected KilometricService kilometricService;
   protected PeriodRepository periodRepository;
   protected BankDetailsService bankDetailsService;
+  protected EmployeeAdvanceService employeeAdvanceService;
+  protected PeriodService periodService;
+  protected MoveRepository moveRepository;
+  protected BankOrderCreateServiceHr bankOrderCreateServiceHr;
+  protected BankOrderRepository bankOrderRepository;
+  protected ReconcileService reconcileService;
+  protected BankOrderService bankOrderService;
+  protected MoveCancelService moveCancelService;
+  protected AppBaseService appBaseService;
+  protected SequenceService sequenceService;
   protected CompanyConfigService companyConfigService;
   protected CurrencyService currencyService;
-  protected ExpenseLineRepository expenseLineRepository;
   protected CompanyDateService companyDateService;
 
   @Inject
@@ -149,9 +158,19 @@ public class ExpenseServiceImpl implements ExpenseService {
       TemplateMessageService templateMessageService,
       PaymentModeService paymentModeService,
       PeriodRepository periodRepository,
+      PeriodService periodService,
       MoveLineConsolidateService moveLineConsolidateService,
       KilometricService kilometricService,
       BankDetailsService bankDetailsService,
+      EmployeeAdvanceService employeeAdvanceService,
+      MoveRepository moveRepository,
+      BankOrderCreateServiceHr bankOrderCreateServiceHr,
+      BankOrderRepository bankOrderRepository,
+      ReconcileService reconcileService,
+      BankOrderService bankOrderService,
+      MoveCancelService moveCancelService,
+      AppBaseService appBaseService,
+      SequenceService sequenceService,
       CompanyConfigService companyConfigService,
       CurrencyService currencyService,
       ExpenseLineRepository expenseLineRepository,
@@ -171,9 +190,19 @@ public class ExpenseServiceImpl implements ExpenseService {
     this.templateMessageService = templateMessageService;
     this.paymentModeService = paymentModeService;
     this.periodRepository = periodRepository;
+    this.periodService = periodService;
     this.moveLineConsolidateService = moveLineConsolidateService;
     this.kilometricService = kilometricService;
     this.bankDetailsService = bankDetailsService;
+    this.employeeAdvanceService = employeeAdvanceService;
+    this.moveRepository = moveRepository;
+    this.bankOrderCreateServiceHr = bankOrderCreateServiceHr;
+    this.bankOrderRepository = bankOrderRepository;
+    this.reconcileService = reconcileService;
+    this.bankOrderService = bankOrderService;
+    this.moveCancelService = moveCancelService;
+    this.appBaseService = appBaseService;
+    this.sequenceService = sequenceService;
     this.companyConfigService = companyConfigService;
     this.currencyService = currencyService;
     this.expenseLineRepository = expenseLineRepository;
@@ -347,7 +376,7 @@ public class ExpenseServiceImpl implements ExpenseService {
       compute(expense);
     }
 
-    Beans.get(EmployeeAdvanceService.class).fillExpenseWithAdvances(expense);
+    employeeAdvanceService.fillExpenseWithAdvances(expense);
     expense.setStatusSelect(ExpenseRepository.STATUS_VALIDATED);
     expense.setValidatedBy(AuthUtils.getUser());
     expense.setValidationDateTime(
@@ -645,9 +674,9 @@ public class ExpenseServiceImpl implements ExpenseService {
       expenseRepository.save(expense);
       return;
     }
-    Beans.get(PeriodService.class).testOpenPeriod(move.getPeriod());
+    periodService.testOpenPeriod(move.getPeriod());
     try {
-      Beans.get(MoveRepository.class).remove(move);
+      moveRepository.remove(move);
       expense.setMove(null);
       expense.setVentilated(false);
       expense.setStatusSelect(ExpenseRepository.STATUS_CANCELED);
@@ -696,10 +725,9 @@ public class ExpenseServiceImpl implements ExpenseService {
     }
 
     if (paymentMode.getGenerateBankOrder()) {
-      BankOrder bankOrder =
-          Beans.get(BankOrderCreateServiceHr.class).createBankOrder(expense, bankDetails);
+      BankOrder bankOrder = bankOrderCreateServiceHr.createBankOrder(expense, bankDetails);
       expense.setBankOrder(bankOrder);
-      Beans.get(BankOrderRepository.class).save(bankOrder);
+      bankOrderRepository.save(bankOrder);
       expense.setPaymentStatusSelect(InvoicePaymentRepository.STATUS_PENDING);
     } else {
       if (accountConfigService
@@ -790,7 +818,7 @@ public class ExpenseServiceImpl implements ExpenseService {
     moveValidateService.accounting(move);
     expense.setPaymentMove(move);
 
-    Beans.get(ReconcileService.class).reconcile(expenseMoveLine, employeeMoveLine, true, false);
+    reconcileService.reconcile(expenseMoveLine, employeeMoveLine, true, false);
 
     expenseRepository.save(expense);
 
@@ -835,7 +863,7 @@ public class ExpenseServiceImpl implements ExpenseService {
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(HumanResourceExceptionMessage.EXPENSE_PAYMENT_CANCEL));
       } else if (bankOrder.getStatusSelect() != BankOrderRepository.STATUS_CANCELED) {
-        Beans.get(BankOrderService.class).cancelBankOrder(bankOrder);
+        bankOrderService.cancelBankOrder(bankOrder);
       }
     }
 
@@ -844,7 +872,7 @@ public class ExpenseServiceImpl implements ExpenseService {
       if (paymentMove.getStatusSelect() == MoveRepository.STATUS_NEW) {
         expense.setPaymentMove(null);
       }
-      Beans.get(MoveCancelService.class).cancel(paymentMove);
+      moveCancelService.cancel(paymentMove);
     }
     resetExpensePaymentAfterCancellation(expense);
   }
@@ -976,11 +1004,11 @@ public class ExpenseServiceImpl implements ExpenseService {
       }
 
       Period period =
-          Beans.get(PeriodRepository.class)
+          periodRepository
               .all()
               .filter(
                   "self.fromDate <= ?1 AND self.toDate >= ?1 AND self.allowExpenseCreation = true AND self.year.company = ?2 AND self.year.typeSelect = ?3",
-                  Beans.get(AppBaseService.class).getTodayDate(company),
+                  appBaseService.getTodayDate(company),
                   company,
                   YearBaseRepository.STATUS_OPENED)
               .fetchOne();
@@ -1030,12 +1058,12 @@ public class ExpenseServiceImpl implements ExpenseService {
   @Override
   public void setDraftSequence(Expense expense) throws AxelorException {
     if (expense.getId() != null && Strings.isNullOrEmpty(expense.getExpenseSeq())) {
-      expense.setExpenseSeq(Beans.get(SequenceService.class).getDraftSequenceNumber(expense));
+      expense.setExpenseSeq(sequenceService.getDraftSequenceNumber(expense));
     }
   }
 
   protected void setExpenseSeq(Expense expense) throws AxelorException {
-    if (!Beans.get(SequenceService.class).isEmptyOrDraftSequenceNumber(expense.getExpenseSeq())) {
+    if (!sequenceService.isEmptyOrDraftSequenceNumber(expense.getExpenseSeq())) {
       return;
     }
 
@@ -1044,9 +1072,8 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     if (sequence != null) {
       expense.setExpenseSeq(
-          Beans.get(SequenceService.class)
-              .getSequenceNumber(
-                  sequence, expense.getSentDateTime().toLocalDate(), Expense.class, "expenseSeq"));
+          sequenceService.getSequenceNumber(
+              sequence, expense.getSentDateTime().toLocalDate(), Expense.class, "expenseSeq"));
       if (expense.getExpenseSeq() != null) {
         return;
       }
@@ -1086,14 +1113,14 @@ public class ExpenseServiceImpl implements ExpenseService {
       LocalDate startDate = vehicle.getStartDate();
       LocalDate endDate = vehicle.getEndDate();
       if (startDate == null) {
-        if (endDate == null || expenseDate.compareTo(endDate) <= 0) {
+        if (endDate == null || !expenseDate.isAfter(endDate)) {
           kilometricAllowParamList.add(vehicle.getKilometricAllowParam());
         }
       } else if (endDate == null) {
-        if (expenseDate.compareTo(startDate) >= 0) {
+        if (!expenseDate.isBefore(startDate)) {
           kilometricAllowParamList.add(vehicle.getKilometricAllowParam());
         }
-      } else if (expenseDate.compareTo(startDate) >= 0 && expenseDate.compareTo(endDate) <= 0) {
+      } else if (!expenseDate.isBefore(startDate) && !expenseDate.isAfter(endDate)) {
         kilometricAllowParamList.add(vehicle.getKilometricAllowParam());
       }
     }
@@ -1133,11 +1160,10 @@ public class ExpenseServiceImpl implements ExpenseService {
       }
       LocalDate startDate = vehicle.getStartDate();
       LocalDate endDate = vehicle.getEndDate();
-      if ((startDate == null && (endDate == null || expenseDate.compareTo(endDate) <= 0))
+      if ((startDate == null && (endDate == null || !expenseDate.isAfter(endDate)))
           || (endDate == null
-              && (expenseDate.compareTo(startDate) >= 0
-                  || (expenseDate.compareTo(startDate) >= 0
-                      && expenseDate.compareTo(endDate) <= 0)))) {
+              && (!expenseDate.isBefore(startDate)
+                  || (!expenseDate.isBefore(startDate) && !expenseDate.isAfter(endDate))))) {
         kilometricAllowParamList.add(vehicle.getKilometricAllowParam());
       }
     }
@@ -1158,7 +1184,6 @@ public class ExpenseServiceImpl implements ExpenseService {
 
   @Override
   public void completeExpenseLines(Expense expense) {
-    ExpenseLineRepository expenseLineRepository = Beans.get(ExpenseLineRepository.class);
     List<ExpenseLine> expenseLineList =
         expenseLineRepository
             .all()
@@ -1222,8 +1247,8 @@ public class ExpenseServiceImpl implements ExpenseService {
     if (expense.getMoveDate() != null) {
       LocalDate moveDate = expense.getMoveDate();
       if (expense.getPeriod() == null
-          || !(moveDate.compareTo(expense.getPeriod().getFromDate()) >= 0)
-          || !(moveDate.compareTo(expense.getPeriod().getToDate()) <= 0)) {
+          || !(!moveDate.isBefore(expense.getPeriod().getFromDate()))
+          || !(!moveDate.isAfter(expense.getPeriod().getToDate()))) {
         expense.setPeriod(
             periodRepository
                 .all()

@@ -219,6 +219,7 @@ public class MoveCheckServiceImpl implements MoveCheckService {
                 ml.getMove() != null
                     && invoiceTermService.getPfpValidatorUserCondition(
                         ml.getMove().getInvoice(), ml)
+                    && CollectionUtils.isNotEmpty(ml.getInvoiceTermList())
                     && ml.getInvoiceTermList().stream()
                         .anyMatch(it -> it.getPfpValidatorUser() == null))) {
       return I18n.get(AccountExceptionMessage.INVOICE_PFP_VALIDATOR_USER_MISSING);

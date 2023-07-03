@@ -56,6 +56,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Singleton
 public class ConvertLeadWizardController {
@@ -72,8 +73,10 @@ public class ConvertLeadWizardController {
       Map<String, Object> contactPartnerMap = null;
 
       Lead lead = Beans.get(LeadRepository.class).find(((Integer) leadMap.get("id")).longValue());
-      Integer leadToPartnerSelect = (Integer) context.get("leadToPartnerSelect");
-      Integer leadToContactSelect = (Integer) context.get("leadToContactSelect");
+      Integer leadToPartnerSelect =
+          (Integer) Optional.ofNullable(context.get("leadToPartnerSelect")).orElse(1);
+      Integer leadToContactSelect =
+          (Integer) Optional.ofNullable(context.get("leadToContactSelect")).orElse(1);
 
       Partner partner = null;
       PartnerStatus partnerStatus = null;

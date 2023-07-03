@@ -371,6 +371,13 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     stockMoveLine.setFromStockLocation(fromStockLocation);
     stockMoveLine.setToStockLocation(toStockLocation);
 
+    if (fromStockLocation == null) {
+      stockMoveLine.setFromStockLocation(stockMove.getFromStockLocation());
+    }
+    if (toStockLocation == null) {
+      stockMoveLine.setToStockLocation(stockMove.getToStockLocation());
+    }
+
     if (stockMove != null) {
       stockMove.addStockMoveLineListItem(stockMoveLine);
       stockMoveLine.setNetMass(
@@ -1535,7 +1542,12 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void updateStockMoveLine(
-      StockMoveLine stockMoveLine, BigDecimal realQty, Integer conformity, Unit unit)
+      StockMoveLine stockMoveLine,
+      BigDecimal realQty,
+      Integer conformity,
+      Unit unit,
+      StockLocation fromStockLocation,
+      StockLocation toStockLocation)
       throws AxelorException {
     if (stockMoveLine.getStockMove() == null) {
       throw new AxelorException(
@@ -1549,6 +1561,12 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
         stockMoveLine.setIsRealQtyModifiedByUser(true);
 
         updateUnit(stockMoveLine, unit);
+        if (fromStockLocation != null) {
+          stockMoveLine.setFromStockLocation(fromStockLocation);
+        }
+        if (toStockLocation != null) {
+          stockMoveLine.setToStockLocation(toStockLocation);
+        }
       }
     }
   }
