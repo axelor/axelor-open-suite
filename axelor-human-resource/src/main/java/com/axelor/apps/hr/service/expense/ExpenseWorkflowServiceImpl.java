@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 import wslite.json.JSONException;
 
 @Singleton
-public class ExpenseActionServiceImpl implements ExpenseActionService {
+public class ExpenseWorkflowServiceImpl implements ExpenseWorkflowService {
 
   protected CompanyDateService companyDateService;
   protected AppAccountService appAccountService;
@@ -45,7 +45,7 @@ public class ExpenseActionServiceImpl implements ExpenseActionService {
   protected MoveRepository moveRepository;
 
   @Inject
-  public ExpenseActionServiceImpl(
+  public ExpenseWorkflowServiceImpl(
       CompanyDateService companyDateService,
       AppAccountService appAccountService,
       HRConfigService hrConfigService,

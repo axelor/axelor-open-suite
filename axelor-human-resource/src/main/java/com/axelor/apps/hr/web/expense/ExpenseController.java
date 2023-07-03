@@ -59,7 +59,6 @@ import com.axelor.apps.hr.service.HRMenuTagService;
 import com.axelor.apps.hr.service.HRMenuValidateService;
 import com.axelor.apps.hr.service.KilometricService;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
-import com.axelor.apps.hr.service.expense.ExpenseActionService;
 import com.axelor.apps.hr.service.expense.ExpenseAnalyticService;
 import com.axelor.apps.hr.service.expense.ExpenseKilometricService;
 import com.axelor.apps.hr.service.expense.ExpenseLineService;
@@ -67,6 +66,7 @@ import com.axelor.apps.hr.service.expense.ExpensePaymentService;
 import com.axelor.apps.hr.service.expense.ExpenseService;
 import com.axelor.apps.hr.service.expense.ExpenseValidateService;
 import com.axelor.apps.hr.service.expense.ExpenseVentilateService;
+import com.axelor.apps.hr.service.expense.ExpenseWorkflowService;
 import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
@@ -354,11 +354,11 @@ public class ExpenseController {
     try {
       Expense expense = request.getContext().asType(Expense.class);
       expense = Beans.get(ExpenseRepository.class).find(expense.getId());
-      ExpenseActionService expenseActionService = Beans.get(ExpenseActionService.class);
+      ExpenseWorkflowService expenseWorkflowService = Beans.get(ExpenseWorkflowService.class);
 
-      expenseActionService.cancel(expense);
+      expenseWorkflowService.cancel(expense);
 
-      Message message = expenseActionService.sendCancellationEmail(expense);
+      Message message = expenseWorkflowService.sendCancellationEmail(expense);
       if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
         response.setInfo(
             String.format(
@@ -407,11 +407,11 @@ public class ExpenseController {
     try {
       Expense expense = request.getContext().asType(Expense.class);
       expense = Beans.get(ExpenseRepository.class).find(expense.getId());
-      ExpenseActionService expenseActionService = Beans.get(ExpenseActionService.class);
+      ExpenseWorkflowService expenseWorkflowService = Beans.get(ExpenseWorkflowService.class);
 
-      expenseActionService.confirm(expense);
+      expenseWorkflowService.confirm(expense);
 
-      Message message = expenseActionService.sendConfirmationEmail(expense);
+      Message message = expenseWorkflowService.sendConfirmationEmail(expense);
       if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
         response.setInfo(
             String.format(
@@ -468,11 +468,11 @@ public class ExpenseController {
     try {
       Expense expense = request.getContext().asType(Expense.class);
       expense = Beans.get(ExpenseRepository.class).find(expense.getId());
-      ExpenseActionService expenseActionService = Beans.get(ExpenseActionService.class);
+      ExpenseWorkflowService expenseWorkflowService = Beans.get(ExpenseWorkflowService.class);
 
-      expenseActionService.refuse(expense);
+      expenseWorkflowService.refuse(expense);
 
-      Message message = expenseActionService.sendRefusalEmail(expense);
+      Message message = expenseWorkflowService.sendRefusalEmail(expense);
       if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
         response.setInfo(
             String.format(

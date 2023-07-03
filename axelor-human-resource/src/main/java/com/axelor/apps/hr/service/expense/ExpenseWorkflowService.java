@@ -24,7 +24,7 @@ import com.axelor.message.db.Message;
 import java.io.IOException;
 import wslite.json.JSONException;
 
-public interface ExpenseActionService {
+public interface ExpenseWorkflowService {
 
   public void confirm(Expense expense) throws AxelorException;
 
