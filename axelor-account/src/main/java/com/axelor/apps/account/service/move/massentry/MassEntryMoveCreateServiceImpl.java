@@ -129,7 +129,7 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
         moveLineComputeAnalyticService.generateAnalyticMoveLines(newMoveLine);
         moveLineMassEntryRecordService.setAnalytics(newMoveLine, moveLine);
         if (ObjectUtils.notEmpty(moveLine.getAnalyticMoveLineList())) {
-          moveLine.clearAnalyticMoveLineList();
+          newMoveLine.clearAnalyticMoveLineList();
           for (AnalyticMoveLine analyticMoveLine : moveLine.getAnalyticMoveLineList()) {
             AnalyticMoveLine copyAnalyticMoveLine =
                 analyticMoveLineRepository.copy(analyticMoveLine, false);
