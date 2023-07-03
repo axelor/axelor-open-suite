@@ -43,11 +43,14 @@ public class SequenceController {
     }
   }
 
-  public void validateSequence(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+  public void validateSequence(ActionRequest request, ActionResponse response) {
     Sequence sequence = request.getContext().asType(Sequence.class);
     if (!Strings.isNullOrEmpty(sequence.getCodeSelect())) {
-      Beans.get(SequenceService.class).validateSequence(sequence);
+      try {
+        Beans.get(SequenceService.class).validateSequence(sequence);
+      } catch (AxelorException e) {
+        TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+      }
     }
   }
 

@@ -132,14 +132,12 @@
     <error message="Prefix or suffix must not contain characters forbidden in filenames."
       if="p = ~/^[^\/\\?*:\|&quot;&lt;>]*$/; prefixe &amp;&amp; !(prefixe ==~ p) || suffixe &amp;&amp; !(suffixe ==~ p)"/>
     <error message="Prefix cannot start with #." if="prefixe ==~ /^#.*$/"/>
-    <error message="Prefix cannot start with the prefix draft."
-      if="prefixe ==__config__.app.getApp('base').getDraftPrefix()"/>
-
   </action-validate>
 
   <action-method name="action-method-sequence-document-concerned-onchange">
     <call class="com.axelor.apps.base.web.SequenceController" method="getDefaultTitle"/>
   </action-method>
+
   <action-method name="action-method-sequence-validate-before-save">
     <call class="com.axelor.apps.base.web.SequenceController" method="validateSequence"/>
   </action-method>
