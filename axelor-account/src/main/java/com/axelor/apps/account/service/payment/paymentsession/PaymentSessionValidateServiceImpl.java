@@ -247,13 +247,11 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
 
       for (InvoiceTerm invoiceTerm : invoiceTermList) {
         offset++;
-        if (paymentSession.getStatusSelect() == PaymentSessionRepository.STATUS_AWAITING_PAYMENT
-            || this.shouldBeProcessed(invoiceTerm)) {
-
-          if (invoiceTerm.getPaymentAmount().compareTo(BigDecimal.ZERO) > 0) {
-            this.processInvoiceTerm(
-                paymentSession, invoiceTerm, moveDateMap, paymentAmountMap, out, isGlobal);
-          }
+        if ((paymentSession.getStatusSelect() == PaymentSessionRepository.STATUS_AWAITING_PAYMENT
+                || this.shouldBeProcessed(invoiceTerm))
+            && invoiceTerm.getPaymentAmount().compareTo(BigDecimal.ZERO) > 0) {
+          this.processInvoiceTerm(
+              paymentSession, invoiceTerm, moveDateMap, paymentAmountMap, out, isGlobal);
         } else {
           this.releaseInvoiceTerm(invoiceTerm);
         }
