@@ -39,6 +39,7 @@ import com.google.inject.persist.Transactional;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -170,6 +171,7 @@ public class MovePfpServiceImpl implements MovePfpService {
       invoiceTermList.addAll(
           move.getMoveLineList().stream()
               .map(MoveLine::getInvoiceTermList)
+              .filter(Objects::nonNull)
               .flatMap(Collection::stream)
               .collect(Collectors.toList()));
     }

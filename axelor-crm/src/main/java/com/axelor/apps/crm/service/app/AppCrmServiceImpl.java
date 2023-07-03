@@ -143,7 +143,7 @@ public class AppCrmServiceImpl extends AppBaseServiceImpl implements AppCrmServi
   }
 
   @Override
-  public PartnerStatus getClosedWinPartnerStatus() throws AxelorException {
+  public PartnerStatus getClosedLostPartnerStatus() throws AxelorException {
     PartnerStatus closedLostPartnerStatus = getAppCrm().getClosedLostPartnerStatus();
 
     if (closedLostPartnerStatus == null) {
@@ -156,7 +156,7 @@ public class AppCrmServiceImpl extends AppBaseServiceImpl implements AppCrmServi
   }
 
   @Override
-  public PartnerStatus getClosedLostPartnerStatus() throws AxelorException {
+  public PartnerStatus getClosedWinPartnerStatus() throws AxelorException {
     PartnerStatus closedWinPartnerStatus = getAppCrm().getClosedWinPartnerStatus();
 
     if (closedWinPartnerStatus == null) {

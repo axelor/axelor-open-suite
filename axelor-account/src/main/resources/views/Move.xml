@@ -219,7 +219,7 @@
             showIf="(statusSelect == 1 || statusSelect == 5) &amp;&amp; journal.allowAccountingDaybook &amp;&amp; company.accountConfig.accountingDaybook"
             colSpan="12" onClick="action-account-move-group-accounting-click"/>
           <button name="accountingBtn" title="Accounting.toAccount" css="btn-success"
-            showIf="statusSelect == 2 || ((statusSelect == 1 || statusSelect == 5) &amp;&amp; (!journal.allowAccountingDaybook || !company.accountConfig.accountingDaybook))"
+            showIf="statusSelect == 2 || ((statusSelect == 1 || statusSelect == 5) &amp;&amp; journal &amp;&amp; (!journal.allowAccountingDaybook || !company.accountConfig.accountingDaybook))"
             colSpan="12" onClick="action-account-move-group-accounting-click"/>
         </panel>
         <panel name="pfpPanel"
@@ -259,7 +259,7 @@
         </panel>
       </panel>
     </panel>
-    <panel-tabs name="mainPanelTab">
+    <panel-tabs name="mainPanelTab" hideIf="!journal || $mainPanelTabHidden">
       <panel title="Move Lines" readonlyIf="$validatePeriod">
         <button colSpan="3" name="counterpartGenerateBtn" css="btn-custom text-left"
           icon="fa-plus" title="Generate counterpart"
@@ -381,6 +381,7 @@
           <field name="journal.journalType.technicalTypeSelect" hidden="true" type="integer"/>
           <field name="company.accountConfig" hidden="true"/>
           <field name="company.accountConfig.accountingDaybook" hidden="true"/>
+          <field name="$mainPanelTabHidden" hidden="true"/>
         </panel>
       </panel>
     </panel-tabs>

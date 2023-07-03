@@ -32,7 +32,7 @@
       form-view="fixed-asset-category-form" grid-view="fixed-asset-category-grid" canEdit="false"/>
     <field name="purchaseAccount" if-module="axelor-account" form-view="account-form"
       grid-view="account-grid" if="__config__.app.isApp('account')" canEdit="false"
-      domain="self.company = :company AND (self.accountType.technicalTypeSelect = 'charge' OR self.accountType.technicalTypeSelect = 'debt' OR self.accountType.technicalTypeSelect = 'immobilisation')"/>
+      domain="self.company = :company AND self.accountType.technicalTypeSelect IN ('charge', 'debt', 'immobilisation') AND self.statusSelect = 1"/>
     <field name="purchaseTax" form-view="tax-form" grid-view="tax-grid" canEdit="false"/>
     <field name="purchFixedAssetsAccount"
       domain="self.company = :company AND self.accountType.technicalTypeSelect = 'immobilisation'"

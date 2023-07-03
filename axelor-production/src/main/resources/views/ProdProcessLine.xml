@@ -119,13 +119,12 @@
   <action-attrs name="action-prod-process-line-attrs-update-from-workcenter">
     <attribute name="value" for="durationPerCycle"
       expr="eval: workCenter?.durationPerCycle"/>
-    <attribute name="value" for="timingOfImplementation"
-      expr="eval: workCenter?.timingOfImplementation"/>
     <attribute name="value" for="humanDuration"
       expr="eval: workCenter?.hrDurationPerCycle"/>
   </action-attrs>
 
   <action-group name="action-prod-process-line-group-work-center-onchange">
+    <action name="action-prod-process-line-method-duration"/>
     <action name="action-prod-process-line-attrs-update-from-workcenter"/>
     <action name="action-prod-process-line-method-capacity-settings"/>
   </action-group>
