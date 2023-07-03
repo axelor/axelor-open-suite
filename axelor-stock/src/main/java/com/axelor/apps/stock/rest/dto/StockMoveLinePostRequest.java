@@ -55,11 +55,9 @@ public class StockMoveLinePostRequest extends RequestStructure {
   @Max(StockMoveLineRepository.CONFORMITY_NON_COMPLIANT)
   private Integer conformity;
 
-  @NotNull
   @Min(0)
   private Long fromStockLocationId;
 
-  @NotNull
   @Min(0)
   private Long toStockLocationId;
 
@@ -150,10 +148,16 @@ public class StockMoveLinePostRequest extends RequestStructure {
   }
 
   public StockLocation fetchFromStockLocation() {
-    return ObjectFinder.find(StockLocation.class, fromStockLocationId, ObjectFinder.NO_VERSION);
+    if (fromStockLocationId != null) {
+      return ObjectFinder.find(StockLocation.class, fromStockLocationId, ObjectFinder.NO_VERSION);
+    }
+    return null;
   }
 
   public StockLocation fetchtoStockLocation() {
-    return ObjectFinder.find(StockLocation.class, toStockLocationId, ObjectFinder.NO_VERSION);
+    if (toStockLocationId != null) {
+      return ObjectFinder.find(StockLocation.class, toStockLocationId, ObjectFinder.NO_VERSION);
+    }
+    return null;
   }
 }

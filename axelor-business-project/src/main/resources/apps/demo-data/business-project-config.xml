@@ -111,6 +111,8 @@
       column="date"/>
     <bind to="duration" column="hoursDuration"/>
     <bind to="hoursDuration" column="hoursDuration"/>
+    <bind to="projectTask" column="projectTask_importId"
+      search="self.importId = :projectTask_importId" if="projectTask"/>
   </input>
 
   <input file="hr_timesheet.csv" type="com.axelor.apps.hr.db.Timesheet" separator=";"
