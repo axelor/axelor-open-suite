@@ -277,6 +277,28 @@
     <call class="com.axelor.apps.crm.web.CalendarController" method="showMyEvents"/>
   </action-method>
 
+  <menuitem name="crm-root-partners-companies" parent="crm-root" title="Partners Companies"
+    action="crm.root.partners.companies" order="700"/>
+
+  <action-view name="crm.root.partners.companies" title="Partners Companies"
+    model="com.axelor.apps.base.db.Partner">
+    <view type="kanban" name="partner-prospect-kanban"
+      if="__config__.app.getApp('crm')?.getCrmProcessOnPartner()"/>
+    <view type="cards" name="partner-cards"/>
+    <view type="grid" name="partner-prospect-grid"/>
+    <view type="form" name="partner-customer-form"/>
+    <view-param name="limit" value="39"/>
+    <view-param name="search-filters" value="partner-filters"/>
+    <view-param name="forceTitle" value="true"/>
+    <domain>self.isContact = false AND self.isProspect = true AND self.isCollaborator = true</domain>
+    <context name="_isProspect" expr="true"/>
+    <context name="_isCollaborator" expr="true"/>
+    <context name="_domain"
+      expr="self.isContact = false AND self.isProspect = true AND self.isCollaborator = true"/>
+    <context name="json-enhance" expr="eval:true"/>
+    <context name="_isFromCrm" expr="eval:true"/>
+  </action-view>
+
   <menuitem name="crm-root-report" parent="crm-root" title="Reportings" order="1100"
     icon="fa-bar-chart"/>
 
@@ -626,8 +648,8 @@
     <view type="form" name="research-parameter-config-form"/>
   </action-view>
 
-  <menuitem name="crm-conf-partner-companies" parent="crm-conf"
-    title="Partner Companies" order="1200" if="eval:  __config__.app.getApp('crm')?.getIsManagePartnerCompany()"/>
+  <menuitem name="crm-conf-partner-companies" parent="crm-conf" title="Partners Companies"
+    order="1200" if="eval:  __config__.app.getApp('crm')?.getIsManagePartnerCompany()"/>
 
   <menuitem name="crm-conf-collaborator-domain" parent="crm-conf-partner-companies"
     title="Partner work domain" action="crm.conf.collaborator.domain" order="100"/>
@@ -638,8 +660,8 @@
     <view type="form" name="collaborator-domain-form"/>
   </action-view>
 
-  <menuitem name="crm-conf-fidelity" parent="crm-conf-partner-companies" title="Partner Fidelity"
-    action="crm.conf.fidelity" order="200"/>
+  <menuitem name="crm-conf-fidelity" parent="crm-conf-partner-companies"
+    title="Partner Fidelity" action="crm.conf.fidelity" order="200"/>
 
   <action-view name="crm.conf.fidelity" title="Partner Fidelity"
     model="com.axelor.apps.crm.db.Fidelity">
