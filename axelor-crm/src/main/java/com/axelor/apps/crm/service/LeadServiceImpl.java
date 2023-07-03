@@ -37,13 +37,11 @@ import com.axelor.apps.crm.exception.CrmExceptionMessage;
 import com.axelor.apps.crm.service.app.AppCrmService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.message.db.repo.MultiRelatedRepository;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -59,7 +57,6 @@ public class LeadServiceImpl implements LeadService {
   protected MultiRelatedRepository multiRelatedRepository;
   protected LeadStatusRepository leadStatusRepo;
   protected AppCrmService appCrmService;
-  protected DomainNameToolService<Lead> domainNameToolService;
 
   @Inject
   public LeadServiceImpl(
@@ -70,8 +67,7 @@ public class LeadServiceImpl implements LeadService {
       EventRepository eventRepo,
       MultiRelatedRepository multiRelatedRepository,
       LeadStatusRepository leadStatusRepo,
-      AppCrmService appCrmService,
-      DomainNameToolService domainNameToolService) {
+      AppCrmService appCrmService) {
     this.sequenceService = sequenceService;
     this.userService = userService;
     this.partnerRepo = partnerRepo;
@@ -80,7 +76,6 @@ public class LeadServiceImpl implements LeadService {
     this.multiRelatedRepository = multiRelatedRepository;
     this.leadStatusRepo = leadStatusRepo;
     this.appCrmService = appCrmService;
-    this.domainNameToolService = domainNameToolService;
   }
 
   /**
@@ -255,20 +250,5 @@ public class LeadServiceImpl implements LeadService {
   @Override
   public LeadStatus getDefaultLeadStatus() throws AxelorException {
     return appCrmService.getLeadDefaultStatus();
-  }
-
-  @Override
-  public List<Lead> getLeadsWithSameDomainName(Lead lead)
-      throws ClassNotFoundException, AxelorException {
-    List<Long> idToIgnoreList = new ArrayList<>();
-    idToIgnoreList.add(lead.getId());
-    domainNameToolService.set(lead);
-    List<Lead> leadList = new ArrayList<Lead>();
-    if (ObjectUtils.notEmpty(lead.getEmailAddress())) {
-      leadList =
-          domainNameToolService.getEntitiesVithSameEmailAddress(
-              lead.getEmailAddress().getName(), idToIgnoreList, null);
-    }
-    return leadList;
   }
 }
