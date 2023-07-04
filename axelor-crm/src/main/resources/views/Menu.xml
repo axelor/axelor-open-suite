@@ -56,28 +56,8 @@
 
   <menuitem name="crm-root-prospects" parent="crm-root" title="Prospects" order="200"/>
 
-  <menuitem name="crm-all-prospects" parent="crm-root-prospects" title="All prospects"
-    action="crm.all.prospects" order="100"/>
-
-  <action-view name="crm.all.prospects" title="All prospects"
-    model="com.axelor.apps.base.db.Partner">
-    <view type="kanban" name="partner-prospect-kanban"
-      if="__config__.app.getApp('crm')?.getCrmProcessOnPartner()"/>
-    <view type="cards" name="partner-cards"/>
-    <view type="grid" name="partner-prospect-grid"/>
-    <view type="form" name="partner-customer-form"/>
-    <view-param name="limit" value="39"/>
-    <view-param name="search-filters" value="partner-filters"/>
-    <view-param name="forceTitle" value="true"/>
-    <domain>self.isContact = false AND self.isProspect = true</domain>
-    <context name="_isProspect" expr="true"/>
-    <context name="_domain" expr="self.isContact = false AND self.isProspect = true"/>
-    <context name="json-enhance" expr="eval:true"/>
-    <context name="_isFromCrm" expr="eval:true"/>
-  </action-view>
-
   <menuitem name="crm-my-prospects" parent="crm-root-prospects" title="My prospects"
-    action="crm.my.prospects" order="200"/>
+    action="crm.my.prospects" order="100"/>
 
   <action-view name="crm.my.prospects" title="My prospects"
     model="com.axelor.apps.base.db.Partner">
@@ -95,6 +75,26 @@
       expr="self.isContact = false AND self.isProspect = true AND self.user.id = :_internalUserId"/>
     <context name="json-enhance" expr="eval:true"/>
     <context name="_internalUserId" expr="eval:__user__.id"/>
+    <context name="_isFromCrm" expr="eval:true"/>
+  </action-view>
+
+  <menuitem name="crm-all-prospects" parent="crm-root-prospects" title="All prospects"
+    action="crm.all.prospects" order="200"
+    if="!__config__.app.getApp('crm')?.getCrmProcessOnPartner()"/>
+
+  <action-view name="crm.all.prospects" title="All prospects"
+    model="com.axelor.apps.base.db.Partner">
+    <view type="kanban" name="partner-prospect-kanban"/>
+    <view type="cards" name="partner-cards"/>
+    <view type="grid" name="partner-prospect-grid"/>
+    <view type="form" name="partner-customer-form"/>
+    <view-param name="limit" value="39"/>
+    <view-param name="search-filters" value="partner-filters"/>
+    <view-param name="forceTitle" value="true"/>
+    <domain>self.isContact = false AND self.isProspect = true</domain>
+    <context name="_isProspect" expr="true"/>
+    <context name="_domain" expr="self.isContact = false AND self.isProspect = true"/>
+    <context name="json-enhance" expr="eval:true"/>
     <context name="_isFromCrm" expr="eval:true"/>
   </action-view>
 
