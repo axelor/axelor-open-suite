@@ -177,10 +177,6 @@ public class ContractLineServiceImpl implements ContractLineService {
       taxRate = contractLine.getTaxLine().getValue().divide(new BigDecimal(100));
     }
 
-    if (contractLine.getContractVersion() != null) {
-      contractLine = computePricesPerYear(contractLine, contractLine.getContractVersion());
-    }
-
     BigDecimal price =
         priceListService.computeDiscount(
             contractLine.getPrice(),
@@ -191,6 +187,10 @@ public class ContractLineServiceImpl implements ContractLineService {
     contractLine.setExTaxTotal(exTaxTotal);
     BigDecimal inTaxTotal = exTaxTotal.add(exTaxTotal.multiply(taxRate));
     contractLine.setInTaxTotal(inTaxTotal);
+
+    if (contractLine.getContractVersion() != null) {
+      contractLine = computePricesPerYear(contractLine, contractLine.getContractVersion());
+    }
 
     return contractLine;
   }

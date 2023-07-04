@@ -71,6 +71,8 @@ public class ContractVersionRepository extends AbstractContractVersionRepository
 
     newVersion.setIsConsumptionBeforeEndDate(currentVersion.getIsConsumptionBeforeEndDate());
     newVersion.setIsConsumptionManagement(currentVersion.getIsConsumptionManagement());
+    newVersion.setYearlyExTaxTotalRevalued(currentVersion.getYearlyExTaxTotalRevalued());
+    newVersion.setInitialExTaxTotalPerYear(currentVersion.getInitialExTaxTotalPerYear());
 
     return newVersion;
   }
