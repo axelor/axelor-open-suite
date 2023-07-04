@@ -446,6 +446,7 @@
       if="__config__.app.getApp('account').manageCutOffPeriod"/>
     <action name="action-invoice-line-method-compute"/>
     <action name="action-invoice-line-method-get-and-compute-analytic-distribution"/>
+    <action name="action-invoice-line-method-print-analytic-account-on-invoice-line"/>
     <action name="action-budget-validate-exceed-line-amount"/>
     <action name="action-invoice-line-method-get-fixed-asset-category"
       if="__config__.app.isApp('account')"/>
