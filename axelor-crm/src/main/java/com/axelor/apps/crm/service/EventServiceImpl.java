@@ -669,7 +669,6 @@ public class EventServiceImpl implements EventService {
   }
 
   protected void afterPlanned(Event event) {
-    this.updateLeadScheduledEventDate(event);
     this.updatePartnerScheduledEventDate(event);
     this.updateOpportunityScheduledEventDate(event);
   }
@@ -682,8 +681,6 @@ public class EventServiceImpl implements EventService {
   }
 
   protected void afterRealized(Event event) {
-    this.updateLeadLastEventDate(event);
-    this.updateLeadScheduledEventDateAfterRealized(event);
     this.updatePartnerLastEventDate(event);
     this.updatePartnerScheduledEventDateAfterRealized(event);
     this.updateOpportunityLastEventDate(event);
@@ -700,26 +697,6 @@ public class EventServiceImpl implements EventService {
   @Transactional
   protected void afterCanceled(Event event) {
     LocalDateTime eventDateTime = event.getEndDateTime();
-    Lead lead = event.getEventLead();
-    if (lead != null
-        && lead.getLastEventDateT() != null
-        && lead.getLastEventDateT().equals(eventDateTime)) {
-      List<Event> eventList =
-          lead.getEventList().stream()
-              .filter(
-                  e ->
-                      e != event
-                          && e.getEndDateTime() != null
-                          && e.getStatusSelect() == EventRepository.STATUS_REALIZED
-                          && !e.getEndDateTime().isAfter(eventDateTime))
-              .sorted(Comparator.comparing(Event::getEndDateTime).reversed())
-              .collect(Collectors.toList());
-
-      if (!eventList.isEmpty()) {
-        lead.setLastEventDateT(eventList.get(0).getEndDateTime());
-        leadRepo.save(lead);
-      }
-    }
 
     Partner partner = event.getPartner();
     if (partner != null
@@ -735,18 +712,6 @@ public class EventServiceImpl implements EventService {
       this.fetchLatestEventEndDateT(
               event, eventRepo.all().filter("self.opportunity.id = ?", opportunity.getId()).fetch())
           .ifPresent(opportunity::setLastEventDateT);
-    }
-  }
-
-  @Transactional
-  protected void updateLeadLastEventDate(Event event) {
-    Lead lead = event.getEventLead();
-    if (lead != null
-        && event.getStartDateTime() != null
-        && (lead.getLastEventDateT() == null
-            || (event.getStartDateTime().isBefore(LocalDateTime.now())
-                && event.getStartDateTime().isAfter(lead.getLastEventDateT())))) {
-      lead.setLastEventDateT(event.getStartDateTime());
     }
   }
 
@@ -787,19 +752,6 @@ public class EventServiceImpl implements EventService {
   }
 
   @Transactional
-  protected void updateLeadScheduledEventDate(Event event) {
-    Lead lead = event.getEventLead();
-    if (lead != null
-        && event.getStartDateTime() != null
-        && event.getStatusSelect() == EventRepository.STATUS_PLANNED
-        && (lead.getNextScheduledEventDateT() == null
-            || (event.getStartDateTime().isAfter(LocalDateTime.now())
-                && event.getStartDateTime().isBefore(lead.getNextScheduledEventDateT())))) {
-      lead.setNextScheduledEventDateT(event.getStartDateTime());
-    }
-  }
-
-  @Transactional
   protected void updateOpportunityScheduledEventDate(Event event) {
     Opportunity opportunity = event.getOpportunity();
     if (opportunity != null
@@ -819,16 +771,6 @@ public class EventServiceImpl implements EventService {
       this.fetchNextEventStartDateT(
               event, eventRepo.all().filter("self.partner.id = ?", partner.getId()).fetch())
           .ifPresent(partner::setScheduledEventDateT);
-    }
-  }
-
-  @Transactional
-  protected void updateLeadScheduledEventDateAfterRealized(Event event) {
-    Lead lead = event.getEventLead();
-    if (lead != null && event.getStartDateTime() != null && !lead.getEventList().isEmpty()) {
-      this.fetchNextEventStartDateT(event, lead.getEventList())
-          .ifPresent(lead::setNextScheduledEventDateT);
-      leadRepo.save(lead);
     }
   }
 
