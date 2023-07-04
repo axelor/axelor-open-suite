@@ -1923,6 +1923,7 @@
 "Invoice.invoiceTermPaymentMode","Payment Mode",,
 "Invoice.invoiceTermPercentage","%",,
 "Invoice.invoiceTerms","Invoice term(s)",,
+"Invoice.noDiscountEarlyPayment","No discount will be granted for early payment",,
 "Invoice.note","Note",,
 "Invoice.of","of",,
 "Invoice.optionOnDeliveries","VAT paid on debit notes",,

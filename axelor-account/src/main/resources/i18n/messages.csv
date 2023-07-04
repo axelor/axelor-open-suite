@@ -1923,6 +1923,7 @@
 "Invoice.invoiceTermPaymentMode",,,
 "Invoice.invoiceTermPercentage",,,
 "Invoice.invoiceTerms",,,
+"Invoice.noDiscountEarlyPayment",,,
 "Invoice.note",,,
 "Invoice.of",,,
 "Invoice.optionOnDeliveries",,,
