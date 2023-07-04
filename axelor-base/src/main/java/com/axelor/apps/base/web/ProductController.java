@@ -195,20 +195,4 @@ public class ProductController {
     }
     return displayedProductIdList;
   }
-  
-  public void updateCostPrice(ActionRequest request, ActionResponse response) {
-	    try {
-
-	      Product product = request.getContext().asType(Product.class);
-	      // Set anomaly when a product exists in list Price
-	      if (product.getId() != null) {
-	        Beans.get(ProductService.class).updateCostPriceFromView(product);
-	        response.setValue("costPrice", product.getCostPrice());
-	      }
-	      
-	    } catch (Exception e) {
-	      TraceBackService.trace(response, e);
-	    }
-	  }
-
 }
