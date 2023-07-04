@@ -670,7 +670,6 @@ public class EventServiceImpl implements EventService {
 
   protected void afterPlanned(Event event) {
     this.updatePartnerScheduledEventDate(event);
-    this.updateOpportunityScheduledEventDate(event);
   }
 
   @Override
@@ -684,7 +683,6 @@ public class EventServiceImpl implements EventService {
     this.updatePartnerLastEventDate(event);
     this.updatePartnerScheduledEventDateAfterRealized(event);
     this.updateOpportunityLastEventDate(event);
-    this.updateOpportunityScheduledEventDateAfterRealized(event);
   }
 
   @Override
@@ -705,13 +703,6 @@ public class EventServiceImpl implements EventService {
       this.fetchLatestEventEndDateT(
               event, eventRepo.all().filter("self.partner.id = ?", partner.getId()).fetch())
           .ifPresent(partner::setLastEventDateT);
-    }
-
-    Opportunity opportunity = event.getOpportunity();
-    if (opportunity != null) {
-      this.fetchLatestEventEndDateT(
-              event, eventRepo.all().filter("self.opportunity.id = ?", opportunity.getId()).fetch())
-          .ifPresent(opportunity::setLastEventDateT);
     }
   }
 
@@ -752,37 +743,12 @@ public class EventServiceImpl implements EventService {
   }
 
   @Transactional
-  protected void updateOpportunityScheduledEventDate(Event event) {
-    Opportunity opportunity = event.getOpportunity();
-    if (opportunity != null
-        && event.getStartDateTime() != null
-        && event.getStatusSelect() == EventRepository.STATUS_PLANNED
-        && (opportunity.getNextScheduledEventDateT() == null
-            || (event.getStartDateTime().isAfter(LocalDateTime.now())
-                && event.getStartDateTime().isBefore(opportunity.getNextScheduledEventDateT())))) {
-      opportunity.setNextScheduledEventDateT(event.getStartDateTime());
-    }
-  }
-
-  @Transactional
   protected void updatePartnerScheduledEventDateAfterRealized(Event event) {
     Partner partner = event.getPartner();
     if (partner != null && event.getStartDateTime() != null) {
       this.fetchNextEventStartDateT(
               event, eventRepo.all().filter("self.partner.id = ?", partner.getId()).fetch())
           .ifPresent(partner::setScheduledEventDateT);
-    }
-  }
-
-  @Transactional
-  protected void updateOpportunityScheduledEventDateAfterRealized(Event event) {
-    Opportunity opportunity = event.getOpportunity();
-    if (opportunity != null
-        && event.getStartDateTime() != null
-        && !opportunity.getEventList().isEmpty()) {
-      this.fetchNextEventStartDateT(event, opportunity.getEventList())
-          .ifPresent(opportunity::setNextScheduledEventDateT);
-      opportunityRepo.save(opportunity);
     }
   }
 

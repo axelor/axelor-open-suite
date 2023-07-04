@@ -30,8 +30,17 @@
     <many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User"
       title="Assigned to"/>
     <many-to-one name="team" ref="com.axelor.team.db.Team" title="Team"/>
-    <datetime name="lastEventDateT" title="Last event date"/>
-    <datetime name="nextScheduledEventDateT" title="Next scheduled event date"/>
+    <datetime name="lastEventDateT" title="Last event date" formula="true">
+      <![CDATA[
+      SELECT ICAL_EVENT.start_date_time FROM ICAL_EVENT WHERE ICAL_EVENT.opportunity = id AND ICAL_EVENT.end_date_time < NOW() ORDER BY ICAL_EVENT.end_date_time DESC LIMIT 1
+      ]]>
+    </datetime>
+    <datetime name="nextScheduledEventDateT" title="Next scheduled event date"
+      formula="true">
+      <![CDATA[
+      SELECT ICAL_EVENT.start_date_time FROM ICAL_EVENT WHERE ICAL_EVENT.opportunity = id AND ICAL_EVENT.start_date_time > NOW() ORDER BY ICAL_EVENT.start_date_time ASC LIMIT 1
+      ]]>
+    </datetime>
     <one-to-many name="eventList" ref="com.axelor.apps.crm.db.Event" title="Events"
       mappedBy="opportunity"/>
     <many-to-one name="lostReason" ref="LostReason" title="Lost reason"/>
