@@ -40,6 +40,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -274,7 +275,7 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
         throw new AxelorException(
             accountingReport,
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            AccountExceptionMessage.CUSTOM_REPORT_TIMEOUT,
+            I18n.get(AccountExceptionMessage.CUSTOM_REPORT_TIMEOUT),
             accountingReport.getRef());
       }
     }
