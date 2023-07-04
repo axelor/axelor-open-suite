@@ -28,7 +28,8 @@
 
   <form name="accounting-report-form" title="Accounting report"
     model="com.axelor.apps.account.db.AccountingReport"
-    onNew="action-accounting-report-record-default" onLoad="action-accounting-report-attrs-display-anomalies">
+    onNew="action-accounting-report-record-default"
+    onLoad="action-accounting-report-attrs-display-anomalies">
     <panel name="mainPanel"
       readonlyIf="statusSelect == 2 &amp;&amp; (reportType.typeSelect == 19 || reportType.typeSelect == 20)">
       <field name="ref" readonly="true" hideIf="[23,24].includes(reportType.typeSelect)"/>
