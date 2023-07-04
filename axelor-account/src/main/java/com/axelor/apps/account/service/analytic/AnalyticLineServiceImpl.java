@@ -207,31 +207,28 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
       return line;
     }
 
-    if (line.getAnalyticMoveLineList() != null
-        && !line.getAnalyticMoveLineList().isEmpty()
-        && company != null) {
-      List<AnalyticMoveLine> analyticMoveLineList = Lists.newArrayList();
-      for (AnalyticAxisByCompany analyticAxisByCompany :
-          accountConfigService.getAccountConfig(company).getAnalyticAxisByCompanyList()) {
-        for (AnalyticMoveLine analyticMoveLine : line.getAnalyticMoveLineList()) {
-          if (analyticMoveLine.getAnalyticAxis().equals(analyticAxisByCompany.getAnalyticAxis())) {
-            analyticMoveLineList.add(analyticMoveLine);
-          }
+    List<AnalyticMoveLine> analyticMoveLineList = Lists.newArrayList();
+    for (AnalyticAxisByCompany analyticAxisByCompany :
+        accountConfigService.getAccountConfig(company).getAnalyticAxisByCompanyList()) {
+      for (AnalyticMoveLine analyticMoveLine : line.getAnalyticMoveLineList()) {
+        if (analyticMoveLine.getAnalyticAxis().equals(analyticAxisByCompany.getAnalyticAxis())) {
+          analyticMoveLineList.add(analyticMoveLine);
         }
-
-        if (!analyticMoveLineList.isEmpty()) {
-
-          AnalyticMoveLine analyticMoveLine = analyticMoveLineList.get(0);
-          if (analyticMoveLineList.size() == 1
-              && analyticMoveLine.getPercentage().compareTo(new BigDecimal(100)) == 0) {
-            setAxisAccount(line, analyticAxisByCompany, analyticMoveLine);
-          } else {
-            setAxisAccount(line, analyticAxisByCompany, null);
-          }
-        }
-        analyticMoveLineList.clear();
       }
+
+      if (!analyticMoveLineList.isEmpty()) {
+
+        AnalyticMoveLine analyticMoveLine = analyticMoveLineList.get(0);
+        if (analyticMoveLineList.size() == 1
+            && analyticMoveLine.getPercentage().compareTo(new BigDecimal(100)) == 0) {
+          setAxisAccount(line, analyticAxisByCompany, analyticMoveLine);
+        } else {
+          setAxisAccount(line, analyticAxisByCompany, null);
+        }
+      }
+      analyticMoveLineList.clear();
     }
+
     return line;
   }
 
