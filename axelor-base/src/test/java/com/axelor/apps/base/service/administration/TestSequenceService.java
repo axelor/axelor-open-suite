@@ -13,24 +13,25 @@ public class TestSequenceService {
     assertEquals(
         "AZ", sequenceService.findNextLetterSequence(26, SequenceLettersTypeSelect.UPPERCASE));
   }
+
   @Test
   public void findNextLetterSequenc2() {
     SequenceService sequenceService = new SequenceService(null, null, null, null);
     assertEquals(
-            "ABA", sequenceService.findNextLetterSequence(27, SequenceLettersTypeSelect.UPPERCASE));
+        "ABA", sequenceService.findNextLetterSequence(27, SequenceLettersTypeSelect.UPPERCASE));
   }
+
   @Test
   public void findNextLetterSequenc3() {
     SequenceService sequenceService = new SequenceService(null, null, null, null);
     assertEquals(
-            "AZZ", sequenceService.findNextLetterSequence(676, SequenceLettersTypeSelect.UPPERCASE));
+        "AZZ", sequenceService.findNextLetterSequence(676, SequenceLettersTypeSelect.UPPERCASE));
   }
-
 
   @Test
   public void findNextLetterSequenc4() {
     SequenceService sequenceService = new SequenceService(null, null, null, null);
     assertEquals(
-            "BAA", sequenceService.findNextLetterSequence(677, SequenceLettersTypeSelect.UPPERCASE));
+        "BAA", sequenceService.findNextLetterSequence(677, SequenceLettersTypeSelect.UPPERCASE));
   }
 }

@@ -235,25 +235,13 @@ public class SequenceService {
   }
 
   protected String computeNextSeq(
-      SequenceVersion sequenceVersion, Sequence sequence, LocalDate refDate) {
+      SequenceVersion sequenceVersion, Sequence sequence, LocalDate refDate)
+      throws AxelorException {
 
     String seqPrefixe = StringUtils.defaultString(sequence.getPrefixe(), "");
     String seqSuffixe = StringUtils.defaultString(sequence.getSuffixe(), "");
-    String padStr;
-    String seq;
 
-    if (sequence.getSequenceTypeSelect() == SequenceTypeSelect.NUMBERS) {
-      padStr = PADDING_DIGIT;
-      seq = sequenceVersion.getNextNum().toString();
-    } else {
-      padStr = PADDING_LETTER;
-      long next = sequenceVersion.getNextNum();
-      SequenceLettersTypeSelect lettersType =
-          sequenceVersion.getSequence().getSequenceLettersTypeSelect();
-      seq = findNextLetterSequence(next, lettersType);
-    }
-
-    String sequenceValue = StringUtils.leftPad(seq, sequence.getPadding(), padStr);
+    String sequenceValue = getSequenceValue(sequenceVersion);
 
     String nextSeq =
         (seqPrefixe + sequenceValue + seqSuffixe)
@@ -270,22 +258,55 @@ public class SequenceService {
     return nextSeq;
   }
 
+  protected String getSequenceValue(SequenceVersion sequenceVersion) throws AxelorException {
+
+    Sequence sequence = sequenceVersion.getSequence();
+    SequenceTypeSelect sequenceTypeSelect = sequence.getSequenceTypeSelect();
+    Long nextNum = sequenceVersion.getNextNum();
+
+    String padStr;
+    String nextSequence;
+
+    switch (sequenceTypeSelect) {
+      case NUMBERS:
+        padStr = PADDING_DIGIT;
+        nextSequence = nextNum.toString();
+        break;
+
+      case LETTERS:
+        padStr = PADDING_LETTER;
+        SequenceLettersTypeSelect lettersType = sequence.getSequenceLettersTypeSelect();
+        nextSequence = findNextLetterSequence(nextNum, lettersType);
+        break;
+
+      default:
+        throw new AxelorException(
+            sequenceVersion,
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(BaseExceptionMessage.UNHANDLED_SEQUENCE_TYPE),
+            sequenceTypeSelect);
+    }
+
+    return StringUtils.leftPad(nextSequence, sequence.getPadding(), padStr);
+  }
+
   /**
-   * Compute a test sequence by computing the next seq without any save Use for checking validity
-   * purpose
+   * Computes a test sequence by computing the next seq without any save. Used for checking validity
+   * purpose.
    *
    * @param sequence
    * @param refDate
    * @return the test sequence
+   * @throws AxelorException
    */
-  public String computeTestSeq(Sequence sequence, LocalDate refDate) {
+  public String computeTestSeq(Sequence sequence, LocalDate refDate) throws AxelorException {
     SequenceVersion sequenceVersion = getVersion(sequence, refDate);
     return computeNextSeq(sequenceVersion, sequence, refDate);
   }
 
   protected String findNextLetterSequence(long n, SequenceLettersTypeSelect lettersType) {
 
-    char[] buf = new char[(int) Math.floor(Math.log(25 * (n + 1)) / Math.log(26))+1];
+    char[] buf = new char[(int) Math.floor(Math.log(25 * (n + 1)) / Math.log(26)) + 1];
     int length = buf.length;
     int let;
     n--;
