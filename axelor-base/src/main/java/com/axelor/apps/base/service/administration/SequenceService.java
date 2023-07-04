@@ -58,6 +58,8 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public class SequenceService {
 
+  private static final String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
   protected static final String DRAFT_PREFIX = "#";
 
   protected static final String PATTERN_FULL_YEAR = "%YYYY";
@@ -304,7 +306,7 @@ public class SequenceService {
     return computeNextSeq(sequenceVersion, sequence, refDate);
   }
 
-  protected String findNextLetterSequence(long n, SequenceLettersTypeSelect lettersType)
+  protected String findNextLetterSequence(long nextNum, SequenceLettersTypeSelect lettersType)
       throws AxelorException {
     if (lettersType == null) {
       throw new AxelorException(
@@ -312,22 +314,14 @@ public class SequenceService {
           I18n.get(BaseExceptionMessage.SEQUENCE_LETTERS_TYPE_IS_NULL));
     }
 
-    char[] buf = new char[(int) Math.floor(Math.log(25 * (n + 1)) / Math.log(26)) + 1];
-    int length = buf.length;
-    int let;
-    n--;
-    buf[length - 1] = (char) ('A' + (n) % 26);
-
-    for (int i = 0; i < buf.length - 1; i++) {
-      length--;
-      let = (int) (n / Math.pow(26, length));
-      buf[i] = (char) ('A' + let);
-      if (let > 0) {
-        n = (long) (n - Math.pow(26, length));
-      }
+    String result;
+    if (nextNum <= 0) {
+      throw new IllegalArgumentException("Input should be a strictly positive long.");
+    } else if (nextNum == 1) {
+      result = "A";
+    } else {
+      result = convertNextSeqLongToString(nextNum);
     }
-
-    String result = new String(buf);
 
     switch (lettersType) {
       case UPPERCASE:
@@ -342,6 +336,19 @@ public class SequenceService {
             I18n.get(BaseExceptionMessage.SEQUENCE_LETTERS_TYPE_UNHANDLED),
             lettersType);
     }
+  }
+
+  protected String convertNextSeqLongToString(long nextNum) {
+    if (nextNum == 1) {
+      return "";
+    }
+
+    int alphabetLength = ALPHABET.length();
+
+    long q = (nextNum - 1) / alphabetLength;
+    int r = (int) (nextNum - 1) % alphabetLength;
+
+    return convertNextSeqLongToString(q + 1) + ALPHABET.charAt(r);
   }
 
   public SequenceVersion getVersion(Sequence sequence, LocalDate refDate) {

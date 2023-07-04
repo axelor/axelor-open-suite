@@ -20,6 +20,7 @@ class TestSequenceService {
 
   @BeforeAll
   static void prepare() {
+
     SequenceVersionRepository sequenceVersionRepository = mock(SequenceVersionRepository.class);
     AppBaseService appBaseService = mock(AppBaseService.class);
     SequenceRepository sequenceRepo = mock(SequenceRepository.class);
@@ -40,7 +41,17 @@ class TestSequenceService {
   }
 
   @ParameterizedTest
-  @CsvSource({"26,AZ", "27,ABA", "676,AZZ", "677,BAA"})
+  @CsvSource({
+    "1,A",
+    "26,Z",
+    "27,BA",
+    "676,ZZ",
+    "677,BAA",
+    "17576,ZZZ",
+    "17577,BAAA",
+    "456976,ZZZZ",
+    "11881376,ZZZZZ"
+  })
   void findNextLetterSequence_when_lettersType_is_uppercase(long input, String expected)
       throws AxelorException {
     String actual =
@@ -49,7 +60,7 @@ class TestSequenceService {
   }
 
   @ParameterizedTest
-  @CsvSource({"26,az", "27,aba", "676,azz", "677,baa"})
+  @CsvSource({"1,a", "27,ba", "677,baa"})
   void findNextLetterSequence_when_lettersType_is_lowercase(long input, String expected)
       throws AxelorException {
     String actual =
