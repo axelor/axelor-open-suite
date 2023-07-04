@@ -447,11 +447,13 @@ public class PaymentSessionValidateBankPaymentServiceImpl
       PaymentSession paymentSession,
       InvoiceTerm invoiceTerm,
       Map<LocalDate, Map<Partner, List<Move>>> moveDateMap,
-      Map<Move, BigDecimal> paymentAmountMap)
+      Map<Move, BigDecimal> paymentAmountMap,
+      List<Pair<InvoiceTerm, Pair<InvoiceTerm, BigDecimal>>> invoiceTermLinkWithRefund)
       throws AxelorException {
 
     if (!this.bankOrderCreatedForInvoiceTerm(invoiceTerm, paymentSession)) {
-      super.processInvoiceTermLcr(paymentSession, invoiceTerm, moveDateMap, paymentAmountMap);
+      super.processInvoiceTermLcr(
+          paymentSession, invoiceTerm, moveDateMap, paymentAmountMap, invoiceTermLinkWithRefund);
     }
 
     if (paymentSession.getBankOrder() != null
