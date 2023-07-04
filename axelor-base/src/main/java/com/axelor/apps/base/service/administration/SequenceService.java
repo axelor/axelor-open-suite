@@ -283,7 +283,7 @@ public class SequenceService {
         throw new AxelorException(
             sequenceVersion,
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(BaseExceptionMessage.UNHANDLED_SEQUENCE_TYPE),
+            I18n.get(BaseExceptionMessage.SEQUENCE_TYPE_UNHANDLED),
             sequenceTypeSelect);
     }
 
@@ -304,7 +304,13 @@ public class SequenceService {
     return computeNextSeq(sequenceVersion, sequence, refDate);
   }
 
-  protected String findNextLetterSequence(long n, SequenceLettersTypeSelect lettersType) {
+  protected String findNextLetterSequence(long n, SequenceLettersTypeSelect lettersType)
+      throws AxelorException {
+    if (lettersType == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.SEQUENCE_LETTERS_TYPE_IS_NULL));
+    }
 
     char[] buf = new char[(int) Math.floor(Math.log(25 * (n + 1)) / Math.log(26)) + 1];
     int length = buf.length;
@@ -321,10 +327,21 @@ public class SequenceService {
       }
     }
 
-    if (lettersType == SequenceLettersTypeSelect.UPPERCASE) {
-      return new String(buf);
+    String result = new String(buf);
+
+    switch (lettersType) {
+      case UPPERCASE:
+        return result;
+
+      case LOWERCASE:
+        return result.toLowerCase();
+
+      default:
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(BaseExceptionMessage.SEQUENCE_LETTERS_TYPE_UNHANDLED),
+            lettersType);
     }
-    return new String(buf).toLowerCase();
   }
 
   public SequenceVersion getVersion(Sequence sequence, LocalDate refDate) {

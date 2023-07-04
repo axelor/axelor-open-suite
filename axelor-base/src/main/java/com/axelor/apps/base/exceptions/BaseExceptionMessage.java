@@ -201,8 +201,14 @@ public final class BaseExceptionMessage {
   public static final String SEQUENCE_LENGTH_NOT_VALID = /*$$(*/
       "Total sequence length must be less than 15 characters." /*)*/;
 
-  public static final String UNHANDLED_SEQUENCE_TYPE = /*$$(*/
+  public static final String SEQUENCE_TYPE_UNHANDLED = /*$$(*/
       "The sequence type '%s' is not handled." /*)*/;
+
+  public static final String SEQUENCE_LETTERS_TYPE_IS_NULL = /*$$(*/
+      "The sequence letter type can't be null." /*)*/;
+
+  public static final String SEQUENCE_LETTERS_TYPE_UNHANDLED = /*$$(*/
+      "The sequence letter type '%s' is not handled." /*)*/;
 
   /** Address controller */
   public static final String ADDRESS_1 = /*$$(*/ "OK" /*)*/;
