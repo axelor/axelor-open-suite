@@ -136,10 +136,10 @@
     <call class="com.axelor.apps.base.web.SequenceController" method="getDefaultTitle"/>
   </action-method>
 
-
   <action-method name="action-sequence-method-compute-fullname">
     <call class="com.axelor.apps.base.web.SequenceController" method="computeFullName"/>
   </action-method>
+
   <action-method name="action-sequence-method-is-length-valid">
     <call class="com.axelor.apps.base.web.SequenceController" method="isLengthValid"/>
   </action-method>
