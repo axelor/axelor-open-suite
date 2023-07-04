@@ -27,6 +27,7 @@ import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
@@ -822,6 +823,10 @@ public class MoveValidateServiceImpl implements MoveValidateService {
 
   @Override
   public void checkTaxAmount(Move move) throws AxelorException {
+    if (this.isReverseCharge(move)) {
+      return;
+    }
+
     AccountConfig accountConfig = accountConfigService.getAccountConfig(move.getCompany());
     List<MoveLine> moveLineList = move.getMoveLineList();
 
@@ -843,11 +848,10 @@ public class MoveValidateServiceImpl implements MoveValidateService {
             .filter(
                 moveLine ->
                     moveLine
-                            .getAccount()
-                            .getAccountType()
-                            .getTechnicalTypeSelect()
-                            .equals(AccountTypeRepository.TYPE_TAX)
-                        && !this.isReverseTaxLine(moveLine, move))
+                        .getAccount()
+                        .getAccountType()
+                        .getTechnicalTypeSelect()
+                        .equals(AccountTypeRepository.TYPE_TAX))
             .map(it -> it.getDebit().add(it.getCredit()))
             .reduce(BigDecimal::add)
             .orElse(BigDecimal.ZERO);
@@ -876,18 +880,9 @@ public class MoveValidateServiceImpl implements MoveValidateService {
             RoundingMode.HALF_UP);
   }
 
-  protected boolean isReverseTaxLine(MoveLine moveLine, Move move) {
-    if (moveLine.getTaxLine() == null) {
-      return false;
-    }
-
+  protected boolean isReverseCharge(Move move) {
     return move.getMoveLineList().stream()
-        .anyMatch(
-            it ->
-                it.getTaxEquiv() != null
-                    && moveLine
-                        .getTaxLine()
-                        .getTax()
-                        .equals(it.getTaxEquiv().getReverseChargeTax()));
+        .map(MoveLine::getTaxEquiv)
+        .anyMatch(TaxEquiv::getReverseCharge);
   }
 }
