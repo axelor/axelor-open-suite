@@ -27,7 +27,6 @@ import com.axelor.apps.base.service.DateService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.Lead;
-import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.db.RecurrenceConfiguration;
 import com.axelor.apps.crm.db.repo.EventRepository;
 import com.axelor.apps.crm.db.repo.LeadRepository;
@@ -47,11 +46,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -643,138 +640,14 @@ public class EventServiceImpl implements EventService {
   }
 
   @Override
-  public void fillEventDates(Event event) throws AxelorException {
-    switch (event.getStatusSelect()) {
-      case EventRepository.STATUS_PLANNED:
-        afterPlanned(event);
-        break;
-
-      case EventRepository.STATUS_REALIZED:
-        afterRealized(event);
-        break;
-
-      case EventRepository.STATUS_CANCELED:
-        afterCanceled(event);
-        break;
-
-      default:
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_MISSING_FIELD, I18n.get("Type not selected!"));
-    }
-  }
-
-  @Override
-  public void planEvent(Event event) {
-    this.afterPlanned(event);
-  }
-
-  protected void afterPlanned(Event event) {
-    this.updatePartnerScheduledEventDate(event);
-  }
-
-  @Override
   @Transactional(rollbackOn = {Exception.class})
   public void realizeEvent(Event event) {
     event.setStatusSelect(EventRepository.STATUS_REALIZED);
-    this.afterRealized(event);
-  }
-
-  protected void afterRealized(Event event) {
-    this.updatePartnerLastEventDate(event);
-    this.updatePartnerScheduledEventDateAfterRealized(event);
-    this.updateOpportunityLastEventDate(event);
   }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void cancelEvent(Event event) {
     event.setStatusSelect(EventRepository.STATUS_CANCELED);
-    this.afterCanceled(event);
-  }
-
-  @Transactional
-  protected void afterCanceled(Event event) {
-    LocalDateTime eventDateTime = event.getEndDateTime();
-
-    Partner partner = event.getPartner();
-    if (partner != null
-        && partner.getLastEventDateT() != null
-        && partner.getLastEventDateT().equals(eventDateTime)) {
-      this.fetchLatestEventEndDateT(
-              event, eventRepo.all().filter("self.partner.id = ?", partner.getId()).fetch())
-          .ifPresent(partner::setLastEventDateT);
-    }
-  }
-
-  @Transactional
-  protected void updateOpportunityLastEventDate(Event event) {
-    Opportunity opportunity = event.getOpportunity();
-    if (opportunity != null
-        && event.getStartDateTime() != null
-        && (opportunity.getLastEventDateT() == null
-            || (event.getStartDateTime().isBefore(LocalDateTime.now())
-                && event.getStartDateTime().isAfter(opportunity.getLastEventDateT())))) {
-      opportunity.setLastEventDateT(event.getStartDateTime());
-    }
-  }
-
-  @Transactional
-  protected void updatePartnerLastEventDate(Event event) {
-    Partner partner = event.getPartner();
-    if (partner != null
-        && event.getEndDateTime() != null
-        && (partner.getLastEventDateT() == null
-            || !partner.getLastEventDateT().isAfter(event.getEndDateTime()))) {
-      partner.setLastEventDateT(event.getEndDateTime());
-    }
-  }
-
-  @Transactional
-  protected void updatePartnerScheduledEventDate(Event event) {
-    Partner partner = event.getPartner();
-    LocalDateTime startDateTime = event.getStartDateTime();
-    if (partner != null
-        && startDateTime != null
-        && event.getStatusSelect() == EventRepository.STATUS_PLANNED
-        && (partner.getScheduledEventDateT() == null
-            || partner.getScheduledEventDateT().isAfter(startDateTime))) {
-      partner.setScheduledEventDateT(startDateTime);
-    }
-  }
-
-  @Transactional
-  protected void updatePartnerScheduledEventDateAfterRealized(Event event) {
-    Partner partner = event.getPartner();
-    if (partner != null && event.getStartDateTime() != null) {
-      this.fetchNextEventStartDateT(
-              event, eventRepo.all().filter("self.partner.id = ?", partner.getId()).fetch())
-          .ifPresent(partner::setScheduledEventDateT);
-    }
-  }
-
-  protected Optional<LocalDateTime> fetchNextEventStartDateT(Event event, List<Event> eventList) {
-    return eventList.stream()
-        .filter(
-            e ->
-                e != event
-                    && e.getStartDateTime() != null
-                    && e.getStatusSelect() == EventRepository.STATUS_PLANNED
-                    && e.getStartDateTime().isAfter(event.getStartDateTime()))
-        .min(Comparator.comparing(Event::getStartDateTime))
-        .map(Event::getStartDateTime);
-  }
-
-  protected Optional<LocalDateTime> fetchLatestEventEndDateT(Event event, List<Event> eventList) {
-    Optional<Event> optEvent =
-        eventList.stream()
-            .filter(
-                e ->
-                    e != event
-                        && e.getEndDateTime() != null
-                        && e.getStatusSelect().equals(EventRepository.STATUS_REALIZED)
-                        && !e.getEndDateTime().isAfter(event.getEndDateTime()))
-            .max(Comparator.comparing(Event::getEndDateTime));
-
-    return optEvent.map(Event::getEndDateTime);
   }
 }
