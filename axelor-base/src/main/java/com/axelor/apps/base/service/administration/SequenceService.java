@@ -240,15 +240,22 @@ public class SequenceService {
     String seqPrefixe = StringUtils.defaultString(sequence.getPrefixe(), "");
     String seqSuffixe = StringUtils.defaultString(sequence.getSuffixe(), "");
     String sequenceValue;
+    String padStr;
+    String seq;
 
     if (sequence.getSequenceTypeSelect() == SequenceTypeSelect.NUMBERS) {
-      sequenceValue =
-          StringUtils.leftPad(
-              sequenceVersion.getNextNum().toString(), sequence.getPadding(), PADDING_DIGIT);
+      padStr = PADDING_DIGIT;
+      seq = sequenceVersion.getNextNum().toString();
     } else {
-
-      sequenceValue = findNextLetterSequence(sequenceVersion, sequence);
+      padStr = PADDING_LETTER;
+      long next = sequenceVersion.getNextNum();
+      SequenceLettersTypeSelect lettersType =
+          sequenceVersion.getSequence().getSequenceLettersTypeSelect();
+      seq = findNextLetterSequence(next, lettersType);
     }
+
+    sequenceValue = StringUtils.leftPad(seq, sequence.getPadding(), padStr);
+
     String nextSeq =
         (seqPrefixe + sequenceValue + seqSuffixe)
             .replace(PATTERN_FULL_YEAR, Integer.toString(refDate.get(ChronoField.YEAR_OF_ERA)))
@@ -277,29 +284,27 @@ public class SequenceService {
     return computeNextSeq(sequenceVersion, sequence, refDate);
   }
 
-  protected String findNextLetterSequence(SequenceVersion sequenceVersion, Sequence sequence) {
+  protected String findNextLetterSequence(long n, SequenceLettersTypeSelect lettersType) {
 
-    char[] buf = sequence.getLastLetterSequence().toCharArray();
-    buf[buf.length - 1] = (char) (buf[buf.length - 1] + 1);
-    for (int i = buf.length - 2; i >= 0; i--) {
-      if (buf[i + 1] > 'Z') {
-        buf[i + 1] = 'A';
-        buf[i] = (char) (buf[i] + 1);
-      } else break;
+    char[] buf = new char[(int) Math.floor(Math.log(25 * (n + 1)) / Math.log(26))+1];
+    int length = buf.length;
+    int let;
+    n--;
+    buf[length - 1] = (char) ('A' + (n) % 26);
+
+    for (int i = 0; i < buf.length - 1; i++) {
+      length--;
+      let = (int) (n / Math.pow(26, length));
+      buf[i] = (char) ('A' + let);
+      if (let > 0) {
+        n = (long) (n - Math.pow(26, length));
+      }
     }
 
-    String seq;
-    if (buf[0] > 'Z') {
-      buf[0] = 'A';
-      seq = 'A' + new String(buf);
-    } else seq = new String(buf);
-
-    sequence.setLastLetterSequence(seq);
-    if (sequenceVersion.getSequence().getSequenceLettersTypeSelect()
-        == SequenceLettersTypeSelect.UPPERCASE) {
-      return seq;
+    if (lettersType == SequenceLettersTypeSelect.UPPERCASE) {
+      return new String(buf);
     }
-    return seq.toLowerCase();
+    return new String(buf).toLowerCase();
   }
 
   public SequenceVersion getVersion(Sequence sequence, LocalDate refDate) {
@@ -374,14 +379,6 @@ public class SequenceService {
   public boolean isEmptyOrDraftSequenceNumber(String sequenceNumber) {
     return Strings.isNullOrEmpty(sequenceNumber)
         || sequenceNumber.matches(String.format("[\\%s\\*]\\d+", DRAFT_PREFIX));
-  }
-
-  @Transactional
-  public void changeSequenceLetter(Sequence sequence) {
-    sequence.setLastLetterSequence(
-        StringUtils.leftPad(
-            sequence.getLastLetterSequence(), sequence.getPadding(), PADDING_LETTER));
-    sequenceRepo.save(sequence);
   }
 
   /**

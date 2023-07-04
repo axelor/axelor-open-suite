@@ -20,7 +20,6 @@ package com.axelor.apps.base.web;
 
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Sequence;
-import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -48,13 +47,6 @@ public class SequenceController {
 
     String fullName = Beans.get(SequenceService.class).computeFullName(sequence);
     response.setValue("fullName", fullName);
-  }
-
-  public void changeSequenceLetter(ActionRequest request, ActionResponse response) {
-    Sequence sequence = request.getContext().asType(Sequence.class);
-    sequence = Beans.get(SequenceRepository.class).find(sequence.getId());
-    Beans.get(SequenceService.class).changeSequenceLetter(sequence);
-    response.setReload(true);
   }
 
   public void updateSequenceVersionsMonthly(ActionRequest request, ActionResponse response) {
