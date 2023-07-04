@@ -24,20 +24,9 @@ import com.axelor.message.db.Message;
 import java.io.IOException;
 import wslite.json.JSONException;
 
-public interface ExpenseWorkflowService {
-
+public interface ExpenseConfirmationService {
   public void confirm(Expense expense) throws AxelorException;
 
   public Message sendConfirmationEmail(Expense expense)
-      throws AxelorException, ClassNotFoundException, IOException, JSONException;
-
-  public void refuse(Expense expense) throws AxelorException;
-
-  public Message sendRefusalEmail(Expense expense)
-      throws AxelorException, ClassNotFoundException, IOException, JSONException;
-
-  public void cancel(Expense expense) throws AxelorException;
-
-  public Message sendCancellationEmail(Expense expense)
       throws AxelorException, ClassNotFoundException, IOException, JSONException;
 }

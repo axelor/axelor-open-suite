@@ -28,12 +28,12 @@ import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ExpenseServiceProjectImpl extends ExpenseInvoiceLineServiceImpl {
+public class ExpenseInvoiceLineServiceProjectImpl extends ExpenseInvoiceLineServiceImpl {
 
   protected AppAccountService appAccountService;
 
   @Inject
-  public ExpenseServiceProjectImpl(AppAccountService appAccountService) {
+  public ExpenseInvoiceLineServiceProjectImpl(AppAccountService appAccountService) {
     this.appAccountService = appAccountService;
   }
 

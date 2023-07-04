@@ -24,9 +24,9 @@ import com.axelor.message.db.Message;
 import java.io.IOException;
 import wslite.json.JSONException;
 
-public interface ExpenseValidateService {
-  public void validate(Expense expense) throws AxelorException;
+public interface ExpenseRefusalService {
+  public void refuse(Expense expense) throws AxelorException;
 
-  public Message sendValidationEmail(Expense expense)
+  public Message sendRefusalEmail(Expense expense)
       throws AxelorException, ClassNotFoundException, IOException, JSONException;
 }

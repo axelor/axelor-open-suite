@@ -60,13 +60,16 @@ import com.axelor.apps.hr.service.HRMenuValidateService;
 import com.axelor.apps.hr.service.KilometricService;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.expense.ExpenseAnalyticService;
+import com.axelor.apps.hr.service.expense.ExpenseCancellationService;
+import com.axelor.apps.hr.service.expense.ExpenseComputationService;
+import com.axelor.apps.hr.service.expense.ExpenseConfirmationService;
 import com.axelor.apps.hr.service.expense.ExpenseKilometricService;
 import com.axelor.apps.hr.service.expense.ExpenseLineService;
 import com.axelor.apps.hr.service.expense.ExpensePaymentService;
-import com.axelor.apps.hr.service.expense.ExpenseService;
+import com.axelor.apps.hr.service.expense.ExpenseRefusalService;
+import com.axelor.apps.hr.service.expense.ExpenseToolService;
 import com.axelor.apps.hr.service.expense.ExpenseValidateService;
 import com.axelor.apps.hr.service.expense.ExpenseVentilateService;
-import com.axelor.apps.hr.service.expense.ExpenseWorkflowService;
 import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
@@ -274,20 +277,20 @@ public class ExpenseController {
 
   /**
    * Called from expense form, on expense lines change. Call {@link
-   * ExpenseValidateService#compute(Expense)}
+   * ExpenseComputationService#compute(Expense)}
    *
    * @param request
    * @param response
    */
   public void compute(ActionRequest request, ActionResponse response) {
     Expense expense = request.getContext().asType(Expense.class);
-    expense = Beans.get(ExpenseValidateService.class).compute(expense);
+    expense = Beans.get(ExpenseComputationService.class).compute(expense);
     response.setValues(expense);
   }
 
   public void updateMoveDateAndPeriod(ActionRequest request, ActionResponse response) {
     Expense expense = request.getContext().asType(Expense.class);
-    expense = Beans.get(ExpenseService.class).updateMoveDateAndPeriod(expense);
+    expense = Beans.get(ExpenseToolService.class).updateMoveDateAndPeriod(expense);
     response.setValue("moveDate", expense.getMoveDate());
     response.setValue("period", expense.getPeriod());
   }
@@ -354,11 +357,12 @@ public class ExpenseController {
     try {
       Expense expense = request.getContext().asType(Expense.class);
       expense = Beans.get(ExpenseRepository.class).find(expense.getId());
-      ExpenseWorkflowService expenseWorkflowService = Beans.get(ExpenseWorkflowService.class);
+      ExpenseCancellationService expenseCancellationService =
+          Beans.get(ExpenseCancellationService.class);
 
-      expenseWorkflowService.cancel(expense);
+      expenseCancellationService.cancel(expense);
 
-      Message message = expenseWorkflowService.sendCancellationEmail(expense);
+      Message message = expenseCancellationService.sendCancellationEmail(expense);
       if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
         response.setInfo(
             String.format(
@@ -407,11 +411,12 @@ public class ExpenseController {
     try {
       Expense expense = request.getContext().asType(Expense.class);
       expense = Beans.get(ExpenseRepository.class).find(expense.getId());
-      ExpenseWorkflowService expenseWorkflowService = Beans.get(ExpenseWorkflowService.class);
+      ExpenseConfirmationService expenseConfirmationService =
+          Beans.get(ExpenseConfirmationService.class);
 
-      expenseWorkflowService.confirm(expense);
+      expenseConfirmationService.confirm(expense);
 
-      Message message = expenseWorkflowService.sendConfirmationEmail(expense);
+      Message message = expenseConfirmationService.sendConfirmationEmail(expense);
       if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
         response.setInfo(
             String.format(
@@ -468,11 +473,11 @@ public class ExpenseController {
     try {
       Expense expense = request.getContext().asType(Expense.class);
       expense = Beans.get(ExpenseRepository.class).find(expense.getId());
-      ExpenseWorkflowService expenseWorkflowService = Beans.get(ExpenseWorkflowService.class);
+      ExpenseRefusalService expenseRefusalService = Beans.get(ExpenseRefusalService.class);
 
-      expenseWorkflowService.refuse(expense);
+      expenseRefusalService.refuse(expense);
 
-      Message message = expenseWorkflowService.sendRefusalEmail(expense);
+      Message message = expenseRefusalService.sendRefusalEmail(expense);
       if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
         response.setInfo(
             String.format(
@@ -505,7 +510,8 @@ public class ExpenseController {
 
     Expense expense = request.getContext().asType(Expense.class);
     ExpenseLineService expenseLineService = Beans.get(ExpenseLineService.class);
-    ExpenseService expenseService = Beans.get(ExpenseService.class);
+    ExpenseComputationService expenseComputationService =
+        Beans.get(ExpenseComputationService.class);
 
     List<Integer> expenseLineListId = new ArrayList<>();
     int compt = 0;
@@ -531,8 +537,8 @@ public class ExpenseController {
     }
 
     response.setValue(
-        "personalExpenseAmount", expenseService.computePersonalExpenseAmount(expense));
-    response.setValue("advanceAmount", expenseService.computeAdvanceAmount(expense));
+        "personalExpenseAmount", expenseComputationService.computePersonalExpenseAmount(expense));
+    response.setValue("advanceAmount", expenseComputationService.computeAdvanceAmount(expense));
 
     if (expense.getKilometricExpenseLineList() != null
         && !expense.getKilometricExpenseLineList().isEmpty()) {

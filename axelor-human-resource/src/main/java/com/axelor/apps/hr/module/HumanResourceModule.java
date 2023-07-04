@@ -68,6 +68,12 @@ import com.axelor.apps.hr.service.employee.EmploymentAmendmentTypeService;
 import com.axelor.apps.hr.service.employee.EmploymentAmendmentTypeServiceImpl;
 import com.axelor.apps.hr.service.expense.ExpenseAnalyticService;
 import com.axelor.apps.hr.service.expense.ExpenseAnalyticServiceImpl;
+import com.axelor.apps.hr.service.expense.ExpenseCancellationService;
+import com.axelor.apps.hr.service.expense.ExpenseCancellationServiceImpl;
+import com.axelor.apps.hr.service.expense.ExpenseComputationService;
+import com.axelor.apps.hr.service.expense.ExpenseComputationServiceImpl;
+import com.axelor.apps.hr.service.expense.ExpenseConfirmationService;
+import com.axelor.apps.hr.service.expense.ExpenseConfirmationServiceImpl;
 import com.axelor.apps.hr.service.expense.ExpenseFetchPeriodService;
 import com.axelor.apps.hr.service.expense.ExpenseFetchPeriodServiceImpl;
 import com.axelor.apps.hr.service.expense.ExpenseInvoiceLineService;
@@ -79,14 +85,14 @@ import com.axelor.apps.hr.service.expense.ExpenseLineServiceImpl;
 import com.axelor.apps.hr.service.expense.ExpenseMoveReverseServiceImpl;
 import com.axelor.apps.hr.service.expense.ExpensePaymentService;
 import com.axelor.apps.hr.service.expense.ExpensePaymentServiceImpl;
-import com.axelor.apps.hr.service.expense.ExpenseService;
-import com.axelor.apps.hr.service.expense.ExpenseServiceImpl;
+import com.axelor.apps.hr.service.expense.ExpenseRefusalService;
+import com.axelor.apps.hr.service.expense.ExpenseRefusalServiceImpl;
+import com.axelor.apps.hr.service.expense.ExpenseToolService;
+import com.axelor.apps.hr.service.expense.ExpenseToolServiceImpl;
 import com.axelor.apps.hr.service.expense.ExpenseValidateService;
 import com.axelor.apps.hr.service.expense.ExpenseValidateServiceImpl;
 import com.axelor.apps.hr.service.expense.ExpenseVentilateService;
 import com.axelor.apps.hr.service.expense.ExpenseVentilateServiceImpl;
-import com.axelor.apps.hr.service.expense.ExpenseWorkflowService;
-import com.axelor.apps.hr.service.expense.ExpenseWorkflowServiceImpl;
 import com.axelor.apps.hr.service.extra.hours.ExtraHoursService;
 import com.axelor.apps.hr.service.extra.hours.ExtraHoursServiceImpl;
 import com.axelor.apps.hr.service.leave.LeaveService;
@@ -138,7 +144,6 @@ public class HumanResourceModule extends AxelorModule {
     bind(AccountConfigService.class).to(AccountConfigHRService.class);
     bind(ExtraHoursService.class).to(ExtraHoursServiceImpl.class);
     bind(LeaveService.class).to(LeaveServiceImpl.class);
-    bind(ExpenseService.class).to(ExpenseServiceImpl.class);
     bind(LunchVoucherMgtService.class).to(LunchVoucherMgtServiceImpl.class);
     bind(LunchVoucherMgtLineService.class).to(LunchVoucherMgtLineServiceImpl.class);
     bind(AppHumanResourceService.class).to(AppHumanResourceServiceImpl.class);
@@ -172,7 +177,9 @@ public class HumanResourceModule extends AxelorModule {
         .to(ProjectPlanningTimeComputeNameServiceImpl.class);
     bind(MoveValidateServiceImpl.class).to(MoveValidateHRServiceImpl.class);
     bind(EmployeeDashboardService.class).to(EmployeeDashboardServiceImpl.class);
-    bind(ExpenseWorkflowService.class).to(ExpenseWorkflowServiceImpl.class);
+    bind(ExpenseCancellationService.class).to(ExpenseCancellationServiceImpl.class);
+    bind(ExpenseConfirmationService.class).to(ExpenseConfirmationServiceImpl.class);
+    bind(ExpenseRefusalService.class).to(ExpenseRefusalServiceImpl.class);
     bind(ExpenseAnalyticService.class).to(ExpenseAnalyticServiceImpl.class);
     bind(ExpenseInvoiceLineService.class).to(ExpenseInvoiceLineServiceImpl.class);
     bind(ExpenseKilometricService.class).to(ExpenseKilometricServiceImpl.class);
@@ -180,5 +187,7 @@ public class HumanResourceModule extends AxelorModule {
     bind(ExpensePaymentService.class).to(ExpensePaymentServiceImpl.class);
     bind(ExpenseValidateService.class).to(ExpenseValidateServiceImpl.class);
     bind(ExpenseVentilateService.class).to(ExpenseVentilateServiceImpl.class);
+    bind(ExpenseToolService.class).to(ExpenseToolServiceImpl.class);
+    bind(ExpenseComputationService.class).to(ExpenseComputationServiceImpl.class);
   }
 }

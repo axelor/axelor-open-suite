@@ -18,15 +18,13 @@
  */
 package com.axelor.apps.hr.service.expense;
 
-import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.hr.db.Expense;
-import com.axelor.message.db.Message;
-import java.io.IOException;
-import wslite.json.JSONException;
+import java.math.BigDecimal;
 
-public interface ExpenseValidateService {
-  public void validate(Expense expense) throws AxelorException;
+public interface ExpenseComputationService {
+  public Expense compute(Expense expense);
 
-  public Message sendValidationEmail(Expense expense)
-      throws AxelorException, ClassNotFoundException, IOException, JSONException;
+  public BigDecimal computePersonalExpenseAmount(Expense expense);
+
+  public BigDecimal computeAdvanceAmount(Expense expense);
 }

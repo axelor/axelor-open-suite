@@ -23,6 +23,5 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.hr.db.Expense;
 
 public interface ExpenseVentilateService {
-
   public Move ventilate(Expense expense) throws AxelorException;
 }

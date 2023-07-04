@@ -21,13 +21,13 @@ import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.List;
 import wslite.json.JSONException;
 
 @Singleton
 public class ExpenseValidateServiceImpl implements ExpenseValidateService {
 
   protected KilometricService kilometricService;
+  protected ExpenseComputationService expenseComputationService;
   protected EmployeeAdvanceService employeeAdvanceService;
   protected AppAccountService appAccountService;
   protected HRConfigService hrConfigService;
@@ -37,12 +37,14 @@ public class ExpenseValidateServiceImpl implements ExpenseValidateService {
   @Inject
   public ExpenseValidateServiceImpl(
       KilometricService kilometricService,
+      ExpenseComputationService expenseComputationService,
       EmployeeAdvanceService employeeAdvanceService,
       AppAccountService appAccountService,
       HRConfigService hrConfigService,
       TemplateMessageService templateMessageService,
       ExpenseRepository expenseRepository) {
     this.kilometricService = kilometricService;
+    this.expenseComputationService = expenseComputationService;
     this.employeeAdvanceService = employeeAdvanceService;
     this.appAccountService = appAccountService;
     this.hrConfigService = hrConfigService;
@@ -69,7 +71,7 @@ public class ExpenseValidateServiceImpl implements ExpenseValidateService {
 
         kilometricService.updateKilometricLog(line, expense.getEmployee());
       }
-      compute(expense);
+      expenseComputationService.compute(expense);
     }
 
     employeeAdvanceService.fillExpenseWithAdvances(expense);
@@ -83,41 +85,6 @@ public class ExpenseValidateServiceImpl implements ExpenseValidateService {
       expense.setPaymentMode(paymentMode);
     }
     expenseRepository.save(expense);
-  }
-
-  @Override
-  public Expense compute(Expense expense) {
-
-    BigDecimal exTaxTotal = BigDecimal.ZERO;
-    BigDecimal taxTotal = BigDecimal.ZERO;
-    BigDecimal inTaxTotal = BigDecimal.ZERO;
-    List<ExpenseLine> generalExpenseLineList = expense.getGeneralExpenseLineList();
-    List<ExpenseLine> kilometricExpenseLineList = expense.getKilometricExpenseLineList();
-
-    if (generalExpenseLineList != null) {
-      for (ExpenseLine expenseLine : generalExpenseLineList) {
-        exTaxTotal = exTaxTotal.add(expenseLine.getUntaxedAmount());
-        taxTotal = taxTotal.add(expenseLine.getTotalTax());
-        inTaxTotal = inTaxTotal.add(expenseLine.getTotalAmount());
-      }
-    }
-    if (kilometricExpenseLineList != null) {
-      for (ExpenseLine kilometricExpenseLine : kilometricExpenseLineList) {
-        if (kilometricExpenseLine.getUntaxedAmount() != null) {
-          exTaxTotal = exTaxTotal.add(kilometricExpenseLine.getUntaxedAmount());
-        }
-        if (kilometricExpenseLine.getTotalTax() != null) {
-          taxTotal = taxTotal.add(kilometricExpenseLine.getTotalTax());
-        }
-        if (kilometricExpenseLine.getTotalAmount() != null) {
-          inTaxTotal = inTaxTotal.add(kilometricExpenseLine.getTotalAmount());
-        }
-      }
-    }
-    expense.setExTaxTotal(exTaxTotal);
-    expense.setTaxTotal(taxTotal);
-    expense.setInTaxTotal(inTaxTotal);
-    return expense;
   }
 
   @Override

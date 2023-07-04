@@ -69,8 +69,41 @@ public class ExpenseVentilateServiceImpl implements ExpenseVentilateService {
   protected ExpenseRepository expenseRepository;
 
   @Inject
-  public ExpenseVentilateServiceImpl(AppAccountService appAccountService) {
+  public ExpenseVentilateServiceImpl(
+      AppAccountService appAccountService,
+      SequenceService sequenceService,
+      HRConfigService hrConfigService,
+      AccountConfigService accountConfigService,
+      AccountConfigHRService accountConfigHRService,
+      BankDetailsService bankDetailsService,
+      MoveCreateService moveCreateService,
+      MoveLineConsolidateService moveLineConsolidateService,
+      CompanyConfigService companyConfigService,
+      CurrencyService currencyService,
+      MoveLineCreateService moveLineCreateService,
+      ExpenseLineService expenseLineService,
+      AccountingSituationService accountingSituationService,
+      MoveValidateService moveValidateService,
+      AccountManagementAccountService accountManagementAccountService,
+      AnalyticMoveLineGenerateRealService analyticMoveLineGenerateRealService,
+      ExpenseRepository expenseRepository) {
     this.appAccountService = appAccountService;
+    this.sequenceService = sequenceService;
+    this.hrConfigService = hrConfigService;
+    this.accountConfigService = accountConfigService;
+    this.accountConfigHRService = accountConfigHRService;
+    this.bankDetailsService = bankDetailsService;
+    this.moveCreateService = moveCreateService;
+    this.moveLineConsolidateService = moveLineConsolidateService;
+    this.companyConfigService = companyConfigService;
+    this.currencyService = currencyService;
+    this.moveLineCreateService = moveLineCreateService;
+    this.expenseLineService = expenseLineService;
+    this.accountingSituationService = accountingSituationService;
+    this.moveValidateService = moveValidateService;
+    this.accountManagementAccountService = accountManagementAccountService;
+    this.analyticMoveLineGenerateRealService = analyticMoveLineGenerateRealService;
+    this.expenseRepository = expenseRepository;
   }
 
   @Override

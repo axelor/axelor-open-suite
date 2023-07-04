@@ -23,7 +23,6 @@ import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
-import com.axelor.apps.account.service.invoice.factory.CancelFactory;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
@@ -54,7 +53,6 @@ public class ExpenseMoveReverseServiceImpl extends MoveReverseServiceBankPayment
       MoveRepository moveRepository,
       MoveLineCreateService moveLineCreateService,
       ExtractContextMoveService extractContextMoveService,
-      CancelFactory cancelFactory,
       InvoicePaymentRepository invoicePaymentRepository,
       InvoicePaymentCancelService invoicePaymentCancelService,
       MoveToolService moveToolService,
