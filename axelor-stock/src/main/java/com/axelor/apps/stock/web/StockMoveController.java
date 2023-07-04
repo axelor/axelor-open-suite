@@ -695,13 +695,13 @@ public class StockMoveController {
     StockMove stockMove = request.getContext().asType(StockMove.class);
     StockLocation fromStockLocation = stockMove.getFromStockLocation();
     Beans.get(StockMoveService.class).changeLinesFromStockLocation(stockMove, fromStockLocation);
-    response.setValues(stockMove);
+    response.setValue("stockMoveLineList", stockMove.getStockMoveLineList());
   }
 
   public void changeLinesToStockLocation(ActionRequest request, ActionResponse response) {
     StockMove stockMove = request.getContext().asType(StockMove.class);
     StockLocation toStockLocation = stockMove.getToStockLocation();
     Beans.get(StockMoveService.class).changeLinesToStockLocation(stockMove, toStockLocation);
-    response.setValues(stockMove);
+    response.setValue("stockMoveLineList", stockMove.getStockMoveLineList());
   }
 }
