@@ -239,7 +239,6 @@ public class SequenceService {
 
     String seqPrefixe = StringUtils.defaultString(sequence.getPrefixe(), "");
     String seqSuffixe = StringUtils.defaultString(sequence.getSuffixe(), "");
-    String sequenceValue;
     String padStr;
     String seq;
 
@@ -254,7 +253,7 @@ public class SequenceService {
       seq = findNextLetterSequence(next, lettersType);
     }
 
-    sequenceValue = StringUtils.leftPad(seq, sequence.getPadding(), padStr);
+    String sequenceValue = StringUtils.leftPad(seq, sequence.getPadding(), padStr);
 
     String nextSeq =
         (seqPrefixe + sequenceValue + seqSuffixe)
