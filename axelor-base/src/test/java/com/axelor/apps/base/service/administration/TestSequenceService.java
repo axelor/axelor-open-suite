@@ -1,8 +1,9 @@
 package com.axelor.apps.base.service.administration;
 
-import static com.mongodb.util.MyAsserts.assertEquals;
-
 import com.axelor.apps.base.db.SequenceLettersTypeSelect;
+
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
 
 public class TestSequenceService {
@@ -15,21 +16,21 @@ public class TestSequenceService {
   }
 
   @Test
-  public void findNextLetterSequenc2() {
+  public void findNextLetterSequence2() {
     SequenceService sequenceService = new SequenceService(null, null, null, null);
     assertEquals(
         "ABA", sequenceService.findNextLetterSequence(27, SequenceLettersTypeSelect.UPPERCASE));
   }
 
   @Test
-  public void findNextLetterSequenc3() {
+  public void findNextLetterSequence3() {
     SequenceService sequenceService = new SequenceService(null, null, null, null);
     assertEquals(
         "AZZ", sequenceService.findNextLetterSequence(676, SequenceLettersTypeSelect.UPPERCASE));
   }
 
   @Test
-  public void findNextLetterSequenc4() {
+  public void findNextLetterSequence4() {
     SequenceService sequenceService = new SequenceService(null, null, null, null);
     assertEquals(
         "BAA", sequenceService.findNextLetterSequence(677, SequenceLettersTypeSelect.UPPERCASE));
