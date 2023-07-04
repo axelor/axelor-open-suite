@@ -1205,7 +1205,7 @@
 "Cust. Invoices to merge","Factures client à fusionner",,
 "Cust. Refunds","Avoirs des clients",,
 "Custom","Personnalisé",,
-"Custom report %s couldn't be computed (timeout).","Le rapport personnalisé %s n'a pas pu être calculé (timeout).",,
+"Custom report %s couldn't be computed (timeout).","Le rapport personnalisé %s n'a pas pu être calculé (timeout). Les anomalies concernées peuvent être consultées dans l'onglet dédié à cet effet.",,
 "Custom rule","Règle personnalisée",,
 "Custom state","Etat personnalisé",,
 "Customer","Client",,

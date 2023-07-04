@@ -40,7 +40,6 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
-import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -69,6 +68,7 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
   protected AccountingReportValueMoveLineService accountingReportValueMoveLineService;
   protected AccountingReportValuePercentageService accountingReportValuePercentageService;
   protected AppBaseService appBaseService;
+  protected TraceBackRepository traceBackRepository;
 
   protected static int lineOffset = 0;
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -82,12 +82,14 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
       AccountingReportValuePercentageService accountingReportValuePercentageService,
       AppBaseService appBaseService,
       AnalyticAccountRepository analyticAccountRepo,
-      DateService dateService) {
+      DateService dateService,
+      TraceBackRepository traceBackRepository) {
     super(accountRepo, accountingReportValueRepo, analyticAccountRepo, dateService);
     this.accountingReportValueCustomRuleService = accountingReportValueCustomRuleService;
     this.accountingReportValueMoveLineService = accountingReportValueMoveLineService;
     this.accountingReportValuePercentageService = accountingReportValuePercentageService;
     this.appBaseService = appBaseService;
+    this.traceBackRepository = traceBackRepository;
   }
 
   public static synchronized void incrementLineOffset() {
@@ -238,6 +240,9 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
     AccountingReportType accountingReportType = accountingReport.getReportType();
     this.checkAccountingReportType(accountingReportType);
 
+    this.clearTracebacks(accountingReport);
+    accountingReport.setTraceAnomalies(false);
+
     int nullCount = -1;
     int previousNullCount;
 
@@ -255,12 +260,33 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
               analyticCounter);
 
       if (nullCount == previousNullCount) {
+        accountingReport.setTraceAnomalies(true);
+
+        this.createReportValues(
+            accountingReport,
+            valuesMapByColumn,
+            valuesMapByLine,
+            configAnalyticAccount,
+            startDate,
+            endDate,
+            analyticCounter);
+
         throw new AxelorException(
+            accountingReport,
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             AccountExceptionMessage.CUSTOM_REPORT_TIMEOUT,
             accountingReport.getRef());
       }
     }
+  }
+
+  @Transactional
+  protected void clearTracebacks(AccountingReport accountingReport) {
+    traceBackRepository
+        .all()
+        .filter("self.ref = 'com.axelor.apps.account.db.AccountingReport' AND self.refId = :id")
+        .bind("id", accountingReport.getId())
+        .remove();
   }
 
   protected void checkAccountingReportType(AccountingReportType accountingReportType)
@@ -434,7 +460,8 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
       }
 
       for (AccountingReportConfigLine line : lineList) {
-        accountingReport = JPA.find(AccountingReport.class, accountingReport.getId());
+        accountingReport = this.fetchAccountingReport(accountingReport);
+
         line = JPA.find(AccountingReportConfigLine.class, line.getId());
         column = JPA.find(AccountingReportConfigLine.class, column.getId());
         groupColumn =
@@ -586,15 +613,7 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
             analyticCounter);
       }
     } catch (Exception e) {
-      throw new AxelorException(
-          e,
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          String.format(
-              I18n.get(
-                  "An exception occured while computing the following elements: group: %s, column: %s, line %s"),
-              groupColumn != null ? groupColumn.getCode() : "",
-              column.getCode(),
-              line.getCode()));
+      this.traceException(e, accountingReport, groupColumn, column, line);
     }
   }
 
