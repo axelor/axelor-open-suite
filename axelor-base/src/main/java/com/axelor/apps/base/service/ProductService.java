@@ -62,4 +62,7 @@ public interface ProductService {
   public void copyProduct(Product product, Product copy);
 
   public void updateCostPriceFromView(Product product) throws AxelorException;
+
+  BigDecimal convertFromPurchaseToStockUnitPrice(Product product, BigDecimal lastPurchasePrice)
+      throws AxelorException;
 }

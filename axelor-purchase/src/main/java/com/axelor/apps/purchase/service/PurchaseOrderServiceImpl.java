@@ -87,6 +87,8 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
   @Inject protected PurchaseConfigService purchaseConfigService;
 
+  @Inject protected ProductService productService;
+
   @Override
   public PurchaseOrder _computePurchaseOrderLines(PurchaseOrder purchaseOrder)
       throws AxelorException {
@@ -494,7 +496,10 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
                   productCompanyService.get(product, "costTypeSelect", purchaseOrder.getCompany())
               == ProductRepository.COST_TYPE_LAST_PURCHASE_PRICE) {
             productCompanyService.set(
-                product, "costPrice", lastPurchasePrice, purchaseOrder.getCompany());
+                product,
+                "costPrice",
+                productService.convertFromPurchaseToStockUnitPrice(product, lastPurchasePrice),
+                purchaseOrder.getCompany());
             if ((Boolean)
                 productCompanyService.get(
                     product, "autoUpdateSalePrice", purchaseOrder.getCompany())) {

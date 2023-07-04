@@ -539,4 +539,7 @@ public final class BaseExceptionMessage {
 
   public static final String SWAGGER_NO_RESOURCE_PACKAGES = /*$$(*/
       "Swagger is enabled but not resource packages is specified." /*)*/;
+
+  public static final String PRODUCT_MISSING_UNITS_TO_CONVERT = /*$$(*/
+      "The product %s is missing stock unit or purchase unit to make the conversion of last purchase price." /*)*/;
 }

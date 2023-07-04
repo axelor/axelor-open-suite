@@ -641,11 +641,11 @@
 
 
   <action-method name="action-product-method-update-cost-price">
-  	<call class="com.axelor.apps.base.web.ProductController" method="updateCostPrice"/>
-  </action-method>	
+    <call class="com.axelor.apps.base.web.ProductController" method="updateCostPrice"/>
+  </action-method>
 
   <action-group name="action-product-group-cost-type-select-onchange">
-    <action name="action-product-attrs-update-cost-price"/>
+    <action name="action-product-method-update-cost-price"/>
     <action name="action-product-record-compute-sale-price"/>
   </action-group>
 
@@ -710,18 +710,6 @@
       if="__config__.app.isApp('supplychain')"/>
     <attribute for="costTypeSelect" name="selection-in" expr="[1,2,3,4]"
       if="__config__.app.isApp('production')"/>
-  </action-attrs>
-
-  <action-attrs name="action-product-attrs-update-cost-price">
-    <attribute for="costPrice" name="value"
-      expr="eval: shippingCoef ? lastPurchasePrice.multiply(shippingCoef) : lastPurchasePrice"
-      if="costTypeSelect == 2 &amp;&amp; lastPurchasePrice &gt; 0"/>
-    <attribute for="costPrice" name="value"
-      expr="eval: shippingCoef ? purchasePrice.multiply(shippingCoef) : purchasePrice"
-      if="costTypeSelect == 2  &amp;&amp; lastPurchasePrice &lt;= 0"/>
-    <attribute for="costPrice" name="value" expr="eval: avgPrice" if="costTypeSelect == 3"/>
-    <attribute for="costPrice" name="value" expr="eval: lastProductionPrice"
-      if="costTypeSelect == 4"/>
   </action-attrs>
 
   <action-attrs name="action-product-attrs-cost-price-variant">
