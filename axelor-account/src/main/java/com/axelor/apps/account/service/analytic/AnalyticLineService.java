@@ -27,6 +27,7 @@ import com.axelor.apps.base.db.Company;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 public interface AnalyticLineService {
 
@@ -39,6 +40,8 @@ public interface AnalyticLineService {
   List<Long> getAxisDomains(AnalyticLine line, Company company, int position)
       throws AxelorException;
 
+  List<Long> getAnalyticAccountIdList(Company company, int position) throws AxelorException;
+
   boolean isAxisRequired(AnalyticLine line, Company company, int position) throws AxelorException;
 
   AnalyticLine checkAnalyticLineForAxis(AnalyticLine line);
@@ -46,4 +49,7 @@ public interface AnalyticLineService {
   AnalyticLine printAnalyticAccount(AnalyticLine line, Company company) throws AxelorException;
 
   List<Long> getAnalyticAccountsByAxis(AnalyticLine line, AnalyticAxis analyticAxis);
+
+  Map<String, Map<String, Object>> getAnalyticAxisAttrsMap(
+      Company company, int startAxisPosition, int endAxisPosition) throws AxelorException;
 }

@@ -19,6 +19,7 @@
 package com.axelor.apps.account.service.analytic;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticAxisByCompany;
@@ -33,14 +34,18 @@ import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.db.Query;
 import com.axelor.utils.service.ListToolService;
-import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 public class AnalyticLineServiceImpl implements AnalyticLineService {
@@ -113,7 +118,6 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
   public List<Long> getAxisDomains(AnalyticLine line, Company company, int position)
       throws AxelorException {
     List<Long> analyticAccountListByAxis = new ArrayList<>();
-    List<Long> analyticAccountListByRules = new ArrayList<>();
 
     AnalyticAxis analyticAxis = new AnalyticAxis();
 
@@ -128,6 +132,20 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
       analyticAccountListByAxis = getAnalyticAccountsByAxis(line, analyticAxis);
     }
     return analyticAccountListByAxis;
+  }
+
+  @Override
+  public List<Long> getAnalyticAccountIdList(Company company, int position) throws AxelorException {
+    return accountConfigService.getAccountConfig(company).getAnalyticAxisByCompanyList().stream()
+        .filter(it -> it.getSequence() + 1 == position)
+        .findFirst()
+        .stream()
+        .map(AnalyticAxisByCompany::getAnalyticAxis)
+        .map(analyticAccountRepository::findByAnalyticAxis)
+        .map(Query::fetch)
+        .flatMap(Collection::stream)
+        .map(AnalyticAccount::getId)
+        .collect(Collectors.toList());
   }
 
   @Override
@@ -165,11 +183,10 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
       Account account = line.getAccount();
       Integer nbrAxis =
           accountConfigService.getAccountConfig(account.getCompany()).getNbrOfAnalyticAxisSelect();
-      return account != null
-          && account.getAnalyticDistributionAuthorized()
+      return account.getAnalyticDistributionAuthorized()
           && account.getAnalyticDistributionRequiredOnMoveLines()
           && line.getAnalyticDistributionTemplate() == null
-          && (position <= nbrAxis);
+          && position <= nbrAxis;
     }
     return false;
   }
@@ -200,50 +217,121 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
   }
 
   @Override
-  public AnalyticLine printAnalyticAccount(AnalyticLine line, Company company)
+  public AnalyticLine printAnalyticAccount(AnalyticLine analyticLine, Company company)
       throws AxelorException {
-    if (line.getAnalyticMoveLineList() != null
-        && !line.getAnalyticMoveLineList().isEmpty()
-        && company != null) {
-      List<AnalyticMoveLine> analyticMoveLineList = Lists.newArrayList();
-      for (AnalyticAxisByCompany analyticAxisByCompany :
-          accountConfigService.getAccountConfig(company).getAnalyticAxisByCompanyList()) {
-        for (AnalyticMoveLine analyticMoveLine : line.getAnalyticMoveLineList()) {
-          if (analyticMoveLine.getAnalyticAxis().equals(analyticAxisByCompany.getAnalyticAxis())) {
-            analyticMoveLineList.add(analyticMoveLine);
-          }
-        }
+    if (CollectionUtils.isEmpty(analyticLine.getAnalyticMoveLineList()) || company == null) {
+      this.resetAxisAnalyticAccount(analyticLine);
+      return analyticLine;
+    }
 
-        if (!analyticMoveLineList.isEmpty()) {
+    List<AnalyticMoveLine> analyticMoveLineList;
 
-          AnalyticMoveLine analyticMoveLine = analyticMoveLineList.get(0);
-          if (analyticMoveLineList.size() == 1
-              && analyticMoveLine.getPercentage().compareTo(new BigDecimal(100)) == 0) {
-            AnalyticAccount analyticAccount = analyticMoveLine.getAnalyticAccount();
-            switch (analyticAxisByCompany.getSequence()) {
-              case 0:
-                line.setAxis1AnalyticAccount(analyticAccount);
-                break;
-              case 1:
-                line.setAxis2AnalyticAccount(analyticAccount);
-                break;
-              case 2:
-                line.setAxis3AnalyticAccount(analyticAccount);
-                break;
-              case 3:
-                line.setAxis4AnalyticAccount(analyticAccount);
-                break;
-              case 4:
-                line.setAxis5AnalyticAccount(analyticAccount);
-                break;
-              default:
-                break;
-            }
-          }
-        }
-        analyticMoveLineList.clear();
+    for (AnalyticAxisByCompany analyticAxisByCompany :
+        accountConfigService.getAccountConfig(company).getAnalyticAxisByCompanyList()) {
+      analyticMoveLineList =
+          analyticLine.getAnalyticMoveLineList().stream()
+              .filter(it -> it.getAnalyticAxis().equals(analyticAxisByCompany.getAnalyticAxis()))
+              .filter(it -> it.getPercentage().compareTo(new BigDecimal(100)) == 0)
+              .collect(Collectors.toList());
+
+      if (analyticMoveLineList.size() == 1) {
+        AnalyticMoveLine analyticMoveLine = analyticMoveLineList.get(0);
+        this.setAxisAccount(analyticLine, analyticAxisByCompany, analyticMoveLine);
+      } else {
+        this.setAxisAccount(analyticLine, analyticAxisByCompany, null);
       }
     }
-    return line;
+
+    return analyticLine;
+  }
+
+  protected void setAxisAccount(
+      AnalyticLine analyticLine,
+      AnalyticAxisByCompany analyticAxisByCompany,
+      AnalyticMoveLine analyticMoveLine) {
+    AnalyticAccount analyticAccount = null;
+    if (analyticMoveLine != null) {
+      analyticAccount = analyticMoveLine.getAnalyticAccount();
+    }
+
+    switch (analyticAxisByCompany.getSequence()) {
+      case 0:
+        analyticLine.setAxis1AnalyticAccount(analyticAccount);
+        break;
+      case 1:
+        analyticLine.setAxis2AnalyticAccount(analyticAccount);
+        break;
+      case 2:
+        analyticLine.setAxis3AnalyticAccount(analyticAccount);
+        break;
+      case 3:
+        analyticLine.setAxis4AnalyticAccount(analyticAccount);
+        break;
+      case 4:
+        analyticLine.setAxis5AnalyticAccount(analyticAccount);
+        break;
+      default:
+        break;
+    }
+  }
+
+  @Override
+  public Map<String, Map<String, Object>> getAnalyticAxisAttrsMap(
+      Company company, int startAxisPosition, int endAxisPosition) throws AxelorException {
+    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+
+    AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+
+    if (moveLineComputeAnalyticService.checkManageAnalytic(company)) {
+      AnalyticAxis analyticAxis = null;
+
+      for (int i = startAxisPosition; i <= endAxisPosition; i++) {
+        for (AnalyticAxisByCompany analyticAxisByCompany :
+            accountConfig.getAnalyticAxisByCompanyList()) {
+          if (analyticAxisByCompany.getSequence() + 1 == i) {
+            analyticAxis = analyticAxisByCompany.getAnalyticAxis();
+          }
+        }
+
+        if (analyticAxis != null) {
+          this.addAttr(
+              String.format("axis%dAnalyticAccount", i), "title", analyticAxis.getName(), attrsMap);
+
+          analyticAxis = null;
+        }
+
+        this.addAttr(
+            String.format("axis%dAnalyticAccount", i),
+            "hidden",
+            !(i <= accountConfig.getNbrOfAnalyticAxisSelect()),
+            attrsMap);
+      }
+    } else {
+      this.addAttr("analyticDistributionTemplate", "hidden", true, attrsMap);
+      this.addAttr("analyticMoveLineList", "hidden", true, attrsMap);
+
+      for (int i = startAxisPosition; i <= endAxisPosition; i++) {
+        this.addAttr(String.format("axis%dAnalyticAccount", i), "hidden", true, attrsMap);
+      }
+    }
+
+    return attrsMap;
+  }
+
+  protected void addAttr(
+      String field, String attr, Object value, Map<String, Map<String, Object>> attrsMap) {
+    if (!attrsMap.containsKey(field)) {
+      attrsMap.put(field, new HashMap<>());
+    }
+
+    attrsMap.get(field).put(attr, value);
+  }
+
+  protected void resetAxisAnalyticAccount(AnalyticLine analyticLine) {
+    analyticLine.setAxis1AnalyticAccount(null);
+    analyticLine.setAxis2AnalyticAccount(null);
+    analyticLine.setAxis3AnalyticAccount(null);
+    analyticLine.setAxis4AnalyticAccount(null);
+    analyticLine.setAxis5AnalyticAccount(null);
   }
 }
