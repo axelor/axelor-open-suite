@@ -416,7 +416,6 @@ public class SequenceService {
     return sequenceVersionList;
   }
 
-  @Transactional(rollbackOn = Exception.class)
   public void validateSequence(Sequence sequence) throws AxelorException {
     String draftPrefix = getDraftPrefix();
 

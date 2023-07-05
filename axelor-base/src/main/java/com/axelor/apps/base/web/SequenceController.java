@@ -45,12 +45,11 @@ public class SequenceController {
 
   public void validateSequence(ActionRequest request, ActionResponse response) {
     Sequence sequence = request.getContext().asType(Sequence.class);
-    if (!Strings.isNullOrEmpty(sequence.getCodeSelect())) {
-      try {
-        Beans.get(SequenceService.class).validateSequence(sequence);
-      } catch (AxelorException e) {
-        TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-      }
+
+    try {
+      Beans.get(SequenceService.class).validateSequence(sequence);
+    } catch (AxelorException e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 
