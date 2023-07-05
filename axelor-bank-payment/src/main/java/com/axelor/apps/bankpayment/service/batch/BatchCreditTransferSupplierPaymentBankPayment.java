@@ -17,15 +17,22 @@
  */
 package com.axelor.apps.bankpayment.service.batch;
 
+import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.db.repo.PaymentModeRepository;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.batch.BatchCreditTransferSupplierPayment;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMergeService;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.ExceptionOriginRepository;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
@@ -36,6 +43,7 @@ public class BatchCreditTransferSupplierPaymentBankPayment
     extends BatchCreditTransferSupplierPayment {
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   protected final BankOrderMergeService bankOrderMergeService;
+  protected boolean stopping = false;
 
   @Inject
   public BatchCreditTransferSupplierPaymentBankPayment(
@@ -50,16 +58,57 @@ public class BatchCreditTransferSupplierPaymentBankPayment
 
   @Override
   protected void process() {
-    List<InvoicePayment> doneList =
-        processInvoices(InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE);
+    if (!stopping) {
+      List<InvoicePayment> doneList =
+          processInvoices(InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE);
 
-    if (!doneList.isEmpty()) {
-      try {
-        bankOrderMergeService.mergeFromInvoicePayments(doneList);
-      } catch (Exception e) {
-        TraceBackService.trace(e, ExceptionOriginRepository.INVOICE_ORIGIN, batch.getId());
-        LOG.error(e.getMessage());
+      if (!doneList.isEmpty()) {
+        try {
+          bankOrderMergeService.mergeFromInvoicePayments(doneList);
+        } catch (Exception e) {
+          TraceBackService.trace(e, ExceptionOriginRepository.INVOICE_ORIGIN, batch.getId());
+          LOG.error(e.getMessage());
+        }
       }
+    }
+  }
+
+  @Override
+  protected void start() throws IllegalAccessException {
+    super.start();
+
+    try {
+      this.checkCreditTransferBatchField();
+    } catch (AxelorException e) {
+      TraceBackService.trace(
+          new AxelorException(e, e.getCategory(), ""),
+          ExceptionOriginRepository.CREDIT_TRANSFER,
+          batch.getId());
+      incrementAnomaly();
+      stopping = true;
+    }
+    checkPoint();
+  }
+
+  protected void checkCreditTransferBatchField() throws AxelorException {
+    AccountingBatch accountingBatch = batch.getAccountingBatch();
+
+    if (accountingBatch.getPaymentMode() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(AccountExceptionMessage.BATCH_CREDIT_TRANSFER_PAYMENT_MODE_MISSING),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
+          accountingBatch.getCode());
+    }
+
+    if (accountingBatch.getBankDetails() == null
+        && accountingBatch.getPaymentMode().getTypeSelect() == PaymentModeRepository.TYPE_TRANSFER
+        && accountingBatch.getPaymentMode().getInOutSelect() == PaymentModeRepository.OUT) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(AccountExceptionMessage.BATCH_CREDIT_TRANSFER_BANK_DETAILS_MISSING),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
+          accountingBatch.getCode());
     }
   }
 }
