@@ -25,6 +25,7 @@
         grid-view="company-grid" onChange="action-accounting-batch-group-company-on-change"/>
       <field name="bankDetails"
         hideIf="actionSelect &amp;&amp; ([14,15,16,17,18,21].indexOf(actionSelect) &gt; -1 || (actionSelect == 11 &amp;&amp; reimbursementTypeSelect == 2) || (actionSelect == 12 &amp;&amp; directDebitDataTypeSelect == 2))"
+        requiredIf="actionSelect &amp;&amp; actionSelect == 19 &amp;&amp; creditTransferTypeSelect == 2 &amp;&amp; paymentMode.typeSelect == 9 &amp;&amp; paymentMode.inOutSelect == 2"
         widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain"
         form-view="bank-details-form" grid-view="bank-details-grid"/>
       <field name="company.tradingNameSet" colSpan="12" hidden="true"/>
@@ -38,6 +39,8 @@
         if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()" hidden="true"
         canEdit="false"/>
       <field name="archived" title="Archived"/>
+      <field name="paymentMode.typeSelect"/>
+      <field name="paymentMode.inOutSelect"/>
     </panel>
     <panel-tabs name="mainPanelTab">
       <panel name="reimbursementPagePanel" title="Reimbursement configuration"
@@ -91,6 +94,8 @@
         <field name="includeOtherBankAccounts"
           showIf="$contains([1, 2, 3], creditTransferTypeSelect)"
           if="__config__.app.getApp('base')?.getManageMultiBanks()"/>
+        <field name="paymentMode.typeSelect"/>
+        <field name="paymentMode.inOutSelect"/>
       </panel>
 
       <panel name="debtRecoveryPagePanel" title="Debt recovery configuration"
