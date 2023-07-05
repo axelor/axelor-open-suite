@@ -19,6 +19,7 @@
     "draft-js": "^0.11.5",
     "draftjs-to-html": "^0.9.1",
     "html-to-draftjs": "^1.5.0",
+    "html2canvas": "^1.4.1",
     "jss-rtl": "^0.3.0",
     "material-ui-nested-menu-item": "^1.0.2",
     "moment": "^2.25.3",
