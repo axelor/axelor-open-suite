@@ -80,6 +80,7 @@ import com.axelor.apps.supplychain.db.repo.StockMoveLineSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.StockMoveSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.SupplychainBatchRepository;
 import com.axelor.apps.supplychain.db.repo.SupplychainBatchSupplychainRepository;
+import com.axelor.apps.supplychain.listener.InvoicingStateCache;
 import com.axelor.apps.supplychain.service.AccountCustomerServiceSupplyChainImpl;
 import com.axelor.apps.supplychain.service.AccountingCutOffService;
 import com.axelor.apps.supplychain.service.AccountingCutOffServiceImpl;
@@ -292,5 +293,6 @@ public class SupplychainModule extends AxelorModule {
     bind(MrpForecastService.class).to(MrpForecastServiceImpl.class);
     bind(SaleOrderCheckAnalyticService.class).to(SaleOrderCheckAnalyticServiceImpl.class);
     bind(SaleInvoicingStateService.class).to(SaleInvoicingStateServiceImpl.class);
+    bind(InvoicingStateCache.class);
   }
 }

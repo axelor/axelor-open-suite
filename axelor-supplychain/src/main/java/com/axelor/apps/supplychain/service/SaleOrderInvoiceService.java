@@ -302,4 +302,6 @@ public interface SaleOrderInvoiceService {
   void displayErrorMessageBtnGenerateInvoice(SaleOrder saleOrder) throws AxelorException;
 
   int getSaleOrderInvoicingState(SaleOrder saleOrder);
+
+  boolean atLeastOneInvoiceIsVentilated(SaleOrder saleOrder);
 }

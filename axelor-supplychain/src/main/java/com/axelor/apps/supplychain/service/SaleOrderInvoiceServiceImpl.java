@@ -49,6 +49,7 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.db.repo.TimetableRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
+import com.axelor.apps.supplychain.listener.InvoicingStateCache;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceGeneratorSupplyChain;
@@ -690,7 +691,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
   @Override
   public void update(SaleOrder saleOrder, Long currentInvoiceId, boolean excludeCurrentInvoice)
       throws AxelorException {
-
+    Beans.get(InvoicingStateCache.class).invalidateSaleOrder(saleOrder.getId());
     update(saleOrder, currentInvoiceId, excludeCurrentInvoice, false);
   }
 
@@ -997,7 +998,8 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
         atLeastOneInvoiceIsVentilated(saleOrder));
   }
 
-  protected boolean atLeastOneInvoiceIsVentilated(SaleOrder saleOrder) {
+  @Override
+  public boolean atLeastOneInvoiceIsVentilated(SaleOrder saleOrder) {
     if (saleOrder.getSaleOrderLineList() == null || saleOrder.getSaleOrderLineList().isEmpty()) {
       return false;
     }
