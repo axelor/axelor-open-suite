@@ -17,8 +17,8 @@
   </action-view>
 
   <menuitem name="all-leave-request" parent="my-hr-root" title="Leave Requests"
-    action="leave.all" order="200" if="__config__.app.isApp('leave')"
-            icon="fa-plane" icon-background="#84429f"/>
+    action="leave.all" order="200" if="__config__.app.isApp('leave')" icon="fa-plane"
+    icon-background="#84429f"/>
 
   <action-view name="leave.all" model="com.axelor.apps.hr.db.LeaveRequest"
     title="My Leave Requests">
@@ -47,7 +47,7 @@
 
   <menuitem name="all-my-timesheet" parent="my-hr-root" title="Timesheets"
     action="action.timesheet.view.my.timesheet" order="400" if="__config__.app.isApp('timesheet')"
-            icon="fa-clock-o" icon-background="#84429f"/>
+    icon="fa-clock-o" icon-background="#84429f"/>
 
   <action-view name="action.timesheet.view.my.timesheet"
     model="com.axelor.apps.hr.db.Timesheet" title="My Timesheets">
@@ -59,8 +59,8 @@
   </action-view>
 
   <menuitem name="all-extra-hours" parent="my-hr-root" title="Extra hours"
-    action="extra.hours.all" order="500" if="__config__.app.isApp('exthrs')"
-            icon="fa-hourglass-end" icon-background="#84429f"/>
+    action="extra.hours.all" order="500" if="__config__.app.isApp('exthrs')" icon="fa-hourglass-end"
+    icon-background="#84429f"/>
 
   <action-view name="extra.hours.all" model="com.axelor.apps.hr.db.ExtraHours"
     title="My Extra Hours">
