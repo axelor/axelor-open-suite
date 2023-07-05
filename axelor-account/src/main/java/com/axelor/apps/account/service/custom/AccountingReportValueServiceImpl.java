@@ -441,8 +441,7 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
       String parentTitle,
       LocalDate startDate,
       LocalDate endDate,
-      int analyticCounter)
-      throws AxelorException {
+      int analyticCounter) {
     for (AccountingReportConfigLine column : columnList) {
       if (StringUtils.notEmpty(column.getGroupsWithoutColumn()) && groupColumn != null) {
         List<String> groupsWithoutColumnCodeList =
@@ -511,8 +510,7 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
       String parentTitle,
       LocalDate startDate,
       LocalDate endDate,
-      int analyticCounter)
-      throws AxelorException {
+      int analyticCounter) {
     if (this.isValueAlreadyComputed(
         groupColumn, column, line, valuesMapByColumn, configAnalyticAccount, parentTitle)) {
       return;
