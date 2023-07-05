@@ -64,8 +64,10 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -370,6 +372,13 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     stockMoveLine.setCompanyPurchasePrice(companyPurchasePrice);
     stockMoveLine.setFromStockLocation(fromStockLocation);
     stockMoveLine.setToStockLocation(toStockLocation);
+
+    if (fromStockLocation == null) {
+      stockMoveLine.setFromStockLocation(stockMove.getFromStockLocation());
+    }
+    if (toStockLocation == null) {
+      stockMoveLine.setToStockLocation(stockMove.getToStockLocation());
+    }
 
     if (stockMove != null) {
       stockMove.addStockMoveLineListItem(stockMoveLine);
@@ -1535,7 +1544,12 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void updateStockMoveLine(
-      StockMoveLine stockMoveLine, BigDecimal realQty, Integer conformity, Unit unit)
+      StockMoveLine stockMoveLine,
+      BigDecimal realQty,
+      Integer conformity,
+      Unit unit,
+      StockLocation fromStockLocation,
+      StockLocation toStockLocation)
       throws AxelorException {
     if (stockMoveLine.getStockMove() == null) {
       throw new AxelorException(
@@ -1549,6 +1563,12 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
         stockMoveLine.setIsRealQtyModifiedByUser(true);
 
         updateUnit(stockMoveLine, unit);
+        if (fromStockLocation != null) {
+          stockMoveLine.setFromStockLocation(fromStockLocation);
+        }
+        if (toStockLocation != null) {
+          stockMoveLine.setToStockLocation(toStockLocation);
+        }
       }
     }
   }
@@ -1565,5 +1585,23 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       stockMoveLine.setUnit(unit);
       stockMoveLine.setQty(convertQty);
     }
+  }
+
+  @Override
+  public Map<String, Object> getClearedStockMoveLineMap() {
+    Map<String, Object> clearedStockMoveLineMap = new HashMap<>();
+    clearedStockMoveLineMap.put("product", null);
+    clearedStockMoveLineMap.put("productName", "");
+    clearedStockMoveLineMap.put("qty", BigDecimal.ZERO);
+    clearedStockMoveLineMap.put("realQty", BigDecimal.ZERO);
+    clearedStockMoveLineMap.put("unitPriceUntaxed", BigDecimal.ZERO);
+    clearedStockMoveLineMap.put("qtyInvoiced", BigDecimal.ZERO);
+    clearedStockMoveLineMap.put("companyPurchasePrice", BigDecimal.ZERO);
+    clearedStockMoveLineMap.put("reservedQty", BigDecimal.ZERO);
+    clearedStockMoveLineMap.put("unit", null);
+    clearedStockMoveLineMap.put("netMass", BigDecimal.ZERO);
+    clearedStockMoveLineMap.put("totalNetMass", BigDecimal.ZERO);
+    clearedStockMoveLineMap.put("trackingNumber", null);
+    return clearedStockMoveLineMap;
   }
 }

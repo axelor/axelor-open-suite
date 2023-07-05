@@ -201,6 +201,7 @@
     <domain>self.isContact != true</domain>
     <context name="json-enhance" expr="eval:true"/>
     <context name="_domain" expr="self.isContact != true"/>
+    <context name="_showIsEmployee" expr="eval: true"/>
   </action-view>
 
   <menuitem name="referential-root-contacts" parent="referential-root" title="Contacts"

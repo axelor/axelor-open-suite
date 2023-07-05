@@ -164,7 +164,7 @@
     <view type="form" name="appraisal-type-form"/>
   </action-view>
 
-  <!-- My HR -->
+  <!-- MyHR -->
 
   <menuitem name="my-hr-appraisal-all-appraisals" title="Appraisals"
     action="appraisal.all.appraisals" parent="my-hr-root" order="600"

@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.account.service.wizard;
+package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.PaymentCondition;
@@ -26,15 +26,27 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.wizard.BaseConvertLeadWizardService;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 import java.util.Optional;
 
-public class AccountConvertLeadWizardServiceImpl implements BaseConvertLeadWizardService {
+public class SupplyChainConvertLeadWizardServiceImpl implements BaseConvertLeadWizardService {
+
+  protected AppSupplychainService appSupplychainService;
+
+  @Inject
+  public SupplyChainConvertLeadWizardServiceImpl(AppSupplychainService appSupplychainService) {
+    this.appSupplychainService = appSupplychainService;
+  }
 
   @Override
   public void setPartnerFields(Partner partner) {
+    if (!appSupplychainService.isApp("supplychain")) {
+      return;
+    }
     Company activeCompany =
         Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null);
     if (activeCompany != null) {
