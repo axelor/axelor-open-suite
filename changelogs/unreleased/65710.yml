@@ -1,0 +1,3 @@
+---
+title: "ExpenseServiceImpl : Remove Beans.get occurences"
+type: fix
