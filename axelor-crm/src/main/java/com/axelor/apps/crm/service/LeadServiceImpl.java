@@ -37,15 +37,19 @@ import com.axelor.apps.crm.exception.CrmExceptionMessage;
 import com.axelor.apps.crm.service.app.AppCrmService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.message.db.repo.MultiRelatedRepository;
+import com.axelor.meta.schema.actions.ActionView;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class LeadServiceImpl implements LeadService {
 
@@ -255,5 +259,48 @@ public class LeadServiceImpl implements LeadService {
   @Override
   public boolean computeIsLost(Lead lead) throws AxelorException {
     return appCrmService.getLostLeadStatus().equals(lead.getLeadStatus());
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public Map<String, Object> test(Lead lead) throws AxelorException {
+    LeadStatus viewLeadStatus = lead.getLeadStatus();
+    LeadStatus lostLeadStatus = appCrmService.getLostLeadStatus();
+    LeadStatus convertedLeadStatus = appCrmService.getConvertedLeadStatus();
+
+    lead = leadRepo.find(lead.getId());
+
+    if (Objects.isNull(viewLeadStatus)) {
+      return null;
+    }
+    if (viewLeadStatus.equals(lostLeadStatus)) {
+      return ActionView.define(I18n.get("Lose"))
+          .model(Lead.class.getName())
+          .add("form", "lead-lose-wizard-form")
+          .param("popup", "true")
+          .param("show-toolbar", "false")
+          .param("show-confirm", "false")
+          .param("popup-save", "false")
+          .param("forceEdit", "true")
+          .context("_showRecord", lead.getId())
+          .map();
+    } else {
+      lead.setLostReason(null);
+    }
+    if (viewLeadStatus.equals(convertedLeadStatus)) {
+      return ActionView.define(I18n.get("Convert lead (" + lead.getFullName() + ")"))
+          .model(Lead.class.getName())
+          .add("form", "convert-lead-wizard-form")
+          .param("popup", "true")
+          .param("show-toolbar", "false")
+          .param("show-confirm", "false")
+          .param("popup-save", "false")
+          .param("forceEdit", "true")
+          .context("_showRecord", lead.getId())
+          .context("_lead", lead)
+          .context("_primaryAddress", lead.getPrimaryAddress())
+          .map();
+    }
+    return null;
   }
 }

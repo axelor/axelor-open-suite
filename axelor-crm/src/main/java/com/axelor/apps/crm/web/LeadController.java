@@ -240,4 +240,13 @@ public class LeadController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void test(ActionRequest request, ActionResponse response) {
+    Lead lead = request.getContext().asType(Lead.class);
+    try {
+      response.setView(Beans.get(LeadService.class).test(lead));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }
