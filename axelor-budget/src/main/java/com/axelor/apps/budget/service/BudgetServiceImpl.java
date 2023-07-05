@@ -757,16 +757,18 @@ public class BudgetServiceImpl implements BudgetService {
 
   @Override
   public void checkBudgetParentDates(Budget budget) throws AxelorException {
-    if (budget != null && budget.getBudgetLevel() != null) {
-      BudgetLevel section = budget.getBudgetLevel();
+    if (budget == null || budget.getBudgetLevel() == null) {
+      return;
+    }
+    BudgetLevel section = budget.getBudgetLevel();
 
-      if ((budget.getFromDate().isBefore(section.getFromDate()))
-          || (budget.getToDate().isAfter(section.getToDate()))) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            String.format(
-                I18n.get(BudgetExceptionMessage.WRONG_DATES_ON_BUDGET), budget.getCode()));
-      }
+    if (budget.getFromDate() == null
+        || budget.getToDate() == null
+        || (budget.getFromDate().isBefore(section.getFromDate()))
+        || (budget.getToDate().isAfter(section.getToDate()))) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          String.format(I18n.get(BudgetExceptionMessage.WRONG_DATES_ON_BUDGET), budget.getCode()));
     }
   }
 
