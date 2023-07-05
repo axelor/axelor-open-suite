@@ -74,6 +74,8 @@ public final class CrmExceptionMessage {
       "Can not mark as lost an already lost lead." /*)*/;
   public static final String LEAD_CONVERT_KANBAN = /*$$(*/
       "Can only convert leads in form view." /*)*/;
+  public static final String LEAD_LOSE_KANBAN = /*$$(*/
+      "Can only lose leads in form view." /*)*/;
 
   /** Opportunity */
   public static final String LEAD_PARTNER = /*$$(*/ "Please select a lead" /*)*/;

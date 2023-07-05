@@ -424,7 +424,7 @@
   </action-method>
 
   <action-method name="action-lead-method-kanban-onmove">
-    <call class="com.axelor.apps.crm.web.LeadController" method="test"/>
+    <call class="com.axelor.apps.crm.web.LeadController" method="kanbanLeadOnMove"/>
   </action-method>
 
   <action-record name="action-lead-default-record-new"

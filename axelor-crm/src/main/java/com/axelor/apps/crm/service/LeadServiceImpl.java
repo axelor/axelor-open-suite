@@ -262,45 +262,23 @@ public class LeadServiceImpl implements LeadService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public Map<String, Object> test(Lead lead) throws AxelorException {
-    LeadStatus viewLeadStatus = lead.getLeadStatus();
+  public void kanbanLeadOnMove(Lead lead) throws AxelorException {
+    LeadStatus leadStatus = lead.getLeadStatus();
     LeadStatus lostLeadStatus = appCrmService.getLostLeadStatus();
     LeadStatus convertedLeadStatus = appCrmService.getConvertedLeadStatus();
 
-    lead = leadRepo.find(lead.getId());
-
-    if (Objects.isNull(viewLeadStatus)) {
-      return null;
+    if (Objects.isNull(leadStatus)) {
+      return;
     }
-    if (viewLeadStatus.equals(lostLeadStatus)) {
-      return ActionView.define(I18n.get("Lose"))
-          .model(Lead.class.getName())
-          .add("form", "lead-lose-wizard-form")
-          .param("popup", "true")
-          .param("show-toolbar", "false")
-          .param("show-confirm", "false")
-          .param("popup-save", "false")
-          .param("forceEdit", "true")
-          .context("_showRecord", lead.getId())
-          .map();
-    } else {
-      lead.setLostReason(null);
+    if (leadStatus.equals(convertedLeadStatus)) {
+      throw new AxelorException(
+              TraceBackRepository.CATEGORY_INCONSISTENCY,
+              I18n.get(CrmExceptionMessage.LEAD_CONVERT_KANBAN));
     }
-    if (viewLeadStatus.equals(convertedLeadStatus)) {
-      return ActionView.define(I18n.get("Convert lead (" + lead.getFullName() + ")"))
-          .model(Lead.class.getName())
-          .add("form", "convert-lead-wizard-form")
-          .param("popup", "true")
-          .param("show-toolbar", "false")
-          .param("show-confirm", "false")
-          .param("popup-save", "false")
-          .param("forceEdit", "true")
-          .context("_showRecord", lead.getId())
-          .context("_lead", lead)
-          .context("_primaryAddress", lead.getPrimaryAddress())
-          .map();
+    if (leadStatus.equals(lostLeadStatus)) {
+      throw new AxelorException(
+              TraceBackRepository.CATEGORY_INCONSISTENCY,
+              I18n.get(CrmExceptionMessage.LEAD_LOSE_KANBAN));
     }
-    return null;
   }
 }
