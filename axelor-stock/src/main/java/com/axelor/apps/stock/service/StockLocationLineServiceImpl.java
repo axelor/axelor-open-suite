@@ -497,7 +497,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
   @Override
   public StockLocationLine getStockLocationLine(StockLocation stockLocation, Product product) {
 
-    if (product == null || !product.getStockManaged()) {
+    if (product == null || !product.getStockManaged() || stockLocation == null) {
       return null;
     }
 

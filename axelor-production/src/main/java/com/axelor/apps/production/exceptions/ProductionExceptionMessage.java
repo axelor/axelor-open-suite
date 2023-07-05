@@ -128,6 +128,21 @@ public final class ProductionExceptionMessage {
   public static final String MAX_DEPTH_REACHED = /*$$(*/
       "Max depth reached when copying BOM." /*)*/;
 
+  public static final String BILL_OF_MATERIAL_NULL_STATUS = /*$$(*/
+      "BOM currently has no status" /*)*/;
+
+  public static final String BILL_OF_MATERIAL_ALREADY_DRAFT_STATUS = /*$$(*/
+      "BOM is already on draft status" /*)*/;
+
+  public static final String BILL_OF_MATERIAL_VALIDATED_WRONG_STATUS = /*$$(*/
+      "Cannot validate BOM that is not draft" /*)*/;
+
+  public static final String BILL_OF_MATERIAL_APPLICABLE_WRONG_STATUS = /*$$(*/
+      "Cannot make BOM applicable that is not validated" /*)*/;
+
+  public static final String BILL_OF_MATERIAL_OBSOLETE_WRONG_STATUS = /*$$(*/
+      "Cannot make BOM obsolete that is not applicable" /*)*/;
+
   /** Configurator Controller */
   public static final String BILL_OF_MATERIAL_GENERATED = /*$$(*/
       "The bill of materials %s has been generated" /*)*/;
