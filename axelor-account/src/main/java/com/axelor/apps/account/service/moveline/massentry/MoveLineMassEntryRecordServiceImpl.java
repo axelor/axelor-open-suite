@@ -216,7 +216,6 @@ public class MoveLineMassEntryRecordServiceImpl implements MoveLineMassEntryReco
     newMoveLine.setAxis3AnalyticAccount(moveLine.getAxis3AnalyticAccount());
     newMoveLine.setAxis4AnalyticAccount(moveLine.getAxis4AnalyticAccount());
     newMoveLine.setAxis5AnalyticAccount(moveLine.getAxis5AnalyticAccount());
-    newMoveLine.setAnalyticMoveLineList(moveLine.getAnalyticMoveLineList());
   }
 
   @Override
