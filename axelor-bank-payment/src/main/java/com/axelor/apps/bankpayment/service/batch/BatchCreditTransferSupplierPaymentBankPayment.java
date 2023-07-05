@@ -79,7 +79,7 @@ public class BatchCreditTransferSupplierPaymentBankPayment
     super.start();
 
     try {
-      this.testCreditTransferBatchField();
+      this.checkCreditTransferBatchField();
     } catch (AxelorException e) {
       TraceBackService.trace(
           new AxelorException(e, e.getCategory(), ""),
@@ -91,7 +91,7 @@ public class BatchCreditTransferSupplierPaymentBankPayment
     checkPoint();
   }
 
-  public void testCreditTransferBatchField() throws AxelorException {
+  protected void checkCreditTransferBatchField() throws AxelorException {
     AccountingBatch accountingBatch = batch.getAccountingBatch();
 
     if (accountingBatch.getPaymentMode() == null) {
