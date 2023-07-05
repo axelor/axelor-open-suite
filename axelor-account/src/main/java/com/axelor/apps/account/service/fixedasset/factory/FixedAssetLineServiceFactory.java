@@ -22,13 +22,8 @@ import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.fixedasset.FixedAssetLineComputationService;
-import com.axelor.apps.account.service.fixedasset.FixedAssetLineEconomicComputationServiceImpl;
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineEconomicServiceImpl;
-import com.axelor.apps.account.service.fixedasset.FixedAssetLineEconomicUpdateComputationServiceImpl;
-import com.axelor.apps.account.service.fixedasset.FixedAssetLineFiscalComputationServiceImpl;
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineFiscalServiceImpl;
-import com.axelor.apps.account.service.fixedasset.FixedAssetLineIfrsComputationServiceImpl;
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineIfrsServiceImpl;
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineService;
 import com.axelor.apps.base.AxelorException;
@@ -39,55 +34,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FixedAssetLineServiceFactory {
-
-  protected FixedAssetLineEconomicUpdateComputationServiceImpl
-      fixedAssetLineEconomicUpdateComputationService;
-  protected FixedAssetLineEconomicComputationServiceImpl fixedAssetLineEconomicComputationService;
-  protected FixedAssetLineFiscalComputationServiceImpl fixedAssetLineFiscalComputationService;
-  protected FixedAssetLineIfrsComputationServiceImpl fixedAssetLineIfrsComputationService;
   protected FixedAssetLineEconomicServiceImpl fixedAssetLineEconomicService;
   protected FixedAssetLineFiscalServiceImpl fixedAssetLineFiscalService;
   protected FixedAssetLineIfrsServiceImpl fixedAssetLineIfrsService;
 
   @Inject
   public FixedAssetLineServiceFactory(
-      FixedAssetLineEconomicUpdateComputationServiceImpl
-          fixedAssetLineEconomicUpdateComputationService,
-      FixedAssetLineEconomicComputationServiceImpl fixedAssetLineEconomicComputationService,
-      FixedAssetLineFiscalComputationServiceImpl fixedAssetLineFiscalComputationService,
-      FixedAssetLineIfrsComputationServiceImpl fixedAssetLineIfrsComputationService,
       FixedAssetLineEconomicServiceImpl fixedAssetLineEconomicService,
       FixedAssetLineFiscalServiceImpl fixedAssetLineFiscalService,
       FixedAssetLineIfrsServiceImpl fixedAssetLineIfrsService) {
-    this.fixedAssetLineEconomicUpdateComputationService =
-        fixedAssetLineEconomicUpdateComputationService;
-    this.fixedAssetLineEconomicComputationService = fixedAssetLineEconomicComputationService;
-    this.fixedAssetLineFiscalComputationService = fixedAssetLineFiscalComputationService;
-    this.fixedAssetLineIfrsComputationService = fixedAssetLineIfrsComputationService;
     this.fixedAssetLineEconomicService = fixedAssetLineEconomicService;
     this.fixedAssetLineFiscalService = fixedAssetLineFiscalService;
     this.fixedAssetLineIfrsService = fixedAssetLineIfrsService;
-  }
-
-  public FixedAssetLineComputationService getFixedAssetComputationService(
-      FixedAsset fixedAsset, int typeSelect) throws AxelorException {
-
-    switch (typeSelect) {
-      case FixedAssetLineRepository.TYPE_SELECT_ECONOMIC:
-        if (fixedAsset.getCorrectedAccountingValue() != null
-            && fixedAsset.getCorrectedAccountingValue().signum() != 0) {
-          return fixedAssetLineEconomicUpdateComputationService;
-        }
-        return fixedAssetLineEconomicComputationService;
-      case FixedAssetLineRepository.TYPE_SELECT_FISCAL:
-        return fixedAssetLineFiscalComputationService;
-      case FixedAssetLineRepository.TYPE_SELECT_IFRS:
-        return fixedAssetLineIfrsComputationService;
-      default:
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_NO_VALUE,
-            I18n.get(AccountExceptionMessage.IMMO_FIXED_ASSET_LINE_COMPUTATION_SERVICE_NOT_FOUND));
-    }
   }
 
   public FixedAssetLineService getFixedAssetService(int typeSelect) throws AxelorException {

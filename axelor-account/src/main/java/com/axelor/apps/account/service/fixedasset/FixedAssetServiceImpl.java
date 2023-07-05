@@ -29,6 +29,7 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.fixedasset.factory.FixedAssetLineComputationServiceFactory;
 import com.axelor.apps.account.service.fixedasset.factory.FixedAssetLineServiceFactory;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.base.AxelorException;
@@ -63,7 +64,6 @@ public class FixedAssetServiceImpl implements FixedAssetService {
   protected FixedAssetLineMoveService fixedAssetLineMoveService;
 
   protected MoveLineComputeAnalyticService moveLineComputeAnalyticService;
-  protected FixedAssetLineComputationService fixedAssetLineComputationService;
 
   protected FixedAssetDerogatoryLineService fixedAssetDerogatoryLineService;
   protected FixedAssetDateService fixedAssetDateService;
@@ -72,6 +72,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
   protected FixedAssetLineGenerationService fixedAssetLineGenerationService;
 
   protected FixedAssetLineServiceFactory fixedAssetLineServiceFactory;
+  protected FixedAssetLineComputationServiceFactory fixedAssetLineComputationServiceFactory;
   protected DateService dateService;
 
   protected FixedAssetLineService fixedAssetLineService;
@@ -89,6 +90,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       FixedAssetDerogatoryLineService fixedAssetDerogatoryLineService,
       FixedAssetLineService fixedAssetLineService,
       FixedAssetLineServiceFactory fixedAssetLineServiceFactory,
+      FixedAssetLineComputationServiceFactory fixedAssetLineComputationServiceFactory,
       FixedAssetGenerationService fixedAssetGenerationService,
       FixedAssetLineGenerationService fixedAssetLineGenerationService,
       FixedAssetDateService fixedAssetDateService,
@@ -98,9 +100,9 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     this.fixedAssetDerogatoryLineService = fixedAssetDerogatoryLineService;
     this.fixedAssetLineService = fixedAssetLineService;
     this.fixedAssetLineServiceFactory = fixedAssetLineServiceFactory;
+    this.fixedAssetLineComputationServiceFactory = fixedAssetLineComputationServiceFactory;
     this.fixedAssetGenerationService = fixedAssetGenerationService;
     this.fixedAssetLineGenerationService = fixedAssetLineGenerationService;
-    this.fixedAssetLineComputationService = fixedAssetLineComputationService;
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
     this.fixedAssetDateService = fixedAssetDateService;
     this.dateService = dateService;
@@ -710,18 +712,18 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     List<FixedAssetDerogatoryLine> fixedAssetDerogatoryLineList =
         fixedAsset.getFixedAssetDerogatoryLineList();
     if (fixedAssetLineList != null) {
-      fixedAssetLineServiceFactory
+      fixedAssetLineComputationServiceFactory
           .getFixedAssetComputationService(
               fixedAsset, FixedAssetLineRepository.TYPE_SELECT_ECONOMIC)
           .multiplyLinesBy(fixedAssetLineList, prorata);
     }
     if (fiscalAssetLineList != null) {
-      fixedAssetLineServiceFactory
+      fixedAssetLineComputationServiceFactory
           .getFixedAssetComputationService(fixedAsset, FixedAssetLineRepository.TYPE_SELECT_FISCAL)
           .multiplyLinesBy(fiscalAssetLineList, prorata);
     }
     if (ifrsAssetLineList != null) {
-      fixedAssetLineServiceFactory
+      fixedAssetLineComputationServiceFactory
           .getFixedAssetComputationService(fixedAsset, FixedAssetLineRepository.TYPE_SELECT_IFRS)
           .multiplyLinesBy(ifrsAssetLineList, prorata);
     }
