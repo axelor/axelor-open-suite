@@ -12,9 +12,11 @@
 
     <extend target="//panel[@name='viewAccountingReportConfigLinePanel']">
       <insert position="after">
-        <panel name="relatedBudgetPanel" title="Related budgets" hidden="true">
+        <panel name="relatedBudgetPanel" title="Related budgets" hidden="true"
+          if="__config__.app.isApp('budget')">
           <panel-dashlet name="viewRelatedBudgetLineDashlet" colSpan="12" title=""
-            height="450" action="action-account-view-related-budget-line" canSearch="true"/>
+            if="__config__.app.isApp('budget')" height="450"
+            action="action-account-view-related-budget-line" canSearch="true"/>
         </panel>
       </insert>
     </extend>
@@ -22,7 +24,8 @@
 
   <action-group name="action-budget-group-account-account-onload">
     <action name="action-group-account-account-onload"/>
-    <action name="action-account-method-budget-hide-budget-panel"/>
+    <action name="action-account-method-budget-hide-budget-panel"
+      if="__config__.app.isApp('budget')"/>
   </action-group>
 
   <action-view name="action-account-view-related-budget-line" title=""

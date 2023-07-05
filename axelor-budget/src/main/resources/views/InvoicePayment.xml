@@ -14,7 +14,8 @@
   <action-group name="action-budget-invoice-payment-group-save">
     <action name="action-invoice-payment-method-check-and-save"/>
     <action name="save"/>
-    <action name="action-invoice-payment-budget-method-compute-amount-paid-on-budget"/>
+    <action name="action-invoice-payment-budget-method-compute-amount-paid-on-budget"
+      if="__config__.app.isApp('budget')"/>
     <action name="close"/>
   </action-group>
 
