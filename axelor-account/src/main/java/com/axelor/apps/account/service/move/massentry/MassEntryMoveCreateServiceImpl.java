@@ -131,9 +131,8 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
         if (ObjectUtils.notEmpty(moveLine.getAnalyticMoveLineList())) {
           newMoveLine.clearAnalyticMoveLineList();
           for (AnalyticMoveLine analyticMoveLine : moveLine.getAnalyticMoveLineList()) {
-            AnalyticMoveLine copyAnalyticMoveLine =
-                analyticMoveLineRepository.copy(analyticMoveLine, false);
-            newMoveLine.addAnalyticMoveLineListItem(copyAnalyticMoveLine);
+            newMoveLine.addAnalyticMoveLineListItem(
+                analyticMoveLineRepository.copy(analyticMoveLine, false));
           }
         }
 
