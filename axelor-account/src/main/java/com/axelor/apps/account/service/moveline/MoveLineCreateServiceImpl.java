@@ -492,13 +492,6 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
 
         TaxLine taxLine = invoiceLine.getTaxLine();
 
-        if (taxLine == null
-            && invoiceLine.getAccount() != null
-            && invoiceLine.getAccount().getIsTaxRequiredOnMoveLine()
-            && invoiceLine.getAccount().getDefaultTax() != null) {
-          taxLine = invoiceLine.getAccount().getDefaultTax().getActiveTaxLine();
-        }
-
         if (taxLine != null) {
           moveLine.setTaxLine(taxLine);
           moveLine.setTaxRate(taxLine.getValue());
