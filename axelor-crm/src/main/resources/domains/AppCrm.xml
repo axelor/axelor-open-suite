@@ -40,6 +40,9 @@
     <many-to-one name="partnerDefaultStatus" ref="com.axelor.apps.crm.db.PartnerStatus"
       title="Default partner status"/>
 
+    <string name="emailDomainToIgnore" title="Email domain to ignore"
+      help="In order to make this field working a format is needed, see example: example1.com,example2.fr,example.exemple.com"/>
+
     <track>
       <field name="assignableUsers" on="UPDATE"/>
       <field name="groupsAssignable" on="UPDATE"/>

@@ -312,7 +312,7 @@
     <extend target="//panel[@name='companyPanel']">
       <insert position="after">
         <panel-dashlet name="relatedContactPanel"
-          action="action-contact-view-related-contacts" title="Related Contacts" colSpan="12"
+          action="action-contact-method-related-contacts" title="Related Contacts" colSpan="12"
           height="150" showIf="id"/>
       </insert>
     </extend>
@@ -783,15 +783,9 @@
     <call class="com.axelor.apps.crm.web.PartnerCrmController" method="losePartner"/>
   </action-method>
 
-  <action-view name="action-contact-view-related-contacts" title="Contacts"
-    model="com.axelor.apps.base.db.Partner">
-    <view type="grid" name="partner-related-contact-grid"/>
-    <view type="form" name="partner-contact-form"/>
-    <domain>SUBSTRING(self.emailAddress.address, LOCATE('@',self.emailAddress.address)+1) =
-      :_emailAddress AND self.id != :id AND self.isContact = true</domain>
-    <context name="_emailAddress" expr="eval: emailAddress?.address?.split('@')[1]"
-      if="emailAddress?.address"/>
-  </action-view>
+  <action-method name="action-contact-method-related-contacts">
+    <call class="com.axelor.apps.crm.web.PartnerCrmController" method="viewRelatedContacts"/>
+  </action-method>
 
   <action-view name="action-partner-view-generate-opporunity-popup"
     title="Generate opportunity ?" model="com.axelor.apps.base.db.Partner">
