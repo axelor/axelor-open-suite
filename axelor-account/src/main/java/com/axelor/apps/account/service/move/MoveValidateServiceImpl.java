@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticJournal;
 import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
@@ -881,9 +882,16 @@ public class MoveValidateServiceImpl implements MoveValidateService {
   }
 
   protected boolean isReverseCharge(Move move) {
-    return move.getMoveLineList().stream()
-        .map(MoveLine::getTaxEquiv)
-        .filter(Objects::nonNull)
-        .anyMatch(TaxEquiv::getReverseCharge);
+    if (move.getInvoice() != null) {
+      return move.getInvoice().getInvoiceLineList().stream()
+          .map(InvoiceLine::getTaxEquiv)
+          .filter(Objects::nonNull)
+          .anyMatch(TaxEquiv::getReverseCharge);
+    } else {
+      return move.getMoveLineList().stream()
+          .map(MoveLine::getTaxEquiv)
+          .filter(Objects::nonNull)
+          .anyMatch(TaxEquiv::getReverseCharge);
+    }
   }
 }
