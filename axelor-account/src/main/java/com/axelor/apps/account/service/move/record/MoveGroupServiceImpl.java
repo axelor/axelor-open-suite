@@ -238,8 +238,10 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   @Override
   public Map<String, Object> getDateOnChangeValuesMap(Move move, boolean paymentConditionChange)
       throws AxelorException {
-    moveCheckService.checkPeriodPermission(move);
-    moveRecordSetService.setPeriod(move);
+    if (move.getMassEntryStatusSelect() == MoveRepository.MASS_ENTRY_STATUS_NULL) {
+      moveCheckService.checkPeriodPermission(move);
+      moveRecordSetService.setPeriod(move);
+    }
     moveLineControlService.setMoveLineDates(move);
     moveRecordUpdateService.updateMoveLinesCurrencyRate(move);
     moveRecordSetService.setOriginDate(move);
