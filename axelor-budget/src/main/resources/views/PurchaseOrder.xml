@@ -8,7 +8,8 @@
     <extend target="//item[@name='seePurchaseOrderLinesItem']">
       <insert position="after">
         <item title="See budget distribution lines"
-          action="action-purchase-order-see-budget-distribution-lines"/>
+          action="action-purchase-order-see-budget-distribution-lines"
+          if="__config__.app.isApp('budget')"/>
       </insert>
     </extend>
   </grid>
@@ -39,7 +40,7 @@
           <field name="companyDepartment" colSpan="3"
             onChange="action-budget-purchase-order-attrs-company-dept-onchange"
             requiredIf="$enableBudgetKey"/>
-          <field name="budgetLevel"
+          <field name="budgetLevel" if="__config__.app.isApp('budget')"
             onSelect="action-budget-purchase-order-attrs-budget-level-domain"
             requiredIf="companyDepartment &amp;&amp; $enableBudgetKey" colSpan="3"
             showIf="companyDepartment &amp;&amp; $enableBudgetKey"
@@ -69,7 +70,7 @@
     <extend target="//button[@name='cancelBtn']">
       <insert position="before">
         <button name="computeBudgetDistributionBtn" title="Compute budget distribution"
-          if="__config__.app.getApp('budget')?.getManageMultiBudget()"
+          if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget()"
           onClick="action-budget-group-purchase-order-compute-budget-distribution" hidden="true"
           showIf="company.accountConfig.enableBudgetKey &amp;&amp; statusSelect &lt; 3 &amp;&amp; purchaseOrderLineList &amp;&amp; purchaseOrderLineList.length != 0"/>
       </insert>
@@ -94,19 +95,22 @@
 
   <action-group name="action-budget-group-purchase-order-on-validate-actions">
     <action name="action-method-purchase-order-validate-budget-distribution-list"
-      if="__config__.app.getApp('budget')?.manageMultiBudget"/>
+      if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.manageMultiBudget"/>
     <action name="action-group-purchase-order-on-validate-actions"/>
   </action-group>
 
   <action-group name="action-budget-purchase-order-group-on-save">
-    <action name="action-budget-purchase-order-group-get-and-validate-budget-balance"/>
+    <action name="action-budget-purchase-order-group-get-and-validate-budget-balance"
+      if="__config__.app.isApp('budget')"/>
     <action name="save"/>
-    <action name="action-budget-purchase-order-method-fill-budget-str"/>
+    <action name="action-budget-purchase-order-method-fill-budget-str"
+      if="__config__.app.isApp('budget')"/>
   </action-group>
 
   <action-group name="action-budget-group-purchase-order-on-new-actions">
     <action name="action-supplychain-group-purchase-order-on-new-actions"/>
-    <action name="action-budget-purchase-order-record-load-budget-key-config"/>
+    <action name="action-budget-purchase-order-record-load-budget-key-config"
+      if="__config__.app.isApp('budget')"/>
   </action-group>
 
   <action-group name="action-budget-group-purchase-order-compute-budget-distribution">
@@ -125,8 +129,10 @@
 
   <action-group name="action-group-budget-purchase-order-request-onclick">
     <action name="save"/>
-    <action name="action-method-budget-purchase-order-no-compute-budget-distribution"/>
-    <action name="action-budget-purchase-order-group-get-and-validate-budget-balance"/>
+    <action name="action-method-budget-purchase-order-no-compute-budget-distribution"
+      if="__config__.app.isApp('budget')"/>
+    <action name="action-budget-purchase-order-group-get-and-validate-budget-balance"
+      if="__config__.app.isApp('budget')"/>
     <action name="action-purchase-order-method-requested"/>
     <action name="save"/>
   </action-group>
@@ -149,10 +155,11 @@
 
   <action-group name="action-budget-purchase-order-group-onload">
     <action name="action-group-purchase-order-on-load-actions"/>
-    <action name="action-budget-purchase-order-record-load-budget-key-config"/>
+    <action name="action-budget-purchase-order-record-load-budget-key-config"
+      if="__config__.app.isApp('budget')"/>
     <action
       name="action-purchase-order-supplychain-method-update-budget-distribution-amount-available"
-      if="__config__.app.getApp('budget')?.getManageMultiBudget()"/>
+      if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget()"/>
   </action-group>
 
   <action-record name="action-budget-purchase-order-record-load-budget-key-config"
@@ -176,13 +183,14 @@
   </action-record>
 
   <action-attrs name="action-budget-purchase-order-attrs-company-dept-onchange">
-    <attribute name="value" for="budgetLevel" expr="eval:null"/>
+    <attribute name="value" for="budgetLevel" expr="eval:null"
+      if="__config__.app.isApp('budget')"/>
   </action-attrs>
 
   <action-record name="budget-action-purchase-order-record-project-onchange"
     model="com.axelor.apps.purchase.db.PurchaseOrder">
     <field name="budgetLevel" expr="eval: project ? project.budget : budgetLevel"
-      if="_project == null || id != null"/>
+      if="__config__.app.isApp('budget') &amp;&amp; (_project == null || id != null)"/>
     <field name="company" expr="eval: project ? project.company : null"/>
   </action-record>
 

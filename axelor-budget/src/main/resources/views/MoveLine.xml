@@ -14,6 +14,7 @@
       </insert>
       <insert position="after">
         <panel-related name="budgetDistributionListPanel" title="Budget"
+          if="__config__.app.isApp('budget')"
           onChange="action-method-move-line-budget-distribution-validate-amount"
           showIf="['charge', 'income', 'immobilisation'].includes(account.accountType.technicalTypeSelect)"
           field="budgetDistributionList" form-view="move-line-budget-distribution-form"
@@ -33,7 +34,7 @@
       </insert>
       <insert position="after">
         <panel-related name="budgetDistributionListPanel"
-          readonlyIf="move.statusSelect == 3" title="Budget"
+          if="__config__.app.isApp('budget')" readonlyIf="move.statusSelect == 3" title="Budget"
           onChange="action-method-move-line-budget-distribution-validate-amount"
           showIf="['charge', 'income', 'immobilisation'].includes(account.accountType.technicalTypeSelect)"
           field="budgetDistributionList" form-view="move-line-budget-distribution-form"
