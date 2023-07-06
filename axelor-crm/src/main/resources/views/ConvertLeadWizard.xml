@@ -38,6 +38,22 @@
     </panel>
   </form>
 
+  <form name="popup-convert-lead-wizard-form" title="Convert lead"
+    model="com.axelor.utils.db.Wizard" onNew="action-fast-convert-lead-wizard-record-set-defaults">
+    <panel name="mainPanel">
+      <panel name="selectStatusPanel" colSpan="12" showIf="$crmProcessOnPartner">
+        <label name="convertedAs" title="Converted with selected status :" colSpan="4"/>
+        <field name="$partnerStatus" type="Many-to-one"
+          target="com.axelor.apps.crm.db.PartnerStatus" showTitle="false" x-order="sequence"
+          colSpan="4" canView="false"/>
+      </panel>
+      <button name="validateBtn" title="Validate"
+        onClick="action-lead-method-fast-convert-lead,close" colSpan="3" colOffset="3"
+        hideIf="$crmProcessOnPartner &amp;&amp; $partnerStatus == null"/>
+      <button name="cancelBtn" title="Cancel" onClick="close" colSpan="3"/>
+    </panel>
+  </form>
+
   <action-record name="action-convert-lead-wizard-record-set-defaults"
     model="com.axelor.utils.db.Wizard">
     <field name="$leadToPartnerSelect" expr="eval:1"/>
@@ -52,6 +68,19 @@
 
   <action-method name="action-lead-method-convert-lead">
     <call class="com.axelor.apps.crm.web.ConvertLeadWizardController" method="convertLead"/>
+  </action-method>
+
+  <action-record name="action-fast-convert-lead-wizard-record-set-defaults"
+    model="com.axelor.utils.db.Wizard">
+    <field name="$crmProcessOnPartner"
+      expr="eval:__config__.app.getApp('crm')?.getCrmProcessOnPartner()"/>
+    <field name="$partnerStatus"
+      expr="eval:__config__.app.getApp('crm')?.partnerDefaultStatus"
+      if=" __config__.app.getApp('crm')?.getCrmProcessOnPartner()"/>
+  </action-record>
+
+  <action-method name="action-lead-method-fast-convert-lead">
+    <call class="com.axelor.apps.crm.web.ConvertLeadWizardController" method="fastConvertLead"/>
   </action-method>
 
 </object-views>

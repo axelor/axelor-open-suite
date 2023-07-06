@@ -256,4 +256,10 @@ public class LeadServiceImpl implements LeadService {
   public boolean computeIsLost(Lead lead) throws AxelorException {
     return appCrmService.getLostLeadStatus().equals(lead.getLeadStatus());
   }
+
+  @Transactional(rollbackOn = {Exception.class})
+  public void archiveLead(Lead lead) {
+    lead.setArchived(true);
+    leadRepo.save(lead);
+  }
 }

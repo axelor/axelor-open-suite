@@ -17,6 +17,7 @@
       <field name="agenciesManagement" widget="boolean-switch"/>
       <field name="crmProcessOnPartner" widget="boolean-switch"/>
       <field name="emailDomainToIgnore"/>
+      <field name="isAllowFastConversion" widget="boolean-switch"/>
     </panel>
     <panel name="opportunityStatusMgtPanel" title="Opportunitities status managment">
       <field name="opportunityDefaultStatus"/>

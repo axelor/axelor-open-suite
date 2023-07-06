@@ -42,7 +42,7 @@
   </kanban>
 
   <grid name="lead-grid" title="Leads" model="com.axelor.apps.crm.db.Lead"
-    orderBy="-contactDate">
+    orderBy="-contactDate" editable="true">
     <!-- <toolbar> <button name="showMap" title="Map" onClick="action-show-leads-on-map-page" /> </toolbar> -->
     <menubar>
       <menu name="leadReportsMenu" title="Reports" icon="fa-files-o">
@@ -60,16 +60,18 @@
     <hilite color="danger" if="$moment(todayDate).diff(updatedOn,'days') &gt;= 15"/>
     <field name="createdOn" hidden="true"/>
     <field name="updatedOn" hidden="true"/>
+    <field name="name"/>
     <field name="simpleFullName"/>
     <field name="enterpriseName"/>
     <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
     <field name="emailAddress.address"/>
     <field name="contactDate"/>
-    <field name="user" form-view="user-form" grid-view="user-grid"/>
-    <field name="leadStatus" title="Status"/>
+    <field name="leadStatus" title="Status" x-order="sequence"/>
     <field name="leadScoringSelect" widget="ImageSelect" x-labels="false"/>
-    <button name="grabLeadBtn" hideIf="user.id == _internalUserId" icon="fa-suitcase"
-      help="Take charge" onClick="action-lead-method-assign-to-me"/>
+    <button name="convertBtn" onClick="action-lead-group-convert-lead" title="Convert"
+      icon="fa-exchange"/>
+    <button name="notInterestedBtn" onClick="action-lead-method-archive-lead" title="Archive"
+      icon="fa-archive"/>
     <button name="scheduleEventBtn" title="Schedule Event" icon="fa-group"
       onClick="action-lead-view-schedule-event"/>
     <button name="sendByEmailBtn" title="Send Email" icon="fa-envelope"
@@ -568,6 +570,27 @@
 
   <action-method name="action-lead-method-view-lead-with-same-domain-name">
     <call class="com.axelor.apps.crm.web.LeadController" method="viewLeadWithSameDomainName"/>
+  </action-method>
+
+  <action-group name="action-lead-group-convert-lead">
+    <action name="action-lead-group-lead-convert"
+      if="!__config__.app.getApp('crm')?.getIsAllowFastConversion()"/>
+    <action name="action-lead-view-convert-lead-wizard"
+      if="__config__.app.getApp('crm')?.getIsAllowFastConversion()"/>
+  </action-group>
+
+  <action-view name="action-lead-view-convert-lead-wizard" title="Convert lead"
+    model="com.axelor.utils.db.Wizard">
+    <view type="form" name="popup-convert-lead-wizard-form"/>
+    <view-param name="popup" value="true"/>
+    <view-param name="popup-save" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="show-toolbar" value="false"/>
+    <context name="_lead" expr="eval: __self__"/>
+  </action-view>
+
+  <action-method name="action-lead-method-archive-lead">
+    <call class="com.axelor.apps.crm.web.LeadController" method="archiveLead"/>
   </action-method>
 
   <search-filters name="lead-filters" model="com.axelor.apps.crm.db.Lead"

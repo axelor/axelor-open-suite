@@ -240,4 +240,14 @@ public class LeadController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void archiveLead(ActionRequest request, ActionResponse response) {
+    try {
+      Lead lead = request.getContext().asType(Lead.class);
+      Beans.get(LeadService.class).archiveLead(Beans.get(LeadRepository.class).find(lead.getId()));
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

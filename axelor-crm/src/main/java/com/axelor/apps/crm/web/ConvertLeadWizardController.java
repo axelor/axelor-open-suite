@@ -389,4 +389,52 @@ public class ConvertLeadWizardController {
     opportunityMap.put("user", lead.getUser());
     return opportunityMap;
   }
+
+  public void fastConvertLead(ActionRequest request, ActionResponse response) {
+
+    try {
+      Context context = request.getContext();
+      Lead lead = findLead(request);
+      Partner partner = null;
+
+      Map<String, Object> partnerMap = this.getPartnerMap(request, response);
+      setPartnerStatusOnFastConvert(context, partnerMap);
+      Map<String, Object> contactPartnerMap = this.getContactMap(request, response);
+
+      partner =
+          Beans.get(ConvertLeadWizardService.class)
+              .generateDataAndConvertLead(
+                  lead,
+                  LeadRepository.CONVERT_LEAD_CREATE_PARTNER,
+                  LeadRepository.CONVERT_LEAD_CREATE_CONTACT,
+                  partner,
+                  partnerMap,
+                  null,
+                  contactPartnerMap);
+
+      response.setView(
+          ActionView.define(I18n.get(CrmExceptionMessage.CONVERT_LEAD_1))
+              .model(Partner.class.getName())
+              .add("form", "partner-form")
+              .add("grid", "partner-grid")
+              .param("search-filters", "partner-filters")
+              .context("_showRecord", partner.getId())
+              .context("_isFromCrm", true)
+              .map());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  private void setPartnerStatusOnFastConvert(Context context, Map<String, Object> partnerMap) {
+
+    if (Beans.get(AppCrmService.class).getAppCrm().getCrmProcessOnPartner()) {
+      Map<String, Object> partnerStatusMap = (Map<String, Object>) context.get("partnerStatus");
+      PartnerStatus partnerStatus =
+          Beans.get(PartnerStatusRepository.class)
+              .find(((Integer) partnerStatusMap.get("id")).longValue());
+      partnerMap.put("partnerStatus", partnerStatus);
+    }
+  }
 }
