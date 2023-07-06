@@ -883,6 +883,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
   protected boolean isReverseCharge(Move move) {
     return move.getMoveLineList().stream()
         .map(MoveLine::getTaxEquiv)
+        .filter(Objects::nonNull)
         .anyMatch(TaxEquiv::getReverseCharge);
   }
 }
