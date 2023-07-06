@@ -178,10 +178,10 @@
     <extend target="//panel[@name='imagePanel']">
       <insert position="before">
         <button name="validateConversionFromLeadBtn" title="Validate"
-          onClick="action-partner-group-validate-conversion-from-lead"
+          onClick="action-partner-group-validate-conversion-from-lead" hidden="true"
           showIf="!isAlreadyConvertFromLead &amp;&amp; _isInConversionFromLead"/>
         <button name="cancelConversionFromLeadBtn" title="Cancel" onClick="close"
-          showIf="!isAlreadyConvertFromLead &amp;&amp; _isInConversionFromLead"/>
+          hidden="true" showIf="!isAlreadyConvertFromLead &amp;&amp; _isInConversionFromLead"/>
         <field name="partnerStatus" showTitle="false" colSpan="12" widget="NavSelect"
           x-order="sequence" onChange="action-partner-group-partner-status-onchange"
           showIf="$isFromCrm " if=" __config__.app.getApp('crm')?.getCrmProcessOnPartner()"/>

@@ -372,8 +372,8 @@
 
   <action-group name="action-lead-group-lead-convert">
     <action name="save"/>
-    <action name="action-lead-method-view-lead-with-same-domain-name"/>
     <action name="action-lead-view-convert-lead"/>
+    <action name="action-lead-method-view-lead-with-same-domain-name"/>
   </action-group>
 
   <action-group name="action-group-crm-lead-onnew">
