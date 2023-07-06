@@ -285,17 +285,15 @@ public abstract class AbstractFixedAssetLineServiceImpl implements FixedAssetLin
   @Override
   public void filterListByDate(List<FixedAssetLine> fixedAssetLineList, LocalDate date) {
 
-    List<FixedAssetLine> linesToRemove = new ArrayList<>();
     if (CollectionUtils.isEmpty(fixedAssetLineList) || date == null) {
       return;
     }
-    fixedAssetLineList.stream()
-        .filter(
-            line -> line.getDepreciationDate() == null || line.getDepreciationDate().isAfter(date))
-        .forEach(
-            line -> {
-              linesToRemove.add(line);
-            });
+    List<FixedAssetLine> linesToRemove =
+        fixedAssetLineList.stream()
+            .filter(
+                line ->
+                    line.getDepreciationDate() == null || line.getDepreciationDate().isAfter(date))
+            .collect(Collectors.toList());
     clear(fixedAssetLineList, linesToRemove);
   }
 
@@ -394,18 +392,12 @@ public abstract class AbstractFixedAssetLineServiceImpl implements FixedAssetLin
         .filter(
             line ->
                 line.getDepreciationDate() != null
-                    && (line.getDepreciationDate().isAfter(fromDate)
-                        || line.getDepreciationDate().equals(fromDate))
-                    && (line.getDepreciationDate().isBefore(toDate)
-                        || line.getDepreciationDate().equals(toDate))
+                    && !line.getDepreciationDate().isBefore(fromDate)
+                    && !line.getDepreciationDate().isAfter(toDate)
                     && line.getStatusSelect() == lineStatus)
         .sorted(Comparator.comparing(FixedAssetLine::getDepreciationDate))
         .findFirst()
         .orElse(null);
-  }
-
-  protected boolean isLastDayOfTheYear(LocalDate disposalDate) {
-    return disposalDate.getMonthValue() == 12 && disposalDate.getDayOfMonth() == 31;
   }
 
   protected FixedAssetLine getExistingLineWithSameMonth(

@@ -37,6 +37,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatoryLineService {
@@ -360,14 +361,15 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
   @Override
   public void filterListByDate(
       List<FixedAssetDerogatoryLine> fixedAssetDerogatoryLineList, LocalDate date) {
-    List<FixedAssetDerogatoryLine> derogatoryLinesToRemove = new ArrayList<>();
     if (CollectionUtils.isEmpty(fixedAssetDerogatoryLineList) || date == null) {
       return;
     }
-    fixedAssetDerogatoryLineList.stream()
-        .filter(
-            line -> line.getDepreciationDate() == null || line.getDepreciationDate().isAfter(date))
-        .forEach(line -> derogatoryLinesToRemove.add(line));
+    List<FixedAssetDerogatoryLine> derogatoryLinesToRemove =
+        fixedAssetDerogatoryLineList.stream()
+            .filter(
+                line ->
+                    line.getDepreciationDate() == null || line.getDepreciationDate().isAfter(date))
+            .collect(Collectors.toList());
     clear(fixedAssetDerogatoryLineList, derogatoryLinesToRemove);
   }
 }
