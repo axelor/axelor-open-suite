@@ -85,7 +85,7 @@
       <field name="code" required="true" colSpan="2"/>
       <field name="name" required="true" colSpan="4"/>
       <field name="budgetLevel" readonlyIf="$popup()" colSpan="3" requiredIf="!$popup()"
-        onChange="action-budget-attrs-set-in-charge-user,budget-action-method-budget-manage-budget-key"
+        onChange="action-budget-record-onchange-budget-level,budget-action-method-budget-manage-budget-key"
         domain="self.parentBudgetLevel.parentBudgetLevel != null"/>
       <field name="budgetLevel.parentBudgetLevel.parentBudgetLevel" title="Global budget"
         colSpan="3" grid-view="budget-level-grid" form-view="budget-level-form"/>
