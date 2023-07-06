@@ -207,24 +207,6 @@ public class MoveLineController {
     }
   }
 
-  public void createAnalyticAccountLines(ActionRequest request, ActionResponse response) {
-    try {
-
-      MoveLine moveLine = request.getContext().asType(MoveLine.class);
-      Move move = this.getMove(request, moveLine);
-      if (move != null
-          && Beans.get(MoveLineComputeAnalyticService.class)
-              .checkManageAnalytic(move.getCompany())) {
-        moveLine =
-            Beans.get(MoveLineComputeAnalyticService.class)
-                .analyzeMoveLine(moveLine, move.getCompany());
-        response.setValue("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
   public void setAxisDomains(ActionRequest request, ActionResponse response) {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);

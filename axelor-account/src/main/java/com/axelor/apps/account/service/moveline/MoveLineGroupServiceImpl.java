@@ -277,7 +277,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
   public Map<String, Object> getAnalyticAxisOnChangeValuesMap(MoveLine moveLine, Move move)
       throws AxelorException {
     moveLineComputeAnalyticService.clearAnalyticAccountingIfEmpty(moveLine);
-    moveLineComputeAnalyticService.createAnalyticDistributionWithTemplate(moveLine, move);
+    moveLineComputeAnalyticService.analyzeMoveLine(moveLine, move.getCompany());
     moveLineComputeAnalyticService.clearAnalyticAccountingIfEmpty(moveLine);
 
     Map<String, Object> valuesMap = new HashMap<>();
