@@ -1,0 +1,21 @@
+"importId";"code";"name";"parentBudgetLevel.importId";"totalAmountExpected";"totalAmountAvailable";"startDate";"endDate";"fromDate";"toDate";"budgetTypeSelect";"typeSelect";"statusSelect";"checkAvailableSelect";"rootParentBudgetLevel.importId";"company.importId"
+11;"PURCHASE";"PURCHASE";;4300;4300;"TODAY[1d]";"TODAY[60d]";"TODAY[1d]";"TODAY[30d]";1;"budget";"draft";1;;1
+12;"EVENTS";"EVENTS";11;900;900;"TODAY[1d]";"TODAY[30d]";"TODAY[1d]";"TODAY[30d]";;"budget";"draft";;1;1
+13;"PURCHASE";"PURCHASE";11;3400;3400;"TODAY[1d]";"TODAY[30d]";"TODAY[1d]";"TODAY[30d]";;"budget";"draft";;1;1
+14;"CAMPAIGNS AND ADVERTISING";"CAMPAIGNS AND ADVERTISING";12;900;900;"TODAY[1d]";"TODAY[30d]";"TODAY[1d]";"TODAY[30d]";;"budget";"draft";;1;1
+15;"EQUIPMENT";"EQUIPMENT";13;3400;3400;"TODAY[1d]";"TODAY[30d]";"TODAY[1d]";"TODAY[30d]";;"budget";"draft";;1;1
+21;"SALE";"SALE";;4300;4300;"TODAY[1d]";"TODAY[60d]";"TODAY[1d]";"TODAY[30d]";2;"budget";"draft";1;;1
+22;"EVENTS";"EVENTS";21;900;900;"TODAY[1d]";"TODAY[30d]";"TODAY[1d]";"TODAY[30d]";;"budget";"draft";;1;1
+23;"SALE";"SALE";21;3400;3400;"TODAY[1d]";"TODAY[30d]";"TODAY[1d]";"TODAY[30d]";;"budget";"draft";;1;1
+24;"CAMPAIGNS AND ADVERTISING";"CAMPAIGNS AND ADVERTISING";22;900;900;"TODAY[1d]";"TODAY[30d]";"TODAY[1d]";"TODAY[30d]";;"budget";"draft";;1;1
+25;"EQUIPMENT";"EQUIPMENT";23;3400;3400;"TODAY[1d]";"TODAY[30d]";"TODAY[1d]";"TODAY[30d]";;"budget";"draft";;1;1
+31;"INVESTMENT";"INVESTMENT";;4300;4300;"TODAY[1d]";"TODAY[60d]";"TODAY[1d]";"TODAY[30d]";3;"budget";"draft";1;;1
+32;"EVENTS";"EVENTS";31;900;900;"TODAY[1d]";"TODAY[30d]";"TODAY[1d]";"TODAY[30d]";;"budget";"draft";;1;1
+33;"INVESTMENT";"INVESTMENT";31;3400;3400;"TODAY[1d]";"TODAY[30d]";"TODAY[1d]";"TODAY[30d]";;"budget";"draft";;1;1
+34;"CAMPAIGNS AND ADVERTISING";"CAMPAIGNS AND ADVERTISING";32;900;900;"TODAY[1d]";"TODAY[30d]";"TODAY[1d]";"TODAY[30d]";;"budget";"draft";;1;1
+35;"EQUIPMENT";"EQUIPMENT";33;3400;3400;"TODAY[1d]";"TODAY[30d]";"TODAY[1d]";"TODAY[30d]";;"budget";"draft";;1;1
+41;"PURCHASE AND INVESTMENT";"PURCHASE AND INVESTMENT";;4300;4300;"TODAY[1d]";"TODAY[60d]";"TODAY[1d]";"TODAY[30d]";4;"budget";"draft";1;;1
+42;"EVENTS";"EVENTS";41;900;900;"TODAY[1d]";"TODAY[30d]";"TODAY[1d]";"TODAY[30d]";;"budget";"draft";;1;1
+43;"PURCHASE";"PURCHASE";41;3400;3400;"TODAY[1d]";"TODAY[30d]";"TODAY[1d]";"TODAY[30d]";;"budget";"draft";;1;1
+44;"CAMPAIGNS AND ADVERTISING";"CAMPAIGNS AND ADVERTISING";42;900;900;"TODAY[1d]";"TODAY[30d]";"TODAY[1d]";"TODAY[30d]";;"budget";"draft";;1;1
+45;"EQUIPMENT";"EQUIPMENT";43;3400;3400;"TODAY[1d]";"TODAY[30d]";"TODAY[1d]";"TODAY[30d]";;"budget";"draft";;1;1
