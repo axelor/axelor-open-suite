@@ -12,8 +12,8 @@
   <form name="account-config-form" title="Account configuration"
     model="com.axelor.apps.account.db.AccountConfig"
     onNew="action-account-config-record-default,action-attrs-account-config-set-is-can-new"
-    onSave="action-account-config-group-on-save" onLoad="action-attrs-account-config-set-is-can-new"
-    width="large">
+    onSave="save, action-account-config-group-on-save"
+    onLoad="action-attrs-account-config-set-is-can-new" width="large">
 
     <panel name="mainPanel">
       <field name="company" canEdit="false" widget="SuggestBox" form-view="company-form"
