@@ -86,7 +86,5 @@ public interface LeadService {
 
   public LeadStatus getDefaultLeadStatus() throws AxelorException;
 
-  public List<Lead> getLeadsWithSameDomainName(Lead lead);
-
   public boolean computeIsLost(Lead lead) throws AxelorException;
 }

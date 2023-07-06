@@ -37,13 +37,11 @@ import com.axelor.apps.crm.exception.CrmExceptionMessage;
 import com.axelor.apps.crm.service.app.AppCrmService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.message.db.repo.MultiRelatedRepository;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -252,27 +250,6 @@ public class LeadServiceImpl implements LeadService {
   @Override
   public LeadStatus getDefaultLeadStatus() throws AxelorException {
     return appCrmService.getLeadDefaultStatus();
-  }
-
-  @Override
-  public List<Lead> getLeadsWithSameDomainName(Lead lead) {
-    List<Lead> leadsWithSameDomainNameList = new ArrayList<>();
-    if (lead.getEmailAddress() != null) {
-      String leadDomainNameStr = lead.getEmailAddress().getName().split("@")[1].replace("]", "");
-
-      List<Lead> leadsWithSameDomainNameListTemp =
-          leadRepo
-              .all()
-              .filter(
-                  "self.emailAddress is not null and self.emailAddress.name like :domainName and self.id !=  :leadId")
-              .bind("domainName", "%" + leadDomainNameStr + "%")
-              .bind("leadId", lead.getId())
-              .fetch();
-      if (ObjectUtils.notEmpty(leadsWithSameDomainNameListTemp)) {
-        leadsWithSameDomainNameList.addAll(leadsWithSameDomainNameListTemp);
-      }
-    }
-    return leadsWithSameDomainNameList;
   }
 
   @Override
