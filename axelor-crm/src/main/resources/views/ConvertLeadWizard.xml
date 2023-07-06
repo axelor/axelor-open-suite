@@ -11,8 +11,7 @@
         if="__config__.app.getApp('crm')?.getCrmProcessOnPartner()" x-order="sequence"/>
 
       <field name="$leadToPartnerSelect" title="Convert lead into partner" required="true"
-        type="integer" selection="crm.convert.lead.wizard.lead.to.partner.select"
-        onChange="action-convert-lead-attrs-lead-to-contact-select-reset"/>
+        type="integer" selection="crm.convert.lead.wizard.lead.to.partner.select"/>
       <field name="$selectPartner" showIf="$leadToPartnerSelect == 2"
         requiredIf="$leadToPartnerSelect == 2" title="Select Partner" widget="ManyToOne"
         domain="self.isContact = 'false'" form-view="partner-form" grid-view="partner-grid"

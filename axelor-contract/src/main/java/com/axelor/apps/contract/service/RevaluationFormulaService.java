@@ -32,6 +32,10 @@ public class RevaluationFormulaService {
 
   public void checkFormula(RevaluationFormula revaluationFormula) throws ScriptException {
     String formula = revaluationFormula.getFormula();
+    if (formula == null) {
+      return;
+    }
+
     formula = formula.toLowerCase();
     if (formula.contains(REVALUATION_INDEX_1)) {
       formula = formula.replace(REVALUATION_INDEX_1, "1");

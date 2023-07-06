@@ -25,8 +25,6 @@ public class TicketPutRequest extends RequestStructure {
       flags = Pattern.Flag.CASE_INSENSITIVE)
   private String targetStatus;
 
-  public TicketPutRequest() {}
-
   public LocalDateTime getDateTime() {
     return dateTime;
   }

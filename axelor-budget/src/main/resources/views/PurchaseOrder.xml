@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="purchase-order-grid" id="budget-purchase-order-grid" title="Purchase orders"
     model="com.axelor.apps.purchase.db.PurchaseOrder" extension="true">
@@ -23,33 +23,28 @@
       <attribute name="width" value="large"/>
     </extend>
 
-    <extend target="//field[@name='versionNumber']">
-      <insert position="after">
-        <panel name="projectAndCompanyDepartmentPanel" colSpan="3">
-          <field name="project" colSpan="12"
-            onChange="budget-action-purchase-order-record-project-onchange"
-            hideIf="orderTypeSelect == 4"/>
-          <field name="companyDepartment" colSpan="12"
-            onChange="action-budget-purchase-order-attrs-company-dept-onchange"
-            requiredIf="$enableBudgetKey"/>
-        </panel>
-        <spacer colSpan="9" name="beforeBudgetLevelSpacer"/>
-        <field name="budgetLevel"
-          onSelect="action-budget-purchase-order-attrs-budget-level-domain"
-          requiredIf="companyDepartment &amp;&amp; $enableBudgetKey" colSpan="3"
-          showIf="companyDepartment &amp;&amp; $enableBudgetKey"
-          onChange="action-budget-purchase-order-group-budget-level-onchange"
-          form-view="global-budget-budget-level-form" grid-view="budget-level-grid"/>
-      </insert>
+    <extend target="//field[@name='project']">
+      <attribute name="onChange"
+        value="budget-action-purchase-order-record-project-onchange"/>
     </extend>
-
-
 
     <extend target="//panel[@name='timetablePanel']">
       <insert position="after">
         <panel name="budgetDistributionPanel" title="Budget distribution"
           if="__config__.app.isApp('budget')" if-module="axelor-supplychain"
           showIf="statusSelect &lt;= 4">
+          <field name="project" colSpan="3"
+            onChange="budget-action-purchase-order-record-project-onchange"
+            hideIf="orderTypeSelect == 4"/>
+          <field name="companyDepartment" colSpan="3"
+            onChange="action-budget-purchase-order-attrs-company-dept-onchange"
+            requiredIf="$enableBudgetKey"/>
+          <field name="budgetLevel"
+            onSelect="action-budget-purchase-order-attrs-budget-level-domain"
+            requiredIf="companyDepartment &amp;&amp; $enableBudgetKey" colSpan="3"
+            showIf="companyDepartment &amp;&amp; $enableBudgetKey"
+            onChange="action-budget-purchase-order-group-budget-level-onchange"
+            form-view="global-budget-budget-level-form" grid-view="budget-level-grid"/>
           <field name="budget" showIf="statusSelect &lt;= 2" title="Budget line"
             domain="self.company = :company AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.statusSelect LIKE 'valid' AND (:budgetLevel IS NOT NULL AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel = :budgetLevel ) OR (:budgetLevel IS NULL AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel IS NOT NULL AND ((:companyDepartment IS NOT NULL AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.companyDepartment = :companyDepartment) OR :companyDepartment IS NULL))"/>
           <button name="applyToAllBtn" title="Apply to all"
