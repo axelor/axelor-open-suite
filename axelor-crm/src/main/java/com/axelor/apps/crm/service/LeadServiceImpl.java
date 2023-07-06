@@ -40,7 +40,6 @@ import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.message.db.repo.MultiRelatedRepository;
-import com.axelor.meta.schema.actions.ActionView;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -272,13 +271,13 @@ public class LeadServiceImpl implements LeadService {
     }
     if (leadStatus.equals(convertedLeadStatus)) {
       throw new AxelorException(
-              TraceBackRepository.CATEGORY_INCONSISTENCY,
-              I18n.get(CrmExceptionMessage.LEAD_CONVERT_KANBAN));
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(CrmExceptionMessage.LEAD_CONVERT_KANBAN));
     }
     if (leadStatus.equals(lostLeadStatus)) {
       throw new AxelorException(
-              TraceBackRepository.CATEGORY_INCONSISTENCY,
-              I18n.get(CrmExceptionMessage.LEAD_LOSE_KANBAN));
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(CrmExceptionMessage.LEAD_LOSE_KANBAN));
     }
   }
 }
