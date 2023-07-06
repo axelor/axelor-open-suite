@@ -21,10 +21,12 @@ package com.axelor.apps.contract.service;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
+import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.apps.supplychain.service.invoice.InvoiceLineAnalyticSupplychainServiceImpl;
 import com.axelor.utils.service.ListToolService;
 import com.google.inject.Inject;
@@ -40,14 +42,18 @@ public class InvoiceLineAnalyticContractServiceImpl
       AnalyticToolService analyticToolService,
       AccountConfigService accountConfigService,
       ListToolService listToolService,
-      AppAccountService appAccountService) {
+      AppAccountService appAccountService,
+      AnalyticLineModelService analyticLineModelService,
+      AnalyticMoveLineRepository analyticMoveLineRepository) {
     super(
         analyticAccountRepository,
         analyticMoveLineService,
         analyticToolService,
         accountConfigService,
         listToolService,
-        appAccountService);
+        appAccountService,
+        analyticLineModelService,
+        analyticMoveLineRepository);
   }
 
   @Override
