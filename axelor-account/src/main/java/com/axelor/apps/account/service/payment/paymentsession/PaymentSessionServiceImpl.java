@@ -465,9 +465,6 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
       offset += invoiceTermList.size();
       JPA.clear();
     }
-
-    paymentSession = paymentSessionRepository.find(paymentSession.getId());
-    this.computeTotalPaymentSession(paymentSession);
   }
 
   protected Query<InvoiceTerm> getNegativeBalanceInvoiceTermQuery(PaymentSession paymentSession) {
