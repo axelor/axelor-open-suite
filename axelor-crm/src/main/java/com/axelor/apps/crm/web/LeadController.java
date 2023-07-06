@@ -224,4 +224,20 @@ public class LeadController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void rollbackLeadStatus(ActionRequest request, ActionResponse response) {
+    Lead lead = request.getContext().asType(Lead.class);
+    lead = Beans.get(LeadRepository.class).find(lead.getId());
+
+    response.setValue("leadStatus", lead.getLeadStatus());
+  }
+
+  public void computeIsLost(ActionRequest request, ActionResponse response) {
+    try {
+      Lead lead = request.getContext().asType(Lead.class);
+      response.setValue("$isLost", Beans.get(LeadService.class).computeIsLost(lead));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

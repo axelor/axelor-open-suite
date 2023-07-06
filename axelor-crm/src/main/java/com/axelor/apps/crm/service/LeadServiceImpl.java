@@ -251,4 +251,9 @@ public class LeadServiceImpl implements LeadService {
   public LeadStatus getDefaultLeadStatus() throws AxelorException {
     return appCrmService.getLeadDefaultStatus();
   }
+
+  @Override
+  public boolean computeIsLost(Lead lead) throws AxelorException {
+    return appCrmService.getLostLeadStatus().equals(lead.getLeadStatus());
+  }
 }
