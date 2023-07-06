@@ -74,7 +74,7 @@
         <button name="sessionTotalAmount" title="Session total amount" icon="fa-money"
           widget="info-button" onClick="action-payment-session-view-invoice-terms"
           showIf="sessionTotalAmount &gt; 0 || $hasUnselectedInvoiceTerm"
-          x-currency="company.currency.symbol"/>
+          x-currency="company.currency.symbol" readonly="false"/>
       </panel>
       <panel name="btnPanel" colSpan="4" itemSpan="12">
         <button name="validateBtn" title="Validate" css="btn-success"
