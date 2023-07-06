@@ -38,7 +38,8 @@
     </panel>
     <panel-tabs name="mainPanelTab">
       <panel name="queryPagePanel" title="Query">
-        <field name="query" showTitle="false" colSpan="12" widget="CodeEditor" x-syntax="sql"/>
+        <field name="query" showTitle="false" colSpan="12" widget="CodeEditor"
+          x-code-syntax="sql"/>
       </panel>
       <panel name="descriptionPanel" title="Description">
         <field name="description" showTitle="false" colSpan="12"/>
