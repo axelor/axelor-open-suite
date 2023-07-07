@@ -1549,6 +1549,9 @@ public final class AccountExceptionMessage {
   public static final String CUSTOM_REPORT_ANOMALY_NO_GROUP = /*$$(*/
       "Column %s | Line %s : %s" /*)*/;
 
+  public static final String CUSTOM_REPORT_WRONG_PERCENTAGE_BASE_COLUMN = /*$$(*/
+      "Column to be used for percentage computation is wrong." /*)*/;
+
   public static final String REPORT_TYPE_NOT_CUSTOM = /*$$(*/
       "Report type %s is not of a custom type and thus cannot be computed as such." /*)*/;
 
