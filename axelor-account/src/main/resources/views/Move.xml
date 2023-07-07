@@ -326,7 +326,7 @@
       <panel name="detailsPanel" title="Details">
         <panel name="relatedToPanel" title="Related to" readonly="true" colSpan="12"
           itemSpan="4" stacked="true"
-          hideIf="!invoice &amp;&amp; !paymentVoucher &amp;&amp; !paymentSession &amp;&amp; !stockMove &amp;&amp; !cutOffOriginMove &amp;&amp; !$isThereRelatedCutOffMoves">
+          hideIf="!invoice &amp;&amp; !paymentVoucher &amp;&amp; !paymentSession &amp;&amp; !stockMove &amp;&amp; !cutOffOriginMove &amp;&amp; !$isThereRelatedCutOffMoves &amp;&amp; !expense">
           <field name="invoice" hideIf="functionalOriginSelect == 5 || !invoice"
             readonlyIf="$validatePeriod" form-view="invoice-form" grid-view="invoice-grid"/>
           <field name="paymentVoucher" readonlyIf="$validatePeriod"

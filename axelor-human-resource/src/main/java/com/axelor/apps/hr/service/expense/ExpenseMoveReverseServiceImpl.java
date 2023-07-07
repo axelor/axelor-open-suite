@@ -33,16 +33,13 @@ import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliation
 import com.axelor.apps.bankpayment.service.move.MoveReverseServiceBankPaymentImpl;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.hr.db.Expense;
-import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.studio.app.service.AppService;
 import com.google.inject.Inject;
 import java.time.LocalDate;
 
 public class ExpenseMoveReverseServiceImpl extends MoveReverseServiceBankPaymentImpl {
 
-  protected ExpenseRepository expenseRepository;
   protected ExpensePaymentService expensePaymentService;
-
   protected AppService appService;
 
   @Inject
@@ -58,7 +55,6 @@ public class ExpenseMoveReverseServiceImpl extends MoveReverseServiceBankPayment
       MoveToolService moveToolService,
       BankReconciliationService bankReconciliationService,
       BankReconciliationLineRepository bankReconciliationLineRepository,
-      ExpenseRepository expenseRepository,
       ExpensePaymentService expensePaymentService,
       AppService appService) {
     super(
@@ -73,7 +69,6 @@ public class ExpenseMoveReverseServiceImpl extends MoveReverseServiceBankPayment
         moveToolService,
         bankReconciliationService,
         bankReconciliationLineRepository);
-    this.expenseRepository = expenseRepository;
     this.expensePaymentService = expensePaymentService;
     this.appService = appService;
   }
@@ -97,20 +92,11 @@ public class ExpenseMoveReverseServiceImpl extends MoveReverseServiceBankPayment
       return reverseMove;
     }
 
-    Expense expense = getLinkedExpense(move);
+    Expense expense = move.getExpense();
 
     if (expense != null) {
       expensePaymentService.resetExpensePaymentAfterCancellation(expense);
     }
     return reverseMove;
-  }
-
-  protected Expense getLinkedExpense(Move move) {
-    return expenseRepository
-        .all()
-        .filter("self.paymentMove.id = :paymentMove AND self.statusSelect = :statusSelect")
-        .bind("paymentMove", move.getId())
-        .bind("statusSelect", ExpenseRepository.STATUS_REIMBURSED)
-        .fetchOne();
   }
 }

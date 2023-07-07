@@ -296,6 +296,7 @@ public class ExpenseVentilateServiceImpl implements ExpenseVentilateService {
     moveValidateService.accounting(move);
 
     expense.setMove(move);
+    move.setExpense(expense);
     return move;
   }
 
