@@ -32,9 +32,9 @@ public class SaleOrderProjectRepository extends SaleOrderSupplychainRepository {
 
     if (Beans.get(AppBusinessProjectService.class).isApp("business-project")) {
       copy.setProject(null);
-    }
-    for (SaleOrderLine saleOrderLine : copy.getSaleOrderLineList()) {
-      saleOrderLine.setProject(null);
+      for (SaleOrderLine saleOrderLine : copy.getSaleOrderLineList()) {
+        saleOrderLine.setProject(null);
+      }
     }
 
     return copy;
