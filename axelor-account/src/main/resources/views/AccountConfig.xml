@@ -12,8 +12,8 @@
   <form name="account-config-form" title="Account configuration"
     model="com.axelor.apps.account.db.AccountConfig"
     onNew="action-account-config-record-default,action-attrs-account-config-set-is-can-new"
-    onSave="action-account-config-group-on-save" onLoad="action-attrs-account-config-set-is-can-new"
-    width="large">
+    onSave="save, action-account-config-group-on-save"
+    onLoad="action-attrs-account-config-set-is-can-new" width="large">
 
     <panel name="mainPanel">
       <field name="company" canEdit="false" widget="SuggestBox" form-view="company-form"
@@ -502,13 +502,13 @@
     model="com.axelor.apps.account.db.AccountConfig">
     <alert
       message="By deactivating simulated moves, all moves (including move lines) in this status will be deleted for the company ${company.name}. Do you wish to continue ?"
-      if="!isActivateSimulatedMove &amp;&amp; __repo__(AccountConfig).all().fetchOne().getIsActivateSimulatedMove()"/>
+      if="!isActivateSimulatedMove &amp;&amp; __repo__(AccountConfig).find(id)?.getIsActivateSimulatedMove()"/>
   </action-validate>
 
   <action-method name="action-account-config-method-deactivate-simulated-moves">
     <call class="com.axelor.apps.account.web.AccountConfigController"
       method="deactivateSimulatedMoves"
-      if="!isActivateSimulatedMove &amp;&amp; __repo__(AccountConfig).all().fetchOne().getIsActivateSimulatedMove()"/>
+      if="!isActivateSimulatedMove &amp;&amp;  __repo__(AccountConfig).find(id)?.getIsActivateSimulatedMove()"/>
   </action-method>
 
   <action-attrs name="action-attrs-account-config-set-is-can-new">
