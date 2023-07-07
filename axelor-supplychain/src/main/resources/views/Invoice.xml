@@ -12,6 +12,25 @@
     <field name="inTaxTotal" aggregate="sum"/>
   </grid>
 
+  <form name="invoice-form" title="Invoice" model="com.axelor.apps.account.db.Invoice"
+    id="supplychain-invoice-form" extension="true">
+    <extend target="//button[@name='ventilateBtn']">
+      <attribute name="onClick" value="supplychain-action-invoice-group-ventilate-button"/>
+    </extend>
+  </form>
+
+  <form name="invoice-client-form" title="Invoice" model="com.axelor.apps.account.db.Invoice"
+    id="supplychain-invoice-client-form" extension="true">
+    <extend target="//button[@name='ventilateBtn']">
+      <attribute name="onClick" value="supplychain-action-invoice-group-ventilate-button"/>
+    </extend>
+  </form>
+
+  <action-group name="supplychain-action-invoice-group-ventilate-button">
+    <action name="action-invoice-method-check-existing-invoice-on-order"/>
+    <action name="action-invoice-group-ventilate-button"/>
+  </action-group>
+
   <action-method name="action-supplychain-method-generate-subscription-invoice">
     <call class="com.axelor.apps.supplychain.web.InvoiceController"
       method="generateSubscriptionInvoices"/>
@@ -20,6 +39,10 @@
   <action-method name="action-invoice-method-update-product-qty-with-pack-header-qty">
     <call class="com.axelor.apps.supplychain.web.InvoiceController"
       method="updateProductQtyWithPackHeaderQty"/>
+  </action-method>
+
+  <action-method name="action-invoice-method-check-existing-invoice-on-order">
+    <call class="com.axelor.apps.supplychain.web.InvoiceController" method="checkOrders"/>
   </action-method>
 
   <action-validate name="action-invoice-validate-pfp-stock-move">
