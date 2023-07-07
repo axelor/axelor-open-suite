@@ -333,7 +333,6 @@ public class StockMoveServiceImpl implements StockMoveService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
   public void plan(StockMove stockMove) throws AxelorException {
     planStockMove(stockMove);
     if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
@@ -434,7 +433,6 @@ public class StockMoveServiceImpl implements StockMoveService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
   public String realize(StockMove stockMove) throws AxelorException {
     return realize(stockMove, true);
   }
