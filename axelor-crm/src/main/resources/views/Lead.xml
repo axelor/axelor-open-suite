@@ -5,8 +5,7 @@
 
   <kanban columnBy="leadStatus" model="com.axelor.apps.crm.db.Lead" sequenceBy="sequence"
     title="Leads" name="lead-kanban" draggable="true" limit="10">
-    <field name="name"/>
-    <field name="firstName"/>
+    <field name="simpleFullName"/>
     <field name="leadStatus"/>
     <field name="enterpriseName"/>
     <field name="nextScheduledEventDateT"/>
@@ -19,7 +18,7 @@
     <hilite color="info" if="leadScoringSelect == 4.00"/>
     <hilite color="success" if="leadScoringSelect == 5.00"/>
     <template> <![CDATA[
-  <h4>{{record.firstName+" "+record.name}}</h4>
+  <h4>{{record.simpleFullName}}</h4>
           <img ng-if="user" ng-src="{{$image('user', 'image')}}">
           <div class="card-body">
               <dl>
@@ -88,8 +87,10 @@
     </menubar>
     <panel name="mainPanel">
       <panel name="statusPanel" colSpan="12">
+        <field name="$isLost" type="boolean" hidden="true"/>
         <field name="leadStatus" showTitle="false" colSpan="12" widget="NavSelect"
-          x-order="sequence" onChange="action-lead-group-lead-status-onchange" readonlyIf="!id"/>
+          x-order="sequence" onChange="action-lead-group-lead-status-onchange"
+          readonlyIf="!id || isConverted || $isLost"/>
         <panel name="viewerDetailsPanel" colSpan="12" showIf="$readonly()">
           <field name="$viewerTagsLeft" showTitle="false">
             <viewer depends="industrySector">
@@ -244,13 +245,15 @@
     </panel-tabs>
 
     <panel name="actionsPanel" sidebar="true"
-      hideIf="user.id == _internalUserId &amp;&amp; (!id || isConverted) &amp;&amp; !partner">
+      hideIf="user.id == _internalUserId &amp;&amp; (!id || isConverted || $isLost) &amp;&amp; !partner">
       <button name="grabLeadBtn" title="Take in charge" hideIf="user.id == _internalUserId"
         icon="fa-suitcase" onClick="save,action-lead-method-assign-to-me"/>
-      <button name="convertBtn" title="Convert" hideIf="!id || isConverted"
+      <button name="convertBtn" title="Convert" hideIf="!id || isConverted || $isLost"
         icon="fa-exchange" onClick="action-lead-group-lead-convert"/>
-      <button name="showPartnerBtn" title="Show Partner" showIf="partner"
+      <button name="showPartnerBtn" title="Show Partner" hideIf="!partner"
         onClick="action-lead-view-show-partner"/>
+      <button name="loseBtn" title="Lose" hideIf="!id || isConverted || $isLost"
+        onClick="action-lead-view-lose" css="btn-danger" icon="fa-times-circle"/>
     </panel>
 
     <panel sidebar="true" name="followUpPanel" title="Follow-up" colSpan="12">
@@ -355,12 +358,13 @@
   </action-method>
 
   <action-group name="action-lead-group-lead-status-onchange">
-    <action name="action-lead-view-lose"
+    <action name="action-lead-validate-lead-convert-error"
+      if="eval: __this__?.leadStatus?.id == __config__.app.getApp('crm')?.convertedLeadStatus?.id"/>
+    <action name="action-lead-validate-lead-lose-error"
       if="eval: __this__?.leadStatus?.id == __config__.app.getApp('crm')?.lostLeadStatus?.id"/>
     <action name="action-lead-record-clear-lost-reason"
       if="eval: __this__?.leadStatus?.id != __config__.app.getApp('crm')?.lostLeadStatus?.id"/>
-    <action name="action-lead-group-lead-convert"
-      if="eval: __this__?.leadStatus?.id == __config__.app.getApp('crm')?.convertedLeadStatus?.id"/>
+    <action name="save"/>
   </action-group>
 
   <action-group name="action-lead-group-lead-convert">
@@ -378,8 +382,13 @@
   <action-group name="action-group-crm-lead-onload">
     <action name="action-lead-method-set-social-network-url"/>
     <action name="action-crm-lead-method-check-name"/>
+    <action name="action-lead-method-compute-is-lost"/>
     <action name="action-lead-attrs-display-lost-reason"/>
   </action-group>
+
+  <action-method name="action-lead-method-compute-is-lost">
+    <call class="com.axelor.apps.crm.web.LeadController" method="computeIsLost"/>
+  </action-method>
 
   <action-attrs name="action-lead-attrs-display-lost-reason">
     <attribute name="hidden" for="lostReason"
@@ -579,4 +588,24 @@
     <error message="Please fill default lead status in App CRM configuration."
       if="!__config__.app.getApp('crm')?.leadDefaultStatus"/>
   </action-validate>
+
+  <action-validate name="action-lead-validate-lead-convert-error">
+    <error message="To convert lead, please use the Convert button."
+      action="action-lead-method-rollback-lead-status, save"/>
+  </action-validate>
+
+  <action-validate name="action-lead-validate-lead-lose-error">
+    <error message="To lose lead, please use the Lose button."
+      action="action-lead-group-lead-lose-error"/>
+  </action-validate>
+
+  <action-group name="action-lead-group-lead-lose-error">
+    <action name="action-lead-method-rollback-lead-status"/>
+    <action name="action-lead-method-compute-is-lost"/>
+    <action name="save"/>
+  </action-group>
+
+  <action-method name="action-lead-method-rollback-lead-status">
+    <call class="com.axelor.apps.crm.web.LeadController" method="rollbackLeadStatus"/>
+  </action-method>
 </object-views>

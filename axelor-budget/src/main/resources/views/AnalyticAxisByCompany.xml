@@ -9,7 +9,7 @@
 
     <extend target="//field[@name='analyticAxis']">
       <insert position="after">
-        <field name="includeInBudgetKey"/>
+        <field name="includeInBudgetKey" if="__config__.app.isApp('budget')"/>
       </insert>
     </extend>
   </grid>
@@ -19,7 +19,7 @@
     model="com.axelor.apps.account.db.AnalyticAxisByCompany" extension="true">
     <extend target="//field[@name='analyticAxis']">
       <insert position="after">
-        <field name="includeInBudgetKey"/>
+        <field name="includeInBudgetKey" if="__config__.app.isApp('budget')"/>
       </insert>
     </extend>
   </form>

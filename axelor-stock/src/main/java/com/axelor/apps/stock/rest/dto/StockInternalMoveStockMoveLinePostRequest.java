@@ -3,6 +3,7 @@ package com.axelor.apps.stock.rest.dto;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.utils.api.ObjectFinder;
 import java.math.BigDecimal;
 import javax.validation.constraints.Min;
@@ -17,6 +18,9 @@ public class StockInternalMoveStockMoveLinePostRequest {
   @NotNull
   @Min(0)
   private Long unitId;
+
+  @Min(0)
+  private Long trackingNumberId;
 
   @NotNull
   @Min(0)
@@ -68,6 +72,21 @@ public class StockInternalMoveStockMoveLinePostRequest {
 
   public void setToStockLocationId(Long toStockLocationId) {
     this.toStockLocationId = toStockLocationId;
+  }
+
+  public Long getTrackingNumberId() {
+    return trackingNumberId;
+  }
+
+  public void setTrackingNumberId(Long trackingNumberId) {
+    this.trackingNumberId = trackingNumberId;
+  }
+
+  public TrackingNumber fetchTrackingNumber() {
+    if (trackingNumberId != null) {
+      return ObjectFinder.find(TrackingNumber.class, trackingNumberId, ObjectFinder.NO_VERSION);
+    }
+    return null;
   }
 
   // Transform id to object
