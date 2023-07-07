@@ -640,19 +640,19 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
     this.addDateQueries(queryList, accountingReport);
 
     if (accountingReport.getJournal() != null) {
-      queryList.add("(self.move.journal IS NULL OR self.move.journal >= :journal)");
+      queryList.add("(self.move.journal IS NULL OR self.move.journal = :journal)");
     }
 
-    if (accountingReport.getJournal() != null) {
-      queryList.add("(self.move.paymentMode IS NULL OR self.move.paymentMode >= :paymentMode)");
+    if (accountingReport.getPaymentMode() != null) {
+      queryList.add("(self.move.paymentMode IS NULL OR self.move.paymentMode = :paymentMode)");
     }
 
-    if (accountingReport.getJournal() != null) {
-      queryList.add("(self.move.currency IS NULL OR self.move.currency >= :currency)");
+    if (accountingReport.getCurrency() != null) {
+      queryList.add("(self.move.currency IS NULL OR self.move.currency = :currency)");
     }
 
-    if (accountingReport.getJournal() != null) {
-      queryList.add("(self.move.company IS NULL OR self.move.company >= :company)");
+    if (accountingReport.getCompany() != null) {
+      queryList.add("(self.move.company IS NULL OR self.move.company = :company)");
     }
 
     queryList.addAll(

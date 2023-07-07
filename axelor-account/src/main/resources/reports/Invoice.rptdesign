@@ -3591,7 +3591,7 @@ InvoiceTerm.is_paid as "InvoiceTermIsPaid",
 AppAccount.allow_multi_invoice_terms as "AllowMultiInvoiceTerms"
 from account_invoice_term as InvoiceTerm
 left outer join account_payment_mode as PaymentMode on (InvoiceTerm.payment_mode = PaymentMode.id)
-left outer join studio_app_account as AppAccount on true
+left outer join base_app_account as AppAccount on true
 inner join account_invoice as Invoice on (InvoiceTerm.invoice = Invoice.id)
 left outer join base_currency as Currency on (Invoice.currency = Currency.id)
 left outer join account_financial_discount as FinancialDiscount on (InvoiceTerm.financial_discount = FinancialDiscount.id)
