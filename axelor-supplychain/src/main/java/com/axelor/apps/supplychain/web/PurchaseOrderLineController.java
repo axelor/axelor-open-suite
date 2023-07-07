@@ -19,6 +19,8 @@
 package com.axelor.apps.supplychain.web;
 
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.base.ResponseMessageType;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.supplychain.service.PurchaseOrderLineServiceSupplyChain;
@@ -26,19 +28,29 @@ import com.axelor.apps.supplychain.service.PurchaseOrderLineServiceSupplychainIm
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.utils.ContextTool;
 import com.google.inject.Singleton;
 
 @Singleton
 public class PurchaseOrderLineController {
 
   public void computeAnalyticDistribution(ActionRequest request, ActionResponse response) {
-    PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
+    try {
+      if (Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()) {
+        PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
 
-    if (Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()) {
-      purchaseOrderLine =
-          Beans.get(PurchaseOrderLineServiceSupplychainImpl.class)
-              .computeAnalyticDistribution(purchaseOrderLine);
-      response.setValue("analyticMoveLineList", purchaseOrderLine.getAnalyticMoveLineList());
+        if (purchaseOrderLine.getPurchaseOrder() == null) {
+          purchaseOrderLine.setPurchaseOrder(
+              ContextTool.getContextParent(request.getContext(), PurchaseOrder.class, 1));
+        }
+
+        purchaseOrderLine =
+            Beans.get(PurchaseOrderLineServiceSupplychainImpl.class)
+                .computeAnalyticDistribution(purchaseOrderLine);
+        response.setValue("analyticMoveLineList", purchaseOrderLine.getAnalyticMoveLineList());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 
