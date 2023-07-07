@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module package="com.axelor.apps.budget.db" name="budget"/>
 
@@ -63,8 +63,6 @@
     <string name="levelTypeSelect" title="Level Type Select"
       selection="budget.budget.level.type.select" default="global"/>
 
-    <!-- This field is used for the temporary fix. It should be removed after RM#24881 -->
-    <string name="rootParentBudgetLevel" title="Root parent budget level"/>
     <string name="commentString" title="Commentaires" large="true" multiline="true"/>
     <string name="versionNumber" title="Version Number" default="1"/>
     <date name="projectStartDate" title="Project start date"/>

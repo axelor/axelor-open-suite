@@ -690,4 +690,18 @@ public class StockMoveController {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
+
+  public void changeLinesFromStockLocation(ActionRequest request, ActionResponse response) {
+    StockMove stockMove = request.getContext().asType(StockMove.class);
+    StockLocation fromStockLocation = stockMove.getFromStockLocation();
+    Beans.get(StockMoveService.class).changeLinesFromStockLocation(stockMove, fromStockLocation);
+    response.setValue("stockMoveLineList", stockMove.getStockMoveLineList());
+  }
+
+  public void changeLinesToStockLocation(ActionRequest request, ActionResponse response) {
+    StockMove stockMove = request.getContext().asType(StockMove.class);
+    StockLocation toStockLocation = stockMove.getToStockLocation();
+    Beans.get(StockMoveService.class).changeLinesToStockLocation(stockMove, toStockLocation);
+    response.setValue("stockMoveLineList", stockMove.getStockMoveLineList());
+  }
 }
