@@ -212,7 +212,7 @@
           showIf="journal != null &amp;&amp; statusSelect != 3 &amp;&amp; ([1,2,4].includes(journal.journalType.technicalTypeSelect) &amp;&amp; functionalOriginSelect &amp;&amp; (functionalOriginSelect == 3 || functionalOriginSelect == 4 || functionalOriginSelect == 7))"
           onClick="action-move-method-generate-counterpart"/>
         <button colSpan="3" name="autoTaxLineGenerateBtn" css="btn-custom text-left"
-          icon="fa-plus" title="Generate tax lines" showIf="statusSelect == 1 || statusSelect == 5"
+          icon="fa-plus" title="Generate tax lines" showIf="[1,2,5].includes(statusSelect)"
           onClick="action-move-method-generate-tax-lines"/>
         <panel-related name="moveLineListPanel"
           showIf="(statusSelect == 1 || statusSelect == 2 || statusSelect == 5) &amp;&amp; journal &amp;&amp; currency &amp;&amp; company &amp;&amp; date &amp;&amp; period"
