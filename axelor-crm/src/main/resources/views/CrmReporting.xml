@@ -37,8 +37,8 @@
       <field name="countrySet" widget="TagSelect"/>
       <field name="industrySectorSet" widget="TagSelect"/>
       <field name="categorySet" widget="TagSelect"/>
-      <field name="fromDate" colSpan="3"/>
-      <field name="toDate" colSpan="3"/>
+      <field name="fromDate" colSpan="3" requiredIf="toDate == null"/>
+      <field name="toDate" colSpan="3" requiredIf="fromDate == null"/>
     </panel>
     <panel sidebar="true" canCollapse="true">
       <button name="openResultButton" title="Open the list of results"
@@ -50,21 +50,6 @@
         onClick="save,action-crm-reporting-group-show-events"/>
     </panel>
   </form>
-
-  <action-group name="action-crm-reporting-group-show-results">
-    <action name="action-crm-reporting-validate-date-required"/>
-    <action name="action-crm-reporting-method-show-results"/>
-  </action-group>
-
-  <action-group name="action-crm-reporting-group-show-opportunities">
-    <action name="action-crm-reporting-validate-date-required"/>
-    <action name="action-crm-reporting-method-show-opportunities"/>
-  </action-group>
-
-  <action-group name="action-crm-reporting-group-show-events">
-    <action name="action-crm-reporting-validate-date-required"/>
-    <action name="action-crm-reporting-method-show-events"/>
-  </action-group>
 
   <action-method name="action-crm-reporting-method-show-results">
     <call method="showResults" class="com.axelor.apps.crm.web.CrmReportingController"/>
@@ -81,10 +66,5 @@
   <action-method name="action-crm-reporting-method-prefill-companySet">
     <call class="com.axelor.apps.crm.web.CrmReportingController" method="prefillCompanySet"/>
   </action-method>
-
-  <action-validate name="action-crm-reporting-validate-date-required">
-    <error message="'From date' or 'To date' field must be filled."
-      if="eval: fromDate == null &amp;&amp; toDate == null"/>
-  </action-validate>
 
 </object-views>
