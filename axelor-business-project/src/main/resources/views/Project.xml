@@ -76,7 +76,6 @@
               <field name="initialCosts" hidden="true"/>
               <field name="initialMargin" hidden="true"/>
               <field name="initialMarkup" hidden="true"/>
-              <field name="unitCost" hidden="true"/>
             </panel>
             <panel name="realPanel" title="ProjectTask.Real" colSpan="12">
               <panel-dashlet action="action-project-view-real-turnover-custom"
@@ -91,7 +90,6 @@
               <field name="realCosts" hidden="true"/>
               <field name="realMargin" hidden="true"/>
               <field name="realMarkup" hidden="true"/>
-              <field name="forecastUnitCost" hidden="true"/>
             </panel>
             <panel name="forecastPanel" title="ProjectTask.Forecast" colSpan="12">
               <panel-dashlet action="action-project-view-forecast-costs-custom"
