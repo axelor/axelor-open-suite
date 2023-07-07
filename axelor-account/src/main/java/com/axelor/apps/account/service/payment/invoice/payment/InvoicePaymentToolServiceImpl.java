@@ -182,7 +182,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
       }
     }
 
-    return invoice.getAmountRemaining().compareTo(pendingAmount) <= 0;
+    return invoice.getRemainingAmountAfterFinDiscount().compareTo(pendingAmount) <= 0;
   }
 
   /** @inheritDoc */
