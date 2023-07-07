@@ -1,0 +1,3 @@
+---
+title: "Forecast generator : Fix endless loading when no periodicity selected"
+type: fix
