@@ -244,7 +244,7 @@ public class StockMoveServiceImpl implements StockMoveService {
       throws AxelorException {
 
     StockMove stockMove = createStockMoveMobility(fromStockLocation, toStockLocation, company);
-
+    this.plan(stockMove);
     if (stockMoveLines != null) {
       for (StockMoveLine stockMoveLine : stockMoveLines) {
         // This method will already set sml.stockMove = stockMove so no need to add in list.
@@ -252,7 +252,7 @@ public class StockMoveServiceImpl implements StockMoveService {
       }
     }
 
-    this.validate(stockMove);
+    this.realize(stockMove);
 
     return stockMove;
   }
@@ -333,6 +333,7 @@ public class StockMoveServiceImpl implements StockMoveService {
   }
 
   @Override
+  @Transactional(rollbackOn = {Exception.class})
   public void plan(StockMove stockMove) throws AxelorException {
     planStockMove(stockMove);
     if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
@@ -433,6 +434,7 @@ public class StockMoveServiceImpl implements StockMoveService {
   }
 
   @Override
+  @Transactional(rollbackOn = {Exception.class})
   public String realize(StockMove stockMove) throws AxelorException {
     return realize(stockMove, true);
   }
