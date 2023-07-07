@@ -123,6 +123,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
 
   @Override
   public StockMoveLine createStockMoveLine(
+      Integer sequence,
       Product product,
       String productName,
       String description,
@@ -139,9 +140,10 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       SaleOrderLine saleOrderLine,
       PurchaseOrderLine purchaseOrderLine)
       throws AxelorException {
+    StockMoveLine stockMoveLine = null;
     if (product != null) {
 
-      StockMoveLine stockMoveLine =
+      stockMoveLine =
           generateStockMoveLineConvertingUnitPrice(
               product,
               productName,
@@ -162,22 +164,28 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       TrackingNumberConfiguration trackingNumberConfiguration =
           product.getTrackingNumberConfiguration();
 
-      return assignOrGenerateTrackingNumber(
-          stockMoveLine, stockMove, product, trackingNumberConfiguration, type);
+      stockMoveLine =
+          assignOrGenerateTrackingNumber(
+              stockMoveLine, stockMove, product, trackingNumberConfiguration, type);
     } else {
-      return this.createStockMoveLine(
-          product,
-          productName,
-          description,
-          quantity,
-          BigDecimal.ZERO,
-          BigDecimal.ZERO,
-          companyUnitPriceUntaxed,
-          BigDecimal.ZERO,
-          unit,
-          stockMove,
-          null);
+      stockMoveLine =
+          this.createStockMoveLine(
+              product,
+              productName,
+              description,
+              quantity,
+              BigDecimal.ZERO,
+              BigDecimal.ZERO,
+              companyUnitPriceUntaxed,
+              BigDecimal.ZERO,
+              unit,
+              stockMove,
+              null);
     }
+    if (sequence != null) {
+      stockMoveLine.setSequence(sequence);
+    }
+    return stockMoveLine;
   }
 
   @Override
