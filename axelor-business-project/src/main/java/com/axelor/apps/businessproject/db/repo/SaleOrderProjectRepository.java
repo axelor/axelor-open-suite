@@ -20,6 +20,7 @@ package com.axelor.apps.businessproject.db.repo;
 
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.supplychain.db.repo.SaleOrderSupplychainRepository;
 import com.axelor.inject.Beans;
 
@@ -31,6 +32,9 @@ public class SaleOrderProjectRepository extends SaleOrderSupplychainRepository {
 
     if (Beans.get(AppBusinessProjectService.class).isApp("business-project")) {
       copy.setProject(null);
+    }
+    for (SaleOrderLine saleOrderLine: copy.getSaleOrderLineList()) {
+      saleOrderLine.setProject(null);
     }
 
     return copy;
