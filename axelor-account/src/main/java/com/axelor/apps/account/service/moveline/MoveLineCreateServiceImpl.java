@@ -863,7 +863,6 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
                 BigDecimal.valueOf(100),
                 AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
                 RoundingMode.HALF_UP);
-    newOrUpdatedMoveLine.setDebit(newOrUpdatedMoveLine.getDebit().add(newMoveLineDebit));
     BigDecimal newMoveLineCredit =
         credit
             .multiply(taxLineValue)
@@ -871,8 +870,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
                 BigDecimal.valueOf(100),
                 AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
                 RoundingMode.HALF_UP);
-    newOrUpdatedMoveLine.setCredit(newOrUpdatedMoveLine.getCredit().add(newMoveLineCredit));
-    newOrUpdatedMoveLine = this.checkOrUpdateTaxLineAmount(newOrUpdatedMoveLine);
+    this.setTaxLineAmount(newMoveLineDebit, newMoveLineCredit, newOrUpdatedMoveLine);
 
     newOrUpdatedMoveLine.setOriginDate(move.getOriginDate());
     newOrUpdatedMoveLine = moveLineToolService.setCurrencyAmount(newOrUpdatedMoveLine);
@@ -919,20 +917,26 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     return newOrUpdatedMoveLine;
   }
 
-  protected MoveLine checkOrUpdateTaxLineAmount(MoveLine moveLine) {
-    if (moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0
-        && moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0) {
-      BigDecimal taxLineDiff = moveLine.getDebit().subtract(moveLine.getCredit());
-      if (taxLineDiff.compareTo(BigDecimal.ZERO) > 0) {
-        moveLine.setDebit(taxLineDiff);
+  protected void setTaxLineAmount(BigDecimal debit, BigDecimal credit, MoveLine moveLine) {
+    if ((debit.compareTo(BigDecimal.ZERO) > 0
+            && moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0)
+        || (credit.compareTo(BigDecimal.ZERO) > 0
+            && moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0)) {
+      BigDecimal creditTaxLineDiff = moveLine.getCredit().subtract(credit).abs();
+      BigDecimal debitTaxLineDiff = moveLine.getDebit().subtract(debit).abs();
+      BigDecimal taxLineAMount = debitTaxLineDiff.subtract(creditTaxLineDiff);
+
+      if (taxLineAMount.compareTo(BigDecimal.ZERO) > 0) {
+        moveLine.setDebit(taxLineAMount);
         moveLine.setCredit(BigDecimal.ZERO);
       } else {
         moveLine.setDebit(BigDecimal.ZERO);
-        moveLine.setCredit(taxLineDiff.abs());
+        moveLine.setCredit(taxLineAMount.abs());
       }
+    } else {
+      moveLine.setDebit(moveLine.getDebit().add(debit));
+      moveLine.setCredit(moveLine.getCredit().add(credit));
     }
-
-    return moveLine;
   }
 
   protected BigDecimal sumMoveLinesByAccountType(List<MoveLine> moveLines, String accountType) {
