@@ -330,7 +330,7 @@
 
   <kanban columnBy="partnerStatus" model="com.axelor.apps.base.db.Partner"
     sequenceBy="sequence" title="Prospects" name="partner-prospect-kanban" limit="10"
-    draggable="true">
+    draggable="true" onMove="action-partner-method-kanban-onmove">
     <field name="name"/>
     <field name="leadScoringSelect"/>
     <field name="sizeSelect"/>
@@ -653,6 +653,10 @@
   <action-method name="action-partner-method-get-subsidiary-partners-count">
     <call class="com.axelor.apps.crm.web.PartnerCrmController"
       method="getSubsidiaryPartnersCount"/>
+  </action-method>
+
+  <action-method name="action-partner-method-kanban-onmove">
+    <call class="com.axelor.apps.crm.web.PartnerCrmController" method="kanbanPartnerOnMove"/>
   </action-method>
 
   <action-group name="crm-action-group-partner-onload">

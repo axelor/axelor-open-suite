@@ -227,6 +227,14 @@ public class LeadController {
   }
 
   public void kanbanLeadOnMove(ActionRequest request, ActionResponse response) {
+    Lead lead = request.getContext().asType(Lead.class);
+    try {
+      Beans.get(LeadService.class).kanbanLeadOnMove(lead);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
   public void rollbackLeadStatus(ActionRequest request, ActionResponse response) {
     Lead lead = request.getContext().asType(Lead.class);
     lead = Beans.get(LeadRepository.class).find(lead.getId());
@@ -240,15 +248,6 @@ public class LeadController {
       response.setValue("$isLost", Beans.get(LeadService.class).computeIsLost(lead));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
-    }
-  }
-
-  public void test(ActionRequest request, ActionResponse response) {
-    Lead lead = request.getContext().asType(Lead.class);
-    try {
-      Beans.get(LeadService.class).kanbanLeadOnMove(lead);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 }

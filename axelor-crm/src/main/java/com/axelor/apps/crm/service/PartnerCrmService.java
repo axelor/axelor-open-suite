@@ -14,4 +14,6 @@ public interface PartnerCrmService {
    */
   public void losePartner(Partner partner, LostReason lostReason, String lostReasonStr)
       throws AxelorException;
+
+  public void kanbanPartnerOnMove(Partner partner) throws AxelorException;
 }

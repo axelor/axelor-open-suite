@@ -261,7 +261,7 @@
 
   <kanban columnBy="opportunityStatus" sequenceBy="orderByState" limit="10"
     name="opportunity-kanban" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity"
-    onMove="action-opportunity-method-cancel-saleorders">
+    onMove="action-opportunity-method-cancel-saleorders, action-opportunity-method-kanban-onmove">
     <field name="opportunitySeq"/>
     <field name="name"/>
     <field name="description"/>
@@ -671,6 +671,11 @@
 
   <action-method name="action-opportunity-method-lost-process">
     <call method="lostProcess" class="com.axelor.apps.crm.web.OpportunityController"/>
+  </action-method>
+
+  <action-method name="action-opportunity-method-kanban-onmove">
+    <call class="com.axelor.apps.crm.web.OpportunityController"
+      method="kanbanOpportunityOnMove"/>
   </action-method>
 
 </object-views>

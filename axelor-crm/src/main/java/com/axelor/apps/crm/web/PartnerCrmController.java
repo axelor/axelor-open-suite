@@ -96,4 +96,13 @@ public class PartnerCrmController {
     }
     response.setView(actionViewBuilder.map());
   }
+
+  public void kanbanPartnerOnMove(ActionRequest request, ActionResponse response) {
+    Partner partner = request.getContext().asType(Partner.class);
+    try {
+      Beans.get(PartnerCrmService.class).kanbanPartnerOnMove(partner);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
 }
