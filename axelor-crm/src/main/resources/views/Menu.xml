@@ -278,7 +278,8 @@
   </action-method>
 
   <menuitem name="crm-root-partners-companies" parent="crm-root" title="Partners Companies"
-    action="crm.root.partners.companies" order="700"/>
+    action="crm.root.partners.companies" order="700"
+    if="__config__.app.getApp('crm')?.getIsManagePartnerCompany()"/>
 
   <action-view name="crm.root.partners.companies" title="Partners Companies"
     model="com.axelor.apps.base.db.Partner">
@@ -290,8 +291,7 @@
     <view-param name="limit" value="39"/>
     <view-param name="search-filters" value="partner-filters"/>
     <view-param name="forceTitle" value="true"/>
-    <domain>self.isContact = false AND self.isProspect = true AND self.isCollaborator = true</domain>
-    <context name="_isProspect" expr="true"/>
+    <domain>self.isCollaborator = true</domain>
     <context name="_isCollaborator" expr="true"/>
     <context name="_domain"
       expr="self.isContact = false AND self.isProspect = true AND self.isCollaborator = true"/>

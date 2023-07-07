@@ -673,6 +673,11 @@
       if="_isProspect || (__user__?.activeCompany?.defaultPartnerCategorySelect == 1 &amp;&amp; !_isSupplier &amp;&amp; !_isCarrier &amp;&amp; !_isSubcontractor)"/>
   </action-record>
 
+  <action-record name="action-partner-record-set-is-collaborator"
+    model="com.axelor.apps.base.db.Partner">
+    <field name="isCollaborator" expr="true" if="_isCollaborator"/>
+  </action-record>
+
   <action-record name="action-partner-record-set-partner-status"
     model="com.axelor.apps.base.db.Partner">
     <field name="partnerStatus"
@@ -697,6 +702,7 @@
     <action name="action-partner-validate-default-status"/>
     <action name="action-group-base-partner-onnew"/>
     <action name="action-partner-record-set-is-prospect"/>
+    <action name="action-partner-record-set-is-collaborator"/>
     <action name="action-partner-method-set-fields-for-conversion-from-lead"
       if="_isInConversionFromLead"/>
     <action name="action-partner-record-set-is-in-conversion-from-lead"/>

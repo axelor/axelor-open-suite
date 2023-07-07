@@ -189,7 +189,7 @@
         hideIf="isContact ||  isEmployee"
         onChange="action-partner-group-check-can-change-supplier,action-partner-account-attrs-hide-supplier-account,action-partner-record-unset-factor"/>
       <field name="isCollaborator" colSpan="12" widget="InlineCheckbox" if-module="axelor-crm"
-        if="__config__.app.isApp('crm')"/>
+        if="__config__.app.getApp('crm')?.getIsManagePartnerCompany()"/>
       <field name="isSubcontractor" colSpan="12" widget="InlineCheckbox"
         if-module="axelor-production"
         if="__config__.app.getApp('production')?.getManageOutsourcing()"/>
