@@ -2093,6 +2093,7 @@
 "Uploaded file must have the same format as the selected type.","Le fichier téléversé doit avoir le même format que le type sélectionné.",,
 "Uppercase / lowercase","Majuscules / minuscules",,
 "Url",,,
+"Use OSRM (https://router.project-osrm.org/route/v1/driving) Open source routing APIs to get routing information based upon a given start/end location.","Utilisez OSRM (https://router.project-osrm.org/route/v1/driving) API de routage open source pour obtenir des informations de routage basées sur un emplacement de départ/d'arrivée donné",,
 "Use QAS Validation","Utiliser la validation QAS",,
 "Use fake data",,,
 "Use for stock only","Utiliser en stock",,
