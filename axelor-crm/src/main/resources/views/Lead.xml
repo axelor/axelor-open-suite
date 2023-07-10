@@ -4,8 +4,11 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <kanban columnBy="leadStatus" model="com.axelor.apps.crm.db.Lead" sequenceBy="sequence"
-    title="Leads" name="lead-kanban" draggable="true" limit="10">
+    title="Leads" name="lead-kanban" draggable="true" limit="10"
+    onMove="action-lead-method-kanban-onmove">
     <field name="simpleFullName"/>
+    <field name="name"/>
+    <field name="firstName"/>
     <field name="leadStatus"/>
     <field name="enterpriseName"/>
     <field name="nextScheduledEventDateT"/>
@@ -418,6 +421,10 @@
 
   <action-method name="action-lead-method-assign-to-me-multiple">
     <call class="com.axelor.apps.crm.web.LeadController" method="assignToMeMultipleLead"/>
+  </action-method>
+
+  <action-method name="action-lead-method-kanban-onmove">
+    <call class="com.axelor.apps.crm.web.LeadController" method="kanbanLeadOnMove"/>
   </action-method>
 
   <action-record name="action-lead-default-record-new"
