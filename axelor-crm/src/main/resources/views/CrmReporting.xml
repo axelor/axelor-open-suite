@@ -42,12 +42,12 @@
     </panel>
     <panel sidebar="true" canCollapse="true">
       <button name="openResultButton" title="Open the list of results"
-        onClick="save,action-crm-reporting-group-show-results"/>
+        onClick="save,action-crm-reporting-method-show-results"/>
       <button name="showOpportunitiesButton" title="Show the opportunities"
-        onClick="save,action-crm-reporting-group-show-opportunities"
+        onClick="save,action-crm-reporting-method-show-opportunities"
         hideIf="typeSelect == 'com.axelor.apps.crm.db.Lead'"/>
       <button name="showEventsButton" title="Show the events"
-        onClick="save,action-crm-reporting-group-show-events"/>
+        onClick="save,action-crm-reporting-method-show-events"/>
     </panel>
   </form>
 
