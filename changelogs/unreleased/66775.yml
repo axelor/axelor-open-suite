@@ -1,0 +1,3 @@
+---
+title: "App supplychain : Prevent from allowing generation on both purchase orders and stock moves at the same time"
+type: fix
