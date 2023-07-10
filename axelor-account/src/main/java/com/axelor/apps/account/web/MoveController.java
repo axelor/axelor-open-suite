@@ -608,7 +608,7 @@ public class MoveController {
       MoveGroupService moveGroupService = Beans.get(MoveGroupService.class);
 
       response.setValues(moveGroupService.getPaymentModeOnChangeValuesMap(move));
-      response.setAttrs(moveGroupService.getPaymentModeOnChangeAttrsMap());
+      response.setAttrs(moveGroupService.getHeaderChangeAttrsMap());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -708,7 +708,7 @@ public class MoveController {
 
   public void onChangePartnerBankDetails(ActionRequest request, ActionResponse response) {
     try {
-      response.setAttrs(Beans.get(MoveGroupService.class).getPartnerBankDetailsOnChangeAttrsMap());
+      response.setAttrs(Beans.get(MoveGroupService.class).getHeaderChangeAttrsMap());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

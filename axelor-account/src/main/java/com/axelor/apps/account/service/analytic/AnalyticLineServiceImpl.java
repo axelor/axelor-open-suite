@@ -225,7 +225,6 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
     }
 
     List<AnalyticMoveLine> analyticMoveLineList;
-
     for (AnalyticAxisByCompany analyticAxisByCompany :
         accountConfigService.getAccountConfig(company).getAnalyticAxisByCompanyList()) {
       analyticMoveLineList =

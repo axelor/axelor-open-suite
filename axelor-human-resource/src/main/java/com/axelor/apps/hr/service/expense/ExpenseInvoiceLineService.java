@@ -16,22 +16,19 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.hr.service;
+package com.axelor.apps.hr.service.expense;
 
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Period;
+import com.axelor.apps.hr.db.ExpenseLine;
 import java.util.List;
-import java.util.Map;
 
-public interface EmployeeDashboardService {
+public interface ExpenseInvoiceLineService {
 
-  Period getCurrentPeriod() throws AxelorException;
+  public List<InvoiceLine> createInvoiceLines(
+      Invoice invoice, List<ExpenseLine> expenseLineList, int priority) throws AxelorException;
 
-  List<Map<String, Object>> getLeaveData() throws AxelorException;
-
-  List<Map<String, Object>> getExpenseData() throws AxelorException;
-
-  List<Map<String, Object>> getTimesheetData() throws AxelorException;
-
-  List<Map<String, Object>> getExtraHrsData() throws AxelorException;
+  public List<InvoiceLine> createInvoiceLine(Invoice invoice, ExpenseLine expenseLine, int priority)
+      throws AxelorException;
 }
