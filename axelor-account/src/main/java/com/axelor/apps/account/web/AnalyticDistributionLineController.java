@@ -112,7 +112,8 @@ public class AnalyticDistributionLineController {
     if (analyticDistributionTemplate != null && analyticDistributionTemplate.getCompany() != null) {
       company = analyticDistributionTemplate.getCompany();
     } else {
-      company = ContextTool.getFieldContextParent(request.getContext(), "company");
+      company =
+          ContextTool.getFieldFromContextParent(request.getContext(), "company", Company.class);
     }
     if (company != null) {
       response.setAttr(
