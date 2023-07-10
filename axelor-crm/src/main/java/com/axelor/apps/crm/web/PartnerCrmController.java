@@ -105,6 +105,7 @@ public class PartnerCrmController {
     } catch (Exception e) {
       if (e.getMessage().equals(I18n.get(CrmExceptionMessage.PROSPECT_CLOSE_WIN_KANBAN))) {
         TraceBackService.trace(response, e, ResponseMessageType.INFORMATION);
+        response.setReload(true);
         return;
       }
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
