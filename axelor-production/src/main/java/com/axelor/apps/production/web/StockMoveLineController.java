@@ -102,14 +102,14 @@ public class StockMoveLineController {
         company = stockMove.getCompany();
       }
 
+      StockMoveLineService stockMoveLineService = Beans.get(StockMoveLineService.class);
       if (stockMoveLine.getProduct() == null) {
-        stockMoveLine = new StockMoveLine();
-        stockMoveLine.setStockMove(stockMove);
+        stockMoveLineService.resetStockMoveLine(stockMoveLine);
         response.setValues(Mapper.toMap(stockMoveLine));
         return;
       }
 
-      Beans.get(StockMoveLineService.class).setProductInfo(stockMove, stockMoveLine, company);
+      stockMoveLineService.setProductInfo(stockMove, stockMoveLine, company);
       response.setValues(stockMoveLine);
     } catch (Exception e) {
       stockMoveLine = new StockMoveLine();
