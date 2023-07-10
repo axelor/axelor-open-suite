@@ -35,6 +35,7 @@
     <boolean name="manageFinancialDiscount" title="Manage financial discount"
       help="Field allowing to activate the financial discounts"/>
     <boolean name="allowMultiInvoiceTerms" title="Allow multi invoice terms"/>
+    <boolean name="displayNoFinancialDiscountAppliedOnPrinting" title="Display mention 'no financial discount applied' on printing" help="If this option is enabled, the mention 'No discount will be granted for early payment' will be displayed on printing when it's a sale invoice addressed to a legal entity with no granted financial discount"/>
 
     <!-- DAS2 - N4DS -->
     <many-to-one name="defaultServiceTypeTypology"
