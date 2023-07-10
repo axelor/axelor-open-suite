@@ -103,18 +103,25 @@ public class StockMoveLineController {
       }
 
       if (stockMoveLine.getProduct() == null) {
-        stockMoveLine = new StockMoveLine();
-        stockMoveLine.setStockMove(stockMove);
-        response.setValues(Mapper.toMap(stockMoveLine));
+        sendEmptyStockMoveLine(response, stockMove, stockMoveLine);
         return;
       }
 
       Beans.get(StockMoveLineService.class).setProductInfo(stockMove, stockMoveLine, company);
       response.setValues(stockMoveLine);
     } catch (Exception e) {
-      stockMoveLine = new StockMoveLine();
-      response.setValues(Mapper.toMap(stockMoveLine));
+      sendEmptyStockMoveLine(response, null, null);
       TraceBackService.trace(response, e);
     }
+  }
+
+  protected void sendEmptyStockMoveLine(
+      ActionResponse response, StockMove stockMove, StockMoveLine originalStockMoveLine) {
+    StockMoveLine stockMoveLine = new StockMoveLine();
+    stockMoveLine.setStockMove(stockMove);
+    if (originalStockMoveLine != null) {
+      stockMoveLine.setId(originalStockMoveLine.getId());
+    }
+    response.setValues(Mapper.toMap(stockMoveLine));
   }
 }
