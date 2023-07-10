@@ -306,7 +306,7 @@
             <field name="toStockLocation.typeSelect" hidden="true"/>
           </panel>
         </panel>
-        <panel colSpan="9">
+        <panel name="mainTagsPanel" colSpan="9">
           <panel name="tagsPanel" colSpan="12">
             <panel name="availableStatusAndInvoiceStatusTagsPanel" colSpan="2" stacked="true"
               itemSpan="12">
@@ -474,7 +474,7 @@
                 	<![CDATA[<span class='label label-warning'>Warning : Delivery address is missing.</span>]]></static>
         <field name="estimatedDate"
           readonlyIf="(statusSelect != 1 &amp;&amp; statusSelect != 2) || pickingIsEdited"/>
-        <panel stacked="true">
+        <panel name="availabilityPanel" stacked="true">
           <field name="filterOnAvailableProducts" hidden="true" widget="boolean-switch"
             onChange="action-stock-move-method-update-stock-move-line"/>
           <field name="availabilityRequest" hidden="true" widget="boolean-switch"
@@ -534,7 +534,7 @@
           readonlyIf="(statusSelect != 1 &amp;&amp; statusSelect != 2) || pickingIsEdited"/>
         <field name="supplierShipmentDate" showIf="!isReversion"/>
         <field name="supplierShipmentRef" showIf="!isReversion"/>
-        <panel stacked="true" itemSpan="12">
+        <panel name="incomingMoveDataPanel" stacked="true" itemSpan="12">
           <field name="fromAddressStr" height="3" hideIf="statusSelect &gt; 2">
             <viewer>{{record.fromAddressStr}}</viewer>
           </field>
@@ -561,7 +561,7 @@
         grid-view="stock-move-line-grid" form-view="stock-move-line-form" canMove="true"
         orderBy="sequence" canRemove="!(statusSelect == 2 &amp;&amp; pickingIsEdited)" canNew="true"/>
       <panel name="freightCarrierPanel" title="Freight Carrier" itemSpan="12">
-        <panel itemSpan="3">
+        <panel name="freightCarrierFirstDisplayPanel" itemSpan="3">
           <field name="shipmentMode" canEdit="false" form-view="shipment-mode-form"
             grid-view="shipment-mode-grid"/>
           <field name="freightCarrierMode" canEdit="false"
@@ -575,7 +575,7 @@
             form-view="partner-form" grid-view="partner-grid" canEdit="false"/>
         </panel>
 
-        <panel itemSpan="3">
+        <panel name="freightCarrierSecondDisplayPanel" itemSpan="3">
           <field name="incoterm" form-view="incoterm-form" grid-view="incoterm-grid"
             canEdit="false"/>
           <field name="trackingNumber"/>
@@ -584,7 +584,7 @@
             showIf="typeSelect == 2 &amp;&amp; originTypeSelect &amp;&amp; originTypeSelect=='com.axelor.apps.sale.db.SaleOrder'"/>
         </panel>
 
-        <panel itemSpan="3">
+        <panel name="freightCarrierThirdDisplayPanel" itemSpan="3">
           <field name="numOfPackages" readonlyIf="statusSelect == 3 || statusSelect == 4"/>
           <field name="numOfPalettes" readonlyIf="statusSelect == 3 || statusSelect == 4"/>
           <field name="grossMass" readonlyIf="statusSelect == 3 || statusSelect == 4"/>
@@ -602,7 +602,7 @@
           </panel>
         </panel>
 
-        <panel itemSpan="3">
+        <panel name="freightCarrierFourthDisplayPanel" itemSpan="3">
           <field name="isNeedingConformityCertificate"
             onChange="action-stock-move-record-unset-certificate-signed"/>
           <field name="signatoryUser" canEdit="false"/>
