@@ -105,6 +105,7 @@ public class StockMoveLineController {
       StockMoveLineService stockMoveLineService = Beans.get(StockMoveLineService.class);
       if (stockMoveLine.getProduct() == null) {
         stockMoveLineService.resetStockMoveLine(stockMoveLine);
+        stockMoveLine.setStockMove(stockMove);
         response.setValues(Mapper.toMap(stockMoveLine));
         return;
       }
