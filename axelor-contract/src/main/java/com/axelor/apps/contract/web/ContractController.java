@@ -250,4 +250,21 @@ public class ContractController {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
+
+  public void hideFields(ActionRequest request, ActionResponse response) {
+    Contract contract = request.getContext().asType(Contract.class);
+    response.setAttr(
+        "currentContractVersion.contractLineList.isToRevaluate",
+        "hidden",
+        !contract.getCurrentContractVersion().getIsPeriodicInvoicing()
+            || !contract.getIsToRevaluate());
+    response.setAttr(
+        "currentContractVersion.contractLineList.initialPricePerYear",
+        "hidden",
+        !contract.getCurrentContractVersion().getIsPeriodicInvoicing());
+    response.setAttr(
+        "currentContractVersion.contractLineList.yearlyPriceRevalued",
+        "hidden",
+        !contract.getCurrentContractVersion().getIsPeriodicInvoicing());
+  }
 }
