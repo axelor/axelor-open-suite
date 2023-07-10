@@ -696,6 +696,7 @@
 "Warn delay from supplier",,,
 "Weekly breakdown","Répartition hebdomadaire",,
 "When this is active, sale order will be automatically set to 'Order completed' status once 'Amount invoiced W.T.' is equal to 'Total W.T.'. This will happen when all invoices linked to the sale order get to status 'Ventilated'","Quand cette option est activée, la commande sera automatiquement passée au statut 'Commande terminée' une fois que le 'Montant facturé HT' sera égal au 'Total HT' de la commande. Cela se produira quand toutes les factures liées à la commande passeront au statut 'Ventilée'",,
+"You cannot enable invoice generation from both purchase orders and stock moves at the same time. Please disable one of them.","Il n'est pas possible d'activer la génération de factures à la fois sur les commandes fournisseurs et sur les mouvements de stocks. Veuillez désactiver l'un des eux.",,
 "You cannot request reservation with a negative quantity.","Vous ne pouvez pas demander la réservation d'une quantité négative.",,
 "You have to choose at least one incoming stock move","Vous devez choisir au moins un BR",,
 "You have to choose at least one outgoing stock move","Vous devez choisir au moins un BL",,

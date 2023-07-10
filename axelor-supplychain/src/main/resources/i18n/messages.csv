@@ -696,6 +696,7 @@
 "Warn delay from supplier",,,
 "Weekly breakdown",,,
 "When this is active, sale order will be automatically set to 'Order completed' status once 'Amount invoiced W.T.' is equal to 'Total W.T.'. This will happen when all invoices linked to the sale order get to status 'Ventilated'",,,
+"You cannot enable invoice generation from both purchase orders and stock moves at the same time. Please disable one of them.",,,
 "You cannot request reservation with a negative quantity.",,,
 "You have to choose at least one incoming stock move",,,
 "You have to choose at least one outgoing stock move",,,

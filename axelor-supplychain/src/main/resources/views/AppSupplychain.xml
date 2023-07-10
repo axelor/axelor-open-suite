@@ -4,7 +4,8 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <form name="app-supplychain-config-form" title="App Supplychain"
-    model="com.axelor.studio.db.AppSupplychain" canDelete="false" canNew="false" width="large" onLoad="action-app-supply-chain-validate-invoice-generation-method-enabled">
+    model="com.axelor.studio.db.AppSupplychain" canDelete="false" canNew="false" width="large"
+    onLoad="action-app-supply-chain-validate-invoice-generation-method-enabled">
     <panel name="saleOrderPanel" title="Sale order">
       <field name="custStockMoveMgtOnSO"
         readonlyIf="customerStockMoveGenerationAuto || terminateSaleOrderOnDelivery"
@@ -106,10 +107,12 @@
     <field name="supplierStockMoveGenerationAuto" expr="eval: false"
       if="isPurchaseOrderWithoutIncomingStockMove"/>
   </action-record>
-  
-  <action-validate name="action-app-supply-chain-validate-invoice-generation-method-enabled">
-    <error message="You cannot enable invoice generation from both purchase orders and stock moves at the same time. Please disable one of them."
-           if="generateInvoiceFromPurchaseOrder &amp;&amp; generateInvoiceFromStockMove"/>
+
+  <action-validate
+    name="action-app-supply-chain-validate-invoice-generation-method-enabled">
+    <error
+      message="You cannot enable invoice generation from both purchase orders and stock moves at the same time. Please disable one of them."
+      if="generateInvoiceFromPurchaseOrder &amp;&amp; generateInvoiceFromStockMove"/>
   </action-validate>
 
 </object-views>
