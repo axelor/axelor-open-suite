@@ -21,13 +21,18 @@ package com.axelor.apps.hr.service;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Period;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.YearRepository;
+import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
+import com.axelor.apps.hr.db.ExtraHours;
 import com.axelor.apps.hr.db.ExtraHoursLine;
 import com.axelor.apps.hr.db.LeaveLine;
+import com.axelor.apps.hr.db.LeaveReason;
 import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
@@ -35,8 +40,10 @@ import com.axelor.apps.hr.db.repo.ExtraHoursLineRepository;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
-import com.axelor.apps.hr.service.employee.EmployeeService;
 import com.axelor.auth.AuthUtils;
+import com.axelor.common.ObjectUtils;
+import com.axelor.i18n.I18n;
+import com.axelor.meta.MetaStore;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -46,61 +53,52 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class EmployeeDashboardServiceImpl implements EmployeeDashboardService {
+public class HRDashboardServiceImpl implements HRDashboardService {
+
   protected static final String LEAVE_VALID = "valid";
   protected static final String LEAVE_BALANCE = "balance";
   protected static final String LEAVE_TAKEN = "taken";
   protected static final String NOT_AT_WORK = "notAtWork";
   protected static final String AT_WORK = "atWork";
+  protected static final String LEAVE_STATUS_SELECT = "hrs.leave.request.status.select";
+  protected static final String EXPENSE_STATUS_SELECT = "hrs.expenses.status.select";
 
   protected AppBaseService appBaseService;
-  protected EmployeeService employeeService;
   protected LeaveRequestRepository leaveRepo;
   protected ExpenseLineRepository expenseRepo;
   protected ExtraHoursLineRepository extraHoursRepo;
   protected TimesheetLineRepository timesheetLineRepo;
   protected PeriodService periodService;
   protected EmployeeComputeDaysLeaveBonusService leaveBonusService;
+  protected PartnerService partnerService;
 
   @Inject
-  public EmployeeDashboardServiceImpl(
+  public HRDashboardServiceImpl(
       AppBaseService appBaseService,
-      EmployeeService employeeService,
       LeaveRequestRepository leaveRepo,
       ExpenseLineRepository expenseRepo,
       ExtraHoursLineRepository extraHoursRepo,
       TimesheetLineRepository timesheetLineRepo,
       PeriodService periodService,
-      EmployeeComputeDaysLeaveBonusService leaveBonusService) {
+      EmployeeComputeDaysLeaveBonusService leaveBonusService,
+      PartnerService partnerService) {
     this.appBaseService = appBaseService;
-    this.employeeService = employeeService;
     this.leaveRepo = leaveRepo;
     this.expenseRepo = expenseRepo;
     this.extraHoursRepo = extraHoursRepo;
     this.timesheetLineRepo = timesheetLineRepo;
     this.periodService = periodService;
     this.leaveBonusService = leaveBonusService;
+    this.partnerService = partnerService;
   }
 
   @Override
-  public List<Map<String, Object>> getLeaveData() throws AxelorException {
-    Employee employee = employeeService.getConnectedEmployee();
-    Period period = getCurrentPeriod();
-
-    List<LeaveRequest> leaves =
-        leaveRepo
-            .all()
-            .filter(
-                "self.employee = :employee AND self.statusSelect != :statusSelect"
-                    + " AND ((self.fromDateT >= :fromDateT AND self.toDateT <= :endDateT) OR (self.fromDateT <= :fromDateT AND self.toDateT >= :fromDateT AND self.toDateT <= :endDateT) OR (self.fromDateT >= :fromDateT AND self.fromDateT <= :endDateT AND self.toDateT >= :endDateT))")
-            .bind("employee", employee)
-            .bind("statusSelect", LeaveRequestRepository.STATUS_CANCELED)
-            .bind("fromDateT", period.getFromDate().atStartOfDay())
-            .bind("endDateT", period.getToDate().atTime(LocalTime.MAX))
-            .fetch();
-
+  public List<Map<String, Object>> getConnectedEmployeeLeaveData(Employee employee, Period period)
+      throws AxelorException {
+    List<LeaveRequest> leaves = getLeaveList(employee, period);
     Map<Integer, Long> leaveCounts =
         leaves.stream()
             .collect(Collectors.groupingBy(LeaveRequest::getStatusSelect, Collectors.counting()));
@@ -114,6 +112,24 @@ public class EmployeeDashboardServiceImpl implements EmployeeDashboardService {
     data.putAll(leaveCountData);
 
     return List.of(data);
+  }
+
+  protected List<LeaveRequest> getLeaveList(Employee employee, Period period) {
+    StringBuilder filter = new StringBuilder("self.statusSelect != :statusSelect");
+    Map<String, Object> params = new HashMap<>();
+
+    if (employee != null) {
+      filter.append(" AND self.employee = :employee");
+      params.put("employee", employee);
+    }
+    if (period != null) {
+      filter.append(
+          " AND ((self.fromDateT >= :fromDateT AND self.toDateT <= :endDateT) OR (self.fromDateT <= :fromDateT AND self.toDateT >= :fromDateT AND self.toDateT <= :endDateT) OR (self.fromDateT >= :fromDateT AND self.fromDateT <= :endDateT AND self.toDateT >= :endDateT))");
+      params.put("fromDateT", period.getFromDate().atStartOfDay());
+      params.put("endDateT", period.getToDate().atTime(LocalTime.MAX));
+    }
+    params.put("statusSelect", LeaveRequestRepository.STATUS_CANCELED);
+    return leaveRepo.all().filter(filter.toString()).bind(params).fetch();
   }
 
   protected HashMap<Object, Object> getLeaveCountSums(Employee employee, Period period) {
@@ -153,21 +169,33 @@ public class EmployeeDashboardServiceImpl implements EmployeeDashboardService {
   }
 
   @Override
-  public List<Map<String, Object>> getExpenseData() throws AxelorException {
-    Employee employee = employeeService.getConnectedEmployee();
-    Period period = getCurrentPeriod();
+  public List<Map<String, Object>> getExpenseData(Employee employee, Period period)
+      throws AxelorException {
+    List<ExpenseLine> expenseList = getExpenseList(employee, period);
+    return getExpenseData(expenseList);
+  }
 
-    List<ExpenseLine> expenseList =
-        expenseRepo
-            .all()
-            .filter(
-                "self.expense.employee = :employee AND self.expenseDate >= :fromDate AND self.expenseDate <= :endDate")
-            .bind("employee", employee)
-            .bind("fromDate", period.getFromDate())
-            .bind("endDate", period.getToDate())
-            .order("-expenseDate")
-            .fetch();
+  protected List<ExpenseLine> getExpenseList(Employee employee, Period period) {
+    StringBuilder filter = new StringBuilder();
+    Map<String, Object> params = new HashMap<>();
 
+    if (employee != null) {
+      filter.append("self.expense.employee = :employee");
+      params.put("employee", employee);
+    }
+    if (period != null) {
+      filter.append(ObjectUtils.isEmpty(filter) ? "" : " AND ");
+      filter.append("self.expenseDate >= :fromDate AND self.expenseDate <= :endDate");
+      params.put("fromDate", period.getFromDate());
+      params.put("endDate", period.getToDate());
+    }
+    if (ObjectUtils.isEmpty(filter)) {
+      return expenseRepo.all().fetch();
+    }
+    return expenseRepo.all().filter(filter.toString()).bind(params).fetch();
+  }
+
+  protected List<Map<String, Object>> getExpenseData(List<ExpenseLine> expenseList) {
     List<Map<String, Object>> expenseData = new ArrayList<>();
 
     for (ExpenseLine expenseLine : expenseList) {
@@ -175,20 +203,38 @@ public class EmployeeDashboardServiceImpl implements EmployeeDashboardService {
       map.put("expenseId", expenseLine.getExpense().getId());
       map.put("date", expenseLine.getExpenseDate());
       map.put("inTaxTotal", expenseLine.getTotalAmount());
-      map.put("fullName", expenseLine.getComments());
       map.put("status", expenseLine.getExpense().getStatusSelect());
+      map.put(
+          "fullName",
+          Optional.ofNullable(expenseLine.getExpense())
+              .map(Expense::getEmployee)
+              .map(Employee::getContactPartner)
+              .map(partner -> partnerService.computeSimpleFullName(partner))
+              .orElse(null));
+      map.put(
+          "statusSelect",
+          I18n.get(
+              MetaStore.getSelectionItem(
+                      EXPENSE_STATUS_SELECT, expenseLine.getExpense().getStatusSelect().toString())
+                  .getTitle()));
+      map.put(
+          "expenseType",
+          Optional.ofNullable(expenseLine.getExpenseProduct()).map(Product::getName).orElse(null));
       expenseData.add(map);
     }
-
     return expenseData;
   }
 
   @Override
-  public List<Map<String, Object>> getTimesheetData() throws AxelorException {
-    Employee employee = employeeService.getConnectedEmployee();
-    Period period = getCurrentPeriod();
-
+  public List<Map<String, Object>> getTimesheetData(Employee employee, Period period)
+      throws AxelorException {
     Map<LocalDate, BigDecimal> timeSpentPerDayMap = getTimeSpentPerDay(employee, period);
+    return getTimesheetData(employee, period, timeSpentPerDayMap);
+  }
+
+  protected List<Map<String, Object>> getTimesheetData(
+      Employee employee, Period period, Map<LocalDate, BigDecimal> timeSpentPerDayMap)
+      throws AxelorException {
     int notAtWork = 0;
     int atWork = 0;
 
@@ -221,42 +267,70 @@ public class EmployeeDashboardServiceImpl implements EmployeeDashboardService {
   }
 
   @Override
-  public List<Map<String, Object>> getExtraHrsData() throws AxelorException {
-    Employee employee = employeeService.getConnectedEmployee();
-    Period period = getCurrentPeriod();
+  public List<Map<String, Object>> getExtraHrsData(Employee employee, Period period)
+      throws AxelorException {
+    List<ExtraHoursLine> extraHoursList = getExtraHoursList(employee, period);
+    return getExtraHrsData(extraHoursList);
+  }
 
-    List<ExtraHoursLine> extraHoursList =
-        extraHoursRepo
-            .all()
-            .filter(
-                "self.extraHours.employee = :employee AND self.date >= :fromDate AND self.date <= :endDate")
-            .bind("employee", employee)
-            .bind("fromDate", period.getFromDate())
-            .bind("endDate", period.getToDate())
-            .fetch();
+  protected List<ExtraHoursLine> getExtraHoursList(Employee employee, Period period) {
+    StringBuilder filter = new StringBuilder();
+    Map<String, Object> params = new HashMap<>();
+
+    if (employee != null) {
+      filter.append("self.extraHours.employee = :employee");
+      params.put("employee", employee);
+    }
+    if (period != null) {
+      filter.append(ObjectUtils.isEmpty(filter) ? "" : " AND ");
+      filter.append("self.date >= :fromDate AND self.date <= :endDate");
+      params.put("fromDate", period.getFromDate());
+      params.put("endDate", period.getToDate());
+    }
+    if (ObjectUtils.isEmpty(filter)) {
+      return extraHoursRepo.all().fetch();
+    }
+    return extraHoursRepo.all().filter(filter.toString()).bind(params).fetch();
+  }
+
+  protected List<Map<String, Object>> getExtraHrsData(List<ExtraHoursLine> extraHoursList) {
     List<Map<String, Object>> extraHrsData = new ArrayList<>();
+
     for (ExtraHoursLine extraHrsLine : extraHoursList) {
       Map<String, Object> map = new HashMap<>();
       map.put("extraHrId", extraHrsLine.getExtraHours().getId());
       map.put("date", extraHrsLine.getDate());
       map.put("duration", extraHrsLine.getQty());
       map.put("description", extraHrsLine.getDescription());
+      map.put(
+          "fullName",
+          Optional.ofNullable(extraHrsLine.getExtraHours())
+              .map(ExtraHours::getEmployee)
+              .map(Employee::getContactPartner)
+              .map(partner -> partnerService.computeSimpleFullName(partner))
+              .orElse(null));
       extraHrsData.add(map);
     }
     return extraHrsData;
   }
 
   protected Map<LocalDate, BigDecimal> getTimeSpentPerDay(Employee employee, Period period) {
+    StringBuilder filter = new StringBuilder("self.timesheet.statusSelect = :statusSelect");
+    Map<String, Object> params = new HashMap<>();
+
+    if (employee != null) {
+      filter.append(" AND self.timesheet.employee = :employee");
+      params.put("employee", employee);
+    }
+    if (period != null) {
+      filter.append(" AND self.date >= :fromDate AND self.date <= :endDate");
+      params.put("fromDate", period.getFromDate());
+      params.put("endDate", period.getToDate());
+    }
+    params.put("statusSelect", TimesheetRepository.STATUS_VALIDATED);
+
     List<TimesheetLine> timesheeLineList =
-        timesheetLineRepo
-            .all()
-            .filter(
-                "self.timesheet.employee = :employee AND self.timesheet.statusSelect = :statusSelect AND self.date >= :fromDate AND self.date <= :endDate")
-            .bind("employee", employee)
-            .bind("statusSelect", TimesheetRepository.STATUS_VALIDATED)
-            .bind("fromDate", period.getFromDate())
-            .bind("endDate", period.getToDate())
-            .fetch();
+        timesheetLineRepo.all().filter(filter.toString()).bind(params).fetch();
 
     return timesheeLineList.stream()
         .collect(
@@ -271,5 +345,45 @@ public class EmployeeDashboardServiceImpl implements EmployeeDashboardService {
     Company company = AuthUtils.getUser().getActiveCompany();
     return periodService.getActivePeriod(
         appBaseService.getTodayDate(company), company, YearRepository.TYPE_PAYROLL);
+  }
+
+  @Override
+  public List<Map<String, Object>> getEmployeeLeaveData(Employee employee, Period period) {
+    List<LeaveRequest> leaves = getLeaveList(employee, period);
+    return getLeaveData(leaves);
+  }
+
+  protected List<Map<String, Object>> getLeaveData(List<LeaveRequest> leaves) {
+    List<Map<String, Object>> leaveData = new ArrayList<>();
+
+    for (LeaveRequest leaveRequest : leaves) {
+      Map<String, Object> map = new HashMap<>();
+      map.put("leaveRequestId", leaveRequest.getId());
+      map.put(
+          "fullName",
+          Optional.ofNullable(leaveRequest.getEmployee())
+              .map(Employee::getContactPartner)
+              .map(partner -> partnerService.computeSimpleFullName(partner))
+              .orElse(null));
+      map.put(
+          "fromDate",
+          leaveRequest.getFromDateT() != null ? leaveRequest.getFromDateT().toLocalDate() : null);
+      map.put(
+          "toDate",
+          leaveRequest.getToDateT() != null ? leaveRequest.getToDateT().toLocalDate() : null);
+      map.put(
+          "statusSelect",
+          I18n.get(
+              MetaStore.getSelectionItem(
+                      LEAVE_STATUS_SELECT, leaveRequest.getStatusSelect().toString())
+                  .getTitle()));
+      map.put(
+          "leaveReason",
+          Optional.ofNullable(leaveRequest.getLeaveReason())
+              .map(LeaveReason::getName)
+              .orElse(null));
+      leaveData.add(map);
+    }
+    return leaveData;
   }
 }

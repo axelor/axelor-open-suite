@@ -148,14 +148,7 @@ public class MassEntryServiceImpl implements MassEntryService {
         Move workingMove =
             massEntryMoveCreateService.createMoveFromMassEntryList(parentMove, temporaryMoveNumber);
 
-        String categoryMessage =
-            this.generatedTaxeAndCounterPart(parentMove, workingMove, dueDate, temporaryMoveNumber);
-        if (ObjectUtils.isEmpty(categoryMessage)) {
-          massEntryToolService.sortMoveLinesMassEntryByTemporaryNumber(parentMove);
-        } else {
-          massEntryVerificationService.setErrorMassEntryMoveLines(
-              parentMove, temporaryMoveNumber, "paymentMode", categoryMessage);
-        }
+        generatedTaxAndCounterPart(parentMove, workingMove, dueDate, temporaryMoveNumber);
       }
     }
   }
@@ -281,8 +274,7 @@ public class MassEntryServiceImpl implements MassEntryService {
     return resultMap;
   }
 
-  @Override
-  public String generatedTaxeAndCounterPart(
+  protected void generatedTaxAndCounterPart(
       Move parentMove, Move workingMove, LocalDate dueDate, int temporaryMoveNumber) {
     try {
       moveToolService.exceptionOnGenerateCounterpart(workingMove);
@@ -290,10 +282,11 @@ public class MassEntryServiceImpl implements MassEntryService {
           parentMove, workingMove, dueDate, temporaryMoveNumber);
       moveLineMassEntryService.setPfpValidatorUserForInTaxAccount(
           parentMove.getMoveLineMassEntryList(), parentMove.getCompany(), temporaryMoveNumber);
+      massEntryToolService.sortMoveLinesMassEntryByTemporaryNumber(parentMove);
     } catch (AxelorException e) {
       TraceBackService.trace(e);
-      return e.getMessage();
+      massEntryVerificationService.setErrorMassEntryMoveLines(
+          parentMove, temporaryMoveNumber, "paymentMode", e.getMessage());
     }
-    return null;
   }
 }
