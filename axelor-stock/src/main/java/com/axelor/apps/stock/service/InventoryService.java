@@ -558,8 +558,9 @@ public class InventoryService {
     List<StockMove> stockMoveList =
         stockMoveRepo
             .all()
-            .filter("self.inventory.id = :inventoryId")
-            .bind("inventoryId", inventory.getId())
+            .filter("self.originTypeSelect = :originTypeSelect AND self.originId = :originId")
+            .bind("originTypeSelect", StockMoveRepository.ORIGIN_INVENTORY)
+            .bind("originId", inventory.getId())
             .fetch();
 
     for (StockMove stockMove : stockMoveList) {
@@ -704,12 +705,12 @@ public class InventoryService {
 
     stockMove.setName(inventorySeq);
 
-    stockMove.setInventory(inventory);
+    stockMove.setOriginTypeSelect(StockMoveRepository.ORIGIN_INVENTORY);
+    stockMove.setOriginId(inventory.getId());
     stockMove.setOrigin(inventorySeq);
 
     for (InventoryLine inventoryLine : inventoryLineList) {
-      generateStockMoveLines(
-          inventoryLine, stockMove, isEnteringStock, fromStockLocation, toStockLocation);
+      generateStockMoveLines(inventoryLine, stockMove, isEnteringStock);
     }
     if (stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()) {
 
@@ -730,11 +731,7 @@ public class InventoryService {
    * @throws AxelorException
    */
   protected void generateStockMoveLines(
-      InventoryLine inventoryLine,
-      StockMove stockMove,
-      boolean isEnteringStock,
-      StockLocation fromStockLocation,
-      StockLocation toStockLocation)
+      InventoryLine inventoryLine, StockMove stockMove, boolean isEnteringStock)
       throws AxelorException {
     Product product = inventoryLine.getProduct();
     TrackingNumber trackingNumber = inventoryLine.getTrackingNumber();
@@ -745,7 +742,7 @@ public class InventoryService {
     if (diff.signum() > 0) {
       BigDecimal avgPrice;
       StockLocationLine stockLocationLine =
-          stockLocationLineService.getStockLocationLine(toStockLocation, product);
+          stockLocationLineService.getStockLocationLine(stockMove.getToStockLocation(), product);
       if (stockLocationLine != null) {
         avgPrice = stockLocationLine.getAvgPrice();
       } else {
@@ -764,9 +761,7 @@ public class InventoryService {
               stockMove,
               StockMoveLineService.TYPE_NULL,
               false,
-              BigDecimal.ZERO,
-              fromStockLocation,
-              toStockLocation);
+              BigDecimal.ZERO);
       if (stockMoveLine == null) {
         throw new AxelorException(
             inventoryLine.getInventory(),
@@ -1028,7 +1023,13 @@ public class InventoryService {
   }
 
   public List<StockMove> findStockMoves(Inventory inventory) {
-    return stockMoveRepo.all().filter("self.inventory.id = ?2", inventory.getId()).fetch();
+    return stockMoveRepo
+        .all()
+        .filter(
+            "self.originTypeSelect = ?1 AND self.originId = ?2",
+            StockMoveRepository.ORIGIN_INVENTORY,
+            inventory.getId())
+        .fetch();
   }
 
   public String computeTitle(Inventory entity) {

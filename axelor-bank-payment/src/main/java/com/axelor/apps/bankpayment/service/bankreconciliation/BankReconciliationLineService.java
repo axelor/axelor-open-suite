@@ -123,7 +123,7 @@ public class BankReconciliationLineService {
     if (isDebit) {
       if (BankReconciliationToolService.isForeignCurrency(
           bankReconciliationLine.getBankReconciliation())) {
-        moveLineCredit = moveLine.getCurrencyAmount().abs();
+        moveLineCredit = moveLine.getCurrencyAmount();
       } else {
         moveLineCredit = moveLine.getCredit();
       }
@@ -131,7 +131,7 @@ public class BankReconciliationLineService {
     } else {
       if (BankReconciliationToolService.isForeignCurrency(
           bankReconciliationLine.getBankReconciliation())) {
-        moveLineDebit = moveLine.getCurrencyAmount().abs();
+        moveLineDebit = moveLine.getCurrencyAmount();
       } else {
         moveLineDebit = moveLine.getDebit();
       }

@@ -90,7 +90,10 @@ public class StockCorrectionController {
       StockMove stockMove =
           Beans.get(StockMoveRepository.class)
               .all()
-              .filter("self.stockCorrection.id = ?", stockCorrectionId)
+              .filter(
+                  "self.originTypeSelect = ? AND self.originId = ?",
+                  StockMoveRepository.ORIGIN_STOCK_CORRECTION,
+                  stockCorrectionId)
               .fetchOne();
       if (stockMove != null) {
         response.setView(

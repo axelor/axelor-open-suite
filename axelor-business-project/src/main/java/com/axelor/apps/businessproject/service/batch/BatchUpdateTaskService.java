@@ -72,7 +72,7 @@ public class BatchUpdateTaskService extends AbstractBatch {
 
     Map<String, Object> contextValues = null;
     try {
-      contextValues = BusinessProjectBatchService.createJsonContext(batch);
+      contextValues = ProjectInvoicingAssistantBatchService.createJsonContext(batch);
     } catch (Exception e) {
       TraceBackService.trace(e);
     }
@@ -160,7 +160,7 @@ public class BatchUpdateTaskService extends AbstractBatch {
       JPA.clear();
     }
     findBatch();
-    BusinessProjectBatchService.updateJsonObject(
+    ProjectInvoicingAssistantBatchService.updateJsonObject(
         batch, updatedTaskList, "updatedTaskSet", contextValues);
   }
 
@@ -201,7 +201,7 @@ public class BatchUpdateTaskService extends AbstractBatch {
       JPA.clear();
     }
     findBatch();
-    BusinessProjectBatchService.updateJsonObject(
+    ProjectInvoicingAssistantBatchService.updateJsonObject(
         batch, updatedTimesheetLineList, "updatedTimesheetLineSet", contextValues);
   }
 
@@ -210,13 +210,14 @@ public class BatchUpdateTaskService extends AbstractBatch {
     String comment = I18n.get(BusinessProjectExceptionMessage.BATCH_TASK_UPDATION_2);
 
     comment +=
-        String.format("\t" + I18n.get(BaseExceptionMessage.BASE_BATCH_3), batch.getAnomaly());
+        String.format(
+            "\t" + I18n.get(BaseExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
 
     super.stop();
     addComment(comment);
   }
 
   protected void setBatchTypeSelect() {
-    this.batch.setBatchTypeSelect(BatchRepository.BATCH_TYPE_BUSINESS_PROJECT_BATCH);
+    this.batch.setBatchTypeSelect(BatchRepository.BATCH_TYPE_PROJECT_INVOICING_ASSISTANT_BATCH);
   }
 }

@@ -874,9 +874,7 @@ public class IrrecoverableService {
             invoice.getMove().getOrigin() + ":" + irrecoverableName,
             invoice.getInvoiceId(),
             invoice.getCompanyBankDetails());
-    if (move.getJournal() != null && move.getJournal().getIsFillOriginDate()) {
-      move.setOriginDate(invoice.getInvoiceDate() != null ? invoice.getInvoiceDate() : null);
-    }
+    move.setOriginDate(invoice.getInvoiceDate() != null ? invoice.getInvoiceDate() : null);
     int seq = 1;
 
     BigDecimal amount = BigDecimal.ZERO;
@@ -1030,9 +1028,8 @@ public class IrrecoverableService {
             originStr,
             moveLine.getDescription(),
             moveLine.getMove().getCompanyBankDetails());
-    if (move.getJournal() != null && move.getJournal().getIsFillOriginDate()) {
-      move.setOriginDate(moveLine.getMove().getDate());
-    }
+    move.setOriginDate(moveLine.getMove().getDate());
+
     int seq = 1;
 
     // Credit MoveLine Customer account (411, 416, ...)

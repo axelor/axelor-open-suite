@@ -23,11 +23,9 @@ import com.axelor.apps.talent.db.JobApplication;
 
 public interface JobApplicationService {
 
-  Employee createEmployeeFromJobApplication(JobApplication jobApplication);
+  public Employee hire(JobApplication jobApplication);
 
-  String computeFullName(JobApplication jobApplication);
+  public String computeFullName(JobApplication jobApplication);
 
-  void setDMSFile(JobApplication jobApplication);
-
-  String getInlineUrl(JobApplication jobApplication);
+  public void setDMSFile(JobApplication jobApplication);
 }

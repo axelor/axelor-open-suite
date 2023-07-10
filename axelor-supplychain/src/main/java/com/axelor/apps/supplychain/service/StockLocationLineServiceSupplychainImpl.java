@@ -31,6 +31,7 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.service.StockLocationLineHistoryService;
 import com.axelor.apps.stock.service.StockLocationLineServiceImpl;
 import com.axelor.apps.stock.service.StockRulesService;
+import com.axelor.apps.stock.service.WapHistoryService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.i18n.I18n;
@@ -50,6 +51,7 @@ public class StockLocationLineServiceSupplychainImpl extends StockLocationLineSe
       StockRulesService stockRulesService,
       StockMoveLineRepository stockMoveLineRepository,
       AppBaseService appBaseService,
+      WapHistoryService wapHistoryService,
       UnitConversionService unitConversionService,
       AppSupplychainService appSupplychainService,
       StockLocationLineHistoryService stockLocationLineHistoryService) {
@@ -58,6 +60,7 @@ public class StockLocationLineServiceSupplychainImpl extends StockLocationLineSe
         stockRulesService,
         stockMoveLineRepository,
         appBaseService,
+        wapHistoryService,
         unitConversionService,
         stockLocationLineHistoryService);
     this.appSupplychainService = appSupplychainService;

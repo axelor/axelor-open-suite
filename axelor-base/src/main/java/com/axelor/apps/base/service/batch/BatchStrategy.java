@@ -19,14 +19,5 @@
 package com.axelor.apps.base.service.batch;
 
 import com.axelor.apps.base.service.administration.AbstractBatch;
-import com.axelor.auth.db.User;
 
-public abstract class BatchStrategy extends AbstractBatch {
-
-  protected void updateUser(User user) {
-    if (user != null) {
-      user.addBatchSetItem(batchRepo.find(batch.getId()));
-      incrementDone();
-    }
-  }
-}
+public abstract class BatchStrategy extends AbstractBatch {}

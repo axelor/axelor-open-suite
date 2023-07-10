@@ -64,6 +64,4 @@ public interface MoveLineToolService {
   void checkDateInPeriod(Move move, MoveLine moveLine) throws AxelorException;
 
   void setAmountRemainingReconciliableMoveLines(Context context);
-
-  boolean isCutOffActive(MoveLine moveLine);
 }

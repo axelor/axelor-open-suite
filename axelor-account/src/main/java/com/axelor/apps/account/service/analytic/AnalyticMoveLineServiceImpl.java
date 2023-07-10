@@ -38,7 +38,6 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -122,11 +121,7 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
 
   @Override
   public AnalyticDistributionTemplate getAnalyticDistributionTemplate(
-      Partner partner,
-      Product product,
-      Company company,
-      TradingName tradingName,
-      boolean isPurchase)
+      Partner partner, Product product, Company company, boolean isPurchase)
       throws AxelorException {
 
     if (accountConfigService.getAccountConfig(company).getAnalyticDistributionTypeSelect()
@@ -139,12 +134,6 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
         && company != null) {
       return accountManagementServiceAccountImpl.getAnalyticDistributionTemplate(
           product, company, isPurchase);
-    } else if (appBaseService.getAppBase().getEnableTradingNamesManagement()
-        && accountConfigService.getAccountConfig(company).getAnalyticDistributionTypeSelect()
-            == AccountConfigRepository.DISTRIBUTION_TYPE_TRADING_NAME
-        && tradingName != null
-        && tradingName.getAnalyticDistributionTemplate() != null) {
-      return tradingName.getAnalyticDistributionTemplate();
     }
     return null;
   }

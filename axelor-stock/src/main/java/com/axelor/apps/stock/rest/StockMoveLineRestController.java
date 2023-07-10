@@ -71,9 +71,7 @@ public class StockMoveLineRestController {
             stockmoveLine,
             requestBody.getRealQty(),
             requestBody.getConformity(),
-            requestBody.fetchUnit(),
-            requestBody.fetchFromStockLocation(),
-            requestBody.fetchToStockLocation());
+            requestBody.fetchUnit());
 
     return ResponseConstructor.build(
         Response.Status.OK, "Line successfully updated.", new StockMoveLineResponse(stockmoveLine));

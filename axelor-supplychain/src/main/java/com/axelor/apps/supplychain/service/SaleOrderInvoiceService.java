@@ -302,5 +302,5 @@ public interface SaleOrderInvoiceService {
    */
   void displayErrorMessageBtnGenerateInvoice(SaleOrder saleOrder) throws AxelorException;
 
-  void updateInvoicingState(SaleOrder saleOrder);
+  int getSaleOrderInvoicingState(SaleOrder saleOrder);
 }

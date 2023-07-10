@@ -19,11 +19,9 @@
 package com.axelor.apps.bankpayment.service.bankorder;
 
 import com.axelor.apps.account.db.InvoicePayment;
-import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
-import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionCancelService;
@@ -51,7 +49,6 @@ import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFile
 import com.axelor.apps.bankpayment.service.config.BankPaymentConfigService;
 import com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentBankPaymentCancelService;
 import com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentValidateServiceBankPayImpl;
-import com.axelor.apps.bankpayment.service.move.MoveCancelBankPaymentService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Currency;
@@ -78,13 +75,11 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
-import org.apache.commons.collections.CollectionUtils;
 
 public class BankOrderServiceImpl implements BankOrderService {
 
@@ -100,8 +95,6 @@ public class BankOrderServiceImpl implements BankOrderService {
   protected AppBaseService appBaseService;
   protected PaymentSessionCancelService paymentSessionCancelService;
   protected PaymentSessionRepository paymentSessionRepo;
-  protected MoveCancelBankPaymentService moveCancelBankPaymentService;
-  protected MoveRepository moveRepo;
 
   @Inject
   public BankOrderServiceImpl(
@@ -116,9 +109,7 @@ public class BankOrderServiceImpl implements BankOrderService {
       BankOrderMoveService bankOrderMoveService,
       AppBaseService appBaseService,
       PaymentSessionCancelService paymentSessionCancelService,
-      PaymentSessionRepository paymentSessionRepo,
-      MoveCancelBankPaymentService moveCancelBankPaymentService,
-      MoveRepository moveRepo) {
+      PaymentSessionRepository paymentSessionRepo) {
 
     this.bankOrderRepo = bankOrderRepo;
     this.invoicePaymentRepo = invoicePaymentRepo;
@@ -132,8 +123,6 @@ public class BankOrderServiceImpl implements BankOrderService {
     this.appBaseService = appBaseService;
     this.paymentSessionCancelService = paymentSessionCancelService;
     this.paymentSessionRepo = paymentSessionRepo;
-    this.moveCancelBankPaymentService = moveCancelBankPaymentService;
-    this.moveRepo = moveRepo;
   }
 
   public void checkPreconditions(BankOrder bankOrder) throws AxelorException {
@@ -308,46 +297,6 @@ public class BankOrderServiceImpl implements BankOrderService {
 
   @Override
   public BankOrder cancelPayment(BankOrder bankOrder) throws AxelorException {
-    this.cancelMoves(bankOrder);
-    this.cancelInvoicePayments(bankOrder);
-
-    return this.cancelPaymentSession(bankOrder);
-  }
-
-  protected void cancelMoves(BankOrder bankOrder) throws AxelorException {
-    this.cancelBankOrderLinesMove(bankOrder);
-    this.cancelInvoicePaymentMove(bankOrder);
-    this.cancelPaymentSessionMoves(bankOrder);
-  }
-
-  protected void cancelBankOrderLinesMove(BankOrder bankOrder) throws AxelorException {
-    if (CollectionUtils.isEmpty(bankOrder.getBankOrderLineList())) {
-      return;
-    }
-
-    for (BankOrderLine bankOrderLine : bankOrder.getBankOrderLineList()) {
-      moveCancelBankPaymentService.cancelGeneratedMove(bankOrderLine.getSenderMove());
-      moveCancelBankPaymentService.cancelGeneratedMove(bankOrderLine.getReceiverMove());
-    }
-  }
-
-  protected void cancelInvoicePaymentMove(BankOrder bankOrder) throws AxelorException {
-    for (InvoicePayment invoicePayment : invoicePaymentRepo.findByBankOrder(bankOrder).fetch()) {
-      moveCancelBankPaymentService.cancelGeneratedMove(invoicePayment.getMove());
-    }
-  }
-
-  protected void cancelPaymentSessionMoves(BankOrder bankOrder) throws AxelorException {
-    PaymentSession paymentSession = paymentSessionRepo.findByBankOrder(bankOrder);
-
-    if (paymentSession != null) {
-      for (Move move : moveRepo.findByPaymentSession(paymentSession).fetch()) {
-        moveCancelBankPaymentService.cancelGeneratedMove(move);
-      }
-    }
-  }
-
-  protected void cancelInvoicePayments(BankOrder bankOrder) throws AxelorException {
     List<InvoicePayment> invoicePaymentList = invoicePaymentRepo.findByBankOrder(bankOrder).fetch();
 
     for (InvoicePayment invoicePayment : invoicePaymentList) {
@@ -356,14 +305,12 @@ public class BankOrderServiceImpl implements BankOrderService {
         invoicePaymentBankPaymentCancelService.cancelInvoicePayment(invoicePayment);
       }
     }
-  }
 
-  protected BankOrder cancelPaymentSession(BankOrder bankOrder) {
     PaymentSession paymentSession = paymentSessionRepo.findByBankOrder(bankOrder);
 
     if (paymentSession != null) {
       paymentSessionCancelService.cancelPaymentSession(paymentSession);
-      return bankOrderRepo.find(bankOrder.getId());
+      bankOrder = bankOrderRepo.find(bankOrder.getId());
     }
 
     return bankOrder;
@@ -378,19 +325,14 @@ public class BankOrderServiceImpl implements BankOrderService {
           paymentSessionRepo.all().filter("self.bankOrder = ?", bankOrder).fetchOne();
 
       if (paymentSession != null) {
-        Beans.get(PaymentSessionValidateService.class)
-            .processPaymentSession(paymentSession, new ArrayList());
+        Beans.get(PaymentSessionValidateService.class).processPaymentSession(paymentSession);
         bankOrder = bankOrderRepo.find(bankOrder.getId());
       }
-    } else if (bankOrder
-        .getFunctionalOriginSelect()
-        .equals(BankOrderRepository.FUNCTIONAL_ORIGIN_INVOICE_PAYMENT)) {
-      this.validatePayment(bankOrder);
-    } else {
-      bankOrderMoveService.generateMoves(bankOrder);
     }
 
+    bankOrderMoveService.generateMoves(bankOrder);
     bankOrder.setAreMovesGenerated(true);
+    validatePayment(bankOrder);
 
     return bankOrderRepo.find(bankOrder.getId());
   }

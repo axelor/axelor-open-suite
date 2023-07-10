@@ -21,7 +21,6 @@ package com.axelor.apps.production.service;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.production.db.Machine;
-import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.WorkCenterGroup;
@@ -34,11 +33,6 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.tuple.Pair;
 
 public class ProdProcessLineServiceImpl implements ProdProcessLineService {
 
@@ -60,13 +54,12 @@ public class ProdProcessLineServiceImpl implements ProdProcessLineService {
     WorkCenter workCenter =
         workCenterService.getMainWorkCenterFromGroup(prodProcessLine.getWorkCenterGroup());
     prodProcessLine.setWorkCenter(workCenter);
-    prodProcessLine.setDurationPerCycle(
-        workCenterService.getMachineDurationFromWorkCenter(workCenter));
-    prodProcessLine.setHumanDuration(workCenterService.getHumanDurationFromWorkCenter(workCenter));
+    prodProcessLine.setDurationPerCycle(workCenterService.getDurationFromWorkCenter(workCenter));
     prodProcessLine.setMinCapacityPerCycle(
         workCenterService.getMinCapacityPerCycleFromWorkCenter(workCenter));
     prodProcessLine.setMaxCapacityPerCycle(
         workCenterService.getMaxCapacityPerCycleFromWorkCenter(workCenter));
+    prodProcessLine.setTimingOfImplementation(workCenter.getTimingOfImplementation());
   }
 
   /**
@@ -85,44 +78,10 @@ public class ProdProcessLineServiceImpl implements ProdProcessLineService {
   }
 
   @Override
-  public long computeEntireCycleDuration(
-      OperationOrder operationOrder, ProdProcessLine prodProcessLine, BigDecimal qty)
+  public long computeEntireCycleDuration(ProdProcessLine prodProcessLine, BigDecimal qty)
       throws AxelorException {
     WorkCenter workCenter = prodProcessLine.getWorkCenter();
 
-    Pair<Long, BigDecimal> durationNbCyclesPair =
-        getDurationNbCyclesPair(workCenter, prodProcessLine, qty);
-    long duration = durationNbCyclesPair.getLeft().longValue();
-    BigDecimal nbCycles = durationNbCyclesPair.getRight();
-
-    BigDecimal machineDurationPerCycle =
-        new BigDecimal(workCenterService.getMachineDurationFromWorkCenter(workCenter));
-    BigDecimal humanDurationPerCycle =
-        new BigDecimal(workCenterService.getHumanDurationFromWorkCenter(workCenter));
-    BigDecimal maxDurationPerCycle =
-        getMaxDuration(Arrays.asList(machineDurationPerCycle, humanDurationPerCycle));
-
-    long plannedDuration = 0;
-    long machineDuration = duration + nbCycles.multiply(machineDurationPerCycle).longValue();
-    long humanDuration = nbCycles.multiply(humanDurationPerCycle).longValue();
-
-    if (machineDurationPerCycle.equals(maxDurationPerCycle)) {
-      plannedDuration = machineDuration;
-    } else if (humanDurationPerCycle.equals(maxDurationPerCycle)) {
-      plannedDuration = humanDuration;
-    }
-
-    if (operationOrder != null) {
-      operationOrder.setPlannedMachineDuration(machineDuration);
-      operationOrder.setPlannedHumanDuration(humanDuration);
-    }
-
-    return plannedDuration;
-  }
-
-  protected Pair<Long, BigDecimal> getDurationNbCyclesPair(
-      WorkCenter workCenter, ProdProcessLine prodProcessLine, BigDecimal qty)
-      throws AxelorException {
     long duration = 0;
     if (prodProcessLine.getWorkCenter() == null) {
       throw new AxelorException(
@@ -155,19 +114,18 @@ public class ProdProcessLineServiceImpl implements ProdProcessLineService {
             I18n.get(ProductionExceptionMessage.WORKCENTER_NO_MACHINE),
             workCenter.getName());
       }
-      duration += workCenter.getStartingDuration();
-      duration += workCenter.getEndingDuration();
+      duration += machine.getStartingDuration();
+      duration += machine.getEndingDuration();
       duration +=
           nbCycles
               .subtract(new BigDecimal(1))
-              .multiply(new BigDecimal(workCenter.getSetupDuration()))
+              .multiply(new BigDecimal(machine.getSetupDuration()))
               .longValue();
     }
 
-    return Pair.of(Long.valueOf(duration), nbCycles);
-  }
+    BigDecimal durationPerCycle = new BigDecimal(prodProcessLine.getDurationPerCycle());
+    duration += nbCycles.multiply(durationPerCycle).longValue();
 
-  protected BigDecimal getMaxDuration(List<BigDecimal> durations) {
-    return !CollectionUtils.isEmpty(durations) ? Collections.max(durations) : BigDecimal.ZERO;
+    return duration;
   }
 }

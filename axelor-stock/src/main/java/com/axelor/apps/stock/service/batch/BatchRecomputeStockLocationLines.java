@@ -24,7 +24,6 @@ import com.axelor.apps.base.db.repo.ExceptionOriginRepository;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.StockMove;
-import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
@@ -125,19 +124,17 @@ public class BatchRecomputeStockLocationLines extends AbstractBatch {
 
   protected void updatePlannedQty(StockMoveGroup stockMoveGroup) throws AxelorException {
 
-    List<StockMoveLine> stockMoveLineList;
-    Query<StockMoveLine> query = buildQueryFetchStockMoveLineFromGroup(stockMoveGroup).order("id");
+    List<StockMove> stockMoves;
+    Query<StockMove> query = buildQueryFetchStockMoveFromGroup(stockMoveGroup).order("id");
     int offSet = 0;
-    while (!(stockMoveLineList = query.fetch(FETCH_LIMIT, offSet)).isEmpty()) {
+    while (!(stockMoves = query.fetch(FETCH_LIMIT, offSet)).isEmpty()) {
 
-      for (StockMoveLine stockMoveLine : stockMoveLineList) {
-        stockMoveLineService.updateLocations(
-            StockMoveRepository.STATUS_DRAFT,
-            StockMoveRepository.STATUS_PLANNED,
-            stockMoveLine.getStockMove().getPlannedStockMoveLineList(),
-            stockMoveLine.getStockMove().getEstimatedDate(),
-            false,
-            true);
+      for (StockMove stockMove : stockMoves) {
+        stockMoveService.updateLocations(
+            stockMove,
+            stockMove.getFromStockLocation(),
+            stockMove.getToStockLocation(),
+            StockMoveRepository.STATUS_DRAFT);
       }
 
       offSet += FETCH_LIMIT;
@@ -186,6 +183,8 @@ public class BatchRecomputeStockLocationLines extends AbstractBatch {
 
     for (Entry<TrackProduct, StockMoveLineOrigin> entry : stockMoveLinesMap.entrySet()) {
       stockMoveLineService.updateLocations(
+          stockLocationRepository.find(group.getFromStockLocation()),
+          stockLocationRepository.find(group.getToStockLocation()),
           StockMoveRepository.STATUS_PLANNED,
           StockMoveRepository.STATUS_REALIZED,
           Collections.singletonList(entry.getValue().getStockMoveLine()),
@@ -204,9 +203,13 @@ public class BatchRecomputeStockLocationLines extends AbstractBatch {
 
   protected void clearWapHistoryLines() {
 
+    javax.persistence.Query clearWapHistoryLinesQuery =
+        JPA.em().createNativeQuery("Delete FROM stock_wap_history");
+
     javax.persistence.Query clearStockLocationsHistoryLinesQuery =
         JPA.em().createNativeQuery("Delete FROM stock_stock_location_line_history");
 
+    JPA.runInTransaction(clearWapHistoryLinesQuery::executeUpdate);
     JPA.runInTransaction(clearStockLocationsHistoryLinesQuery::executeUpdate);
   }
 
@@ -225,30 +228,6 @@ public class BatchRecomputeStockLocationLines extends AbstractBatch {
     }
 
     return stockMoveRepository
-        .all()
-        .filter(query.toString())
-        .bind("realDate", stockMoveGroup.getRealDate())
-        .bind("fromStockLocation", stockMoveGroup.getFromStockLocation())
-        .bind("toStockLocation", stockMoveGroup.getToStockLocation())
-        .bind("status", stockMoveGroup.getStatusSelect());
-  }
-
-  protected Query<StockMoveLine> buildQueryFetchStockMoveLineFromGroup(
-      StockMoveGroup stockMoveGroup) {
-
-    StringBuilder query =
-        new StringBuilder(
-            "self.fromStockLocation.id = :fromStockLocation"
-                + " AND self.toStockLocation.id = :toStockLocation"
-                + " AND self.stockMove.statusSelect = :status");
-
-    if (stockMoveGroup.getRealDate() == null) {
-      query.append(" AND self.stockMove.realDate is NULL");
-    } else {
-      query.append(" AND self.stockMove.realDate = :realDate");
-    }
-
-    return stockMoveLineRepository
         .all()
         .filter(query.toString())
         .bind("realDate", stockMoveGroup.getRealDate())

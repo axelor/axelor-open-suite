@@ -122,8 +122,6 @@ public class GdprProcessingRegisterService implements Callable<List<GDPRProcessi
     List<GDPRProcessingRegisterRule> gdprProcessingRegisterRuleList =
         gdprProcessingRegister.getGdprProcessingRegisterRuleList();
 
-    boolean isArchiveData = gdprProcessingRegister.getIsArchiveData();
-
     Anonymizer anonymizer = gdprProcessingRegister.getAnonymizer();
 
     LocalDate calculatedDate =
@@ -155,9 +153,7 @@ public class GdprProcessingRegisterService implements Callable<List<GDPRProcessi
 
       for (Long id : ids) {
         model = Query.of(entityKlass).filter("id = :id").bind("id", id).fetchOne();
-        if (isArchiveData) {
-          model.setArchived(true);
-        }
+        model.setArchived(true);
         anonymize(metaModel, model, anonymizer);
         count++;
 

@@ -53,7 +53,5 @@ public class AppMobileSettingsServiceImpl implements AppMobileSettingsService {
         MobileConfigRepository.APP_SEQUENCE_MANUFACTURING);
     updateMobileConfig(
         appMobileSettings.getIsCrmAppEnabled(), MobileConfigRepository.APP_SEQUENCE_CRM);
-    updateMobileConfig(
-        appMobileSettings.getIsHelpdeskAppEnabled(), MobileConfigRepository.APP_SEQUENCE_HELPDESK);
   }
 }

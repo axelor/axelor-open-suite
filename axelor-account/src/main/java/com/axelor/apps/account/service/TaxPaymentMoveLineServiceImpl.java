@@ -20,6 +20,8 @@ package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.TaxPaymentMoveLine;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.inject.Beans;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
@@ -44,7 +46,8 @@ public class TaxPaymentMoveLineServiceImpl implements TaxPaymentMoveLineService 
             taxPaymentMoveLine.getReconcile(),
             taxPaymentMoveLine.getTaxRate(),
             taxPaymentMoveLine.getDetailPaymentAmount().negate(),
-            taxPaymentMoveLine.getDate());
+            Beans.get(AppBaseService.class)
+                .getTodayDate(taxPaymentMoveLine.getReconcile().getCompany()));
     reversetaxPaymentMoveLine = this.computeTaxAmount(reversetaxPaymentMoveLine);
     reversetaxPaymentMoveLine.setIsAlreadyReverse(true);
     reversetaxPaymentMoveLine.setVatSystemSelect(taxPaymentMoveLine.getVatSystemSelect());

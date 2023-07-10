@@ -28,16 +28,14 @@ import com.axelor.apps.production.db.repo.OperationOrderDurationRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.service.ProdProcessLineService;
 import com.axelor.apps.production.service.app.AppProductionService;
-import com.axelor.apps.production.service.machine.MachineService;
-import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.production.service.operationorder.OperationOrderStockMoveService;
-import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowServiceImpl;
+import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.time.Duration;
 import java.util.List;
 
-public class OperationOrderWorkflowServiceBusinessImpl extends OperationOrderWorkflowServiceImpl {
+public class OperationOrderWorkflowServiceBusinessImpl extends OperationOrderWorkflowService {
 
   @Inject
   public OperationOrderWorkflowServiceBusinessImpl(
@@ -47,9 +45,7 @@ public class OperationOrderWorkflowServiceBusinessImpl extends OperationOrderWor
       AppProductionService appProductionService,
       MachineToolRepository machineToolRepo,
       WeeklyPlanningService weeklyPlanningService,
-      ProdProcessLineService prodProcessLineService,
-      MachineService machineService,
-      ManufOrderService manufOrderService) {
+      ProdProcessLineService prodProcessLineService) {
     super(
         operationOrderStockMoveService,
         operationOrderRepo,
@@ -57,9 +53,7 @@ public class OperationOrderWorkflowServiceBusinessImpl extends OperationOrderWor
         appProductionService,
         machineToolRepo,
         weeklyPlanningService,
-        prodProcessLineService,
-        machineService,
-        manufOrderService);
+        prodProcessLineService);
   }
 
   /**

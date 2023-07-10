@@ -7,7 +7,8 @@
 
   <entity name="ProjectPlanningTime" cacheable="true">
 
-    <decimal name="plannedTime" title="Planned time"/>
+    <date name="date" column="date_val" title="Date" required="true"/>
+    <decimal name="plannedHours" title="Planned hours"/>
 
     <many-to-one name="employee" ref="com.axelor.apps.hr.db.Employee" title="Employee"
       required="true"/>
@@ -19,15 +20,13 @@
     <integer name="timepercent" title="Time %" selection="project.task.progress.select"/>
     <string name="description" title="Description" large="true"/>
     <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Activity"/>
-
-    <datetime name="startDateTime" title="Start date time" required="true"/>
-    <datetime name="endDateTime" title="End date time" required="true"/>
-    <many-to-one name="timeUnit" title="Time unit" ref="com.axelor.apps.base.db.Unit"
-      required="true"/>
+    <boolean name="isIncludeInTurnoverForecast" title="Include in turnover forecast"/>
+    <time name="startTime" title="Start time"/>
+    <time name="endTime" title="End time"/>
 
     <string name="fullName" namecolumn="true">
 		 <![CDATA[
-      		return Beans.get(ProjectPlanningTimeComputeNameService.class).computeProjectPlanningTimeFullname(this.getEmployee(),this.getProject(),this.getStartDateTime());
+      		return Beans.get(ProjectPlanningTimeComputeNameService.class).computeProjectPlanningTimeFullname(this.getEmployee(),this.getProject(),this.getDate());
 	  	]]>
     </string>
 

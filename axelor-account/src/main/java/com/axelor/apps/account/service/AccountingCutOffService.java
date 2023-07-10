@@ -20,7 +20,6 @@ package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
-import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.db.Query;
@@ -57,7 +56,4 @@ public interface AccountingCutOffService {
       boolean isReverse,
       String prefixOrigin)
       throws AxelorException;
-
-  Query<MoveLine> getMoveLines(
-      Company company, Journal researchJournal, LocalDate moveDate, int accountingCutOffTypeSelect);
 }

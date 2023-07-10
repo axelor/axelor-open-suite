@@ -33,13 +33,8 @@ public class OpportunityManagementRepository extends OpportunityRepository {
   @Override
   public Opportunity copy(Opportunity entity, boolean deep) {
     Opportunity copy = super.copy(entity, deep);
-    try {
-      OpportunityStatus status = Beans.get(AppCrmService.class).getOpportunityDefaultStatus();
-      copy.setOpportunityStatus(status);
-    } catch (Exception e) {
-      TraceBackService.traceExceptionFromSaveMethod(e);
-      throw new PersistenceException(e.getMessage(), e);
-    }
+    OpportunityStatus status = Beans.get(OpportunityStatusRepository.class).getDefaultStatus();
+    copy.setOpportunityStatus(status);
     copy.setLostReason(null);
     copy.setOpportunitySeq(null);
     return copy;

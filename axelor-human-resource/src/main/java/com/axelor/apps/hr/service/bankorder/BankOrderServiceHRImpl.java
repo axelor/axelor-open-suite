@@ -19,7 +19,6 @@
 package com.axelor.apps.hr.service.bankorder;
 
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
-import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionCancelService;
 import com.axelor.apps.bankpayment.db.BankOrder;
@@ -31,13 +30,12 @@ import com.axelor.apps.bankpayment.service.bankorder.BankOrderMoveService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderServiceImpl;
 import com.axelor.apps.bankpayment.service.config.BankPaymentConfigService;
 import com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentBankPaymentCancelService;
-import com.axelor.apps.bankpayment.service.move.MoveCancelBankPaymentService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
-import com.axelor.apps.hr.service.expense.ExpensePaymentService;
+import com.axelor.apps.hr.service.expense.ExpenseService;
 import com.axelor.inject.Beans;
 import com.axelor.studio.app.service.AppService;
 import com.google.inject.Inject;
@@ -46,7 +44,7 @@ import java.util.List;
 
 public class BankOrderServiceHRImpl extends BankOrderServiceImpl {
 
-  protected ExpensePaymentService expensePaymentService;
+  protected ExpenseService expenseService;
 
   @Inject
   public BankOrderServiceHRImpl(
@@ -62,9 +60,7 @@ public class BankOrderServiceHRImpl extends BankOrderServiceImpl {
       AppBaseService appBaseService,
       PaymentSessionCancelService paymentSessionCancelService,
       PaymentSessionRepository paymentSessionRepo,
-      MoveCancelBankPaymentService moveCancelBankPaymentService,
-      MoveRepository moveRepo,
-      ExpensePaymentService expensePaymentService) {
+      ExpenseService expenseService) {
     super(
         bankOrderRepo,
         invoicePaymentRepo,
@@ -77,10 +73,8 @@ public class BankOrderServiceHRImpl extends BankOrderServiceImpl {
         bankOrderMoveService,
         appBaseService,
         paymentSessionCancelService,
-        paymentSessionRepo,
-        moveCancelBankPaymentService,
-        moveRepo);
-    this.expensePaymentService = expensePaymentService;
+        paymentSessionRepo);
+    this.expenseService = expenseService;
   }
 
   @Override
@@ -99,7 +93,7 @@ public class BankOrderServiceHRImpl extends BankOrderServiceImpl {
       if (expense != null && expense.getStatusSelect() != ExpenseRepository.STATUS_REIMBURSED) {
         expense.setStatusSelect(ExpenseRepository.STATUS_REIMBURSED);
         expense.setPaymentStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
-        expensePaymentService.createMoveForExpensePayment(expense);
+        expenseService.createMoveForExpensePayment(expense);
       }
     }
   }
@@ -119,7 +113,7 @@ public class BankOrderServiceHRImpl extends BankOrderServiceImpl {
     for (Expense expense : expenseList) {
       if (expense != null
           && expense.getPaymentStatusSelect() != InvoicePaymentRepository.STATUS_CANCELED) {
-        expensePaymentService.cancelPayment(expense);
+        expenseService.cancelPayment(expense);
       }
     }
 

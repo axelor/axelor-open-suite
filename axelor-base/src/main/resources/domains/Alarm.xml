@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="Alarm">
+
+    <datetime name="date" column="date_val" title="Date" required="true" tz="true"/>
+    <many-to-one name="alarmEngine" ref="com.axelor.apps.base.db.AlarmEngine"
+      title="Alarm engine"/>
+    <boolean name="acquitOk" title="Suspend Alarm"/>
+
+    <string name="content" title="Message" large="true"/>
+
+    <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
+
+  </entity>
+
+</domain-models>

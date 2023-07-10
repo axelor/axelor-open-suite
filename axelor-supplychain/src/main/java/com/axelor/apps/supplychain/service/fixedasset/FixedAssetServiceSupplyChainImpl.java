@@ -93,17 +93,14 @@ public class FixedAssetServiceSupplyChainImpl extends FixedAssetGenerationServic
       if (fixedAsset.getInvoiceLine().getIncomingStockMove() != null
           && CollectionUtils.isNotEmpty(
               fixedAsset.getInvoiceLine().getIncomingStockMove().getStockMoveLineList())) {
-
-        StockMoveLine stockMoveLine =
+        fixedAsset.setTrackingNumber(
             fixedAsset.getInvoiceLine().getIncomingStockMove().getStockMoveLineList().stream()
                 .filter(l -> pol.equals(l.getPurchaseOrderLine()))
                 .findFirst()
-                .orElse(null);
-
-        if (stockMoveLine != null) {
-          fixedAsset.setTrackingNumber(stockMoveLine.getTrackingNumber());
-          fixedAsset.setStockLocation(stockMoveLine.getToStockLocation());
-        }
+                .map(StockMoveLine::getTrackingNumber)
+                .orElse(null));
+        fixedAsset.setStockLocation(
+            fixedAsset.getInvoiceLine().getIncomingStockMove().getToStockLocation());
       }
     }
 

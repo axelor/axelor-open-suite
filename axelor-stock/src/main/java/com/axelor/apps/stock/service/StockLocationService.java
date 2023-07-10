@@ -61,6 +61,4 @@ public interface StockLocationService {
 
   void changeProductLocker(StockLocation stockLocation, Product product, String newLocker)
       throws AxelorException;
-
-  String computeStockLocationChildren(StockLocation stockLocation);
 }

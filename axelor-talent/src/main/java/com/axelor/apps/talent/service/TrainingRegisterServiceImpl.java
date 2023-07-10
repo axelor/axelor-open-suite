@@ -101,6 +101,7 @@ public class TrainingRegisterServiceImpl implements TrainingRegisterService {
     if (CollectionUtils.isNotEmpty(skills)) {
 
       Employee employee = trainingRegister.getEmployee();
+      employee.getSkillSet().addAll(skills);
 
       skills.forEach(
           skill -> {

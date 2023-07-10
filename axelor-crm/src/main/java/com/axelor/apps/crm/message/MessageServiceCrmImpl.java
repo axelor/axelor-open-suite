@@ -23,7 +23,6 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.ICalendarEventRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.birt.template.BirtTemplateService;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.crm.db.Event;
@@ -51,16 +50,14 @@ public class MessageServiceCrmImpl extends MessageServiceBaseImpl {
       SendMailQueueService sendMailQueueService,
       AppSettingsMessageService appSettingsMessageService,
       UserService userService,
-      AppBaseService appBaseService,
-      BirtTemplateService birtTemplateService) {
+      AppBaseService appBaseService) {
     super(
         metaAttachmentRepository,
         messageRepository,
         sendMailQueueService,
         appSettingsMessageService,
         userService,
-        appBaseService,
-        birtTemplateService);
+        appBaseService);
   }
 
   @Transactional(rollbackOn = {Exception.class})

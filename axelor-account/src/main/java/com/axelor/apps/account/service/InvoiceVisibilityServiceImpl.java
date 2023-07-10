@@ -24,7 +24,6 @@ import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
-import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.auth.db.User;
@@ -36,18 +35,15 @@ import org.apache.commons.collections.CollectionUtils;
 @RequestScoped
 public class InvoiceVisibilityServiceImpl implements InvoiceVisibilityService {
   protected InvoiceService invoiceService;
-  protected InvoiceTermPfpService invoiceTermPfpService;
   protected AccountConfigService accountConfigService;
   protected AppAccountService appAccountService;
 
   @Inject
   public InvoiceVisibilityServiceImpl(
       InvoiceService invoiceService,
-      InvoiceTermPfpService invoiceTermPfpService,
       AccountConfigService accountConfigService,
       AppAccountService appAccountService) {
     this.invoiceService = invoiceService;
-    this.invoiceTermPfpService = invoiceTermPfpService;
     this.accountConfigService = accountConfigService;
     this.appAccountService = appAccountService;
   }
@@ -55,10 +51,9 @@ public class InvoiceVisibilityServiceImpl implements InvoiceVisibilityService {
   @Override
   public boolean isPfpButtonVisible(Invoice invoice, User user, boolean litigation)
       throws AxelorException {
-    boolean managePfpCondition = invoiceTermPfpService.getManagePfpCondition(invoice.getCompany());
+    boolean managePfpCondition = this.getManagePfpCondition(invoice);
 
-    boolean validatorUserCondition =
-        invoiceTermPfpService.getUserCondition(invoice.getPfpValidatorUser(), user);
+    boolean validatorUserCondition = this._getUserCondition(invoice, user);
 
     boolean operationTypeCondition = this.getOperationTypePurchaseCondition(invoice);
 
@@ -66,8 +61,7 @@ public class InvoiceVisibilityServiceImpl implements InvoiceVisibilityService {
 
     boolean pfpValidateStatusCondition = this._getPfpValidateStatusCondition(invoice, litigation);
 
-    boolean invoiceTermsCondition =
-        invoiceTermPfpService.getInvoiceTermsCondition(invoice.getInvoiceTermList());
+    boolean invoiceTermsCondition = this._getInvoiceTermsCondition(invoice);
 
     return managePfpCondition
         && validatorUserCondition
@@ -91,12 +85,11 @@ public class InvoiceVisibilityServiceImpl implements InvoiceVisibilityService {
 
   @Override
   public boolean isValidatorUserVisible(Invoice invoice) throws AxelorException {
-    boolean managePfpCondition = invoiceTermPfpService.getManagePfpCondition(invoice.getCompany());
+    boolean managePfpCondition = this.getManagePfpCondition(invoice);
 
     boolean operationTypeCondition = this.getOperationTypePurchaseCondition(invoice);
 
-    boolean invoiceTermsCondition =
-        invoiceTermPfpService.getInvoiceTermsCondition(invoice.getInvoiceTermList());
+    boolean invoiceTermsCondition = this._getInvoiceTermsCondition(invoice);
 
     boolean decisionDateCondition = this._getDecisionDateCondition(invoice);
 
@@ -110,7 +103,7 @@ public class InvoiceVisibilityServiceImpl implements InvoiceVisibilityService {
 
   @Override
   public boolean isDecisionPfpVisible(Invoice invoice) throws AxelorException {
-    boolean managePfpCondition = invoiceTermPfpService.getManagePfpCondition(invoice.getCompany());
+    boolean managePfpCondition = this.getManagePfpCondition(invoice);
 
     boolean operationTypeCondition = this.getOperationTypePurchaseCondition(invoice);
 
@@ -121,7 +114,7 @@ public class InvoiceVisibilityServiceImpl implements InvoiceVisibilityService {
 
   @Override
   public boolean isSendNotifyVisible(Invoice invoice) throws AxelorException {
-    boolean managePfpCondition = invoiceTermPfpService.getManagePfpCondition(invoice.getCompany());
+    boolean managePfpCondition = this.getManagePfpCondition(invoice);
 
     boolean operationTypeCondition = this.getOperationTypePurchaseCondition(invoice);
 
@@ -143,6 +136,14 @@ public class InvoiceVisibilityServiceImpl implements InvoiceVisibilityService {
   }
 
   @Override
+  public boolean getManagePfpCondition(Invoice invoice) throws AxelorException {
+    return invoice.getCompany() != null
+        && accountConfigService
+            .getAccountConfig(invoice.getCompany())
+            .getIsManagePassedForPayment();
+  }
+
+  @Override
   public boolean getOperationTypePurchaseCondition(Invoice invoice) throws AxelorException {
     return invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
         || (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND
@@ -160,10 +161,14 @@ public class InvoiceVisibilityServiceImpl implements InvoiceVisibilityService {
         : appAccount.getAppAccount().getPaymentVouchersOnCustomerInvoice();
   }
 
+  protected boolean _getUserCondition(Invoice invoice, User user) {
+    return user.equals(invoice.getPfpValidatorUser()) || user.getIsSuperPfpUser();
+  }
+
   protected boolean _getOperationTypeCondition(Invoice invoice) throws AxelorException {
     return invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE
         || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND
-        || !invoiceTermPfpService.getManagePfpCondition(invoice.getCompany())
+        || !this.getManagePfpCondition(invoice)
         || (this._getInvoiceTermsCondition2(invoice)
             && (invoice.getOperationTypeSelect()
                     == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
@@ -195,6 +200,13 @@ public class InvoiceVisibilityServiceImpl implements InvoiceVisibilityService {
             || invoice.getPfpValidateStatusSelect() == InvoiceRepository.PFP_STATUS_LITIGATION);
   }
 
+  protected boolean _getInvoiceTermsCondition(Invoice invoice) {
+    return CollectionUtils.isEmpty(invoice.getInvoiceTermList())
+        || invoice.getInvoiceTermList().stream()
+            .allMatch(
+                it -> it.getPfpValidateStatusSelect() == InvoiceTermRepository.PFP_STATUS_AWAITING);
+  }
+
   protected boolean _getInvoiceTermsCondition2(Invoice invoice) {
     return CollectionUtils.isEmpty(invoice.getInvoiceTermList())
         || invoice.getInvoiceTermList().stream()
@@ -214,7 +226,7 @@ public class InvoiceVisibilityServiceImpl implements InvoiceVisibilityService {
   @Override
   public boolean getPfpCondition(Invoice invoice) throws AxelorException {
     return appAccountService.getAppAccount().getActivatePassedForPayment()
-        && invoiceTermPfpService.getManagePfpCondition(invoice.getCompany())
+        && this.getManagePfpCondition(invoice)
         && this.getOperationTypePurchaseCondition(invoice);
   }
 }

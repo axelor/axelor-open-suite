@@ -25,7 +25,6 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import java.math.BigDecimal;
@@ -72,9 +71,7 @@ public interface StockMoveLineServiceSupplychain {
       boolean taxed,
       BigDecimal taxRate,
       SaleOrderLine saleOrderLine,
-      PurchaseOrderLine purchaseOrderLine,
-      StockLocation fromStockLocation,
-      StockLocation toStockLocation)
+      PurchaseOrderLine purchaseOrderLine)
       throws AxelorException;
 
   /**
@@ -87,7 +84,7 @@ public interface StockMoveLineServiceSupplychain {
   StockMoveLine getMergedStockMoveLine(List<StockMoveLine> stockMoveLineList)
       throws AxelorException;
 
-  boolean isAvailableProduct(StockMoveLine stockMoveLine);
+  boolean isAvailableProduct(StockMove stockMove, StockMoveLine stockMoveLine);
 
   void setInvoiceStatus(StockMoveLine stockMoveLine);
 

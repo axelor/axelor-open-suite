@@ -28,6 +28,7 @@ import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.InventoryRepository;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.report.IReport;
 import com.axelor.apps.stock.service.InventoryProductService;
@@ -252,7 +253,10 @@ public class InventoryController {
       } else {
         builder
             .context("_showSingle", true)
-            .domain(String.format("self.inventory.id = %s", inventory.getId()));
+            .domain(
+                String.format(
+                    "self.originTypeSelect = '%s' AND self.originId = %s",
+                    StockMoveRepository.ORIGIN_INVENTORY, inventory.getId()));
         response.setView(builder.map());
       }
     } catch (Exception e) {

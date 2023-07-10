@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="AlarmEngine" cacheable="true">
+
+    <!-- HEADER -->
+    <string name="code" title="Code" required="true"/>
+    <many-to-one name="metaModel" ref="com.axelor.meta.db.MetaModel" title="Model"
+      required="true"/>
+    <many-to-one name="alarmMessage" ref="com.axelor.apps.base.db.AlarmMessage"
+      title="Message" required="true"/>
+    <integer name="managerTypeSelect" title="Manager Type"
+      selection="alarm.engine.manager.type"/>
+    <boolean name="activeOk" title="Active" default="true"/>
+    <boolean name="lockingOk" title="Blocking" default="false"/>
+    <boolean name="externalOk" title="External" default="false"/>
+
+    <string name="query" title="Query" large="true"/>
+
+    <string name="description" title="Description" large="true"/>
+
+  </entity>
+
+</domain-models>

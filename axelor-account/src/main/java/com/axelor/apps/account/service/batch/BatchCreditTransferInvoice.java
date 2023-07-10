@@ -133,7 +133,7 @@ public abstract class BatchCreditTransferInvoice extends BatchStrategy {
       for (Invoice invoice : invoiceList) {
         try {
           doneList.add(
-              invoicePaymentCreateService.createAndAddInvoicePayment(invoice, companyBankDetails));
+              invoicePaymentCreateService.createInvoicePayment(invoice, companyBankDetails));
           incrementDone();
         } catch (Exception ex) {
           incrementAnomaly();

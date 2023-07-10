@@ -18,17 +18,14 @@
  */
 package com.axelor.apps.account.service.moveline;
 
-import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.FinancialDiscount;
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.AccountingCutOffService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.batch.BatchAccountingCutOff;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -37,12 +34,10 @@ import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Batch;
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.db.JPA;
-import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -82,7 +77,6 @@ public class MoveLineServiceImpl implements MoveLineService {
   protected AccountConfigService accountConfigService;
   protected InvoiceTermService invoiceTermService;
   protected MoveLineControlService moveLineControlService;
-  protected AccountingCutOffService cutOffService;
 
   @Inject
   public MoveLineServiceImpl(
@@ -93,8 +87,7 @@ public class MoveLineServiceImpl implements MoveLineService {
       AppAccountService appAccountService,
       AccountConfigService accountConfigService,
       InvoiceTermService invoiceTermService,
-      MoveLineControlService moveLineControlService,
-      AccountingCutOffService cutOffService) {
+      MoveLineControlService moveLineControlService) {
     this.moveLineRepository = moveLineRepository;
     this.invoiceRepository = invoiceRepository;
     this.paymentService = paymentService;
@@ -103,7 +96,6 @@ public class MoveLineServiceImpl implements MoveLineService {
     this.accountConfigService = accountConfigService;
     this.invoiceTermService = invoiceTermService;
     this.moveLineControlService = moveLineControlService;
-    this.cutOffService = cutOffService;
   }
 
   @Override
@@ -168,10 +160,6 @@ public class MoveLineServiceImpl implements MoveLineService {
           I18n.get(AccountExceptionMessage.MOVE_LINE_RECONCILE_LINE_NO_SELECTED));
     }
 
-    if (paymentService.reconcileMoveLinesWithCompatibleAccounts(moveLineList)) {
-      return;
-    }
-
     Map<List<Object>, Pair<List<MoveLine>, List<MoveLine>>> moveLineMap =
         getPopulatedReconcilableMoveLineMap(moveLineList);
 
@@ -195,8 +183,7 @@ public class MoveLineServiceImpl implements MoveLineService {
     }
   }
 
-  @Override
-  public Pair<List<MoveLine>, List<MoveLine>> findMoveLineLists(
+  protected Pair<List<MoveLine>, List<MoveLine>> findMoveLineLists(
       Pair<List<MoveLine>, List<MoveLine>> moveLineLists) {
     List<MoveLine> fetchedDebitMoveLineList =
         moveLineLists.getLeft().stream()
@@ -228,8 +215,7 @@ public class MoveLineServiceImpl implements MoveLineService {
     }
   }
 
-  @Override
-  public Map<List<Object>, Pair<List<MoveLine>, List<MoveLine>>>
+  protected Map<List<Object>, Pair<List<MoveLine>, List<MoveLine>>>
       getPopulatedReconcilableMoveLineMap(List<MoveLine> moveLineList) {
 
     Map<List<Object>, Pair<List<MoveLine>, List<MoveLine>>> moveLineMap = new HashMap<>();
@@ -330,73 +316,22 @@ public class MoveLineServiceImpl implements MoveLineService {
 
   @Override
   public BigDecimal getCutOffProrataAmount(MoveLine moveLine, LocalDate moveDate) {
-    if (moveDate == null || !moveLineToolService.isCutOffActive(moveLine)) {
+    if (moveDate == null
+        || moveLine.getCutOffStartDate() == null
+        || moveLine.getCutOffEndDate() == null) {
       return BigDecimal.ZERO;
     }
     BigDecimal daysProrata =
         BigDecimal.valueOf(ChronoUnit.DAYS.between(moveDate, moveLine.getCutOffEndDate()));
     BigDecimal daysTotal =
         BigDecimal.valueOf(
-                ChronoUnit.DAYS.between(moveLine.getCutOffStartDate(), moveLine.getCutOffEndDate()))
-            .add(BigDecimal.ONE);
+            ChronoUnit.DAYS.between(moveLine.getCutOffStartDate(), moveLine.getCutOffEndDate()));
     if (daysTotal.compareTo(BigDecimal.ZERO) == 0) {
       return BigDecimal.ZERO;
     }
     BigDecimal prorata = daysProrata.divide(daysTotal, 10, RoundingMode.HALF_UP);
 
     return prorata.multiply(moveLine.getCurrencyAmount()).setScale(2, RoundingMode.HALF_UP);
-  }
-
-  @Override
-  public void computeCutOffProrataAmount(AccountingBatch accountingBatch) throws AxelorException {
-    Company company = accountingBatch.getCompany();
-    LocalDate moveDate = accountingBatch.getMoveDate();
-    Journal researchJournal = accountingBatch.getResearchJournal();
-    int accountingCutOffTypeSelect = accountingBatch.getAccountingCutOffTypeSelect();
-
-    int offset = 0;
-    List<MoveLine> moveLineList;
-    Query<MoveLine> moveLineQuery =
-        cutOffService.getMoveLines(company, researchJournal, moveDate, accountingCutOffTypeSelect);
-
-    while (!(moveLineList = moveLineQuery.fetch(10, offset)).isEmpty()) {
-
-      for (MoveLine moveLine : moveLineList) {
-        ++offset;
-
-        this.computeCutOffProrataAmount(moveLine, moveDate);
-      }
-
-      JPA.clear();
-    }
-  }
-
-  @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public MoveLine computeCutOffProrataAmount(MoveLine moveLine, LocalDate moveDate) {
-    if (moveDate != null && moveLineToolService.isCutOffActive(moveLine)) {
-      BigDecimal daysProrata =
-          BigDecimal.valueOf(ChronoUnit.DAYS.between(moveDate, moveLine.getCutOffEndDate()));
-      BigDecimal daysTotal =
-          BigDecimal.valueOf(
-                  ChronoUnit.DAYS.between(
-                      moveLine.getCutOffStartDate(), moveLine.getCutOffEndDate()))
-              .add(BigDecimal.ONE);
-
-      if (daysTotal.compareTo(BigDecimal.ZERO) != 0) {
-        BigDecimal prorata = BigDecimal.ONE;
-        if (moveDate.isAfter(moveLine.getCutOffStartDate())) {
-          prorata = daysProrata.divide(daysTotal, 10, RoundingMode.HALF_UP);
-        }
-
-        moveLine.setCutOffProrataAmount(
-            prorata.multiply(moveLine.getCurrencyAmount()).setScale(2, RoundingMode.HALF_UP));
-        moveLine.setAmountBeforeCutOffProrata(moveLine.getCredit().max(moveLine.getDebit()));
-        moveLine.setDurationCutOffProrata(daysProrata.toString() + "/" + daysTotal.toString());
-      }
-    }
-
-    return moveLine;
   }
 
   @Override

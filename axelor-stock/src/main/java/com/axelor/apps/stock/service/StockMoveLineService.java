@@ -33,7 +33,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 public interface StockMoveLineService {
 
@@ -66,9 +65,7 @@ public interface StockMoveLineService {
       StockMove stockMove,
       int type,
       boolean taxed,
-      BigDecimal taxRate,
-      StockLocation fromStockLocation,
-      StockLocation toStockLocation)
+      BigDecimal taxRate)
       throws AxelorException;
 
   public void generateTrackingNumber(
@@ -104,9 +101,7 @@ public interface StockMoveLineService {
       BigDecimal companyPurchasePrice,
       Unit unit,
       StockMove stockMove,
-      TrackingNumber trackingNumber,
-      StockLocation fromStockLocation,
-      StockLocation toStockLocation)
+      TrackingNumber trackingNumber)
       throws AxelorException;
 
   public StockMoveLine assignOrGenerateTrackingNumber(
@@ -119,7 +114,8 @@ public interface StockMoveLineService {
 
   public void checkTrackingNumber(StockMove stockMove) throws AxelorException;
 
-  public void assignTrackingNumber(StockMoveLine stockMoveLine, Product product)
+  public void assignTrackingNumber(
+      StockMoveLine stockMoveLine, Product product, StockLocation stockLocation)
       throws AxelorException;
 
   public List<? extends StockLocationLine> getStockLocationLines(
@@ -130,6 +126,8 @@ public interface StockMoveLineService {
       throws AxelorException;
 
   public void updateLocations(
+      StockLocation fromStockLocation,
+      StockLocation toStockLocation,
       int fromStatus,
       int toStatus,
       List<StockMoveLine> stockMoveLineList,
@@ -140,6 +138,8 @@ public interface StockMoveLineService {
 
   public void updateLocations(
       StockMoveLine stockMoveLine,
+      StockLocation fromStockLocation,
+      StockLocation toStockLocation,
       Product product,
       BigDecimal qty,
       int fromStatus,
@@ -255,6 +255,7 @@ public interface StockMoveLineService {
    * set the available quantity of product in a given location.
    *
    * @param stockMoveLine
+   * @param stockLocation
    * @return
    */
   public void updateAvailableQty(StockMoveLine stockMoveLine, StockLocation stockLocation);
@@ -264,7 +265,8 @@ public interface StockMoveLineService {
 
   public void setAvailableStatus(StockMoveLine stockMoveLine);
 
-  public List<TrackingNumber> getAvailableTrackingNumbers(StockMoveLine stockMoveLine);
+  public List<TrackingNumber> getAvailableTrackingNumbers(
+      StockMoveLine stockMoveLine, StockMove stockMove);
 
   /**
    * Fill realize avg price in stock move line. This method is called on realize, to save avg price
@@ -282,19 +284,12 @@ public interface StockMoveLineService {
       BigDecimal qty,
       BigDecimal realQty,
       Unit unit,
-      Integer conformitySelect,
-      StockLocation fromStockLocation,
-      StockLocation toStockLocation)
+      Integer conformitySelect)
       throws AxelorException;
 
   /** To update realQty and conformity of a stock move line (API AOS) */
   void updateStockMoveLine(
-      StockMoveLine stockMoveLine,
-      BigDecimal realQty,
-      Integer conformity,
-      Unit unit,
-      StockLocation fromStockLocation,
-      StockLocation toStockLocation)
+      StockMoveLine stockMoveLine, BigDecimal realQty, Integer conformity, Unit unit)
       throws AxelorException;
 
   /**
@@ -313,6 +308,8 @@ public interface StockMoveLineService {
    * @throws AxelorException
    */
   void updateLocations(
+      StockLocation fromStockLocation,
+      StockLocation toStockLocation,
       int fromStatus,
       int toStatus,
       List<StockMoveLine> stockMoveLineList,
@@ -325,6 +322,4 @@ public interface StockMoveLineService {
 
   public BigDecimal computeNewAveragePriceLocationLine(
       StockLocationLine stockLocationLine, StockMoveLine stockMoveLine) throws AxelorException;
-
-  Map<String, Object> getClearedStockMoveLineMap();
 }

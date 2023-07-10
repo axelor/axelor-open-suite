@@ -18,5 +18,4 @@ dependencies {
 	api project(":modules:axelor-base")
 
 	implementation libs.jsoup
-	implementation libs.swagger_jaxrs
 }

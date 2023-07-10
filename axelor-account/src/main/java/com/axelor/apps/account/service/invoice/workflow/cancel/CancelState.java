@@ -19,10 +19,12 @@
 package com.axelor.apps.account.service.invoice.workflow.cancel;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.BudgetService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.workflow.WorkflowInvoice;
@@ -37,10 +39,12 @@ import com.google.inject.persist.Transactional;
 public class CancelState extends WorkflowInvoice {
 
   private WorkflowCancelService workflowService;
+  private BudgetService budgetService;
 
   @Inject
-  CancelState(WorkflowCancelService workflowService) {
+  CancelState(WorkflowCancelService workflowService, BudgetService budgetService) {
     this.workflowService = workflowService;
+    this.budgetService = budgetService;
   }
 
   @Override
@@ -64,6 +68,12 @@ public class CancelState extends WorkflowInvoice {
         .getAccountConfig(invoice.getCompany())
         .getIsManagePassedForPayment()) {
       setPfpStatus();
+    }
+
+    budgetService.updateBudgetLinesFromInvoice(invoice);
+
+    for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+      invoiceLine.clearBudgetDistributionList();
     }
   }
 

@@ -42,6 +42,4 @@ public interface EmployeeService extends UserService {
   Long generateNewDPAE(Employee employee) throws AxelorException;
 
   public User getUser(Employee employee) throws AxelorException;
-
-  public Employee getConnectedEmployee() throws AxelorException;
 }

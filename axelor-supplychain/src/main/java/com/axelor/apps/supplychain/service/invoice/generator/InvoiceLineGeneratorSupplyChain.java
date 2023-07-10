@@ -20,6 +20,7 @@ package com.axelor.apps.supplychain.service.invoice.generator;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.BudgetDistribution;
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.FixedAssetCategory;
 import com.axelor.apps.account.db.Invoice;
@@ -48,6 +49,7 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 /** Classe de création de ligne de facture abstraite. */
 public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerator {
@@ -228,7 +230,6 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
       if (purchaseOrderLine.getIsTitleLine()) {
         return invoiceLine;
       } else {
-
         if (purchaseOrderLine.getAnalyticDistributionTemplate() != null
             || !ObjectUtils.isEmpty(purchaseOrderLine.getAnalyticMoveLineList())) {
           invoiceLine.setAnalyticDistributionTemplate(
@@ -242,6 +243,10 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
           analyticMoveLineList.stream().forEach(invoiceLine::addAnalyticMoveLineListItem);
         }
 
+        this.copyBudgetDistributionList(purchaseOrderLine.getBudgetDistributionList(), invoiceLine);
+        invoiceLine.setBudget(purchaseOrderLine.getBudget());
+        invoiceLine.setBudgetDistributionSumAmount(
+            purchaseOrderLine.getBudgetDistributionSumAmount());
         invoiceLine.setFixedAssets(purchaseOrderLine.getFixedAssets());
 
         if (product != null && purchaseOrderLine.getFixedAssets()) {
@@ -276,6 +281,13 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
       analyticMoveLineList =
           invoiceLineAnalyticService.getAndComputeAnalyticDistribution(invoiceLine, invoice);
       analyticMoveLineList.stream().forEach(invoiceLine::addAnalyticMoveLineListItem);
+    }
+
+    if (!CollectionUtils.isEmpty(invoiceLine.getAnalyticMoveLineList())) {
+      for (AnalyticMoveLine analyticMoveLine : invoiceLine.getAnalyticMoveLineList()) {
+        analyticMoveLine.setPurchaseOrderLine(invoiceLine.getPurchaseOrderLine());
+        analyticMoveLine.setSaleOrderLine(invoiceLine.getSaleOrderLine());
+      }
     }
 
     FiscalPosition fiscalPosition = invoice.getFiscalPosition();
@@ -344,6 +356,22 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
       analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_FORECAST_INVOICE);
 
       invoiceLine.addAnalyticMoveLineListItem(analyticMoveLine);
+    }
+  }
+
+  public void copyBudgetDistributionList(
+      List<BudgetDistribution> originalBudgetDistributionList, InvoiceLine invoiceLine) {
+
+    if (originalBudgetDistributionList == null) {
+      return;
+    }
+
+    for (BudgetDistribution budgetDistributionIt : originalBudgetDistributionList) {
+      BudgetDistribution budgetDistribution = new BudgetDistribution();
+      budgetDistribution.setBudget(budgetDistributionIt.getBudget());
+      budgetDistribution.setAmount(budgetDistributionIt.getAmount());
+      budgetDistribution.setBudgetAmountAvailable(budgetDistributionIt.getBudgetAmountAvailable());
+      invoiceLine.addBudgetDistributionListItem(budgetDistribution);
     }
   }
 

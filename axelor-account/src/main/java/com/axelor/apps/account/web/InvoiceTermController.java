@@ -231,9 +231,11 @@ public class InvoiceTermController {
 
   public void validatePfp(ActionRequest request, ActionResponse response) {
     try {
-      InvoiceTerm invoiceterm = request.getContext().asType(InvoiceTerm.class);
+      InvoiceTerm invoiceterm =
+          Beans.get(InvoiceTermRepository.class)
+              .find(request.getContext().asType(InvoiceTerm.class).getId());
       Beans.get(InvoiceTermPfpService.class).validatePfp(invoiceterm, AuthUtils.getUser());
-      response.setValues(invoiceterm);
+      response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -297,10 +299,8 @@ public class InvoiceTermController {
       }
 
       Beans.get(InvoiceTermPfpService.class)
-          .initPftPartialValidation(originalInvoiceTerm, grantedAmount, partialReason);
-
+          .generateInvoiceTerm(originalInvoiceTerm, invoiceAmount, grantedAmount, partialReason);
       response.setCanClose(true);
-
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

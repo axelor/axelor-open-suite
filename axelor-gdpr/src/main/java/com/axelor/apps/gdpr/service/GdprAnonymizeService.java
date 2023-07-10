@@ -29,14 +29,7 @@ import java.util.List;
 public interface GdprAnonymizeService {
 
   List<String> excludeFields =
-      Arrays.asList(
-          "id",
-          "archived",
-          "createdBy",
-          "updatedBy",
-          "version",
-          "statusSelect",
-          "partnerTypeSelect");
+      Arrays.asList("id", "archived", "version", "statusSelect", "partnerTypeSelect");
 
   /**
    * return tracking datas for given model

@@ -32,6 +32,4 @@ public interface UserHrService {
 
   @CallMethod
   public Product getTimesheetProduct(Employee employee);
-
-  void createUserFromEmployee(User user, Employee employee);
 }

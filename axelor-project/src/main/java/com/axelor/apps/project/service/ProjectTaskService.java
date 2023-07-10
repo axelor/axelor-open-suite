@@ -21,8 +21,8 @@ package com.axelor.apps.project.service;
 import com.axelor.apps.base.db.Frequency;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPriority;
+import com.axelor.apps.project.db.ProjectStatus;
 import com.axelor.apps.project.db.ProjectTask;
-import com.axelor.apps.project.db.TaskStatus;
 import com.axelor.auth.db.User;
 import com.axelor.meta.CallMethod;
 
@@ -37,16 +37,17 @@ public interface ProjectTaskService {
    * <p>This method DOES NOT update potential parent.
    */
   void updateNextTask(ProjectTask projectTask);
+
   /** Removes all next tasks of given {@link ProjectTask}. */
   void removeNextTasks(ProjectTask projectTask);
 
   public ProjectTask create(String subject, Project project, User assignedTo);
 
   @CallMethod
-  public TaskStatus getDefaultCompletedStatus(Project project);
+  public ProjectStatus getDefaultCompletedStatus(Project project);
 
   @CallMethod
-  public TaskStatus getStatus(Project project);
+  public ProjectStatus getStatus(Project project);
 
   @CallMethod
   public ProjectPriority getPriority(Project project);

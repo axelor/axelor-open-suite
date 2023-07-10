@@ -75,17 +75,8 @@
     <boolean name="isConverted" title="Converted"/>
     <many-to-one ref="com.axelor.apps.base.db.CompanyDepartment"
       name="companyDepartment" title="Department"/>
-    <datetime name="lastEventDateT" title="Last event date" formula="true">
-      <![CDATA[
-      SELECT ICAL_EVENT.start_date_time FROM ICAL_EVENT WHERE ICAL_EVENT.event_lead = id AND ICAL_EVENT.end_date_time < NOW() ORDER BY ICAL_EVENT.end_date_time DESC LIMIT 1
-      ]]>
-    </datetime>
-    <datetime name="nextScheduledEventDateT" title="Next scheduled event date"
-      formula="true">
-      <![CDATA[
-      SELECT ICAL_EVENT.start_date_time FROM ICAL_EVENT WHERE ICAL_EVENT.event_lead = id AND ICAL_EVENT.start_date_time > NOW() ORDER BY ICAL_EVENT.start_date_time ASC LIMIT 1
-      ]]>
-    </datetime>
+    <datetime name="lastEventDateT" title="Last event date"/>
+    <datetime name="nextScheduledEventDateT" title="Next scheduled event date"/>
     <integer name="leadScoringSelect" title="Lead scoring"
       selection="gold.rating.icon.select"/>
     <integer name="sizeSelect" title="Size" selection="crm.lead.size.select"/>
@@ -93,7 +84,7 @@
     <many-to-one ref="com.axelor.apps.base.db.PartnerCategory" name="type"
       title="Category"/>
     <many-to-many ref="com.axelor.apps.crm.db.LeadTag" name="leadTagSet" title="Tags"/>
-    <integer name="sequence" title="Sequence"/>
+
     <extra-code>
     <![CDATA[
 		//lead size select

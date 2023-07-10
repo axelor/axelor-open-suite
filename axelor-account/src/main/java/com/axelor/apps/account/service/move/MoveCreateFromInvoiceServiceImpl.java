@@ -272,8 +272,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
       }
 
       // Management of the switch to 580
-      reconcileService.canBeZeroBalance(null, invoiceCustomerMoveLine);
-      // reconcileService.balanceCredit(invoiceCustomerMoveLine);
+      reconcileService.balanceCredit(invoiceCustomerMoveLine);
 
       invoice.setCompanyInTaxTotalRemaining(moveToolService.getInTaxTotalRemaining(invoice));
     }

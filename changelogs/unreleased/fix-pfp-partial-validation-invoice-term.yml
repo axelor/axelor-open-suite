@@ -1,3 +1,0 @@
----
-title: "InvoiceTerm/PartialPfpValidation: rework of partial pfp validation in invoice terms to be more user friendly and fix of financial discount in second invoice term generation"
-type: fix

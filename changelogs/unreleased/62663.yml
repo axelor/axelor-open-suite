@@ -1,5 +1,0 @@
----
-title: "Supplychain: add invoicing state to sale order and sale order lines"
-type: feature
-description: |
-  Sale orders and sale order lines can now be filtered with invoicing state.

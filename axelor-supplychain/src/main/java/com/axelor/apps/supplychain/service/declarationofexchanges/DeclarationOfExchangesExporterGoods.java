@@ -227,13 +227,13 @@ public class DeclarationOfExchangesExporterGoods extends DeclarationOfExchangesE
     String srcDstCountry;
     String dept;
     try {
-      Address partnerAddress = stockMoveToolService.getPartnerAddress(stockMove, stockMoveLine);
+      Address partnerAddress = stockMoveToolService.getPartnerAddress(stockMoveLine.getStockMove());
       srcDstCountry = partnerAddress.getAddressL7Country().getAlpha2Code();
     } catch (AxelorException e) {
       srcDstCountry = e.getMessage();
     }
     try {
-      Address companyAddress = stockMoveToolService.getCompanyAddress(stockMove, stockMoveLine);
+      Address companyAddress = stockMoveToolService.getCompanyAddress(stockMoveLine.getStockMove());
       dept = companyAddress.getCity().getDepartment().getCode();
     } catch (AxelorException e) {
       dept = e.getMessage();
@@ -247,9 +247,9 @@ public class DeclarationOfExchangesExporterGoods extends DeclarationOfExchangesE
       if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING) {
         countryOrigCode = srcDstCountry;
       } else if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
-          && ObjectUtils.notEmpty(stockMoveLine.getFromStockLocation().getAddress())) {
+          && ObjectUtils.notEmpty(stockMove.getFromStockLocation().getAddress())) {
         countryOrigCode =
-            stockMoveLine.getFromStockLocation().getAddress().getAddressL7Country().getAlpha2Code();
+            stockMove.getFromStockLocation().getAddress().getAddressL7Country().getAlpha2Code();
       } else {
         countryOrigCode = "";
       }

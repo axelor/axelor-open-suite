@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="account" package="com.axelor.apps.account.db"/>
+
+  <entity name="BudgetLine" cacheable="true">
+
+    <date name="fromDate" title="From"/>
+    <date name="toDate" title="To"/>
+    <many-to-one name="budget" ref="com.axelor.apps.account.db.Budget"/>
+    <decimal name="amountExpected" title="Expected amount"
+      help="Expected amount allocated on the budget. This amount is automatically computed by adding up expected amounts of bellowed levels."
+      precision="20" scale="2"/>
+    <decimal name="amountRealized" title="Realized amount" precision="20" scale="2"/>
+
+  </entity>
+
+</domain-models>

@@ -23,7 +23,6 @@ import com.axelor.apps.base.db.EventsPlanning;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.hr.db.Employee;
-import com.axelor.apps.hr.db.EmploymentContract;
 import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
@@ -34,23 +33,12 @@ import com.axelor.studio.db.AppBase;
 import com.axelor.studio.db.AppLeave;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.util.List;
 
 public class UserHrServiceImpl implements UserHrService {
 
-  protected UserRepository userRepo;
-  protected AppHumanResourceService appHumanResourceService;
-  protected UserService userService;
+  @Inject UserRepository userRepo;
 
-  @Inject
-  public UserHrServiceImpl(
-      UserRepository userRepo,
-      AppHumanResourceService appHumanResourceService,
-      UserService userService) {
-    this.userRepo = userRepo;
-    this.appHumanResourceService = appHumanResourceService;
-    this.userService = userService;
-  }
+  @Inject private AppHumanResourceService appHumanResourceService;
 
   @Transactional
   public void createEmployee(User user) {
@@ -116,53 +104,5 @@ public class UserHrServiceImpl implements UserHrService {
     }
 
     return product;
-  }
-
-  @Transactional(rollbackOn = {Exception.class})
-  @Override
-  public void createUserFromEmployee(User user, Employee employee) {
-    User employeeUser = new User();
-    setUserInfoFromUser(employeeUser, user);
-    setUserInfoFromEmployee(employeeUser, employee);
-    employee.setUser(employeeUser);
-
-    userRepo.save(employeeUser);
-  }
-
-  protected void setUserInfoFromUser(User employeeUser, User user) {
-    employeeUser.setActivateOn(user.getActivateOn());
-    employeeUser.setExpiresOn(user.getExpiresOn());
-    employeeUser.setCode(user.getCode());
-    employeeUser.setGroup(user.getGroup());
-
-    CharSequence password = userService.generateRandomPassword();
-    employeeUser.setPassword(password.toString());
-  }
-
-  protected void setUserInfoFromEmployee(User employeeUser, Employee employee) {
-    employeeUser.setEmployee(employee);
-
-    if (employee.getContactPartner() != null) {
-      employeeUser.setPartner(employee.getContactPartner());
-      String employeeName = employee.getContactPartner().getName();
-      if (employee.getContactPartner().getFirstName() != null) {
-        employeeName += " " + employee.getContactPartner().getFirstName();
-      }
-      employeeUser.setName(employeeName);
-      if (employee.getContactPartner().getEmailAddress() != null) {
-        employeeUser.setEmail(employee.getContactPartner().getEmailAddress().getAddress());
-      }
-    }
-
-    if (employee.getMainEmploymentContract() != null) {
-      employeeUser.setActiveCompany(employee.getMainEmploymentContract().getPayCompany());
-    }
-
-    List<EmploymentContract> contractList = employee.getEmploymentContractList();
-    if (contractList != null && !contractList.isEmpty()) {
-      for (EmploymentContract employmentContract : contractList) {
-        employeeUser.addCompanySetItem(employmentContract.getPayCompany());
-      }
-    }
   }
 }

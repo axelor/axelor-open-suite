@@ -38,6 +38,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.alarm.AlarmEngineService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -77,6 +78,7 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
       ValidateFactory validateFactory,
       VentilateFactory ventilateFactory,
       CancelFactory cancelFactory,
+      AlarmEngineService<Invoice> alarmEngineService,
       InvoiceRepository invoiceRepo,
       AppAccountService appAccountService,
       PartnerService partnerService,
@@ -96,6 +98,7 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
         validateFactory,
         ventilateFactory,
         cancelFactory,
+        alarmEngineService,
         invoiceRepo,
         appAccountService,
         partnerService,

@@ -19,13 +19,11 @@
 package com.axelor.apps.crm.service;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.crm.db.LostReason;
 import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.db.OpportunityStatus;
 import com.axelor.meta.CallMethod;
 import com.google.inject.persist.Transactional;
 import java.util.List;
-import java.util.Map;
 
 public interface OpportunityService {
 
@@ -34,21 +32,13 @@ public interface OpportunityService {
 
   public void setSequence(Opportunity opportunity) throws AxelorException;
 
-  public OpportunityStatus getDefaultOpportunityStatus() throws AxelorException;
+  public OpportunityStatus getDefaultOpportunityStatus();
 
-  void setOpportunityStatusStagedClosedWon(Opportunity opportunity) throws AxelorException;
+  public void setOpportunityStatus(Opportunity opportunity, boolean isStagedClosedWon)
+      throws AxelorException;
 
-  void setOpportunityStatusStagedClosedLost(Opportunity opportunity) throws AxelorException;
-
-  void setOpportunityStatusNextStage(Opportunity opportunity);
+  public void setOpportunityStatusNextStage(Opportunity opportunity);
 
   @CallMethod
   public List<Long> getClosedOpportunityStatusIdList();
-
-  public List<Opportunity> winningProcess(Opportunity opportunity, Map<String, Boolean> map)
-      throws AxelorException;
-
-  public void lostProcess(
-      List<Opportunity> otherOpportunities, LostReason lostReason, String lostReasonStr)
-      throws AxelorException;
 }

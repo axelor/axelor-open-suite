@@ -20,7 +20,6 @@ package com.axelor.apps.stock.rest.dto;
 
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
-import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.utils.api.ObjectFinder;
@@ -54,12 +53,6 @@ public class StockMoveLinePostRequest extends RequestStructure {
   @Min(StockMoveLineRepository.CONFORMITY_NONE)
   @Max(StockMoveLineRepository.CONFORMITY_NON_COMPLIANT)
   private Integer conformity;
-
-  @Min(0)
-  private Long fromStockLocationId;
-
-  @Min(0)
-  private Long toStockLocationId;
 
   public StockMoveLinePostRequest() {}
 
@@ -114,22 +107,6 @@ public class StockMoveLinePostRequest extends RequestStructure {
     this.conformity = conformity;
   }
 
-  public Long getFromStockLocationId() {
-    return fromStockLocationId;
-  }
-
-  public void setFromStockLocationId(Long fromStockLocationId) {
-    this.fromStockLocationId = fromStockLocationId;
-  }
-
-  public Long getToStockLocationId() {
-    return toStockLocationId;
-  }
-
-  public void setToStockLocationId(Long toStockLocationId) {
-    this.toStockLocationId = toStockLocationId;
-  }
-
   // Transform id to object
   public Product fetchProduct() {
     return ObjectFinder.find(Product.class, productId, ObjectFinder.NO_VERSION);
@@ -145,19 +122,5 @@ public class StockMoveLinePostRequest extends RequestStructure {
     } else {
       return null;
     }
-  }
-
-  public StockLocation fetchFromStockLocation() {
-    if (fromStockLocationId != null) {
-      return ObjectFinder.find(StockLocation.class, fromStockLocationId, ObjectFinder.NO_VERSION);
-    }
-    return null;
-  }
-
-  public StockLocation fetchtoStockLocation() {
-    if (toStockLocationId != null) {
-      return ObjectFinder.find(StockLocation.class, toStockLocationId, ObjectFinder.NO_VERSION);
-    }
-    return null;
   }
 }

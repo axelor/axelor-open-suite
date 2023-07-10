@@ -66,10 +66,9 @@ public class StockMoveCheckWapServiceImpl implements StockMoveCheckWapService {
       if (product != null
           && product.getProductTypeSelect().equals(ProductRepository.PRODUCT_TYPE_STORABLE)) {
 
-        StockLocation toStockLocation = stockMoveLine.getToStockLocation();
+        StockLocation toStockLocation = stockMove.getToStockLocation();
         StockLocationLine stockLocationLine =
-            stockLocationLineService.getStockLocationLine(
-                stockMoveLine.getToStockLocation(), product);
+            stockLocationLineService.getStockLocationLine(stockMove.getToStockLocation(), product);
         if (!product.getStockManaged()
             || toStockLocation.getTypeSelect() == StockLocationRepository.TYPE_VIRTUAL
             || stockLocationLine == null

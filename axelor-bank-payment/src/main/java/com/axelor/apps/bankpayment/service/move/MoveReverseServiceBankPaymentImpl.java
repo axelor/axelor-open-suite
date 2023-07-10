@@ -26,7 +26,6 @@ import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveReverseServiceImpl;
-import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
@@ -62,7 +61,6 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
       ExtractContextMoveService extractContextMoveService,
       InvoicePaymentRepository invoicePaymentRepository,
       InvoicePaymentCancelService invoicePaymentCancelService,
-      MoveToolService moveToolService,
       BankReconciliationService bankReconciliationService,
       BankReconciliationLineRepository bankReconciliationLineRepository) {
     super(
@@ -73,8 +71,7 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
         moveLineCreateService,
         extractContextMoveService,
         invoicePaymentRepository,
-        invoicePaymentCancelService,
-        moveToolService);
+        invoicePaymentCancelService);
     this.bankReconciliationService = bankReconciliationService;
     this.bankReconciliationLineRepository = bankReconciliationLineRepository;
   }

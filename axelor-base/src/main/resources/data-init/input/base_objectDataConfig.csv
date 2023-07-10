@@ -1,0 +1,2 @@
+"title";"modelSelect";"metaModel";"typeSelect";"tabName";"path";"metaFieldPath";"fields"
+"Partner data config";"com.axelor.apps.base.db.Partner";"Partner";0;"Partner";;"mainPartner";"titleSelect,name,firstName,partnerSeq,emailAddress,fixedPhone,mobilePhone,webSite,department,description"

@@ -68,12 +68,15 @@ public class TimesheetHRRepository extends TimesheetRepository {
     if (entity.getStatusSelect() == TimesheetRepository.STATUS_VALIDATED
         && entity.getTimesheetLineList() != null) {
 
+      timesheetService.setProjectTaskTotalRealHrs(entity.getTimesheetLineList(), false);
+
       Map<Project, BigDecimal> projectTimeSpentMap =
           timesheetLineService.getProjectTimeSpentMap(entity.getTimesheetLineList());
       Iterator<Project> projectIterator = projectTimeSpentMap.keySet().iterator();
 
       while (projectIterator.hasNext()) {
         Project project = projectIterator.next();
+        project.setTimeSpent(project.getTimeSpent().subtract(projectTimeSpentMap.get(project)));
         projectRepository.save(project);
       }
     }

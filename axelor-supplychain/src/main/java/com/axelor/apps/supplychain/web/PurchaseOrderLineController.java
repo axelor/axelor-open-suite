@@ -19,6 +19,7 @@
 package com.axelor.apps.supplychain.web;
 
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.supplychain.service.PurchaseOrderLineServiceSupplyChain;
 import com.axelor.apps.supplychain.service.PurchaseOrderLineServiceSupplychainImpl;
@@ -49,5 +50,17 @@ public class PurchaseOrderLineController {
         Beans.get(PurchaseOrderLineServiceSupplyChain.class)
             .createAnalyticDistributionWithTemplate(purchaseOrderLine);
     response.setValue("analyticMoveLineList", purchaseOrderLine.getAnalyticMoveLineList());
+  }
+
+  public void computeBudgetDistributionSumAmount(ActionRequest request, ActionResponse response) {
+    PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
+    PurchaseOrder purchaseOrder = request.getContext().getParent().asType(PurchaseOrder.class);
+
+    Beans.get(PurchaseOrderLineServiceSupplychainImpl.class)
+        .computeBudgetDistributionSumAmount(purchaseOrderLine, purchaseOrder);
+
+    response.setValue(
+        "budgetDistributionSumAmount", purchaseOrderLine.getBudgetDistributionSumAmount());
+    response.setValue("budgetDistributionList", purchaseOrderLine.getBudgetDistributionList());
   }
 }

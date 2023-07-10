@@ -25,9 +25,8 @@ import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.PartnerPriceListService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.crm.db.Opportunity;
-import com.axelor.apps.crm.db.OpportunityStatus;
-import com.axelor.apps.crm.service.app.AppCrmService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
@@ -35,7 +34,6 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.util.List;
 
 public class OpportunitySaleOrderServiceImpl implements OpportunitySaleOrderService {
 
@@ -43,20 +41,16 @@ public class OpportunitySaleOrderServiceImpl implements OpportunitySaleOrderServ
 
   protected SaleOrderRepository saleOrderRepo;
 
-  protected SaleOrderWorkflowService saleOrderWorkflowService;
-
-  protected AppCrmService appCrmService;
+  protected AppBaseService appBaseService;
 
   @Inject
   public OpportunitySaleOrderServiceImpl(
       SaleOrderCreateService saleOrderCreateService,
       SaleOrderRepository saleOrderRepo,
-      SaleOrderWorkflowService saleOrderWorkflowService,
-      AppCrmService appCrmService) {
+      AppBaseService appBaseService) {
     this.saleOrderCreateService = saleOrderCreateService;
     this.saleOrderRepo = saleOrderRepo;
-    this.saleOrderWorkflowService = saleOrderWorkflowService;
-    this.appCrmService = appCrmService;
+    this.appBaseService = appBaseService;
   }
 
   @Override
@@ -108,23 +102,5 @@ public class OpportunitySaleOrderServiceImpl implements OpportunitySaleOrderServ
         null,
         opportunity.getPartner().getFiscalPosition(),
         opportunity.getTradingName());
-  }
-
-  @Override
-  public void cancelSaleOrders(Opportunity opportunity) throws AxelorException {
-
-    OpportunityStatus closedLostOpportunityStatus = appCrmService.getClosedLostOpportunityStatus();
-
-    if (opportunity.getOpportunityStatus().equals(closedLostOpportunityStatus)) {
-      List<SaleOrder> saleOrderList = opportunity.getSaleOrderList();
-      if (saleOrderList != null && !saleOrderList.isEmpty()) {
-        for (SaleOrder saleOrder : saleOrderList) {
-          if (saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_DRAFT_QUOTATION
-              || saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_FINALIZED_QUOTATION) {
-            saleOrderWorkflowService.cancelSaleOrder(saleOrder, null, opportunity.getName());
-          }
-        }
-      }
-    }
   }
 }

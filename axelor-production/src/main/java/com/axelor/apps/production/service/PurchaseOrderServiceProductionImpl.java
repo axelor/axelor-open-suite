@@ -36,6 +36,7 @@ import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.service.PartnerStockSettingsService;
 import com.axelor.apps.stock.service.config.StockConfigService;
+import com.axelor.apps.supplychain.service.BudgetSupplychainService;
 import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderStockService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -56,6 +57,7 @@ public class PurchaseOrderServiceProductionImpl extends PurchaseOrderServiceSupp
       AppAccountService appAccountService,
       AppBaseService appBaseService,
       PurchaseOrderStockService purchaseOrderStockService,
+      BudgetSupplychainService budgetSupplychainService,
       PurchaseOrderLineRepository purchaseOrderLineRepository,
       PurchaseOrderLineService purchaseOrderLineService,
       ManufOrderRepository manufOrderRepo,
@@ -68,6 +70,7 @@ public class PurchaseOrderServiceProductionImpl extends PurchaseOrderServiceSupp
         appAccountService,
         appBaseService,
         purchaseOrderStockService,
+        budgetSupplychainService,
         purchaseOrderLineRepository,
         purchaseOrderLineService,
         partnerStockSettingsService,

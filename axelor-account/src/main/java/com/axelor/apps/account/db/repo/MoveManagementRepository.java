@@ -26,7 +26,6 @@ import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
-import com.axelor.apps.account.service.move.MovePfpService;
 import com.axelor.apps.account.service.move.MoveRemoveService;
 import com.axelor.apps.account.service.move.MoveSequenceService;
 import com.axelor.apps.account.service.move.MoveValidateService;
@@ -78,9 +77,6 @@ public class MoveManagementRepository extends MoveRepository {
       copy.setInvoice(null);
       copy.setPaymentSession(null);
       copy.setOrigin(origin);
-      copy.setReasonOfRefusalToPay(null);
-      copy.setReasonOfRefusalToPayStr(null);
-      Beans.get(MovePfpService.class).setPfpStatus(copy);
 
       List<MoveLine> moveLineList = copy.getMoveLineList();
 
@@ -151,6 +147,7 @@ public class MoveManagementRepository extends MoveRepository {
     invoiceTerm.setPfpPartialReason(null);
     invoiceTerm.setReasonOfRefusalToPay(null);
     invoiceTerm.setReasonOfRefusalToPayStr(null);
+    invoiceTerm.setPfpValidatorUser(null);
     invoiceTerm.setDecisionPfpTakenDateTime(null);
     invoiceTerm.setInvoice(null);
 

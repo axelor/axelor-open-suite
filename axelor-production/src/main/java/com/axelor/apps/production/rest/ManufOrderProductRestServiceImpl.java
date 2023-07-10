@@ -290,15 +290,7 @@ public class ManufOrderProductRestServiceImpl implements ManufOrderProductRestSe
 
     StockMoveLine stockMoveLine =
         stockMoveLineService.createStockMoveLine(
-            stockMove,
-            product,
-            trackingNumber,
-            qty,
-            BigDecimal.ZERO,
-            null,
-            null,
-            stockMove.getFromStockLocation(),
-            stockMove.getToStockLocation());
+            stockMove, product, trackingNumber, qty, BigDecimal.ZERO, null, null);
 
     addProductInManufOrder(manufOrder, stockMoveLine, productType);
 

@@ -196,7 +196,10 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
     List<StockMove> stockMoves =
         Beans.get(StockMoveRepository.class)
             .all()
-            .filter("self.saleOrder.id = ?", saleOrder.getId())
+            .filter(
+                "self.originId = ? AND self.originTypeSelect = ?",
+                saleOrder.getId(),
+                "com.axelor.apps.sale.db.SaleOrder")
             .fetch();
     if (!stockMoves.isEmpty()) {
       for (StockMove stockMove : stockMoves) {

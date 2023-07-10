@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <form id="cash-management-invoice-form" name="invoice-form" title="Invoice"
+    model="com.axelor.apps.account.db.Invoice" extension="true">
+    <extend target="//field[@name='paymentCondition']">
+      <attribute name="onChange"
+        value="action-cash-management-group-payment-condition-onchange"/>
+    </extend>
+    <extend target="//field[@name='originDate']">
+      <attribute name="onChange"
+        value="action-cash-management-group-payment-condition-onchange"/>
+    </extend>
+    <extend target="//field[@name='invoiceDate']">
+      <attribute name="onChange"
+        value="action-cash-management-group-payment-condition-onchange"/>
+    </extend>
+    <extend target="//field[@name='dueDate']">
+      <attribute name="onChange" value="action-invoice-method-estimated-payment-date"/>
+    </extend>
+    <extend target="//field[@name='partner']">
+      <attribute name="onChange"
+        value="action-group-cash-management-invoice-partner-onchange"/>
+    </extend>
+  </form>
+
+  <form id="cash-management-invoice-client-form" name="invoice-client-form" title="Invoice"
+    model="com.axelor.apps.account.db.Invoice" extension="true">
+    <extend target="//field[@name='invoiceDate']">
+      <attribute name="onChange"
+        value="action-cash-management-group-payment-condition-onchange"/>
+    </extend>
+    <extend target="//field[@name='dueDate']">
+      <attribute name="onChange" value="action-invoice-method-estimated-payment-date"/>
+    </extend>
+    <extend target="//field[@name='partner']">
+      <attribute name="onChange"
+        value="action-group-cash-management-invoice-partner-onchange"/>
+    </extend>
+  </form>
+
+  <action-method name="action-invoice-method-estimated-payment-date">
+    <call class="com.axelor.apps.cash.management.web.InvoiceController"
+      method="fillEstimatedPaymentDate"/>
+  </action-method>
+
+  <action-group name="action-group-cash-management-invoice-partner-onchange">
+    <action name="action-invoice-group-partner-onchange"/>
+    <action name="action-invoice-method-estimated-payment-date"/>
+  </action-group>
+
+  <action-group name="action-cash-management-group-payment-condition-onchange">
+    <action name="action-invoice-group-payment-condition-onchange"/>
+    <action name="action-invoice-method-estimated-payment-date"/>
+  </action-group>
+
+</object-views>

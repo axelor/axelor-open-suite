@@ -58,6 +58,7 @@ public class BatchOutgoingStockMoveInvoicing extends BatchStrategy {
             .createQuery(
                 "SELECT self FROM StockMove self "
                     + "WHERE self.statusSelect = :statusSelect "
+                    + "AND self.originTypeSelect LIKE :typeSaleOrder "
                     + "AND self.invoicingStatusSelect !=  :invoicingStatusSelect "
                     + "AND (SELECT count(invoice.id) FROM Invoice invoice WHERE invoice.statusSelect != :invoiceStatusCanceled AND invoice MEMBER OF self.invoiceSet) = 0"
                     + "AND self.id NOT IN (:anomalyList) "
@@ -70,6 +71,7 @@ public class BatchOutgoingStockMoveInvoicing extends BatchStrategy {
                     + "ORDER BY self.id",
                 StockMove.class)
             .setParameter("statusSelect", StockMoveRepository.STATUS_REALIZED)
+            .setParameter("typeSaleOrder", StockMoveRepository.ORIGIN_SALE_ORDER)
             .setParameter("invoiceStatusCanceled", InvoiceRepository.STATUS_CANCELED)
             .setParameter("invoicingStatusSelect", StockMoveRepository.STATUS_DELAYED_INVOICE)
             .setParameter("anomalyList", anomalyList)
@@ -81,7 +83,7 @@ public class BatchOutgoingStockMoveInvoicing extends BatchStrategy {
       for (StockMove stockMove : stockMoveList) {
         try {
           stockMoveInvoiceService.createInvoiceFromSaleOrder(
-              stockMove, stockMove.getSaleOrder(), null);
+              stockMove, saleRepo.find(stockMove.getOriginId()), null);
           updateStockMove(stockMove);
         } catch (Exception e) {
           incrementAnomaly();

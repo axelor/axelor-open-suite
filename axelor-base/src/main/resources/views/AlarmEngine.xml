@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <selection name="alarm.engine.manager.type">
+    <option value="0"></option>
+    <option value="1">Invoicing Management</option>
+    <option value="2">Contract Manager</option>
+    <option value="3">Sales Manager</option>
+    <option value="4">Technical manager</option>
+  </selection>
+
+  <grid name="alarm-engine-grid" title="Alarm engines"
+    model="com.axelor.apps.base.db.AlarmEngine">
+    <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+    <field name="metaModel" form-view="meta-model-form" grid-view="meta-model-grid"/>
+    <field name="managerTypeSelect"/>
+    <field name="activeOk"/>
+    <field name="lockingOk"/>
+    <field name="externalOk"/>
+  </grid>
+
+  <form onLoad="action-alarm-engine-attrs-external"
+    onSave="action-alarm-engine-method-validate-query" onNew="action-alarm-engine-attrs-external"
+    name="alarm-engine-form" title="Alarm engine" model="com.axelor.apps.base.db.AlarmEngine"
+    width="large">
+    <panel name="mainPanel">
+      <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+      <field name="metaModel" form-view="meta-model-form" grid-view="meta-model-grid"/>
+      <field name="alarmMessage" grid-view="alarm-message-grid" form-view="alarm-message-form"/>
+      <field name="managerTypeSelect"/>
+    </panel>
+    <panel name="actionsPanel">
+      <field name="activeOk" colSpan="2"/>
+      <field name="lockingOk" colSpan="2"/>
+      <field name="externalOk" onChange="action-alarm-engine-attrs-external" colSpan="2"/>
+    </panel>
+    <panel-tabs name="mainPanelTab">
+      <panel name="queryPagePanel" title="Query">
+        <field name="query" showTitle="false" colSpan="12" widget="CodeEditor"
+          x-code-syntax="sql"/>
+      </panel>
+      <panel name="descriptionPanel" title="Description">
+        <field name="description" showTitle="false" colSpan="12"/>
+      </panel>
+    </panel-tabs>
+  </form>
+
+
+  <action-attrs name="action-alarm-engine-attrs-external">
+    <attribute name="hidden" for="queryPagePanel" expr="eval: externalOk"/>
+  </action-attrs>
+
+  <action-method name="action-alarm-engine-method-validate-query">
+    <call class="com.axelor.apps.base.web.AlarmEngineController" method="validateQuery"/>
+  </action-method>
+
+</object-views>

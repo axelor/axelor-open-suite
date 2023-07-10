@@ -14,8 +14,6 @@
 
     <integer name="deliveryState" title="Delivery State"
       selection="sale.order.delivery.state" readonly="true" default="1"/>
-    <integer name="invoicingState" title="Invoicing State"
-      selection="supplychain.sale.order.invoicing.state.select" readonly="true" default="1"/>
 
     <many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation"
       title="Stock location"/>
@@ -77,11 +75,6 @@
                 public static final int DELIVERY_STATE_NOT_DELIVERED = 1;
    				public static final int DELIVERY_STATE_PARTIALLY_DELIVERED = 2;
    				public static final int DELIVERY_STATE_DELIVERED = 3;
-
-   				// INVOICING STATE SELECT
-                public static final int INVOICING_STATE_NOT_INVOICED = 1;
-   				public static final int INVOICING_STATE_PARTIALLY_INVOICED = 2;
-   				public static final int INVOICING_STATE_INVOICED = 3;
             ]]>
     </extra-code>
 

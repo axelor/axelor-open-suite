@@ -47,14 +47,13 @@ public interface InvoicePaymentCreateService {
       throws AxelorException;
 
   /**
-   * Create an invoice payment for the specified invoice and with the specified bank details, and
-   * add the payment to the invoice payment list.
+   * Create an invoice payment for the specified invoice and with the specified bank details.
    *
    * @param invoice
    * @param companyBankDetails
-   * @return the created payment
+   * @return
    */
-  InvoicePayment createAndAddInvoicePayment(Invoice invoice, BankDetails companyBankDetails)
+  public InvoicePayment createInvoicePayment(Invoice invoice, BankDetails companyBankDetails)
       throws AxelorException;
 
   InvoicePayment createInvoicePayment(

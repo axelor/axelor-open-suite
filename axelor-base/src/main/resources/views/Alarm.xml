@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="alarm-dashlet-grid" title="Alarm" model="com.axelor.apps.base.db.Alarm">
+    <field name="date"/>
+    <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
+    <field name="invoice" width="120" form-view="invoice-form" grid-view="invoice-grid"/>
+    <field name="alarmEngine.alarmMessage"/>
+    <field name="acquitOk"/>
+  </grid>
+
+  <grid name="alarm-grid" title="Alarms" model="com.axelor.apps.base.db.Alarm">
+    <field name="date"/>
+    <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
+    <field name="invoice" width="120" form-view="invoice-form" grid-view="invoice-grid"/>
+    <field name="alarmEngine.alarmMessage"/>
+    <field name="alarmEngine.alarmMessage.typeSelect"/>
+    <field name="acquitOk"/>
+  </grid>
+
+  <form name="alarm-form" title="Alarm" model="com.axelor.apps.base.db.Alarm" width="large">
+    <panel name="mainPanel">
+      <field name="date" colSpan="5"/>
+      <field name="alarmEngine" colSpan="5" edit-window="self" form-view="alarm-message-form"
+        summary-view="alarm-message-form" grid-view="alarm-engine-grid"/>
+      <field name="acquitOk" colSpan="2"/>
+      <field name="content" showTitle="false" colSpan="12" widget="html"/>
+    </panel>
+    <panel name="detailsPanel" title="Details">
+      <field name="partner" domain="self.isContact = false" form-view="partner-form"
+        grid-view="partner-grid"/>
+      <field name="invoice" form-view="invoice-form" grid-view="invoice-grid"/>
+      <field name="balanceDueDebtRecovery"/>
+    </panel>
+  </form>
+
+</object-views>

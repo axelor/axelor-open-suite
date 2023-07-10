@@ -1,0 +1,21 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="ObjectDataConfig" cacheable="true">
+    <![CDATA[
+    This object store the configuration for export of data
+    ]]>
+    <string name="title" title="Title"/>
+    <string name="modelSelect" namecolumn="true" title="Model"
+      selection="object.data.config.model.select" required="true"/>
+    <one-to-many name="dataConfigLineList" ref="DataConfigLine" title="Lines"
+      mappedBy="objectDataConfig"/>
+    <string name="comment" column="comment_val" title="Comment" large="true"/>
+
+  </entity>
+
+</domain-models>

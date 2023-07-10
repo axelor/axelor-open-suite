@@ -18,6 +18,8 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.account.db.Budget;
+import com.axelor.apps.account.db.BudgetDistribution;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
@@ -54,13 +56,16 @@ import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -129,11 +134,14 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       qtyToInvoiceMap = null;
     }
 
-    if (stockMove.getSaleOrder() != null) {
-      invoice = createInvoiceFromSaleOrder(stockMove, stockMove.getSaleOrder(), qtyToInvoiceMap);
-    } else if (stockMove.getPurchaseOrder() != null) {
+    Long origin = stockMove.getOriginId();
+
+    if (StockMoveRepository.ORIGIN_SALE_ORDER.equals(stockMove.getOriginTypeSelect())) {
+      invoice = createInvoiceFromSaleOrder(stockMove, saleOrderRepo.find(origin), qtyToInvoiceMap);
+    } else if (StockMoveRepository.ORIGIN_PURCHASE_ORDER.equals(stockMove.getOriginTypeSelect())) {
       invoice =
-          createInvoiceFromPurchaseOrder(stockMove, stockMove.getPurchaseOrder(), qtyToInvoiceMap);
+          createInvoiceFromPurchaseOrder(
+              stockMove, purchaseOrderRepo.find(origin), qtyToInvoiceMap);
     } else {
       invoice = createInvoiceFromOrderlessStockMove(stockMove, qtyToInvoiceMap);
     }
@@ -376,11 +384,11 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     List<InvoiceLine> invoiceLineList = new ArrayList<>();
 
     List<StockMoveLine> stockMoveLineToInvoiceList;
-    if ((stockMove.getPurchaseOrder() != null
+    if ((StockMoveRepository.ORIGIN_PURCHASE_ORDER.equals(stockMove.getOriginTypeSelect())
             && supplyChainConfigService
                 .getSupplyChainConfig(invoice.getCompany())
                 .getActivateIncStockMovePartialInvoicing())
-        || (stockMove.getSaleOrder() != null
+        || (StockMoveRepository.ORIGIN_SALE_ORDER.equals(stockMove.getOriginTypeSelect())
             && supplyChainConfigService
                 .getSupplyChainConfig(invoice.getCompany())
                 .getActivateOutStockMovePartialInvoicing())) {
@@ -408,6 +416,8 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
         invoiceLineList.add(invoiceLineCreated);
       }
     }
+
+    setComputedBudgetLinesAmount(invoiceLineList);
 
     return invoiceLineList;
   }
@@ -669,5 +679,50 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     boolean isRefundInvoice = InvoiceToolService.isRefund(invoice);
     boolean isReversionStockMove = stockMove.getIsReversion();
     return isRefundInvoice != isReversionStockMove;
+  }
+
+  protected void setComputedBudgetLinesAmount(List<InvoiceLine> invoiceLineList) {
+    invoiceLineList.forEach(invoiceLine -> computeBudgetLineAmount(invoiceLineList, invoiceLine));
+  }
+
+  protected void computeBudgetLineAmount(
+      List<InvoiceLine> invoiceLineList, InvoiceLine invoiceLine) {
+
+    Product product = invoiceLine.getProduct();
+    Optional.ofNullable(invoiceLine.getBudgetDistributionList())
+        .orElse(Collections.emptyList())
+        .forEach(
+            budgetDistribution ->
+                budgetDistribution.setAmount(
+                    divideBudgetDistributionAmount(budgetDistribution, product, invoiceLineList)));
+  }
+
+  protected BigDecimal divideBudgetDistributionAmount(
+      BudgetDistribution budgetDistribution, Product product, List<InvoiceLine> invoiceLineList) {
+    return budgetDistribution
+        .getAmount()
+        .divide(
+            new BigDecimal(
+                countInvoiceLineWithSameProductAndBudget(
+                    product, invoiceLineList, budgetDistribution.getBudget())),
+            RoundingMode.HALF_UP);
+  }
+
+  protected long countInvoiceLineWithSameProductAndBudget(
+      Product product, List<InvoiceLine> invoiceLineList, Budget budget) {
+    return invoiceLineList.stream()
+        .filter(
+            invoiceLine ->
+                product.equals(invoiceLine.getProduct()) && useSameBudget(budget, invoiceLine))
+        .count();
+  }
+
+  protected boolean useSameBudget(Budget budget, InvoiceLine invoiceLine) {
+    List<BudgetDistribution> budgetDistributionList = invoiceLine.getBudgetDistributionList();
+    if (budgetDistributionList == null) {
+      return false;
+    }
+    return budgetDistributionList.stream()
+        .anyMatch(budgetDistribution -> budget.equals(budgetDistribution.getBudget()));
   }
 }

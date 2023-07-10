@@ -33,7 +33,7 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
-import com.axelor.apps.hr.service.expense.ExpensePaymentService;
+import com.axelor.apps.hr.service.expense.ExpenseService;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
@@ -52,18 +52,18 @@ public class BatchCreditTransferExpensePaymentHR extends BatchCreditTransferExpe
   protected final Logger log = LoggerFactory.getLogger(getClass());
   protected final AppAccountService appAccountService;
   protected final ExpenseRepository expenseRepo;
-  protected final ExpensePaymentService expensePaymentService;
+  protected final ExpenseService expenseService;
   protected final BankOrderMergeService bankOrderMergeService;
 
   @Inject
   public BatchCreditTransferExpensePaymentHR(
       AppAccountService appAccountService,
       ExpenseRepository expenseRepo,
-      ExpensePaymentService expensePaymentService,
+      ExpenseService expenseService,
       BankOrderMergeService bankOrderMergeService) {
     this.appAccountService = appAccountService;
     this.expenseRepo = expenseRepo;
-    this.expensePaymentService = expensePaymentService;
+    this.expenseService = expenseService;
     this.bankOrderMergeService = bankOrderMergeService;
   }
 
@@ -182,7 +182,7 @@ public class BatchCreditTransferExpensePaymentHR extends BatchCreditTransferExpe
         String.format(
             "Credit transfer batch for expense payment: adding payment for expense %s",
             expense.getExpenseSeq()));
-    expensePaymentService.addPayment(expense, bankDetails);
+    expenseService.addPayment(expense, bankDetails);
   }
 
   /**

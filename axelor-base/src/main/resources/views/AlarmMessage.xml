@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="alarm-message-grid" title="Alarm Messages"
+    model="com.axelor.apps.base.db.AlarmMessage">
+    <field name="name"/>
+    <field name="typeSelect"/>
+    <field name="typeSelect"/>
+  </grid>
+
+  <form name="alarm-message-form" title="Alarm Message"
+    model="com.axelor.apps.base.db.AlarmMessage">
+    <panel name="mainPanel">
+      <field name="name"/>
+      <field name="typeSelect"/>
+      <field name="message" colSpan="12" widget="html"/>
+    </panel>
+  </form>
+
+</object-views>

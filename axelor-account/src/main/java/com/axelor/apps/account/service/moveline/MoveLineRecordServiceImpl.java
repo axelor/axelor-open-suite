@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveLoadDefaultConfigService;
 import com.axelor.apps.base.AxelorException;
@@ -74,16 +75,11 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
     BigDecimal total = moveLine.getCredit().add(moveLine.getDebit());
 
     if (total.signum() != 0) {
-      boolean isCredit = moveLine.getCredit().signum() > 0;
-      BigDecimal currencyAmount =
+      moveLine.setCurrencyAmount(
           total.divide(
               moveLine.getCurrencyRate(),
               AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
-              RoundingMode.HALF_UP);
-      if (isCredit) {
-        currencyAmount = currencyAmount.negate();
-      }
-      moveLine.setCurrencyAmount(currencyAmount);
+              RoundingMode.HALF_UP));
     }
   }
 
@@ -148,18 +144,17 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
 
   @Override
   public void setDebitCredit(MoveLine moveLine) {
-    BigDecimal currencyAmount = moveLine.getCurrencyAmount();
-    BigDecimal currencyRate = moveLine.getCurrencyRate();
-    BigDecimal newCurrencyAmount = currencyAmount.multiply(currencyRate).abs();
-
-    if (currencyAmount.signum() < 0) {
-      moveLine.setDebit(BigDecimal.ZERO);
-      moveLine.setCredit(newCurrencyAmount);
+    if (moveLine.getAccount() == null) {
+      return;
     }
 
-    if (currencyAmount.signum() > 0) {
-      moveLine.setCredit(BigDecimal.ZERO);
-      moveLine.setDebit(newCurrencyAmount);
+    BigDecimal amount = moveLine.getCurrencyAmount().multiply(moveLine.getCurrencyRate());
+
+    if (moveLine.getAccount().getCommonPosition() == AccountRepository.COMMON_POSITION_CREDIT) {
+      moveLine.setCredit(amount);
+    } else if (moveLine.getAccount().getCommonPosition()
+        == AccountRepository.COMMON_POSITION_DEBIT) {
+      moveLine.setDebit(amount);
     }
   }
 

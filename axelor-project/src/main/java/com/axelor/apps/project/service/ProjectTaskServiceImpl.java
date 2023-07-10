@@ -24,14 +24,15 @@ import com.axelor.apps.base.service.FrequencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPriority;
+import com.axelor.apps.project.db.ProjectStatus;
 import com.axelor.apps.project.db.ProjectTask;
-import com.axelor.apps.project.db.TaskStatus;
 import com.axelor.apps.project.db.repo.ProjectPriorityRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
@@ -121,7 +122,7 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
 
     nextProjectTask.setParentTask(projectTask.getParentTask());
     nextProjectTask.setProduct(projectTask.getProduct());
-    nextProjectTask.setInvoicingUnit(projectTask.getInvoicingUnit());
+    nextProjectTask.setUnit(projectTask.getUnit());
     nextProjectTask.setQuantity(projectTask.getQuantity());
     nextProjectTask.setUnitPrice(projectTask.getUnitPrice());
     nextProjectTask.setTaskEndDate(projectTask.getTaskEndDate());
@@ -190,28 +191,28 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
   }
 
   @Override
-  public TaskStatus getDefaultCompletedStatus(Project project) {
+  public ProjectStatus getDefaultCompletedStatus(Project project) {
     return project == null || ObjectUtils.isEmpty(project.getProjectTaskStatusSet())
         ? null
         : project.getProjectTaskStatusSet().stream()
-            .filter(TaskStatus::getIsDefaultCompleted)
+            .filter(ProjectStatus::getIsDefaultCompleted)
             .findAny()
             .orElse(null);
   }
 
   @Override
-  public TaskStatus getStatus(Project project) {
+  public ProjectStatus getStatus(Project project) {
     if (project == null) {
       return null;
     }
 
     project = projectRepository.find(project.getId());
-    Set<TaskStatus> projectStatusSet = project.getProjectTaskStatusSet();
+    Set<ProjectStatus> projectStatusSet = project.getProjectTaskStatusSet();
 
     return ObjectUtils.isEmpty(projectStatusSet)
         ? null
         : projectStatusSet.stream()
-            .min(Comparator.comparingInt(TaskStatus::getSequence))
+            .min(Comparator.comparingInt(ProjectStatus::getSequence))
             .orElse(null);
   }
 
@@ -221,7 +222,7 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
       return null;
     }
 
-    project = projectRepository.find(project.getId());
+    project = Beans.get(ProjectRepository.class).find(project.getId());
 
     return ObjectUtils.isEmpty(project.getProjectTaskPrioritySet())
         ? null

@@ -25,9 +25,7 @@ import java.math.BigDecimal;
 
 public interface WorkCenterService {
 
-  public long getMachineDurationFromWorkCenter(WorkCenter workCenter);
-
-  public long getHumanDurationFromWorkCenter(WorkCenter workCenter);
+  public Long getDurationFromWorkCenter(WorkCenter workCenter);
 
   public BigDecimal getMinCapacityPerCycleFromWorkCenter(WorkCenter workCenter);
 

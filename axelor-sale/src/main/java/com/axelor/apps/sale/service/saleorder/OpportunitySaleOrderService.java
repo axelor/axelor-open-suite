@@ -25,6 +25,4 @@ import com.axelor.apps.sale.db.SaleOrder;
 public interface OpportunitySaleOrderService {
 
   SaleOrder createSaleOrderFromOpportunity(Opportunity opportunity) throws AxelorException;
-
-  public void cancelSaleOrders(Opportunity opportunity) throws AxelorException;
 }

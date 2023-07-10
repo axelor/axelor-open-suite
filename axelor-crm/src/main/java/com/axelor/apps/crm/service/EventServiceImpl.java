@@ -30,7 +30,6 @@ import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.RecurrenceConfiguration;
 import com.axelor.apps.crm.db.repo.EventRepository;
 import com.axelor.apps.crm.db.repo.LeadRepository;
-import com.axelor.apps.crm.db.repo.OpportunityRepository;
 import com.axelor.apps.crm.db.repo.RecurrenceConfigurationRepository;
 import com.axelor.apps.crm.exception.CrmExceptionMessage;
 import com.axelor.auth.db.User;
@@ -46,9 +45,11 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -70,7 +71,6 @@ public class EventServiceImpl implements EventService {
 
   protected DateService dateService;
 
-  protected OpportunityRepository opportunityRepo;
   private static final int ITERATION_LIMIT = 1000;
 
   @Inject
@@ -80,15 +80,13 @@ public class EventServiceImpl implements EventService {
       EmailAddressRepository emailAddressRepo,
       PartnerRepository partnerRepo,
       LeadRepository leadRepo,
-      DateService dateService,
-      OpportunityRepository opportunityRepo) {
+      DateService dateService) {
     this.partnerService = partnerService;
     this.eventRepo = eventRepo;
     this.emailAddressRepo = emailAddressRepo;
     this.partnerRepo = partnerRepo;
     this.leadRepo = leadRepo;
     this.dateService = dateService;
-    this.opportunityRepo = opportunityRepo;
   }
 
   @Override
@@ -640,14 +638,186 @@ public class EventServiceImpl implements EventService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public void realizeEvent(Event event) {
-    event.setStatusSelect(EventRepository.STATUS_REALIZED);
+  public void fillEventDates(Event event) throws AxelorException {
+    switch (event.getStatusSelect()) {
+      case EventRepository.STATUS_PLANNED:
+        afterPlanned(event);
+        break;
+
+      case EventRepository.STATUS_REALIZED:
+        afterRealized(event);
+        break;
+
+      case EventRepository.STATUS_CANCELED:
+        afterCanceled(event);
+        break;
+
+      default:
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_MISSING_FIELD, I18n.get("Type not selected!"));
+    }
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  public void planEvent(Event event) {
+    this.afterPlanned(event);
+  }
+
+  protected void afterPlanned(Event event) {
+    this.updateLeadScheduledEventDate(event);
+    this.updatePartnerScheduledEventDate(event);
+  }
+
+  @Override
+  public void realizeEvent(Event event) {
+    event.setStatusSelect(EventRepository.STATUS_REALIZED);
+
+    saveEvent(event);
+
+    this.afterRealized(event);
+  }
+
+  protected void afterRealized(Event event) {
+    this.updateLeadLastEventDate(event);
+    this.updateLeadScheduledEventDateAfterRealized(event);
+    this.updatePartnerLastEventDate(event);
+    this.updatePartnerScheduledEventDateAfterRealized(event);
+  }
+
+  @Override
   public void cancelEvent(Event event) {
     event.setStatusSelect(EventRepository.STATUS_CANCELED);
+
+    saveEvent(event);
+
+    this.afterCanceled(event);
+  }
+
+  protected void afterCanceled(Event event) {
+    LocalDateTime eventDateTime = event.getEndDateTime();
+
+    Lead lead = event.getEventLead();
+    if (lead != null
+        && lead.getLastEventDateT() != null
+        && lead.getLastEventDateT().equals(eventDateTime)) {
+      List<Event> eventList =
+          lead.getEventList().stream()
+              .filter(
+                  e ->
+                      e != event
+                          && e.getEndDateTime() != null
+                          && e.getStatusSelect() == EventRepository.STATUS_REALIZED
+                          && !e.getEndDateTime().isAfter(eventDateTime))
+              .sorted(Comparator.comparing(Event::getEndDateTime).reversed())
+              .collect(Collectors.toList());
+
+      if (!eventList.isEmpty()) {
+        lead.setLastEventDateT(eventList.get(0).getEndDateTime());
+        leadRepo.save(lead);
+      }
+    }
+
+    Partner partner = event.getPartner();
+    if (partner != null
+        && partner.getLastEventDateT() != null
+        && partner.getLastEventDateT().equals(eventDateTime)) {
+      this.fetchLatestEventEndDateT(
+              event, eventRepo.all().filter("self.partner.id = ?", partner.getId()).fetch())
+          .ifPresent(partner::setLastEventDateT);
+    }
+  }
+
+  @Transactional
+  protected void updateLeadLastEventDate(Event event) {
+    Lead lead = event.getEventLead();
+    if (lead != null
+        && event.getEndDateTime() != null
+        && (lead.getLastEventDateT() == null
+            || !lead.getLastEventDateT().isAfter(event.getEndDateTime()))) {
+      lead.setLastEventDateT(event.getEndDateTime());
+    }
+  }
+
+  @Transactional
+  protected void updatePartnerLastEventDate(Event event) {
+    Partner partner = event.getPartner();
+    if (partner != null
+        && event.getEndDateTime() != null
+        && (partner.getLastEventDateT() == null
+            || !partner.getLastEventDateT().isAfter(event.getEndDateTime()))) {
+      partner.setLastEventDateT(event.getEndDateTime());
+    }
+  }
+
+  @Transactional
+  protected void updatePartnerScheduledEventDate(Event event) {
+    Partner partner = event.getPartner();
+    LocalDateTime startDateTime = event.getStartDateTime();
+    if (partner != null
+        && startDateTime != null
+        && event.getStatusSelect() == EventRepository.STATUS_PLANNED
+        && (partner.getScheduledEventDateT() == null
+            || partner.getScheduledEventDateT().isAfter(startDateTime))) {
+      partner.setScheduledEventDateT(startDateTime);
+    }
+  }
+
+  @Transactional
+  protected void updateLeadScheduledEventDate(Event event) {
+    Lead lead = event.getEventLead();
+    LocalDateTime startDateTime = event.getStartDateTime();
+    if (lead != null
+        && startDateTime != null
+        && event.getStatusSelect() == EventRepository.STATUS_PLANNED
+        && (lead.getNextScheduledEventDateT() == null
+            || lead.getNextScheduledEventDateT().isAfter(event.getEndDateTime()))) {
+      lead.setNextScheduledEventDateT(startDateTime);
+    }
+  }
+
+  @Transactional
+  protected void updatePartnerScheduledEventDateAfterRealized(Event event) {
+    Partner partner = event.getPartner();
+    if (partner != null && event.getStartDateTime() != null) {
+      this.fetchNextEventStartDateT(
+              event, eventRepo.all().filter("self.partner.id = ?", partner.getId()).fetch())
+          .ifPresent(partner::setScheduledEventDateT);
+    }
+  }
+
+  @Transactional
+  protected void updateLeadScheduledEventDateAfterRealized(Event event) {
+    Lead lead = event.getEventLead();
+    if (lead != null && event.getStartDateTime() != null && !lead.getEventList().isEmpty()) {
+      this.fetchNextEventStartDateT(event, lead.getEventList())
+          .ifPresent(lead::setNextScheduledEventDateT);
+      leadRepo.save(lead);
+    }
+  }
+
+  protected Optional<LocalDateTime> fetchNextEventStartDateT(Event event, List<Event> eventList) {
+    return eventList.stream()
+        .filter(
+            e ->
+                e != event
+                    && e.getStartDateTime() != null
+                    && e.getStatusSelect() == EventRepository.STATUS_PLANNED
+                    && e.getStartDateTime().isAfter(event.getStartDateTime()))
+        .min(Comparator.comparing(Event::getStartDateTime))
+        .map(Event::getStartDateTime);
+  }
+
+  protected Optional<LocalDateTime> fetchLatestEventEndDateT(Event event, List<Event> eventList) {
+    Optional<Event> optEvent =
+        eventList.stream()
+            .filter(
+                e ->
+                    e != event
+                        && e.getEndDateTime() != null
+                        && e.getStatusSelect().equals(EventRepository.STATUS_REALIZED)
+                        && !e.getEndDateTime().isAfter(event.getEndDateTime()))
+            .max(Comparator.comparing(Event::getEndDateTime));
+
+    return optEvent.map(Event::getEndDateTime);
   }
 }

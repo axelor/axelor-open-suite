@@ -21,7 +21,6 @@ package com.axelor.apps.supplychain.service;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
-import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import java.math.BigDecimal;
@@ -42,9 +41,7 @@ public interface PurchaseOrderStockService {
       StockMove stockMove,
       StockMove qualityStockMove,
       PurchaseOrderLine purchaseOrderLine,
-      BigDecimal qty,
-      StockLocation fromStockLocation,
-      StockLocation toStockLocation)
+      BigDecimal qty)
       throws AxelorException;
 
   public void cancelReceipt(PurchaseOrder purchaseOrder) throws AxelorException;

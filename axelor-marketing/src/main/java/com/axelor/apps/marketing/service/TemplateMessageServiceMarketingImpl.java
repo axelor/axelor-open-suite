@@ -18,7 +18,6 @@
  */
 package com.axelor.apps.marketing.service;
 
-import com.axelor.apps.base.service.birt.template.BirtTemplateService;
 import com.axelor.apps.base.service.message.TemplateMessageServiceBaseImpl;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.EmailAccount;
@@ -42,10 +41,8 @@ public class TemplateMessageServiceMarketingImpl extends TemplateMessageServiceB
 
   @Inject
   public TemplateMessageServiceMarketingImpl(
-      MessageService messageService,
-      TemplateContextService templateContextService,
-      BirtTemplateService birtTemplateService) {
-    super(messageService, templateContextService, birtTemplateService);
+      MessageService messageService, TemplateContextService templateContextService) {
+    super(messageService, templateContextService);
   }
 
   @Override

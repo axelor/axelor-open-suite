@@ -190,7 +190,8 @@ public class BatchRealizeFixedAssetLine extends AbstractBatch {
     appendTypeComments(sbComment);
 
     sbComment.append(
-        String.format("\t" + I18n.get(BaseExceptionMessage.BASE_BATCH_3), batch.getAnomaly()));
+        String.format(
+            "\t" + I18n.get(BaseExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly()));
 
     addComment(sbComment.toString());
     super.stop();

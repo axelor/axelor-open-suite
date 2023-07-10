@@ -176,7 +176,7 @@ public class PaymentServiceImpl implements PaymentService {
    * @throws AxelorException
    */
   @Transactional(rollbackOn = {Exception.class})
-  public void createReconcile(
+  protected void createReconcile(
       MoveLine debitMoveLine,
       MoveLine creditMoveLine,
       BigDecimal debitTotalRemaining,
@@ -326,8 +326,7 @@ public class PaymentServiceImpl implements PaymentService {
       move.getMoveLineList().add(moveLine);
       moveLineNo2++;
       // Gestion du passage en 580
-      reconcileService.canBeZeroBalance(null, moveLine);
-      // reconcileService.balanceCredit(moveLine);
+      reconcileService.balanceCredit(moveLine);
     }
     log.debug("End createExcessPaymentWithAmount");
     return moveLineNo2;
@@ -472,36 +471,5 @@ public class PaymentServiceImpl implements PaymentService {
       }
     }
     return amountRemaining;
-  }
-
-  @Override
-  public boolean reconcileMoveLinesWithCompatibleAccounts(List<MoveLine> moveLineList)
-      throws AxelorException {
-    if (moveLineList.size() == 2
-        && !moveLineList.get(0).getAccount().equals(moveLineList.get(1).getAccount())
-        && moveLineList
-            .get(0)
-            .getAccount()
-            .getCompatibleAccountSet()
-            .contains(moveLineList.get(1).getAccount())) {
-      MoveLine creditMoveLine = null;
-      MoveLine debitMoveLine = null;
-
-      if (moveLineList.get(0).getCredit().signum() > 0
-          && moveLineList.get(1).getDebit().signum() > 0) {
-        creditMoveLine = moveLineList.get(0);
-        debitMoveLine = moveLineList.get(1);
-      } else if (moveLineList.get(1).getCredit().signum() > 0
-          && moveLineList.get(0).getDebit().signum() > 0) {
-        creditMoveLine = moveLineList.get(1);
-        debitMoveLine = moveLineList.get(0);
-      }
-
-      if (creditMoveLine != null && debitMoveLine != null) {
-        reconcileService.reconcile(debitMoveLine, creditMoveLine, true, true);
-        return true;
-      }
-    }
-    return false;
   }
 }

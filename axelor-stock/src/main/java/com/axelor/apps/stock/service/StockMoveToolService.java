@@ -22,8 +22,8 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
-import com.axelor.apps.stock.db.StockMoveLine;
 import java.math.BigDecimal;
 
 public interface StockMoveToolService {
@@ -37,6 +37,8 @@ public interface StockMoveToolService {
    * @throws AxelorException Aucune séquence de StockMove n'a été configurée
    */
   public String getSequenceStockMove(int stockMoveType, Company company) throws AxelorException;
+
+  public int getStockMoveType(StockLocation fromStockLocation, StockLocation toStockLocation);
 
   public BigDecimal compute(StockMove stockMove);
 
@@ -69,18 +71,18 @@ public interface StockMoveToolService {
   /**
    * Get from address from stock move or stock location.
    *
-   * @param stockMoveLine
+   * @param stockMove
    * @return
    */
-  Address getFromAddress(StockMove stockMove, StockMoveLine stockMoveLine);
+  Address getFromAddress(StockMove stockMove);
 
   /**
    * Get to address from stock move or stock location.
    *
-   * @param stockMoveLine
+   * @param stockMove
    * @return
    */
-  Address getToAddress(StockMove stockMove, StockMoveLine stockMoveLine);
+  Address getToAddress(StockMove stockMove);
 
   /**
    * Get partner address.
@@ -89,16 +91,14 @@ public interface StockMoveToolService {
    * @return
    * @throws AxelorException
    */
-  Address getPartnerAddress(StockMove stockMove, StockMoveLine stockMoveLine)
-      throws AxelorException;
+  Address getPartnerAddress(StockMove stockMove) throws AxelorException;
 
   /**
    * Get company address.
    *
-   * @param stockMoveLine
+   * @param stockMove
    * @return
    * @throws AxelorException
    */
-  Address getCompanyAddress(StockMove stockMove, StockMoveLine stockMoveLine)
-      throws AxelorException;
+  Address getCompanyAddress(StockMove stockMove) throws AxelorException;
 }

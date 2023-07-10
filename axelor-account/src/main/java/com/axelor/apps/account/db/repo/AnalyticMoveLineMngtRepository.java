@@ -26,7 +26,6 @@ public class AnalyticMoveLineMngtRepository extends AnalyticMoveLineRepository {
     AnalyticMoveLine copy = super.copy(entity, deep);
     copy.setMoveLine(null);
     copy.setInvoiceLine(null);
-    copy.setMoveLineMassEntry(null);
     return copy;
   }
 }

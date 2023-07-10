@@ -25,7 +25,6 @@ import com.axelor.apps.base.db.ModelEmailLink;
 import com.axelor.apps.base.db.PrintingSettings;
 import com.axelor.apps.base.db.repo.ModelEmailLinkRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.birt.template.BirtTemplateService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.auth.AuthUtils;
@@ -33,6 +32,7 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
+import com.axelor.inject.Beans;
 import com.axelor.message.db.EmailAccount;
 import com.axelor.message.db.EmailAddress;
 import com.axelor.message.db.Message;
@@ -43,9 +43,12 @@ import com.axelor.message.service.SendMailQueueService;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.repo.MetaAttachmentRepository;
 import com.axelor.studio.db.AppBase;
+import com.axelor.text.StringTemplates;
+import com.axelor.text.Templates;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
@@ -54,6 +57,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.mail.MessagingException;
@@ -67,7 +71,6 @@ public class MessageServiceBaseImpl extends MessageServiceImpl implements Messag
 
   protected final UserService userService;
   protected final AppBaseService appBaseService;
-  protected final BirtTemplateService birtTemplateService;
 
   @Inject
   public MessageServiceBaseImpl(
@@ -76,8 +79,7 @@ public class MessageServiceBaseImpl extends MessageServiceImpl implements Messag
       SendMailQueueService sendMailQueueService,
       AppSettingsMessageService appSettingsMessageService,
       UserService userService,
-      AppBaseService appBaseService,
-      BirtTemplateService birtTemplateService) {
+      AppBaseService appBaseService) {
     super(
         metaAttachmentRepository,
         messageRepository,
@@ -85,7 +87,6 @@ public class MessageServiceBaseImpl extends MessageServiceImpl implements Messag
         appSettingsMessageService);
     this.userService = userService;
     this.appBaseService = appBaseService;
-    this.birtTemplateService = birtTemplateService;
   }
 
   @Override
@@ -208,9 +209,7 @@ public class MessageServiceBaseImpl extends MessageServiceImpl implements Messag
     }
 
     PrintingSettings printSettings = company.getPrintingSettings();
-    if (printSettings == null
-        || printSettings.getDefaultMailBirtTemplate() == null
-        || printSettings.getDefaultMailBirtTemplate().getTemplateMetaFile() == null) {
+    if (printSettings == null || printSettings.getDefaultMailBirtTemplate() == null) {
       return null;
     }
 
@@ -218,19 +217,33 @@ public class MessageServiceBaseImpl extends MessageServiceImpl implements Messag
 
     logger.debug("Default BirtTemplate : {}", birtTemplate);
 
+    Templates templates = new StringTemplates('$', '$');
+    Map<String, Object> templatesContext = Maps.newHashMap();
     try {
       Class<? extends Model> className =
           (Class<? extends Model>) Class.forName(message.getClass().getName());
-      Model model = JPA.find(className, message.getId());
+      templatesContext.put("Message", JPA.find(className, message.getId()));
+    } catch (ClassNotFoundException e) {
+      TraceBackService.trace(e);
+    }
 
-      String fileName =
-          "Message "
-              + message.getSubject()
-              + "-"
-              + appBaseService.getTodayDate(company).format(DateTimeFormatter.BASIC_ISO_DATE);
-      return birtTemplateService.generateBirtTemplateLink(birtTemplate, model, fileName);
+    String fileName =
+        "Message "
+            + message.getSubject()
+            + "-"
+            + appBaseService.getTodayDate(company).format(DateTimeFormatter.BASIC_ISO_DATE);
 
-    } catch (AxelorException | ClassNotFoundException e) {
+    try {
+      return Beans.get(TemplateMessageServiceBaseImpl.class)
+          .generateBirtTemplateLink(
+              templates,
+              templatesContext,
+              fileName,
+              birtTemplate.getTemplateLink(),
+              birtTemplate.getFormat(),
+              birtTemplate.getBirtTemplateParameterList());
+
+    } catch (AxelorException e) {
       TraceBackService.trace(e);
       throw new IllegalStateException(e);
     }

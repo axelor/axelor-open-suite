@@ -36,6 +36,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.CostSheetGroup;
 import com.axelor.apps.production.db.CostSheetLine;
+import com.axelor.apps.production.db.ProdHumanResource;
 import com.axelor.apps.production.db.UnitCostCalcLine;
 import com.axelor.apps.production.db.UnitCostCalculation;
 import com.axelor.apps.production.db.WorkCenter;
@@ -481,6 +482,7 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
 
   public CostSheetLine createWorkCenterHRCostSheetLine(
       WorkCenter workCenter,
+      ProdHumanResource prodHumanResource,
       int priority,
       int bomLevel,
       CostSheetLine parentCostSheetLine,

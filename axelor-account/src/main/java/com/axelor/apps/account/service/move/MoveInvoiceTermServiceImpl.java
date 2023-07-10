@@ -31,7 +31,6 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PayVoucherDueElementRepository;
 import com.axelor.apps.account.db.repo.PayVoucherElementToPayRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.common.StringUtils;
@@ -51,7 +50,6 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
   protected InvoiceTermRepository invoiceTermRepo;
   protected PayVoucherElementToPayRepository payVoucherElementToPayRepository;
   protected PayVoucherDueElementRepository payVoucherDueElementRepository;
-  protected InvoiceTermPfpService invoiceTermPfpService;
 
   @Inject
   public MoveInvoiceTermServiceImpl(
@@ -60,15 +58,13 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
       MoveRepository moveRepo,
       InvoiceTermRepository invoiceTermRepo,
       PayVoucherElementToPayRepository payVoucherElementToPayRepository,
-      PayVoucherDueElementRepository payVoucherDueElementRepository,
-      InvoiceTermPfpService invoiceTermPfpService) {
+      PayVoucherDueElementRepository payVoucherDueElementRepository) {
     this.moveLineInvoiceTermService = moveLineInvoiceTermService;
     this.invoiceTermService = invoiceTermService;
     this.moveRepo = moveRepo;
     this.invoiceTermRepo = invoiceTermRepo;
     this.payVoucherElementToPayRepository = payVoucherElementToPayRepository;
     this.payVoucherDueElementRepository = payVoucherDueElementRepository;
-    this.invoiceTermPfpService = invoiceTermPfpService;
   }
 
   @Override
@@ -293,22 +289,5 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
       }
     }
     return "";
-  }
-
-  @Override
-  public Integer checkOtherInvoiceTerms(Move move) {
-    if (move == null || CollectionUtils.isEmpty(move.getMoveLineList())) {
-      return null;
-    }
-    List<InvoiceTerm> invoiceTermList =
-        move.getMoveLineList().stream()
-            .map(MoveLine::getInvoiceTermList)
-            .filter(Objects::nonNull)
-            .flatMap(Collection::stream)
-            .collect(Collectors.toList());
-    if (!CollectionUtils.isEmpty(invoiceTermList)) {
-      return invoiceTermPfpService.checkOtherInvoiceTerms(invoiceTermList);
-    }
-    return null;
   }
 }
