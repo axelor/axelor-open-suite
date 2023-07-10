@@ -108,6 +108,7 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
       Product product = orderLine.getProduct();
       String rootName =
           saleOrder.getSaleOrderSeq() + " - " + orderLine.getSequence() + " - " + product.getName();
+      orderLine.setProject(project);
       ProjectTask root =
           projectTaskRepository
               .all()
