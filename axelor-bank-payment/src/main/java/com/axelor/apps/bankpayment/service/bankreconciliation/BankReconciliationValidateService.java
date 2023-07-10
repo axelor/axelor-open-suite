@@ -225,7 +225,7 @@ public class BankReconciliationValidateService {
         if (isDebit) {
           BigDecimal amountMoveLine =
               BankReconciliationToolService.isForeignCurrency(bankReconciliation)
-                  ? moveLine.getCurrencyAmount()
+                  ? moveLine.getCurrencyAmount().abs()
                   : moveLine.getCredit();
           debit =
               (amountMoveLine.subtract(moveLine.getBankReconciledAmount()))
@@ -234,7 +234,7 @@ public class BankReconciliationValidateService {
         } else {
           BigDecimal amountMoveLine =
               BankReconciliationToolService.isForeignCurrency(bankReconciliation)
-                  ? moveLine.getCurrencyAmount()
+                  ? moveLine.getCurrencyAmount().abs()
                   : moveLine.getDebit();
           debit = BigDecimal.ZERO;
           credit =

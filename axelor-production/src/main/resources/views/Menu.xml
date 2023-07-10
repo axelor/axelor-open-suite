@@ -147,8 +147,8 @@
     <view type="form" name="stock-move-form"/>
     <domain>self.typeSelect = :_typeSelect AND
       self.isReversion = FALSE AND
-      self.toStockLocation.typeSelect=:_stockLocTypeSelect AND
-      self.toStockLocation.isOutsourcingLocation=:_isOutsourcingLoc</domain>
+      self.stockMoveLineList.toStockLocation.typeSelect=:_stockLocTypeSelect AND
+      self.stockMoveLineList.toStockLocation.isOutsourcingLocation=:_isOutsourcingLoc</domain>
     <context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_OUTGOING"/>
     <context name="_stockLocTypeSelect" expr="eval: __repo__(StockLocation).TYPE_VIRTUAL"/>
     <context name="_isOutsourcingLoc" expr="eval:true"/>
@@ -164,8 +164,8 @@
     <view type="form" name="stock-move-form"/>
     <domain>self.typeSelect = :_typeSelect AND
       self.isReversion = FALSE AND
-      self.fromStockLocation.typeSelect=:_stockLocTypeSelect AND
-      self.fromStockLocation.isOutsourcingLocation=:_isOutsourcingLoc</domain>
+      self.stockMoveLineList.fromStockLocation.typeSelect=:_stockLocTypeSelect AND
+      self.stockMoveLineList.fromStockLocation.isOutsourcingLocation=:_isOutsourcingLoc</domain>
     <context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_INCOMING"/>
     <context name="_stockLocTypeSelect" expr="eval: __repo__(StockLocation).TYPE_VIRTUAL"/>
     <context name="_isOutsourcingLoc" expr="eval:true"/>

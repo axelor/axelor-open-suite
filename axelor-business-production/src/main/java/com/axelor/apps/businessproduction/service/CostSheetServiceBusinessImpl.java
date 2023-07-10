@@ -19,13 +19,12 @@
 package com.axelor.apps.businessproduction.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.hr.db.Employee;
-import com.axelor.apps.hr.db.repo.EmployeeHRRepository;
 import com.axelor.apps.production.db.CostSheetLine;
 import com.axelor.apps.production.db.OperationOrder;
-import com.axelor.apps.production.db.ProdHumanResource;
+import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.CostSheetRepository;
 import com.axelor.apps.production.service.app.AppProductionService;
@@ -61,40 +60,16 @@ public class CostSheetServiceBusinessImpl extends CostSheetServiceImpl {
 
   @Override
   protected void _computeHumanResourceCost(
-      ProdHumanResource prodHumanResource,
+      WorkCenter workCenter,
+      BigDecimal producedQty,
+      Unit pieceUnit,
       int priority,
       int bomLevel,
       CostSheetLine parentCostSheetLine)
       throws AxelorException {
 
-    Employee employee = prodHumanResource.getEmployee();
-
-    if (appProductionService.isApp("production")
-        && appProductionService.getAppProduction().getManageBusinessProduction()
-        && employee != null
-        && !EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee)) {
-      BigDecimal durationHours =
-          new BigDecimal(prodHumanResource.getDuration())
-              .divide(
-                  BigDecimal.valueOf(3600),
-                  appProductionService.getNbDecimalDigitForUnitPrice(),
-                  BigDecimal.ROUND_HALF_UP);
-
-      costSheet.addCostSheetLineListItem(
-          costSheetLineService.createWorkCenterHRCostSheetLine(
-              prodHumanResource.getWorkCenter(),
-              prodHumanResource,
-              priority,
-              bomLevel,
-              parentCostSheetLine,
-              durationHours,
-              employee.getHourlyRate().multiply(durationHours),
-              hourUnit));
-
-    } else {
-
-      super._computeHumanResourceCost(prodHumanResource, priority, bomLevel, parentCostSheetLine);
-    }
+    super._computeHumanResourceCost(
+        workCenter, producedQty, pieceUnit, priority, bomLevel, parentCostSheetLine);
   }
 
   @Override
@@ -145,7 +120,7 @@ public class CostSheetServiceBusinessImpl extends CostSheetServiceImpl {
       // TODO get the timesheet Line done when we run the calculation.
 
       this.computeRealHumanResourceCost(
-          null, operationOrder.getWorkCenter(), priority, bomLevel, parentCostSheetLine, duration);
+          operationOrder.getWorkCenter(), priority, bomLevel, parentCostSheetLine, duration);
     }
   }
 }

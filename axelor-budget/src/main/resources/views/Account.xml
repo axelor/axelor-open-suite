@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+
+  <form name="account-form" title="Accounting.Account"
+    model="com.axelor.apps.account.db.Account" id="budget-account-form" extension="true">
+    <extend target="/">
+      <attribute name="onLoad" value="action-budget-group-account-account-onload"/>
+    </extend>
+
+    <extend target="//panel[@name='viewAccountingReportConfigLinePanel']">
+      <insert position="after">
+        <panel name="relatedBudgetPanel" title="Related budgets" hidden="true"
+          if="__config__.app.isApp('budget')">
+          <panel-dashlet name="viewRelatedBudgetLineDashlet" colSpan="12" title=""
+            if="__config__.app.isApp('budget')" height="450"
+            action="action-account-view-related-budget-line" canSearch="true"/>
+        </panel>
+      </insert>
+    </extend>
+  </form>
+
+  <action-group name="action-budget-group-account-account-onload">
+    <action name="action-group-account-account-onload"/>
+    <action name="action-account-method-budget-hide-budget-panel"
+      if="__config__.app.isApp('budget')"/>
+  </action-group>
+
+  <action-view name="action-account-view-related-budget-line" title=""
+    model="com.axelor.apps.budget.db.Budget">
+    <view type="grid" name="budget-lines-grid"/>
+    <view type="form" name="budget-included-form"/>
+    <domain>:id MEMBER OF self.accountSet</domain>
+  </action-view>
+
+  <action-method name="action-account-method-budget-hide-budget-panel">
+    <call class="com.axelor.apps.budget.web.AccountController" method="hideBudgetPanel"/>
+  </action-method>
+
+</object-views>

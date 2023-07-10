@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid id="budget-analytic-axis-by-company-grid" name="analytic-axis-by-company-grid"
+    title="Analytic Axis By Company" model="com.axelor.apps.account.db.AnalyticAxisByCompany"
+    extension="true">
+
+    <extend target="//field[@name='analyticAxis']">
+      <insert position="after">
+        <field name="includeInBudgetKey" if="__config__.app.isApp('budget')"/>
+      </insert>
+    </extend>
+  </grid>
+
+  <form id="budget-analytic-axis-by-company-config-form"
+    name="analytic-axis-by-company-config-form" title="Analytic Axis By company"
+    model="com.axelor.apps.account.db.AnalyticAxisByCompany" extension="true">
+    <extend target="//field[@name='analyticAxis']">
+      <insert position="after">
+        <field name="includeInBudgetKey" if="__config__.app.isApp('budget')"/>
+      </insert>
+    </extend>
+  </form>
+
+</object-views>

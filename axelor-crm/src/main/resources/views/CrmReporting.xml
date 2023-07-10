@@ -24,7 +24,8 @@
   </grid>
 
   <form name="crm-reporting-form" title="Crm reporting"
-    model="com.axelor.apps.crm.db.CrmReporting">
+    model="com.axelor.apps.crm.db.CrmReporting" onSave="action-crm-reporting-validate-date-required"
+    onNew="action-crm-reporting-method-prefill-companySet">
     <panel colSpan="12">
       <field name="typeSelect"/>
       <field name="companySet" widget="TagSelect"
@@ -36,8 +37,8 @@
       <field name="countrySet" widget="TagSelect"/>
       <field name="industrySectorSet" widget="TagSelect"/>
       <field name="categorySet" widget="TagSelect"/>
-      <field name="fromDate" colSpan="3"/>
-      <field name="toDate" colSpan="3"/>
+      <field name="fromDate" colSpan="3" requiredIf="toDate == null"/>
+      <field name="toDate" colSpan="3" requiredIf="fromDate == null"/>
     </panel>
     <panel sidebar="true" canCollapse="true">
       <button name="openResultButton" title="Open the list of results"
@@ -60,6 +61,10 @@
 
   <action-method name="action-crm-reporting-method-show-events">
     <call method="showEvents" class="com.axelor.apps.crm.web.CrmReportingController"/>
+  </action-method>
+
+  <action-method name="action-crm-reporting-method-prefill-companySet">
+    <call class="com.axelor.apps.crm.web.CrmReportingController" method="prefillCompanySet"/>
   </action-method>
 
 </object-views>

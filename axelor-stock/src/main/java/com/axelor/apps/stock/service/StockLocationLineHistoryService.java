@@ -21,6 +21,7 @@ package com.axelor.apps.stock.service;
 import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.StockLocationLineHistory;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public interface StockLocationLineHistoryService {
 
@@ -37,4 +38,6 @@ public interface StockLocationLineHistoryService {
       LocalDateTime dateTime,
       String origin,
       String typeSelect);
+
+  List<StockLocationLineHistory> getStockLineHistoryLines(StockLocationLine stockLocationLine);
 }

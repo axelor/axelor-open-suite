@@ -18,12 +18,29 @@
  */
 package com.axelor.apps.gdpr.service.app;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Anonymizer;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.gdpr.exception.GdprExceptionMessage;
 import com.axelor.db.Query;
+import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppGdpr;
+import java.util.Objects;
 
 public class AppGdprServiceImpl implements AppGdprService {
   @Override
   public AppGdpr getAppGDPR() {
     return Query.of(AppGdpr.class).fetchOne();
+  }
+
+  @Override
+  public Anonymizer getGdprAnonymizer() throws AxelorException {
+    Anonymizer anonymizer = getAppGDPR().getAnonymizer();
+    if (Objects.isNull(anonymizer)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(GdprExceptionMessage.APP_GDPR_NO_ANONYMIZER_FOUND));
+    }
+    return anonymizer;
   }
 }
