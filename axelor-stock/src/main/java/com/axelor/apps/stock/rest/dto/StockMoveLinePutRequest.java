@@ -39,8 +39,6 @@ public class StockMoveLinePutRequest extends RequestStructure {
   @Max(StockMoveLineRepository.CONFORMITY_NON_COMPLIANT)
   private Integer conformity;
 
-  public StockMoveLinePutRequest() {}
-
   public Long getUnitId() {
     return unitId;
   }

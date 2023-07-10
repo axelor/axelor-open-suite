@@ -58,8 +58,6 @@ public class StockInternalMovePostRequest extends RequestPostStructure {
   @Min(0)
   private BigDecimal movedQty;
 
-  public StockInternalMovePostRequest() {}
-
   public Long getProductId() {
     return productId;
   }

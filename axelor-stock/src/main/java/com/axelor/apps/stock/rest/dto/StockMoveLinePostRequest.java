@@ -54,8 +54,6 @@ public class StockMoveLinePostRequest extends RequestStructure {
   @Max(StockMoveLineRepository.CONFORMITY_NON_COMPLIANT)
   private Integer conformity;
 
-  public StockMoveLinePostRequest() {}
-
   public Long getProductId() {
     return productId;
   }
