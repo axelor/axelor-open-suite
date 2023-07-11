@@ -342,7 +342,11 @@ public class MoveLineServiceImpl implements MoveLineService {
     if (daysTotal.compareTo(BigDecimal.ZERO) == 0) {
       return BigDecimal.ZERO;
     }
-    BigDecimal prorata = daysProrata.divide(daysTotal, 10, RoundingMode.HALF_UP);
+
+    BigDecimal prorata = BigDecimal.ONE;
+    if (moveDate.isAfter(moveLine.getCutOffStartDate())) {
+      prorata = daysProrata.divide(daysTotal, 10, RoundingMode.HALF_UP);
+    }
 
     return prorata.multiply(moveLine.getCurrencyAmount()).setScale(2, RoundingMode.HALF_UP);
   }
