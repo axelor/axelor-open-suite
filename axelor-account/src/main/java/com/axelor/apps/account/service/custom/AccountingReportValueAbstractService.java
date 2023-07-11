@@ -283,6 +283,20 @@ public abstract class AccountingReportValueAbstractService {
   }
 
   protected void traceException(
+      String errorMessage,
+      AccountingReport accountingReport,
+      AccountingReportConfigLine group,
+      AccountingReportConfigLine column,
+      AccountingReportConfigLine line) {
+    this.traceException(
+        new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(errorMessage)),
+        accountingReport,
+        group,
+        column,
+        line);
+  }
+
+  protected void traceException(
       Exception e,
       AccountingReport accountingReport,
       AccountingReportConfigLine group,

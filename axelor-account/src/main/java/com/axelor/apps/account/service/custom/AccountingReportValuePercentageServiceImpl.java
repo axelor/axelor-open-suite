@@ -27,11 +27,9 @@ import com.axelor.apps.account.db.repo.AccountingReportValueRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.DateService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.StringUtils;
-import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -77,9 +75,7 @@ public class AccountingReportValuePercentageServiceImpl extends AccountingReport
       if (accountingReport.getTraceAnomalies()
           && StringUtils.notEmpty(column.getPercentageBaseColumn())) {
         this.traceException(
-            new AxelorException(
-                TraceBackRepository.CATEGORY_INCONSISTENCY,
-                I18n.get(AccountExceptionMessage.CUSTOM_REPORT_WRONG_PERCENTAGE_BASE_COLUMN)),
+            AccountExceptionMessage.CUSTOM_REPORT_WRONG_PERCENTAGE_BASE_COLUMN,
             accountingReport,
             groupColumn,
             column,
