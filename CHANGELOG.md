@@ -1,3 +1,61 @@
+## [7.0.5] (2023-07-11)
+
+#### Fixed
+
+* Business project: Automatic project can be enabled only if project generation/selection for order is enabled
+
+The helper for the project generation/selection for order has been changed. To update it, a script must be executed:
+
+```sql
+DELETE FROM meta_help WHERE field_name = 'generateProjectOrder';
+```
+
+* App configuration: remove YOURS API from Routing Services
+
+If using the distance computation with web services in expenses, users should select the OSRM API in App base config.
+
+* Custom accounting report: fixed percentage value when total line is not computed during the first iteration.
+* Custom accounting report: fixed various issues related to report parameters.
+* Custom accounting report: fixed number format.
+* Custom accounting report: order accounts and analytic accounts alphabetically when detailed.
+* Custom accounting report: fixed analytic values not taking result computation method into account.
+* Accounting report config line: prevent from creating a line with an invalid groovy code.
+* Move: fixed automatic fill of VAT system when financial account is empty.
+* Move: fixed duplicate origin verification when move is not saved.
+* Invoice: fixed error when cancelling an invoice payment.
+* Move: on change of company, currency is updated to company currency even when the partner is filled.
+* Product/Account Management: hide financial account when it is inactive on product account management.
+* Reconcile group: added back "calculate" and "accounting reconcile" buttons on move line grid view.
+* Forecast generator: fixed endless loading when no periodicity selected.
+* Stock move line: fixed a issue when emptying product from stock move line would create a new stock move line.
+* Prod process line: fixed an issue where capacity settings panel was hidden with work center group feature activated.
+* Inventory: fixed wrong gap value on inventory.
+* Accounting report: fixed impossibility to select a payment move line in DAS2 grid even if code N4DS is not empty.
+* Fixed asset: fixed move line amount 0 error on sale move generation.
+* Stock rules demo data: fixed wrong repicient in message template.
+* Accounting batch: fixed error when we try to run credit transfer batch without bank details.
+* Sale order template: fixed error when selecting a project.
+* Move: allow tax line generation when move is daybook status.
+* Credit transfer batch: fixed duplicate payments & bank orders.
+* Purchase Order/Sale Order/Contract : Remove wrong analytic line link after invoice generation
+* Payment session: change titles related to emails on form view.
+* Payment voucher: fixed invoice terms display when trading name is not managed or filled.
+* Contract: fixed an error occurring when invoicing a contract
+
+An error occurred when invoicing a contract if time prorated Invoice was enabled and then periodic invoicing was disabled.
+
+* Fixed asset: fixed being able to dispose a fixed asset while generating a sale move but with no tax line set.
+* Move: removed verification on tax in move with cut off functional origin.
+* Invoice term: Fixed company amount remaining on pfp partial validation to pay the right amount.
+* Details stock location line: removed reserved quantity from the form view.
+* Sale order: fixed totals in sales order printouts.
+* Email address: Remove the unused field 'lead' from email address.
+* Invoice: fixed view marked as dirty after invoice validation.
+* Account printings: fixed an issue were pictures with specific filenames were not displayed in the printings.
+* Accounting report: fixed bank reconciliation statement.
+* Accounting report config line: filter analytic accounts with report type company.
+* Invoice/Move: filled analytic axis on move when we ventilate an invoice.
+
 ## [7.0.4] (2023-06-22)
 
 #### Features
@@ -282,6 +340,7 @@ closedWinOpportunityStatus, closedLostOpportunityStatus, salesPropositionStatus 
     </details>
 
 
+[7.0.5]: https://github.com/axelor/axelor-open-suite/compare/v7.0.4...v7.0.5
 [7.0.4]: https://github.com/axelor/axelor-open-suite/compare/v7.0.3...v7.0.4
 [7.0.3]: https://github.com/axelor/axelor-open-suite/compare/v7.0.2...v7.0.3
 [7.0.2]: https://github.com/axelor/axelor-open-suite/compare/v7.0.1...v7.0.2
