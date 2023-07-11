@@ -74,11 +74,14 @@ public class StockMoveLineController {
    * @param response
    */
   public void setProductInfo(ActionRequest request, ActionResponse response) {
-    StockMoveLine stockMoveLine;
+
+    StockMoveLineService stockMoveLineService = Beans.get(StockMoveLineService.class);
+    StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
+    StockMove stockMove = stockMoveLine.getStockMove();
     try {
-      stockMoveLine = request.getContext().asType(StockMoveLine.class);
+
       Company company;
-      StockMove stockMove = stockMoveLine.getStockMove();
+
       if (stockMove == null) {
         Context parentContext = request.getContext().getParent();
         if (parentContext.getContextClass().equals(StockMove.class)) {
@@ -102,7 +105,6 @@ public class StockMoveLineController {
         company = stockMove.getCompany();
       }
 
-      StockMoveLineService stockMoveLineService = Beans.get(StockMoveLineService.class);
       if (stockMoveLine.getProduct() == null) {
         stockMoveLineService.resetStockMoveLine(stockMoveLine);
         stockMoveLine.setStockMove(stockMove);
@@ -113,8 +115,9 @@ public class StockMoveLineController {
       stockMoveLineService.setProductInfo(stockMove, stockMoveLine, company);
       response.setValues(stockMoveLine);
     } catch (Exception e) {
-      stockMoveLine = new StockMoveLine();
-      response.setValues(Mapper.toMap(stockMoveLine));
+
+      stockMoveLineService.resetStockMoveLine(stockMoveLine);
+      stockMoveLine.setStockMove(stockMove);
       TraceBackService.trace(response, e);
     }
   }
