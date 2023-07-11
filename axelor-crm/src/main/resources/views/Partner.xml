@@ -286,9 +286,9 @@
     <extend target="//field[@name='jobTitleFunction']">
       <attribute name="x-create" value="function"/>
       <insert position="before">
+        <field name="isMainContact" colSpan="4"/>
         <field name="isDoNotCall" colSpan="4" hideIf="$readonly()"/>
         <field name="isDoNotEmail" colSpan="4" hideIf="$readonly()"/>
-        <field name="isMainContact" colSpan="4"/>
         <field name="$viewerCallAndEmail" showTitle="false" showIf="$readonly()" colSpan="12">
           <viewer><![CDATA[
 			<h4>
@@ -330,7 +330,7 @@
 
   <kanban columnBy="partnerStatus" model="com.axelor.apps.base.db.Partner"
     sequenceBy="sequence" title="Prospects" name="partner-prospect-kanban" limit="10"
-    draggable="true">
+    draggable="true" onMove="action-partner-method-kanban-onmove">
     <field name="name"/>
     <field name="leadScoringSelect"/>
     <field name="sizeSelect"/>
@@ -653,6 +653,10 @@
   <action-method name="action-partner-method-get-subsidiary-partners-count">
     <call class="com.axelor.apps.crm.web.PartnerCrmController"
       method="getSubsidiaryPartnersCount"/>
+  </action-method>
+
+  <action-method name="action-partner-method-kanban-onmove">
+    <call class="com.axelor.apps.crm.web.PartnerCrmController" method="kanbanPartnerOnMove"/>
   </action-method>
 
   <action-group name="crm-action-group-partner-onload">

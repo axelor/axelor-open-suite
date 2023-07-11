@@ -275,7 +275,6 @@
       </menu>
     </menubar>
     <panel name="mainPanel">
-      <field name="rootParentBudgetLevel" colSpan="12" hidden="true"/>
       <field name="typeSelect" colSpan="12" hidden="true"/>
       <field name="code" required="true" colSpan="2"/>
       <field name="name" required="true" colSpan="4"/>

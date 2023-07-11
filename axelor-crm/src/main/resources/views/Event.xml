@@ -389,7 +389,6 @@
     <action name="action-event-view-modifications-recurrence"
       if="recurrenceConfiguration &amp;&amp; id > 0"/>
     <action name="action-event-attrs-show-past-event-text"/>
-    <action name="action-event-method-fill-event-related-dates"/>
   </action-group>
 
   <action-view name="action-event-view-modifications-recurrence"
@@ -634,11 +633,6 @@
   </action-record>
 
   <!-- ACTION METHOD -->
-
-  <action-method name="action-event-method-fill-event-related-dates"
-    model="com.axelor.apps.crm.db.Event">
-    <call class="com.axelor.apps.crm.web.EventController" method="fillEventDates"/>
-  </action-method>
 
   <action-method name="action-event-method-compute-from-start-date-time">
     <call class="com.axelor.apps.crm.web.EventController" method="computeFromStartDateTime"/>
