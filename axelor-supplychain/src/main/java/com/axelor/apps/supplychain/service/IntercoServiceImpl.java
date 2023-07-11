@@ -98,6 +98,8 @@ public class IntercoServiceImpl implements IntercoService {
     SaleOrderCreateService saleOrderCreateService = Beans.get(SaleOrderCreateService.class);
     SaleOrderComputeService saleOrderComputeService = Beans.get(SaleOrderComputeService.class);
     Company intercoCompany = findIntercoCompany(purchaseOrder.getSupplierPartner());
+    Partner clientPartner = purchaseOrder.getCompany().getPartner();
+
     // create sale order
     SaleOrder saleOrder =
         saleOrderCreateService.createSaleOrder(
@@ -109,10 +111,10 @@ public class IntercoServiceImpl implements IntercoService {
             null,
             null,
             purchaseOrder.getPriceList(),
-            purchaseOrder.getCompany().getPartner(),
+            clientPartner,
             null,
             null,
-            null);
+            clientPartner.getFiscalPosition());
 
     // in ati
     saleOrder.setInAti(purchaseOrder.getInAti());
@@ -134,7 +136,7 @@ public class IntercoServiceImpl implements IntercoService {
     // get stock location
     saleOrder.setStockLocation(
         Beans.get(SaleOrderSupplychainService.class)
-            .getStockLocation(purchaseOrder.getCompany().getPartner(), intercoCompany));
+            .getStockLocation(clientPartner, intercoCompany));
 
     // copy timetable info
     saleOrder.setExpectedRealisationDate(purchaseOrder.getExpectedRealisationDate());
@@ -192,7 +194,9 @@ public class IntercoServiceImpl implements IntercoService {
         Beans.get(TradingNameService.class).getDefaultPrintingSettings(null, intercoCompany));
 
     purchaseOrder.setStatusSelect(PurchaseOrderRepository.STATUS_DRAFT);
-    purchaseOrder.setSupplierPartner(saleOrder.getCompany().getPartner());
+    Partner supplierPartner = saleOrder.getCompany().getPartner();
+    purchaseOrder.setSupplierPartner(supplierPartner);
+    purchaseOrder.setFiscalPosition(supplierPartner.getFiscalPosition());
     purchaseOrder.setTradingName(saleOrder.getTradingName());
 
     // in ati
@@ -208,7 +212,7 @@ public class IntercoServiceImpl implements IntercoService {
     purchaseOrder.setDeliveryDate(saleOrder.getDeliveryDate());
     purchaseOrder.setStockLocation(
         Beans.get(PurchaseOrderSupplychainService.class)
-            .getStockLocation(saleOrder.getCompany().getPartner(), intercoCompany));
+            .getStockLocation(supplierPartner, intercoCompany));
     purchaseOrder.setShipmentMode(saleOrder.getShipmentMode());
     purchaseOrder.setFreightCarrierMode(saleOrder.getFreightCarrierMode());
 
