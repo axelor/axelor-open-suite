@@ -22,6 +22,26 @@
             <property name="id">209</property>
             <expression name="value" type="javascript">params["DefaultDriver"].value</expression>
         </structure>
+        <structure>
+            <property name="name">odaAutoCommit</property>
+            <property name="id">209</property>
+        </structure>
+        <structure>
+            <property name="name">odaIsolationMode</property>
+            <property name="id">209</property>
+        </structure>
+        <structure>
+            <property name="name">odaJndiName</property>
+            <property name="id">209</property>
+        </structure>
+        <structure>
+            <property name="name">OdaConnProfileName</property>
+            <property name="id">209</property>
+        </structure>
+        <structure>
+            <property name="name">OdaConnProfileStorePath</property>
+            <property name="id">209</property>
+        </structure>
     </list-property>
     <property name="units">cm</property>
     <method name="beforeFactory"><![CDATA[if(params["HeaderHeight"].value != 0 ) {
@@ -43,6 +63,9 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
             <property name="isRequired">true</property>
             <property name="dataType">decimal</property>
             <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">5</value>
+            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -55,6 +78,9 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">axelor-open-suite-dev</value>
+            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -67,6 +93,9 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">axelor</value>
+            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -79,6 +108,9 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">axelor</value>
+            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -217,7 +249,9 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-open-suite-dev</property>
+            <property name="odaUser">axelor</property>
+            <encrypted-property name="odaPassword" encryptionID="base64">YXhlbG9y</encrypted-property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -535,6 +569,12 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
                     <property name="analysis">measure</property>
                     <text-property name="displayName">displayPartnerSeqOnPrinting</text-property>
                     <text-property name="heading">displayPartnerSeqOnPrinting</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">displayNoFinancialDiscountAppliedOnPrinting</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">displayNoFinancialDiscountAppliedOnPrinting</text-property>
+                    <text-property name="heading">displayNoFinancialDiscountAppliedOnPrinting</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">hideDiscount</property>
@@ -959,136 +999,141 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
                     </structure>
                     <structure>
                         <property name="position">46</property>
-                        <property name="name">hideDiscount</property>
+                        <property name="name">displayNoFinancialDiscountAppliedOnPrinting</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
                         <property name="position">47</property>
-                        <property name="name">displayProductCodeOnPrinting</property>
+                        <property name="name">hideDiscount</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
                         <property name="position">48</property>
+                        <property name="name">displayProductCodeOnPrinting</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">49</property>
                         <property name="name">subscription_from_date</property>
                         <property name="dataType">date</property>
                     </structure>
                     <structure>
-                        <property name="position">49</property>
+                        <property name="position">50</property>
                         <property name="name">subscription_to_date</property>
                         <property name="dataType">date</property>
                     </structure>
                     <structure>
-                        <property name="position">50</property>
+                        <property name="position">51</property>
                         <property name="name">amount_remaining</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">51</property>
+                        <property name="position">52</property>
                         <property name="name">proforma_comments</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">52</property>
+                        <property name="position">53</property>
                         <property name="name">head_office_address</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">53</property>
+                        <property name="position">54</property>
                         <property name="name">delivery_address_str</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">54</property>
+                        <property name="position">55</property>
                         <property name="name">originDate</property>
                         <property name="dataType">date</property>
                     </structure>
                     <structure>
-                        <property name="position">55</property>
+                        <property name="position">56</property>
                         <property name="name">supplierInvoiceNb</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">56</property>
+                        <property name="position">57</property>
                         <property name="name">displayHeadOfficeAddress</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">57</property>
+                        <property name="position">58</property>
                         <property name="name">enablePackMangement</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">58</property>
+                        <property name="position">59</property>
                         <property name="name">ManageFinancialDiscount</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">59</property>
+                        <property name="position">60</property>
                         <property name="name">contactPartnerTitleSelect</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">60</property>
+                        <property name="position">61</property>
                         <property name="name">originalInvoice</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">61</property>
+                        <property name="position">62</property>
                         <property name="name">originalInvoiceId</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">62</property>
+                        <property name="position">63</property>
                         <property name="name">StockMoveRealDate</property>
                         <property name="dataType">date</property>
                     </structure>
                     <structure>
-                        <property name="position">63</property>
+                        <property name="position">64</property>
                         <property name="name">StockMoveSeq</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">64</property>
+                        <property name="position">65</property>
                         <property name="name">isAppSupplyChainActive</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">65</property>
+                        <property name="position">66</property>
                         <property name="name">isStockMoveEmpty</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">66</property>
+                        <property name="position">67</property>
                         <property name="name">displayStockMoveOnInvoicePrinting</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">67</property>
+                        <property name="position">68</property>
                         <property name="name">legal_notice</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">68</property>
+                        <property name="position">69</property>
                         <property name="name">supplierVatSystemSelect</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">69</property>
+                        <property name="position">70</property>
                         <property name="name">companyVatSystemSelect</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">70</property>
+                        <property name="position">71</property>
                         <property name="name">display_siren</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">71</property>
+                        <property name="position">72</property>
                         <property name="name">invoice_product_statement</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">72</property>
+                        <property name="position">73</property>
                         <property name="name">displayItemsCategoriesOnPrinting</property>
                         <property name="dataType">integer</property>
                     </structure>
@@ -1413,188 +1458,195 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
                 </structure>
                 <structure>
                     <property name="position">46</property>
+                    <property name="name">displayNoFinancialDiscountAppliedOnPrinting</property>
+                    <property name="nativeName">displayNoFinancialDiscountAppliedOnPrinting</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
+                </structure>
+                <structure>
+                    <property name="position">47</property>
                     <property name="name">hideDiscount</property>
                     <property name="nativeName">hideDiscount</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
-                    <property name="position">47</property>
+                    <property name="position">48</property>
                     <property name="name">displayProductCodeOnPrinting</property>
                     <property name="nativeName">displayProductCodeOnPrinting</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
-                    <property name="position">48</property>
+                    <property name="position">49</property>
                     <property name="name">subscription_from_date</property>
                     <property name="nativeName">subscription_from_date</property>
                     <property name="dataType">date</property>
                     <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
-                    <property name="position">49</property>
+                    <property name="position">50</property>
                     <property name="name">subscription_to_date</property>
                     <property name="nativeName">subscription_to_date</property>
                     <property name="dataType">date</property>
                     <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
-                    <property name="position">50</property>
+                    <property name="position">51</property>
                     <property name="name">amount_remaining</property>
                     <property name="nativeName">amount_remaining</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">51</property>
+                    <property name="position">52</property>
                     <property name="name">proforma_comments</property>
                     <property name="nativeName">proforma_comments</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">52</property>
+                    <property name="position">53</property>
                     <property name="name">head_office_address</property>
                     <property name="nativeName">head_office_address</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">53</property>
+                    <property name="position">54</property>
                     <property name="name">delivery_address_str</property>
                     <property name="nativeName">delivery_address_str</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">54</property>
+                    <property name="position">55</property>
                     <property name="name">originDate</property>
                     <property name="nativeName">originDate</property>
                     <property name="dataType">date</property>
                     <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
-                    <property name="position">55</property>
+                    <property name="position">56</property>
                     <property name="name">supplierInvoiceNb</property>
                     <property name="nativeName">supplierInvoiceNb</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">56</property>
+                    <property name="position">57</property>
                     <property name="name">displayHeadOfficeAddress</property>
                     <property name="nativeName">displayHeadOfficeAddress</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
-                    <property name="position">57</property>
+                    <property name="position">58</property>
                     <property name="name">enablePackMangement</property>
                     <property name="nativeName">enablePackMangement</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
-                    <property name="position">58</property>
+                    <property name="position">59</property>
                     <property name="name">ManageFinancialDiscount</property>
                     <property name="nativeName">ManageFinancialDiscount</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
-                    <property name="position">59</property>
+                    <property name="position">60</property>
                     <property name="name">contactPartnerTitleSelect</property>
                     <property name="nativeName">contactPartnerTitleSelect</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
-                    <property name="position">60</property>
+                    <property name="position">61</property>
                     <property name="name">originalInvoice</property>
                     <property name="nativeName">originalInvoice</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
-                    <property name="position">61</property>
+                    <property name="position">62</property>
                     <property name="name">originalInvoiceId</property>
                     <property name="nativeName">originalInvoiceId</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">62</property>
+                    <property name="position">63</property>
                     <property name="name">StockMoveRealDate</property>
                     <property name="nativeName">StockMoveRealDate</property>
                     <property name="dataType">date</property>
                     <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
-                    <property name="position">63</property>
+                    <property name="position">64</property>
                     <property name="name">StockMoveSeq</property>
                     <property name="nativeName">StockMoveSeq</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">64</property>
+                    <property name="position">65</property>
                     <property name="name">isAppSupplyChainActive</property>
                     <property name="nativeName">isAppSupplyChainActive</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
-                    <property name="position">65</property>
+                    <property name="position">66</property>
                     <property name="name">isStockMoveEmpty</property>
                     <property name="nativeName">isStockMoveEmpty</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
-                    <property name="position">66</property>
+                    <property name="position">67</property>
                     <property name="name">displayStockMoveOnInvoicePrinting</property>
                     <property name="nativeName">displayStockMoveOnInvoicePrinting</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
-                    <property name="position">67</property>
+                    <property name="position">68</property>
                     <property name="name">legal_notice</property>
                     <property name="nativeName">legal_notice</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">68</property>
+                    <property name="position">69</property>
                     <property name="name">supplierVatSystemSelect</property>
                     <property name="nativeName">supplierVatSystemSelect</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
-                    <property name="position">69</property>
+                    <property name="position">70</property>
                     <property name="name">companyVatSystemSelect</property>
                     <property name="nativeName">companyVatSystemSelect</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
-                    <property name="position">70</property>
+                    <property name="position">71</property>
                     <property name="name">display_siren</property>
                     <property name="nativeName">display_siren</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
-                    <property name="position">71</property>
+                    <property name="position">72</property>
                     <property name="name">invoice_product_statement</property>
                     <property name="nativeName">invoice_product_statement</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">72</property>
+                    <property name="position">73</property>
                     <property name="name">displayItemsCategoriesOnPrinting</property>
                     <property name="nativeName">displayItemsCategoriesOnPrinting</property>
                     <property name="dataType">integer</property>
@@ -1646,6 +1698,7 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
 	AccountConfig.display_tax_detail_on_printing as "displayTaxDetailOnPrinting", 
 	AccountConfig.terms_and_conditions as "termsAndConditions",
 	AccountConfig.display_partner_seq_on_printing as "displayPartnerSeqOnPrinting",
+	AccountConfig.display_no_financial_discount_applied_on_printing as "displayNoFinancialDiscountAppliedOnPrinting",
 	Invoice.hide_discount as "hideDiscount", 
 	AccountConfig.display_product_code_on_printing as "displayProductCodeOnPrinting",
 	Invoice.subscription_from_date,
@@ -10120,6 +10173,12 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                                     <expression name="expression" type="javascript">dataSetRow["financial_discount"]</expression>
                                     <property name="dataType">decimal</property>
                                 </structure>
+                                <structure>
+                                    <property name="name">displayNoFinancialDiscountAppliedOnPrinting</property>
+                                    <text-property name="displayName">displayNoFinancialDiscountAppliedOnPrinting</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["displayNoFinancialDiscountAppliedOnPrinting"]</expression>
+                                    <property name="dataType">integer</property>
+                                </structure>
                             </list-property>
                             <column id="4977">
                                 <property name="suppressDuplicates">false</property>
@@ -10153,13 +10212,19 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                                 <cell id="5771">
                                     <property name="colSpan">8</property>
                                     <property name="rowSpan">1</property>
+                                </cell>
+                                <cell id="5779"/>
+                            </row>
+                            <row id="6048">
+                                <cell id="6049">
+                                    <property name="colSpan">8</property>
+                                    <property name="rowSpan">1</property>
                                     <text id="5780">
                                         <property name="fontSize">9pt</property>
                                         <property name="dataSet">InvoiceDB</property>
                                         <list-property name="visibility">
                                             <structure>
                                                 <property name="format">all</property>
-                                                <expression name="valueExpr" type="javascript">row._outer["ManageFinancialDiscount"] != 1</expression>
                                             </structure>
                                         </list-property>
                                         <list-property name="boundDataColumns">
@@ -10174,20 +10239,13 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF format="HTML">row["legal_notice"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"")</VALUE-OF>]]></text-property>
                                     </text>
-                                </cell>
-                                <cell id="5779"/>
-                            </row>
-                            <row id="6048">
-                                <cell id="6049">
-                                    <property name="colSpan">8</property>
-                                    <property name="rowSpan">1</property>
                                     <text id="6058">
                                         <property name="fontSize">9pt</property>
                                         <property name="dataSet">TranslateDS</property>
                                         <list-property name="visibility">
                                             <structure>
                                                 <property name="format">all</property>
-                                                <expression name="valueExpr" type="javascript">row._outer["operation_type_select"] != 3 || row._outer["partner_type_select"] != 1 || (row._outer["ManageFinancialDiscount"] == 1 &amp;&amp; row._outer["financial_discount"] != null)</expression>
+                                                <expression name="valueExpr" type="javascript">row._outer["operation_type_select"] != 3 || row._outer["partner_type_select"] != 1 || row._outer["displayNoFinancialDiscountAppliedOnPrinting"] != 1 || row._outer["financial_discount"] != null</expression>
                                             </structure>
                                         </list-property>
                                         <list-property name="paramBindings">
