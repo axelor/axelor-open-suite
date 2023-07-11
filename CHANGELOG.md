@@ -1,3 +1,38 @@
+## [6.3.23] (2023-07-11)
+
+#### Fixed
+
+* Business project: Automatic project can be enabled only if project generation/selection for order is enabled
+
+The helper for the project generation/selection for order has been changed. To update it, a script must be executed:
+
+```sql
+DELETE FROM meta_help WHERE field_name = 'generateProjectOrder';
+```
+
+* App configuration: remove YOURS API from Routing Services
+
+If using the distance computation with web services in expenses, users should select the OSRM API in App base config.
+
+* Product/Account Management: hide financial account when it is inactive on product account management.
+* Forecast generator: fixed endless loading when no periodicity selected.
+* Stock move line: fixed a issue when emptying product from stock move line would create a new stock move line.
+* Prod process line: fixed an issue where capacity settings panel was hidden with work center group feature activated.
+* Inventory: fixed wrong gap value on inventory.
+* Accounting report: fixed impossibility to select a payment move line in DAS2 grid even if code N4DS is not empty.
+* Fixed asset: fixed move line amount 0 error on sale move generation.
+* Sale order template: fixed error when selecting a project.
+* Accounting batch: fixed error when we try to run credit transfer batch without bank details.
+* Sale order template: fixed error when selecting a project.
+* Move: on change of company, currency is now updated to company currency even when partner filled.
+* Contract: fixed an error occurring when invoicing a contract
+
+An error occurred when invoicing a contract if time prorated Invoice was enabled and then periodic invoicing was disabled.
+
+* Move: removed verification on tax in move with cut off functional origin.
+* Details stock location line: removed reserved quantity from the form view.
+* Sale order: fixed totals in sales order printouts.
+
 ## [6.3.22] (2023-06-22)
 
 #### Fixed
@@ -716,6 +751,7 @@ If you had modules calling these methods, you will need to update them so they c
 * Account Config: Remove Invoices button and associate action from account config
 * Stock correction: Removed unused future and reserved quantity from database.
 
+[6.3.23]: https://github.com/axelor/axelor-open-suite/compare/v6.3.22...v6.3.23
 [6.3.22]: https://github.com/axelor/axelor-open-suite/compare/v6.3.21...v6.3.22
 [6.3.21]: https://github.com/axelor/axelor-open-suite/compare/v6.3.20...v6.3.21
 [6.3.20]: https://github.com/axelor/axelor-open-suite/compare/v6.3.19...v6.3.20
