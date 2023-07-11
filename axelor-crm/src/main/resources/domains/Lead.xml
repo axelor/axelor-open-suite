@@ -36,7 +36,7 @@
       title="Country"/>
 
     <one-to-one name="emailAddress" ref="com.axelor.message.db.EmailAddress"
-      title="Email"/>
+      title="Email" unique="true"/>
     <binary name="picture" title="Picture"/>
 
     <string name="description" title="Description" large="true"/>

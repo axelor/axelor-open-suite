@@ -13,7 +13,7 @@
     <many-to-one name="driverPartner" title="Driver"
       ref="com.axelor.apps.base.db.Partner"/>
     <one-to-one name="vehicleModel" ref="com.axelor.apps.fleet.db.VehicleModel"
-      title="Model"/>
+      title="Model" unique="true"/>
     <one-to-many name="vehicleFuelLogList" ref="VehicleFuelLog" title="Fuel log"
       mappedBy="vehicle"/>
     <one-to-many name="vehicleServiceLogList" ref="VehicleServiceLog"

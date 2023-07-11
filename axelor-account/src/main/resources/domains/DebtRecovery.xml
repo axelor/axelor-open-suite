@@ -8,7 +8,7 @@
   <entity name="DebtRecovery">
 
     <one-to-one name="accountingSituation"
-      ref="com.axelor.apps.account.db.AccountingSituation"/>
+      ref="com.axelor.apps.account.db.AccountingSituation" unique="true"/>
     <many-to-one name="tradingNameAccountingSituation"
       ref="com.axelor.apps.account.db.AccountingSituation"/>
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner"/>
