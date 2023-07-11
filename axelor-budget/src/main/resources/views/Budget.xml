@@ -85,7 +85,7 @@
       <field name="code" required="true" colSpan="2"/>
       <field name="name" required="true" colSpan="4"/>
       <field name="budgetLevel" readonlyIf="$popup()" colSpan="3" requiredIf="!$popup()"
-        onChange="action-budget-record-onchange-budget-level,budget-action-method-budget-manage-budget-key"
+        onChange="action-budget-record-set-default-values-budget-level,budget-action-method-budget-manage-budget-key"
         domain="self.parentBudgetLevel.parentBudgetLevel != null"/>
       <field name="budgetLevel.parentBudgetLevel.parentBudgetLevel" title="Global budget"
         colSpan="3" grid-view="budget-level-grid" form-view="budget-level-form"/>
@@ -175,7 +175,7 @@
           onChange="budget-action-method-budget-manage-budget-key"/>
         <field name="name" required="true" colSpan="4"/>
         <field name="budgetLevel"
-          onChange="action-budget-record-onchange-budget-level,budget-action-method-budget-manage-budget-key"
+          onChange="action-budget-record-set-default-values-budget-level,budget-action-method-budget-manage-budget-key"
           readonlyIf="$popup()" requiredIf="!$popup()" colSpan="3"
           domain="self.parentBudgetLevel.parentBudgetLevel != null AND self.parentBudgetLevel.parentBudgetLevel.id = :globalId"/>
         <field name="budgetLevel.parentBudgetLevel.parentBudgetLevel" title="Global budget"
@@ -342,12 +342,12 @@
     <attribute for="code" name="focus" expr="true"/>
   </action-attrs>
 
-  <action-record name="action-budget-record-onchange-budget-level"
+  <action-record name="action-budget-record-set-default-values-budget-level"
     model="com.axelor.apps.budget.db.Budget">
     <field name="fromDate"
-      expr="eval:_fromDate != null ? _fromDate : _parent?.fromDate != null ? _parent?.fromDate : fromDate"/>
+      expr="eval: _fromDate ? _fromDate : __parent__?.fromDate != null ? __parent__?.fromDate : fromDate"/>
     <field name="toDate"
-      expr="eval:_toDate != null ? _toDate : _parent?.toDate != null ? _parent?.toDate : toDate"/>
+      expr="eval: _toDate ? _toDate : __parent__?.toDate != null ? __parent__?.toDate : toDate"/>
     <field name="inChargeUser"
       expr="eval: budgetLevel?.parentBudgetLevel?.parentBudgetLevel?.budgetManager"/>
   </action-record>
