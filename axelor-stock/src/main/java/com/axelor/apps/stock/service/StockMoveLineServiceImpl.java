@@ -1513,7 +1513,6 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       stockMoveLine.setAvailableQty(BigDecimal.ZERO);
       stockMoveLine.setAvailableQtyForProduct(BigDecimal.ZERO);
       stockMoveLine.setAvailableStatus(null);
-      stockMoveLine.setAvailableStatus(null);
       stockMoveLine.setUnit(null);
       stockMoveLine.setNetMass(BigDecimal.ZERO);
       stockMoveLine.setTotalNetMass(BigDecimal.ZERO);
