@@ -26,8 +26,7 @@
         form-view="partner-contact-form" target="com.axelor.apps.base.db.Partner"/>
       <button name="validateBtn"
         hideIf="($crmProcessOnPartner &amp;&amp; $partnerStatus == null)|| !$leadToPartnerSelect || $leadToPartnerSelect == 2 &amp;&amp; $selectPartner == null || $leadToContactSelect == 2 &amp;&amp; ($selectContactSet == null || $selectContactSet.length == 0)"
-        title="Validate"
-        onClick="action-convert-lead-validate-confirm-validate-lead,action-lead-method-convert-lead"/>
+        title="Validate" onClick="action-lead-method-convert-lead"/>
       <field name="$selectPartner.partnerTypeSelect" hidden="true"/>
       <field name="$crmProcessOnPartner" hidden="true"/>
     </panel>
@@ -40,10 +39,6 @@
     <field name="$crmProcessOnPartner"
       expr="eval:__config__.app.getApp('crm')?.getCrmProcessOnPartner()"/>
   </action-record>
-
-  <action-validate name="action-convert-lead-validate-confirm-validate-lead">
-    <alert message="Are you sure you want to convert the lead?"/>
-  </action-validate>
 
   <action-method name="action-lead-method-convert-lead">
     <call class="com.axelor.apps.crm.web.ConvertLeadWizardController" method="convertLead"/>

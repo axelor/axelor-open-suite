@@ -150,7 +150,6 @@ public class ConvertLeadWizardController {
 
     response.setCanClose(true);
     if (crmProcessOnPartner) {
-      response.setInfo(I18n.get(CrmExceptionMessage.CONVERT_LEAD_1));
       response.setView(
           ActionView.define(I18n.get(CrmExceptionMessage.CONVERT_LEAD_1))
               .model(Partner.class.getName())
@@ -235,7 +234,7 @@ public class ConvertLeadWizardController {
 
     } else {
       partnerMap.put("partnerTypeSelect", 1);
-      partnerMap.put("name", lead.getName());
+      partnerMap.put("name", lead.getEnterpriseName());
     }
     partnerMap.put("language", appBase.getDefaultPartnerLanguage());
     return partnerMap;

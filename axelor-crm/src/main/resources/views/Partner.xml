@@ -759,6 +759,7 @@
       == __config__.app.getApp('crm')?.closedLostPartnerStatus?.id"/>
     <action name="action-partner-record-win"
       if="eval: __this__?.partnerStatus?.id == __config__.app.getApp('crm')?.closedWinPartnerStatus?.id"/>
+    <action name="save"/>
   </action-group>
 
   <action-view name="action-partner-view-partner-popup-view"
