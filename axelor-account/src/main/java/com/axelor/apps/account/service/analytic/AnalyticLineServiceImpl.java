@@ -46,6 +46,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.apache.commons.collections.CollectionUtils;
 
 public class AnalyticLineServiceImpl implements AnalyticLineService {
@@ -224,17 +225,11 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
       return analyticLine;
     }
 
-    List<AnalyticMoveLine> analyticMoveLineList;
     for (AnalyticAxisByCompany analyticAxisByCompany :
         accountConfigService.getAccountConfig(company).getAnalyticAxisByCompanyList()) {
-      analyticMoveLineList =
-          analyticLine.getAnalyticMoveLineList().stream()
-              .filter(it -> it.getAnalyticAxis().equals(analyticAxisByCompany.getAnalyticAxis()))
-              .filter(it -> it.getPercentage().compareTo(new BigDecimal(100)) == 0)
-              .collect(Collectors.toList());
-
-      if (analyticMoveLineList.size() == 1) {
-        AnalyticMoveLine analyticMoveLine = analyticMoveLineList.get(0);
+      if (checkAnalyticAxisPercentage(analyticLine, analyticAxisByCompany.getAnalyticAxis())) {
+        AnalyticMoveLine analyticMoveLine =
+            getAnalyticMoveLines(analyticLine, analyticAxisByCompany.getAnalyticAxis()).get(0);
         this.setAxisAccount(analyticLine, analyticAxisByCompany, analyticMoveLine);
       } else {
         this.setAxisAccount(analyticLine, analyticAxisByCompany, null);
@@ -242,6 +237,25 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
     }
 
     return analyticLine;
+  }
+
+  protected boolean checkAnalyticAxisPercentage(
+      AnalyticLine analyticLine, AnalyticAxis analyticAxis) {
+    return getAnalyticMoveLines(analyticLine, analyticAxis).size() == 1
+        && getAnalyticMoveLineOnAxis(analyticLine, analyticAxis).count() == 1;
+  }
+
+  protected List<AnalyticMoveLine> getAnalyticMoveLines(
+      AnalyticLine analyticLine, AnalyticAxis analyticAxis) {
+    return getAnalyticMoveLineOnAxis(analyticLine, analyticAxis)
+        .filter(it -> it.getPercentage().compareTo(new BigDecimal(100)) == 0)
+        .collect(Collectors.toList());
+  }
+
+  protected Stream<AnalyticMoveLine> getAnalyticMoveLineOnAxis(
+      AnalyticLine analyticLine, AnalyticAxis analyticAxis) {
+    return analyticLine.getAnalyticMoveLineList().stream()
+        .filter(it -> it.getAnalyticAxis().equals(analyticAxis));
   }
 
   protected void setAxisAccount(
