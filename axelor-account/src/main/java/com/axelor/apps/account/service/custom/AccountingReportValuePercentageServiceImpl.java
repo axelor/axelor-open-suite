@@ -74,7 +74,8 @@ public class AccountingReportValuePercentageServiceImpl extends AccountingReport
                 column.getPercentageBaseColumn(), parentTitle, groupColumn, configAnalyticAccount));
 
     if (valuesMap == null) {
-      if (accountingReport.getTraceAnomalies() && StringUtils.notEmpty(column.getPercentageBaseColumn())) {
+      if (accountingReport.getTraceAnomalies()
+          && StringUtils.notEmpty(column.getPercentageBaseColumn())) {
         this.traceException(
             new AxelorException(
                 TraceBackRepository.CATEGORY_INCONSISTENCY,
