@@ -1316,4 +1316,47 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     stockLocationLineOpt.ifPresent(
         stockLocationLine -> stockMoveLine.setWapPrice(stockLocationLine.getAvgPrice()));
   }
+
+  @Override
+  public StockMoveLine resetStockMoveLine(StockMoveLine stockMoveLine) {
+    if (stockMoveLine != null) {
+
+      stockMoveLine.setStockMove(null);
+      stockMoveLine.setPlannedStockMove(null);
+      stockMoveLine.setProduct(null);
+      stockMoveLine.setFilterOnAvailableProducts(true);
+      stockMoveLine.setQty(BigDecimal.ZERO);
+      stockMoveLine.setRealQty(BigDecimal.ZERO);
+      stockMoveLine.setOldQty(BigDecimal.ZERO);
+      stockMoveLine.setAvailableQty(BigDecimal.ZERO);
+      stockMoveLine.setAvailableQtyForProduct(BigDecimal.ZERO);
+      stockMoveLine.setAvailableStatus(null);
+      stockMoveLine.setUnit(null);
+      stockMoveLine.setNetMass(BigDecimal.ZERO);
+      stockMoveLine.setTotalNetMass(BigDecimal.ZERO);
+      stockMoveLine.setTrackingNumber(null);
+      stockMoveLine.setConformitySelect(null);
+      stockMoveLine.setShippedQty(BigDecimal.ZERO);
+      stockMoveLine.setShippedDate(null);
+      stockMoveLine.setProductModel(null);
+      stockMoveLine.setProductName(null);
+      stockMoveLine.setDescription(null);
+      stockMoveLine.setUnitPriceTaxed(BigDecimal.ZERO);
+      stockMoveLine.setUnitPriceUntaxed(BigDecimal.ZERO);
+      stockMoveLine.setCompanyUnitPriceUntaxed(BigDecimal.ZERO);
+      stockMoveLine.setWapPrice(BigDecimal.ZERO);
+      stockMoveLine.setCompanyPurchasePrice(BigDecimal.ZERO);
+      stockMoveLine.setProductTypeSelect(null);
+      stockMoveLine.setSequence(null);
+      stockMoveLine.setName(null);
+      stockMoveLine.setCustomsCodeNomenclature(null);
+      stockMoveLine.setCustomsCode(null);
+      stockMoveLine.setLogisticalFormLineList(null);
+      stockMoveLine.setLineTypeSelect(null);
+      stockMoveLine.setRegime(null);
+      stockMoveLine.setNatureOfTransaction(null);
+      stockMoveLine.setCountryOfOrigin(null);
+    }
+    return stockMoveLine;
+  }
 }

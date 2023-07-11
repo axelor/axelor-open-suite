@@ -1,0 +1,3 @@
+---
+title: "StockMoveLine: Fixed a issue when emptying product from stock move line would create a new stock move line."
+type: fix
