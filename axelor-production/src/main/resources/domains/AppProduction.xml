@@ -7,7 +7,7 @@
 
   <entity name="AppProduction" cacheable="true">
 
-    <one-to-one ref="com.axelor.studio.db.App" name="app"/>
+    <one-to-one ref="com.axelor.studio.db.App" name="app" unique="true"/>
 
     <boolean name="prodOrderMgtOnSO" title="Production order management from sale order"
       default="false"/>

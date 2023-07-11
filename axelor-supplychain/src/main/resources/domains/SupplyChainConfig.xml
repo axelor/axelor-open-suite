@@ -7,7 +7,8 @@
 
   <entity name="SupplyChainConfig">
 
-    <one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
+    <one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"
+      unique="true"/>
 
     <boolean name="hasOutSmForStorableProduct" title="Generate out. moves for products"/>
     <boolean name="hasOutSmForNonStorableProduct" title="Generate out. moves for services"/>
