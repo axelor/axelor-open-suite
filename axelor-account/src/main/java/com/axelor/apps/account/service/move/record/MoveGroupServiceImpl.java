@@ -398,7 +398,15 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     valuesMap.put("companyCurrency", move.getCompanyCurrency());
     valuesMap.put("currencyCode", move.getCurrencyCode());
     valuesMap.put("companyCurrencyCode", move.getCompanyCurrencyCode());
-    valuesMap.put("partner", null);
+
+    if (move.getPartner() != null
+        && move.getCompany() != null
+        && move.getPartner().getCompanySet() != null
+        && !move.getPartner().getCompanySet().contains(move.getCompany())) {
+      valuesMap.put("partner", null);
+      valuesMap.put("currency", move.getCompany().getCurrency());
+      valuesMap.put("companyBankDetails", null);
+    }
 
     return valuesMap;
   }
