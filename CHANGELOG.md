@@ -1,3 +1,24 @@
+## [6.2.31] (2023-07-11)
+
+#### Fixed
+
+* App configuration: remove YOURS API from Routing Services
+
+If using the distance computation with web services in expenses, users should select the OSRM API in App base config.
+
+* Forecast generator: fixed endless loading when no periodicity selected.
+* Stock move line: fixed an issue when emptying product from stock move line would create a new stock move line.
+* Inventory: fixed wrong gap value on inventory.
+* Accounting report: fixed impossibility to select a payment move line in DAS2 grid even if code N4DS is not empty.
+* Stock rules demo data: fixed wrong repicient in message template.
+* Sale order template: fixed error when selecting a project.
+* Contract: fixed an error occurring when invoicing a contract
+
+An error occurred when invoicing a contract if time prorated Invoice was enabled and then periodic invoicing was disabled.
+
+* Details stock location line: removed reserved quantity from the form view.
+* Sale order: fixed totals in sales order printouts.
+
 ## [6.2.30] (2023-06-22)
 
 #### Fixed
@@ -1110,6 +1131,7 @@ will be equal to the reason for manual forecasts.
 * Territory: Remove object
 
 
+[6.2.31]: https://github.com/axelor/axelor-open-suite/compare/v6.2.30...v6.2.31
 [6.2.30]: https://github.com/axelor/axelor-open-suite/compare/v6.2.29...v6.2.30
 [6.2.29]: https://github.com/axelor/axelor-open-suite/compare/v6.2.28...v6.2.29
 [6.2.28]: https://github.com/axelor/axelor-open-suite/compare/v6.2.27...v6.2.28
