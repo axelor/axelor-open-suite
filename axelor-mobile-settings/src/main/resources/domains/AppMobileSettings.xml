@@ -7,7 +7,7 @@
 
   <entity name="AppMobileSettings" cacheable="true">
 
-    <one-to-one ref="com.axelor.studio.db.App" name="app"/>
+    <one-to-one ref="com.axelor.studio.db.App" name="app" unique="true"/>
 
     <boolean name="isStockAppEnabled" title="Stock" default="false"/>
     <boolean name="isProductionAppEnabled" title="Manufacturing" default="false"/>

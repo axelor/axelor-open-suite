@@ -7,7 +7,7 @@
 
   <entity name="AppTimesheet" cacheable="true">
 
-    <one-to-one ref="com.axelor.studio.db.App" name="app"/>
+    <one-to-one ref="com.axelor.studio.db.App" name="app" unique="true"/>
 
     <integer name="invoicingTypeLogTimesSelect" title="Invoicing Type for Log Times"
       selection="hrs.timesheet.line.invoicing.type.select" default="1"/>
