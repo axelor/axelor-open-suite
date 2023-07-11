@@ -326,5 +326,14 @@ public interface StockMoveLineService {
   public BigDecimal computeNewAveragePriceLocationLine(
       StockLocationLine stockLocationLine, StockMoveLine stockMoveLine) throws AxelorException;
 
+  /**
+   * This method resets complety the stock move line. It does not remove the stock move line from
+   * database.
+   *
+   * @param stockMoveLine
+   * @return empty stock move line
+   */
+  public StockMoveLine resetStockMoveLine(StockMoveLine stockMoveLine);
+
   Map<String, Object> getClearedStockMoveLineMap();
 }
