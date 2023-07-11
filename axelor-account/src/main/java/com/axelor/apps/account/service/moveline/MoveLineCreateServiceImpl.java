@@ -39,6 +39,7 @@ import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
 import com.axelor.apps.account.service.TaxAccountService;
+import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineGenerateRealService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
@@ -90,6 +91,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
   protected FiscalPositionService fiscalPositionService;
   protected TaxService taxService;
   protected AppBaseService appBaseService;
+  protected AnalyticLineService analyticLineService;
 
   @Inject
   public MoveLineCreateServiceImpl(
@@ -107,7 +109,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       AccountingSituationService accountingSituationService,
       FiscalPositionService fiscalPositionService,
       TaxService taxService,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      AnalyticLineService analyticLineService) {
     this.companyConfigService = companyConfigService;
     this.currencyService = currencyService;
     this.fiscalPositionAccountService = fiscalPositionAccountService;
@@ -123,6 +126,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     this.fiscalPositionService = fiscalPositionService;
     this.taxService = taxService;
     this.appBaseService = appBaseService;
+    this.analyticLineService = analyticLineService;
   }
 
   /**
@@ -489,6 +493,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
         if (CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())) {
           moveLine.setAnalyticMoveLineList(analyticMoveLineList);
         }
+
+        analyticLineService.printAnalyticAccount(moveLine, move.getCompany());
 
         TaxLine taxLine = invoiceLine.getTaxLine();
         if (taxLine != null) {
