@@ -133,7 +133,7 @@
       grid-view="analytic-distribution-template-grid"
       form-view="analytic-distribution-template-form"
       onChange="action-move-line-group-analytic-distribution-template-onchange"
-      onSelect="action-move-line-method-analytic-distribution-template-onselect"
+      onSelect="action-move-line-attrs-set-domain-analytic-distribution-template"
       readonlyIf="!account || !account.analyticDistributionAuthorized"
       requiredIf="(!analyticMoveLineList || !analyticMoveLineList.length) &amp;&amp; account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines &amp;&amp; (axis1AnalyticAccount == null &amp;&amp; axis2AnalyticAccount == null &amp;&amp; axis3AnalyticAccount == null &amp;&amp; axis4AnalyticAccount == null &amp;&amp; axis5AnalyticAccount == null)"
       width="80"/>
