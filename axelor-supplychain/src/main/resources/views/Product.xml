@@ -151,9 +151,9 @@
     <domain>self.reservedQty > 0 and self.stockMove.statusSelect = :statusSelectList
       AND
       self.product.id = :productId
-      AND (self.stockMove.toStockLocation.id IN :location OR 0 IN
-      :location)
-      AND (self.stockMove.company.id = :companyId OR :companyId IS NULL)</domain>
+      AND (self.toStockLocation.id IN :location OR 0 IN :location)
+      AND
+      (self.stockMove.company.id = :companyId OR :companyId IS NULL)</domain>
     <context name="productId" expr="eval:product?.id"/>
     <context name="location" expr="eval: stockLocationIdList"/>
     <context name="companyId" expr="eval: company?.id "/>
@@ -170,9 +170,10 @@
     <domain>self.stockMove.statusSelect = :statusSelectList
       AND self.product.id = :productId
       AND
-      (self.stockMove.toStockLocation.id IN :location OR 0 IN :location)
+      (self.toStockLocation.id IN :location OR 0 IN :location)
       AND
-      (self.stockMove.company.id = :companyId OR :companyId IS NULL)</domain>
+      (self.stockMove.company.id =
+      :companyId OR :companyId IS NULL)</domain>
     <context name="productId" expr="eval:product?.id"/>
     <context name="location" expr="eval: stockLocationIdList"/>
     <context name="companyId" expr="eval: company?.id "/>
@@ -189,9 +190,10 @@
     <domain>self.stockMove.statusSelect = :statusSelect
       AND self.product.id = :productId
       AND
-      (self.stockMove.toStockLocation.id IN :location OR 0 IN :location)
+      (self.toStockLocation.id IN :location OR 0 IN :location)
       AND
-      (self.stockMove.company.id = :companyId OR :companyId IS NULL)</domain>
+      (self.stockMove.company.id =
+      :companyId OR :companyId IS NULL)</domain>
     <context name="productId" expr="eval:product?.id"/>
     <context name="location" expr="eval: stockLocationIdList"/>
     <context name="companyId" expr="eval: company?.id "/>

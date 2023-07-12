@@ -18,25 +18,33 @@
  */
 package com.axelor.apps.crm.db.repo;
 
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.service.LeadService;
 import com.axelor.inject.Beans;
+import javax.persistence.PersistenceException;
 
 public class LeadManagementRepository extends LeadRepository {
 
   @Override
   public Lead save(Lead entity) {
-    LeadService leadService = Beans.get(LeadService.class);
+    try {
+      LeadService leadService = Beans.get(LeadService.class);
 
-    String fullName =
-        leadService.processFullName(
-            entity.getEnterpriseName(), entity.getName(), entity.getFirstName());
-    entity.setFullName(fullName);
+      String fullName =
+          leadService.processFullName(
+              entity.getEnterpriseName(), entity.getName(), entity.getFirstName());
+      entity.setFullName(fullName);
 
-    if (entity.getLeadStatus() == null) {
-      entity.setLeadStatus(leadService.getDefaultLeadStatus());
+      if (entity.getLeadStatus() == null) {
+        entity.setLeadStatus(leadService.getDefaultLeadStatus());
+      }
+
+      return super.save(entity);
+
+    } catch (Exception e) {
+      TraceBackService.traceExceptionFromSaveMethod(e);
+      throw new PersistenceException(e.getMessage(), e);
     }
-
-    return super.save(entity);
   }
 }

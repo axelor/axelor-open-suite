@@ -69,9 +69,7 @@ public abstract class AbstractImportBatch extends AbstractBatch {
             + String.format(
                 I18n.get(ITranslation.BASE_IMPORT_BATCH_FILES_IMPORTED), batch.getDone()));
     comment.append(
-        "\t"
-            + String.format(
-                I18n.get(BaseExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly()));
+        "\t" + String.format(I18n.get(BaseExceptionMessage.BASE_BATCH_3), batch.getAnomaly()));
     addComment(comment.toString());
     super.stop();
   }

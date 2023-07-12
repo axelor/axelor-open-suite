@@ -18,7 +18,12 @@
  */
 package com.axelor.apps.businessproject.service.app;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
+import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
+import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.studio.app.service.AppVersionService;
@@ -28,6 +33,8 @@ import com.axelor.studio.db.repo.AppRepository;
 import com.axelor.studio.service.AppSettingsStudioService;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.math.BigDecimal;
+import java.util.Objects;
 
 @Singleton
 public class AppBusinessProjectServiceImpl extends AppBaseServiceImpl
@@ -50,5 +57,41 @@ public class AppBusinessProjectServiceImpl extends AppBaseServiceImpl
   @Override
   public AppBusinessProject getAppBusinessProject() {
     return appBusinessProjectRepo.all().fetchOne();
+  }
+
+  @Override
+  public Unit getDaysUnit() throws AxelorException {
+    Unit daysUnit = getAppBusinessProject().getDaysUnit();
+    if (Objects.isNull(daysUnit)) {
+      throw new AxelorException(
+          getAppBusinessProject(),
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BusinessProjectExceptionMessage.PROJECT_CONFIG_DAYS_UNIT_MISSING));
+    }
+    return daysUnit;
+  }
+
+  @Override
+  public Unit getHoursUnit() throws AxelorException {
+    Unit hoursUnit = getAppBusinessProject().getHoursUnit();
+    if (Objects.isNull(hoursUnit)) {
+      throw new AxelorException(
+          getAppBusinessProject(),
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BusinessProjectExceptionMessage.PROJECT_CONFIG_HOURS_UNIT_MISSING));
+    }
+    return hoursUnit;
+  }
+
+  @Override
+  public BigDecimal getDefaultHoursADay() throws AxelorException {
+    BigDecimal hoursUnit = getAppBusinessProject().getDefaultHoursADay();
+    if (Objects.isNull(hoursUnit) || hoursUnit.signum() <= 0) {
+      throw new AxelorException(
+          getAppBusinessProject(),
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BusinessProjectExceptionMessage.PROJECT_CONFIG_DEFAULT_HOURS_PER_DAY_MISSING));
+    }
+    return hoursUnit;
   }
 }

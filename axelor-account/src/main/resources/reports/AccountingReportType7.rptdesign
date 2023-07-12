@@ -2181,7 +2181,7 @@ else {
                             <structure>
                                 <property name="name">currencyCredit</property>
                                 <expression name="expression" type="javascript">if (dataSetRow["credit"] >= 0.01 || dataSetRow["credit"] &lt;= -0.01) {
-dataSetRow["currency_amount"]
+Math.abs(dataSetRow["currency_amount"])
 }
 else {
 0
