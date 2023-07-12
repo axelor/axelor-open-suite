@@ -1,3 +1,0 @@
----
-title: "Stock Move: Cancelling a stock move will now set the wap to its former value if nothing happened since the realization."
-type: feature

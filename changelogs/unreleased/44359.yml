@@ -1,7 +1,0 @@
----
-title: "Move : improve data input for user in move lines"
-type: change
-description: |
-  The cursor position will change depending on the common position of the chosen account.
-  Can now put negative value for currency amount in move line.
-  When creating move line with foreign currency, putting a positive or negative value will automatically fill credit or debit.
