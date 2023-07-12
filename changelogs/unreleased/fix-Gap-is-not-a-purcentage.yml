@@ -1,0 +1,3 @@
+title: "[axelor-production]: fixed SOP/PMS Gap is not a purcentage"
+type: fix
+description: Changed computation of traditional "Gap" fields to compute percentages to align with title of fields.
