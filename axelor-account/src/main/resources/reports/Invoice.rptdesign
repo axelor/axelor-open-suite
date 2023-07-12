@@ -10211,6 +10211,7 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                                         <list-property name="visibility">
                                             <structure>
                                                 <property name="format">all</property>
+                                                <expression name="valueExpr" type="javascript">row._outer["ManageFinancialDiscount"] != 1</expression>
                                             </structure>
                                         </list-property>
                                         <list-property name="boundDataColumns">
