@@ -108,6 +108,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
   protected ProdProductRepository prodProductRepo;
   protected ProductCompanyService productCompanyService;
   protected BarcodeGeneratorService barcodeGeneratorService;
+  protected UnitConversionService unitConversionService;
   protected MetaFiles metaFiles;
 
   @Inject
@@ -122,6 +123,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       ProdProductRepository prodProductRepo,
       ProductCompanyService productCompanyService,
       BarcodeGeneratorService barcodeGeneratorService,
+      UnitConversionService unitConversionService,
       MetaFiles metaFiles) {
     this.sequenceService = sequenceService;
     this.operationOrderService = operationOrderService;
@@ -133,6 +135,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     this.prodProductRepo = prodProductRepo;
     this.productCompanyService = productCompanyService;
     this.barcodeGeneratorService = barcodeGeneratorService;
+    this.unitConversionService = unitConversionService;
     this.metaFiles = metaFiles;
   }
 
@@ -161,6 +164,18 @@ public class ManufOrderServiceImpl implements ManufOrderService {
           I18n.get(ProductionExceptionMessage.GENERATE_MANUF_ORDER_BOM_DIVIDE_ZERO),
           billOfMaterial.getName());
     }
+    Unit unit = billOfMaterial.getUnit();
+    if (unit == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(ProductionExceptionMessage.GENERATE_MANUF_ORDER_BOM_MISSING_UNIT),
+          billOfMaterial.getName());
+    }
+    if (!unit.equals(product.getUnit())) {
+      qtyRequested =
+          unitConversionService.convert(
+              product.getUnit(), unit, qtyRequested, qtyRequested.scale(), product);
+    }
     BigDecimal qty =
         qtyRequested.divide(
             billOfMaterial.getQty(),
@@ -171,6 +186,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
         this.createManufOrder(
             product,
             qty,
+            unit,
             priority,
             IS_TO_INVOICE,
             company,
@@ -286,6 +302,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
   public ManufOrder createManufOrder(
       Product product,
       BigDecimal qty,
+      Unit unit,
       int priority,
       boolean isToInvoice,
       Company company,
@@ -305,6 +322,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
             null,
             priority,
             this.isManagedConsumedProduct(billOfMaterial),
+            unit,
             billOfMaterial,
             product,
             prodProcess,
@@ -916,16 +934,25 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       int priority,
       BillOfMaterial billOfMaterial,
       LocalDateTime plannedStartDateT,
-      LocalDateTime plannedEndDateT) {
+      LocalDateTime plannedEndDateT)
+      throws AxelorException {
 
     ProdProcess prodProcess = billOfMaterial.getProdProcess();
     Company company = billOfMaterial.getCompany();
+
+    Unit unit = billOfMaterial.getUnit();
+    if (unit != null && !unit.equals(product.getUnit())) {
+      qtyRequested =
+          unitConversionService.convert(
+              product.getUnit(), unit, qtyRequested, qtyRequested.scale(), product);
+    }
     return new ManufOrder(
         qtyRequested,
         company,
         null,
         priority,
         false,
+        unit,
         billOfMaterial,
         product,
         prodProcess,
@@ -980,6 +1007,11 @@ public class ManufOrderServiceImpl implements ManufOrderService {
        * If unit are the same, then add the qty If not, convert the unit and get the
        * converted qty
        */
+      if (manufOrder.getUnit() == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            I18n.get(ProductionExceptionMessage.MANUF_ORDER_MERGE_MISSING_UNIT));
+      }
       if (manufOrder.getUnit().equals(unit)) {
         qty = qty.add(manufOrder.getQty());
       } else {

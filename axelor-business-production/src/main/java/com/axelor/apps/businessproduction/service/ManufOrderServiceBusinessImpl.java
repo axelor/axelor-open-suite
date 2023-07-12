@@ -19,9 +19,11 @@ package com.axelor.apps.businessproduction.service;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.BarcodeGeneratorService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ProductVariantService;
+import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.BillOfMaterial;
@@ -62,6 +64,7 @@ public class ManufOrderServiceBusinessImpl extends ManufOrderServiceImpl {
       OperationOrderServiceBusinessImpl operationOrderServiceBusinessImpl,
       ProductCompanyService productCompanyService,
       BarcodeGeneratorService barcodeGeneratorService,
+      UnitConversionService unitConversionService,
       MetaFiles metaFiles) {
     super(
         sequenceService,
@@ -74,6 +77,7 @@ public class ManufOrderServiceBusinessImpl extends ManufOrderServiceImpl {
         prodProductRepo,
         productCompanyService,
         barcodeGeneratorService,
+        unitConversionService,
         metaFiles);
     this.operationOrderServiceBusinessImpl = operationOrderServiceBusinessImpl;
   }
@@ -100,6 +104,7 @@ public class ManufOrderServiceBusinessImpl extends ManufOrderServiceImpl {
   public ManufOrder createManufOrder(
       Product product,
       BigDecimal qty,
+      Unit unit,
       int priority,
       boolean isToInvoice,
       Company company,
@@ -112,6 +117,7 @@ public class ManufOrderServiceBusinessImpl extends ManufOrderServiceImpl {
         super.createManufOrder(
             product,
             qty,
+            unit,
             priority,
             isToInvoice,
             company,
