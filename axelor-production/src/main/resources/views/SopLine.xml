@@ -74,6 +74,7 @@
       <field name="$difference" readonly="true" title="Difference" type="decimal"/>
       <field name="$currency" hidden="true" type="many-to-one"
         target="com.axelor.apps.base.db.Currency" colSpan="12"/>
+      <field name="$currency.symbol" hidden="true" colSpan="12"/>
       <button name="computeTotalForecastBtn" title="Compute total forecast"
         onClick="action-mrp-forecast-method-compute-total-forecast"/>
       <button name="confirmForecastsBtn" readonlyIf="$stockLocation==null"
@@ -171,7 +172,7 @@
 
   <action-validate name="action-mrp-forecast-validate-check-difference">
     <alert
-      message="There currently is a ${difference} ${currency?.symbol} difference between your total forecast and the S&amp;OP forecast. Proceed?"
+      message="There currently is a ${difference} ${currency?.symbol?:currency?.name} difference between your total forecast and the S&amp;OP forecast. Proceed?"
       if="difference != 0"/>
   </action-validate>
 
