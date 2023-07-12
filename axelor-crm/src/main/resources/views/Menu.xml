@@ -628,18 +628,18 @@
 
 
   <menuitem name="crm-conf-collaborator-domain" parent="crm-conf"
-    title="Partner work domain" action="crm.conf.collaborator.domain" order="1200"/>
+    title="Collaborator work domain" action="crm.conf.collaborator.domain" order="1200"/>
 
-  <action-view name="crm.conf.collaborator.domain" title="Partner work domain"
+  <action-view name="crm.conf.collaborator.domain" title="Collaborator work domain"
     model="com.axelor.apps.crm.db.CollaboratorDomain">
     <view type="grid" name="collaborator-domain-grid"/>
     <view type="form" name="collaborator-domain-form"/>
   </action-view>
 
-  <menuitem name="crm-conf-fidelity" parent="crm-conf" title="Partner Fidelity"
+  <menuitem name="crm-conf-fidelity" parent="crm-conf" title="Collaborator Fidelity"
     action="crm.conf.fidelity" order="1300"/>
 
-  <action-view name="crm.conf.fidelity" title="Partner Fidelity"
+  <action-view name="crm.conf.fidelity" title="Collaborator Fidelity"
     model="com.axelor.apps.crm.db.Fidelity">
     <view type="grid" name="fidelity-grid"/>
     <view type="form" name="fidelity-form"/>
