@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://axelor.com/xml/ns/object-views"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <form id="budget-account-config-form" name="account-config-form"
+    title="Account configuration" model="com.axelor.apps.account.db.AccountConfig" extension="true">
+    <extend target="/">
+      <attribute name="onSave" value="action-budget-group-account-config-onsave"/>
+    </extend>
+
+    <extend target="//field[@name='analyticJournal']">
+      <insert position="after">
+        <field name="enableBudgetKey" colSpan="6" if="__config__.app.isApp('budget')"/>
+        <field name="budgetDistributionRoleList" colSpan="6" widget="TagSelect"
+          showIf="enableBudgetKey" if="__config__.app.isApp('budget')"/>
+      </insert>
+    </extend>
+  </form>
+
+  <action-group name="action-budget-group-account-config-onsave">
+    <action name="action-account-config-group-on-save"/>
+    <action name="action-budget-method-validate-budgetKey-in-axis"
+      if="__config__.app.isApp('budget')"/>
+  </action-group>
+
+  <action-method name="action-budget-method-validate-budgetKey-in-axis">
+    <call class="com.axelor.apps.budget.web.AccountConfigController" method="checkBudgetKey"/>
+  </action-method>
+
+</object-views>

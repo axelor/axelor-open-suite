@@ -27,6 +27,7 @@ import com.axelor.apps.supplychain.db.repo.MrpRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.report.IReport;
 import com.axelor.apps.supplychain.service.MrpFilterSaleOrderLineService;
+import com.axelor.apps.supplychain.service.MrpProposalService;
 import com.axelor.apps.supplychain.service.MrpService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -84,7 +85,7 @@ public class MrpController {
       Mrp mrp = request.getContext().asType(Mrp.class);
       Boolean isProposalsPerSupplier =
           (Boolean) request.getContext().get("consolidateProposalsPerSupplier");
-      Beans.get(MrpService.class)
+      Beans.get(MrpProposalService.class)
           .generateAllProposals(
               Beans.get(MrpRepository.class).find(mrp.getId()),
               isProposalsPerSupplier != null && isProposalsPerSupplier);
@@ -101,7 +102,7 @@ public class MrpController {
       Mrp mrp = request.getContext().asType(Mrp.class);
       Boolean isProposalsPerSupplier =
           (Boolean) request.getContext().get("consolidateProposalsPerSupplier");
-      Beans.get(MrpService.class)
+      Beans.get(MrpProposalService.class)
           .generateSelectedProposals(
               Beans.get(MrpRepository.class).find(mrp.getId()),
               isProposalsPerSupplier != null && isProposalsPerSupplier);

@@ -10,6 +10,8 @@
     <extra-code>
   	  <![CDATA[
   	  public static final String IMPORT = "import";
+
+  	  public static final String PASSWORD_CHANGE = "passwordChange";
   	  ]]>
     </extra-code>
   </entity>

@@ -6,21 +6,27 @@
   <grid name="lunch-voucher-mgt-line-grid" title="Lunch Voucher Lines"
     model="com.axelor.apps.hr.db.LunchVoucherMgtLine" editable="true" orderBy="employee">
     <hilite if="statusSelect==2" color="danger"/>
-    <field name="employee" width="150"/>
-    <field name="canteenEntries" width="150" aggregate="sum" title="Canteen"
+    <field name="employee" width="200"/>
+    <field name="canteenEntries" aggregate="sum" title="Canteen"
       readonlyIf="$get('lunchVoucherMgt.statusSelect') == 4"
       onChange="action-lunch-voucher-mgt-line-compute"/>
-    <field name="daysOverseas" width="150" aggregate="sum" title="Overseas"
+    <field name="daysOverseas" aggregate="sum" title="Overseas"
       readonlyIf="$get('lunchVoucherMgt.statusSelect') == 4"
       onChange="action-lunch-voucher-mgt-line-compute"/>
-    <field name="invitation" width="150" aggregate="sum" title="Invitation"
+    <field name="restaurant" aggregate="sum"
       readonlyIf="$get('lunchVoucherMgt.statusSelect') == 4"
       onChange="action-lunch-voucher-mgt-line-compute"/>
-    <field name="inAdvanceNbr" width="150" aggregate="sum" title="Advance"/>
-    <field name="lunchVoucherNumber" width="150" aggregate="sum" title="Nbr lunch vouchers"/>
-    <field name="givenToEmployee" width="150" title="Given"/>
+    <field name="invitation" aggregate="sum" title="Invitation"
+      readonlyIf="$get('lunchVoucherMgt.statusSelect') == 4"
+      onChange="action-lunch-voucher-mgt-line-compute"/>
+    <field name="inAdvanceNbr" aggregate="sum" title="Advance"/>
+    <field name="lunchVoucherNumber" aggregate="sum" title="Nbr lunch vouchers"/>
+    <field name="givenToEmployee" title="Given"/>
     <field name="lunchVoucherFormatSelect" width="200"/>
-    <field name="statusSelect" width="150"/>
+    <field name="statusSelect"/>
+    <button name="statusToCalculateBtn"
+      onClick="action-lunch-voucher-mgt-line-method-set-status-to-calculate" icon="fa-check-circle"
+      help="To calculate"/>
     <field name="lunchVoucherMgt" hidden="true"/>
     <field name="lunchVoucherMgt.statusSelect" hidden="true"/>
     <field name="daysWorkedNbr" hidden="true"/>
@@ -31,6 +37,7 @@
     <field name="lunchVoucherMgt.payPeriod"/>
     <field name="canteenEntries" aggregate="sum" title="Canteen"/>
     <field name="daysOverseas" aggregate="sum" title="Overseas"/>
+    <field name="restaurant" aggregate="sum"/>
     <field name="invitation" aggregate="sum" title="Invitation"/>
     <field name="inAdvanceNbr" aggregate="sum" title="Advance"/>
     <field name="lunchVoucherNumber" aggregate="sum" title="Nbr lunch vouchers"/>
@@ -44,6 +51,7 @@
     <field name="lunchVoucherMgt.payPeriod"/>
     <field name="canteenEntries" aggregate="sum" title="Canteen"/>
     <field name="daysOverseas" aggregate="sum" title="Overseas"/>
+    <field name="restaurant" aggregate="sum"/>
     <field name="invitation" aggregate="sum" title="Invitation"/>
     <field name="inAdvanceNbr" aggregate="sum" title="Advance"/>
     <field name="lunchVoucherNumber" aggregate="sum" title="Nbr lunch vouchers"/>
@@ -64,6 +72,8 @@
         readonlyIf="lunchVoucherMgt.statusSelect == 4"/>
       <field name="daysOverseas" colSpan="6" onChange="action-lunch-voucher-mgt-line-compute"
         readonlyIf="lunchVoucherMgt.statusSelect == 4"/>
+      <field name="restaurant" colSpan="6" onChange="action-lunch-voucher-mgt-line-compute"
+        readonlyIf="lunchVoucherMgt.statusSelect == 4"/>
       <field name="invitation" colSpan="6" onChange="action-lunch-voucher-mgt-line-compute"
         readonlyIf="lunchVoucherMgt.statusSelect == 4"/>
       <field name="inAdvanceNbr" colSpan="6"/>
@@ -79,6 +89,11 @@
   <action-method name="action-lunch-voucher-mgt-line-compute">
     <call class="com.axelor.apps.hr.web.lunch.voucher.LunchVoucherMgtLineController"
       method="compute"/>
+  </action-method>
+
+  <action-method name="action-lunch-voucher-mgt-line-method-set-status-to-calculate">
+    <call class="com.axelor.apps.hr.web.lunch.voucher.LunchVoucherMgtLineController"
+      method="setStatusToCalculate"/>
   </action-method>
 
 </object-views>

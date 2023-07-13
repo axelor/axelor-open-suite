@@ -23,8 +23,8 @@ import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
-import com.axelor.apps.account.service.invoice.factory.CancelFactory;
 import com.axelor.apps.account.service.move.MoveCreateService;
+import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
@@ -34,7 +34,6 @@ import com.axelor.apps.bankpayment.service.move.MoveReverseServiceBankPaymentImp
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
-import com.axelor.inject.Beans;
 import com.axelor.studio.app.service.AppService;
 import com.google.inject.Inject;
 import java.time.LocalDate;
@@ -42,7 +41,9 @@ import java.time.LocalDate;
 public class ExpenseMoveReverseServiceImpl extends MoveReverseServiceBankPaymentImpl {
 
   protected ExpenseRepository expenseRepository;
-  protected ExpenseService expenseService;
+  protected ExpensePaymentService expensePaymentService;
+
+  protected AppService appService;
 
   @Inject
   public ExpenseMoveReverseServiceImpl(
@@ -52,13 +53,14 @@ public class ExpenseMoveReverseServiceImpl extends MoveReverseServiceBankPayment
       MoveRepository moveRepository,
       MoveLineCreateService moveLineCreateService,
       ExtractContextMoveService extractContextMoveService,
-      CancelFactory cancelFactory,
       InvoicePaymentRepository invoicePaymentRepository,
       InvoicePaymentCancelService invoicePaymentCancelService,
+      MoveToolService moveToolService,
       BankReconciliationService bankReconciliationService,
       BankReconciliationLineRepository bankReconciliationLineRepository,
       ExpenseRepository expenseRepository,
-      ExpenseService expenseService) {
+      ExpensePaymentService expensePaymentService,
+      AppService appService) {
     super(
         moveCreateService,
         reconcileService,
@@ -68,10 +70,12 @@ public class ExpenseMoveReverseServiceImpl extends MoveReverseServiceBankPayment
         extractContextMoveService,
         invoicePaymentRepository,
         invoicePaymentCancelService,
+        moveToolService,
         bankReconciliationService,
         bankReconciliationLineRepository);
     this.expenseRepository = expenseRepository;
-    this.expenseService = expenseService;
+    this.expensePaymentService = expensePaymentService;
+    this.appService = appService;
   }
 
   @Override
@@ -89,14 +93,14 @@ public class ExpenseMoveReverseServiceImpl extends MoveReverseServiceBankPayment
             isAutomaticAccounting,
             isUnreconcileOriginalMove,
             dateOfReversion);
-    if (!Beans.get(AppService.class).isApp("expense")) {
+    if (!appService.isApp("expense")) {
       return reverseMove;
     }
 
     Expense expense = getLinkedExpense(move);
 
     if (expense != null) {
-      expenseService.resetExpensePaymentAfterCancellation(expense);
+      expensePaymentService.resetExpensePaymentAfterCancellation(expense);
     }
     return reverseMove;
   }

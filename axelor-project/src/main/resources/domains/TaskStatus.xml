@@ -1,0 +1,22 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="project" package="com.axelor.apps.project.db"/>
+
+  <entity name="TaskStatus">
+
+    <integer name="sequence" title="Sequence"/>
+    <string name="name" translatable="true"/>
+    <boolean name="isDefaultCompleted" title="Default completed"/>
+    <boolean name="isCompleted" title="Completed ?"/>
+    <finder-method name="getDefaultCompleted" using=""
+      filter="self.isDefaultCompleted = true"/>
+    <finder-method name="getCompleted" using=""
+      filter="self.isCompleted = true AND self.isDefaultCompleted = false"/>
+    <finder-method name="getNotCompleted" using="" filter="self.isCompleted = false"/>
+
+  </entity>
+
+</domain-models>

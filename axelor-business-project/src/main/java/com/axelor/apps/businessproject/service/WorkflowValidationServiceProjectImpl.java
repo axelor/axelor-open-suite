@@ -28,7 +28,12 @@ import com.google.inject.persist.Transactional;
 
 public class WorkflowValidationServiceProjectImpl extends WorkflowValidationServiceImpl {
 
-  @Inject InvoicingProjectRepository invoicingProjectRepo;
+  protected InvoicingProjectRepository invoicingProjectRepo;
+
+  @Inject
+  public WorkflowValidationServiceProjectImpl(InvoicingProjectRepository invoicingProjectRepo) {
+    this.invoicingProjectRepo = invoicingProjectRepo;
+  }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
