@@ -23,4 +23,6 @@ public final class HelpdeskExceptionMessage {
   private HelpdeskExceptionMessage() {}
 
   public static final String SELECT_TICKETS = /*$$(*/ "Please select tickets" /*)*/;
+  public static final String UPDATE_TICKET_WORKFLOW = /*$$(*/
+      "Workflow to update status to value provided is not supported by ticket." /*)*/;
 }

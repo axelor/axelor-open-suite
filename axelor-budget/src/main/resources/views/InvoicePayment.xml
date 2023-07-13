@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <form name="invoice-payment-form" title="Payment"
+    model="com.axelor.apps.account.db.InvoicePayment" id="budget-invoice-payment-form"
+    extension="true">
+    <extend target="//button[@name='saveBtn']">
+      <attribute name="onClick" value="action-budget-invoice-payment-group-save"/>
+    </extend>
+  </form>
+
+  <action-group name="action-budget-invoice-payment-group-save">
+    <action name="action-invoice-payment-method-check-and-save"/>
+    <action name="save"/>
+    <action name="action-invoice-payment-budget-method-compute-amount-paid-on-budget"
+      if="__config__.app.isApp('budget')"/>
+    <action name="close"/>
+  </action-group>
+
+  <action-method
+    name="action-invoice-payment-budget-method-compute-amount-paid-on-budget">
+    <call class="com.axelor.apps.budget.web.InvoicePaymentController"
+      method="computeAmountPaid"/>
+  </action-method>
+
+</object-views>
+

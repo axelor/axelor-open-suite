@@ -20,6 +20,7 @@ package com.axelor.apps.hr.service.project;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.ProjectTask;
 import java.math.BigDecimal;
 import java.util.List;
@@ -34,6 +35,8 @@ public interface ProjectPlanningTimeService {
   public void addMultipleProjectPlanningTime(Map<String, Object> dataMap) throws AxelorException;
 
   public void removeProjectPlanningLines(List<Map<String, Object>> projectPlanningLines);
+
+  public void removeProjectPlanningLine(ProjectPlanningTime projectPlanningTime);
 
   public BigDecimal getDurationForCustomer(ProjectTask projectTask);
 }

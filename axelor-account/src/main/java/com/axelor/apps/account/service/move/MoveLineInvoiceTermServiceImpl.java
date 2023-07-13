@@ -36,6 +36,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
@@ -111,7 +112,7 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
           move,
           move.getDate(),
           BigDecimal.valueOf(100),
-          moveLine.getCurrencyAmount(),
+          moveLine.getCurrencyAmount().abs(),
           1,
           false);
 
@@ -127,7 +128,9 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
     Account holdbackAccount = containsHoldback ? this.getHoldbackAccount(moveLine, move) : null;
     boolean isHoldback = moveLine.getAccount().equals(holdbackAccount);
     BigDecimal total =
-        invoiceTermService.getTotalInvoiceTermsAmount(moveLine, holdbackAccount, containsHoldback);
+        invoiceTermService
+            .getTotalInvoiceTermsAmount(moveLine, holdbackAccount, containsHoldback)
+            .abs();
     MoveLine holdbackMoveLine = null;
 
     for (PaymentConditionLine paymentConditionLine :
@@ -313,12 +316,19 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
                     AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
                     RoundingMode.HALF_UP);
 
+    User pfpUser = null;
+    if (invoiceTermService.getPfpValidatorUserCondition(move.getInvoice(), moveLine)) {
+      Partner partner = move.getInvoice() != null ? move.getPartner() : moveLine.getPartner();
+
+      pfpUser = invoiceTermService.getPfpValidatorUser(partner, move.getCompany());
+    }
+
     return invoiceTermService.createInvoiceTerm(
         null,
         move,
         moveLine,
         move.getPartnerBankDetails(),
-        null,
+        pfpUser,
         move.getPaymentMode(),
         dueDate,
         null,

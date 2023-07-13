@@ -71,6 +71,7 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
   protected AppBaseService appBaseService;
 
   protected static int lineOffset = 0;
+  protected static int periodNumber = 0;
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Inject
@@ -96,6 +97,14 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
 
   public static synchronized int getLineOffset() {
     return lineOffset;
+  }
+
+  public static synchronized void incrementPeriodNumber() {
+    periodNumber++;
+  }
+
+  public static synchronized int getPeriodNumber() {
+    return periodNumber;
   }
 
   @Override
@@ -197,6 +206,8 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
     switch (reportType.getComparison()) {
       case AccountingReportTypeRepository.COMPARISON_PREVIOUS_YEAR:
         for (int i = 1; i < accountingReport.getReportType().getNoOfPeriods() + 1; i++) {
+          AccountingReportValueServiceImpl.incrementPeriodNumber();
+
           this.computeReportValues(
               accountingReport,
               configAnalyticAccount,
@@ -207,6 +218,8 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
         break;
       case AccountingReportTypeRepository.COMPARISON_SAME_PERIOD_ON_PREVIOUS_YEAR:
         for (int i = 1; i < accountingReport.getReportType().getNoOfPeriods() + 1; i++) {
+          AccountingReportValueServiceImpl.incrementPeriodNumber();
+
           this.computeReportValues(
               accountingReport,
               configAnalyticAccount,
@@ -216,6 +229,8 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
         }
         break;
       case AccountingReportTypeRepository.COMPARISON_OTHER_PERIOD:
+        AccountingReportValueServiceImpl.incrementPeriodNumber();
+
         this.computeReportValues(
             accountingReport,
             configAnalyticAccount,
@@ -632,11 +647,11 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
     return String.join(
         " AND ",
         this.getAccountFilters(
-            configLine.getAccountSet(),
             configLine.getAccountTypeSet(),
             configLine.getAccountCode(),
             null,
             null,
-            false));
+            false,
+            CollectionUtils.isEmpty(configLine.getAccountSet())));
   }
 }

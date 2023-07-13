@@ -223,4 +223,51 @@ public class BillOfMaterialController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void setDraftStaus(ActionRequest request, ActionResponse response) throws AxelorException {
+    try {
+      BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
+      billOfMaterial = Beans.get(BillOfMaterialRepository.class).find(billOfMaterial.getId());
+      Beans.get(BillOfMaterialService.class).setDraftStatus(billOfMaterial);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setValidateStatus(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    try {
+      BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
+      billOfMaterial = Beans.get(BillOfMaterialRepository.class).find(billOfMaterial.getId());
+      Beans.get(BillOfMaterialService.class).setValidateStatus(billOfMaterial);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setApplicableStatus(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    try {
+      BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
+      billOfMaterial = Beans.get(BillOfMaterialRepository.class).find(billOfMaterial.getId());
+      Beans.get(BillOfMaterialService.class).setApplicableStatus(billOfMaterial);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setObsoleteStatus(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    try {
+      BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
+      billOfMaterial = Beans.get(BillOfMaterialRepository.class).find(billOfMaterial.getId());
+      Beans.get(BillOfMaterialService.class).setObsoleteStatus(billOfMaterial);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

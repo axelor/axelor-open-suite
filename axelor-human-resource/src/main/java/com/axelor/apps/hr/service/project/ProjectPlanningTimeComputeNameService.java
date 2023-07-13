@@ -20,9 +20,10 @@ package com.axelor.apps.hr.service.project;
 
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.project.db.Project;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public interface ProjectPlanningTimeComputeNameService {
 
-  String computeProjectPlanningTimeFullname(Employee employee, Project project, LocalDate date);
+  String computeProjectPlanningTimeFullname(
+      Employee employee, Project project, LocalDateTime startDateTime);
 }
