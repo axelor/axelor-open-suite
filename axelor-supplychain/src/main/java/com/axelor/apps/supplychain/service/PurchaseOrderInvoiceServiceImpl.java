@@ -271,7 +271,8 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
         invoicedAmount,
         purchaseOrder.getPurchaseOrderSeq());
 
-    return invoicedAmount;
+    return invoicedAmount.setScale(
+        purchaseOrder.getCurrency().getNumberOfDecimals(), RoundingMode.HALF_UP);
   }
 
   protected BigDecimal getAmountVentilated(

@@ -12,7 +12,8 @@
     <many-to-one name="paymentCondition"
       ref="com.axelor.apps.account.db.PaymentCondition" title="Payment condition"/>
 
-    <decimal name="amountInvoiced" title="Amount invoiced W.T." readonly="true"/>
+    <decimal name="amountInvoiced" title="Amount invoiced W.T." readonly="true" scale="3"
+      precision="20"/>
 
     <many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation"
       title="Stock location"/>

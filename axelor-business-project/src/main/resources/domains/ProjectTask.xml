@@ -9,7 +9,7 @@
 
     <boolean name="toInvoice" title="To invoice"/>
     <boolean name="invoiced" title="Invoiced"/>
-    <decimal name="exTaxTotal" title="ProjectTask.exTaxTotal"/>
+    <decimal name="exTaxTotal" scale="3" precision="20" title="ProjectTask.exTaxTotal"/>
     <integer name="discountTypeSelect" title="Discount type"
       selection="base.price.list.line.amount.type.select" default="3"/>
     <decimal name="discountAmount" title="Discount amount" precision="20" scale="10"/>

@@ -417,7 +417,6 @@ public abstract class InvoiceGenerator {
    * Compute the invoice total amounts
    *
    * @param invoice
-   * @throws AxelorException
    */
   public void computeInvoice(Invoice invoice) throws AxelorException {
 

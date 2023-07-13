@@ -20,6 +20,7 @@ package com.axelor.apps.purchase.service;
 
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
@@ -59,8 +60,6 @@ public interface PurchaseOrderLineService {
   Optional<TaxLine> getOptionalTaxLine(
       PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine);
 
-  public BigDecimal computePurchaseOrderLine(PurchaseOrderLine purchaseOrderLine);
-
   public BigDecimal getCompanyExTaxTotal(BigDecimal exTaxTotal, PurchaseOrder purchaseOrder)
       throws AxelorException;
 
@@ -70,7 +69,8 @@ public interface PurchaseOrderLineService {
   public Map<String, BigDecimal> compute(
       PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder) throws AxelorException;
 
-  public BigDecimal computeDiscount(PurchaseOrderLine purchaseOrderLine, Boolean inAti);
+  public BigDecimal computeDiscount(
+      PurchaseOrderLine purchaseOrderLine, Boolean inAti, Currency currency);
 
   public PurchaseOrderLine createPurchaseOrderLine(
       PurchaseOrder purchaseOrder,

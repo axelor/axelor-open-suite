@@ -20,6 +20,7 @@ package com.axelor.apps.sale.service.saleorder;
 
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Unit;
@@ -67,23 +68,6 @@ public interface SaleOrderLineService {
   public Map<String, BigDecimal> computeValues(SaleOrder saleOrder, SaleOrderLine saleOrderLine)
       throws AxelorException;
 
-  /**
-   * Compute the excluded tax total amount of a sale order line.
-   *
-   * @param saleOrderLine the sale order line which total amount you want to compute.
-   * @return The excluded tax total amount.
-   */
-  public BigDecimal computeAmount(SaleOrderLine saleOrderLine);
-
-  /**
-   * Compute the excluded tax total amount of a sale order line.
-   *
-   * @param quantity The quantity.
-   * @param price The unit price.
-   * @return The excluded tax total amount.
-   */
-  public BigDecimal computeAmount(BigDecimal quantity, BigDecimal price);
-
   public BigDecimal getExTaxUnitPrice(
       SaleOrder saleOrder, SaleOrderLine saleOrderLine, TaxLine taxLine) throws AxelorException;
 
@@ -109,7 +93,7 @@ public interface SaleOrderLineService {
    * @param inAti whether or not the sale order line (and thus the discounted price) includes taxes.
    * @return the discounted price of the line, including taxes if inAti is true.
    */
-  public BigDecimal computeDiscount(SaleOrderLine saleOrderLine, Boolean inAti);
+  public BigDecimal computeDiscount(SaleOrderLine saleOrderLine, Boolean inAti, Currency currency);
 
   public Map<String, Object> getDiscountsFromPriceLists(
       SaleOrder saleOrder, SaleOrderLine saleOrderLine, BigDecimal price);

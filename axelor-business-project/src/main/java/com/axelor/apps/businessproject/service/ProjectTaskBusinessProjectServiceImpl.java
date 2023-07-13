@@ -55,7 +55,6 @@ import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.service.ProjectTaskServiceImpl;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
@@ -180,7 +179,10 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
         this.getPriceListLine(projectTask, priceList, projectTask.getUnitPrice());
     Map<String, Object> discounts =
         priceListService.getReplacedPriceAndDiscounts(
-            priceList, priceListLine, projectTask.getUnitPrice());
+            priceList,
+            priceListLine,
+            projectTask.getUnitPrice(),
+            projectTask.getCurrency().getNumberOfDecimals());
 
     if (discounts == null) {
       this.emptyDiscounts(projectTask);
@@ -209,13 +211,17 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
 
   @Override
   public ProjectTask compute(ProjectTask projectTask) {
+    BigDecimal qty = projectTask.getQuantity();
     if (projectTask.getProduct() == null && projectTask.getProject() == null
         || projectTask.getUnitPrice() == null
-        || projectTask.getQuantity() == null) {
+        || qty == null) {
       return projectTask;
     }
+
     BigDecimal priceDiscounted = this.computeDiscount(projectTask);
-    BigDecimal exTaxTotal = this.computeAmount(projectTask.getQuantity(), priceDiscounted);
+    BigDecimal exTaxTotal =
+        qty.multiply(priceDiscounted)
+            .setScale(projectTask.getCurrency().getNumberOfDecimals(), RoundingMode.HALF_UP);
 
     projectTask.setPriceDiscounted(priceDiscounted);
     projectTask.setExTaxTotal(exTaxTotal);
@@ -228,17 +234,8 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     return priceListService.computeDiscount(
         projectTask.getUnitPrice(),
         projectTask.getDiscountTypeSelect(),
-        projectTask.getDiscountAmount());
-  }
-
-  protected BigDecimal computeAmount(BigDecimal quantity, BigDecimal price) {
-
-    BigDecimal amount =
-        price
-            .multiply(quantity)
-            .setScale(AppSaleService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
-
-    return amount;
+        projectTask.getDiscountAmount(),
+        projectTask.getCurrency().getNumberOfDecimals());
   }
 
   @Override
@@ -390,6 +387,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     Company company =
         projectTask.getProject() != null ? projectTask.getProject().getCompany() : null;
     BigDecimal unitPrice = (BigDecimal) productCompanyService.get(product, "salePrice", company);
+    int scale = projectTask.getCurrency().getNumberOfDecimals();
 
     PriceList priceList =
         partnerPriceListService.getDefaultPriceList(
@@ -400,7 +398,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
 
     PriceListLine priceListLine = this.getPriceListLine(projectTask, priceList, unitPrice);
     Map<String, Object> discounts =
-        priceListService.getReplacedPriceAndDiscounts(priceList, priceListLine, unitPrice);
+        priceListService.getReplacedPriceAndDiscounts(priceList, priceListLine, unitPrice, scale);
 
     if (discounts == null) {
       return unitPrice;
@@ -409,7 +407,8 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
           priceListService.computeDiscount(
               unitPrice,
               (Integer) discounts.get("discountTypeSelect"),
-              (BigDecimal) discounts.get("discountAmount"));
+              (BigDecimal) discounts.get("discountAmount"),
+              scale);
     }
     return unitPrice;
   }

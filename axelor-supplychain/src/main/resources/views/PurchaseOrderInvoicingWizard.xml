@@ -13,7 +13,8 @@
     <panel name="amountPanel" showIf="$contains([2],$number($operationSelect))">
       <field name="$isPercent" title="Is amount in %" type="boolean"/>
       <field name="$amountToInvoice" title="Amount to invoice" type="decimal" min="0"
-        showIf="$contains([2],$number($operationSelect))"/>
+        showIf="$contains([2],$number($operationSelect))" x-scale="currency.numberOfDecimals"/>
+      <field name="currency.numberOfDecimals" hidden="true"/>
     </panel>
     <panel name="actionPanel" showIf="$operationSelect &lt; 5">
       <button name="createInvoiceBtn" title="Generate the invoice"

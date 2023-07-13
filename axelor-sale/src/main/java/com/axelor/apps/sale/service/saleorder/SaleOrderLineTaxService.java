@@ -21,6 +21,7 @@ package com.axelor.apps.sale.service.saleorder;
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLineTax;
@@ -28,6 +29,7 @@ import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -41,8 +43,12 @@ public class SaleOrderLineTaxService {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  @Inject private SaleOrderService saleOrderService;
-  @Inject private SaleOrderToolService saleOrderToolService;
+  protected CurrencyService currencyService;
+
+  @Inject
+  public SaleOrderLineTaxService(CurrencyService currencyService) {
+    this.currencyService = currencyService;
+  }
 
   /**
    * Créer les lignes de TVA du devis. La création des lignes de TVA se basent sur les lignes de
@@ -111,13 +117,16 @@ public class SaleOrderLineTaxService {
       // Dans la devise de la facture
       BigDecimal exTaxBase = saleOrderLineTax.getExTaxBase();
       BigDecimal taxTotal = BigDecimal.ZERO;
-      if (saleOrderLineTax.getTaxLine() != null) {
+      TaxLine taxLine = saleOrderLineTax.getTaxLine();
+      int scale = currencyService.computeScaleForView(saleOrder.getCurrency());
+
+      if (taxLine != null) {
         taxTotal =
-            saleOrderToolService.computeAmount(
-                exTaxBase, saleOrderLineTax.getTaxLine().getValue().divide(new BigDecimal(100)));
-        saleOrderLineTax.setTaxTotal(taxTotal);
+            exTaxBase.multiply(
+                taxLine.getValue().divide(new BigDecimal(100), scale, RoundingMode.HALF_UP));
+        saleOrderLineTax.setTaxTotal(taxTotal.setScale(scale, RoundingMode.HALF_UP));
       }
-      saleOrderLineTax.setInTaxTotal(exTaxBase.add(taxTotal));
+      saleOrderLineTax.setInTaxTotal(exTaxBase.add(taxTotal).setScale(scale, RoundingMode.HALF_UP));
       saleOrderLineTaxList.add(saleOrderLineTax);
 
       LOG.debug(

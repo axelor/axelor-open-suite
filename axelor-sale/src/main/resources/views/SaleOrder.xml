@@ -706,8 +706,14 @@
     </panel>
     <panel name="inTaxTotalPanel" readonly="true" hideIf="clientPartner == null" colSpan="4"
       sidebar="true">
+      <field name="currency.numberOfDecimals" hidden="true"/>
+      <field name="exTaxTotal" hidden="true" x-scale="currency.numberOfDecimals"/>
+      <field name="taxTotal" hidden="true" x-scale="currency.numberOfDecimals"/>
+      <field name="amountInvoiced" hidden="true" x-scale="currency.numberOfDecimals"/>
+      <field name="advanceTotal" hidden="true" x-scale="currency.numberOfDecimals"/>
       <separator/>
-      <field name="inTaxTotal" showTitle="false" colSpan="12" css="order-subtotal">
+      <field name="inTaxTotal" showTitle="false" colSpan="12" css="order-subtotal"
+        x-scale="currency.numberOfDecimals">
         <viewer
           depends="exTaxTotal,currency.symbol,taxTotal,statusSelect,amountInvoiced,advanceTotal"><![CDATA[
 
@@ -973,7 +979,13 @@
     </panel>
 
     <panel name="inTaxTotalPanel" sidebar="true" readonly="true" colSpan="4">
-      <field name="inTaxTotal" css="order-subtotal" showTitle="false" colSpan="12">
+      <field name="currency.numberOfDecimals" hidden="true"/>
+      <field name="exTaxTotal" hidden="true" x-scale="currency.numberOfDecimals"/>
+      <field name="taxTotal" hidden="true" x-scale="currency.numberOfDecimals"/>
+      <field name="amountInvoiced" hidden="true" x-scale="currency.numberOfDecimals"/>
+      <field name="advanceTotal" hidden="true" x-scale="currency.numberOfDecimals"/>
+      <field name="inTaxTotal" css="order-subtotal" showTitle="false" colSpan="12"
+        x-scale="currency.numberOfDecimals">
         <viewer
           depends="exTaxTotal,currency.symbol,taxTotal,statusSelect,amountInvoiced,advanceTotal">
                     <![CDATA[
@@ -1073,7 +1085,13 @@
           <field name="statusSelect" widget="NavSelect" colSpan="12"/>
         </panel>
         <panel name="inTaxTotalPanel" readonly="true" css="order-subtotal" colSpan="4">
-          <field name="inTaxTotal" showTitle="false" colSpan="12">
+          <field name="currency.numberOfDecimals" hidden="true"/>
+          <field name="exTaxTotal" hidden="true" x-scale="currency.numberOfDecimals"/>
+          <field name="taxTotal" hidden="true" x-scale="currency.numberOfDecimals"/>
+          <field name="amountInvoiced" hidden="true" x-scale="currency.numberOfDecimals"/>
+          <field name="advanceTotal" hidden="true" x-scale="currency.numberOfDecimals"/>
+          <field name="inTaxTotal" showTitle="false" colSpan="12"
+            x-scale="currency.numberOfDecimals">
             <viewer
               depends="exTaxTotal,currency.symbol,taxTotal,statusSelect,amountInvoiced,advanceTotal">
                         <![CDATA[
@@ -1276,12 +1294,13 @@
     <field name="externalReference"/>
     <field name="clientPartner.fullName"/>
     <field name="orderDate"/>
-    <field name="exTaxTotal"/>
-    <field name="inTaxTotal"/>
+    <field name="exTaxTotal" x-scale="currency.numberOfDecimals"/>
+    <field name="inTaxTotal" x-scale="currency.numberOfDecimals"/>
     <field name="currency.symbol"/>
+    <field name="currency.numberOfDecimals"/>
     <field name="statusSelect"/>
     <field name="deliveryState"/>
-    <field name="amountInvoiced"/>
+    <field name="amountInvoiced" x-scale="currency.numberOfDecimals"/>
     <field name="company"/>
     <field name="tradingName"/>
     <field name="stockLocation" if="__config__.app.isApp('supplychain')"/>

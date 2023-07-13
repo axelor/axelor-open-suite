@@ -227,7 +227,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
                 false,
                 saleOrderLine.getTaxLine(),
                 exTaxPrice,
-                appBaseService.getNbDecimalDigitForUnitPrice()));
+                saleOrder.getCurrency().getNumberOfDecimals()));
       }
     }
   }
@@ -273,7 +273,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
                 saleOrderLine.getProduct().getInAti(),
                 saleOrderLine.getTaxLine(),
                 (BigDecimal) discounts.get("discountAmount"),
-                appBaseService.getNbDecimalDigitForUnitPrice()));
+                saleOrder.getCurrency().getNumberOfDecimals()));
       } else {
         saleOrderLine.setDiscountAmount((BigDecimal) discounts.get("discountAmount"));
       }
@@ -342,11 +342,12 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   public Map<String, BigDecimal> computeValues(SaleOrder saleOrder, SaleOrderLine saleOrderLine)
       throws AxelorException {
 
+    BigDecimal qty = saleOrderLine.getQty();
     HashMap<String, BigDecimal> map = new HashMap<>();
     if (saleOrder == null
         || saleOrderLine.getPrice() == null
         || saleOrderLine.getInTaxPrice() == null
-        || saleOrderLine.getQty() == null) {
+        || qty == null) {
       return map;
     }
 
@@ -354,25 +355,27 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     BigDecimal companyExTaxTotal;
     BigDecimal inTaxTotal;
     BigDecimal companyInTaxTotal;
-    BigDecimal priceDiscounted = this.computeDiscount(saleOrderLine, saleOrder.getInAti());
+    BigDecimal priceDiscounted =
+        this.computeDiscount(saleOrderLine, saleOrder.getInAti(), saleOrder.getCurrency());
     BigDecimal taxRate = BigDecimal.ZERO;
     BigDecimal subTotalCostPrice = BigDecimal.ZERO;
+    int scale = currencyService.computeScaleForView(saleOrder.getCurrency());
 
     if (saleOrderLine.getTaxLine() != null) {
       taxRate = saleOrderLine.getTaxLine().getValue().divide(new BigDecimal(100));
     }
 
     if (!saleOrder.getInAti()) {
-      exTaxTotal = this.computeAmount(saleOrderLine.getQty(), priceDiscounted);
+      exTaxTotal = qty.multiply(priceDiscounted).setScale(scale, RoundingMode.HALF_UP);
       inTaxTotal = exTaxTotal.add(exTaxTotal.multiply(taxRate));
       companyExTaxTotal = this.getAmountInCompanyCurrency(exTaxTotal, saleOrder);
       companyInTaxTotal = companyExTaxTotal.add(companyExTaxTotal.multiply(taxRate));
     } else {
-      inTaxTotal = this.computeAmount(saleOrderLine.getQty(), priceDiscounted);
-      exTaxTotal = inTaxTotal.divide(taxRate.add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
+      inTaxTotal = qty.multiply(priceDiscounted).setScale(scale, RoundingMode.HALF_UP);
+      exTaxTotal = inTaxTotal.divide(taxRate.add(BigDecimal.ONE), scale, BigDecimal.ROUND_HALF_UP);
       companyInTaxTotal = this.getAmountInCompanyCurrency(inTaxTotal, saleOrder);
       companyExTaxTotal =
-          companyInTaxTotal.divide(taxRate.add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
+          companyInTaxTotal.divide(taxRate.add(BigDecimal.ONE), scale, BigDecimal.ROUND_HALF_UP);
     }
 
     if (saleOrderLine.getProduct() != null
@@ -404,34 +407,6 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     map.putAll(saleOrderMarginService.getSaleOrderLineComputedMarginInfo(saleOrder, saleOrderLine));
 
     return map;
-  }
-
-  /**
-   * Compute the excluded tax total amount of a sale order line.
-   *
-   * @return The excluded tax total amount.
-   */
-  @Override
-  public BigDecimal computeAmount(SaleOrderLine saleOrderLine) {
-
-    BigDecimal price = this.computeDiscount(saleOrderLine, false);
-
-    return computeAmount(saleOrderLine.getQty(), price);
-  }
-
-  @Override
-  public BigDecimal computeAmount(BigDecimal quantity, BigDecimal price) {
-
-    BigDecimal amount =
-        quantity
-            .multiply(price)
-            .setScale(AppSaleService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
-
-    logger.debug(
-        "Computation of W.T. amount with a quantity of {} for {} : {}",
-        new Object[] {quantity, price, amount});
-
-    return amount;
   }
 
   @Override
@@ -478,13 +453,15 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
             : taxService.convertUnitPrice(
                 productInAti, taxLine, productSalePrice, AppBaseService.COMPUTATION_SCALING);
 
+    int scale = currencyService.computeScaleForView(saleOrder.getCurrency());
+
     return currencyService
         .getAmountCurrencyConvertedAtDate(
             (Currency) productCompanyService.get(product, "saleCurrency", saleOrder.getCompany()),
             saleOrder.getCurrency(),
             price,
             saleOrder.getCreationDate())
-        .setScale(appSaleService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+        .setScale(scale, RoundingMode.HALF_UP);
   }
 
   @Override
@@ -525,7 +502,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
             saleOrder.getCompany().getCurrency(),
             (BigDecimal) productCompanyService.get(product, "costPrice", saleOrder.getCompany()),
             saleOrder.getCreationDate())
-        .setScale(AppSaleService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+        .setScale(saleOrder.getCurrency().getNumberOfDecimals(), RoundingMode.HALF_UP);
   }
 
   @Override
@@ -537,12 +514,13 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   }
 
   @Override
-  public BigDecimal computeDiscount(SaleOrderLine saleOrderLine, Boolean inAti) {
+  public BigDecimal computeDiscount(SaleOrderLine saleOrderLine, Boolean inAti, Currency currency) {
 
     BigDecimal price = inAti ? saleOrderLine.getInTaxPrice() : saleOrderLine.getPrice();
+    int scale = currency.getNumberOfDecimals();
 
     return priceListService.computeDiscount(
-        price, saleOrderLine.getDiscountTypeSelect(), saleOrderLine.getDiscountAmount());
+        price, saleOrderLine.getDiscountTypeSelect(), saleOrderLine.getDiscountAmount(), scale);
   }
 
   @Override
@@ -555,7 +533,9 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 
     if (priceList != null) {
       PriceListLine priceListLine = this.getPriceListLine(saleOrderLine, priceList, price);
-      discounts = priceListService.getReplacedPriceAndDiscounts(priceList, priceListLine, price);
+      discounts =
+          priceListService.getReplacedPriceAndDiscounts(
+              priceList, priceListLine, price, saleOrder.getCurrency().getNumberOfDecimals());
 
       if (saleOrder.getTemplate()) {
         Integer manualDiscountAmountType = saleOrderLine.getDiscountTypeSelect();

@@ -227,7 +227,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
             .multiply(paymentConditionLine.getPaymentPercentage())
             .divide(
                 BigDecimal.valueOf(100),
-                AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+                invoice.getCurrency().getNumberOfDecimals(),
                 RoundingMode.HALF_UP);
 
     User pfpUser = null;

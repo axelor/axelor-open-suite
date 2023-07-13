@@ -28,6 +28,7 @@ import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import com.axelor.apps.purchase.db.PurchaseOrderLineTax;
 import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
@@ -41,6 +42,7 @@ import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -189,7 +191,12 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService {
       purchaseOrder.setInAti(false);
     }
 
+    setPriceScaling(purchaseOrder);
+
     purchaseOrder.setNotes(supplierPartner.getPurchaseOrderComments());
+
+    purchaseOrderRepository.save(purchaseOrder);
+
     return purchaseOrder;
   }
 
@@ -214,6 +221,25 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService {
         purchaseOrderLine.setProductName(supplierCatalog.getProductSupplierName());
         purchaseOrderLine.setProductCode(supplierCatalog.getProductSupplierCode());
       }
+    }
+  }
+
+  protected void setPriceScaling(PurchaseOrder purchaseOrder) {
+    int scale = purchaseOrder.getCurrency().getNumberOfDecimals();
+    purchaseOrder.setInTaxTotal(
+        purchaseOrder.getInTaxTotal().setScale(scale, RoundingMode.HALF_UP));
+    purchaseOrder.setTaxTotal(purchaseOrder.getTaxTotal().setScale(scale, RoundingMode.HALF_UP));
+    for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
+      purchaseOrderLine.setCompanyInTaxTotal(
+          purchaseOrderLine.getCompanyInTaxTotal().setScale(scale, RoundingMode.HALF_UP));
+      purchaseOrderLine.setInTaxTotal(
+          purchaseOrderLine.getInTaxTotal().setScale(scale, RoundingMode.HALF_UP));
+    }
+    for (PurchaseOrderLineTax purchaseOrderLineTax : purchaseOrder.getPurchaseOrderLineTaxList()) {
+      purchaseOrderLineTax.setTaxTotal(
+          purchaseOrderLineTax.getTaxTotal().setScale(scale, RoundingMode.HALF_UP));
+      purchaseOrderLineTax.setInTaxTotal(
+          purchaseOrderLineTax.getInTaxTotal().setScale(scale, RoundingMode.HALF_UP));
     }
   }
 }

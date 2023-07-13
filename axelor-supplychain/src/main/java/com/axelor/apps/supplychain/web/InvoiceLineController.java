@@ -60,7 +60,8 @@ public class InvoiceLineController {
               (line.getQty().divide(oldKitQty, scale, RoundingMode.HALF_UP))
                   .multiply(newKitQty)
                   .setScale(scale, RoundingMode.HALF_UP);
-          priceDiscounted = invoiceLineService.computeDiscount(line, invoice.getInAti());
+          priceDiscounted =
+              invoiceLineService.computeDiscount(line, invoice.getInAti(), invoice.getCurrency());
 
           if (line.getTaxLine() != null) {
             taxRate = line.getTaxLine().getValue();

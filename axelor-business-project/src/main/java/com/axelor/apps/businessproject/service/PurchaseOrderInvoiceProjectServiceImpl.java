@@ -134,6 +134,7 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
     }
 
     BigDecimal discountAmount = price;
+    int currencyScale = invoice.getCurrency().getNumberOfDecimals();
     int discountTypeSelect = 1;
     if (invoice.getPartner().getChargeBackPurchaseSelect()
         == PartnerRepository.CHARGING_BACK_TYPE_PRICE_LIST) {
@@ -152,17 +153,20 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
             || appBusinessProjectService.getAppBase().getComputeMethodDiscountSelect()
                 == AppBaseRepository.INCLUDE_DISCOUNT) {
           Map<String, Object> discounts =
-              priceListService.getDiscounts(priceList, priceListLine, price);
+              priceListService.getDiscounts(priceList, priceListLine, price, currencyScale);
           if (discounts != null) {
             discountAmount = (BigDecimal) discounts.get("discountAmount");
             price =
                 priceListService.computeDiscount(
-                    price, (int) discounts.get("discountTypeSelect"), discountAmount);
+                    price,
+                    (int) discounts.get("discountTypeSelect"),
+                    discountAmount,
+                    currencyScale);
           }
 
         } else {
           Map<String, Object> discounts =
-              priceListService.getDiscounts(priceList, priceListLine, price);
+              priceListService.getDiscounts(priceList, priceListLine, price, currencyScale);
           if (discounts != null) {
             discountAmount = (BigDecimal) discounts.get("discountAmount");
             if (discounts.get("price") != null) {

@@ -24,9 +24,10 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.BlockingService;
+import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.exception.PurchaseExceptionMessage;
-import com.axelor.apps.purchase.service.PurchaseOrderLineServiceImpl;
 import com.axelor.apps.suppliermanagement.db.PurchaseOrderSupplierLine;
 import com.axelor.apps.suppliermanagement.db.repo.PurchaseOrderSupplierLineRepository;
 import com.axelor.i18n.I18n;
@@ -34,20 +35,31 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 public class PurchaseOrderSupplierLineService {
 
-  @Inject PurchaseOrderSupplierLineRepository poSupplierLineRepo;
+  protected PurchaseOrderSupplierLineRepository poSupplierLineRepo;
+  protected CurrencyService currencyService;
+
+  @Inject
+  public PurchaseOrderSupplierLineService(
+      PurchaseOrderSupplierLineRepository poSupplierLineRepo, CurrencyService currencyService) {
+    this.poSupplierLineRepo = poSupplierLineRepo;
+    this.currencyService = currencyService;
+  }
 
   @Transactional(rollbackOn = {Exception.class})
   public void accept(PurchaseOrderSupplierLine purchaseOrderSupplierLine) throws AxelorException {
 
     PurchaseOrderLine purchaseOrderLine = purchaseOrderSupplierLine.getPurchaseOrderLine();
+    PurchaseOrder purchaseOrder = purchaseOrderLine.getPurchaseOrder();
+    Partner supplierPartner = purchaseOrderSupplierLine.getSupplierPartner();
+    Company company = purchaseOrder.getCompany();
+    int scale = currencyService.computeScaleForView(purchaseOrder.getCurrency());
 
     purchaseOrderLine.setEstimatedReceiptDate(purchaseOrderSupplierLine.getEstimatedDelivDate());
 
-    Partner supplierPartner = purchaseOrderSupplierLine.getSupplierPartner();
-    Company company = purchaseOrderLine.getPurchaseOrder().getCompany();
     if (Beans.get(BlockingService.class)
             .getBlocking(supplierPartner, company, BlockingRepository.PURCHASE_BLOCKING)
         != null) {
@@ -56,13 +68,14 @@ public class PurchaseOrderSupplierLineService {
           I18n.get(PurchaseExceptionMessage.SUPPLIER_BLOCKED),
           supplierPartner);
     }
-    purchaseOrderLine.setSupplierPartner(supplierPartner);
 
+    purchaseOrderLine.setSupplierPartner(supplierPartner);
     purchaseOrderLine.setPrice(purchaseOrderSupplierLine.getPrice());
     purchaseOrderLine.setExTaxTotal(
-        PurchaseOrderLineServiceImpl.computeAmount(
-            purchaseOrderLine.getQty(), purchaseOrderLine.getPrice()));
-
+        purchaseOrderLine
+            .getQty()
+            .multiply(purchaseOrderLine.getPrice())
+            .setScale(scale, RoundingMode.HALF_UP));
     purchaseOrderSupplierLine.setStateSelect(PurchaseOrderSupplierLineRepository.STATE_ACCEPTED);
 
     poSupplierLineRepo.save(purchaseOrderSupplierLine);

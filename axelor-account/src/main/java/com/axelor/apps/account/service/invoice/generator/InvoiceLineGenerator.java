@@ -264,13 +264,15 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     if (taxLine != null) {
       taxRate = taxLine.getValue().divide(new BigDecimal(100));
     }
-
+    int scale = currencyService.computeScaleForView(invoice.getCurrency());
+    BigDecimal price = qty.multiply(priceDiscounted).setScale(scale, RoundingMode.HALF_UP);
     if (!invoice.getInAti()) {
-      exTaxTotal = computeAmount(this.qty, this.priceDiscounted, 2);
-      inTaxTotal = exTaxTotal.add(exTaxTotal.multiply(taxRate)).setScale(2, RoundingMode.HALF_UP);
+      exTaxTotal = price;
+      inTaxTotal =
+          exTaxTotal.add(exTaxTotal.multiply(taxRate)).setScale(scale, RoundingMode.HALF_UP);
     } else {
-      inTaxTotal = computeAmount(this.qty, this.priceDiscounted, 2);
-      exTaxTotal = inTaxTotal.divide(taxRate.add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
+      inTaxTotal = price;
+      exTaxTotal = inTaxTotal.divide(taxRate.add(BigDecimal.ONE), scale, RoundingMode.HALF_UP);
     }
   }
 
@@ -284,6 +286,8 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 
     Currency companyCurrency = company.getCurrency();
 
+    int scale = currencyService.computeScaleForView(companyCurrency);
+
     if (companyCurrency == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -295,13 +299,13 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
         currencyService
             .getAmountCurrencyConvertedAtDate(
                 invoice.getCurrency(), companyCurrency, exTaxTotal, today)
-            .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
+            .setScale(scale, RoundingMode.HALF_UP));
 
     invoiceLine.setCompanyInTaxTotal(
         currencyService
             .getAmountCurrencyConvertedAtDate(
                 invoice.getCurrency(), companyCurrency, inTaxTotal, today)
-            .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
+            .setScale(scale, RoundingMode.HALF_UP));
   }
 
   /**

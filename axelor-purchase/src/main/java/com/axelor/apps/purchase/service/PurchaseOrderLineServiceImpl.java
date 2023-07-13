@@ -96,28 +96,34 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
       return map;
     }
 
+    int scale = currencyService.computeScaleForView(purchaseOrder.getCurrency());
+    BigDecimal qty = purchaseOrderLine.getQty();
     BigDecimal exTaxTotal;
     BigDecimal companyExTaxTotal;
     BigDecimal inTaxTotal;
     BigDecimal companyInTaxTotal;
-    BigDecimal priceDiscounted = this.computeDiscount(purchaseOrderLine, purchaseOrder.getInAti());
+    BigDecimal priceDiscounted =
+        this.computeDiscount(
+            purchaseOrderLine, purchaseOrder.getInAti(), purchaseOrder.getCurrency());
     BigDecimal taxRate = BigDecimal.ZERO;
 
     if (purchaseOrderLine.getTaxLine() != null) {
       taxRate = purchaseOrderLine.getTaxLine().getValue().divide(new BigDecimal(100));
     }
 
+    BigDecimal total = qty.multiply(priceDiscounted).setScale(scale, RoundingMode.HALF_UP);
+
     if (!purchaseOrder.getInAti()) {
-      exTaxTotal = computeAmount(purchaseOrderLine.getQty(), priceDiscounted);
+      exTaxTotal = total;
       inTaxTotal = exTaxTotal.add(exTaxTotal.multiply(taxRate));
       companyExTaxTotal = getCompanyExTaxTotal(exTaxTotal, purchaseOrder);
       companyInTaxTotal = companyExTaxTotal.add(companyExTaxTotal.multiply(taxRate));
     } else {
-      inTaxTotal = computeAmount(purchaseOrderLine.getQty(), priceDiscounted);
-      exTaxTotal = inTaxTotal.divide(taxRate.add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
+      inTaxTotal = total;
+      exTaxTotal = inTaxTotal.divide(taxRate.add(BigDecimal.ONE), scale, RoundingMode.HALF_UP);
       companyInTaxTotal = getCompanyExTaxTotal(inTaxTotal, purchaseOrder);
       companyExTaxTotal =
-          companyInTaxTotal.divide(taxRate.add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
+          companyInTaxTotal.divide(taxRate.add(BigDecimal.ONE), scale, RoundingMode.HALF_UP);
     }
 
     if (purchaseOrderLine.getProduct() != null) {
@@ -135,27 +141,6 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     purchaseOrderLine.setCompanyInTaxTotal(companyInTaxTotal);
     purchaseOrderLine.setMaxPurchasePrice(getPurchaseMaxPrice(purchaseOrder, purchaseOrderLine));
     return map;
-  }
-
-  /**
-   * Calculer le montant HT d'une ligne de commande.
-   *
-   * @param quantity Quantité.
-   * @param price Le prix.
-   * @return Le montant HT de la ligne.
-   */
-  public static BigDecimal computeAmount(BigDecimal quantity, BigDecimal price) {
-
-    BigDecimal amount =
-        quantity
-            .multiply(price)
-            .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
-
-    LOG.debug(
-        "Computation of amount W.T. with a quantity of {} for {} : {}",
-        new Object[] {quantity, price, amount});
-
-    return amount;
   }
 
   public String[] getProductSupplierInfos(
@@ -342,11 +327,12 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 
   @Override
   public BigDecimal getPurchaseMaxPrice(
-      PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) throws AxelorException {
+      PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) {
 
     try {
 
       Product product = purchaseOrderLine.getProduct();
+      int scale = currencyService.computeScaleForView(purchaseOrder.getCurrency());
 
       if (product == null
           || !((Boolean)
@@ -375,7 +361,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
                         product.getManagPriceCoef().signum() == 0
                             ? BigDecimal.ONE
                             : product.getManagPriceCoef(),
-                        appBaseService.getNbDecimalDigitForUnitPrice(),
+                        scale,
                         RoundingMode.HALF_UP),
                 AppBaseService.COMPUTATION_SCALING);
       } else {
@@ -386,7 +372,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
                     product.getManagPriceCoef().signum() == 0
                         ? BigDecimal.ONE
                         : product.getManagPriceCoef(),
-                    appBaseService.getNbDecimalDigitForUnitPrice(),
+                    scale,
                     RoundingMode.HALF_UP);
       }
       return currencyService
@@ -396,7 +382,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
               purchaseOrder.getCurrency(),
               price,
               purchaseOrder.getOrderDate())
-          .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+          .setScale(scale, RoundingMode.HALF_UP);
 
     } catch (Exception e) {
       return BigDecimal.ZERO;
@@ -426,12 +412,6 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
   }
 
   @Override
-  public BigDecimal computePurchaseOrderLine(PurchaseOrderLine purchaseOrderLine) {
-
-    return purchaseOrderLine.getExTaxTotal();
-  }
-
-  @Override
   public BigDecimal getCompanyExTaxTotal(BigDecimal exTaxTotal, PurchaseOrder purchaseOrder)
       throws AxelorException {
 
@@ -441,7 +421,8 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
             purchaseOrder.getCompany().getCurrency(),
             exTaxTotal,
             purchaseOrder.getOrderDate())
-        .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+        .setScale(
+            currencyService.computeScaleForView(purchaseOrder.getCurrency()), RoundingMode.HALF_UP);
   }
 
   @Override
@@ -453,12 +434,16 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
   }
 
   @Override
-  public BigDecimal computeDiscount(PurchaseOrderLine purchaseOrderLine, Boolean inAti) {
+  public BigDecimal computeDiscount(
+      PurchaseOrderLine purchaseOrderLine, Boolean inAti, Currency currency) {
 
     BigDecimal price = inAti ? purchaseOrderLine.getInTaxPrice() : purchaseOrderLine.getPrice();
 
     return priceListService.computeDiscount(
-        price, purchaseOrderLine.getDiscountTypeSelect(), purchaseOrderLine.getDiscountAmount());
+        price,
+        purchaseOrderLine.getDiscountTypeSelect(),
+        purchaseOrderLine.getDiscountAmount(),
+        currency.getNumberOfDecimals());
   }
 
   @Override
@@ -548,7 +533,9 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 
     if (priceList != null) {
       PriceListLine priceListLine = this.getPriceListLine(purchaseOrderLine, priceList, price);
-      discounts = priceListService.getReplacedPriceAndDiscounts(priceList, priceListLine, price);
+      discounts =
+          priceListService.getReplacedPriceAndDiscounts(
+              priceList, priceListLine, price, purchaseOrder.getCurrency().getNumberOfDecimals());
     }
 
     return discounts;

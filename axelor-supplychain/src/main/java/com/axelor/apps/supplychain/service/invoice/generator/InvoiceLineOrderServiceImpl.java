@@ -52,7 +52,7 @@ public class InvoiceLineOrderServiceImpl implements InvoiceLineOrderService {
       OrderLineTax orderLineTax) {
 
     TaxLine taxLine = orderLineTax.getTaxLine();
-    int scale = appBaseService.getNbDecimalDigitForUnitPrice();
+    int scale = invoice.getCurrency().getNumberOfDecimals();
 
     BigDecimal price =
         percentToInvoice
