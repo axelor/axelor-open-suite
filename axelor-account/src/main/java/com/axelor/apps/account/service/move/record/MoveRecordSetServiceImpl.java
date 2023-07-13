@@ -68,7 +68,7 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
   }
 
   @Override
-  public void setPeriod(Move move) {
+  public void setPeriod(Move move, boolean disableException) throws AxelorException {
     try {
       if (move.getDate() != null && move.getCompany() != null) {
         move.setPeriod(
@@ -76,7 +76,11 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
                 move.getDate(), move.getCompany(), YearRepository.TYPE_FISCAL));
       }
     } catch (AxelorException axelorException) {
-      move.setPeriod(null);
+      if (disableException) {
+        move.setPeriod(null);
+      } else {
+        throw axelorException;
+      }
     }
   }
 

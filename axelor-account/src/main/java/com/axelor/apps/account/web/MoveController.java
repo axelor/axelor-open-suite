@@ -435,7 +435,8 @@ public class MoveController {
       boolean paymentConditionChange =
           this.getChangeDummyBoolean(context, "paymentConditionChange");
 
-      response.setValues(moveGroupService.getDateOnChangeValuesMap(move, paymentConditionChange));
+      response.setValues(
+          moveGroupService.getDateOnChangeValuesMap(move, paymentConditionChange, false));
       response.setAttrs(moveGroupService.getDateOnChangeAttrsMap(move, paymentConditionChange));
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
