@@ -61,8 +61,8 @@ public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetServic
 
   @Override
   @Transactional
-  public String computeBudgetDistribution(SaleOrderLine saleOrderLine) {
-    if (saleOrderLine == null || saleOrderLine.getSaleOrder() == null) {
+  public String computeBudgetDistribution(SaleOrder saleOrder, SaleOrderLine saleOrderLine) {
+    if (saleOrder == null || saleOrderLine == null) {
       return "";
     }
     saleOrderLine.clearBudgetDistributionList();
@@ -71,10 +71,10 @@ public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetServic
         budgetDistributionService.createBudgetDistribution(
             saleOrderLine.getAnalyticMoveLineList(),
             saleOrderLine.getAccount(),
-            saleOrderLine.getSaleOrder().getCompany(),
-            saleOrderLine.getSaleOrder().getOrderDate() != null
-                ? saleOrderLine.getSaleOrder().getOrderDate()
-                : saleOrderLine.getSaleOrder().getCreationDate(),
+            saleOrder.getCompany(),
+            saleOrder.getOrderDate() != null
+                ? saleOrder.getOrderDate()
+                : saleOrder.getCreationDate(),
             saleOrderLine.getCompanyExTaxTotal(),
             saleOrderLine.getFullName(),
             saleOrderLine);
