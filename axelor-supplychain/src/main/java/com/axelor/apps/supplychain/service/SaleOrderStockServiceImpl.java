@@ -157,16 +157,28 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
   protected Optional<StockMove> createStockMove(
       SaleOrder saleOrder, LocalDate estimatedDeliveryDate, List<SaleOrderLine> saleOrderLineList)
       throws AxelorException {
-
-    StockMove stockMove =
-        this.createStockMove(saleOrder, saleOrder.getCompany(), estimatedDeliveryDate);
+    Company company = saleOrder.getCompany();
+    StockMove stockMove = this.createStockMove(saleOrder, company, estimatedDeliveryDate);
     stockMove.setDeliveryCondition(saleOrder.getDeliveryCondition());
+
+    StockLocation toStockLocation = saleOrder.getToStockLocation();
+    if (toStockLocation == null) {
+      toStockLocation =
+          partnerStockSettingsService.getDefaultExternalStockLocation(
+              saleOrder.getClientPartner(), company, null);
+    }
+    if (toStockLocation == null) {
+      toStockLocation =
+          stockConfigService.getCustomerVirtualStockLocation(
+              stockConfigService.getStockConfig(company));
+    }
 
     for (SaleOrderLine saleOrderLine : saleOrderLineList) {
       if (saleOrderLine.getProduct() != null) {
         BigDecimal qty = saleOrderLineServiceSupplyChain.computeUndeliveredQty(saleOrderLine);
         if (qty.signum() > 0 && !existActiveStockMoveForSaleOrderLine(saleOrderLine)) {
-          createStockMoveLine(stockMove, saleOrderLine, qty);
+          createStockMoveLine(
+              stockMove, saleOrderLine, qty, saleOrder.getStockLocation(), toStockLocation);
         }
       }
     }
@@ -299,8 +311,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
             StockMoveRepository.TYPE_OUTGOING);
 
     stockMove.setToAddressStr(saleOrder.getDeliveryAddressStr());
-    stockMove.setOriginId(saleOrder.getId());
-    stockMove.setOriginTypeSelect(StockMoveRepository.ORIGIN_SALE_ORDER);
+    stockMove.setSaleOrder(saleOrder);
     stockMove.setOrigin(saleOrder.getSaleOrderSeq());
     stockMove.setStockMoveLineList(new ArrayList<>());
     stockMove.setTradingName(saleOrder.getTradingName());
@@ -379,17 +390,28 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
   }
 
   @Override
-  public StockMoveLine createStockMoveLine(StockMove stockMove, SaleOrderLine saleOrderLine)
+  public StockMoveLine createStockMoveLine(
+      StockMove stockMove,
+      SaleOrderLine saleOrderLine,
+      StockLocation fromStockLocation,
+      StockLocation toStockLocation)
       throws AxelorException {
     return createStockMoveLine(
         stockMove,
         saleOrderLine,
-        saleOrderLineServiceSupplyChain.computeUndeliveredQty(saleOrderLine));
+        saleOrderLineServiceSupplyChain.computeUndeliveredQty(saleOrderLine),
+        fromStockLocation,
+        toStockLocation);
   }
 
   @Override
   public StockMoveLine createStockMoveLine(
-      StockMove stockMove, SaleOrderLine saleOrderLine, BigDecimal qty) throws AxelorException {
+      StockMove stockMove,
+      SaleOrderLine saleOrderLine,
+      BigDecimal qty,
+      StockLocation fromStockLocation,
+      StockLocation toStockLocation)
+      throws AxelorException {
 
     if (this.isStockMoveProduct(saleOrderLine)) {
 
@@ -457,7 +479,9 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
               saleOrderLine.getSaleOrder().getInAti(),
               taxRate,
               saleOrderLine,
-              null);
+              null,
+              fromStockLocation,
+              toStockLocation);
 
       if (saleOrderLine.getDeliveryState() == 0) {
         saleOrderLine.setDeliveryState(SaleOrderLineRepository.DELIVERY_STATE_NOT_DELIVERED);
@@ -549,16 +573,6 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
       }
     }
     return deliveryState;
-  }
-
-  @Override
-  public Optional<SaleOrder> findSaleOrder(StockMove stockMove) {
-    if (StockMoveRepository.ORIGIN_SALE_ORDER.equals(stockMove.getOriginTypeSelect())
-        && stockMove.getOriginId() != null) {
-      return Optional.ofNullable(saleOrderRepository.find(stockMove.getOriginId()));
-    } else {
-      return Optional.empty();
-    }
   }
 
   /**

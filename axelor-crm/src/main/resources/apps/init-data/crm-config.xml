@@ -14,8 +14,13 @@
   <input file="crm_leadStatus.csv" separator=";" type="com.axelor.apps.crm.db.LeadStatus"
     search="self.importId = :importId"/>
 
+
   <input file="crm_opportunityStatus.csv" separator=";"
     type="com.axelor.apps.crm.db.OpportunityStatus" search="self.importId = :importId"/>
+
+
+  <input file="crm_partnerStatus.csv" separator=";"
+    type="com.axelor.apps.crm.db.PartnerStatus" search="self.importId = :importId"/>
 
   <input file="studio_appCrm.csv" separator=";" type="com.axelor.studio.db.AppCrm"
     search="self.app.code = :code">
@@ -30,6 +35,16 @@
       search="self.importId = :convertedLeadStatus_importId"/>
     <bind to="lostLeadStatus" column="lostLeadStatus_importId"
       search="self.importId = :lostLeadStatus_importId"/>
+    <bind to="closedWinPartnerStatus" column="closedWinPartnerStatus_importId"
+      search="self.importId = :closedWinPartnerStatus_importId"/>
+    <bind to="closedLostPartnerStatus" column="closedLostPartnerStatus_importId"
+      search="self.importId = :closedLostPartnerStatus_importId"/>
+    <bind to="leadDefaultStatus" column="leadDefaultStatus_importId"
+      search="self.importId = :leadDefaultStatus_importId"/>
+    <bind to="opportunityDefaultStatus" column="opportunityDefaultStatus_importId"
+      search="self.importId = :opportunityDefaultStatus_importId"/>
+    <bind to="partnerDefaultStatus" column="partnerDefaultStatus_importId"
+      search="self.importId = :partnerDefaultStatus_importId"/>
   </input>
 
 </csv-inputs>

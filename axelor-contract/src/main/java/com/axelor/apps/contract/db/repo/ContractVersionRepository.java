@@ -61,7 +61,10 @@ public class ContractVersionRepository extends AbstractContractVersionRepository
     ContractLineRepository repository = Beans.get(ContractLineRepository.class);
     List<ContractLine> lines =
         ModelTool.copy(repository, currentVersion.getContractLineList(), false);
-    newVersion.setContractLineList(lines);
+
+    for (ContractLine line : lines) {
+      newVersion.addContractLineListItem(line);
+    }
 
     newVersion.setIsTimeProratedInvoice(currentVersion.getIsTimeProratedInvoice());
     newVersion.setIsVersionProratedInvoice(currentVersion.getIsVersionProratedInvoice());

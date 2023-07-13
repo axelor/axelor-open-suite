@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<csv-inputs xmlns="http://axelor.com/xml/ns/data-import"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_6.1.xsd">
+
+  <input file="meta_metaMenu.csv" separator=";" type="com.axelor.meta.db.MetaMenu"
+    search="self.name = :name" update="true"/>
+
+  <input file="budget_advanced_export.csv" search="self.importId = :importId"
+    type="com.axelor.apps.base.db.AdvancedExport" separator=";">
+  </input>
+
+  <input file="budget_advanced_export_line.csv" search="self.importId = :importId"
+    type="com.axelor.apps.base.db.AdvancedExportLine" separator=";">
+  </input>
+</csv-inputs>

@@ -521,4 +521,60 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
 
     return productIds;
   }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public BillOfMaterial setDraftStatus(BillOfMaterial billOfMaterial) throws AxelorException {
+    if (billOfMaterial.getStatusSelect() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(ProductionExceptionMessage.BILL_OF_MATERIAL_NULL_STATUS));
+    } else if (billOfMaterial.getStatusSelect() != null
+        && billOfMaterial.getStatusSelect() == BillOfMaterialRepository.STATUS_DRAFT) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(ProductionExceptionMessage.BILL_OF_MATERIAL_ALREADY_DRAFT_STATUS));
+    }
+    billOfMaterial.setStatusSelect(BillOfMaterialRepository.STATUS_DRAFT);
+    return billOfMaterialRepo.save(billOfMaterial);
+  }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public BillOfMaterial setValidateStatus(BillOfMaterial billOfMaterial) throws AxelorException {
+    if (billOfMaterial.getStatusSelect() == null
+        || billOfMaterial.getStatusSelect() != BillOfMaterialRepository.STATUS_DRAFT) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(ProductionExceptionMessage.BILL_OF_MATERIAL_VALIDATED_WRONG_STATUS));
+    }
+    billOfMaterial.setStatusSelect(BillOfMaterialRepository.STATUS_VALIDATED);
+    return billOfMaterialRepo.save(billOfMaterial);
+  }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public BillOfMaterial setApplicableStatus(BillOfMaterial billOfMaterial) throws AxelorException {
+    if (billOfMaterial.getStatusSelect() == null
+        || billOfMaterial.getStatusSelect() != BillOfMaterialRepository.STATUS_VALIDATED) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(ProductionExceptionMessage.BILL_OF_MATERIAL_APPLICABLE_WRONG_STATUS));
+    }
+    billOfMaterial.setStatusSelect(BillOfMaterialRepository.STATUS_APPLICABLE);
+    return billOfMaterialRepo.save(billOfMaterial);
+  }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public BillOfMaterial setObsoleteStatus(BillOfMaterial billOfMaterial) throws AxelorException {
+    if (billOfMaterial.getStatusSelect() == null
+        || billOfMaterial.getStatusSelect() != BillOfMaterialRepository.STATUS_APPLICABLE) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(ProductionExceptionMessage.BILL_OF_MATERIAL_OBSOLETE_WRONG_STATUS));
+    }
+    billOfMaterial.setStatusSelect(BillOfMaterialRepository.STATUS_OBSOLETE);
+    return billOfMaterialRepo.save(billOfMaterial);
+  }
 }

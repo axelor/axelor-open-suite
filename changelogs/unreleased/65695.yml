@@ -1,6 +1,0 @@
----
-title: "Business project: Automatic project can be enabled only if project generation/selection for order is enabled"
-type: fix
-description: |
-  The helper for the project generation/selection for order has been changed. To update it, a script must be executed:
-  "DELETE FROM meta_help WHERE field_name = 'generateProjectOrder';"
