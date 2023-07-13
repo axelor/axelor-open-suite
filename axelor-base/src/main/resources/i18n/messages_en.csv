@@ -2093,6 +2093,7 @@
 "Uploaded file must have the same format as the selected type.",,,
 "Uppercase / lowercase",,,
 "Url",,,
+"Use OSRM (https://router.project-osrm.org/route/v1/driving) Open source routing APIs to get routing information based upon a given start/end location.",,,
 "Use QAS Validation",,,
 "Use fake data",,,
 "Use for stock only",,,

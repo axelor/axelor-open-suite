@@ -85,7 +85,7 @@
       <field name="code" required="true" colSpan="2"/>
       <field name="name" required="true" colSpan="4"/>
       <field name="budgetLevel" readonlyIf="$popup()" colSpan="3" requiredIf="!$popup()"
-        onChange="action-budget-attrs-set-in-charge-user,budget-action-method-budget-manage-budget-key"
+        onChange="action-budget-record-set-default-values-budget-level,budget-action-method-budget-manage-budget-key"
         domain="self.parentBudgetLevel.parentBudgetLevel != null"/>
       <field name="budgetLevel.parentBudgetLevel.parentBudgetLevel" title="Global budget"
         colSpan="3" grid-view="budget-level-grid" form-view="budget-level-form"/>
@@ -170,13 +170,12 @@
     <panel name="overViewPanel" title="Overview" canCollapse="true" colSpan="12"
       collapseIf="!$popup()">
       <panel name="mainPanel" readonlyIf="statusSelect != 1" colSpan="9">
-        <field name="rootParentBudgetLevel" colSpan="12" hidden="true"/>
         <field name="typeSelect" colSpan="12" hidden="true"/>
         <field name="code" required="true" colSpan="2"
           onChange="budget-action-method-budget-manage-budget-key"/>
         <field name="name" required="true" colSpan="4"/>
         <field name="budgetLevel"
-          onChange="action-budget-attrs-set-in-charge-user,budget-action-method-budget-manage-budget-key"
+          onChange="action-budget-record-set-default-values-budget-level,budget-action-method-budget-manage-budget-key"
           readonlyIf="$popup()" requiredIf="!$popup()" colSpan="3"
           domain="self.parentBudgetLevel.parentBudgetLevel != null AND self.parentBudgetLevel.parentBudgetLevel.id = :globalId"/>
         <field name="budgetLevel.parentBudgetLevel.parentBudgetLevel" title="Global budget"
@@ -276,7 +275,6 @@
       </menu>
     </menubar>
     <panel name="mainPanel">
-      <field name="rootParentBudgetLevel" colSpan="12" hidden="true"/>
       <field name="typeSelect" colSpan="12" hidden="true"/>
       <field name="code" required="true" colSpan="2"/>
       <field name="name" required="true" colSpan="4"/>
@@ -333,14 +331,6 @@
 
   <action-attrs name="budget-action-budget-attrs-set-attrs">
     <attribute name="domain" for="budgetLevel" expr="eval: _domain"/>
-    <attribute for="rootParentBudgetLevel" expr="eval:_globalCode" name="value"
-      if="rootParentBudgetLevel == null"/>
-    <attribute if="fromDate == null" name="value"
-      expr="eval:_fromDate != null ? _fromDate : _parent?.fromDate != null ? _parent?.fromDate : fromDate"
-      for="fromDate"/>
-    <attribute if="toDate == null" name="value"
-      expr="eval:_toDate != null ? _toDate : _parent?.toDate != null ? _parent?.toDate : toDate"
-      for="toDate"/>
     <attribute name="hidden" for="accountSet"
       expr="eval: !(typeSelect == com.axelor.apps.budget.db.repo.BudgetRepository.BUDGET_TYPE_SELECT_BUDGET)"/>
     <attribute name="hidden" for="accountModelSet"
@@ -350,6 +340,16 @@
       if="budgetLevel?.parentBudgetLevel?.parentBudgetLevel?.budgetTypeSelect == 2"/>
     <attribute for="code" name="focus" expr="true"/>
   </action-attrs>
+
+  <action-record name="action-budget-record-set-default-values-budget-level"
+    model="com.axelor.apps.budget.db.Budget">
+    <field name="fromDate"
+      expr="eval: _fromDate ? _fromDate : __parent__?.fromDate != null ? __parent__?.fromDate : fromDate"/>
+    <field name="toDate"
+      expr="eval: _toDate ? _toDate : __parent__?.toDate != null ? __parent__?.toDate : toDate"/>
+    <field name="inChargeUser"
+      expr="eval: budgetLevel?.parentBudgetLevel?.parentBudgetLevel?.budgetManager"/>
+  </action-record>
 
   <action-record name="action-budget-record-on-new"
     model="com.axelor.apps.budget.db.Budget">
@@ -392,11 +392,6 @@
     <view type="form" name="budget-included-template-form"/>
     <context name="_showRecord" expr="eval: id"/>
   </action-view>
-
-  <action-attrs name="action-budget-attrs-set-in-charge-user">
-    <attribute name="value" for="inChargeUser"
-      expr="eval: budgetLevel?.parentBudgetLevel?.parentBudgetLevel?.budgetManager"/>
-  </action-attrs>
 
   <action-method name="action-budget-budget-method-generate-periods">
     <call class="com.axelor.apps.budget.web.BudgetController" method="generatePeriods"/>

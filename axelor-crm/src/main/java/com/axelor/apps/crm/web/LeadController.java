@@ -20,6 +20,7 @@ package com.axelor.apps.crm.web;
 
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.crm.db.Lead;
@@ -220,6 +221,31 @@ public class LeadController {
                 .map());
       }
 
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void kanbanLeadOnMove(ActionRequest request, ActionResponse response) {
+    Lead lead = request.getContext().asType(Lead.class);
+    try {
+      Beans.get(LeadService.class).kanbanLeadOnMove(lead);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void rollbackLeadStatus(ActionRequest request, ActionResponse response) {
+    Lead lead = request.getContext().asType(Lead.class);
+    lead = Beans.get(LeadRepository.class).find(lead.getId());
+
+    response.setValue("leadStatus", lead.getLeadStatus());
+  }
+
+  public void computeIsLost(ActionRequest request, ActionResponse response) {
+    try {
+      Lead lead = request.getContext().asType(Lead.class);
+      response.setValue("$isLost", Beans.get(LeadService.class).computeIsLost(lead));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
