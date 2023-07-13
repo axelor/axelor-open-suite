@@ -1,0 +1,5 @@
+---
+title: "MOVELINE/INVOICELINE/ANALYTIC DISTRIBUTION TEMPLATE : manage analytic by partner in moveline"
+type: fix
+description:
+  Now also take partner to get an analytic distribution, depending on the account configuration distribution select type.

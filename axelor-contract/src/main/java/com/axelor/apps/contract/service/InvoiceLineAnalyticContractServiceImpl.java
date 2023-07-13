@@ -21,6 +21,7 @@ package com.axelor.apps.contract.service;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
+import com.axelor.apps.account.service.analytic.AnalyticDistributionTemplateService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -40,14 +41,16 @@ public class InvoiceLineAnalyticContractServiceImpl
       AnalyticToolService analyticToolService,
       AccountConfigService accountConfigService,
       ListToolService listToolService,
-      AppAccountService appAccountService) {
+      AppAccountService appAccountService,
+      AnalyticDistributionTemplateService analyticDistributionTemplateService) {
     super(
         analyticAccountRepository,
         analyticMoveLineService,
         analyticToolService,
         accountConfigService,
         listToolService,
-        appAccountService);
+        appAccountService,
+        analyticDistributionTemplateService);
   }
 
   @Override

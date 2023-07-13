@@ -18,9 +18,12 @@
  */
 package com.axelor.apps.account.service.analytic;
 
+import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.TradingName;
 
 public interface AnalyticDistributionTemplateService {
 
@@ -42,4 +45,7 @@ public interface AnalyticDistributionTemplateService {
 
   void verifyTemplateValues(AnalyticDistributionTemplate analyticDistributionTemplate)
       throws AxelorException;
+
+  AnalyticDistributionTemplate getDistributionTemplate(
+      Account account, TradingName tradingName, Partner partner) throws AxelorException;
 }

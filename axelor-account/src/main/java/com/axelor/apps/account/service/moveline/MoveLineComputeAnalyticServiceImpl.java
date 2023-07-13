@@ -18,21 +18,18 @@
  */
 package com.axelor.apps.account.service.moveline;
 
-import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
+import com.axelor.apps.account.service.analytic.AnalyticDistributionTemplateService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.TradingName;
 import com.axelor.utils.service.ListToolService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
@@ -50,6 +47,7 @@ public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyt
   protected ListToolService listToolService;
   protected AnalyticToolService analyticToolService;
   protected AppAccountService appAccountService;
+  protected AnalyticDistributionTemplateService analyticDistributionTemplateService;
   private final int RETURN_SCALE = 2;
 
   @Inject
@@ -59,13 +57,15 @@ public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyt
       AnalyticAccountRepository analyticAccountRepository,
       ListToolService listToolService,
       AnalyticToolService analyticToolService,
-      AppAccountService appAccountService) {
+      AppAccountService appAccountService,
+      AnalyticDistributionTemplateService analyticDistributionTemplateService) {
     this.analyticMoveLineService = analyticMoveLineService;
     this.accountConfigService = accountConfigService;
     this.analyticAccountRepository = analyticAccountRepository;
     this.listToolService = listToolService;
     this.analyticToolService = analyticToolService;
     this.appAccountService = appAccountService;
+    this.analyticDistributionTemplateService = analyticDistributionTemplateService;
   }
 
   @Override
@@ -159,7 +159,8 @@ public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyt
       throws AxelorException {
     if (moveLine != null) {
       moveLine.setAnalyticDistributionTemplate(
-          getDistributionTemplate(moveLine.getAccount(), move.getTradingName()));
+          analyticDistributionTemplateService.getDistributionTemplate(
+              moveLine.getAccount(), move.getTradingName(), move.getPartner()));
     }
     List<AnalyticMoveLine> analyticMoveLineList = moveLine.getAnalyticMoveLineList();
     if (analyticMoveLineList != null) {
@@ -169,31 +170,6 @@ public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyt
     }
     moveLine = computeAnalyticDistribution(moveLine);
     return moveLine;
-  }
-
-  protected AnalyticDistributionTemplate getDistributionTemplate(
-      Account account, TradingName tradingName) throws AxelorException {
-    AnalyticDistributionTemplate analyticDistributionTemplate = null;
-    if (account == null || !account.getAnalyticDistributionAuthorized()) {
-      return null;
-    }
-
-    if (account.getAnalyticDistributionTemplate() != null
-        && accountConfigService
-                .getAccountConfig(account.getCompany())
-                .getAnalyticDistributionTypeSelect()
-            == AccountConfigRepository.DISTRIBUTION_TYPE_PRODUCT) {
-      analyticDistributionTemplate = account.getAnalyticDistributionTemplate();
-    } else if (tradingName != null
-        && tradingName.getAnalyticDistributionTemplate() != null
-        && accountConfigService
-                .getAccountConfig(account.getCompany())
-                .getAnalyticDistributionTypeSelect()
-            == AccountConfigRepository.DISTRIBUTION_TYPE_TRADING_NAME) {
-      analyticDistributionTemplate = tradingName.getAnalyticDistributionTemplate();
-    }
-
-    return analyticDistributionTemplate;
   }
 
   @Override

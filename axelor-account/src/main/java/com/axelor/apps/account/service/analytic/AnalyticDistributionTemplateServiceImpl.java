@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.account.service.analytic;
 
+import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticAxis;
@@ -25,11 +26,14 @@ import com.axelor.apps.account.db.AnalyticAxisByCompany;
 import com.axelor.apps.account.db.AnalyticDistributionLine;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticJournal;
+import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AnalyticDistributionTemplateRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
@@ -336,5 +340,30 @@ public class AnalyticDistributionTemplateServiceImpl
         }
       }
     }
+  }
+
+  @Override
+  public AnalyticDistributionTemplate getDistributionTemplate(
+      Account account, TradingName tradingName, Partner partner) throws AxelorException {
+    if (account == null || !account.getAnalyticDistributionAuthorized()) {
+      return null;
+    }
+
+    Integer analyticDistributionTypeSelect =
+        accountConfigService
+            .getAccountConfig(account.getCompany())
+            .getAnalyticDistributionTypeSelect();
+
+    if (analyticDistributionTypeSelect == AccountConfigRepository.DISTRIBUTION_TYPE_PRODUCT) {
+      return account.getAnalyticDistributionTemplate();
+    } else if (tradingName != null
+        && analyticDistributionTypeSelect
+            == AccountConfigRepository.DISTRIBUTION_TYPE_TRADING_NAME) {
+      return tradingName.getAnalyticDistributionTemplate();
+    } else if (partner != null
+        && analyticDistributionTypeSelect == AccountConfigRepository.DISTRIBUTION_TYPE_PARTNER) {
+      return partner.getAnalyticDistributionTemplate();
+    }
+    return null;
   }
 }

@@ -26,6 +26,7 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
+import com.axelor.apps.account.service.analytic.AnalyticDistributionTemplateService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -50,6 +51,7 @@ public class InvoiceLineAnalyticServiceImpl implements InvoiceLineAnalyticServic
   protected AccountConfigService accountConfigService;
   protected ListToolService listToolService;
   protected AppAccountService appAccountService;
+  public AnalyticDistributionTemplateService analyticDistributionTemplateService;
 
   @Inject
   public InvoiceLineAnalyticServiceImpl(
@@ -58,13 +60,15 @@ public class InvoiceLineAnalyticServiceImpl implements InvoiceLineAnalyticServic
       AnalyticToolService analyticToolService,
       AccountConfigService accountConfigService,
       ListToolService listToolService,
-      AppAccountService appAccountService) {
+      AppAccountService appAccountService,
+      AnalyticDistributionTemplateService analyticDistributionTemplateService) {
     this.analyticAccountRepository = analyticAccountRepository;
     this.analyticMoveLineService = analyticMoveLineService;
     this.analyticToolService = analyticToolService;
     this.accountConfigService = accountConfigService;
     this.listToolService = listToolService;
     this.appAccountService = appAccountService;
+    this.analyticDistributionTemplateService = analyticDistributionTemplateService;
   }
 
   @Override
@@ -138,23 +142,11 @@ public class InvoiceLineAnalyticServiceImpl implements InvoiceLineAnalyticServic
   @Override
   public InvoiceLine selectDefaultDistributionTemplate(InvoiceLine invoiceLine)
       throws AxelorException {
-
     if (invoiceLine != null) {
-      if (invoiceLine.getAccount() != null
-          && invoiceLine.getAccount().getAnalyticDistributionAuthorized()
-          && invoiceLine.getAccount().getAnalyticDistributionTemplate() != null
-          && accountConfigService
-                  .getAccountConfig(invoiceLine.getAccount().getCompany())
-                  .getAnalyticDistributionTypeSelect()
-              == AccountConfigRepository.DISTRIBUTION_TYPE_PRODUCT) {
-
-        invoiceLine.setAnalyticDistributionTemplate(
-            invoiceLine.getAccount().getAnalyticDistributionTemplate());
-      } else {
-        invoiceLine.setAnalyticDistributionTemplate(null);
-      }
-    } else {
-      invoiceLine.setAnalyticDistributionTemplate(null);
+      analyticDistributionTemplateService.getDistributionTemplate(
+          invoiceLine.getAccount(),
+          invoiceLine.getInvoice().getTradingName(),
+          invoiceLine.getInvoice().getPartner());
     }
     return invoiceLine;
   }
