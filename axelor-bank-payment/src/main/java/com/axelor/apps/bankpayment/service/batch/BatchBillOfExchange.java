@@ -187,8 +187,6 @@ public class BatchBillOfExchange extends AbstractBatch {
     reconcilesMoves(move, invoice.getMove(), invoice);
     replaceInvoiceTerms(invoice, move, newInvoiceTermList, invoiceTermListToRemove);
     updateInvoice(invoice, move, accountConfig);
-
-    System.err.println("YOUHOU");
   }
 
   /**
