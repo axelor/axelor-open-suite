@@ -50,7 +50,7 @@
     </panel>
     <panel name="planningAndPerformancesPanel" title="Planning and performances"
       canCollapse="true">
-      <field name="weeklyPlanning" canNew="true"/>
+      <field name="weeklyPlanning" canNew="true" domain="self.typeSelect = 2"/>
       <field name="publicHolidayEventsPlanning" canEdit="false"
         form-view="events-planning-form" grid-view="events-planning-grid"/>
 
