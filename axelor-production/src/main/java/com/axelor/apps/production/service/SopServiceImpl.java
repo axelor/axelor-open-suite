@@ -81,11 +81,17 @@ public class SopServiceImpl implements SopService {
   @Override
   public void generateSOPLines(Sop sop) throws AxelorException {
     today = appBaseService.getTodayDate(sop.getCompany());
+
+    List<Year> years = new ArrayList<>();
+    years.add(sop.getYear());
+    if (sop.getIsForecastOnHistoric() && sop.getYearbasedHistoric() != null) {
+      years.add(sop.getYearbasedHistoric());
+    }
     List<Period> yearPeriods =
         periodRepo
             .all()
-            .filter("self.year = :year AND self.statusSelect = :status")
-            .bind("year", sop.getYear())
+            .filter("self.year IN (:years) AND self.statusSelect = :status")
+            .bind("years", years)
             .bind("status", PeriodRepository.STATUS_OPENED)
             .fetch();
     List<SopLine> sopLineList = new ArrayList<SopLine>();
