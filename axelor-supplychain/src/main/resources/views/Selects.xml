@@ -6,11 +6,6 @@
 
   <!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
 
-  <selection name="supplychain.batch.action.select">
-    <option value="3">Invoice orders</option>
-    <option value="4">Update stock history</option>
-  </selection>
-
   <selection name="supplychain.batch.invoice.stock.moves.action.select">
     <option value="2">Invoice outgoing stock moves</option>
     <option value="3">Invoice orders</option>
