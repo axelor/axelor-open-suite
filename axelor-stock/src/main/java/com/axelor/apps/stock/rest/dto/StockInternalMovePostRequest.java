@@ -42,30 +42,6 @@ public class StockInternalMovePostRequest extends RequestPostStructure {
 
   private List<StockInternalMoveStockMoveLinePostRequest> lineList;
 
-  public Long getProductId() {
-    return productId;
-  }
-
-  public void setProductId(Long productId) {
-    this.productId = productId;
-  }
-
-  public Long getOriginStockLocationId() {
-    return originStockLocationId;
-  }
-
-  public void setOriginStockLocationId(Long originStockLocationId) {
-    this.originStockLocationId = originStockLocationId;
-  }
-
-  public Long getDestStockLocationId() {
-    return destStockLocationId;
-  }
-
-  public void setDestStockLocationId(Long destStockLocationId) {
-    this.destStockLocationId = destStockLocationId;
-  }
-
   public Long getCompanyId() {
     return companyId;
   }
