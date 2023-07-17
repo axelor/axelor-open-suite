@@ -24,21 +24,26 @@ public class AnalyticLineModel implements AnalyticLine {
   protected AnalyticDistributionTemplate analyticDistributionTemplate;
 
   protected Product product;
+  protected Account account;
+  protected Company company;
+  protected TradingName tradingName;
+  protected Partner partner;
 
   protected boolean isPurchase;
   protected BigDecimal exTaxTotal;
   protected BigDecimal companyExTaxTotal;
+  protected BigDecimal lineAmount;
 
   public AnalyticLineModel() {}
 
   @Override
   public BigDecimal getLineAmount() {
-    return null;
+    return this.lineAmount;
   }
 
   @Override
   public Account getAccount() {
-    return null;
+    return this.account;
   }
 
   @Override
@@ -139,15 +144,15 @@ public class AnalyticLineModel implements AnalyticLine {
   }
 
   public TradingName getTradingName() {
-    return null;
+    return this.tradingName;
   }
 
   public Company getCompany() {
-    return null;
+    return this.company;
   }
 
   public Partner getPartner() {
-    return null;
+    return this.partner;
   }
 
   public void copyToModel() {}
