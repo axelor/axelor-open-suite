@@ -1593,4 +1593,7 @@ public final class AccountExceptionMessage {
 
   public static final String FIXED_ASSET_MASS_VALIDATION_EXCEPTION = /*$$(*/
       "The following error occurred during the validation of fixed asset %d : %s." /*)*/;
+
+  public static final String PAYMENT_CONDITION_LINKED_OBJECTS = /*$$(*/
+      "Changes will be applied on next records." /*)*/;
 }
