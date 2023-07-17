@@ -20,6 +20,7 @@
     <datetime name="reconciliationDateTime" title="Reconciliation date" readonly="true"/>
     <datetime name="reconciliationCancelDateTime" title="Reconciliation cancel date"
       readonly="true"/>
+    <date name="effectiveDate" title="Effective date" readonly="true"/>
     <!-- Will be fully reconciled if the payment amount is with a range of +/-20 cts compare to the amount
       remaining to pay -->
     <boolean name="canBeZeroBalanceOk" title="Clear remaining amount" default="false"

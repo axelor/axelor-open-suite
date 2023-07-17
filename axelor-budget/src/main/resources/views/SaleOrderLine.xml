@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid id="budget-sale-order-line-grid" model="com.axelor.apps.sale.db.SaleOrderLine"
+    title="SO lines" name="sale-order-line-grid" extension="true">
+    <extend target="//field[@name='estimatedDeliveryDate']">
+      <insert position="after">
+        <field name="budgetStr" if="__config__.app.isApp('budget')"/>
+      </insert>
+    </extend>
+  </grid>
+
+  <form id="budget-sale-order-line-form" name="sale-order-line-form" title="SO line"
+    model="com.axelor.apps.sale.db.SaleOrderLine" extension="true">
+
+    <extend target="/">
+      <attribute name="onNew" value="action-budget-group-sale-saleorderline-onnew"/>
+      <attribute name="onLoad" value="action-budget-sale-order-line-group-onload"/>
+
+    </extend>
+
+    <extend target="//field[@name='product']">
+      <attribute name="onChange"
+        value="action-budget-group-sale-sale-orderline-product-onchange"/>
+    </extend>
+
+    <extend target="//panel[@name='analyticDistributionPanel']">
+
+      <insert position="after">
+        <panel if="__config__.app.isApp('budget')" if-module="axelor-supplychain"
+          name="budgetDistributionPanel" title="Budget" showIf="product" colSpan="12">
+          <field if="__config__.app.getApp('budget')?.getManageMultiBudget()"
+            name="companyExTaxTotal" title="Total W.T." hidden="false" readonly="true" colSpan="6">
+            <viewer depends="companyExTaxTotal,$currencySymbol"><![CDATA[
+
+				<dd>{{$fmt('companyExTaxTotal') | currency: record.$currencySymbol}}</dd>
+
+	      ]]></viewer>
+          </field>
+          <field if="__config__.app.getApp('budget')?.getManageMultiBudget()"
+            name="budgetDistributionSumAmount" readonly="true" colSpan="6"/>
+          <field name="groupBudget" title="Group" colSpan="4"
+            onSelect="action-budget-sale-order-line-method-group-domain"
+            form-view="budget-group-budget-level-form" grid-view="budget-level-included-grid"/>
+          <field name="section" title="Section" colSpan="4"
+            onSelect="action-budget-sale-order-line-method-section-domain"
+            form-view="budget-section-budget-level-form" grid-view="budget-level-node-grid"/>
+          <field name="line" title="Line" colSpan="4"
+            onSelect="action-budget-sale-order-line-method-line-domain" form-view="budget-line-form"
+            grid-view="budget-line-grid"/>
+          <field if="!__config__.app.getApp('budget')?.getManageMultiBudget()" name="budget"
+            onChange="action-budget-sale-order-line-method-set-account,action-budget-sale-order-line-method-fill-budget-str"
+            onSelect="action-budget-sale-order-line-method-budget-domain"/>
+          <panel name="accountPanel" colSpan="12">
+            <field name="account" onSelect="action-budget-sale-order-line-set-account-domain"
+              onChange="action-sale-order-line-attrs-hidden-analytic-distribution-panel"/>
+          </panel>
+          <panel-related if="__config__.app.getApp('budget')?.getManageMultiBudget()"
+            name="budgetDistributionListPanel" colSpan="12" field="budgetDistributionList"
+            form-view="sale-order-budget-distribution-form"
+            grid-view="reduce-budget-distribution-grid" editable="true"
+            onChange="action-group-budget-sale-order-line-budget-distribution-onchange"/>
+          <field name="$currencySymbol" hidden="true"/>
+        </panel>
+      </insert>
+    </extend>
+  </form>
+
+  <action-group name="action-budget-group-sale-saleorderline-onnew">
+    <action name="action-supplychain-group-sale-saleorderline-onnew"/>
+    <action name="action-method-sale-order-line-budget-check-budget-key-roles"
+      if="__config__.app.isApp('budget')"/>
+  </action-group>
+
+  <action-group name="action-budget-sale-order-line-group-onload">
+    <action name="action-sale-order-line-supplychain-group-onload"/>
+    <action name="action-method-sale-order-line-budget-check-budget-key-roles"
+      if="__config__.app.isApp('budget')"/>
+  </action-group>
+
+  <action-group name="action-group-sale-saleorderline-product-onchange"
+    id="action-budget-group-sale-saleorderline-product-onchange">
+    <action name="action-sale-order-line-method-get-product-information"/>
+    <action name="action-sale-order-line-method-compute"/>
+    <action name="action-sale-order-line-attrs-hide-bill-of-material"/>
+    <action name="action-sale-order-line-get-production-information"/>
+    <action name="action-sale-order-line-method-supplier-partner-default"
+      if="__config__.app.isApp('supplychain')"/>
+    <action name="action-sale-order-line-method-check-stock"
+      if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getCheckSaleStocks()"/>
+    <action name="action-sale-order-line-method-check-qty"
+      if="__config__.app.getApp('sale')?.manageMultipleSaleQuantity"/>
+    <action if="__config__.app.isApp('supplychain')"
+      name="action-sale-order-line-attrs-show-delivery-panel"/>
+    <action name="action-method-sale-order-line-available-and-allocated-stock"/>
+    <action name="action-sale-order-attrs-hide-ati"/>
+    <action name="action-record-sale-order-line-future-qty"
+      if="__config__.app.isApp('supplychain')"/>
+    <action name="action-sale-order-line-record-complementary-products-to-handle"/>
+    <action name="action-sale-order-line-method-fill-max-discount"/>
+    <action name="action-sale-order-line-method-translate-product-description-and-name"/>
+    <action name="action-method-budget-sale-orderline-set-product-account"
+      if="__config__.app.isApp('budget')"/>
+  </action-group>
+
+  <action-attrs name="action-sale-order-line-attrs-hidden-analytic-distribution-panel"
+    id="action-budget-sale-order-line-attrs-hidden-analytic-distribution-panel">
+    <attribute name="hidden" for="analyticDistributionPanel"
+      expr="eval: !__config__.app.isApp('supplychain') || !__config__.app.getApp('account')?.getManageAnalyticAccounting() || !__parent__?.company?.accountConfig?.getManageAnalyticAccounting() || (__config__.app.isApp('budget') &amp;&amp; account &amp;&amp; !account.analyticDistributionAuthorized)"/>
+  </action-attrs>
+
+  <action-method name="action-budget-sale-order-line-method-group-domain">
+    <call class="com.axelor.apps.budget.web.SaleOrderLineController"
+      method="setGroupBudgetDomain"/>
+  </action-method>
+
+  <action-method name="action-budget-sale-order-line-method-section-domain">
+    <call class="com.axelor.apps.budget.web.SaleOrderLineController"
+      method="setSectionBudgetDomain"/>
+  </action-method>
+
+  <action-method name="action-budget-sale-order-line-method-line-domain">
+    <call class="com.axelor.apps.budget.web.SaleOrderLineController"
+      method="setLineBudgetDomain"/>
+  </action-method>
+
+  <action-method name="action-budget-sale-order-line-method-budget-domain">
+    <call class="com.axelor.apps.budget.web.SaleOrderLineController" method="setBudgetDomain"/>
+  </action-method>
+
+  <action-method name="action-budget-sale-order-line-method-account-domain">
+    <call class="com.axelor.apps.budget.web.SaleOrderLineController" method="getAccountDomain"/>
+  </action-method>
+
+  <action-method name="action-budget-sale-order-line-method-set-account">
+    <call class="com.axelor.apps.budget.web.SaleOrderLineController" method="setAccount"/>
+  </action-method>
+
+  <action-method name="action-method-budget-sale-orderline-set-product-account">
+    <call class="com.axelor.apps.budget.web.SaleOrderLineController" method="setProductAccount"/>
+  </action-method>
+
+  <action-group name="action-group-budget-sale-order-line-budget-distribution-onchange">
+    <action name="action-method-sale-order-line-budget-distribution-validate-amount"/>
+    <action name="action-sale-order-method-compute-budget-distribution-sum-amount"/>
+    <action name="action-budget-sale-order-line-method-fill-budget-str"/>
+  </action-group>
+
+  <action-method
+    name="action-method-sale-order-line-budget-distribution-validate-amount">
+    <call class="com.axelor.apps.budget.web.SaleOrderLineController"
+      method="validateBudgetLinesAmount"/>
+  </action-method>
+
+  <action-method name="action-method-sale-order-line-budget-check-budget-key-roles">
+    <call class="com.axelor.apps.budget.web.SaleOrderLineController" method="checkBudget"/>
+  </action-method>
+
+  <action-method name="action-budget-sale-order-line-method-fill-budget-str">
+    <call class="com.axelor.apps.budget.web.SaleOrderLineController" method="fillBudgetStr"/>
+  </action-method>
+
+  <action-method name="action-budget-sale-order-line-set-account-domain">
+    <call class="com.axelor.apps.budget.web.SaleOrderLineController" method="setAccountDomain"
+      if="__config__.app.isApp('budget')"/>
+  </action-method>
+
+</object-views>

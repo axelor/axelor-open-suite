@@ -37,8 +37,9 @@
 "perm.helpdesk.Sla.rwc";"com.axelor.apps.helpdesk.db.Sla";"true";"true";"true";"false";"false";;
 "perm.teamTask.rwc";"com.axelor.team.db.TeamTask";"true";"true";"true";"false";"false";;
 "perm.bank.details.r";"com.axelor.apps.base.db.BankDetails";"true";"false";"false";"false";"false";;
-"perm.budget.distribution.r";"com.axelor.apps.account.db.BudgetDistribution";"true";"false";"false";"false";"false";;
+"perm.budget.distribution.r";"com.axelor.apps.budget.db.BudgetDistribution";"true";"false";"false";"false";"false";;
 "perm.meta.file.r";"com.axelor.meta.db.MetaFile";"true";"false";"false";"false";"false";;
 "perm.stock.location.line.r";"com.axelor.apps.stock.db.StockLocationLine";"true";"false";"false";"false";"false";;
 "perm.stock.rules.r";"com.axelor.apps.stock.db.StockRules";"true";"false";"false";"false";"false";;
 "perm.bill.of.material.r";"com.axelor.apps.production.db.BillOfMaterial";"true";"false";"false";"false";"false";;
+"perm.base.Wizard.r";"com.axelor.utils.db.Wizard";"true";"false";"false";"false";"false";;

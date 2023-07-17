@@ -231,11 +231,9 @@ public class InvoiceTermController {
 
   public void validatePfp(ActionRequest request, ActionResponse response) {
     try {
-      InvoiceTerm invoiceterm =
-          Beans.get(InvoiceTermRepository.class)
-              .find(request.getContext().asType(InvoiceTerm.class).getId());
+      InvoiceTerm invoiceterm = request.getContext().asType(InvoiceTerm.class);
       Beans.get(InvoiceTermPfpService.class).validatePfp(invoiceterm, AuthUtils.getUser());
-      response.setReload(true);
+      response.setValues(invoiceterm);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -299,8 +297,10 @@ public class InvoiceTermController {
       }
 
       Beans.get(InvoiceTermPfpService.class)
-          .generateInvoiceTerm(originalInvoiceTerm, invoiceAmount, grantedAmount, partialReason);
+          .initPftPartialValidation(originalInvoiceTerm, grantedAmount, partialReason);
+
       response.setCanClose(true);
+
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -458,12 +458,14 @@ public class InvoiceTermController {
       response.setValue("$isMultiCurrency", isMultiCurrency);
       MoveLine moveLine = invoiceTerm.getMoveLine();
       Invoice invoice = invoiceTerm.getInvoice();
-      Move move = moveLine.getMove();
       if (invoice != null
               && !Objects.equals(invoice.getCurrency(), invoice.getCompany().getCurrency())
           || (invoice == null
-              && move != null
-              && !Objects.equals(move.getCurrency(), move.getCompany().getCurrency()))) {
+              && moveLine != null
+              && moveLine.getMove() != null
+              && !Objects.equals(
+                  moveLine.getMove().getCurrency(),
+                  moveLine.getMove().getCompany().getCurrency()))) {
         response.setAttr("amount", "title", I18n.get("Amount in currency"));
         response.setAttr("amountRemaining", "title", I18n.get("Amount remaining in currency"));
       }

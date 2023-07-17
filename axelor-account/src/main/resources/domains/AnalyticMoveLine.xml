@@ -12,6 +12,8 @@
       index="idx_acc_ana_move_line_ana_dist_template"/>
     <many-to-one name="invoiceLine" ref="com.axelor.apps.account.db.InvoiceLine"/>
     <many-to-one name="moveLine" ref="com.axelor.apps.account.db.MoveLine"/>
+    <many-to-one name="moveLineMassEntry"
+      ref="com.axelor.apps.account.db.MoveLineMassEntry"/>
 
     <many-to-one name="analyticAxis" ref="com.axelor.apps.account.db.AnalyticAxis"
       title="Axis"/>

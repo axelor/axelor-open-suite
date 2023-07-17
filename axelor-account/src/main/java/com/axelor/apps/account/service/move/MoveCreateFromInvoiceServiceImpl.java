@@ -176,6 +176,8 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
         paymentConditionService.checkPaymentCondition(invoice.getPaymentCondition());
         move.setPaymentCondition(invoice.getPaymentCondition());
 
+        move.setDueDate(invoice.getDueDate());
+
         boolean isDebitCustomer = moveToolService.isDebitCustomer(invoice, false);
 
         move.getMoveLineList()
@@ -270,7 +272,8 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
       }
 
       // Management of the switch to 580
-      reconcileService.balanceCredit(invoiceCustomerMoveLine);
+      reconcileService.canBeZeroBalance(null, invoiceCustomerMoveLine);
+      // reconcileService.balanceCredit(invoiceCustomerMoveLine);
 
       invoice.setCompanyInTaxTotalRemaining(moveToolService.getInTaxTotalRemaining(invoice));
     }

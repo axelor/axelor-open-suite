@@ -57,7 +57,6 @@ import com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrService;
 import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanningTime;
-import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
@@ -84,6 +83,7 @@ import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -93,6 +93,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
@@ -726,15 +727,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
                         final Project updateProject = findProject(project.getId());
                         getEntityManager().lock(updateProject, LockModeType.PESSIMISTIC_WRITE);
 
-                        BigDecimal timeSpent =
-                            projectTimeSpentMap
-                                .get(updateProject)
-                                .add(this.computeSubTimeSpent(updateProject));
-                        updateProject.setTimeSpent(timeSpent);
-
                         projectRepo.save(updateProject);
-
-                        this.computeParentTimeSpent(updateProject);
                       });
                   done = true;
                 } catch (PersistenceException e) {
@@ -750,7 +743,6 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
             });
       }
     }
-    this.setProjectTaskTotalRealHrs(timesheet.getTimesheetLineList(), true);
   }
 
   protected Project findProject(Long projectId) {
@@ -786,17 +778,6 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
       sum = sum.add(this.computeSubTimeSpent(projectIt));
     }
     return sum;
-  }
-
-  @Override
-  public void computeParentTimeSpent(Project project) {
-    Project parentProject = project.getParentProject();
-    if (parentProject == null) {
-      return;
-    }
-    parentProject.setTimeSpent(project.getTimeSpent().add(this.computeTimeSpent(parentProject)));
-    projectRepo.save(parentProject);
-    this.computeParentTimeSpent(parentProject);
   }
 
   @Override
@@ -1167,23 +1148,6 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
 
   @Override
   @Transactional
-  public void setProjectTaskTotalRealHrs(List<TimesheetLine> timesheetLines, boolean isAdd) {
-    for (TimesheetLine timesheetLine : timesheetLines) {
-      ProjectTask projectTask = timesheetLine.getProjectTask();
-      if (projectTask != null) {
-        projectTask = projectTaskRepo.find(projectTask.getId());
-        BigDecimal totalrealhrs =
-            isAdd
-                ? projectTask.getTotalRealHrs().add(timesheetLine.getHoursDuration())
-                : projectTask.getTotalRealHrs().subtract(timesheetLine.getHoursDuration());
-        projectTask.setTotalRealHrs(totalrealhrs);
-        projectTaskRepo.save(projectTask);
-      }
-    }
-  }
-
-  @Override
-  @Transactional
   public void removeAfterToDateTimesheetLines(Timesheet timesheet) {
 
     List<TimesheetLine> removedTimesheetLines = new ArrayList<>();
@@ -1203,10 +1167,10 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
       Timesheet timesheet, ProjectPlanningTime projectPlanningTime) throws AxelorException {
     TimesheetLine timesheetLine = new TimesheetLine();
     Project project = projectPlanningTime.getProject();
-    timesheetLine.setHoursDuration(projectPlanningTime.getPlannedHours());
+    timesheetLine.setHoursDuration(projectPlanningTime.getPlannedTime());
     timesheetLine.setDuration(
         timesheetLineService.computeHoursDuration(
-            timesheet, projectPlanningTime.getPlannedHours(), false));
+            timesheet, projectPlanningTime.getPlannedTime(), false));
     timesheetLine.setTimesheet(timesheet);
     timesheetLine.setEmployee(timesheet.getEmployee());
     timesheetLine.setProduct(projectPlanningTime.getProduct());
@@ -1214,7 +1178,10 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
       timesheetLine.setProjectTask(projectPlanningTime.getProjectTask());
       timesheetLine.setProject(projectPlanningTime.getProject());
     }
-    timesheetLine.setDate(projectPlanningTime.getDate());
+    LocalDateTime startDateTime = projectPlanningTime.getStartDateTime();
+    if (!Objects.isNull(startDateTime)) {
+      timesheetLine.setDate(startDateTime.toLocalDate());
+    }
     timesheetLine.setProjectPlanningTime(projectPlanningTime);
     return timesheetLine;
   }

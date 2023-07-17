@@ -17,6 +17,12 @@
     <field name="name"/>
   </calendar>
 
+  <calendar name="planning-machine-calender"
+    model="com.axelor.apps.production.db.OperationOrder" title="Machine Planning"
+    eventStart="plannedStartDateT" eventStop="plannedEndDateT" colorBy="statusSelect">
+    <field name="operationName"/>
+  </calendar>
+
 
   <grid name="operation-order-group-grid" title="Operations"
     model="com.axelor.apps.production.db.OperationOrder" groupBy="manufOrder"
@@ -121,6 +127,11 @@
           onChange="action-operation-order-record-set-planned-start-date-time-and-duration"/>
         <field name="plannedDuration" colSpan="12" widget="duration" x-seconds="true"
           x-big="true" onChange="action-operation-order-record-set-planned-end-date-time"/>
+        <field name="plannedHumanDuration" colSpan="12" widget="duration" x-seconds="true"
+          x-big="true" hideIf="workCenter.workCenterTypeSelect == 2"/>
+        <field name="plannedMachineDuration" colSpan="12" widget="duration" x-seconds="true"
+          x-big="true" hideIf="workCenter.workCenterTypeSelect == 1"/>
+        <field name="workCenter.workCenterTypeSelect" hidden="true"/>
       </panel>
       <panel name="realDatesPanel" title="Real dates" colSpan="6">
         <field name="realStartDateT"
@@ -139,9 +150,6 @@
       <field name="machineTool" domain="self.machine = machine" form-view="machine-tool-form"
         grid-view="machine-tool-grid" readonlyIf="statusSelect &gt; 3" colSpan="4"
         if="__config__.app.getApp('production')?.getEnableToolManagement()"/>
-      <panel-related name="prodHumanResourceListPanel" field="prodHumanResourceList"
-        readonlyIf="statusSelect == 6" colSpan="12" grid-view="prod-human-resource-grid"
-        form-view="prod-human-resource-form"/>
       <field name="prodProcessLine.description" colSpan="12"/>
       <field name="prodProcessLine.objectDescriptionList" colSpan="12" height="20"/>
     </panel>
@@ -313,6 +321,13 @@
     model="com.axelor.apps.production.db.OperationOrder">
     <field name="plannedEndDateT" expr="eval: plannedStartDateT?.plusSeconds(plannedDuration)"/>
   </action-record>
+
+  <action-view name="action-manufacturing-view-on-click-planning-machine-calender-view"
+    title="Machine Planning" model="com.axelor.apps.production.db.OperationOrder">
+    <view type="calendar" name="planning-machine-calender"/>
+    <domain>self.statusSelect IN (3,4,5,6) AND self.machine.id = :_machineId</domain>
+    <context name="_machineId" expr="eval: id"/>
+  </action-view>
 
   <search-filters name="operation-order-filters"
     model="com.axelor.apps.production.db.OperationOrder" title="Operation order filters">
