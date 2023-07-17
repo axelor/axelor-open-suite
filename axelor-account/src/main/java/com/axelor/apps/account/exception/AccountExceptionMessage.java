@@ -1534,7 +1534,16 @@ public final class AccountExceptionMessage {
       "Please create an accounting situation for partner %s and company %s and select a vat system in order to compute it" /*)*/;
 
   public static final String CUSTOM_REPORT_TIMEOUT = /*$$(*/
-      "Custom report %s couldn't be computed (timeout)." /*)*/;
+      "Custom report %s couldn't be computed (timeout). Related anomalies can be viewed in the dedicated tab" /*)*/;
+
+  public static final String CUSTOM_REPORT_ANOMALY_GROUP = /*$$(*/
+      "Group %s | Column %s | Line %s : %s" /*)*/;
+
+  public static final String CUSTOM_REPORT_ANOMALY_NO_GROUP = /*$$(*/
+      "Column %s | Line %s : %s" /*)*/;
+
+  public static final String CUSTOM_REPORT_WRONG_PERCENTAGE_BASE_COLUMN = /*$$(*/
+      "Column to be used for percentage computation is wrong." /*)*/;
 
   public static final String REPORT_TYPE_NOT_CUSTOM = /*$$(*/
       "Report type %s is not of a custom type and thus cannot be computed as such." /*)*/;

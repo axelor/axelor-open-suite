@@ -17,4 +17,9 @@
     <button onClick="action-traceback-show-reference" name="refBtn" title="Reference"
       icon="fa-share"/>
   </grid>
+
+  <grid name="trace-back-accounting-report-grid" title="TraceBack"
+    model="com.axelor.apps.base.db.TraceBack">
+    <field name="message"/>
+  </grid>
 </object-views>

@@ -120,8 +120,9 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
           valuesMapByLine.put(lineCode, new HashMap<>());
         }
 
+        accountingReport = this.fetchAccountingReport(accountingReport);
+
         account = JPA.find(Account.class, account.getId());
-        accountingReport = JPA.find(AccountingReport.class, accountingReport.getId());
         line = JPA.find(AccountingReportConfigLine.class, line.getId());
         column = JPA.find(AccountingReportConfigLine.class, column.getId());
         groupColumn =
@@ -176,8 +177,10 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
         if (!valuesMapByLine.containsKey(lineCode)) {
           valuesMapByLine.put(lineCode, new HashMap<>());
         }
+
+        accountingReport = this.fetchAccountingReport(accountingReport);
+
         accountType = JPA.find(AccountType.class, accountType.getId());
-        accountingReport = JPA.find(AccountingReport.class, accountingReport.getId());
         line = JPA.find(AccountingReportConfigLine.class, line.getId());
         column = JPA.find(AccountingReportConfigLine.class, column.getId());
         groupColumn =
@@ -225,8 +228,10 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
         if (!valuesMapByLine.containsKey(lineCode)) {
           valuesMapByLine.put(lineCode, new HashMap<>());
         }
+
+        accountingReport = this.fetchAccountingReport(accountingReport);
+
         analyticAccount = JPA.find(AnalyticAccount.class, analyticAccount.getId());
-        accountingReport = JPA.find(AccountingReport.class, accountingReport.getId());
         line = JPA.find(AccountingReportConfigLine.class, line.getId());
         column = JPA.find(AccountingReportConfigLine.class, column.getId());
         groupColumn =
