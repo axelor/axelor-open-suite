@@ -49,6 +49,9 @@
       ]]>
     </decimal>
 
+    <many-to-many ref="com.axelor.apps.base.db.Partner" name="partnerSet"
+      title="Partners"/>
+
     <extra-code><![CDATA[
 
         // STATUS SELECT

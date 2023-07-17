@@ -44,6 +44,8 @@ public interface PaymentSessionService {
 
   public void unSelectAll(PaymentSession paymentSession) throws AxelorException;
 
+  void removeNegativeLines(PaymentSession paymentSession) throws AxelorException;
+
   public boolean hasInvoiceTerm(PaymentSession paymentSession);
 
   public void searchEligibleTerms(PaymentSession paymentSession) throws AxelorException;

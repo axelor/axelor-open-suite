@@ -31,7 +31,6 @@ import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.PeriodServiceAccount;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -79,11 +78,9 @@ public class MoveToolServiceImpl implements MoveToolService {
   public MoveToolServiceImpl(
       MoveLineToolService moveLineToolService,
       MoveLineRepository moveLineRepository,
-      AccountCustomerService accountCustomerService,
       AccountConfigService accountConfigService,
       PeriodServiceAccount periodServiceAccount,
       MoveRepository moveRepository) {
-
     this.moveLineToolService = moveLineToolService;
     this.moveLineRepository = moveLineRepository;
     this.accountConfigService = accountConfigService;
@@ -365,9 +362,9 @@ public class MoveToolServiceImpl implements MoveToolService {
 
     for (MoveLine moveLine : moveLineList) {
       if (moveLine.getDebit().compareTo(moveLine.getCredit()) == 1) {
-        balance = balance.add(moveLine.getCurrencyAmount());
+        balance = balance.add(moveLine.getCurrencyAmount().abs());
       } else {
-        balance = balance.subtract(moveLine.getCurrencyAmount());
+        balance = balance.subtract(moveLine.getCurrencyAmount().abs());
       }
     }
     return balance;
@@ -519,6 +516,17 @@ public class MoveToolServiceImpl implements MoveToolService {
       if (moveLine != null) {
         moveLine.setDescription(move.getDescription());
       }
+    }
+  }
+
+  @Override
+  public BigDecimal computeCurrencyAmountSign(BigDecimal currencyAmount, boolean isDebit) {
+    if (isDebit) {
+      return currencyAmount.abs();
+    } else {
+      return currencyAmount.compareTo(BigDecimal.ZERO) < 0
+          ? currencyAmount
+          : currencyAmount.negate();
     }
   }
 

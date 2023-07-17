@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+
+  <selection name="budget.budget.status.select">
+    <option value="1">Draft</option>
+    <option value="2">Validated</option>
+  </selection>
+
+  <selection name="budget.budget.type.select">
+    <option value="template" color="deeporange">Template</option>
+    <option value="budget" color="green">Budget</option>
+  </selection>
+
+  <selection name="budget.level.status.select">
+    <option value="draft">Draft</option>
+    <option value="valid">Valid</option>
+    <option value="archived">Archived</option>
+  </selection>
+
+  <selection name="budget.budget.source.select">
+    <option value="auto">Auto</option>
+    <option value="custom">budget.custom</option>
+  </selection>
+
+  <selection name="budget.budget.level.type.select">
+    <option value="global">Global Level</option>
+    <option value="group">Group Level</option>
+    <option value="section">Section Level</option>
+  </selection>
+
+  <selection name="budget.budget.level.check.available">
+    <option value="1">Budget Line</option>
+    <option value="2">budget.Budget</option>
+    <option value="3">Budget section</option>
+    <option value="4">Budget group</option>
+    <option value="5">Global budget</option>
+  </selection>
+
+  <selection name="budget.level.budget.type.select">
+    <option value="1">Budget.Purchase</option>
+    <option value="2">Budget.Sale</option>
+    <option value="3">Investment</option>
+    <option value="4">Purchase and investment</option>
+  </selection>
+</object-views>

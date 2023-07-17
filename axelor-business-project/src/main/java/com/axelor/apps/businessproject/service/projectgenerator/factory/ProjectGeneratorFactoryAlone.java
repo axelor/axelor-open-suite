@@ -26,6 +26,7 @@ import com.axelor.apps.businessproject.service.projectgenerator.ProjectGenerator
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.google.inject.Inject;
@@ -49,6 +50,9 @@ public class ProjectGeneratorFactoryAlone implements ProjectGeneratorFactory {
   public Project create(SaleOrder saleOrder) {
     Project project = projectBusinessService.generateProject(saleOrder);
     project.setIsBusinessProject(true);
+    for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+      saleOrderLine.setProject(project);
+    }
     return projectRepository.save(project);
   }
 

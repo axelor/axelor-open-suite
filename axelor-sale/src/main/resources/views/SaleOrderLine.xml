@@ -137,13 +137,13 @@
 					]]>
               </viewer>
             </field>
-            <field name="$invoicingState" showTitle="false" showIf="id &amp;&amp; $readonly()"
+            <field name="invoicingState" showTitle="false" showIf="id &amp;&amp; $readonly()"
               colSpan="2" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
-              <viewer depends="$invoicingState"><![CDATA[
+              <viewer depends="invoicingState"><![CDATA[
                         <h4>
-                            <span class="label label-success" ng-show="record.$invoicingState == 3" x-translate>Invoiced</span>
-                            <span class="label label-warning" ng-show="record.$invoicingState == 2" x-translate>Partially invoiced</span>
-                            <span class="label label-important" ng-show="record.$invoicingState == 1" x-translate>Not invoiced</span>
+                            <span class="label label-success" ng-show="record.invoicingState == 3" x-translate>Invoiced</span>
+                            <span class="label label-warning" ng-show="record.invoicingState == 2" x-translate>Partially invoiced</span>
+                            <span class="label label-important" ng-show="record.invoicingState == 1" x-translate>Not invoiced</span>
                         </h4>
                     ]]>
               </viewer>
@@ -1057,5 +1057,10 @@
     <view type="form" name="project-task-form"/>
     <domain>self.saleOrderLine = :id</domain>
   </action-view>
+
+  <search-filters title="Sale order lines filter" name="sale-order-lines-filter"
+    model="com.axelor.apps.sale.db.SaleOrderLine">
+    <field name="invoicingState" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+  </search-filters>
 
 </object-views>

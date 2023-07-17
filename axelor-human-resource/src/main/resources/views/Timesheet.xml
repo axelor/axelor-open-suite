@@ -45,7 +45,7 @@
   </grid>
 
   <grid name="my-timesheets-grid" title="My Timesheets" model="com.axelor.apps.hr.db.Timesheet"
-    canNew="false" orderBy="-fromDate">
+    canNew="true" orderBy="-fromDate">
     <menubar>
       <menu name="timesheetToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
         <item name="seeTimesheetLinesItem" action="action-timesheet-see-timesheet-lines"
