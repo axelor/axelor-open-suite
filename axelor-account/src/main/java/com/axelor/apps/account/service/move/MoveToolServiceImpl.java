@@ -56,7 +56,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -643,17 +645,25 @@ public class MoveToolServiceImpl implements MoveToolService {
   @Override
   public List<Move> getMovesWithDuplicatedOrigin(Move move) {
     List<Move> moveList = null;
+    StringBuilder query =
+        new StringBuilder("self.origin = :origin AND self.period.year = :periodYear");
+    Map<String, Object> params = new HashMap<>();
+
     if (!ObjectUtils.isEmpty(move.getOrigin()) && !ObjectUtils.isEmpty(move.getPeriod())) {
-      moveList =
-          moveRepository
-              .all()
-              .filter(
-                  "(?1 is null OR self.id != ?1) AND self.origin = ?2 AND self.period.year = ?3  AND (?4 is null OR self.partner = ?4)",
-                  move.getId(),
-                  move.getOrigin(),
-                  move.getPeriod().getYear(),
-                  move.getPartner())
-              .fetch();
+      params.put("origin", move.getOrigin());
+      params.put("periodYear", move.getPeriod().getYear());
+
+      if (move.getId() != null) {
+        query.append(" AND self.id != :moveId");
+        params.put("moveId", move.getId());
+      }
+
+      if (ObjectUtils.notEmpty(move.getPartner())) {
+        query.append(" AND self.partner = :partner");
+        params.put("partner", move.getPartner());
+      }
+
+      moveList = moveRepository.all().filter(query.toString()).bind(params).fetch();
     }
     return moveList;
   }

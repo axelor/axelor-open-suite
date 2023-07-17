@@ -26,11 +26,12 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.db.Query;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 public interface AccountingCutOffService {
 
   Query<Move> getMoves(
-      Company company, Journal researchJournal, LocalDate moveDate, int accountingCutOffTypeSelect);
+      Company company, Set<Journal> journalSet, LocalDate moveDate, int accountingCutOffTypeSelect);
 
   List<Move> generateCutOffMovesFromMove(
       Move move,
@@ -59,5 +60,5 @@ public interface AccountingCutOffService {
       throws AxelorException;
 
   Query<MoveLine> getMoveLines(
-      Company company, Journal researchJournal, LocalDate moveDate, int accountingCutOffTypeSelect);
+      Company company, Set<Journal> journalSet, LocalDate moveDate, int accountingCutOffTypeSelect);
 }

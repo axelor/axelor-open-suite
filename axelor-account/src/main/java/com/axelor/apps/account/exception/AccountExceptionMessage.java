@@ -46,6 +46,10 @@ public final class AccountExceptionMessage {
       /*$$(*/ "Disposal quantity can not be equal to 0" /*)*/;
   public static final String IMMO_FIXED_ASSET_LINE_PREVIOUS_NOT_REALIZED =
       /*$$(*/ "Line can't be realized because previous line is still planned" /*)*/;
+  public static final String IMMO_FIXED_ASSET_LINE_COMPUTATION_SERVICE_NOT_FOUND =
+      /*$$(*/ "No implementation of FixedAssetLineComputationService found" /*)*/;
+  public static final String IMMO_FIXED_ASSET_LINE_SERVICE_NOT_FOUND =
+      /*$$(*/ "No implementation of FixedAssetLineService found" /*)*/;
   public static final String IMMO_FIXED_ASSET_GENERATE_SALE_MOVE_CATEGORY_ACCOUNTS_MISSING =
       /*$$(*/ "Fixed asset: sale move could not be generated because fixed category is missing one of these accounts : %s" /*)*/;
   public static final String IMMO_FIXED_ASSET_GENERATE_DISPOSAL_MOVE_CATEGORY_ACCOUNTS_MISSING =
@@ -548,6 +552,12 @@ public final class AccountExceptionMessage {
       "%d reimbursements created successfully," /*)*/;
   public static final String BATCH_CREDIT_TRANSFER_ANOMALY_SINGULAR = /*$$(*/ "%d anomaly." /*)*/;
   public static final String BATCH_CREDIT_TRANSFER_ANOMALY_PLURAL = /*$$(*/ "%d anomalies." /*)*/;
+
+  public static final String BATCH_CREDIT_TRANSFER_BANK_DETAILS_MISSING = /*$$(*/
+      "%s : Please, fill bank details in batch %s" /*)*/;
+
+  public static final String BATCH_CREDIT_TRANSFER_PAYMENT_MODE_MISSING = /*$$(*/
+      "%s : Please, fill payment mode in batch %s" /*)*/;
 
   /** Batch strategy */
   public static final String BATCH_STRATEGY_1 = /*$$(*/

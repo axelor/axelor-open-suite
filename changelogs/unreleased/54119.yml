@@ -1,6 +1,0 @@
----
-title: "Analytic distribution template: trading name now has a Analytic distribution template field"
-type: feature
-description: |
-  In Account configuration, if the Analytic distribution type is 'Per trading name', 
-  Analytic distribution template will be retrieved from the trading name when creating Purchase order, Sale order and invoice lines.

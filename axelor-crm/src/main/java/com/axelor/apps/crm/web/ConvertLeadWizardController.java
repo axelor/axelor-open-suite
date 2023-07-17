@@ -39,7 +39,6 @@ import com.axelor.apps.crm.exception.CrmExceptionMessage;
 import com.axelor.apps.crm.service.ConvertLeadWizardService;
 import com.axelor.apps.crm.service.app.AppCrmService;
 import com.axelor.auth.AuthUtils;
-import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
@@ -76,27 +75,20 @@ public class ConvertLeadWizardController {
       Integer leadToPartnerSelect =
           (Integer) Optional.ofNullable(context.get("leadToPartnerSelect")).orElse(1);
       Integer leadToContactSelect =
-          (Integer) Optional.ofNullable(context.get("leadToContactSelect")).orElse(1);
+          (Integer) Optional.ofNullable(context.get("leadToContactSelect")).orElse(0);
 
       Partner partner = null;
       PartnerStatus partnerStatus = null;
       List<Partner> contactPartnerList = new ArrayList<>();
 
-      if (crmProcessOnPartner) {
-        Map<String, Object> partnerStatusMap = (Map<String, Object>) context.get("partnerStatus");
-        partnerStatus =
-            Beans.get(PartnerStatusRepository.class)
-                .find(((Integer) partnerStatusMap.get("id")).longValue());
-      }
+      PartnerRepository partnerRepository = Beans.get(PartnerRepository.class);
 
       if (leadToPartnerSelect == LeadRepository.CONVERT_LEAD_CREATE_PARTNER) {
-        partnerMap = this.getPartnerMap(request, response);
+        partnerMap = this.getPartnerMap(leadToContactSelect != 0, request, response);
       } else if (leadToPartnerSelect == LeadRepository.CONVERT_LEAD_SELECT_PARTNER) {
         Map<String, Object> selectPartnerContext =
             (Map<String, Object>) context.get("selectPartner");
-        partner =
-            Beans.get(PartnerRepository.class)
-                .find(((Integer) selectPartnerContext.get("id")).longValue());
+        partner = partnerRepository.find(((Integer) selectPartnerContext.get("id")).longValue());
       }
 
       if (leadToContactSelect == LeadRepository.CONVERT_LEAD_CREATE_CONTACT) {
@@ -106,11 +98,15 @@ public class ConvertLeadWizardController {
             (List<HashMap<String, Object>>) context.get("selectContactSet");
         for (HashMap<String, Object> selectContactContext : selectContactContextList) {
           contactPartnerList.add(
-              Beans.get(PartnerRepository.class)
-                  .find(((Integer) selectContactContext.get("id")).longValue()));
+              partnerRepository.find(((Integer) selectContactContext.get("id")).longValue()));
         }
       }
-      if (!appCrm.getCrmProcessOnPartner()) {
+
+      if (crmProcessOnPartner) {
+        Map<String, Object> partnerStatusMap = (Map<String, Object>) context.get("partnerStatus");
+        partnerStatus =
+            Beans.get(PartnerStatusRepository.class)
+                .find(((Integer) partnerStatusMap.get("id")).longValue());
         partner =
             Beans.get(ConvertLeadWizardService.class)
                 .generateDataAndConvertLead(
@@ -119,10 +115,20 @@ public class ConvertLeadWizardController {
                     leadToContactSelect,
                     partner,
                     partnerMap,
+                    partnerStatus,
                     contactPartnerList,
                     contactPartnerMap);
       }
-      openPartner(response, partner, crmProcessOnPartner, leadToPartnerSelect, lead, partnerStatus);
+      openPartner(
+          response,
+          partner,
+          partnerMap,
+          crmProcessOnPartner,
+          leadToPartnerSelect,
+          lead,
+          partnerStatus,
+          contactPartnerList,
+          contactPartnerMap);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -131,17 +137,19 @@ public class ConvertLeadWizardController {
   protected void openPartner(
       ActionResponse response,
       Partner partner,
+      Map<String, Object> partnerMap,
       boolean crmProcessOnPartner,
       Integer leadToPartnerSelect,
       Lead lead,
-      PartnerStatus partnerStatus) {
+      PartnerStatus partnerStatus,
+      List<Partner> contactPartnerList,
+      Map<String, Object> contactPartnerMap) {
 
     String form = "partner-form";
     String grid = "partner-grid";
 
     response.setCanClose(true);
-    if (!crmProcessOnPartner) {
-      response.setInfo(I18n.get(CrmExceptionMessage.CONVERT_LEAD_1));
+    if (crmProcessOnPartner) {
       response.setView(
           ActionView.define(I18n.get(CrmExceptionMessage.CONVERT_LEAD_1))
               .model(Partner.class.getName())
@@ -162,7 +170,9 @@ public class ConvertLeadWizardController {
                 .context("_isInConversionFromLead", true)
                 .context("_lead", lead)
                 .context("_isFromCrm", true)
-                .context("_partnerStatus", partnerStatus)
+                .context("_partnerMap", partnerMap)
+                .context("_contactPartnerList", contactPartnerList)
+                .context("_contactPartnerMap", contactPartnerMap)
                 .map());
       } else if (leadToPartnerSelect == LeadRepository.CONVERT_LEAD_SELECT_PARTNER) {
         response.setView(
@@ -171,18 +181,19 @@ public class ConvertLeadWizardController {
                 .add("form", form)
                 .add("grid", grid)
                 .param("search-filters", "partner-filters")
-                .context("_showRecord", partner.getId())
                 .context("_isInConversionFromLead", true)
+                .context("_showRecord", partner.getId())
                 .context("_lead", lead)
                 .context("_isFromCrm", true)
-                .context("_partnerStatus", partnerStatus)
+                .context("_contactPartnerList", contactPartnerList)
+                .context("_contactPartnerMap", contactPartnerMap)
                 .map());
       }
     }
   }
 
-  public Map<String, Object> getPartnerMap(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+  public Map<String, Object> getPartnerMap(
+      boolean isCompany, ActionRequest request, ActionResponse response) throws AxelorException {
     Lead lead = findLead(request);
     AppBase appBase = Beans.get(AppBaseService.class).getAppBase();
     Map<String, Object> partnerMap = new HashMap<String, Object>();
@@ -215,7 +226,7 @@ public class ConvertLeadWizardController {
       partnerMap.put("isProspect", true);
     }
 
-    if (ObjectUtils.notEmpty(lead.getName())) {
+    if (!isCompany) {
       partnerMap.put("firstName", lead.getFirstName());
       partnerMap.put("name", lead.getName());
       partnerMap.put("titleSelect", lead.getTitleSelect());
@@ -291,7 +302,7 @@ public class ConvertLeadWizardController {
       Partner partner = context.asType(Partner.class);
 
       if (partner.getId() == null) {
-        Map<String, Object> partnerMap = this.getPartnerMap(request, response);
+        Map<String, Object> partnerMap = (Map<String, Object>) context.get("_partnerMap");
         for (Map.Entry partnerField : partnerMap.entrySet()) {
           response.setValue((String) partnerField.getKey(), partnerField.getValue());
         }
@@ -333,16 +344,27 @@ public class ConvertLeadWizardController {
       Partner partner = context.asType(Partner.class);
       partner = Beans.get(PartnerRepository.class).find(partner.getId());
       Lead lead = this.findLead(request);
-      partner =
-          Beans.get(ConvertLeadWizardService.class)
-              .generateDataAndConvertLead(
-                  lead,
-                  LeadRepository.CONVERT_LEAD_SELECT_PARTNER,
-                  LeadRepository.CONVERT_LEAD_SELECT_CONTACT,
-                  partner,
-                  null,
-                  null,
-                  null);
+
+      ConvertLeadWizardService convertLeadWizardService = Beans.get(ConvertLeadWizardService.class);
+
+      List<Map<String, Object>> partnerList =
+          (List<Map<String, Object>>) context.get("_contactPartnerList");
+
+      List<Partner> contactList = convertLeadWizardService.convertMapListToPartnerList(partnerList);
+
+      Map<String, Object> contactPartnerMap =
+          (Map<String, Object>) context.get("_contactPartnerMap");
+
+      convertLeadWizardService.generateDataAndConvertLead(
+          lead,
+          LeadRepository.CONVERT_LEAD_SELECT_PARTNER,
+          LeadRepository.CONVERT_LEAD_SELECT_CONTACT,
+          partner,
+          null,
+          null,
+          contactList,
+          contactPartnerMap);
+      response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

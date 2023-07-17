@@ -1,6 +1,0 @@
----
-title: "App base configuration: remove OSM Routing API selection"
-type: change
-description: |
-  Now, when computing distance for Kilometric Allowances, if using the Open Street Map mapping service proviser, 
-  it will use the OSRM API by default.

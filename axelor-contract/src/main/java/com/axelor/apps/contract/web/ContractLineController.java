@@ -21,7 +21,9 @@ package com.axelor.apps.contract.web;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.db.ContractVersion;
+import com.axelor.apps.contract.db.repo.ContractRepository;
 import com.axelor.apps.contract.service.ContractLineService;
+import com.axelor.apps.contract.service.ContractLineViewService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -94,10 +96,20 @@ public class ContractLineController {
 
   public void hideDatePanel(ActionRequest request, ActionResponse response) {
     ContractVersion contract = request.getContext().getParent().asType(ContractVersion.class);
-    boolean hidePanel = false;
-    if (!contract.getIsPeriodicInvoicing()) {
-      hidePanel = true;
+    response.setAttr("datePanel", "hidden", !contract.getIsPeriodicInvoicing());
+  }
+
+  public void hideIsToRevaluate(ActionRequest request, ActionResponse response) {
+    ContractVersion contractVersion =
+        request.getContext().getParent().asType(ContractVersion.class);
+    Object contractId = request.getContext().getParent().get("_xContractId");
+    Contract contract = null;
+    if (contractId != null) {
+      contract = Beans.get(ContractRepository.class).find(((Integer) contractId).longValue());
     }
-    response.setAttr("datePanel", "hidden", hidePanel);
+    response.setAttr(
+        "isToRevaluate",
+        "hidden",
+        Beans.get(ContractLineViewService.class).hideIsToRevaluate(contract, contractVersion));
   }
 }

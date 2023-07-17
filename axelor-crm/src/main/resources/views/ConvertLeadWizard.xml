@@ -16,23 +16,17 @@
         requiredIf="$leadToPartnerSelect == 2" title="Select Partner" widget="ManyToOne"
         domain="self.isContact = 'false'" form-view="partner-form" grid-view="partner-grid"
         target="com.axelor.apps.base.db.Partner"/>
-      <spacer name="leadContactSelectSpacer"
-        if="!__config__.app.getApp('crm')?.getCrmProcessOnPartner()"
-        showIf="$selectPartner.partnerTypeSelect != 2"/>
-      <field name="$leadToContactSelect"
-        if="!__config__.app.getApp('crm')?.getCrmProcessOnPartner()"
-        showIf="$selectPartner.partnerTypeSelect != 2" title="Convert lead into contact"
-        type="integer" selection="crm.convert.lead.wizard.lead.to.contact.select"/>
+      <field name="$leadToContactSelect" showIf="$selectPartner.partnerTypeSelect != 2"
+        title="Convert lead into contact" type="integer"
+        selection="crm.convert.lead.wizard.lead.to.contact.select"/>
       <field name="$selectContactSet"
-        if="!__config__.app.getApp('crm')?.getCrmProcessOnPartner()"
         showIf="$leadToContactSelect == 2 &amp;&amp; $selectPartner.partnerTypeSelect != 2"
         requiredIf="$leadToContactSelect == 2" title="Select Contact" widget="ManyToMany"
         domain="self.isContact = 'true'" grid-view="partner-contact-grid"
         form-view="partner-contact-form" target="com.axelor.apps.base.db.Partner"/>
       <button name="validateBtn"
         hideIf="($crmProcessOnPartner &amp;&amp; $partnerStatus == null)|| !$leadToPartnerSelect || $leadToPartnerSelect == 2 &amp;&amp; $selectPartner == null || $leadToContactSelect == 2 &amp;&amp; ($selectContactSet == null || $selectContactSet.length == 0)"
-        title="Validate"
-        onClick="action-convert-lead-validate-confirm-validate-lead,action-lead-method-convert-lead"/>
+        title="Validate" onClick="action-lead-method-convert-lead"/>
       <field name="$selectPartner.partnerTypeSelect" hidden="true"/>
       <field name="$crmProcessOnPartner" hidden="true"/>
     </panel>
@@ -45,10 +39,6 @@
     <field name="$crmProcessOnPartner"
       expr="eval:__config__.app.getApp('crm')?.getCrmProcessOnPartner()"/>
   </action-record>
-
-  <action-validate name="action-convert-lead-validate-confirm-validate-lead">
-    <alert message="Are you sure you want to convert the lead?"/>
-  </action-validate>
 
   <action-method name="action-lead-method-convert-lead">
     <call class="com.axelor.apps.crm.web.ConvertLeadWizardController" method="convertLead"/>
