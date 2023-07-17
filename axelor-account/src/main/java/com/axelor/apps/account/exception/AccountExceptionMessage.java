@@ -242,19 +242,22 @@ public final class AccountExceptionMessage {
   public static final String ACCOUNTING_REPORT_ANOMALIES = /*$$(*/ "Anomalies generated" /*)*/;
 
   public static final String ACCOUNTING_REPORT_MISSING_COMPANY_PARTNER = /*$$(*/
-      "Company partner is missing" /*)*/;
+      "DAS2 declarant company %s : Company partner is missing" /*)*/;
 
   public static final String ACCOUNTING_REPORT_MISSING_COMPANY_PARTNER_ADDRESS = /*$$(*/
-      "Company partner main address is missing" /*)*/;
+      "DAS2 declarant company %s : Main address of the company partner is missing." /*)*/;
 
   public static final String ACCOUNTING_REPORT_MISSING_COMPANY_PARTNER_ADDRESS_L7 = /*$$(*/
-      "Country is missing in company partner main address" /*)*/;
+      "DAS2 declarant company %s : Country is missing in company partner main address" /*)*/;
 
   public static final String ACCOUNTING_REPORT_MISSING_COMPANY_PARTNER_ADDRESS_L7_A2CODE = /*$$(*/
-      "Country alpha2code is missing in company partner main address" /*)*/;
+      "DAS2 declarant company %s : Country alpha2code is missing in company partner main address" /*)*/;
 
   public static final String ACCOUNTING_REPORT_MISSING_COMPANY_PARTNER_ADDRESS_CITY = /*$$(*/
-      "City is missing in company partner main address" /*)*/;
+      "DAS2 declarant company %s : The city is missing on the main address of the partner associated to the company" /*)*/;
+
+  public static final String ACCOUNTING_REPORT_MISSING_COMPANY_PARTNER_ADDRESS_CITY_ZIP = /*$$(*/
+      "DAS2 declarant company %s : The city zip is missing on the main address of the partner associated to the company" /*)*/;
 
   public static final String ACCOUNTING_REPORT_DAS2_ACTIVE_NORM = /*$$(*/
       "DAS2 active norm is missing" /*)*/;
@@ -275,10 +278,6 @@ public final class AccountExceptionMessage {
           "DAS2 declarant company %s : Registration code is missing" /*)*/;
   public static final String ACCOUNTING_REPORT_DAS2_DECLARANT_COMPANY_MISSING_NAF = /*$$(*/
       "DAS2 declarant company %s : Activity code is missing" /*)*/;
-  public static final String ACCOUNTING_REPORT_DAS2_DECLARANT_COMPANY_MISSING_ADDRESS = /*$$(*/
-      "DAS2 declarant company %s : Address is missing" /*)*/;
-  public static final String ACCOUNTING_REPORT_DAS2_MOVE_LINE_PARTNER_MISSING = /*$$(*/
-      "Partner is missing on the move %s" /*)*/;
   public static final String ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_TITLE_MISSING = /*$$(*/
       "DAS2 declared partner %s %s : title is missing" /*)*/;
   public static final String ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_WRONG_TITLE = /*$$(*/
@@ -287,12 +286,12 @@ public final class AccountExceptionMessage {
       ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_MISSING_REGISTRATION_CODE = /*$$(*/
           "DAS2 declared partner %s %s : Registration code is missing" /*)*/;
   public static final String ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_MISSING_ADDRESS = /*$$(*/
-      "DAS2 declared partner %s %s : address is missing" /*)*/;
+      "DAS2 declared partner %s %s : Main address is missing" /*)*/;
   public static final String ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_MISSING_ADDRESS_CITY = /*$$(*/
-      "DAS2 declared partner %s %s : address city is missing" /*)*/;
+      "DAS2 declared partner %s %s : The city associated to its main address is missing." /*)*/;
   public static final String
       ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_MISSING_ADDRESS_CITY_ZIP = /*$$(*/
-          "DAS2 declared partner %s %s : address city zip is missing" /*)*/;
+          "DAS2 declared partner %s %s : The city zip associated to its main address is missing" /*)*/;
   public static final String ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_INCONSISTENT_TITLE = /*$$(*/
       "DAS2 declared partner %s %s : a foreign declared partner is necessarily an individual" /*)*/;
   public static final String ACCOUNTING_REPORT_DAS2_DECLARED_PARTNER_FIRST_NAME_MISSING = /*$$(*/
