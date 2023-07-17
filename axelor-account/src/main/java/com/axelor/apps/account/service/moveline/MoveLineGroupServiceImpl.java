@@ -123,6 +123,8 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
     moveLineAttrsService.addAnalyticAxisAttrs(move, attrsMap);
     moveAttrsService.addPartnerRequired(move, attrsMap);
     moveLineAttrsService.addDescriptionRequired(move, attrsMap);
+    moveLineAttrsService.addNumberOfDecimals(move, attrsMap);
+    moveLineAttrsService.addCompanyCurrencyNumberOfDecimals(move, attrsMap);
 
     return attrsMap;
   }

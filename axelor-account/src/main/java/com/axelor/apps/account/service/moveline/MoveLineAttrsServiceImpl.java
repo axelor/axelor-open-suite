@@ -310,4 +310,27 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
       this.addAttr("currencyAmount", "focus", true, attrsMap);
     }
   }
+
+  @Override
+  public void addNumberOfDecimals(Move move, Map<String, Map<String, Object>> attrsMap) {
+    if (move.getCurrency() == null) {
+      return;
+    }
+
+    this.addAttr("$numberOfDecimals", "value", move.getCurrency().getNumberOfDecimals(), attrsMap);
+  }
+
+  @Override
+  public void addCompanyCurrencyNumberOfDecimals(
+      Move move, Map<String, Map<String, Object>> attrsMap) {
+    if (move.getCompany() == null || move.getCompany().getCurrency() == null) {
+      return;
+    }
+
+    this.addAttr(
+        "$companyCurrencyNumberOfDecimals",
+        "value",
+        move.getCompany().getCurrency().getNumberOfDecimals(),
+        attrsMap);
+  }
 }

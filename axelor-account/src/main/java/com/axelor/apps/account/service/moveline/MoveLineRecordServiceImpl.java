@@ -59,6 +59,7 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
     Currency currency = move.getCurrency();
     Currency companyCurrency = move.getCompanyCurrency();
     BigDecimal currencyRate = BigDecimal.ONE;
+    int numberOfDecimals = AppBaseService.DEFAULT_NB_DECIMAL_DIGITS;
 
     if (currency != null && companyCurrency != null && !currency.equals(companyCurrency)) {
       if (move.getMoveLineList().size() == 0) {
@@ -73,13 +74,14 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
 
     BigDecimal total = moveLine.getCredit().add(moveLine.getDebit());
 
+    if (currency != null) {
+      numberOfDecimals = currency.getNumberOfDecimals();
+    }
+
     if (total.signum() != 0) {
       boolean isCredit = moveLine.getCredit().signum() > 0;
       BigDecimal currencyAmount =
-          total.divide(
-              moveLine.getCurrencyRate(),
-              AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
-              RoundingMode.HALF_UP);
+          total.divide(moveLine.getCurrencyRate(), numberOfDecimals, RoundingMode.HALF_UP);
       if (isCredit) {
         currencyAmount = currencyAmount.negate();
       }

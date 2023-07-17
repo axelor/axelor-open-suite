@@ -152,16 +152,18 @@
       readonlyIf="amountPaid &gt; 0" onChange="action-move-line-method-account-onchange"/>
     <field name="currencyAmount"
       onChange="action-move-line-method-currency-amount-rate-onchange" readonlyIf="!isOtherCurrency"
-      width="90" x-scale="move.currency.numberOfDecimals"/>
+      width="90" x-scale="$numberOfDecimals || move.currency.numberOfDecimals"/>
     <field name="currencyRate"
       onChange="action-move-line-method-currency-amount-rate-onchange" readonlyIf="!isOtherCurrency"
       width="90"/>
     <field name="debit" onChange="action-move-line-method-debit-onchange" width="90"
-      readonlyIf="amountPaid &gt; 0" x-scale="move.currency.numberOfDecimals"/>
+      readonlyIf="amountPaid &gt; 0"
+      x-scale="$companyCurrencyNumberOfDecimals || move.company.currency.numberOfDecimals"/>
     <field name="credit" onChange="action-move-line-method-credit-onchange" width="90"
-      readonlyIf="amountPaid &gt; 0"/>
+      readonlyIf="amountPaid &gt; 0"
+      x-scale="$companyCurrencyNumberOfDecimals || move.company.currency.numberOfDecimals"/>
     <field name="amountRemaining" hidden="true" width="80"
-      x-scale="move.currency.numberOfDecimals"/>
+      x-scale="$companyCurrencyNumberOfDecimals || move.company.currency.numberOfDecimals"/>
     <field name="amountPaid" hidden="true"/>
     <field name="taxLine" readonlyIf="!account.isTaxAuthorizedOnMoveLine"
       requiredIf="account.isTaxRequiredOnMoveLine"
@@ -218,8 +220,10 @@
     <field name="account.accountType.technicalTypeSelect" hidden="true"/>
     <field name="taxEquiv" hidden="true" grid-view="tax-equiv-grid" form-view="tax-equiv-form"/>
     <field name="taxLineBeforeReverse" hidden="true"/>
-    <field name="move.company.currency.numberOfDecimals" hidden="true"/>
+    <field name="$numberOfDecimals" hidden="true"/>
     <field name="move.currency.numberOfDecimals" hidden="true"/>
+    <field name="$companyCurrencyNumberOfDecimals" hidden="true"/>
+    <field name="move.company.currency.numberOfDecimals" hidden="true"/>
   </grid>
 
   <grid name="move-line-journal-grid" orderBy="account,-date" title="Move lines"
