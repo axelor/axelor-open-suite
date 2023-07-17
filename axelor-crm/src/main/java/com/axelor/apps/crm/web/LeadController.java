@@ -20,22 +20,24 @@ package com.axelor.apps.crm.web;
 
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.ImportConfiguration;
-import com.axelor.apps.base.db.repo.ImportConfigurationRepository;
+import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.apps.crm.db.report.IReport;
 import com.axelor.apps.crm.exception.CrmExceptionMessage;
+import com.axelor.apps.crm.service.EmailDomainToolService;
 import com.axelor.apps.crm.service.LeadService;
 import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.csv.script.ImportLeadConfiguration;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
@@ -47,6 +49,9 @@ import org.slf4j.LoggerFactory;
 
 @Singleton
 public class LeadController {
+
+  // using provider for the injection of a parameterized service
+  @Inject private Provider<EmailDomainToolService<Lead>> emailDomainToolServiceProvider;
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -139,32 +144,6 @@ public class LeadController {
     response.setAttr("linkedinLabel", "title", urlMap.get("linkedin"));
   }
 
-  public void getLeadImportConfig(ActionRequest request, ActionResponse response) {
-
-    ImportConfiguration leadImportConfig =
-        Beans.get(ImportConfigurationRepository.class)
-            .all()
-            .filter("self.bindMetaFile.fileName = ?1", ImportLeadConfiguration.IMPORT_LEAD_CONFIG)
-            .fetchOne();
-
-    logger.debug("ImportConfig for lead: {}", leadImportConfig);
-
-    if (leadImportConfig == null) {
-      response.setInfo(I18n.get(CrmExceptionMessage.LEAD_4));
-    } else {
-      response.setView(
-          ActionView.define(I18n.get(CrmExceptionMessage.LEAD_5))
-              .model("com.axelor.apps.base.db.ImportConfiguration")
-              .add("form", "import-configuration-form")
-              .param("popup", "reload")
-              .param("forceEdit", "true")
-              .param("popup-save", "false")
-              .param("show-toolbar", "false")
-              .context("_showRecord", leadImportConfig.getId().toString())
-              .map());
-    }
-  }
-
   /**
    * Called from lead view on name change and onLoad. Call {@link
    * LeadService#isThereDuplicateLead(Lead)}
@@ -210,6 +189,63 @@ public class LeadController {
           .assignToMeMultipleLead(
               leadRepo.all().filter("id in ?1", request.getContext().get("_ids")).fetch());
       response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void viewLeadWithSameDomainName(ActionRequest request, ActionResponse response) {
+    try {
+      Lead lead = request.getContext().asType(Lead.class);
+      lead = Beans.get(LeadRepository.class).find(lead.getId());
+
+      List<Lead> leadList =
+          emailDomainToolServiceProvider
+              .get()
+              .getEntitiesWithSameEmailAddress(lead, lead.getEmailAddress(), null);
+
+      if (ObjectUtils.notEmpty(leadList)) {
+        response.setView(null);
+
+        response.setView(
+            ActionView.define(I18n.get("Lead with same domain name"))
+                .model(Lead.class.getName())
+                .add("form", "lead-with-same-domain-name-form")
+                .param("popup", "true")
+                .param("show-toolbar", "false")
+                .param("show-confirm", "true")
+                .param("popup-save", "false")
+                .param("forceEdit", "false")
+                .context("_leadList", leadList)
+                .context("_showRecord", lead.getId())
+                .map());
+      }
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void kanbanLeadOnMove(ActionRequest request, ActionResponse response) {
+    Lead lead = request.getContext().asType(Lead.class);
+    try {
+      Beans.get(LeadService.class).kanbanLeadOnMove(lead);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void rollbackLeadStatus(ActionRequest request, ActionResponse response) {
+    Lead lead = request.getContext().asType(Lead.class);
+    lead = Beans.get(LeadRepository.class).find(lead.getId());
+
+    response.setValue("leadStatus", lead.getLeadStatus());
+  }
+
+  public void computeIsLost(ActionRequest request, ActionResponse response) {
+    try {
+      Lead lead = request.getContext().asType(Lead.class);
+      response.setValue("$isLost", Beans.get(LeadService.class).computeIsLost(lead));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

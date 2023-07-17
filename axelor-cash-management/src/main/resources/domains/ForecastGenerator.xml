@@ -21,6 +21,16 @@
     <string name="comments" title="Comments" large="true"/>
     <integer name="periodicitySelect" selection="product.periodicity.subscription.select"
       title="Periodicity" default="1"/>
+
+    <extra-code><![CDATA[
+
+
+		public static final int FORECAST_GENERATOR_WEEKLY = 7;
+		public static final int FORECAST_GENERATOR_FORTNIGHTLY = 14;
+
+
+	]]></extra-code>
   </entity>
+
 
 </domain-models>

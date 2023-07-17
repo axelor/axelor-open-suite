@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<csv-inputs xmlns="http://axelor.com/xml/ns/data-import"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_6.1.xsd">
+
+  <input file="studio_appBudget.csv" separator=";" search="self.app.code = :code"
+    update="true" type="com.axelor.studio.db.AppBudget"/>
+
+  <input file="budget_budgetLevel.csv" separator=";"
+    type="com.axelor.apps.budget.db.BudgetLevel" search="self.importId = :importId">
+    <bind to="fromDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(fromDate)"
+      column="fromDate"/>
+    <bind to="toDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(toDate)"
+      column="toDate"/>
+    <bind to="startDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(startDate)"
+      column="startDate"/>
+    <bind to="endDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(endDate)"
+      column="endDate"/>
+  </input>
+
+  <input file="budget_budget.csv" separator=";" type="com.axelor.apps.budget.db.Budget"
+    search="self.importId = :importId">
+    <bind to="fromDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(fromDate)"
+      column="fromDate"/>
+    <bind to="toDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(toDate)"
+      column="toDate"/>
+    <bind column="accountSet" to="accountSet" search="self.code in :accountSet"
+      eval="accountSet.split('\\|') as List"/>
+  </input>
+
+  <input file="budget_budgetLine.csv" separator=";"
+    type="com.axelor.apps.budget.db.BudgetLine" search="self.importId = :importId">
+    <bind to="fromDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(fromDate)"
+      column="fromDate"/>
+    <bind to="toDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(toDate)"
+      column="toDate"/>
+  </input>
+
+</csv-inputs>

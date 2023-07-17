@@ -18,14 +18,11 @@
  */
 package com.axelor.apps.account.service.invoice.workflow.validate;
 
-import com.axelor.apps.account.db.BudgetDistribution;
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountingSituationService;
-import com.axelor.apps.account.service.BudgetService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
@@ -48,7 +45,6 @@ public class ValidateState extends WorkflowInvoice {
   protected AppBaseService appBaseService;
   protected InvoiceService invoiceService;
   protected AppAccountService appAccountService;
-  protected BudgetService budgetService;
   protected AccountingSituationService accountingSituationService;
 
   @Inject
@@ -59,7 +55,6 @@ public class ValidateState extends WorkflowInvoice {
       AppBaseService appBaseService,
       InvoiceService invoiceService,
       AppAccountService appAccountService,
-      BudgetService budgetService,
       AccountingSituationService accountingSituationService) {
     this.userService = userService;
     this.blockingService = blockingService;
@@ -67,7 +62,6 @@ public class ValidateState extends WorkflowInvoice {
     this.appBaseService = appBaseService;
     this.invoiceService = invoiceService;
     this.appAccountService = appAccountService;
-    this.budgetService = budgetService;
     this.accountingSituationService = accountingSituationService;
   }
 
@@ -117,15 +111,6 @@ public class ValidateState extends WorkflowInvoice {
       invoice.setJournal(invoiceService.getJournal(invoice));
     }
 
-    if ((invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
-            || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND)
-        && appAccountService.isApp("budget")) {
-      if (!appAccountService.getAppBudget().getManageMultiBudget()) {
-        this.generateBudgetDistribution(invoice);
-      }
-      budgetService.updateBudgetLinesFromInvoice(invoice);
-    }
-
     workflowValidationService.afterValidation(invoice);
   }
 
@@ -138,21 +123,6 @@ public class ValidateState extends WorkflowInvoice {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
           I18n.get(AccountExceptionMessage.INVOICE_INVOICE_TERM_ACCOUNT));
-    }
-  }
-
-  protected void generateBudgetDistribution(Invoice invoice) {
-    if (invoice.getInvoiceLineList() != null) {
-      for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
-        if (invoiceLine.getBudget() != null
-            && (invoiceLine.getBudgetDistributionList() == null
-                || invoiceLine.getBudgetDistributionList().isEmpty())) {
-          BudgetDistribution budgetDistribution = new BudgetDistribution();
-          budgetDistribution.setBudget(invoiceLine.getBudget());
-          budgetDistribution.setAmount(invoiceLine.getCompanyExTaxTotal());
-          invoiceLine.addBudgetDistributionListItem(budgetDistribution);
-        }
-      }
     }
   }
 }

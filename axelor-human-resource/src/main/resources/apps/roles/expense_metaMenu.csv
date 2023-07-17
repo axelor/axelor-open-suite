@@ -1,7 +1,6 @@
 "name";"roles"
 "hr-root";"Expense Manager|Expense User|Expense Read"
 "expense-root";"Expense Manager|Expense User|Expense Read"
-"edit-expense";"Expense Manager|Expense User|Expense Read"
 "all-expense";"Expense Manager|Expense User|Expense Read"
 "validate-expense";"Expense Manager|Expense User|Expense Read"
 "ventilate-expense";"Expense Manager|Expense User|Expense Read"

@@ -19,11 +19,15 @@
 package com.axelor.apps.crm.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.crm.db.CrmReporting;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
+import java.util.Set;
 
 public interface CrmReportingService {
 
   public ActionViewBuilder createActionViewBuilder(CrmReporting crmReporting, Class<?> klass)
       throws ClassNotFoundException, AxelorException;
+
+  Set<Company> prefillCompanySet(CrmReporting crmReporting);
 }

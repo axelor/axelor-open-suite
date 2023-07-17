@@ -7,7 +7,7 @@
 
   <entity name="AccountingReportAnalyticConfigLine">
 
-    <integer name="ruleLevel" title="Level" min="1" max="5" required="true" default="1"/>
+    <integer name="ruleLevel" title="Level" min="1" required="true" default="1"/>
     <integer name="typeSelect" title="Type" required="true"
       selection="accounting.report.analytic.config.line.type.select"/>
     <string name="analyticAccountCode" title="Analytic account code"/>

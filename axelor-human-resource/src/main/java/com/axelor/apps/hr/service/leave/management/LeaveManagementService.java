@@ -59,7 +59,6 @@ public class LeaveManagementService {
     LeaveManagement leaveManagement = new LeaveManagement();
 
     leaveManagement.setLeaveLine(leaveLine);
-    leaveManagement.setUser(user);
     leaveManagement.setComments(comments);
     if (date == null) {
       leaveManagement.setDate(

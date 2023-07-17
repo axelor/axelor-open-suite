@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.account.service.move;
 
+import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.base.AxelorException;
@@ -62,4 +63,6 @@ public interface MoveLineControlService {
   boolean canReconcile(MoveLine moveLine);
 
   void checkPartner(MoveLine moveLine) throws AxelorException;
+
+  void checkAccountAnalytic(Move move, MoveLine moveLine, Account account) throws AxelorException;
 }

@@ -34,6 +34,7 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.service.StockLocationLineService;
+import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.mapper.Mapper;
@@ -60,18 +61,7 @@ public class StockMoveLineController {
 
   public void compute(ActionRequest request, ActionResponse response) throws AxelorException {
     StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
-    StockMove stockMove = stockMoveLine.getStockMove();
-    if (stockMove == null) {
-      Context parentContext = request.getContext().getParent();
-      Context superParentContext = parentContext.getParent();
-      if (parentContext.getContextClass().equals(StockMove.class)) {
-        stockMove = parentContext.asType(StockMove.class);
-      } else if (superParentContext.getContextClass().equals(StockMove.class)) {
-        stockMove = superParentContext.asType(StockMove.class);
-      } else {
-        return;
-      }
-    }
+    StockMove stockMove = getStockMove(request, stockMoveLine);
     stockMoveLine = Beans.get(StockMoveLineService.class).compute(stockMoveLine, stockMove);
     response.setValue("unitPriceUntaxed", stockMoveLine.getUnitPriceUntaxed());
     response.setValue("unitPriceTaxed", stockMoveLine.getUnitPriceTaxed());
@@ -80,27 +70,27 @@ public class StockMoveLineController {
 
   public void setProductInfo(ActionRequest request, ActionResponse response) {
 
-    StockMoveLine stockMoveLine;
-
+    StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
+    StockMoveLineService stockMoveLineService = Beans.get(StockMoveLineService.class);
+    StockMove stockMove = stockMoveLine.getStockMove();
     try {
-      stockMoveLine = request.getContext().asType(StockMoveLine.class);
-      StockMove stockMove = stockMoveLine.getStockMove();
 
       if (stockMove == null) {
         stockMove = request.getContext().getParent().asType(StockMove.class);
       }
 
       if (stockMoveLine.getProduct() == null) {
-        stockMoveLine = new StockMoveLine();
+        stockMoveLineService.resetStockMoveLine(stockMoveLine);
+        stockMoveLine.setStockMove(stockMove);
         response.setValues(Mapper.toMap(stockMoveLine));
         return;
       }
 
-      Beans.get(StockMoveLineService.class)
-          .setProductInfo(stockMove, stockMoveLine, stockMove.getCompany());
+      stockMoveLineService.setProductInfo(stockMove, stockMoveLine, stockMove.getCompany());
       response.setValues(stockMoveLine);
     } catch (Exception e) {
-      stockMoveLine = new StockMoveLine();
+      stockMoveLineService.resetStockMoveLine(stockMoveLine);
+      stockMoveLine.setStockMove(stockMove);
       response.setValues(Mapper.toMap(stockMoveLine));
       TraceBackService.trace(response, e, ResponseMessageType.INFORMATION);
     }
@@ -118,6 +108,12 @@ public class StockMoveLineController {
       newStockMoveLine.put("lineTypeSelect", stockMoveLine.getLineTypeSelect());
       response.setValues(newStockMoveLine);
     }
+  }
+
+  public void clearLine(ActionRequest request, ActionResponse response) {
+    Map<String, Object> clearedStockMoveLineMap =
+        Beans.get(StockMoveLineService.class).getClearedStockMoveLineMap();
+    response.setValues(clearedStockMoveLineMap);
   }
 
   public void splitStockMoveLineByTrackingNumber(ActionRequest request, ActionResponse response) {
@@ -210,7 +206,7 @@ public class StockMoveLineController {
               .find(Long.parseLong(((Map) _parent.get("fromStockLocation")).get("id").toString()));
 
     } else if (stockMoveLine.getStockMove() != null) {
-      stockLocation = stockMoveLine.getStockMove().getFromStockLocation();
+      stockLocation = stockMoveLine.getFromStockLocation();
     }
 
     if (stockLocation != null) {
@@ -260,13 +256,12 @@ public class StockMoveLineController {
 
     if (stockMoveLine == null
         || stockMoveLine.getProduct() == null
-        || stockMove == null
-        || stockMove.getFromStockLocation() == null) {
+        || stockMoveLine.getFromStockLocation() == null) {
       return;
     }
 
     List<TrackingNumber> trackingNumberList =
-        Beans.get(StockMoveLineService.class).getAvailableTrackingNumbers(stockMoveLine, stockMove);
+        Beans.get(StockMoveLineService.class).getAvailableTrackingNumbers(stockMoveLine);
     if (trackingNumberList == null || trackingNumberList.isEmpty()) {
       return;
     }
@@ -278,7 +273,7 @@ public class StockMoveLineController {
     for (TrackingNumber trackingNumber : trackingNumberList) {
       StockLocationLine detailStockLocationLine =
           stockLocationLineService.getDetailLocationLine(
-              stockMove.getFromStockLocation(), stockMoveLine.getProduct(), trackingNumber);
+              stockMoveLine.getFromStockLocation(), stockMoveLine.getProduct(), trackingNumber);
       BigDecimal availableQty =
           detailStockLocationLine != null
               ? detailStockLocationLine.getCurrentQty()
@@ -331,5 +326,41 @@ public class StockMoveLineController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void getFromStockLocationDomain(ActionRequest request, ActionResponse response) {
+    StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
+    StockMove stockMove = getStockMove(request, stockMoveLine);
+    response.setAttr(
+        "fromStockLocation",
+        "domain",
+        Beans.get(StockLocationService.class)
+            .computeStockLocationChildren(stockMove.getFromStockLocation()));
+  }
+
+  public void getToStockLocationDomain(ActionRequest request, ActionResponse response) {
+    StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
+    StockMove stockMove = getStockMove(request, stockMoveLine);
+    response.setAttr(
+        "toStockLocation",
+        "domain",
+        Beans.get(StockLocationService.class)
+            .computeStockLocationChildren(stockMove.getToStockLocation()));
+  }
+
+  protected StockMove getStockMove(ActionRequest request, StockMoveLine stockMoveLine) {
+    StockMove stockMove = stockMoveLine.getStockMove();
+    if (stockMove == null) {
+      Context parentContext = request.getContext().getParent();
+      Context superParentContext = parentContext.getParent();
+      if (parentContext.getContextClass().equals(StockMove.class)) {
+        stockMove = parentContext.asType(StockMove.class);
+      } else if (superParentContext.getContextClass().equals(StockMove.class)) {
+        stockMove = superParentContext.asType(StockMove.class);
+      } else {
+        return null;
+      }
+    }
+    return stockMove;
   }
 }

@@ -13,6 +13,8 @@
     <date name="date" column="date_val" title="Date"/> <!-- Only used for Manual Misc. Operations -->
     <string name="reference" title="Reference" namecolumn="true" readonly="true"/>
     <one-to-many name="moveLineList" ref="MoveLine" title="Move lines" mappedBy="move"/>
+    <one-to-many name="moveLineMassEntryList" ref="MoveLineMassEntry"
+      title="Move lines mass entry" mappedBy="moveMassEntry"/>
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"
       required="true"/>
@@ -69,11 +71,24 @@
     <many-to-one name="cutOffOriginMove" title="Cut off origin move"
       ref="com.axelor.apps.account.db.Move"/>
 
+    <many-to-one name="pfpValidatorUser" ref="com.axelor.auth.db.User"
+      title="PFP Validator"/>
+    <integer name="pfpValidateStatusSelect" title="Status"
+      selection="invoice.pfp.validate.status.select" readonly="true" default="0"/>
+    <many-to-one name="reasonOfRefusalToPay" title="Reason of refusal to pay"
+      ref="com.axelor.apps.base.db.CancelReason"/>
+    <string name="reasonOfRefusalToPayStr" title="Reason of refusal to pay" large="true"/>
+
     <many-to-one ref="com.axelor.apps.account.db.FECImport" name="fecImport"
       title="FEC Import"/>
+    <integer name="massEntryStatusSelect" title="Status" default="0"
+      selection="iaccount.move.mass.entry.status.select"/>
+    <string name="massEntryErrors" title="Error list"/>
+    <boolean name="massEntryManageCutOff" title="Manage Cut off period"/>
     <unique-constraint columns="reference,company"/>
 
     <finder-method name="findByPaymentVoucher" using="paymentVoucher" all="true"/>
+    <finder-method name="findByPaymentSession" using="paymentSession" all="true"/>
 
     <extra-code><![CDATA[
 
@@ -89,6 +104,7 @@
 		public static final int TECHNICAL_ORIGIN_AUTOMATIC = 2;
 		public static final int TECHNICAL_ORIGIN_TEMPLATE = 3;
 		public static final int TECHNICAL_ORIGIN_IMPORT = 4;
+		public static final int TECHNICAL_ORIGIN_MASS_ENTRY = 5;
 
 		// REVERSE DATE OF REVERSION
 		public static final int DATE_OF_REVERSION_TODAY = 1;
@@ -106,6 +122,17 @@
 		public static final int FUNCTIONAL_ORIGIN_FIXED_ASSET = 7;
 		public static final int FUNCTIONAL_ORIGIN_DOUBTFUL_CUSTOMER = 8;
 		public static final int FUNCTIONAL_ORIGIN_IRRECOVERABLE = 9;
+
+		// PFP VALIDATE STATUS SELECT
+	    public static final int PFP_NONE = 0;
+	    public static final int PFP_STATUS_AWAITING = 1;
+	    public static final int PFP_STATUS_VALIDATED = 2;
+	    public static final int PFP_STATUS_LITIGATION = 3;
+
+		// MASS ENTRY STATUS
+		public static final int MASS_ENTRY_STATUS_NULL = 0;
+		public static final int MASS_ENTRY_STATUS_ON_GOING = 1;
+		public static final int MASS_ENTRY_STATUS_VALIDATED = 2;
 	]]></extra-code>
 
     <track>
@@ -122,6 +149,10 @@
       <field name="originDate" on="UPDATE"/>
       <field name="origin" on="UPDATE"/>
       <field name="description" on="UPDATE"/>
+      <field name="pfpValidatorUser" on="UPDATE"/>
+      <field name="pfpValidateStatusSelect" on="UPDATE"/>
+      <field name="reasonOfRefusalToPay" on="UPDATE"/>
+      <field name="reasonOfRefusalToPayStr" on="UPDATE"/>
       <message if="true" on="CREATE">Move created</message>
       <message if="statusSelect == 1" tag="important">New move</message>
       <message if="statusSelect == 2" tag="info">Daybook move</message>
