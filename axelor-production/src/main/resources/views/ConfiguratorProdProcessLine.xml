@@ -93,6 +93,13 @@
         <field name="durationPerCycleFormula" widget="CodeEditor" showIf="defDurationFormula"
           x-code-syntax="groovy" height="100" colSpan="12"/>
       </panel>
+      <panel name="hrDurationPanel">
+        <field name="defHrDurationFormula" colSpan="12"/>
+        <field name="humanDuration" colSpan="6" widget="duration" x-big="true"
+          x-seconds="true" showIf="!defHrDurationFormula"/>
+        <field name="humanDurationFormula" widget="CodeEditor" showIf="defHrDurationFormula"
+          x-code-syntax="groovy" height="100" colSpan="12"/>
+      </panel>
       <panel name="timingOfImplementationPanel">
         <field name="defTimingOfImplementationFormula" colSpan="12"/>
         <field name="timingOfImplementation" colSpan="6" widget="duration" x-big="true"

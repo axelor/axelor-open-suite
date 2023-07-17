@@ -26,23 +26,32 @@ import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.LunchVoucherAdvance;
 import com.axelor.apps.hr.db.LunchVoucherMgt;
 import com.axelor.apps.hr.db.LunchVoucherMgtLine;
+import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
+import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.db.repo.LunchVoucherAdvanceRepository;
 import com.axelor.apps.hr.db.repo.LunchVoucherMgtLineRepository;
 import com.axelor.apps.hr.service.EmployeeComputeDaysLeaveLunchVoucherService;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.math.RoundingMode;
 import java.util.List;
 
 public class LunchVoucherMgtLineServiceImpl implements LunchVoucherMgtLineService {
 
   protected EmployeeComputeDaysLeaveLunchVoucherService employeeComputeDaysLeaveLunchVoucherService;
+  protected ExpenseLineRepository expenseLineRepository;
+  protected LunchVoucherMgtLineRepository lunchVoucherMgtLineRepository;
 
   @Inject
   public LunchVoucherMgtLineServiceImpl(
-      EmployeeComputeDaysLeaveLunchVoucherService employeeComputeDaysLeaveLunchVoucherService) {
+      EmployeeComputeDaysLeaveLunchVoucherService employeeComputeDaysLeaveLunchVoucherService,
+      ExpenseLineRepository expenseLineRepository,
+      LunchVoucherMgtLineRepository lunchVoucherMgtLineRepository) {
     this.employeeComputeDaysLeaveLunchVoucherService = employeeComputeDaysLeaveLunchVoucherService;
+    this.expenseLineRepository = expenseLineRepository;
+    this.lunchVoucherMgtLineRepository = lunchVoucherMgtLineRepository;
   }
 
   /*
@@ -66,6 +75,8 @@ public class LunchVoucherMgtLineServiceImpl implements LunchVoucherMgtLineServic
       Employee employee, LunchVoucherMgt lunchVoucherMgt, LunchVoucherMgtLine lunchVoucherMgtLine) {
     Integer lineStatus = LunchVoucherMgtLineRepository.STATUS_CALCULATED;
     try {
+      lunchVoucherMgtLine.setRestaurant(computeRestaurant(employee));
+      lunchVoucherMgtLine.setInvitation(computeInvitation(employee));
       lunchVoucherMgtLine.setInAdvanceNbr(computeEmployeeLunchVoucherAdvance(employee));
       lunchVoucherMgtLine.setDaysWorkedNbr(
           employeeComputeDaysLeaveLunchVoucherService
@@ -120,9 +131,41 @@ public class LunchVoucherMgtLineServiceImpl implements LunchVoucherMgtLineServic
     Integer lunchVoucherNumber =
         lunchVoucherMgtLine.getDaysWorkedNbr()
             - (lunchVoucherMgtLine.getCanteenEntries()
+                + lunchVoucherMgtLine.getRestaurant()
                 + lunchVoucherMgtLine.getDaysOverseas()
                 + lunchVoucherMgtLine.getInAdvanceNbr()
                 + lunchVoucherMgtLine.getInvitation());
     lunchVoucherMgtLine.setLunchVoucherNumber(Integer.max(lunchVoucherNumber, 0));
+  }
+
+  @Override
+  public int computeRestaurant(Employee employee) {
+    return (int)
+        expenseLineRepository
+            .all()
+            .filter(
+                "self.expenseProduct.deductLunchVoucher = true AND self.expense.employee = :employee AND self.expense.statusSelect = :statusSelect AND self.expense.ventilated = false")
+            .bind("employee", employee)
+            .bind("statusSelect", ExpenseRepository.STATUS_VALIDATED)
+            .count();
+  }
+
+  @Override
+  public int computeInvitation(Employee employee) {
+    return (int)
+        expenseLineRepository
+            .all()
+            .filter(
+                "self.expenseProduct.deductLunchVoucher = true AND :employee MEMBER OF self.invitedCollaboratorSet AND self.expense.statusSelect = :statusSelect AND self.expense.ventilated = false")
+            .bind("employee", employee)
+            .bind("statusSelect", ExpenseRepository.STATUS_VALIDATED)
+            .count();
+  }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public void setStatusToCalculate(LunchVoucherMgtLine lunchVoucherMgtLine) {
+    lunchVoucherMgtLine.setStatusSelect(LunchVoucherMgtLineRepository.STATUS_TO_CALCULATE);
+    lunchVoucherMgtLineRepository.save(lunchVoucherMgtLine);
   }
 }

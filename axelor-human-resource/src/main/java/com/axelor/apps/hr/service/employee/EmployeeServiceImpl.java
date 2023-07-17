@@ -34,6 +34,7 @@ import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -44,6 +45,7 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeService {
 
@@ -244,5 +246,17 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
         TraceBackRepository.CATEGORY_NO_VALUE,
         I18n.get(HumanResourceExceptionMessage.NO_USER_FOR_EMPLOYEE),
         employee.getName());
+  }
+
+  @Override
+  public Employee getConnectedEmployee() throws AxelorException {
+    User user = Optional.ofNullable(AuthUtils.getUser()).get();
+    if (user.getEmployee() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(HumanResourceExceptionMessage.LEAVE_USER_EMPLOYEE),
+          user.getName());
+    }
+    return user.getEmployee();
   }
 }

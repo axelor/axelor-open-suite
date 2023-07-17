@@ -25,5 +25,11 @@ import java.util.Map;
 public interface MoveComputeService {
   Map<String, Object> computeTotals(Move move);
 
+  boolean checkManageCutOffDates(Move move);
+
   void applyCutOffDates(Move move, LocalDate cutOffStartDate, LocalDate cutOffEndDate);
+
+  void autoApplyCutOffDates(Move move);
+
+  void applyCutOffDatesInEmptyLines(Move move, LocalDate cutOffStartDate, LocalDate cutOffEndDate);
 }

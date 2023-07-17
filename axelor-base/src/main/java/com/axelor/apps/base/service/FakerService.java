@@ -29,5 +29,7 @@ public interface FakerService {
    * @return
    * @throws AxelorException if the class or method given doesn't exist.
    */
-  String generateFakeData(FakerApiField fakerApiField) throws AxelorException;
+  Object generateFakeData(FakerApiField fakerApiField) throws AxelorException;
+
+  String checkMethod(FakerApiField fakerApiField) throws AxelorException;
 }
