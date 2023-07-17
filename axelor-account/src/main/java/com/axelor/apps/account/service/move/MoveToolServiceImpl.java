@@ -31,7 +31,6 @@ import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.PeriodServiceAccount;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -57,7 +56,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -77,11 +78,9 @@ public class MoveToolServiceImpl implements MoveToolService {
   public MoveToolServiceImpl(
       MoveLineToolService moveLineToolService,
       MoveLineRepository moveLineRepository,
-      AccountCustomerService accountCustomerService,
       AccountConfigService accountConfigService,
       PeriodServiceAccount periodServiceAccount,
       MoveRepository moveRepository) {
-
     this.moveLineToolService = moveLineToolService;
     this.moveLineRepository = moveLineRepository;
     this.accountConfigService = accountConfigService;
@@ -363,9 +362,9 @@ public class MoveToolServiceImpl implements MoveToolService {
 
     for (MoveLine moveLine : moveLineList) {
       if (moveLine.getDebit().compareTo(moveLine.getCredit()) == 1) {
-        balance = balance.add(moveLine.getCurrencyAmount());
+        balance = balance.add(moveLine.getCurrencyAmount().abs());
       } else {
-        balance = balance.subtract(moveLine.getCurrencyAmount());
+        balance = balance.subtract(moveLine.getCurrencyAmount().abs());
       }
     }
     return balance;
@@ -520,6 +519,17 @@ public class MoveToolServiceImpl implements MoveToolService {
     }
   }
 
+  @Override
+  public BigDecimal computeCurrencyAmountSign(BigDecimal currencyAmount, boolean isDebit) {
+    if (isDebit) {
+      return currencyAmount.abs();
+    } else {
+      return currencyAmount.compareTo(BigDecimal.ZERO) < 0
+          ? currencyAmount
+          : currencyAmount.negate();
+    }
+  }
+
   public boolean isTemporarilyClosurePeriodManage(Period period, Journal journal, User user)
       throws AxelorException {
     if (period != null) {
@@ -633,19 +643,27 @@ public class MoveToolServiceImpl implements MoveToolService {
   }
 
   @Override
-  public List<Move> getMovesWithDuplicatedOrigin(Move move) throws AxelorException {
+  public List<Move> getMovesWithDuplicatedOrigin(Move move) {
     List<Move> moveList = null;
+    StringBuilder query =
+        new StringBuilder("self.origin = :origin AND self.period.year = :periodYear");
+    Map<String, Object> params = new HashMap<>();
+
     if (!ObjectUtils.isEmpty(move.getOrigin()) && !ObjectUtils.isEmpty(move.getPeriod())) {
-      moveList =
-          moveRepository
-              .all()
-              .filter(
-                  "(?1 is null OR self.id != ?1) AND self.origin = ?2 AND self.period.year = ?3  AND (?4 is null OR self.partner = ?4)",
-                  move.getId(),
-                  move.getOrigin(),
-                  move.getPeriod().getYear(),
-                  move.getPartner())
-              .fetch();
+      params.put("origin", move.getOrigin());
+      params.put("periodYear", move.getPeriod().getYear());
+
+      if (move.getId() != null) {
+        query.append(" AND self.id != :moveId");
+        params.put("moveId", move.getId());
+      }
+
+      if (ObjectUtils.notEmpty(move.getPartner())) {
+        query.append(" AND self.partner = :partner");
+        params.put("partner", move.getPartner());
+      }
+
+      moveList = moveRepository.all().filter(query.toString()).bind(params).fetch();
     }
     return moveList;
   }

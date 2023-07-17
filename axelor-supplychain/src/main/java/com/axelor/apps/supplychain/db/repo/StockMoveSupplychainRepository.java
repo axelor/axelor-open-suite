@@ -32,9 +32,7 @@ public class StockMoveSupplychainRepository extends StockMoveManagementRepositor
     StockMove copy = super.copy(entity, deep);
 
     copy.setInvoiceSet(null);
-    copy.setOriginTypeSelect(null);
     copy.setOrigin(null);
-    copy.setOriginId(null);
     if (copy.getStockMoveLineList() != null) {
       for (StockMoveLine stockMoveLine : copy.getStockMoveLineList()) {
         stockMoveLine.setReservedQty(BigDecimal.ZERO);

@@ -14,12 +14,14 @@
       selection="account.reconcile.group.status.select"/>
     <datetime name="letteringDateTime" title="Date of lettering"/>
     <datetime name="unletteringDateTime" title="Date of unlettering"/>
+    <boolean name="isProposal"/>
 
     <extra-code><![CDATA[
       // STATUS SELECT
-      public static final int STATUS_TEMPORARY = 1;
-      public static final int STATUS_FINAL = 2;
+      public static final int STATUS_PARTIAL = 1;
+      public static final int STATUS_BALANCED = 2;
       public static final int STATUS_UNLETTERED = 3;
+      public static final int STATUS_PROPOSAL = 4;
 	]]></extra-code>
   </entity>
 

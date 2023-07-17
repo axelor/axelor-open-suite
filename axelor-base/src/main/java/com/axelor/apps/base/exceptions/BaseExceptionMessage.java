@@ -134,19 +134,11 @@ public final class BaseExceptionMessage {
   public static final String INDICATOR_GENERATOR_2 = /*$$(*/
       "Error : incorrect request for the indicatior generator %s" /*)*/;
   public static final String INDICATOR_GENERATOR_3 = /*$$(*/ "Request performed" /*)*/;
-
-  /** Alarm engine batch service */
-  public static final String ALARM_ENGINE_BATCH_1 = /*$$(*/ "Alarm Engine %s" /*)*/;
-
-  public static final String ALARM_ENGINE_BATCH_2 = /*$$(*/ "Alarms report :" /*)*/;
-  public static final String ALARM_ENGINE_BATCH_3 = /*$$(*/ "* %s object(s) into alarm" /*)*/;
-  public static final String ALARM_ENGINE_BATCH_4 = /*$$(*/ "* %s anomaly(ies)" /*)*/;
-  public static final String ALARM_ENGINE_BATCH_5 = /*$$(*/ "Alarm batch" /*)*/;
-
   /** Base batch service */
   public static final String BASE_BATCH_1 = /*$$(*/ "Unknown action %s for the %s treatment" /*)*/;
 
   public static final String BASE_BATCH_2 = /*$$(*/ "Batch %s unknown" /*)*/;
+  public static final String BASE_BATCH_3 = /*$$(*/ "* %s anomaly(ies)" /*)*/;
 
   /** Product service */
   public static final String PRODUCT_NO_SEQUENCE = /*$$(*/
@@ -182,6 +174,9 @@ public final class BaseExceptionMessage {
 
   public static final String TEMPLATE_MESSAGE_BASE_2 = /*$$(*/
       "Unable to generate Birt report file" /*)*/;
+
+  public static final String BIRT_TEMPLATE_MESSAGE_STANDARD_TEMPLATE_NOT_FOUND = /*$$(*/
+      "%s was not found in the standard application." /*)*/;
 
   /** Tax service */
   public static final String TAX_1 = /*$$(*/ "Please enter a tax version for the tax %s" /*)*/;
@@ -529,6 +524,14 @@ public final class BaseExceptionMessage {
   public static final String ADVANCED_IMPORT_NOT_VALIDATED = /*$$(*/
       "Advanced import is not validated" /*)*/;
 
+  public static final String FIELD_NOT_FOUND = /*$$(*/ "This field %s doesn't exist." /*)*/;
+
+  public static final String ERROR_MISSING_RESEARCH_PARAMETER_CONFIGURATION = /*$$(*/
+      "Missing parameter configuration for model %s." /*)*/;
+
+  public static final String ERROR_MISSING_CANNOT_FIND_OBJECT = /*$$(*/
+      "Can not find object." /*)*/;
+
   public static final String COMPANY_INVALID_LOCALE = /*$$(*/
       "Warning: locale %s is invalid, please enter a valid locale." /*)*/;
 
@@ -539,4 +542,45 @@ public final class BaseExceptionMessage {
 
   public static final String SWAGGER_NO_RESOURCE_PACKAGES = /*$$(*/
       "Swagger is enabled but not resource packages is specified." /*)*/;
+
+  public static final String FAKER_METHOD_DOES_NOT_EXIST = /*$$(*/
+      "The method '%s' doesn't exist in the Faker API." /*)*/;
+
+  public static final String FAKER_CLASS_DOES_NOT_EXIST = /*$$(*/
+      "The class '%s' doesn't exist in the Faker API." /*)*/;
+
+  public static final String FAKER_METHOD_ERROR = /*$$(*/
+      "An error occured while executing '%s'." /*)*/;
+
+  public static final String JSON_FIELD_CAN_NOT_BE_ANONYMIZED = /*$$(*/
+      "Json field can not be anonymized" /*)*/;
+
+  public static final String FAKER_FIELDS_EMPTY = /*$$(*/ "The fields are empty" /*)*/;
+
+  public static final String FAKER_METHOD_PARAMS_ERROR = /*$$(*/
+      "There is a type error on parameters of the method '%s'." /*)*/;
+
+  public static final String FAKER_CLASS_NAME_ERROR = /*$$(*/
+      "Error in class name. Please check." /*)*/;
+
+  public static final String FAKER_METHOD_NAME_ERROR = /*$$(*/
+      "Error in method name. Please check." /*)*/;
+
+  public static final String FAKER_METHOD_MISSING_PARAMS = /*$$(*/
+      "Please check yours params, both fields must be filled." /*)*/;
+
+  public static final String FAKER_METHOD_CONFIGURATION_ERROR = /*$$(*/
+      "An error occurred, please check your configuration." /*)*/;
+
+  public static final String FAKER_METHOD_PARAMETERS_CONFIGURATION_ERROR = /*$$(*/
+      "Please check your parameters configuration." /*)*/;
+
+  public static final String FAKER_METHOD_PARAMETERS_VALUE_ERROR = /*$$(*/
+      "Please check your parameters value format." /*)*/;
+
+  public static final String FAKER_METHOD_EXAMPLE_OUTPUT = /*$$(*/
+      "The faker API field is valide. An example output is : %s." /*)*/;
+
+  public static final String UNKNOWN_DURATION = /*$$(*/
+      "The duration '%s' is unknown. Valid durations are in months or years." /*)*/;
 }

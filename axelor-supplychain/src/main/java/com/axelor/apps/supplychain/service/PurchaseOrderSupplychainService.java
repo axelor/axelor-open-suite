@@ -37,8 +37,6 @@ public interface PurchaseOrderSupplychainService {
 
   void updateToValidatedStatus(PurchaseOrder purchaseOrder) throws AxelorException;
 
-  void generateBudgetDistribution(PurchaseOrder purchaseOrder);
-
   PurchaseOrder createPurchaseOrder(
       User buyerUser,
       Company company,
@@ -67,10 +65,6 @@ public interface PurchaseOrderSupplychainService {
 
   void updateAmountToBeSpreadOverTheTimetable(PurchaseOrder purchaseOrder);
 
-  void applyToallBudgetDistribution(PurchaseOrder purchaseOrder);
-
-  void setPurchaseOrderLineBudget(PurchaseOrder purchaseOrder);
-
   String createShipmentCostLine(PurchaseOrder purchaseOrder) throws AxelorException;
 
   PurchaseOrderLine createShippingCostLine(PurchaseOrder purchaseOrder, Product shippingCostProduct)
@@ -81,16 +75,6 @@ public interface PurchaseOrderSupplychainService {
   String removeShipmentCostLine(PurchaseOrder purchaseOrder);
 
   BigDecimal computeExTaxTotalWithoutShippingLines(PurchaseOrder purchaseOrder);
-
-  void updateBudgetDistributionAmountAvailable(PurchaseOrder purchaseOrder);
-
-  /**
-   * Check if budget distributions of the purchase order lines are correctly setted.
-   *
-   * @return true if it is good, else false
-   * @param purchaseOrder
-   */
-  boolean isGoodAmountBudgetDistribution(PurchaseOrder purchaseOrder) throws AxelorException;
 
   StockLocation getStockLocation(Partner supplierPartner, Company company) throws AxelorException;
 
