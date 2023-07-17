@@ -64,10 +64,10 @@ import java.util.stream.Collectors;
 
 public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceService {
 
-  private InvoiceRepository invoiceRepository;
-  private SaleOrderRepository saleOrderRepository;
-  private PurchaseOrderRepository purchaseOrderRepository;
-  private StockMoveInvoiceService stockMoveInvoiceService;
+  protected final InvoiceRepository invoiceRepository;
+  protected final SaleOrderRepository saleOrderRepository;
+  protected final PurchaseOrderRepository purchaseOrderRepository;
+  protected final StockMoveInvoiceService stockMoveInvoiceService;
 
   @Inject
   public StockMoveMultiInvoiceServiceImpl(
@@ -620,9 +620,8 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
   protected Invoice createDummyOutInvoice(StockMove stockMove) {
     Invoice dummyInvoice = new Invoice();
 
-    if (stockMove.getOriginId() != null
-        && StockMoveRepository.ORIGIN_SALE_ORDER.equals(stockMove.getOriginTypeSelect())) {
-      SaleOrder saleOrder = saleOrderRepository.find(stockMove.getOriginId());
+    if (stockMove.getSaleOrder() != null) {
+      SaleOrder saleOrder = stockMove.getSaleOrder();
       dummyInvoice.setCurrency(saleOrder.getCurrency());
       dummyInvoice.setPartner(saleOrder.getClientPartner());
       dummyInvoice.setCompany(saleOrder.getCompany());
@@ -659,9 +658,8 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
   protected Invoice createDummyInInvoice(StockMove stockMove) {
     Invoice dummyInvoice = new Invoice();
 
-    if (stockMove.getOriginId() != null
-        && StockMoveRepository.ORIGIN_PURCHASE_ORDER.equals(stockMove.getOriginTypeSelect())) {
-      PurchaseOrder purchaseOrder = purchaseOrderRepository.find(stockMove.getOriginId());
+    if (stockMove.getPurchaseOrder() != null) {
+      PurchaseOrder purchaseOrder = stockMove.getPurchaseOrder();
       dummyInvoice.setCurrency(purchaseOrder.getCurrency());
       dummyInvoice.setPartner(purchaseOrder.getSupplierPartner());
       dummyInvoice.setCompany(purchaseOrder.getCompany());
@@ -673,9 +671,8 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
       dummyInvoice.setInAti(purchaseOrder.getInAti());
       dummyInvoice.setFiscalPosition(purchaseOrder.getFiscalPosition());
     } else {
-      if (stockMove.getOriginId() != null
-          && StockMoveRepository.ORIGIN_SALE_ORDER.equals(stockMove.getOriginTypeSelect())) {
-        SaleOrder saleOrder = saleOrderRepository.find(stockMove.getOriginId());
+      if (stockMove.getSaleOrder() != null) {
+        SaleOrder saleOrder = stockMove.getSaleOrder();
         dummyInvoice.setIncoterm(saleOrder.getIncoterm());
         dummyInvoice.setFiscalPosition(saleOrder.getFiscalPosition());
       }
@@ -743,8 +740,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
   protected void completeInvoiceInMultiOutgoingStockMove(
       Invoice dummyInvoice, StockMove stockMove) {
 
-    if (stockMove.getOriginId() != null
-        && StockMoveRepository.ORIGIN_SALE_ORDER.equals(stockMove.getOriginTypeSelect())) {
+    if (stockMove.getSaleOrder() != null) {
       return;
     }
 
@@ -787,8 +783,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
   protected void completeInvoiceInMultiIncomingStockMove(
       Invoice dummyInvoice, StockMove stockMove) {
 
-    if (stockMove.getOriginId() != null
-        && StockMoveRepository.ORIGIN_PURCHASE_ORDER.equals(stockMove.getOriginTypeSelect())) {
+    if (stockMove.getPurchaseOrder() != null) {
       return;
     }
 
@@ -832,11 +827,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
     List<String> externalRefList = new ArrayList<>();
     List<String> internalRefList = new ArrayList<>();
     for (StockMove stockMove : stockMoveList) {
-      SaleOrder saleOrder =
-          StockMoveRepository.ORIGIN_SALE_ORDER.equals(stockMove.getOriginTypeSelect())
-                  && stockMove.getOriginId() != null
-              ? saleOrderRepository.find(stockMove.getOriginId())
-              : null;
+      SaleOrder saleOrder = stockMove.getSaleOrder();
       if (saleOrder != null) {
         externalRefList.add(saleOrder.getExternalReference());
       }
@@ -865,11 +856,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
     List<String> externalRefList = new ArrayList<>();
     List<String> internalRefList = new ArrayList<>();
     for (StockMove stockMove : stockMoveList) {
-      PurchaseOrder purchaseOrder =
-          StockMoveRepository.ORIGIN_PURCHASE_ORDER.equals(stockMove.getOriginTypeSelect())
-                  && stockMove.getOriginId() != null
-              ? purchaseOrderRepository.find(stockMove.getOriginId())
-              : null;
+      PurchaseOrder purchaseOrder = stockMove.getPurchaseOrder();
       if (purchaseOrder != null) {
         externalRefList.add(purchaseOrder.getExternalReference());
       }

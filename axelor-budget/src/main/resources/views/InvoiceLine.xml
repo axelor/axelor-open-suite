@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <form id="budget-invoice-line-form" name="invoice-line-form" title="Invoice line"
+    model="com.axelor.apps.account.db.InvoiceLine" extension="true">
+
+    <extend target="/">
+      <attribute name="onLoad" value="action-group-budget-invoice-line-onload"/>
+      <attribute name="onNew" value="action-group-budget-invoice-line-onnew"/>
+    </extend>
+
+    <extend target="//panel[@name='accountingPanel']">
+      <insert position="after">
+        <panel name="budgetPanel" title="Budget" if="__config__.app.isApp('budget')">
+          <field name="companyExTaxTotal" title="Total W.T." colSpan="6"
+            if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget()"
+            readonly="true" hidden="false">
+            <viewer depends="companyExTaxTotal,$currencySymbol">
+              <![CDATA[
+                              <dd>{{$fmt('companyExTaxTotal') | currency: record.$currencySymbol}}</dd>
+                          ]]>
+            </viewer>
+          </field>
+          <field name="budgetDistributionSumAmount" colSpan="6"
+            if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget()"
+            readonly="true"/>
+          <field name="budget"
+            if="__config__.app.isApp('budget') &amp;&amp; !__config__.app.getApp('budget')?.getManageMultiBudget()"
+            canEdit="false" domain="self.statusSelect = 2 and self.budgetLineList IS NOT EMPTY"/>
+          <panel-related name="budgetDistributionListPanel"
+            field="budgetDistributionList" grid-view="reduce-budget-distribution-grid"
+            form-view="invoice-budget-distribution-form" editable="true" colSpan="12"
+            if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget()"
+            onChange="action-group-budget-invoice-line-budget-distribution-onchange"/>
+          <field name="$currencySymbol" hidden="true"/>
+        </panel>
+      </insert>
+    </extend>
+
+  </form>
+
+  <action-group name="action-group-budget-invoice-line-budget-distribution-onchange">
+    <action name="action-method-invoice-line-budget-distribution-validate-amount"/>
+    <action name="action-invoice-order-method-compute-budget-distribution-sum-amount"/>
+  </action-group>
+
+  <action-method
+    name="action-invoice-order-method-compute-budget-distribution-sum-amount">
+    <call class="com.axelor.apps.budget.web.InvoiceLineController"
+      method="computeBudgetDistributionSumAmount"/>
+  </action-method>
+
+  <action-method name="action-method-invoice-line-budget-distribution-validate-amount">
+    <call class="com.axelor.apps.budget.web.InvoiceLineController"
+      method="validateBudgetLinesAmount"/>
+  </action-method>
+
+  <action-method name="action-method-invoice-line-budget-check-budget-key-roles">
+    <call class="com.axelor.apps.budget.web.InvoiceLineController" method="checkBudget"/>
+  </action-method>
+
+  <action-group name="action-group-budget-invoice-line-onload">
+    <action name="action-group-account-invoice-line-onload"/>
+    <action name="action-budget-distribution-attrs-budget-amount-available"
+      if="__config__.app.isApp('budget')"/>
+    <action name="action-method-invoice-line-budget-check-budget-key-roles"
+      if="__config__.app.isApp('budget')"/>
+  </action-group>
+
+  <action-group name="action-group-budget-invoice-line-onnew">
+    <action name="action-account-invoice-line-onnew-group"/>
+    <action name="action-budget-distribution-attrs-budget-amount-available"
+      if="__config__.app.isApp('budget')"/>
+    <action name="action-method-invoice-line-budget-check-budget-key-roles"
+      if="__config__.app.isApp('budget')"/>
+  </action-group>
+</object-views>

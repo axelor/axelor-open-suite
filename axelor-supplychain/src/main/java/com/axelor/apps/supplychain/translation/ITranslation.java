@@ -37,7 +37,4 @@ public interface ITranslation {
   public static final String DELIVERED_BY = /*$$(*/ "value:Delivered by"; /*)*/
 
   public static final String ORDERED_BY = /*$$(*/ "value:Ordered by"; /*)*/
-
-  public static final String PURCHASE_ORDER_BUDGET_DISTRIBUTIONS_SUM_NOT_EQUAL = /*$$(*/
-      "Some sum's amount of the budget distributions of the purchase order lines does not match their own total amount, do you want to proceed ?" /*)*/;
 }

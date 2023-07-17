@@ -164,6 +164,8 @@ public final class StockExceptionMessage {
       "You must configure a default receipt stock location for the company %s" /*)*/;
   public static final String STOCK_CONFIG_PICKUP = /*$$(*/
       "You must configure a default pickup stock location for the company %s" /*)*/;
+  public static final String PO_MISSING_DEFAULT_STOCK_LOCATION = /*$$(*/
+      "Please add a quality control default stock location for company %s in the app stock configuration" /*)*/;
 
   /** Stock Location Controller */
   public static final String LOCATION_1 = /*$$(*/
@@ -270,4 +272,9 @@ public final class StockExceptionMessage {
 
   public static final String INVENTORY_PRODUCT_TRACKING_NUMBER_ERROR = /*$$(*/
       "There is more than one line for same product with same tracking number." /*)*/;
+
+  public static final String REST_STOCK_MOVE_LINE_STOCK_LOCATION_REQUIRED = /*$$(*/
+      "Error: %s field is required and can not be null" /*)*/;
+  public static final String REST_STOCK_MOVE_LINE_STOCK_LOCATIONS_REQUIRED = /*$$(*/
+      "Error: %s and %s fields are required and can not be null" /*)*/;
 }

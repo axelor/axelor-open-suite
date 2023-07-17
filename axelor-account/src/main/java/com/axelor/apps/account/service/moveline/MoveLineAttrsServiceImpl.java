@@ -18,13 +18,7 @@
  */
 package com.axelor.apps.account.service.moveline;
 
-import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.AccountConfig;
-import com.axelor.apps.account.db.AccountType;
-import com.axelor.apps.account.db.AnalyticAxis;
-import com.axelor.apps.account.db.AnalyticAxisByCompany;
-import com.axelor.apps.account.db.Move;
-import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.*;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.PeriodServiceAccount;
@@ -32,6 +26,7 @@ import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.StringUtils;
 import com.google.inject.Inject;
@@ -167,7 +162,7 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
   }
 
   @Override
-  public void addReadonly(Move move, Map<String, Map<String, Object>> attrsMap) {
+  public void addReadonly(MoveLine moveLine, Move move, Map<String, Map<String, Object>> attrsMap) {
     boolean statusCondition =
         move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED
             || move.getStatusSelect() == MoveRepository.STATUS_CANCELED;
@@ -178,6 +173,11 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
     this.addAttr("irrecoverableDetailsPanel", "readonly", singleStatusCondition, attrsMap);
     this.addAttr("currency", "readonly", singleStatusCondition, attrsMap);
     this.addAttr("otherPanel", "readonly", singleStatusCondition, attrsMap);
+    this.addAttr(
+        "partner",
+        "readonly",
+        moveLine.getAmountPaid().signum() > 0 || move.getPartner() != null,
+        attrsMap);
 
     if (move.getPaymentCondition() != null) {
       this.addAttr("dueDate", "readonly", !move.getPaymentCondition().getIsFree(), attrsMap);
@@ -221,7 +221,8 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
         moveLine.getAmountPaid().signum() != 0
             || (moveLine.getAccount() != null
                 && move.getPartner() != null
-                && moveLine.getAccount().getUseForPartnerBalance());
+                && moveLine.getAccount().getUseForPartnerBalance()
+                && move.getMassEntryStatusSelect() == MoveRepository.MASS_ENTRY_STATUS_NULL);
 
     this.addAttr("partner", "readonly", readonly, attrsMap);
   }
@@ -288,5 +289,25 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
             "self.isSpecific IS FALSE AND self.company.id = %d", move.getCompany().getId());
 
     this.addAttr("analyticDistributionTemplate", "domain", domain, attrsMap);
+  }
+
+  @Override
+  public void changeFocus(Move move, MoveLine moveLine, Map<String, Map<String, Object>> attrsMap) {
+    Account account = moveLine.getAccount();
+    Company company = move.getCompany();
+
+    if (account != null) {
+      if (account.getCommonPosition() == AccountRepository.COMMON_POSITION_CREDIT) {
+        this.addAttr("credit", "focus", true, attrsMap);
+      }
+
+      if (account.getCommonPosition() == AccountRepository.COMMON_POSITION_DEBIT) {
+        this.addAttr("debit", "focus", true, attrsMap);
+      }
+    }
+
+    if (company.getCurrency() != move.getCurrency()) {
+      this.addAttr("currencyAmount", "focus", true, attrsMap);
+    }
   }
 }

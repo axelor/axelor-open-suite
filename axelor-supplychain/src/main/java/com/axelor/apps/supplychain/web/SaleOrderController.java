@@ -548,8 +548,7 @@ public class SaleOrderController {
         stockMoveRepo
             .all()
             .filter(
-                "self.originTypeSelect = ?1 AND self.originId = ?2 AND self.statusSelect = ?3",
-                "com.axelor.apps.sale.db.SaleOrder",
+                "self.saleOrder.id = ?2 AND self.statusSelect = ?3",
                 saleOrder.getId(),
                 StockMoveRepository.STATUS_PLANNED)
             .fetchOne();
@@ -800,18 +799,6 @@ public class SaleOrderController {
           Beans.get(SaleOrderSupplychainService.class)
               .getToStockLocation(saleOrder.getClientPartner(), company);
       response.setValue("toStockLocation", toStockLocation);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void setInvoicingState(ActionRequest request, ActionResponse response) {
-    try {
-      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-      saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
-      response.setValue(
-          "$invoicingState",
-          Beans.get(SaleOrderInvoiceService.class).getSaleOrderInvoicingState(saleOrder));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
