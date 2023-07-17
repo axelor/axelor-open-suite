@@ -3131,6 +3131,7 @@
 "The following analytic accounts : %s are inactive and linked to a move line. Thus, the move can't be set to daybook/accounted.",,,
 "The following analytic journal : %s is inactive and linked to a move line. Thus, the move can't be set to daybook/accounted.",,,
 "The following analytic journals : %s are inactive and linked to a move line. Thus, the move can't be set to daybook/accounted.",,,
+"The following error occurred during the validation of fixed asset %d : %s.",,,
 "The from date is incorrect",,,
 "The functional origin %s of the account move %s is not allowed on the journal %s (%s)",,,
 "The gross value of a fixed asset must be greater than zero. The fixed asset %s can't be validated.",,,
