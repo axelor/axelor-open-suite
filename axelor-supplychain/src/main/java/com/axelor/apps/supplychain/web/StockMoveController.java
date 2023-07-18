@@ -134,4 +134,16 @@ public class StockMoveController {
       TraceBackService.trace(response, e, ResponseMessageType.WARNING);
     }
   }
+
+  public void setInvoicingStatusInvoicedDelayed(ActionRequest request, ActionResponse response) {
+    StockMove stockMove = request.getContext().asType(StockMove.class);
+    Beans.get(StockMoveServiceSupplychain.class).setInvoicingStatusInvoicedDelayed(stockMove);
+    response.setReload(true);
+  }
+
+  public void setInvoicingStatusInvoicedValidated(ActionRequest request, ActionResponse response) {
+    StockMove stockMove = request.getContext().asType(StockMove.class);
+    Beans.get(StockMoveServiceSupplychain.class).setInvoicingStatusInvoicedValidated(stockMove);
+    response.setReload(true);
+  }
 }

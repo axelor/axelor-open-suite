@@ -323,16 +323,6 @@
     <attribute name="readonly" for="company" expr="true"/>
   </action-attrs>
 
-  <action-record name="action-stock-move-status-select-invoiced-delayed"
-    model="com.axelor.apps.stock.db.StockMove">
-    <field name="invoicingStatusSelect" expr="3"/>
-  </action-record>
-
-  <action-record name="action-stock-move-status-select-invoiced-validated"
-    model="com.axelor.apps.stock.db.StockMove">
-    <field name="invoicingStatusSelect" expr="4"/>
-  </action-record>
-
   <action-record name="action-supplychain-stock-move-record-invoice-blocking-onchange"
     model="com.axelor.apps.stock.db.StockMove">
     <field name="invoiceBlockedByUser" expr="eval: invoiceBlocking ? __user__ : null"/>
@@ -346,6 +336,17 @@
   <action-method name="action-supplychain-stock-move-method-check-invoice-status">
     <call class="com.axelor.apps.supplychain.web.StockMoveController"
       method="checkInvoiceStatus"/>
+  </action-method>
+
+  <action-method name="action-stock-move-method-set-invoicing-status-invoiced-delayed">
+    <call class="com.axelor.apps.supplychain.web.StockMoveController"
+      method="setInvoicingStatusInvoicedDelayed"/>
+  </action-method>
+
+  <action-method
+    name="action-stock-move-method-set-invoicing-status-invoiced-validated">
+    <call class="com.axelor.apps.supplychain.web.StockMoveController"
+      method="setInvoicingStatusInvoicedValidated"/>
   </action-method>
 
   <search-filters id="supplychain-customer-deliveries-filter"
