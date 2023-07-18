@@ -1,0 +1,2 @@
+title: "Fixed asset : Improve the error message shown when an exception occurs during a mass validation"
+type: fix
