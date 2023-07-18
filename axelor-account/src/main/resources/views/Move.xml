@@ -52,7 +52,7 @@
   <form name="move-form" title="Account move" canArchive="false"
     model="com.axelor.apps.account.db.Move" canDelete="false" width="large"
     onNew="action-account-move-onnew-group" onLoad="action-account-move-group-onload"
-    onSave="action-account-move-group-onsave" readonlyIf="$simulatedPeriodClosed">
+    onSave="action-account-move-group-onsave">
     <toolbar>
       <button name="printBtn" title="Print Move" icon="fa-print"
         onClick="save,action-account-move-method-print-move"/>
@@ -64,7 +64,7 @@
         showIf="id != null &amp;&amp; !archived &amp;&amp; statusSelect != 3"/>
     </toolbar>
 
-    <panel name="mainPanel" colSpan="12">
+    <panel name="mainPanel" colSpan="12" readonlyIf="$simulatedPeriodClosed">
       <panel name="moveDetailsPanel" colSpan="9">
         <field name="reference" colSpan="12"/>
         <panel name="moveContentPanel" colSpan="12">
@@ -221,7 +221,7 @@
       </panel>
     </panel>
 
-    <panel readonlyIf="$validatePeriod">
+    <panel readonlyIf="$validatePeriod || $simulatedPeriodClosed">
       <panel-related name="moveLineListPanel" field="moveLineList" editable="true"
         colSpan="12" height="6"
         showIf="(statusSelect == 1 || statusSelect == 2 || statusSelect == 5) &amp;&amp; journal &amp;&amp; currency &amp;&amp; company &amp;&amp; date &amp;&amp; period"
@@ -284,7 +284,7 @@
       </field>
     </panel>
 
-    <panel-tabs name="mainPanelTab">
+    <panel-tabs name="mainPanelTab" readonlyIf="$simulatedPeriodClosed">
       <panel name="relatedToPanel" title="Related to" readonly="true" itemSpan="4">
         <field name="invoice" domain="self.company = :company AND self.statusSelect = 3"
           form-view="invoice-form" readonlyIf="$validatePeriod" grid-view="invoice-grid"
