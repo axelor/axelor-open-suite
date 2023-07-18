@@ -84,6 +84,7 @@ import com.axelor.apps.supplychain.db.repo.StockMoveLineSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.StockMoveSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.SupplychainBatchRepository;
 import com.axelor.apps.supplychain.db.repo.SupplychainBatchSupplychainRepository;
+import com.axelor.apps.supplychain.listener.InvoicingStateCache;
 import com.axelor.apps.supplychain.rest.StockProductRestServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.AccountCustomerServiceSupplyChainImpl;
 import com.axelor.apps.supplychain.service.AccountingBatchSupplyChainService;
@@ -306,5 +307,6 @@ public class SupplychainModule extends AxelorModule {
     bind(StockProductRestServiceImpl.class).to(StockProductRestServiceSupplychainImpl.class);
     bind(InvoiceLineOrderService.class).to(InvoiceLineOrderServiceImpl.class);
     bind(SaleInvoicingStateService.class).to(SaleInvoicingStateServiceImpl.class);
+    bind(InvoicingStateCache.class);
   }
 }
