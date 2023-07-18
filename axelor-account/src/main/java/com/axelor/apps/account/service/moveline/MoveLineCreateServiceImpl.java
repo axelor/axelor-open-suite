@@ -769,6 +769,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     TaxLine taxLineBeforeReverse = null;
     Account newAccountRC = null;
     String newSourceTaxLineRCKey = null;
+    int numberOfDecimals = AppBaseService.DEFAULT_NB_DECIMAL_DIGITS;
 
     FiscalPosition fiscalPosition = move.getFiscalPosition();
 
@@ -868,21 +869,19 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
           sumMoveLinesByAccountType(move.getMoveLineList(), AccountTypeRepository.TYPE_RECEIVABLE);
     }
 
+    if (company.getCurrency() != null) {
+      numberOfDecimals = company.getCurrency().getNumberOfDecimals();
+    }
+
     BigDecimal newMoveLineDebit =
         debit
             .multiply(taxLineValue)
-            .divide(
-                BigDecimal.valueOf(100),
-                AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
-                RoundingMode.HALF_UP);
+            .divide(BigDecimal.valueOf(100), numberOfDecimals, RoundingMode.HALF_UP);
     newOrUpdatedMoveLine.setDebit(newOrUpdatedMoveLine.getDebit().add(newMoveLineDebit));
     BigDecimal newMoveLineCredit =
         credit
             .multiply(taxLineValue)
-            .divide(
-                BigDecimal.valueOf(100),
-                AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
-                RoundingMode.HALF_UP);
+            .divide(BigDecimal.valueOf(100), numberOfDecimals, RoundingMode.HALF_UP);
     newOrUpdatedMoveLine.setCredit(newOrUpdatedMoveLine.getCredit().add(newMoveLineCredit));
 
     newOrUpdatedMoveLine.setOriginDate(move.getOriginDate());
