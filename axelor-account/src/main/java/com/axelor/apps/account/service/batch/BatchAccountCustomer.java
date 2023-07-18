@@ -125,8 +125,7 @@ public class BatchAccountCustomer extends BatchStrategy {
         String.format(
             "\t" + I18n.get(AccountExceptionMessage.BATCH_ACCOUNT_3) + "\n", batch.getDone());
     comment +=
-        String.format(
-            "\t" + I18n.get(BaseExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
+        String.format("\t" + I18n.get(BaseExceptionMessage.BASE_BATCH_3), batch.getAnomaly());
 
     super.stop();
     addComment(comment);

@@ -106,6 +106,7 @@
 "Urgent",,,
 "User",,,
 "User in charge of the issue",,,
+"Workflow to update status to value provided is not supported by ticket.",,,
 "Working Days",,,
 "chart.resolved",,,
 "days",,,

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="research-result-line-grid" model="com.axelor.apps.base.db.ResearchResultLine"
+    title="Results">
+    <field name="origin" readonly="true" title="Origin"/>
+    <field name="research1Value" title="Value 1"/>
+    <field name="research2Value" title="Value 2"/>
+    <field name="research3Value" title="Value 3"/>
+    <field name="research4Value" title="Value 4"/>
+    <field name="dateResearch1Value" title="Date 1"/>
+  </grid>
+
+  <form name="research-result-line-form" model="com.axelor.apps.base.db.ResearchResultLine"
+    title="Result">
+    <panel name="mainPanel">
+      <field name="originTypeSelect" title="Origin" widget="RefSelect" x-related="originId"
+        readonly="true"/>
+      <field name="research1Value" title="Value 1" colSpan="6" readonly="true"/>
+      <field name="research2Value" title="Value 2" colSpan="6" readonly="true"/>
+      <field name="research3Value" title="Value 3" colSpan="6" readonly="true"/>
+      <field name="research4Value" title="Value 4" colSpan="6" readonly="true"/>
+      <field name="dateResearch1Value" title="Date 1" colSpan="6" readonly="true"/>
+    </panel>
+  </form>
+
+</object-views>

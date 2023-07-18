@@ -131,6 +131,9 @@
       <field name="journal" readonlyIf="!company"
         onSelect="action-payment-session-method-set-journal-domain"/>
       <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
+      <field name="partnerSet" widget="TagSelect" canNew="false" canEdit="false"
+        onSelect="action-payment-session-attrs-set-partner-domain" form-view="partner-form"
+        readonlyIf="!company || !partnerTypeSelect"/>
     </panel>
     <panel name="accountingSettingsPanel" title="Accounting Settings"
       readonlyIf="statusSelect > 1 &amp;&amp; $hasInvoiceTerm" itemSpan="6">
@@ -139,6 +142,9 @@
           readonlyIf="statusSelect == 4"/>
         <field name="accountingMethodSelect" showIf="moveAccountingDateSelect == 3"
           selection-in="[1,2]" readonlyIf="statusSelect == 4"/>
+        <label name="accountingMethodSelectCompensationLabel"
+          showIf="accountingMethodSelect == 1" css="label-danger"
+          title="The compensation process is not available when using this accounting method"/>
       </panel>
       <panel name="moveAccountingDatePanel" stacked="true">
         <field name="moveAccountingDateSelect" showIf="accountingMethodSelect != 3"
@@ -156,13 +162,17 @@
       <button name="searchEligibleTermsBtn" title="Search due Terms"
         onClick="action-group-payment-session-search-eligible-terms"
         hideIf="statusSelect > 1 || $hasInvoiceTerm"/>
-      <button name="refreshEligibleTermsBtn" title="Refresh terms list"
-        showIf="id &amp;&amp; $hasInvoiceTerm &amp;&amp; statusSelect == 1"
-        onClick="action-group-payment-session-search-eligible-terms"/>
+      <spacer/>
       <button name="selectAllBtn" title="Select all"
         onClick="action-payment-session-method-select-all" colSpan="3" hidden="true"/>
       <button name="unselectAllBtn" title="Unselect all"
         onClick="action-payment-session-method-unselect-all" colSpan="3" hidden="true"/>
+      <button name="refreshEligibleTermsBtn" title="Refresh terms list"
+        showIf="id &amp;&amp; $hasInvoiceTerm &amp;&amp; statusSelect == 1"
+        onClick="action-group-payment-session-search-eligible-terms"/>
+      <button name="removeNegativeLinesBtn" title="Remove all negative lines"
+        onClick="save,action-payment-session-method-remove-negative-lines"
+        showIf="id &amp;&amp; statusSelect == 1"/>
       <panel-dashlet name="invoiceTermPanelDashlet"
         action="action-invoice-term-view-payment-session-dashlet" hidden="true" colSpan="12"
         canSearch="true" height="600" readonlyIf="statusSelect > 1"/>
@@ -181,7 +191,7 @@
     title="Payment session print wizard">
     <panel name="mainPanel">
       <field name="_exportTypeSelect" type="string" title="Export format"
-        selection="iadministration.export.type.select"/>
+        selection="iadministration.export.type.select" selection-in="['pdf','xlsx','ods']"/>
       <button name="printBtn" title="Export" readonlyIf="!_exportTypeSelect" onClick=""/>
     </panel>
   </form>
@@ -222,6 +232,7 @@
     <action name="action-payment-session-method-set-has-invoice-term-selected"/>
     <action name="action-payment-session-method-set-has-invoice-term"/>
     <action name="action-payment-session-record-set-session-total-amount-btn"/>
+    <action name="action-payment-session-method-set-button-attrs"/>
   </action-group>
 
   <action-attrs name="action-attrs-payment-session-set-company-domain">
@@ -363,6 +374,11 @@
       method="processInvoiceTerms"/>
   </action-method>
 
+  <action-method name="action-payment-session-method-remove-negative-lines">
+    <call class="com.axelor.apps.account.web.PaymentSessionController"
+      method="removeNegativeLines"/>
+  </action-method>
+
   <action-group name="action-group-payment-session-search-eligible-terms">
     <action name="save"/>
     <action name="action-method-payment-session-search-eligible-terms"/>
@@ -460,5 +476,17 @@
   <action-method name="action-payment-session-method-set-button-attrs">
     <call class="com.axelor.apps.account.web.PaymentSessionController" method="setButtonAttrs"/>
   </action-method>
+
+  <action-attrs name="action-payment-session-attrs-set-partner-domain">
+    <attribute name="domain" for="partnerSet"
+      expr="eval: &quot;self.isSupplier = true AND :company member of self.companySet&quot;"
+      if="partnerTypeSelect == 1 &amp;&amp; company"/>
+    <attribute name="domain" for="partnerSet"
+      expr="eval: &quot;self.isEmployee = true AND :company member of self.companySet&quot;"
+      if="partnerTypeSelect == 2 &amp;&amp; company"/>
+    <attribute name="domain" for="partnerSet"
+      expr="eval: &quot;self.isCustomer = true AND :company member of self.companySet&quot;"
+      if="partnerTypeSelect == 3 &amp;&amp; company"/>
+  </action-attrs>
 
 </object-views>

@@ -42,4 +42,7 @@ public final class ProjectExceptionMessage {
       "The parent task creates a loop in the task tree." /*)*/;
   public static final String RESOURCE_ALREADY_BOOKED_ERROR_MSG = /*$$(*/
       "This resource is already booked for this period" /*)*/;
+
+  public static final String PROJECT_SEQUENCE_ERROR = /*$$(*/
+      "The company %s doesn't have any configured sequence for Project" /*)*/;
 }

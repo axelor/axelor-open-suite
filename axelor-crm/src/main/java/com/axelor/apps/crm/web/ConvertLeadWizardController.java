@@ -19,17 +19,26 @@
 package com.axelor.apps.crm.web;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.ResponseMessageType;
+import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.PartnerAddress;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.AddressService;
+import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.crm.db.Lead;
+import com.axelor.apps.crm.db.Opportunity;
+import com.axelor.apps.crm.db.PartnerStatus;
 import com.axelor.apps.crm.db.repo.LeadRepository;
+import com.axelor.apps.crm.db.repo.PartnerStatusRepository;
 import com.axelor.apps.crm.exception.CrmExceptionMessage;
 import com.axelor.apps.crm.service.ConvertLeadWizardService;
+import com.axelor.apps.crm.service.app.AppCrmService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
@@ -38,9 +47,15 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.axelor.studio.db.AppBase;
+import com.axelor.studio.db.AppCrm;
 import com.axelor.utils.service.ConvertBinaryToMetafileService;
 import com.google.inject.Singleton;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Singleton
 public class ConvertLeadWizardController {
@@ -50,189 +65,210 @@ public class ConvertLeadWizardController {
 
     try {
       Context context = request.getContext();
-
+      AppCrm appCrm = Beans.get(AppCrmService.class).getAppCrm();
+      boolean crmProcessOnPartner = appCrm.getCrmProcessOnPartner();
       Map<String, Object> leadMap = (Map<String, Object>) context.get("_lead");
-      Map<String, Object> opportunityMap = null;
       Map<String, Object> partnerMap = null;
       Map<String, Object> contactPartnerMap = null;
 
       Lead lead = Beans.get(LeadRepository.class).find(((Integer) leadMap.get("id")).longValue());
-      Integer leadToPartnerSelect = (Integer) context.get("leadToPartnerSelect");
-      Integer leadToContactSelect = (Integer) context.get("leadToContactSelect");
-
-      if (context.containsKey("isCreateOpportunity")
-          && (Boolean) context.get("isCreateOpportunity")) {
-        opportunityMap = (Map<String, Object>) context.get("opportunity");
-      }
+      Integer leadToPartnerSelect =
+          (Integer) Optional.ofNullable(context.get("leadToPartnerSelect")).orElse(1);
+      Integer leadToContactSelect =
+          (Integer) Optional.ofNullable(context.get("leadToContactSelect")).orElse(0);
 
       Partner partner = null;
-      Partner contactPartner = null;
+      PartnerStatus partnerStatus = null;
+      List<Partner> contactPartnerList = new ArrayList<>();
+
+      PartnerRepository partnerRepository = Beans.get(PartnerRepository.class);
 
       if (leadToPartnerSelect == LeadRepository.CONVERT_LEAD_CREATE_PARTNER) {
-        partnerMap = (Map<String, Object>) context.get("partner");
+        partnerMap = this.getPartnerMap(leadToContactSelect != 0, request, response);
       } else if (leadToPartnerSelect == LeadRepository.CONVERT_LEAD_SELECT_PARTNER) {
         Map<String, Object> selectPartnerContext =
             (Map<String, Object>) context.get("selectPartner");
-        partner =
-            Beans.get(PartnerRepository.class)
-                .find(((Integer) selectPartnerContext.get("id")).longValue());
+        partner = partnerRepository.find(((Integer) selectPartnerContext.get("id")).longValue());
       }
 
       if (leadToContactSelect == LeadRepository.CONVERT_LEAD_CREATE_CONTACT) {
-        contactPartnerMap = (Map<String, Object>) context.get("contactPartner");
+        contactPartnerMap = this.getContactMap(request, response);
       } else if (leadToContactSelect == LeadRepository.CONVERT_LEAD_SELECT_CONTACT) {
-        Map<String, Object> selectContactContext =
-            (Map<String, Object>) context.get("selectContact");
-        contactPartner =
-            Beans.get(PartnerRepository.class)
-                .find(((Integer) selectContactContext.get("id")).longValue());
+        List<HashMap<String, Object>> selectContactContextList =
+            (List<HashMap<String, Object>>) context.get("selectContactSet");
+        for (HashMap<String, Object> selectContactContext : selectContactContextList) {
+          contactPartnerList.add(
+              partnerRepository.find(((Integer) selectContactContext.get("id")).longValue()));
+        }
       }
 
-      lead =
-          Beans.get(ConvertLeadWizardService.class)
-              .generateDataAndConvertLeadAndGenerateOpportunity(
-                  lead,
-                  leadToPartnerSelect,
-                  leadToContactSelect,
-                  partner,
-                  partnerMap,
-                  contactPartner,
-                  contactPartnerMap,
-                  opportunityMap);
-
-      openPartner(response, lead);
+      if (crmProcessOnPartner) {
+        Map<String, Object> partnerStatusMap = (Map<String, Object>) context.get("partnerStatus");
+        partnerStatus =
+            Beans.get(PartnerStatusRepository.class)
+                .find(((Integer) partnerStatusMap.get("id")).longValue());
+        partner =
+            Beans.get(ConvertLeadWizardService.class)
+                .generateDataAndConvertLead(
+                    lead,
+                    leadToPartnerSelect,
+                    leadToContactSelect,
+                    partner,
+                    partnerMap,
+                    partnerStatus,
+                    contactPartnerList,
+                    contactPartnerMap);
+      }
+      openPartner(
+          response,
+          partner,
+          partnerMap,
+          crmProcessOnPartner,
+          leadToPartnerSelect,
+          lead,
+          partnerStatus,
+          contactPartnerList,
+          contactPartnerMap);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
   }
 
-  protected void openPartner(ActionResponse response, Lead lead) {
+  protected void openPartner(
+      ActionResponse response,
+      Partner partner,
+      Map<String, Object> partnerMap,
+      boolean crmProcessOnPartner,
+      Integer leadToPartnerSelect,
+      Lead lead,
+      PartnerStatus partnerStatus,
+      List<Partner> contactPartnerList,
+      Map<String, Object> contactPartnerMap) {
 
-    Partner partner = lead.getPartner();
-    String form = "partner-customer-form";
-    String grid = "partner-customer-grid";
+    String form = "partner-form";
+    String grid = "partner-grid";
 
-    if (partner.getIsSupplier() && !partner.getIsCustomer() && !partner.getIsProspect()) {
-      form = "partner-supplier-form";
-      grid = "partner-supplier-grid";
-    }
-
-    response.setInfo(I18n.get(CrmExceptionMessage.CONVERT_LEAD_1));
     response.setCanClose(true);
-    response.setView(
-        ActionView.define(I18n.get(CrmExceptionMessage.CONVERT_LEAD_1))
-            .model(Partner.class.getName())
-            .add("form", form)
-            .add("grid", grid)
-            .param("search-filters", "partner-filters")
-            .context("_showRecord", partner.getId())
-            .map());
+    if (crmProcessOnPartner) {
+      response.setView(
+          ActionView.define(I18n.get(CrmExceptionMessage.CONVERT_LEAD_1))
+              .model(Partner.class.getName())
+              .add("form", form)
+              .add("grid", grid)
+              .param("search-filters", "partner-filters")
+              .context("_showRecord", partner.getId())
+              .context("_isFromCrm", true)
+              .map());
+    } else {
+      if (leadToPartnerSelect == LeadRepository.CONVERT_LEAD_CREATE_PARTNER) {
+        response.setView(
+            ActionView.define(I18n.get(CrmExceptionMessage.CONVERT_LEAD_1))
+                .model(Partner.class.getName())
+                .add("form", form)
+                .add("grid", grid)
+                .param("search-filters", "partner-filters")
+                .context("_isInConversionFromLead", true)
+                .context("_lead", lead)
+                .context("_isFromCrm", true)
+                .context("_partnerMap", partnerMap)
+                .context("_contactPartnerList", contactPartnerList)
+                .context("_contactPartnerMap", contactPartnerMap)
+                .map());
+      } else if (leadToPartnerSelect == LeadRepository.CONVERT_LEAD_SELECT_PARTNER) {
+        response.setView(
+            ActionView.define(I18n.get(CrmExceptionMessage.CONVERT_LEAD_1))
+                .model(Partner.class.getName())
+                .add("form", form)
+                .add("grid", grid)
+                .param("search-filters", "partner-filters")
+                .context("_isInConversionFromLead", true)
+                .context("_showRecord", partner.getId())
+                .context("_lead", lead)
+                .context("_isFromCrm", true)
+                .context("_contactPartnerList", contactPartnerList)
+                .context("_contactPartnerMap", contactPartnerMap)
+                .map());
+      }
+    }
   }
 
-  public void setDefaults(ActionRequest request, ActionResponse response) throws AxelorException {
-
+  public Map<String, Object> getPartnerMap(
+      boolean isCompany, ActionRequest request, ActionResponse response) throws AxelorException {
     Lead lead = findLead(request);
-
-    response.setAttr("$partner.$primaryAddress", "value", lead.getPrimaryAddress());
-    response.setAttr("$partner.$primaryCity", "value", lead.getPrimaryCity());
-    response.setAttr("$partner.$primaryState", "value", lead.getPrimaryState());
-    response.setAttr("$partner.$primaryPostalCode", "value", lead.getPrimaryPostalCode());
-    response.setAttr("$partner.$primaryCountry", "value", lead.getPrimaryCountry());
-    response.setAttr("$contactAddress", "value", lead.getPrimaryAddress());
-    response.setAttr("$contactCity", "value", lead.getPrimaryCity());
-    response.setAttr("$contactState", "value", lead.getPrimaryState());
-    response.setAttr("$contactPostalCode", "value", lead.getPrimaryPostalCode());
-    response.setAttr("$contactCountry", "value", lead.getPrimaryCountry());
-    response.setAttr("$leadToPartnerSelect", "value", 1);
-    response.setAttr("$leadToContactSelect", "value", 1);
-  }
-
-  public void setPartnerDefaults(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-
-    Lead lead = findLead(request);
-
     AppBase appBase = Beans.get(AppBaseService.class).getAppBase();
-    response.setAttr("name", "value", lead.getEnterpriseName());
-    response.setAttr("industrySector", "value", lead.getIndustrySector());
-    response.setAttr("titleSelect", "value", lead.getTitleSelect());
-    response.setAttr("emailAddress", "value", lead.getEmailAddress());
-    response.setAttr("mobilePhone", "value", lead.getMobilePhone());
-    response.setAttr("fixedPhone", "value", lead.getFixedPhone());
-    response.setAttr("webSite", "value", lead.getWebSite());
-    response.setAttr("source", "value", lead.getSource());
-    response.setAttr("department", "value", lead.getDepartment());
-    response.setAttr("team", "value", lead.getTeam());
-    response.setAttr("user", "value", lead.getUser());
-    response.setAttr("isKeyAccount", "value", lead.getIsKeyAccount());
-    response.setAttr("leadScoringSelect", "value", lead.getLeadScoringSelect());
-    response.setAttr("partnerCategory", "value", lead.getType());
-    response.setAttr("sizeSelect", "value", lead.getSizeSelect());
-    response.setAttr("isNurturing", "value", lead.getIsNurturing());
-    response.setAttr("agency", "value", lead.getAgency());
+    Map<String, Object> partnerMap = new HashMap<String, Object>();
+    partnerMap.put("industrySector", lead.getIndustrySector());
+    partnerMap.put("emailAddress", lead.getEmailAddress());
+    partnerMap.put("mobilePhone", lead.getMobilePhone());
+    partnerMap.put("fixedPhone", lead.getFixedPhone());
+    partnerMap.put("webSite", lead.getWebSite());
+    partnerMap.put("source", lead.getSource());
+    partnerMap.put("department", lead.getDepartment());
+    partnerMap.put("team", lead.getTeam());
+    partnerMap.put("user", lead.getUser());
+    partnerMap.put("isKeyAccount", lead.getIsKeyAccount());
+    partnerMap.put("leadScoringSelect", lead.getLeadScoringSelect());
+    partnerMap.put("partnerCategory", lead.getType());
+    partnerMap.put("sizeSelect", lead.getSizeSelect());
+    partnerMap.put("isNurturing", lead.getIsNurturing());
+    partnerMap.put("agency", lead.getAgency());
     if (lead.getUser() != null && lead.getUser().getActiveCompany() != null) {
       if (lead.getUser().getActiveCompany().getDefaultPartnerCategorySelect()
           == CompanyRepository.CATEGORY_CUSTOMER) {
-        response.setAttr("isCustomer", "value", true);
+        partnerMap.put("isCustomer", true);
       } else if (lead.getUser().getActiveCompany().getDefaultPartnerCategorySelect()
           == CompanyRepository.CATEGORY_SUPPLIER) {
-        response.setAttr("isSupplier", "value", true);
+        partnerMap.put("isSupplier", true);
       } else {
         response.setAttr("isProspect", "value", true);
       }
     } else {
-      response.setAttr("isProspect", "value", true);
+      partnerMap.put("isProspect", true);
     }
-    response.setAttr("partnerTypeSelect", "value", "1");
-    response.setAttr("language", "value", appBase.getDefaultPartnerLanguage());
-  }
 
-  public void setIndividualPartner(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-
-    Lead lead = findLead(request);
-
-    if (request.getContext().get("partnerTypeSelect").toString().equals("2")) {
-      response.setAttr("firstName", "value", lead.getFirstName());
-      response.setAttr("name", "value", lead.getName());
+    if (!isCompany) {
+      partnerMap.put("firstName", lead.getFirstName());
+      partnerMap.put("name", lead.getName());
+      partnerMap.put("titleSelect", lead.getTitleSelect());
+      partnerMap.put("partnerTypeSelect", 2);
 
     } else {
-      response.setAttr("name", "value", lead.getEnterpriseName());
+      partnerMap.put("partnerTypeSelect", 1);
+      partnerMap.put("name", lead.getEnterpriseName());
     }
+    partnerMap.put("language", appBase.getDefaultPartnerLanguage());
+    return partnerMap;
   }
 
-  public void setContactDefaults(ActionRequest request, ActionResponse response) {
-    try {
-      Lead lead = findLead(request);
-
-      if (lead.getPicture() != null) {
-        MetaFile picture =
-            Beans.get(ConvertBinaryToMetafileService.class)
-                .convertByteTabPictureInMetafile(lead.getPicture());
-        response.setAttr("picture", "value", picture);
-      }
-      response.setAttr("firstName", "value", lead.getFirstName());
-      response.setAttr("name", "value", lead.getName());
-      response.setAttr("titleSelect", "value", lead.getTitleSelect());
-      response.setAttr("emailAddress", "value", lead.getEmailAddress());
-      response.setAttr("mobilePhone", "value", lead.getMobilePhone());
-      response.setAttr("fixedPhone", "value", lead.getFixedPhone());
-      response.setAttr("user", "value", lead.getUser());
-      response.setAttr("team", "value", lead.getTeam());
-      response.setAttr("jobTitleFunction", "value", lead.getJobTitleFunction());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+  public Map<String, Object> getContactMap(ActionRequest request, ActionResponse response)
+      throws AxelorException, IOException {
+    Map<String, Object> contactMap = new HashMap<String, Object>();
+    Lead lead = findLead(request);
+    if (lead.getPicture() != null) {
+      MetaFile picture =
+          Beans.get(ConvertBinaryToMetafileService.class)
+              .convertByteTabPictureInMetafile(lead.getPicture());
+      contactMap.put("picture", picture);
     }
-  }
+    contactMap.put("firstName", lead.getFirstName());
 
-  public void setOpportunityDeafults(ActionRequest request, ActionResponse response) {
-    try {
-      Lead lead = findLead(request);
-      response.setAttr("source", "value", lead.getSource());
-      response.setAttr("user", "value", lead.getUser());
-    } catch (AxelorException e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-    }
+    contactMap.put("name", lead.getName());
+
+    contactMap.put("titleSelect", lead.getTitleSelect());
+
+    contactMap.put("emailAddress", lead.getEmailAddress());
+
+    contactMap.put("mobilePhone", lead.getMobilePhone());
+
+    contactMap.put("fixedPhone", lead.getFixedPhone());
+
+    contactMap.put("user", lead.getUser());
+
+    contactMap.put("team", lead.getTeam());
+
+    contactMap.put("jobTitleFunction", lead.getJobTitleFunction());
+
+    return contactMap;
   }
 
   protected Lead findLead(ActionRequest request) throws AxelorException {
@@ -258,5 +294,121 @@ public class ConvertLeadWizardController {
     }
 
     return lead;
+  }
+
+  public void setFieldsForConversionFromLeads(ActionRequest request, ActionResponse response) {
+    try {
+      Context context = request.getContext();
+      Partner partner = context.asType(Partner.class);
+
+      if (partner.getId() == null) {
+        Map<String, Object> partnerMap = (Map<String, Object>) context.get("_partnerMap");
+        for (Map.Entry partnerField : partnerMap.entrySet()) {
+          response.setValue((String) partnerField.getKey(), partnerField.getValue());
+        }
+      }
+      List<PartnerAddress> partnerAddressList = this.generateAddress(request, partner);
+      response.setValue("partnerAddressList", partnerAddressList);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  protected List<PartnerAddress> generateAddress(ActionRequest request, Partner partner)
+      throws AxelorException {
+    Lead lead = this.findLead(request);
+    Address primaryAddress = Beans.get(ConvertLeadWizardService.class).createPrimaryAddress(lead);
+    if (primaryAddress != null) {
+      primaryAddress.setFullName(Beans.get(AddressService.class).computeFullName(primaryAddress));
+      Beans.get(PartnerService.class).addPartnerAddress(partner, primaryAddress, true, true, true);
+    }
+    return partner.getPartnerAddressList();
+  }
+
+  public void setFieldsForOpportunityGenerationFromPartner(
+      ActionRequest request, ActionResponse response) {
+    try {
+      Map<String, Object> opportunityMap = this.getOpportunityMap(request);
+      for (Map.Entry opportunityField : opportunityMap.entrySet()) {
+        response.setValue((String) opportunityField.getKey(), opportunityField.getValue());
+      }
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void convertLeadFromPartner(ActionRequest request, ActionResponse response) {
+    try {
+      Context context = request.getContext();
+      Partner partner = context.asType(Partner.class);
+      partner = Beans.get(PartnerRepository.class).find(partner.getId());
+      Lead lead = this.findLead(request);
+
+      ConvertLeadWizardService convertLeadWizardService = Beans.get(ConvertLeadWizardService.class);
+
+      List<Map<String, Object>> partnerList =
+          (List<Map<String, Object>>) context.get("_contactPartnerList");
+
+      List<Partner> contactList = convertLeadWizardService.convertMapListToPartnerList(partnerList);
+
+      Map<String, Object> contactPartnerMap =
+          (Map<String, Object>) context.get("_contactPartnerMap");
+
+      convertLeadWizardService.generateDataAndConvertLead(
+          lead,
+          LeadRepository.CONVERT_LEAD_SELECT_PARTNER,
+          LeadRepository.CONVERT_LEAD_SELECT_CONTACT,
+          partner,
+          null,
+          null,
+          contactList,
+          contactPartnerMap);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void openOpportunity(ActionRequest request, ActionResponse response) {
+
+    try {
+
+      Context context = request.getContext();
+      Partner partner = context.asType(Partner.class);
+      partner = Beans.get(PartnerRepository.class).find(partner.getId());
+
+      Lead lead;
+      Map<String, Object> leadContext = (Map<String, Object>) context.get("_lead");
+      lead = Beans.get(LeadRepository.class).find(((Integer) leadContext.get("id")).longValue());
+
+      String form = "opportunity-form";
+      String grid = "opportunity-grid";
+      response.setCanClose(true);
+      response.setView(
+          ActionView.define(I18n.get(CrmExceptionMessage.CONVERT_LEAD_1))
+              .model(Opportunity.class.getName())
+              .add("form", form)
+              .add("grid", grid)
+              .param("search-filters", "opportunity-filters")
+              .context("_isGeneratedFromPartner", true)
+              .context("_partner", partner)
+              .context("_lead", lead)
+              .context("_internalUserId", AuthUtils.getUser().getId())
+              .context("_myActiveTeam", Beans.get(UserService.class).getUserActiveTeam())
+              .context("todayDate", Beans.get(AppBaseService.class).getTodayDate(null))
+              .map());
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  protected Map<String, Object> getOpportunityMap(ActionRequest request) throws AxelorException {
+    Map<String, Object> opportunityMap = new HashMap<String, Object>();
+    Lead lead = findLead(request);
+    opportunityMap.put("source", lead.getSource());
+    opportunityMap.put("user", lead.getUser());
+    return opportunityMap;
   }
 }

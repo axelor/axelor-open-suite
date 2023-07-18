@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+
+  <grid name="research-parameter-config-grid" title="Research configurations"
+    model="com.axelor.apps.base.db.ResearchParameterConfig">
+    <field name="model"/>
+  </grid>
+
+  <form name="research-parameter-config-form" title="Search configuration"
+    model="com.axelor.apps.base.db.ResearchParameterConfig" width="large">
+    <panel name="mainPanel">
+      <field name="model"
+        onChange="action-base-research-parameter-config-set-meta-model-method" colSpan="3"
+        readonlyIf="researchParameterList != null &amp;&amp; researchParameterList.length &gt; 0"/>
+      <field name="metaModel" hidden="true" readonly="true"/>
+      <help>
+        <![CDATA[
+          <br>Mapping for the query :<br>First Name -> :firstName <br>Last Name -> :lastName <br>Email -> :email <br>Phone -> :phone <br>
+        ]]>
+      </help>
+
+      <field name="researchParameterList" showIf="model" colSpan="12" showTitle="false">
+        <editor colSpan="12">
+          <field name="researchPrimaryKey" colSpan="3" required="true"/>
+          <field name="mapping" onChange="ation-base-research-parameter-method-set-query"
+            colSpan="3" readonlyIf="researchPrimaryKey == null"
+            onSelect="action-research-parameter-method-mapping-domain" required="true"/>
+          <field name="binding" onChange="ation-base-research-parameter-method-set-query"
+            colSpan="3" required="true"/>
+          <field name="query" colSpan="3" required="true"/>
+
+        </editor>
+      </field>
+    </panel>
+  </form>
+
+  <action-method name="action-base-research-parameter-config-set-meta-model-method">
+    <call class="com.axelor.apps.base.web.ResearchParameterConfigController"
+      method="setMetaModel"/>
+  </action-method>
+
+</object-views>
