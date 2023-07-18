@@ -1397,6 +1397,7 @@
 "Derogatory Resumption Move",,,
 "Derogatory depreciation",,,
 "Description",,,
+"Description is missing on move line(s)",,,
 "Description is required in moves for company %s but description of moves that are being generated will be empty. Please make sure a journal is set and fill a default description or enable document number to be used as such.",,,
 "Description required",,,
 "Designated account %s in move line %s is not allowed on the journal %s. Please modify journal settings or designated account to proceed.",,,
