@@ -135,6 +135,7 @@
             readonlyIf="$validatePeriod || moveLineList.length  &gt; 0 &amp;&amp; statusSelect == 3"
             onChange="action-move-group-origin-date-onchange" colSpan="2"/>
           <field name="description" readonlyIf="$validatePeriod"
+            requiredIf="company.accountConfig.isDescriptionRequired"
             onChange="action-account-move-group-set-description-on-lines" colSpan="6"/>
         </panel>
       </panel>
@@ -322,6 +323,7 @@
           <field name="journal.allowAccountingDaybook" hidden="true"/>
           <field name="company.accountConfig" hidden="true"/>
           <field name="company.accountConfig.accountingDaybook" hidden="true"/>
+          <field name="company.accountConfig.isDescriptionRequired" hidden="true"/>
         </panel>
       </panel>
     </panel-tabs>
