@@ -15,6 +15,7 @@
       default="1" readonly="true"/>
     <many-to-one name="employee" ref="Employee" title="Employee" readonly="true"
       required="true"/>
+    <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
 
     <one-to-many name="generalExpenseLineList" ref="com.axelor.apps.hr.db.ExpenseLine"
       title="General expense lines" mappedBy="generalExpense"/>
@@ -39,7 +40,6 @@
       selection="hr.expense.company.cb.payment" default="1"/>
     <many-to-one name="payrollPreparation"
       ref="com.axelor.apps.hr.db.PayrollPreparation"/>
-    <boolean name="multipleUsers" title="Multiple users" default="false"/>
     <one-to-many name="employeeAdvanceUsageList"
       ref="com.axelor.apps.hr.db.EmployeeAdvanceUsage" mappedBy="expense" title="Employee advances"
       readonly="true" orphanRemoval="false"/>

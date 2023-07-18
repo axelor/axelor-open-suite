@@ -40,9 +40,8 @@ public class ConfiguratorProdProcessLineController {
           request.getContext().asType(ConfiguratorProdProcessLine.class);
       WorkCenter workCenter = confProdProcessLine.getWorkCenter();
       if (workCenter != null) {
-        response.setValue(
-            "durationPerCycle",
-            Beans.get(WorkCenterService.class).getDurationFromWorkCenter(workCenter));
+        response.setValue("durationPerCycle", workCenter.getDurationPerCycle());
+        response.setValue("humanDuration", workCenter.getHrDurationPerCycle());
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+
+  <form model="com.axelor.utils.db.Wizard" title="Budget level export"
+    name="budget-budget-level-export-wizard-form">
+    <panel name="mainPanel">
+      <field name="$advancedExportBudget"
+        onSelect="action-attrs-budget-export-wizard-domain-advanced-export-budget-on-select"
+        type="many-to-one" title="Advance export budget"
+        target="com.axelor.apps.base.db.AdvancedExport" required="true"/>
+      <field name="$advancedExportPurchaseOrderLine"
+        onSelect="action-attrs-budget-export-wizard-domain-advanced-export-po-line-on-select"
+        type="many-to-one" title="Advance export purchase order line"
+        target="com.axelor.apps.base.db.AdvancedExport" required="true"/>
+      <button name="okBtn" title="OK" onClick="action-group-budget-export-budget-level"
+        colOffset="11" colSpan="1"/>
+    </panel>
+  </form>
+
+  <action-group name="action-group-budget-export-budget-level">
+    <action name="action-method-budget-level-method-export-budget-level"
+      if="_model == 'com.axelor.apps.budget.db.BudgetLevel'"/>
+    <action name="action-method-budget-level-method-export-budget"
+      if="_model == 'com.axelor.apps.budget.db.Budget'"/>
+  </action-group>
+
+  <action-method name="action-method-budget-level-method-export-budget-level">
+    <call class="com.axelor.apps.budget.web.BudgetLevelController" method="exportBudgetLevel"/>
+  </action-method>
+
+  <action-method name="action-method-budget-level-method-export-budget">
+    <call class="com.axelor.apps.budget.web.BudgetController" method="exportBudgetLevel"/>
+  </action-method>
+
+  <action-attrs
+    name="action-attrs-budget-export-wizard-domain-advanced-export-budget-on-select">
+    <attribute name="domain" for="$advancedExportBudget"
+      expr="eval: &quot; self.metaModel.name = 'BudgetLevel' OR self.metaModel.name = 'Budget' &quot;"/>
+  </action-attrs>
+
+  <action-attrs
+    name="action-attrs-budget-export-wizard-domain-advanced-export-po-line-on-select">
+    <attribute name="domain" for="$advancedExportPurchaseOrderLine"
+      expr="eval: &quot; self.metaModel.name = 'PurchaseOrderLine' &quot;"/>
+  </action-attrs>
+
+</object-views>

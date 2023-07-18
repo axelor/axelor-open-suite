@@ -272,4 +272,9 @@ public final class StockExceptionMessage {
 
   public static final String INVENTORY_PRODUCT_TRACKING_NUMBER_ERROR = /*$$(*/
       "There is more than one line for same product with same tracking number." /*)*/;
+
+  public static final String REST_STOCK_MOVE_LINE_STOCK_LOCATION_REQUIRED = /*$$(*/
+      "Error: %s field is required and can not be null" /*)*/;
+  public static final String REST_STOCK_MOVE_LINE_STOCK_LOCATIONS_REQUIRED = /*$$(*/
+      "Error: %s and %s fields are required and can not be null" /*)*/;
 }

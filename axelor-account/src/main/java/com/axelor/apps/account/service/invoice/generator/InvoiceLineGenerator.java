@@ -32,7 +32,6 @@ import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Alarm;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
@@ -425,15 +424,6 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
       return unitConversion.getCoef();
     } else {
       return BigDecimal.ONE;
-    }
-  }
-
-  protected void addAlarm(Alarm alarm, Partner partner) {
-
-    if (alarm != null) {
-
-      alarm.setInvoice(invoice);
-      alarm.setPartner(partner);
     }
   }
 }

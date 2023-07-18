@@ -91,4 +91,12 @@ public interface BillOfMaterialService {
    * @throws AxelorException
    */
   List<Long> getBillOfMaterialProductsId(Set<Company> companySet) throws AxelorException;
+
+  BillOfMaterial setDraftStatus(BillOfMaterial billOfMaterial) throws AxelorException;
+
+  BillOfMaterial setValidateStatus(BillOfMaterial billOfMaterial) throws AxelorException;
+
+  BillOfMaterial setApplicableStatus(BillOfMaterial billOfMaterial) throws AxelorException;
+
+  BillOfMaterial setObsoleteStatus(BillOfMaterial billOfMaterial) throws AxelorException;
 }
