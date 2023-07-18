@@ -198,8 +198,9 @@ public interface StockMoveLineService {
    * Store customs code information on each stock move line from its product.
    *
    * @param stockMoveLineList List of StockMoveLines on which to operate
+   * @throws AxelorException
    */
-  public void storeCustomsCodes(List<StockMoveLine> stockMoveLineList);
+  public void storeCustomsCodes(List<StockMoveLine> stockMoveLineList) throws AxelorException;
 
   /**
    * Check whether a stock move line is fully spread over logistical form lines.
@@ -321,4 +322,13 @@ public interface StockMoveLineService {
 
   public BigDecimal computeNewAveragePriceLocationLine(
       StockLocationLine stockLocationLine, StockMoveLine stockMoveLine) throws AxelorException;
+
+  /**
+   * This method resets complety the stock move line. It does not remove the stock move line from
+   * database.
+   *
+   * @param stockMoveLine
+   * @return empty stock move line
+   */
+  public StockMoveLine resetStockMoveLine(StockMoveLine stockMoveLine);
 }

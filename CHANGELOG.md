@@ -1,3 +1,101 @@
+## [7.0.5] (2023-07-11)
+
+#### Fixed
+
+* Business project: Automatic project can be enabled only if project generation/selection for order is enabled
+
+The helper for the project generation/selection for order has been changed. To update it, a script must be executed:
+
+```sql
+DELETE FROM meta_help WHERE field_name = 'generateProjectOrder';
+```
+
+* App configuration: remove YOURS API from Routing Services
+
+If using the distance computation with web services in expenses, users should select the OSRM API in App base config.
+
+* Custom accounting report: fixed percentage value when total line is not computed during the first iteration.
+* Custom accounting report: fixed various issues related to report parameters.
+* Custom accounting report: fixed number format.
+* Custom accounting report: order accounts and analytic accounts alphabetically when detailed.
+* Custom accounting report: fixed analytic values not taking result computation method into account.
+* Accounting report config line: prevent from creating a line with an invalid groovy code.
+* Move: fixed automatic fill of VAT system when financial account is empty.
+* Move: fixed duplicate origin verification when move is not saved.
+* Invoice: fixed error when cancelling an invoice payment.
+* Move: on change of company, currency is updated to company currency even when the partner is filled.
+* Product/Account Management: hide financial account when it is inactive on product account management.
+* Reconcile group: added back "calculate" and "accounting reconcile" buttons on move line grid view.
+* Forecast generator: fixed endless loading when no periodicity selected.
+* Stock move line: fixed a issue when emptying product from stock move line would create a new stock move line.
+* Prod process line: fixed an issue where capacity settings panel was hidden with work center group feature activated.
+* Inventory: fixed wrong gap value on inventory.
+* Accounting report: fixed impossibility to select a payment move line in DAS2 grid even if code N4DS is not empty.
+* Fixed asset: fixed move line amount 0 error on sale move generation.
+* Stock rules demo data: fixed wrong repicient in message template.
+* Accounting batch: fixed error when we try to run credit transfer batch without bank details.
+* Sale order template: fixed error when selecting a project.
+* Move: allow tax line generation when move is daybook status.
+* Credit transfer batch: fixed duplicate payments & bank orders.
+* Purchase Order/Sale Order/Contract : Remove wrong analytic line link after invoice generation
+* Payment session: change titles related to emails on form view.
+* Payment voucher: fixed invoice terms display when trading name is not managed or filled.
+* Contract: fixed an error occurring when invoicing a contract
+
+An error occurred when invoicing a contract if time prorated Invoice was enabled and then periodic invoicing was disabled.
+
+* Fixed asset: fixed being able to dispose a fixed asset while generating a sale move but with no tax line set.
+* Move: removed verification on tax in move with cut off functional origin.
+* Invoice term: Fixed company amount remaining on pfp partial validation to pay the right amount.
+* Details stock location line: removed reserved quantity from the form view.
+* Sale order: fixed totals in sales order printouts.
+* Email address: Remove the unused field 'lead' from email address.
+* Invoice: fixed view marked as dirty after invoice validation.
+* Account printings: fixed an issue were pictures with specific filenames were not displayed in the printings.
+* Accounting report: fixed bank reconciliation statement.
+* Accounting report config line: filter analytic accounts with report type company.
+* Invoice/Move: filled analytic axis on move when we ventilate an invoice.
+
+## [7.0.4] (2023-06-22)
+
+#### Features
+
+* INVOICE : mandatory reference to the original invoice on the printing
+
+The credit invoice include all the compulsory information on the original invoice. It also contain the credit note referring to the invoice it cancels or modifies. For example -  "In reimbursement of Invoice n°XXXX, issued on DD/MM/YYYY".
+
+
+#### Fixed
+
+* Analytic rules: fixed issue when retrieving analytic rules from the company to check which analytics accounts are authorized.
+* Sale order line: fixed the view, move the hidden fields to a separate panel which avoids unnecessary blank space and the product field appears in its proper position.
+* Accounting batch: removed period check on consistency accounting batch.
+* Stock move: date of realisation of the stock move will be emptied when planning a stock move.
+* Move template: fixed invoice terms not being created when generating a move from a template.
+* Move: added missing translation when a move is deleted.
+* Bank reconciliation line: prevent new line creation outside of a bank reconciliation.
+* Job position: fixed english title "Responsible" instead of "Hiring manager".
+* Account: fixed misleading error message when company has no partner.
+* Stock quality control: when default stock location for quality control is not set and needed, a proper error message is now displayed.
+* Sequence: when configuring a sequence, end date of a sequence now cannot be prior to the starting date and vice versa.
+* Invoice: fixed an issue where invoice terms information were displayed on the invoice printing even when the invoice term feature was disabled.
+* Stock location history batch: deactivate re-computation stock location history batch.
+* Move line: prevent from updating partner when move has a partner already set.
+* Product: "Control on receipt" and "custom codes" are now correctly managed per company (if the configuration is activated).
+* Invoice: do not set financial discount on refunds.
+* Move: fixed functional origin error when emptying the journal on a move form view.
+* Reconcile: fixed an issue where letter button was shown if the group was unlettered.
+* Invoice: added missing translation on an error message that can be shown during invoice ventilation.
+* Sale order: fixed discount information missing on reports.
+* Invoice: fixed an issue happening when we try to save an invoice with an analytic move line on invoice line.
+* Stock Move: fixed a bug where future quantity was not correctly updated.
+* Partner: fixed an issue where blocking date was not displayed.
+* Accounting report VAT invoicing/payment: fixed differences in display between reports.
+* Move: fixed currency exchange rate wrongly set on counterpart generation.
+* Accounting Batch: accounting cut-off batch now takes into account 'include not stock managed product' boolean for the preview.
+* Sale order: fixed an issue when computing invoicing state where the invoiced was marked as not invoiced instead of partially invoiced.
+* Trading name: fixed wrong french translation for trading name ('Nom commercial' -> 'Enseigne').
+
 ## [7.0.3] (2023-06-08)
 
 #### Fixed
@@ -242,6 +340,8 @@ closedWinOpportunityStatus, closedLostOpportunityStatus, salesPropositionStatus 
     </details>
 
 
+[7.0.5]: https://github.com/axelor/axelor-open-suite/compare/v7.0.4...v7.0.5
+[7.0.4]: https://github.com/axelor/axelor-open-suite/compare/v7.0.3...v7.0.4
 [7.0.3]: https://github.com/axelor/axelor-open-suite/compare/v7.0.2...v7.0.3
 [7.0.2]: https://github.com/axelor/axelor-open-suite/compare/v7.0.1...v7.0.2
 [7.0.1]: https://github.com/axelor/axelor-open-suite/compare/v7.0.0...v7.0.1

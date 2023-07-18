@@ -672,11 +672,13 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       throws AxelorException {
     Product product = stockMoveLine.getProduct();
     // check if the product configuration forces to select a conformity
-    if ((product == null) || !product.getControlOnReceipt()) {
+    if (product == null) {
       return;
     }
+    Boolean controlOnReceipt =
+        (Boolean) productCompanyService.get(product, "controlOnReceipt", stockMove.getCompany());
     // check the stock move type
-    if (stockMove.getTypeSelect() != StockMoveRepository.TYPE_INCOMING) {
+    if (!controlOnReceipt || stockMove.getTypeSelect() != StockMoveRepository.TYPE_INCOMING) {
       return;
     }
 
@@ -1020,7 +1022,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
   }
 
   @Override
-  public void storeCustomsCodes(List<StockMoveLine> stockMoveLineList) {
+  public void storeCustomsCodes(List<StockMoveLine> stockMoveLineList) throws AxelorException {
     if (stockMoveLineList == null) {
       return;
     }
@@ -1028,7 +1030,11 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     for (StockMoveLine stockMoveLine : stockMoveLineList) {
       Product product = stockMoveLine.getProduct();
       CustomsCodeNomenclature customsCodeNomenclature =
-          product != null ? product.getCustomsCodeNomenclature() : null;
+          product != null
+              ? (CustomsCodeNomenclature)
+                  productCompanyService.get(
+                      product, "customsCodeNomenclature", stockMoveLine.getStockMove().getCompany())
+              : null;
       stockMoveLine.setCustomsCodeNomenclature(customsCodeNomenclature);
       stockMoveLine.setCustomsCode(
           customsCodeNomenclature != null ? customsCodeNomenclature.getCode() : null);
@@ -1491,5 +1497,49 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       stockMoveLine.setUnit(unit);
       stockMoveLine.setQty(convertQty);
     }
+  }
+
+  @Override
+  public StockMoveLine resetStockMoveLine(StockMoveLine stockMoveLine) {
+    if (stockMoveLine != null) {
+
+      stockMoveLine.setStockMove(null);
+      stockMoveLine.setPlannedStockMove(null);
+      stockMoveLine.setProduct(null);
+      stockMoveLine.setFilterOnAvailableProducts(true);
+      stockMoveLine.setQty(BigDecimal.ZERO);
+      stockMoveLine.setRealQty(BigDecimal.ZERO);
+      stockMoveLine.setOldQty(BigDecimal.ZERO);
+      stockMoveLine.setAvailableQty(BigDecimal.ZERO);
+      stockMoveLine.setAvailableQtyForProduct(BigDecimal.ZERO);
+      stockMoveLine.setAvailableStatus(null);
+      stockMoveLine.setUnit(null);
+      stockMoveLine.setNetMass(BigDecimal.ZERO);
+      stockMoveLine.setTotalNetMass(BigDecimal.ZERO);
+      stockMoveLine.setTrackingNumber(null);
+      stockMoveLine.setConformitySelect(null);
+      stockMoveLine.setShippedQty(BigDecimal.ZERO);
+      stockMoveLine.setShippedDate(null);
+      stockMoveLine.setProductModel(null);
+      stockMoveLine.setProductName(null);
+      stockMoveLine.setDescription(null);
+      stockMoveLine.setUnitPriceTaxed(BigDecimal.ZERO);
+      stockMoveLine.setUnitPriceUntaxed(BigDecimal.ZERO);
+      stockMoveLine.setCompanyUnitPriceUntaxed(BigDecimal.ZERO);
+      stockMoveLine.setWapPrice(BigDecimal.ZERO);
+      stockMoveLine.setCompanyPurchasePrice(BigDecimal.ZERO);
+      stockMoveLine.setProductTypeSelect(null);
+      stockMoveLine.setSequence(null);
+      stockMoveLine.setName(null);
+      stockMoveLine.setCustomsCodeNomenclature(null);
+      stockMoveLine.setCustomsCode(null);
+      stockMoveLine.setLogisticalFormLineList(null);
+      stockMoveLine.setLineTypeSelect(null);
+      stockMoveLine.setRegime(null);
+      stockMoveLine.setNatureOfTransaction(null);
+      stockMoveLine.setCountryOfOrigin(null);
+      stockMoveLine.setIsRealQtyModifiedByUser(false);
+    }
+    return stockMoveLine;
   }
 }

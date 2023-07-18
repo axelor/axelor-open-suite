@@ -64,10 +64,10 @@ import java.util.stream.Collectors;
 
 public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceService {
 
-  private InvoiceRepository invoiceRepository;
-  private SaleOrderRepository saleOrderRepository;
-  private PurchaseOrderRepository purchaseOrderRepository;
-  private StockMoveInvoiceService stockMoveInvoiceService;
+  protected final InvoiceRepository invoiceRepository;
+  protected final SaleOrderRepository saleOrderRepository;
+  protected final PurchaseOrderRepository purchaseOrderRepository;
+  protected final StockMoveInvoiceService stockMoveInvoiceService;
 
   @Inject
   public StockMoveMultiInvoiceServiceImpl(
