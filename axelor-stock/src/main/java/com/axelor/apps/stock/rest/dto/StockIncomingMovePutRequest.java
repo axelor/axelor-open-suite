@@ -30,8 +30,6 @@ public class StockIncomingMovePutRequest extends RequestStructure {
   @NotNull
   private Long toStockLocationId;
 
-  public StockIncomingMovePutRequest() {}
-
   public Long getToStockLocationId() {
     return toStockLocationId;
   }

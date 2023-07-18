@@ -35,8 +35,6 @@ public class WastedProductPostRequest extends RequestStructure {
   @Min(0)
   private BigDecimal qty;
 
-  public WastedProductPostRequest() {}
-
   public Long getProductId() {
     return productId;
   }
