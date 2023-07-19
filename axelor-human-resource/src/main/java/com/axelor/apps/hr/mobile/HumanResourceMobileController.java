@@ -48,7 +48,9 @@ import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.KilometricService;
 import com.axelor.apps.hr.service.config.HRConfigService;
-import com.axelor.apps.hr.service.expense.ExpenseService;
+import com.axelor.apps.hr.service.expense.ExpenseComputationService;
+import com.axelor.apps.hr.service.expense.ExpenseLineService;
+import com.axelor.apps.hr.service.expense.ExpenseToolService;
 import com.axelor.apps.hr.service.leave.LeaveService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
 import com.axelor.apps.hr.service.timesheet.TimesheetService;
@@ -111,8 +113,8 @@ public class HumanResourceMobileController {
             user.getName());
       }
 
-      ExpenseService expenseService = Beans.get(ExpenseService.class);
-      Expense expense = expenseService.getOrCreateExpense(employee);
+      ExpenseToolService expenseToolService = Beans.get(ExpenseToolService.class);
+      Expense expense = expenseToolService.getOrCreateExpense(employee);
 
       ExpenseLine expenseLine = new ExpenseLine();
       expenseLine.setEmployee(employee);
@@ -191,7 +193,7 @@ public class HumanResourceMobileController {
       }
 
       List<ExpenseLine> expenseLineList =
-          Beans.get(ExpenseService.class).getExpenseLineList(expense);
+          Beans.get(ExpenseLineService.class).getExpenseLineList(expense);
       if (expenseLineList != null && !expenseLineList.isEmpty()) {
         Iterator<ExpenseLine> expenseLineIter = expenseLineList.iterator();
         while (expenseLineIter.hasNext()) {
@@ -258,8 +260,10 @@ public class HumanResourceMobileController {
               user.getName());
         }
 
-        ExpenseService expenseService = Beans.get(ExpenseService.class);
-        Expense expense = expenseService.getOrCreateExpense(employee);
+        ExpenseToolService expenseToolService = Beans.get(ExpenseToolService.class);
+        ExpenseComputationService expenseComputationService =
+            Beans.get(ExpenseComputationService.class);
+        Expense expense = expenseToolService.getOrCreateExpense(employee);
 
         ExpenseLine expenseLine;
         Object idO = requestData.get("id");
@@ -313,7 +317,7 @@ public class HumanResourceMobileController {
           }
         }
         expense.addGeneralExpenseLineListItem(expenseLine);
-        expense = expenseService.compute(expense);
+        expense = expenseComputationService.compute(expense);
 
         Beans.get(ExpenseRepository.class).save(expense);
         HashMap<String, Object> data = new HashMap<>();

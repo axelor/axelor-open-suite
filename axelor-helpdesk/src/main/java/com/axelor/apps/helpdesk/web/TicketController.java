@@ -33,7 +33,6 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.utils.date.DateTool;
-import com.axelor.utils.date.DurationTool;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -79,14 +78,11 @@ public class TicketController {
 
       if (ticket.getStartDateT() != null) {
         if (ticket.getDuration() != null && ticket.getDuration() != 0) {
-          response.setValue(
-              "endDateT", DateTool.plusSeconds(ticket.getStartDateT(), ticket.getDuration()));
+          response.setValue("endDateT", Beans.get(TicketService.class).computeEndDate(ticket));
 
         } else if (ticket.getEndDateT() != null
             && ticket.getEndDateT().isAfter(ticket.getStartDateT())) {
-          Duration duration =
-              DurationTool.computeDuration(ticket.getStartDateT(), ticket.getEndDateT());
-          response.setValue("duration", DurationTool.getSecondsDuration(duration));
+          response.setValue("duration", Beans.get(TicketService.class).computeDuration(ticket));
         }
       }
     } catch (Exception e) {
@@ -133,13 +129,10 @@ public class TicketController {
 
         if (ticket.getStartDateT() != null
             && ticket.getStartDateT().isBefore(ticket.getEndDateT())) {
-          Duration duration =
-              DurationTool.computeDuration(ticket.getStartDateT(), ticket.getEndDateT());
-          response.setValue("duration", DurationTool.getSecondsDuration(duration));
+          response.setValue("duration", Beans.get(TicketService.class).computeDuration(ticket));
 
         } else if (ticket.getDuration() != null) {
-          response.setValue(
-              "startDateT", DateTool.minusSeconds(ticket.getEndDateT(), ticket.getDuration()));
+          response.setValue("startDateT", Beans.get(TicketService.class).computeStartDate(ticket));
         }
       }
     } catch (Exception e) {
