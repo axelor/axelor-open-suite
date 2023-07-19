@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.account.service.move.massentry;
 
 import com.axelor.apps.account.db.Journal;
@@ -15,7 +33,7 @@ import com.axelor.apps.account.service.move.MoveControlService;
 import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
-import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryToolService;
+import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryRecordService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
@@ -49,9 +67,9 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
   protected MoveLineControlService moveLineControlService;
   protected MoveValidateService moveValidateService;
   protected MoveControlService moveControlService;
-  protected MoveLineMassEntryToolService moveLineMassEntryToolService;
   protected AppAccountService appAccountService;
   protected PeriodServiceAccount periodServiceAccount;
+  protected MoveLineMassEntryRecordService moveLineMassEntryRecordService;
 
   @Inject
   public MassEntryVerificationServiceImpl(
@@ -60,17 +78,17 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
       MoveLineControlService moveLineControlService,
       MoveValidateService moveValidateService,
       MoveControlService moveControlService,
-      MoveLineMassEntryToolService moveLineMassEntryToolService,
       AppAccountService appAccountService,
-      PeriodServiceAccount periodServiceAccount) {
+      PeriodServiceAccount periodServiceAccount,
+      MoveLineMassEntryRecordService moveLineMassEntryRecordService) {
     this.periodService = periodService;
     this.moveLineToolService = moveLineToolService;
     this.moveLineControlService = moveLineControlService;
     this.moveValidateService = moveValidateService;
     this.moveControlService = moveControlService;
-    this.moveLineMassEntryToolService = moveLineMassEntryToolService;
     this.appAccountService = appAccountService;
     this.periodServiceAccount = periodServiceAccount;
+    this.moveLineMassEntryRecordService = moveLineMassEntryRecordService;
   }
 
   @Override
@@ -167,7 +185,7 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
     if (parentMove.getJournal().getJournalType().getTechnicalTypeSelect()
             == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE
         && !moveLine.getPartner().equals(newMoveLine.getPartner())) {
-      moveLineMassEntryToolService.setPartnerChanges(moveLine, newMoveLine);
+      moveLineMassEntryRecordService.resetPartner(moveLine, newMoveLine);
     }
 
     // Check move line mass entry partner bank details

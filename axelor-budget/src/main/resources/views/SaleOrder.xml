@@ -1,14 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <form name="sale-order-form" id="budget-sale-order-form" title="Sale order"
     model="com.axelor.apps.sale.db.SaleOrder" extension="true">
 
     <extend target="/">
-      <attribute name="onSave"
-        value="action-supplychain-saleorder-onsave,action-budget-sale-order-group-on-save"/>
+      <attribute name="onSave" value="action-budget-sale-order-group-on-save"/>
+      <attribute name="onNew" value="action-group-budget-saleorder-onnew"/>
+      <attribute name="onLoad" value="action-group-budget-saleorder-onload"/>
+    </extend>
+
+    <extend target="//button[@name='confirmOrderBtn']">
+      <attribute name="onClick" value="action-group-budget-sale-order-confirm-onclick"/>
     </extend>
 
     <extend target="//button[@name='cancelBtn']">
@@ -18,7 +23,7 @@
       <insert position="before">
         <button name="computeBudgetDistributionBtn" title="Compute budget distribution"
           onClick="action-budget-group-sale-order-compute-budget-distribution"
-          if="__config__.app.getApp('budget')?.getManageMultiBudget()"
+          if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget()"
           showIf="company.accountConfig.enableBudgetKey &amp;&amp; statusSelect &lt; 3 &amp;&amp; saleOrderLineList &amp;&amp; saleOrderLineList.length != 0"/>
       </insert>
     </extend>
@@ -39,23 +44,29 @@
     </extend>
   </form>
 
-  <action-group name="action-budget-sale-order-group-on-save">
+  <action-group name="action-group-budget-sale-order-confirm-onclick">
     <action name="save"/>
-    <action name="action-budget-sale-order-method-fill-budget-str"/>
-    <action name="action-budget-sale-order-method-update-budget-lines"/>
+    <action name="action-method-budget-sale-order-no-compute-budget-distribution"
+      if="__config__.app.isApp('budget')"/>
+    <action name="action-budget-sale-order-method-update-budget-lines"
+      if="__config__.app.isApp('budget')"/>
+    <action name="action-sale-group-confirmed"/>
   </action-group>
 
-  <action-group name="action-group-supplychain-saleorder-onnew"
-    id="action-group-budget-saleorder-onnew">
-    <action name="action-group-sale-saleorder-onnew"/>
-    <action name="action-sale-order-record-payment-mode"/>
-    <action name="action-supplychain-sale-order-method-get-stock-location"
-      if="tradingName?.shippingDefaultStockLocation == null || stockLocation == null"/>
-    <action name="action-sale-order-attrs-interco"/>
-    <action name="action-sale-order-record-interco"/>
-    <action name="supplychain-action-create-shipment-cost-line"/>
-    <action name="action-sale-order-record-set-default-tax-number"/>
-    <action name="action-budget-sale-order-record-load-budget-key-config"/>
+  <action-group name="action-budget-sale-order-group-on-save">
+    <action name="action-supplychain-saleorder-onsave"/>
+    <action name="save"/>
+    <action name="action-budget-sale-order-method-fill-budget-str"
+      if="__config__.app.isApp('budget')"/>
+    <action name="
+      action-budget-sale-order-method-update-budget-lines "
+      if="__config__.app.isApp('budget')"/>
+  </action-group>
+
+  <action-group name="action-group-budget-saleorder-onnew">
+    <action name="action-group-supplychain-saleorder-onnew"/>
+    <action name="action-budget-sale-order-record-load-budget-key-config"
+      if="__config__.app.isApp('budget')"/>
   </action-group>
 
   <action-group name="action-budget-group-sale-order-compute-budget-distribution">
@@ -70,29 +81,15 @@
     id="action-budget-group-sale-order-finalize-quotation">
     <action name="save"/>
     <action name="action-sale-order-validate-quotation"/>
-    <action name="action-method-budget-sale-order-validate-budget-balance"/>
+    <action name="action-method-budget-sale-order-validate-budget-balance"
+      if="__config__.app.isApp('budget')"/>
     <action name="action-sale-order-method-finalize-quotation"/>
   </action-group>
 
-  <action-group name="action-group-business-project-saleorder-onload"
-    id="action-group-budget-saleorder-onload">
-    <action name="action-group-supplychain-saleorder-onload"/>
-    <action name="action-sale-order-attrs-project"/>
-    <action name="action-budget-sale-order-record-load-budget-key-config"/>
-  </action-group>
-
-  <action-group name="action-sale-group-confirmed"
-    id="action-budget-sale-group-confirmed">
-    <action name="action-sale-order-validate-check-on-confirm"/>
-    <action name="action-method-budget-sale-order-validate-budget-balance"/>
-    <action name="save"/>
-    <action name="action-method-budget-sale-order-no-compute-budget-distribution"/>
-    <action name="action-budget-sale-order-method-update-budget-lines"/>
-    <action name="action-business-project-method-generate-project"
-      if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getAutomaticProject()"/>
-    <action name="action-sale-order-method-confirm"/>
-    <action name="action-sale-order-method-notify-stock-move-created"
-      if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.customerStockMoveGenerationAuto "/>
+  <action-group name="action-group-budget-saleorder-onload">
+    <action name="action-group-business-project-saleorder-onload"/>
+    <action name="action-budget-sale-order-record-load-budget-key-config"
+      if="__config__.app.isApp('budget')"/>
   </action-group>
 
   <action-record name="action-budget-sale-order-record-load-budget-key-config"

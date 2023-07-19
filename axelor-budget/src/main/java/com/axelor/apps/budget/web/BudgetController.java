@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.budget.web;
 
 import com.axelor.apps.base.AxelorException;
@@ -101,6 +119,10 @@ public class BudgetController {
 
   public void manageBudgetKey(ActionRequest request, ActionResponse response) {
     try {
+      if (request.getContext() == null) {
+        return;
+      }
+
       Budget budget = request.getContext().asType(Budget.class);
       Company company = null;
       if (budget.getBudgetLevel() != null && budget.getBudgetLevel().getCompany() != null) {
@@ -116,7 +138,8 @@ public class BudgetController {
               != null) {
         company =
             budget.getBudgetLevel().getParentBudgetLevel().getParentBudgetLevel().getCompany();
-      } else if (request.getContext().getParent() != null
+      } else if (budget.getId() != null
+          && request.getContext().getParent() != null
           && request.getContext().getParent().getParent() != null
           && request.getContext().getParent().getParent().getParent() != null) {
         company =

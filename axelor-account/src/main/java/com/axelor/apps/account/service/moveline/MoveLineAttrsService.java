@@ -40,7 +40,7 @@ public interface MoveLineAttrsService {
   void addInvoiceTermListPercentageWarningText(
       MoveLine moveLine, Map<String, Map<String, Object>> attrsMap);
 
-  void addReadonly(Move move, Map<String, Map<String, Object>> attrsMap);
+  void addReadonly(MoveLine moveLine, Move move, Map<String, Map<String, Object>> attrsMap);
 
   void addShowTaxAmount(MoveLine moveLine, Map<String, Map<String, Object>> attrsMap);
 
@@ -59,5 +59,5 @@ public interface MoveLineAttrsService {
 
   void addAnalyticDistributionTemplateDomain(Move move, Map<String, Map<String, Object>> attrsMap);
 
-  void addPartnerRequired(Move move, Map<String, Map<String, Object>> attrsMap);
+  void changeFocus(Move move, MoveLine moveLine, Map<String, Map<String, Object>> attrsMap);
 }

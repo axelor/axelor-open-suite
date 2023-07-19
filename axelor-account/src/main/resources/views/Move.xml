@@ -219,7 +219,7 @@
             showIf="(statusSelect == 1 || statusSelect == 5) &amp;&amp; journal.allowAccountingDaybook &amp;&amp; company.accountConfig.accountingDaybook"
             colSpan="12" onClick="action-account-move-group-accounting-click"/>
           <button name="accountingBtn" title="Accounting.toAccount" css="btn-success"
-            showIf="statusSelect == 2 || ((statusSelect == 1 || statusSelect == 5) &amp;&amp; (!journal.allowAccountingDaybook || !company.accountConfig.accountingDaybook))"
+            showIf="statusSelect == 2 || ((statusSelect == 1 || statusSelect == 5) &amp;&amp; journal &amp;&amp; (!journal.allowAccountingDaybook || !company.accountConfig.accountingDaybook))"
             colSpan="12" onClick="action-account-move-group-accounting-click"/>
         </panel>
         <panel name="pfpPanel"
@@ -259,14 +259,14 @@
         </panel>
       </panel>
     </panel>
-    <panel-tabs name="mainPanelTab">
+    <panel-tabs name="mainPanelTab" hideIf="!journal || $mainPanelTabHidden">
       <panel title="Move Lines" readonlyIf="$validatePeriod">
         <button colSpan="3" name="counterpartGenerateBtn" css="btn-custom text-left"
           icon="fa-plus" title="Generate counterpart"
           showIf="journal != null &amp;&amp; statusSelect != 3 &amp;&amp; ([1,2,4].includes(journal.journalType.technicalTypeSelect) &amp;&amp; functionalOriginSelect &amp;&amp; (functionalOriginSelect == 3 || functionalOriginSelect == 4 || functionalOriginSelect == 7))"
           onClick="action-move-method-generate-counterpart"/>
         <button colSpan="3" name="autoTaxLineGenerateBtn" css="btn-custom text-left"
-          icon="fa-plus" title="Generate tax lines" showIf="statusSelect == 1 || statusSelect == 5"
+          icon="fa-plus" title="Generate tax lines" showIf="[1,2,5].includes(statusSelect)"
           onClick="action-move-method-generate-tax-lines"/>
         <panel-related name="moveLineListPanel"
           showIf="(statusSelect == 1 || statusSelect == 2 || statusSelect == 5) &amp;&amp; journal &amp;&amp; currency &amp;&amp; company &amp;&amp; date &amp;&amp; period"
@@ -381,6 +381,7 @@
           <field name="journal.journalType.technicalTypeSelect" hidden="true" type="integer"/>
           <field name="company.accountConfig" hidden="true"/>
           <field name="company.accountConfig.accountingDaybook" hidden="true"/>
+          <field name="$mainPanelTabHidden" hidden="true"/>
         </panel>
       </panel>
     </panel-tabs>
@@ -456,14 +457,12 @@
       </panel>
     </panel>
 
-    <panel>
-      <panel-related name="moveLineMassEntryListPanel" field="moveLineMassEntryList"
-        editable="true" colSpan="12" height="20" canNew="true" canRemove="true"
-        grid-view="move-line-mass-entry-move-grid"
-        onChange="action-account-move-method-move-line-list-onchange"/>
-    </panel>
+    <panel-related name="moveLineMassEntryListPanel" field="moveLineMassEntryList"
+      editable="true" colSpan="12" height="20" canNew="true" canRemove="true"
+      grid-view="move-line-mass-entry-move-grid"
+      onChange="action-account-move-method-move-line-list-onchange" hideIf="!journal"/>
 
-    <panel name="errorPanel" colSpan="12">
+    <panel name="errorPanel" colSpan="12" hideIf="!journal">
       <field name="massEntryErrors" readonly="true" widget="Text" colSpan="12"/>
     </panel>
   </form>

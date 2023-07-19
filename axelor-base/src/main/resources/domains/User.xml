@@ -11,7 +11,8 @@
       title="Company"/>
     <many-to-one name="activeCompany" ref="com.axelor.apps.base.db.Company"
       title="Active company" massUpdate="true"/>
-    <one-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
+    <one-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"
+      unique="true"/>
     <datetime name="todayDateT" title="Today date" tz="true"/>
     <many-to-many name="teamSet" ref="com.axelor.team.db.Team" title="Teams"
       mappedBy="members"/>

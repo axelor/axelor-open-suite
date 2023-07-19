@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.budget.service.purchaseorder;
 
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
@@ -20,6 +38,7 @@ import com.axelor.apps.supplychain.service.PurchaseOrderStockService;
 import com.axelor.apps.supplychain.service.PurchaseOrderSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.meta.CallMethod;
+import com.axelor.studio.db.AppBudget;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -135,6 +154,7 @@ public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderWorkflowService
   @Override
   public void generateBudgetDistribution(PurchaseOrder purchaseOrder) {
     if (CollectionUtils.isNotEmpty(purchaseOrder.getPurchaseOrderLineList())) {
+      AppBudget appBudget = appBudgetService.getAppBudget();
       for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
         if (purchaseOrderLine.getBudget() != null) {
           BudgetDistribution budgetDistribution = null;
@@ -151,6 +171,8 @@ public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderWorkflowService
           }
 
           if (budgetDistribution == null) {
+            purchaseOrderLine.clearBudgetDistributionList();
+
             budgetDistribution = new BudgetDistribution();
             budgetDistribution.setBudget(purchaseOrderLine.getBudget());
             budgetDistribution.setBudgetAmountAvailable(
@@ -163,6 +185,10 @@ public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderWorkflowService
           }
 
           budgetDistribution.setAmount(purchaseOrderLine.getCompanyExTaxTotal());
+        } else if (purchaseOrderLine.getBudget() == null
+            && appBudget != null
+            && !appBudget.getManageMultiBudget()) {
+          purchaseOrderLine.clearBudgetDistributionList();
         }
       }
     }

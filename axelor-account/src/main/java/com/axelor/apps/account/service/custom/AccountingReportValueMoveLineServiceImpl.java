@@ -36,6 +36,7 @@ import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.DateService;
+import com.axelor.auth.db.AuditableModel;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
@@ -48,12 +49,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -110,6 +113,9 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
         detailByAccountSet = this.mergeWithAccountCode(detailByAccountSet, line.getAccountCode());
       }
 
+      detailByAccountSet =
+          this.sortSet(detailByAccountSet, Comparator.comparing(Account::getLabel));
+
       for (Account account : detailByAccountSet) {
         String lineCode = String.format("%s_%d", line.getCode(), counter++);
 
@@ -117,8 +123,9 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
           valuesMapByLine.put(lineCode, new HashMap<>());
         }
 
+        accountingReport = this.fetchAccountingReport(accountingReport);
+
         account = JPA.find(Account.class, account.getId());
-        accountingReport = JPA.find(AccountingReport.class, accountingReport.getId());
         line = JPA.find(AccountingReportConfigLine.class, line.getId());
         column = JPA.find(AccountingReportConfigLine.class, column.getId());
         groupColumn =
@@ -164,14 +171,19 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
             this.mergeWithAccounts(detailByAccountTypeSet, line.getAccountSet());
       }
 
+      detailByAccountTypeSet =
+          this.sortSet(detailByAccountTypeSet, Comparator.comparing(AccountType::getName));
+
       for (AccountType accountType : detailByAccountTypeSet) {
         String lineCode = String.format("%s_%d", line.getCode(), counter++);
 
         if (!valuesMapByLine.containsKey(lineCode)) {
           valuesMapByLine.put(lineCode, new HashMap<>());
         }
+
+        accountingReport = this.fetchAccountingReport(accountingReport);
+
         accountType = JPA.find(AccountType.class, accountType.getId());
-        accountingReport = JPA.find(AccountingReport.class, accountingReport.getId());
         line = JPA.find(AccountingReportConfigLine.class, line.getId());
         column = JPA.find(AccountingReportConfigLine.class, column.getId());
         groupColumn =
@@ -209,15 +221,20 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
         && line.getDetailBySelect()
             == AccountingReportConfigLineRepository.DETAIL_BY_ANALYTIC_ACCOUNT) {
       int counter = 1;
+      Set<AnalyticAccount> sortedAnalyticAccountSet =
+          this.sortSet(
+              line.getAnalyticAccountSet(), Comparator.comparing(AnalyticAccount::getFullName));
 
-      for (AnalyticAccount analyticAccount : line.getAnalyticAccountSet()) {
+      for (AnalyticAccount analyticAccount : sortedAnalyticAccountSet) {
         String lineCode = String.format("%s_%d", line.getCode(), counter++);
 
         if (!valuesMapByLine.containsKey(lineCode)) {
           valuesMapByLine.put(lineCode, new HashMap<>());
         }
+
+        accountingReport = this.fetchAccountingReport(accountingReport);
+
         analyticAccount = JPA.find(AnalyticAccount.class, analyticAccount.getId());
-        accountingReport = JPA.find(AccountingReport.class, accountingReport.getId());
         line = JPA.find(AccountingReportConfigLine.class, line.getId());
         column = JPA.find(AccountingReportConfigLine.class, column.getId());
         groupColumn =
@@ -273,6 +290,13 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
     }
   }
 
+  protected <T extends AuditableModel> Set<T> sortSet(Set<T> set, Comparator<T> comparator) {
+    Set<T> sortedSet = new TreeSet<>(comparator);
+    sortedSet.addAll(set);
+
+    return sortedSet;
+  }
+
   protected void mergeSetsAndCreateValueFromMoveLines(
       AccountingReport accountingReport,
       AccountingReportConfigLine groupColumn,
@@ -306,18 +330,21 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
     }
 
     if (detailByAnalyticAccount != null) {
-      lineAnalyticAccountSet = new HashSet<>(Collections.singletonList(detailByAnalyticAccount));
+      lineAnalyticAccountSet = this.getParentAnalyticAccountSet(detailByAnalyticAccount);
     }
 
     Set<Account> accountSet;
     Set<AccountType> accountTypeSet = null;
     Set<AnalyticAccount> analyticAccountSet =
         this.mergeSets(column.getAnalyticAccountSet(), lineAnalyticAccountSet);
+    analyticAccountSet =
+        this.mergeSets(analyticAccountSet, accountingReport.getAnalyticAccountSet());
 
     if (groupAccount != null) {
       accountSet = new HashSet<>(Collections.singletonList(groupAccount));
     } else {
       accountSet = this.mergeSets(column.getAccountSet(), lineAccountSet);
+      accountSet = this.mergeSets(accountSet, accountingReport.getAccountSet());
       accountTypeSet = this.mergeSets(column.getAccountTypeSet(), lineAccountTypeSet);
     }
 
@@ -344,6 +371,20 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
         lineTitle,
         lineCode,
         analyticCounter);
+  }
+
+  protected Set<AnalyticAccount> getParentAnalyticAccountSet(AnalyticAccount analyticAccount) {
+    List<AnalyticAccount> parentAnalyticAccountList =
+        analyticAccountRepo.findByParent(analyticAccount).fetch();
+
+    if (parentAnalyticAccountList.isEmpty()) {
+      return new HashSet<>(Collections.singletonList(analyticAccount));
+    } else {
+      return parentAnalyticAccountList.stream()
+          .map(this::getParentAnalyticAccountSet)
+          .flatMap(Collection::stream)
+          .collect(Collectors.toSet());
+    }
   }
 
   protected void checkResultSelects(
@@ -637,31 +678,31 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
     this.addDateQueries(queryList, accountingReport);
 
     if (accountingReport.getJournal() != null) {
-      queryList.add("(self.move.journal IS NULL OR self.move.journal >= :journal)");
+      queryList.add("(self.move.journal IS NULL OR self.move.journal = :journal)");
     }
 
-    if (accountingReport.getJournal() != null) {
-      queryList.add("(self.move.paymentMode IS NULL OR self.move.paymentMode >= :paymentMode)");
+    if (accountingReport.getPaymentMode() != null) {
+      queryList.add("(self.move.paymentMode IS NULL OR self.move.paymentMode = :paymentMode)");
     }
 
-    if (accountingReport.getJournal() != null) {
-      queryList.add("(self.move.currency IS NULL OR self.move.currency >= :currency)");
+    if (accountingReport.getCurrency() != null) {
+      queryList.add("(self.move.currency IS NULL OR self.move.currency = :currency)");
     }
 
-    if (accountingReport.getJournal() != null) {
-      queryList.add("(self.move.company IS NULL OR self.move.company >= :company)");
+    if (accountingReport.getCompany() != null) {
+      queryList.add("(self.move.company IS NULL OR self.move.company = :company)");
     }
 
     queryList.addAll(
         this.getAccountFilters(
-            accountSet,
             accountTypeSet,
             groupColumn == null ? null : groupColumn.getAccountCode(),
             column.getAccountCode(),
             line.getAccountCode(),
-            true));
+            true,
+            this.areAllAccountSetsEmpty(accountingReport, groupColumn, column, line)));
 
-    if (CollectionUtils.isNotEmpty(analyticAccountSet)) {
+    if (!this.areAllAnalyticAccountSetsEmpty(accountingReport, groupColumn, column, line)) {
       queryList.add(
           "EXISTS(SELECT 1 FROM AnalyticMoveLine aml WHERE aml.analyticAccount IN :analyticAccountSet AND aml.moveLine = self)");
     }
@@ -762,19 +803,27 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
     String groupColumnAnalyticAccountCode =
         groupColumn == null ? null : groupColumn.getAnalyticAccountCode();
 
+    BigDecimal value = BigDecimal.ZERO;
+
     if (CollectionUtils.isNotEmpty(analyticAccountSet)
         || StringUtils.notEmpty(groupColumnAnalyticAccountCode)
         || StringUtils.notEmpty(column.getAnalyticAccountCode())
         || StringUtils.notEmpty(line.getAnalyticAccountCode())) {
-      return this.getAnalyticAmount(moveLine, analyticAccountSet);
-    }
-
-    BigDecimal value = moveLine.getDebit();
-
-    if (resultSelect == AccountingReportConfigLineRepository.RESULT_CREDIT) {
-      value = moveLine.getCredit();
-    } else if (resultSelect == AccountingReportConfigLineRepository.RESULT_DEBIT_MINUS_CREDIT) {
-      value = value.subtract(moveLine.getCredit());
+      value =
+          this.getAnalyticAmount(
+              moveLine, analyticAccountSet, resultSelect, moveLine.getDebit().signum() > 0);
+    } else {
+      switch (resultSelect) {
+        case AccountingReportConfigLineRepository.RESULT_DEBIT_MINUS_CREDIT:
+          value = moveLine.getDebit().subtract(moveLine.getCredit());
+          break;
+        case AccountingReportConfigLineRepository.RESULT_DEBIT:
+          value = moveLine.getDebit();
+          break;
+        case AccountingReportConfigLineRepository.RESULT_CREDIT:
+          value = moveLine.getCredit();
+          break;
+      }
     }
 
     if ((groupColumn != null && groupColumn.getNegateValue())
@@ -787,16 +836,31 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
   }
 
   protected BigDecimal getAnalyticAmount(
-      MoveLine moveLine, Set<AnalyticAccount> analyticAccountSet) {
+      MoveLine moveLine,
+      Set<AnalyticAccount> analyticAccountSet,
+      int resultSelect,
+      boolean isDebit) {
     if (CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())) {
       return BigDecimal.ZERO;
     }
 
-    return moveLine.getAnalyticMoveLineList().stream()
-        .filter(it -> this.containsAnalyticAccount(it.getAnalyticAccount(), analyticAccountSet))
-        .map(AnalyticMoveLine::getAmount)
-        .reduce(BigDecimal::add)
-        .orElse(BigDecimal.ZERO);
+    BigDecimal value =
+        moveLine.getAnalyticMoveLineList().stream()
+            .filter(it -> this.containsAnalyticAccount(it.getAnalyticAccount(), analyticAccountSet))
+            .map(AnalyticMoveLine::getAmount)
+            .reduce(BigDecimal::add)
+            .orElse(BigDecimal.ZERO);
+
+    switch (resultSelect) {
+      case AccountingReportConfigLineRepository.RESULT_DEBIT_MINUS_CREDIT:
+        return isDebit ? value : value.negate();
+      case AccountingReportConfigLineRepository.RESULT_DEBIT:
+        return isDebit ? value : BigDecimal.ZERO;
+      case AccountingReportConfigLineRepository.RESULT_CREDIT:
+        return isDebit ? BigDecimal.ZERO : value;
+    }
+
+    return BigDecimal.ZERO;
   }
 
   protected boolean containsAnalyticAccount(

@@ -39,6 +39,7 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -152,7 +153,7 @@ public class MoveCheckServiceImpl implements MoveCheckService {
   }
 
   @Override
-  public String getDuplicatedMoveOriginAlert(Move move) throws AxelorException {
+  public String getDuplicatedMoveOriginAlert(Move move) {
     if (move.getJournal() != null
         && move.getPartner() != null
         && move.getJournal().getHasDuplicateDetectionOnOrigin()) {
@@ -218,6 +219,7 @@ public class MoveCheckServiceImpl implements MoveCheckService {
                 ml.getMove() != null
                     && invoiceTermService.getPfpValidatorUserCondition(
                         ml.getMove().getInvoice(), ml)
+                    && CollectionUtils.isNotEmpty(ml.getInvoiceTermList())
                     && ml.getInvoiceTermList().stream()
                         .anyMatch(it -> it.getPfpValidatorUser() == null))) {
       return I18n.get(AccountExceptionMessage.INVOICE_PFP_VALIDATOR_USER_MISSING);
@@ -233,6 +235,24 @@ public class MoveCheckServiceImpl implements MoveCheckService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(AccountExceptionMessage.NO_CUT_OFF_TO_APPLY));
+    }
+  }
+
+  @Override
+  public void checkCurrencyAmountSum(Move move) throws AxelorException {
+    List<MoveLine> moveLineList = move.getMoveLineList();
+    if (CollectionUtils.isEmpty(moveLineList)
+        || move.getStatusSelect() == MoveRepository.STATUS_NEW) {
+      return;
+    }
+    if (moveLineList.stream()
+            .map(MoveLine::getCurrencyAmount)
+            .reduce(BigDecimal.ZERO, BigDecimal::add)
+            .compareTo(BigDecimal.ZERO)
+        != 0) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(AccountExceptionMessage.MOVE_CHECK_CURRENCY_AMOUNT_SUM));
     }
   }
 }

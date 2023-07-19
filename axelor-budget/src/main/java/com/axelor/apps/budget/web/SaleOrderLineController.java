@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.budget.web;
 
 import com.axelor.apps.account.db.Account;
@@ -148,6 +166,79 @@ public class SaleOrderLineController {
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.INFORMATION);
+    }
+  }
+
+  public void setGroupBudgetDomain(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+      SaleOrder saleOrder = request.getContext().getParent().asType(SaleOrder.class);
+      String query = "self.id = 0";
+
+      if (saleOrder != null && saleOrder.getCompany() != null) {
+        query =
+            Beans.get(SaleOrderLineBudgetService.class)
+                .getGroupBudgetDomain(saleOrderLine, saleOrder);
+      }
+
+      response.setAttr("groupBudget", "domain", query);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setSectionBudgetDomain(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+      SaleOrder saleOrder = request.getContext().getParent().asType(SaleOrder.class);
+      String query = "self.id = 0";
+
+      if (saleOrder != null && saleOrder.getCompany() != null) {
+        query =
+            Beans.get(SaleOrderLineBudgetService.class)
+                .getSectionBudgetDomain(saleOrderLine, saleOrder);
+      }
+
+      response.setAttr("section", "domain", query);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setLineBudgetDomain(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+      SaleOrder saleOrder = request.getContext().getParent().asType(SaleOrder.class);
+      String query = "self.id = 0";
+
+      if (saleOrder != null && saleOrder.getCompany() != null) {
+        query =
+            Beans.get(SaleOrderLineBudgetService.class)
+                .getLineBudgetDomain(saleOrderLine, saleOrder, false);
+      }
+
+      response.setAttr("line", "domain", query);
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setBudgetDomain(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+      SaleOrder saleOrder = request.getContext().getParent().asType(SaleOrder.class);
+      String query = "self.id = 0";
+
+      if (saleOrder != null && saleOrder.getCompany() != null) {
+        query =
+            Beans.get(SaleOrderLineBudgetService.class)
+                .getLineBudgetDomain(saleOrderLine, saleOrder, true);
+      }
+
+      response.setAttr("budget", "domain", query);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }

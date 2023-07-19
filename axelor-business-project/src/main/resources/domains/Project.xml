@@ -96,6 +96,8 @@
     <decimal name="forecastMargin" title="ProjectTask.Margin"/>
     <decimal name="forecastMarkup" title="ProjectTask.Markup"/>
 
+    <one-to-many name="projectHistoryLineList"
+      ref="com.axelor.apps.project.db.ProjectHistoryLine" title="Project history" mappedBy="project"/>
 
     <extra-code><![CDATA[
 

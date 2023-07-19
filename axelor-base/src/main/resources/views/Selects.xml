@@ -135,11 +135,6 @@
     <option value="2">Open street map</option>
   </selection>
 
-  <selection name="base.app.base.osm.routing.api.select">
-    <option value="1">YOUR navigation</option>
-    <option value="2">OSRM</option>
-  </selection>
-
   <selection name="base.app.base.currency.api.select">
     <option value="com.axelor.apps.base.service.currency.ECBCurrencyConversionService">ECB</option>
     <option value="com.axelor.apps.base.service.currency.FixerCurrencyConversionService">Fixer</option>
@@ -715,10 +710,41 @@
     <option value="5">EXPORT</option>
   </selection>
 
+  <selection name="research.model.selection">
+    <option value="com.axelor.apps.base.db.Partner">Partner</option>
+    <option value="com.axelor.apps.base.db.Partner.Contact">Contact</option>
+  </selection>
+
+  <selection name="research.primary.key.type.select">
+    <option value="String">String</option>
+    <option value="LocalDate">Date</option>
+  </selection>
+
   <selection name="base.batch.password.change.action.select">
     <option value="1">Generate new random passwords</option>
     <option value="2">Force the users to update password the next login</option>
     <option value="3">Generate new random passwords and force password change</option>
+  </selection>
+
+  <selection name="base.faker.api.field.param.type.select">
+    <option value="int">int</option>
+    <option value="long">long</option>
+    <option value="double">double</option>
+    <option value="boolean">boolean</option>
+    <option value="java.lang.String">String</option>
+    <option value="java.util.Date">Date (YYYY-MM-DD)</option>
+    <option value="java.sql.Timestamp">Timestamp (YYYY-MM-DD)</option>
+    <option value="java.util.concurrent.TimeUnit">TimeUnit</option>
+  </selection>
+
+  <selection name="base.faker.api.field.data.type.select">
+    <option value="Integer">Integer</option>
+    <option value="Long">Long</option>
+    <option value="BigDecimal">BigDecimal</option>
+    <option value="LocalDate">LocalDate</option>
+    <option value="LocalDateTime">LocalDateTime</option>
+    <option value="String">String</option>
+    <option value="Boolean">Boolean</option>
   </selection>
 
 </object-views>

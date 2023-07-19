@@ -28,7 +28,8 @@
 
   <form name="accounting-report-form" title="Accounting report"
     model="com.axelor.apps.account.db.AccountingReport"
-    onNew="action-accounting-report-record-default">
+    onNew="action-accounting-report-record-default"
+    onLoad="action-accounting-report-attrs-display-anomalies">
     <panel name="mainPanel"
       readonlyIf="statusSelect == 2 &amp;&amp; (reportType.typeSelect == 19 || reportType.typeSelect == 20)">
       <field name="ref" readonly="true" hideIf="[23,24].includes(reportType.typeSelect)"/>
@@ -120,7 +121,7 @@
         <field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form"
           hideIf="[1,2,3,4,5,7,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,2000,2001,3000].indexOf(reportType.typeSelect) != -1"/>
         <field name="accountSet" requiredIf="reportType.typeSelect == 18"
-          hideIf="[12,15,16,19,20,21,22,23,24,2000,2001,3000].indexOf(reportType.typeSelect) != -1"
+          hideIf="[12,15,16,19,20,21,22,23,24,2000,2001].indexOf(reportType.typeSelect) != -1"
           colSpan="12" form-view="account-form" grid-view="account-grid" widget="TagSelect"
           canNew="false" onSelect="action-accounting-report-attrs-accountset-domain"/>
         <field name="partnerSet"
@@ -136,9 +137,9 @@
           widget="TagSelect" canNew="false" form-view="analytic-axis-form"
           grid-view="analytic-axis-grid"/>
         <field name="analyticAccountSet"
-          showIf="reportType.typeSelect == 2000 || reportType.typeSelect == 2001" colSpan="12"
-          widget="TagSelect" canNew="false" form-view="analytic-account-form"
-          grid-view="analytic-account-grid"/>
+          showIf="[2000,2001,3000].includes(reportType.typeSelect)" colSpan="12" widget="TagSelect"
+          canNew="false" form-view="analytic-account-form" grid-view="analytic-account-grid"
+          domain="self.company = :company"/>
         <field name="accountTypeSet"
           showIf="[6,2000,2001].indexOf(reportType.typeSelect) != -1" colSpan="12"
           widget="TagSelect" canNew="false" form-view="account-type-form"
@@ -207,6 +208,8 @@
         <field name="company.accountConfig" hidden="true"/>
         <field name="company.accountConfig.isActivateSimulatedMove" hidden="true"/>
       </panel>
+      <panel-dashlet name="tracebackPanel" title="Anomalies" hidden="true"
+        action="action-accounting-report-view-traceback"/>
     </panel-tabs>
 
     <panel sidebar="true" name="balancePanel" title="Balance"
@@ -361,6 +364,11 @@
     model="com.axelor.apps.account.db.AccountingReport">
     <attribute for="accountSet" name="domain"
       expr="eval: &quot; self.company = :company AND ((${reportType?.typeSelect} = 18 AND self.accountType.technicalTypeSelect = 'cash') OR (${reportType?.typeSelect} &lt;&gt; 18 AND (${reportType?.typeSelect} &lt;&gt; 6 OR self.useForPartnerBalance = true))) &quot;"/>
+  </action-attrs>
+
+  <action-attrs name="action-accounting-report-attrs-display-anomalies">
+    <attribute name="hidden" for="tracebackPanel"
+      expr="eval: reportType?.typeSelect != 3000 || __repo__(TraceBack).all().filter(&quot; self.ref = 'com.axelor.apps.account.db.AccountingReport' AND self.refId = ? &quot;, id).count() == 0"/>
   </action-attrs>
 
   <!-- ACTION RECORD -->
@@ -545,6 +553,13 @@
       message="Make sure there isn't another ongoing DAS2 export for this period that has not been exported yet"
       if="reportType?.typeSelect == 19"/>
   </action-validate>
+
+  <action-view name="action-accounting-report-view-traceback" title="Anomalies"
+    model="com.axelor.apps.base.db.TraceBack">
+    <view type="grid" name="trace-back-accounting-report-grid"/>
+    <view type="form" name="trace-back-form"/>
+    <domain>self.ref = 'com.axelor.apps.account.db.AccountingReport' AND self.refId = :id</domain>
+  </action-view>
 
   <search-filters name="accounting-report-filters"
     model="com.axelor.apps.account.db.AccountingReport" title="Accounting report filters">

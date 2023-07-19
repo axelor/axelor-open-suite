@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.service.administration.AbstractBatchService;
 import com.axelor.apps.contract.batch.BatchContract;
 import com.axelor.apps.contract.batch.BatchContractInvoicing;
+import com.axelor.apps.contract.batch.BatchContractRevaluate;
 import com.axelor.apps.contract.db.ContractBatch;
 import com.axelor.apps.contract.db.repo.ContractBatchRepository;
 import com.axelor.apps.contract.db.repo.ContractRepository;
@@ -41,6 +42,10 @@ public class BatchContractService extends AbstractBatchService {
     Batch batch;
     ContractBatch contractBatch = (ContractBatch) model;
     switch (contractBatch.getActionSelect()) {
+      case ContractBatchRepository.REVALUATE_CONTRACTS:
+        batch = revaluateContracts(contractBatch);
+        break;
+
       case ContractBatchRepository.INVOICING:
         batch = invoiceContracts(contractBatch);
         break;
@@ -49,6 +54,10 @@ public class BatchContractService extends AbstractBatchService {
     }
 
     return batch;
+  }
+
+  protected Batch revaluateContracts(ContractBatch contractBatch) {
+    return Beans.get(BatchContractRevaluate.class).run(contractBatch);
   }
 
   protected Batch invoiceContracts(ContractBatch contractBatch) {

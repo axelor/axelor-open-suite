@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.budget.web;
 
 import com.axelor.apps.account.db.Invoice;
@@ -15,6 +33,7 @@ import com.axelor.apps.budget.service.purchaseorder.PurchaseOrderLineBudgetServi
 import com.axelor.apps.budget.service.saleorder.SaleOrderLineBudgetService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -206,8 +225,9 @@ public class BudgetDistributionController {
       } else if (parentContext != null
           && SaleOrderLine.class.equals(parentContext.getContextClass())) {
         SaleOrderLine saleOrderLine = parentContext.asType(SaleOrderLine.class);
-
-        query = Beans.get(SaleOrderLineBudgetService.class).getBudgetDomain(saleOrderLine);
+        SaleOrder saleOrder = parentContext.getParent().asType(SaleOrder.class);
+        query =
+            Beans.get(SaleOrderLineBudgetService.class).getBudgetDomain(saleOrderLine, saleOrder);
       }
 
       response.setAttr("budget", "domain", query);
@@ -225,9 +245,6 @@ public class BudgetDistributionController {
         if (purchaseOrderLine.getProduct() != null) {
           response.setValue("product", purchaseOrderLine.getProduct());
         }
-        if (purchaseOrderLine.getPurchaseOrder() != null) {
-          response.setValue("purchaseOrderLine", purchaseOrderLine);
-        }
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -241,9 +258,6 @@ public class BudgetDistributionController {
         SaleOrderLine saleOrderLine = parentContext.asType(SaleOrderLine.class);
         if (saleOrderLine.getProduct() != null) {
           response.setValue("product", saleOrderLine.getProduct());
-        }
-        if (saleOrderLine.getSaleOrder() != null) {
-          response.setValue("saleOrderLine", saleOrderLine);
         }
       }
     } catch (Exception e) {
@@ -259,9 +273,6 @@ public class BudgetDistributionController {
         if (invoiceLine.getInvoice() != null
             && invoiceLine.getInvoice().getPurchaseOrder() != null) {
           response.setValue("purchaseOrder", invoiceLine.getInvoice().getPurchaseOrder());
-        }
-        if (invoiceLine.getInvoice() != null && invoiceLine.getInvoice().getSaleOrder() != null) {
-          response.setValue("saleOrder", invoiceLine.getInvoice().getSaleOrder());
         }
       }
     } catch (Exception e) {

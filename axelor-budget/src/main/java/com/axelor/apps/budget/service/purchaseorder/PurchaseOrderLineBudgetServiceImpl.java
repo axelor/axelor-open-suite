@@ -1,10 +1,30 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.budget.service.purchaseorder;
 
+import com.axelor.apps.account.db.AccountType;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
+import com.axelor.apps.budget.db.BudgetLevel;
 import com.axelor.apps.budget.db.repo.BudgetLevelRepository;
 import com.axelor.apps.budget.db.repo.BudgetRepository;
 import com.axelor.apps.budget.exception.BudgetExceptionMessage;
@@ -214,5 +234,213 @@ public class PurchaseOrderLineBudgetServiceImpl implements PurchaseOrderLineBudg
     }
 
     purchaseOrderLine.setBudgetDistributionSumAmount(budgetDistributionSumAmount);
+  }
+
+  @Override
+  public String getGroupBudgetDomain(
+      PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder, BudgetLevel global) {
+
+    if (purchaseOrderLine == null || purchaseOrder == null || purchaseOrder.getCompany() == null) {
+      return "self.id = 0";
+    }
+
+    String query =
+        String.format(
+            "self.parentBudgetLevel IS NOT NULL AND self.parentBudgetLevel.parentBudgetLevel IS NULL AND self.statusSelect = '%s'",
+            BudgetLevelRepository.BUDGET_LEVEL_STATUS_SELECT_VALID);
+
+    if (purchaseOrderLine.getAccount() != null
+        && purchaseOrderLine.getAccount().getAccountType() != null) {
+      AccountType accountType = purchaseOrderLine.getAccount().getAccountType();
+      if (AccountTypeRepository.TYPE_CHARGE.equals(accountType.getTechnicalTypeSelect())) {
+        query =
+            query.concat(
+                String.format(
+                    " AND self.parentBudgetLevel.budgetTypeSelect in (%d,%d)",
+                    BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE,
+                    BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE_AND_INVESTMENT));
+      } else if (AccountTypeRepository.TYPE_IMMOBILISATION.equals(
+          accountType.getTechnicalTypeSelect())) {
+        query =
+            query.concat(
+                String.format(
+                    " AND self.parentBudgetLevel.budgetTypeSelect in (%d,%d)",
+                    BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_INVESTMENT,
+                    BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE_AND_INVESTMENT));
+      } else {
+        query =
+            query.concat(
+                String.format(
+                    " AND self.parentBudgetLevel.budgetTypeSelect in (%d,%d,%d)",
+                    BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE,
+                    BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_INVESTMENT,
+                    BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE_AND_INVESTMENT));
+      }
+    }
+
+    if (purchaseOrderLine.getBudget() != null
+        && purchaseOrderLine.getBudget().getBudgetLevel() != null
+        && purchaseOrderLine.getBudget().getBudgetLevel().getParentBudgetLevel() != null) {
+      query =
+          query.concat(
+              String.format(
+                  " AND self.id = %d",
+                  purchaseOrderLine.getBudget().getBudgetLevel().getParentBudgetLevel().getId()));
+    } else if (global != null && global.getId() != null) {
+      query = query.concat(String.format(" AND self.parentBudgetLevel.id = %d", global.getId()));
+    } else {
+      query =
+          query.concat(
+              String.format(
+                  " AND self.parentBudgetLevel.company.id = %d",
+                  purchaseOrder.getCompany().getId()));
+    }
+    return query;
+  }
+
+  @Override
+  public String getSectionBudgetDomain(
+      PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder, BudgetLevel global) {
+
+    if (purchaseOrderLine == null || purchaseOrder == null || purchaseOrder.getCompany() == null) {
+      return "self.id = 0";
+    }
+
+    String query =
+        String.format(
+            "self.parentBudgetLevel.parentBudgetLevel IS NOT NULL AND self.parentBudgetLevel.parentBudgetLevel.parentBudgetLevel IS NULL AND self.parentBudgetLevel.parentBudgetLevel.statusSelect = '%s'",
+            BudgetLevelRepository.BUDGET_LEVEL_STATUS_SELECT_VALID);
+
+    if (purchaseOrderLine.getAccount() != null
+        && purchaseOrderLine.getAccount().getAccountType() != null) {
+      AccountType accountType = purchaseOrderLine.getAccount().getAccountType();
+      if (AccountTypeRepository.TYPE_CHARGE.equals(accountType.getTechnicalTypeSelect())) {
+        query =
+            query.concat(
+                String.format(
+                    " AND self.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect in (%d,%d)",
+                    BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE,
+                    BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE_AND_INVESTMENT));
+      } else if (AccountTypeRepository.TYPE_IMMOBILISATION.equals(
+          accountType.getTechnicalTypeSelect())) {
+        query =
+            query.concat(
+                String.format(
+                    " AND self.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect in (%d,%d)",
+                    BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_INVESTMENT,
+                    BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE_AND_INVESTMENT));
+      } else {
+        query =
+            query.concat(
+                String.format(
+                    " AND self.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect in (%d,%d,%d)",
+                    BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE,
+                    BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_INVESTMENT,
+                    BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE_AND_INVESTMENT));
+      }
+    }
+
+    if (purchaseOrderLine.getBudget() != null
+        && purchaseOrderLine.getBudget().getBudgetLevel() != null) {
+      query =
+          query.concat(
+              String.format(
+                  " AND self.id = %d", purchaseOrderLine.getBudget().getBudgetLevel().getId()));
+    } else if (purchaseOrderLine.getGroupBudget() != null) {
+      query =
+          query.concat(
+              String.format(
+                  " AND self.parentBudgetLevel.id = %d",
+                  purchaseOrderLine.getGroupBudget().getId()));
+    } else if (global != null && global.getId() != null) {
+      query =
+          query.concat(
+              String.format(
+                  " AND self.parentBudgetLevel.parentBudgetLevel.id = %d", global.getId()));
+    } else {
+      query =
+          query.concat(
+              String.format(
+                  " AND self.parentBudgetLevel.parentBudgetLevel.company.id = %d",
+                  purchaseOrder.getCompany().getId()));
+    }
+    return query;
+  }
+
+  @Override
+  public String getLineBudgetDomain(
+      PurchaseOrderLine purchaseOrderLine,
+      PurchaseOrder purchaseOrder,
+      BudgetLevel global,
+      boolean isBudget) {
+
+    if (purchaseOrderLine == null || purchaseOrder == null || purchaseOrder.getCompany() == null) {
+      return "self.id = 0";
+    }
+
+    String query =
+        String.format(
+            "self.budgetLevel.parentBudgetLevel.parentBudgetLevel IS NOT NULL AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.statusSelect = '%s'",
+            BudgetLevelRepository.BUDGET_LEVEL_STATUS_SELECT_VALID);
+
+    if (purchaseOrderLine.getAccount() != null
+        && purchaseOrderLine.getAccount().getAccountType() != null) {
+      AccountType accountType = purchaseOrderLine.getAccount().getAccountType();
+      if (AccountTypeRepository.TYPE_CHARGE.equals(accountType.getTechnicalTypeSelect())) {
+        query =
+            query.concat(
+                String.format(
+                    " AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect in (%d,%d)",
+                    BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE,
+                    BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE_AND_INVESTMENT));
+      } else if (AccountTypeRepository.TYPE_IMMOBILISATION.equals(
+          accountType.getTechnicalTypeSelect())) {
+        query =
+            query.concat(
+                String.format(
+                    " AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect in (%d,%d)",
+                    BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_INVESTMENT,
+                    BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE_AND_INVESTMENT));
+      } else {
+        query =
+            query.concat(
+                String.format(
+                    " AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect in (%d,%d,%d)",
+                    BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE,
+                    BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_INVESTMENT,
+                    BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE_AND_INVESTMENT));
+      }
+    }
+
+    if (purchaseOrderLine.getBudget() != null && !isBudget) {
+      query =
+          query.concat(String.format(" AND self.id = %d", purchaseOrderLine.getBudget().getId()));
+    } else if (purchaseOrderLine.getLine() != null && isBudget) {
+      query = query.concat(String.format(" AND self.id = %d", purchaseOrderLine.getLine().getId()));
+    } else if (purchaseOrderLine.getSection() != null) {
+      query =
+          query.concat(
+              String.format(
+                  " AND self.budgetLevel.id = %d", purchaseOrderLine.getSection().getId()));
+    } else if (purchaseOrderLine.getGroupBudget() != null) {
+      query =
+          query.concat(
+              String.format(
+                  " AND self.budgetLevel.parentBudgetLevel.id = %d",
+                  purchaseOrderLine.getGroupBudget().getId()));
+    } else if (global != null && global.getId() != null) {
+      query =
+          query.concat(
+              String.format(
+                  " AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.id = %d",
+                  global.getId()));
+    } else {
+      query =
+          query.concat(
+              String.format(
+                  " AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.company.id = %d",
+                  purchaseOrder.getCompany().getId()));
+    }
+    return query;
   }
 }

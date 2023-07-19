@@ -408,6 +408,9 @@
     <panel name="statusPanel" hidden="true">
       <field name="saleOrder.statusSelect"/>
       <field name="saleOrder.orderBeingEdited"/>
+      <field name="product.isUnrenewed" hidden="true"/>
+      <field name="product.isPrototype" hidden="true"/>
+      <field name="saleOrder" hidden="true"/>
     </panel>
     <panel-mail name="mailsPanel">
       <mail-messages/>

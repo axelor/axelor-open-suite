@@ -145,7 +145,8 @@ public interface ContractService {
    * @param contract contain consumption and contract lines.
    * @return Multimap of consumption lines successfully converted to contract lines.
    */
-  Multimap<ContractLine, ConsumptionLine> mergeConsumptionLines(Contract contract);
+  Multimap<ContractLine, ConsumptionLine> mergeConsumptionLines(Contract contract)
+      throws AxelorException;
 
   default List<ContractVersion> getVersions(Contract contract) {
     List<ContractVersion> versions = contract.getVersionHistory();
@@ -163,4 +164,8 @@ public interface ContractService {
         && (contract.getCurrentContractVersion().getIsTimeProratedInvoice()
             && contract.getCurrentContractVersion().getIsVersionProratedInvoice());
   }
+
+  Contract getNextContract(Contract contract) throws AxelorException;
+
+  void setInitialPriceOnContractLines(Contract contract);
 }

@@ -19,13 +19,13 @@
 package com.axelor.apps.talent.service;
 
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.DMSService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.talent.db.JobApplication;
 import com.axelor.apps.talent.db.repo.JobApplicationRepository;
-import com.axelor.dms.db.DMSFile;
 import com.axelor.dms.db.repo.DMSFileRepository;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
@@ -45,6 +45,7 @@ public class JobApplicationServiceImpl implements JobApplicationService {
 
   protected DMSFileRepository dmsFileRepo;
   protected AppTalentService appTalentService;
+  protected DMSService dmsService;
 
   @Inject
   public JobApplicationServiceImpl(
@@ -52,12 +53,14 @@ public class JobApplicationServiceImpl implements JobApplicationService {
       AppBaseService appBaseService,
       MetaFiles metaFiles,
       DMSFileRepository dmsFileRepo,
-      AppTalentService appTalentService) {
+      AppTalentService appTalentService,
+      DMSService dmsService) {
     this.jobApplicationRepo = jobApplicationRepo;
     this.appBaseService = appBaseService;
     this.metaFiles = metaFiles;
     this.dmsFileRepo = dmsFileRepo;
     this.appTalentService = appTalentService;
+    this.dmsService = dmsService;
   }
 
   @Transactional
@@ -138,27 +141,21 @@ public class JobApplicationServiceImpl implements JobApplicationService {
   @Override
   @Transactional
   public void setDMSFile(JobApplication jobApplication) {
-    if (jobApplication.getResume() == null) {
-      DMSFile toDelete = dmsFileRepo.find(jobApplication.getResumeId());
-      if (toDelete != null) {
-        metaFiles.delete(toDelete);
-      }
+    MetaFile metaFile = jobApplication.getResume();
+    Long resumeId = jobApplication.getResumeId();
+    Long dmsId = dmsService.setDmsFile(metaFile, resumeId, jobApplication);
+
+    if (metaFile == null) {
       jobApplication.setResumeId(null);
-    } else {
-      MetaFile resume = jobApplication.getResume();
-      DMSFile resumeFile = metaFiles.attach(resume, resume.getFileName(), jobApplication);
-      jobApplication.setResumeId(resumeFile.getId());
     }
+    if (dmsId != null) {
+      jobApplication.setResumeId(dmsId);
+    }
+
     jobApplicationRepo.save(jobApplication);
   }
 
   public String getInlineUrl(JobApplication jobApplication) {
-    Long resumeId = jobApplication.getResumeId();
-    if (resumeId == null || resumeId == 0) {
-      return "";
-    }
-
-    DMSFile dmsFile = dmsFileRepo.find(jobApplication.getResumeId());
-    return String.format("ws/dms/inline/%d", dmsFile.getId());
+    return dmsService.getInlineUrl(jobApplication.getResumeId());
   }
 }

@@ -33,6 +33,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public interface StockMoveLineService {
 
@@ -197,8 +198,9 @@ public interface StockMoveLineService {
    * Store customs code information on each stock move line from its product.
    *
    * @param stockMoveLineList List of StockMoveLines on which to operate
+   * @throws AxelorException
    */
-  public void storeCustomsCodes(List<StockMoveLine> stockMoveLineList);
+  public void storeCustomsCodes(List<StockMoveLine> stockMoveLineList) throws AxelorException;
 
   /**
    * Check whether a stock move line is fully spread over logistical form lines.
@@ -287,7 +289,12 @@ public interface StockMoveLineService {
 
   /** To update realQty and conformity of a stock move line (API AOS) */
   void updateStockMoveLine(
-      StockMoveLine stockMoveLine, BigDecimal realQty, Integer conformity, Unit unit)
+      StockMoveLine stockMoveLine,
+      BigDecimal realQty,
+      Integer conformity,
+      Unit unit,
+      StockLocation fromStockLocation,
+      StockLocation toStockLocation)
       throws AxelorException;
 
   /**
@@ -318,4 +325,15 @@ public interface StockMoveLineService {
 
   public BigDecimal computeNewAveragePriceLocationLine(
       StockLocationLine stockLocationLine, StockMoveLine stockMoveLine) throws AxelorException;
+
+  /**
+   * This method resets complety the stock move line. It does not remove the stock move line from
+   * database.
+   *
+   * @param stockMoveLine
+   * @return empty stock move line
+   */
+  public StockMoveLine resetStockMoveLine(StockMoveLine stockMoveLine);
+
+  Map<String, Object> getClearedStockMoveLineMap();
 }

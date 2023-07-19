@@ -30,6 +30,8 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.TradingName;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.studio.db.AppAccount;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
@@ -43,6 +45,7 @@ public class AnalyticMoveLineGenerateRealServiceImpl
   protected AppAccountService appAccountService;
   protected MoveLineComputeAnalyticService moveLineComputeAnalyticService;
   protected AccountManagementAccountService accountManagementAccountService;
+  protected AppBaseService appBaseService;
 
   @Inject
   public AnalyticMoveLineGenerateRealServiceImpl(
@@ -51,13 +54,15 @@ public class AnalyticMoveLineGenerateRealServiceImpl
       AccountConfigService accountConfigService,
       AppAccountService appAccountService,
       MoveLineComputeAnalyticService moveLineComputeAnalyticService,
-      AccountManagementAccountService accountManagementAccountService) {
+      AccountManagementAccountService accountManagementAccountService,
+      AppBaseService appBaseService) {
     this.analyticMoveLineRepository = analyticMoveLineRepository;
     this.analyticMoveLineService = analyticMoveLineService;
     this.accountConfigService = accountConfigService;
     this.appAccountService = appAccountService;
     this.accountManagementAccountService = accountManagementAccountService;
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
+    this.appBaseService = appBaseService;
   }
 
   @Override
@@ -84,6 +89,7 @@ public class AnalyticMoveLineGenerateRealServiceImpl
         && moveLine.getAccount().getAnalyticDistributionAuthorized()) {
       AccountConfig accountConfig = accountConfigService.getAccountConfig(move.getCompany());
       AppAccount appAccount = appAccountService.getAppAccount();
+      TradingName tradingName = move.getTradingName();
       if (appAccount != null
           && appAccount.getManageAnalyticAccounting()
           && accountConfig != null
@@ -96,6 +102,12 @@ public class AnalyticMoveLineGenerateRealServiceImpl
         } else if (accountConfig.getAnalyticDistributionTypeSelect()
             == AccountConfigRepository.DISTRIBUTION_TYPE_PRODUCT) {
           analyticDistributionTemplate = moveLine.getAccount().getAnalyticDistributionTemplate();
+        } else if (appBaseService.getAppBase().getEnableTradingNamesManagement()
+            && accountConfig.getAnalyticDistributionTypeSelect()
+                == AccountConfigRepository.DISTRIBUTION_TYPE_TRADING_NAME
+            && tradingName != null
+            && tradingName.getAnalyticDistributionTemplate() != null) {
+          analyticDistributionTemplate = tradingName.getAnalyticDistributionTemplate();
         }
 
         if (analyticDistributionTemplate != null) {
