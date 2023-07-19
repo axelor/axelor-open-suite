@@ -5,7 +5,8 @@
 
   <module name="talent" package="com.axelor.apps.talent.db"/>
 
-  <entity name="JobApplication" cacheable="true">
+  <entity name="JobApplication" cacheable="true"
+    implements="com.axelor.apps.base.interfaces.PdfViewer">
     <string name="lastName" title="Last name"/>
     <string name="firstName" title="First name"/>
     <string name="fullName" title="Full name" namecolumn="true"/>
@@ -47,7 +48,7 @@
       ref="com.axelor.apps.base.db.Address"/>
     <many-to-one name="resume" title="JobApplication.resume"
       ref="com.axelor.meta.db.MetaFile"/>
-    <long name="resumeId" nullable="true"/>
+    <many-to-one name="dmsFile" ref="com.axelor.dms.db.DMSFile"/>
     <extra-code>
 	   		<![CDATA[
 	   			public static final Integer STATUS_OPEN = 0;

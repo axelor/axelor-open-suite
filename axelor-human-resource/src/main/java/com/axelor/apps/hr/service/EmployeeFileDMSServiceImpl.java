@@ -5,6 +5,7 @@ import com.axelor.apps.hr.db.EmployeeFile;
 import com.axelor.apps.hr.db.repo.EmployeeFileRepository;
 import com.axelor.dms.db.DMSFile;
 import com.axelor.dms.db.repo.DMSFileRepository;
+import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -13,41 +14,35 @@ public class EmployeeFileDMSServiceImpl implements EmployeeFileDMSService {
   protected EmployeeFileRepository employeeFileRepository;
   protected DMSFileRepository dmsFileRepository;
   protected DMSService dmsService;
+  protected MetaFiles metaFiles;
 
   @Inject
   public EmployeeFileDMSServiceImpl(
       EmployeeFileRepository employeeFileRepository,
       DMSFileRepository dmsFileRepository,
-      DMSService dmsService) {
+      DMSService dmsService,
+      MetaFiles metaFiles) {
     this.employeeFileRepository = employeeFileRepository;
     this.dmsFileRepository = dmsFileRepository;
     this.dmsService = dmsService;
+    this.metaFiles = metaFiles;
   }
 
   @Override
   @Transactional
   public void setDMSFile(EmployeeFile employeeFile) {
     MetaFile metaFile = employeeFile.getMetaFile();
-    Long metaFileId = employeeFile.getMetaFileId();
-    Long dmsId = dmsService.setDmsFile(metaFile, metaFileId, employeeFile);
-
-    if (metaFile == null) {
-      employeeFile.setMetaFileId(null);
-    }
-    if (dmsId != null) {
-      employeeFile.setMetaFileId(dmsId);
-    }
-
+    dmsService.setDmsFile(metaFile, employeeFile);
     employeeFileRepository.save(employeeFile);
   }
 
   @Override
   public String getInlineUrl(EmployeeFile employeeFile) {
     MetaFile metaFile = employeeFile.getMetaFile();
-    if (metaFile == null || !"application/pdf".equals(metaFile.getFileType())) {
+    DMSFile dmsFile = employeeFile.getDmsFile();
+    if (metaFile == null || dmsFile == null || !"application/pdf".equals(metaFile.getFileType())) {
       return "";
     }
-    DMSFile dmsFile = dmsFileRepository.find(employeeFile.getMetaFileId());
-    return dmsService.getInlineUrl(dmsFile.getId());
+    return dmsService.getInlineUrl(dmsFile);
   }
 }

@@ -26,6 +26,7 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.talent.db.JobApplication;
 import com.axelor.apps.talent.db.repo.JobApplicationRepository;
+import com.axelor.dms.db.DMSFile;
 import com.axelor.dms.db.repo.DMSFileRepository;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
@@ -142,20 +143,11 @@ public class JobApplicationServiceImpl implements JobApplicationService {
   @Transactional
   public void setDMSFile(JobApplication jobApplication) {
     MetaFile metaFile = jobApplication.getResume();
-    Long resumeId = jobApplication.getResumeId();
-    Long dmsId = dmsService.setDmsFile(metaFile, resumeId, jobApplication);
-
-    if (metaFile == null) {
-      jobApplication.setResumeId(null);
-    }
-    if (dmsId != null) {
-      jobApplication.setResumeId(dmsId);
-    }
-
+    dmsService.setDmsFile(metaFile, jobApplication);
     jobApplicationRepo.save(jobApplication);
   }
 
   public String getInlineUrl(JobApplication jobApplication) {
-    return dmsService.getInlineUrl(jobApplication.getResumeId());
+    return dmsService.getInlineUrl(jobApplication.getDmsFile());
   }
 }

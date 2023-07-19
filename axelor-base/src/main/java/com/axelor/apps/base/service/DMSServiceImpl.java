@@ -1,5 +1,6 @@
 package com.axelor.apps.base.service;
 
+import com.axelor.apps.base.interfaces.PdfViewer;
 import com.axelor.db.Model;
 import com.axelor.dms.db.DMSFile;
 import com.axelor.dms.db.repo.DMSFileRepository;
@@ -19,26 +20,26 @@ public class DMSServiceImpl implements DMSService {
   }
 
   @Override
-  public Long setDmsFile(MetaFile metaFile, Long dmsId, Model entity) {
+  public DMSFile setDmsFile(MetaFile metaFile, PdfViewer pdfViewer) {
     if (metaFile == null) {
-      DMSFile toDelete = dmsFileRepository.find(dmsId);
-      if (toDelete != null) {
-        metaFiles.delete(toDelete);
+      pdfViewer.setDmsFile(null);
+
+      DMSFile previousDmsFile = pdfViewer.getDmsFile();
+      if (previousDmsFile != null) {
+        dmsFileRepository.remove(previousDmsFile);
       }
       return null;
-    } else {
-      DMSFile dmsFile = metaFiles.attach(metaFile, metaFile.getFileName(), entity);
-      return dmsFile.getId();
     }
+    DMSFile dmsFile = metaFiles.attach(metaFile, metaFile.getFileName(), (Model) pdfViewer);
+    pdfViewer.setDmsFile(dmsFile);
+    return dmsFile;
   }
 
   @Override
-  public String getInlineUrl(Long id) {
-    if (id == null || id == 0) {
+  public String getInlineUrl(DMSFile dmsFile) {
+    if (dmsFile == null) {
       return "";
     }
-
-    DMSFile dmsFile = dmsFileRepository.find(id);
     return String.format("ws/dms/inline/%d", dmsFile.getId());
   }
 }
