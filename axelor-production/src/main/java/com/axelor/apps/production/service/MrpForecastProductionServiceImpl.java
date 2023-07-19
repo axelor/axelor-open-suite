@@ -86,7 +86,7 @@ public class MrpForecastProductionServiceImpl implements MrpForecastProductionSe
     mrpForecast.setQty(qty);
     mrpForecast.setTechnicalOrigin(technicalOrigin);
     mrpForecast.setUnit(unit);
-    mrpForecast.setStatusSelect(MrpForecastRepository.STATUS_DRAFT);
+    mrpForecast.setStatusSelect(MrpForecastRepository.STATUS_CONFIRMED);
     mrpForecastRepo.save(mrpForecast);
   }
 
