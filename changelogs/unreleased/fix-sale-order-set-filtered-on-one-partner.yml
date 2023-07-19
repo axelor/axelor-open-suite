@@ -1,0 +1,3 @@
+---
+title : "MANUF ORDER : Fixed a bug where sale order set was emptied on change of client partner and saleOrderSet filtered on one partner"
+type : fix
