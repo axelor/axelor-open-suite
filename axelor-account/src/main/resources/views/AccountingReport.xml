@@ -556,7 +556,7 @@
   </action-validate>
 
   <action-view name="action-accounting-report-view-traceback" title="Anomalies"
-    model="com.axelor.apps.base.db.TraceBack">
+    model="com.axelor.exception.db.TraceBack">
     <view type="grid" name="trace-back-accounting-report-grid"/>
     <view type="form" name="trace-back-form"/>
     <domain>self.ref = 'com.axelor.apps.account.db.AccountingReport' AND self.refId = :id</domain>

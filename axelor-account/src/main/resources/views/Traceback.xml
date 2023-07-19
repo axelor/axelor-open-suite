@@ -19,7 +19,7 @@
   </grid>
 
   <grid name="trace-back-accounting-report-grid" title="TraceBack"
-    model="com.axelor.apps.base.db.TraceBack">
+    model="com.axelor.exception.db.TraceBack">
     <field name="message"/>
   </grid>
 </object-views>
