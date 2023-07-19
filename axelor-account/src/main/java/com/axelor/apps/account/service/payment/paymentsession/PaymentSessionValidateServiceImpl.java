@@ -1224,9 +1224,10 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     }
 
     Map<Move, BigDecimal> paymentAmountMap = new HashMap<>();
+    Partner partner = invoiceTerm.getMoveLine().getPartner();
 
     Move move =
-        this.getMove(paymentSession, null, invoiceTerm, moveDateMap, paymentAmountMap, true);
+        this.getMove(paymentSession, partner, invoiceTerm, moveDateMap, paymentAmountMap, true);
 
     boolean out = paymentSession.getPaymentMode().getInOutSelect() == PaymentModeRepository.OUT;
 
@@ -1250,41 +1251,32 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     MoveLine moveLine =
         this.generateMoveLine(
             move,
-            invoiceTerm.getMoveLine().getPartner(),
+            partner,
             invoiceTerm.getMoveLine().getAccount(),
             invoiceTerm.getAmountPaid().add(reconciledAmount),
             invoiceTerm.getMoveLine().getOrigin(),
             this.getMoveLineDescription(paymentSession),
             out);
 
-    Account counterPartAccount = accountConfigService.getBillOfExchReceivAccount(accountConfig);
-    MoveLine counterPartMoveLine =
-        move.getMoveLineList().stream()
-            .filter(ml -> ml.getAccount().equals(counterPartAccount))
-            .findFirst()
-            .orElse(null);
+    move.setDescription(
+        this.getMoveDescription(paymentSession, moveLine.getCurrencyAmount())
+            .concat(String.format(" - %s", I18n.get("Placement"))));
 
-    if (counterPartMoveLine != null) {
+    if (invoiceTerm.getAmountPaid().signum() != 0) {
+      Account counterPartAccount = accountConfigService.getBillOfExchReceivAccount(accountConfig);
 
-      counterPartMoveLine = updateMoveLineAmounts(counterPartMoveLine, invoiceTerm);
-
-    } else {
-      counterPartMoveLine =
+      MoveLine counterPartMoveLine =
           this.generateMoveLine(
               move,
-              null,
-              accountConfigService.getBillOfExchReceivAccount(accountConfig),
+              partner,
+              counterPartAccount,
               invoiceTerm.getAmountPaid(),
               invoiceTerm.getMoveLine().getOrigin(),
               this.getMoveLineDescription(paymentSession),
               !out);
+
+      invoiceTerm.setPlacementMoveLine(counterPartMoveLine);
     }
-
-    invoiceTerm.setPlacementMoveLine(counterPartMoveLine);
-
-    move.setDescription(
-        this.getMoveDescription(paymentSession, counterPartMoveLine.getCurrencyAmount())
-            .concat(String.format(" - %s", I18n.get("Placement"))));
 
     moveComputeService.autoApplyCutOffDates(move);
 
