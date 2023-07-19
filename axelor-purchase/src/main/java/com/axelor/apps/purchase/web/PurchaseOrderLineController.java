@@ -335,16 +335,19 @@ public class PurchaseOrderLineController {
       Context context = request.getContext();
       PurchaseOrderLine purchaseOrderLine = context.asType(PurchaseOrderLine.class);
       PurchaseOrder purchaseOrder = getPurchaseOrder(context);
+      Company company = purchaseOrder.getCompany();
+      Partner supplierPartner = purchaseOrder.getSupplierPartner();
 
       Beans.get(SupplierCatalogService.class)
           .checkMinQty(
               purchaseOrderLine.getProduct(),
-              purchaseOrder.getSupplierPartner(),
-              purchaseOrder.getCompany(),
+              supplierPartner,
+              company,
               purchaseOrderLine.getQty(),
               request,
               response);
-      Beans.get(PurchaseOrderLineService.class).checkMultipleQty(purchaseOrderLine, response);
+      Beans.get(PurchaseOrderLineService.class)
+          .checkMultipleQty(company, supplierPartner, purchaseOrderLine, response);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
