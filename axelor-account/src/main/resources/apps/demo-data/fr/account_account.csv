@@ -696,7 +696,7 @@
 695;624700;624000;"Transports collectifs du personnel";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
 696;624800;624000;"Divers";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
 697;625000;620;"Déplacements missions et réceptions";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
-698;625100;625000;"Voyages et déplacements";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+698;625100;625000;"Voyages et déplacements";"charge";;1;;;"true";"false";2;"NDAS";"N_D";1;"true";"false";"false";2
 699;625500;625000;"Frais de déménagement";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
 700;625600;625000;"Missions";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
 701;625700;625000;"Réceptions";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2

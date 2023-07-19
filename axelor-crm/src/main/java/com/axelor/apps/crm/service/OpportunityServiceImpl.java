@@ -40,6 +40,7 @@ import com.google.inject.persist.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class OpportunityServiceImpl implements OpportunityService {
 
@@ -177,5 +178,20 @@ public class OpportunityServiceImpl implements OpportunityService {
     opportunity.setLostReason(lostReason);
     opportunity.setLostReasonStr(lostReasonStr);
     saveOpportunity(opportunity);
+  }
+
+  @Override
+  public void kanbanOpportunityOnMove(Opportunity opportunity) throws AxelorException {
+    OpportunityStatus opportunityStatus = opportunity.getOpportunityStatus();
+    OpportunityStatus closedLostOpportunityStatus = appCrmService.getClosedLostOpportunityStatus();
+
+    if (Objects.isNull(opportunityStatus)) {
+      return;
+    }
+    if (opportunityStatus.equals(closedLostOpportunityStatus)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(CrmExceptionMessage.OPPORTUNITY_CLOSE_LOST_KANBAN));
+    }
   }
 }

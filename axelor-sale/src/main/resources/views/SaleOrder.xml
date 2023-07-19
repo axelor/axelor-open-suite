@@ -945,8 +945,7 @@
       <panel name="projectPanel"
         if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder()"
         title="Business project" colSpan="12" if-module="axelor-business-project">
-        <field name="project" domain="self.typeSelect = 'project'" form-view="project-form"
-          grid-view="project-grid" colSpan="12"/>
+        <field name="project" form-view="project-form" grid-view="project-grid" colSpan="12"/>
       </panel>
 
     </panel-tabs>

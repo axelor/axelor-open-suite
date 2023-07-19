@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <form id="budget-move-form" name="move-form" title="Account move"
     model="com.axelor.apps.account.db.Move" extension="true">
@@ -9,7 +9,8 @@
     <extend target="//button[@name='autoTaxLineGenerateBtn']">
       <insert position="after">
         <button name="computeBudgetDistributionBtn" title="Compute budget distribution"
-          colSpan="3" if="__config__.app.getApp('budget')?.getManageMultiBudget()"
+          colSpan="3"
+          if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget()"
           onClick="action-account-move-group-compute-budget-distribution" css="btn-custom text-left"
           icon="fa-plus"
           showIf="company.accountConfig.enableBudgetKey &amp;&amp; technicalOriginSelect == 1
@@ -47,7 +48,8 @@
   </action-group>
 
   <action-group name="action-budget-move-accounting-click">
-    <action name="action-budget-move-accounting-validate-group"/>
+    <action name="action-budget-move-accounting-validate-group"
+      if="__config__.app.isApp('budget')"/>
     <action name="action-account-move-group-accounting-click"/>
   </action-group>
 

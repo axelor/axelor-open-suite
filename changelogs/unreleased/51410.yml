@@ -1,6 +1,0 @@
----
-title: "User, Employee : Improve UI/UX when creating user and employee"
-type: fix
-description: |
-  When creating an User, improve filter when choosing an Employee for more coherence.
-  When creating an Employee, improve filter when choosing an User for more coherence.

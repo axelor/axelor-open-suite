@@ -111,6 +111,7 @@
   </selection>
 
   <selection name="crm.convert.lead.wizard.lead.to.contact.select">
+    <option value="0">No contact creation</option>
     <option value="1">Create new contact</option>
     <option value="2">Select existing contact</option>
   </selection>

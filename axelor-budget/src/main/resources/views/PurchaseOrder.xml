@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="purchase-order-grid" id="budget-purchase-order-grid" title="Purchase orders"
     model="com.axelor.apps.purchase.db.PurchaseOrder" extension="true">
     <extend target="//item[@name='seePurchaseOrderLinesItem']">
       <insert position="after">
         <item title="See budget distribution lines"
-          action="action-purchase-order-see-budget-distribution-lines"/>
+          action="action-purchase-order-see-budget-distribution-lines"
+          if="__config__.app.isApp('budget')"/>
       </insert>
     </extend>
   </grid>
@@ -23,33 +24,28 @@
       <attribute name="width" value="large"/>
     </extend>
 
-    <extend target="//field[@name='versionNumber']">
-      <insert position="after">
-        <panel name="projectAndCompanyDepartmentPanel" colSpan="3">
-          <field name="project" colSpan="12"
-            onChange="budget-action-purchase-order-record-project-onchange"
-            hideIf="orderTypeSelect == 4"/>
-          <field name="companyDepartment" colSpan="12"
-            onChange="action-budget-purchase-order-attrs-company-dept-onchange"
-            requiredIf="$enableBudgetKey"/>
-        </panel>
-        <spacer colSpan="9" name="beforeBudgetLevelSpacer"/>
-        <field name="budgetLevel"
-          onSelect="action-budget-purchase-order-attrs-budget-level-domain"
-          requiredIf="companyDepartment &amp;&amp; $enableBudgetKey" colSpan="3"
-          showIf="companyDepartment &amp;&amp; $enableBudgetKey"
-          onChange="action-budget-purchase-order-group-budget-level-onchange"
-          form-view="global-budget-budget-level-form" grid-view="budget-level-grid"/>
-      </insert>
+    <extend target="//field[@name='project']">
+      <attribute name="onChange"
+        value="budget-action-purchase-order-record-project-onchange"/>
     </extend>
-
-
 
     <extend target="//panel[@name='timetablePanel']">
       <insert position="after">
         <panel name="budgetDistributionPanel" title="Budget distribution"
           if="__config__.app.isApp('budget')" if-module="axelor-supplychain"
           showIf="statusSelect &lt;= 4">
+          <field name="project" colSpan="3"
+            onChange="budget-action-purchase-order-record-project-onchange"
+            hideIf="orderTypeSelect == 4"/>
+          <field name="companyDepartment" colSpan="3"
+            onChange="action-budget-purchase-order-attrs-company-dept-onchange"
+            requiredIf="$enableBudgetKey"/>
+          <field name="budgetLevel" if="__config__.app.isApp('budget')"
+            onSelect="action-budget-purchase-order-attrs-budget-level-domain"
+            requiredIf="companyDepartment &amp;&amp; $enableBudgetKey" colSpan="3"
+            showIf="companyDepartment &amp;&amp; $enableBudgetKey"
+            onChange="action-budget-purchase-order-group-budget-level-onchange"
+            form-view="global-budget-budget-level-form" grid-view="budget-level-grid"/>
           <field name="budget" showIf="statusSelect &lt;= 2" title="Budget line"
             domain="self.company = :company AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.statusSelect LIKE 'valid' AND (:budgetLevel IS NOT NULL AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel = :budgetLevel ) OR (:budgetLevel IS NULL AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel IS NOT NULL AND ((:companyDepartment IS NOT NULL AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.companyDepartment = :companyDepartment) OR :companyDepartment IS NULL))"/>
           <button name="applyToAllBtn" title="Apply to all"
@@ -74,7 +70,7 @@
     <extend target="//button[@name='cancelBtn']">
       <insert position="before">
         <button name="computeBudgetDistributionBtn" title="Compute budget distribution"
-          if="__config__.app.getApp('budget')?.getManageMultiBudget()"
+          if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget()"
           onClick="action-budget-group-purchase-order-compute-budget-distribution" hidden="true"
           showIf="company.accountConfig.enableBudgetKey &amp;&amp; statusSelect &lt; 3 &amp;&amp; purchaseOrderLineList &amp;&amp; purchaseOrderLineList.length != 0"/>
       </insert>
@@ -99,19 +95,22 @@
 
   <action-group name="action-budget-group-purchase-order-on-validate-actions">
     <action name="action-method-purchase-order-validate-budget-distribution-list"
-      if="__config__.app.getApp('budget')?.manageMultiBudget"/>
+      if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.manageMultiBudget"/>
     <action name="action-group-purchase-order-on-validate-actions"/>
   </action-group>
 
   <action-group name="action-budget-purchase-order-group-on-save">
-    <action name="action-budget-purchase-order-group-get-and-validate-budget-balance"/>
+    <action name="action-budget-purchase-order-group-get-and-validate-budget-balance"
+      if="__config__.app.isApp('budget')"/>
     <action name="save"/>
-    <action name="action-budget-purchase-order-method-fill-budget-str"/>
+    <action name="action-budget-purchase-order-method-fill-budget-str"
+      if="__config__.app.isApp('budget')"/>
   </action-group>
 
   <action-group name="action-budget-group-purchase-order-on-new-actions">
     <action name="action-supplychain-group-purchase-order-on-new-actions"/>
-    <action name="action-budget-purchase-order-record-load-budget-key-config"/>
+    <action name="action-budget-purchase-order-record-load-budget-key-config"
+      if="__config__.app.isApp('budget')"/>
   </action-group>
 
   <action-group name="action-budget-group-purchase-order-compute-budget-distribution">
@@ -130,8 +129,10 @@
 
   <action-group name="action-group-budget-purchase-order-request-onclick">
     <action name="save"/>
-    <action name="action-method-budget-purchase-order-no-compute-budget-distribution"/>
-    <action name="action-budget-purchase-order-group-get-and-validate-budget-balance"/>
+    <action name="action-method-budget-purchase-order-no-compute-budget-distribution"
+      if="__config__.app.isApp('budget')"/>
+    <action name="action-budget-purchase-order-group-get-and-validate-budget-balance"
+      if="__config__.app.isApp('budget')"/>
     <action name="action-purchase-order-method-requested"/>
     <action name="save"/>
   </action-group>
@@ -154,10 +155,11 @@
 
   <action-group name="action-budget-purchase-order-group-onload">
     <action name="action-group-purchase-order-on-load-actions"/>
-    <action name="action-budget-purchase-order-record-load-budget-key-config"/>
+    <action name="action-budget-purchase-order-record-load-budget-key-config"
+      if="__config__.app.isApp('budget')"/>
     <action
       name="action-purchase-order-supplychain-method-update-budget-distribution-amount-available"
-      if="__config__.app.getApp('budget')?.getManageMultiBudget()"/>
+      if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget()"/>
   </action-group>
 
   <action-record name="action-budget-purchase-order-record-load-budget-key-config"
@@ -181,13 +183,14 @@
   </action-record>
 
   <action-attrs name="action-budget-purchase-order-attrs-company-dept-onchange">
-    <attribute name="value" for="budgetLevel" expr="eval:null"/>
+    <attribute name="value" for="budgetLevel" expr="eval:null"
+      if="__config__.app.isApp('budget')"/>
   </action-attrs>
 
   <action-record name="budget-action-purchase-order-record-project-onchange"
     model="com.axelor.apps.purchase.db.PurchaseOrder">
     <field name="budgetLevel" expr="eval: project ? project.budget : budgetLevel"
-      if="_project == null || id != null"/>
+      if="__config__.app.isApp('budget') &amp;&amp; (_project == null || id != null)"/>
     <field name="company" expr="eval: project ? project.company : null"/>
   </action-record>
 

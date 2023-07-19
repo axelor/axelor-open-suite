@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module package="com.axelor.apps.budget.db" name="budget"/>
 
@@ -55,9 +55,6 @@
       title="Available amount with simulated moves"
       help="Represents the expected amount minus the sum of realized amounts and the sum of moves of status simulated.">
     </decimal>
-
-    <!-- This field is used for the temporary fix. It should be removed after RM#24881 -->
-    <string name="rootParentBudgetLevel" title="Root parent budget level"/>
 
     <many-to-one name="budgetModel" ref="com.axelor.apps.budget.db.Budget"
       title="Budget model"/>

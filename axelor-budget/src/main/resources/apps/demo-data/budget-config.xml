@@ -6,18 +6,34 @@
   <input file="studio_appBudget.csv" separator=";" search="self.app.code = :code"
     update="true" type="com.axelor.studio.db.AppBudget"/>
 
-  <input file="account_budget.csv" separator=";" type="com.axelor.apps.budget.db.Budget"
+  <input file="budget_budgetLevel.csv" separator=";"
+    type="com.axelor.apps.budget.db.BudgetLevel" search="self.importId = :importId">
+    <bind to="fromDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(fromDate)"
+      column="fromDate"/>
+    <bind to="toDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(toDate)"
+      column="toDate"/>
+    <bind to="startDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(startDate)"
+      column="startDate"/>
+    <bind to="endDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(endDate)"
+      column="endDate"/>
+  </input>
+
+  <input file="budget_budget.csv" separator=";" type="com.axelor.apps.budget.db.Budget"
     search="self.importId = :importId">
     <bind to="fromDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(fromDate)"
       column="fromDate"/>
     <bind to="toDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(toDate)"
       column="toDate"/>
+    <bind column="accountSet" to="accountSet" search="self.code in :accountSet"
+      eval="accountSet.split('\\|') as List"/>
   </input>
 
-  <input file="account_budgetDistribution.csv" separator=";"
-    type="com.axelor.apps.budget.db.BudgetDistribution" search="self.importId = :importId">
-    <bind to="createdOn" eval="call:com.axelor.csv.script.ImportDateTime:importDate(createdOn)"
-      column="createdOn"/>
+  <input file="budget_budgetLine.csv" separator=";"
+    type="com.axelor.apps.budget.db.BudgetLine" search="self.importId = :importId">
+    <bind to="fromDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(fromDate)"
+      column="fromDate"/>
+    <bind to="toDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(toDate)"
+      column="toDate"/>
   </input>
 
 </csv-inputs>

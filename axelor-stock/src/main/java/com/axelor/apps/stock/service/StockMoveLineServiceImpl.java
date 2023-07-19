@@ -64,8 +64,10 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -1583,5 +1585,67 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       stockMoveLine.setUnit(unit);
       stockMoveLine.setQty(convertQty);
     }
+  }
+
+  @Override
+  public StockMoveLine resetStockMoveLine(StockMoveLine stockMoveLine) {
+    if (stockMoveLine != null) {
+
+      stockMoveLine.setStockMove(null);
+      stockMoveLine.setPlannedStockMove(null);
+      stockMoveLine.setProduct(null);
+      stockMoveLine.setFilterOnAvailableProducts(true);
+      stockMoveLine.setQty(BigDecimal.ZERO);
+      stockMoveLine.setRealQty(BigDecimal.ZERO);
+      stockMoveLine.setOldQty(BigDecimal.ZERO);
+      stockMoveLine.setAvailableQty(BigDecimal.ZERO);
+      stockMoveLine.setAvailableQtyForProduct(BigDecimal.ZERO);
+      stockMoveLine.setAvailableStatus(null);
+      stockMoveLine.setUnit(null);
+      stockMoveLine.setNetMass(BigDecimal.ZERO);
+      stockMoveLine.setTotalNetMass(BigDecimal.ZERO);
+      stockMoveLine.setTrackingNumber(null);
+      stockMoveLine.setConformitySelect(null);
+      stockMoveLine.setShippedQty(BigDecimal.ZERO);
+      stockMoveLine.setShippedDate(null);
+      stockMoveLine.setProductModel(null);
+      stockMoveLine.setProductName(null);
+      stockMoveLine.setDescription(null);
+      stockMoveLine.setUnitPriceTaxed(BigDecimal.ZERO);
+      stockMoveLine.setUnitPriceUntaxed(BigDecimal.ZERO);
+      stockMoveLine.setCompanyUnitPriceUntaxed(BigDecimal.ZERO);
+      stockMoveLine.setWapPrice(BigDecimal.ZERO);
+      stockMoveLine.setCompanyPurchasePrice(BigDecimal.ZERO);
+      stockMoveLine.setProductTypeSelect(null);
+      stockMoveLine.setSequence(null);
+      stockMoveLine.setName(null);
+      stockMoveLine.setCustomsCodeNomenclature(null);
+      stockMoveLine.setCustomsCode(null);
+      stockMoveLine.setLogisticalFormLineList(null);
+      stockMoveLine.setLineTypeSelect(null);
+      stockMoveLine.setRegime(null);
+      stockMoveLine.setNatureOfTransaction(null);
+      stockMoveLine.setCountryOfOrigin(null);
+      stockMoveLine.setIsRealQtyModifiedByUser(false);
+    }
+    return stockMoveLine;
+  }
+
+  @Override
+  public Map<String, Object> getClearedStockMoveLineMap() {
+    Map<String, Object> clearedStockMoveLineMap = new HashMap<>();
+    clearedStockMoveLineMap.put("product", null);
+    clearedStockMoveLineMap.put("productName", "");
+    clearedStockMoveLineMap.put("qty", BigDecimal.ZERO);
+    clearedStockMoveLineMap.put("realQty", BigDecimal.ZERO);
+    clearedStockMoveLineMap.put("unitPriceUntaxed", BigDecimal.ZERO);
+    clearedStockMoveLineMap.put("qtyInvoiced", BigDecimal.ZERO);
+    clearedStockMoveLineMap.put("companyPurchasePrice", BigDecimal.ZERO);
+    clearedStockMoveLineMap.put("reservedQty", BigDecimal.ZERO);
+    clearedStockMoveLineMap.put("unit", null);
+    clearedStockMoveLineMap.put("netMass", BigDecimal.ZERO);
+    clearedStockMoveLineMap.put("totalNetMass", BigDecimal.ZERO);
+    clearedStockMoveLineMap.put("trackingNumber", null);
+    return clearedStockMoveLineMap;
   }
 }

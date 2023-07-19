@@ -1,0 +1,3 @@
+---
+title: "PaymentSession/BankOrder : fix of compensation in payment session process with bank order"
+type: fix

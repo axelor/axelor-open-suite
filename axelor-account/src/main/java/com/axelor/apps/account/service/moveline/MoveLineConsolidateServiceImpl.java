@@ -41,7 +41,8 @@ public class MoveLineConsolidateServiceImpl implements MoveLineConsolidateServic
   protected MoveToolService moveToolService;
 
   @Inject
-  public MoveLineConsolidateServiceImpl(MoveLineToolService moveLineToolService) {
+  public MoveLineConsolidateServiceImpl(
+      MoveLineToolService moveLineToolService, MoveToolService moveToolService) {
     this.moveLineToolService = moveLineToolService;
     this.moveToolService = moveToolService;
   }

@@ -939,8 +939,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
         JPA.em()
             .createQuery(
                 "SELECT InvoiceTerm FROM InvoiceTerm InvoiceTerm "
-                    + " WHERE InvoiceTerm.paymentSession = :paymentSession "
-                    + " AND InvoiceTerm.isSelectedOnPaymentSession = true",
+                    + " WHERE InvoiceTerm.paymentSession = :paymentSession",
                 InvoiceTerm.class);
     invoiceTermQuery.setParameter("paymentSession", paymentSession);
 
@@ -1031,7 +1030,8 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
         paymentSession, processPaymentSession(paymentSession, invoiceTermLinkWithRefund, isLcr));
   }
 
-  protected void createAndReconcileMoveLineFromPair(
+  @Override
+  public void createAndReconcileMoveLineFromPair(
       PaymentSession paymentSession,
       Move move,
       InvoiceTerm invoiceTerm,
@@ -1083,11 +1083,12 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
         == MoveRepository.FUNCTIONAL_ORIGIN_SALE) {
       creditMoveLine = moveLine;
       debitMoveLine = pair.getLeft().getMoveLine();
-    } else if (invoiceTerm.getMoveLine().getMove().getFunctionalOriginSelect()
+    } else if (pair.getLeft().getMoveLine().getMove().getFunctionalOriginSelect()
         == MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE) {
       creditMoveLine = pair.getLeft().getMoveLine();
       debitMoveLine = moveLine;
     }
+
     Reconcile invoiceTermsReconcile =
         reconcileService.createReconcile(debitMoveLine, creditMoveLine, pair.getRight(), true);
 

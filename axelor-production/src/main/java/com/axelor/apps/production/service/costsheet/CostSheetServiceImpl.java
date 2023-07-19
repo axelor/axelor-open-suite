@@ -369,6 +369,7 @@ public class CostSheetServiceImpl implements CostSheetService {
             this._computeHumanResourceCost(
                 workCenter,
                 producedQty,
+                prodProcessLine.getHumanDuration(),
                 pieceUnit,
                 prodProcessLine.getPriority(),
                 bomLevel,
@@ -388,6 +389,7 @@ public class CostSheetServiceImpl implements CostSheetService {
   protected void _computeHumanResourceCost(
       WorkCenter workCenter,
       BigDecimal producedQty,
+      Long humanDuration,
       Unit pieceUnit,
       int priority,
       int bomLevel,
@@ -400,7 +402,7 @@ public class CostSheetServiceImpl implements CostSheetService {
       BigDecimal costPerHour = workCenter.getHrCostAmount();
 
       BigDecimal durationHours =
-          BigDecimal.valueOf(workCenter.getHrDurationPerCycle())
+          BigDecimal.valueOf(humanDuration)
               .divide(
                   BigDecimal.valueOf(3600),
                   appProductionService.getNbDecimalDigitForUnitPrice(),

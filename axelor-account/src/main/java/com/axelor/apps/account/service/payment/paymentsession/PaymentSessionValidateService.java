@@ -56,6 +56,15 @@ public interface PaymentSessionValidateService {
 
   public List<InvoiceTerm> getInvoiceTermsWithInActiveBankDetails(PaymentSession paymentSession);
 
+  void createAndReconcileMoveLineFromPair(
+      PaymentSession paymentSession,
+      Move move,
+      InvoiceTerm invoiceTerm,
+      Pair<InvoiceTerm, BigDecimal> pair,
+      boolean out,
+      Map<Move, BigDecimal> paymentAmountMap)
+      throws AxelorException;
+
   public boolean containsCompensativeInvoiceTerm(
       List<InvoiceTerm> invoiceTermList, PaymentSession paymentSession);
 
