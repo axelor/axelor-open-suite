@@ -269,9 +269,9 @@
           <field name="isPrintInvoicesInCompanyLanguage" widget="boolean-switch"/>
           <field name="displayHeadOfficeAddrOnInvoicePrinting" widget="boolean-switch"/>
           <field name="displayStockMoveOnInvoicePrinting" widget="boolean-switch"
-            if="__config__.app.isApp('supplychain')"/>
-          <field name="displayPartnerSirenOnInvoicePrinting" widget="boolean-switch"
-            colSpan="12"/>
+            if="__config__.app.isApp('supplychain')" colSpan="12"/>
+          <field name="displayPartnerSirenOnInvoicePrinting" widget="boolean-switch"/>
+          <field name="displayNoFinancialDiscountAppliedOnPrinting" widget="boolean-switch"/>
           <field name="displayItemsCategoriesOnPrinting" widget="boolean-switch"/>
           <panel name="statementsPanel" title="Invoice product statements" colSpan="12"
             hideIf="!displayItemsCategoriesOnPrinting">
