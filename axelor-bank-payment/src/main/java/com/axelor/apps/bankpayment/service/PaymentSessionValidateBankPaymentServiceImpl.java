@@ -47,6 +47,7 @@ import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderFileFormat;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.db.BankOrderLineOrigin;
+import com.axelor.apps.bankpayment.db.repo.BankOrderLineRepository;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderCreateService;
@@ -71,7 +72,6 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -92,6 +92,7 @@ public class PaymentSessionValidateBankPaymentServiceImpl
   protected CurrencyService currencyService;
   protected AppAccountService appAccountService;
   protected DateService dateService;
+  protected BankOrderLineRepository bankOrderLineRepo;
 
   @Inject
   public PaymentSessionValidateBankPaymentServiceImpl(
@@ -121,7 +122,8 @@ public class PaymentSessionValidateBankPaymentServiceImpl
       CurrencyService currencyService,
       AppAccountService appAccountService,
       InvoicePaymentRepository invoicePaymentRepo,
-      DateService dateService) {
+      DateService dateService,
+      BankOrderLineRepository bankOrderLineRepo) {
     super(
         appBaseService,
         moveCreateService,
@@ -150,6 +152,7 @@ public class PaymentSessionValidateBankPaymentServiceImpl
     this.currencyService = currencyService;
     this.appAccountService = appAccountService;
     this.dateService = dateService;
+    this.bankOrderLineRepo = bankOrderLineRepo;
   }
 
   @Override
@@ -507,25 +510,10 @@ public class PaymentSessionValidateBankPaymentServiceImpl
           paymentSession, invoiceTerm, paymentSession.getBankOrder(), invoiceTermLinkWithRefund);
     }
 
-    if (!this.bankOrderCreatedForInvoiceTerm(invoiceTerm, paymentSession)) {
-      super.processInvoiceTermLcr(
-          paymentSession, invoiceTerm, moveDateMap, paymentAmountMap, invoiceTermLinkWithRefund);
-    }
-  }
+    manageInvoicePayment(paymentSession, invoiceTerm, invoiceTerm.getAmountPaid());
 
-  public boolean bankOrderCreatedForInvoiceTerm(
-      InvoiceTerm invoiceTerm, PaymentSession paymentSession) {
-
-    if (paymentSession.getBankOrder() != null
-        && !ObjectUtils.isEmpty(paymentSession.getBankOrder().getBankOrderLineList())) {
-      return paymentSession.getBankOrder().getBankOrderLineList().stream()
-          .map(BankOrderLine::getBankOrderLineOriginList)
-          .flatMap(Collection::stream)
-          .map(BankOrderLineOrigin::getRelatedToSelectId)
-          .collect(Collectors.toList())
-          .contains(invoiceTerm.getId());
-    }
-    return false;
+    super.processInvoiceTermLcr(
+        paymentSession, invoiceTerm, moveDateMap, paymentAmountMap, invoiceTermLinkWithRefund);
   }
 
   @Transactional
@@ -540,6 +528,10 @@ public class PaymentSessionValidateBankPaymentServiceImpl
           origin.setBankOrderLine(null);
           bankOrderLine.removeBankOrderLineOriginListItem(origin);
         }
+      }
+
+      if (bankOrderLine.getId() != null) {
+        bankOrderLineRepo.remove(bankOrderLine);
       }
     }
   }

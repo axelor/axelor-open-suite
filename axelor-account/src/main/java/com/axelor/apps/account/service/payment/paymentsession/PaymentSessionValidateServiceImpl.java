@@ -1152,13 +1152,16 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       Map<Move, BigDecimal> paymentAmountMap,
       List<Pair<InvoiceTerm, Pair<InvoiceTerm, BigDecimal>>> invoiceTermLinkWithRefund)
       throws AxelorException {
-    MoveLine placementMoveLine = null;
-    if (this.generatePaymentsFirst(paymentSession)) {
-      this.generatePendingPaymentFromInvoiceTerm(paymentSession, invoiceTerm);
+    if (paymentSession.getStatusSelect() != PaymentSessionRepository.STATUS_AWAITING_PAYMENT) {
+      if (this.generatePaymentsFirst(paymentSession)) {
+        this.generatePendingPaymentFromInvoiceTerm(paymentSession, invoiceTerm);
+      }
+      processLcrPlacement(paymentSession, invoiceTerm, moveDateMap, invoiceTermLinkWithRefund);
     }
-    processLcrPlacement(paymentSession, invoiceTerm, moveDateMap, invoiceTermLinkWithRefund);
+
     if (paymentSession.getAccountingTriggerSelect()
-        == PaymentSessionRepository.ACCOUNTING_TRIGGER_IMMEDIATE) {
+            == PaymentSessionRepository.ACCOUNTING_TRIGGER_IMMEDIATE
+        || paymentSession.getStatusSelect() == PaymentSessionRepository.STATUS_AWAITING_PAYMENT) {
       processLcrPayment(paymentSession, invoiceTerm, paymentAmountMap);
     }
   }
