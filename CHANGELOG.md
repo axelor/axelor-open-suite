@@ -1,3 +1,17 @@
+## [6.3.24] (2023-07-20)
+
+#### Fixed
+
+* Manufacturing order: fixed JNPE error when merging manufacturing orders missing units.
+* Cost sheet: fixed wrong bill of materials used for cost calculation.
+* Stock move line: fixed display issues with the button used to generate tracking numbers in stock move lines.
+* Operation order: correctly filter work center field on work center group (when the feature is activated).
+* Stock move: fixed issue preventing the display of invoicing button.
+* Supplychain batch: fixed an error occurring when invoicing outgoing stock moves.
+* Product: fixed wrong filter on analytic on product accounting panel.
+* Sale order: improved performance when loading card views.
+* Interco: fixed generated sale order/purchase order missing a fiscal position.
+
 ## [6.3.23] (2023-07-11)
 
 #### Fixed
@@ -751,6 +765,7 @@ If you had modules calling these methods, you will need to update them so they c
 * Account Config: Remove Invoices button and associate action from account config
 * Stock correction: Removed unused future and reserved quantity from database.
 
+[6.3.24]: https://github.com/axelor/axelor-open-suite/compare/v6.3.23...v6.3.24
 [6.3.23]: https://github.com/axelor/axelor-open-suite/compare/v6.3.22...v6.3.23
 [6.3.22]: https://github.com/axelor/axelor-open-suite/compare/v6.3.21...v6.3.22
 [6.3.21]: https://github.com/axelor/axelor-open-suite/compare/v6.3.20...v6.3.21
