@@ -1,3 +1,27 @@
+## [7.0.6] (2023-07-20)
+
+#### Fixed
+
+* Account/Move/Invoice: fixed analytic check when required on move line, invoice line.
+* Manufacturing order: fixed JNPE error when merging manufacturing orders missing units.
+* Cost sheet: fixed wrong bill of materials used for cost calculation.
+* Move: set description required on move line when it is enabled in company account configuration.
+* Stock move line: fixed display issues with the button used to generate tracking numbers in stock move lines.
+* Custom accounting report: added a tab listing anomalies that are preventing generation.
+* Operation order: correctly filter work center field on work center group (when the feature is activated).
+* Payment condition: improved warning message when modifying an existing payment condition.
+* Stock move: fixed issue preventing the display of invoicing button.
+* Supplychain batch: fixed an error occurring when invoicing outgoing stock moves.
+* Invoice: fixed unwanted financial discount on advance payment invoice.
+* Bank payment printings: fixed an issue were pictures with specific filenames were not displayed in the printings.
+* Accounting report: fixed error on N4DS export when the partner address has no city filled.
+* Fixed asset: improved the error message shown when an exception occurs during a mass validation.
+* Analytic distribution template: fixed error when creating a new analytic distribution template.
+* Product: fixed wrong filter on analytic on product accounting panel.
+* Faker API: update documentation in help message.
+* Sale order: improved performance when loading card views.
+* Interco: fixed generated sale order/purchase order missing a fiscal position.
+
 ## [7.0.5] (2023-07-11)
 
 #### Fixed
@@ -340,6 +364,7 @@ closedWinOpportunityStatus, closedLostOpportunityStatus, salesPropositionStatus 
     </details>
 
 
+[7.0.6]: https://github.com/axelor/axelor-open-suite/compare/v7.0.5...v7.0.6
 [7.0.5]: https://github.com/axelor/axelor-open-suite/compare/v7.0.4...v7.0.5
 [7.0.4]: https://github.com/axelor/axelor-open-suite/compare/v7.0.3...v7.0.4
 [7.0.3]: https://github.com/axelor/axelor-open-suite/compare/v7.0.2...v7.0.3
