@@ -18,20 +18,38 @@
  */
 package com.axelor.apps.supplychain.web;
 
+import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
 
 public class AnalyticDistributionLineController {
 
   public void linkWithOrderLine(ActionRequest request, ActionResponse response)
       throws AxelorException {
     try {
-      Class<?> parentClass = request.getContext().getParent().getContextClass();
-      if ((InvoiceLine.class).equals(parentClass)) {
-        InvoiceLine invoiceLine = request.getContext().getParent().asType(InvoiceLine.class);
+      AnalyticMoveLine analyticMoveLine = request.getContext().asType(AnalyticMoveLine.class);
+
+      Context parentContext = request.getContext().getParent();
+      InvoiceLine invoiceLine = null;
+
+      if (request.getContext().get("invoiceId") != null) {
+        Long invoiceId = Long.valueOf((Integer) request.getContext().get("invoiceId"));
+        invoiceLine = Beans.get(InvoiceLineRepository.class).find(invoiceId);
+      } else if (parentContext != null) {
+        Class<?> parentClass = request.getContext().getParent().getContextClass();
+        if ((InvoiceLine.class).equals(parentClass)) {
+          invoiceLine = request.getContext().getParent().asType(InvoiceLine.class);
+        }
+      } else {
+        invoiceLine = analyticMoveLine.getInvoiceLine();
+      }
+      if (invoiceLine != null) {
         response.setValue("saleOrderLine", invoiceLine.getSaleOrderLine());
         response.setValue("purchaseOrderLine", invoiceLine.getPurchaseOrderLine());
       }
