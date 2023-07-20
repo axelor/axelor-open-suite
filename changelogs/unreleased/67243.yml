@@ -1,0 +1,3 @@
+---
+title: "Invoice/AnalyticMoveLine : Fix error at percentage computation"
+type: fix

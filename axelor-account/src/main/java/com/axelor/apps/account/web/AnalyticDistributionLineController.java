@@ -87,16 +87,26 @@ public class AnalyticDistributionLineController {
   public void calculateAmountWithPercentage(ActionRequest request, ActionResponse response)
       throws AxelorException {
     try {
-      Class<?> parentClass = request.getContext().getParent().getContextClass();
-      if (AnalyticLine.class.isAssignableFrom(parentClass)) {
-        AnalyticMoveLine analyticMoveLine = request.getContext().asType(AnalyticMoveLine.class);
-        AnalyticLine parent = request.getContext().getParent().asType(AnalyticLine.class);
-        response.setValue(
-            "amount",
-            Beans.get(AnalyticLineService.class)
-                .getAnalyticAmountFromParent(parent, analyticMoveLine));
-      }
+      AnalyticMoveLine analyticMoveLine = request.getContext().asType(AnalyticMoveLine.class);
 
+      Context parentContext = request.getContext().getParent();
+      AnalyticLine parent = null;
+      if (parentContext != null) {
+        Class<?> parentClass = request.getContext().getParent().getContextClass();
+        if (AnalyticLine.class.isAssignableFrom(parentClass)) {
+          parent = request.getContext().getParent().asType(AnalyticLine.class);
+        }
+      } else {
+        if (analyticMoveLine.getMoveLine() != null) {
+          parent = analyticMoveLine.getMoveLine();
+        } else if (analyticMoveLine.getInvoiceLine() != null) {
+          parent = analyticMoveLine.getInvoiceLine();
+        }
+      }
+      response.setValue(
+          "amount",
+          Beans.get(AnalyticLineService.class)
+              .getAnalyticAmountFromParent(parent, analyticMoveLine));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
