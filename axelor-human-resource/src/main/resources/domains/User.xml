@@ -7,7 +7,8 @@
 
   <entity name="User" sequential="true">
 
-    <one-to-one name="employee" ref="com.axelor.apps.hr.db.Employee" title="Employee"/>
+    <one-to-one name="employee" ref="com.axelor.apps.hr.db.Employee" title="Employee"
+      unique="true"/>
 
     <track>
       <field name="employee"/>

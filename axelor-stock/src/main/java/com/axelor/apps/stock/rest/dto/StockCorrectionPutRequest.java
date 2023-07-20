@@ -38,8 +38,6 @@ public class StockCorrectionPutRequest extends RequestStructure {
   @Min(0)
   private Long reasonId;
 
-  public StockCorrectionPutRequest() {}
-
   public Integer getStatus() {
     return status;
   }

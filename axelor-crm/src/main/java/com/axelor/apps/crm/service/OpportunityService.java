@@ -51,4 +51,6 @@ public interface OpportunityService {
   public void lostProcess(
       List<Opportunity> otherOpportunities, LostReason lostReason, String lostReasonStr)
       throws AxelorException;
+
+  public void kanbanOpportunityOnMove(Opportunity opportunity) throws AxelorException;
 }

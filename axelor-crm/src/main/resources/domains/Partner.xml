@@ -44,19 +44,10 @@
 
     <string name="lostReasonStr" title="Lost reason" large="true"/>
 
+
     <integer name="sequence" title="Sequence"/>
     <boolean name="isMainContact" title="Main Contact"/>
     <boolean name="isAlreadyConvertFromLead"/>
-
-    <boolean name="isCollaborator" title="Partner company"/>
-    <one-to-many name="collaboratorDomainList" title="Work Domain"
-      ref="com.axelor.apps.crm.db.CollaboratorDomain" mappedBy="partner"/>
-    <many-to-many name="workAreaSet" title="Work Area"
-      ref="com.axelor.apps.base.db.Country"/>
-    <many-to-one name="fidelity" title="Fidelity" ref="com.axelor.apps.crm.db.Fidelity"/>
-    <date name="collaboratorSince" title="Partner since"/>
-    <integer name="takenOpportunities" title="Sent opportunities"/>
-    <integer name="wonOpportunities" title="Won opportunities"/>
 
     <extra-code>
     <![CDATA[

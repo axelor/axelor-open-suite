@@ -7,7 +7,7 @@
 
   <entity name="AppBase" cacheable="true">
 
-    <one-to-one ref="com.axelor.studio.db.App" name="app"/>
+    <one-to-one ref="com.axelor.studio.db.App" name="app" unique="true"/>
 
     <datetime name="todayDateT" title="Today date" tz="true"/>
     <many-to-one name="defaultPartnerLanguage" ref="com.axelor.apps.base.db.Language"

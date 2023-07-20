@@ -165,7 +165,10 @@ public class AccountService {
   }
 
   public void checkAnalyticAxis(
-      Account account, AnalyticDistributionTemplate analyticDistributionTemplate)
+      Account account,
+      AnalyticDistributionTemplate analyticDistributionTemplate,
+      boolean isRequiredOnMoveLine,
+      boolean isRequiredOnInvoiceLine)
       throws AxelorException {
     if (account != null && account.getAnalyticDistributionAuthorized()) {
       if (analyticDistributionTemplate == null
@@ -173,7 +176,8 @@ public class AccountService {
           && accountConfigService
                   .getAccountConfig(account.getCompany())
                   .getAnalyticDistributionTypeSelect()
-              != AccountConfigRepository.DISTRIBUTION_TYPE_FREE) {
+              != AccountConfigRepository.DISTRIBUTION_TYPE_FREE
+          && (isRequiredOnInvoiceLine || isRequiredOnMoveLine)) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get("Please put AnalyticDistribution Template"));

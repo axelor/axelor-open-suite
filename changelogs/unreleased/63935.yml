@@ -1,6 +1,0 @@
----
-title : "Project : Compute totals batch"
-type: feature
-description: |
-  Create batch that compute project totals, including times and financial data
-  Rename ProjectInvoicingAssistant to BusinessProject

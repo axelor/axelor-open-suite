@@ -169,7 +169,7 @@
         <item name="envelopeItem" title="Envelope"
           action="save,action-partner-method-show-envelope" readonlyIf="!id"/>
         <item name="customerSituationItem" title="Customer Situation"
-          action="save,action-partner-method-show-client-situation" readonlyIf="!id"
+          action="save,action-partner-view-customer-situation-filters" readonlyIf="!id"
           showIf="isCustomer" if-module="axelor-account"/>
       </menu>
     </menubar>
@@ -266,12 +266,10 @@
           if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.manageFactors"
           if-module="axelor-account"
           onChange="action-partner-group-check-can-change-factor,action-partner-record-set-factor"/>
-        <field name="isCollaborator" colSpan="2" widget="InlineCheckbox" hideIf="$readonly()"
-          if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
         <field name="$viewerPartnerType" showTitle="false" hideIf="isContact || !$readonly()"
           colSpan="12">
           <viewer
-            depends="isProspect,isEmployee,isCustomer,isSupplier,isSubcontractor,isFactor,isCarrier,isCollaborator">
+            depends="isProspect,isEmployee,isCustomer,isSupplier,isSubcontractor,isFactor,isCarrier">
             <![CDATA[
 							<h4 style="text-align: right;">
 								<span class="label label-default" style="background-color: #FC6355; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isProspect" x-translate>Prospect</span>
@@ -281,7 +279,6 @@
 								<span class="label label-default" style="background-color: #000080; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isSubcontractor" x-translate>Subcontractor</span>
 								<span class="label label-default" style="background-color: #54FC62; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isFactor" x-translate>Factor</span>
 								<span class="label label-default" style="background-color: #FF0000; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isCarrier" x-translate>Carrier</span>
-								<span class="label label-default" style="background-color: #BC3772; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isCollaborator" x-translate>Collaborator</span>
 							</h4>
                         ]]>
           </viewer>
@@ -644,7 +641,7 @@
         <item name="envelopeItem" title="Envelope"
           action="save,action-partner-method-show-envelope" readonlyIf="id == null"/>
         <item name="customerSituationItem" title="Customer Situation"
-          action="save,action-partner-method-show-client-situation" readonlyIf="id == null"
+          action="save,action-partner-view-customer-situation-filters" readonlyIf="id == null"
           showIf="isContact == false" if-module="axelor-account"/>
       </menu>
     </menubar>
@@ -1082,7 +1079,7 @@
         <item name="envelopeItem" title="Envelope"
           action="save,action-partner-method-show-envelope" readonlyIf="id == null"/>
         <item name="customerSituationItem" title="Customer Situation"
-          action="save,action-partner-method-show-client-situation" readonlyIf="id == null"
+          action="save,action-partner-view-customer-situation-filters" readonlyIf="id == null"
           showIf="isContact == false" if-module="axelor-account"/>
       </menu>
     </menubar>
@@ -1173,6 +1170,31 @@
     </panel>
     <panel name="notesPanel" title="Notes" colSpan="12" sidebar="true">
       <field name="description" showTitle="false" colSpan="12" height="6" widget="Html"/>
+    </panel>
+  </form>
+
+  <form model="com.axelor.apps.base.db.Partner" title="Customer situation filters"
+    name="popup-customer-situation-form" onLoad="action-attrs-customer-situation-popup-on-load">
+    <panel name="mainPanel">
+      <panel name="filtersPanel" colSpan="12">
+        <field name="$company" type="many-to-one" target="com.axelor.apps.base.db.Company"
+          title="Company"/>
+        <field name="$tradingName" title="Trading name" type="many-to-one"
+          target="com.axelor.apps.base.db.TradingName"
+          if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"/>
+        <panel name="datePanel" colSpan="12">
+          <field name="$fromDate" title="From Date" type="date"/>
+          <field name="$toDate" title="To Date" type="date"/>
+        </panel>
+        <field name="$saleOrderStatus" title="Sale order status" type="selection"
+          selection="sale.order.status.select" widget="MultiSelect"/>
+        <field name="$invoiceStatus" title="Invoice status" type="selection"
+          selection="iaccount.invoice.status.select" widget="MultiSelect"/>
+        <field name="$stockMoveStatus" title="Delivery status" type="selection"
+          selection="stock.move.status.select" widget="MultiSelect"/>
+      </panel>
+      <button onClick="action-partner-method-show-client-situation,close" name="printBtn"
+        title="Print" colOffset="3"/>
     </panel>
   </form>
 
@@ -1860,6 +1882,22 @@
 
   <action-attrs name="action-attrs-update-manually-blocked-account">
     <attribute name="value" for="hasManuallyBlockedAccount" expr="eval: hasBlockedAccount"/>
+  </action-attrs>
+
+  <action-view name="action-partner-view-customer-situation-filters"
+    title="Customer situation filters" model="com.axelor.apps.base.db.Partner">
+    <view name="popup-customer-situation-form" type="form"/>
+    <view-param name="popup" value="true"/>
+    <view-param name="popup-save" value="false"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="forceEdit" value="true"/>
+    <context name="_showRecord" expr="eval: id"/>
+  </action-view>
+
+  <action-attrs name="action-attrs-customer-situation-popup-on-load">
+    <attribute name="hidden" for="$company"
+      expr="eval: __repo__(Company).all().count() == 1"/>
   </action-attrs>
 
 </object-views>
