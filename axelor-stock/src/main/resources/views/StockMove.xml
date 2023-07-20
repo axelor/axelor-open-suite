@@ -407,12 +407,10 @@
           onChange="action-stock-move-method-printing-settings-default-value,action-stock-move-record-set-trading-name-stock-locations-default"
           domain=":company MEMBER OF self.companySet" form-view="trading-name-form"
           grid-view="trading-name-grid"/>
-        <field name="fromStockLocation" canEdit="false"
-          domain="self.company = :company"
+        <field name="fromStockLocation" canEdit="false" domain="self.company = :company"
           onChange="action-stock-move-group-from-location-onchange" grid-view="stock-location-grid"
           form-view="stock-location-form"/>
-        <field name="toStockLocation" canEdit="false"
-          domain="self.company = :company"
+        <field name="toStockLocation" canEdit="false" domain="self.company = :company"
           onChange="action-stock-move-group-to-location-onchange" grid-view="stock-location-grid"
           form-view="stock-location-form" readonlyIf="statusSelect != 1"/>
         <field name="filterOnAvailableProducts" hidden="true" widget="boolean-switch"
