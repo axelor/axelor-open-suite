@@ -713,14 +713,14 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
                   null);
         } else {
           if (moveLine.getDebit().compareTo(BigDecimal.ZERO) != 0) {
-            BigDecimal currencyAmount = moveLine.getCurrencyAmount().add(invoiceTerm.getAmount());
             // Debit
+            BigDecimal currencyAmount = moveLine.getCurrencyAmount().add(invoiceTerm.getAmount());
             moveLine.setDebit(moveLine.getDebit().add(companyAmount));
             moveLine.setCurrencyAmount(currencyAmount);
           } else {
+            // Credit
             BigDecimal currencyAmount =
                 moveLine.getCurrencyAmount().subtract(invoiceTerm.getAmount());
-            // Credit
             moveLine.setCredit(moveLine.getCredit().add(companyAmount));
             moveLine.setCurrencyAmount(currencyAmount);
           }
