@@ -1,3 +1,25 @@
+## [6.5.13] (2023-07-20)
+
+#### Fixed
+
+* Manufacturing order: fixed JNPE error when merging manufacturing orders missing units.
+* Cost sheet: fixed wrong bill of materials used for cost calculation.
+* Move: set description required on move line when it is enabled in company account configuration.
+* Stock move line: fixed display issues with the button used to generate tracking numbers in stock move lines.
+* Custom accounting report: added a tab listing anomalies that are preventing generation.
+* Operation order: correctly filter work center field on work center group (when the feature is activated).
+* Payment condition: improved warning message when modifying an existing payment condition.
+* Stock move: fixed issue preventing the display of invoicing button.
+* Supplychain batch: fixed an error occurring when invoicing outgoing stock moves.
+* Invoice: fixed unwanted financial discount on advance payment invoice.
+* Bank payment printings: fixed an issue were pictures with specific filenames were not displayed in the printings.
+* Accounting report: fixed error on N4DS export when the partner address has no city filled.
+* Fixed asset: improved the error message shown when an exception occurs during a mass validation.
+* Move line: filter analytic per company.
+* Product: fixed wrong filter on analytic on product accounting panel.
+* Sale order: improved performance when loading card views.
+* Interco: fixed generated sale order/purchase order missing a fiscal position.
+
 ## [6.5.12] (2023-07-11)
 
 #### Fixed
@@ -666,6 +688,7 @@ Opportunity Status: add label-help on some opportunities status in form
 * Opportunity : Remove lead field
 * CRM : remove Target and TargetConfiguration from CRM
 
+[6.5.13]: https://github.com/axelor/axelor-open-suite/compare/v6.5.12...v6.5.13
 [6.5.12]: https://github.com/axelor/axelor-open-suite/compare/v6.5.11...v6.5.12
 [6.5.11]: https://github.com/axelor/axelor-open-suite/compare/v6.5.10...v6.5.11
 [6.5.10]: https://github.com/axelor/axelor-open-suite/compare/v6.5.9...v6.5.10
