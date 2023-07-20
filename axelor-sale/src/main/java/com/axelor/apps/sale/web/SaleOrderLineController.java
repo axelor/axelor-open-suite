@@ -449,7 +449,10 @@ public class SaleOrderLineController {
             && !description.isEmpty()
             && productName != null
             && !productName.isEmpty()) {
-          response.setValue("description", description);
+          if (Boolean.TRUE.equals(
+              Beans.get(AppSaleService.class).getAppSale().getIsEnabledProductDescriptionCopy())) {
+            response.setValue("description", description);
+          }
           response.setValue("productName", productName);
         }
       }
