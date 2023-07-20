@@ -349,21 +349,22 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
   }
 
   @Override
-  public String getAnalyticAxisDomain(Company company) {
+  public String getAnalyticAxisDomain(Company company) throws AxelorException {
+    if (company == null) {
+      return "self.id IN (0)";
+    }
     StringBuilder domain = new StringBuilder();
     domain
         .append("(self.company is null OR self.company.id = ")
         .append(company.getId())
         .append(")");
-    AccountConfig accountConfig = accountConfigRepository.findByCompany(company);
-    if (accountConfig != null) {
-      List<AnalyticAxis> analyticAxisList =
-          accountConfig.getAnalyticAxisByCompanyList().stream()
-              .map(AnalyticAxisByCompany::getAnalyticAxis)
-              .collect(Collectors.toList());
-      String idList = StringTool.getIdListString(analyticAxisList);
-      domain.append(" AND self.id IN (").append(idList).append(")");
-    }
+    AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+    List<AnalyticAxis> analyticAxisList =
+        accountConfig.getAnalyticAxisByCompanyList().stream()
+            .map(AnalyticAxisByCompany::getAnalyticAxis)
+            .collect(Collectors.toList());
+    String idList = StringTool.getIdListString(analyticAxisList);
+    domain.append(" AND self.id IN (").append(idList).append(")");
     return domain.toString();
   }
 }

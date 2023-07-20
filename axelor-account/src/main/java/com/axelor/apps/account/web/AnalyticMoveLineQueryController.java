@@ -28,6 +28,7 @@ import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineQueryService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
+import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -209,24 +210,32 @@ public class AnalyticMoveLineQueryController {
   }
 
   public void setAnalyticAxisDomain(ActionRequest request, ActionResponse response) {
-    AnalyticMoveLine analyticMoveLine = request.getContext().asType(AnalyticMoveLine.class);
-    Company company = null;
-    if (analyticMoveLine.getAnalyticJournal() != null
-        && analyticMoveLine.getAnalyticJournal().getCompany() != null) {
-      company = analyticMoveLine.getAnalyticJournal().getCompany();
-    } else {
-      Context parent = request.getContext().getParent();
-      if (parent.getParent() != null && parent.getParent().get("company") != null) {
-        company = (Company) parent.get("company");
-      } else if (parent.get("move") != null && ((Move) parent.get("move")).getCompany() != null) {
-        company = ((Move) parent.get("move")).getCompany();
+    try {
+      Context context = request.getContext();
+      AnalyticMoveLine analyticMoveLine = context.asType(AnalyticMoveLine.class);
+      Company company;
+      if (analyticMoveLine.getAnalyticJournal() != null
+          && analyticMoveLine.getAnalyticJournal().getCompany() != null) {
+        company = analyticMoveLine.getAnalyticJournal().getCompany();
+      } else {
+        company =
+            Beans.get(AnalyticToolService.class)
+                .getFieldFromContextParent(context, "company", Company.class);
+        if (company == null) {
+          Move move =
+              Beans.get(AnalyticToolService.class)
+                  .getFieldFromContextParent(context, "move", Move.class);
+          if (move != null) {
+            company = move.getCompany();
+          }
+        }
       }
-    }
-    if (company != null) {
       response.setAttr(
           "analyticAxis",
           "domain",
           Beans.get(AnalyticMoveLineService.class).getAnalyticAxisDomain(company));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }

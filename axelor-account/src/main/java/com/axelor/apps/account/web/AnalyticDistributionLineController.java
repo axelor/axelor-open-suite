@@ -29,6 +29,7 @@ import com.axelor.apps.account.db.repo.AnalyticLine;
 import com.axelor.apps.account.service.analytic.AnalyticAccountService;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
+import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -37,7 +38,6 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.axelor.utils.MapTools;
 import com.google.inject.Singleton;
 
 @Singleton
@@ -112,7 +112,9 @@ public class AnalyticDistributionLineController {
     if (analyticDistributionTemplate != null && analyticDistributionTemplate.getCompany() != null) {
       company = analyticDistributionTemplate.getCompany();
     } else {
-      company = getFieldFromContextParent(request.getContext(), "company", Company.class);
+      company =
+          Beans.get(AnalyticToolService.class)
+              .getFieldFromContextParent(request.getContext(), "company", Company.class);
     }
     if (company != null) {
       response.setAttr(
@@ -163,16 +165,5 @@ public class AnalyticDistributionLineController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
-  }
-
-  protected <T> T getFieldFromContextParent(Context context, String fieldName, Class<T> klass) {
-    while (context != null) {
-      T object = MapTools.get(context, klass, fieldName);
-      if (object != null) {
-        return object;
-      }
-      context = context.getParent();
-    }
-    return null;
   }
 }

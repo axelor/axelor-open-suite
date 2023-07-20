@@ -73,5 +73,5 @@ public interface AnalyticMoveLineService {
   AnalyticMoveLine generateAnalyticMoveLine(
       AnalyticMoveLine analyticMoveLine, AnalyticAccount analyticAccount);
 
-  String getAnalyticAxisDomain(Company company);
+  String getAnalyticAxisDomain(Company company) throws AxelorException;
 }
