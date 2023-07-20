@@ -19,6 +19,7 @@
 package com.axelor.apps.bankpayment.service.bankorder;
 
 import com.axelor.apps.account.db.InvoicePayment;
+import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentSession;
@@ -85,6 +86,7 @@ import java.util.List;
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class BankOrderServiceImpl implements BankOrderService {
 
@@ -102,6 +104,7 @@ public class BankOrderServiceImpl implements BankOrderService {
   protected PaymentSessionRepository paymentSessionRepo;
   protected MoveCancelBankPaymentService moveCancelBankPaymentService;
   protected MoveRepository moveRepo;
+  protected PaymentSessionValidateService paymentSessionValidateService;
 
   @Inject
   public BankOrderServiceImpl(
@@ -118,7 +121,8 @@ public class BankOrderServiceImpl implements BankOrderService {
       PaymentSessionCancelService paymentSessionCancelService,
       PaymentSessionRepository paymentSessionRepo,
       MoveCancelBankPaymentService moveCancelBankPaymentService,
-      MoveRepository moveRepo) {
+      MoveRepository moveRepo,
+      PaymentSessionValidateService paymentSessionValidateService) {
 
     this.bankOrderRepo = bankOrderRepo;
     this.invoicePaymentRepo = invoicePaymentRepo;
@@ -134,6 +138,7 @@ public class BankOrderServiceImpl implements BankOrderService {
     this.paymentSessionRepo = paymentSessionRepo;
     this.moveCancelBankPaymentService = moveCancelBankPaymentService;
     this.moveRepo = moveRepo;
+    this.paymentSessionValidateService = paymentSessionValidateService;
   }
 
   public void checkPreconditions(BankOrder bankOrder) throws AxelorException {
@@ -378,8 +383,13 @@ public class BankOrderServiceImpl implements BankOrderService {
           paymentSessionRepo.all().filter("self.bankOrder = ?", bankOrder).fetchOne();
 
       if (paymentSession != null) {
-        Beans.get(PaymentSessionValidateService.class)
-            .processPaymentSession(paymentSession, new ArrayList());
+        List<Pair<InvoiceTerm, Pair<InvoiceTerm, BigDecimal>>> invoiceTermLinkWithRefund =
+            new ArrayList<>();
+        paymentSessionValidateService.reconciledInvoiceTermMoves(
+            paymentSession, invoiceTermLinkWithRefund);
+
+        paymentSessionValidateService.processPaymentSession(
+            paymentSession, invoiceTermLinkWithRefund);
         bankOrder = bankOrderRepo.find(bankOrder.getId());
       }
     } else if (bankOrder
