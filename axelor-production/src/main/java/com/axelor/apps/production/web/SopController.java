@@ -29,7 +29,7 @@ import com.axelor.rpc.ActionResponse;
 public class SopController {
   public void generateSOPLines(ActionRequest request, ActionResponse response) {
     Sop sop = request.getContext().asType(Sop.class);
-    if (sop.getYear() == null) {
+    if (sop.getPeriodYear() == null) {
       response.setError("Please specify the year to generate lines.");
     } else {
       try {

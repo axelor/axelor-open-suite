@@ -42,7 +42,7 @@
 "manufacturing-mps-conf";"Production Manager"
 "manufacturing-mps-conf-mrp-line-type";"Production Manager"
 "manufacturing-mps-conf-manufacturing-periods";"Production Manager"
-"manufacturing-root-sop";"Production Manager|Production User|Production Read"
+"manufacturing-mps-sop";"Production Manager|Production User|Production Read"
 "manufacturing-root-mps-charge";"Production Manager|Production User|Production Read"
 "manufacturing-conf-machine-tool";"Production Manager"
 "manufacturing-conf-manuf-order";"Production Manager"
