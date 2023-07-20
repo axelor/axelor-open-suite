@@ -1,3 +1,20 @@
+## [6.4.19] (2023-07-20)
+
+#### Fixed
+
+* Manufacturing order: fixed JNPE error when merging manufacturing orders missing units.
+* Cost sheet: fixed wrong bill of materials used for cost calculation.
+* Stock move line: fixed display issues with the button used to generate tracking numbers in stock move lines.
+* Operation order: correctly filter work center field on work center group (when the feature is activated).
+* Payment condition: improved warning message when modifying an existing payment condition.
+* Stock move: fixed issue preventing the display of invoicing button.
+* Supplychain batch: fixed an error occurring when invoicing outgoing stock moves.
+* Invoice: fixed unwanted financial discount on advance payment invoice.
+* Bank payment printings: fixed an issue were pictures with specific filenames were not displayed in the printings.
+* Product: fixed wrong filter on analytic on product accounting panel.
+* Sale order: improved performance when loading card views.
+* Interco: fixed generated sale order/purchase order missing a fiscal position.
+
 ## [6.4.18] (2023-07-11)
 
 #### Fixed
@@ -868,6 +885,7 @@ A new mobile application for stock and production modules are now available, the
 * Account budget: Remove checkAvailableBudget in budget, which was unused.
 * Accounting report: removed old specific export format for Sale, Purchase, Treasury, Refund (1006 to 1009 accounting report type). Already replaced per the generic Journal entry export with a filter on the journal.
 
+[6.4.19]: https://github.com/axelor/axelor-open-suite/compare/v6.4.18...v6.4.19
 [6.4.18]: https://github.com/axelor/axelor-open-suite/compare/v6.4.17...v6.4.18
 [6.4.17]: https://github.com/axelor/axelor-open-suite/compare/v6.4.16...v6.4.17
 [6.4.16]: https://github.com/axelor/axelor-open-suite/compare/v6.4.15...v6.4.16
