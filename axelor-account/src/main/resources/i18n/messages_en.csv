@@ -2531,6 +2531,7 @@
 "Please be aware that the selected %s offers financial discounts but the system does not support at the moment financial discount on invoices/refunds in a currency different from the company currency.",,,
 "Please create a partner for the company %s.",,,
 "Please create an accounting situation for partner %s and company %s and select a vat system in order to compute it",,,
+"Please ensure that the moves selected are in the 'Accounted' status for your report to be legally valid.",,,
 "Please enter a Cut off start and end date for the invoice lines that have an account Cut off management",,,
 "Please enter a Cut off start and end date for the move lines that have an account Cut off management",,,
 "Please enter a gross value greater than the residual value in terms of absolute value",,,
