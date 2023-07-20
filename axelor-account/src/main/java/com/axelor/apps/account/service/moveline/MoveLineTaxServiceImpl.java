@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,10 +14,11 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service.moveline;
 
+import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
@@ -29,11 +31,11 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.TaxPaymentMoveLineService;
 import com.axelor.apps.account.util.TaxAccountToolService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -157,7 +159,7 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
             reconcile,
             vatRate,
             detailPaymentAmount,
-            appBaseService.getTodayDate(reconcile.getCompany()));
+            reconcile.getEffectiveDate());
 
     taxPaymentMoveLine.setFiscalPosition(invoiceMove.getFiscalPosition());
 
@@ -193,8 +195,8 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public MoveLine computeTaxAmount(MoveLine moveLine) throws AxelorException {
+  @Transactional
+  public MoveLine computeTaxAmount(MoveLine moveLine) {
     moveLine.setTaxAmount(BigDecimal.ZERO);
     if (!ObjectUtils.isEmpty(moveLine.getTaxPaymentMoveLineList())) {
       for (TaxPaymentMoveLine taxPaymentMoveLine : moveLine.getTaxPaymentMoveLineList()) {
@@ -206,7 +208,26 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void autoTaxLineGenerate(Move move) throws AxelorException {
+  public void autoTaxLineGenerate(Move move, Account account, boolean percentMoveTemplate)
+      throws AxelorException {
+
+    autoTaxLineGenerateNoSave(move, account, percentMoveTemplate);
+    moveRepository.save(move);
+  }
+
+  @Override
+  public void autoTaxLineGenerateNoSave(Move move) throws AxelorException {
+    if (CollectionUtils.isNotEmpty(move.getMoveLineList())
+        && (move.getStatusSelect().equals(MoveRepository.STATUS_NEW)
+            || move.getStatusSelect().equals(MoveRepository.STATUS_SIMULATED)
+            || move.getStatusSelect().equals(MoveRepository.STATUS_DAYBOOK))) {
+      this.autoTaxLineGenerateNoSave(move, null, false);
+    }
+  }
+
+  @Override
+  public void autoTaxLineGenerateNoSave(Move move, Account account, boolean percentMoveTemplate)
+      throws AxelorException {
 
     List<MoveLine> moveLineList = move.getMoveLineList();
 
@@ -248,13 +269,12 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
         if (this.isGenerateMoveLineForAutoTax(accountType)) {
 
           moveLineCreateService.createMoveLineForAutoTax(
-              move, map, newMap, moveLine, taxLine, accountType);
+              move, map, newMap, moveLine, taxLine, accountType, account, percentMoveTemplate);
         }
       }
     }
 
     moveLineList.addAll(newMap.values());
-    moveRepository.save(move);
   }
 
   protected boolean isGenerateMoveLineForAutoTax(String accountType) {

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
-  <entity name="StockMove" lang="java">
+  <entity name="StockMove">
 
     <string name="stockMoveSeq" namecolumn="true" title="Ref." readonly="true"/>
     <string name="name" title="Name"/>
@@ -47,7 +47,7 @@
     <boolean name="isWithReturnSurplus" title="Return surplus"/>
     <boolean name="isWithBackorder" title="Manage backorder" default="false"/>
 
-    <string name="trackingNumber" title="Tracking Number"/>
+    <string name="trackingNumber" title="Tracking number"/>
     <integer name="numOfPackages" title="Number Of Packages"/>
     <integer name="numOfPalettes" title="Number Of Palettes"/>
     <decimal name="grossMass" title="Gross Mass"/>
@@ -75,11 +75,11 @@
     <boolean name="plannedStockMoveAutomaticMail"
       title="Send email when planning stock move" default="false"/>
     <many-to-one name="plannedStockMoveMessageTemplate" title="Message template"
-      ref="com.axelor.apps.message.db.Template"/>
+      ref="com.axelor.message.db.Template"/>
     <boolean name="realStockMoveAutomaticMail" title="Send email on stock move realization"
       default="false"/>
     <many-to-one name="realStockMoveMessageTemplate" title="Message template"
-      ref="com.axelor.apps.message.db.Template"/>
+      ref="com.axelor.message.db.Template"/>
 
     <many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName"/>
     <many-to-one name="printingSettings" ref="com.axelor.apps.base.db.PrintingSettings"/>
@@ -98,8 +98,6 @@
     <many-to-one name="stockMoveOrigin" ref="com.axelor.apps.stock.db.StockMove"
       title="Stock Move Origin"/>
 
-    <string name="originTypeSelect" title="Origin Type" selection="stockmove.origin.select"/>
-    <long name="originId" title="Origin Id"/>
     <string name="origin" readonly="true" title="Origin"/>
     <boolean name="availabilityRequest" title="Availability request"/>
 
@@ -113,13 +111,19 @@
     <string name="note" title="Notes" large="true"/>
 
     <boolean name="filterOnAvailableProducts" title="Filter on available products"
-      default="true" transient="true"/>
+      default="true"/>
 
     <many-to-one name="reversionOriginStockMove" title="Origin stock move"
       ref="com.axelor.apps.stock.db.StockMove"/>
 
     <string name="pickingOrderComments" title="Comment to display on picking order"
       large="true"/>
+
+    <many-to-one name="inventory" title="Inventory"
+      ref="com.axelor.apps.stock.db.Inventory" copy="false"/>
+    <many-to-one name="stockCorrection" title="Stock correction"
+      ref="com.axelor.apps.stock.db.StockCorrection" copy="false"/>
+
     <unique-constraint columns="stockMoveSeq,company"/>
 
     <extra-code><![CDATA[
@@ -148,9 +152,6 @@
 		public static final int CONFORMITY_NONE = 1;
 		public static final int CONFORMITY_COMPLIANT = 2;
 		public static final int CONFORMITY_NON_COMPLIANT = 3;
-
-		public static final String ORIGIN_INVENTORY = "com.axelor.apps.stock.db.Inventory";
-		public static final String ORIGIN_STOCK_CORRECTION = "com.axelor.apps.stock.db.StockCorrection";
 	]]></extra-code>
 
     <track>

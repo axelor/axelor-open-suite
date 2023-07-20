@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="Partner" lang="java">
+  <entity name="Partner">
 
     <!-- En-tête -->
     <many-to-one name="partnerCategory" ref="com.axelor.apps.base.db.PartnerCategory"
@@ -46,8 +46,8 @@
       index="false" massUpdate="true"/>
 
     <!-- From contact -->
-    <one-to-one name="emailAddress" ref="com.axelor.apps.message.db.EmailAddress"
-      title="Email"/>
+    <one-to-one name="emailAddress" ref="com.axelor.message.db.EmailAddress"
+      title="Email" unique="true"/>
     <string name="fixedPhone" title="Fixed phone"/>
     <string name="mobilePhone" title="Mobile phone"/>
     <string name="webSite" title="Website"/>
@@ -110,7 +110,7 @@
     <many-to-one name="mainAddress" ref="com.axelor.apps.base.db.Address"
       title="Address"/>
 
-    <string name="companyStr" title="Companies"/>
+    <string name="companyStr" title="Companies" large="true"/>
 
     <string name="headOfficeAddress" title="Head office address"/>
 

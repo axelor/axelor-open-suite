@@ -1,0 +1,50 @@
+name: Publish snapshot
+
+on:
+  schedule:
+    - cron: '30 1 * * *'
+
+jobs:
+  publish-snapshot-dev:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: dev
+      - name: Set up JDK 1.11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.11
+      - name: Install webapp
+        run: git clone -b dev https://github.com/axelor/open-suite-webapp.git open-suite-webapp
+      - name: move to the right place
+        run: mkdir -p open-suite-webapp/modules/axelor-open-suite && ls | grep -v open-suite-webapp | xargs -I{} mv {} open-suite-webapp/modules/axelor-open-suite
+      - name: Grant execute permission for gradlew
+        run: chmod +x open-suite-webapp/gradlew
+      - name: Publish snapshot
+        run: cd open-suite-webapp && ./gradlew publish -PmavenRepository=https://repository.axelor.com/nexus/repository/maven-snapshots/ -PmavenUsername=${NEXUS_DEPLOYMENT_USERNAME} -PmavenPassword=${NEXUS_DEPLOYMENT_PASSWORD}
+        env:
+          NEXUS_DEPLOYMENT_USERNAME: ${{ secrets.NEXUS_DEPLOYMENT_USERNAME }}
+          NEXUS_DEPLOYMENT_PASSWORD: ${{ secrets.NEXUS_DEPLOYMENT_PASSWORD }}
+  publish-snapshot-wip:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: wip
+      - name: Set up JDK 1.11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.11
+      - name: Install webapp
+        run: git clone -b wip https://github.com/axelor/open-suite-webapp.git open-suite-webapp
+      - name: move to the right place
+        run: mkdir -p open-suite-webapp/modules/axelor-open-suite && ls | grep -v open-suite-webapp | xargs -I{} mv {} open-suite-webapp/modules/axelor-open-suite
+      - name: Grant execute permission for gradlew
+        run: chmod +x open-suite-webapp/gradlew
+      - name: Publish snapshot
+        run: cd open-suite-webapp && ./gradlew publish -PmavenRepository=https://repository.axelor.com/nexus/repository/maven-snapshots/ -PmavenUsername=${NEXUS_DEPLOYMENT_USERNAME} -PmavenPassword=${NEXUS_DEPLOYMENT_PASSWORD}
+        env:
+          NEXUS_DEPLOYMENT_USERNAME: ${{ secrets.NEXUS_DEPLOYMENT_USERNAME }}
+          NEXUS_DEPLOYMENT_PASSWORD: ${{ secrets.NEXUS_DEPLOYMENT_PASSWORD }}
+

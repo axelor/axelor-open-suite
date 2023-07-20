@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="BankDetails" lang="java">
+  <entity name="BankDetails">
 
     <many-to-one name="partner" ref="Partner" title="Partner"/>
     <string name="ownerName" title="Owner name" max="255"/>
@@ -32,7 +32,7 @@
             if(bank != null) {
                 bankFullName = bank.getFullName();
             }
-            return com.axelor.apps.base.service.BankDetailsServiceImpl.computeBankDetailsFullName
+            return Beans.get(BankDetailsFullNameComputeService.class).computeBankDetailsFullName
             (code, label, iban, bankFullName);
         ]]>
     </string>
@@ -40,6 +40,13 @@
     <finder-method name="findDefaultByPartner" using="partner"
       filter="self.partner = :partner AND self.isDefault = TRUE"/>
     <finder-method name="findActivesByPartner" using="partner,active" all="true"/>
+
+    <extra-imports>
+      <![CDATA[
+      import com.axelor.inject.Beans;
+      import com.axelor.apps.base.service.BankDetailsFullNameComputeService;
+      ]]>
+    </extra-imports>
 
     <track>
       <field name="partner" on="UPDATE"/>

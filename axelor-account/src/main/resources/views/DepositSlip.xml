@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="cheque-deposit-slip-grid" model="com.axelor.apps.account.db.DepositSlip"
     title="Deposit slips" orderBy="-depositDate,-depositNumber">
@@ -37,11 +37,9 @@
             readonlyIf="valueForCollectionAccount" canEdit="false" canNew="false"
             onChange="action-deposit-slip-group-bank-details-account-onchange"
             onSelect="action-deposit-slip-company-bank-details-domain" canSelect="true" colSpan="4"/>
-          <panel name="subCompanyBankDetailsPanel" hidden="true" showIf="companyBankDetails"
-            colSpan="8">
-            <field name="companyBankDetails.bank.bankName" title="Bank name"/>
-            <field name="companyBankDetails.accountNbr"/>
-          </panel>
+          <field name="companyBankDetails.bank.bankName" title="Bank name"
+            showIf="companyBankDetails" colSpan="4"/>
+          <field name="companyBankDetails.accountNbr" showIf="companyBankDetails" colSpan="4"/>
         </panel>
         <field name="valueForCollectionAccount"
           domain="self.accountType.technicalTypeSelect = 'cash' AND self.company = :company"
@@ -63,10 +61,11 @@
         title="Load available payment vouchers for bank deposit" colOffset="8" colSpan="4"/>
       <panel-related field="__paymentVoucherDueList"
         title="Available payment vouchers for deposit slip" type="ONE-TO-MANY"
-        target="com.axelor.apps.account.db.PaymentVoucher"
-        grid-view="selector-payment-voucher-deposit-slip-grid"
-        form-view="payment-voucher-deposit-slip-form" colSpan="12" readonly="true"/>
-      <button onClick="save,action-cheque-deposit-slip-attrs-load-payment-vouchers,save"
+        target="com.axelor.apps.account.db.PaymentVoucher" canEdit="false" canNew="false"
+        canRemove="false" grid-view="selector-payment-voucher-deposit-slip-grid"
+        form-view="payment-voucher-deposit-slip-form" colSpan="12"/>
+      <button
+        onClick="action-deposit-slip-method-load-payment-voucher,action-deposit-slip-record-total-amount-cheque-count"
         name="loadSelectedLinesBtn" title="Load selected lines" colOffset="6" colSpan="3"
         readonlyIf="__paymentVoucherDueList.length == 0" css="btn-success"/>
       <button
@@ -83,9 +82,9 @@
         onChange="action-deposit-slip-record-total-amount-cheque-count,save,action-deposit-slip-load-payment-voucher-due-list"/>
       <panel colSpan="5" hidden="true"
         hideIf="companyBankDetails || isBankDepositMoveGenerated">
-        <field name="__depositDate" type="Date" title="Deposit date"/>
+        <field name="__depositDate" type="Date" title="Date of the deposit slip"/>
         <button
-          onClick="save,action-cheque-deposit-slip-method-update-deposit-cheque-date,save"
+          onClick="save,action-cheque-deposit-slip-method-update-deposit-cheque-date,action-cheque-deposit-slip-method-update-invoice-payments,save"
           name="updateDepositDatesBtn" title="Update deposit dates" readonlyIf="!__depositDate"/>
       </panel>
       <panel colSpan="3" colOffset="4" itemSpan="12"
@@ -129,18 +128,10 @@
     <field name="paymentModeTypeSelect" expr="eval: __repo__(PaymentMode).TYPE_CHEQUE"/>
   </action-record>
 
-  <action-attrs name="action-cheque-deposit-slip-attrs-load-payment-vouchers">
-    <attribute name="value:add" for="paymentVoucherList"
-      expr="eval: __paymentVoucherDueList?.findAll{ it.selected }"/>
-    <attribute name="value:del" for="__paymentVoucherDueList"
-      expr="eval: __paymentVoucherDueList?.findAll{ it.selected }"/>
-    <attribute name="value" for="totalAmount"
-      expr="eval: (__paymentVoucherDueList?.findAll{ it.selected }.sum{it.paidAmount as BigDecimal}) + totalAmount"
-      if="__paymentVoucherDueList?.findAll{ it.selected }.size() > 0"/>
-    <attribute name="value" for="chequeCount"
-      expr="eval: __paymentVoucherDueList?.findAll{ it.selected }?.size() + chequeCount"
-      if="__paymentVoucherDueList?.findAll{ it.selected }"/>
-  </action-attrs>
+  <action-method name="action-deposit-slip-method-load-payment-voucher"
+    model="com.axelor.apps.account.db.DepositSlip">
+    <call class="com.axelor.apps.account.web.DepositSlipController" method="loadPaymentVoucher"/>
+  </action-method>
 
   <action-record name="action-deposit-slip-record-total-amount-cheque-count"
     model="com.axelor.apps.account.db.DepositSlip">
@@ -203,14 +194,20 @@
     <call class="com.axelor.apps.account.web.DepositSlipController" method="validate"/>
   </action-method>
 
+  <action-method name="action-cheque-deposit-slip-method-update-invoice-payments"
+    model="com.axelor.apps.account.db.DepositSlip">
+    <call class="com.axelor.apps.account.web.DepositSlipController"
+      method="updateInvoicePayments"/>
+  </action-method>
+
   <grid title="Payment vouchers" name="selector-payment-voucher-deposit-slip-grid"
     model="com.axelor.apps.account.db.PaymentVoucher" orderBy="paymentDate" x-selector="checkbox"
-    edit-icon="false">
+    edit-icon="true">
     <field name="ref"/>
     <field name="valueForCollectionMove.journal" hidden="true"/>
     <field name="valueForCollectionMove.date" hidden="true"/>
-    <field name="companyBankDetails"/>
-    <field name="companybankDetails.bank.bankName"/>
+    <field name="depositBankDetails"/>
+    <field name="depositBankDetails.bank.bankName"/>
     <field name="chequeDate"/>
     <field name="chequeOwner"/>
     <field name="chequeBank"/>
@@ -227,7 +224,7 @@
     <field name="ref" readonly="true"/>
     <field name="valueForCollectionMove.journal" hidden="true"/>
     <field name="valueForCollectionMove.date" hidden="true"/>
-    <field name="companyBankDetails" readonly="true"/>
+    <field name="depositBankDetails" readonly="true"/>
     <field name="chequeDate" required="true"/>
     <field name="chequeOwner" required="true"/>
     <field name="chequeBank" required="true"/>
@@ -251,6 +248,8 @@
       <field name="chequeNumber" colSpan="12" required="true"/>
       <field name="chequeDate" required="true"/>
       <field name="chequeDueDate"/>
+      <field name="depositBankDetails" domain="self.active = true AND self.company = :company"
+        required="true"/>
     </panel>
   </form>
 

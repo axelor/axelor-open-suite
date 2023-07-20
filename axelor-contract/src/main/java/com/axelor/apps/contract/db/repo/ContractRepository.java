@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,31 +14,49 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.contract.db.repo;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.contract.db.Contract;
+import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.db.ContractVersion;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.apps.contract.service.ContractLineService;
+import com.axelor.apps.contract.service.ContractVersionServiceImpl;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import javax.persistence.PersistenceException;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ContractRepository extends AbstractContractRepository {
   @Override
   public Contract save(Contract contract) {
     try {
+      ContractLineService contractLineService = Beans.get(ContractLineService.class);
       if (contract.getContractId() == null) {
         contract.setContractId(computeSeq(contract.getCompany(), contract.getTargetTypeSelect()));
       }
 
       ContractVersion currentContractVersion = contract.getCurrentContractVersion();
-      currentContractVersion.setIsConsumptionManagement(contract.getIsConsumptionManagement());
+
+      if (currentContractVersion != null) {
+        currentContractVersion.setIsConsumptionManagement(contract.getIsConsumptionManagement());
+
+        if (CollectionUtils.isNotEmpty(
+            contract.getCurrentContractVersion().getContractLineList())) {
+          for (ContractLine contractLine :
+              contract.getCurrentContractVersion().getContractLineList()) {
+            contractLineService.computeTotal(contractLine);
+          }
+        }
+        Beans.get(ContractVersionServiceImpl.class)
+            .computeTotals(contract.getCurrentContractVersion());
+      }
 
       return super.save(contract);
     } catch (Exception e) {
@@ -72,6 +91,8 @@ public class ContractRepository extends AbstractContractRepository {
   public Contract copy(Contract entity, boolean deep) {
     Contract contract = super.copy(entity, deep);
     ContractVersion version = Beans.get(ContractVersionRepository.class).copy(entity);
+    contract.setNextRevaluationDate(null);
+    contract.setLastRevaluationDate(null);
     contract.setCurrentContractVersion(version);
     return contract;
   }

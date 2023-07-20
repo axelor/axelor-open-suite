@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.8.0.v201806072022</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -31,6 +31,7 @@
         </structure>
     </list-property>
     <property name="units">in</property>
+    <method name="beforeFactory"><![CDATA[reportContext.getAppContext().put("MAX_PAGE_BREAK_INTERVAL", 1000000);]]></method>
     <property name="iconFile">/templates/blank_report.gif</property>
     <property name="layoutPreference">fixed layout</property>
     <property name="bidiLayoutOrientation">ltr</property>
@@ -654,86 +655,106 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 </structure>
             </list-property>
             <list-property name="parameters">
-                <structure>
-                    <property name="name">param_1</property>
-                    <property name="paramName">AccountingReportId</property>
-                    <property name="nativeName"></property>
-                    <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-5</property>
-                    <property name="position">1</property>
-                    <property name="isInput">true</property>
-                    <property name="isOutput">false</property>
-                </structure>
-                <structure>
-                    <property name="name">param_2</property>
-                    <property name="paramName">AccountingReportId</property>
-                    <property name="nativeName"></property>
-                    <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-5</property>
-                    <property name="position">2</property>
-                    <property name="isInput">true</property>
-                    <property name="isOutput">false</property>
-                </structure>
-                <structure>
-                    <property name="name">param_3</property>
-                    <property name="paramName">AccountingReportId</property>
-                    <property name="nativeName"></property>
-                    <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-5</property>
-                    <property name="position">3</property>
-                    <property name="isInput">true</property>
-                    <property name="isOutput">false</property>
-                </structure>
-                <structure>
-                    <property name="name">param_4</property>
-                    <property name="paramName">AccountingReportId</property>
-                    <property name="nativeName"></property>
-                    <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-5</property>
-                    <property name="position">4</property>
-                    <property name="isInput">true</property>
-                    <property name="isOutput">false</property>
-                </structure>
-                <structure>
-                    <property name="name">param_5</property>
-                    <property name="paramName">AccountingReportId</property>
-                    <property name="nativeName"></property>
-                    <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-5</property>
-                    <property name="position">5</property>
-                    <property name="isInput">true</property>
-                    <property name="isOutput">false</property>
-                </structure>
-                <structure>
-                    <property name="name">param_6</property>
-                    <property name="paramName">AccountingReportId</property>
-                    <property name="nativeName"></property>
-                    <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-5</property>
-                    <property name="position">6</property>
-                    <property name="isInput">true</property>
-                    <property name="isOutput">false</property>
-                </structure>
-                <structure>
-                    <property name="name">param_7</property>
-                    <property name="paramName">AccountingReportId</property>
-                    <property name="nativeName"></property>
-                    <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-5</property>
-                    <property name="position">7</property>
-                    <property name="isInput">true</property>
-                    <property name="isOutput">false</property>
-                </structure>
-                <structure>
-                    <property name="name">param_8</property>
-                    <property name="paramName">AccountingReportId</property>
-                    <property name="nativeName"></property>
-                    <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-5</property>
-                    <property name="position">8</property>
-                    <property name="isInput">true</property>
-                    <property name="isOutput">false</property>
-                </structure>
+            <structure>
+                <property name="name">param_1</property>
+                <property name="paramName">AccountingReportId</property>
+                <property name="nativeName"></property>
+                <property name="dataType">decimal</property>
+                <property name="nativeDataType">-5</property>
+                <property name="position">1</property>
+                <property name="isInput">true</property>
+                <property name="isOutput">false</property>
+            </structure>
+            <structure>
+                <property name="name">param_2</property>
+                <property name="paramName">AccountingReportId</property>
+                <property name="nativeName"></property>
+                <property name="dataType">decimal</property>
+                <property name="nativeDataType">-5</property>
+                <property name="position">2</property>
+                <property name="isInput">true</property>
+                <property name="isOutput">false</property>
+            </structure>
+            <structure>
+                <property name="name">param_3</property>
+                <property name="paramName">AccountingReportId</property>
+                <property name="nativeName"></property>
+                <property name="dataType">decimal</property>
+                <property name="nativeDataType">-5</property>
+                <property name="position">3</property>
+                <property name="isInput">true</property>
+                <property name="isOutput">false</property>
+            </structure>
+            <structure>
+                <property name="name">param_4</property>
+                <property name="paramName">AccountingReportId</property>
+                <property name="nativeName"></property>
+                <property name="dataType">decimal</property>
+                <property name="nativeDataType">-5</property>
+                <property name="position">4</property>
+                <property name="isInput">true</property>
+                <property name="isOutput">false</property>
+            </structure>
+            <structure>
+                <property name="name">param_5</property>
+                <property name="paramName">AccountingReportId</property>
+                <property name="nativeName"></property>
+                <property name="dataType">decimal</property>
+                <property name="nativeDataType">-5</property>
+                <property name="position">5</property>
+                <property name="isInput">true</property>
+                <property name="isOutput">false</property>
+            </structure>
+            <structure>
+                <property name="name">param_6</property>
+                <property name="paramName">AccountingReportId</property>
+                <property name="nativeName"></property>
+                <property name="dataType">decimal</property>
+                <property name="nativeDataType">-5</property>
+                <property name="position">6</property>
+                <property name="isInput">true</property>
+                <property name="isOutput">false</property>
+            </structure>
+            <structure>
+                <property name="name">param_7</property>
+                <property name="paramName">AccountingReportId</property>
+                <property name="nativeName"></property>
+                <property name="dataType">decimal</property>
+                <property name="nativeDataType">-5</property>
+                <property name="position">7</property>
+                <property name="isInput">true</property>
+                <property name="isOutput">false</property>
+            </structure>
+            <structure>
+                <property name="name">param_8</property>
+                <property name="paramName">AccountingReportId</property>
+                <property name="nativeName"></property>
+                <property name="dataType">decimal</property>
+                <property name="nativeDataType">-5</property>
+                <property name="position">8</property>
+                <property name="isInput">true</property>
+                <property name="isOutput">false</property>
+            </structure>
+            <structure>
+                <property name="name">param_9</property>
+                <property name="paramName">AccountingReportId</property>
+                <property name="nativeName"></property>
+                <property name="dataType">decimal</property>
+                <property name="nativeDataType">-5</property>
+                <property name="position">9</property>
+                <property name="isInput">true</property>
+                <property name="isOutput">false</property>
+            </structure>
+            <structure>
+                <property name="name">param_10</property>
+                <property name="paramName">AccountingReportId</property>
+                <property name="nativeName"></property>
+                <property name="dataType">decimal</property>
+                <property name="nativeDataType">-5</property>
+                <property name="position">10</property>
+                <property name="isInput">true</property>
+                <property name="isOutput">false</property>
+            </structure>
             </list-property>
             <structure name="cachedMetaData">
                 <list-property name="resultSet">
@@ -885,41 +906,64 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
 	SUM(impairment_value_b) AS impairment_value_b,
 	SUM(impairment_value_c) AS impairment_value_c
 FROM 
-	(SELECT FixedAssetType.technical_type_select AS fixed_asset_type, 
-			FixedAssetLine.cumulative_depreciation AS depreciation_a,
-			0 AS depreciation_b,
-			0 AS depreciation_c,
-			0 AS impairment_value_a,
-			0 AS impairment_value_b,
-			0 AS impairment_value_c
-		FROM
-			account_accounting_report AS AccountingReport,
-			account_fixed_asset_line  AS FixedAssetLine
-		LEFT JOIN account_fixed_asset AS FixedAsset ON FixedAssetLine.fixed_asset = FixedAsset.id
-		LEFT JOIN account_fixed_asset_Category AS FixedAssetCategory ON FixedAsset.fixed_asset_category = FixedAssetCategory.id
-		LEFT JOIN account_fixed_asset_type AS FixedAssetType ON FixedAssetCategory.fixed_asset_type = FixedAssetType.id
-		WHERE
-			AccountingReport.id = ?
-			AND FixedAsset.company = AccountingReport.company
-			AND FixedAssetLine.status_select = 2
-			AND FixedAssetLine.type_select = 1
-			AND FixedAssetType.technical_type_select != 1
-			AND (FixedAsset.status_select IN (2,3)
-			OR (FixedAsset.status_select = 4 
-			AND	FixedAsset.disposal_date >= AccountingReport.date_from
-			AND FixedAsset.disposal_date <= AccountingReport.date_to))
-			AND FixedAssetLine.depreciation_date < AccountingReport.date_from
-			AND FixedAssetLine.depreciation_date > (SELECT CASE
-					WHEN FixedAsset2.periodicity_in_month = 12 THEN
-						AccountingReport.date_from - interval '1 year'
-					ELSE
-						AccountingReport.date_from - CAST(FixedAsset2.periodicity_in_month||' month' AS Interval)
-					END
-				FROM
-					account_fixed_asset_line  AS FixedAssetLine2
-				LEFT JOIN account_fixed_asset AS FixedAsset2 ON FixedAssetLine2.fixed_asset = FixedAsset2.id
-				WHERE FixedAssetLine2.id = FixedAssetLine.id)
-	UNION ALL
+	(SELECT FixedAssetType.technical_type_select AS fixed_asset_type,
+        FixedAssetLine.depreciation AS depreciation_a,
+        0 AS depreciation_b,
+        0 AS depreciation_c,
+        0 AS impairment_value_a,
+        0 AS impairment_value_b,
+        0 AS impairment_value_c
+    FROM
+        account_accounting_report AS AccountingReport,
+        account_fixed_asset_line  AS FixedAssetLine
+    LEFT JOIN account_fixed_asset AS FixedAsset ON FixedAssetLine.fixed_asset = FixedAsset.id
+    LEFT JOIN account_fixed_asset_Category AS FixedAssetCategory ON FixedAsset.fixed_asset_category = FixedAssetCategory.id
+    LEFT JOIN account_fixed_asset_type AS FixedAssetType ON FixedAssetCategory.fixed_asset_type = FixedAssetType.id
+    WHERE
+        AccountingReport.id = ?
+        AND FixedAsset.company = AccountingReport.company
+        AND FixedAsset.status_select != 1
+        AND FixedAssetLine.status_select = 2
+        AND FixedAssetLine.type_select = 1
+        AND FixedAssetType.technical_type_select != 1
+        AND FixedAssetLine.depreciation_date < AccountingReport.date_from
+    UNION ALL
+    SELECT FixedAssetType.technical_type_select AS fixed_asset_type,
+        -FixedAssetLine.cumulative_depreciation AS depreciation_a,
+        0 AS depreciation_b,
+        0 AS depreciation_c,
+        0 AS impairment_value_a,
+        0 AS impairment_value_b,
+        0 AS impairment_value_c
+    FROM
+        account_accounting_report AS AccountingReport,
+        account_fixed_asset_line  AS FixedAssetLine
+    LEFT JOIN account_fixed_asset AS FixedAsset ON FixedAssetLine.fixed_asset = FixedAsset.id
+    LEFT JOIN account_fixed_asset_Category AS FixedAssetCategory ON FixedAsset.fixed_asset_category = FixedAssetCategory.id
+    LEFT JOIN account_fixed_asset_type AS FixedAssetType ON FixedAssetCategory.fixed_asset_type = FixedAssetType.id
+    WHERE
+        AccountingReport.id = ?
+        AND FixedAsset.company = AccountingReport.company
+        AND FixedAsset.status_select = 4
+        AND FixedAssetLine.status_select = 2
+        AND FixedAssetLine.type_select = 1
+        AND FixedAssetType.technical_type_select != 1
+        AND FixedAsset.disposal_date < AccountingReport.date_from
+        AND FixedAssetLine.depreciation_date = (
+            SELECT
+                FixedAssetLine2.depreciation_date
+            FROM
+                account_accounting_report AS AccountingReport2,
+                account_fixed_asset_line  AS FixedAssetLine2
+            LEFT JOIN account_fixed_asset AS FixedAsset2 ON FixedAssetLine2.fixed_asset = FixedAsset.id
+            WHERE
+                AccountingReport2.id = AccountingReport.id
+                AND FixedAsset2.id = FixedAsset.id
+                AND FixedAssetLine2.status_select = 2
+                AND FixedAssetLine2.type_select = 1
+                AND FixedAssetLine2.depreciation_date < AccountingReport2.date_from
+            ORDER BY FixedAssetLine2.depreciation_date DESC LIMIT 1)
+    UNION ALL
 	SELECT FixedAssetType.technical_type_select AS fixed_asset_type,
 			FixedAsset.already_depreciated_amount AS imported_depreciation_a,
 			0 AS depreciation_b,
@@ -929,34 +973,26 @@ FROM
 			0 AS impairment_value_c
 		FROM
 			account_accounting_report AS AccountingReport,
-			account_fixed_asset_line  AS FixedAssetLine
-		LEFT JOIN account_fixed_asset AS FixedAsset ON FixedAssetLine.fixed_asset = FixedAsset.id
+			account_fixed_asset AS FixedAsset
 		LEFT JOIN account_fixed_asset_Category AS FixedAssetCategory ON FixedAsset.fixed_asset_category = FixedAssetCategory.id
 		LEFT JOIN account_fixed_asset_type AS FixedAssetType ON FixedAssetCategory.fixed_asset_type = FixedAssetType.id
 		WHERE
-			AccountingReport.id = ?
+		    AccountingReport.id = ?
 			AND FixedAsset.company = AccountingReport.company
-			AND FixedAssetLine.status_select = 2
-			AND FixedAssetLine.type_select = 1
 			AND FixedAssetType.technical_type_select != 1
 			AND FixedAsset.failover_date IS NOT NULL
 			AND (FixedAsset.status_select IN (2,3)
-			OR (FixedAsset.status_select = 4 
-			AND	FixedAsset.disposal_date >= AccountingReport.date_from
-			AND FixedAsset.disposal_date <= AccountingReport.date_to))
+			    OR (FixedAsset.status_select = 4
+			        AND	FixedAsset.disposal_date >= AccountingReport.date_from))
 			AND FixedAsset.origin_select = 99
-			AND FixedAsset.failover_date < AccountingReport.date_from
-			AND FixedAssetLine.depreciation_date < AccountingReport.date_from
-			AND FixedAssetLine.depreciation_date > (SELECT CASE
-				WHEN FixedAsset2.periodicity_in_month = 12 THEN
-					AccountingReport.date_from - interval '1 year'
-				ELSE
-					AccountingReport.date_from - CAST(FixedAsset2.periodicity_in_month||' month' AS Interval)
-				END
-			FROM
-				account_fixed_asset_line  AS FixedAssetLine2
-			LEFT JOIN account_fixed_asset AS FixedAsset2 ON FixedAssetLine2.fixed_asset = FixedAsset2.id
-			WHERE FixedAssetLine2.id = FixedAssetLine.id)
+			AND FixedAsset.failover_date < AccountingReport.date_to
+			AND NOT EXISTS (
+                SELECT 1 FROM account_fixed_asset_line AS FixedAssetLine
+                WHERE FixedAssetLine.fixed_asset = FixedAsset.id
+                AND FixedAssetLine.depreciation_date <= AccountingReport.date_from
+                AND FixedAssetLine.status_select = 2
+                AND FixedAssetLine.type_select = 1
+            )
 	UNION ALL
 	SELECT FixedAssetType.technical_type_select AS fixed_asset_type,
 			0 AS depreciation_a,
@@ -973,8 +1009,8 @@ FROM
 		LEFT JOIN account_fixed_asset_type AS FixedAssetType ON FixedAssetCategory.fixed_asset_type = FixedAssetType.id
 		WHERE
 			AccountingReport.id = ?
-			AND FixedAsset.company = AccountingReport.company
-			AND FIxedAsset.status_select != 1
+            AND FixedAsset.company = AccountingReport.company
+			AND FixedAsset.status_select != 1
 			AND FixedAssetLine.status_select = 2
 			AND FixedAssetLine.type_select = 1
 			AND FixedAssetType.technical_type_select != 1
@@ -996,21 +1032,34 @@ FROM
 		LEFT JOIN account_fixed_asset_type AS FixedAssetType ON FixedAssetCategory.fixed_asset_type = FixedAssetType.id
 		WHERE
 			AccountingReport.id = ?
-			AND FixedAsset.company = AccountingReport.company
+            AND FixedAsset.company = AccountingReport.company
 			AND FixedAsset.status_select = 4
 			AND FixedAssetLine.status_select = 2
 			AND FixedAssetLine.type_select = 1
 			AND FixedAssetType.technical_type_select != 1
 			AND FixedAsset.disposal_date >= AccountingReport.date_from
 			AND FixedAsset.disposal_date <= AccountingReport.date_to
-			AND FixedAssetLine.depreciation_date >= AccountingReport.date_from
-			AND FixedAssetLine.depreciation_date <= AccountingReport.date_to
+			AND FixedAssetLine.depreciation_date = (
+                SELECT
+                    FixedAssetLine2.depreciation_date
+                FROM
+                    account_accounting_report AS AccountingReport2,
+                    account_fixed_asset_line  AS FixedAssetLine2
+                LEFT JOIN account_fixed_asset AS FixedAsset2 ON FixedAssetLine2.fixed_asset = FixedAsset.id
+                WHERE
+                    AccountingReport2.id = AccountingReport.id
+                    AND FixedAsset2.id = FixedAsset.id
+                    AND FixedAssetLine2.status_select = 2
+                    AND FixedAssetLine2.type_select = 1
+                    AND FixedAssetLine2.depreciation_date >= AccountingReport2.date_from
+                    AND FixedAssetLine2.depreciation_date <= AccountingReport2.date_to
+                ORDER BY FixedAssetLine2.depreciation_date DESC LIMIT 1)
 	UNION ALL
 	SELECT FixedAssetType.technical_type_select AS fixed_asset_type,
 			0 AS depreciation_a,
 			0 AS depreciation_b,
 			0 AS depreciation_c,
-			FixedAssetLine.impairment_value AS impairment_value_a,
+			FixedAssetLine.impairment_value AS impairment_value_a_b,
 			0 AS impairment_value_b,
 			0 AS impairment_value_c
 		FROM
@@ -1020,13 +1069,49 @@ FROM
 		LEFT JOIN account_fixed_asset_Category AS FixedAssetCategory ON FixedAsset.fixed_asset_category = FixedAssetCategory.id
 		LEFT JOIN account_fixed_asset_type AS FixedAssetType ON FixedAssetCategory.fixed_asset_type = FixedAssetType.id
 		WHERE
-			AccountingReport.id = ?
+		    AccountingReport.id = ?
 			AND FixedAsset.company = AccountingReport.company
-			AND FixedAsset.status_select != 4
+			AND FixedAsset.status_select != 1
 			AND FixedAssetLine.status_select = 2
 			AND FixedAssetLine.type_select = 1
 			AND FixedAssetLine.depreciation_date < AccountingReport.date_from
 	UNION ALL
+	SELECT FixedAssetType.technical_type_select AS fixed_asset_type,
+            0 AS depreciation_a,
+            0 AS depreciation_b,
+            0 AS depreciation_c,
+            -FixedAssetLine.impairment_value AS impairment_value_a_c,
+            0 AS impairment_value_b,
+            0 AS impairment_value_c
+        FROM
+            account_accounting_report AS AccountingReport,
+            account_fixed_asset_line  AS FixedAssetLine
+        LEFT JOIN account_fixed_asset AS FixedAsset ON FixedAssetLine.fixed_asset = FixedAsset.id
+        LEFT JOIN account_fixed_asset_Category AS FixedAssetCategory ON FixedAsset.fixed_asset_category = FixedAssetCategory.id
+        LEFT JOIN account_fixed_asset_type AS FixedAssetType ON FixedAssetCategory.fixed_asset_type = FixedAssetType.id
+        WHERE
+            AccountingReport.id = ?
+            AND FixedAsset.company = AccountingReport.company
+            AND FixedAsset.status_select = 4
+            AND FixedAssetLine.status_select = 2
+            AND FixedAssetLine.type_select = 1
+            AND FixedAssetType.technical_type_select != 1
+            AND FixedAsset.disposal_date < AccountingReport.date_from
+            AND FixedAssetLine.depreciation_date = (
+                SELECT
+                    FixedAssetLine2.depreciation_date
+                FROM
+                    account_accounting_report AS AccountingReport2,
+                    account_fixed_asset_line  AS FixedAssetLine2
+                LEFT JOIN account_fixed_asset AS FixedAsset2 ON FixedAssetLine2.fixed_asset = FixedAsset.id
+                WHERE
+                    AccountingReport2.id = AccountingReport.id
+                    AND FixedAsset2.id = FixedAsset.id
+                    AND FixedAssetLine2.status_select = 2
+                    AND FixedAssetLine2.type_select = 1
+                    AND FixedAssetLine2.depreciation_date < AccountingReport2.date_from
+                ORDER BY FixedAssetLine2.depreciation_date DESC LIMIT 1)
+    UNION ALL
 	SELECT FixedAssetType.technical_type_select AS fixed_asset_type,
 			0 AS depreciation_a,
 			0 AS depreciation_b,
@@ -1042,12 +1127,10 @@ FROM
 		LEFT JOIN account_fixed_asset_type AS FixedAssetType ON FixedAssetCategory.fixed_asset_type = FixedAssetType.id
 		WHERE
 			AccountingReport.id = ?
-			AND FixedAsset.company = AccountingReport.company
+            AND FixedAsset.company = AccountingReport.company
 			AND FixedAsset.status_select != 1
-			AND FixedAsset.status_select != 4
 			AND FixedAssetLine.status_select = 2
 			AND FixedAssetLine.type_select = 1
-			AND FixedAssetLine.impairment_value > 0
 			AND FixedAssetLine.depreciation_date >= AccountingReport.date_from
 			AND FixedAssetLine.depreciation_date <= AccountingReport.date_to
 	UNION ALL
@@ -1057,7 +1140,7 @@ FROM
 			0 AS depreciation_c,
 			0 AS impairment_value_a,
 			0 AS impairment_value_b,
-			ABS(FixedAssetLine.impairment_value) AS impairment_value_c
+			FixedAssetLine.impairment_value AS impairment_value_c
 		FROM
 			account_accounting_report AS AccountingReport,
 			account_fixed_asset_line  AS FixedAssetLine
@@ -1066,15 +1149,15 @@ FROM
 		LEFT JOIN account_fixed_asset_type AS FixedAssetType ON FixedAssetCategory.fixed_asset_type = FixedAssetType.id
 		WHERE
 			AccountingReport.id = ?
-			AND FixedAsset.company = AccountingReport.company
-			AND FixedAsset.status_select != 1
-			AND FixedAsset.status_select != 4
+            AND FixedAsset.company = AccountingReport.company
+			AND FixedAsset.status_select = 4
 			AND FixedAssetLine.status_select = 2
 			AND FixedAssetLine.type_select = 1
 			AND FixedAssetType.technical_type_select != 1
-			AND FixedAssetLine.impairment_value < 0
 			AND FixedAssetLine.depreciation_date >= AccountingReport.date_from
 			AND FixedAssetLine.depreciation_date <= AccountingReport.date_to
+			AND FixedAsset.disposal_date >= AccountingReport.date_from
+            AND FixedAsset.disposal_date <= AccountingReport.date_to
 		) AS AccountingReportFixedAssetLine,
 	account_accounting_report AS AccountingReport
 WHERE 
@@ -1298,23 +1381,18 @@ GROUP BY fixed_asset_type]]></xml-property>
                                     <property name="height">36px</property>
                                     <cell id="4157">
                                         <property name="verticalAlign">top</property>
-                                        <text id="4245">
-                                            <property name="fontSize">8pt</property>
+                                        <image id="4592">
                                             <list-property name="visibility">
                                                 <structure>
                                                     <property name="format">all</property>
                                                     <expression name="valueExpr" type="javascript">row["logo_path"] == null</expression>
                                                 </structure>
                                             </list-property>
-                                            <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<TABLE>
-	<TR>
-		<VALUE-OF format="HTML">
-			"<TD><IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='"+row["logo_height"]+"' width='"+row["logo_width"]+"'/></TD>"
-		</VALUE-OF>
-	</TR>
-</TABLE>]]></text-property>
-                                        </text>
+                                            <method name="onCreate"><![CDATA[this.width=row["logo_width"];
+this.height=row["logo_height"];]]></method>
+                                            <property name="source">file</property>
+                                            <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
+                                        </image>
                                     </cell>
                                     <cell id="4590">
                                         <property name="verticalAlign">middle</property>

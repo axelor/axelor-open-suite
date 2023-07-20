@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="stock-correction-grid" title="Stock Corrections"
     model="com.axelor.apps.stock.db.StockCorrection">
@@ -48,6 +48,9 @@
     <panel name="stockCorrectionReasonPanel" sidebar="true" readonlyIf="statusSelect == 2">
       <field name="stockCorrectionReason" canEdit="false" colSpan="12" required="true"/>
       <field name="validationDateT"/>
+    </panel>
+    <panel name="commentsPanel" title="Comments" readonlyIf="statusSelect == 2" colSpan="12">
+      <field name="comments" showTitle="false" colSpan="12" widget="html"/>
     </panel>
   </form>
 

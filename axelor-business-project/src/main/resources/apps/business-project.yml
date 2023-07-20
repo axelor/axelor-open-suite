@@ -1,0 +1,15 @@
+---
+name: Job costing
+code: business-project
+typeSelect: standard
+installOrder: 2180
+description: |
+   Job costing
+image: app-business-project.png
+modules: 
+   axelor-business-project
+dependsOn:
+   - project
+   - employee
+   - supplychain
+sequence: 12

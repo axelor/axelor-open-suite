@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="AccountingReportConfigLine" lang="java">
+  <entity name="AccountingReportConfigLine">
 
     <string name="label" title="Label"/>
     <string name="code" title="Code"/>
@@ -30,6 +30,8 @@
     <boolean name="notComputedIfIntersect" title="Do not compute intersection"/>
     <boolean name="computePreviousYear" title="Compute previous year"/>
     <boolean name="computeOtherPeriod" title="Compute on comparison period"/>
+    <boolean name="balanceBeforePeriod" title="Period's start balance"/>
+    <boolean name="negateValue" title="Negate value"/>
     <many-to-many name="accountTypeSet" title="Account types"
       ref="com.axelor.apps.account.db.AccountType"/>
     <many-to-many name="accountSet" title="Accounts"
@@ -60,7 +62,8 @@
 
       // RESULT SELECT
       public static final int RESULT_DEBIT_MINUS_CREDIT = 1;
-      public static final int RESULT_CREDIT_MINUS_DEBIT = 2;
+      public static final int RESULT_DEBIT = 2;
+      public static final int RESULT_CREDIT = 6;
       public static final int RESULT_SAME_AS_COLUMN = 3;
       public static final int RESULT_SAME_AS_LINE = 4;
       public static final int RESULT_SAME_AS_GROUP = 5;

@@ -1,13 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="user-grid" title="Users list" model="com.axelor.auth.db.User" id="user-grid-base">
-    <toolbar>
-      <button name="generateRandomPasswordsBtn" title="Generate random passwords"
-        onClick="action-user-method-open-generate-random-passwords-wizard"/>
-    </toolbar>
     <field name="name"/>
     <field name="fullName"/>
     <field name="activeCompany" form-view="company-form" grid-view="company-grid"/>
@@ -22,8 +18,8 @@
 
 
   <form name="user-form" id="user-form-base" title="User" model="com.axelor.auth.db.User"
-    onNew="action-user-attrs,action-user-apply-applicaton-mode,action-user-default-method,action-user-check-company,action-attrs-select-in-step-status-select,action-user-attrs-set-pfp-validator-panel-show"
-    onSave="com.axelor.apps.base.web.UserController:validate" onLoad="action-user-group-onload">
+    onNew="action-user-group-on-new" onSave="com.axelor.apps.base.web.UserController:validate"
+    onLoad="action-user-group-on-load">
     <panel name="stepUserPanel" showIf="[0,1,2,3,4].indexOf(stepStatusSelect) > -1">
       <panel name="stepStatusPanel" colSpan="12">
         <field name="stepStatusSelect" showTitle="false" widget="NavSelect" colSpan="12"
@@ -87,7 +83,8 @@
             onClick="save,action-user-view-user-partner-type-wizard,action-user-attrs"/>
           <field name="partner" showTitle="false" colSpan="12" canNew="true"
             domain="self.linkedUser=null AND (self.partnerTypeSelect = 2 OR self.isContact = true OR self.isEmployee = true)"
-            form-view="partner-employee-form" grid-view="partner-employee-grid">
+            form-view="partner-employee-form" grid-view="partner-employee-grid"
+            onChange="action-user-attrs-remove-linked-employee">
             <editor x-viewer="true">
               <field name="fullName" readonly="true"/>
               <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
@@ -113,14 +110,16 @@
       </panel>
       <panel name="stepMainPanel" showIf="stepStatusSelect == 3" colSpan="12">
         <field name="employee" if-module="axelor-human-resource" form-view="employee-form"
-          grid-view="employee-grid" domain="self.user = null" canNew="false" canEdit="false"
-          canView="false" if="__config__.app.isApp('employee')"
-          readonlyIf="employee.contactPartner.id == partner.id"/>
+          grid-view="employee-grid" canNew="false" canEdit="false" canView="false"
+          if="__config__.app.isApp('employee')" onSelect="action-user-attrs-change-employee-domain"
+          domain="self.user == null" onChange="action-user-attrs-fill-contact"
+          showIf="partner == null || partner.employee != null" hidden="true"/>
         <button name="createEmployeeBtn" onClick="save,action-user-group-employee"
           title="Create employee" if-module="axelor-human-resource"
-          showIf="employee == null &amp;&amp; id != null &amp;&amp; id>0"
+          showIf="(employee == null &amp;&amp; id != null &amp;&amp; id>0) || (partner != null &amp;&amp; partner.employee == null) || (employee == null)"
           if="__config__.app.isApp('employee')"/>
         <field name="employee.contactPartner" hidden="true"/>
+        <field name="partner.employee" hidden="true"/>
       </panel>
       <panel name="stepActivationPanel" showIf="stepStatusSelect == 4" colSpan="12">
         <field name="activateOn"
@@ -141,9 +140,9 @@
         onSelect="action-user-attrs-domain-workshop-stock-location" canEdit="false"
         if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production')?.getManageWorkshop()"/>
       <field name="employee" if-module="axelor-human-resource" form-view="employee-form"
-        grid-view="employee-grid" domain="self.user = null" canNew="false" canEdit="false"
-        canView="false" if="__config__.app.isApp('employee')"
-        readonlyIf="employee.contactPartner.id == partner.id"/>
+        grid-view="employee-grid" domain="self.contactPartner = :partner" canNew="false"
+        canEdit="false" canView="false" if="__config__.app.isApp('employee')"
+        readonlyIf="partner == null" readonly="true"/>
       <button name="createEmployeeBtn" onClick="save,action-user-group-employee"
         title="Create employee" if-module="axelor-human-resource"
         showIf="employee == null &amp;&amp; id != null &amp;&amp; id>0"
@@ -232,7 +231,8 @@
           onClick="action-user-view-user-partner-type-wizard,action-user-attrs"/>
         <field name="partner" showTitle="false" colSpan="12" canNew="true"
           domain="self.linkedUser=null AND (self.partnerTypeSelect = 2 OR self.isContact = true OR self.isEmployee = true)"
-          form-view="partner-employee-form" grid-view="partner-employee-grid">
+          form-view="partner-employee-form" grid-view="partner-employee-grid"
+          onChange="action-user-attrs-remove-linked-employee">
           <editor x-viewer="true">
             <field name="fullName" readonly="true"/>
             <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
@@ -360,16 +360,7 @@
 
   </form>
 
-  <form name="generate-random-passwords-wizard" title="Generate random passwords"
-    model="com.axelor.apps.base.db.Wizard">
-    <panel name="mainPanel">
-      <field name="currentUserPassword" title="Your Password" widget="password"/>
-      <button name="generateRandomPasswordsBtn" title="Generate random passwords"
-        readonlyIf="!currentUserPassword" onClick="action-user-method-generate-random-passwords"/>
-    </panel>
-  </form>
-
-  <form model="com.axelor.apps.base.db.Wizard" title="Partner type selection"
+  <form model="com.axelor.utils.db.Wizard" title="Partner type selection"
     name="user-partner-type-wizard-form">
     <panel name="mainPanel">
       <field name="$partnerType" title="Partner type" type="integer"
@@ -426,18 +417,18 @@
   <action-record name="action-user-record-step-status-next"
     model="com.axelor.auth.db.User">
     <field name="stepStatusSelect" expr="eval: stepStatusSelect + 2"
-      if="stepStatusSelect == 2 &amp;&amp; ((partner?.isCustomer || partner?.isEmployee || partner?.isSupplier) || !__config__.app.isApp('employee'))"/>
+      if="stepStatusSelect == 2 &amp;&amp; ((partner?.isCustomer || partner?.isEmployee || partner?.isSupplier) || !__config__.app.isApp('employee') || (__this__.partner != null &amp;&amp; __this__.partner?.employee != null))"/>
     <field name="stepStatusSelect" expr="eval: stepStatusSelect + 1"
-      if="stepStatusSelect != 2 || (stepStatusSelect == 2 &amp;&amp; (!partner?.isCustomer &amp;&amp; !partner?.isEmployee &amp;&amp; !partner?.isSupplier) &amp;&amp; __config__.app.isApp('employee'))"/>
+      if="stepStatusSelect != 2 || (stepStatusSelect == 2 &amp;&amp; (!partner?.isCustomer &amp;&amp; !partner?.isEmployee &amp;&amp; !partner?.isSupplier) &amp;&amp; __config__.app.isApp('employee') &amp;&amp; __this__.partner?.employee == null) || (stepStatusSelect == 2 &amp;&amp; __this__.partner == null)"/>
     <field name="blocked" expr="false" if="stepStatusSelect == 4"/>
   </action-record>
 
   <action-record name="action-user-record-step-status-previous"
     model="com.axelor.auth.db.User">
     <field name="stepStatusSelect" expr="eval: stepStatusSelect - 2"
-      if="stepStatusSelect == 4 &amp;&amp; ((partner?.isCustomer || partner?.isEmployee || partner?.isSupplier) || !__config__.app.isApp('employee'))"/>
+      if="stepStatusSelect == 4 &amp;&amp; ((partner?.isCustomer || partner?.isEmployee || partner?.isSupplier) || !__config__.app.isApp('employee') || (__this__.partner != null &amp;&amp; __this__.partner?.employee != null))"/>
     <field name="stepStatusSelect" expr="eval: stepStatusSelect - 1"
-      if="stepStatusSelect != 4 || (stepStatusSelect == 4 &amp;&amp; (!partner?.isCustomer &amp;&amp; !partner?.isEmployee &amp;&amp; !partner?.isSupplier) &amp;&amp; __config__.app.isApp('employee'))"/>
+      if="stepStatusSelect != 4 || (stepStatusSelect == 4 &amp;&amp; (!partner?.isCustomer &amp;&amp; !partner?.isEmployee &amp;&amp; !partner?.isSupplier) &amp;&amp; __config__.app.isApp('employee') &amp;&amp; __this__.partner?.employee == null) || (stepStatusSelect == 4 &amp;&amp; __this__.partner == null)"/>
   </action-record>
 
   <action-validate name="action-user-check-company">
@@ -445,12 +436,12 @@
   </action-validate>
 
   <action-group name="action-user-group-employee">
-    <action name="com.axelor.apps.hr.web.UserHrController:createEmployee"/>
+    <action name="action-user-method-create-employee"/>
     <action name="action-employee-user-show-employee" if="partner != null"/>
   </action-group>
 
   <action-view name="action-user-view-user-partner-type-wizard" title="Partner"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.utils.db.Wizard">
     <view type="form" name="user-partner-type-wizard-form"/>
     <view-param name="show-toolbar" value="false"/>
     <view-param name="popup-save" value="false"/>
@@ -507,15 +498,6 @@
       if="code &amp;&amp; ![null, id].contains(__repo__(User).findByCode(code)?.id)"/>
   </action-condition>
 
-  <action-method name="action-user-method-open-generate-random-passwords-wizard">
-    <call class="com.axelor.apps.base.web.UserController"
-      method="openGenerateRandomPasswordsWizard"/>
-  </action-method>
-
-  <action-method name="action-user-method-generate-random-passwords">
-    <call class="com.axelor.apps.base.web.UserController" method="generateRandomPasswords"/>
-  </action-method>
-
   <action-view name="action-user-view-show-all-permissions" title="All permissions"
     model="com.axelor.auth.db.Permission">
     <view name="permission-grid" type="grid"/>
@@ -527,6 +509,22 @@
       :userId)</domain>
     <context name="userId" expr="eval: id"/>
   </action-view>
+
+  <action-group name="action-user-group-on-new">
+    <action name="action-user-attrs"/>
+    <action name="action-user-apply-applicaton-mode"/>
+    <action name="action-user-default-method"/>
+    <action name="action-user-check-company"/>
+    <action name="action-attrs-select-in-step-status-select"/>
+    <action name="action-user-attrs-set-pfp-validator-panel-show"/>
+  </action-group>
+
+  <action-group name="action-user-group-on-load">
+    <action name="action-user-attrs"/>
+    <action name="action-user-apply-applicaton-mode"/>
+    <action name="action-attrs-select-in-step-status-select"/>
+    <action name="action-user-attrs-set-pfp-validator-panel-show"/>
+  </action-group>
 
   <action-group name="action-user-group-previous-button">
     <action name="validate"/>
@@ -540,11 +538,32 @@
     <action name="save"/>
   </action-group>
 
+  <action-attrs name="action-user-attrs-remove-linked-employee">
+    <attribute for="employee" name="value" expr="eval: null" if="partner == null"/>
+  </action-attrs>
+
   <action-attrs name="action-user-attrs-set-pfp-validator-panel-show">
     <attribute name="hidden"
       expr="eval: !companySet?.any{it->it.accountConfig?.isManagePassedForPayment}"
       for="substitutePfpValidatorTabPanel"
       if="__config__.app.getApp('account') != null &amp;&amp; __config__.app.getApp('account')?.getActivatePassedForPayment()"/>
+  </action-attrs>
+
+  <action-attrs name="action-user-attrs-change-employee-domain">
+    <attribute for="employee" name="domain" expr="self.user = null"
+      if="partner == null || partner != null"/>
+    <attribute for="employee" name="domain"
+      expr="self.user = null AND self.contactPartner = :partner"
+      if="partner != null &amp;&amp; partner.employee != null"/>
+  </action-attrs>
+
+  <action-method name="action-user-method-create-employee">
+    <call class="com.axelor.apps.hr.web.UserHrController" method="createEmployee"/>
+  </action-method>
+
+  <action-attrs name="action-user-attrs-fill-contact">
+    <attribute for="partner" name="value" expr="eval: employee?.contactPartner"
+      if="partner == null &amp;&amp; employee?.contactPartner != null"/>
   </action-attrs>
 
   <search-filters name="user-filters" model="com.axelor.auth.db.User"

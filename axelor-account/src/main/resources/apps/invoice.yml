@@ -1,0 +1,13 @@
+---
+name: Invoicing
+code: invoice
+typeSelect: standard
+installOrder: 2100
+description: |
+   Invoicing configuration
+image: app-invoice.png
+modules: 
+   axelor-account
+dependsOn: 
+   - account
+sequence: 5

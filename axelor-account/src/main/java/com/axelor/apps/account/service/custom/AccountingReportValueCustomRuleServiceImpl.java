@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.account.service.custom;
 
 import com.axelor.apps.account.db.AccountingReport;
@@ -8,6 +26,8 @@ import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountingReportConfigLineRepository;
 import com.axelor.apps.account.db.repo.AccountingReportValueRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.DateService;
 import com.axelor.common.StringUtils;
 import com.axelor.rpc.Context;
 import com.axelor.script.GroovyScriptHelper;
@@ -28,8 +48,9 @@ public class AccountingReportValueCustomRuleServiceImpl extends AccountingReport
   public AccountingReportValueCustomRuleServiceImpl(
       AccountRepository accountRepo,
       AccountingReportValueRepository accountingReportValueRepo,
-      AnalyticAccountRepository analyticAccountRepo) {
-    super(accountRepo, accountingReportValueRepo, analyticAccountRepo);
+      AnalyticAccountRepository analyticAccountRepo,
+      DateService dateService) {
+    super(accountRepo, accountingReportValueRepo, analyticAccountRepo, dateService);
   }
 
   @Override
@@ -44,7 +65,8 @@ public class AccountingReportValueCustomRuleServiceImpl extends AccountingReport
       String parentTitle,
       LocalDate startDate,
       LocalDate endDate,
-      int analyticCounter) {
+      int analyticCounter)
+      throws AxelorException {
     if (accountingReport.getDisplayDetails()
         && line.getDetailBySelect() != AccountingReportConfigLineRepository.DETAIL_BY_NOTHING) {
       for (String lineCode :
@@ -93,7 +115,8 @@ public class AccountingReportValueCustomRuleServiceImpl extends AccountingReport
       LocalDate startDate,
       LocalDate endDate,
       String parentTitle,
-      int analyticCounter) {
+      int analyticCounter)
+      throws AxelorException {
     this.createValueFromCustomRule(
         accountingReport,
         column,
@@ -121,7 +144,8 @@ public class AccountingReportValueCustomRuleServiceImpl extends AccountingReport
       LocalDate endDate,
       String parentTitle,
       String lineCode,
-      int analyticCounter) {
+      int analyticCounter)
+      throws AxelorException {
     Map<String, AccountingReportValue> valuesMap =
         this.getValuesMap(
             column,
@@ -135,6 +159,7 @@ public class AccountingReportValueCustomRuleServiceImpl extends AccountingReport
 
     BigDecimal result =
         this.getResultFromCustomRule(
+            accountingReport,
             column,
             line,
             groupColumn,
@@ -214,6 +239,7 @@ public class AccountingReportValueCustomRuleServiceImpl extends AccountingReport
   }
 
   protected BigDecimal getResultFromCustomRule(
+      AccountingReport accountingReport,
       AccountingReportConfigLine column,
       AccountingReportConfigLine line,
       AccountingReportConfigLine groupColumn,
@@ -234,6 +260,10 @@ public class AccountingReportValueCustomRuleServiceImpl extends AccountingReport
     try {
       return (BigDecimal) scriptHelper.eval(rule);
     } catch (Exception e) {
+      if (accountingReport.getTraceAnomalies()) {
+        this.traceException(e, accountingReport, groupColumn, column, line);
+      }
+
       this.addNullValue(
           column,
           groupColumn,

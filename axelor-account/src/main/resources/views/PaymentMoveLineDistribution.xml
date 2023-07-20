@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <!-- PAYMENT MOVE LINE DISTRIBUTION -->
 
@@ -25,8 +25,10 @@
   <grid name="payment-move-line-distribution-das2-grid" title="Payment move lines distribution"
     model="com.axelor.apps.account.db.PaymentMoveLineDistribution" groupBy="partner"
     orderBy="partner">
-    <hilite color="danger" if="excludeFromDas2Report"/>
+    <hilite color="danger"
+      if="excludeFromDas2Report || !$get('moveLine.account.serviceType.n4dsCode')"/>
     <field name="excludeFromDas2Report" hidden="true"/>
+    <field name="moveLine.account.serviceType.n4dsCode" hidden="true"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
     <field name="move.journal"/>
     <field name="move.reference"/>
@@ -46,7 +48,7 @@
     <button
       onClick="action-account-payment-move-line-distribution-method-include-line-in-das2"
       icon="fa-check" help="Include in DAS2 report" name="includeInDas2Btn"
-      readonlyIf="!excludeFromDas2Report"/>
+      readonlyIf="!excludeFromDas2Report || !$get('moveLine.account.serviceType.n4dsCode')"/>
   </grid>
 
   <form name="payment-move-line-distribution-form" title="Payment move line distribution"

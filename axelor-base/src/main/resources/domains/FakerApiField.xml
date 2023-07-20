@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="FakerApiField">
+    <string name="name" title="Name" namecolumn="true"/>
+    <string name="className" title="Class name" required="true"/>
+    <string name="methodName" title="Method name" required="true"/>
+    <string name="dataType" title="Data type"
+      selection="base.faker.api.field.data.type.select"/>
+    <one-to-many name="fakerFieldParametersList" mappedBy="fakerApiField"
+      ref="com.axelor.apps.base.db.FakerApiFieldParameters"/>
+  </entity>
+
+</domain-models>

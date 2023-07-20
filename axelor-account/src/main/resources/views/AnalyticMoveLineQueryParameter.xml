@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="analytic-move-line-query-parameter-search-grid"
     title="Search analytic move line query parameter"
@@ -11,7 +11,7 @@
       onSelect="action-attrs-domain-axis-distribution-line"/>
     <field name="analyticAccountSet" grid-view="analytic-account-grid"
       form-view="analytic-account-info-form"
-      onSelect="action-attrs-domain-account-distribution-line" widget="TagSelect"/>
+      onSelect="action-method-domain-account-distribution-line" widget="TagSelect"/>
   </grid>
 
   <grid name="analytic-move-line-query-parameter-reverse-grid"
@@ -22,7 +22,7 @@
       onSelect="action-attrs-domain-axis-distribution-line"/>
     <field name="analyticAccount" grid-view="analytic-account-grid"
       form-view="analytic-account-info-form"
-      onSelect="action-attrs-domain-account-distribution-line"/>
+      onSelect="action-method-domain-account-distribution-line"/>
   </grid>
 
   <form name="analytic-move-line-query-parameter-form"
@@ -37,10 +37,10 @@
         onSelect="action-attrs-domain-axis-distribution-line"/>
       <field name="analyticAccount" grid-view="analytic-account-grid"
         form-view="analytic-account-info-form"
-        onSelect="action-attrs-domain-account-distribution-line"/>
+        onSelect="action-method-domain-account-distribution-line"/>
       <field name="analyticAccountSet" grid-view="analytic-account-grid"
         form-view="analytic-account-info-form"
-        onSelect="action-attrs-domain-account-distribution-line" colSpan="12"/>
+        onSelect="action-method-domain-account-distribution-line" colSpan="12"/>
     </panel>
   </form>
 

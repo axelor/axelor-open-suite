@@ -1,0 +1,12 @@
+---
+name: Business Support
+code: business-support
+typeSelect: standard
+installOrder: 2310
+description: |
+   axelor-business-support
+modules: 
+   axelor-business-support
+dependsOn:
+   - business-project
+sequence: 15

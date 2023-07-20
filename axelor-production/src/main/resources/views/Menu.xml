@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
 
-  <menuitem name="manufacturing-root" title="Manufacturing" order="-84"
+  <menuitem name="manufacturing-root" title="Manufacturing" order="-600"
     if="__config__.app.isApp('production')" icon="fa-cogs" icon-background="#84429f"/>
 
-  <menuitem name="manufacturing-root-products" parent="manufacturing-root" order="5"
+  <menuitem name="manufacturing-root-products" parent="manufacturing-root" order="100"
     title="Products" action="manufacturing.root.products"/>
 
   <action-view name="manufacturing.root.products" title="Products"
@@ -22,11 +22,11 @@
   </action-view>
 
   <menuitem name="manufacturing-root-bill-of-material-root" parent="manufacturing-root"
-    title="Bills of materials" order="10"/>
+    title="Bills of materials" order="300"/>
 
   <menuitem name="manufacturing-root-general-bill-of-material"
     parent="manufacturing-root-bill-of-material-root" title="General BoM"
-    action="manufacturing.root.general.bill.of.material" order="1"/>
+    action="manufacturing.root.general.bill.of.material" order="100"/>
 
   <action-view name="manufacturing.root.general.bill.of.material" title="General BoM"
     model="com.axelor.apps.production.db.BillOfMaterial">
@@ -41,7 +41,7 @@
 
   <menuitem name="manufacturing-root-personalized-bill-of-material"
     parent="manufacturing-root-bill-of-material-root" title="Personalized BoM"
-    action="manufacturing.root.personalized.bill.of.material" order="2"/>
+    action="manufacturing.root.personalized.bill.of.material" order="200"/>
 
   <action-view name="manufacturing.root.personalized.bill.of.material"
     title="Personalized BoM" model="com.axelor.apps.production.db.BillOfMaterial">
@@ -53,7 +53,7 @@
   </action-view>
 
   <menuitem name="manufacturing-root-prod-process" parent="manufacturing-root"
-    title="Production processes" action="manufacturing.root.prod.process" order="5"/>
+    title="Production processes" action="manufacturing.root.prod.process" order="200"/>
 
   <action-view name="manufacturing.root.prod.process" title="Production processes"
     model="com.axelor.apps.production.db.ProdProcess">
@@ -63,7 +63,7 @@
   </action-view>
 
   <menuitem name="manufacturing-root-production-order" parent="manufacturing-root"
-    title="Productions orders" action="manufacturing.root.production.order" order="15"/>
+    title="Productions orders" action="manufacturing.root.production.order" order="400"/>
 
   <action-view name="manufacturing.root.production.order" title="Productions orders"
     model="com.axelor.apps.production.db.ProductionOrder">
@@ -73,7 +73,7 @@
   </action-view>
 
   <menuitem name="manufacturing-root-manuf-order" parent="manufacturing-root"
-    title="Manufacturing orders" action="manufacturing.root.manuf.order" order="20"/>
+    title="Manufacturing orders" action="manufacturing.root.manuf.order" order="500"/>
 
   <action-view name="manufacturing.root.manuf.order" title="Manufacturing orders"
     model="com.axelor.apps.production.db.ManufOrder">
@@ -85,7 +85,7 @@
   </action-view>
 
   <menuitem name="manufacturing-root-operation-order" parent="manufacturing-root"
-    title="Operations orders" action="manufacturing.root.operation.order" order="25"/>
+    title="Operations orders" action="manufacturing.root.operation.order" order="600"/>
 
   <action-view name="manufacturing.root.operation.order" title="Operation orders"
     model="com.axelor.apps.production.db.OperationOrder">
@@ -97,7 +97,7 @@
 
   <menuitem name="manufacturing-root-operation-order-planned-calendar"
     parent="manufacturing-root" title="Planned operations"
-    action="manufacturing.root.operation.order.planned.calendar" order="30"/>
+    action="manufacturing.root.operation.order.planned.calendar" order="700"/>
 
   <action-view name="manufacturing.root.operation.order.planned.calendar"
     title="Planned operations" model="com.axelor.apps.production.db.OperationOrder">
@@ -105,12 +105,12 @@
     <view type="grid" name="operation-order-grid"/>
     <view type="form" name="operation-order-form"/>
     <view-param name="search-filters" value="operation-order-filters"/>
-    <domain>self.statusSelect = 3</domain>
+    <domain>self.manufOrder.statusSelect IN (3,4,5,6)</domain>
   </action-view>
 
   <menuitem name="manufacturing-root-operation-order-real-calendar"
     parent="manufacturing-root" title="Real operations"
-    action="manufacturing.root.operation.order.real.calendar" order="35"/>
+    action="manufacturing.root.operation.order.real.calendar" order="800"/>
 
   <action-view name="manufacturing.root.operation.order.real.calendar"
     title="Real operations" model="com.axelor.apps.production.db.OperationOrder">
@@ -123,11 +123,11 @@
 
 
   <menuitem name="manufacturing-root-outsourcing" title="Outsourcing"
-    parent="manufacturing-root" order="37"
+    parent="manufacturing-root" order="900"
     if="__config__.app.getApp('production')?.getManageOutsourcing()"/>
 
   <menuitem name="manufacturing-root-outsourcing-subcontractors" title="Subcontractors"
-    parent="manufacturing-root-outsourcing" action="manufacturing.root.subcontractors"/>
+    parent="manufacturing-root-outsourcing" action="manufacturing.root.subcontractors" order="100"/>
   <action-view name="manufacturing.root.subcontractors" title="Subcontractors"
     model="com.axelor.apps.base.db.Partner">
     <view type="cards" name="partner-cards"/>
@@ -139,7 +139,7 @@
 
   <menuitem name="manufacturing-root-outsourcing-subcontractors-deliveries"
     title="Subcontractors deliveries" parent="manufacturing-root-outsourcing"
-    action="manufacturing.root.subcontractors.deliveries"/>
+    action="manufacturing.root.subcontractors.deliveries" order="200"/>
   <action-view name="manufacturing.root.subcontractors.deliveries"
     title="Subcontractors deliveries" model="com.axelor.apps.stock.db.StockMove">
     <view type="grid" name="stock-move-out-grid"/>
@@ -147,8 +147,8 @@
     <view type="form" name="stock-move-form"/>
     <domain>self.typeSelect = :_typeSelect AND
       self.isReversion = FALSE AND
-      self.toStockLocation.typeSelect=:_stockLocTypeSelect AND
-      self.toStockLocation.isOutsourcingLocation=:_isOutsourcingLoc</domain>
+      self.stockMoveLineList.toStockLocation.typeSelect=:_stockLocTypeSelect AND
+      self.stockMoveLineList.toStockLocation.isOutsourcingLocation=:_isOutsourcingLoc</domain>
     <context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_OUTGOING"/>
     <context name="_stockLocTypeSelect" expr="eval: __repo__(StockLocation).TYPE_VIRTUAL"/>
     <context name="_isOutsourcingLoc" expr="eval:true"/>
@@ -156,7 +156,7 @@
 
   <menuitem name="manufacturing-root-outsourcing-subcontractors-arrivals"
     title="Subcontractors arrivals" parent="manufacturing-root-outsourcing"
-    action="manufacturing.root.subcontractors.arrivals"/>
+    action="manufacturing.root.subcontractors.arrivals" order="300"/>
   <action-view name="manufacturing.root.subcontractors.arrivals"
     title="Subcontractors arrivals" model="com.axelor.apps.stock.db.StockMove">
     <view type="grid" name="stock-move-in-grid"/>
@@ -164,8 +164,8 @@
     <view type="form" name="stock-move-form"/>
     <domain>self.typeSelect = :_typeSelect AND
       self.isReversion = FALSE AND
-      self.fromStockLocation.typeSelect=:_stockLocTypeSelect AND
-      self.fromStockLocation.isOutsourcingLocation=:_isOutsourcingLoc</domain>
+      self.stockMoveLineList.fromStockLocation.typeSelect=:_stockLocTypeSelect AND
+      self.stockMoveLineList.fromStockLocation.isOutsourcingLocation=:_isOutsourcingLoc</domain>
     <context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_INCOMING"/>
     <context name="_stockLocTypeSelect" expr="eval: __repo__(StockLocation).TYPE_VIRTUAL"/>
     <context name="_isOutsourcingLoc" expr="eval:true"/>
@@ -174,7 +174,7 @@
 
   <menuitem name="manufacturing-root-charge-by-machine-dashboard"
     parent="manufacturing-root" title="Charge by machine"
-    action="manufacturing.root.charge.by.machine.dashboard" order="40"/>
+    action="manufacturing.root.charge.by.machine.dashboard" order="1000"/>
 
   <action-view name="manufacturing.root.charge.by.machine.dashboard"
     title="Charge by machine">
@@ -183,7 +183,8 @@
   </action-view>
 
   <menuitem name="manufacturing-root-raw-material-requirement" parent="manufacturing-root"
-    title="Raw material requirement" action="manufacturing.root.raw.material.requirement" order="42"/>
+    title="Raw material requirement" action="manufacturing.root.raw.material.requirement"
+    order="1100"/>
 
   <action-view name="manufacturing.root.raw.material.requirement"
     title="Raw material requirement" model="com.axelor.apps.production.db.RawMaterialRequirement">
@@ -193,7 +194,7 @@
   </action-view>
 
   <menuitem name="manufacturing-root-cost-calculations" parent="manufacturing-root"
-    title="Cost calculations" action="manufacturing.root.cost.calculations" order="44"/>
+    title="Cost calculations" action="manufacturing.root.cost.calculations" order="1400"/>
 
   <action-view name="manufacturing.root.cost.calculations" title="Cost calculations"
     model="com.axelor.apps.production.db.UnitCostCalculation">
@@ -201,12 +202,12 @@
     <view type="form" name="cost-calculations-form"/>
   </action-view>
 
-  <menuitem name="manufacturing-mps" parent="manufacturing-root" title="MPS" order="43"
+  <menuitem name="manufacturing-mps" parent="manufacturing-root" title="MPS" order="1200"
     if="__config__.app.isApp('supplychain')"/>
 
   <menuitem name="manufacturing-mps-master-production-scheduling"
     parent="manufacturing-mps" title="MPS" action="manufacturing.mps.master.production.scheduling"
-    order="1"/>
+    order="100"/>
 
   <action-view name="manufacturing.mps.master.production.scheduling" title="MPS"
     model="com.axelor.apps.supplychain.db.Mrp">
@@ -217,7 +218,7 @@
   </action-view>
 
   <menuitem name="manufacturing-mps-forecast" parent="manufacturing-mps" title="Forecasts"
-    action="manufacturing.mps.forecast" order="2"/>
+    action="manufacturing.mps.forecast" order="200"/>
 
   <action-view name="manufacturing.mps.forecast" title="Forecasts"
     model="com.axelor.apps.supplychain.db.MrpForecast">
@@ -227,10 +228,10 @@
   </action-view>
 
   <menuitem name="manufacturing-mps-conf" parent="manufacturing-mps" title="Configuration"
-    icon="fa-cog" order="3"/>
+    icon="fa-cog" order="300"/>
 
   <menuitem name="manufacturing-mps-conf-mrp-line-type" parent="manufacturing-mps-conf"
-    title="Move types" action="manufacturing.mps.conf.mrp.line.type"/>
+    title="Move types" action="manufacturing.mps.conf.mrp.line.type" order="100"/>
 
   <action-view name="manufacturing.mps.conf.mrp.line.type" title="Move types"
     model="com.axelor.apps.supplychain.db.MrpLineType">
@@ -240,7 +241,7 @@
 
   <menuitem name="manufacturing-mps-conf-manufacturing-periods"
     parent="manufacturing-mps-conf" title="Manufacturing periods"
-    action="manufacturing.mps.conf.manufacturing-periods"/>
+    action="manufacturing.mps.conf.manufacturing-periods" order="200"/>
 
   <action-view name="manufacturing.mps.conf.manufacturing-periods"
     title="Manufacturing periods" model="com.axelor.apps.base.db.Year">
@@ -250,7 +251,7 @@
   </action-view>
 
   <menuitem name="manufacturing-root-sop" parent="manufacturing-root" title="S&amp;OP"
-    action="manufacturing.root.sop" order="46"/>
+    action="manufacturing.root.sop" order="1600"/>
 
   <action-view name="manufacturing.root.sop" title="Sales and Operations Planning"
     model="com.axelor.apps.production.db.Sop">
@@ -259,7 +260,7 @@
   </action-view>
 
   <menuitem name="manufacturing-root-mps-charge" parent="manufacturing-root"
-    title="MPS Charge" action="manufacturing.root.mps.charge" order="43"
+    title="MPS Charge" action="manufacturing.root.mps.charge" order="1300"
     if="__config__.app.getApp('production')?.manageMpsCharge"/>
 
   <action-view name="manufacturing.root.mps.charge"
@@ -269,10 +270,10 @@
   </action-view>
 
   <menuitem name="manufacturing-root-report" parent="manufacturing-root" title="Reportings"
-    order="45" icon="fa-bar-chart"/>
+    order="1500" icon="fa-bar-chart"/>
 
   <menuitem name="menu-manufacturing-dashboard-1" parent="manufacturing-root-report"
-    title="Manufacturing" action="manufacturing.dashboard.view"/>
+    title="Manufacturing" action="manufacturing.dashboard.view" order="100"/>
 
   <action-view name="manufacturing.dashboard.view" title="Manufacturing Dashboard">
     <view type="dashboard" name="manufacturing.dashboard.sample"/>
@@ -280,7 +281,7 @@
   </action-view>
 
   <menuitem name="menu-manufacturing-user-dashboard" parent="manufacturing-root-report"
-    title="User" action="manufacturing.user.dashboard.view"/>
+    title="User" action="manufacturing.user.dashboard.view" order="200"/>
 
   <action-view name="manufacturing.user.dashboard.view" title="User Dashboard"
     model="com.axelor.auth.db.User">
@@ -288,10 +289,10 @@
   </action-view>
 
   <menuitem name="manufacturing-conf" parent="manufacturing-root" title="Configuration"
-    order="50" icon="fa-cog"/>
+    order="1700" icon="fa-cog"/>
 
   <menuitem name="manufacturing-conf-work-center" parent="manufacturing-conf"
-    title="Work centers" action="manufacturing.conf.work.center"/>
+    title="Work centers" action="manufacturing.conf.work.center" order="100"/>
 
   <action-view name="manufacturing.conf.work.center" title="Work centers"
     model="com.axelor.apps.production.db.WorkCenter">
@@ -301,7 +302,7 @@
   </action-view>
 
   <menuitem name="manufacturing-conf-machine" parent="manufacturing-conf" title="Machines"
-    action="manufacturing.conf.machine"/>
+    action="manufacturing.conf.machine" order="200"/>
 
   <action-view name="manufacturing.conf.machine" title="Machines"
     model="com.axelor.apps.production.db.Machine">
@@ -311,7 +312,7 @@
 
   <menuitem name="manufacturing-conf-machine-tool" parent="manufacturing-conf" title="Tool"
     action="manufacturing.conf.machine.tool"
-    if="__config__.app.getApp('production')?.getEnableToolManagement()"/>
+    if="__config__.app.getApp('production')?.getEnableToolManagement()" order="300"/>
 
   <action-view name="manufacturing.conf.machine.tool" title="Tool"
     model="com.axelor.apps.production.db.MachineTool">
@@ -321,7 +322,7 @@
   </action-view>
 
   <menuitem name="manufacturing-conf-machine-type" parent="manufacturing-conf"
-    title="Machine Types" action="manufacturing.conf.machine.type"/>
+    title="Machine Types" action="manufacturing.conf.machine.type" order="400"/>
 
   <action-view name="manufacturing.conf.machine.type" title="Machine Types"
     model="com.axelor.apps.production.db.MachineType">
@@ -331,7 +332,7 @@
 
   <menuitem name="manufacturing-conf-cost-sheet-group" parent="manufacturing-conf"
     title="Cost sheet groups" action="manufacturing.conf.cost.sheet.group"
-    if="__config__.app.getApp('production')?.getManageCostSheetGroup()"/>
+    if="__config__.app.getApp('production')?.getManageCostSheetGroup()" order="500"/>
 
   <action-view name="manufacturing.conf.cost.sheet.group" title="Cost sheet group"
     model="com.axelor.apps.production.db.CostSheetGroup">
@@ -340,7 +341,7 @@
   </action-view>
 
   <menuitem name="manufacturing-conf-manuf-order" parent="manufacturing-conf"
-    title="Permanent manufacturing orders" action="manufacturing.conf.manuf.order"/>
+    title="Permanent manufacturing orders" action="manufacturing.conf.manuf.order" order="600"/>
 
   <action-view name="manufacturing.conf.manuf.order"
     title="Permanent manufacturing orders" model="com.axelor.apps.production.db.ManufOrder">
@@ -353,10 +354,11 @@
   </action-view>
 
   <menuitem name="manufacturing-conf-configurators" parent="manufacturing-conf"
-    title="Configurators" if="__config__.app.getApp('production')?.getEnableConfigurator()"/>
+    title="Configurators" if="__config__.app.getApp('production')?.getEnableConfigurator()"
+    order="700"/>
 
   <menuitem name="manufacturing-conf-configurators-creator"
-    parent="manufacturing-conf-configurators" order="10" title="Configurator creators"
+    parent="manufacturing-conf-configurators" order="100" title="Configurator creators"
     action="manufacturing.conf.configurator.creator"/>
 
   <action-view name="manufacturing.conf.configurator.creator"
@@ -366,7 +368,7 @@
   </action-view>
 
   <menuitem name="manufacturing-conf-configurators-configurators"
-    parent="manufacturing-conf-configurators" order="20" title="Configurators"
+    parent="manufacturing-conf-configurators" order="200" title="Configurators"
     action="manufacturing.conf.configurator.configurators"/>
 
   <action-view name="manufacturing.conf.configurator.configurators"
@@ -379,7 +381,7 @@
   </action-view>
 
   <menuitem name="manufacturing-conf-configurators-bom"
-    parent="manufacturing-conf-configurators" order="30" title="Configurator BOM"
+    parent="manufacturing-conf-configurators" order="300" title="Configurator BOM"
     action="manufacturing.conf.configurator.bom"/>
 
   <action-view name="manufacturing.conf.configurator.bom" title="Configurator BOM"
@@ -390,7 +392,7 @@
   </action-view>
 
   <menuitem name="manufacturing-conf-configurators-bom-components"
-    parent="manufacturing-conf-configurators" order="31" title="Configurator BOM components"
+    parent="manufacturing-conf-configurators" order="400" title="Configurator BOM components"
     action="manufacturing.conf.configurator.bom.components"/>
 
   <action-view name="manufacturing.conf.configurator.bom.components"
@@ -401,7 +403,7 @@
   </action-view>
 
   <menuitem name="manufacturing-conf-configurators-prodprocess"
-    parent="manufacturing-conf-configurators" order="40" title="Configurator production process"
+    parent="manufacturing-conf-configurators" order="500" title="Configurator production process"
     action="manufacturing.conf.configurator.prod.process"/>
 
   <action-view name="manufacturing.conf.configurator.prod.process"
@@ -413,7 +415,7 @@
   </action-view>
 
   <menuitem name="manufacturing-conf-configurators-prod-process-line"
-    parent="manufacturing-conf-configurators" order="50" title="Configurator Phase"
+    parent="manufacturing-conf-configurators" order="600" title="Configurator Phase"
     action="manufacturing.conf.configurator.prod.process.line"/>
 
   <action-view name="manufacturing.conf.configurator.prod.process.line"
@@ -423,7 +425,7 @@
   </action-view>
 
   <menuitem name="manufacturing-conf-configurators-prod-product"
-    parent="manufacturing-conf-configurators" order="60" title="Configurator prod product"
+    parent="manufacturing-conf-configurators" order="700" title="Configurator prod product"
     action="manufacturing.conf.configurator.prod.product"/>
 
   <action-view name="manufacturing.conf.configurator.prod.product"
@@ -433,7 +435,7 @@
   </action-view>
 
   <menuitem title="Product approvals" name="manufacturing-conf-product-approvals"
-    parent="manufacturing-conf" action="manufacturing.conf.product.approvals"/>
+    parent="manufacturing-conf" action="manufacturing.conf.product.approvals" order="800"/>
 
   <action-view name="manufacturing.conf.product.approvals" title="Product approvals"
     model="com.axelor.apps.production.db.ProductApproval">
@@ -442,7 +444,7 @@
   </action-view>
 
   <menuitem name="manufacturing-conf-cancelreason" parent="manufacturing-conf"
-    title="Cancel Reasons" action="manufacturing.conf.cancelreason"/>
+    title="Cancel Reasons" action="manufacturing.conf.cancelreason" order="900"/>
 
   <action-view name="manufacturing.conf.cancelreason" title="Cancel Reason"
     model="com.axelor.apps.base.db.CancelReason">
@@ -454,7 +456,7 @@
   </action-view>
 
   <menuitem name="manufacturing-conf-machine-planning" parent="manufacturing-conf"
-    title="Machine Planning" action="manufacturing.conf.machine.planning"/>
+    title="Machine Planning" action="manufacturing.conf.machine.planning" order="1000"/>
 
   <action-view name="manufacturing.conf.machine.planning" title="Machine Planning"
     model="com.axelor.apps.base.db.WeeklyPlanning">
@@ -466,7 +468,8 @@
   </action-view>
 
   <menuitem title="Workshop" name="manufacturing-conf-workshop" parent="manufacturing-conf"
-    action="manufacturing.conf.workshop" if="__config__.app.getApp('production')?.manageWorkshop"/>
+    action="manufacturing.conf.workshop" if="__config__.app.getApp('production')?.manageWorkshop"
+    order="1100"/>
 
   <action-view name="manufacturing.conf.workshop" title="Workshop"
     model="com.axelor.apps.stock.db.StockLocation">
@@ -479,7 +482,8 @@
 
   <menuitem title="MPS Weekly schedules" name="manufacturing-conf-mps-weekly-schedule"
     parent="manufacturing-conf" action="manufacturing.conf.mps.weekly.schedule"
-    if-module="axelor-production" if="__config__.app.getApp('production')?.manageMpsCharge"/>
+    if-module="axelor-production" if="__config__.app.getApp('production')?.manageMpsCharge"
+    order="1200"/>
 
   <action-view name="manufacturing.conf.mps.weekly.schedule"
     title="MPS Weekly schedules" model="com.axelor.apps.production.db.MpsWeeklySchedule">
@@ -491,7 +495,7 @@
 
   <menuitem name="admin-root-batch-production" parent="admin-root-batch"
     if="__config__.app.isApp('production')" if-module="axelor-production" title="Production batches"
-    action="admin.root.batch.production"/>
+    action="admin.root.batch.production" order="1400"/>
 
   <action-view name="admin.root.batch.production" title="Production batches"
     model="com.axelor.apps.production.db.ProductionBatch">
@@ -541,7 +545,7 @@
 
   <menuitem name="manufacturing-conf-work-center-group-model" parent="manufacturing-conf"
     title="Models of work center group" action="manufacturing.conf.work.center.group.model"
-    if="__config__.app.getApp('production')?.getManageWorkCenterGroup()"/>
+    if="__config__.app.getApp('production')?.getManageWorkCenterGroup()" order="1300"/>
 
   <action-view name="manufacturing.conf.work.center.group.model"
     title="Models of work center group" model="com.axelor.apps.production.db.WorkCenterGroup">

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="purchase-order-supplier-line-grid" title="suppliers requests" canNew="false"
     model="com.axelor.apps.suppliermanagement.db.PurchaseOrderSupplierLine">
@@ -48,7 +48,7 @@
       <field name="purchaseOrderLine.product"/>
       <field name="purchaseOrderLine.qty" title="Ordered quantity"/>
       <field name="purchaseOrderLine.price"/>
-      <field name="purchaseOrderLine.desiredDelivDate"/>
+      <field name="purchaseOrderLine.desiredReceiptDate"/>
     </panel>
     <panel name="commentsPanel">
       <field name="comments" colSpan="12"/>
@@ -63,41 +63,6 @@
         onClick="save,action-purchase-order-supplier-line-record-cancel,save"/>
       <button name="requestBtn" title="Request" showIf="stateSelect == 5"
         onClick="save,action-purchase-order-supplier-line-record-request,save"/>
-    </panel>
-  </form>
-
-  <grid name="purchase-order-supplier-line-supplier-grid" title="Suppliers requests"
-    model="com.axelor.apps.suppliermanagement.db.PurchaseOrderSupplierLine">
-    <field name="purchaseOrderLine.product" form-view="product-form" grid-view="product-grid"/>
-    <field name="purchaseOrderLine.qty" x-scale="2"/>
-    <field name="purchaseOrderLine.desiredDelivDate"/>
-    <field name="availableQty" aggregate="sum" x-scale="2"/>
-    <field name="purchaseOrderLine.unit" form-view="unit-form" grid-view="unit-grid"/>
-    <field name="price"/>
-    <field name="estimatedDelivDate"/>
-    <field name="comments"/>
-    <field name="stateSelect"/>
-  </grid>
-
-  <form name="purchase-order-supplier-line-supplier-form" title="Supplier request"
-    model="com.axelor.apps.suppliermanagement.db.PurchaseOrderSupplierLine" width="large">
-    <panel name="mainPanel">
-      <field name="stateSelect" showTitle="false" readonly="true" colSpan="12"
-        widget="NavSelect"/>
-      <field name="purchaseOrderLine.purchaseOrder.purchaseOrderSeq"/>
-      <field name="purchaseOrderLine.product" form-view="product-form"
-        grid-view="product-grid" domain="self.dtype = 'Product'"/>
-      <field name="purchaseOrderLine.qty"/>
-      <field name="purchaseOrderLine.unit" form-view="unit-form" grid-view="unit-grid"/>
-      <field name="availableQty" readonlyIf="stateSelect != 1"/>
-      <field name="purchaseOrderLine.desiredDelivDate"/>
-      <field name="price" readonlyIf="stateSelect != 1"/>
-      <field name="estimatedDelivDate" readonlyIf="stateSelect != 1"/>
-      <button name="submit" title="Submit" showIf="stateSelect == 1"
-        onClick="save,action-purchase-order-supplier-line-record-submit,save"/>
-    </panel>
-    <panel name="commentsPanel">
-      <field name="comments" colSpan="12"/>
     </panel>
   </form>
 

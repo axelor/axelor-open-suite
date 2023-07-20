@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,20 +14,22 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.base.web;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Bank;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.repo.AppBaseRepository;
+import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.BankRepository;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.SequenceRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.report.IReport;
 import com.axelor.apps.base.service.BankDetailsService;
@@ -34,23 +37,22 @@ import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.user.UserService;
-import com.axelor.apps.message.db.Message;
-import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.message.db.Message;
+import com.axelor.message.db.repo.MessageRepository;
 import com.axelor.meta.CallMethod;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.axelor.studio.db.repo.AppBaseRepository;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Iterables;
@@ -58,6 +60,8 @@ import com.google.common.collect.Lists;
 import com.google.inject.Singleton;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
+import java.sql.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -183,9 +187,14 @@ public class PartnerController {
   public void printClientSituation(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
-    Partner partner = request.getContext().asType(Partner.class);
+    Context context = request.getContext();
+    Partner partner = context.asType(Partner.class);
 
     User user = AuthUtils.getUser();
+
+    LinkedHashMap<String, Object> companyMap =
+        (LinkedHashMap<String, Object>) context.get("company");
+    Object companyId = companyMap != null ? companyMap.get("id") : null;
 
     String name = I18n.get("Customer Situation");
     String fileLink =
@@ -199,6 +208,25 @@ public class PartnerController {
                 partner.getPicture() != null
                     ? MetaFiles.getPath(partner.getPicture()).toString()
                     : "")
+            .addParam("CompanyId", companyId)
+            .addParam(
+                "TradingNameId",
+                context.get("tradingName") != null
+                    ? ((TradingName) context.get("tradingName")).getId()
+                    : null)
+            .addParam(
+                "FromDate",
+                context.get("fromDate") != null
+                    ? Date.valueOf(context.get("fromDate").toString())
+                    : null)
+            .addParam(
+                "ToDate",
+                context.get("toDate") != null
+                    ? Date.valueOf(context.get("toDate").toString())
+                    : null)
+            .addParam("InvoiceStatus", context.get("invoiceStatus"))
+            .addParam("SaleOrderStatus", context.get("saleOrderStatus"))
+            .addParam("StockMoveStatus", context.get("stockMoveStatus"))
             .generate()
             .getFileLink();
 
@@ -207,7 +235,7 @@ public class PartnerController {
     response.setView(ActionView.define(name).add("html", fileLink).map());
   }
 
-  private String getTimezone(User user) {
+  protected String getTimezone(User user) {
     if (user == null || user.getActiveCompany() == null) {
       return null;
     }

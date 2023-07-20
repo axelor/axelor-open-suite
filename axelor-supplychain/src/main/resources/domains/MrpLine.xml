@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="supplychain" package="com.axelor.apps.supplychain.db"/>
 
-  <entity name="MrpLine" lang="java">
+  <entity name="MrpLine">
 
     <many-to-one name="mrp" ref="com.axelor.apps.supplychain.db.Mrp" title="Mrp"/>
     <many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation"
@@ -22,7 +22,7 @@
     <decimal name="reOrderQty" title="Refill Qty" precision="20" scale="10"/>
     <string name="relatedToSelectName" title="Related to"/>
     <one-to-one ref="com.axelor.apps.supplychain.db.MrpLine"
-      name="estimatedDeliveryMrpLine" title="Associated estimated delivery mrp line"/>
+      name="estimatedDeliveryMrpLine" title="Associated estimated delivery mrp line" unique="true"/>
     <date name="deliveryDelayDate" title="Date to match delivery delay" readonly="true"/>
     <date name="estimatedDeliveryDate" title="Estimated delivery date" readonly="true"/>
 
