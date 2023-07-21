@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.budget.service;
 
 import com.axelor.apps.account.db.Account;
@@ -757,16 +775,18 @@ public class BudgetServiceImpl implements BudgetService {
 
   @Override
   public void checkBudgetParentDates(Budget budget) throws AxelorException {
-    if (budget != null && budget.getBudgetLevel() != null) {
-      BudgetLevel section = budget.getBudgetLevel();
+    if (budget == null || budget.getBudgetLevel() == null) {
+      return;
+    }
+    BudgetLevel section = budget.getBudgetLevel();
 
-      if ((budget.getFromDate().isBefore(section.getFromDate()))
-          || (budget.getToDate().isAfter(section.getToDate()))) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            String.format(
-                I18n.get(BudgetExceptionMessage.WRONG_DATES_ON_BUDGET), budget.getCode()));
-      }
+    if (budget.getFromDate() == null
+        || budget.getToDate() == null
+        || (budget.getFromDate().isBefore(section.getFromDate()))
+        || (budget.getToDate().isAfter(section.getToDate()))) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          String.format(I18n.get(BudgetExceptionMessage.WRONG_DATES_ON_BUDGET), budget.getCode()));
     }
   }
 

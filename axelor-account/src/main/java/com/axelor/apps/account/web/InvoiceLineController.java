@@ -636,7 +636,10 @@ public class InvoiceLineController {
           for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
             if (invoiceLine != null && invoiceLine.getAccount() != null) {
               accountService.checkAnalyticAxis(
-                  invoiceLine.getAccount(), invoiceLine.getAnalyticDistributionTemplate());
+                  invoiceLine.getAccount(),
+                  invoiceLine.getAnalyticDistributionTemplate(),
+                  false,
+                  invoiceLine.getAccount().getAnalyticDistributionRequiredOnInvoiceLines());
             }
           }
         }
@@ -644,7 +647,10 @@ public class InvoiceLineController {
         InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
         if (invoiceLine != null && invoiceLine.getAccount() != null) {
           accountService.checkAnalyticAxis(
-              invoiceLine.getAccount(), invoiceLine.getAnalyticDistributionTemplate());
+              invoiceLine.getAccount(),
+              invoiceLine.getAnalyticDistributionTemplate(),
+              false,
+              invoiceLine.getAccount().getAnalyticDistributionRequiredOnInvoiceLines());
         }
       }
     } catch (Exception e) {

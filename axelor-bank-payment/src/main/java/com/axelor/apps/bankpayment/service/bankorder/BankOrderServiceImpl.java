@@ -19,6 +19,7 @@
 package com.axelor.apps.bankpayment.service.bankorder;
 
 import com.axelor.apps.account.db.InvoicePayment;
+import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentSession;
@@ -85,6 +86,7 @@ import java.util.List;
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class BankOrderServiceImpl implements BankOrderService {
 
@@ -378,15 +380,26 @@ public class BankOrderServiceImpl implements BankOrderService {
           paymentSessionRepo.all().filter("self.bankOrder = ?", bankOrder).fetchOne();
 
       if (paymentSession != null) {
-        Beans.get(PaymentSessionValidateService.class)
-            .processPaymentSession(paymentSession, new ArrayList());
+        PaymentSessionValidateService paymentSessionValidateService =
+            Beans.get(PaymentSessionValidateService.class);
+        List<Pair<InvoiceTerm, Pair<InvoiceTerm, BigDecimal>>> invoiceTermLinkWithRefund =
+            new ArrayList<>();
+        paymentSessionValidateService.reconciledInvoiceTermMoves(
+            paymentSession, invoiceTermLinkWithRefund);
+
+        paymentSessionValidateService.processPaymentSession(
+            paymentSession, invoiceTermLinkWithRefund);
         bankOrder = bankOrderRepo.find(bankOrder.getId());
       }
+    } else if (bankOrder
+        .getFunctionalOriginSelect()
+        .equals(BankOrderRepository.FUNCTIONAL_ORIGIN_INVOICE_PAYMENT)) {
+      this.validatePayment(bankOrder);
+    } else {
+      bankOrderMoveService.generateMoves(bankOrder);
     }
 
-    bankOrderMoveService.generateMoves(bankOrder);
     bankOrder.setAreMovesGenerated(true);
-    validatePayment(bankOrder);
 
     return bankOrderRepo.find(bankOrder.getId());
   }

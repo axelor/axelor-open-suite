@@ -22,7 +22,7 @@
 
   <selection name="budget.budget.source.select">
     <option value="auto">Auto</option>
-    <option value="custom">Custom</option>
+    <option value="custom">budget.custom</option>
   </selection>
 
   <selection name="budget.budget.level.type.select">

@@ -4,8 +4,11 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <kanban columnBy="leadStatus" model="com.axelor.apps.crm.db.Lead" sequenceBy="sequence"
-    title="Leads" name="lead-kanban" draggable="true" limit="10">
+    title="Leads" name="lead-kanban" draggable="true" limit="10"
+    onMove="action-lead-method-kanban-onmove">
     <field name="simpleFullName"/>
+    <field name="name"/>
+    <field name="firstName"/>
     <field name="leadStatus"/>
     <field name="enterpriseName"/>
     <field name="nextScheduledEventDateT"/>
@@ -148,7 +151,7 @@
           <editor x-show-titles="false">
             <field name="enterpriseName" css="label-bold bold large" colSpan="12"
               showIf="partner == null" placeholder="Enterprise name"
-              onChange="action-lead-method-set-social-network-url"/>
+              onChange="action-lead-method-set-social-network-url" required="true"/>
             <field name="industrySector" colSpan="6" form-view="industry-sector-form"
               grid-view="industry-sector-grid" canEdit="false" canNew="true"/>
             <field name="partner" colSpan="12" domain="self.isContact = false"
@@ -369,8 +372,8 @@
 
   <action-group name="action-lead-group-lead-convert">
     <action name="save"/>
-    <action name="action-lead-method-view-lead-with-same-domain-name"/>
     <action name="action-lead-view-convert-lead"/>
+    <action name="action-lead-method-view-lead-with-same-domain-name"/>
   </action-group>
 
   <action-group name="action-group-crm-lead-onnew">
@@ -418,6 +421,10 @@
 
   <action-method name="action-lead-method-assign-to-me-multiple">
     <call class="com.axelor.apps.crm.web.LeadController" method="assignToMeMultipleLead"/>
+  </action-method>
+
+  <action-method name="action-lead-method-kanban-onmove">
+    <call class="com.axelor.apps.crm.web.LeadController" method="kanbanLeadOnMove"/>
   </action-method>
 
   <action-record name="action-lead-default-record-new"

@@ -416,11 +416,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     for (ContractLine line : additionalLines) {
       InvoiceLine invLine = generate(invoice, line);
       invLine.setContractLine(line);
-      if (!CollectionUtils.isEmpty(invLine.getAnalyticMoveLineList())) {
-        for (AnalyticMoveLine analyticMoveLine : invLine.getAnalyticMoveLineList()) {
-          analyticMoveLine.setContractLine(line);
-        }
-      }
+
       contractLineRepo.save(line);
     }
 
@@ -469,11 +465,6 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
         tmp = this.contractLineService.computeTotal(tmp);
         InvoiceLine invLine = generate(invoice, tmp);
         invLine.setContractLine(line);
-        if (!CollectionUtils.isEmpty(invLine.getAnalyticMoveLineList())) {
-          for (AnalyticMoveLine analyticMoveLine : invLine.getAnalyticMoveLineList()) {
-            analyticMoveLine.setContractLine(line);
-          }
-        }
       }
     }
 

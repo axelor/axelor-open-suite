@@ -19,12 +19,10 @@
 package com.axelor.apps.businessproduction.service;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.CostSheetLine;
 import com.axelor.apps.production.db.OperationOrder;
-import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.CostSheetRepository;
 import com.axelor.apps.production.service.app.AppProductionService;
@@ -56,20 +54,6 @@ public class CostSheetServiceBusinessImpl extends CostSheetServiceImpl {
         costSheetLineService,
         appBaseService,
         billOfMaterialRepo);
-  }
-
-  @Override
-  protected void _computeHumanResourceCost(
-      WorkCenter workCenter,
-      BigDecimal producedQty,
-      Unit pieceUnit,
-      int priority,
-      int bomLevel,
-      CostSheetLine parentCostSheetLine)
-      throws AxelorException {
-
-    super._computeHumanResourceCost(
-        workCenter, producedQty, pieceUnit, priority, bomLevel, parentCostSheetLine);
   }
 
   @Override

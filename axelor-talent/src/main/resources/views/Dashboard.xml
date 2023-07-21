@@ -11,10 +11,5 @@
     <dashlet action="chart:chart.nb.training.hours.per.month" height="350"/>
   </dashboard>
 
-  <action-view name="hr.employee.training" title="Training"
-    model="com.axelor.apps.talent.db.TrainingRegister">
-    <view type="custom" name="my-trainings-custom-view"/>
-  </action-view>
-
 </object-views>
 
