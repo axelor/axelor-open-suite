@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <form name="project-form" title="Project" model="com.axelor.apps.project.db.Project"
+    extension="true" id="budget-project-form">
+
+    <extend target="//panel[@name='datePanel']">
+      <insert position="after">
+        <panel name="budgetPanel" title="budget" colSpan="12" sidebar="true"
+          if="__config__.app.isApp('budget')" canCollapse="true"
+          hideIf="budget &amp;&amp; budget.statusSelect != 'valid'">
+          <field name="budget" canSelect="true" canNew="false"
+            canEdit="budget.statusSelect == 'valid'" form-view="global-budget-budget-level-form"
+            grid-view="budget-level-grid" colSpan="12" showTitle="false"
+            domain="self.typeSelect = 'budget' and self.parentBudgetLevel = null and self.project = :id and self.statusSelect = 'valid'">
+            <viewer depends="name,versionNumber">
+                     <![CDATA[
+	                     <div>
+	                     <span ng-show="record.name &amp;&amp; record.versionNumber"><B>{{record.name}}-{{record.versionNumber}}</B></span>
+	                     <span ng-show="record.name &amp;&amp; !record.versionNumber"><B>{{record.name}}</B></span>
+	                     </div>
+                     ]]>
+            </viewer>
+            <editor>
+              <field name="name" readonly="true"/>
+              <field name="versionNumber" readonly="true"/>
+            </editor>
+          </field>
+          <field name="budget.startDate" title="Start Date" readonly="true" showIf="budget"/>
+          <field name="budget.totalAmountExpected" readonly="true" showIf="budget"
+            title="Initial" colSpan="6"/>
+          <field name="budget.totalAmountAvailable" readonly="true" showIf="budget"
+            title="Total amount available" colSpan="6"/>
+        </panel>
+      </insert>
+    </extend>
+
+    <extend target="//panel[@name='purchasesPanel']">
+      <insert position="before">
+        <panel name="budgetPanelTab" title="budget" if="__config__.app.isApp('budget')"
+          showIf="budget &amp;&amp; budget.statusSelect == 'valid'">
+          <field name="budget" colSpan="12" showTitle="false" canEdit="true" canSelect="false">
+            <editor x-viewer="true" readonly="true">
+              <panel name="overViewPanel" colSpan="12" readonly="true">
+                <panel name="mainPanel" colSpan="12">
+                  <field name="statusSelect" showTitle="false" colSpan="12" widget="NavSelect"
+                    readonly="true"/>
+                </panel>
+                <panel name="generalPanel" colSpan="12">
+                  <field name="code" colSpan="1"/>
+                  <field name="name" colSpan="2"/>
+                  <field name="company" colSpan="3"/>
+                  <field name="companyDepartment" colSpan="2"/>
+                  <spacer colSpan="4"/>
+                  <field name="typeSelect" colSpan="1" hidden="true"/>
+                  <field name="budgetManager" colSpan="2"/>
+                </panel>
+                <panel name="projectPanel" colSpan="12">
+                  <field name="projectStartDate" colSpan="2"/>
+                  <field name="projectEndDate" colSpan="2"/>
+                </panel>
+                <panel name="datesPanel" colSpan="6">
+                  <field name="versionNumber" colSpan="4"/>
+                  <field name="startDate" colSpan="4"/>
+                  <field name="endDate" colSpan="4"/>
+                </panel>
+                <spacer/>
+                <field name="commentString" widget="html"/>
+                <panel name="totalAmountPanel" colSpan="12" title="Total amounts">
+                  <field name="totalAmountExpected" colSpan="3"/>
+                  <field name="totalAmountCommitted" colSpan="3"/>
+                  <field name="totalAmountRealized" colSpan="2"/>
+                  <field name="totalAmountAvailable" colSpan="2"/>
+                  <field name="totalAmountPaid" colSpan="2"/>
+                </panel>
+              </panel>
+            </editor>
+          </field>
+          <field name="budget.statusSelect" hidden="true"/>
+          <panel name="budgetLevelCommittedLineBtnPanel" colSpan="12"
+            if="__config__.app.isApp('budget')">
+            <button name="openBudgetBtn" title="Open budget"
+              onClick="action-budget-project-view-budget-level"/>
+            <button name="budgetLevelCommittedLineBtn"
+              onClick="action-budget-project-view-budget-level-committed-line"
+              title="Committed lines"/>
+          </panel>
+        </panel>
+      </insert>
+
+    </extend>
+  </form>
+
+  <action-view name="action-budget-project-view-budget-level-committed-line"
+    model="com.axelor.apps.budget.db.BudgetDistribution" title="Committed lines">
+    <view name="budget-budget-distribution-purchase-order-line-global-dashlet-grid" type="grid"/>
+    <view name="budget-budget-distribution-purchase-order-line-dashlet-form" type="form"/>
+    <domain>self.purchaseOrderLine.purchaseOrder.budgetLevel.id = :_globalId</domain>
+    <context name="_globalId" expr="eval: budget.id"/>
+  </action-view>
+
+  <action-view name="action-budget-project-view-budget-level"
+    model="com.axelor.apps.budget.db.BudgetLevel" title="Global budget">
+    <view type="form" name="global-budget-budget-level-form"/>
+    <view type="grid" name="budget-level-grid"/>
+    <domain>self.typeSelect = :_typeSelect and self.parentBudgetLevel = null</domain>
+    <context name="_typeSelect"
+      expr="eval: com.axelor.apps.budget.db.repo.BudgetLevelRepository.BUDGET_LEVEL_TYPE_SELECT_BUDGET"/>
+    <context name="_isParent" expr="eval: true"/>
+    <context name="_showRecord" expr="eval: budget.id"/>
+  </action-view>
+
+</object-views>

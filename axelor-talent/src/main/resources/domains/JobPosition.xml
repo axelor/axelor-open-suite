@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="talent" package="com.axelor.apps.talent.db"/>
 
-  <entity name="JobPosition" lang="java" cacheable="true">
+  <entity name="JobPosition" cacheable="true">
     <string name="jobTitle" title="Job title" required="true" namecolumn="true"/>
     <string name="jobReference" title="Job reference" readonly="true"/>
     <many-to-one name="companyDepartment"
       ref="com.axelor.apps.base.db.CompanyDepartment" title="Department"/>
     <many-to-one name="employee" ref="com.axelor.apps.hr.db.Employee"
-      title="Responsible"/>
+      title="Hiring manager"/>
     <many-to-one name="contractType" ref="com.axelor.apps.hr.db.EmploymentContractType"
       title="Contract type"/>
     <integer name="experienceSelect" title="Experience"
@@ -19,7 +19,7 @@
     <string name="salary" title="Salary"/>
     <string name="location" title="Location"/>
     <string name="jobDescription" title="Job description" large="true"/>
-    <many-to-one name="mailAccount" ref="com.axelor.apps.message.db.EmailAccount"
+    <many-to-one name="mailAccount" ref="com.axelor.message.db.EmailAccount"
       title="Job email"/>
     <integer name="statusSelect" title="Status" selection="job.position.status.select"/>
     <integer name="nbOpenJob" title="Nb of open jobs"/>

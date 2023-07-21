@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <form name="mail-account-form" id="base-mail-account-form" title="Mail account"
-    model="com.axelor.apps.message.db.EmailAccount" onNew="action-mail-account-default-record"
+    model="com.axelor.message.db.EmailAccount" onNew="action-mail-account-default-record"
     onSave="action-mail-account-method-check-default-mail-account,action-method-mail-account-validate-password">
     <panel name="informationsPanel" title="Information">
       <field name="name"/>
@@ -48,10 +48,13 @@
         title="Fetch emails"
         showIf="isValid &amp;&amp; serverTypeSelect != null &amp;&amp; serverTypeSelect &gt; 1"/>
     </panel>
+    <panel-mail name="mailPanel">
+      <mail-messages limit="4"/>
+    </panel-mail>
   </form>
 
   <action-record name="action-mail-account-default-record"
-    model="com.axelor.apps.message.db.EmailAccount">
+    model="com.axelor.message.db.EmailAccount">
     <field name="user" expr="eval:__user__"
       if="__config__.app.getApp('base')?.getEmailAccountByUser()"/>
     <field name="company" expr="eval: __parent__"

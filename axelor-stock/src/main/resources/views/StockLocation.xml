@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="stock-location-grid" title="Stock Locations"
     model="com.axelor.apps.stock.db.StockLocation">
     <toolbar>
       <button name="printBtn" title="Print" icon="fa-print"
         onClick="action-stock-location-method-open-print-wizard"/>
+      <button name="treeBtn" title="Stock location tree"
+        onClick="action-stock-location-view-tree"/>
     </toolbar>
     <field name="name"/>
     <field name="parentStockLocation" form-view="stock-location-form"
@@ -126,7 +128,7 @@
 
   </form>
 
-  <form model="com.axelor.apps.base.db.Wizard" title="Select format to Export"
+  <form model="com.axelor.utils.db.Wizard" title="Select format to Export"
     name="stock-location-print-wizard-form"
     onNew="action-stock-location-print-wizard-attrs-set-print-type-and-type-select">
     <panel name="mainPanel">
@@ -238,6 +240,11 @@
   <action-attrs name="action-stock-location-attrs-set-default-serial-number-with-name">
     <attribute name="value" for="serialNumber" expr="eval: name" if="eval: id == null"/>
   </action-attrs>
+
+  <action-view name="action-stock-location-view-tree" title="Stock Location Tree"
+    model="com.axelor.apps.stock.db.StockLocation">
+    <view type="tree" name="stock-location-tree"/>
+  </action-view>
 
   <search-filters name="stock-location-filters"
     model="com.axelor.apps.stock.db.StockLocation" title="Stock location filters">

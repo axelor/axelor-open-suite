@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid title="Config lines" name="accounting-report-config-line-grid"
     model="com.axelor.apps.account.db.AccountingReportConfigLine" canMove="true" orderBy="sequence">
@@ -73,7 +73,9 @@
       </panel>
       <panel name="infoPanel" colSpan="12" showIf="[1,2,4].includes(typeSelect)">
         <field name="label" requiredIf="[1,2,4].includes(typeSelect)"/>
-        <field name="code" requiredIf="[1,2,4].includes(typeSelect)"/>
+        <field name="code" requiredIf="[1,2,4].includes(typeSelect)"
+          pattern="^[A-Za-z_]{1}[A-Za-z0-9_]+"
+          help="The code must be a valid groovy variable name. It can only contain letters, numbers, and underscores (_), but cannot start with a number."/>
       </panel>
       <panel name="specificConfigPanel" stacked="true" showIf="!$legacy" colSpan="12">
         <panel name="specificConfigLinePanel" showIf="reportType != null" colSpan="12">
@@ -105,10 +107,11 @@
         </field>
         <panel name="resultPanel" stacked="true" showIf="ruleTypeSelect == 2" colSpan="6">
           <field name="resultSelect" showIf="reportTypeColumn != null"
-            requiredIf="ruleTypeSelect == 2" selection-in="[1,2,4,5]"/>
+            requiredIf="ruleTypeSelect == 2" selection-in="[1,2,4,5,6]"/>
           <field name="resultSelect" showIf="reportType != null"
-            requiredIf="ruleTypeSelect == 2" selection-in="[1,2,3,5]"/>
+            requiredIf="ruleTypeSelect == 2" selection-in="[1,2,3,5,6]"/>
         </panel>
+        <field name="negateValue" colSpan="6" showIf="[1,2,6].includes(resultSelect)"/>
         <field name="accountCode"/>
         <field name="analyticAccountCode" showIf="ruleTypeSelect == 2"/>
         <panel-related name="accountingReportConfigLineAccountTypeSetPanel"
@@ -121,7 +124,8 @@
         <panel-related name="accountingReportConfigLineAnalyticAccountSetPanel"
           field="analyticAccountSet" canNew="false" canEdit="false"
           form-view="analytic-account-form" grid-view="analytic-account-grid"
-          showIf="ruleTypeSelect == 2"/>
+          showIf="ruleTypeSelect == 2"
+          onSelect="action-accounting-report-config-line-attrs-analytic-account-set-domain"/>
       </panel>
       <panel name="rulePanel" title="Rule" showIf="ruleTypeSelect == 3" itemSpan="12">
         <field name="$helpRule" title="Rule" readonly="true">
@@ -144,21 +148,24 @@
         <field name="styleSelect"
           onChange="action-accounting-report-config-line-record-reset-style-priority"/>
         <field name="stylePriority" showIf="styleSelect > 0"/>
-        <panel name="configPanel" colSpan="12"
+        <panel name="configPanel" colSpan="12" itemSpan="4"
           showIf="typeSelect != 4 &amp;&amp; [2,3,4].includes(ruleTypeSelect)">
           <field name="hidden"/>
           <field name="notComputedIfIntersect" hideIf="$legacy"/>
+          <field name="balanceBeforePeriod" showIf="ruleTypeSelect == 2 &amp;&amp; !$legacy"/>
           <panel name="columnConfigPanel" colSpan="12"
             showIf="reportTypeColumn != null &amp;&amp; ruleTypeSelect == 2 &amp;&amp; !$legacy">
             <field name="computePreviousYear" hideIf="computeOtherPeriod"/>
             <field name="computeOtherPeriod" hideIf="computePreviousYear"/>
           </panel>
-          <field name="groupsWithoutColumn"
+          <field name="groupsWithoutColumn" colSpan="6"
             showIf="reportTypeColumn != null &amp;&amp; typeSelect != 5 &amp;&amp; !$legacy"/>
         </panel>
         <panel name="groupConfigPanel" showIf="typeSelect == 4" colSpan="12">
           <field name="hidden"/>
           <field name="computeOtherPeriod"
+            showIf="reportTypeColumn != null &amp;&amp; ruleTypeSelect == 2"/>
+          <field name="balanceBeforePeriod"
             showIf="reportTypeColumn != null &amp;&amp; ruleTypeSelect == 2"/>
         </panel>
       </panel>
@@ -221,6 +228,12 @@
   <action-attrs name="action-accounting-report-config-line-attrs-set-active-tab">
     <attribute name="active" for="accountPanel" expr="eval: true" if="ruleTypeSelect == 2"/>
     <attribute name="active" for="rulePanel" expr="eval: true" if="ruleTypeSelect == 3"/>
+  </action-attrs>
+
+  <action-attrs
+    name="action-accounting-report-config-line-attrs-analytic-account-set-domain">
+    <attribute name="domain" for="analyticAccountSet"
+      expr="eval: &quot; self.company.id = ${__parent__?.company?.id} &quot;"/>
   </action-attrs>
 
   <action-view name="action-move-line-view-open-report-config-line" title="Config lines"

@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,14 +14,15 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.hr.web.extra.hours;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.PeriodService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.ExtraHours;
@@ -28,20 +30,19 @@ import com.axelor.apps.hr.db.repo.ExtraHoursRepository;
 import com.axelor.apps.hr.service.HRMenuTagService;
 import com.axelor.apps.hr.service.HRMenuValidateService;
 import com.axelor.apps.hr.service.extra.hours.ExtraHoursService;
-import com.axelor.apps.message.db.Message;
-import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.Query;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.message.db.Message;
+import com.axelor.message.db.repo.MessageRepository;
 import com.axelor.meta.CallMethod;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.utils.db.Wizard;
 import com.google.inject.Singleton;
 import java.util.List;
 import java.util.Map;
@@ -194,7 +195,7 @@ public class ExtraHoursController {
   }
 
   // confirming request and sending mail to manager
-  public void confirm(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void confirm(ActionRequest request, ActionResponse response) {
 
     try {
       ExtraHours extraHours = request.getContext().asType(ExtraHours.class);
@@ -203,7 +204,7 @@ public class ExtraHoursController {
 
       Message message = Beans.get(ExtraHoursService.class).sendConfirmationEmail(extraHours);
       if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
-        response.setFlash(
+        response.setInfo(
             String.format(
                 I18n.get("Email sent to %s"),
                 Beans.get(MessageServiceBaseImpl.class).getToRecipients(message)));
@@ -223,7 +224,7 @@ public class ExtraHoursController {
    * @param response
    * @throws AxelorException
    */
-  public void valid(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void valid(ActionRequest request, ActionResponse response) {
 
     try {
       ExtraHours extraHours = request.getContext().asType(ExtraHours.class);
@@ -232,7 +233,7 @@ public class ExtraHoursController {
 
       Message message = Beans.get(ExtraHoursService.class).sendValidationEmail(extraHours);
       if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
-        response.setFlash(
+        response.setInfo(
             String.format(
                 I18n.get("Email sent to %s"),
                 Beans.get(MessageServiceBaseImpl.class).getToRecipients(message)));
@@ -248,7 +249,7 @@ public class ExtraHoursController {
   }
 
   // refusing request and sending mail to applicant
-  public void refuse(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void refuse(ActionRequest request, ActionResponse response) {
 
     try {
       ExtraHours extraHours = request.getContext().asType(ExtraHours.class);
@@ -257,7 +258,7 @@ public class ExtraHoursController {
 
       Message message = Beans.get(ExtraHoursService.class).sendRefusalEmail(extraHours);
       if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
-        response.setFlash(
+        response.setInfo(
             String.format(
                 I18n.get("Email sent to %s"),
                 Beans.get(MessageServiceBaseImpl.class).getToRecipients(message)));
@@ -271,7 +272,7 @@ public class ExtraHoursController {
   }
 
   // canceling request and sending mail to applicant
-  public void cancel(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void cancel(ActionRequest request, ActionResponse response) {
     try {
       ExtraHours extraHours = request.getContext().asType(ExtraHours.class);
       extraHours = Beans.get(ExtraHoursRepository.class).find(extraHours.getId());
@@ -279,7 +280,7 @@ public class ExtraHoursController {
 
       Message message = Beans.get(ExtraHoursService.class).sendCancellationEmail(extraHours);
       if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
-        response.setFlash(
+        response.setInfo(
             String.format(
                 I18n.get("Email sent to %s"),
                 Beans.get(MessageServiceBaseImpl.class).getToRecipients(message)));

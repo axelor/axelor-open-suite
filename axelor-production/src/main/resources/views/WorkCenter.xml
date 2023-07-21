@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="work-center-grid" title="Work centers"
     model="com.axelor.apps.production.db.WorkCenter">
@@ -48,10 +48,21 @@
         <panel name="capacitySettingsPanel" title="Capacity settings" colSpan="12">
           <field name="minCapacityPerCycle" colSpan="3"/>
           <field name="maxCapacityPerCycle" colSpan="3"/>
-          <field name="durationPerCycle" colSpan="3" widget="duration" x-big="true"
-            x-seconds="true"/>
-          <field name="timingOfImplementation" colSpan="3" widget="duration" x-big="true"
-            x-seconds="true"/>
+          <panel name="durationPanel" showTitle="false" colSpan="12">
+            <field name="durationPerCycle" colSpan="3" widget="duration" x-big="true"
+              x-seconds="true"/>
+            <field name="startingDuration" widget="duration"
+              help="The time the machine starts before it can be used." colSpan="3" x-big="true"
+              x-seconds="true"/>
+            <field name="setupDuration" widget="duration"
+              help="Time between two cycles. This is the time to wait until the end of a cycle to start a new cycle."
+              colSpan="2" x-big="true" x-seconds="true"/>
+            <field name="endingDuration" widget="duration"
+              help="Ending duration of the machine." colSpan="2" x-big="true" x-seconds="true"/>
+            <field name="timeBeforeNextOperation" widget="duration"
+              help="Time between two operations. This is the time to wait until the end of a operation to start a new one within the work center."
+              colSpan="2" x-big="true" x-seconds="true"/>
+          </panel>
         </panel>
         <panel name="costingSettingsPanel" title="Costing settings" colSpan="12">
           <field name="product"
@@ -65,9 +76,18 @@
           <field name="isRevaluationAtActualPrices"/>
         </panel>
       </panel>
-      <panel-related name="prodHumanResourceListPanel" field="prodHumanResourceList"
-        title="Human resources" showIf="workCenterTypeSelect == 1 || workCenterTypeSelect == 3"
-        form-view="prod-human-resource-form" grid-view="prod-human-resource-grid"/>
+      <panel name="defaultHRSettingsPanel" title="Human Resources"
+        showIf="workCenterTypeSelect == 1 || workCenterTypeSelect == 3">
+        <field name="hrDurationPerCycle" colSpan="3" widget="duration" x-big="true"
+          x-seconds="true"/>
+        <panel name="hrCostSettings" title="HR Cost Settings" colSpan="12">
+          <field name="hrProduct"
+            domain="self.productTypeSelect = 'service' AND self.dtype = 'Product'" canEdit="false"
+            form-view="product-form" grid-view="product-grid"/>
+          <field name="hrCostTypeSelect" colSpan="3" selection-in="[1,3]"/>
+          <field name="hrCostAmount" colSpan="3"/>
+        </panel>
+      </panel>
     </panel-tabs>
 
     <panel-mail name="mailPanel">
@@ -95,10 +115,21 @@
       <panel name="capacitySettingsPanel" title="Capacity settings" colSpan="12">
         <field name="minCapacityPerCycle" colSpan="3"/>
         <field name="maxCapacityPerCycle" colSpan="3"/>
-        <field name="durationPerCycle" colSpan="3" widget="duration" x-big="true"
-          x-seconds="true"/>
-        <field name="timingOfImplementation" colSpan="3" widget="duration" x-big="true"
-          x-seconds="true"/>
+        <panel name="durationPanel" showTitle="false" colSpan="12">
+          <field name="durationPerCycle" colSpan="3" widget="duration" x-big="true"
+            x-seconds="true"/>
+          <field name="startingDuration" widget="duration"
+            help="The time the machine starts before it can be used." colSpan="3" x-big="true"
+            x-seconds="true"/>
+          <field name="setupDuration" widget="duration"
+            help="Time between two cycles. This is the time to wait until the end of a cycle to start a new cycle."
+            colSpan="2" x-big="true" x-seconds="true"/>
+          <field name="endingDuration" widget="duration"
+            help="Ending duration of the machine." colSpan="2" x-big="true" x-seconds="true"/>
+          <field name="timeBeforeNextOperation" widget="duration"
+            help="Time between two operations. This is the time to wait until the end of a operation to start a new one within the work center."
+            colSpan="2" x-big="true" x-seconds="true"/>
+        </panel>
       </panel>
       <panel name="costingSettingsPanel" title="Costing settings" colSpan="12">
         <field name="product"
@@ -136,7 +167,10 @@
   <action-record name="action-work-center-record-type-select-onchange"
     model="com.axelor.apps.production.db.WorkCenter">
     <field name="machine" expr="eval: null" if="workCenterTypeSelect == 1"/>
-    <field name="prodHumanResourceList" expr="eval: null" if="workCenterTypeSelect == 2"/>
+    <field name="hrProduct,hrSkillSet" expr="eval: null" if="workCenterTypeSelect == 2"/>
+    <field name="hrCostTypeSelect,hrDurationPerCycle" expr="eval: 0"
+      if="workCenterTypeSelect == 2"/>
+    <field name="hrCostAmount" expr="eval: 0.00" if="workCenterTypeSelect == 2"/>
   </action-record>
 
   <search-filters name="work-center-filters"

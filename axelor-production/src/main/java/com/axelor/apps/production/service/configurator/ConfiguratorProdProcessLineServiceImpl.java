@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,11 +14,12 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.production.service.configurator;
 
-import com.axelor.apps.base.db.AppProduction;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.production.db.ConfiguratorProdProcessLine;
 import com.axelor.apps.production.db.ConfiguratorProdProduct;
 import com.axelor.apps.production.db.ProdProcessLine;
@@ -31,11 +33,10 @@ import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.JsonContext;
+import com.axelor.studio.db.AppProduction;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -80,6 +81,7 @@ public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdP
     BigDecimal minCapacityPerCycle;
     BigDecimal maxCapacityPerCycle;
     long durationPerCycle;
+    long humanDuration;
     long timingOfImplementation;
 
     if (confProdProcessLine.getDefNameAsFormula()) {
@@ -207,6 +209,15 @@ public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdP
     } else {
       durationPerCycle = confProdProcessLine.getDurationPerCycle();
     }
+    if (confProdProcessLine.getDefHrDurationFormula()) {
+      humanDuration =
+          Long.decode(
+              configuratorService
+                  .computeFormula(confProdProcessLine.getHumanDurationFormula(), attributes)
+                  .toString());
+    } else {
+      humanDuration = confProdProcessLine.getHumanDuration();
+    }
     if (confProdProcessLine.getDefTimingOfImplementationFormula()) {
       timingOfImplementation =
           Long.decode(
@@ -238,7 +249,6 @@ public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdP
     prodProcessLine.setMinCapacityPerCycle(minCapacityPerCycle);
     prodProcessLine.setMaxCapacityPerCycle(maxCapacityPerCycle);
     prodProcessLine.setDurationPerCycle(durationPerCycle);
-    prodProcessLine.setTimingOfImplementation(timingOfImplementation);
 
     if (isConsProOnOperation) {
       List<ConfiguratorProdProduct> confProdProductLines =
@@ -296,13 +306,12 @@ public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdP
     WorkCenter workCenter =
         workCenterService.getMainWorkCenterFromGroup(confProdProcessLine.getWorkCenterGroup());
     confProdProcessLine.setWorkCenter(workCenter);
-    confProdProcessLine.setDurationPerCycle(
-        workCenterService.getDurationFromWorkCenter(workCenter));
+    confProdProcessLine.setDurationPerCycle(workCenter.getDurationPerCycle());
+    confProdProcessLine.setHumanDuration(workCenter.getHrDurationPerCycle());
     confProdProcessLine.setMinCapacityPerCycle(
         workCenterService.getMinCapacityPerCycleFromWorkCenter(workCenter));
     confProdProcessLine.setMaxCapacityPerCycle(
         workCenterService.getMaxCapacityPerCycleFromWorkCenter(workCenter));
-    confProdProcessLine.setTimingOfImplementation(workCenter.getTimingOfImplementation());
   }
 
   /**

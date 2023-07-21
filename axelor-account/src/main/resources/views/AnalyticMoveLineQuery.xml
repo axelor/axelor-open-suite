@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="analytic-move-line-query-grid" title="Analytic review"
     model="com.axelor.apps.account.db.AnalyticMoveLineQuery" x-selector="checkbox">
@@ -40,8 +40,8 @@
               onSelect="action-analytic-move-line-query-method-search-query-axis-domain"
               onChange="action-analytic-move-line-search-query-attrs-axis-onchange"/>
             <field name="analyticAccountSet" grid-view="analytic-account-grid"
-              form-view="analytic-account-info-form"
-              onSelect="action-attrs-domain-account-distribution-line" widget="TagSelect"/>
+              form-view="analytic-account-info-form" canNew="false" canEdit="false"
+              onSelect="action-method-domain-account-distribution-line" widget="TagSelect"/>
           </editor>
         </field>
       </panel>
@@ -58,7 +58,7 @@
               onChange="action-analytic-move-line-reverse-query-attrs-axis-onchange"/>
             <field name="analyticAccount" grid-view="analytic-account-grid"
               form-view="analytic-account-info-form"
-              onSelect="action-attrs-domain-account-distribution-line"/>
+              onSelect="action-method-domain-account-distribution-line"/>
           </editor>
         </field>
       </panel>

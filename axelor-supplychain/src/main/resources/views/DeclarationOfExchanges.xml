@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid model="com.axelor.apps.supplychain.db.DeclarationOfExchanges"
     title="Declarations of exchanges" name="declaration-of-exchanges-grid" orderBy="createdOn"
@@ -110,27 +110,28 @@
       AND self.stockMove.company = :company
       AND
       (COALESCE(self.stockMove.fromAddress.addressL7Country,
-      self.stockMove.fromStockLocation.address.addressL7Country) = :country
+      self.fromStockLocation.address.addressL7Country) = :country
       OR
       COALESCE(self.stockMove.toAddress.addressL7Country,
-      self.stockMove.toStockLocation.address.addressL7Country) = :country)
+      self.toStockLocation.address.addressL7Country) = :country)
       AND
       COALESCE(self.stockMove.fromAddress.addressL7Country,
-      self.stockMove.fromStockLocation.address.addressL7Country)
+      self.fromStockLocation.address.addressL7Country)
       !=
       COALESCE(self.stockMove.toAddress.addressL7Country,
-      self.stockMove.toStockLocation.address.addressL7Country)
+      self.toStockLocation.address.addressL7Country)
       AND
       COALESCE(self.stockMove.fromAddress.addressL7Country.economicArea,
-      self.stockMove.fromStockLocation.address.addressL7Country.economicArea)
+      self.fromStockLocation.address.addressL7Country.economicArea)
       =
       COALESCE(self.stockMove.toAddress.addressL7Country.economicArea,
-      self.stockMove.toStockLocation.address.addressL7Country.economicArea)
+      self.toStockLocation.address.addressL7Country.economicArea)
       AND
       self.product.usedInDEB = true
       AND ((self.saleOrderLine IS NULL AND self.purchaseOrderLine IS
       NULL)
-      OR (self.saleOrderLine IS NOT NULL AND (self.saleOrderLine.saleOrder.taxNumber IS NULL OR
+      OR (self.saleOrderLine IS
+      NOT NULL AND (self.saleOrderLine.saleOrder.taxNumber IS NULL OR
       self.saleOrderLine.saleOrder.taxNumber.includeInDEB = true))
       OR (self.purchaseOrderLine IS NOT
       NULL AND (self.purchaseOrderLine.purchaseOrder.taxNumber IS NULL

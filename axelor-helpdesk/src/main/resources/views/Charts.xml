@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <chart name="chart.ticket.no.of.solved.my.ticket" title="My tickets"
     onInit="action.ticket.chart.set.date.1m">
@@ -523,7 +523,7 @@
     title="Percentage of repartition tickets per state">
     <dataset type="jpql">
         <![CDATA[
-	        SELECT COUNT(self.id) * 100. / (SELECT COUNT(self2.id) FROM Ticket self2 WHERE self2.ticketType = :id) AS _percentage,
+	        SELECT COUNT(self.id) * 100. / (SELECT COUNT(self2.id) FROM Ticket self2 WHERE self2.ticketType.id = :id) AS _percentage,
 	            CASE self.statusSelect WHEN 0 THEN 'New' WHEN 1 THEN 'In progress' WHEN 2 THEN 'Resolved' ELSE 'Closed' END AS _status
 	        FROM Ticket self
 	        WHERE self.ticketType = :id

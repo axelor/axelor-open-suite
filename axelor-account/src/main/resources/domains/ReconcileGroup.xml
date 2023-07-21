@@ -1,25 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="ReconcileGroup" lang="java">
+  <entity name="ReconcileGroup">
 
     <string name="code" title="Reference" readonly="true" namecolumn="true"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"
       required="true" initParam="true"/>
     <integer name="statusSelect" title="Status" default="1" readonly="true"
       selection="account.reconcile.group.status.select"/>
-    <date name="dateOfLettering" title="Date of lettering"/>
-    <date name="unletteringDate" title="Date of unlettering"/>
+    <datetime name="letteringDateTime" title="Date of lettering"/>
+    <datetime name="unletteringDateTime" title="Date of unlettering"/>
+    <boolean name="isProposal"/>
 
     <extra-code><![CDATA[
       // STATUS SELECT
-      public static final int STATUS_TEMPORARY = 1;
-      public static final int STATUS_FINAL = 2;
+      public static final int STATUS_PARTIAL = 1;
+      public static final int STATUS_BALANCED = 2;
       public static final int STATUS_UNLETTERED = 3;
+      public static final int STATUS_PROPOSAL = 4;
 	]]></extra-code>
   </entity>
 

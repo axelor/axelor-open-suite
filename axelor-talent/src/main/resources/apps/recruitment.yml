@@ -1,0 +1,13 @@
+---
+name: Recruitment
+code: recruitment
+typeSelect: standard
+installOrder: 2230
+description: |
+    Recruitment
+image: app-recruitment.png
+modules: 
+    axelor-talent
+dependsOn: 
+    - employee
+sequence: 22

@@ -1,0 +1,1003 @@
+"importId";"code";"parent_code";"name";"accountType.technicalTypeSelect";"reconcileOk";"company.importId";"compatibleAccounts";"useForPartnerBalance";"isTaxAuthorizedOnMoveLine";"isTaxRequiredOnMoveLine";"commonPosition";"serviceType.code";"defaultTax.code";"statusSelect";"manageCutOffPeriod";"isRegulatoryAccount";"isRetrievedOnPaymentSession";"vatSystemSelect"
+1;0;;"Racine PCG";"view";;1;;;;;0;"NDAS";;1;"false";"true";"false";0
+2;"CL1_5";0;"Comptes de bilan";"view";;1;;;;;0;"NDAS";;1;"false";"true";"false";0
+3;"CL6_7";0;"Comptes de gestion";"view";;1;;;;;0;"NDAS";;1;"false";"true";"false";0
+4;"CL1";"CL1_5";"Comptes de capitaux";"view";;1;;;;;0;"NDAS";;1;"false";"true";"false";0
+5;"CL2";"CL1_5";"Comptes d'immobilisations";"view";;1;;;;;0;"NDAS";;1;"false";"true";"false";0
+6;"CL3";"CL1_5";"Comptes de stocks et d'en-cours";"view";;1;;;;;0;"NDAS";;1;"false";"true";"false";0
+7;"CL4";"CL1_5";"Comptes de tiers";"view";;1;;;;;0;"NDAS";;1;"false";"true";"false";0
+8;"CL5";"CL1_5";"Comptes financiers";"view";;1;;;;;0;"NDAS";;1;"false";"true";"false";0
+9;"CL6";"CL6_7";"Comptes de charges";"view";;1;;;;;0;"NDAS";;1;"false";"true";"false";0
+10;"CL7";"CL6_7";"Comptes de produits";"view";;1;;;;;0;"NDAS";;1;"false";"true";"false";0
+11;"CL8";0;"Comptes spéciaux";"view";;1;;;;;0;"NDAS";;1;"false";"true";"false";0
+12;100;"CL1";"Capital et réserves";"view";;1;;;;;0;"NDAS";;1;"false";"true";"false";0
+13;101000;100;"Capital";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+14;101100;101000;"Capital souscrit - non appelé";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+15;101200;101000;"Capital souscrit - appelé non versé";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+16;101300;101000;"Capital souscrit - appelé versé";"equity";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+17;101310;101300;"Capital non amorti";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+18;101320;101300;"Capital amorti";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+19;101800;101000;"Capital souscrit soumis à des réglementations particulières";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+20;104000;100;"Primes liées au capital social";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+21;104100;104000;"Primes d'émission";"equity";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+22;104200;104000;"Primes de fusion";"equity";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+23;104300;104000;"Primes d'apport";"equity";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+24;104400;104000;"Primes de conversion d'obligations en actions";"equity";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+25;104500;104000;"Bons de souscription d'actions";"equity";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+26;105000;100;"Écarts de réévaluation";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+27;105100;105000;"Réserve spéciale de réévaluation";"equity";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+28;105200;105000;"Écart de réévaluation libre";"equity";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+29;105300;105000;"Réserve de réévaluation";"equity";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+30;105500;105000;"Écarts de réévaluation (autres opérations légales)";"equity";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+31;105700;105000;"Autres écarts de réévaluation en France";"equity";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+32;105800;105000;"Autres écarts de réévaluation à l'étranger";"equity";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+33;106000;100;"Réserves";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+34;106100;106000;"Réserve légale";"equity";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+35;106110;106100;"Réserve légale proprement dite";"equity";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+36;106120;106100;"Plus-values nettes à long terme";"equity";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+37;106200;106000;"Réserves indisponibles";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+38;106300;106000;"Réserves statutaires ou contractuelles";"equity";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+39;106400;106000;"Réserves réglementées";"equity";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+40;106410;106400;"Plus-values nettes à long terme";"equity";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+41;106430;106400;"Réserves consécutives à l'octroi de subventions d'investissement";"equity";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+42;106480;106400;"Autres réserves réglementées";"equity";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+43;106800;106000;"Autres réserves";"equity";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+44;106810;106800;"Réserve de propre assureur";"equity";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+45;106880;106800;"Réserves diverses";"equity";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+46;107000;100;"Écarts d'équivalence";"equity";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+47;108000;100;"Compte de l'exploitant";"equity";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+48;109000;100;"Actionnaires: capital souscrit - non appelé";"asset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+49;110;"CL1";"Report à nouveau (solde créditeur ou débiteur)";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+50;110000;110;"Report à nouveau (solde créditeur)";"equity";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+51;119000;110;"Report à nouveau (solde débiteur)";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+52;120;"CL1";"Résultat de l'exercice (bénéfice ou perte)";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+53;120000;120;"Résultat de l'exercice (bénéfice)";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+54;129000;120;"Résultat de l'exercice (perte)";"equity";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+55;130;"CL1";"Subventions d'investissement";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+56;131000;130;"Subventions d'équipement";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+57;131100;131000;"État";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+58;131200;131000;"Régions";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+59;131300;131000;"Départements";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+60;131400;131000;"Communes";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+61;131500;131000;"Collectivités publiques";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+62;131600;131000;"Entreprises publiques";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+63;131700;131000;"Entreprises et organismes privés";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+64;131800;131000;"Autres";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+65;138000;130;"Autres subventions d'investissement (même ventilation que celle du compte 131)";"equity";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+66;139000;130;"Subventions d'investissement inscrites au compte de résultat";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+67;139100;139000;"Subventions d'équipement";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+68;139110;139100;"Etat";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+69;139120;139100;"Régions";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+70;139130;139100;"Départements";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+71;139140;139100;"Communes";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+72;139150;139100;"Collectivités publiques";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+73;139160;139100;"Entreprises publiques";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+74;139170;139100;"Entreprises et organismes privés ";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+75;139180;139100;"Autres";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+76;139800;139000;"Autres subventions d'investissement (même ventilation que celle du compte 1391)";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+77;140;"CL1";"Provisions réglementées";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+78;142000;140;"Provisions réglementées relatives aux immobilisations";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+79;142300;142000;"Provisions reconstitution des gisements miniers et pétroliers";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+80;142400;142000;"Provisions pour investissement (participation des salariés)";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+81;143000;140;"Provisions réglementées relatives aux stocks";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+82;143100;143000;"Hausse des prix";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+83;143200;143000;"Fluctuation des cours";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+84;144000;140;"Provisions réglementées relatives aux autres éléments de l'actif";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+85;145000;140;"Amortissements dérogatoires";"equity";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+86;146000;140;"Provision spéciale de réévaluation";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+87;147000;140;"Plus-values réinvesties";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+88;148000;140;"Autres provisions réglementées";"equity";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+89;150;"CL1";"Provisions";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+90;151000;150;"Provisions pour risques";"provision";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+91;151100;151000;"Provisions pour litiges";"provision";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+92;151200;151000;"Provisions pour garanties données aux clients";"provision";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+93;151300;151000;"Provisions pour pertes sur marchés à terme";"provision";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+94;151400;151000;"Provisions pour amendes et pénalités";"provision";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+95;151500;151000;"Provisions pour pertes de change";"provision";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+96;151600;151000;"Provisions pour pertes sur contrats";"provision";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+97;151800;151000;"Autres provisions pour risques";"provision";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+98;153000;150;"Provisions pour pensions et obligations similaires";"provision";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+99;154000;150;"Provisions pour restructurations";"provision";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+100;155000;150;"Provisions pour impôts";"provision";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+101;156000;150;"Provisions pour renouvellement des immobilisations (entreprises concessionnaires)";"provision";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+102;157000;150;"Provisions pour charges à répartir sur plusieurs exercices";"provision";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+103;157200;157000;"Provisions pour gros entretien ou grandes révisions ";"provision";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+104;158000;150;"Autres provisions pour charges";"provision";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+105;158100;158000;"Provisions pour remises en état";"provision";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+106;160;"CL1";"Emprunts et dettes assimilées";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+107;161000;160;"Emprunts obligataires convertibles";"debt";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+108;163000;160;"Autres emprunts obligataires ";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+109;164000;160;"Emprunts auprès des établissements de crédit";"debt";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+110;165000;160;"Dépôts et cautionnements reçus";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+111;165100;165000;"Dépôts";"debt";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+112;165500;165000;"Cautionnements";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+113;166000;160;"Participation des salariés aux résultats";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+114;166100;166000;"Comptes bloqués";"debt";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+115;166200;166000;"Fonds de participation";"debt";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+116;167000;160;"Emprunts et dettes assortis de conditions particulières";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+117;167100;167000;"Emissions de titres participatifs";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+118;167400;167000;"Avances conditionnées de l'État";"debt";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+119;167500;167000;"Emprunts participatifs";"debt";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+120;168000;160;"Autres emprunts et dettes assimilées";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+121;168100;168000;"Autres emprunts";"debt";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+122;168500;168000;"Rentes viagères capitalisées";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+123;168700;168000;"Autres dettes";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+124;168800;168000;"Intérêts courus";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+125;168810;168800;"Sur emprunts obligataires convertibles ";"debt";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+126;168830;168800;"Sur autres emprunts obligataires";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+127;168840;168800;"Sur emprunts auprès des établissements de crédit";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+128;168850;168800;"Sur dépôts et cautionnements reçus";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+129;168860;168800;"Sur participation des salariés aux résultats";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+130;168870;168800;"Sur emprunts et dettes assortis de conditions particulières";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+131;168880;168800;"Sur autres emprunts et dettes assimilées";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+132;169000;160;"Primes de remboursement des obligations";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+133;170;"CL1";"Dettes rattachées à des participations";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+134;171000;170;"Dettes rattachées à des participations (groupe)";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+135;174000;170;"Dettes rattachées à des participations (hors groupe)";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+136;178000;170;"Dettes rattachées à des sociétés en participation";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+137;178100;178000;"Principal";"debt";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+138;178800;178000;"Intérêts courus";"debt";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+139;180;"CL1";"Comptes de liaison des établissements et sociétés en participation";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+140;181000;180;"Comptes de liaison des établissements";"debt";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+141;186000;180;"Biens et prestations de services échangés entre établissements (charges)";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+142;187000;180;"Biens et prestations de services échangés entre établissements (produits)";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+143;188000;180;"Comptes de liaison des sociétés en participation";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+144;200;"CL2";"Immobilisations incorporelles";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+145;201000;200;"Frais d'établissement";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";2
+146;201100;201000;"Frais de constitution";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";2
+147;201200;201000;"Frais de premier établissement";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";2
+148;201210;201200;"Frais de prospection";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";2
+149;201220;201200;"Frais de publicité";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";2
+150;201300;201000;"Frais d'augmentation de capital et d'opérations diverses (fusions, scissions, transformations)";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";2
+151;203000;200;"Frais de recherche et de développement";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";2
+152;205000;200;"Concessions et droits similaires, brevets, licences, marques, procédés, logiciels, droits et valeurs similaires";"immobilisation";;1;;;;;2;"DAUT";;1;"false";"false";"false";2
+153;206000;200;"Droit au bail";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";2
+154;207000;200;"Fonds commercial";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";2
+155;208000;200;"Autres immobilisations incorporelles";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+156;210;"CL2";"Immobilisations corporelles";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+157;211000;210;"Terrains";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+158;211100;211000;"Terrains nus";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+159;211200;211000;"Terrains aménagés";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+160;211300;211000;"Sous-sols et sur-sols";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+161;211400;211000;"Terrains de gisement";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+162;211410;211400;"Carrières";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+163;211500;211000;"Terrains bâtis";"immobilisation";;1;;;;;0;"NDAS";;1;"false";"false";"false";1
+164;211510;211500;"Ensembles immobiliers industriels (A, B, ...)";"immobilisation";;1;;;;;0;"NDAS";;1;"false";"false";"false";1
+165;211550;211500;"Ensembles immobiliers administratifs et commerciaux (A, B, ...)";"immobilisation";;1;;;;;0;"NDAS";;1;"false";"false";"false";1
+166;211580;211500;"Autres ensembles immobiliers";"immobilisation";;1;;;;;0;"NDAS";;1;"false";"false";"false";1
+167;211581;211580;"Affectés aux opérations professionnelles (A, B, ...)";"immobilisation";;1;;;;;0;"NDAS";;1;"false";"false";"false";1
+168;211588;211580;"Affectés aux opérations non professionnelles (A, B, ...)";"immobilisation";;1;;;;;0;"NDAS";;1;"false";"false";"false";1
+169;211600;211000;"Compte d'ordre sur immobilisations";"immobilisation";;1;;;;;0;"NDAS";;1;"false";"false";"false";1
+170;212000;210;"Agencements et aménagements de terrains (même ventilation que celle du compte 211)";"immobilisation";;1;;;;;0;"NDAS";;1;"false";"false";"false";1
+171;213000;210;"Constructions";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+172;213100;213000;"Bâtiments";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+173;213110;213100;"Ensembles immobiliers industriels (A, B, ...)";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+174;213150;213100;"Ensembles immobiliers administratifs et commerciaux (A, B, ...)";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+175;213180;213100;"Autres ensembles immobiliers";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+176;213181;213180;"Affectés aux opérations professionnelles (A, B, ...)";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+177;213188;213180;"Affectés aux opérations non professionnelles (A, B, ...)";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+178;213500;213000;"Installations générales agencements aménagements des constructions (même ventilation que celle du compte 2131)";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+179;213800;213000;"Ouvrages d'infrastructure";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+180;213810;213800;"Voies de terre";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+181;213820;213800;"Voies de fer";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+182;213830;213800;"Voies d'eau";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+183;213840;213800;"Barrages";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+184;213850;213800;"Pistes d'aérodromes";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+185;214000;210;"Constructions sur sol d'autrui (même ventilation que celle du compte 213)";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+186;215000;210;"Installations techniques matériels et outillages industriels";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+187;215100;215000;"Installations complexes spécialisées";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+188;215110;215100;"Sur sol propre";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+189;215140;215100;"Sur sol d'autrui";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+190;215300;215000;"Installations à caractère spécifique";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+191;215310;215300;"Sur sol propre";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+192;215340;215300;"Sur sol d'autrui";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+193;215400;215000;"Matériel industriel";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+194;215500;215000;"Outillage industriel";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+195;215700;215000;"Agencements et aménagements du matériel et outillage industriels";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+196;218000;210;"Autres immobilisations corporelles";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+197;218100;218000;"Installations générales agencements aménagements divers";"immobilisation";;1;;;;;2;"HONO";;1;"false";"false";"false";1
+198;218200;218000;"Matériel de transport";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+199;218300;218000;"Matériel de bureau et matériel informatique ";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+200;218400;218000;"Mobilier";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+201;218500;218000;"Cheptel";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+202;218600;218000;"Emballages récupérables";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+203;220;"CL2";"Immobilisations mises en concession";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+204;230;"CL2";"Immobilisations en cours";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+205;231000;230;"Immobilisations corporelles en cours";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+206;231200;231000;"Terrains";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+207;231300;231000;"Constructions";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+208;231500;231000;"Installations techniques matériel et outillage industriels";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+209;231800;231000;"Autres immobilisations corporelles";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+210;232000;230;"Immobilisations incorporelles en cours ";"immobilisation";;1;;;;;2;"HONO";;1;"false";"false";"false";1
+211;237000;230;"Avances et acomptes versés sur commandes d'immobilisations incorporelles";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+212;238000;230;"Avances et acomptes versés sur commandes d'immobilisations corporelles";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+213;238200;238000;"Terrains";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+214;238300;238000;"Constructions";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+215;238500;238000;"Installations techniques matériel et outillage industriels";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+216;238800;238000;"Autres immobilisations corporelles";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";1
+217;250;"CL2";"Parts dans des entreprises liées et créances dans des entreprises liées";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+218;260;"CL2";"Participations et créances rattachées à des participations";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+219;261000;260;"Titres de participation";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+220;261100;261000;"Actions";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+221;261800;261000;"Autres titres";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+222;262000;260;"Titres évalués par équivalence";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+223;266000;260;"Autres formes de participation";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+224;267000;260;"Créances rattachées à des participations";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+225;267100;267000;"Créances rattachées à des participations (groupe)";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+226;267400;267000;"Créances rattachées à des participations (hors groupe)";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+227;267500;267000;"Versements représentatifs d'apports non capitalisés (appel de fonds)";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+228;267600;267000;"Avances consolidables";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+229;267700;267000;"Autres créances rattachées à des participations ";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+230;267800;267000;"Intérêts courus";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+231;268000;260;"Créances rattachées à des sociétés en participation";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+232;268100;268000;"Principal";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+233;268800;268000;"Intérêts courus";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+234;269000;260;"Versements restant à effectuer sur titres de participation non libérés";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+235;270;"CL2";"Autres immobilisations financières";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+236;271000;270;"Titres immobilisés autres que les titres immobilisés de l'activité de portefeuille (droit de propriété)";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+237;271100;271000;"Actions";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+238;271800;271000;"Autres titres";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+239;272000;270;"Titres immobilisés (droit de créance)";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+240;272100;272000;"Obligations";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+241;272200;272000;"Bons";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+242;273000;270;"Titres immobilisés de l'activité de portefeuille (TIAP)";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+243;274000;270;"Prêts";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+244;274100;274000;"Prêts participatifs";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+245;274200;274000;"Prêts aux associés";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+246;274300;274000;"Prêts au personnel";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+247;274800;274000;"Autres prêts";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+248;275000;270;"Dépôts et cautionnements versés";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+249;275100;275000;"Dépôts";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+250;275500;275000;"Cautionnements";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+251;276000;270;"Autres créances immobilisées";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+252;276100;276000;"Créances diverses";"immobilisation";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+253;276800;276000;"Intérêts courus";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+254;276820;276800;"Sur titres immobilisés (droits de créance)";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+255;276840;276800;"Sur prêts";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+256;276850;276800;"Sur dépôts et cautionnements";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+257;276880;276800;"Sur créances diverses";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+258;277000;270;"Actions propres ou parts propres";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+259;277100;277000;"Actions propres ou parts propres";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+260;277200;277000;"Actions propres ou parts propres en voie d'annulation";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+261;279000;270;"Versements restant à effectuer sur titres immobilisés non libérés";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+262;280;"CL2";"Amortissement des immobilisations";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+263;280000;280;"Amortissements des immobilisations incorporelles";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+264;280100;280000;"Frais d'établissement (même ventilation que celle du compte 201) ";"immobilisation";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+265;280300;280000;"Frais de recherche et de développement ";"immobilisation";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+266;280500;280000;"Concessions et droits similaires, brevets, licences, logiciels, droits et valeurs similaires";"immobilisation";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+267;280700;280000;"Fonds commercial";"immobilisation";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+268;280800;280000;"Autres immobilisations incorporelles";"immobilisation";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+269;281000;280;"Amortissements des immobilisations corporelles";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+270;281100;281000;"Terrains de gisement";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+271;281200;281000;"Agencements aménagements de terrains (même ventilation que celle du compte 212)";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+272;281300;281000;"Constructions (même ventilation que celle du compte 213)";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+273;281400;281000;"Constructions sur sol d'autrui (même ventilation que celle du compte 214)";"immobilisation";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+274;281500;281000;"Installations matériel et outillage industriels (même ventilation que celle du compte 215)";"immobilisation";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+275;281800;281000;"Autres immobilisations corporelles (même ventilation que celle du compte 218)";"immobilisation";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+276;282000;280;"Amortissements des immobilisations mises en concession";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+277;290;"CL2";"Dépréciation des immobilisations";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+278;290000;290;"Dépréciations des immobilisations incorporelles";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+279;290500;290000;"Marques, procédés, droits et valeurs similaires";"immobilisation";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+280;290600;290000;"Droit au bail";"immobilisation";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+281;290700;290000;"Fonds commercial";"immobilisation";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+282;290800;290000;"Autres immobilisations incorporelles";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+283;291000;290;"Dépréciations des immobilisations corporelles (même ventilation que celle du compte 21)";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+284;291100;291000;"Terrains (autres que terrains de gisement)";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+285;292000;290;"Dépréciations des immobilisations mises en concession";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+286;293000;290;"Dépréciations des immobilisations en cours";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+287;293100;293000;"Immobilisations corporelles en cours";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+288;293200;293000;"Immobilisations incorporelles en cours";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+289;296000;290;"Provisions pour dépréciation des participations et créances rattachées à des participations";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+290;296100;296000;"Titres de participation";"immobilisation";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+291;296600;296000;"Autres formes de participation";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+292;296700;296000;"Créances rattachées à des participations (même ventilation que celle du compte 267)";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+293;296800;296000;"Créances rattachées à des sociétés en participation (même ventilation que celle du compte 268)";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+294;297000;290;"Dépréciations des autres immobilisations financières";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+295;297100;297000;"Titres immobilisés autres que les titres immobilisés de l'activité de portefeuille - droit de propriété (ventilation : 271)";"immobilisation";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+296;297200;297000;"Titres immobilisés - droit de créance (même ventilation que celle du compte 272) ";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+297;297300;297000;"Titres immobilisés de l'activité de portefeuille";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+298;297400;297000;"Prêts (même ventilation que celle du compte 274)";"immobilisation";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+299;297500;297000;"Dépôts et cautionnements versés (même ventilation que celle du compte 275)";"immobilisation";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+300;297600;297000;"Autres créances immobilisées (même ventilation que celle du compte 276)";"immobilisation";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+301;310;"CL3";"Matières premières (et fourniture)";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+302;311000;310;"Matière (ou groupe) A";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+303;312000;310;"Matière (ou groupe) B";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+304;317000;310;"Fournitures A, B, C, ..";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+305;320;"CL3";"Autres approvisionnements";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+306;321000;320;"Matières consommables";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+307;321100;321000;"Matière (ou groupe) C";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+308;321200;321000;"Matière (ou groupe) D";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+309;322000;320;"Fournitures consommables";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+310;322100;322000;"Combustibles";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+311;322200;322000;"Produits d'entretien";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+312;322300;322000;"Fournitures d'atelier et d usine";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+313;322400;322000;"Fournitures de magasin";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+314;322500;322000;"Fournitures de bureau";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+315;326000;320;"Emballages";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+316;326100;326000;"Emballages perdus";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+317;326500;326000;"Emballages récupérables non identifiables";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+318;326700;326000;"Emballages à usage mixte";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+319;330;"CL3";"En-cours de production de biens";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+320;331000;330;"Produits en cours";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+321;331100;331000;"Produit en cours P 1";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+322;331200;331000;"Produit en cours P 2";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+323;335000;330;"Travaux en cours";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+324;335100;335000;"Travaux en cours T 1";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+325;335200;335000;"Travaux en cours T 2";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+326;340;"CL3";"En-cours de production de services";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+327;341000;340;"Études en cours";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+328;341100;341000;"Études en cours E 1";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+329;341200;341000;"Études en cours E 2";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+330;345000;340;"Prestations de services en cours";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+331;345100;345000;"Prestations de services S 1";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+332;345200;345000;"Prestations de services S 2";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+333;350;"CL3";"Stocks de produits";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+334;351000;350;"Produits intermédiaires";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+335;351100;351000;"Produits intermédiaires (ou groupe) A ";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+336;351200;351000;"Produits intermédiaires (ou groupe) B";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+337;355000;350;"Produits finis";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+338;355100;355000;"Produits finis (ou groupe) A";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+339;355200;355000;"Produits finis (ou groupe) B";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+340;358000;350;"Produits résiduels (ou matières de récupération)";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+341;358100;358000;"Déchets";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+342;358500;358000;"Rebuts";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+343;358600;358000;"Matières de récupération";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+344;360;"CL3";"Stocks provenant d'immobilisations";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+345;370;"CL3";"Stocks de marchandises";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+346;371000;370;"Marchandises (ou groupe) A";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+347;372000;370;"Marchandises (ou groupe) B";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+348;380;"CL3";"Stocks en voie d'acheminement";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+349;390;"CL3";"Provisions pour dépréciation des stocks et en-cours";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+350;391000;390;"Provisions pour dépréciation des matières premières (et fournitures)";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+351;391100;391000;"Matières (ou groupe) A";"currentAsset";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+352;391200;391000;"Matières (ou groupe) B";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+353;391700;391000;"Fournitures A, B, C, ..";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+354;392000;390;"Provisions pour dépréciation des autres approvisionnements";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+355;392100;392000;"Matières consommables (même ventilation que celle du compte 321)";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+356;392200;392000;"Fournitures consommables (même ventilation que celle du compte 322)";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+357;392600;392000;"Emballages (même ventilation que celle du compte 326)";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+358;393000;390;"Provisions pour dépréciation des en-cours de production de biens";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+359;393100;393000;"Produits en cours (même ventilation que celle du compte 331)";"currentAsset";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+360;393500;393000;"Travaux en cours (même ventilation que celle du compte 335)";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+361;394000;390;"Provisions pour dépréciation des en-cours de production de services";"currentAsset";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+362;394100;394000;"Études en cours (même ventilation que celle du compte 341)";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+363;394500;394000;"Prestations de services en cours (même ventilation que celle du compte 345)";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+364;395000;390;"Provisions pour dépréciation des stocks de produits";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+365;395100;395000;"Produits intermédiaires (même ventilation que celle du compte 351)";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+366;395500;395000;"Produits finis (même ventilation que celle du compte 355)";"currentAsset";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+367;397000;390;"Provisions pour dépréciation des stocks de marchandises";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+368;397100;397000;"Marchandises (ou groupe) A";"currentAsset";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+369;397200;397000;"Marchandises (ou groupe) B";"currentAsset";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+370;400;"CL4";"Fournisseurs et comptes rattachés";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+371;400000;400;"Fournisseurs et comptes rattachés ";"payable";"true";1;;;;;2;"NDAS";;1;"false";"false";"false";0
+372;401;400;"Fournisseurs";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+373;401100;401;"Fournisseurs - Achats de biens et prestations de services";"payable";"true";1;"411100|411700|416000";"true";;;1;"DAS2";;1;"false";"false";"true";0
+374;401700;401;"Fournisseurs - Retenues de garantie";"payable";"true";1;"411100|411700|416000";"true";;;2;"NDAS";;1;"false";"false";"true";0
+375;403000;400;"Fournisseurs - Effets à payer";"payable";"true";1;;;;;2;"NDAS";;1;"false";"false";"false";0
+376;404000;400;"Fournisseurs d'immobilisations";"payable";"true";1;;;;;2;"NDAS";;1;"false";"false";"false";0
+377;404100;404000;"Fournisseurs - Achats d'immobilisations";"payable";"true";1;;;;;1;"DAS2";;1;"false";"false";"false";0
+378;404700;404000;"Fournisseurs d'immobilisations - Retenues de garantie";"payable";"true";1;;;;;2;"NDAS";;1;"false";"false";"false";0
+379;405000;400;"Fournisseurs d'immobilisations - Effets à payer";"payable";"true";1;;;;;2;"NDAS";;1;"false";"false";"false";0
+380;408000;400;"Fournisseurs - Factures non parvenues";"payable";"true";1;;;;;2;"NDAS";;1;"false";"false";"false";0
+381;408100;408000;"Fournisseurs";"payable";"true";1;;;;;2;"NDAS";;1;"false";"false";"false";0
+382;408400;408000;"Fournisseurs d'immobilisations ";"payable";"true";1;;;;;2;"NDAS";;1;"false";"false";"false";0
+383;408800;408000;"Fournisseurs - Intérêts courus";"payable";"true";1;;;;;2;"NDAS";;1;"false";"false";"false";0
+384;409;400;"Fournisseurs débiteurs";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+385;409100;409;"Fournisseurs - Avances et acomptes versés sur commandes";"payable";"true";1;;"true";;;2;"NDAS";;1;"false";"false";"false";0
+386;409600;409;"Fournisseurs - Créances pour emballages et matériel à rendre";"currentAsset";"true";1;;;;;2;"NDAS";;1;"false";"false";"false";0
+387;409700;409;"Fournisseurs - Autres avoirs";"currentAsset";"true";1;;;;;2;"NDAS";;1;"false";"false";"false";0
+388;409710;409700;"Fournisseurs d'exploitation";"currentAsset";"true";1;;;;;2;"NDAS";;1;"false";"false";"false";0
+389;409740;409700;"Fournisseurs d'immobilisations";"currentAsset";"true";1;;;;;2;"NDAS";;1;"false";"false";"false";0
+390;409800;409;"Rabais, remises, ristournes à obtenir et autres avoirs non encore reçus";"currentAsset";"true";1;;;;;2;"NDAS";;1;"false";"false";"false";0
+391;410;"CL4";"Clients et comptes rattachés";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+392;410000;410;"Clients et comptes rattachés ";"receivable";"true";1;;;;;2;"NDAS";;1;"false";"false";"false";0
+393;411;410;"Clients";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+394;411100;411;"Clients - Ventes de biens ou de prestations de services";"receivable";"true";1;"401100|401700|416000";"true";;;2;"NDAS";;1;"false";"false";"true";0
+395;411700;411;"Clients - Retenues de garantie";"receivable";"true";1;"401100|401700|416000";"true";;;2;"NDAS";;1;"false";"false";"true";0
+396;413000;410;"Clients - Effets à recevoir";"receivable";"true";1;;"true";;;2;"NDAS";;1;"false";"false";"false";0
+397;416000;410;"Clients douteux ou litigieux";"receivable";"true";1;"401100|401700|411100|411700";"true";;;2;"NDAS";;1;"false";"false";"false";0
+398;418000;410;"Clients - Produits non encore facturés";"receivable";"true";1;;;;;2;"NDAS";;1;"false";"false";"false";0
+399;418100;418000;"Clients - Factures à établir ";"receivable";"true";1;;;;;1;"NDAS";;1;"false";"false";"false";0
+400;418800;418000;"Clients - Intérêts courus";"receivable";"true";1;;;;;2;"NDAS";;1;"false";"false";"false";0
+401;419000;410;"Clients créditeurs";"receivable";"true";1;;"true";;;2;"NDAS";;1;"false";"false";"false";0
+402;419100;419000;"Clients - Avances et acomptes reçus sur commandes";"debt";"true";1;;"true";;;1;"NDAS";;1;"false";"false";"false";0
+403;419600;419000;"Clients - Dettes pour emballages et matériels consignés ";"debt";"true";1;;"true";;;2;"NDAS";;1;"false";"false";"false";0
+404;419700;419000;"Clients - Autres avoirs ";"debt";"true";1;;"true";;;2;"NDAS";;1;"false";"false";"false";0
+405;419800;419000;"Rabais, remises, ristournes à accorder et autres avoirs à établir";"debt";"true";1;;"true";;;1;"NDAS";;1;"false";"false";"false";0
+406;420;"CL4";"Personnel et comptes rattachés";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+407;421000;420;"Personnel - Rémunérations dues";"debt";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+408;422000;420;"Comités d'entreprise d'établissement ";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+409;424000;420;"Participation des salariés aux résultats";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+410;424600;424000;"Réserve spéciale";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+411;424800;424000;"Comptes courants";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+412;425000;420;"Personnel - Avances et acomptes";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+413;426000;420;"Personnel - Dépôts";"debt";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+414;427000;420;"Personnel - Oppositions";"debt";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+415;428000;420;"Personnel - Charges à payer et produits à recevoir";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+416;428200;428000;"Dettes provisionnées pour congés à payer";"debt";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+417;428400;428000;"Dettes provisionnées pour participation des salariés aux résultats";"debt";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+418;428600;428000;"Autres charges à payer";"debt";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+419;428700;428000;"Produits à recevoir";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+420;430;"CL4";"Sécurité Sociale et autres organismes sociaux";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+421;431000;430;"Sécurité Sociale";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+422;437000;430;"Autres organismes sociaux";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+423;438000;430;"Organismes sociaux - Charges à payer et produits à recevoir";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+424;438200;438000;"Charges sociales sur congés à payer ";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+425;438600;438000;"Autres charges à payer";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+426;438700;438000;"Produits à recevoir";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+427;440;"CL4";"Etat et autres collectivités publiques";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+428;441000;440;"État - Subventions à recevoir";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+429;441100;441000;"Subventions d'investissement";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+430;441700;441000;"Subventions d'exploitation";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+431;441800;441000;"Subventions d'équilibre";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+432;441900;441000;"Avances sur subventions";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+433;442000;440;"État -Impôts et taxes recouvrables sur des tiers ";"tax";;1;;;"true";;2;"NDAS";;1;"false";"false";"false";0
+434;442400;442000;"Obligataires";"tax";;1;;;"true";;2;"NDAS";;1;"false";"false";"false";0
+435;442500;442000;"Associés";"tax";;1;;;"true";;2;"NDAS";;1;"false";"false";"false";0
+436;443000;440;"Opérations particulières avec l'État, les collectivités publiques, les organismes internationaux";"tax";;1;;;"true";;2;"NDAS";;1;"false";"false";"false";0
+437;443100;443000;"Créances sur l'État résultant de la suppression de la règle du décalage d'un mois en matière de TVA";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+438;443800;443000;"Intérêts courus sur créances figurant au compte 4431";"tax";;1;;;"true";;2;"NDAS";;1;"false";"false";"false";0
+439;444000;440;"État - Impôts sur les bénéfices";"tax";;1;;;"true";;0;"NDAS";;1;"false";"false";"false";0
+440;445000;440;"État - Taxes sur le chiffre d'affaires";"tax";;1;;;"true";;2;"NDAS";;1;"false";"false";"false";0
+441;445200;445000;"TVA due intracommunautaire";"tax";;1;;;"true";;2;"NDAS";;1;"false";"false";"false";0
+442;445201;445000;"TVA due intracommunautaire taux normal";"tax";;1;;;"true";;2;"NDAS";;1;"false";"false";"false";0
+443;445202;445000;"TVA due intracommunautaire taux réduit";"tax";;1;;;"true";;2;"NDAS";;1;"false";"false";"false";0
+444;445203;445000;"TVA due intracommunautaire (autre taux)";"tax";;1;;;"true";;2;"NDAS";;1;"false";"false";"false";0
+445;445500;445000;"Taxes sur le chiffre d'affaires à décaisser";"tax";;1;;;"true";;2;"NDAS";;1;"false";"false";"false";0
+446;445510;445500;"TVA à décaisser";"tax";;1;;;"true";;2;"NDAS";;1;"false";"false";"false";0
+447;445511;445510;"TVA N à décaisser taux normal";"tax";;1;;;"true";;2;"NDAS";;1;"false";"false";"false";0
+448;445512;445510;"TVA R1 à décaisser taux intermédiaire";"tax";;1;;;"true";;2;"NDAS";;1;"false";"false";"false";0
+449;445513;445510;"TVA R2 à décaisser taux réduit";"tax";;1;;;"true";;2;"NDAS";;1;"false";"false";"false";0
+450;445514;445510;"TVA décaissée (autre taux : U...)";"tax";;1;;;"true";;2;"NDAS";;1;"false";"false";"false";0
+451;445580;445500;"Taxes assimilées à la TVA";"tax";;1;;;"true";;2;"NDAS";;1;"false";"false";"false";0
+452;445600;445000;"Taxes sur le chiffre d'affaires déductibles";"tax";;1;;;"true";;2;"NDAS";;1;"false";"false";"false";0
+453;445620;445600;"TVA sur immobilisations";"tax";;1;;;"true";;0;"NDAS";;1;"false";"false";"false";0
+454;445630;445600;"TVA transférée par d'autres entreprises";"tax";;1;;;"true";;2;"NDAS";;1;"false";"false";"false";0
+455;445660;445600;"TVA sur autres biens et services";"tax";;1;;;"true";;2;"NDAS";;1;"false";"false";"false";0
+456;445662;445600;"TVA déductible intracommunautaire";"tax";;1;;;"true";;2;"NDAS";;1;"false";"false";"false";0
+457;445670;445600;"Crédit de TVA à reporter";"tax";;1;;;"true";;2;"NDAS";;1;"false";"false";"false";0
+458;445680;445600;"Taxes assimilées à la TVA";"tax";;1;;;"true";;2;"NDAS";;1;"false";"false";"false";0
+459;445700;445000;"Taxes sur le chiffre d'affaires collectées par l'entreprise";"tax";;1;;;"true";;2;"NDAS";;1;"false";"false";"false";0
+460;445710;445700;"TVA collectée";"tax";;1;;;"true";;2;"NDAS";;1;"false";"false";"false";0
+461;445711;445710;"TVA N collectée taux normal";"tax";;1;;;"true";;1;"NDAS";;1;"false";"false";"false";0
+462;445712;445710;"TVA R1 collectée taux intermédiaire";"tax";;1;;;"true";;1;"NDAS";;1;"false";"false";"false";0
+463;445713;445710;"TVA R2 collectée taux réduit";"tax";;1;;;"true";;0;"NDAS";;1;"false";"false";"false";0
+464;445714;445710;"TVA collectée (autre taux : U...)";"tax";;1;;;"true";;0;"NDAS";;1;"false";"false";"false";0
+465;445780;445700;"Taxes assimilées à la TVA";"tax";;1;;;"true";;0;"NDAS";;1;"false";"false";"false";0
+466;445800;445000;"Taxes sur le chiffre d'affaires à régulariser ou en attente";"tax";;1;;;"true";;2;"NDAS";;1;"false";"false";"false";0
+467;445810;445800;"Acomptes - Régime simplifié d'imposition";"tax";;1;;;"true";;2;"NDAS";;1;"false";"false";"false";0
+468;445820;445800;"Acomptes - Régime du forfait";"tax";;1;;;"true";;2;"NDAS";;1;"false";"false";"false";0
+469;445830;445800;"Remboursement de taxes sur le chiffre d'affaires demandé";"tax";;1;;;"true";;1;"NDAS";;1;"false";"false";"false";0
+470;445840;445800;"TVA récupérée d'avance";"tax";;1;;;"true";;2;"NDAS";;1;"false";"false";"false";0
+471;445860;445800;"Taxes sur le chiffre d'affaires sur factures non parvenues";"tax";;1;;;"true";;2;"NDAS";;1;"false";"false";"false";0
+472;445870;445800;"Taxes sur le chiffre d'affaires sur factures à établir";"tax";;1;;;"true";;1;"NDAS";;1;"false";"false";"false";0
+473;446000;440;"Obligations cautionnées";"tax";;1;;;"true";;2;"NDAS";;1;"false";"false";"false";0
+474;447000;440;"Autres impôts, taxes et versements assimilés";"tax";;1;;;"true";;2;"NDAS";;1;"false";"false";"false";0
+475;448000;440;"État - Charges à payer et produits à recevoir";"tax";;1;;;"true";;2;"NDAS";;1;"false";"false";"false";0
+476;448200;448000;"Charges fiscales sur congés à payer ";"tax";;1;;;"true";;2;"NDAS";;1;"false";"false";"false";0
+477;448600;448000;"Charges à payer";"tax";;1;;;"true";;2;"NDAS";;1;"false";"false";"false";0
+478;448700;448000;"Produits à recevoir";"tax";;1;;;"true";;0;"NDAS";;1;"false";"false";"false";0
+479;449000;440;"Quotas d'émission à restituer à l'État";"tax";;1;;;"true";;2;"NDAS";;1;"false";"false";"false";0
+480;450;"CL4";"Groupe et associés";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+481;451000;450;"Groupe";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+482;455000;450;"Associés - Comptes courants";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+483;455100;455000;"Principal";"receivable";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+484;455800;455000;"Intérêts courus";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+485;456000;450;"Associés - Opérations sur le capital";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+486;456100;456000;"Associés - Comptes d'apport en société";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+487;456110;456100;"Apports en nature";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+488;456150;456100;"Apports en numéraire";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+489;456200;456000;"Apporteurs - Capital appelé, non versé";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+490;456210;456200;"Actionnaires - Capital souscrit et appelé, non versé";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+491;456250;456200;"Associés - Capital appelé, non versé";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+492;456300;456000;"Associés - Versements reçus sur augmentation de capital";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+493;456400;456000;"Associés - Versements anticipés";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+494;456600;456000;"Actionnaires défaillants";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+495;456700;456000;"Associés - Capital à rembourser";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+496;457000;450;"Associés - Dividendes à payer";"debt";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+497;458000;450;"Associés - Opérations faites en commun et en GIE";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+498;458100;458000;"Opérations courantes";"receivable";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+499;458800;458000;"Intérêts courus";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+500;460;"CL4";"Débiteurs divers et créditeurs divers";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+501;462000;460;"Créances sur cessions d'immobilisations";"receivable";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+502;464000;460;"Dettes sur acquisitions de valeurs mobilières de placement";"debt";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+503;465000;460;"Créances sur cessions de valeurs mobilières de placement";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+504;467;460;"Autres comptes débiteurs ou créditeurs";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+505;468000;460;"Divers - Charges à payer et produits à recevoir";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+506;468600;468000;"Charges à payer";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+507;468700;468000;"Produits à recevoir";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+508;470;"CL4";"Comptes transitoires ou d'attente";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+509;471000;470;"Comptes d'attente 1";"receivable";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+510;472000;470;"Comptes d'attente 2";"receivable";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+511;473000;470;"Comptes d'attente 3";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+512;474000;470;"Comptes d'attente 4";"receivable";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+513;475000;470;"Comptes d'attente 5";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+514;476000;470;"Différences de conversion - ACTIF";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+515;476100;476000;"Diminution des créances";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+516;476200;476000;"Augmentation des dettes";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+517;476800;476000;"Différences compensées par couverture de change";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+518;477000;470;"Différences de conversion - PASSIF";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+519;477100;477000;"Augmentation des créances";"debt";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+520;477200;477000;"Diminution des dettes";"debt";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+521;477800;477000;"Différences compensées par couverture de change";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+522;478;470;"Autres comptes transitoires";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+523;480;"CL4";"Comptes de régularisation";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+524;481000;480;"Charges à répartir sur plusieurs exercices ";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+525;481600;481000;"Frais d'émission des emprunts";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+526;486000;480;"Charges constatées d'avance";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+527;487000;480;"Produits constatés d'avance";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+528;488;480;"Comptes de répartition périodique des charges et des produits";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+529;488600;488;"Charges";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+530;488700;488;"Produits";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+531;489000;480;"Quotas d'émission alloués par l'État";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+532;490;"CL4";"Dépréciations des comptes de tiers";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+533;491000;490;"Dépréciation des comptes de clients";"debt";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+534;495000;490;"Dépréciation des comptes du groupe et des associés";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+535;495100;495000;"Comptes du groupe";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+536;495500;495000;"Comptes courants des associés";"debt";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+537;495800;495000;"Opérations faites en commun et en GIE";"debt";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+538;496000;490;"Dépréciations des comptes de débiteurs divers";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+539;496200;496000;"Créances sur cessions d'immobilisations";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+540;496500;496000;"Créances sur cessions de valeurs mobilières de placement";"receivable";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+541;496700;496000;"Autres comptes débiteurs";"receivable";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+542;500;"CL5";"Valeurs mobilières de placement";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+543;501000;500;"Parts dans entreprises liées";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+544;502000;500;"Actions propres";"cash";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+545;503000;500;"Actions";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+546;503100;503000;"Titres cotés";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+547;503500;503000;"Titres non cotés";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+548;504000;500;"Autres titres conférant un droit de propriété";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+549;505000;500;"Obligations et bons émis par la société et rachetés par elle";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+550;506000;500;"Obligations";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+551;506100;506000;"Titres cotés";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+552;506500;506000;"Titres non cotés";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+553;507000;500;"Bons du Trésor et bons de caisse à court terme";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+554;508000;500;"Autres valeurs mobilières de placement et autres créances assimilées";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+555;508100;508000;"Autres valeurs mobilières";"cash";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+556;508200;508000;"Bons de souscription";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+557;508800;508000;"Intérêts courus sur obligations, bons et valeurs assimilées";"cash";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+558;509000;500;"Versements restant à effectuer sur valeurs mobilières de placement non libérées";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+559;510;"CL5";"Banques établissements financiers et assimilés";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+560;511000;510;"Valeurs à l'encaissement";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+561;511100;511000;"Coupons échus à l'encaissement";"cash";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+562;511200;511000;"Chèques à encaisser";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+563;511300;511000;"Effets à l'encaissement";"cash";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+564;511400;511000;"Effets à l'escompte";"cash";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+565;511500;511000;"CB encaissées";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+566;512;510;"Banques";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+567;512100;512;"Comptes en monnaie nationale";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+568;512400;512;"Comptes en devises";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+569;514000;510;"Chèques postaux";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+570;515000;510;"Caisses du Trésor et des établissements publics";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+571;516000;510;"Sociétés de bourse";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+572;517000;510;"Autres organismes financiers";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+573;518000;510;"Intérêts courus";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+574;518100;518000;"Intérêts courus à payer";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+575;518800;518000;"Intérêts courus à recevoir";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+576;519000;510;"Concours bancaires courants";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+577;519100;519000;"Crédit de mobilisation de créances commerciales (CMCC)";"cash";;1;;;;;1;"NDAS";;1;"false";"false";"false";0
+578;519300;519000;"Mobilisation de créances nées à l'étranger";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+579;519800;519000;"Intérêts courus sur concours bancaires courants";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+580;520;"CL5";"Instruments de trésorerie";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+581;530;"CL5";"Caisse";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+582;531000;530;"Caisse siège social";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+583;531100;531000;"Caisse en monnaie nationale";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+584;531400;531000;"Caisse en devises";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+585;532000;530;"Caisse succursale (ou usine) A";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+586;533000;530;"Caisse succursale (ou usine) B";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+587;540;"CL5";"Régies d'avances et accréditifs";"view";;1;;;;;0;"NDAS";;1;"false";"true";"false";0
+588;580;"CL5";"Virements internes";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+589;580100;580;"Virements internes";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+590;580200;580;"Différence de caisse";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+591;580300;580;"Ecarts de règlement";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+592;590;"CL5";"Provisions pour dépréciation des comptes financiers";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+593;590000;590;"Provisions pour dépréciation des valeurs mobilières de placement";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+594;590300;590;"Actions";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+595;590400;590;"Autres titres conférant un droit de propriété ";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+596;590600;590;"Obligations";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+597;590800;590;"Autres valeurs mobilières de placement et créances assimilées (provisions)";"cash";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+598;600;"CL6";"Achats(sauf 603)";"view";;1;;;"true";"true";2;"NDAS";;1;"true";"true";"false";0
+599;601000;600;"Achats stockés - Matières premières (et fournitures)";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";1
+600;601100;601000;"Matières (ou groupe) A";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";1
+601;601200;601000;"Matières (ou groupe) B";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";1
+602;601700;601000;"Fournitures A, B, C, ..";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";1
+603;602000;600;"Achats stockés - Autres approvisionnements";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+604;602100;602000;"Matières consommables";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";1
+605;602110;602100;"Matières (ou groupe) C";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";1
+606;602120;602100;"Matières (ou groupe) D";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";1
+607;602200;602000;"Fournitures consommables";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";1
+608;602210;602200;"Combustibles";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";1
+609;602220;602200;"Produits d'entretien";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";1
+610;602230;602200;"Fournitures d'atelier et d'usine";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";1
+611;602240;602200;"Fournitures de magasin";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";1
+612;602250;602200;"Fournitures de bureau";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";1
+613;602600;602000;"Emballages";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";1
+614;602610;602600;"Emballages perdus";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";1
+615;602650;602600;"Emballages récupérables non identifiables";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";1
+616;602670;602600;"Emballages à usage mixte";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";1
+617;603000;600;"Variation des stocks (approvisionnements et marchandises)";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+618;603100;603000;"Variation des stocks de matières premières (et fournitures)";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+619;603200;603000;"Variation des stocks des autres approvisionnements";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+620;603700;603000;"Variation des stocks de marchandises";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+621;604000;600;"Achats d'études et prestations de services";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+622;605000;600;"Achats de matériel équipements et travaux";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";1
+623;606000;600;"Achats non stockés de matières et fournitures";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";1
+624;606100;606000;"Fournitures non stockables (eau, énergie...) ";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";1
+625;606300;606000;"Fournitures d'entretien et de petit équipement";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";1
+626;606400;606000;"Fournitures administratives";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";1
+627;606800;606000;"Autres matières et fournitures";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";1
+628;607000;600;"Achats de marchandises";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";1
+629;607100;607000;"Marchandise (ou groupe) A";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";1
+630;607200;607000;"Marchandise (ou groupe) B";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";1
+631;608000;600;"Frais accessoires incorporés aux achats";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";1
+632;609000;600;"Rabais, remises et ristournes obtenus sur achats";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";1
+633;609100;609000;"- de matières premières (et fournitures)";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";1
+634;609200;609000;"- d'autres approvisionnements stockés";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";1
+635;609400;609000;"- d'études et prestations de services";"charge";;1;;;"true";"true";0;"NDAS";"N_D";1;"true";"false";"false";1
+636;609500;609000;"- de matériel, équipements et travaux";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";1
+637;609600;609000;"- d'approvisionnements non stockés";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";1
+638;609700;609000;"- de marchandises";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";1
+639;609800;609000;"Rabais, remises et ristournes non affectés";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";1
+640;610;"CL6";"Services extérieurs";"view";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"true";"false";0
+641;611000;610;"Sous-traitance générale";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+642;612000;610;"Redevances de crédit-bail";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+643;612200;612000;"Crédit-bail mobilier";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+644;612500;612000;"Crédit-bail immobilier";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+645;613000;610;"Locations";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+646;613200;613000;"Locations immobilières";"charge";;1;;;"true";"true";0;"NDAS";"N_D";1;"true";"false";"false";2
+647;613500;613000;"Locations mobilières";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+648;613600;613000;"Malis sur emballages";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+649;614000;610;"Charges locatives et de copropriété";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+650;615000;610;"Entretien et réparations";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+651;615200;615000;"- sur biens immobiliers";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+652;615500;615000;"- sur biens mobiliers";"charge";;1;;;"true";"true";0;"NDAS";"N_D";1;"true";"false";"false";2
+653;615600;615000;"Maintenance";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+654;616000;610;"Primes d'assurance";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+655;616100;616000;"Multirisques";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+656;616200;616000;"Assurance obligatoire dommage construction ";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+657;616300;616000;"Assurance transport";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+658;616360;616300;"Assurance transport sur achats";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+659;616370;616300;"Assurance transportsur ventes";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+660;616380;616300;"Assurance transport sur autres biens";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+661;616400;616000;"Risques d'exploitation";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+662;616500;616000;"Insolvabilité clients";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+663;617000;610;"Études et recherches";"charge";;1;;;"true";"true";2;"HONO";"N_D";1;"true";"false";"false";2
+664;618000;610;"Divers";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+665;618100;618000;"Documentation générale";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+666;618300;618000;"Documentation technique";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+667;618500;618000;"Frais de colloques, séminaires, conférences";"charge";;1;;;"true";"true";2;"HONO";"N_D";1;"true";"false";"false";2
+668;619000;610;"Rabais, remises et ristournes obtenus sur services extérieurs";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+669;620;"CL6";"Autres services extérieurs";"view";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"true";"false";0
+670;621000;620;"Personnel extérieur à l'entreprise";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+671;621100;621000;"Personnel intérimaire";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+672;621400;621000;"Personnel détaché ou prêté à l'entreprise";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+673;622000;620;"Rémunérations d'intermédiaires et honoraires ";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+674;622100;622000;"Commissions et courtages sur achats ";"charge";;1;;;"true";"true";2;"COMM";"N_D";1;"true";"false";"false";2
+675;622200;622000;"Commissions et courtages sur ventes";"charge";;1;;;"true";"true";2;"COMM";"N_D";1;"true";"false";"false";2
+676;622400;622000;"Rémunérations des transitaires";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+677;622500;622000;"Rémunérations d'affacturage";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+678;622600;622000;"Honoraires";"charge";;1;;;"true";"true";2;"HONO";"N_D";1;"true";"false";"false";2
+679;622700;622000;"Frais d'actes et de contentieux";"charge";;1;;;"true";"true";2;"AREM";"N_D";1;"true";"false";"false";2
+680;622800;622000;"Divers";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+681;623000;620;"Publicité, publications, relations publiques";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+682;623100;623000;"Annonces et insertions";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+683;623200;623000;"Échantillons";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+684;623300;623000;"Foires et expositions";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+685;623400;623000;"Cadeaux à la clientèle";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+686;623500;623000;"Primes";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+687;623600;623000;"Catalogues et imprimés";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+688;623700;623000;"Publications";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+689;623800;623000;"Divers (pourboires, dons courants...)";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+690;624000;620;"Transports de biens et transports collectifs du personnel";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+691;624100;624000;"Transports sur achats";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+692;624200;624000;"Transports sur ventes";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+693;624300;624000;"Transports entre établissements ou chantiers";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+694;624400;624000;"Transports administratifs";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+695;624700;624000;"Transports collectifs du personnel";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+696;624800;624000;"Divers";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+697;625000;620;"Déplacements missions et réceptions";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+698;625100;625000;"Voyages et déplacements";"charge";;1;;;"true";"false";2;"NDAS";"N_D";1;"true";"false";"false";2
+699;625500;625000;"Frais de déménagement";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+700;625600;625000;"Missions";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+701;625700;625000;"Réceptions";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+702;626000;620;"Frais postaux et frais de télécommunications";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+703;627000;620;"Services bancaires et assimilés";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+704;627100;627000;"Frais sur titres (achat, vente, garde)";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+705;627200;627000;"Commissions et frais sur émission d'emprunts";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+706;627500;627000;"Frais sur effets";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+707;627600;627000;"Location de coffres";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+708;627800;627000;"Autres frais et commissions sur prestations de services";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+709;628000;620;"Divers";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+710;628100;628000;"Concours divers (cotisations...)";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+711;628400;628000;"Frais de recrutement de personnel";"charge";;1;;;"true";"true";2;"HONO";"N_D";1;"true";"false";"false";2
+712;629000;620;"Rabais, remises et ristournes obtenus sur autres services extérieurs";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+713;630;"CL6";"Impôts, taxes et versements assimilés";"view";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"true";"false";0
+714;631000;630;"Impôts, taxes et versements assimilés sur rémunérations (administration des impôts)";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+715;631100;631000;"Taxe sur les salaires";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+716;631200;631000;"Taxe d'apprentissage";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+717;631300;631000;"Participation des employeurs à la formation professionnelle continue";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+718;631400;631000;"Cotisation pour défaut d'investissement obligatoire dans la construction";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+719;631800;631000;"Autres";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+720;633000;630;"Impôts, taxes et versements assimilés sur rémunérations (autres organismes)";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+721;633100;633000;"Versement de transport";"charge";;1;;;"true";"true";0;"NDAS";"N_D";1;"true";"false";"false";0
+722;633200;633000;"Allocation logement";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+723;633300;633000;"Participation des employeurs à la formation professionnelle continue";"charge";;1;;;"true";"true";2;"HONO";"N_D";1;"true";"false";"false";0
+724;633400;633000;"Participation des employeurs à l'effort de construction";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+725;633500;633000;"Versements libératoires ouvrant droit à l'exonération de la taxe d'apprentissage";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+726;633800;633000;"Autres";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+727;635000;630;"Autres impôts, taxes et versements assimilés (administration des impôts)";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+728;635100;635000;"Impôts directs (sauf impôts sur les bénéfices)";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+729;635110;635100;"Taxe professionnelle";"charge";;1;;;"true";"true";0;"NDAS";"N_D";1;"true";"false";"false";0
+730;635120;635100;"Taxes foncières";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+731;635130;635100;"Autres impôts locaux";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+732;635140;635100;"Taxe sur les véhicules des sociétés";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+733;635200;635000;"Taxes sur le chiffre d'affaires non récupérables ";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+734;635300;635000;"Impôts indirects";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+735;635400;635000;"Droits d'enregistrement et de timbre";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+736;635410;635400;"Droits de mutation";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+737;635800;635000;"Autres droits";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+738;637000;630;"Autres impôts, taxes et versements assimilés (autres organismes)";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+739;637100;637000;"Contribution sociale de solidarité à la charge des sociétés";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+740;637200;637000;"Taxes perçues par les organismes publics internationaux";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+741;637400;637000;"Impôts et taxes exigibles à l'étranger";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+742;637800;637000;"Taxes diverses";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+743;640;"CL6";"Charges de personnel";"view";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"true";"false";0
+744;641000;640;"Rémunérations du personnel";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+745;641100;641000;"Salaires et appointements";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+746;641200;641000;"Congés payés";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+747;641300;641000;"Primes et gratifications";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+748;641400;641000;"Indemnités et avantages divers";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+749;641500;641000;"Supplément familial";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+750;644000;640;"Rémunération du travail de l'exploitant";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+751;645;640;"Charges de Sécurité sociale et de prévoyance";"view";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"true";"false";0
+752;645100;645;"Cotisations à l'URSSAF";"charge";;1;;;"true";"true";0;"NDAS";"N_D";1;"true";"false";"false";0
+753;645200;645;"Cotisations aux mutuelles";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+754;645300;645;"Cotisations aux caisses de retraites";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+755;645400;645;"Cotisations aux ASSEDIC";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+756;645800;645;"Cotisations aux autres organismes sociaux";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+757;646;640;"Cotisations sociales personnelles de l'exploitant";"view";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+758;647000;640;"Autres charges sociales";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+759;647100;647000;"Prestations directes";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+760;647200;647000;"Versements aux comités d'entreprise et d'établissement";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+761;647300;647000;"Versements aux comités d'hygiène et de sécurité";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+762;647400;647000;"Versements aux autres oeuvres sociales";"charge";;1;;;"true";"true";0;"NDAS";"N_D";1;"true";"false";"false";0
+763;647500;647000;"Médecine du travail pharmacie";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+764;648000;640;"Autres charges de personnel";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+765;650;"CL6";"Autres charges de gestion courante";"view";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"true";"false";0
+766;651000;650;"Redevances pour concessions, brevets, licences, marques, procédés, logiciels, droits et valeurs similaires";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+767;651100;651000;"Redevances pour concessions brevets, licences, marques, procédés, logiciels ";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+768;651600;651000;"Droits d'auteur et de reproduction";"charge";;1;;;"true";"true";2;"DAUT";"N_D";1;"true";"false";"false";2
+769;651800;651000;"Autres droits et valeurs similaires";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+770;653000;650;"Jetons de présence";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+771;654000;650;"Pertes sur créances irrécouvrables";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+772;654100;654000;"Créances de l'exercice";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+773;654400;654000;"Créances des exercices antérieurs";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+774;655000;650;"Quotes-parts de résultat sur opérations faites en commun";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+775;655100;655000;"Quote-part de bénéfice transférée (comptabilité du gérant)";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+776;655500;655000;"Quote-part de perte supportée (comptabilité des associés non gérants)";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+777;658000;650;"Charges diverses de gestion courante";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+778;660;"CL6";"Charges financières";"view";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"true";"false";0
+779;661000;660;"Charges d'intérêt";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+780;661100;661000;"Intérêts des emprunts et dettes";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+781;661160;661100;"Intérêts des emprunts et dettes assimilées";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+782;661170;661100;"Intérêts des dettes rattachées à des participations";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+783;661500;661000;"Intérêts des comptes courants et des dépôts créditeurs";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+784;661600;661000;"Intérêts bancaires et sur opérations de financement (escompte, ...)";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+785;661700;661000;"Intérêts des obligations cautionnées";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+786;661800;661000;"Intérêts des autres dettes";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+787;661810;661800;"Intérêts des dettes commerciales";"charge";;1;;;"true";"true";0;"NDAS";"N_D";1;"true";"false";"false";2
+788;661880;661800;"Intérêts des dettes diverses";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+789;664000;660;"Pertes sur créances liées à des participations";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+790;665000;660;"Escomptes accordés";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+791;666000;660;"Pertes de change";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+792;667000;660;"Charges nettes sur cessions de valeurs mobilières de placement";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+793;668000;660;"Autres charges financières";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+794;670;"CL6";"Charges exceptionnelles";"view";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"true";"false";0
+795;671000;670;"Charges exceptionnelles sur opérations de gestion";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+796;671100;671000;"Pénalités sur marchés (et dédits payés sur achats et ventes)";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+797;671200;671000;"Pénalités, amendes fiscales et pénales ";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+798;671300;671000;"Dons, libéralités";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+799;671400;671000;"Créances devenues irrécouvrables dans l'exercice";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+800;671500;671000;"Subventions accordées";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+801;671700;671000;"Rappels d'impôts (autres qu'impôts sur les bénéfices)";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+802;671800;671000;"Autres charges exceptionnelles sur opération de gestion";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+803;672000;670;"Charges sur exercices antérieurs (en cours d'exercice seulement)";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+804;675000;670;"Valeurs comptables des éléments d'actif cédés";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+805;675100;675000;"Immobilisations incorporelles";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+806;675200;675000;"Immobilisations corporelles";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+807;675600;675000;"Immobilisations financières";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+808;675800;675000;"Autres éléments d'actif";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+809;678000;670;"Autres charges exceptionnelles";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+810;678100;678000;"Malis provenant de clauses d'indexation ";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+811;678200;678000;"Lots";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+812;678300;678000;"Malis provenant du rachat par l'entreprise d'actions et obligations émises par elle-même";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+813;678800;678000;"Charges exceptionnelles diverses";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+814;680;"CL6";"Dotations aux amortissements, dépréciations et provisions";"view";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"true";"false";0
+815;681000;680;"Dotations aux amortissements, dépréciations et provisions - Charges d'exploitation, Amortisation, depreciation and provisions - Operating expenses";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+816;681100;681000;"Dotations aux amortissements des immobilisations incorporelles et corporelles ";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+817;681110;681100;"Immobilisations incorporelles";"charge";;1;;;"true";"true";0;"NDAS";"N_D";1;"true";"false";"false";0
+818;681120;681100;"Immobilisations corporelles";"charge";;1;;;"true";"true";0;"NDAS";"N_D";1;"true";"false";"false";0
+819;681200;681000;"Dotations aux amortissements des charges d'exploitation à répartir";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+820;681500;681000;"Dotations aux provisions pour risques et charges d'exploitation";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+821;681600;681000;"Dotations pour dépréciations des immobilisations incorporelles et corporelles";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+822;681610;681600;"Immobilisations incorporelles";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+823;681620;681600;"Immobilisations corporelles";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+824;681700;681000;"Dotations aux provisions pour dépréciation des actifs circulants";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+825;681730;681700;"Stocks et en-cours";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+826;681740;681700;"Créances";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+827;686000;680;"Dotations aux amortissements, dépréciations et provisions - Charges financières";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+828;686100;686000;"Dotations aux amortissements des primes de remboursement des obligations";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+829;686500;686000;"Dotations aux provisions pour risques et charges financiers";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+830;686600;686000;"Dotations aux dépréciation des éléments financiers";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+831;686620;686600;"Immobilisations financières";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+832;686650;686600;"Valeurs mobilières de placement";"charge";;1;;;"true";"true";0;"NDAS";"N_D";1;"true";"false";"false";0
+833;686800;686000;"Autres dotations";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+834;687000;680;"Dotations aux amortissements, dépréciations et provisions - Charges exceptionnelles";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+835;687100;687000;"Dotations aux amortissements exceptionnels des immobilisations";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+836;687200;687000;"Dotations aux provisions réglementées (immobilisations)";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+837;687250;687200;"Amortissements dérogatoires";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+838;687300;687000;"Dotations aux provisions réglementées (stocks)";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+839;687400;687000;"Dotations aux autres provisions réglementées";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+840;687500;687000;"Dotations aux provisions exceptionnelles";"charge";;1;;;"true";"true";0;"NDAS";"N_D";1;"true";"false";"false";0
+841;687600;687000;"Dotations aux dépréciations exceptionnelles";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+842;690;"CL6";"Participation des salariés - Impôts sur les bénéfices et assimilés";"view";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"true";"false";0
+843;691000;690;"Participation des salariés aux résultats";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+844;695000;690;"Impôts sur les bénéfices";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+845;695100;695000;"Impôts dus en France";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+846;695200;695000;"Contribution additionnelle à l'impôt sur les bénéfices";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+847;695400;695000;"Impôts dus à l'étranger";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+848;696000;690;"Supplément d'impôt sur les sociétés lié aux distributions";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+849;697000;690;"Imposition forfaitaire annuelle des sociétés";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+850;698000;690;"Intégration fiscale";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+851;698100;698000;"Intégration fiscale - Charges";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+852;698900;698000;"Intégration fiscale - Produits";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+853;699000;690;"Produits, Reports en arrière des déficits";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";0
+854;700;"CL7";"Ventes de produits fabriqués - Prestations de service - Marchandises";"view";;1;;;"true";"true";0;"NDAS";"N_C";1;"true";"true";"false";0
+855;701000;700;"Ventes de produits finis";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";1
+856;701200;701000;"Produits finis (ou groupe) B";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";1
+857;702000;700;"Ventes de produits intermédiaires";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";1
+858;703000;700;"Ventes de produits résiduels";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";1
+859;704000;700;"Travaux";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";1
+860;704100;704000;"Travaux de catégorie (ou activité) A";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";1
+861;704200;704000;"Travaux de catégorie (ou activité) B";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";1
+862;705000;700;"Études";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";2
+863;706000;700;"Prestations de services";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";2
+864;707000;700;"Ventes de marchandises";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";1
+865;707100;707000;"Marchandises (ou groupe) A";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";1
+866;707200;707000;"Marchandises (ou groupe) B";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";1
+867;707210;707200;"Ventes de produits textiles";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";1
+868;707300;707000;"Marchandises à l'exportation";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";1
+869;708000;700;"Produits des activités annexes";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";1
+870;708100;708000;"Produits des services exploités dans l'intérêt du personnel";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";1
+871;708200;708000;"Commissions et courtages";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";1
+872;708300;708000;"Locations diverses";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";1
+873;708400;708000;"Mise à disposition de personnel facturée ";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";1
+874;708500;708000;"Ports et frais accessoires facturés";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";1
+875;708600;708000;"Bonis sur reprises d'emballages consignés";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";1
+876;708700;708000;"Bonifications obtenues des clients et primes sur ventes";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";1
+877;708800;708000;"Autres produits d'activités annexes (cessions d'approvisionnements...)";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";1
+878;709000;700;"Rabais, remises et ristournes accordés par l'entreprise";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";1
+879;709100;709000;"- sur ventes de produits finis";"income";;1;;;"true";"true";2;"NDAS";"N_C";1;"true";"false";"false";1
+880;709200;709000;"- sur ventes de produits intermédiaires ";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";1
+881;709400;709000;"- sur travaux";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";1
+882;709500;709000;"- sur études";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";1
+883;709600;709000;"- sur prestations de services";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";1
+884;709700;709000;"- sur ventes de marchandises";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";1
+885;709800;709000;"- sur produits des activités annexes";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";1
+886;710;"CL7";"Production stockée (ou déstockage)";"view";;1;;;"true";"true";2;"NDAS";"N_C";1;"true";"true";"false";0
+887;713000;710;"Variation des stocks (en-cours de production, produits)";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+888;713300;713000;"Variation des en-cours de production de biens";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+889;713310;713300;"Produits en cours";"income";;1;;;"true";"true";0;"NDAS";"N_C";1;"true";"false";"false";0
+890;713350;713300;"Travaux en cours";"income";;1;;;"true";"true";0;"NDAS";"N_C";1;"true";"false";"false";0
+891;713400;713000;"Variation des en-cours de production de services";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+892;713410;713400;"Études en cours";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+893;713450;713400;"Prestations de services en cours";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+894;713500;713000;"Variation des stocks de produits";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+895;713510;713500;"Produits intermédiaires ";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+896;713550;713500;"Produits finis";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+897;713580;713500;"Produits résiduels";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+898;720;"CL7";"Production immobilisée";"view";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"true";"false";0
+899;721000;720;"Immobilisations incorporelles ";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";2
+900;722000;720;"Immobilisations corporelles";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";1
+901;740;"CL7";"Subventions d'exploitation";"view";;1;;;"true";"true";2;"NDAS";"N_C";1;"true";"true";"false";0
+902;750;"CL7";"Autres produits de gestion courante";"view";;1;;;"true";"true";2;"NDAS";"N_C";1;"true";"true";"false";0
+903;751000;750;"Redevances pour concessions, brevets, licences, marques, procédés, logiciels, droits et valeurs similaires";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";2
+904;751100;751000;"Redevances pour concessions, brevets, licences, marques, procédés, logiciels ";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";2
+905;751600;751000;"Droits d'auteur et de reproduction";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";2
+906;751800;751000;"Autres droits et valeurs similaires";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";2
+907;752000;750;"Revenus des immeubles non affectés aux activités professionnelles";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+908;753000;750;"Jetons de présence et rémunérations d'administrateurs, gérants...";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+909;754000;750;"Ristournes perçues des coopératives (provenant des excédents)";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+910;755000;750;"Quotes-parts de résultats sur opérations faites en commun";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+911;755100;755000;"Quote-part de perte transférée (comptabilité du gérant)";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+912;755500;755000;"Quote-part de bénéfice attribuée (comptabilité des associés non-gérants)";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+913;758000;750;"Produits divers de gestion courante";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+914;760;"CL7";"Produits financiers";"view";;1;;;"true";"true";2;"NDAS";"N_C";1;"true";"true";"false";0
+915;761000;760;"Produits de participations";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+916;761100;761000;"Revenus des titres de participation";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+917;761600;761000;"Revenus sur autres formes de participation ";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+918;761700;761000;"Revenus des créances rattachées à des participations";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+919;762000;760;"Produits des autres immobilisations financières";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+920;762100;762000;"Revenus des titres immobilisés";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+921;762600;762000;"Revenus des prêts";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+922;762700;762000;"Revenus des créances immobilisées";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+923;763000;760;"Revenus des autres créances";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+924;763100;763000;"Revenus des créances commerciales ";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+925;763800;763000;"Revenus des créances diverses";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+926;764000;760;"Revenus des valeurs mobilières de placement";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+927;765000;760;"Escomptes obtenus";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+928;766000;760;"Gains de change";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+929;767000;760;"Produits nets sur cessions de valeurs mobilières de placement";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+930;768000;760;"Autres produits financiers";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+931;770;"CL7";"Produits exceptionnels";"view";;1;;;"true";"true";2;"NDAS";"N_C";1;"true";"true";"false";0
+932;771000;770;"Produits exceptionnels sur opérations de gestion";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+933;771100;771000;"Dédits et pénalités perçus sur achats et sur ventes";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+934;771300;771000;"Libéralités reçues";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+935;771400;771000;"Rentrées sur créances amorties";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+936;771500;771000;"Subventions d'équilibre";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+937;771700;771000;"Dégrèvements d'impôts autres qu'impôts sur les bénéfices";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+938;771800;771000;"Autres produits exceptionnels sur opérations de gestion";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+939;772000;770;"Produits sur exercices antérieurs (en cours d'exercice seulement)";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+940;775000;770;"Produits des cessions d'éléments d'actif";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+941;775100;775000;"Immobilisations incorporelles";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+942;775200;775000;"Immobilisations corporelles";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+943;775600;775000;"Immobilisations financières";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+944;775800;775000;"Autres éléments d'actif";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+945;777000;770;"Quote-part des subventions d'investissement virée au résultat de l'exercice";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+946;778000;770;"Autres produits exceptionnels";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+947;778100;778000;"Bonis provenant de clauses d'indexation ";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+948;778200;778000;"Lots";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+949;778300;778000;"Bonis provenant du rachat par l'entreprise d'actions et d'obligations émises par elle-même";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+950;778800;778000;"Produits exceptionnels divers";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+951;780;"CL7";"Reprises sur amortissements, dépréciations et provisions";"view";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"true";"false";0
+952;781000;780;"Reprises sur amortissements, dépréciations et provisions (à inscrire dans les produits d'exploitation)";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+953;781100;781000;"Reprises sur amortissements des immobilisations incorporelles et corporelles ";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+954;781110;781100;"Immobilisations incorporelles";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+955;781120;781100;"Immobilisations corporelles";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+956;781500;781000;"Reprises sur provisions d'exploitation";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+957;781600;781000;"Reprises sur dépréciations des immobilisations corporelles et incorporelles";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+958;781610;781600;"Immobilisations incorporelles";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+959;781620;781600;"Immobilisations corporelles";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+960;781700;781000;"Reprises sur dépréciations des actifs circulants";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+961;781730;781700;"Stocks et en-cours";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+962;781740;781700;"Créances";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+963;786000;780;"Reprises sur dépréciations et provisions (à inscrire dans les produits financiers)";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+964;786500;786000;"Reprises sur provisions financiers";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+965;786600;786000;"Reprises sur dépréciations des éléments financiers";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+966;786620;786600;"Immobilisations financières";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+967;786650;786600;"Valeurs mobilières de placement";"income";;1;;;"true";"true";0;"NDAS";"N_C";1;"true";"false";"false";0
+968;787000;780;"Reprises sur dépréciations et provisions (à inscrire dans les produits exceptionnels)";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+969;787200;787000;"Reprises sur provisions réglementées (immobilisations)";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+970;787250;787200;"Amortissements dérogatoires";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+971;787260;787200;"Provision spéciale de réévaluation";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+972;787270;787200;"Plus-values réinvesties";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+973;787300;787000;"Reprises sur provisions réglementées (stocks) ";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+974;787400;787000;"Reprises sur autres provisions réglementées ";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+975;787500;787000;"Reprises sur provisions exceptionnelles";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+976;787600;787000;"Reprises pour dépréciations exceptionnelles";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+977;790;"CL7";"Transferts de charges";"view";;1;;;"true";"true";2;"NDAS";"N_C";1;"true";"true";"false";0
+978;791000;790;"Transferts de charges d'exploitation";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+979;796000;790;"Transferts de charges financières";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+980;797000;790;"Transferts de charges exceptionnelles";"income";;1;;;"true";"true";1;"NDAS";"N_C";1;"true";"false";"false";0
+981;800;"CL8";"Engagements";"view";;1;;;;;2;"NDAS";;1;"false";"true";"false";0
+982;801000;800;"Engagements donnés par l'entité";"commitment";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+983;801100;801000;"Avals, cautions, garanties";"commitment";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+984;801400;801000;"Effets circulant sous l'endos de l'entité";"commitment";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+985;801600;801000;"Redevances crédit-bail restant à courir";"commitment";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+986;801610;801600;"Crédit-bail mobilier";"commitment";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+987;801650;801600;"Crédit-bail immobilier";"commitment";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+988;801800;801000;"Autres engagements donnés";"commitment";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+989;802000;800;"Engagements reçus par l'entité";"commitment";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+990;802100;802000;"Avals, cautions, garanties";"commitment";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+991;802400;802000;"Créances escomptées non échues";"commitment";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+992;802600;802000;"Engagements reçus pour utilisation en crédit-bail";"commitment";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+993;802610;802600;"Crédit-bail mobilier";"commitment";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+994;802650;802600;"Crédit-bail immobilier";"commitment";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+995;802800;802000;"Autres engagements reçus";"commitment";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+996;809;800;"Contrepartie des engagements";"view";;1;;;;;0;"NDAS";;1;"false";"true";"false";0
+997;809100;809;"Contrepartie 801";"commitment";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+998;809200;809;"Contrepartie 802";"commitment";;1;;;;;0;"NDAS";;1;"false";"false";"false";0
+999;880;"CL8";"Résultats en instance d'affectation";"view";;1;;;;;0;"NDAS";;1;"false";"true";"false";0
+1000;890;"CL8";"Bilan";"view";;1;;;;;0;"NDAS";;1;"false";"true";"false";0
+1001;890000;890;"Bilan d'ouverture";"special";;1;;;;;2;"NDAS";;1;"false";"false";"false";0
+1002;891000;890;"Bilan de clôture";"special";;1;;;;;2;"NDAS";;1;"false";"false";"false";0

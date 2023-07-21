@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="sale-order-line-grid" title="SO lines"
     model="com.axelor.apps.sale.db.SaleOrderLine">
@@ -137,14 +137,13 @@
 					]]>
               </viewer>
             </field>
-            <field name="invoiced" showTitle="false"
-              showIf="id &amp;&amp; $readonly() &amp;&amp; exTaxTotal > 0" colSpan="2"
-              if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
-              <viewer depends="amountInvoiced,exTaxTotal"><![CDATA[
+            <field name="invoicingState" showTitle="false" showIf="id &amp;&amp; $readonly()"
+              colSpan="2" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
+              <viewer depends="invoicingState"><![CDATA[
                         <h4>
-                            <span class="label label-success" ng-show="record.amountInvoiced > 0 && $number(record.amountInvoiced) >= $number(record.exTaxTotal)" x-translate>Invoiced</span>
-                            <span class="label label-warning" ng-show="record.amountInvoiced > 0 && $number(record.amountInvoiced) < $number(record.exTaxTotal)" x-translate>Partially invoiced</span>
-                            <span class="label label-important" ng-show="record.amountInvoiced == 0" x-translate>Not invoiced</span>
+                            <span class="label label-success" ng-show="record.invoicingState == 3" x-translate>Invoiced</span>
+                            <span class="label label-warning" ng-show="record.invoicingState == 2" x-translate>Partially invoiced</span>
+                            <span class="label label-important" ng-show="record.invoicingState == 1" x-translate>Not invoiced</span>
                         </h4>
                     ]]>
               </viewer>
@@ -181,9 +180,6 @@
             </field>
 
           </panel>
-          <field name="product.isUnrenewed" hidden="true"/>
-          <field name="product.isPrototype" hidden="true"/>
-          <field name="saleOrder" hidden="true"/>
           <field name="product" canEdit="false"
             onChange="action-group-sale-saleorderline-product-onchange"
             onSelect="action-sale-order-line-method-domain-product" form-view="product-form"
@@ -197,6 +193,9 @@
             onChange="action-sale-order-line-method-empty-line,action-sale-order-attrs-hide-ati"/>
           <field name="productName" colSpan="12"/>
           <field name="oldQty"/>
+          <field name="product.isUnrenewed" hidden="true"/>
+          <field name="product.isPrototype" hidden="true"/>
+          <field name="saleOrder" hidden="true"/>
         </panel>
         <panel name="productDetailPanel" colSpan="12">
           <field name="qty" colSpan="3"
@@ -369,7 +368,6 @@
           action="action-sale-order-line-view-project-tasks" colSpan="12"/>
       </panel>
       <panel name="analyticDistributionPanel" title="Analytics" if-module="axelor-supplychain"
-        if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()"
         onTabSelect="action-sale-order-line-attrs-read-only-distribution-lines">
         <field name="analyticDistributionTemplate"
           grid-view="analytic-distribution-template-grid"
@@ -398,7 +396,7 @@
         <field name="billOfMaterial"
           onSelect="action-sale-order-line-attrs-bill-of-material-domain"
           if-module="axelor-production" form-view="bill-of-material-form"
-          grid-view="bill-of-material-grid" if="__config__.app.isApp('production')"/>
+          grid-view="bill-of-material-grid" if="__config__.app.isApp('production')" canEdit="true"/>
         <button name="customizeBOMBtn" title="Customize BOM"
           onClick="action-production-method-customize-bill-of-material"
           if-module="axelor-production" if="__config__.app.isApp('production')"/>
@@ -410,6 +408,9 @@
     <panel name="statusPanel" hidden="true">
       <field name="saleOrder.statusSelect"/>
       <field name="saleOrder.orderBeingEdited"/>
+      <field name="product.isUnrenewed" hidden="true"/>
+      <field name="product.isPrototype" hidden="true"/>
+      <field name="saleOrder" hidden="true"/>
     </panel>
     <panel-mail name="mailsPanel">
       <mail-messages/>
@@ -637,6 +638,7 @@
     <action name="action-sale-order-line-attrs-selection-in-type-select"/>
     <action name="action-sale-order-line-attrs-delivered-qty-hidden"/>
     <action name="action-sale-order-line-attrs-display-different-language-message"/>
+    <action name="action-sale-order-line-attrs-hidden-analytic-distribution-panel"/>
   </action-group>
 
   <action-group name="action-group-sale-saleorderline-onload">
@@ -663,6 +665,7 @@
     <action name="action-sale-order-line-attrs-selection-in-type-select"/>
     <action name="action-sale-order-line-attrs-delivered-qty-hidden"/>
     <action name="action-sale-order-line-attrs-display-different-language-message"/>
+    <action name="action-sale-order-line-attrs-hidden-analytic-distribution-panel"/>
   </action-group>
 
   <action-group name="action-group-sale-saleorderline-product-onchange">
@@ -939,7 +942,7 @@
 
   <action-attrs name="action-sale-order-line-attrs-bill-of-material-domain">
     <attribute name="domain" for="billOfMaterial"
-      expr="eval: &quot;(self.product.id = ${product?.parentProduct?.id} OR self.product.id = ${product?.id}) AND self.defineSubBillOfMaterial = true AND self.personalized = false &quot;"/>
+      expr="eval: &quot;(self.product.id = ${product?.parentProduct?.id} OR self.product.id = ${product?.id}) AND self.defineSubBillOfMaterial = true &quot;"/>
   </action-attrs>
 
   <action-attrs name="action-sale-order-line-attrs-discountamount-title">
@@ -1004,6 +1007,11 @@
       if="product?.productTypeSelect == 'service'"/>
   </action-attrs>
 
+  <action-attrs name="action-sale-order-line-attrs-hidden-analytic-distribution-panel">
+    <attribute name="hidden" for="analyticDistributionPanel"
+      expr="eval: !__config__.app.isApp('supplychain') || !__config__.app.getApp('account')?.getManageAnalyticAccounting() || !__parent__?.company?.accountConfig?.getManageAnalyticAccounting()"/>
+  </action-attrs>
+
   <action-attrs name="action-sale-order-line-attrs-fill-estimated-date">
     <attribute name="value" expr="eval: __parent__?.estimatedShippingDate"
       for="estimatedShippingDate"
@@ -1049,5 +1057,10 @@
     <view type="form" name="project-task-form"/>
     <domain>self.saleOrderLine = :id</domain>
   </action-view>
+
+  <search-filters title="Sale order lines filter" name="sale-order-lines-filter"
+    model="com.axelor.apps.sale.db.SaleOrderLine">
+    <field name="invoicingState" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+  </search-filters>
 
 </object-views>

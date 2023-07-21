@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="campaign-grid" title="Campaigns" model="com.axelor.apps.marketing.db.Campaign">
     <field name="name"/>
@@ -264,7 +264,7 @@
   <action-record name="action-campaign-record-set-duration"
     model="com.axelor.apps.marketing.db.Campaign">
     <field name="duration"
-      expr="eval: com.axelor.apps.tool.date.DurationTool.getSecondsDuration( com.axelor.apps.tool.date.DurationTool.computeDuration(eventStartDateTime, eventEndDateTime))"
+      expr="eval: com.axelor.utils.date.DurationTool.getSecondsDuration( com.axelor.utils.date.DurationTool.computeDuration(eventStartDateTime, eventEndDateTime))"
       if="eventStartDateTime != null &amp;&amp; eventEndDateTime != null"/>
   </action-record>
 
@@ -352,7 +352,7 @@
   </action-view>
 
   <action-view name="dashlet.generated.emails" title="Generated emails"
-    model="com.axelor.apps.message.db.Message">
+    model="com.axelor.message.db.Message">
     <view type="grid" name="message-grid"/>
     <view type="form" name="message-form"/>
     <domain>self.id IN (SELECT related.message.id FROM MultiRelated as related WHERE

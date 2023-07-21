@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <menuitem name="account-root-bank-orders" parent="account-root" title="Bank Orders"
-    order="26" if="__config__.app.isApp('bank-payment')"/>
+    order="900" if="__config__.app.isApp('bank-payment')"/>
 
   <menuitem name="account-root-bank-order-direct-debit" if-module="axelor-bank-payment"
     if="__config__.app.getApp('bank-payment').manageDirectDebitPayment"
-    parent="account-root-bank-orders" title="Direct Debits"/>
+    parent="account-root-bank-orders" title="Direct Debits" order="100"/>
 
   <menuitem name="account-root-bank-order-sepa-direct-debit"
     parent="account-root-bank-order-direct-debit" title="SEPA Direct Debits"
-    action="account.bank.order.sepa.direct.debit"/>
+    action="account.bank.order.sepa.direct.debit" order="100"/>
 
   <action-view name="account.bank.order.sepa.direct.debit" title="SEPA Direct Debits"
     model="com.axelor.apps.bankpayment.db.BankOrder">
@@ -26,12 +26,12 @@
 
   <menuitem title="LCR" name="account-root-bank-order-lcr"
     parent="account-root-bank-orders"
-    if="eval: __config__?.app?.getApp('bank-payment')?.manageBillOfExchange"/>
+    if="eval: __config__?.app?.getApp('bank-payment')?.manageBillOfExchange" order="200"/>
 
   <menuitem title="LCR bank orders" name="account-root-bank-order-lcr-bank-orders"
     parent="account-root-bank-order-lcr"
     if="eval: __config__?.app?.getApp('bank-payment')?.manageBillOfExchange"
-    action="account.bank.payment.bank.order.lcr"/>
+    action="account.bank.payment.bank.order.lcr" order="100"/>
 
   <action-view name="account.bank.payment.bank.order.lcr" title="LCR Bank orders"
     model="com.axelor.apps.bankpayment.db.BankOrder">
@@ -43,7 +43,7 @@
 
   <menuitem name="account-root-bank-order-international-direct-debit"
     parent="account-root-bank-order-direct-debit" title="International Direct Debits"
-    action="account.bank.order.international.direct.debit"/>
+    action="account.bank.order.international.direct.debit" order="200"/>
 
   <action-view name="account.bank.order.international.direct.debit"
     title="International Direct Debits" model="com.axelor.apps.bankpayment.db.BankOrder">
@@ -57,11 +57,11 @@
 
   <menuitem name="account-root-bank-order-credit-transfer" if-module="axelor-bank-payment"
     if="__config__.app.getApp('bank-payment').manageCreditTransferPayment"
-    parent="account-root-bank-orders" title="Credit Transfers"/>
+    parent="account-root-bank-orders" title="Credit Transfers" order="300"/>
 
   <menuitem name="account.bank.order.sepa.credit.transfert"
     parent="account-root-bank-order-credit-transfer" title="SEPA Credit Transfers"
-    action="account.bank.order.sepa.credit.transfer"/>
+    action="account.bank.order.sepa.credit.transfer" order="100"/>
 
   <action-view name="account.bank.order.sepa.credit.transfer"
     title="SEPA Credit Transfers" model="com.axelor.apps.bankpayment.db.BankOrder">
@@ -75,7 +75,7 @@
 
   <menuitem name="account-root-bank-order-international-credit-transfer"
     parent="account-root-bank-order-credit-transfer" title="International Credit Transfers"
-    action="account.bank.order.international.credit.transfer"/>
+    action="account.bank.order.international.credit.transfer" order="200"/>
 
   <action-view name="account.bank.order.international.credit.transfer"
     title="International Credit Transfers" model="com.axelor.apps.bankpayment.db.BankOrder">
@@ -89,11 +89,11 @@
 
   <menuitem name="account-root-bank-order-bank-to-bank-transfer"
     parent="account-root-bank-orders" title="Bank to Bank Transfers" if-module="axelor-bank-payment"
-    if="__config__.app.getApp('bank-payment').manageBankToBankTransferPayment"/>
+    if="__config__.app.getApp('bank-payment').manageBankToBankTransferPayment" order="400"/>
 
   <menuitem name="account-root-bank-order-sepa-bank-to-bank-transfer"
     parent="account-root-bank-order-bank-to-bank-transfer" title="National Bank to Bank Transfers"
-    action="account.bank.order.sepa.bank.to.bank.transfer"/>
+    action="account.bank.order.sepa.bank.to.bank.transfer" order="100"/>
 
   <action-view name="account.bank.order.sepa.bank.to.bank.transfer"
     title="SEPA Bank to Bank Transfers" model="com.axelor.apps.bankpayment.db.BankOrder">
@@ -110,7 +110,7 @@
   <menuitem name="account-root-bank-order-international-bank-to-bank-transfer"
     parent="account-root-bank-order-bank-to-bank-transfer"
     title="International Bank to Bank Transfers"
-    action="account.bank.order.international.bank.to.bank.transfer"/>
+    action="account.bank.order.international.bank.to.bank.transfer" order="200"/>
 
   <action-view name="account.bank.order.international.bank.to.bank.transfer"
     title="International Bank to Bank Transfers" model="com.axelor.apps.bankpayment.db.BankOrder">
@@ -125,7 +125,8 @@
   </action-view>
 
   <menuitem name="account-root-bank-order-send-a-bank-order"
-    parent="account-root-bank-orders" title="Send a Bank Order" action="account.send.bank.order"/>
+    parent="account-root-bank-orders" title="Send a Bank Order" action="account.send.bank.order"
+    order="500"/>
 
   <action-view name="account.send.bank.order" title="Send a Bank Order"
     model="com.axelor.apps.bankpayment.db.BankOrder">
@@ -140,7 +141,8 @@
   <menuitem name="account-root-bank-order-awaiting-for-signature"
     parent="account-root-bank-orders" title="Bank Orders awaiting for signature"
     if-module="axelor-bank-payment" if="__config__.app.getApp('bank-payment').enableEbicsModule"
-    action="account.bank.order.awaiting.for.signature" tag-count="true" tag-style="default"/>
+    action="account.bank.order.awaiting.for.signature" tag-count="true" tag-style="default"
+    order="600"/>
 
 
   <action-view name="account.bank.order.awaiting.for.signature"
@@ -154,10 +156,11 @@
 
 
   <menuitem name="account-root-bank-statement" parent="account-root"
-    title="Bank Statements" order="17" if="__config__.app.isApp('bank-payment')"/>
+    title="Bank Statements" order="600" if="__config__.app.isApp('bank-payment')"/>
 
   <menuitem name="account-root-bank-statement-bank-statement"
-    parent="account-root-bank-statement" title="Bank Statements" action="account.bank.statement"/>
+    parent="account-root-bank-statement" title="Bank Statements" action="account.bank.statement"
+    order="100"/>
 
   <action-view name="account.bank.statement" title="Bank Statements"
     model="com.axelor.apps.bankpayment.db.BankStatement">
@@ -168,11 +171,11 @@
   </action-view>
 
   <menuitem name="account-root-bank-reconciliation" parent="account-root"
-    title="Bank Reconciliations" order="27" if="__config__.app.isApp('bank-payment')"/>
+    title="Bank Reconciliations" order="1000" if="__config__.app.isApp('bank-payment')"/>
 
   <menuitem name="account-root-bank-reconciliation-bank-reconciliation"
     parent="account-root-bank-reconciliation" title="Bank Reconciliations"
-    action="account.bank.reconciliation"/>
+    action="account.bank.reconciliation" order="100"/>
 
   <action-view name="account.bank.reconciliation" title="Bank Reconciliations"
     model="com.axelor.apps.bankpayment.db.BankReconciliation">
@@ -184,7 +187,7 @@
 
   <menuitem name="account-root-bank-reconciliation-bank-reconciliation-line"
     parent="account-root-bank-reconciliation" title="Bank Reconciliation Lines"
-    action="account.bank.reconciliation.line"/>
+    action="account.bank.reconciliation.line" order="200"/>
 
   <action-view name="account.bank.reconciliation.line" title="Bank Reconciliation Lines"
     model="com.axelor.apps.bankpayment.db.BankReconciliationLine">
@@ -192,11 +195,12 @@
     <view type="form" name="bank-reconciliation-line-form"/>
   </action-view>
 
-  <menuitem name="account-conf-bank-order" parent="account-conf" title="Bank orders"/>
+  <menuitem name="account-conf-bank-order" parent="account-conf" title="Bank orders"
+    order="600"/>
 
   <menuitem name="account-conf-bank-order-bank-order-file-format"
     parent="account-conf-bank-order" title="Bank order file formats"
-    action="account.conf.bank.order.bank.order.file.format"/>
+    action="account.conf.bank.order.bank.order.file.format" order="100"/>
 
   <action-view name="account.conf.bank.order.bank.order.file.format"
     title="Bank order file formats" model="com.axelor.apps.bankpayment.db.BankOrderFileFormat">
@@ -206,7 +210,7 @@
 
   <menuitem name="account-conf-bank-order-bank-order-economic-reason"
     parent="account-conf-bank-order" title="Bank Orders economic reasons"
-    action="account.conf.bank.order.bank.order.economic.reason"/>
+    action="account.conf.bank.order.bank.order.economic.reason" order="200"/>
 
   <action-view name="account.conf.bank.order.bank.order.economic.reason"
     title="Bank Orders economic reasons"
@@ -217,26 +221,27 @@
 
 
   <menuitem name="account-conf-ebics" parent="account-conf" title="Ebics"
-    if-module="axelor-bank-payment" if="__config__.app.getApp('bank-payment').enableEbicsModule"/>
+    if-module="axelor-bank-payment" if="__config__.app.getApp('bank-payment').enableEbicsModule"
+    order="700"/>
 
   <menuitem name="account-conf-ebics-ebics-user" parent="account-conf-ebics"
-    title="Ebics users" action="account.conf.ebics.ebics.user"/>
+    title="Ebics users" action="account.conf.ebics.ebics.user" order="100"/>
 
   <menuitem name="account-conf-ebics-ebics-partner" parent="account-conf-ebics"
-    title="Ebics partners" action="account.conf.ebics.ebics.partner"/>
+    title="Ebics partners" action="account.conf.ebics.ebics.partner" order="200"/>
 
   <menuitem name="account-conf-ebics-ebics-bank" parent="account-conf-ebics"
-    title="Ebics banks" action="account.conf.ebics.ebics.bank"/>
+    title="Ebics banks" action="account.conf.ebics.ebics.bank" order="300"/>
 
   <!-- <menuitem name="account-conf-ebics-ebics-transfer-state" parent="account-conf-ebics" -->
   <!-- title="Ebics transfer states" action="account.conf.ebics.ebics.transfer.state" /> -->
 
   <menuitem name="account-conf-ebics-ebics-certificate" parent="account-conf-ebics"
-    title="Ebics certificates" action="account.conf.ebics.ebics.certificate"/>
+    title="Ebics certificates" action="account.conf.ebics.ebics.certificate" order="400"/>
 
   <menuitem name="admin-root-batch-bank-payment" parent="admin-root-batch"
     title="Bank payment batches" action="admin.root.batch.bank.payment"
-    if="__config__.app.isApp('bank-payment')"/>
+    if="__config__.app.isApp('bank-payment')" order="600"/>
 
   <action-view name="admin.root.batch.bank.payment" title="Bank payment batches"
     model="com.axelor.apps.bankpayment.db.BankPaymentBatch">
@@ -277,7 +282,7 @@
 
   <menuitem name="account-conf-ebics-bank-statement-file-format"
     parent="account-conf-ebics" title="Bank statements file formats"
-    action="account.conf.ebics.bank.statement.file.format"/>
+    action="account.conf.ebics.bank.statement.file.format" order="500"/>
 
   <action-view name="account.conf.ebics.bank.statement.file.format"
     title="Bank statements file formats"
@@ -288,7 +293,7 @@
 
   <menuitem name="account-root-payment-schedule-payment-schedule-line-reject"
     parent="account-root-payment-schedule" title="Payment schedule line rejection"
-    action="account.root.payment.schedule.payment.schedule.line.reject"/>
+    action="account.root.payment.schedule.payment.schedule.line.reject" order="300"/>
 
   <action-view name="account.root.payment.schedule.payment.schedule.line.reject"
     title="Payment schedule line rejection" model="com.axelor.apps.account.db.PaymentScheduleLine">
@@ -308,10 +313,11 @@
   <!-- Bank statement rule -->
 
   <menuitem name="account-conf-bank-accounting-reconciliation" parent="account-conf"
-    title="Bank Statement / Reconciliations"/>
+    title="Bank Statement / Reconciliations" order="800"/>
 
   <menuitem title="Bank statement rules" name="account-bank-statement-rule"
-    parent="account-conf-bank-accounting-reconciliation" action="account.bank.statement.rule"/>
+    parent="account-conf-bank-accounting-reconciliation" action="account.bank.statement.rule"
+    order="100"/>
 
   <action-view name="account.bank.statement.rule" title="Bank statement rules"
     model="com.axelor.apps.bankpayment.db.BankStatementRule">
@@ -320,7 +326,8 @@
   </action-view>
 
   <menuitem title="Bank statement queries" name="account-bank-statement-query"
-    parent="account-conf-bank-accounting-reconciliation" action="account.bank.statement.query"/>
+    parent="account-conf-bank-accounting-reconciliation" action="account.bank.statement.query"
+    order="200"/>
 
   <action-view name="account.bank.statement.query" title="Bank statement queries"
     model="com.axelor.apps.bankpayment.db.BankStatementQuery">
@@ -329,7 +336,7 @@
   </action-view>
 
   <menuitem title="Bank details tree" name="bank-payment-bank-details"
-    parent="account-root-bank-statement" action="bank.payment.bank.detail.tree"/>
+    parent="account-root-bank-statement" action="bank.payment.bank.detail.tree" order="200"/>
 
   <action-view name="bank.payment.bank.detail.tree" title="Bank details tree"
     model="com.axelor.apps.base.db.BankDetails">
@@ -338,7 +345,7 @@
 
   <menuitem name="account-interbank-code-line" title="Interbank code/Payment mode"
     parent="account-conf-bank-accounting-reconciliation"
-    action="account.account.management.interbank.code.payment.mode"/>
+    action="account.account.management.interbank.code.payment.mode" order="300"/>
 
   <action-view name="account.account.management.interbank.code.payment.mode"
     title="Interbank code/Payment mode" model="com.axelor.apps.account.db.AccountManagement">

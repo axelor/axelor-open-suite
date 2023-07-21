@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="MoveLine" lang="java"
-    implements="com.axelor.apps.account.db.repo.AnalyticLine">
+  <entity name="MoveLine" implements="com.axelor.apps.account.db.repo.AnalyticLine"
+    strategy="CLASS">
 
     <many-to-one name="move" ref="Move" title="Move" initParam="true"/>
 
@@ -24,6 +24,7 @@
     <decimal name="credit" title="Credit" initParam="true"/>
     <string name="description" title="Description" initParam="true"/>
     <string name="origin" title="moveLine.origin" initParam="true"/>
+    <string name="externalOrigin" title="External origin"/>
 
     <one-to-many name="debitReconcileList" orphanRemoval="false" ref="Reconcile"
       title="Debit Reconcile list" mappedBy="debitMoveLine" readonly="false"/>
@@ -53,7 +54,7 @@
 
     <decimal name="currencyRate" title="Currency Rate" precision="20" scale="5"
       initParam="true"/>
-    <decimal name="currencyAmount" title="Amount in Acc. currency" initParam="true"/>
+    <decimal name="currencyAmount" title="Amount in move currency" initParam="true"/>
 
     <string name="postedNbr" title="Posted number"/>
     <!-- Fixed asset fields -->
@@ -176,6 +177,14 @@
     <string name="fiscalYearCode"/>
     <date name="accountingDate"/>
     <boolean name="adjustingMove"/>
+
+    <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
+
+    <!-- CUTOFF -->
+    <decimal name="cutOffProrataAmount" title="Prorata amount" scale="2" precision="20"/>
+    <decimal name="amountBeforeCutOffProrata" title="Original amount" scale="2"
+      precision="20"/>
+    <string name="durationCutOffProrata" title="Prorata duration"/>
 
     <finder-method name="findByReconcileGroup" all="true" using="reconcileGroup"/>
     <finder-method name="findByAccount" all="true" using="account"/>

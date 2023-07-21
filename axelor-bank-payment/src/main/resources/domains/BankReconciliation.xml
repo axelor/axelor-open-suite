@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="bank-payment" package="com.axelor.apps.bankpayment.db"/>
 
-  <entity name="BankReconciliation" lang="java">
+  <entity name="BankReconciliation">
 
     <string name="name" title="Label" namecolumn="true"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true"
@@ -35,7 +35,7 @@
       default="true"/>
     <many-to-one name="validatedByUser" title="Validated By"
       ref="com.axelor.auth.db.User" readonly="true"/>
-    <date name="validatedDate" title="Validated On" readonly="true"/>
+    <datetime name="validateDateTime" title="Validated On" readonly="true"/>
     <boolean name="hasBeenCorrected" title="Corrected" default="false"/>
     <datetime name="correctedDateTime" readonly="true"/>
     <many-to-one name="correctedUser" ref="com.axelor.auth.db.User" readonly="true"/>

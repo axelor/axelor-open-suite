@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="production" package="com.axelor.apps.production.db"/>
 
-  <entity name="OperationOrderDuration" lang="java">
+  <entity name="OperationOrderDuration">
     <many-to-one name="operationOrder"
       ref="com.axelor.apps.production.db.OperationOrder" title="Operation Order"/>
 

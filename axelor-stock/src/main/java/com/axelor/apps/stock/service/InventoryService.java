@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,16 +14,21 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.stock.service;
 
+import com.axelor.app.AppSettings;
+import com.axelor.app.AvailableAppSettings;
+import com.axelor.app.internal.AppFilter;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductCategory;
 import com.axelor.apps.base.db.ProductFamily;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.SequenceRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.Inventory;
@@ -40,17 +46,16 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.db.repo.TrackingNumberRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.service.config.StockConfigService;
-import com.axelor.apps.tool.StringHTMLListBuilder;
-import com.axelor.apps.tool.file.CsvTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.Query;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.i18n.L10n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
+import com.axelor.utils.StringHTMLListBuilder;
+import com.axelor.utils.file.CsvTool;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -73,9 +78,12 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.LocaleUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
@@ -276,7 +284,7 @@ public class InventoryService {
   }
 
   protected InventoryLine copyAndEditInventoryLine(
-      InventoryLine inventoryLine, String description, BigDecimal realQty) {
+      InventoryLine inventoryLine, String description, BigDecimal realQty) throws AxelorException {
 
     // There is not one to many for inventoryLine, so true or false is the same.
     InventoryLine inventoryLineResult = inventoryLineRepository.copy(inventoryLine, true);
@@ -285,6 +293,7 @@ public class InventoryService {
     if (inventoryLineResult.getTrackingNumber() != null) {
       inventoryLineResult.getTrackingNumber().setCounter(realQty);
     }
+    inventoryLineService.compute(inventoryLineResult, inventoryLineResult.getInventory());
     return inventoryLineResult;
   }
 
@@ -509,7 +518,8 @@ public class InventoryService {
     }
 
     checkMissingStockLocation(inventory.getInventoryLineList());
-    inventory.setValidatedOn(appBaseService.getTodayDate(inventory.getCompany()));
+    inventory.setValidatedOn(
+        appBaseService.getTodayDateTime(inventory.getCompany()).toLocalDateTime());
     inventory.setStatusSelect(InventoryRepository.STATUS_VALIDATED);
     inventory.setValidatedBy(AuthUtils.getUser());
     generateStockMoves(inventory, true);
@@ -548,9 +558,8 @@ public class InventoryService {
     List<StockMove> stockMoveList =
         stockMoveRepo
             .all()
-            .filter("self.originTypeSelect = :originTypeSelect AND self.originId = :originId")
-            .bind("originTypeSelect", StockMoveRepository.ORIGIN_INVENTORY)
-            .bind("originId", inventory.getId())
+            .filter("self.inventory.id = :inventoryId")
+            .bind("inventoryId", inventory.getId())
             .fetch();
 
     for (StockMove stockMove : stockMoveList) {
@@ -560,7 +569,7 @@ public class InventoryService {
     inventory.setStatusSelect(InventoryRepository.STATUS_CANCELED);
   }
 
-  private void storeLastInventoryData(Inventory inventory) {
+  protected void storeLastInventoryData(Inventory inventory) {
     Map<Pair<Product, TrackingNumber>, BigDecimal> realQties = new HashMap<>();
     Map<Product, BigDecimal> consolidatedRealQties = new HashMap<>();
     Map<Product, String> realRacks = new HashMap<>();
@@ -592,7 +601,7 @@ public class InventoryService {
         if (realQty != null) {
           stockLocationLine.setLastInventoryRealQty(realQty);
           stockLocationLine.setLastInventoryDateT(
-              inventory.getValidatedOn().atStartOfDay().atZone(ZoneOffset.UTC));
+              inventory.getValidatedOn().atZone(ZoneOffset.UTC));
         }
 
         String rack = realRacks.get(product);
@@ -613,7 +622,7 @@ public class InventoryService {
         if (realQty != null) {
           detailsStockLocationLine.setLastInventoryRealQty(realQty);
           detailsStockLocationLine.setLastInventoryDateT(
-              inventory.getValidatedOn().atStartOfDay().atZone(ZoneOffset.UTC));
+              inventory.getValidatedOn().atZone(ZoneOffset.UTC));
         }
 
         String rack = realRacks.get(product);
@@ -680,7 +689,7 @@ public class InventoryService {
     String inventorySeq = inventory.getInventorySeq();
 
     LocalDate inventoryDate = inventory.getPlannedStartDateT().toLocalDate();
-    LocalDate realDate = inventory.getValidatedOn();
+    LocalDate realDate = inventory.getValidatedOn().toLocalDate();
     StockMove stockMove =
         stockMoveService.createStockMove(
             null,
@@ -695,12 +704,12 @@ public class InventoryService {
 
     stockMove.setName(inventorySeq);
 
-    stockMove.setOriginTypeSelect(StockMoveRepository.ORIGIN_INVENTORY);
-    stockMove.setOriginId(inventory.getId());
+    stockMove.setInventory(inventory);
     stockMove.setOrigin(inventorySeq);
 
     for (InventoryLine inventoryLine : inventoryLineList) {
-      generateStockMoveLines(inventoryLine, stockMove, isEnteringStock);
+      generateStockMoveLines(
+          inventoryLine, stockMove, isEnteringStock, fromStockLocation, toStockLocation);
     }
     if (stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()) {
 
@@ -721,7 +730,11 @@ public class InventoryService {
    * @throws AxelorException
    */
   protected void generateStockMoveLines(
-      InventoryLine inventoryLine, StockMove stockMove, boolean isEnteringStock)
+      InventoryLine inventoryLine,
+      StockMove stockMove,
+      boolean isEnteringStock,
+      StockLocation fromStockLocation,
+      StockLocation toStockLocation)
       throws AxelorException {
     Product product = inventoryLine.getProduct();
     TrackingNumber trackingNumber = inventoryLine.getTrackingNumber();
@@ -732,7 +745,7 @@ public class InventoryService {
     if (diff.signum() > 0) {
       BigDecimal avgPrice;
       StockLocationLine stockLocationLine =
-          stockLocationLineService.getStockLocationLine(stockMove.getToStockLocation(), product);
+          stockLocationLineService.getStockLocationLine(toStockLocation, product);
       if (stockLocationLine != null) {
         avgPrice = stockLocationLine.getAvgPrice();
       } else {
@@ -751,7 +764,9 @@ public class InventoryService {
               stockMove,
               StockMoveLineService.TYPE_NULL,
               false,
-              BigDecimal.ZERO);
+              BigDecimal.ZERO,
+              fromStockLocation,
+              toStockLocation);
       if (stockMoveLine == null) {
         throw new AxelorException(
             inventoryLine.getInventory(),
@@ -915,6 +930,16 @@ public class InventoryService {
 
     List<String[]> list = new ArrayList<>();
 
+    AppSettings appSettings = AppSettings.get();
+    final Locale locale =
+        Optional.ofNullable(
+                LocaleUtils.toLocale(appSettings.get(AvailableAppSettings.DATA_EXPORT_LOCALE)))
+            .orElse(AppFilter.getLocale());
+    final String separator =
+        Optional.ofNullable(appSettings.get(AvailableAppSettings.DATA_EXPORT_SEPARATOR))
+            .orElse(";");
+    L10n dateFormat = L10n.getInstance(locale);
+
     for (InventoryLine inventoryLine : inventory.getInventoryLineList()) {
       String[] item = new String[10];
       String realQty = "";
@@ -948,9 +973,7 @@ public class InventoryService {
       if (stockLocationLine != null) {
         ZonedDateTime lastInventoryDateT = stockLocationLine.getLastInventoryDateT();
         lastInventoryDateTString =
-            lastInventoryDateT == null
-                ? ""
-                : lastInventoryDateT.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+            lastInventoryDateT == null ? "" : dateFormat.format(lastInventoryDateT.toLocalDate());
       }
       item[8] = lastInventoryDateTString;
       item[9] =
@@ -987,7 +1010,7 @@ public class InventoryService {
       LAST_INVENTORY_DATE,
       STOCK_LOCATION
     };
-    CsvTool.csvWriter(file.getParent(), file.getName(), ';', '"', headers, list);
+    CsvTool.csvWriter(file.getParent(), file.getName(), separator.charAt(0), '"', headers, list);
 
     try (InputStream is = new FileInputStream(file)) {
       return Beans.get(MetaFiles.class).upload(is, fileName + ".csv");
@@ -1005,13 +1028,7 @@ public class InventoryService {
   }
 
   public List<StockMove> findStockMoves(Inventory inventory) {
-    return stockMoveRepo
-        .all()
-        .filter(
-            "self.originTypeSelect = ?1 AND self.originId = ?2",
-            StockMoveRepository.ORIGIN_INVENTORY,
-            inventory.getId())
-        .fetch();
+    return stockMoveRepo.all().filter("self.inventory.id = ?2", inventory.getId()).fetch();
   }
 
   public String computeTitle(Inventory entity) {

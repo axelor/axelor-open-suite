@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="PaymentSchedule" lang="java">
+  <entity name="PaymentSchedule">
 
     <integer name="typeSelect" title="Type"
       selection="iaccount.payment.schedule.type.select" default="1"/>
@@ -15,7 +15,7 @@
     <date name="startDate" title="Schedule start Date"/>
     <integer name="nbrTerm" title="Nbr. of terms"/>
     <many-to-one name="bankDetails" ref="com.axelor.apps.base.db.BankDetails"
-      title="Bank Details"/>
+      title="Partner bank details"/>
     <many-to-one name="companyBankDetails" ref="com.axelor.apps.base.db.BankDetails"/>
     <many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode"
       title="Payment Mode" required="true"/>

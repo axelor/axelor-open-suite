@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="production" package="com.axelor.apps.production.db"/>
 
-  <entity name="OperationOrder" lang="java">
+  <entity name="OperationOrder">
 
     <integer name="priority" title="Priority" initParam="true"/>
     <!-- Ajouter action-record pour concatener seq + priority -->
@@ -22,10 +22,6 @@
       title="Work center" initParam="true"/>
     <many-to-one name="machine" ref="com.axelor.apps.production.db.Machine"
       title="Machine" initParam="true"/>
-
-    <one-to-many name="prodHumanResourceList"
-      ref="com.axelor.apps.production.db.ProdHumanResource" mappedBy="operationOrder"
-      title="Human resources"/>
 
     <one-to-many name="toConsumeProdProductList"
       ref="com.axelor.apps.production.db.ProdProduct" mappedBy="toConsumeOperationOrder"
@@ -51,7 +47,9 @@
 
     <one-to-many name="inStockMoveList" ref="com.axelor.apps.stock.db.StockMove"
       title="Stock move in" mappedBy="inOperationOrder"/>
-    <long name="plannedDuration" title="Planned duration (hh:mm:ss)"/>
+    <long name="plannedDuration" title="Planning duration (hhh:mm:ss)"/>
+    <long name="plannedHumanDuration" title="Planned human duration (hhh:mm:ss)"/>
+    <long name="plannedMachineDuration" title="Planned machine duration (hhh:mm:ss)"/>
     <long name="realDuration" title="Real duration (hh:mm:ss)"/>
 
     <boolean name="isWithDifference">

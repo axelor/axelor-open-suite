@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.bankpayment.module;
 
@@ -29,6 +30,7 @@ import com.axelor.apps.account.service.extract.ExtractContextMoveServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceTermServiceImpl;
 import com.axelor.apps.account.service.move.MoveRemoveServiceImpl;
 import com.axelor.apps.account.service.move.MoveReverseServiceImpl;
+import com.axelor.apps.account.service.moveline.MoveLineGroupServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentValidateServiceImpl;
@@ -74,6 +76,8 @@ import com.axelor.apps.bankpayment.service.bankorder.BankOrderMoveService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMoveServiceImpl;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderServiceImpl;
+import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationService;
+import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationServiceImpl;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementRemoveService;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementRemoveServiceImpl;
 import com.axelor.apps.bankpayment.service.bankstatementquery.BankStatementQueryService;
@@ -86,11 +90,22 @@ import com.axelor.apps.bankpayment.service.batch.BatchBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.batch.BatchCreditTransferPartnerReimbursementBankPayment;
 import com.axelor.apps.bankpayment.service.batch.BatchCreditTransferSupplierPaymentBankPayment;
 import com.axelor.apps.bankpayment.service.extract.ExtractContextMoveServiceBankPaymentImpl;
+import com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentBankPaymentCancelService;
 import com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentCancelServiceBankPayImpl;
 import com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentCreateServiceBankPayImpl;
 import com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentValidateServiceBankPayImpl;
+import com.axelor.apps.bankpayment.service.move.MoveCancelBankPaymentService;
+import com.axelor.apps.bankpayment.service.move.MoveCancelBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.move.MoveRemoveServiceBankPaymentImpl;
 import com.axelor.apps.bankpayment.service.move.MoveReverseServiceBankPaymentImpl;
+import com.axelor.apps.bankpayment.service.moveline.MoveLineCheckBankPaymentService;
+import com.axelor.apps.bankpayment.service.moveline.MoveLineCheckBankPaymentServiceImpl;
+import com.axelor.apps.bankpayment.service.moveline.MoveLineGroupBankPaymentService;
+import com.axelor.apps.bankpayment.service.moveline.MoveLineGroupBankPaymentServiceImpl;
+import com.axelor.apps.bankpayment.service.moveline.MoveLineRecordBankPaymentService;
+import com.axelor.apps.bankpayment.service.moveline.MoveLineRecordBankPaymentServiceImpl;
+import com.axelor.apps.bankpayment.service.moveline.MoveLineToolBankPaymentService;
+import com.axelor.apps.bankpayment.service.moveline.MoveLineToolBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.web.InvoicePaymentBankPayController;
 
 public class BankPaymentModule extends AxelorModule {
@@ -172,5 +187,18 @@ public class BankPaymentModule extends AxelorModule {
     bind(InvoiceTermBankPaymentService.class).to(InvoiceTermBankPaymentServiceImpl.class);
 
     bind(InvoiceTermServiceImpl.class).to(InvoiceTermBankPaymentServiceImpl.class);
+
+    bind(MoveLineGroupServiceImpl.class).to(MoveLineGroupBankPaymentServiceImpl.class);
+    bind(MoveLineGroupBankPaymentService.class).to(MoveLineGroupBankPaymentServiceImpl.class);
+    bind(MoveLineCheckBankPaymentService.class).to(MoveLineCheckBankPaymentServiceImpl.class);
+    bind(MoveLineRecordBankPaymentService.class).to(MoveLineRecordBankPaymentServiceImpl.class);
+    bind(MoveLineToolBankPaymentService.class).to(MoveLineToolBankPaymentServiceImpl.class);
+
+    bind(InvoicePaymentBankPaymentCancelService.class)
+        .to(InvoicePaymentCancelServiceBankPayImpl.class);
+
+    bind(MoveCancelBankPaymentService.class).to(MoveCancelBankPaymentServiceImpl.class);
+
+    bind(BankReconciliationService.class).to(BankReconciliationServiceImpl.class);
   }
 }

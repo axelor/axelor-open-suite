@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="sale" package="com.axelor.apps.sale.db"/>
 
-  <entity name="Configurator" lang="java">
+  <entity name="Configurator">
 
     <many-to-one name="configuratorCreator"
       ref="com.axelor.apps.sale.db.ConfiguratorCreator" title="Configurator model" required="true"/>
     <string name="configuratorCreatorName" hidden="true" namecolumn="true"/>
     <string name="attributes" title="Attributes" json="true"/>
     <string name="indicators" title="Indicators" json="true"/>
-    <one-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
+    <one-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"
+      unique="true"/>
 
 
     <extra-code><![CDATA[
