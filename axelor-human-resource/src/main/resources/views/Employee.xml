@@ -573,8 +573,7 @@
     		</div>
     		<div class="span8" style="padding-left: 40px;display: flex;flex-direction: column;justify-content: center;position: relative;">
         		<div style="position: absolute;height: calc(100% + 16px);display: flex;align-items: center;left: 0;transform: skew(-20deg, 0deg);border-left: 2px solid #ddd;">
-            		<div ng-style="hrManager && {'background-color': '#d9534f', 'color': '#fff'} || record.leavingDate == null && $moment(record.hireDate) > $moment().subtract(30, 'days') && {'background-color': '#20BCB5', 'color': '#fff'} || record.leavingDate != null && $moment(record.leavingDate) < $moment()  && {'background-color': '#BC2026', 'color': '#fff'}"
-                	style="width: 30px;height: 60%;background: #ddd; color: #000; display: flex;flex-direction: column;justify-content: center;align-items: center;box-shadow: rgb(0 0 0 / 25%) 3px 3px 8px">
+            		<div style="{{hrManager && 'background-color: #d9534f; color: #fff;' || record.leavingDate == null && $moment(record.hireDate) > $moment().subtract(30, 'days') && 'background-color: #20BCB5; color: #fff;' || record.leavingDate != null && $moment(record.leavingDate) < $moment() && 'background-color: #BC2026; color: #fff;' || 'background: #ddd; color: #000;'}} width: 30px;height: 60%; display: flex;flex-direction: column;justify-content: center;align-items: center;box-shadow: rgb(0 0 0 / 25%) 3px 3px 8px'}}">
                 		<span ng-if="contactPartner.fixedPhone">
                     		<i class="fa fa-phone fa-flip-horizontal" style="font-size: 18px;transform: skew(20deg, 0deg);" />
                 		</span>

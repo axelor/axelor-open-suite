@@ -146,8 +146,8 @@
 		                        <dd ng-show="record.withdrawnCash != 0">-{{$fmt('withdrawnCash')}}</dd>
 		                        <dt ng-show="record.advanceAmount != 0" x-translate>Advance</dt>
 		                        <dd ng-show="record.advanceAmount != 0">-{{$fmt('advanceAmount')}}</dd>
-		                        <dt ng-show="(record.statusSelect == 3 || record.statusSelect == 4 &amp;&amp; record.paymentAmount != 0) &amp;&amp; (record.paymentStatusSelect == 1 || record.paymentStatusSelect == 3)"  ng-style="{'color' : 'blue'}" x-translate>Payment</dt>
-		                        <dd ng-show="(record.statusSelect == 3 || record.statusSelect == 4 &amp;&amp; record.paymentAmount != 0) &amp;&amp; (record.paymentStatusSelect == 1 || record.paymentStatusSelect == 3)"  ng-style="{'color' : 'blue'}">-{{$fmt('paymentAmount')}}</dd>
+		                        <dt ng-show="(record.statusSelect == 3 || record.statusSelect == 4 &amp;&amp; record.paymentAmount != 0) &amp;&amp; (record.paymentStatusSelect == 1 || record.paymentStatusSelect == 3)"  style="color: blue;" x-translate>Payment</dt>
+		                        <dd ng-show="(record.statusSelect == 3 || record.statusSelect == 4 &amp;&amp; record.paymentAmount != 0) &amp;&amp; (record.paymentStatusSelect == 1 || record.paymentStatusSelect == 3)"  style="color: blue;">-{{$fmt('paymentAmount')}}</dd>
 		                        <dt class="order-subtotal-total" x-translate>TotalToRefund</dt>
 		                        <dd class="order-subtotal-total">{{$fmt('$totalToRefund') | currency: record.currency.symbol}}</dd>
 		                    </dl>
