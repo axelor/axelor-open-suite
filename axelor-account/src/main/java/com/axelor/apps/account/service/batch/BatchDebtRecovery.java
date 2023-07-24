@@ -253,8 +253,7 @@ public class BatchDebtRecovery extends BatchStrategy {
         String.format(
             "\t* %s " + I18n.get(AccountExceptionMessage.BATCH_DEBT_RECOVERY_2) + "\n",
             batch.getDone());
-    comment +=
-        String.format(I18n.get(BaseExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
+    comment += String.format(I18n.get(BaseExceptionMessage.BASE_BATCH_3), batch.getAnomaly());
 
     super.stop();
     addComment(comment);

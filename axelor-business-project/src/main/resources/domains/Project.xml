@@ -58,9 +58,47 @@
 
     <many-to-one name="customerAddress" title="Address"
       ref="com.axelor.apps.base.db.Address"/>
-    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
+
     <many-to-many name="projectFolderSet"
       ref="com.axelor.apps.businessproject.db.ProjectFolder" title="Project Folders"/>
+
+    <!-- planification fields -->
+    <decimal name="numberHoursADay" title="Number of hours in a day" min="0"/>
+    <many-to-one name="projectTimeUnit" ref="com.axelor.apps.base.db.Unit"
+      title="Project time unit"
+      help="This will determine the unit used for project-wide reporting. If there are tasks using another unit, conversions will be made using &apos;Number of hours in a day&apos; value."/>
+
+    <integer name="spentTimeCostComputationMethod" default="1"
+      title="Spent time actual cost computation method"
+      selection="business.project.spent.time.computation.method.select"
+      help="This will determine the way of computing actual costs for time spent : Sale order (using sale order line's unitary cost), Product (using task product's cost price), or Employee (using Employee hourly rate). If Sale order is selected, then product's cost price will be used if there's no sale order line linked to the task."/>
+
+    <decimal name="soldTime" title="Sold time"/>
+    <decimal name="updatedTime" title="Updated time"/>
+    <decimal name="plannedTime" title="Planned time"/>
+    <decimal name="spentTime" title="Spent time"/>
+    <decimal name="percentageOfProgress" title="% of progress" readonly="true" precision="5"
+      scale="2"/>
+    <decimal name="percentageOfConsumption" title="% of consumption" readonly="true"
+      precision="5" scale="2"/>
+    <decimal name="remainingAmountToDo" title="Remaining amount to do" readonly="true"
+      precision="6" scale="2"/>
+
+    <decimal name="turnover" title="ProjectTask.Turnover"/>
+    <decimal name="initialCosts" title="ProjectTask.Costs"/>
+    <decimal name="initialMargin" title="ProjectTask.Margin"/>
+    <decimal name="initialMarkup" title="ProjectTask.Markup"/>
+    <decimal name="realTurnover" title="Real turnover"/>
+    <decimal name="realCosts" title="ProjectTask.Costs"/>
+    <decimal name="realMargin" title="ProjectTask.Margin"/>
+    <decimal name="realMarkup" title="ProjectTask.Markup"/>
+    <decimal name="forecastCosts" title="ProjectTask.Costs"/>
+    <decimal name="forecastMargin" title="ProjectTask.Margin"/>
+    <decimal name="forecastMarkup" title="ProjectTask.Markup"/>
+
+    <one-to-many name="projectHistoryLineList"
+      ref="com.axelor.apps.project.db.ProjectHistoryLine" title="Project history" mappedBy="project"/>
+
     <extra-code><![CDATA[
 
 		   	// TYPE SELECT
@@ -71,6 +109,10 @@
    			public static final int TASK_PER_LINE_ALONE = 1;
    			public static final int TASK_PER_LINE_PHASE = 2;
    			public static final int TASK_PER_LINE_TASK = 3;
+
+   			public static final int COMPUTATION_METHOD_SALE_ORDER = 1;
+   			public static final int COMPUTATION_METHOD_PRODUCT = 2;
+   			public static final int COMPUTATION_METHOD_EMPLOYEE = 3;
 		]]></extra-code>
 
 
@@ -78,9 +120,9 @@
 
   <enum name="ProjectGeneratorType">
     <item name="PROJECT_ALONE" title="Project alone"/>
-    <item name="PHASE_BY_LINE" title="Phase by line"/>
+    <item name="SUB_PROJECT_BY_LINE" title="Sub-project by line"/>
     <item name="TASK_BY_LINE" title="Task by line"/>
-    <item name="TASK_TEMPLATE" title="Tasks by product"/>
+    <item name="TASK_TEMPLATE" title="Task by line using subtasks models"/>
   </enum>
 
 </domain-models>

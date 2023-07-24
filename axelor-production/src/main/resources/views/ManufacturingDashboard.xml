@@ -10,8 +10,6 @@
       height="350" colSpan="12"/>
     <dashlet action="manufacturing.dashboard.standby.manuf.orders" canSearch="true"
       height="350" colSpan="12"/>
-    <dashlet action="manufacturing.dashboard.hr.assigned.manuf.orders" canSearch="true"
-      height="350"/>
     <dashlet action="dashlet.wastes.by.product" height="350"/>
     <dashlet action="manufacturing.dashboard.wasted.products" canSearch="true" height="350"
       colSpan="12"/>
@@ -41,14 +39,6 @@
     <view type="grid" name="manuf-order-grid"/>
     <view type="form" name="manuf-order-form"/>
     <domain>self.statusSelect = 5</domain>
-  </action-view>
-
-  <action-view name="manufacturing.dashboard.hr.assigned.manuf.orders"
-    title="Human Ressources Assigned per Manufacturing order"
-    model="com.axelor.apps.production.db.ProdHumanResource">
-    <view type="grid" name="prod-human-resource-group-grid"/>
-    <view type="form" name="prod-human-resource-form"/>
-    <domain>(self.operationOrder.manufOrder.statusSelect) not in (1,2)</domain>
   </action-view>
 
   <action-view name="manufacturing.dashboard.wasted.products"

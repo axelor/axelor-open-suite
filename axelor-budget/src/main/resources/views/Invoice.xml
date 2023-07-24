@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="invoice-supplier-grid" id="budget-invoice-supplier-grid" title="Invoices"
+    model="com.axelor.apps.account.db.Invoice" extension="true">
+    <extend target="//item[@name='seeSupplInvoicesLinesItem']">
+      <insert position="after">
+        <item title="See budget distribution lines"
+          action="action-invoice-see-budget-distribution-lines" if="__config__.app.isApp('budget')"/>
+      </insert>
+    </extend>
+  </grid>
+
+  <grid name="invoice-supplier-refund-grid" id="budget-invoice-supplier-refund-grid"
+    title="Invoices" model="com.axelor.apps.account.db.Invoice" extension="true">
+    <extend target="//item[@name='seeSupplInvoicesLinesItem']">
+      <insert position="after">
+        <item title="See budget distribution lines"
+          action="action-invoice-see-budget-distribution-lines" if="__config__.app.isApp('budget')"/>
+      </insert>
+    </extend>
+  </grid>
+
+  <form model="com.axelor.apps.account.db.Invoice" title="Invoice" name="invoice-form"
+    id="budget-invoice-form" extension="true">
+    <extend target="/">
+      <attribute name="onSave" value="action-budget-invoice-onsave-group"/>
+    </extend>
+
+    <extend target="panel-tabs[@name='mainPanelTab']/panel[@name='pfpAccountConfigPanel']">
+      <insert position="after">
+        <panel name="budgetPanel" title="Budget"
+          showIf="(statusSelect >= 2 &amp;&amp; statusSelect &lt; 4) || budgetDistributionGenerated">
+          <panel-dashlet name="budgetDistributionPanel" title="Budget distribution"
+            action="action-budget-distribution-view-budget-distribution" colSpan="12"
+            readonly="true" if="__config__.app.isApp('budget')"/>
+        </panel>
+      </insert>
+    </extend>
+
+    <extend target="//button[@name='ventilateBtn']">
+      <attribute name="onClick" value="action-budget-invoice-group-ventilate-button"/>
+
+      <insert position="after">
+        <button name="computeBudgetDistributionBtn" title="Compute budget distribution"
+          onClick="action-budget-group-compute-budget-distribution" hidden="true"
+          if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget()"
+          showIf="company.accountConfig.enableBudgetKey &amp;&amp; purchaseOrder == null &amp;&amp; (statusSelect == 1 || statusSelect == 2) &amp;&amp; (invoiceLineList &amp;&amp; invoiceLineList.length != 0)"/>
+      </insert>
+    </extend>
+
+    <extend target="//field[@name='dueDate']">
+      <insert position="after">
+        <field name="budgetDistributionGenerated" hidden="true"/>
+        <field name="company.accountConfig.enableBudgetKey" hidden="true"/>
+        <field name="purchaseOrder" hidden="true"/>
+        <field name="$budgetExceedAlert" type="string" hidden="true"/>
+      </insert>
+    </extend>
+  </form>
+
+  <action-group name="action-budget-invoice-group-ventilate-button">
+    <action name="action-method-invoice-budget-no-compute-budget-distribution"
+      if="__config__.app.isApp('budget')"/>
+    <action name="action-budget-invoice-record-get-budget-balance"
+      if="__config__.app.isApp('budget')"/>
+    <action name="action-budget-invoice-validate-budget-balance"
+      if="__config__.app.isApp('budget')"/>
+    <action name="action-invoice-group-ventilate-button"/>
+  </action-group>
+
+  <action-group name="action-budget-group-compute-budget-distribution">
+    <action name="save"/>
+    <action name="action-validate-budget-recompute-budget-distribution"/>
+    <action name="action-method-budget-invoice-compute-budget-distribution"/>
+    <action name="action-method-budget-invoice-compute-budget-distribution-sum-amount"/>
+    <action name="save"/>
+  </action-group>
+
+  <action-method name="action-method-budget-invoice-compute-budget-distribution">
+    <call class="com.axelor.apps.budget.web.InvoiceController"
+      method="computeBudgetDistribution"/>
+  </action-method>
+
+  <action-method
+    name="action-method-budget-invoice-compute-budget-distribution-sum-amount">
+    <call class="com.axelor.apps.budget.web.InvoiceController"
+      method="computeInvoiceBudgetDistributionSumAmount"/>
+  </action-method>
+
+  <action-method name="action-method-invoice-budget-no-compute-budget-distribution">
+    <call class="com.axelor.apps.budget.web.InvoiceController" method="checkNoComputeBudget"/>
+  </action-method>
+
+  <action-validate name="action-validate-budget-recompute-budget-distribution">
+    <alert
+      message="A budget distribution has already been generated. By launching this action, the budget distribution table will be cleared and re-computed. Do you want to proceed ?"
+      if="company?.accountConfig?.enableBudgetKey &amp;&amp; budgetDistributionGenerated"/>
+  </action-validate>
+
+  <action-group name="action-budget-invoice-onsave-group">
+    <action name="action-invoice-onsave-group"/>
+    <action name="action-budget-invoice-record-get-budget-balance"
+      if="__config__.app.isApp('budget') &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 3)"/>
+    <action name="action-budget-invoice-validate-budget-balance"
+      if="__config__.app.isApp('budget') &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 3)"/>
+  </action-group>
+
+  <action-record name="action-budget-invoice-record-get-budget-balance"
+    model="com.axelor.apps.account.db.Invoice">
+    <field name="$budgetExceedAlert"
+      expr="call:com.axelor.apps.budget.service.invoice.BudgetInvoiceServiceImpl:getBudgetExceedAlert(__this__)"/>
+  </action-record>
+
+  <action-validate name="action-budget-invoice-validate-budget-balance">
+    <alert message="$budgetExceedAlert"
+      if="id &amp;&amp; budgetExceedAlert != null &amp;&amp; budgetExceedAlert != ''"/>
+  </action-validate>
+
+  <action-view name="action-budget-distribution-view-budget-distribution"
+    title="Budget distribution" model="com.axelor.apps.budget.db.BudgetDistribution">
+    <view type="grid" name="invoice-budget-distribution-grid"/>
+    <view type="form" name="invoice-budget-distribution-form"/>
+    <view-param name="limit" value="200"/>
+    <domain>self.invoiceLine.invoice.id = :_invoiceId</domain>
+    <context name="_invoiceId" expr="eval: __this__.id"/>
+  </action-view>
+
+  <action-view name="action-invoice-see-budget-distribution-lines"
+    title="See budget distribution lines" model="com.axelor.apps.budget.db.BudgetDistribution">
+    <view type="grid" name="budget-distribution-grid-invoice-line-grid"/>
+    <view type="form" name="budget-distribution-grid-invoice-line-form"/>
+    <domain>self.invoiceLine.invoice.statusSelect in (2,3)</domain>
+  </action-view>
+
+</object-views>

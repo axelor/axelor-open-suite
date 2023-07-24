@@ -32,6 +32,7 @@ import com.axelor.apps.project.db.TaskTemplate;
 import com.axelor.apps.project.db.Wiki;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectStatusRepository;
+import com.axelor.apps.project.db.repo.ProjectTemplateRepository;
 import com.axelor.apps.project.db.repo.WikiRepository;
 import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.apps.project.translation.ITranslation;
@@ -62,15 +63,18 @@ public class ProjectServiceImpl implements ProjectService {
   protected ProjectRepository projectRepository;
   protected ProjectStatusRepository projectStatusRepository;
   protected AppProjectService appProjectService;
+  protected ProjectTemplateRepository projTemplateRepo;
 
   @Inject
   public ProjectServiceImpl(
       ProjectRepository projectRepository,
       ProjectStatusRepository projectStatusRepository,
-      AppProjectService appProjectService) {
+      AppProjectService appProjectService,
+      ProjectTemplateRepository projTemplateRepo) {
     this.projectRepository = projectRepository;
     this.projectStatusRepository = projectStatusRepository;
     this.appProjectService = appProjectService;
+    this.projTemplateRepo = projTemplateRepo;
   }
 
   @Inject WikiRepository wikiRepo;
@@ -187,7 +191,6 @@ public class ProjectServiceImpl implements ProjectService {
     } else {
       builder.add("kanban", "project-task-kanban");
       builder.add("calendar", "project-task-per-status-calendar");
-      builder.param("kanban-hide-columns", getStatusColumnsTobeExcluded(project));
     }
 
     if (ObjectUtils.notEmpty(context)) {
@@ -199,6 +202,20 @@ public class ProjectServiceImpl implements ProjectService {
   @Override
   public Map<String, Object> createProjectFromTemplateView(ProjectTemplate projectTemplate)
       throws AxelorException {
+    if (appProjectService.getAppProject().getGenerateProjectSequence()
+        && !projectTemplate.getIsBusinessProject()) {
+      projectTemplate = projTemplateRepo.find(projectTemplate.getId());
+      Project project =
+          Beans.get(ProjectService.class).createProjectFromTemplate(projectTemplate, null, null);
+      return ActionView.define(I18n.get("Project"))
+          .model(Project.class.getName())
+          .add("form", "project-form")
+          .add("grid", "project-grid")
+          .param("search-filters", "project-filters")
+          .context("_showRecord", project.getId())
+          .map();
+    }
+
     return ActionView.define(I18n.get("Create project from this template"))
         .model(Wizard.class.getName())
         .add("form", "project-template-wizard-form")
@@ -257,8 +274,7 @@ public class ProjectServiceImpl implements ProjectService {
             .add("kanban", "project-task-kanban")
             .add("grid", "project-task-grid")
             .add("form", "project-task-form")
-            .domain("self.typeSelect = :_typeSelect AND self.project = :_project")
-            .param("kanban-hide-columns", getStatusColumnsTobeExcluded(project));
+            .domain("self.typeSelect = :_typeSelect AND self.project = :_project");
 
     if (ObjectUtils.notEmpty(context)) {
       context.forEach(builder::context);
@@ -294,17 +310,6 @@ public class ProjectServiceImpl implements ProjectService {
     return task;
   }
 
-  protected String getStatusColumnsTobeExcluded(Project project) {
-    return projectStatusRepository
-        .all()
-        .filter("self not in :allowedProjectTaskStatus")
-        .bind("allowedProjectTaskStatus", project.getProjectTaskStatusSet())
-        .fetchStream()
-        .map(ProjectStatus::getId)
-        .map(String::valueOf)
-        .collect(Collectors.joining(","));
-  }
-
   @Override
   public String getTimeZone(Project project) {
     return null;
@@ -312,11 +317,7 @@ public class ProjectServiceImpl implements ProjectService {
 
   @Override
   public ProjectStatus getDefaultProjectStatus() {
-    return projectStatusRepository
-        .all()
-        .filter("self.relatedToSelect = ?1", ProjectStatusRepository.PROJECT_STATUS_PROJECT)
-        .order("sequence")
-        .fetchOne();
+    return projectStatusRepository.all().order("sequence").fetchOne();
   }
 
   public boolean checkIfResourceBooked(Project project) {
