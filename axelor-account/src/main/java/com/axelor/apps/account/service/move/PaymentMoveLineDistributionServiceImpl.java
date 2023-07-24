@@ -84,7 +84,7 @@ public class PaymentMoveLineDistributionServiceImpl implements PaymentMoveLineDi
           || moveLine.getAccount().getServiceType().getN4dsCode() == null) {
         paymentMvlD.setExcludeFromDas2Report(true);
       }
-      paymentMvlD.setOperationDate(reconcile.getReconciliationDateTime().toLocalDate());
+      paymentMvlD.setOperationDate(reconcile.getEffectiveDate());
       if (!moveLine.getAccount().getReconcileOk()) {
         this.computeProratedAmounts(
             paymentMvlD,

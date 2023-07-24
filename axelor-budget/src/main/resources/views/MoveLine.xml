@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <form id="budget-move-line-move-form" name="move-line-move-form" title="Move line"
+    model="com.axelor.apps.account.db.MoveLine" extension="true">
+
+    <extend target="//panel[@name='othersPanel']">
+      <insert position="inside">
+        <field name="account.accountType.technicalTypeSelect" hidden="true"/>
+        <field name="account.accountType" hidden="true"/>
+        <field name="move.statusSelect" hidden="true"/>
+      </insert>
+      <insert position="after">
+        <panel-related name="budgetDistributionListPanel" title="Budget"
+          if="__config__.app.isApp('budget')"
+          onChange="action-method-move-line-budget-distribution-validate-amount"
+          showIf="['charge', 'income', 'immobilisation'].includes(account.accountType.technicalTypeSelect)"
+          field="budgetDistributionList" form-view="move-line-budget-distribution-form"
+          grid-view="move-line-budget-distribution-grid" editable="true" colSpan="12"/>
+      </insert>
+    </extend>
+  </form>
+
+  <form id="budget-move-line-form" name="move-line-form" title="Move line"
+    model="com.axelor.apps.account.db.MoveLine" extension="true">
+
+    <extend target="//panel[@name='othersPanel']">
+      <insert position="inside">
+        <field name="account.accountType.technicalTypeSelect" hidden="true"/>
+        <field name="account.accountType" hidden="true"/>
+        <field name="move.statusSelect" hidden="true"/>
+      </insert>
+      <insert position="after">
+        <panel-related name="budgetDistributionListPanel"
+          if="__config__.app.isApp('budget')" readonlyIf="move.statusSelect == 3" title="Budget"
+          onChange="action-method-move-line-budget-distribution-validate-amount"
+          showIf="['charge', 'income', 'immobilisation'].includes(account.accountType.technicalTypeSelect)"
+          field="budgetDistributionList" form-view="move-line-budget-distribution-form"
+          grid-view="move-line-budget-distribution-grid" editable="true" colSpan="12"/>
+      </insert>
+    </extend>
+  </form>
+
+  <action-method name="action-method-move-line-budget-distribution-validate-amount">
+    <call class="com.axelor.apps.budget.web.MoveLineController"
+      method="validateBudgetLinesAmount"/>
+  </action-method>
+
+</object-views>

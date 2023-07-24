@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.account.service;
 
+import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.ReconcileGroup;
 import com.axelor.apps.base.AxelorException;
@@ -37,6 +38,8 @@ public interface ReconcileGroupService {
    */
   void validate(ReconcileGroup reconcileGroup, List<Reconcile> reconcileList)
       throws AxelorException;
+
+  void cancelProposal(ReconcileGroup reconcileGroup);
 
   /**
    * Check if the given reconcile lines are balanced.
@@ -125,4 +128,12 @@ public interface ReconcileGroupService {
    * @throws AxelorException
    */
   void unletter(ReconcileGroup reconcileGroup) throws AxelorException;
+
+  List<Reconcile> getReconcileList(ReconcileGroup reconcileGroup);
+
+  void createProposal(List<MoveLine> moveLineList);
+
+  void removeDraftReconciles(ReconcileGroup reconcileGroup);
+
+  void validateProposal(ReconcileGroup reconcileGroup) throws AxelorException;
 }

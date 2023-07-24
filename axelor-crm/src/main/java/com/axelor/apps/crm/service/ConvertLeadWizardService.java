@@ -19,20 +19,27 @@
 package com.axelor.apps.crm.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.crm.db.Lead;
+import com.axelor.apps.crm.db.PartnerStatus;
+import java.util.List;
 import java.util.Map;
 
 public interface ConvertLeadWizardService {
 
-  public Lead generateDataAndConvertLeadAndGenerateOpportunity(
+  public Partner generateDataAndConvertLead(
       Lead lead,
       Integer leadToPartnerSelect,
       Integer leadToContactSelect,
       Partner partner,
       Map<String, Object> partnerMap,
-      Partner contactPartner,
-      Map<String, Object> contactPartnerMap,
-      Map<String, Object> opportunityMap)
+      PartnerStatus partnerStatus,
+      List<Partner> contactPartnerList,
+      Map<String, Object> contactPartnerMap)
       throws AxelorException;
+
+  public Address createPrimaryAddress(Lead lead);
+
+  List<Partner> convertMapListToPartnerList(List<Map<String, Object>> contactList);
 }

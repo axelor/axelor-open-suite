@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="index-revaluation-grid" title="Indexes revaluation"
+    model="com.axelor.apps.contract.db.IndexRevaluation">
+    <field name="code"/>
+    <field name="name"/>
+  </grid>
+
+  <form name="index-revaluation-form" title="Index revaluation"
+    model="com.axelor.apps.contract.db.IndexRevaluation">
+    <panel name="mainPanel">
+      <field name="code"/>
+      <field name="name"/>
+    </panel>
+    <panel-related name="indexValueListPanel" field="indexValueList"
+      form-view="index-value-form" grid-view="index-value-grid"
+      onChange="action-index-revaluation-method-set-index-values-end-date"/>
+  </form>
+
+  <action-method name="action-index-revaluation-method-set-index-values-end-date">
+    <call class="com.axelor.apps.contract.web.IndexRevaluationController"
+      method="setIndexValuesEndDate"/>
+  </action-method>
+
+</object-views>
