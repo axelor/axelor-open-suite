@@ -748,8 +748,8 @@ public class MoveLineController {
 
       MoveLineGroupService moveLineGroupService = Beans.get(MoveLineGroupService.class);
 
-      response.setValues(moveLineGroupService.getAnalyticMoveLineValuesMap(moveLine, move));
-      response.setAttrs(moveLineGroupService.getAnalyticMoveLineAttrsMap(moveLine, move));
+      response.setValues(moveLineGroupService.getAnalyticMoveLineOnChangeValuesMap(moveLine, move));
+      response.setAttrs(moveLineGroupService.getAnalyticMoveLineOnChangeAttrsMap(moveLine, move));
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

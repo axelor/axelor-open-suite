@@ -452,7 +452,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
   }
 
   @Override
-  public Map<String, Object> getAnalyticMoveLineValuesMap(MoveLine moveLine, Move move)
+  public Map<String, Object> getAnalyticMoveLineOnChangeValuesMap(MoveLine moveLine, Move move)
       throws AxelorException {
     analyticLineService.printAnalyticAccount(moveLine, move.getCompany());
 
@@ -460,8 +460,8 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
   }
 
   @Override
-  public Map<String, Map<String, Object>> getAnalyticMoveLineAttrsMap(MoveLine moveLine, Move move)
-      throws AxelorException {
+  public Map<String, Map<String, Object>> getAnalyticMoveLineOnChangeAttrsMap(
+      MoveLine moveLine, Move move) throws AxelorException {
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
     moveLineAttrsService.addAnalyticAccountRequired(moveLine, move, attrsMap);
