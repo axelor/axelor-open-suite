@@ -4,18 +4,18 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid model="com.axelor.apps.crm.db.LeadStatus" title="Lead status" name="lead-status-grid"
-    orderBy="sequence">
+    orderBy="sequence" canMove="true">
     <field name="name"/>
-    <field name="sequence"/>
     <field name="isOpen"/>
+    <field name="sequence" hidden="true"/>
   </grid>
 
   <form model="com.axelor.apps.crm.db.LeadStatus" title="Lead status" name="lead-status-form"
     onLoad="action-lead-status-attrs-set-isopen-readonly">
     <panel name="mainPanel">
       <field name="name"/>
-      <field name="sequence"/>
       <field name="isOpen"/>
+      <field name="sequence" hidden="true"/>
     </panel>
   </form>
 

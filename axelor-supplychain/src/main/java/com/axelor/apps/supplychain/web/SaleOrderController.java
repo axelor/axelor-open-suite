@@ -548,8 +548,7 @@ public class SaleOrderController {
         stockMoveRepo
             .all()
             .filter(
-                "self.originTypeSelect = ?1 AND self.originId = ?2 AND self.statusSelect = ?3",
-                "com.axelor.apps.sale.db.SaleOrder",
+                "self.saleOrder.id = ?2 AND self.statusSelect = ?3",
                 saleOrder.getId(),
                 StockMoveRepository.STATUS_PLANNED)
             .fetchOne();

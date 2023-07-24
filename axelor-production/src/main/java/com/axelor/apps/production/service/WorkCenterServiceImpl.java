@@ -20,41 +20,39 @@ package com.axelor.apps.production.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.production.db.ProdHumanResource;
 import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.WorkCenterGroup;
 import com.axelor.apps.production.db.repo.WorkCenterRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.i18n.I18n;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Set;
-import org.apache.commons.collections.CollectionUtils;
 
 public class WorkCenterServiceImpl implements WorkCenterService {
 
   @Override
-  public Long getDurationFromWorkCenter(WorkCenter workCenter) {
-    List<Long> durations = new ArrayList<>();
-
+  public long getMachineDurationFromWorkCenter(WorkCenter workCenter) {
+    long machineDuration = 0;
     if (workCenter.getWorkCenterTypeSelect() == WorkCenterRepository.WORK_CENTER_TYPE_MACHINE
         || workCenter.getWorkCenterTypeSelect() == WorkCenterRepository.WORK_CENTER_TYPE_BOTH) {
-      durations.add(workCenter.getDurationPerCycle());
+      machineDuration = workCenter.getDurationPerCycle();
     }
+    return machineDuration;
+  }
+
+  @Override
+  public long getHumanDurationFromWorkCenter(WorkCenter workCenter) {
+    long humanDuration = 0;
 
     if (workCenter.getWorkCenterTypeSelect() == WorkCenterRepository.WORK_CENTER_TYPE_HUMAN
         || workCenter.getWorkCenterTypeSelect() == WorkCenterRepository.WORK_CENTER_TYPE_BOTH) {
-      if (workCenter.getProdHumanResourceList() != null) {
-        for (ProdHumanResource prodHumanResource : workCenter.getProdHumanResourceList()) {
-          durations.add(prodHumanResource.getDuration());
-        }
+      if (workCenter.getHrDurationPerCycle() != null) {
+        humanDuration = workCenter.getHrDurationPerCycle();
       }
     }
 
-    return !CollectionUtils.isEmpty(durations) ? Collections.max(durations) : 0L;
+    return humanDuration;
   }
 
   @Override

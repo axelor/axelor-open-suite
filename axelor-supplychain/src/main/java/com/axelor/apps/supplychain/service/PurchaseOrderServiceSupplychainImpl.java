@@ -18,10 +18,7 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import com.axelor.apps.account.db.Budget;
-import com.axelor.apps.account.db.BudgetDistribution;
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.repo.BudgetDistributionRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -74,7 +71,6 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
   protected AppAccountService appAccountService;
   protected AppBaseService appBaseService;
   protected PurchaseOrderStockService purchaseOrderStockService;
-  protected BudgetSupplychainService budgetSupplychainService;
   protected PurchaseOrderLineRepository purchaseOrderLineRepository;
   protected PurchaseOrderLineService purchaseOrderLineService;
   protected PartnerStockSettingsService partnerStockSettingsService;
@@ -87,7 +83,6 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
       AppAccountService appAccountService,
       AppBaseService appBaseService,
       PurchaseOrderStockService purchaseOrderStockService,
-      BudgetSupplychainService budgetSupplychainService,
       PurchaseOrderLineRepository purchaseOrderLineRepository,
       PurchaseOrderLineService purchaseOrderLineService,
       PartnerStockSettingsService partnerStockSettingsService,
@@ -98,7 +93,6 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
     this.appAccountService = appAccountService;
     this.appBaseService = appBaseService;
     this.purchaseOrderStockService = purchaseOrderStockService;
-    this.budgetSupplychainService = budgetSupplychainService;
     this.purchaseOrderLineRepository = purchaseOrderLineRepository;
     this.purchaseOrderLineService = purchaseOrderLineService;
     this.partnerStockSettingsService = partnerStockSettingsService;
@@ -196,28 +190,6 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
     return total;
   }
 
-  @Transactional
-  @Override
-  public void generateBudgetDistribution(PurchaseOrder purchaseOrder) {
-    if (purchaseOrder.getPurchaseOrderLineList() != null) {
-      for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
-        Budget budget = purchaseOrderLine.getBudget();
-        if (purchaseOrder.getStatusSelect().equals(PurchaseOrderRepository.STATUS_REQUESTED)
-            && budget != null
-            && (purchaseOrderLine.getBudgetDistributionList() == null
-                || purchaseOrderLine.getBudgetDistributionList().isEmpty())) {
-          BudgetDistribution budgetDistribution = new BudgetDistribution();
-          budgetDistribution.setBudget(budget);
-          budgetDistribution.setAmount(purchaseOrderLine.getCompanyExTaxTotal());
-          budgetDistribution.setBudgetAmountAvailable(
-              budget.getTotalAmountExpected().subtract(budget.getTotalAmountCommitted()));
-          purchaseOrderLine.addBudgetDistributionListItem(budgetDistribution);
-        }
-      }
-      // purchaseOrderRepo.save(purchaseOrder);
-    }
-  }
-
   @Transactional(rollbackOn = {Exception.class})
   @Override
   public PurchaseOrder mergePurchaseOrders(
@@ -285,21 +257,6 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
     purchaseOrder.setAmountToBeSpreadOverTheTimetable(totalHT.subtract(sumTimetableAmount));
   }
 
-  @Transactional
-  @Override
-  public void applyToallBudgetDistribution(PurchaseOrder purchaseOrder) {
-
-    for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
-      BudgetDistribution newBudgetDistribution = new BudgetDistribution();
-      newBudgetDistribution.setAmount(purchaseOrderLine.getCompanyExTaxTotal());
-      newBudgetDistribution.setBudget(purchaseOrder.getBudget());
-      newBudgetDistribution.setPurchaseOrderLine(purchaseOrderLine);
-      Beans.get(BudgetDistributionRepository.class).save(newBudgetDistribution);
-      Beans.get(PurchaseOrderLineServiceSupplychainImpl.class)
-          .computeBudgetDistributionSumAmount(purchaseOrderLine, purchaseOrder);
-    }
-  }
-
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void requestPurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
@@ -334,15 +291,6 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
             .fetchOne();
     if (saleOrder != null) {
       saleOrder.setExternalReference(purchaseOrder.getPurchaseOrderSeq());
-    }
-  }
-
-  @Override
-  public void setPurchaseOrderLineBudget(PurchaseOrder purchaseOrder) {
-
-    Budget budget = purchaseOrder.getBudget();
-    for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
-      purchaseOrderLine.setBudget(budget);
     }
   }
 
@@ -457,44 +405,6 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
       }
     }
     return exTaxTotal;
-  }
-
-  @Transactional
-  @Override
-  public void updateBudgetDistributionAmountAvailable(PurchaseOrder purchaseOrder) {
-    if (purchaseOrder.getPurchaseOrderLineList() != null) {
-      for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
-        List<BudgetDistribution> budgetDistributionList =
-            purchaseOrderLine.getBudgetDistributionList();
-        Budget budget = purchaseOrderLine.getBudget();
-        if (!budgetDistributionList.isEmpty() && budget != null) {
-          for (BudgetDistribution budgetDistribution : budgetDistributionList) {
-            budgetDistribution.setBudgetAmountAvailable(
-                budget.getTotalAmountExpected().subtract(budget.getTotalAmountCommitted()));
-          }
-        }
-      }
-    }
-  }
-
-  @Override
-  public boolean isGoodAmountBudgetDistribution(PurchaseOrder purchaseOrder) {
-    if (purchaseOrder.getPurchaseOrderLineList() != null) {
-      for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
-        if (purchaseOrderLine.getBudgetDistributionList() != null
-            && !purchaseOrderLine.getBudgetDistributionList().isEmpty()) {
-          BigDecimal budgetDistributionTotalAmount =
-              purchaseOrderLine.getBudgetDistributionList().stream()
-                  .map(BudgetDistribution::getAmount)
-                  .reduce(BigDecimal.ZERO, BigDecimal::add);
-          if (budgetDistributionTotalAmount.compareTo(purchaseOrderLine.getCompanyExTaxTotal())
-              != 0) {
-            return false;
-          }
-        }
-      }
-    }
-    return true;
   }
 
   @Override

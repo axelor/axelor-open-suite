@@ -137,7 +137,9 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       boolean taxed,
       BigDecimal taxRate,
       SaleOrderLine saleOrderLine,
-      PurchaseOrderLine purchaseOrderLine)
+      PurchaseOrderLine purchaseOrderLine,
+      StockLocation fromStockLocation,
+      StockLocation toStockLocation)
       throws AxelorException {
     if (product != null) {
 
@@ -153,7 +155,9 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
               unit,
               stockMove,
               taxed,
-              taxRate);
+              taxRate,
+              fromStockLocation,
+              toStockLocation);
       stockMoveLine.setRequestedReservedQty(requestedReservedQty);
       stockMoveLine.setIsQtyRequested(
           requestedReservedQty != null && requestedReservedQty.signum() > 0);
@@ -176,7 +180,9 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
           BigDecimal.ZERO,
           unit,
           stockMove,
-          null);
+          null,
+          fromStockLocation,
+          toStockLocation);
     }
   }
 
@@ -189,10 +195,8 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       return super.compute(stockMoveLine, null);
     }
 
-    if (stockMove.getOriginId() != null
-        && stockMove.getOriginId() != 0L
-        && (stockMoveLine.getSaleOrderLine() != null
-            || stockMoveLine.getPurchaseOrderLine() != null)) {
+    if ((stockMove.getSaleOrder() != null && stockMoveLine.getSaleOrderLine() != null)
+        || (stockMove.getPurchaseOrder() != null && stockMoveLine.getPurchaseOrderLine() != null)) {
       // the stock move comes from a sale or purchase order, we take the price from the order.
       stockMoveLine = computeFromOrder(stockMoveLine, stockMove);
     } else {
@@ -206,7 +210,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
     BigDecimal unitPriceUntaxed = stockMoveLine.getUnitPriceUntaxed();
     BigDecimal unitPriceTaxed = stockMoveLine.getUnitPriceTaxed();
     Unit orderUnit = null;
-    if (StockMoveRepository.ORIGIN_SALE_ORDER.equals(stockMove.getOriginTypeSelect())) {
+    if (stockMove.getSaleOrder() != null) {
       SaleOrderLine saleOrderLine = stockMoveLine.getSaleOrderLine();
       if (saleOrderLine == null) {
         // log the exception
@@ -214,14 +218,14 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
             new AxelorException(
                 TraceBackRepository.CATEGORY_MISSING_FIELD,
                 SupplychainExceptionMessage.STOCK_MOVE_MISSING_SALE_ORDER,
-                stockMove.getOriginId(),
+                stockMove.getSaleOrder(),
                 stockMove.getName()));
       } else {
         unitPriceUntaxed = saleOrderLine.getPriceDiscounted();
         unitPriceTaxed = saleOrderLine.getInTaxPrice();
         orderUnit = saleOrderLine.getUnit();
       }
-    } else if (StockMoveRepository.ORIGIN_PURCHASE_ORDER.equals(stockMove.getOriginTypeSelect())) {
+    } else if (stockMove.getPurchaseOrder() != null) {
       PurchaseOrderLine purchaseOrderLine = stockMoveLine.getPurchaseOrderLine();
       if (purchaseOrderLine == null) {
         // log the exception
@@ -229,7 +233,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
             new AxelorException(
                 TraceBackRepository.CATEGORY_MISSING_FIELD,
                 SupplychainExceptionMessage.STOCK_MOVE_MISSING_PURCHASE_ORDER,
-                stockMove.getOriginId(),
+                stockMove.getPurchaseOrder(),
                 stockMove.getName()));
       } else {
         unitPriceUntaxed = purchaseOrderLine.getPriceDiscounted();
@@ -403,6 +407,8 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
             BigDecimal.ZERO,
             unit,
             stockMove,
+            null,
+            null,
             null);
 
     generatedStockMoveLine.setSaleOrderLine(saleOrderLine);
@@ -472,12 +478,12 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
   }
 
   @Override
-  public boolean isAvailableProduct(StockMove stockMove, StockMoveLine stockMoveLine) {
+  public boolean isAvailableProduct(StockMoveLine stockMoveLine) {
     if (stockMoveLine.getProduct() == null
         || (stockMoveLine.getProduct() != null && !stockMoveLine.getProduct().getStockManaged())) {
       return true;
     }
-    updateAvailableQty(stockMoveLine, stockMove.getFromStockLocation());
+    updateAvailableQty(stockMoveLine, stockMoveLine.getFromStockLocation());
     BigDecimal availableQty = stockMoveLine.getAvailableQty();
     if (stockMoveLine.getProduct().getTrackingNumberConfiguration() != null
         && stockMoveLine.getTrackingNumber() == null) {

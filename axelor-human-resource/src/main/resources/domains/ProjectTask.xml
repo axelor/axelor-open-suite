@@ -8,7 +8,6 @@
   <entity name="ProjectTask">
 
     <decimal name="totalPlannedHrs" title="Total planned hours"/>
-    <decimal name="totalRealHrs" title="Total real hours"/>
     <one-to-many name="projectPlanningTimeList" title="Project planning time lines"
       ref="com.axelor.apps.project.db.ProjectPlanningTime" mappedBy="projectTask"/>
 
