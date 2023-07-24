@@ -502,7 +502,7 @@
 462000;460;"Créances sur cessions d'immobilisations";"receivable";;;;;;0;"NDAS";;1;"false";"false";"false";0
 464000;460;"Dettes sur acquisitions de valeurs mobilières de placement";"debt";;;;;;0;"NDAS";;1;"false";"false";"false";0
 465000;460;"Créances sur cessions de valeurs mobilières de placement";"receivable";;;;;;2;"NDAS";;1;"false";"false";"false";0
-467;460;"Autres comptes débiteurs ou créditeurs";"view";;;;;;2;"NDAS";;1;"false";"true";"false";0
+467000;460;"Autres comptes débiteurs ou créditeurs";"view";;;;;;2;"NDAS";;1;"false";"true";"false";0
 468000;460;"Divers - Charges à payer et produits à recevoir";"receivable";;;;;;2;"NDAS";;1;"false";"false";"false";0
 468600;468000;"Charges à payer";"debt";;;;;;2;"NDAS";;1;"false";"false";"false";0
 468700;468000;"Produits à recevoir";"receivable";;;;;;2;"NDAS";;1;"false";"false";"false";0
@@ -527,8 +527,8 @@
 486000;480;"Charges constatées d'avance";"receivable";;;;;;2;"NDAS";;1;"false";"false";"false";0
 487000;480;"Produits constatés d'avance";"debt";;;;;;2;"NDAS";;1;"false";"false";"false";0
 488000;480;"Comptes de répartition périodique des charges et des produits";"view";;;;;;2;"NDAS";;1;"false";"true";"false";0
-488600;488;"Charges";"debt";;;;;;2;"NDAS";;1;"false";"false";"false";0
-488700;488;"Produits";"receivable";;;;;;2;"NDAS";;1;"false";"false";"false";0
+488600;488000;"Charges";"debt";;;;;;2;"NDAS";;1;"false";"false";"false";0
+488700;488000;"Produits";"receivable";;;;;;2;"NDAS";;1;"false";"false";"false";0
 489000;480;"Quotas d'émission alloués par l'État";"receivable";;;;;;2;"NDAS";;1;"false";"false";"false";0
 490;"CL4";"Dépréciations des comptes de tiers";"view";;;;;;2;"NDAS";;1;"false";"true";"false";0
 491000;490;"Dépréciation des comptes de clients";"debt";;;;;;1;"NDAS";;1;"false";"false";"false";0
