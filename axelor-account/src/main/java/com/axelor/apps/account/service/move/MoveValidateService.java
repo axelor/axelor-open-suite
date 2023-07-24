@@ -75,4 +75,6 @@ public interface MoveValidateService {
   void accountingMultiple(Query<Move> moveListQuery) throws AxelorException;
 
   void checkMoveLinesPartner(Move move) throws AxelorException;
+
+  void checkTaxAmount(Move move) throws AxelorException;
 }

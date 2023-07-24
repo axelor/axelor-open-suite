@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="contract" package="com.axelor.apps.contract.db"/>
+
+  <entity name="RevaluationFormula">
+    <string name="code" title="Code" required="true"/>
+    <string name="name" title="Name"/>
+    <string name="formula" title="Formula" large="true"/>
+    <string name="invoiceComment" title="Comment to be included on invoice" large="true"/>
+    <string name="description" title="Description" large="true"/>
+  </entity>
+
+</domain-models>

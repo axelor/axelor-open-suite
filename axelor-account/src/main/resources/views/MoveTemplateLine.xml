@@ -4,7 +4,8 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="move-template-line-in-amount-grid" title="Move template line"
-    model="com.axelor.apps.account.db.MoveTemplateLine">
+    model="com.axelor.apps.account.db.MoveTemplateLine"
+    onNew="action-attrs-move-template-line-set-required-partner">
     <field name="name"/>
     <field name="product" form-view="product-form" grid-view="product-grid"/>
     <field name="account" form-view="account-form" grid-view="account-grid"/>
@@ -33,8 +34,8 @@
 
   <form name="move-template-line-in-amount-form" title="Move template line"
     model="com.axelor.apps.account.db.MoveTemplateLine"
-    onNew="action-move-template-attrs-set-hidden-analytic-distribution-template"
-    onLoad="action-move-template-attrs-set-hidden-analytic-distribution-template">
+    onNew="action-attrs-move-template-line-set-required-partner,action-move-template-attrs-set-hidden-analytic-distribution-template"
+    onLoad="action-attrs-move-template-line-set-required-partner,action-move-template-attrs-set-hidden-analytic-distribution-template">
     <panel name="mainPanel">
       <field name="name"/>
       <field name="partner" canEdit="false" form-view="partner-form" grid-view="partner-grid"
@@ -142,5 +143,11 @@
   <action-method name="action-method-move-template-line-set-partner-domain">
     <call class="com.axelor.apps.account.web.MoveTemplateController" method="filterPartner"/>
   </action-method>
+
+  <action-attrs name="action-attrs-move-template-line-set-required-partner">
+    <attribute for="partner" name="required"
+      expr="eval: [1,2].contains(__parent__?.journal?.journalType?.technicalTypeSelect)"
+      if="__parent__._model == 'com.axelor.apps.account.db.MoveTemplate'"/>
+  </action-attrs>
 
 </object-views>

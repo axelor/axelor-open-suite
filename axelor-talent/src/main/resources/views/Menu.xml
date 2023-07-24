@@ -164,4 +164,10 @@
     <view type="form" name="appraisal-type-form"/>
   </action-view>
 
+  <!-- MyHR -->
+
+  <menuitem name="my-hr-appraisal-all-appraisals" title="Appraisals"
+    action="appraisal.all.appraisals" parent="my-hr-root" order="600"
+    if="__config__.app.isApp('appraisal')" icon="fa-comments-o" icon-background="#84429f"/>
+
 </object-views>
