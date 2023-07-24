@@ -45,15 +45,16 @@
     <decimal name="initialCosts" title="ProjectTask.Costs"/>
     <decimal name="initialMargin" title="ProjectTask.Margin"/>
     <decimal name="initialMarkup" title="ProjectTask.Markup"/>
-    <decimal name="unitCost" title="Unit cost"/>
     <decimal name="realTurnover" title="Real turnover"/>
     <decimal name="realCosts" title="ProjectTask.Costs"/>
     <decimal name="realMargin" title="ProjectTask.Margin"/>
     <decimal name="realMarkup" title="ProjectTask.Markup"/>
-    <decimal name="forecastUnitCost" title="Forecast unit cost"/>
     <decimal name="forecastCosts" title="ProjectTask.Costs"/>
     <decimal name="forecastMargin" title="ProjectTask.Margin"/>
     <decimal name="forecastMarkup" title="ProjectTask.Markup"/>
+
+    <decimal name="unitCost" title="Unit cost"/>
+    <decimal name="totalCost" title="Total cost"/>
 
     <extra-code>
 			<![CDATA[
