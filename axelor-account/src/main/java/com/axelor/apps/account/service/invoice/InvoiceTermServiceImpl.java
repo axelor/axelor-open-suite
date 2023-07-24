@@ -333,29 +333,6 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     }
   }
 
-  @Override
-  public void updateFinancialDiscount(InvoiceTerm invoiceTerm) {
-    if (appAccountService.getAppAccount().getManageFinancialDiscount()
-        && invoiceTerm.getFinancialDiscount() != null) {
-
-      invoiceTerm.setFinancialDiscountAmount(
-          invoiceTerm
-              .getAmountRemaining()
-              .multiply(
-                  invoiceTerm
-                      .getFinancialDiscount()
-                      .getDiscountRate()
-                      .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP)));
-      invoiceTerm.setRemainingAmountAfterFinDiscount(
-          invoiceTerm.getAmountRemaining().subtract(invoiceTerm.getFinancialDiscountAmount()));
-
-      this.computeAmountRemainingAfterFinDiscount(invoiceTerm);
-
-      invoiceTerm.setFinancialDiscountDeadlineDate(
-          this.computeFinancialDiscountDeadlineDate(invoiceTerm));
-    }
-  }
-
   protected void computeAmountRemainingAfterFinDiscount(InvoiceTerm invoiceTerm) {
     if (invoiceTerm.getAmount().signum() > 0) {
       invoiceTerm.setAmountRemainingAfterFinDiscount(

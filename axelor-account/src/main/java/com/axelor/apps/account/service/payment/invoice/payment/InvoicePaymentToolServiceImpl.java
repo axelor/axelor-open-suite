@@ -291,7 +291,6 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
         it ->
             invoiceTermPaymentService.manageInvoiceTermFinancialDiscount(
                 it, it.getInvoiceTerm(), invoicePayment.getApplyFinancialDiscount()));
-
     invoicePayment.setApplyFinancialDiscount(true);
     invoicePayment.setFinancialDiscount(
         invoiceTermPaymentList.get(0).getInvoiceTerm().getFinancialDiscount());
@@ -307,57 +306,6 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
         invoicePayment.getAmount().add(invoicePayment.getFinancialDiscountTotalAmount()));
     invoicePayment.setFinancialDiscountDeadlineDate(
         this.getFinancialDiscountDeadlineDate(invoiceTermPaymentList));
-  }
-
-  @Override
-  public void updateFinancialDiscount(InvoicePayment invoicePayment) {
-    if (CollectionUtils.isEmpty(invoicePayment.getInvoiceTermPaymentList())) {
-      return;
-    }
-    List<InvoiceTermPayment> invoiceTermPaymentList =
-        invoicePayment.getInvoiceTermPaymentList().stream()
-            .filter(it -> it.getInvoiceTerm() != null)
-            .collect(Collectors.toList());
-
-    invoiceTermPaymentList.forEach(
-        it -> updateInvoiceTermFinancialDiscount(it, it.getInvoiceTerm(), invoicePayment));
-
-    if (invoicePayment.getFinancialDiscount() != null) {
-      invoicePayment.setFinancialDiscountTotalAmount(
-          this.getFinancialDiscountTotalAmount(invoiceTermPaymentList));
-      invoicePayment.setFinancialDiscountTaxAmount(
-          this.getFinancialDiscountTaxAmount(invoiceTermPaymentList));
-      invoicePayment.setFinancialDiscountAmount(
-          invoicePayment
-              .getFinancialDiscountTotalAmount()
-              .subtract(invoicePayment.getFinancialDiscountTaxAmount()));
-      invoicePayment.setTotalAmountWithFinancialDiscount(
-          invoicePayment.getAmount().add(invoicePayment.getFinancialDiscountTotalAmount()));
-      invoicePayment.setFinancialDiscountDeadlineDate(
-          this.getFinancialDiscountDeadlineDate(invoiceTermPaymentList));
-    } else {
-      invoicePayment.setApplyFinancialDiscount(false);
-      invoicePayment.setFinancialDiscountTotalAmount(BigDecimal.ZERO);
-      invoicePayment.setFinancialDiscountTaxAmount(BigDecimal.ZERO);
-      invoicePayment.setFinancialDiscountAmount(BigDecimal.ZERO);
-      invoicePayment.setTotalAmountWithFinancialDiscount(BigDecimal.ZERO);
-      invoicePayment.setFinancialDiscountDeadlineDate(null);
-    }
-  }
-
-  protected void updateInvoiceTermFinancialDiscount(
-      InvoiceTermPayment invoiceTermPayment,
-      InvoiceTerm invoiceTerm,
-      InvoicePayment invoicePayment) {
-    if (invoicePayment.getFinancialDiscount() != null) {
-      invoiceTerm.setApplyFinancialDiscount(true);
-      invoiceTerm.setFinancialDiscount(invoicePayment.getFinancialDiscount());
-      invoiceTermService.updateFinancialDiscount(invoiceTerm);
-      invoiceTermPaymentService.manageInvoiceTermFinancialDiscount(
-          invoiceTermPayment, invoiceTerm, invoicePayment.getApplyFinancialDiscount());
-    } else {
-      invoiceTerm.setApplyFinancialDiscount(false);
-    }
   }
 
   protected BigDecimal getFinancialDiscountTotalAmount(
@@ -484,5 +432,91 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
         invoicePayment
             .getFinancialDiscountTotalAmount()
             .subtract(invoicePayment.getFinancialDiscountTaxAmount()));
+  }
+
+  @Override
+  public List<Long> changeAmount(InvoicePayment invoicePayment, Long invoiceId)
+      throws AxelorException {
+    if (invoicePayment.getCurrency() == null) {
+      return null;
+    }
+
+    List<Long> invoiceTermIdList = null;
+    boolean amountError = false;
+
+    if (invoiceId > 0) {
+      List<InvoiceTerm> invoiceTerms =
+          Beans.get(InvoiceTermService.class)
+              .getUnpaidInvoiceTermsFiltered(invoicePayment.getInvoice());
+
+      if (invoicePayment.getManualChange()) {
+        invoiceTerms.stream()
+            .filter(it -> it.getFinancialDiscount() != null)
+            .forEach(
+                it -> it.setApplyFinancialDiscount(invoicePayment.getApplyFinancialDiscount()));
+      }
+
+      BigDecimal payableAmount =
+          this.getPayableAmount(
+              invoiceTerms,
+              invoicePayment.getPaymentDate(),
+              invoicePayment.getManualChange(),
+              invoicePayment.getCurrency());
+
+      if (!invoicePayment.getManualChange()
+          || invoicePayment.getAmount().compareTo(payableAmount) > 0) {
+        invoicePayment.setAmount(payableAmount);
+        amountError = invoicePayment.getManualChange();
+      }
+
+      invoiceTermIdList =
+          invoiceTerms.stream().map(InvoiceTerm::getId).collect(Collectors.toList());
+      if (!CollectionUtils.isEmpty(invoiceTerms)) {
+
+        BigDecimal amount = invoicePayment.getAmount();
+
+        if (invoicePayment.getManualChange() && invoicePayment.getApplyFinancialDiscount()) {
+          this.computeFromInvoiceTermPayments(invoicePayment);
+          amount = amount.add(invoicePayment.getFinancialDiscountTotalAmount());
+        }
+
+        invoicePayment.clearInvoiceTermPaymentList();
+        Beans.get(InvoiceTermPaymentService.class)
+            .initInvoiceTermPaymentsWithAmount(invoicePayment, invoiceTerms, amount);
+      }
+
+      if (amountError) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(AccountExceptionMessage.INVOICE_PAYMENT_AMOUNT_TOO_HIGH));
+      }
+    }
+    return invoiceTermIdList;
+  }
+
+  @Override
+  public void changeApplyFinancialDiscountForInvoiceTermsAndUpdatedAmount(
+      InvoicePayment invoicePayment) {
+    invoicePayment.getInvoiceTermPaymentList().stream()
+        .filter(
+            it -> it.getInvoiceTerm() != null && it.getInvoiceTerm().getFinancialDiscount() != null)
+        .map(it -> it.getInvoiceTerm())
+        .forEach(it -> it.setApplyFinancialDiscount(invoicePayment.getApplyFinancialDiscount()));
+    if (invoicePayment.getApplyFinancialDiscount()
+        && invoicePayment.getFinancialDiscount() != null) {
+      int financialTotalAmountWithDiscountScale = 2;
+      invoicePayment.setAmount(
+          invoicePayment
+              .getAmount()
+              .multiply(
+                  BigDecimal.ONE.subtract(
+                      invoicePayment
+                          .getFinancialDiscount()
+                          .getDiscountRate()
+                          .divide(
+                              new BigDecimal(100),
+                              financialTotalAmountWithDiscountScale,
+                              RoundingMode.HALF_UP))));
+    }
   }
 }

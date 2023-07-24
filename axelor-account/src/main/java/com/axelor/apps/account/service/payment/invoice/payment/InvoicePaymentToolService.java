@@ -75,5 +75,8 @@ public interface InvoicePaymentToolService {
 
   void computeFromInvoiceTermPayments(InvoicePayment invoicePayment);
 
-  public void updateFinancialDiscount(InvoicePayment invoicePayment);
+  List<Long> changeAmount(InvoicePayment invoicePayment, Long invoiceId) throws AxelorException;
+
+  public void changeApplyFinancialDiscountForInvoiceTermsAndUpdatedAmount(
+      InvoicePayment invoicePayment);
 }

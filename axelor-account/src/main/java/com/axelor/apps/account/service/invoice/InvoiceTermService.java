@@ -328,8 +328,6 @@ public interface InvoiceTermService {
   List<InvoiceTerm> recomputeInvoiceTermsPercentage(
       List<InvoiceTerm> invoiceTermList, BigDecimal total);
 
-  void updateFinancialDiscount(InvoiceTerm invoiceTerm);
-
   boolean isThresholdNotOnLastInvoiceTerm(
       MoveLine moveLine, BigDecimal thresholdDistanceFromRegulation);
 }

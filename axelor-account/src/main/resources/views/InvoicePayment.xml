@@ -61,16 +61,16 @@
     </panel>
     <panel name="discountPanel" title="Financial discount"
       if="__config__.app.getApp('account')?.getManageFinancialDiscount()"
-      readonlyIf="statusSelect > 0 || invoice.amountPaid > 0">
-      <field name="applyFinancialDiscount"/>
-      <field name="financialDiscount" onChange="action-invoice-payment-method-update-discount"
-        showIf="applyFinancialDiscount" readonlyIf="!applyFinancialDiscount"
+      readonlyIf="statusSelect > 0 || invoice.amountPaid > 0" showIf="financialDiscount">
+      <field name="applyFinancialDiscount"
+        onChange="action-invoice-payment-group-apply-financial-discount-on-change"/>
+      <field name="financialDiscount" showIf="applyFinancialDiscount" readonly="true"
         requiredIf="applyFinancialDiscount"/>
       <field name="totalAmountWithFinancialDiscount" title="Total amount with Fin. Discount"
         showIf="applyFinancialDiscount &amp;&amp; totalAmountWithFinancialDiscount != null"
         readonly="true"/>
       <panel name="financialDiscountAmountPanel"
-        showIf="applyFinancialDiscount &amp;&amp; !$isMultiCurrency" colSpan="12">
+        showIf="applyFinancialDiscount &amp;&amp; !$isMultiCurrency" colSpan="12" readonly="true">
         <field name="financialDiscountDeadlineDate"/>
         <field name="financialDiscountAmount" readonly="true"
           showIf="financialDiscountTaxAmount > 0"/>
@@ -163,6 +163,14 @@
     <action name="action-invoice-payment-method-mass-payment-set-amount"/>
   </action-group>
 
+  <action-group name="action-invoice-payment-group-apply-financial-discount-on-change">
+    <action name="action-record-invoice-payment-apply-financial-discount-on-change"/>
+    <action name="action-invoice-payment-record-manual-change"/>
+    <action
+      name="action-invoice-payment-method-compute-invoice-payment-after-apply-financial-discount-change"/>
+  </action-group>
+
+
   <action-validate name="action-invoice-payment-validate-mass-payment">
     <error message="Please fill in the company bank details." if="companyBankDetails == null"/>
     <error message="Please fill in the date." if="paymentDate == null"/>
@@ -199,6 +207,17 @@
       expr="eval: __repo__(Invoice).all().filter(&quot;self.id in (?1) AND self.financialDiscount is not null &quot;,_invoices).fetchOne()?.financialDiscount"/>
   </action-record>
 
+  <action-record
+    name="action-record-invoice-payment-apply-financial-discount-on-change"
+    model="com.axelor.apps.account.db.InvoicePayment">
+    <field name="amount" expr="eval: totalAmountWithFinancialDiscount"
+      if="!applyFinancialDiscount"/>
+    <field name="totalAmountWithFinancialDiscount" expr="eval: 0" if="!applyFinancialDiscount"/>
+    <field name="financialDiscountAmount" expr="eval: 0" if="!applyFinancialDiscount"/>
+    <field name="financialDiscountTaxAmount" expr="eval: 0" if="!applyFinancialDiscount"/>
+    <field name="financialDiscountTotalAmount" expr="eval: 0" if="!applyFinancialDiscount"/>
+  </action-record>
+
 
   <action-attrs name="action-invoice-payment-attrs-new">
     <attribute for="amount" name="readonly"
@@ -215,11 +234,6 @@
   <action-method name="action-invoice-payment-method-new-discount">
     <call class="com.axelor.apps.account.web.InvoicePaymentController"
       method="computeDatasForFinancialDiscount"/>
-  </action-method>
-
-  <action-method name="action-invoice-payment-method-update-discount">
-    <call class="com.axelor.apps.account.web.InvoicePaymentController"
-      method="updateFinancialDiscount"/>
   </action-method>
 
   <action-method name="action-invoice-payment-method-apply-financial-discount">
@@ -268,6 +282,12 @@
   <action-method name="action-invoice-payment-method-set-is-multi-currency">
     <call class="com.axelor.apps.account.web.InvoicePaymentController"
       method="setIsMultiCurrency"/>
+  </action-method>
+
+  <action-method
+    name="action-invoice-payment-method-compute-invoice-payment-after-apply-financial-discount-change">
+    <call class="com.axelor.apps.account.web.InvoicePaymentController"
+      method="computeInvoicePaymentAfterApplyFinancialDiscount"/>
   </action-method>
 
   <action-record name="action-record-on-change-invoice-payment-financial-discount"

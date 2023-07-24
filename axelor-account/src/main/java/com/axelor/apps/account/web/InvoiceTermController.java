@@ -412,22 +412,6 @@ public class InvoiceTermController {
     }
   }
 
-  public void updateFinancialDiscount(ActionRequest request, ActionResponse response) {
-    try {
-      InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
-
-      if (invoiceTerm.getFinancialDiscount() != null) {
-        Beans.get(InvoiceTermService.class).updateFinancialDiscount(invoiceTerm);
-        response.setValues(invoiceTerm);
-      } else {
-        response.setValue("applyFinancialDiscount", false);
-      }
-
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
   public void setPfpStatus(ActionRequest request, ActionResponse response) {
     try {
       InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
