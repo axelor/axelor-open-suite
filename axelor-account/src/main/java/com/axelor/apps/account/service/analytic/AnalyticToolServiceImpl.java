@@ -25,8 +25,6 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
-import com.axelor.rpc.Context;
-import com.axelor.utils.MapTools;
 import java.math.BigDecimal;
 import java.util.List;
 import javax.inject.Inject;
@@ -78,17 +76,5 @@ public class AnalyticToolServiceImpl implements AnalyticToolService {
       AnalyticAccount analyticAccount, List<AnalyticMoveLine> analyticMoveLineList) {
     return analyticAccount != null
         && !isAxisAccountSumValidated(analyticMoveLineList, analyticAccount.getAnalyticAxis());
-  }
-
-  @Override
-  public <T> T getFieldFromContextParent(Context context, String fieldName, Class<T> klass) {
-    while (context != null) {
-      T object = MapTools.get(context, klass, fieldName);
-      if (object != null) {
-        return object;
-      }
-      context = context.getParent();
-    }
-    return null;
   }
 }
