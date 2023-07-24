@@ -501,7 +501,6 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
         analyticLineService.printAnalyticAccount(moveLine, move.getCompany());
 
         TaxLine taxLine = invoiceLine.getTaxLine();
-
         if (taxLine != null) {
           moveLine.setTaxLine(taxLine);
           moveLine.setTaxRate(taxLine.getValue());
