@@ -1,0 +1,3 @@
+---
+title: FinancialDiscount in invoice - fields related to financial discount are displayed even when option disabled on AppAccount
+type: fix
