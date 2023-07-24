@@ -267,45 +267,33 @@ public class DebtRecoveryService {
 
     int mailTransitTime = company.getAccountConfig().getMailTransitTime();
 
+    LocalDate todayDate = appAccountService.getTodayDate(company);
+
     for (MoveLine moveLine : moveLineQuery) {
       if (moveLine.getMove() != null && !moveLine.getMove().getIgnoreInDebtRecoveryOk()) {
         Move move = moveLine.getMove();
+        Invoice invoice = move.getInvoice();
+
         // facture exigibles non bloquée en relance et dont la date de facture + délai
         // d'acheminement < date du jour
         if (move.getStatusSelect() != MoveRepository.STATUS_CANCELED
-            && move.getInvoice() != null
-            && !move.getInvoice().getDebtRecoveryBlockingOk()
-            && !move.getInvoice().getSchedulePaymentOk()
-            && ((move.getInvoice().getInvoiceDate()).plusDays(mailTransitTime))
-                .isBefore(appAccountService.getTodayDate(company))) {
-          if ((moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0)
-              && moveLine.getDueDate() != null
-              && (appAccountService.getTodayDate(company).isAfter(moveLine.getDueDate())
-                  || appAccountService.getTodayDate(company).isEqual(moveLine.getDueDate()))) {
-            if (moveLine.getAccount() != null && moveLine.getAccount().getUseForPartnerBalance()) {
-              if (moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
-                moveLineList.add(moveLine);
-              }
-            }
-          }
+            && invoice != null
+            && !invoice.getDebtRecoveryBlockingOk()
+            && !invoice.getSchedulePaymentOk()
+            && ((invoice.getInvoiceDate()).plusDays(mailTransitTime)).isBefore(todayDate)) {
+          moveLineList.add(moveLine);
         }
+
         InvoiceTerm invoiceTerm =
             invoiceTermRepo
                 .all()
                 .filter("self.moveLine.id = :moveLineId")
                 .bind("moveLineId", moveLine.getId())
                 .fetchOne();
-        if (move.getInvoice() == null || invoiceTerm != null) {
-          if ((moveLine.getPaymentScheduleLine() != null || invoiceTerm != null)
-              && (moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0)
-              && moveLine.getDueDate() != null
-              && (appAccountService.getTodayDate(company).isAfter(moveLine.getDueDate())
-                  || appAccountService.getTodayDate(company).isEqual(moveLine.getDueDate()))) {
-            if (moveLine.getAccount() != null && moveLine.getAccount().getUseForPartnerBalance()) {
-              if (moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
-                moveLineList.add(moveLine);
-              }
-            }
+
+        if (invoice == null || invoiceTerm != null) {
+          if ((moveLine.getPaymentScheduleLine() != null || invoiceTerm != null)) {
+            moveLineList.add(moveLine);
           }
         }
       }
@@ -365,22 +353,32 @@ public class DebtRecoveryService {
   public List<? extends MoveLine> getMoveLine(
       Partner partner, Company company, TradingName tradingName) {
 
-    Query<MoveLine> query;
-    if (tradingName == null) {
-      query =
-          moveLineRepo
-              .all()
-              .filter("self.partner = ?1 and self.move.company = ?2", partner, company);
-    } else {
-      query =
-          moveLineRepo
-              .all()
-              .filter(
-                  "self.partner = ?1 and self.move.company = ?2 and self.move.tradingName = ?3",
-                  partner,
-                  company,
-                  tradingName);
+    LocalDate todayDate = appAccountService.getTodayDate(company);
+
+    // Shift common checks from method getMoveLineDebtRecovery to filter
+    StringBuilder filter = new StringBuilder();
+    filter.append("self.partner = :partner AND self.move.company = :company");
+    filter.append(
+        " AND self.debit > 0 AND self.dueDate IS NOT NULL AND (self.dueDate < :todayDate OR self.dueDate = :todayDate)");
+    filter.append(
+        " AND self.account IS NOT NULL AND self.account.useForPartnerBalance = true AND self.amountRemaining > 0");
+
+    if (tradingName != null) {
+      filter.append(" AND self.move.tradingName = :tradingName");
     }
+
+    Query<MoveLine> query =
+        moveLineRepo
+            .all()
+            .filter(filter.toString())
+            .bind("partner", partner)
+            .bind("company", company)
+            .bind("todayDate", todayDate);
+
+    if (tradingName != null) {
+      query.bind("tradingName", tradingName);
+    }
+
     return query.fetch();
   }
 
