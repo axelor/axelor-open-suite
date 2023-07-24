@@ -70,8 +70,10 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImpl
@@ -602,5 +604,23 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     projectTask.setPercentageOfProgress(percentageOfProgression);
     projectTask.setPercentageOfConsumption(percentageOfConsumption);
     projectTask.setRemainingAmountToDo(remainingAmountToDo);
+  }
+
+  @Override
+  public Map<String, Object> processRequestToDisplayTimeReporting(Long id) throws AxelorException {
+
+    ProjectTask projectTask = projectTaskRepo.find(id);
+
+    Map<String, Object> data = new HashMap<>();
+    data.put(
+        "unit",
+        Optional.ofNullable(projectTask.getTimeUnit())
+            .map(unit -> unit.getName() + "(s)")
+            .orElse(""));
+    data.put("progress", projectTask.getPercentageOfProgress() + " %");
+    data.put("consumption", projectTask.getPercentageOfConsumption() + " %");
+    data.put("remaining", projectTask.getRemainingAmountToDo());
+
+    return data;
   }
 }

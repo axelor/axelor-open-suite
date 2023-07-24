@@ -150,6 +150,46 @@
     </template>
   </custom>
 
+  <!-- time follow up -->
+  <custom title="% of progress" name="project-task-percentage-progress-custom"
+    css="report-box dashlet-no-dropdown">
+    <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectTaskController:getProjectTaskTimeFollowUpData</dataset>
+    <template>
+      <![CDATA[
+        <i class='report-icon fa fa-line-chart'></i>
+        <div style='display:inline-block;'>
+          <h1>{{first.progress}}</h1>
+        </div>
+      ]]>
+    </template>
+  </custom>
+
+  <custom title="% of consumption" name="project-task-percentage-consumption-custom"
+    css="report-box dashlet-no-dropdown">
+    <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectTaskController:getProjectTaskTimeFollowUpData</dataset>
+    <template>
+      <![CDATA[
+        <i class='report-icon fa fa-hourglass-half'></i>
+        <div style='display:inline-block;'>
+          <h1>{{first.consumption}}</h1>
+        </div>
+      ]]>
+    </template>
+  </custom>
+
+  <custom title="Remaining amount to do" name="project-task-remaining-to-do-custom"
+    css="report-box dashlet-no-dropdown">
+    <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectTaskController:getProjectTaskTimeFollowUpData</dataset>
+    <template>
+      <![CDATA[
+        <i class='report-icon fa fa-tasks'></i>
+        <div style='display:inline-block;'>
+          <h1>{{first.remaining}} <span style="font-size:20px;">{{first.unit}}</span></h1>
+        </div>
+      ]]>
+    </template>
+  </custom>
+
   <!-- ACTION VIEWS -->
   <action-view name="action-project-task-view-turnover-custom"
     title="ProjectTask.Turnover">
@@ -198,6 +238,22 @@
     <view type="custom" name="project-task-forecast-markup-custom"/>
   </action-view>
 
+
+  <!-- time follow up -->
+  <action-view name="action-project-task-view-percentage-progress-custom"
+    title="% of progress">
+    <view type="custom" name="project-task-percentage-progress-custom"/>
+  </action-view>
+
+  <action-view name="action-project-task-view-percentage-consumption-custom"
+    title="% of consumption">
+    <view type="custom" name="project-task-percentage-consumption-custom"/>
+  </action-view>
+
+  <action-view name="action-project-task-view-remaining-to-do-custom"
+    title="Remaining amount to do">
+    <view type="custom" name="project-task-remaining-to-do-custom"/>
+  </action-view>
 
 
 </object-views>

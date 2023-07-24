@@ -33,6 +33,7 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 public interface ProjectTaskBusinessProjectService extends ProjectTaskService {
 
@@ -66,4 +67,6 @@ public interface ProjectTaskBusinessProjectService extends ProjectTaskService {
   ProjectTask setProjectTaskValues(ProjectTask projectTask) throws AxelorException;
 
   void computeProjectTaskTotals(ProjectTask projectTask) throws AxelorException;
+
+  Map<String, Object> processRequestToDisplayTimeReporting(Long id) throws AxelorException;
 }
