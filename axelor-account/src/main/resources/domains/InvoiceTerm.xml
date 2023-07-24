@@ -137,6 +137,8 @@
       <field name="reasonOfRefusalToPayStr" on="UPDATE"/>
     </track>
 
+    <entity-listener class="com.axelor.apps.account.db.repo.InvoiceTermListener"/>
+
   </entity>
 
 </domain-models>

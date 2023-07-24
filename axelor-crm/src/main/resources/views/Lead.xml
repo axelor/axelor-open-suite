@@ -151,7 +151,7 @@
           <editor x-show-titles="false">
             <field name="enterpriseName" css="label-bold bold large" colSpan="12"
               showIf="partner == null" placeholder="Enterprise name"
-              onChange="action-lead-method-set-social-network-url"/>
+              onChange="action-lead-method-set-social-network-url" required="true"/>
             <field name="industrySector" colSpan="6" form-view="industry-sector-form"
               grid-view="industry-sector-grid" canEdit="false" canNew="true"/>
             <field name="partner" colSpan="12" domain="self.isContact = false"
@@ -372,8 +372,8 @@
 
   <action-group name="action-lead-group-lead-convert">
     <action name="save"/>
-    <action name="action-lead-method-view-lead-with-same-domain-name"/>
     <action name="action-lead-view-convert-lead"/>
+    <action name="action-lead-method-view-lead-with-same-domain-name"/>
   </action-group>
 
   <action-group name="action-group-crm-lead-onnew">

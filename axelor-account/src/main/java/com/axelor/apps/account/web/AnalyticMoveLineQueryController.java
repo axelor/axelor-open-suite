@@ -22,11 +22,15 @@ import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.AnalyticMoveLineQuery;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineQueryService;
+import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
+import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.base.ResponseMessageType;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
@@ -200,6 +204,36 @@ public class AnalyticMoveLineQueryController {
       domain.append(")");
       response.setAttr("analyticAccount", "domain", domain.toString());
 
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setAnalyticAxisDomain(ActionRequest request, ActionResponse response) {
+    try {
+      Context context = request.getContext();
+      AnalyticMoveLine analyticMoveLine = context.asType(AnalyticMoveLine.class);
+      Company company;
+      if (analyticMoveLine.getAnalyticJournal() != null
+          && analyticMoveLine.getAnalyticJournal().getCompany() != null) {
+        company = analyticMoveLine.getAnalyticJournal().getCompany();
+      } else {
+        company =
+            Beans.get(AnalyticToolService.class)
+                .getFieldFromContextParent(context, "company", Company.class);
+        if (company == null) {
+          Move move =
+              Beans.get(AnalyticToolService.class)
+                  .getFieldFromContextParent(context, "move", Move.class);
+          if (move != null) {
+            company = move.getCompany();
+          }
+        }
+      }
+      response.setAttr(
+          "analyticAxis",
+          "domain",
+          Beans.get(AnalyticMoveLineService.class).getAnalyticAxisDomain(company));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

@@ -16,19 +16,20 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.talent.service;
+package com.axelor.apps.account.db.repo;
 
+import com.axelor.apps.account.db.InvoiceTerm;
+import com.axelor.apps.account.service.move.record.MoveRecordUpdateService;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Period;
-import com.axelor.apps.hr.db.Employee;
-import java.util.List;
-import java.util.Map;
+import com.axelor.inject.Beans;
+import javax.persistence.PostUpdate;
 
-public interface TalentDashboardService {
-
-  List<Map<String, Object>> getTrainingData(Employee employee, Period period)
-      throws AxelorException;
-
-  List<Map<String, Object>> getRecruitmentData(Employee employee, Period period)
-      throws AxelorException;
+public class InvoiceTermListener {
+  @PostUpdate
+  protected void updateMovePfpValidateStatus(InvoiceTerm invoiceTerm) throws AxelorException {
+    if (invoiceTerm.getMoveLine() != null) {
+      Beans.get(MoveRecordUpdateService.class)
+          .updateInvoiceTerms(invoiceTerm.getMoveLine().getMove(), false, false);
+    }
+  }
 }

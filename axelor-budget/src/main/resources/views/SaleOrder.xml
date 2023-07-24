@@ -87,7 +87,7 @@
   </action-group>
 
   <action-group name="action-group-budget-saleorder-onload">
-    <action name="action-group-business-project-saleorder-onload"/>
+    <action name="action-group-supplychain-saleorder-onload"/>
     <action name="action-budget-sale-order-record-load-budget-key-config"
       if="__config__.app.isApp('budget')"/>
   </action-group>
