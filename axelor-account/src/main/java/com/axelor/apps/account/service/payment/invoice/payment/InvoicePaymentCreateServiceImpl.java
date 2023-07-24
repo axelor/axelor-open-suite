@@ -342,8 +342,13 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
     invoice.addInvoicePaymentListItem(invoicePayment);
     invoicePayment.setCompanyBankDetails(companyBankDetails);
     invoiceTermPaymentService.createInvoicePaymentTerms(invoicePayment, null);
-    invoiceTermService.updateInvoiceTermsPaidAmount(invoicePayment);
-    return invoicePaymentRepository.save(invoicePayment);
+    invoicePayment = invoicePaymentRepository.save(invoicePayment);
+
+    if (invoicePayment.getStatusSelect() != InvoicePaymentRepository.STATUS_PENDING) {
+      invoiceTermService.updateInvoiceTermsPaidAmount(invoicePayment);
+    }
+
+    return invoicePayment;
   }
 
   @Transactional

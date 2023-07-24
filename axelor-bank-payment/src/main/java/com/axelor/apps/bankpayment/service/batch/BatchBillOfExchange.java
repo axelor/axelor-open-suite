@@ -179,16 +179,14 @@ public class BatchBillOfExchange extends AbstractBatch {
     }
     AccountConfig accountConfig =
         accountConfigService.getAccountConfig(accountingBatch.getCompany());
-    Move move = createLCRAccountMove(invoice, accountConfig, accountingBatch);
-    moveValidateService.accounting(move);
+    Move placementMove = createLCRAccountMove(invoice, accountConfig, accountingBatch);
+    moveValidateService.accounting(placementMove);
     List<InvoiceTerm> newInvoiceTermList = new ArrayList<>();
     List<InvoiceTerm> invoiceTermListToRemove = new ArrayList<>();
-    copyInvoiceTerms(invoice, move, newInvoiceTermList, invoiceTermListToRemove);
-    reconcilesMoves(move, invoice.getMove(), invoice);
-    replaceInvoiceTerms(invoice, move, newInvoiceTermList, invoiceTermListToRemove);
-    updateInvoice(invoice, move, accountConfig);
-
-    System.err.println("YOUHOU");
+    copyInvoiceTerms(invoice, placementMove, newInvoiceTermList, invoiceTermListToRemove);
+    reconcilesMoves(placementMove, invoice.getMove(), invoice);
+    updateInvoice(invoice, placementMove, accountConfig);
+    replaceInvoiceTerms(invoice, newInvoiceTermList, invoiceTermListToRemove);
   }
 
   /**
@@ -232,7 +230,7 @@ public class BatchBillOfExchange extends AbstractBatch {
             debitMoveLine, creditMoveLine, creditMoveLine.getCredit(), false);
     reconcileService.confirmReconcile(reconcile, false, false);
 
-    updateInvoiceTerms(creditMoveLine, debitMoveLine, creditMoveLine.getCredit());
+    updateInvoiceTerms(creditMoveLine, debitMoveLine);
   }
 
   /**
@@ -280,6 +278,7 @@ public class BatchBillOfExchange extends AbstractBatch {
             null,
             invoice.getCompanyBankDetails());
     if (move != null) {
+      move.setPaymentCondition(invoice.getPaymentCondition());
 
       LocalDate todayDate = this.appBaseService.getTodayDate(invoice.getCompany());
       MoveLine creditMoveLine =
@@ -397,24 +396,28 @@ public class BatchBillOfExchange extends AbstractBatch {
     if (ObjectUtils.isEmpty(invoice.getInvoiceTermList())) {
       return;
     }
+
+    MoveLine newDebitMoveLine =
+        move.getMoveLineList().stream()
+            .filter(dml -> dml.getDebit().signum() != 0)
+            .findFirst()
+            .orElse(null);
+    if (!ObjectUtils.isEmpty(newDebitMoveLine.getInvoiceTermList())) {
+      newInvoiceTermList.addAll(newDebitMoveLine.getInvoiceTermList());
+    }
+
     List<InvoiceTerm> invoiceTermList =
         invoice.getInvoiceTermList().stream()
             .filter(it -> !it.getIsPaid() && it.getAmountRemaining().signum() > 0)
             .collect(Collectors.toList());
     if (!ObjectUtils.isEmpty(invoiceTermList)) {
-      for (InvoiceTerm invoiceTerm : invoiceTermList) {
-        InvoiceTerm copy = invoiceTermRepo.copy(invoiceTerm, false);
-        newInvoiceTermList.add(copy);
-
-        invoiceTermListToRemove.add(invoiceTerm);
-      }
+      invoiceTermListToRemove.addAll(invoiceTermList);
     }
   }
 
   @Transactional(rollbackOn = {Exception.class})
   protected void replaceInvoiceTerms(
       Invoice invoice,
-      Move move,
       List<InvoiceTerm> newInvoiceTermList,
       List<InvoiceTerm> invoiceTermListToRemove) {
     if (ObjectUtils.isEmpty(newInvoiceTermList) || ObjectUtils.isEmpty(invoiceTermListToRemove)) {
@@ -423,43 +426,28 @@ public class BatchBillOfExchange extends AbstractBatch {
     invoice.clearInvoiceTermList();
     for (InvoiceTerm invoiceTerm : newInvoiceTermList) {
       invoice.addInvoiceTermListItem(invoiceTerm);
-      MoveLine debitMoveLine =
-          move.getMoveLineList().stream()
-              .filter(dml -> dml.getDebit().equals(invoiceTerm.getAmountRemaining()))
-              .findFirst()
-              .orElse(null);
-      if (debitMoveLine != null) {
-        debitMoveLine.clearInvoiceTermList();
-        debitMoveLine.addInvoiceTermListItem(invoiceTerm);
-      }
     }
 
     for (InvoiceTerm invoiceTerm : invoiceTermListToRemove) {
       invoice.removeInvoiceTermListItem(invoiceTerm);
       invoiceTerm.setInvoice(null);
-      MoveLine debitMoveLine = invoiceTerm.getMoveLine();
-      debitMoveLine.clearInvoiceTermList();
-      debitMoveLine.addInvoiceTermListItem(invoiceTerm);
     }
   }
 
-  protected void updateInvoiceTerms(
-      MoveLine creditMoveLine, MoveLine debitMoveLine, BigDecimal amount) {
-    updateAmounts(creditMoveLine.getInvoiceTermList(), amount);
-    updateAmounts(debitMoveLine.getInvoiceTermList(), amount);
+  protected void updateInvoiceTerms(MoveLine creditMoveLine, MoveLine debitMoveLine) {
+    updateAmounts(creditMoveLine.getInvoiceTermList());
+    updateAmounts(debitMoveLine.getInvoiceTermList());
   }
 
-  protected void updateAmounts(List<InvoiceTerm> invoiceTermList, BigDecimal amount) {
+  protected void updateAmounts(List<InvoiceTerm> invoiceTermList) {
     if (!ObjectUtils.isEmpty(invoiceTermList)) {
       for (InvoiceTerm invoiceTerm : invoiceTermList) {
-        invoiceTerm.setAmountRemaining(invoiceTerm.getAmountRemaining().subtract(amount));
-        invoiceTerm.setCompanyAmountRemaining(
-            invoiceTerm.getCompanyAmountRemaining().subtract(amount));
         MoveLine moveLine = invoiceTerm.getMoveLine();
-        moveLine.setAmountRemaining(moveLine.getAmountRemaining().subtract(amount));
-        if (invoiceTerm.getAmountRemaining().signum() == 0) {
-          invoiceTerm.setIsPaid(true);
-        }
+        moveLine.setAmountRemaining(
+            moveLine.getAmountRemaining().subtract(invoiceTerm.getAmountRemaining()));
+        invoiceTerm.setAmountRemaining(BigDecimal.ZERO);
+        invoiceTerm.setCompanyAmountRemaining(BigDecimal.ZERO);
+        invoiceTerm.setIsPaid(true);
       }
     }
   }
