@@ -182,27 +182,27 @@
           requiredIf="(!analyticMoveLineList || !analyticMoveLineList.length) &amp;&amp; account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnInvoiceLines"/>
         <field name="axis1AnalyticAccount" grid-view="analytic-account-grid"
           form-view="analytic-account-form"
-          readonlyIf="!account.analyticDistributionAuthorized || !account || analyticDistributionTemplate != null"
+          readonlyIf="!account.analyticDistributionAuthorized || !account || analyticDistributionTemplate != null || account.company.accountConfig.analyticDistributionTypeSelect != 1"
           onSelect="action-invoice-line-method-set-axis-domain"
           onChange="action-invoice-line-method-axis-create-analytic-line"/>
         <field name="axis2AnalyticAccount" grid-view="analytic-account-grid"
           form-view="analytic-account-form"
-          readonlyIf="!account.analyticDistributionAuthorized || !account || analyticDistributionTemplate != null"
+          readonlyIf="!account.analyticDistributionAuthorized || !account || analyticDistributionTemplate != null || account.company.accountConfig.analyticDistributionTypeSelect != 1"
           onSelect="action-invoice-line-method-set-axis-domain"
           onChange="action-invoice-line-method-axis-create-analytic-line"/>
         <field name="axis3AnalyticAccount" grid-view="analytic-account-grid"
           form-view="analytic-account-form"
-          readonlyIf="!account.analyticDistributionAuthorized || !account || analyticDistributionTemplate != null"
+          readonlyIf="!account.analyticDistributionAuthorized || !account || analyticDistributionTemplate != null || account.company.accountConfig.analyticDistributionTypeSelect != 1"
           onSelect="action-invoice-line-method-set-axis-domain"
           onChange="action-invoice-line-method-axis-create-analytic-line"/>
         <field name="axis4AnalyticAccount" grid-view="analytic-account-grid"
           form-view="analytic-account-form"
-          readonlyIf="!account.analyticDistributionAuthorized || !account || analyticDistributionTemplate != null"
+          readonlyIf="!account.analyticDistributionAuthorized || !account || analyticDistributionTemplate != null || account.company.accountConfig.analyticDistributionTypeSelect != 1"
           onSelect="action-invoice-line-method-set-axis-domain"
           onChange="action-invoice-line-method-axis-create-analytic-line"/>
         <field name="axis5AnalyticAccount" grid-view="analytic-account-grid"
           form-view="analytic-account-form"
-          readonlyIf="!account.analyticDistributionAuthorized || !account || analyticDistributionTemplate != null"
+          readonlyIf="!account.analyticDistributionAuthorized || !account || analyticDistributionTemplate != null || account.company.accountConfig.analyticDistributionTypeSelect != 1"
           onSelect="action-invoice-line-method-set-axis-domain"
           onChange="action-invoice-line-method-axis-create-analytic-line"/>
         <field name="analyticMoveLineList" grid-view="analytic-move-line-move-line-grid"
@@ -211,6 +211,10 @@
         <field name="account.analyticDistributionAuthorized" hidden="true"/>
         <field name="account.analyticDistributionRequiredOnInvoiceLines" hidden="true"/>
         <field name="$isValidAnalyticMoveLineList" type="boolean" hidden="true"/>
+        <field name="account.company" hidden="true"/>
+        <field name="account.company.accountConfig" hidden="true"/>
+        <field name="account.company.accountConfig.analyticDistributionTypeSelect"
+          hidden="true"/>
       </panel>
       <panel name="configurationPanel" title="Configuration" if-module="axelor-supplychain"
         if="__config__.app.isApp('supplychain')">

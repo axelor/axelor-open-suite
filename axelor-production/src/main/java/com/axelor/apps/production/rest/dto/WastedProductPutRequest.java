@@ -29,8 +29,6 @@ public class WastedProductPutRequest extends RequestStructure {
   @Min(0)
   private BigDecimal qty;
 
-  public WastedProductPutRequest() {}
-
   public BigDecimal getQty() {
     return qty;
   }

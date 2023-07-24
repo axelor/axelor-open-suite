@@ -50,8 +50,6 @@ public class InventoryLinePostRequest extends RequestPostStructure {
   @Min(0)
   private BigDecimal realQty;
 
-  public InventoryLinePostRequest() {}
-
   public Long getInventoryId() {
     return inventoryId;
   }

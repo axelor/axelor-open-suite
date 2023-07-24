@@ -1166,6 +1166,9 @@ public final class AccountExceptionMessage {
   /** MoveLine */
   public static final String NO_MOVE_LINE_SELECTED = /*$$(*/ "No Lines selected" /*)*/;
 
+  public static final String MOVE_LINE_DESCRIPTION_MISSING = /*$$(*/
+      "Description is missing on move line(s)" /*)*/;
+
   /** User */
   public static final String USER_PFP_VALIDATOR_COMPANY_SET_NOT_EQUAL = /*$$(*/
       "%s has not exaclty the same internal companies as %s." /*)*/;
@@ -1650,4 +1653,10 @@ public final class AccountExceptionMessage {
 
   public static final String REVERSE_CHARGE_TAX_MISSING_ON_FISCAL_POSITION = /*$$(*/
       "A reverse charge tax is required on the fiscal position %s (From tax : %s - To tax : %s)." /*)*/;
+
+  public static final String FIXED_ASSET_MASS_VALIDATION_EXCEPTION = /*$$(*/
+      "The following error occurred during the validation of fixed asset %d : %s." /*)*/;
+
+  public static final String PAYMENT_CONDITION_LINKED_OBJECTS = /*$$(*/
+      "Changes will be applied on next records." /*)*/;
 }
