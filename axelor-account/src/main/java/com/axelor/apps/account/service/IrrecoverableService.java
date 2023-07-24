@@ -514,6 +514,7 @@ public class IrrecoverableService {
           I18n.get(AccountExceptionMessage.IRRECOVERABLE_2),
           I18n.get(BaseExceptionMessage.EXCEPTION));
     }
+    moveValidateService.accounting(move);
     irrecoverable.getMoveSet().add(move);
   }
 
