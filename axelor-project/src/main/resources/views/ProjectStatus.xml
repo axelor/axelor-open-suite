@@ -3,7 +3,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
-  <grid name="project-status-grid" title="Status"
+  <grid name="project-status-grid" title="Project status"
     model="com.axelor.apps.project.db.ProjectStatus" orderBy="sequence">
     <field name="sequence"/>
     <field name="name"/>
@@ -11,8 +11,8 @@
     <field name="isDefaultCompleted"/>
   </grid>
 
-  <form name="project-status-form" title="Status"
-    model="com.axelor.apps.project.db.ProjectStatus" onNew="action-project-status-record-on-new">
+  <form name="project-status-form" title="Project status"
+    model="com.axelor.apps.project.db.ProjectStatus">
     <panel name="mainPanel">
       <field name="sequence"/>
       <field name="name"/>
@@ -20,10 +20,5 @@
       <field name="isDefaultCompleted" showIf="isCompleted"/>
     </panel>
   </form>
-
-  <action-record name="action-project-status-record-on-new"
-    model="com.axelor.apps.project.db.ProjectStatus">
-    <field name="relatedToSelect" expr="eval: relatedToSelect"/>
-  </action-record>
 
 </object-views>

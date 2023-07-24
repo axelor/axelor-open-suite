@@ -696,7 +696,7 @@
 695;624700;624000;"Transport staff";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
 696;624800;624000;"Miscellaneous";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
 697;625000;62;"Travel missions and receptions";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
-698;625100;625000;"Travel and transport";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
+698;625100;625000;"Travel and transport";"charge";;1;;;"true";"false";2;"NDAS";"N_D";1;"true";"false";"false";2
 699;625500;625000;"Removal expenses";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
 700;625600;625000;"Missions";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2
 701;625700;625000;"Receptions";"charge";;1;;;"true";"true";2;"NDAS";"N_D";1;"true";"false";"false";2

@@ -26,7 +26,9 @@ import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.apps.stock.db.CustomsCodeNomenclature;
 import com.axelor.apps.stock.db.ModeOfTransport;
 import com.axelor.apps.stock.db.NatureOfTransaction;
 import com.axelor.apps.stock.db.Regime;
@@ -164,10 +166,14 @@ public class DeclarationOfExchangesExporterGoods extends DeclarationOfExchangesE
     if (StringUtils.isBlank(customsCode)) {
       if (product == null) {
         customsCode = I18n.get("Product is missing.");
-      }
-
-      if (product != null && product.getCustomsCodeNomenclature() != null) {
-        customsCode = product.getCustomsCodeNomenclature().getCode();
+      } else {
+        CustomsCodeNomenclature customsCodeNomenclature =
+            (CustomsCodeNomenclature)
+                Beans.get(ProductCompanyService.class)
+                    .get(product, "customsCodeNomenclature", stockMove.getCompany());
+        if (customsCodeNomenclature != null) {
+          customsCode = customsCodeNomenclature.getCode();
+        }
       }
 
       if (StringUtils.isBlank(customsCode)) {
@@ -221,13 +227,13 @@ public class DeclarationOfExchangesExporterGoods extends DeclarationOfExchangesE
     String srcDstCountry;
     String dept;
     try {
-      Address partnerAddress = stockMoveToolService.getPartnerAddress(stockMoveLine.getStockMove());
+      Address partnerAddress = stockMoveToolService.getPartnerAddress(stockMove, stockMoveLine);
       srcDstCountry = partnerAddress.getAddressL7Country().getAlpha2Code();
     } catch (AxelorException e) {
       srcDstCountry = e.getMessage();
     }
     try {
-      Address companyAddress = stockMoveToolService.getCompanyAddress(stockMoveLine.getStockMove());
+      Address companyAddress = stockMoveToolService.getCompanyAddress(stockMove, stockMoveLine);
       dept = companyAddress.getCity().getDepartment().getCode();
     } catch (AxelorException e) {
       dept = e.getMessage();
@@ -241,9 +247,9 @@ public class DeclarationOfExchangesExporterGoods extends DeclarationOfExchangesE
       if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING) {
         countryOrigCode = srcDstCountry;
       } else if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
-          && ObjectUtils.notEmpty(stockMove.getFromStockLocation().getAddress())) {
+          && ObjectUtils.notEmpty(stockMoveLine.getFromStockLocation().getAddress())) {
         countryOrigCode =
-            stockMove.getFromStockLocation().getAddress().getAddressL7Country().getAlpha2Code();
+            stockMoveLine.getFromStockLocation().getAddress().getAddressL7Country().getAlpha2Code();
       } else {
         countryOrigCode = "";
       }

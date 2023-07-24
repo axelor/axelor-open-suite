@@ -32,7 +32,7 @@
       form-view="fixed-asset-category-form" grid-view="fixed-asset-category-grid" canEdit="false"/>
     <field name="purchaseAccount" if-module="axelor-account" form-view="account-form"
       grid-view="account-grid" if="__config__.app.isApp('account')" canEdit="false"
-      domain="self.company = :company AND (self.accountType.technicalTypeSelect = 'charge' OR self.accountType.technicalTypeSelect = 'debt' OR self.accountType.technicalTypeSelect = 'immobilisation')"/>
+      domain="self.company = :company AND self.accountType.technicalTypeSelect IN ('charge', 'debt', 'immobilisation') AND self.statusSelect = 1"/>
     <field name="purchaseTax" form-view="tax-form" grid-view="tax-grid" canEdit="false"/>
     <field name="purchFixedAssetsAccount"
       domain="self.company = :company AND self.accountType.technicalTypeSelect = 'immobilisation'"
@@ -44,7 +44,7 @@
     <field name="saleTax" form-view="tax-form" grid-view="tax-grid"/>
     <field name="analyticDistributionTemplate" if-module="axelor-account"
       if="__config__.app.isApp('account')" grid-view="analytic-distribution-template-grid"
-      form-view="analytic-distribution-template-form" canNew="true"/>
+      form-view="analytic-distribution-template-form" domain="self.company = :company"/>
   </grid>
 
 
@@ -165,9 +165,9 @@
       </panel>
 
       <panel name="analyticsPanel" title="Analytics" colSpan="12" showIf="typeSelect != 2">
-        <field name="analyticDistributionTemplate" canNew="true" if-module="axelor-account"
+        <field name="analyticDistributionTemplate" if-module="axelor-account"
           if="__config__.app.isApp('account')" grid-view="analytic-distribution-template-grid"
-          form-view="analytic-distribution-template-form"/>
+          form-view="analytic-distribution-template-form" domain="self.company = :company"/>
       </panel>
       <panel name="taxPanel" title="Tax" colSpan="12" hidden="true">
         <field name="tax" form-view="tax-form" grid-view="tax-grid"

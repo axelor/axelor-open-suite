@@ -25,6 +25,7 @@ import com.axelor.apps.account.db.FixedAssetCategory;
 import com.axelor.apps.account.db.FixedAssetDerogatoryLine;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
@@ -107,6 +108,50 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
     this.fixedAssetDateService = fixedAssetDateService;
     this.dateService = dateService;
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public FixedAsset fullDisposal(
+      FixedAsset fixedAsset,
+      LocalDate disposalDate,
+      int disposalQtySelect,
+      BigDecimal disposalQty,
+      Boolean generateSaleMove,
+      TaxLine saleTaxLine,
+      Integer disposalTypeSelect,
+      BigDecimal disposalAmount,
+      AssetDisposalReason assetDisposalReason,
+      String comments)
+      throws AxelorException {
+
+    this.checkFixedAssetBeforeDisposal(
+        fixedAsset, disposalDate, disposalQtySelect, disposalQty, generateSaleMove, saleTaxLine);
+
+    int transferredReason =
+        this.computeTransferredReason(
+            disposalTypeSelect, disposalQtySelect, disposalQty, fixedAsset);
+
+    FixedAsset createdFixedAsset =
+        this.computeDisposal(
+            fixedAsset,
+            disposalDate,
+            disposalQty,
+            disposalAmount,
+            transferredReason,
+            assetDisposalReason,
+            comments);
+    if (generateSaleMove && saleTaxLine != null) {
+      if (createdFixedAsset != null) {
+
+        fixedAssetLineMoveService.generateSaleMove(
+            createdFixedAsset, saleTaxLine, disposalAmount, disposalDate);
+      } else {
+        fixedAssetLineMoveService.generateSaleMove(
+            fixedAsset, saleTaxLine, disposalAmount, disposalDate);
+      }
+    }
+    return createdFixedAsset;
   }
 
   @Override
@@ -511,7 +556,12 @@ public class FixedAssetServiceImpl implements FixedAssetService {
 
   @Override
   public void checkFixedAssetBeforeDisposal(
-      FixedAsset fixedAsset, LocalDate disposalDate, int disposalQtySelect, BigDecimal disposalQty)
+      FixedAsset fixedAsset,
+      LocalDate disposalDate,
+      int disposalQtySelect,
+      BigDecimal disposalQty,
+      Boolean generateSaleMove,
+      TaxLine saleTaxLine)
       throws AxelorException {
     if (Stream.of(
                 fixedAsset.getFixedAssetLineList(),
@@ -542,6 +592,15 @@ public class FixedAssetServiceImpl implements FixedAssetService {
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(AccountExceptionMessage.IMMO_FIXED_ASSET_DISPOSAL_QTY_GREATER_ORIGINAL),
           fixedAsset.getQty().toString());
+    }
+    if (generateSaleMove
+        && saleTaxLine != null
+        && fixedAsset.getCompany().getAccountConfig().getCustomerSalesJournal() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(
+              AccountExceptionMessage
+                  .IMMO_FIXED_ASSET_DISPOSAL_COMPANY_ACCOUNT_CONFIG_CUSTOMER_SALES_JOURNAL_EMPTY));
     }
   }
 

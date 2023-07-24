@@ -14,6 +14,8 @@
     <boolean name="payrollPreparation" title="Payroll preparation"/>
     <boolean name="lunchVoucher" title="Lunch Voucher"/>
     <boolean name="employeeBonus" title="Employee bonus"/>
+    <boolean name="isMyHrEnabled" title="Enable MyHR" default="true"
+      help="Activate MyHR enables the HR menu entries for employees."/>
 
     <extra-code>
    		<![CDATA[
@@ -28,6 +30,7 @@
       <field name="payrollPreparation" on="UPDATE"/>
       <field name="lunchVoucher" on="UPDATE"/>
       <field name="employeeBonus" on="UPDATE"/>
+      <field name="isMyHrEnabled" on="UPDATE"/>
     </track>
   </entity>
 

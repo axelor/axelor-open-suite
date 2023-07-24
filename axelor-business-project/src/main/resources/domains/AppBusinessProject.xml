@@ -28,30 +28,32 @@
     <boolean name="enableToInvoiceTimesheet" title="Enable to invoice timesheet"/>
     <boolean name="enableToInvoiceExpense" title="Enable to invoice expense"/>
 
-    <boolean name="generateProjectOrder" title="Generate/Select Project for Order"/>
+    <boolean name="generateProjectOrder" title="Generate/Select Project for Order"
+      help="This option allows you to link an order to a new or existing project."/>
     <boolean name="automaticProject" title="Automatic Project"/>
-
-    <integer name="generatedElementTypeSelect" title="Generated element type" default="3"
-      selection="business.project.config.generated.element.type"/>
 
     <boolean name="projectSaleOrderLines" title="Project in Sale order lines"/>
     <boolean name="projectPurchaseOrderLines" title="Project in Purchase order lines"/>
 
     <boolean name="projectInvoiceLines" title="Project in Invoice Lines"/>
 
-    <boolean name="enableTaskTemplatesByProduct" title="Enable task templates by product"/>
-
-    <boolean name="generateProjectSequence" title="Generate sequence for project"/>
+    <boolean name="enableTaskTemplatesByProduct" title="Enable task templates by product"
+      help="When activated, this will add a new tab to the product form where you can select a task template that will be used when a task is generated in relation to the given product."/>
 
     <boolean name="automaticInvoicing" title="Automatic invoicing"
       help="On creation of an Invoicing project, attached Timesheet Lines and Teamtasks will be automatically set as to invoice regarding Status for invoice pre task tasks, Status for invoice post task tasks and Exclude tasks for invoicing field"/>
 
     <many-to-many name="preTaskStatusSet" title="Status for invoice pre task tasks"
-      ref="com.axelor.apps.project.db.ProjectStatus"/>
+      ref="com.axelor.apps.project.db.TaskStatus"/>
     <many-to-many name="postTaskStatusSet" title="Status for invoice post task tasks"
-      ref="com.axelor.apps.project.db.ProjectStatus"/>
+      ref="com.axelor.apps.project.db.TaskStatus"/>
     <string name="excludeTaskInvoicing" title="Exclude tasks for invoicing"
       help="Here you can enter a groovy formula to exclude certain tasks from invoicing according to certain desired criteria"/>
+
+    <!-- planification fields -->
+    <many-to-one name="daysUnit" ref="com.axelor.apps.base.db.Unit" title="Days unit"/>
+    <many-to-one name="hoursUnit" ref="com.axelor.apps.base.db.Unit" title="Hours unit"/>
+    <decimal name="defaultHoursADay" title="Default hours in a day" min="0"/>
 
     <track>
       <field name="productInvoicingProject" on="UPDATE"/>
@@ -67,12 +69,10 @@
       <field name="enableToInvoiceExpense" on="UPDATE"/>
       <field name="generateProjectOrder" on="UPDATE"/>
       <field name="automaticProject" on="UPDATE"/>
-      <field name="generatedElementTypeSelect" on="UPDATE"/>
       <field name="projectSaleOrderLines" on="UPDATE"/>
       <field name="projectPurchaseOrderLines" on="UPDATE"/>
       <field name="projectInvoiceLines" on="UPDATE"/>
       <field name="enableTaskTemplatesByProduct" on="UPDATE"/>
-      <field name="generateProjectSequence" on="UPDATE"/>
       <field name="automaticInvoicing" on="UPDATE"/>
       <field name="excludeTaskInvoicing" on="UPDATE"/>
     </track>

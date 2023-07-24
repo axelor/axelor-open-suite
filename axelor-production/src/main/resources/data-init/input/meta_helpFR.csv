@@ -14,7 +14,6 @@
 "axelor-production";"WorkCenter";"work-center-form";"minCapacityPerCycle";"Capacité minimum de production par cycle de la machine."
 "axelor-production";"WorkCenter";"work-center-form";"maxCapacityPerCycle";"Capacité maximum de production par cycle de la machine."
 "axelor-production";"WorkCenter";"work-center-form";"durationPerCycle";"Durée du cycle de production de la machine."
-"axelor-production";"WorkCenter";"work-center-form";"prodHumanResourceList";"Tableau permettant de configurer la liste d'employés ou de profils employés nécessaires sur le poste de charge ainsi que la durée d'intervention de chacun."
 "axelor-production";"Machine";"machine-form";"startingDuration";"Temps que met la machine à démarrer avant de pouvoir être utilisée."
 "axelor-production";"Machine";"machine-form";"setupDuration";"Temps entre deux cycles. Il s'agit du temps qu'il faut attendre après la fin d'un cycle pour pouvoir en commencer un nouveau."
 "axelor-production";"Machine";"machine-form";"endingDuration";"Temps de clôture de la machine."

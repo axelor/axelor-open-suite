@@ -695,7 +695,6 @@ public class DebtRecoveryService {
               "Partner {}, Company {} - Reminder level : on hold",
               partner.getName(),
               company.getName());
-          // TODO Alarm ?
           TraceBackService.trace(
               new AxelorException(
                   debtRecovery,
