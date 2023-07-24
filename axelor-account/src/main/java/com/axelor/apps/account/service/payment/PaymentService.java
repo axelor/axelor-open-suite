@@ -94,4 +94,14 @@ public interface PaymentService {
   BigDecimal getAmountRemainingFromPaymentMove(PaymentScheduleLine psl);
 
   BigDecimal getAmountRemainingFromPaymentMove(Invoice invoice);
+
+  void createReconcile(
+      MoveLine debitMoveLine,
+      MoveLine creditMoveLine,
+      BigDecimal debitTotalRemaining,
+      BigDecimal creditTotalRemaining)
+      throws AxelorException;
+
+  boolean reconcileMoveLinesWithCompatibleAccounts(List<MoveLine> moveLineList)
+      throws AxelorException;
 }

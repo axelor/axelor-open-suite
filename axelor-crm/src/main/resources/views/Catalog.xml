@@ -35,6 +35,12 @@
 
   <form name="catalog-form" title="Catalog" model="com.axelor.apps.crm.db.Catalog"
     width="large" onSave="action-crm-validate-catalog-onsave">
+    <menubar>
+      <menu name="catalogToolsMenu" title="Tools" icon="fa-wrench">
+        <item name="sendEmailItem" title="Send Email"
+          action="save,action-catalog-view-send-email-wizard"/>
+      </menu>
+    </menubar>
     <panel name="mainPanel">
       <panel name="imagePanel" itemSpan="12" colSpan="2">
         <field name="image" widget="Image"/>
@@ -56,6 +62,22 @@
     </panel-mail>
   </form>
 
+  <form name="catalog-send-email-wizard-form" title="Catalog"
+    model="com.axelor.utils.db.Wizard" onNew="action-catalog-attrs-set-model">
+    <panel name="mainPanel">
+      <field name="$template" type="many-to-one" target="com.axelor.message.db.Template"
+        title="Template" form-view="template-form" grid-view="template-grid"
+        domain="self.metaModel.fullName = 'com.axelor.apps.crm.db.Catalog' AND self.isSystem != true"
+        colSpan="4" required="true"/>
+      <field name="$contactSet" title="Contact list" type="many-to-many" widget="TagSelect"
+        target="com.axelor.apps.base.db.Partner" form-view="partner-contact-form"
+        grid-view="partner-contact-grid" colSpan="8" domain="self.isContact = true"/>
+      <button name="validateBtn" colSpan="4" title="Validate"
+        onClick="action-catalog-method-send-email,close" colOffset="2" readonlyIf="!$contactSet"/>
+      <button name="cancelBtn" colSpan="4" title="Cancel" onClick="close"/>
+    </panel>
+  </form>
+
   <action-validate name="action-crm-validate-catalog-onsave">
     <error message="Only pdf files are allowed"
       if="eval: pdfFile != null &amp;&amp; com.google.common.io.Files.getFileExtension(pdfFile.fileName) != 'pdf'"/>
@@ -63,6 +85,24 @@
 
   <action-method name="action-crm-method-catalog-show-pdf">
     <call class="com.axelor.apps.crm.web.CatalogController" method="showPdf"/>
+  </action-method>
+
+  <action-attrs name="action-catalog-attrs-set-model">
+    <attribute name="value" for="$template"
+      expr="eval: __repo__(Template).all().filter('self.metaModel.fullName = ?1 and self.isDefault = true and self.isSystem != true','com.axelor.apps.crm.db.Catalog').fetchOne()"/>
+  </action-attrs>
+
+  <action-view name="action-catalog-view-send-email-wizard" title="Catalog"
+    model="com.axelor.utils.db.Wizard">
+    <view type="form" name="catalog-send-email-wizard-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="popup-save" value="false"/>
+    <view-param name="show-toolbar" value="false"/>
+    <context name="_catalogId" expr="eval: id"/>
+  </action-view>
+
+  <action-method name="action-catalog-method-send-email">
+    <call class="com.axelor.apps.crm.web.CatalogController" method="sendEmail"/>
   </action-method>
 
 </object-views>

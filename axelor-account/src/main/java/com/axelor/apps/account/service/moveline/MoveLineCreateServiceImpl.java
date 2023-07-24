@@ -39,6 +39,7 @@ import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
 import com.axelor.apps.account.service.TaxAccountService;
+import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineGenerateRealService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
@@ -90,6 +91,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
   protected FiscalPositionService fiscalPositionService;
   protected TaxService taxService;
   protected AppBaseService appBaseService;
+  protected AnalyticLineService analyticLineService;
 
   @Inject
   public MoveLineCreateServiceImpl(
@@ -107,7 +109,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       AccountingSituationService accountingSituationService,
       FiscalPositionService fiscalPositionService,
       TaxService taxService,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      AnalyticLineService analyticLineService) {
     this.companyConfigService = companyConfigService;
     this.currencyService = currencyService;
     this.fiscalPositionAccountService = fiscalPositionAccountService;
@@ -123,6 +126,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     this.fiscalPositionService = fiscalPositionService;
     this.taxService = taxService;
     this.appBaseService = appBaseService;
+    this.analyticLineService = analyticLineService;
   }
 
   /**
@@ -269,8 +273,12 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       }
     }
 
-    if (originDate == null) {
+    if (originDate == null && move.getJournal().getIsFillOriginDate()) {
       originDate = date;
+    }
+
+    if (!isDebit) {
+      amountInSpecificMoveCurrency = amountInSpecificMoveCurrency.negate();
     }
 
     MoveLine moveLine =
@@ -490,6 +498,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
           moveLine.setAnalyticMoveLineList(analyticMoveLineList);
         }
 
+        analyticLineService.printAnalyticAccount(moveLine, move.getCompany());
+
         TaxLine taxLine = invoiceLine.getTaxLine();
         if (taxLine != null) {
           moveLine.setTaxLine(taxLine);
@@ -702,14 +712,16 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
                   origin,
                   null);
         } else {
+          BigDecimal currencyAmount = moveLine.getCurrencyAmount().add(invoiceTerm.getAmount());
           if (moveLine.getDebit().compareTo(BigDecimal.ZERO) != 0) {
             // Debit
             moveLine.setDebit(moveLine.getDebit().add(companyAmount));
+            moveLine.setCurrencyAmount(currencyAmount.abs());
           } else {
             // Credit
             moveLine.setCredit(moveLine.getCredit().add(companyAmount));
+            moveLine.setCurrencyAmount(currencyAmount.negate());
           }
-          moveLine.setCurrencyAmount(moveLine.getCurrencyAmount().add(invoiceTerm.getAmount()));
         }
       }
     }

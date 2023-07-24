@@ -31,14 +31,16 @@
     <many-to-one name="invoicedPartner" title="Invoiced partner"
       ref="com.axelor.apps.base.db.Partner"/>
 
-    <finder-method name="findAllBySaleOrderAndStatus"
-      using="originTypeSelect,originId,statusSelect" all="true"/>
+    <many-to-one name="saleOrder" title="Sale order"
+      ref="com.axelor.apps.sale.db.SaleOrder" copy="false"/>
+    <many-to-one name="purchaseOrder" title="Purchase order"
+      ref="com.axelor.apps.purchase.db.PurchaseOrder" copy="false"/>
+
+    <finder-method name="findAllBySaleOrderAndStatus" using="saleOrder,statusSelect"
+      all="true"/>
 
     <extra-code>
     <![CDATA[
-		public static final String ORIGIN_SALE_ORDER = "com.axelor.apps.sale.db.SaleOrder";
-		public static final String ORIGIN_PURCHASE_ORDER = "com.axelor.apps.purchase.db.PurchaseOrder";
-
 		// INVOICE
 	    public static final int INVOICE_ALL = 1;
 	    public static final int INVOICE_PARTIALLY = 2;

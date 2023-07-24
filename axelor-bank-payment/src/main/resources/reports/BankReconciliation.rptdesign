@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202108150822</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -995,7 +995,7 @@ bankReconciliationLine.credit ;]]></xml-property>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
                 </structure>
-                 <structure>
+                <structure>
                     <property name="name">param_5</property>
                     <property name="paramName">BankReconciliationToDate</property>
                     <property name="nativeName"></property>
@@ -1423,7 +1423,7 @@ AND (moveLine.date_val <= ? OR moveLine.due_date <= ?)));
                         <structure>
                             <property name="name">logo_width</property>
                             <text-property name="displayName">logo_width</text-property>
-                            <expression name="expression" type="javascript">if(dataSetRow["logo_width"]>0){dataSetRow["logo_width"]+'px'}else{'100px'}</expression>
+                            <expression name="expression" type="javascript">if(dataSetRow["logo_width"]>0){dataSetRow["logo_width"]+'px'}else{'154px'}</expression>
                             <property name="dataType">string</property>
                             <property name="allowExport">true</property>
                         </structure>
@@ -1496,24 +1496,13 @@ AND (moveLine.date_val <= ? OR moveLine.due_date <= ?)));
                             <property name="borderRightStyle">none</property>
                             <property name="borderTopStyle">none</property>
                             <property name="textAlign">left</property>
-                            <property name="verticalAlign">middle</property>
-                            <text id="6409">
-                                <property name="fontSize">8pt</property>
-                                <list-property name="visibility">
-                                    <structure>
-                                        <property name="format">all</property>
-                                        <expression name="valueExpr" type="javascript">row["logo_path"] == null</expression>
-                                    </structure>
-                                </list-property>
-                                <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[<TABLE>
-	<TR>
-		<VALUE-OF format="HTML">
-			"<TD><IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='"+row["logo_height"]+"' width='"+row["logo_width"]+"'/></TD>"
-		</VALUE-OF>
-	</TR>
-</TABLE>]]></text-property>
-                            </text>
+                            <image id="6890">
+                                <expression name="altText">""</expression>
+                                <method name="onCreate"><![CDATA[this.width = row["logo_width"];
+this.height = row["logo_height"];]]></method>
+                                <property name="source">file</property>
+                                <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
+                            </image>
                         </cell>
                         <cell id="6422">
                             <property name="verticalAlign">middle</property>
@@ -1726,6 +1715,26 @@ AND (moveLine.date_val <= ? OR moveLine.due_date <= ?)));
                             <expression name="expression" type="javascript">dataSetRow["corrected_user_full_name"]</expression>
                             <property name="dataType">string</property>
                         </structure>
+                        <structure>
+                            <property name="name">logo_height</property>
+                            <text-property name="displayName">logo_height</text-property>
+                            <expression name="expression" type="javascript">if(dataSetRow["logo_height"]>0){dataSetRow["logo_height"]+'px'}else{'35px'}</expression>
+                            <property name="dataType">string</property>
+                            <property name="allowExport">true</property>
+                        </structure>
+                        <structure>
+                            <property name="name">logo_width</property>
+                            <text-property name="displayName">logo_width</text-property>
+                            <expression name="expression" type="javascript">if(dataSetRow["logo_width"]>0){dataSetRow["logo_width"]+'px'}else{'154px'}</expression>
+                            <property name="dataType">string</property>
+                            <property name="allowExport">true</property>
+                        </structure>
+                        <structure>
+                            <property name="name">comments</property>
+                            <text-property name="displayName">comments</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["comments"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
                     </list-property>
                     <column id="6048">
                         <property name="suppressDuplicates">true</property>
@@ -1787,55 +1796,10 @@ AND (moveLine.date_val <= ? OR moveLine.due_date <= ?)));
                             <property name="textAlign">left</property>
                             <image id="6057">
                                 <property name="overflow">hidden</property>
-                                <property name="height">35px</property>
-                                <property name="width">154px</property>
                                 <expression name="altText">""</expression>
-                                <property name="dataSet">BankReconciliationDS</property>
-                                <list-property name="boundDataColumns">
-                                    <structure>
-                                        <property name="name">company</property>
-                                        <text-property name="displayName">company</text-property>
-                                        <expression name="expression" type="javascript">dataSetRow["company"]</expression>
-                                        <property name="dataType">string</property>
-                                    </structure>
-                                    <structure>
-                                        <property name="name">report_date</property>
-                                        <text-property name="displayName">report_date</text-property>
-                                        <expression name="expression" type="javascript">dataSetRow["report_date"]</expression>
-                                        <property name="dataType">date-time</property>
-                                    </structure>
-                                    <structure>
-                                        <property name="name">currency</property>
-                                        <text-property name="displayName">currency</text-property>
-                                        <expression name="expression" type="javascript">dataSetRow["currency"]</expression>
-                                        <property name="dataType">string</property>
-                                    </structure>
-                                    <structure>
-                                        <property name="name">journal</property>
-                                        <text-property name="displayName">journal</text-property>
-                                        <expression name="expression" type="javascript">dataSetRow["journal"]</expression>
-                                        <property name="dataType">string</property>
-                                    </structure>
-                                    <structure>
-                                        <property name="name">cash_account</property>
-                                        <text-property name="displayName">cash_account</text-property>
-                                        <expression name="expression" type="javascript">dataSetRow["cash_account"]</expression>
-                                        <property name="dataType">string</property>
-                                    </structure>
-                                    <structure>
-                                        <property name="name">logo_path</property>
-                                        <text-property name="displayName">logo_path</text-property>
-                                        <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
-                                        <property name="dataType">string</property>
-                                    </structure>
-                                    <structure>
-                                        <property name="name">account</property>
-                                        <text-property name="displayName">account</text-property>
-                                        <expression name="expression" type="javascript">dataSetRow["account"]</expression>
-                                        <property name="dataType">string</property>
-                                    </structure>
-                                </list-property>
                                 <structure name="toc"/>
+                                <method name="onCreate"><![CDATA[this.width = row["logo_width"];
+this.height = row["logo_height"];]]></method>
                                 <property name="source">file</property>
                                 <property name="proportionalScale">true</property>
                                 <expression name="uri" type="javascript">params["AttachmentPath"]+row["logo_path"]</expression>
