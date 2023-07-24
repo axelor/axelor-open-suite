@@ -49,14 +49,6 @@ public class ProjectHRRepository extends ProjectManagementRepository {
             .filter("self.project = ?1 OR self.project.parentProject = ?1", project)
             .fetch();
 
-    project.setTotalPlannedHrs(projectPlanningTimeService.getProjectPlannedHrs(project));
-
-    Project parentProject = project.getParentProject();
-    if (parentProject != null) {
-      parentProject.setTotalPlannedHrs(
-          projectPlanningTimeService.getProjectPlannedHrs(parentProject));
-    }
-
     if (projectPlanningTimeList != null) {
       for (ProjectPlanningTime planningTime : projectPlanningTimeList) {
         ProjectTask task = planningTime.getProjectTask();

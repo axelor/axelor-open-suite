@@ -111,6 +111,7 @@
   </selection>
 
   <selection name="crm.convert.lead.wizard.lead.to.contact.select">
+    <option value="0">No contact creation</option>
     <option value="1">Create new contact</option>
     <option value="2">Select existing contact</option>
   </selection>
@@ -172,6 +173,12 @@
   <selection name="crm.reporting.type.select">
     <option value="com.axelor.apps.crm.db.Lead">Lead</option>
     <option value="com.axelor.apps.base.db.Partner">Partner</option>
+  </selection>
+
+  <selection id="crm.research.model.selection" name="research.model.selection">
+    <option value="com.axelor.apps.crm.db.Lead">Lead</option>
+    <option value="com.axelor.apps.crm.db.Event">Event</option>
+    <option value="com.axelor.apps.crm.db.Opportunity">Opportunity</option>
   </selection>
 
 </object-views>

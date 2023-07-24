@@ -113,7 +113,7 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
     if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
       List<InvoiceTerm> invoiceTermList = moveLine.getInvoiceTermList();
       Invoice invoiceAttached = invoiceTermList.get(0).getInvoice();
-      BigDecimal total = moveLine.getCurrencyAmount();
+      BigDecimal total = moveLine.getCurrencyAmount().abs();
 
       if (invoiceAttached != null) {
         invoiceTermList = invoiceAttached.getInvoiceTermList();
@@ -318,6 +318,33 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
           I18n.get(AccountExceptionMessage.MOVE_LINE_INCONSISTENCY_DETECTED_PARTNER),
           optMoveLinePartner.get().getName(),
           optMovePartner.get().getName());
+    }
+  }
+
+  @Override
+  public void checkAccountAnalytic(Move move, MoveLine moveLine, Account account)
+      throws AxelorException {
+    if (moveLine.getAnalyticDistributionTemplate() == null
+        && ObjectUtils.isEmpty(moveLine.getAnalyticMoveLineList())
+        && account.getAnalyticDistributionAuthorized()
+        && account.getAnalyticDistributionRequiredOnMoveLines()) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(AccountExceptionMessage.MOVE_10),
+          account.getName(),
+          moveLine.getName());
+    }
+
+    if (account != null
+        && !account.getAnalyticDistributionAuthorized()
+        && (moveLine.getAnalyticDistributionTemplate() != null
+            || (moveLine.getAnalyticMoveLineList() != null
+                && !moveLine.getAnalyticMoveLineList().isEmpty()))) {
+      throw new AxelorException(
+          move,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(AccountExceptionMessage.MOVE_11),
+          moveLine.getName());
     }
   }
 }

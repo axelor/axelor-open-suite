@@ -24,7 +24,6 @@ import com.axelor.apps.base.db.repo.ExceptionOriginRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.db.SupplychainBatch;
@@ -51,14 +50,13 @@ public class BatchOutgoingStockMoveInvoicing extends BatchStrategy {
   protected void process() {
     SupplychainBatch supplychainBatch = batch.getSupplychainBatch();
     List<Long> anomalyList = Lists.newArrayList(0L);
-    SaleOrderRepository saleRepo = Beans.get(SaleOrderRepository.class);
 
     TypedQuery<StockMove> query =
         JPA.em()
             .createQuery(
                 "SELECT self FROM StockMove self "
                     + "WHERE self.statusSelect = :statusSelect "
-                    + "AND self.originTypeSelect LIKE :typeSaleOrder "
+                    + "AND self.typeSelect = :typeSelect "
                     + "AND self.invoicingStatusSelect !=  :invoicingStatusSelect "
                     + "AND (SELECT count(invoice.id) FROM Invoice invoice WHERE invoice.statusSelect != :invoiceStatusCanceled AND invoice MEMBER OF self.invoiceSet) = 0"
                     + "AND self.id NOT IN (:anomalyList) "
@@ -71,7 +69,7 @@ public class BatchOutgoingStockMoveInvoicing extends BatchStrategy {
                     + "ORDER BY self.id",
                 StockMove.class)
             .setParameter("statusSelect", StockMoveRepository.STATUS_REALIZED)
-            .setParameter("typeSaleOrder", StockMoveRepository.ORIGIN_SALE_ORDER)
+            .setParameter("typeSelect", StockMoveRepository.TYPE_OUTGOING)
             .setParameter("invoiceStatusCanceled", InvoiceRepository.STATUS_CANCELED)
             .setParameter("invoicingStatusSelect", StockMoveRepository.STATUS_DELAYED_INVOICE)
             .setParameter("anomalyList", anomalyList)
@@ -82,8 +80,7 @@ public class BatchOutgoingStockMoveInvoicing extends BatchStrategy {
     while (!(stockMoveList = query.getResultList()).isEmpty()) {
       for (StockMove stockMove : stockMoveList) {
         try {
-          stockMoveInvoiceService.createInvoiceFromSaleOrder(
-              stockMove, saleRepo.find(stockMove.getOriginId()), null);
+          stockMoveInvoiceService.createInvoiceFromStockMove(stockMove, null);
           updateStockMove(stockMove);
         } catch (Exception e) {
           incrementAnomaly();

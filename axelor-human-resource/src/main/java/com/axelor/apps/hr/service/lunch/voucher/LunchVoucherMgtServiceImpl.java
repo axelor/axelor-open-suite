@@ -20,6 +20,7 @@ package com.axelor.apps.hr.service.lunch.voucher;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Employee;
@@ -117,12 +118,25 @@ public class LunchVoucherMgtServiceImpl implements LunchVoucherMgtService {
     }
 
     HRConfig hrConfig = hrConfigService.getHRConfig(company);
+    Period payPeriod = lunchVoucherMgt.getPayPeriod();
+    LocalDate fromDate = null;
+    LocalDate toDate = null;
+
+    if (payPeriod != null) {
+      fromDate = payPeriod.getFromDate();
+      toDate = payPeriod.getToDate();
+    }
 
     List<Employee> employeeList =
         Beans.get(EmployeeRepository.class)
             .all()
-            .filter("self.mainEmploymentContract.payCompany = ?1", company)
+            .filter(
+                "self.mainEmploymentContract.payCompany = :company AND (self.user.expiresOn is null OR self.user.expiresOn >= :fromDate) AND self.hireDate <= :toDate AND self.user.blocked = false AND (self.external = false OR self.external is null)")
+            .bind("company", company)
+            .bind("fromDate", fromDate)
+            .bind("toDate", toDate)
             .fetch();
+
     for (Employee employee : employeeList) {
       if (employee != null) {
         if (isEmployeeFormerNewOrArchived(employee, lunchVoucherMgt)) {

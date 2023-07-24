@@ -24,4 +24,132 @@
     <bind to="resetDate"
       eval="call:com.axelor.apps.base.service.app.AppBaseService:getTodayDate(null)"/>
   </input>
+
+  <input file="project_taskTemplate.csv" separator=";" search="self.importId = :importId"
+    type="com.axelor.apps.project.db.TaskTemplate"/>
+
+  <input file="base_product.csv" separator=";" search="self.importId = :importId"
+    type="com.axelor.apps.base.db.Product">
+    <bind to="taskTemplateSet" column="taskTemplateSet_importId"
+      search="self.importId in :taskTemplateSet_importId"
+      eval="taskTemplateSet_importId.split('\\|') as List"/>
+  </input>
+
+  <input file="sale_saleOrder.csv" separator=";" search="self.importId = :importId"
+    type="com.axelor.apps.sale.db.SaleOrder">
+    <bind to="creationDate"
+      eval="call:com.axelor.csv.script.ImportDateTime:importDate(creationDate)"
+      column="creationDate"/>
+    <bind to="confirmationDateTime"
+      eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(confirmationDateTime)"
+      column="confirmationDateTime"/>
+    <bind to="shipmentDate"
+      eval="call:com.axelor.csv.script.ImportDateTime:importDate(shipmentDate)"
+      column="shipmentDate"/>
+  </input>
+
+  <input file="sale_saleOrderLine.csv" separator=";"
+    type="com.axelor.apps.sale.db.SaleOrderLine" search="self.importId = :importId"
+    call="com.axelor.csv.script.ImportSaleOrderLine:importSaleOrderLine">
+    <bind to="priceDiscounted" eval="price"/>
+  </input>
+
+  <input file="sale_saleOrder.csv" separator=";" search="self.importId = :importId"
+    type="com.axelor.apps.sale.db.SaleOrder"
+    call="com.axelor.csv.script.ImportSaleOrder:importSaleOrder">
+    <bind to="creationDate"
+      eval="call:com.axelor.csv.script.ImportDateTime:importDate(creationDate)"
+      column="creationDate"/>
+    <bind to="confirmationDateTime"
+      eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(confirmationDateTime)"
+      column="confirmationDateTime"/>
+    <bind to="shipmentDate"
+      eval="call:com.axelor.csv.script.ImportDateTime:importDate(shipmentDate)"
+      column="shipmentDate"/>
+  </input>
+
+  <input file="sale_saleOrder.csv" separator=";" search="self.importId = :importId"
+    type="com.axelor.apps.sale.db.SaleOrder"
+    call="com.axelor.csv.script.FinalizeAndConfirmSaleOrder:finalizeAndConfirmSaleOrder">
+    <bind to="creationDate"
+      eval="call:com.axelor.csv.script.ImportDateTime:importDate(creationDate)"
+      column="creationDate"/>
+    <bind to="confirmationDateTime"
+      eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(confirmationDateTime)"
+      column="confirmationDateTime"/>
+    <bind to="shipmentDate"
+      eval="call:com.axelor.csv.script.ImportDateTime:importDate(shipmentDate)"
+      column="shipmentDate"/>
+  </input>
+
+  <input file="sale_saleOrder.csv" separator=";" search="self.importId = :importId"
+    type="com.axelor.apps.sale.db.SaleOrder"
+    call="com.axelor.csv.script.GenerateBusinessProject:generateBusinessProject">
+    <bind to="creationDate"
+      eval="call:com.axelor.csv.script.ImportDateTime:importDate(creationDate)"
+      column="creationDate"/>
+    <bind to="confirmationDateTime"
+      eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(confirmationDateTime)"
+      column="confirmationDateTime"/>
+    <bind to="shipmentDate"
+      eval="call:com.axelor.csv.script.ImportDateTime:importDate(shipmentDate)"
+      column="shipmentDate"/>
+  </input>
+
+  <input file="hr_timesheet.csv" type="com.axelor.apps.hr.db.Timesheet" separator=";"
+    search="self.importId = :importId">
+    <bind to="fromDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(fromDate)"
+      column="fromDate"/>
+    <bind to="toDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(toDate)"
+      column="toDate"/>
+  </input>
+
+  <input file="hr_timesheetLine.csv" type="com.axelor.apps.hr.db.TimesheetLine" separator=";"
+    search="self.importId = :importId">
+    <bind to="employee" search="self.importId = :employee_importId"/>
+    <bind to="date" eval="call:com.axelor.csv.script.ImportDateTime:importDate(date)"
+      column="date"/>
+    <bind to="duration" column="hoursDuration"/>
+    <bind to="hoursDuration" column="hoursDuration"/>
+    <bind to="projectTask" column="projectTask_importId"
+      search="self.importId = :projectTask_importId" if="projectTask"/>
+  </input>
+
+  <input file="hr_timesheet.csv" type="com.axelor.apps.hr.db.Timesheet" separator=";"
+    search="self.importId = :importId"
+    call="com.axelor.csv.script.ValidateTimesheet:validateTimesheet">
+    <bind to="fromDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(fromDate)"
+      column="fromDate"/>
+    <bind to="toDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(toDate)"
+      column="toDate"/>
+  </input>
+
+  <input file="hr_projectPlanningTime.csv"
+    type="com.axelor.apps.project.db.ProjectPlanningTime" separator=";"
+    search="self.importId = :importId">
+    <bind to="employee" search="self.importId = :employee_importId"/>
+    <bind to="startDateTime"
+      eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(startDateTime)"
+      column="startDateTime"/>
+    <bind to="endDateTime"
+      eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(endDateTime)"
+      column="endDateTime"/>
+  </input>
+
+  <input file="sale_saleOrder.csv" separator=";" search="self.importId = :importId"
+    type="com.axelor.apps.sale.db.SaleOrder"
+    call="com.axelor.csv.script.ComputeSaleOrderProjectTotals:computeSaleOrderProjectTotals">
+    <bind to="creationDate"
+      eval="call:com.axelor.csv.script.ImportDateTime:importDate(creationDate)"
+      column="creationDate"/>
+    <bind to="confirmationDateTime"
+      eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(confirmationDateTime)"
+      column="confirmationDateTime"/>
+    <bind to="shipmentDate"
+      eval="call:com.axelor.csv.script.ImportDateTime:importDate(shipmentDate)"
+      column="shipmentDate"/>
+  </input>
+
+  <input file="project_project.csv" type="com.axelor.apps.project.db.Project" separator=";"
+    search="self.importId = :importId"/>
 </csv-inputs>

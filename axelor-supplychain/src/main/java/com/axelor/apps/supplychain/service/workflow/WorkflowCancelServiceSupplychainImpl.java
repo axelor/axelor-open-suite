@@ -100,6 +100,7 @@ public class WorkflowCancelServiceSupplychainImpl extends WorkflowCancelServiceI
           "Update the invoiced amount of the sale order : {}", invoiceSaleOrder.getSaleOrderSeq());
       invoiceSaleOrder.setAmountInvoiced(
           saleOrderInvoiceService.getInvoicedAmount(invoiceSaleOrder, invoice.getId(), true));
+      saleOrderInvoiceService.updateInvoicingState(invoiceSaleOrder);
 
     } else {
 
@@ -119,6 +120,7 @@ public class WorkflowCancelServiceSupplychainImpl extends WorkflowCancelServiceI
         log.debug("Update the invoiced amount of the sale order : {}", saleOrder.getSaleOrderSeq());
         saleOrder.setAmountInvoiced(
             saleOrderInvoiceService.getInvoicedAmount(saleOrder, invoice.getId(), true));
+        saleOrderInvoiceService.updateInvoicingState(saleOrder);
         saleOrderRepository.save(saleOrder);
       }
     }

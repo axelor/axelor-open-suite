@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.account.service.moveline;
 
+import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.base.AxelorException;
@@ -27,6 +28,8 @@ import com.axelor.meta.CallMethod;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
+import org.apache.commons.lang3.tuple.Pair;
 
 public interface MoveLineService {
 
@@ -50,6 +53,8 @@ public interface MoveLineService {
 
   BigDecimal getCutOffProrataAmount(MoveLine moveLine, LocalDate moveDate);
 
+  MoveLine computeCutOffProrataAmount(MoveLine moveLine, LocalDate moveDate);
+
   public boolean checkManageAnalytic(Move move) throws AxelorException;
 
   @CallMethod
@@ -64,4 +69,12 @@ public interface MoveLineService {
   void updatePartner(List<MoveLine> moveLineList, Partner partner, Partner previousPartner);
 
   List<MoveLine> getReconcilableMoveLines(List<Integer> moveLineIds);
+
+  Map<List<Object>, Pair<List<MoveLine>, List<MoveLine>>> getPopulatedReconcilableMoveLineMap(
+      List<MoveLine> moveLineList);
+
+  Pair<List<MoveLine>, List<MoveLine>> findMoveLineLists(
+      Pair<List<MoveLine>, List<MoveLine>> moveLineLists);
+
+  void computeCutOffProrataAmount(AccountingBatch accountingBatch) throws AxelorException;
 }

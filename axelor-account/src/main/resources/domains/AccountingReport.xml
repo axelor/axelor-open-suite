@@ -114,6 +114,9 @@
     <boolean name="excludeViewAccount" default="false"/>
     <boolean name="excludeCommitmentSpecialAccount" default="false"/>
 
+    <!-- Transient -->
+    <boolean name="traceAnomalies" transient="true"/>
+
     <unique-constraint columns="ref,company"/>
 
     <extra-code><![CDATA[
