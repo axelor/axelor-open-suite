@@ -809,7 +809,8 @@ InvoiceSet.length > 0))"
             <viewer><![CDATA[{{record.reasonOfRefusalToPayStr}}]]></viewer>
           </field>
         </panel>
-        <panel name="financialDiscountPanel" showIf="statusSelect > 2" colSpan="12" if="__config__.app.getApp('account')?.getManageFinancialDiscount()">
+        <panel name="financialDiscountPanel" showIf="statusSelect > 2" colSpan="12"
+          if="__config__.app.getApp('account')?.getManageFinancialDiscount()">
           <field name="financialDiscount" readonlyIf="amountPaid > 0"
             onChange="action-invoice-group-financial-discount"/>
           <field name="financialDiscountDeadlineDate" readonly="true"
