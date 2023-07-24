@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,16 +14,16 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.base.service.imports;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.ImportConfiguration;
 import com.axelor.apps.base.db.ImportHistory;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.imports.importer.ExcelToCSV;
 import com.axelor.apps.base.service.imports.importer.FactoryImporter;
-import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.MetaScanner;
@@ -94,7 +95,7 @@ public class ImportDemoDataServiceImpl implements ImportDemoDataService {
     return false;
   }
 
-  private boolean validateExcel(File excelFile, FileOutputStream out)
+  protected boolean validateExcel(File excelFile, FileOutputStream out)
       throws FileNotFoundException, IOException, AxelorException {
     Workbook workBook = new XSSFWorkbook(new FileInputStream(excelFile));
     boolean flag = true;
@@ -115,7 +116,7 @@ public class ImportDemoDataServiceImpl implements ImportDemoDataService {
     return flag;
   }
 
-  private boolean validateSheet(Sheet sheet, StringBuilder errorList) throws IOException {
+  protected boolean validateSheet(Sheet sheet, StringBuilder errorList) throws IOException {
 
     boolean flag = true;
 
@@ -137,7 +138,7 @@ public class ImportDemoDataServiceImpl implements ImportDemoDataService {
     return flag;
   }
 
-  private boolean validateModule(Row moduleRow, StringBuilder errorList) throws IOException {
+  protected boolean validateModule(Row moduleRow, StringBuilder errorList) throws IOException {
 
     if (this.validateRow(moduleRow, errorList, I18n.get(BaseExceptionMessage.MODULE))
         && this.validateCell(
@@ -154,7 +155,7 @@ public class ImportDemoDataServiceImpl implements ImportDemoDataService {
     return false;
   }
 
-  private boolean validateDataFile(Row dataFileRow, StringBuilder errorList) throws IOException {
+  protected boolean validateDataFile(Row dataFileRow, StringBuilder errorList) throws IOException {
 
     if (this.validateRow(dataFileRow, errorList, I18n.get(BaseExceptionMessage.DATA_FILE))
         && this.validateCell(
@@ -165,7 +166,7 @@ public class ImportDemoDataServiceImpl implements ImportDemoDataService {
     return false;
   }
 
-  private boolean validateConfigFile(Row moduleRow, Row configFileRow, StringBuilder errorList)
+  protected boolean validateConfigFile(Row moduleRow, Row configFileRow, StringBuilder errorList)
       throws IOException {
 
     if (this.validateRow(
@@ -190,7 +191,7 @@ public class ImportDemoDataServiceImpl implements ImportDemoDataService {
     return false;
   }
 
-  private boolean validateHeader(Sheet sheet, StringBuilder errorList) throws IOException {
+  protected boolean validateHeader(Sheet sheet, StringBuilder errorList) throws IOException {
 
     boolean flag = true;
     Row headerRow = sheet.getRow(3);
@@ -212,7 +213,8 @@ public class ImportDemoDataServiceImpl implements ImportDemoDataService {
     return flag;
   }
 
-  private boolean validateRow(Row row, StringBuilder errorList, String rowName) throws IOException {
+  protected boolean validateRow(Row row, StringBuilder errorList, String rowName)
+      throws IOException {
 
     if (row == null) {
       errorList.append(String.format("\n" + I18n.get(BaseExceptionMessage.ROW_NOT_EMPTY), rowName));
@@ -221,7 +223,7 @@ public class ImportDemoDataServiceImpl implements ImportDemoDataService {
     return true;
   }
 
-  private boolean validateCell(Cell cell, StringBuilder errorList, String cellName)
+  protected boolean validateCell(Cell cell, StringBuilder errorList, String cellName)
       throws IOException {
 
     if (cell == null || cell.getCellType() != Cell.CELL_TYPE_STRING) {
@@ -232,7 +234,7 @@ public class ImportDemoDataServiceImpl implements ImportDemoDataService {
     return true;
   }
 
-  private boolean checkConfigFile(String moduleName, String configFileName) {
+  protected boolean checkConfigFile(String moduleName, String configFileName) {
     String dirNamePattern = "demo".replaceAll("/|\\\\", "(/|\\\\\\\\)");
     List<URL> files = new ArrayList<URL>();
 
@@ -257,7 +259,7 @@ public class ImportDemoDataServiceImpl implements ImportDemoDataService {
     return importDetails;
   }
 
-  private File getConfigFile(String moduleName, File configFile, String configFileName)
+  protected File getConfigFile(String moduleName, File configFile, String configFileName)
       throws IOException, AxelorException {
     String dirNamePattern = "demo".replaceAll("/|\\\\", "(/|\\\\\\\\)");
     List<URL> files = new ArrayList<URL>();
@@ -276,7 +278,7 @@ public class ImportDemoDataServiceImpl implements ImportDemoDataService {
     return configFile;
   }
 
-  private MetaFile importFileData(
+  protected MetaFile importFileData(
       File dataFile, File configFile, String dataFileName, String configFileName)
       throws IOException, AxelorException {
     ImportConfiguration config = new ImportConfiguration();

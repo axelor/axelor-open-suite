@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
-  <menuitem name="business-project-root" title="Job costing" order="-102"
+  <menuitem name="business-project-root" title="Job costing" order="-1300"
     icon="fa-list-alt" icon-background="blue" if="__config__.app.isApp('business-project')"/>
 
   <menuitem name="business-project-folder" parent="business-project-root"
-    title="Project Folder" action="business.project.folder" order="5"/>
+    title="Project Folder" action="business.project.folder" order="100"/>
 
   <action-view name="business.project.folder" title="Project Folder"
     model="com.axelor.apps.businessproject.db.ProjectFolder">
@@ -15,7 +15,7 @@
     <view type="form" name="project-folder-form"/>
   </action-view>
 
-  <menuitem name="business-project-all" parent="business-project-root" order="10"
+  <menuitem name="business-project-all" parent="business-project-root" order="200"
     title="Business projects" action="business.project.all"/>
 
   <action-view name="business.project.all" title="Business projects"
@@ -28,7 +28,7 @@
     <context name="_fromBusinessProject" expr="eval:true"/>
   </action-view>
 
-  <menuitem name="business-project-root-invoicing-project" order="-102"
+  <menuitem name="business-project-root-invoicing-project" order="-1200"
     title="Invoicing project" action="business.project.root.invoicing.project" icon="fa-tasks"
     icon-background="#3f6bb9" if="__config__.app.isApp('business-project')"/>
 
@@ -41,17 +41,15 @@
 
   <!-- ADMINISTRATION -->
 
-  <menuitem name="admin-root-batch-project-invoicing-assistant" parent="admin-root-batch"
+  <menuitem name="admin-root-batch-business-project" parent="admin-root-batch"
     if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
-    title="Project invoicing assistant batches"
-    action="admin.root.batch.project.invoicing.assistant"/>
+    title="Business project batches" action="admin.root.batch.business.project" order="1300"/>
 
-  <action-view name="admin.root.batch.project.invoicing.assistant"
-    title="Project invoicing assistant batches"
-    model="com.axelor.apps.businessproject.db.ProjectInvoicingAssistantBatch">
-    <view type="grid" name="project-invoicing-assistant-batch-grid"/>
-    <view type="form" name="project-invoicing-assistant-batch-form"/>
-    <view-param name="search-filters" value="project-invoicing-assistant-batch-filters"/>
+  <action-view name="admin.root.batch.business.project" title="Business project batches"
+    model="com.axelor.apps.businessproject.db.BusinessProjectBatch">
+    <view type="grid" name="business-project-batch-grid"/>
+    <view type="form" name="business-project-batch-form"/>
+    <view-param name="search-filters" value="business-project-batch-filters"/>
   </action-view>
 
 </object-views>

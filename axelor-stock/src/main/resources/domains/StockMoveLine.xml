@@ -1,15 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
-  <entity name="StockMoveLine" lang="java">
+  <entity name="StockMoveLine">
 
     <many-to-one name="stockMove" readonly="true"
       ref="com.axelor.apps.stock.db.StockMove" title="Stock move"/>
     <many-to-one name="plannedStockMove" ref="com.axelor.apps.stock.db.StockMove"/>
+
+    <many-to-one name="fromStockLocation" ref="com.axelor.apps.stock.db.StockLocation"
+      required="true" title="From stock location"/>
+    <many-to-one name="toStockLocation" ref="com.axelor.apps.stock.db.StockLocation"
+      required="true" title="To stock location"/>
 
     <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
     <boolean name="filterOnAvailableProducts" title="Filter on available products"
@@ -83,6 +88,10 @@
     <enum name="regime" ref="com.axelor.apps.stock.db.Regime"/>
     <enum name="natureOfTransaction" ref="com.axelor.apps.stock.db.NatureOfTransaction"/>
     <many-to-one name="countryOfOrigin" ref="com.axelor.apps.base.db.Country"/>
+
+    <!-- Specific to mobile application -->
+    <boolean name="isRealQtyModifiedByUser"/>
+    <!-- Specific to mobile application -->
 
     <extra-code><![CDATA[
         // CONFORMITY SELECT

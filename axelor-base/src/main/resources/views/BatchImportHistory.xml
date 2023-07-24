@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="batch-import-history-grid" title="Historical"
+    model="com.axelor.apps.base.db.BatchImportHistory" orderBy="-createdOn">
+    <field name="user" form-view="user-form" grid-view="user-grid"/>
+    <field name="dataMetaFile" form-view="meta-files-form" grid-view="meta-files-grid"/>
+    <field name="createdOn"/>
+  </grid>
+
+  <form name="batch-import-history-form" title="Historical"
+    model="com.axelor.apps.base.db.BatchImportHistory">
+    <panel name="mainPanel" colSpan="6">
+      <field name="user" form-view="user-form" grid-view="user-grid" canNew="false"
+        canEdit="false" canView="false"/>
+      <field name="dataMetaFile" form-view="meta-files-form" grid-view="meta-files-grid"/>
+      <field name="createdOn"/>
+      <field name="logMetaFile" widget="binary-link"/>
+    </panel>
+  </form>
+
+</object-views>

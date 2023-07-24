@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.stock.exception;
 
 public final class StockExceptionMessage {
@@ -41,6 +59,11 @@ public final class StockExceptionMessage {
       "Can only cancel a validated inventory." /*)*/;
   public static final String INVENTORY_DRAFT_WRONG_STATUS = /*$$(*/
       "Can only return to draft if cancelled." /*)*/;
+  public static final String INVENTORY_VALIDATE_INVENTORY_LINE_LIST = /*$$(*/
+      "Please fill all inventory lines" /*)*/;
+
+  public static final String INVENTORY_LINE_STOCK_LOCATION_MISSING = /*$$(*/
+      "Stock location is missing for these lines : %s" /*)*/;
 
   /** Stock Location Line Service Impl */
   public static final String LOCATION_LINE_1 = /*$$(*/
@@ -71,7 +94,7 @@ public final class StockExceptionMessage {
   public static final String STOCK_MOVE_6 = /*$$(*/
       "There's no destination stock location selected for the stock's movement %s" /*)*/;
   public static final String STOCK_MOVE_7 = /*$$(*/ "Partial stock move (From" /*)*/;
-  public static final String STOCK_MOVE_8 = /*$$(*/ "Reverse stock move (From" /*)*/;
+  public static final String STOCK_MOVE_8 = /*$$(*/ "%s Reverse stock move (From %s)" /*)*/;
   public static final String STOCK_MOVE_9 = /*$$(*/
       "A partial stock move has been generated (%s)" /*)*/;
   public static final String STOCK_MOVE_10 = /*$$(*/
@@ -141,6 +164,8 @@ public final class StockExceptionMessage {
       "You must configure a default receipt stock location for the company %s" /*)*/;
   public static final String STOCK_CONFIG_PICKUP = /*$$(*/
       "You must configure a default pickup stock location for the company %s" /*)*/;
+  public static final String PO_MISSING_DEFAULT_STOCK_LOCATION = /*$$(*/
+      "Please add a quality control default stock location for company %s in the app stock configuration" /*)*/;
 
   /** Stock Location Controller */
   public static final String LOCATION_1 = /*$$(*/
@@ -161,6 +186,9 @@ public final class StockExceptionMessage {
 
   public static final String STOCK_MOVE_LINE_EXPIRED_PRODUCTS = /*$$(*/
       "Expired product(s): %s" /*)*/;
+
+  public static final String STOCK_MOVE_LINE_MISSING_QUANTITY = /*$$(*/
+      "Please indicate a new quantity." /*)*/;
 
   public static final String MISSING_PRODUCT_MASS_UNIT = /*$$(*/
       "Please configure mass units for this product packing : %s" /*)*/;
@@ -244,4 +272,9 @@ public final class StockExceptionMessage {
 
   public static final String INVENTORY_PRODUCT_TRACKING_NUMBER_ERROR = /*$$(*/
       "There is more than one line for same product with same tracking number." /*)*/;
+
+  public static final String REST_STOCK_MOVE_LINE_STOCK_LOCATION_REQUIRED = /*$$(*/
+      "Error: %s field is required and can not be null" /*)*/;
+  public static final String REST_STOCK_MOVE_LINE_STOCK_LOCATIONS_REQUIRED = /*$$(*/
+      "Error: %s and %s fields are required and can not be null" /*)*/;
 }

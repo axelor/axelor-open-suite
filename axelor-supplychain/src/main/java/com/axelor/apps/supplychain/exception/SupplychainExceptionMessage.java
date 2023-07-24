@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.supplychain.exception;
 
 public final class SupplychainExceptionMessage {
@@ -13,9 +31,6 @@ public final class SupplychainExceptionMessage {
   /** Purchase order Service */
   public static final String PURCHASE_ORDER_1 = /*$$(*/
       "%s please configure a virtual supplier stock location for the company %s" /*)*/;
-
-  public static final String PURCHASE_ORDER_2 = /*$$(*/
-      "Error : you have exceeded the budget %s for this period" /*)*/;
 
   public static final String PO_INVOICE_TOO_MUCH_INVOICED = /*$$(*/
       "The purchase order %s invoiced amount cannot be greater than its total amount." /*)*/;
@@ -75,6 +90,10 @@ public final class SupplychainExceptionMessage {
       "The trading name must be the same for all sale orders." /*)*/;
   public static final String STOCK_MOVE_MULTI_INVOICE_TRADING_NAME_PO = /*$$(*/
       "The trading name must be the same for all purchase orders." /*)*/;
+  public static final String STOCK_MOVE_MULTI_FISCAL_POSITION_PO = /*$$(*/
+      "The fiscal position must be the same for all purchase orders" /*)*/;
+  public static final String STOCK_MOVE_MULTI_FISCAL_POSITION_SO = /*$$(*/
+      "The fiscal position must be the same for all sale orders" /*)*/;
   public static final String STOCK_MOVE_MULTI_INVOICE_IN_ATI = /*$$(*/
       "Unit prices in A.T.I and in W.T. can't be mix" /*)*/;
   public static final String STOCK_MOVE_MULTI_INVOICE_INCOTERM = /*$$(*/
@@ -89,6 +108,10 @@ public final class SupplychainExceptionMessage {
       "An invoice not canceled already exists for the incoming stock move %s" /*)*/;
   public static final String STOCK_MOVE_AVAILABILITY_REQUEST_NOT_UPDATABLE = /*$$(*/
       "Please uncheck picking order edited box from this stock move from Cust. Shipment to prepare menu entry." /*)*/;
+  public static final String STOCK_MOVE_CANCEL_WRONG_STATUS_ERROR = /*$$(*/
+      "Can't cancel a stock move that is partially or totally invoiced." /*)*/;
+  public static final String STOCK_MOVE_CANCEL_WRONG_INVOICE_STATUS_ALERT = /*$$(*/
+      "An invoice at status draft or validated is linked to the stock move %s. Please contact the invoicing/accounting department before any changes." /*)*/;
 
   /** Stock move line service */
   public static final String STOCK_MOVE_MISSING_SALE_ORDER = /*$$(*/
@@ -145,6 +168,20 @@ public final class SupplychainExceptionMessage {
       "The process was stopped because the computation is stuck in an infinite loop. This error can be caused by a configuration error." /*)*/;
   public static final String MRP_ALREADY_STARTED = /*$$(*/
       "Mrp calculation is already on going." /*)*/;
+
+  public static final String MRP_CANNOT_PROCESS_ONGOING = /*$$(*/
+      "Could not process MRP %s since its computation is already ongoing." /*)*/;
+
+  public static final String MRP_NOT_FOUND_WITH_SEQ = /*$$(*/
+      "Could not find MRP with sequence %s." /*)*/;
+
+  public static final String MRP_SCHEDULER_SEQ_MISSING = /*$$(*/ "MRP sequence is missing." /*)*/;
+
+  public static final String MRP_GENERATE_PROPOSAL_NO_LINE_SELECTED = /*$$(*/
+      "Please select at least one line to generate a proposal." /*)*/;
+
+  public static final String MRP_GENERATE_PROPOSAL_NO_POSSIBLE_LINE = /*$$(*/
+      "No proposal can be generated from these lines." /*)*/;
 
   //  Mrp Forecast
   public static final String MRP_FORECAST_CONFIRM_WRONG_STATUS = /*$$(*/
@@ -277,7 +314,7 @@ public final class SupplychainExceptionMessage {
       "Stock move %s has already been invoiced." /*)*/;
 
   public static final String STOCK_MOVE_INVOICE_QTY_MAX = /*$$(*/
-      "The quantity to invoice is greater than the quantity in the stock move" /*)*/;
+      "It is not allowed to invoice a greater quantity %s than the delivered quantity %s. Please check the invoice line with this product %s." /*)*/;
 
   public static final String SALE_ORDER_COMPLETE_MANUALLY = /*$$(*/
       "There is at least one draft or planned stock move for this sale order." /*)*/;
@@ -323,4 +360,18 @@ public final class SupplychainExceptionMessage {
 
   public static final String MRP_STOCK_HISTORY_FIELD_SELECT_MISSING = /*$$(*/
       "Field fieldSelect is null for %s" /*)*/;
+
+  public static final String SALE_ORDER_MERGE_ERROR_INVOICED_PARTNER = /*$$(*/
+      "The invoiced partner must be the same for all sale orders" /*)*/;
+  public static final String SALE_ORDER_MERGE_ERROR_DELIVERED_PARTNER = /*$$(*/
+      "The delivered partner must be the same for all sale orders" /*)*/;
+  public static final String SALE_ORDER_MERGE_ERROR_INCOTERM = /*$$(*/
+      "The incoterm must be the same for all sale orders" /*)*/;
+
+  public static final String MISSING_FORECASTED_INV_CUST_ACCOUNT = /*$$(*/
+      "Please select a forecasted invoice customer account in the accounting batch" /*)*/;
+  public static final String MISSING_FORECASTED_INV_SUPP_ACCOUNT = /*$$(*/
+      "Please select a forecasted invoice supplier account in the accounting batch" /*)*/;
+  public static final String STOCK_MOVE_LINES_ASSOCIATED_WITH_INVOICE_LINES_CANNOT_SPLIT = /*$$(*/
+      "The following stock move lines are already associated with invoice lines and can not be splitted: %s" /*)*/;
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="prod-residual-product-grid" title="Residual products"
     model="com.axelor.apps.production.db.ProdResidualProduct" editable="true">
@@ -32,7 +32,7 @@
 
   <action-attrs name="action-prod-residual-product-attrs-qty-digits">
     <attribute name="scale" for="qty"
-      expr="eval: __config__.app.getApp('production').nbDecimalDigitForBomQty"/>
+      expr="eval: __config__.app.getApp('production')?.nbDecimalDigitForBomQty"/>
   </action-attrs>
 
 </object-views>

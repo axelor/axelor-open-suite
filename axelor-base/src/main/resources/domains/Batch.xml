@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="Batch" lang="java" sequential="true">
+  <entity name="Batch" sequential="true">
 
     <!-- NOT DISPLAY -->
-    <many-to-one name="alarmEngineBatch" ref="com.axelor.apps.base.db.AlarmEngineBatch"/>
     <many-to-one name="baseBatch" ref="com.axelor.apps.base.db.BaseBatch"/>
     <many-to-one name="mailBatch" ref="com.axelor.apps.base.db.MailBatch"/>
 
@@ -18,10 +17,43 @@
     <long name="duration" title="Duration" readonly="true"/>
     <integer name="done" title="Succeeded"/>
     <integer name="anomaly" title="Anomaly"/>
+    <integer name="batchTypeSelect" title="Batch type" selection="batch.batch.type.select"/>
+    <integer name="actionLaunchOrigin" title="Origin" default="1"
+      selection="batch.action.launch.origin.select"/>
     <string name="comments" title="Comments" large="true"/>
+    <string name="companyCode" title="Company"/>
+    <string name="actionName" title="Action"/>
 
 
     <many-to-one name="metaFile" title="File" ref="com.axelor.meta.db.MetaFile"/>
+    <many-to-one name="importBatch" title="Import batch"
+      ref="com.axelor.apps.base.db.ImportBatch"/>
+
+    <extra-code><![CDATA[
+      // Batch type select
+
+		public static final int BATCH_TYPE_BASE_BATCH = 100;
+		public static final int BATCH_TYPE_MAIL_BATCH = 102;
+		public static final int BATCH_TYPE_IMPORT_BATCH = 103;
+		public static final int BATCH_TYPE_ACCOUNTING_BATCH = 200;
+		public static final int BATCH_TYPE_INVOICE_BATCH = 201;
+		public static final int BATCH_TYPE_BANK_PAYMENT_BATCH = 300;
+		public static final int BATCH_TYPE_CRM_BATCH = 400;
+		public static final int BATCH_TYPE_CONTRACT_BATCH = 500;
+		public static final int BATCH_TYPE_HR_BATCH = 600;
+		public static final int BATCH_TYPE_PRODUCTION_BATCH = 700;
+		public static final int BATCH_TYPE_SALE_BATCH = 800;
+		public static final int BATCH_TYPE_SUPPLYCHAIN_BATCH = 900;
+		public static final int BATCH_TYPE_BUSINESS_PROJECT_BATCH = 1000;
+		public static final int BATCH_TYPE_STOCK_BATCH = 1100;
+
+
+		// Action launch origin
+
+		public static final int ACTION_LAUNCH_ORIGIN_MANUAL = 1;
+		public static final int ACTION_LAUNCH_ORIGIN_SCHEDULED = 2;
+
+	 ]]></extra-code>
 
   </entity>
 

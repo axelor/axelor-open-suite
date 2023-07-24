@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,10 +14,11 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.base.syncContact;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.City;
 import com.axelor.apps.base.db.Company;
@@ -38,17 +40,16 @@ import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.user.UserService;
-import com.axelor.apps.message.db.EmailAddress;
-import com.axelor.apps.message.db.repo.EmailAddressRepository;
-import com.axelor.apps.tool.EmailTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
-import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.message.db.EmailAddress;
+import com.axelor.message.db.repo.EmailAddressRepository;
 import com.axelor.rpc.Response;
+import com.axelor.utils.EmailTool;
 import com.google.api.services.people.v1.model.Name;
 import com.google.api.services.people.v1.model.Organization;
 import com.google.api.services.people.v1.model.Person;
@@ -70,6 +71,7 @@ import javax.ws.rs.core.MediaType;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @Path("/synccontact")
+@Deprecated
 public class SyncContactService {
 
   private PartnerRepository partnerRepo;
@@ -127,6 +129,7 @@ public class SyncContactService {
 
   @POST
   @Path("/key/{id}")
+  @Deprecated
   public SyncContactResponse getKeyAndClientId(@PathParam("id") Long id) {
     SyncContact syncContact = syncContactRepo.find(id);
     if (syncContact == null) {
@@ -143,7 +146,9 @@ public class SyncContactService {
 
   @POST
   @Path("/sync/{id}")
-  public Response importContact(@PathParam("id") Long id, PeopleRequest request) {
+  @Deprecated
+  public Response importContact(@PathParam("id") Long id, PeopleRequest request)
+      throws AxelorException {
     if (request == null || request.getPeople() == null || id == null) {
       return new Response();
     }
@@ -151,7 +156,7 @@ public class SyncContactService {
     return new Response();
   }
 
-  public void importAllContact(Long id, List<Person> people) {
+  public void importAllContact(Long id, List<Person> people) throws AxelorException {
     int i = 0;
     SyncContact syncContact = syncContactRepo.find(id);
     if (syncContact == null) {
@@ -171,7 +176,8 @@ public class SyncContactService {
     updateSyncContact(id, syncContactHistoric);
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
+  @Deprecated
   public void updateSyncContact(Long id, SyncContactHistoric syncContactHistoric) {
     SyncContact syncContact;
     syncContact = syncContactRepo.find(id);
@@ -189,8 +195,10 @@ public class SyncContactService {
     syncContactRepo.save(syncContact);
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public Partner importContact(Person googlePerson, Boolean updateContactField) {
+  @Transactional(rollbackOn = {Exception.class})
+  @Deprecated
+  public Partner importContact(Person googlePerson, Boolean updateContactField)
+      throws AxelorException {
     if (googlePerson.getNames() == null) {
       return null;
     }
@@ -214,7 +222,8 @@ public class SyncContactService {
     return partner;
   }
 
-  public Partner createPartner(Person googlePerson, Name googleName) {
+  @Deprecated
+  public Partner createPartner(Person googlePerson, Name googleName) throws AxelorException {
     Partner partner = new Partner();
     setDefaultPartnerValue(partner);
     importName(googleName, partner);
@@ -224,9 +233,11 @@ public class SyncContactService {
     return partnerRepo.save(partner);
   }
 
-  protected void setDefaultPartnerValue(Partner partner) {
+  protected void setDefaultPartnerValue(Partner partner) throws AxelorException {
     partner.setPartnerTypeSelect(PartnerRepository.PARTNER_TYPE_INDIVIDUAL);
-    String seq = Beans.get(SequenceService.class).getSequenceNumber(SequenceRepository.PARTNER);
+    String seq =
+        Beans.get(SequenceService.class)
+            .getSequenceNumber(SequenceRepository.PARTNER, Partner.class, "partnerSeq");
     partner.setUser(userService.getUser());
     partner.setPartnerSeq(seq);
     partner.setIsContact(true);
@@ -414,7 +425,7 @@ public class SyncContactService {
     }
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Partner updatePartner(Person googlePerson, Partner partner, Boolean updateContactField) {
     Boolean toUpdate =
         updateContactField

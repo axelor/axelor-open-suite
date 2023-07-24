@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="resource-booking-grid" title="Resource bookings"
     model="com.axelor.apps.project.db.ResourceBooking">
@@ -54,6 +54,8 @@
   <action-record name="action-resource-booking-defaults"
     model="com.axelor.apps.project.db.ResourceBooking">
     <field name="project" expr="eval:_project" if="_project != null"/>
+    <field name="project" expr="eval:__parent__"
+      if="__this__?.project == null &amp;&amp; __parent__?.getContextClass() == Project.class"/>
     <field name="projectTask" expr="eval:_task" if="_task != null"/>
     <field name="resource" expr="eval:_resource" if="_resource != null"/>
     <field name="user" expr="eval:__user__"/>

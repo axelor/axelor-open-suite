@@ -1,0 +1,32 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="DayPlanning">
+    <many-to-one name="weeklyPlanning" ref="com.axelor.apps.base.db.WeeklyPlanning"/>
+    <string name="nameSelect" required="true" namecolumn="true" title="Day"
+      selection="hrs.weekly.day.select"/>
+    <time name="morningFrom" title="1st Period From"/>
+    <time name="morningTo" title="To"/>
+    <time name="afternoonFrom" title="2nd Period From"/>
+    <time name="afternoonTo" title="To"/>
+    <integer name="sequence" title="Seq."/>
+
+    <extra-code>
+      	<![CDATA[
+      		// NAME
+      		public static final String MONDAY = "monday";
+      		public static final String TUESDAY = "tuesday";
+      		public static final String WEDNESDAY = "wednesday";
+      		public static final String THURSDAY = "thursday";
+      		public static final String FRIDAY = "friday";
+      		public static final String SATURDAY = "saturday";
+      		public static final String SUNDAY = "sunday";
+      	]]>
+    </extra-code>
+  </entity>
+
+</domain-models>

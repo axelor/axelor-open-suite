@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="stock-location-grid" title="Stock Locations"
     model="com.axelor.apps.stock.db.StockLocation">
     <toolbar>
       <button name="printBtn" title="Print" icon="fa-print"
         onClick="action-stock-location-method-open-print-wizard"/>
+      <button name="treeBtn" title="Stock location tree"
+        onClick="action-stock-location-view-tree"/>
     </toolbar>
     <field name="name"/>
     <field name="parentStockLocation" form-view="stock-location-form"
       grid-view="stock-location-grid"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
     <field name="address" form-view="address-form" grid-view="address-grid"/>
     <field name="typeSelect"/>
@@ -27,7 +29,7 @@
     <field name="parentStockLocation" form-view="stock-location-form"
       grid-view="stock-location-grid"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
     <field name="address" form-view="address-form" grid-view="address-grid"/>
     <field name="typeSelect"/>
@@ -87,11 +89,11 @@
         </viewer>
       </field>
       <panel name="barcodePanel" title="Barcode" colSpan="12"
-        if="__config__.app.getApp('stock').getActivateStockLocationBarCodeGeneration()">
+        if="__config__.app.getApp('stock')?.getActivateStockLocationBarCodeGeneration()">
         <field name="barCode" showTitle="false" widget="Image" colSpan="2"/>
         <field name="serialNumber" readonlyIf="barCode != null" colSpan="4"/>
         <field name="barcodeTypeConfig" readonlyIf="barCode != null"
-          if="__config__.app.getApp('stock').getEditStockLocationBarcodeType()" colSpan="4"/>
+          if="__config__.app.getApp('stock')?.getEditStockLocationBarcodeType()" colSpan="4"/>
       </panel>
     </panel>
     <panel-tabs name="mainPanelTab">
@@ -112,11 +114,11 @@
         <field name="isNotInMrp" colSpan="3" if="__config__.app.isApp('supplychain')"/>
         <field name="isNotInCalculStock" colSpan="3"/>
         <field name="isWorkshop" colSpan="3" title="Workshop"
-          if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageWorkshop()"
+          if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production')?.getManageWorkshop()"
           showIf="usableOnProduction"/>
         <field name="isOutsourcingLocation" onChange="action-stock-set-partner-domain-attrs"
           showIf="typeSelect==2 || typeSelect==3" colSpan="3" if-module="axelor-production"
-          if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageOutsourcing()"/>
+          if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production')?.getManageOutsourcing()"/>
         <field name="includeVirtualSubLocation" onChange="save" hideIf="typeSelect == 3"
           colSpan="3"/>
         <field name="isValued" showIf="typeSelect == 1 || typeSelect == 2" colSpan="3"/>
@@ -126,7 +128,7 @@
 
   </form>
 
-  <form model="com.axelor.apps.base.db.Wizard" title="Select format to Export"
+  <form model="com.axelor.utils.db.Wizard" title="Select format to Export"
     name="stock-location-print-wizard-form"
     onNew="action-stock-location-print-wizard-attrs-set-print-type-and-type-select">
     <panel name="mainPanel">
@@ -171,12 +173,12 @@
     model="com.axelor.apps.stock.db.StockLocation">
     <attribute name="domain" for="partner"
       expr="eval: &quot;self.isContact = false AND :company member of self.companySet &amp;&amp; self.isSubcontractor = true&quot;"
-      if="typeSelect == 2 &amp;&amp; isOutsourcingLocation &amp;&amp; __config__.app.getApp('production').getManageOutsourcing()"/>
+      if="typeSelect == 2 &amp;&amp; isOutsourcingLocation &amp;&amp; __config__.app.getApp('production')?.getManageOutsourcing()"/>
     <attribute name="domain" for="partner" expr="eval: null"
-      if="typeSelect == 1 &amp;&amp; !__config__.app.getApp('production').getManageOutsourcing()"/>
+      if="typeSelect == 1 &amp;&amp; !__config__.app.getApp('production')?.getManageOutsourcing()"/>
     <attribute name="title" for="partner" expr="Partner" if="typeSelect == 1"/>
     <attribute name="title" for="partner" expr="Deported stock location"
-      if="typeSelect == 3 &amp;&amp; __config__.app.getApp('production').getManageOutsourcing()"/>
+      if="typeSelect == 3 &amp;&amp; __config__.app.getApp('production')?.getManageOutsourcing()"/>
   </action-attrs>
 
   <action-view name="action-location-view-create-inventory" title="Create inventory"
@@ -239,12 +241,17 @@
     <attribute name="value" for="serialNumber" expr="eval: name" if="eval: id == null"/>
   </action-attrs>
 
+  <action-view name="action-stock-location-view-tree" title="Stock Location Tree"
+    model="com.axelor.apps.stock.db.StockLocation">
+    <view type="tree" name="stock-location-tree"/>
+  </action-view>
+
   <search-filters name="stock-location-filters"
     model="com.axelor.apps.stock.db.StockLocation" title="Stock location filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="isWorkshop" hidden="true"
-      if="!(__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageWorkshop())"/>
+      if="!(__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production')?.getManageWorkshop())"/>
     <field name="usableOnSaleOrder" hidden="true" if="!__config__.app.isApp('supplychain')"/>
     <field name="usableOnPurchaseOrder" hidden="true"
       if="!__config__.app.isApp('supplychain')"/>

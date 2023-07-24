@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="year-grid" title="Year" model="com.axelor.apps.base.db.Year">
     <field name="name"/>
@@ -9,7 +9,7 @@
     <field name="fromDate"/>
     <field name="toDate"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
   </grid>
 
   <form name="year-form" title="Year" model="com.axelor.apps.base.db.Year"
@@ -43,10 +43,10 @@
 
   <action-validate name="action-civil-year-check-date">
     <error
-      message="Civil year already exist for ${fromDate.format(java.time.format.DateTimeFormatter.ofPattern('dd/MM/yyyy'))} and ${toDate.format(java.time.format.DateTimeFormatter.ofPattern('dd/MM/yyyy'))}."
+      message="Civil year already exist for ${com.axelor.i18n.L10n.getInstance().format(fromDate)} and ${com.axelor.i18n.L10n.getInstance().format(toDate)}."
       if="id == null &amp;&amp; __repo__(Year).all().filter('(?1 BETWEEN fromDate AND toDate OR ?2 BETWEEN fromDate AND toDate) AND company = ?3 AND typeSelect = 0',fromDate,toDate,company).count() &gt; 0 &amp;&amp; typeSelect == 0"/>
     <error
-      message="Civil year already exist for ${fromDate.format(java.time.format.DateTimeFormatter.ofPattern('dd/MM/yyyy'))} and ${toDate.format(java.time.format.DateTimeFormatter.ofPattern('dd/MM/yyyy'))}."
+      message="Civil year already exist for ${com.axelor.i18n.L10n.getInstance().format(fromDate)} and ${com.axelor.i18n.L10n.getInstance().format(toDate)}."
       if="id != null &amp;&amp; __repo__(Year).all().filter('(?1 BETWEEN fromDate AND toDate OR ?2 BETWEEN fromDate AND toDate) AND company = ?3 AND typeSelect = 0 AND id != ?4',fromDate,toDate,company,id).count() &gt; 0 &amp;&amp; typeSelect == 0"/>
   </action-validate>
 
@@ -86,6 +86,6 @@
   <search-filters name="year-filters" model="com.axelor.apps.base.db.Year"
     title="Year filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
   </search-filters>
 </object-views>

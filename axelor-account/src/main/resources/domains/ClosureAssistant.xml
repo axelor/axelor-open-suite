@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="account" package="com.axelor.apps.account.db"/>
+
+  <entity name="ClosureAssistant">
+
+    <many-to-one ref="com.axelor.apps.base.db.Year" name="fiscalYear"
+      title="Fiscal Year" required="true"/>
+    <many-to-one ref="com.axelor.apps.base.db.Company" name="company" title="Company"
+      required="true"/>
+    <decimal name="progress" title="Progress" readonly="true"/>
+    <one-to-many ref="com.axelor.apps.account.db.ClosureAssistantLine"
+      mappedBy="closureAssistant" name="closureAssistantLineList" title="Closure steps"/>
+    <integer name="statusSelect" selection="account.closure.assistant.status.select"
+      title="Status" readonly="true" default="1"/>
+
+
+
+    <extra-code><![CDATA[
+		// STATUS SELECT
+		public static final int STATUS_NEW = 1;
+		public static final int STATUS_IN_PROGRESS= 2;
+		public static final int STATUS_TERMINATED = 3;
+
+	]]></extra-code>
+
+  </entity>
+
+</domain-models>

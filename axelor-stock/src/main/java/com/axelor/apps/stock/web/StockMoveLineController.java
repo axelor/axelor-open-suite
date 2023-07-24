@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,14 +14,16 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.stock.web;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.service.InternationalService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.StockMove;
@@ -31,18 +34,17 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.service.StockLocationLineService;
+import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.mapper.Mapper;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.ResponseMessageType;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.axelor.utils.db.Wizard;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -59,18 +61,7 @@ public class StockMoveLineController {
 
   public void compute(ActionRequest request, ActionResponse response) throws AxelorException {
     StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
-    StockMove stockMove = stockMoveLine.getStockMove();
-    if (stockMove == null) {
-      Context parentContext = request.getContext().getParent();
-      Context superParentContext = parentContext.getParent();
-      if (parentContext.getContextClass().equals(StockMove.class)) {
-        stockMove = parentContext.asType(StockMove.class);
-      } else if (superParentContext.getContextClass().equals(StockMove.class)) {
-        stockMove = superParentContext.asType(StockMove.class);
-      } else {
-        return;
-      }
-    }
+    StockMove stockMove = getStockMove(request, stockMoveLine);
     stockMoveLine = Beans.get(StockMoveLineService.class).compute(stockMoveLine, stockMove);
     response.setValue("unitPriceUntaxed", stockMoveLine.getUnitPriceUntaxed());
     response.setValue("unitPriceTaxed", stockMoveLine.getUnitPriceTaxed());
@@ -79,27 +70,27 @@ public class StockMoveLineController {
 
   public void setProductInfo(ActionRequest request, ActionResponse response) {
 
-    StockMoveLine stockMoveLine;
-
+    StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
+    StockMoveLineService stockMoveLineService = Beans.get(StockMoveLineService.class);
+    StockMove stockMove = stockMoveLine.getStockMove();
     try {
-      stockMoveLine = request.getContext().asType(StockMoveLine.class);
-      StockMove stockMove = stockMoveLine.getStockMove();
 
       if (stockMove == null) {
         stockMove = request.getContext().getParent().asType(StockMove.class);
       }
 
       if (stockMoveLine.getProduct() == null) {
-        stockMoveLine = new StockMoveLine();
+        stockMoveLineService.resetStockMoveLine(stockMoveLine);
+        stockMoveLine.setStockMove(stockMove);
         response.setValues(Mapper.toMap(stockMoveLine));
         return;
       }
 
-      Beans.get(StockMoveLineService.class)
-          .setProductInfo(stockMove, stockMoveLine, stockMove.getCompany());
+      stockMoveLineService.setProductInfo(stockMove, stockMoveLine, stockMove.getCompany());
       response.setValues(stockMoveLine);
     } catch (Exception e) {
-      stockMoveLine = new StockMoveLine();
+      stockMoveLineService.resetStockMoveLine(stockMoveLine);
+      stockMoveLine.setStockMove(stockMove);
       response.setValues(Mapper.toMap(stockMoveLine));
       TraceBackService.trace(response, e, ResponseMessageType.INFORMATION);
     }
@@ -109,12 +100,20 @@ public class StockMoveLineController {
     StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
     if (stockMoveLine.getLineTypeSelect() != StockMoveLineRepository.TYPE_NORMAL) {
       Map<String, Object> newStockMoveLine = Mapper.toMap(new StockMoveLine());
+      newStockMoveLine.put("productName", stockMoveLine.getProductName());
       newStockMoveLine.put("qty", BigDecimal.ZERO);
+      newStockMoveLine.put("realQty", BigDecimal.ZERO);
       newStockMoveLine.put("id", stockMoveLine.getId());
       newStockMoveLine.put("version", stockMoveLine.getVersion());
       newStockMoveLine.put("lineTypeSelect", stockMoveLine.getLineTypeSelect());
       response.setValues(newStockMoveLine);
     }
+  }
+
+  public void clearLine(ActionRequest request, ActionResponse response) {
+    Map<String, Object> clearedStockMoveLineMap =
+        Beans.get(StockMoveLineService.class).getClearedStockMoveLineMap();
+    response.setValues(clearedStockMoveLineMap);
   }
 
   public void splitStockMoveLineByTrackingNumber(ActionRequest request, ActionResponse response) {
@@ -207,7 +206,7 @@ public class StockMoveLineController {
               .find(Long.parseLong(((Map) _parent.get("fromStockLocation")).get("id").toString()));
 
     } else if (stockMoveLine.getStockMove() != null) {
-      stockLocation = stockMoveLine.getStockMove().getFromStockLocation();
+      stockLocation = stockMoveLine.getFromStockLocation();
     }
 
     if (stockLocation != null) {
@@ -224,9 +223,13 @@ public class StockMoveLineController {
         context.getParent() != null
             ? context.getParent().asType(StockMove.class)
             : stockMoveLine.getStockMove();
-    String domain =
-        Beans.get(StockMoveLineService.class).createDomainForProduct(stockMoveLine, stockMove);
-    response.setAttr("product", "domain", domain);
+    try {
+      String domain =
+          Beans.get(StockMoveLineService.class).createDomainForProduct(stockMoveLine, stockMove);
+      response.setAttr("product", "domain", domain);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void setAvailableStatus(ActionRequest request, ActionResponse response) {
@@ -253,13 +256,12 @@ public class StockMoveLineController {
 
     if (stockMoveLine == null
         || stockMoveLine.getProduct() == null
-        || stockMove == null
-        || stockMove.getFromStockLocation() == null) {
+        || stockMoveLine.getFromStockLocation() == null) {
       return;
     }
 
     List<TrackingNumber> trackingNumberList =
-        Beans.get(StockMoveLineService.class).getAvailableTrackingNumbers(stockMoveLine, stockMove);
+        Beans.get(StockMoveLineService.class).getAvailableTrackingNumbers(stockMoveLine);
     if (trackingNumberList == null || trackingNumberList.isEmpty()) {
       return;
     }
@@ -271,7 +273,7 @@ public class StockMoveLineController {
     for (TrackingNumber trackingNumber : trackingNumberList) {
       StockLocationLine detailStockLocationLine =
           stockLocationLineService.getDetailLocationLine(
-              stockMove.getFromStockLocation(), stockMoveLine.getProduct(), trackingNumber);
+              stockMoveLine.getFromStockLocation(), stockMoveLine.getProduct(), trackingNumber);
       BigDecimal availableQty =
           detailStockLocationLine != null
               ? detailStockLocationLine.getCurrentQty()
@@ -297,26 +299,68 @@ public class StockMoveLineController {
       Context context = request.getContext();
       InternationalService internationalService = Beans.get(InternationalService.class);
       StockMoveLine stockMoveLine = context.asType(StockMoveLine.class);
-      StockMove stockMove =
-          context.getParent() != null
-              ? context.getParent().asType(StockMove.class)
-              : stockMoveLine.getStockMove();
-      Partner partner = stockMove.getPartner();
-      String userLanguage = AuthUtils.getUser().getLanguage();
-      String partnerLanguage = partner.getLanguage().getCode();
+      Context parentContext = context.getParent();
+      if (parentContext != null && parentContext.getContextClass().equals(StockMove.class)) {
+        StockMove stockMove = parentContext.asType(StockMove.class);
+        Partner partner = stockMove.getPartner();
+        String userLanguage = AuthUtils.getUser().getLanguage();
+        Product product = stockMoveLine.getProduct();
 
-      if (stockMoveLine.getProduct() != null) {
-        response.setValue(
-            "description",
-            internationalService.translate(
-                stockMoveLine.getProduct().getDescription(), userLanguage, partnerLanguage));
-        response.setValue(
-            "productName",
-            internationalService.translate(
-                stockMoveLine.getProduct().getName(), userLanguage, partnerLanguage));
+        if (product != null) {
+          Map<String, String> translation =
+              internationalService.getProductDescriptionAndNameTranslation(
+                  product, partner, userLanguage);
+
+          String description = translation.get("description");
+          String productName = translation.get("productName");
+
+          if (description != null
+              && !description.isEmpty()
+              && productName != null
+              && !productName.isEmpty()) {
+            response.setValue("description", description);
+            response.setValue("productName", productName);
+          }
+        }
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void getFromStockLocationDomain(ActionRequest request, ActionResponse response) {
+    StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
+    StockMove stockMove = getStockMove(request, stockMoveLine);
+    response.setAttr(
+        "fromStockLocation",
+        "domain",
+        Beans.get(StockLocationService.class)
+            .computeStockLocationChildren(stockMove.getFromStockLocation()));
+  }
+
+  public void getToStockLocationDomain(ActionRequest request, ActionResponse response) {
+    StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
+    StockMove stockMove = getStockMove(request, stockMoveLine);
+    response.setAttr(
+        "toStockLocation",
+        "domain",
+        Beans.get(StockLocationService.class)
+            .computeStockLocationChildren(stockMove.getToStockLocation()));
+  }
+
+  protected StockMove getStockMove(ActionRequest request, StockMoveLine stockMoveLine) {
+    StockMove stockMove = stockMoveLine.getStockMove();
+    if (stockMove == null) {
+      Context parentContext = request.getContext().getParent();
+      Context superParentContext = parentContext.getParent();
+      if (parentContext.getContextClass().equals(StockMove.class)) {
+        stockMove = parentContext.asType(StockMove.class);
+      } else if (superParentContext.getContextClass().equals(StockMove.class)) {
+        stockMove = superParentContext.asType(StockMove.class);
+      } else {
+        return null;
+      }
+    }
+    return stockMove;
   }
 }

@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,11 +14,12 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.sale.service.saleorder;
 
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Unit;
@@ -26,7 +28,6 @@ import com.axelor.apps.sale.db.Pack;
 import com.axelor.apps.sale.db.PackLine;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.exception.AxelorException;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import java.math.BigDecimal;
@@ -110,19 +111,6 @@ public interface SaleOrderLineService {
    */
   public BigDecimal computeDiscount(SaleOrderLine saleOrderLine, Boolean inAti);
 
-  /**
-   * Convert a product's unit price from incl. tax to ex. tax or the other way round.
-   *
-   * <p>If the price is ati, it will be converted to ex. tax, and if it isn't it will be converted
-   * to ati.
-   *
-   * @param priceIsAti a boolean indicating if the price is ati.
-   * @param taxLine the tax to apply.
-   * @param price the unit price to convert.
-   * @return the converted price as a BigDecimal.
-   */
-  public BigDecimal convertUnitPrice(Boolean inAti, TaxLine taxLine, BigDecimal price);
-
   public Map<String, Object> getDiscountsFromPriceLists(
       SaleOrder saleOrder, SaleOrderLine saleOrderLine, BigDecimal price);
 
@@ -132,9 +120,6 @@ public interface SaleOrderLineService {
   public Unit getSaleUnit(SaleOrderLine saleOrderLine);
 
   public SaleOrder getSaleOrder(Context context);
-
-  public Map<String, BigDecimal> computeSubMargin(SaleOrder saleOrder, SaleOrderLine saleOrderLine)
-      throws AxelorException;
 
   public BigDecimal getAvailableStock(SaleOrder saleOrder, SaleOrderLine saleOrderLine);
 

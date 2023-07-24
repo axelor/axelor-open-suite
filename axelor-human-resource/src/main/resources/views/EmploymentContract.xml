@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="employment-contract-grid" title="Employment contracts"
     model="com.axelor.apps.hr.db.EmploymentContract">
@@ -38,7 +38,7 @@
           action="save,action-employment-contract-validate-printing-settings,action-employment-contract-export-word"/>
         <item title="Generate payroll prepa."
           action="save,action-employment-contract-generate-payroll-prepa"
-          if="__config__.app.getApp('employee').getPayrollPreparation()"/>
+          if="__config__.app.getApp('employee')?.getPayrollPreparation()"/>
         <item title="Export employment contract"
           action="save,action-employment-contract-method-export"/>
       </menu>

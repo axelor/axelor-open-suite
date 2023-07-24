@@ -1,23 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
-  <entity name="StockMove" lang="java">
+  <entity name="StockMove">
 
     <many-to-one name="inManufOrder" ref="com.axelor.apps.production.db.ManufOrder"/>
     <many-to-one name="outManufOrder" ref="com.axelor.apps.production.db.ManufOrder"/>
     <many-to-one name="inOperationOrder"
       ref="com.axelor.apps.production.db.OperationOrder"/>
-
-    <extra-code>
-	    <![CDATA[
-			public static final String ORIGIN_MANUF_ORDER = "com.axelor.apps.production.db.ManufOrder";
-			public static final String ORIGIN_OPERATION_ORDER = "com.axelor.apps.production.db.OperationOrder";
-	    ]]>
-    </extra-code>
+    <many-to-one name="manufOrder" title="Manufacturing order"
+      ref="com.axelor.apps.production.db.ManufOrder" copy="false"/>
+    <many-to-one name="operationOrder" title="Operation order"
+      ref="com.axelor.apps.production.db.OperationOrder" copy="false"/>
 
   </entity>
 </domain-models>

@@ -1,0 +1,13 @@
+---
+name: CRM
+code: crm
+typeSelect: standard
+installOrder: 2020
+description: |
+   CRM configuration
+image: app-crm.png
+modules: 
+   axelor-crm
+dependsOn:
+   - base
+sequence: 25

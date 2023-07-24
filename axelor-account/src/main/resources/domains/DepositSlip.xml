@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
@@ -12,22 +12,28 @@
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true"/>
     <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" required="true"/>
     <many-to-one name="companyBankDetails" ref="com.axelor.apps.base.db.BankDetails"
-      title="Bank account" required="true"/>
+      title="Bank account"/>
     <date name="fromDate" title="Start date"/>
     <date name="toDate" title="End date"/>
-    <date name="depositDate" required="true" copy="false"/>
+    <date name="depositDate" required="true" copy="false" title="Date of the deposit slip"/>
     <integer name="depositType" title="Deposit type" selection="account.deposit.type.select"/>
     <string name="depositNumber" readonly="true" copy="false" namecolumn="true"/>
     <date name="publicationDate" readonly="true" copy="false"/>
 
     <one-to-many name="paymentVoucherList"
-      ref="com.axelor.apps.account.db.PaymentVoucher" title="Payment vouchers" orphanRemoval="false"
-      mappedBy="depositSlip" copy="false"/>
+      ref="com.axelor.apps.account.db.PaymentVoucher"
+      title="Selected payment voucher for deposit slip" orphanRemoval="false" mappedBy="depositSlip"
+      copy="false"/>
 
     <decimal name="totalAmount" scale="2" precision="20" readonly="true" copy="false"/>
 
     <!-- Cheque -->
     <integer name="chequeCount" title="Number of cheques" readonly="true" copy="false"/>
+
+    <many-to-one name="valueForCollectionAccount"
+      ref="com.axelor.apps.account.db.Account"/>
+    <boolean name="isBankDepositMoveGenerated" title="Bank deposit move generated"
+      readonly="true" copy="true"/>
 
     <!-- Cash -->
     <!-- TODO -->

@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="contract-version-next-grid" title="Versions"
     model="com.axelor.apps.contract.db.ContractVersion">
     <field name="contract.contractId"/>
     <field name="contract.name"/>
     <field name="contract.partner"/>
-    <field name="activationDate"/>
+    <field name="activationDateTime"/>
     <field name="statusSelect"/>
   </grid>
 
@@ -42,7 +42,7 @@
         </field>
         <field name="nextContract.company" colSpan="4"/>
         <field name="nextContract.partner" colSpan="4"/>
-        <field if="__config__.app.getApp('contract').isInvoicingManagement"
+        <field if="__config__.app.getApp('contract')?.isInvoicingManagement"
           name="nextContract.currency" colSpan="4"/>
         <field name="nextContract.name" css="highlight" colSpan="12"/>
         <panel name="contractDatesPanel" title="Contract Dates" hidden="true" showIf="id"
@@ -63,12 +63,12 @@
             <panel name="activationDatesPanel" hidden="true" readonly="true"
               showIf="statusSelect >= 3" colSpan="12">
               <field name="activatedByUser" colSpan="4"/>
-              <field name="activationDate" colSpan="4"/>
+              <field name="activationDateTime" colSpan="4"/>
               <panel colSpan="4" name="endDatesPanel">
                 <field name="supposedEndDate" hidden="true" readonly="true"
                   showIf="statusSelect == 3" colSpan="12"/>
-                <field name="endDate" hidden="true" readonly="true" showIf="statusSelect == 4"
-                  colSpan="12"/>
+                <field name="endDateTime" hidden="true" readonly="true"
+                  showIf="statusSelect == 4" colSpan="12"/>
               </panel>
             </panel>
           </panel>
@@ -84,9 +84,11 @@
             onClick="action.contract.view.contract,close"/>
           <button name="showBtn" title="Show contract" showIf="id"
             onClick="action.contract.view.contract,close"/>
-          <button name="waitingBtn" title="Waiting" showIf="id &amp;&amp; statusSelect == 1"
+          <button name="waitingBtn" title="Put on-hold"
+            showIf="id &amp;&amp; statusSelect == 1"
             onClick="save,action-contract-version-method-waiting"/>
-          <button name="ongoingBtn" title="Ongoing" showIf="id &amp;&amp; statusSelect == 2"
+          <button name="ongoingBtn" title="Activate contract"
+            showIf="id &amp;&amp; statusSelect == 2"
             onClick="save,action-contract-version-method-active,close"/>
         </panel>
         <panel title="Notes" stacked="true" name="notePanel">
@@ -96,24 +98,25 @@
     </panel>
     <panel-tabs name="mainPanelTab">
       <panel title="Content" name="contentPanel">
-        <field if="__config__.app.getApp('contract').isInvoicingManagement" hidden="true"
-          showIf="nextContract.isInvoicingManagement" name="contractLineList" colSpan="12"/>
+        <field if="__config__.app.getApp('contract')?.isInvoicingManagement" hidden="true"
+          showIf="nextContract.isInvoicingManagement" name="contractLineList" colSpan="12"
+          form-view="contract-line-form" grid-view="contract-line-grid"/>
         <field name="description" colSpan="9" widget="html"/>
         <field name="metaFile" colSpan="3" widget="binary-link"/>
       </panel>
-      <panel if="__config__.app.getApp('contract').isConfigContract" title="Config."
+      <panel if="__config__.app.getApp('contract')?.isConfigContract" title="Config."
         name="configPanel">
-        <panel if="__config__.app.getApp('contract').isInvoicingManagement" title="Invoicing"
+        <panel if="__config__.app.getApp('contract')?.isInvoicingManagement" title="Invoicing"
           colSpan="12" name="configSubPanel">
           <field name="nextContract.isInvoicingManagement" colSpan="6" widget="boolean-switch"/>
           <panel name="managementPanel" hidden="true"
             showIf="nextContract.isInvoicingManagement" colSpan="6">
             <field if="__config__.app.getApp('contract')isAdditionalBenefitManagement"
               widget="boolean-switch" name="nextContract.isAdditionaBenefitManagement" colSpan="6"/>
-            <field if="__config__.app.getApp('contract').isConsumptionManagement"
+            <field if="__config__.app.getApp('contract')?.isConsumptionManagement"
               widget="boolean-switch" name="nextContract.isConsumptionManagement" colSpan="6"/>
           </panel>
-          <field if="__config__.app.getApp('contract').isConsumptionManagement"
+          <field if="__config__.app.getApp('contract')?.isConsumptionManagement"
             widget="boolean-switch" name="isConsumptionBeforeEndDate" hidden="true"
             showIf="nextContract.isConsumptionManagement" colSpan="6"/>
           <panel name="invoicingSubPanel" hidden="true"
@@ -122,22 +125,27 @@
               <field name="paymentMode" colSpan="3" widget="SuggestBox" canEdit="false"
                 form-view="payment-mode-form" grid-view="payment-mode-grid"/>
               <field name="paymentCondition" colSpan="3" widget="SuggestBox" canEdit="false"
-                form-view="payment-condition-form" grid-view="payment-condition-grid"/>
+                form-view="payment-condition-form" grid-view="payment-condition-grid"
+                onSelect="action-contract-version-attrs-payment-condition-set-domain"/>
               <field name="automaticInvoicing" colSpan="3" widget="boolean-switch"/>
               <field name="invoicingMomentSelect" showIf="automaticInvoicing" colSpan="3"/>
             </panel>
             <panel name="invoicingDetailsPanel" colSpan="12">
-              <field name="isPeriodicInvoicing" colSpan="3" widget="boolean-switch"/>
+              <field name="isPeriodicInvoicing" colSpan="3" widget="boolean-switch"
+                readonlyIf="!nextContract.currentContractVersion.isPeriodicInvoicing"/>
               <panel showIf="isPeriodicInvoicing" colSpan="9" name="subInvoicingDetailsPanel">
                 <field name="invoicingDuration" colSpan="4"/>
                 <field name="isTimeProratedInvoice" colSpan="4" widget="boolean-switch"/>
                 <field name="isVersionProratedInvoice" hidden="true"
                   showIf="isTimeProratedInvoice" widget="boolean-switch" colSpan="4"/>
+                <field name="nextContract.currentContractVersion" hidden="true"/>
+                <field name="nextContract.currentContractVersion.isPeriodicInvoicing"
+                  hidden="true"/>
               </panel>
             </panel>
           </panel>
         </panel>
-        <panel if="__config__.app.getApp('contract').isRenewalManagement" title="Renewal"
+        <panel if="__config__.app.getApp('contract')?.isRenewalManagement" title="Renewal"
           colSpan="12" name="renewalDetailsPanel">
           <field name="isTacitRenewal" colSpan="3" widget="boolean-switch"/>
           <field name="renewalDuration" colSpan="3" requiredIf="isTacitRenewal"/>
@@ -174,6 +182,12 @@
       if="_xIsNextVersion"/>
   </action-attrs>
 
+  <action-attrs name="action-contract-version-attrs-payment-condition-set-domain">
+    <attribute name="domain" for="paymentCondition"
+      expr="eval: &quot; SIZE(self.paymentConditionLineList) &lt; 2 &quot;"
+      if="!__config__.app.getApp('account').allowMultiInvoiceTerms"/>
+  </action-attrs>
+
   <action-method name="action-contract-version-method-new-draft">
     <call class="com.axelor.apps.contract.web.ContractVersionController" method="newDraft"/>
   </action-method>
@@ -186,6 +200,11 @@
     <call class="com.axelor.apps.contract.web.ContractVersionController" method="active"/>
   </action-method>
 
+  <action-method name="action-method-contract-version-update-contract-lines">
+    <call class="com.axelor.apps.contract.web.ContractVersionController"
+      method="updateContractLines"/>
+  </action-method>
+
   <action-method name="action-contract-version-method-waiting">
     <call class="com.axelor.apps.contract.web.ContractVersionController" method="waiting"/>
   </action-method>
@@ -193,5 +212,11 @@
   <action-method name="action-method-contract-version-change-product">
     <call class="com.axelor.apps.contract.web.ContractVersionController" method="changeProduct"/>
   </action-method>
+
+  <action-method name="action-method-contract-version-check-supposed-activation-date">
+    <call class="com.axelor.apps.contract.web.ContractVersionController"
+      method="checkSupposedActivationDate"/>
+  </action-method>
+
 
 </object-views>

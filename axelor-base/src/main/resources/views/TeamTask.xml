@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="team-task-grid" id="base-team-task-grid" title="Tasks"
     model="com.axelor.team.db.TeamTask">
@@ -41,6 +41,9 @@
         <field name="isFirst" hidden="true"/>
         <field name="doUpdateNextTasks" hidden="true"/>
         <field name="hasDateOrFrequencyChanged" hidden="true"/>
+      </panel>
+      <panel name="rolePanel" title="Role">
+        <field name="role"/>
       </panel>
     </panel-tabs>
 
@@ -101,7 +104,7 @@
     <field name="priceDiscounted" hidden="true" if="!__config__.app.isApp('business-project')"/>
     <field name="exTaxTotal" hidden="true" if="!__config__.app.isApp('business-project')"/>
     <field name="metaFile" hidden="true"
-      if="!__config__.app.getApp('project').isEnableSignature"/>
+      if="!__config__.app.getApp('project')?.isEnableSignature"/>
     <field name="totalRealHrs" hidden="true" if="!__config__.app.isApp('timesheet')"/>
   </search-filters>
 

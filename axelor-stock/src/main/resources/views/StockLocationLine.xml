@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="stock-location-line-grid" title="Stock Locations content"
     model="com.axelor.apps.stock.db.StockLocationLine" orderBy="product">
@@ -11,10 +11,10 @@
     <field name="currentQty" aggregate="sum" x-scale="2"/>
     <field name="futureQty" aggregate="sum" x-scale="2"/>
     <field name="requestedReservedQty" if-module="axelor-supplychain"
-      if="__config__.app.getApp('supplychain').getManageStockReservation()" aggregate="sum"
+      if="__config__.app.getApp('supplychain')?.getManageStockReservation()" aggregate="sum"
       x-scale="2"/>
     <field name="reservedQty" if-module="axelor-supplychain"
-      if="__config__.app.getApp('supplychain').getManageStockReservation()" aggregate="sum"
+      if="__config__.app.getApp('supplychain')?.getManageStockReservation()" aggregate="sum"
       x-scale="2"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
     <field name="avgPrice" x-scale="2"/>
@@ -56,16 +56,16 @@
       <button name="$reservedQtyBtn" title="Reserved qty" icon="fa-cubes"
         onClick="action-stock-location-line-view-reserved-stock-move-lines" colSpan="4"
         widget="info-button" if-module="axelor-supplychain"
-        if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
+        if="__config__.app.getApp('supplychain')?.getManageStockReservation()"/>
       <panel name="simpleButtonPanel" colSpan="12">
         <button name="showDetailedStockBtn" title="Show detailed stock"
           onClick="action-stock-location-line-view-show-detailed-stock" colSpan="4"/>
         <button name="allocateAll" title="Allocate all"
           onClick="save,action-stock-location-line-allocate-all" colSpan="4"
-          if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
+          if="__config__.app.getApp('supplychain')?.getManageStockReservation()"/>
         <button name="deallocateAll" title="Deallocate all"
           onClick="save,action-stock-location-line-deallocate-all" colSpan="4"
-          if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
+          if="__config__.app.getApp('supplychain')?.getManageStockReservation()"/>
       </panel>
     </panel>
     <panel-dashlet name="productQtyPanel"
@@ -73,8 +73,9 @@
       title="Product quantity in other stock locations"/>
     <panel-dashlet name="stockRulesPanel"
       action="action-stock-location-line-view-stock-rule" title="Stock Rules"/>
-    <panel-dashlet name="wapHistoryPanel"
-      action="action-stock-location-line-view-wap-history" title="WAP history"/>
+    <panel-dashlet name="stockLocationLineHistoryHistoryPanel"
+      action="action-stock-location-line-view-stock-location-line-history"
+      title="Stock location line history"/>
     <panel name="stockCorrectionPanel" sidebar="true">
       <button name="stockCorrectionBtn" title="Stock Correction"
         onClick="action-stock-location-line-view-open-stock-correction-form"/>
@@ -167,7 +168,7 @@
       <button name="$reservedQtyBtn" title="Reserved qty" icon="fa-cubes"
         onClick="action-stock-location-line-view-reserved-stock-move-lines" colSpan="3"
         widget="info-button" if-module="axelor-supplychain"
-        if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
+        if="__config__.app.getApp('supplychain')?.getManageStockReservation()"/>
       <button name="showDetailedStockBtn" title="Show detailed stock"
         onClick="action-stock-location-line-view-show-detailed-stock" colSpan="3"/>
     </panel>
@@ -175,7 +176,7 @@
       action="action-stock-location-line-view-product-qty"
       title="Product quantity in other stock locations"/>
     <panel-dashlet name="wapHistoryPanel"
-      action="action-stock-location-line-view-wap-history" title="WAP history"/>
+      action="action-stock-location-line-view-stock-location-line-history" title="WAP history"/>
   </form>
 
   <grid name="stock-location-line-product-group-by-variant-grid"
@@ -218,7 +219,7 @@
       <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
       <field name="avgPrice" onChange="action-stock-location-line-group-avg-price-onchange"/>
       <field name="reservedQty" if-module="axelor-supplychain"
-        if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
+        if="__config__.app.getApp('supplychain')?.getManageStockReservation()" hidden="true"/>
       <field name="trackingNumber" domain="self.product = :product"/>
       <field name="rack"/>
       <field name="detailsStockLocation"/>
@@ -266,8 +267,7 @@
     <view type="grid" name="stock-move-line-all-grid-planned"/>
     <view type="form" name="stock-move-line-all-form"/>
     <domain>self.stockMove.statusSelect = 2 AND self.product.id = :productId AND
-      (self.stockMove.fromStockLocation.id = :locationId OR self.stockMove.toStockLocation.id =
-      :locationId)</domain>
+      (self.fromStockLocation.id = :locationId OR self.toStockLocation.id = :locationId)</domain>
     <context name="productId" expr="eval: product?.id"/>
     <context name="locationId" expr="eval: stockLocation?.id"/>
   </action-view>
@@ -277,8 +277,7 @@
     <view type="grid" name="stock-move-line-all-grid"/>
     <view type="form" name="stock-move-line-all-form"/>
     <domain>self.stockMove.statusSelect = 3 AND self.product.id = :productId AND
-      (self.stockMove.fromStockLocation.id = :locationId OR self.stockMove.toStockLocation.id =
-      :locationId)</domain>
+      (self.fromStockLocation.id = :locationId OR self.toStockLocation.id = :locationId)</domain>
     <context name="productId" expr="eval: product?.id"/>
     <context name="locationId" expr="eval: stockLocation?.id "/>
   </action-view>
@@ -294,7 +293,7 @@
 
   <action-attrs name="action-stock-location-line-atts-avg-price-scale">
     <attribute name="scale" for="avgPrice"
-      expr="eval: __config__.app.getApp('base').getNbDecimalDigitForUnitPrice()"/>
+      expr="eval: __config__.app.getApp('base')?.getNbDecimalDigitForUnitPrice()"/>
     <attribute name="value" for="$isAvgPriceEditable" expr="eval:false"/>
   </action-attrs>
 
@@ -339,10 +338,10 @@
     <context name="locationId" expr="eval: stockLocation?.id "/>
   </action-view>
 
-  <action-view name="action-stock-location-line-view-wap-history" title="WAP History"
-    model="com.axelor.apps.stock.db.WapHistory">
-    <view type="grid" name="wap-history-grid"/>
-    <view type="form" name="wap-history-form"/>
+  <action-view name="action-stock-location-line-view-stock-location-line-history"
+    title="Stock location line history" model="com.axelor.apps.stock.db.StockLocationLineHistory">
+    <view type="grid" name="stock-location-line-history-grid"/>
+    <view type="form" name="stock-location-line-history-form"/>
     <domain>self.stockLocationLine.id = :id</domain>
   </action-view>
 

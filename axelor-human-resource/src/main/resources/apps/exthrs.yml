@@ -1,0 +1,14 @@
+---
+name: Extra hours
+code: exthrs
+typeSelect: standard
+installOrder: 2170
+description: |
+   Extra hours
+image: app-extra-hours.png
+modules: 
+   axelor-human-resource
+dependsOn:
+   - employee
+   - project
+sequence: 21

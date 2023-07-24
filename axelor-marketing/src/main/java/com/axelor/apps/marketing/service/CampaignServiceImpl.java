@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,10 +14,11 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.marketing.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.Lead;
@@ -24,14 +26,13 @@ import com.axelor.apps.crm.db.repo.EventRepository;
 import com.axelor.apps.marketing.db.Campaign;
 import com.axelor.apps.marketing.db.repo.CampaignRepository;
 import com.axelor.apps.marketing.exception.MarketingExceptionMessage;
-import com.axelor.apps.message.db.Message;
-import com.axelor.apps.message.db.Template;
-import com.axelor.apps.message.service.MessageService;
-import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.db.Model;
-import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.message.db.Message;
+import com.axelor.message.db.Template;
+import com.axelor.message.service.MessageService;
+import com.axelor.message.service.TemplateMessageService;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
@@ -40,7 +41,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Set;
-import javax.mail.MessagingException;
 import wslite.json.JSONException;
 
 public class CampaignServiceImpl implements CampaignService {
@@ -113,13 +113,7 @@ public class CampaignServiceImpl implements CampaignService {
 
       try {
         generateAndSendMessage(campaign, partner, template);
-      } catch (ClassNotFoundException
-          | InstantiationException
-          | IllegalAccessException
-          | MessagingException
-          | IOException
-          | JSONException
-          | AxelorException e) {
+      } catch (ClassNotFoundException | IOException | JSONException e) {
         errors.append(partner.getName() + "\n");
         e.printStackTrace();
       }
@@ -136,13 +130,7 @@ public class CampaignServiceImpl implements CampaignService {
 
       try {
         generateAndSendMessage(campaign, lead, template);
-      } catch (ClassNotFoundException
-          | InstantiationException
-          | IllegalAccessException
-          | MessagingException
-          | IOException
-          | JSONException
-          | AxelorException e) {
+      } catch (ClassNotFoundException | IOException | JSONException e) {
         errors.append(lead.getName() + "\n");
         e.printStackTrace();
       }
@@ -153,8 +141,7 @@ public class CampaignServiceImpl implements CampaignService {
 
   @Transactional(rollbackOn = {Exception.class})
   protected void generateAndSendMessage(Campaign campaign, Model model, Template template)
-      throws ClassNotFoundException, InstantiationException, IllegalAccessException,
-          MessagingException, IOException, AxelorException, JSONException {
+      throws ClassNotFoundException, IOException, JSONException {
     Message message = templateMessageMarketingService.generateAndSendMessage(model, template);
     Beans.get(MessageService.class)
         .addMessageRelatedTo(message, Campaign.class.getCanonicalName(), campaign.getId());
@@ -226,7 +213,7 @@ public class CampaignServiceImpl implements CampaignService {
 
     for (Lead lead : campaign.getLeadSet()) {
       Event event = new Event();
-      event.setLead(lead);
+      event.setEventLead(lead);
       event.setUser(
           campaign.getGenerateEventPerPartnerOrLead() ? lead.getUser() : campaign.getEventUser());
       event.setSubject(campaign.getSubject());
@@ -242,7 +229,7 @@ public class CampaignServiceImpl implements CampaignService {
     }
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void generateTargets(Campaign campaign) throws AxelorException {
 
     TargetListService targetListService = Beans.get(TargetListService.class);

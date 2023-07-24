@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.sale.report;
 
@@ -35,6 +36,7 @@ public interface ITranslation {
   public static final String SALES_ORDER_INVOICING_ADDRS = /*$$(*/ "SaleOrder.invoicingAddrs"; /*)*/
   public static final String SALES_ORDER_DELIVERY_ADDRESS = /*$$(*/
       "SaleOrder.deliveryAddress"; /*)*/
+  public static final String SALES_ORDER_SHIPMENT_DATE = /*$$(*/ "SaleOrder.shipmentDate"; /*)*/
   public static final String SALES_ORDER_DESCRIPTION = /*$$(*/ "SaleOrder.description"; /*)*/
   public static final String SALES_ORDER_TAX = /*$$(*/ "SaleOrder.tax"; /*)*/
   public static final String SALES_ORDER_QTY_UNIT = /*$$(*/ "SaleOrder.qtyUnit"; /*)*/
@@ -52,7 +54,8 @@ public interface ITranslation {
   public static final String SALES_ORDER_SALEMAN_NAME = /*$$(*/ "SaleOrder.salemanName"; /*)*/
   public static final String SALES_ORDER_SALEMAN_EMAIL = /*$$(*/ "SaleOrder.salemanEmail"; /*)*/
   public static final String SALES_ORDER_SALEMAN_PHONE = /*$$(*/ "SaleOrder.salemanPhone"; /*)*/
-  public static final String SALES_ORDER_DELIVERY_DATE = /*$$(*/ "SaleOrder.deliveryDate"; /*)*/
+  public static final String SALES_ORDER_END_VALIDITY_DATE = /*$$(*/
+      "SaleOrder.endOfValidityDate"; /*)*/
   public static final String SALES_ORDER_DELIVERY_CONDITION = /*$$(*/
       "SaleOrder.deliveryCondition"; /*)*/
   public static final String SALES_ORDER_PRODUCT_DESCRIPTION = /*$$(*/

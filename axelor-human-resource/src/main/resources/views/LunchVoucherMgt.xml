@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="lunch-voucher-mgt-grid" title="Lunch Voucher Management"
     model="com.axelor.apps.hr.db.LunchVoucherMgt">
-    <field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="company" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="payPeriod" canEdit="false" canView="false"/>
     <field name="leavePeriod" canEdit="false" canView="false"/>
     <field name="statusSelect"/>
@@ -53,25 +53,10 @@
         </panel>
         <panel name="exportsPanel" title="Export" colSpan="12" readonly="true" hidden="true"
           showIf="csvFile != null">
-          <field name="exportDate"/>
+          <field name="exportDateTime"/>
           <field name="csvFile" widget="binary-link" showTitle="false"/>
         </panel>
       </panel>
-    </panel>
-    <panel name="quantitiesPanel" title="Quantities" readonlyIf="statusSelect &gt;= 3"
-      canCollapse="true" collapseIf="true">
-      <panel name="stockQtyDetailsPanel" colSpan="12">
-        <field name="stockQuantityStatus" css="label-bold bold" colSpan="3"/>
-        <field name="stockLineQuantity" title="Quantity to stock" colSpan="3"
-          css="label-bold bold" onChange="action-lunch-voucher-method-update-total"/>
-      </panel>
-      <panel name="vouchersPanel" colSpan="12">
-        <field name="requestedLunchVouchers" css="label-bold bold" colSpan="3"/>
-        <field name="totalLunchVouchers" css="label-bold bold" colSpan="3"/>
-        <field name="givenLunchVouchers" css="label-bold bold" colSpan="3"
-          showIf="statusSelect == 4"/>
-      </panel>
-      <field name="stockLineComment" colSpan="12"/>
     </panel>
     <panel-tabs name="mainPanelTab">
       <panel title="Content" name="contentPanel">
@@ -79,6 +64,20 @@
           field="lunchVoucherMgtLineList" form-view="lunch-voucher-mgt-line-form"
           grid-view="lunch-voucher-mgt-line-grid" canNew="false" canRemove="false"
           onChange="action-lunch-voucher-method-update-total"/>
+      </panel>
+      <panel name="quantitiesPanel" title="Quantities" readonlyIf="statusSelect &gt;= 3">
+        <panel name="stockQtyDetailsPanel" colSpan="12">
+          <field name="stockQuantityStatus" css="label-bold bold" colSpan="3"/>
+          <field name="stockLineQuantity" title="Quantity to stock" colSpan="3"
+            css="label-bold bold" onChange="action-lunch-voucher-method-update-total"/>
+        </panel>
+        <panel name="vouchersPanel" colSpan="12">
+          <field name="requestedLunchVouchers" css="label-bold bold" colSpan="3"/>
+          <field name="totalLunchVouchers" css="label-bold bold" colSpan="3"/>
+          <field name="givenLunchVouchers" css="label-bold bold" colSpan="3"
+            showIf="statusSelect == 4"/>
+        </panel>
+        <field name="stockLineComment" colSpan="12"/>
       </panel>
       <panel title="Configuration" name="configurationPanel">
         <panel name="chargesPanel" title="Charges and Contributions" colSpan="12">
@@ -179,6 +178,6 @@
   <search-filters name="lunch-voucher-mgt-filters"
     model="com.axelor.apps.hr.db.LunchVoucherMgt" title="Lunch voucher management filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
   </search-filters>
 </object-views>

@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="analytic-move-line-query-grid" title="Analytic review"
+    model="com.axelor.apps.account.db.AnalyticMoveLineQuery" x-selector="checkbox">
+    <field name="company"/>
+    <field name="tradingName"/>
+    <field name="fromDate"/>
+    <field name="toDate"/>
+  </grid>
+
+  <form name="analytic-move-line-query-form" title="Analytic review"
+    model="com.axelor.apps.account.db.AnalyticMoveLineQuery"
+    onNew="action-analytic-move-line-query-group-on-new"
+    onLoad="action-analytic-move-line-query-origin-select-domain" width="large">
+    <panel name="mainPanel">
+      <field name="company" form-view="company-form" grid-view="company-grid"
+        onSelect="action-analytic-move-line-query-attrs-set-company-domain"
+        onChange="action-analytic-move-line-query-record-company-onchange"/>
+      <field name="tradingName"
+        if="__config__.app.getApp('base').getEnableTradingNamesManagement()" readonlyIf="!company"
+        form-view="trading-name-form" grid-view="trading-name-grid"
+        onSelect="action-analytic-move-line-query-attrs-set-trading-name-domain"/>
+      <panel name="datePanel" colSpan="12">
+        <field name="fromDate"/>
+        <field name="toDate"/>
+      </panel>
+      <field name="searchOperatorSelect"/>
+      <field name="specificOriginSelect" hideIf="$popup()"/>
+
+      <panel title="Move line search criterias" colSpan="12">
+        <field name="searchAnalyticMoveLineQueryParameterList"
+          readonlyIf="!company || !fromDate || !toDate" colSpan="12">
+          <editor x-show-on-new="false"
+            onNew="action-analytic-move-line-query-parameter-record-search-on-new">
+            <field name="analyticAxis" grid-view="analytic-axis-grid"
+              form-view="analytic-axis-form"
+              onSelect="action-analytic-move-line-query-method-search-query-axis-domain"
+              onChange="action-analytic-move-line-search-query-attrs-axis-onchange"/>
+            <field name="analyticAccountSet" grid-view="analytic-account-grid"
+              form-view="analytic-account-info-form" canNew="false" canEdit="false"
+              onSelect="action-method-domain-account-distribution-line" widget="TagSelect"/>
+          </editor>
+        </field>
+      </panel>
+
+      <panel title="Move line reverse values" colSpan="12">
+        <field name="reverseAnalyticMoveLineQueryParameterList"
+          readonlyIf="!searchAnalyticMoveLineQueryParameterList.length" colSpan="12"
+          showTitle="false">
+          <editor x-show-on-new="false"
+            onNew="action-analytic-move-line-query-parameter-record-reverse-on-new">
+            <field name="analyticAxis" grid-view="analytic-axis-grid"
+              form-view="analytic-axis-form"
+              onSelect="action-analytic-move-line-query-method-reverse-query-axis-domain"
+              onChange="action-analytic-move-line-reverse-query-attrs-axis-onchange"/>
+            <field name="analyticAccount" grid-view="analytic-account-grid"
+              form-view="analytic-account-info-form"
+              onSelect="action-method-domain-account-distribution-line"/>
+          </editor>
+        </field>
+      </panel>
+    </panel>
+
+    <panel name="btnPanel" itemSpan="4">
+      <button name="filterAnalyticMoveLineBtn" title="Filter analytic move lines"
+        onClick="save,action-analytic-move-line-query-method-show-filtered-lines"
+        readonlyIf="!company || !fromDate || !toDate || !searchAnalyticMoveLineQueryParameterList.length"/>
+    </panel>
+
+    <panel-dashlet name="filteredAnalyticmoveLinesDashlet"
+      title="Analytic move lines to reverse"
+      action="action-analytic-move-line-view-show-filtered-lines" x-show-bars="true"/>
+  </form>
+
+  <action-group name="action-analytic-move-line-query-group-on-new">
+    <action name="action-analytic-move-line-query-record-default"/>
+    <action name="action-analytic-move-line-query-origin-select-domain"/>
+  </action-group>
+
+  <action-attrs name="action-analytic-move-line-query-attrs-set-company-domain">
+    <attribute name="domain" for="company"
+      expr="eval: 'self.id IN (' + __user__?.companySet?.collect{ it.id }.join(',') + ')'"
+      if="__user__?.companySet &amp;&amp; !__user__.companySet.isEmpty()"/>
+  </action-attrs>
+
+  <action-attrs name="action-analytic-move-line-query-attrs-set-trading-name-domain">
+    <attribute name="domain" for="tradingName"
+      expr="eval: &quot;self.id IN (${company?.tradingNameSet?.collect{it.id}.join(',')})&quot;"/>
+  </action-attrs>
+
+  <action-attrs name="action-analytic-move-line-query-origin-select-domain">
+    <attribute name="selection-in" for="specificOriginSelect"
+      if="!company?.accountConfig?.accountingDaybook" expr="eval:[1,2,3,7]"/>
+    <attribute name="selection-in" for="specificOriginSelect"
+      if="!company?.accountConfig?.isActivateSimulatedMove" expr="eval:[1,2,3,4,5,6]"/>
+    <attribute name="selection-in" for="specificOriginSelect" expr="eval: [1,2,3]"
+      if="!company?.accountConfig?.accountingDaybook &amp;&amp; !company?.accountConfig?.isActivateSimulatedMove"/>
+  </action-attrs>
+
+  <action-record name="action-analytic-move-line-query-record-default"
+    model="com.axelor.apps.account.db.AnalyticMoveLineQuery">
+    <field name="company" expr="eval:__user__.activeCompany" if="__user__.activeCompany"/>
+    <field name="toDate" expr="eval:__config__.date"/>
+  </action-record>
+
+  <action-record name="action-analytic-move-line-query-record-company-onchange"
+    model="com.axelor.apps.account.db.AnalyticMoveLineQuery">
+    <field name="tradingName" expr="eval: null"/>
+    <field name="searchAnalyticMoveLineQueryParameterList" expr="eval: null"/>
+    <field name="reverseAnalyticMoveLineQueryParameterList" expr="eval: null"/>
+  </action-record>
+
+  <action-attrs name="action-analytic-move-line-search-query-attrs-axis-onchange">
+    <attribute name="value" for="analyticAccountSet" expr="eval:null"/>
+  </action-attrs>
+
+  <action-attrs name="action-analytic-move-line-reverse-query-attrs-axis-onchange">
+    <attribute name="value" for="analyticAccount" expr="eval:null"/>
+  </action-attrs>
+
+  <action-method name="action-analytic-move-line-query-method-show-filtered-lines">
+    <call class="com.axelor.apps.account.web.AnalyticMoveLineQueryController"
+      method="filterAnalyticMoveLines"/>
+  </action-method>
+
+  <action-method name="action-analytic-move-line-query-method-selected-reverse">
+    <call class="com.axelor.apps.account.web.AnalyticMoveLineQueryController"
+      method="selectedReverse"/>
+  </action-method>
+
+  <action-method name="action-analytic-move-line-query-method-all-reverse">
+    <call class="com.axelor.apps.account.web.AnalyticMoveLineQueryController"
+      method="allReverse"/>
+  </action-method>
+
+  <action-method
+    name="action-analytic-move-line-query-method-search-query-axis-domain">
+    <call class="com.axelor.apps.account.web.AnalyticMoveLineQueryController"
+      method="searchQueryAxisDomain"/>
+  </action-method>
+
+  <action-method
+    name="action-analytic-move-line-query-method-reverse-query-axis-domain">
+    <call class="com.axelor.apps.account.web.AnalyticMoveLineQueryController"
+      method="reverseQueryAxisDomain"/>
+  </action-method>
+
+</object-views>

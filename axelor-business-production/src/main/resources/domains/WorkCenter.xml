@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="production" package="com.axelor.apps.production.db"/>
+
+  <entity name="WorkCenter">
+    <many-to-many name="hrSkillSet" title="Skill needed"
+      ref="com.axelor.apps.talent.db.Skill"/>
+  </entity>
+</domain-models>

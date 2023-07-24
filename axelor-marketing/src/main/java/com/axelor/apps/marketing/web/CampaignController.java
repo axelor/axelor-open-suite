@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,19 +14,19 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.marketing.web;
 
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.apps.marketing.db.Campaign;
 import com.axelor.apps.marketing.db.repo.CampaignRepository;
 import com.axelor.apps.marketing.exception.MarketingExceptionMessage;
 import com.axelor.apps.marketing.service.CampaignService;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
@@ -44,15 +45,15 @@ public class CampaignController {
       campaign = Beans.get(CampaignRepository.class).find(campaign.getId());
 
       if (campaign.getLeadSet().isEmpty() && campaign.getPartnerSet().isEmpty()) {
-        response.setFlash(I18n.get(MarketingExceptionMessage.EMPTY_TARGET));
+        response.setInfo(I18n.get(MarketingExceptionMessage.EMPTY_TARGET));
         return;
       }
       MetaFile logFile = Beans.get(CampaignService.class).sendEmail(campaign);
 
       if (logFile == null) {
-        response.setFlash(I18n.get(MarketingExceptionMessage.EMAIL_SUCCESS));
+        response.setInfo(I18n.get(MarketingExceptionMessage.EMAIL_SUCCESS));
       } else {
-        response.setFlash(I18n.get(MarketingExceptionMessage.EMAIL_ERROR2));
+        response.setInfo(I18n.get(MarketingExceptionMessage.EMAIL_ERROR2));
       }
 
       response.setValue("emailLog", logFile);
@@ -69,16 +70,16 @@ public class CampaignController {
       campaign = Beans.get(CampaignRepository.class).find(campaign.getId());
 
       if (campaign.getInvitedPartnerSet().isEmpty() && campaign.getInvitedPartnerSet().isEmpty()) {
-        response.setFlash(I18n.get(MarketingExceptionMessage.REMINDER_EMAIL1));
+        response.setInfo(I18n.get(MarketingExceptionMessage.REMINDER_EMAIL1));
         return;
       }
 
       MetaFile logFile = Beans.get(CampaignService.class).sendReminderEmail(campaign);
 
       if (logFile == null) {
-        response.setFlash(I18n.get(MarketingExceptionMessage.EMAIL_SUCCESS));
+        response.setInfo(I18n.get(MarketingExceptionMessage.EMAIL_SUCCESS));
       } else {
-        response.setFlash(I18n.get(MarketingExceptionMessage.EMAIL_ERROR2));
+        response.setInfo(I18n.get(MarketingExceptionMessage.EMAIL_ERROR2));
       }
 
       response.setValue("emailLog", logFile);

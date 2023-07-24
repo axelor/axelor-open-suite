@@ -1,6 +1,0 @@
----
-title: "Bank Order: Manage generation of CFONB160 file for Bill of exchange."
-type: feature
-description: |
-  Add new payment mode and bank file format,
-  Add a new type of accounting batch

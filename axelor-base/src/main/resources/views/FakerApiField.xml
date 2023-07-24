@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid model="com.axelor.apps.base.db.FakerApiField" title="Faker API fields"
+    name="faker-api-field-grid">
+    <field name="name"/>
+    <field name="className"/>
+    <field name="methodName" title="FakerApiField.methodName"/>
+    <field name="dataType"/>
+  </grid>
+
+  <form model="com.axelor.apps.base.db.FakerApiField" title="Faker API fields"
+    name="faker-api-field-form" onSave="action-faker-api-field-attrs-compute-name">
+    <toolbar>
+      <button name="testBtn" title="Check faker method"
+        onClick="action-faker-api-field-method-check-configuration"/>
+    </toolbar>
+
+    <panel name="mainPanel">
+      <help><![CDATA[You can find classes and methods name <a href="https://javadoc.io/doc/net.datafaker/datafaker/1.6.0/index.html" target="_blank">here</a>]]></help>
+      <field name="name" readonly="true" showIf="id!=null" colSpan="12"/>
+      <field name="className"/>
+      <field name="methodName" title="FakerApiField.methodName"/>
+      <field name="dataType"/>
+
+      <panel name="paramPanel" title="Method parameters" colSpan="12" hidden="true"
+        canCollapse="true"
+        collapseIf="!id || (!$readonly() &amp;&amp; fakerFieldParametersList==null)"
+        showIf="!id || (!$readonly()) || ($readonly() &amp;&amp; fakerFieldParametersList!=null &amp;&amp; fakerFieldParametersList.length&gt;0)">
+        <help><![CDATA[Pay attention to the type and the order of the parameters.<br>See <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/TimeUnit.html" target="_blank">java documentation</a> for TimeUnit syntax.]]></help>
+        <field name="fakerFieldParametersList" colSpan="12" showTitle="false">
+          <editor>
+            <field name="paramType" requiredIf="paramValue"/>
+            <field name="paramValue" requiredIf="paramType"
+              onChange="action-faker-api-field-condition-filter-timeunit-field"/>
+          </editor>
+        </field>
+      </panel>
+    </panel>
+  </form>
+
+  <action-attrs name="action-faker-api-field-attrs-compute-name">
+    <attribute for="name" name="value" expr="eval: className + &quot;.&quot; + methodName"/>
+  </action-attrs>
+
+  <action-method name="action-faker-api-field-method-check-configuration">
+    <call class="com.axelor.apps.base.web.FakerApiFieldController" method="checkMethod"/>
+  </action-method>
+
+  <action-condition name="action-faker-api-field-condition-filter-timeunit-field">
+    <check
+      if="paramType == 'java.util.concurrent.TimeUnit' &amp;&amp; paramValue != null &amp;&amp; !['DAYS','HOURS','MICROSECONDS','MILLISECONDS','MINUTES','NANOSECONDS','SECONDS'].contains(paramValue)"
+      error="Invalid value" field="paramValue"/>
+  </action-condition>
+
+</object-views>

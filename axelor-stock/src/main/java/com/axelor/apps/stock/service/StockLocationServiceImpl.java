@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,11 +14,11 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.stock.service;
 
-import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
@@ -32,18 +33,20 @@ import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockRulesRepository;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.filter.Filter;
 import com.axelor.rpc.filter.JPQLFilter;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.persistence.Query;
@@ -57,38 +60,20 @@ public class StockLocationServiceImpl implements StockLocationService {
 
   protected ProductRepository productRepo;
 
+  protected StockConfigService stockConfigService;
+
   protected Set<Long> locationIdSet = new HashSet<>();
 
   @Inject
   public StockLocationServiceImpl(
       StockLocationRepository stockLocationRepo,
       StockLocationLineService stockLocationLineService,
-      ProductRepository productRepo) {
+      ProductRepository productRepo,
+      StockConfigService stockConfigService) {
     this.stockLocationRepo = stockLocationRepo;
     this.stockLocationLineService = stockLocationLineService;
     this.productRepo = productRepo;
-  }
-
-  @Override
-  public StockLocation getDefaultReceiptStockLocation(Company company) {
-    try {
-      StockConfigService stockConfigService = Beans.get(StockConfigService.class);
-      StockConfig stockConfig = stockConfigService.getStockConfig(company);
-      return stockConfigService.getReceiptDefaultStockLocation(stockConfig);
-    } catch (Exception e) {
-      return null;
-    }
-  }
-
-  @Override
-  public StockLocation getPickupDefaultStockLocation(Company company) {
-    try {
-      StockConfigService stockConfigService = Beans.get(StockConfigService.class);
-      StockConfig stockConfig = stockConfigService.getStockConfig(company);
-      return stockConfigService.getPickupDefaultStockLocation(stockConfig);
-    } catch (Exception e) {
-      return null;
-    }
+    this.stockConfigService = stockConfigService;
   }
 
   protected List<StockLocation> getNonVirtualStockLocations(Long companyId) {
@@ -182,6 +167,15 @@ public class StockLocationServiceImpl implements StockLocationService {
     return getQty(productId, locationId, companyId, "future");
   }
 
+  @Override
+  public Map<String, Object> getStockIndicators(Long productId, Long companyId, Long locationId)
+      throws AxelorException {
+    Map<String, Object> map = new HashMap<>();
+    map.put("$realQty", getRealQty(productId, locationId, companyId));
+    map.put("$futureQty", getFutureQty(productId, locationId, companyId));
+    return map;
+  }
+
   public List<Long> getBadStockLocationLineId() {
 
     List<StockLocationLine> stockLocationLineList =
@@ -272,11 +266,13 @@ public class StockLocationServiceImpl implements StockLocationService {
     Query query =
         JPA.em()
             .createQuery(
-                "SELECT SUM( self.currentQty * CASE WHEN (location.company.stockConfig.stockValuationTypeSelect = 1) THEN "
-                    + "(self.avgPrice)  WHEN (location.company.stockConfig.stockValuationTypeSelect = 2) THEN "
+                "SELECT SUM( self.currentQty * "
+                    + "CASE WHEN (location.company.stockConfig.stockValuationTypeSelect = 1) THEN (self.product.avgPrice) "
+                    + "WHEN (location.company.stockConfig.stockValuationTypeSelect = 2) THEN "
                     + "CASE WHEN (self.product.costTypeSelect = 3) THEN (self.avgPrice) ELSE (self.product.costPrice) END "
                     + "WHEN (location.company.stockConfig.stockValuationTypeSelect = 3) THEN (self.product.salePrice) "
                     + "WHEN (location.company.stockConfig.stockValuationTypeSelect = 4) THEN (self.product.purchasePrice) "
+                    + "WHEN (location.company.stockConfig.stockValuationTypeSelect = 5) THEN (self.avgPrice) "
                     + "ELSE (self.avgPrice) END ) AS value "
                     + "FROM StockLocationLine AS self "
                     + "LEFT JOIN StockLocation AS location "
@@ -313,5 +309,29 @@ public class StockLocationServiceImpl implements StockLocationService {
                     && !stockConfig.getIsDisplayAgPriceInPrinting()
                     && !stockConfig.getIsDisplaySaleValueInPrinting())
                 && !stockConfig.getIsDisplayPurchaseValueInPrinting());
+  }
+
+  @Override
+  @Transactional
+  public void changeProductLocker(StockLocation stockLocation, Product product, String newLocker) {
+    List<StockLocationLine> stockLocationLineList = stockLocation.getStockLocationLineList();
+    for (StockLocationLine stockLocationLine : stockLocationLineList) {
+      if (stockLocationLine.getProduct() == product) {
+        stockLocationLine.setRack(newLocker);
+      }
+    }
+    stockLocationRepo.save(stockLocation);
+  }
+
+  @Override
+  public String computeStockLocationChildren(StockLocation stockLocation) {
+    if (stockLocation == null) {
+      return "self.id in (0)";
+    }
+    return String.format(
+        "self.id in (%s)",
+        getAllLocationAndSubLocation(stockLocation, false).stream()
+            .map(location -> location.getId().toString())
+            .collect(Collectors.joining(",")));
   }
 }

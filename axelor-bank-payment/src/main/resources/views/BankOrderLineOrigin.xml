@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="bank-order-line-origin-grid"
     model="com.axelor.apps.bankpayment.db.BankOrderLineOrigin" title="Origins">
@@ -9,14 +9,45 @@
     <field name="relatedToSelectName"/>
     <field name="relatedToSelectDate"/>
     <field name="relatedToSelectDueDate"/>
+    <button name="displayInvoiceBtn"
+      onClick="action-bank-order-line-origin-group-display-invoice-btn" icon="fa-file-pdf-o"
+      showIf="(relatedToSelect==&quot;com.axelor.apps.account.db.InvoiceTerm&quot;) || (relatedToSelect==&quot;com.axelor.apps.account.db.Invoice&quot;)"/>
   </grid>
 
   <form name="bank-order-line-origin-form"
-    model="com.axelor.apps.bankpayment.db.BankOrderLineOrigin" title="Origin">
+    model="com.axelor.apps.bankpayment.db.BankOrderLineOrigin" title="Origin"
+    onLoad="action-bank-order-line-origin-method-display-dsm-file-button">
     <panel name="mainPanel">
-      <field name="relatedToSelect" widget="RefSelect" x-related="relatedToSelectId"
-        colSpan="12"/>
+      <field name="relatedToSelect" title="Related to" widget="RefSelect"
+        x-related="relatedToSelectId" colSpan="12"/>
+      <field name="relatedToSelectName" colSpan="4"/>
+      <field name="relatedToSelectDate" colSpan="4"/>
+      <field name="relatedToSelectDueDate" colSpan="4"/>
+      <button name="displayInvoiceBtn" title="Display the invoice"
+        onClick="action-bank-order-line-origin-group-display-invoice-btn" icon="fa-file-pdf-o"
+        showIf="(relatedToSelect==&quot;com.axelor.apps.account.db.InvoiceTerm&quot;) || (relatedToSelect==&quot;com.axelor.apps.account.db.Invoice&quot;)"
+        hidden="true"/>
     </panel>
   </form>
+
+  <action-group name="action-bank-order-line-origin-group-display-invoice-btn">
+    <action name="action-bank-order-line-origin-method-alert-no-dsm-file-button"/>
+    <action name="action-bank-order-line-origin-method-show-dms-files"/>
+  </action-group>
+
+  <action-method name="action-bank-order-line-origin-method-show-dms-files">
+    <call class="com.axelor.apps.bankpayment.web.BankOrderLineOriginController"
+      method="showDMSFiles"/>
+  </action-method>
+
+  <action-method name="action-bank-order-line-origin-method-display-dsm-file-button">
+    <call class="com.axelor.apps.bankpayment.web.BankOrderLineOriginController"
+      method="displayDmsFileButton"/>
+  </action-method>
+
+  <action-method name="action-bank-order-line-origin-method-alert-no-dsm-file-button">
+    <call class="com.axelor.apps.bankpayment.web.BankOrderLineOriginController"
+      method="alertNoDmsFile"/>
+  </action-method>
 
 </object-views>

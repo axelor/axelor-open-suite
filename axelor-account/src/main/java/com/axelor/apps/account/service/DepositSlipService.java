@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,22 +14,28 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.DepositSlip;
-import com.axelor.exception.AxelorException;
+import com.axelor.apps.account.db.PaymentVoucher;
+import com.axelor.apps.base.AxelorException;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
 
 public interface DepositSlipService {
+
   /**
-   * Load payments into deposit slip.
+   * Get payments into deposit slip.
    *
    * @param depositSlip
    * @throws AxelorException
    */
-  void loadPayments(DepositSlip depositSlip) throws AxelorException;
+  List<PaymentVoucher> fetchPaymentVouchers(DepositSlip depositSlip);
 
   /**
    * Publish deposit slip.
@@ -38,14 +45,21 @@ public interface DepositSlipService {
    * @throws AxelorException
    * @throws IOException
    */
-  String publish(DepositSlip depositSlip) throws AxelorException;
+  LocalDate publish(DepositSlip depositSlip) throws AxelorException;
 
   /**
-   * Get report filename.
+   * Validate deposit slip using value for collection account.
    *
    * @param depositSlip
    * @return
    * @throws AxelorException
+   * @throws IOException
    */
-  String getFilename(DepositSlip depositSlip) throws AxelorException;
+  void validate(DepositSlip depositSlip) throws AxelorException;
+
+  List<Integer> getSelectedPaymentVoucherDueIdList(List<Map<String, Object>> paymentVoucherDueList);
+
+  BigDecimal getTotalAmount(DepositSlip depositSlip, List<Integer> selectedPaymentVoucherDueIdList);
+
+  void updateInvoicePayments(DepositSlip depositSlip, LocalDate depositDate);
 }

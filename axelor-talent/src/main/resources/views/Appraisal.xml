@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="appraisal-grid" title="Appraisals" model="com.axelor.apps.talent.db.Appraisal">
     <field name="employee"/>
-    <field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="company" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="appraisalType"/>
     <field name="toDate"/>
     <field name="reviewerEmployee"/>
@@ -14,7 +14,7 @@
 
   <grid name="appraisal-template-grid" title="Appraisal templates"
     model="com.axelor.apps.talent.db.Appraisal">
-    <field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="company" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="appraisalType"/>
     <field name="toDate"/>
     <field name="reviewerEmployee"/>
@@ -135,7 +135,7 @@
   <search-filters name="appraisal-fitlers"
     model="com.axelor.apps.talent.db.Appraisal" title="Appraisal filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <filter title="New appraisal">
       <domain>self.isTemplate = false and self.statusSelect = 0</domain>
     </filter>

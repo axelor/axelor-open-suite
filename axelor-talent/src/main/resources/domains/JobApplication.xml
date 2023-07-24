@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="talent" package="com.axelor.apps.talent.db"/>
 
-  <entity name="JobApplication" lang="java" cacheable="true">
+  <entity name="JobApplication" cacheable="true">
     <string name="lastName" title="Last name"/>
     <string name="firstName" title="First name"/>
     <string name="fullName" title="Full name" namecolumn="true"/>
-    <one-to-one name="emailAddress" ref="com.axelor.apps.message.db.EmailAddress"
+    <one-to-one name="emailAddress" ref="com.axelor.message.db.EmailAddress"
       title="Email"/>
     <string name="fixedPhone" title="Fixed phone"/>
     <string name="mobilePhone" title="Mobile phone"/>
@@ -27,14 +27,13 @@
     <many-to-one name="jobPosition" ref="JobPosition" title="Applied job"
       required="true"/>
     <many-to-one name="responsible" ref="com.axelor.apps.hr.db.Employee"
-      title="Responsible"/>
+      title="Hiring manager"/>
     <many-to-one name="employee" ref="com.axelor.apps.hr.db.Employee"
       title="Employee hired"/>
     <string name="expectedSalary" title="Expected salary"/>
     <string name="proposedSalary" title="Proposed salary"/>
     <date name="availabilityFrom" title="Availability from"/>
     <string name="description" title="Description" large="true"/>
-    <integer name="statusSelect" title="Status" selection="job.application.status.select"/>
     <many-to-one name="hiringStage" ref="com.axelor.apps.talent.db.HiringStage"
       title="Hiring stage"/>
     <string name="reasonNotHired" title="Reason not hired" large="true"/>

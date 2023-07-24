@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="PayVoucherElementToPay" sequential="true" lang="java">
+  <entity name="PayVoucherElementToPay" sequential="true">
 
     <integer name="sequence" title="Seq."/>
     <many-to-one name="moveLine" ref="com.axelor.apps.account.db.MoveLine"
@@ -24,6 +24,20 @@
     <decimal name="remainingAmountAfterPayment" title="Remaining to pay after cashing"
       readonly="true"/>
 
+    <many-to-one name="invoiceTerm" title="Invoice term"
+      ref="com.axelor.apps.account.db.InvoiceTerm"/>
+
+    <boolean name="applyFinancialDiscount" title="Apply financial discount ?"
+      readonly="true"/>
+    <many-to-one name="financialDiscount"
+      ref="com.axelor.apps.account.db.FinancialDiscount" title="Financial discount"/>
+    <date name="financialDiscountDeadlineDate" title="Fin. discount deadline date"/>
+    <decimal name="financialDiscountAmount" title="Fin. discount amount"/>
+    <decimal name="financialDiscountTaxAmount" title="Fin. discount tax"/>
+    <decimal name="financialDiscountTotalAmount"
+      title="payvoucher.financialDiscountTotalAmount"/>
+    <decimal name="totalAmountWithFinancialDiscount"
+      title="Total amount with financial discount"/>
   </entity>
 
 </domain-models>

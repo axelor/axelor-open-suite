@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -254,12 +254,6 @@
                     <text-property name="heading">fixed_phone</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">fax</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">fax</text-property>
-                    <text-property name="heading">fax</text-property>
-                </structure>
-                <structure>
                     <property name="columnName">mobile_phone</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">mobile_phone</text-property>
@@ -306,6 +300,12 @@
                     <property name="analysis">measure</property>
                     <text-property name="displayName">balance_due_debt_recovery_cust_account</text-property>
                     <text-property name="heading">balance_due_debt_recovery_cust_account</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">currency</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">currency</text-property>
+                    <text-property name="heading">currency</text-property>
                 </structure>
             </list-property>
             <list-property name="parameters">
@@ -379,48 +379,48 @@
                     </structure>
                     <structure>
                         <property name="position">12</property>
-                        <property name="name">fax</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">13</property>
                         <property name="name">mobile_phone</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">14</property>
+                        <property name="position">13</property>
                         <property name="name">email_address</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">15</property>
+                        <property name="position">14</property>
                         <property name="name">web_site</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">16</property>
+                        <property name="position">15</property>
                         <property name="name">internal_user_name</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">17</property>
+                        <property name="position">16</property>
                         <property name="name">team_name</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">18</property>
+                        <property name="position">17</property>
                         <property name="name">balance_cust_account</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">19</property>
+                        <property name="position">18</property>
                         <property name="name">balance_due_cust_account</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">20</property>
+                        <property name="position">19</property>
                         <property name="name">balance_due_debt_recovery_cust_account</property>
                         <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">20</property>
+                        <property name="name">currency</property>
+                        <property name="dataType">string</property>
                     </structure>
                 </list-property>
             </structure>
@@ -431,150 +431,131 @@
                     <property name="name">id</property>
                     <property name="nativeName">id</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
                     <property name="name">logo_path</property>
                     <property name="nativeName">logo_path</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
                     <property name="name">logo_height</property>
                     <property name="nativeName">logo_height</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
                     <property name="name">logo_width</property>
                     <property name="nativeName">logo_width</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
                     <property name="name">title_select</property>
                     <property name="nativeName">title_select</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
                     <property name="name">partner_type_select</property>
                     <property name="nativeName">partner_type_select</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">7</property>
                     <property name="name">partner_first_name</property>
                     <property name="nativeName">partner_first_name</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">8</property>
                     <property name="name">partner_name</property>
                     <property name="nativeName">partner_name</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">9</property>
                     <property name="name">partner_seq</property>
                     <property name="nativeName">partner_seq</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">10</property>
                     <property name="name">invoicing_full_name</property>
                     <property name="nativeName">invoicing_full_name</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">11</property>
                     <property name="name">fixed_phone</property>
                     <property name="nativeName">fixed_phone</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">12</property>
-                    <property name="name">fax</property>
-                    <property name="nativeName">fax</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
-                </structure>
-                <structure>
-                    <property name="position">13</property>
                     <property name="name">mobile_phone</property>
                     <property name="nativeName">mobile_phone</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">14</property>
+                    <property name="position">13</property>
                     <property name="name">email_address</property>
                     <property name="nativeName">email_address</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">15</property>
+                    <property name="position">14</property>
                     <property name="name">web_site</property>
                     <property name="nativeName">web_site</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">16</property>
+                    <property name="position">15</property>
                     <property name="name">internal_user_name</property>
                     <property name="nativeName">internal_user_name</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">17</property>
+                    <property name="position">16</property>
                     <property name="name">team_name</property>
                     <property name="nativeName">team_name</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">18</property>
+                    <property name="position">17</property>
                     <property name="name">balance_cust_account</property>
                     <property name="nativeName">balance_cust_account</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">19</property>
+                    <property name="position">18</property>
                     <property name="name">balance_due_cust_account</property>
                     <property name="nativeName">balance_due_cust_account</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">20</property>
+                    <property name="position">19</property>
                     <property name="name">balance_due_debt_recovery_cust_account</property>
                     <property name="nativeName">balance_due_debt_recovery_cust_account</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
+                </structure>
+                <structure>
+                    <property name="position">20</property>
+                    <property name="name">currency</property>
+                    <property name="nativeName">currency</property>
+                    <property name="dataType">string</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select Partner.id, MetaFile.file_path as logo_path, Company.height as logo_height, Company.width as logo_width, Partner.title_select , Partner.partner_type_select, Partner.first_name as partner_first_name,
 Partner.name as partner_name, Partner.partner_seq, InvoicingAddress.full_name as invoicing_full_name,
-Partner.fixed_phone, Partner.fax, Partner.mobile_phone, EmailAddress.address as email_address, Partner.web_site, 
+Partner.fixed_phone, Partner.mobile_phone, EmailAddress.address as email_address, Partner.web_site, 
 AuthUser.name as internal_user_name, Team.name as team_name,
-AccountingSituation.balance_cust_account, AccountingSituation.balance_due_cust_account, AccountingSituation.balance_due_debt_recovery_cust_account
+AccountingSituation.balance_cust_account, AccountingSituation.balance_due_cust_account, AccountingSituation.balance_due_debt_recovery_cust_account, Currency.symbol as currency
 from base_partner as Partner
 left join auth_user as AuthUser on (Partner.user_id = AuthUser.id)
 left join base_company as Company on (Company.id = AuthUser.active_company)
+left join base_currency as Currency on (Company.currency = Currency.id)
 left join base_partner_address as PartnerAddress on (PartnerAddress.partner = Partner.id and PartnerAddress.is_invoicing_addr is true and PartnerAddress.is_default_addr is true)
 left join base_address as InvoicingAddress on (InvoicingAddress.id = PartnerAddress.address)
 left join message_email_address as EmailAddress on (Partner.email_address = EmailAddress.id)
@@ -1504,66 +1485,77 @@ ORDER BY Event.created_on desc]]></xml-property>
             <list-property name="columnHints">
                 <structure>
                     <property name="columnName">id</property>
+                    <property name="alias">id</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">id</text-property>
                     <text-property name="heading">id</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">invoice_date</property>
+                    <property name="alias">invoice_date</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">invoice_date</text-property>
                     <text-property name="heading">invoice_date</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">invoice_id</property>
+                    <property name="alias">invoice_id</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">invoice_id</text-property>
                     <text-property name="heading">invoice_id</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">internal_reference</property>
+                    <property name="alias">internal_reference</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">internal_reference</text-property>
                     <text-property name="heading">internal_reference</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">external_reference</property>
+                    <property name="alias">external_reference</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">external_reference</text-property>
                     <text-property name="heading">external_reference</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">ex_tax_total</property>
+                    <property name="alias">ex_tax_total</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">ex_tax_total</text-property>
                     <text-property name="heading">ex_tax_total</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">in_tax_total</property>
+                    <property name="alias">in_tax_total</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">in_tax_total</text-property>
                     <text-property name="heading">in_tax_total</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">tax_total</property>
+                    <property name="alias">tax_total</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">tax_total</text-property>
                     <text-property name="heading">tax_total</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">company_in_tax_total_remaining</property>
+                    <property name="alias">company_in_tax_total_remaining</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">company_in_tax_total_remaining</text-property>
                     <text-property name="heading">company_in_tax_total_remaining</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">due_date</property>
+                    <property name="alias">due_date</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">due_date</text-property>
                     <text-property name="heading">due_date</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">currency</property>
+                    <property name="alias">currency</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">currency</text-property>
                     <text-property name="heading">currency</text-property>
@@ -1636,7 +1628,32 @@ ORDER BY Event.created_on desc]]></xml-property>
                     </structure>
                     <structure>
                         <property name="position">11</property>
+                        <property name="name">term_sequence</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">12</property>
+                        <property name="name">term_amount</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">13</property>
+                        <property name="name">term_amount_remaining</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">14</property>
+                        <property name="name">term_due_date</property>
+                        <property name="dataType">date</property>
+                    </structure>
+                    <structure>
+                        <property name="position">15</property>
                         <property name="name">currency</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">16</property>
+                        <property name="name">term_currency</property>
                         <property name="dataType">string</property>
                     </structure>
                 </list-property>
@@ -1648,77 +1665,96 @@ ORDER BY Event.created_on desc]]></xml-property>
                     <property name="name">id</property>
                     <property name="nativeName">id</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
                     <property name="name">invoice_date</property>
                     <property name="nativeName">invoice_date</property>
                     <property name="dataType">date</property>
-                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
                     <property name="name">invoice_id</property>
                     <property name="nativeName">invoice_id</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
                     <property name="name">internal_reference</property>
                     <property name="nativeName">internal_reference</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
                     <property name="name">external_reference</property>
                     <property name="nativeName">external_reference</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
                     <property name="name">ex_tax_total</property>
                     <property name="nativeName">ex_tax_total</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">7</property>
                     <property name="name">in_tax_total</property>
                     <property name="nativeName">in_tax_total</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">8</property>
                     <property name="name">tax_total</property>
                     <property name="nativeName">tax_total</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">9</property>
                     <property name="name">company_in_tax_total_remaining</property>
                     <property name="nativeName">company_in_tax_total_remaining</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">10</property>
                     <property name="name">due_date</property>
                     <property name="nativeName">due_date</property>
                     <property name="dataType">date</property>
-                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">11</property>
+                    <property name="name">term_sequence</property>
+                    <property name="nativeName">term_sequence</property>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="position">12</property>
+                    <property name="name">term_amount</property>
+                    <property name="nativeName">term_amount</property>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="position">13</property>
+                    <property name="name">term_amount_remaining</property>
+                    <property name="nativeName">term_amount_remaining</property>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="position">14</property>
+                    <property name="name">term_due_date</property>
+                    <property name="nativeName">term_due_date</property>
+                    <property name="dataType">date</property>
+                </structure>
+                <structure>
+                    <property name="position">15</property>
                     <property name="name">currency</property>
                     <property name="nativeName">currency</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">16</property>
+                    <property name="name">term_currency</property>
+                    <property name="nativeName">term_currency</property>
+                    <property name="dataType">string</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select * from customer_situation_invoice(cast(? as bigint));]]></xml-property>
@@ -1781,12 +1817,16 @@ coalesce(SaleOrder.creation_date, SaleOrder.confirmation_date_time::date) as dis
 SaleOrder.sale_order_seq, ContactPartner.partner_type_select,
 ContactPartner.title_select, ContactPartner.name, ContactPartner.first_name,
 SaleOrder.ex_tax_total, SaleOrder.tax_total, SaleOrder.in_tax_total, 
-SaleOrder.status_select, SaleOrder.order_date, Currency.symbol AS currency
+SaleOrder.status_select, SaleOrder.order_date,
+(CASE WHEN SaleOrder.currency = Company.currency
+THEN Currency.symbol
+ELSE '' END) AS currency
 FROM base_partner AS Partner
 INNER JOIN sale_sale_order AS SaleOrder ON (SaleOrder.client_partner = Partner.id)
 LEFT JOIN base_partner AS ContactPartner ON (ContactPartner.id = SaleOrder.contact_partner)
 INNER JOIN auth_user AS AuthUser ON (AuthUser.id = Partner.user_id)
-LEFT JOIN base_currency AS Currency ON (SaleOrder.currency = Currency.id)
+LEFT JOIN base_company as Company on (SaleOrder.company = Company.id)
+LEFT JOIN base_currency as Currency on (Company.currency = Currency.id)
 WHERE Partner.id = partnerId and SaleOrder.company = AuthUser.active_company
 ORDER BY display_date desc;
 
@@ -1806,7 +1846,7 @@ CREATE OR REPLACE FUNCTION customer_situation_invoice(partnerId bigint)
 RETURNS table(id bigint, invoice_date date, invoice_id varchar,
 internal_reference varchar, external_reference varchar,
 ex_tax_total numeric, in_tax_total numeric, tax_total numeric, company_in_tax_total_remaining numeric,
-due_date date, currency varchar) as
+due_date date, term_sequence integer, term_amount numeric(19,2), term_amount_remaining numeric(19,2),term_due_date date, currency varchar, term_currency varchar) as
 $func$
 BEGIN
 IF (SELECT COUNT(to_regclass('account_invoice')) != 0) THEN
@@ -1814,13 +1854,41 @@ IF (SELECT COUNT(to_regclass('account_invoice')) != 0) THEN
 return query
 select 
 Invoice.id, Invoice.invoice_date, Invoice.invoice_id, Invoice.internal_reference, Invoice.external_reference,
-Invoice.ex_tax_total, Invoice.in_tax_total, Invoice.tax_total, Invoice.company_in_tax_total_remaining,
-Invoice.due_date, Currency.symbol as currency
+(CASE WHEN Invoice.operation_type_select IN (1,4)
+THEN Invoice.company_ex_tax_total * -1
+ELSE Invoice.company_ex_tax_total
+END),
+(CASE WHEN Invoice.operation_type_select IN (1,4)
+THEN Invoice.company_in_tax_total * -1
+ELSE Invoice.company_in_tax_total
+END),
+(CASE WHEN Invoice.operation_type_select IN (1,4)
+THEN Invoice.company_tax_total * -1
+ELSE Invoice.company_tax_total
+END),  
+(CASE WHEN Invoice.operation_type_select IN (1,4)
+THEN Invoice.company_in_tax_total_remaining * -1
+ELSE Invoice.company_in_tax_total_remaining
+END), 
+Invoice.due_date, InvoiceTerm.sequence, 
+(CASE WHEN Invoice.operation_type_select IN (1,4)
+THEN InvoiceTerm.amount * -1
+ELSE InvoiceTerm.amount
+END),   
+(CASE WHEN Invoice.operation_type_select IN (1,4)
+THEN InvoiceTerm.amount_remaining * -1
+ELSE InvoiceTerm.amount_remaining
+END), 
+InvoiceTerm.due_date, Currency.symbol as currency, TermCurrency.symbol as term_currency
 
 from base_partner as Partner
 inner join account_invoice as Invoice on (Invoice.partner = Partner.id)
-left join base_currency as Currency on (Invoice.currency = Currency.id)
-where Partner.id = partnerId;
+left join account_invoice_term as InvoiceTerm on (InvoiceTerm.invoice = Invoice.id)
+left join base_company as Company on (Invoice.company = Company.id)
+left join base_currency as Currency on (Company.currency = Currency.id)
+left join base_currency as TermCurrency on (Invoice.currency = TermCurrency.id)
+where Partner.id = partnerId
+order by InvoiceTerm.sequence;
 
 end if;
 END;
@@ -1931,12 +1999,6 @@ $func$ LANGUAGE plpgsql;
                     <property name="name">fixed_phone</property>
                     <text-property name="displayName">fixed_phone</text-property>
                     <expression name="expression" type="javascript">dataSetRow["fixed_phone"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="name">fax</property>
-                    <text-property name="displayName">fax</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["fax"]</expression>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
@@ -2058,23 +2120,18 @@ $func$ LANGUAGE plpgsql;
                 <cell id="3350">
                     <property name="colSpan">2</property>
                     <property name="rowSpan">1</property>
-                    <text id="4574">
-                        <property name="fontSize">8pt</property>
+                    <image id="4686">
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
                                 <expression name="valueExpr" type="javascript">row["logo_path"] == null</expression>
                             </structure>
                         </list-property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<TABLE>
-	<TR>
-		<VALUE-OF format="HTML">
-			"<TD><IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='"+row["logo_height"]+"' width='"+row["logo_width"]+"'/></TD>"
-		</VALUE-OF>
-	</TR>
-</TABLE>]]></text-property>
-                    </text>
+                        <method name="onRender"><![CDATA[this.width=row["logo_width"];
+this.height=row["logo_height"];]]></method>
+                        <property name="source">file</property>
+                        <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
+                    </image>
                 </cell>
                 <cell id="4096">
                     <property name="colSpan">4</property>
@@ -2387,11 +2444,7 @@ row["partner_first_name"]
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">if(row["partner_type_select"] == "1"){
-"ClientSituation.fax"
-}else{
-"ClientSituation.mobile"
-}</value>
+                                    <value type="javascript">"ClientSituation.mobile"</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -2418,11 +2471,7 @@ row["partner_first_name"]
                     <text id="4107">
                         <property name="marginTop">2pt</property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>if(row["partner_type_select"] == "1"){
-row["fax"]
-}else if(row["partner_type_select"] == "2"){
-row["mobile_phone"]
-}</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["mobile_phone"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
             </row>
@@ -2484,11 +2533,7 @@ row["mobile_phone"]
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">if(row["partner_type_select"] == "1"){
-"ClientSituation.website"
-}else if(row["partner_type_select"] == "2"){
-"ClientSituation.fax"
-}</value>
+                                    <value type="javascript">"ClientSituation.website"</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -2514,11 +2559,7 @@ row["mobile_phone"]
                     <text id="4108">
                         <property name="marginTop">1pt</property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>if(row["partner_type_select"] == "1"){
-row["web_site"]
-}else if(row["partner_type_select"] == "2"){
-row["fax"]
-}</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["web_site"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
             </row>
@@ -5540,7 +5581,7 @@ row["first_name"]
                             <property name="marginRight">1pt</property>
                             <property name="textAlign">right</property>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["ex_tax_total"]</VALUE-OF>]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["ex_tax_total"]</VALUE-OF><VALUE-OF format="^">" "</VALUE-OF> <VALUE-OF>row["Currency"]</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                     <cell id="4175">
@@ -5563,7 +5604,7 @@ row["first_name"]
                             <property name="marginRight">1pt</property>
                             <property name="textAlign">right</property>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["tax_total"]</VALUE-OF>]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["tax_total"]</VALUE-OF><VALUE-OF format="^">" "</VALUE-OF> <VALUE-OF>row["Currency"]</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                     <cell id="4177">
@@ -5738,12 +5779,6 @@ default:
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="name">fax</property>
-                    <text-property name="displayName">fax</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["fax"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
                     <property name="name">mobile_phone</property>
                     <text-property name="displayName">mobile_phone</text-property>
                     <expression name="expression" type="javascript">dataSetRow["mobile_phone"]</expression>
@@ -5790,6 +5825,18 @@ default:
                     <text-property name="displayName">balance_due_debt_recovery_cust_account</text-property>
                     <expression name="expression" type="javascript">dataSetRow["balance_due_debt_recovery_cust_account"]</expression>
                     <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">title_select_1</property>
+                    <text-property name="displayName">title_select</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["title_select"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">currency</property>
+                    <text-property name="displayName">currency</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["currency"]</expression>
+                    <property name="dataType">string</property>
                 </structure>
             </list-property>
             <column id="4454">
@@ -5971,12 +6018,6 @@ default:
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
-                                <property name="name">fax</property>
-                                <text-property name="displayName">fax</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["fax"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
                                 <property name="name">mobile_phone</property>
                                 <text-property name="displayName">mobile_phone</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["mobile_phone"]</expression>
@@ -6027,7 +6068,7 @@ default:
                         </list-property>
                         <structure name="toc"/>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OFformat="###,##0.00">row["balance_cust_account"]</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<VALUE-OFformat="###,##0.00">row["balance_cust_account"]</VALUE-OF><VALUE-OF format="^">" "</VALUE-OF> <VALUE-OF>row._outer["currency"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
                 <cell id="4475">
@@ -6135,12 +6176,6 @@ default:
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
-                                <property name="name">fax</property>
-                                <text-property name="displayName">fax</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["fax"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
                                 <property name="name">mobile_phone</property>
                                 <text-property name="displayName">mobile_phone</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["mobile_phone"]</expression>
@@ -6191,7 +6226,7 @@ default:
                         </list-property>
                         <structure name="toc"/>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["balance_due_cust_account"]</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["balance_due_cust_account"]</VALUE-OF><VALUE-OF format="^">" "</VALUE-OF> <VALUE-OF>row._outer["currency"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
                 <cell id="4479">
@@ -6302,12 +6337,6 @@ default:
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
-                                <property name="name">fax</property>
-                                <text-property name="displayName">fax</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["fax"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
                                 <property name="name">mobile_phone</property>
                                 <text-property name="displayName">mobile_phone</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["mobile_phone"]</expression>
@@ -6358,7 +6387,7 @@ default:
                         </list-property>
                         <structure name="toc"/>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["balance_due_debt_recovery_cust_account"]</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["balance_due_debt_recovery_cust_account"]</VALUE-OF><VALUE-OF format="^">" "</VALUE-OF> <VALUE-OF>row._outer["currency"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
             </row>
@@ -6452,25 +6481,61 @@ default:
                     <expression name="expression" type="javascript">dataSetRow["currency"]</expression>
                     <property name="dataType">string</property>
                 </structure>
-            </list-property>
-            <list-property name="sort">
                 <structure>
-                    <expression name="key" type="javascript">row["invoice_date"]</expression>
-                    <property name="direction">asc</property>
-                    <property name="strength">-1</property>
+                    <property name="name">term_sequence</property>
+                    <text-property name="displayName">term_sequence</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["term_sequence"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">term_amount</property>
+                    <text-property name="displayName">term_amount</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["term_amount"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">term_amount_remaining</property>
+                    <text-property name="displayName">term_amount_remaining</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["term_amount_remaining"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">term_due_date</property>
+                    <text-property name="displayName">term_due_date</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["term_due_date"]</expression>
+                    <property name="dataType">date</property>
+                </structure>
+                <structure>
+                    <property name="name">countTermSeq</property>
+                    <text-property name="displayName">countTermSeq</text-property>
+                    <property name="dataType">integer</property>
+                    <simple-property-list name="aggregateOn">
+                        <value>invoiceIdGroup</value>
+                    </simple-property-list>
+                    <property name="aggregateFunction">COUNT</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">row["term_sequence"]</expression>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">term_currency</property>
+                    <text-property name="displayName">term_currency</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["term_currency"]</expression>
+                    <property name="dataType">string</property>
                 </structure>
             </list-property>
             <column id="4443">
-                <property name="width">2.037291666666667cm</property>
+                <property name="width">1.5cm</property>
             </column>
             <column id="4444">
-                <property name="width">2.8310416666666667cm</property>
+                <property name="width">2.2cm</property>
             </column>
             <column id="4445">
-                <property name="width">2.8045833333333334cm</property>
-            </column>
-            <column id="4446">
-                <property name="width">2.778125cm</property>
+                <property name="width">1.5cm</property>
             </column>
             <column id="4339">
                 <property name="width">1.7991666666666668cm</property>
@@ -6484,8 +6549,17 @@ default:
             <column id="4449">
                 <property name="width">1.6933333333333334cm</property>
             </column>
-            <column id="4450">
+            <column id="4588">
+                <property name="width">1cm</property>
+            </column>
+            <column id="4647">
                 <property name="width">1.74625cm</property>
+            </column>
+            <column id="4639">
+                <property name="width">1.74625cm</property>
+            </column>
+            <column id="4643">
+                <property name="width">1.5cm</property>
             </column>
             <header>
                 <row id="4397">
@@ -6494,7 +6568,7 @@ default:
                     <property name="borderBottomWidth">thin</property>
                     <property name="height">0.6614583333333334cm</property>
                     <cell id="4398">
-                        <property name="colSpan">9</property>
+                        <property name="colSpan">11</property>
                         <property name="rowSpan">1</property>
                         <property name="backgroundColor">#FFFFFF</property>
                         <property name="color">#FFFFFF</property>
@@ -6689,65 +6763,6 @@ default:
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
                                         <value type="javascript">"ClientSituation.refDoc"</value>
-                                    </simple-property-list>
-                                </structure>
-                            </list-property>
-                            <list-property name="boundDataColumns">
-                                <structure>
-                                    <property name="name">key</property>
-                                    <text-property name="displayName">key</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">translation</property>
-                                    <text-property name="displayName">translation</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                            </list-property>
-                            <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B>]]></text-property>
-                        </text>
-                    </cell>
-                    <cell id="4407">
-                        <property name="backgroundColor">#7F7F7F</property>
-                        <property name="color">#FFFFFF</property>
-                        <property name="borderBottomColor">#7F7F7F</property>
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftColor">#7F7F7F</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightColor">#7F7F7F</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopColor">#7F7F7F</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                        <text id="4408">
-                            <property name="fontSize">9pt</property>
-                            <property name="borderBottomColor">#7F7F7F</property>
-                            <property name="borderBottomStyle">solid</property>
-                            <property name="borderBottomWidth">thin</property>
-                            <property name="borderLeftColor">#7F7F7F</property>
-                            <property name="borderLeftStyle">solid</property>
-                            <property name="borderLeftWidth">thin</property>
-                            <property name="borderRightColor">#7F7F7F</property>
-                            <property name="borderRightStyle">solid</property>
-                            <property name="borderRightWidth">thin</property>
-                            <property name="borderTopColor">#7F7F7F</property>
-                            <property name="borderTopStyle">solid</property>
-                            <property name="borderTopWidth">thin</property>
-                            <property name="marginTop">0pt</property>
-                            <property name="marginLeft">0pt</property>
-                            <property name="textAlign">center</property>
-                            <property name="dataSet">TranslateDS</property>
-                            <list-property name="paramBindings">
-                                <structure>
-                                    <property name="paramName">param_1</property>
-                                    <simple-property-list name="expression">
-                                        <value type="javascript">"ClientSituation.custRef"</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -7005,7 +7020,7 @@ default:
                             <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B>]]></text-property>
                         </text>
                     </cell>
-                    <cell id="4415">
+                    <cell id="4585">
                         <property name="backgroundColor">#7F7F7F</property>
                         <property name="color">#FFFFFF</property>
                         <property name="borderBottomColor">#7F7F7F</property>
@@ -7017,7 +7032,7 @@ default:
                         <property name="borderTopColor">#7F7F7F</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <text id="4416">
+                        <text id="4648">
                             <property name="fontSize">9pt</property>
                             <property name="borderBottomColor">#7F7F7F</property>
                             <property name="borderBottomStyle">solid</property>
@@ -7039,7 +7054,175 @@ default:
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">"ClientSituation.dueDate"</value>
+                                        <value type="javascript">"ClientSituation.termN"</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">key</property>
+                                    <text-property name="displayName">key</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">translation</property>
+                                    <text-property name="displayName">translation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                            </list-property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B>]]></text-property>
+                        </text>
+                    </cell>
+                    <cell id="4645">
+                        <property name="backgroundColor">#7F7F7F</property>
+                        <property name="color">#FFFFFF</property>
+                        <property name="borderBottomColor">#7F7F7F</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftColor">#7F7F7F</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderTopColor">#7F7F7F</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <text id="4649">
+                            <property name="fontSize">9pt</property>
+                            <property name="borderBottomColor">#7F7F7F</property>
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">thin</property>
+                            <property name="borderLeftColor">#7F7F7F</property>
+                            <property name="borderLeftStyle">solid</property>
+                            <property name="borderLeftWidth">thin</property>
+                            <property name="borderRightColor">#7F7F7F</property>
+                            <property name="borderRightStyle">solid</property>
+                            <property name="borderRightWidth">thin</property>
+                            <property name="borderTopColor">#7F7F7F</property>
+                            <property name="borderTopStyle">solid</property>
+                            <property name="borderTopWidth">thin</property>
+                            <property name="marginTop">0pt</property>
+                            <property name="marginLeft">0pt</property>
+                            <property name="textAlign">center</property>
+                            <property name="dataSet">TranslateDS</property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">"ClientSituation.totalAtiTerm"</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">key</property>
+                                    <text-property name="displayName">key</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">translation</property>
+                                    <text-property name="displayName">translation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                            </list-property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B>]]></text-property>
+                        </text>
+                    </cell>
+                    <cell id="4637">
+                        <property name="backgroundColor">#7F7F7F</property>
+                        <property name="color">#FFFFFF</property>
+                        <property name="borderBottomColor">#7F7F7F</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftColor">#7F7F7F</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderTopColor">#7F7F7F</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <text id="4603">
+                            <property name="fontSize">9pt</property>
+                            <property name="borderBottomColor">#7F7F7F</property>
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">thin</property>
+                            <property name="borderLeftColor">#7F7F7F</property>
+                            <property name="borderLeftStyle">solid</property>
+                            <property name="borderLeftWidth">thin</property>
+                            <property name="borderRightColor">#7F7F7F</property>
+                            <property name="borderRightStyle">solid</property>
+                            <property name="borderRightWidth">thin</property>
+                            <property name="borderTopColor">#7F7F7F</property>
+                            <property name="borderTopStyle">solid</property>
+                            <property name="borderTopWidth">thin</property>
+                            <property name="marginTop">0pt</property>
+                            <property name="marginLeft">0pt</property>
+                            <property name="textAlign">center</property>
+                            <property name="dataSet">TranslateDS</property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">"ClientSituation.toPay"</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">key</property>
+                                    <text-property name="displayName">key</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">translation</property>
+                                    <text-property name="displayName">translation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                            </list-property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B>]]></text-property>
+                        </text>
+                    </cell>
+                    <cell id="4641">
+                        <property name="backgroundColor">#7F7F7F</property>
+                        <property name="color">#FFFFFF</property>
+                        <property name="borderBottomColor">#7F7F7F</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftColor">#7F7F7F</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderTopColor">#7F7F7F</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <text id="4610">
+                            <property name="fontSize">9pt</property>
+                            <property name="borderBottomColor">#7F7F7F</property>
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">thin</property>
+                            <property name="borderLeftColor">#7F7F7F</property>
+                            <property name="borderLeftStyle">solid</property>
+                            <property name="borderLeftWidth">thin</property>
+                            <property name="borderRightColor">#7F7F7F</property>
+                            <property name="borderRightStyle">solid</property>
+                            <property name="borderRightWidth">thin</property>
+                            <property name="borderTopColor">#7F7F7F</property>
+                            <property name="borderTopStyle">solid</property>
+                            <property name="borderTopWidth">thin</property>
+                            <property name="marginTop">0pt</property>
+                            <property name="marginLeft">0pt</property>
+                            <property name="textAlign">center</property>
+                            <property name="dataSet">TranslateDS</property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">"ClientSituation.dueDateTerm"</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -7063,229 +7246,275 @@ default:
                     </cell>
                 </row>
             </header>
-            <detail>
-                <row id="4417">
-                    <property name="height">0.635cm</property>
-                    <cell id="4418">
-                        <property name="borderBottomColor">#7F7F7F</property>
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftColor">#7F7F7F</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightColor">#7F7F7F</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopColor">#7F7F7F</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
+            <group id="4589">
+                <property name="groupName">invoiceIdGroup</property>
+                <expression name="keyExpr" type="javascript">row["invoice_id"]</expression>
+                <structure name="toc">
+                    <expression name="expressionValue" type="javascript">row["invoice_id"]</expression>
+                </structure>
+                <property name="hideDetail">false</property>
+                <list-property name="sort">
+                    <structure>
+                        <expression name="key" type="javascript">row["invoice_date"]</expression>
+                        <property name="direction">asc</property>
+                        <property name="strength">-1</property>
+                    </structure>
+                    <structure>
+                        <expression name="key" type="javascript">row["invoice_id"]</expression>
+                        <property name="direction">asc</property>
+                        <property name="strength">-1</property>
+                    </structure>
+                </list-property>
+                <header>
+                    <row id="4590">
                         <property name="verticalAlign">middle</property>
-                        <data id="4583">
-                            <property name="fontSize">8pt</property>
-                            <structure name="dateTimeFormat">
-                                <property name="category">Short Date</property>
-                                <property name="pattern">Short Date</property>
-                            </structure>
-                            <property name="resultSetColumn">invoice_date</property>
-                        </data>
-                    </cell>
-                    <cell id="4420">
-                        <property name="borderBottomColor">#7F7F7F</property>
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftColor">#7F7F7F</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightColor">#7F7F7F</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopColor">#7F7F7F</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                        <property name="verticalAlign">middle</property>
-                        <text id="4421">
-                            <property name="fontSize">8pt</property>
-                            <property name="marginBottom">1pt</property>
-                            <property name="textAlign">center</property>
-                            <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF>row["invoice_id"]</VALUE-OF>]]></text-property>
-                        </text>
-                    </cell>
-                    <cell id="4422">
-                        <property name="borderBottomColor">#7F7F7F</property>
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftColor">#7F7F7F</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightColor">#7F7F7F</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopColor">#7F7F7F</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                        <property name="verticalAlign">middle</property>
-                        <text id="4423">
-                            <property name="fontSize">8pt</property>
-                            <property name="marginBottom">1pt</property>
-                            <property name="textAlign">left</property>
-                            <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF>row["internal_reference"]</VALUE-OF>]]></text-property>
-                        </text>
-                    </cell>
-                    <cell id="4424">
-                        <property name="borderBottomColor">#7F7F7F</property>
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftColor">#7F7F7F</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightColor">#7F7F7F</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopColor">#7F7F7F</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                        <property name="verticalAlign">middle</property>
-                        <text id="4425">
-                            <property name="fontSize">8pt</property>
-                            <property name="marginBottom">1pt</property>
-                            <property name="marginRight">1pt</property>
-                            <property name="textAlign">left</property>
-                            <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF>row["external_reference"]</VALUE-OF>]]></text-property>
-                        </text>
-                    </cell>
-                    <cell id="4337">
-                        <property name="borderBottomColor">#7F7F7F</property>
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftColor">#7F7F7F</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightColor">#7F7F7F</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopColor">#7F7F7F</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                        <property name="verticalAlign">middle</property>
-                        <text id="4452">
-                            <property name="fontSize">8pt</property>
-                            <property name="marginBottom">1pt</property>
-                            <property name="marginRight">1pt</property>
-                            <property name="textAlign">right</property>
-                            <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["ex_tax_total"]</VALUE-OF>]]></text-property>
-                        </text>
-                    </cell>
-                    <cell id="4426">
-                        <property name="borderBottomColor">#7F7F7F</property>
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftColor">#7F7F7F</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightColor">#7F7F7F</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopColor">#7F7F7F</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                        <property name="verticalAlign">middle</property>
-                        <text id="4427">
-                            <property name="fontSize">8pt</property>
-                            <property name="marginBottom">1pt</property>
-                            <property name="marginRight">1pt</property>
-                            <property name="textAlign">right</property>
-                            <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["tax_total"]</VALUE-OF>]]></text-property>
-                        </text>
-                    </cell>
-                    <cell id="4428">
-                        <property name="borderBottomColor">#7F7F7F</property>
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftColor">#7F7F7F</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightColor">#7F7F7F</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopColor">#7F7F7F</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                        <property name="verticalAlign">middle</property>
-                        <text id="4429">
-                            <property name="fontSize">8pt</property>
-                            <property name="marginBottom">1pt</property>
-                            <property name="marginRight">1pt</property>
-                            <property name="textAlign">right</property>
-                            <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["in_tax_total"]</VALUE-OF><VALUE-OF format="^">" "</VALUE-OF> <VALUE-OF>row["currency"]</VALUE-OF>]]></text-property>
-                        </text>
-                    </cell>
-                    <cell id="4430">
-                        <property name="borderBottomColor">#7F7F7F</property>
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftColor">#7F7F7F</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightColor">#7F7F7F</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopColor">#7F7F7F</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                        <property name="verticalAlign">middle</property>
-                        <text id="4431">
-                            <property name="fontSize">8pt</property>
-                            <property name="marginBottom">1pt</property>
-                            <property name="marginRight">1pt</property>
-                            <property name="textAlign">right</property>
-                            <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["company_in_tax_total_remaining"]</VALUE-OF><VALUE-OF format="^">" "</VALUE-OF> <VALUE-OF>row["currency"]</VALUE-OF>]]></text-property>
-                        </text>
-                    </cell>
-                    <cell id="4432">
-                        <property name="borderBottomColor">#7F7F7F</property>
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftColor">#7F7F7F</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightColor">#7F7F7F</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopColor">#7F7F7F</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                        <property name="verticalAlign">middle</property>
-                        <data id="4582">
-                            <property name="fontSize">8pt</property>
-                            <structure name="dateTimeFormat">
-                                <property name="category">Short Date</property>
-                                <property name="pattern">Short Date</property>
-                            </structure>
-                            <property name="resultSetColumn">due_date</property>
-                        </data>
-                    </cell>
-                </row>
-            </detail>
-            <footer>
-                <row id="4434">
-                    <cell id="4435"/>
-                    <cell id="4436"/>
-                    <cell id="4437"/>
-                    <cell id="4438"/>
-                    <cell id="4338"/>
-                    <cell id="4439"/>
-                    <cell id="4440"/>
-                    <cell id="4441"/>
-                    <cell id="4442"/>
-                </row>
-            </footer>
+                        <cell id="4591">
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">thin</property>
+                            <property name="borderLeftStyle">solid</property>
+                            <property name="borderLeftWidth">thin</property>
+                            <property name="borderRightStyle">solid</property>
+                            <property name="borderRightWidth">thin</property>
+                            <property name="borderTopStyle">solid</property>
+                            <property name="borderTopWidth">thin</property>
+                            <data id="4583">
+                                <property name="fontSize">8pt</property>
+                                <structure name="dateTimeFormat">
+                                    <property name="category">Short Date</property>
+                                    <property name="pattern">Short Date</property>
+                                </structure>
+                                <property name="resultSetColumn">invoice_date</property>
+                            </data>
+                        </cell>
+                        <cell id="4592">
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">thin</property>
+                            <property name="borderLeftStyle">solid</property>
+                            <property name="borderLeftWidth">thin</property>
+                            <property name="borderRightStyle">solid</property>
+                            <property name="borderRightWidth">thin</property>
+                            <property name="borderTopStyle">solid</property>
+                            <property name="borderTopWidth">thin</property>
+                            <text id="4421">
+                                <property name="fontSize">8pt</property>
+                                <property name="marginBottom">1pt</property>
+                                <property name="textAlign">center</property>
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<VALUE-OF>row["invoice_id"]</VALUE-OF>]]></text-property>
+                            </text>
+                        </cell>
+                        <cell id="4593">
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">thin</property>
+                            <property name="borderLeftStyle">solid</property>
+                            <property name="borderLeftWidth">thin</property>
+                            <property name="borderRightStyle">solid</property>
+                            <property name="borderRightWidth">thin</property>
+                            <property name="borderTopStyle">solid</property>
+                            <property name="borderTopWidth">thin</property>
+                            <text id="4423">
+                                <property name="fontSize">8pt</property>
+                                <property name="marginBottom">1pt</property>
+                                <property name="textAlign">left</property>
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<VALUE-OF>row["internal_reference"]</VALUE-OF>]]></text-property>
+                            </text>
+                        </cell>
+                        <cell id="4595">
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">thin</property>
+                            <property name="borderLeftStyle">solid</property>
+                            <property name="borderLeftWidth">thin</property>
+                            <property name="borderRightStyle">solid</property>
+                            <property name="borderRightWidth">thin</property>
+                            <property name="borderTopStyle">solid</property>
+                            <property name="borderTopWidth">thin</property>
+                            <text id="4452">
+                                <property name="fontSize">8pt</property>
+                                <property name="marginBottom">1pt</property>
+                                <property name="marginRight">1pt</property>
+                                <property name="textAlign">right</property>
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["ex_tax_total"]</VALUE-OF><VALUE-OF format="^">" "</VALUE-OF> <VALUE-OF>row["currency"]</VALUE-OF>]]></text-property>
+                            </text>
+                        </cell>
+                        <cell id="4596">
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">thin</property>
+                            <property name="borderLeftStyle">solid</property>
+                            <property name="borderLeftWidth">thin</property>
+                            <property name="borderRightStyle">solid</property>
+                            <property name="borderRightWidth">thin</property>
+                            <property name="borderTopStyle">solid</property>
+                            <property name="borderTopWidth">thin</property>
+                            <text id="4427">
+                                <property name="fontSize">8pt</property>
+                                <property name="marginBottom">1pt</property>
+                                <property name="marginRight">1pt</property>
+                                <property name="textAlign">right</property>
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["tax_total"]</VALUE-OF><VALUE-OF format="^">" "</VALUE-OF> <VALUE-OF>row["currency"]</VALUE-OF>]]></text-property>
+                            </text>
+                        </cell>
+                        <cell id="4597">
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">thin</property>
+                            <property name="borderLeftStyle">solid</property>
+                            <property name="borderLeftWidth">thin</property>
+                            <property name="borderRightStyle">solid</property>
+                            <property name="borderRightWidth">thin</property>
+                            <property name="borderTopStyle">solid</property>
+                            <property name="borderTopWidth">thin</property>
+                            <text id="4429">
+                                <property name="fontSize">8pt</property>
+                                <property name="marginBottom">1pt</property>
+                                <property name="marginRight">1pt</property>
+                                <property name="textAlign">right</property>
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["in_tax_total"]</VALUE-OF><VALUE-OF format="^">" "</VALUE-OF> <VALUE-OF>row["currency"]</VALUE-OF>]]></text-property>
+                            </text>
+                        </cell>
+                        <cell id="4598">
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">thin</property>
+                            <property name="borderLeftStyle">solid</property>
+                            <property name="borderLeftWidth">thin</property>
+                            <property name="borderRightStyle">solid</property>
+                            <property name="borderRightWidth">thin</property>
+                            <property name="borderTopStyle">solid</property>
+                            <property name="borderTopWidth">thin</property>
+                            <text id="4431">
+                                <property name="fontSize">8pt</property>
+                                <property name="marginBottom">1pt</property>
+                                <property name="marginRight">1pt</property>
+                                <property name="textAlign">right</property>
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["company_in_tax_total_remaining"]</VALUE-OF><VALUE-OF format="^">" "</VALUE-OF> <VALUE-OF>row["currency"]</VALUE-OF>]]></text-property>
+                            </text>
+                        </cell>
+                        <cell id="4600">
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">thin</property>
+                            <property name="borderLeftStyle">solid</property>
+                            <property name="borderLeftWidth">thin</property>
+                            <property name="borderRightStyle">solid</property>
+                            <property name="borderRightWidth">thin</property>
+                            <property name="borderTopStyle">solid</property>
+                            <property name="borderTopWidth">thin</property>
+                            <table id="4652">
+                                <column id="4659"/>
+                                <detail>
+                                    <row id="4655">
+                                        <cell id="4656">
+                                            <text id="4684">
+                                                <property name="fontSize">8pt</property>
+                                                <property name="marginBottom">1pt</property>
+                                                <property name="textAlign">center</property>
+                                                <property name="contentType">html</property>
+                                                <text-property name="content"><![CDATA[<VALUE-OF>row["term_sequence"]</VALUE-OF>]]></text-property>
+                                            </text>
+                                        </cell>
+                                    </row>
+                                </detail>
+                            </table>
+                        </cell>
+                        <cell id="4646">
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">thin</property>
+                            <property name="borderLeftStyle">solid</property>
+                            <property name="borderLeftWidth">thin</property>
+                            <property name="borderRightStyle">solid</property>
+                            <property name="borderRightWidth">thin</property>
+                            <property name="borderTopStyle">solid</property>
+                            <property name="borderTopWidth">thin</property>
+                            <table id="4660">
+                                <column id="4667"/>
+                                <detail>
+                                    <row id="4663">
+                                        <cell id="4664">
+                                            <text id="4685">
+                                                <property name="fontSize">8pt</property>
+                                                <property name="marginBottom">1pt</property>
+                                                <property name="marginRight">1pt</property>
+                                                <property name="textAlign">right</property>
+                                                <list-property name="visibility">
+                                                    <structure>
+                                                        <property name="format">all</property>
+                                                        <expression name="valueExpr" type="javascript">!row["term_due_date"]</expression>
+                                                    </structure>
+                                                </list-property>
+                                                <property name="contentType">html</property>
+                                                <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["term_amount"]</VALUE-OF><VALUE-OF format="^">" "</VALUE-OF> <VALUE-OF>row["term_currency"]</VALUE-OF>]]></text-property>
+                                            </text>
+                                        </cell>
+                                    </row>
+                                </detail>
+                            </table>
+                        </cell>
+                        <cell id="4638">
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">thin</property>
+                            <property name="borderLeftStyle">solid</property>
+                            <property name="borderLeftWidth">thin</property>
+                            <property name="borderRightStyle">solid</property>
+                            <property name="borderRightWidth">thin</property>
+                            <property name="borderTopStyle">solid</property>
+                            <property name="borderTopWidth">thin</property>
+                            <table id="4668">
+                                <column id="4675"/>
+                                <detail>
+                                    <row id="4671">
+                                        <cell id="4672">
+                                            <text id="4604">
+                                                <property name="fontSize">8pt</property>
+                                                <property name="marginBottom">1pt</property>
+                                                <property name="marginRight">1pt</property>
+                                                <property name="textAlign">right</property>
+                                                <list-property name="visibility">
+                                                    <structure>
+                                                        <property name="format">all</property>
+                                                        <expression name="valueExpr" type="javascript">!row["term_due_date"]</expression>
+                                                    </structure>
+                                                </list-property>
+                                                <property name="contentType">html</property>
+                                                <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["term_amount_remaining"]</VALUE-OF><VALUE-OF format="^">" "</VALUE-OF> <VALUE-OF>row["term_currency"]</VALUE-OF>]]></text-property>
+                                            </text>
+                                        </cell>
+                                    </row>
+                                </detail>
+                            </table>
+                        </cell>
+                        <cell id="4642">
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">thin</property>
+                            <property name="borderLeftStyle">solid</property>
+                            <property name="borderLeftWidth">thin</property>
+                            <property name="borderRightStyle">solid</property>
+                            <property name="borderRightWidth">thin</property>
+                            <property name="borderTopStyle">solid</property>
+                            <property name="borderTopWidth">thin</property>
+                            <table id="4676">
+                                <column id="4683"/>
+                                <detail>
+                                    <row id="4679">
+                                        <cell id="4680">
+                                            <data id="4611">
+                                                <property name="fontSize">8pt</property>
+                                                <structure name="dateTimeFormat">
+                                                    <property name="category">Short Date</property>
+                                                    <property name="pattern">Short Date</property>
+                                                </structure>
+                                                <structure name="toc"/>
+                                                <property name="resultSetColumn">term_due_date</property>
+                                            </data>
+                                        </cell>
+                                    </row>
+                                </detail>
+                            </table>
+                        </cell>
+                    </row>
+                </header>
+            </group>
         </table>
     </body>
 </report>

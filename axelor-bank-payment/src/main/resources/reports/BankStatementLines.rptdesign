@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.5.0.v201506092134 Build &lt;@BUILD@></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202108150822</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -62,7 +62,7 @@
             <property name="dataType">string</property>
             <property name="distinct">true</property>
             <simple-property-list name="defaultValue">
-                <value type="constant">jdbc:postgresql://localhost:5432/axelor-open-suite</value>
+                <value type="constant">jdbc:postgresql://localhost:5432/</value>
             </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
@@ -76,9 +76,6 @@
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">axelor</value>
-            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -186,7 +183,6 @@
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
             <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
-            <property name="odaUser">axelor</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -345,6 +341,12 @@ list.join(" - ");</expression>
                     <text-property name="heading">logo_width</text-property>
                 </structure>
                 <structure>
+                    <property name="columnName">logo_path</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">logo_path</text-property>
+                    <text-property name="heading">logo_path</text-property>
+                </structure>
+                <structure>
                     <property name="columnName">header</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">header</text-property>
@@ -497,21 +499,26 @@ list.join(" - ");</expression>
                     </structure>
                     <structure>
                         <property name="position">20</property>
-                        <property name="name">header</property>
+                        <property name="name">logo_path</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">21</property>
-                        <property name="name">footer</property>
+                        <property name="name">header</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">22</property>
+                        <property name="name">footer</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">23</property>
                         <property name="name">logoPosition</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">23</property>
+                        <property name="position">24</property>
                         <property name="name">bank_details_full_name</property>
                         <property name="dataType">string</property>
                     </structure>
@@ -654,20 +661,27 @@ list.join(" - ");</expression>
                 </structure>
                 <structure>
                     <property name="position">20</property>
+                    <property name="name">logo_path</property>
+                    <property name="nativeName">logo_path</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">21</property>
                     <property name="name">header</property>
                     <property name="nativeName">header</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">21</property>
+                    <property name="position">22</property>
                     <property name="name">footer</property>
                     <property name="nativeName">footer</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">22</property>
+                    <property name="position">23</property>
                     <property name="name">logoPosition</property>
                     <property name="nativeName">logoPosition</property>
                     <property name="dataType">integer</property>
@@ -675,7 +689,7 @@ list.join(" - ");</expression>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select sequence, BankStatementLine.id as bank_statement_line_id,
-	operation_date, value_date, line_type_select, description, reference,
+	operation_date, value_date, line_type_select, BankStatementLine.description, reference,
 	commission_exemption_index_select, unavailability_index_select,
 	origin, debit, credit,
 	BankDetails.iban as bank_details_iban,
@@ -685,6 +699,7 @@ list.join(" - ");</expression>
 	Currency.code as currency_code,
 	Company.height as "logo_height",
 	Company.width as "logo_width",
+	MetaFile.file_path as "logo_path",
 	PrintingSettings.pdf_header as "header", 
 	PrintingSettings.pdf_footer as "footer",
 	PrintingSettings.logo_position_select as "logoPosition"
@@ -699,6 +714,8 @@ left join account_account as Account
 on BankDetails.bank_account = Account.id
 left join base_company as Company
 on Account.company = Company.id
+left join public.meta_file as MetaFile
+on MetaFile.id = Company.logo
 left join base_printing_settings as PrintingSettings 
 on Company.printing_settings = PrintingSettings.id
 left join bankpayment_bank_statement as BankStatement 
@@ -707,7 +724,6 @@ where BankStatementLine.operation_date >= ?
 and BankStatementLine.operation_date <= ? 
 and BankStatementLine.bank_details = ?
 order by BankStatement.from_date, BankStatementLine.sequence]]></xml-property>
-
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="TranslateDS" id="3799">
             <property name="nullsOrdering">nulls lowest</property>
@@ -851,21 +867,28 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             <property name="colSpan">3</property>
                             <property name="rowSpan">1</property>
                             <property name="textAlign">left</property>
-                            <text id="4417">
-                                <property name="fontSize">8pt</property>
+                            <grid id="5692">
                                 <property name="dataSet">BankStatementLineDS</property>
                                 <list-property name="boundDataColumns">
                                     <structure>
                                         <property name="name">logo_height</property>
                                         <text-property name="displayName">logo_height</text-property>
-                                        <expression name="expression" type="javascript">dataSetRow["logo_height"]</expression>
-                                        <property name="dataType">integer</property>
+                                        <expression name="expression" type="javascript">if(dataSetRow["logo_height"]>0){dataSetRow["logo_height"]+'px'}else{'35px'}</expression>
+                                        <property name="dataType">string</property>
+                                        <property name="allowExport">true</property>
                                     </structure>
                                     <structure>
                                         <property name="name">logo_width</property>
                                         <text-property name="displayName">logo_width</text-property>
-                                        <expression name="expression" type="javascript">dataSetRow["logo_width"]</expression>
-                                        <property name="dataType">integer</property>
+                                        <expression name="expression" type="javascript">if(dataSetRow["logo_width"]>0){dataSetRow["logo_width"]+'px'}else{'154px'}</expression>
+                                        <property name="dataType">string</property>
+                                        <property name="allowExport">true</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">logo_path</property>
+                                        <text-property name="displayName">logo_path</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
+                                        <property name="dataType">string</property>
                                     </structure>
                                     <structure>
                                         <property name="name">header</property>
@@ -880,25 +903,117 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <property name="dataType">integer</property>
                                     </structure>
                                 </list-property>
-                                <structure name="toc"/>
-                                <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[<TABLE >
-	<TR>
-		<VALUE-OF format="HTML">if(row["logoPosition"] == 3) {
-		"<TD>"+row["header"]+"</TD><TD/><TD align='right' valign='middle'> <IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='"+row["logo_height"]+"' width='"+row["logo_width"]+"'/></td>"
-		} else if(row["logoPosition"] == 1) {
-		"<TD valign='middle'> <IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='"+row["logo_height"]+"' width='"+row["logo_width"]+"'/></TD><TD/><TD>"+row["header"]+"</TD>"
-		} else if(row["logoPosition"] == 2) {
-			"<TD/><TD align='center' valign='middle'><IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='"+row["logo_height"]+"' width='"+row["logo_width"]+"'/></TD><TD>"+row["header"]+"</TD>"
-		}else if(row["logoPosition"] == null) {
-			"<TD valign='middle'> <IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='"+row["logo_height"]+"' width='"+row["logo_width"]+"'/>"
-		}else {
-		"<TD/><TD/><TD>"+row["header"]+"</TD>"
-		}
- 		</VALUE-OF>
-	</TR>
-</TABLE>]]></text-property>
-                            </text>
+                                <column id="5693"/>
+                                <column id="5694"/>
+                                <column id="5695">
+                                    <property name="width">1.6979166666666667in</property>
+                                </column>
+                                <column id="5696">
+                                    <property name="width">2.375in</property>
+                                </column>
+                                <column id="5697"/>
+                                <row id="5698">
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">docx</property>
+                                            <expression name="valueExpr" type="javascript">row["logoPosition"] == 3</expression>
+                                        </structure>
+                                        <structure>
+                                            <property name="format">pdf</property>
+                                            <expression name="valueExpr" type="javascript">row["logoPosition"] == 3</expression>
+                                        </structure>
+                                        <structure>
+                                            <property name="format">xlsx</property>
+                                            <expression name="valueExpr" type="javascript">true</expression>
+                                        </structure>
+                                    </list-property>
+                                    <cell id="5699">
+                                        <property name="colSpan">3</property>
+                                        <property name="rowSpan">1</property>
+                                        <method name="onCreate"><![CDATA[var logoPosition = row["logoPosition"];
+
+if (logoPosition == 2) {
+   this.getStyle().setTextAlign('right');
+}]]></method>
+                                        <property name="fontSize">10pt</property>
+                                        <image id="5594">
+                                            <property name="marginLeft">0px</property>
+                                            <property name="display">block</property>
+                                            <expression name="altText">""</expression>
+                                            <list-property name="visibility">
+                                                <structure>
+                                                    <property name="format">all</property>
+                                                    <expression name="valueExpr" type="javascript">row["logoPosition"] == 0</expression>
+                                                </structure>
+                                            </list-property>
+                                            <method name="onCreate"><![CDATA[this.width = row["logo_width"];
+this.height = row["logo_height"];]]></method>
+                                            <property name="source">file</property>
+                                            <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
+                                        </image>
+                                    </cell>
+                                    <cell id="5702">
+                                        <property name="colSpan">1</property>
+                                        <property name="rowSpan">1</property>
+                                        <property name="textAlign">right</property>
+                                    </cell>
+                                    <cell id="5714">
+                                        <property name="textAlign">right</property>
+                                        <text id="5682">
+                                            <property name="fontFamily">sans-serif</property>
+                                            <property name="fontSize">8pt</property>
+                                            <property name="textAlign">left</property>
+                                            <list-property name="visibility">
+                                                <structure>
+                                                    <property name="format">all</property>
+                                                    <expression name="valueExpr" type="javascript">row["logoPosition"] == null</expression>
+                                                </structure>
+                                            </list-property>
+                                            <property name="contentType">html</property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF format="HTML">row["header"] ? row["header"] : ""</VALUE-OF>]]></text-property>
+                                        </text>
+                                    </cell>
+                                </row>
+                                <row id="5704">
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">docx</property>
+                                            <expression name="valueExpr" type="javascript">row["logoPosition"] != 3</expression>
+                                        </structure>
+                                        <structure>
+                                            <property name="format">pdf</property>
+                                            <expression name="valueExpr" type="javascript">row["logoPosition"] != 3</expression>
+                                        </structure>
+                                        <structure>
+                                            <property name="format">xlsx</property>
+                                            <expression name="valueExpr" type="javascript">true</expression>
+                                        </structure>
+                                    </list-property>
+                                    <cell id="5705">
+                                        <property name="colSpan">2</property>
+                                        <property name="rowSpan">1</property>
+                                        <property name="fontSize">10pt</property>
+                                        <text id="5681">
+                                            <property name="fontSize">8pt</property>
+                                            <property name="contentType">html</property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF format="HTML">row["header"] ? row["header"] : ""</VALUE-OF>]]></text-property>
+                                        </text>
+                                    </cell>
+                                    <cell id="5707">
+                                        <property name="colSpan">3</property>
+                                        <property name="rowSpan">1</property>
+                                        <property name="textAlign">right</property>
+                                        <image id="5614">
+                                            <property name="display">block</property>
+                                            <structure name="toc"/>
+                                            <method name="onCreate"><![CDATA[this.width = row["logo_width"];
+this.height = row["logo_height"];]]></method>
+                                            <property name="source">file</property>
+                                            <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
+                                        </image>
+                                    </cell>
+                                </row>
+                            </grid>
                         </cell>
                     </row>
                     <row id="18">

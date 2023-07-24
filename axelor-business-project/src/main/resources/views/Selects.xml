@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <selection name="business.project.task.invoicing.type.select">
     <option value="1">Time spent</option>
@@ -49,12 +49,14 @@
     <option value="5">Canceled</option>
   </selection>
 
-  <selection name="project.invoicing.assistant.batch.action.select">
+  <selection name="business.project.batch.action.select">
     <option value="1">Update Tasks</option>
     <option value="2">Generate invoicing projects</option>
+    <option value="3">Compute project totals</option>
+    <option value="4">Backup project data to project history</option>
   </selection>
 
-  <selection name="project.invoicing.assistant.batch.consolidate.phase.select">
+  <selection name="business.project.batch.consolidate.phase.select">
     <option value="1">Consolidate all</option>
     <option value="2">Don't consolidate</option>
     <option value="3">Default value</option>
@@ -63,6 +65,23 @@
   <selection id="business.project.sequence.generic.code.select"
     name="sequence.generic.code.select">
     <option value="project">Project</option>
+  </selection>
+
+  <selection name="meta.schedule.batch.service.select"
+    id="business.project.meta.schedule.batch.service.select">
+    <option value="com.axelor.apps.businessproject.service.batch.BusinessProjectBatchService">
+      com.axelor.apps.businessproject.service.batch.BusinessProjectBatchService
+    </option>
+  </selection>
+
+  <selection name="batch.batch.type.select" id="business.project.batch.batch.type.select">
+    <option value="1000">Business project batch</option>
+  </selection>
+
+  <selection name="business.project.spent.time.computation.method.select">
+    <option value="1">Sale order (if existing)</option>
+    <option value="2">Product</option>
+    <option value="3">Employee</option>
   </selection>
 
 </object-views>

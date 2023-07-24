@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -92,9 +92,6 @@
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">axelor</value>
-            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -182,7 +179,6 @@
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
             <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
-            <property name="odaUser">axelor</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -462,12 +458,6 @@ order by ProductFamily.name, ProductCategory.name
                     <text-property name="heading">email</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">fax</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">fax</text-property>
-                    <text-property name="heading">fax</text-property>
-                </structure>
-                <structure>
                     <property name="columnName">fixed_phone</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">fixed_phone</text-property>
@@ -523,21 +513,16 @@ order by ProductFamily.name, ProductCategory.name
                     </structure>
                     <structure>
                         <property name="position">5</property>
-                        <property name="name">fax</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">6</property>
                         <property name="name">fixed_phone</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">7</property>
+                        <property name="position">6</property>
                         <property name="name">logo_height</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">8</property>
+                        <property name="position">7</property>
                         <property name="name">logo_width</property>
                         <property name="dataType">integer</property>
                     </structure>
@@ -575,34 +560,27 @@ order by ProductFamily.name, ProductCategory.name
                 </structure>
                 <structure>
                     <property name="position">5</property>
-                    <property name="name">fax</property>
-                    <property name="nativeName">fax</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
-                </structure>
-                <structure>
-                    <property name="position">6</property>
                     <property name="name">fixed_phone</property>
                     <property name="nativeName">fixed_phone</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">7</property>
+                    <property name="position">6</property>
                     <property name="name">logo_height</property>
                     <property name="nativeName">logo_height</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
-                    <property name="position">8</property>
+                    <property name="position">7</property>
                     <property name="name">logo_width</property>
                     <property name="nativeName">logo_width</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select MetaFile.file_path as logo_path, Address.full_name, Partner.web_site, Email.address as email, Partner.fax, Partner.fixed_phone,
+            <xml-property name="queryText"><![CDATA[select MetaFile.file_path as logo_path, Address.full_name, Partner.web_site, Email.address as email, Partner.fixed_phone,
 Company.height as logo_height, Company.width as logo_width
 from auth_user as AuthUser 
 left outer join base_company as Company on (AuthUser.active_company = Company.id)
@@ -783,7 +761,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select nb_decimal_digit_for_unit_price
-from base_app_base]]></xml-property>
+from studio_app_base]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -1864,12 +1842,6 @@ group by ProductCategory.id , ProductCategory.name]]></xml-property>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="name">fax</property>
-                    <text-property name="displayName">fax</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["fax"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
                     <property name="name">fixed_phone</property>
                     <text-property name="displayName">fixed_phone</text-property>
                     <expression name="expression" type="javascript">dataSetRow["fixed_phone"]</expression>
@@ -1913,23 +1885,18 @@ group by ProductCategory.id , ProductCategory.name]]></xml-property>
                 <property name="height">1in</property>
                 <cell id="3426"/>
                 <cell id="3427">
-                    <text id="5413">
-                        <property name="fontSize">8pt</property>
+                    <image id="4749">
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
                                 <expression name="valueExpr" type="javascript">row["logo_path"] == null</expression>
                             </structure>
                         </list-property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<TABLE>
-	<TR>
-		<VALUE-OF format="HTML">
-			"<TD><IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='"+row["logo_height"]+"' width='"+row["logo_width"]+"'/></TD>"
-		</VALUE-OF>
-	</TR>
-</TABLE>]]></text-property>
-                    </text>
+                        <method name="onRender"><![CDATA[this.width=row["logo_width"];
+this.height=row["logo_height"];]]></method>
+                        <property name="source">file</property>
+                        <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
+                    </image>
                 </cell>
                 <cell id="3441"/>
                 <cell id="3428">
@@ -3862,12 +3829,6 @@ group by ProductCategory.id , ProductCategory.name]]></xml-property>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="name">fax</property>
-                    <text-property name="displayName">fax</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["fax"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
                     <property name="name">fixed_phone</property>
                     <text-property name="displayName">fixed_phone</text-property>
                     <expression name="expression" type="javascript">dataSetRow["fixed_phone"]</expression>
@@ -3924,7 +3885,6 @@ group by ProductCategory.id , ProductCategory.name]]></xml-property>
                         <property name="textAlign">center</property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[Tél : <VALUE-OF>row["fixed_phone"]</VALUE-OF><br>
-Fax : <VALUE-OF>row["fax"]</VALUE-OF><br>
 Email : <VALUE-OF>row["email"]</VALUE-OF>]]></text-property>
                     </text>
                     <text id="3723"/>

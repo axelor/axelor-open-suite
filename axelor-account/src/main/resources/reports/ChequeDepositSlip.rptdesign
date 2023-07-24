@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -35,7 +35,7 @@
             <property name="dataType">string</property>
             <property name="distinct">true</property>
             <simple-property-list name="defaultValue">
-                <value type="constant">jdbc:postgresql://localhost:5432/axelor-open-suite</value>
+                <value type="constant">jdbc:postgresql://localhost:5432/</value>
             </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
@@ -49,9 +49,6 @@
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">axelor</value>
-            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -134,6 +131,31 @@
                 <property name="category">Unformatted</property>
             </structure>
         </scalar-parameter>
+        <scalar-parameter name="BankDetailsId" id="4512">
+            <property name="valueType">static</property>
+            <property name="dataType">decimal</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="ChequeDate" id="4513">
+            <property name="hidden">false</property>
+            <property name="valueType">static</property>
+            <property name="isRequired">true</property>
+            <property name="dataType">date</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="concealValue">false</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
     </parameters>
     <data-sources>
         <oda-data-source extensionID="org.eclipse.birt.report.data.oda.jdbc" name="Data Source" id="209">
@@ -154,8 +176,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-open-suite</property>
-            <property name="odaUser">axelor</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -275,11 +296,99 @@
             <list-property name="parameters">
                 <structure>
                     <property name="name">param_1</property>
+                    <property name="paramName">ChequeDate</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">0</property>
+                    <property name="position">1</property>
+                    <property name="isOptional">false</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                <structure>
+                    <property name="name">param_2</property>
                     <property name="paramName">DepositSlipId</property>
                     <property name="nativeName"></property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
-                    <property name="position">1</property>
+                    <property name="position">2</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                <structure>
+                    <property name="name">param_3</property>
+                    <property name="paramName">BankDetailsId</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">0</property>
+                    <property name="position">3</property>
+                    <property name="isOptional">false</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                <structure>
+                    <property name="name">param_4</property>
+                    <property name="paramName">ChequeDate</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">0</property>
+                    <property name="position">4</property>
+                    <property name="isOptional">false</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                <structure>
+                    <property name="name">param_5</property>
+                    <property name="paramName">DepositSlipId</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">0</property>
+                    <property name="position">5</property>
+                    <property name="isOptional">false</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                <structure>
+                    <property name="name">param_6</property>
+                    <property name="paramName">BankDetailsId</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">0</property>
+                    <property name="position">6</property>
+                    <property name="isOptional">false</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                <structure>
+                    <property name="name">param_7</property>
+                    <property name="paramName">ChequeDate</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">0</property>
+                    <property name="position">7</property>
+                    <property name="isOptional">false</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                <structure>
+                    <property name="name">param_8</property>
+                    <property name="paramName">BankDetailsId</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">0</property>
+                    <property name="position">8</property>
+                    <property name="isOptional">false</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                <structure>
+                    <property name="name">param_9</property>
+                    <property name="paramName">DepositSlipId</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">0</property>
+                    <property name="position">9</property>
+                    <property name="isOptional">false</property>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
                 </structure>
@@ -509,11 +618,11 @@
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT
 	Deposit.deposit_number       AS "DepositNumber",
-	Deposit.deposit_date         AS "DepositDate",
+	(SELECT DISTINCT(PV.cheque_date) FROM account_payment_voucher AS PV WHERE PV.cheque_date = ?)     AS "DepositDate",
 	Deposit.deposit_type         AS "DepositType",
-	Deposit.cheque_count         AS "ChqNbr",
-	Deposit.total_amount         AS "TotalAmount",
-	BankDetails.account_nbr      AS "AccountNbr",
+	(SELECT COUNT(PV.id) FROM account_payment_voucher AS PV WHERE PV.deposit_slip = ? AND PV.deposit_bank_details = ? AND PV.cheque_date = ?)         AS "ChqNbr",
+	(SELECT SUM(PV.paid_amount) FROM account_payment_voucher AS PV WHERE PV.deposit_slip = ? AND PV.deposit_bank_details = ? AND PV.cheque_date = ?)         AS "TotalAmount",
+	BankDetails.iban      		 AS "AccountNbr",
 	Bank.bank_name               AS "BankName",
 	Email.address                AS "Email",
 	Address.addressl2            AS "Addressl2",
@@ -526,13 +635,13 @@
 	Company.height            	 AS "logo_height",
 	Company.width                AS "logo_width",
 	MetaFile.file_path           AS "CompanyLogo"
-FROM account_deposit_slip AS Deposit
+	FROM account_deposit_slip AS Deposit
 	LEFT OUTER JOIN base_company AS Company ON (Deposit.company = Company.id)
 	LEFT OUTER JOIN base_partner AS CompanyPartner ON (Company.partner = CompanyPartner.id)
 	LEFT OUTER JOIN base_address AS Address ON (Company.address = Address.id)
 	LEFT OUTER JOIN message_email_address AS Email ON (CompanyPartner.email_address = Email.id)
 	LEFT OUTER JOIN base_city AS City ON (Address.city = City.id)
-	LEFT OUTER JOIN base_bank_details AS BankDetails ON (Deposit.company_bank_details = BankDetails.id)
+	LEFT OUTER JOIN base_bank_details AS BankDetails ON (BankDetails.id = ?)
 	LEFT OUTER JOIN base_bank AS Bank ON (BankDetails.bank = Bank.id)
 	LEFT OUTER JOIN meta_file AS MetaFile ON (MetaFile.id = Company.logo)
 WHERE Deposit.id = ?]]></xml-property>
@@ -555,11 +664,6 @@ WHERE Deposit.id = ?]]></xml-property>
                     <text-property name="heading">ChqBank</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">ChqDate</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="heading">ChqDate</text-property>
-                </structure>
-                <structure>
                     <property name="columnName">ChqPartnerName</property>
                     <property name="analysis">dimension</property>
                     <text-property name="heading">ChqPartnerName</text-property>
@@ -570,14 +674,21 @@ WHERE Deposit.id = ?]]></xml-property>
                     <text-property name="heading">PaymentDate</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">PartnerFullName</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="heading">PartnerFullName</text-property>
-                </structure>
-                <structure>
                     <property name="columnName">PartnerId</property>
                     <property name="analysis">measure</property>
                     <text-property name="heading">PartnerId</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">CurrencyCode</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">CurrencyCode</text-property>
+                    <text-property name="heading">CurrencyCode</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">CurrencySymbol</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">CurrencySymbol</text-property>
+                    <text-property name="heading">CurrencySymbol</text-property>
                 </structure>
             </list-property>
             <list-property name="parameters">
@@ -588,6 +699,28 @@ WHERE Deposit.id = ?]]></xml-property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
                     <property name="position">1</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                <structure>
+                    <property name="name">param_2</property>
+                    <property name="paramName">BankDetailsId</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">0</property>
+                    <property name="position">2</property>
+                    <property name="isOptional">false</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                <structure>
+                    <property name="name">param_3</property>
+                    <property name="paramName">ChequeDate</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">0</property>
+                    <property name="position">3</property>
+                    <property name="isOptional">false</property>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
                 </structure>
@@ -611,28 +744,28 @@ WHERE Deposit.id = ?]]></xml-property>
                     </structure>
                     <structure>
                         <property name="position">4</property>
-                        <property name="name">ChqDate</property>
-                        <property name="dataType">date</property>
-                    </structure>
-                    <structure>
-                        <property name="position">5</property>
                         <property name="name">ChqPartnerName</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">6</property>
+                        <property name="position">5</property>
                         <property name="name">PaymentDate</property>
                         <property name="dataType">date</property>
                     </structure>
                     <structure>
+                        <property name="position">6</property>
+                        <property name="name">PartnerId</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
                         <property name="position">7</property>
-                        <property name="name">PartnerFullName</property>
+                        <property name="name">CurrencyCode</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">8</property>
-                        <property name="name">PartnerId</property>
-                        <property name="dataType">decimal</property>
+                        <property name="name">CurrencySymbol</property>
+                        <property name="dataType">string</property>
                     </structure>
                 </list-property>
             </structure>
@@ -661,52 +794,55 @@ WHERE Deposit.id = ?]]></xml-property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
-                    <property name="name">ChqDate</property>
-                    <property name="nativeName">ChqDate</property>
-                    <property name="dataType">date</property>
-                    <property name="nativeDataType">91</property>
-                </structure>
-                <structure>
-                    <property name="position">5</property>
                     <property name="name">ChqPartnerName</property>
                     <property name="nativeName">ChqPartnerName</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">6</property>
+                    <property name="position">5</property>
                     <property name="name">PaymentDate</property>
                     <property name="nativeName">PaymentDate</property>
                     <property name="dataType">date</property>
                     <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
+                    <property name="position">6</property>
+                    <property name="name">PartnerId</property>
+                    <property name="nativeName">PartnerId</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                </structure>
+                <structure>
                     <property name="position">7</property>
-                    <property name="name">PartnerFullName</property>
-                    <property name="nativeName">PartnerFullName</property>
+                    <property name="name">CurrencyCode</property>
+                    <property name="nativeName">CurrencyCode</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">8</property>
-                    <property name="name">PartnerId</property>
-                    <property name="nativeName">PartnerId</property>
-                    <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-5</property>
+                    <property name="name">CurrencySymbol</property>
+                    <property name="nativeName">CurrencySymbol</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT
 	PV.paid_amount      AS "Amount",
 	PV.cheque_number    AS "ChqNbr",
 	PV.cheque_bank      AS "ChqBank",
-	PV.cheque_date      AS "ChqDate",
 	PV.cheque_owner     AS "ChqPartnerName",
-	PV.payment_date     AS "PaymentDate",
-	Partner.full_name   AS "PartnerFullName",
-	Partner.id   AS "PartnerId"
-FROM account_payment_voucher AS PV
+	PV.cheque_due_date    AS "ChequeDueDate",
+	PV.payment_date		AS "PaymentDate",
+	PV.cheque_date		AS "ChequeDate",
+	Partner.id   AS "PartnerId",
+	Currency.code as "CurrencyCode",
+	Currency.symbol as "CurrencySymbol"
+	FROM account_payment_voucher AS PV
 	LEFT JOIN base_partner AS Partner ON (PV.partner = Partner.id)
-WHERE PV.deposit_slip = ?]]></xml-property>
+	LEFT JOIN base_currency AS Currency on PV.currency = Currency.id
+	WHERE PV.deposit_slip = ? AND PV.deposit_bank_details = ? AND PV.cheque_date = ?]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -1064,7 +1200,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="name">logo_width</property>
                     <text-property name="displayName">logo_width</text-property>
                     <expression name="expression" type="javascript">if(dataSetRow["logo_width"]>0){dataSetRow["logo_width"]+'px'}else{'154px'}</expression>
-                    <property name="dataType">integer</property>
+                    <property name="dataType">string</property>
                     <property name="allowExport">true</property>
                 </structure>
                 <structure>
@@ -1089,36 +1225,34 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
             </list-property>
             <structure name="toc"/>
             <column id="4006">
-                <property name="width">2in</property>
+                <property name="width">30%</property>
             </column>
-            <column id="4007"/>
-            <column id="4008">
-                <property name="width">2.625in</property>
+            <column id="4007">
+                <property name="width">20%</property>
             </column>
+            <column id="4503">
+                <property name="width">20%</property>
+            </column>
+            <column id="4008"/>
             <row id="4009">
                 <cell id="4010">
                     <property name="colSpan">1</property>
                     <property name="rowSpan">1</property>
-                    <text id="4465">
-                        <property name="fontSize">8pt</property>
+                    <image id="4513">
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
                                 <expression name="valueExpr" type="javascript">row["CompanyLogo"] == null</expression>
                             </structure>
                         </list-property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<TABLE>
-	<TR>
-		<VALUE-OF format="HTML">
-			"<TD><IMG src='"+params["AttachmentPath"].value+row["CompanyLogo"]+"' alt='' height='"+row["logo_height"]+"' width='"+row["logo_width"]+"'/></TD>"
-		</VALUE-OF>
-	</TR>
-</TABLE>]]></text-property>
-                    </text>
+                        <method name="onRender"><![CDATA[this.width=row["logo_width"];
+this.height=row["logo_height"];]]></method>
+                        <property name="source">file</property>
+                        <expression name="uri" type="javascript">params["AttachmentPath"].value+row["CompanyLogo"]</expression>
+                    </image>
                 </cell>
                 <cell id="4051">
-                    <property name="colSpan">2</property>
+                    <property name="colSpan">3</property>
                     <property name="rowSpan">1</property>
                     <grid id="4043">
                         <property name="marginLeft">0pt</property>
@@ -1193,11 +1327,12 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
             <row id="4071">
                 <cell id="4072"/>
                 <cell id="4073"/>
+                <cell id="4498"/>
                 <cell id="4074"/>
             </row>
             <row id="4075">
                 <cell id="4076">
-                    <property name="colSpan">3</property>
+                    <property name="colSpan">4</property>
                     <property name="rowSpan">1</property>
                     <property name="fontFamily">serif</property>
                     <grid id="4079">
@@ -1213,8 +1348,12 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         <property name="marginLeft">15pt</property>
                         <property name="marginRight">15pt</property>
                         <property name="width">7.385416666666667in</property>
-                        <column id="4080"/>
-                        <column id="4100"/>
+                        <column id="4080">
+                            <property name="width">55%</property>
+                        </column>
+                        <column id="4100">
+                            <property name="width">45%</property>
+                        </column>
                         <row id="4082">
                             <cell id="4083">
                                 <property name="colSpan">1</property>
@@ -1223,7 +1362,6 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                 <property name="paddingLeft">4pt</property>
                                 <property name="paddingBottom">4pt</property>
                                 <grid id="4359">
-                                    <property name="width">3.6041666666666665in</property>
                                     <column id="4360">
                                         <property name="width">1.5in</property>
                                     </column>
@@ -1271,7 +1409,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                                     <structure>
                                                         <property name="paramName">param_1</property>
                                                         <simple-property-list name="expression">
-                                                            <value type="javascript">"ChequeDepositSlip.chequeDate"</value>
+                                                            <value type="javascript">"Date of the deposit slip"</value>
                                                         </simple-property-list>
                                                     </structure>
                                                 </list-property>
@@ -1501,6 +1639,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                 <text-property name="displayName">Amount</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["Amount"]</expression>
                                 <property name="dataType">decimal</property>
+                                <property name="allowExport">true</property>
                             </structure>
                             <structure>
                                 <property name="name">ChqNbr</property>
@@ -1515,12 +1654,6 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
-                                <property name="name">ChqDate</property>
-                                <text-property name="displayName">ChqDate</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["ChqDate"]</expression>
-                                <property name="dataType">date</property>
-                            </structure>
-                            <structure>
                                 <property name="name">ChqPartnerName</property>
                                 <text-property name="displayName">ChqPartnerName</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["ChqPartnerName"]</expression>
@@ -1533,16 +1666,42 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                 <property name="dataType">date</property>
                             </structure>
                             <structure>
-                                <property name="name">PartnerFullName</property>
-                                <text-property name="displayName">PartnerFullName</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["PartnerFullName"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
                                 <property name="name">PartnerId</property>
                                 <text-property name="displayName">PartnerId</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["PartnerId"]</expression>
                                 <property name="dataType">decimal</property>
+                            </structure>
+                            <structure>
+                                <property name="name">CurrencyCode</property>
+                                <text-property name="displayName">CurrencyCode</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["CurrencyCode"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">CurrencySymbol</property>
+                                <text-property name="displayName">CurrencySymbol</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["CurrencySymbol"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">ChequeDate</property>
+                                <text-property name="displayName">ChequeDate</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["ChequeDate"]</expression>
+                                <property name="dataType">date</property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">Aggregation</property>
+                                <text-property name="displayName">SumAmount</text-property>
+                                <property name="dataType">float</property>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">row["Amount"]</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
                             </structure>
                         </list-property>
                         <list-property name="sort">
@@ -1552,9 +1711,12 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                 <property name="strength">-1</property>
                             </structure>
                         </list-property>
-                        <column id="4438"/>
-                        <column id="4440"/>
-                        <column id="4441"/>
+                        <column id="4440">
+                            <property name="width">14%</property>
+                        </column>
+                        <column id="4441">
+                            <property name="width">14%</property>
+                        </column>
                         <column id="4442">
                             <list-property name="visibility">
                                 <structure>
@@ -1562,58 +1724,29 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                     <expression name="valueExpr" type="javascript">row._outer["DepositType"] != 1</expression>
                                 </structure>
                             </list-property>
+                            <property name="width">14%</property>
                         </column>
-                        <column id="4469">
+                        <column id="4472">
                             <list-property name="visibility">
                                 <structure>
                                     <property name="format">all</property>
                                     <expression name="valueExpr" type="javascript">row._outer["DepositType"] != 3</expression>
                                 </structure>
                             </list-property>
+                            <property name="width">14%</property>
                         </column>
-                        <column id="4443"/>
-                        <column id="4444"/>
-                        <column id="4445"/>
+                        <column id="4443">
+                            <property name="width">14%</property>
+                        </column>
+                        <column id="4445">
+                            <property name="width">14%</property>
+                        </column>
+                        <column id="4479">
+                            <property name="width">14%</property>
+                        </column>
                         <header>
                             <row id="4395">
                                 <property name="fontWeight">bold</property>
-                                <cell id="4396">
-                                    <property name="borderBottomStyle">solid</property>
-                                    <property name="borderBottomWidth">thin</property>
-                                    <property name="borderLeftStyle">solid</property>
-                                    <property name="borderLeftWidth">thin</property>
-                                    <property name="borderRightStyle">solid</property>
-                                    <property name="borderRightWidth">thin</property>
-                                    <property name="borderTopStyle">solid</property>
-                                    <property name="borderTopWidth">thin</property>
-                                    <data id="4456">
-                                        <property name="dataSet">TranslateDS</property>
-                                        <list-property name="paramBindings">
-                                            <structure>
-                                                <property name="paramName">param_1</property>
-                                                <simple-property-list name="expression">
-                                                    <value type="javascript">'ChequeDepositSlip.individual'</value>
-                                                </simple-property-list>
-                                            </structure>
-                                        </list-property>
-                                        <list-property name="boundDataColumns">
-                                            <structure>
-                                                <property name="name">translation</property>
-                                                <text-property name="displayName">translation</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                                <property name="dataType">string</property>
-                                            </structure>
-                                            <structure>
-                                                <property name="name">Individual</property>
-                                                <text-property name="displayName">Individual</text-property>
-                                                <expression name="expression" type="javascript">row["translation"]</expression>
-                                                <property name="dataType">string</property>
-                                                <property name="allowExport">true</property>
-                                            </structure>
-                                        </list-property>
-                                        <property name="resultSetColumn">Individual</property>
-                                    </data>
-                                </cell>
                                 <cell id="4400">
                                     <property name="borderBottomStyle">solid</property>
                                     <property name="borderBottomWidth">thin</property>
@@ -1720,7 +1853,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <text-property name="content"><![CDATA[<VALUE-OF format="HTML">row["translation"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
-                                <cell id="4466">
+                                <cell id="4473">
                                     <property name="borderBottomStyle">solid</property>
                                     <property name="borderBottomWidth">thin</property>
                                     <property name="borderLeftStyle">solid</property>
@@ -1795,43 +1928,6 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <property name="resultSetColumn">PaymentDateLabel</property>
                                     </data>
                                 </cell>
-                                <cell id="4408">
-                                    <property name="borderBottomStyle">solid</property>
-                                    <property name="borderBottomWidth">thin</property>
-                                    <property name="borderLeftStyle">solid</property>
-                                    <property name="borderLeftWidth">thin</property>
-                                    <property name="borderRightStyle">solid</property>
-                                    <property name="borderRightWidth">thin</property>
-                                    <property name="borderTopStyle">solid</property>
-                                    <property name="borderTopWidth">thin</property>
-                                    <data id="4461">
-                                        <property name="dataSet">TranslateDS</property>
-                                        <list-property name="paramBindings">
-                                            <structure>
-                                                <property name="paramName">param_1</property>
-                                                <simple-property-list name="expression">
-                                                    <value type="javascript">'ChequeDepositSlip.depositDate'</value>
-                                                </simple-property-list>
-                                            </structure>
-                                        </list-property>
-                                        <list-property name="boundDataColumns">
-                                            <structure>
-                                                <property name="name">translation</property>
-                                                <text-property name="displayName">translation</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                                <property name="dataType">string</property>
-                                            </structure>
-                                            <structure>
-                                                <property name="name">DepositDate</property>
-                                                <text-property name="displayName">DepositDate</text-property>
-                                                <expression name="expression" type="javascript">row["translation"]</expression>
-                                                <property name="dataType">string</property>
-                                                <property name="allowExport">true</property>
-                                            </structure>
-                                        </list-property>
-                                        <property name="resultSetColumn">DepositDate</property>
-                                    </data>
-                                </cell>
                                 <cell id="4410">
                                     <property name="borderBottomStyle">solid</property>
                                     <property name="borderBottomWidth">thin</property>
@@ -1869,13 +1965,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <property name="resultSetColumn">AmountLabel</property>
                                     </data>
                                 </cell>
-                            </row>
-                        </header>
-                        <detail>
-                            <row id="4412">
-                                <property name="fontSize">9pt</property>
-                                <property name="textAlign">center</property>
-                                <cell id="4413">
+                                <cell id="4476">
                                     <property name="borderBottomStyle">solid</property>
                                     <property name="borderBottomWidth">thin</property>
                                     <property name="borderLeftStyle">solid</property>
@@ -1884,10 +1974,40 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                     <property name="borderRightWidth">thin</property>
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
-                                    <data id="4428">
-                                        <property name="resultSetColumn">PartnerFullName</property>
+                                    <data id="4482">
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">'ChequeDepositSlip.currencyCode'</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">Issuer</property>
+                                                <text-property name="displayName">CurrencyCode</text-property>
+                                                <expression name="expression" type="javascript">row["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                                <property name="allowExport">true</property>
+                                            </structure>
+                                        </list-property>
+                                        <property name="resultSetColumn">Issuer</property>
                                     </data>
                                 </cell>
+                            </row>
+                        </header>
+                        <detail>
+                            <row id="4412">
+                                <property name="fontSize">9pt</property>
+                                <property name="textAlign">center</property>
                                 <cell id="4417">
                                     <property name="borderBottomStyle">solid</property>
                                     <property name="borderBottomWidth">thin</property>
@@ -1959,23 +2079,6 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <property name="resultSetColumn">PaymentDate</property>
                                     </data>
                                 </cell>
-                                <cell id="4425">
-                                    <property name="borderBottomStyle">solid</property>
-                                    <property name="borderBottomWidth">thin</property>
-                                    <property name="borderLeftStyle">solid</property>
-                                    <property name="borderLeftWidth">thin</property>
-                                    <property name="borderRightStyle">solid</property>
-                                    <property name="borderRightWidth">thin</property>
-                                    <property name="borderTopStyle">solid</property>
-                                    <property name="borderTopWidth">thin</property>
-                                    <data id="4467">
-                                        <structure name="dateTimeFormat">
-                                            <property name="category">Short Date</property>
-                                            <property name="pattern">Short Date</property>
-                                        </structure>
-                                        <property name="resultSetColumn">ChqDate</property>
-                                    </data>
-                                </cell>
                                 <cell id="4427">
                                     <property name="borderBottomStyle">solid</property>
                                     <property name="borderBottomWidth">thin</property>
@@ -1987,24 +2090,43 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                     <property name="borderTopWidth">thin</property>
                                     <data id="4414">
                                         <structure name="numberFormat">
-                                            <property name="category">Currency</property>
-                                            <property name="pattern">#,##0.00 €{RoundingMode=UP}</property>
+                                            <property name="category">Custom</property>
+                                            <property name="pattern">#,##0.00</property>
                                             <property name="locale">fr_FR</property>
                                         </structure>
+                                        <property name="display">inline</property>
                                         <property name="resultSetColumn">Amount</property>
+                                    </data>
+                                    <text-data id="4511">
+                                        <property name="marginLeft">0.1cm</property>
+                                        <property name="display">inline</property>
+                                        <expression name="valueExpr">row["CurrencySymbol"]</expression>
+                                        <property name="contentType">html</property>
+                                    </text-data>
+                                </cell>
+                                <cell id="4477">
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">thin</property>
+                                    <data id="4481">
+                                        <property name="resultSetColumn">CurrencyCode</property>
                                     </data>
                                 </cell>
                             </row>
                         </detail>
                         <footer>
                             <row id="4429">
-                                <cell id="4430"/>
                                 <cell id="4432"/>
                                 <cell id="4433"/>
                                 <cell id="4434"/>
-                                <cell id="4468"/>
+                                <cell id="4475"/>
                                 <cell id="4435">
-                                    <property name="colSpan">3</property>
+                                    <property name="colSpan">2</property>
                                     <property name="rowSpan">1</property>
                                     <property name="paddingTop">5pt</property>
                                     <text id="4449">
@@ -2012,12 +2134,124 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <property name="fontWeight">bold</property>
                                         <property name="textAlign">right</property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[TOTAL: &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;<VALUE-OF format="#,##0.00 €{RoundingMode=HALF_UP}">row._outer["TotalAmount"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[TOTAL: &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;<VALUE-OF format="#,##0.00{RoundingMode=HALF_UP}">row._outer["TotalAmount"]</VALUE-OF>&amp;nbsp;<VALUE-OF>row["CurrencySymbol"]</VALUE-OF>]]></text-property>
                                     </text>
+                                </cell>
+                                <cell id="4496">
+                                    <property name="paddingTop">5pt</property>
                                 </cell>
                             </row>
                         </footer>
                     </table>
+                </cell>
+            </row>
+            <row id="4483">
+                <property name="height">1cm</property>
+                <cell id="4484">
+                    <property name="fontFamily">serif</property>
+                </cell>
+                <cell id="4485">
+                    <property name="fontFamily">serif</property>
+                </cell>
+                <cell id="4500">
+                    <property name="fontFamily">serif</property>
+                </cell>
+                <cell id="4486">
+                    <property name="fontFamily">serif</property>
+                </cell>
+            </row>
+            <row id="4487">
+                <cell id="4488">
+                    <property name="fontFamily">serif</property>
+                </cell>
+                <cell id="4489">
+                    <property name="fontFamily">serif</property>
+                </cell>
+                <cell id="4501">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
+                    <property name="fontFamily">serif</property>
+                    <data id="4509">
+                        <property name="textAlign">left</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'ChequeDepositSlip.signature'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">Issuer</property>
+                                <text-property name="displayName">Signature</text-property>
+                                <expression name="expression" type="javascript">row["translation"]</expression>
+                                <property name="dataType">string</property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                        </list-property>
+                        <property name="resultSetColumn">Issuer</property>
+                    </data>
+                </cell>
+            </row>
+            <row id="4491">
+                <property name="height">2cm</property>
+                <cell id="4492">
+                    <property name="fontFamily">serif</property>
+                </cell>
+                <cell id="4493">
+                    <property name="fontFamily">serif</property>
+                </cell>
+                <cell id="4502">
+                    <property name="fontFamily">serif</property>
+                </cell>
+                <cell id="4494">
+                    <property name="fontFamily">serif</property>
+                </cell>
+            </row>
+            <row id="4504">
+                <cell id="4505">
+                    <property name="colSpan">4</property>
+                    <property name="rowSpan">1</property>
+                    <property name="fontFamily">serif</property>
+                    <data id="4510">
+                        <property name="marginTop">15pt</property>
+                        <property name="marginLeft">15pt</property>
+                        <property name="marginRight">15pt</property>
+                        <property name="textAlign">left</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'ChequeDepositSlip.reminderNote'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">Issuer</property>
+                                <text-property name="displayName">ReminderNote</text-property>
+                                <expression name="expression" type="javascript">row["translation"]</expression>
+                                <property name="dataType">string</property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                        </list-property>
+                        <property name="resultSetColumn">Issuer</property>
+                    </data>
                 </cell>
             </row>
         </grid>

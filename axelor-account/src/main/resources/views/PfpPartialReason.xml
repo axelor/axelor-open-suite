@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="pfp-partial-reason-grid" title="PFP Partial Reasons"
+    model="com.axelor.apps.account.db.PfpPartialReason">
+    <field name="name"/>
+  </grid>
+
+  <form name="pfp-partial-reason-form" title="PFP Partial Reason"
+    model="com.axelor.apps.account.db.PfpPartialReason">
+    <panel name="mainPanel">
+      <field name="name" colSpan="12"/>
+    </panel>
+  </form>
+
+</object-views>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="analytic-move-line-query-parameter-search-grid"
+    title="Search analytic move line query parameter"
+    model="com.axelor.apps.account.db.AnalyticMoveLineQueryParameter" editable="true"
+    onNew="action-analytic-move-line-query-parameter-record-search-on-new" x-selector="checkbox">
+    <field name="analyticAxis" grid-view="analytic-axis-grid" form-view="analytic-axis-form"
+      onSelect="action-attrs-domain-axis-distribution-line"/>
+    <field name="analyticAccountSet" grid-view="analytic-account-grid"
+      form-view="analytic-account-info-form"
+      onSelect="action-method-domain-account-distribution-line" widget="TagSelect"/>
+  </grid>
+
+  <grid name="analytic-move-line-query-parameter-reverse-grid"
+    title="Reverse analytic move line query parameter"
+    model="com.axelor.apps.account.db.AnalyticMoveLineQueryParameter" editable="true"
+    x-selector="checkbox" onNew="action-analytic-move-line-query-parameter-record-query-on-new">
+    <field name="analyticAxis" grid-view="analytic-axis-grid" form-view="analytic-axis-form"
+      onSelect="action-attrs-domain-axis-distribution-line"/>
+    <field name="analyticAccount" grid-view="analytic-account-grid"
+      form-view="analytic-account-info-form"
+      onSelect="action-method-domain-account-distribution-line"/>
+  </grid>
+
+  <form name="analytic-move-line-query-parameter-form"
+    title="Analytic move line search/reverse"
+    model="com.axelor.apps.account.db.AnalyticMoveLineQueryParameter"
+    onNew="action-analytic-move-line-query-parameter-record-on-new">
+    <panel name="mainPanel">
+      <field name="analyticMoveLineSearch" grid-view="analytic-move-line-query-grid"
+        form-view="analytic-move-line-query-form"/>
+      <field name="typeSelect"/>
+      <field name="analyticAxis" grid-view="analytic-axis-grid" form-view="analytic-axis-form"
+        onSelect="action-attrs-domain-axis-distribution-line"/>
+      <field name="analyticAccount" grid-view="analytic-account-grid"
+        form-view="analytic-account-info-form"
+        onSelect="action-method-domain-account-distribution-line"/>
+      <field name="analyticAccountSet" grid-view="analytic-account-grid"
+        form-view="analytic-account-info-form"
+        onSelect="action-method-domain-account-distribution-line" colSpan="12"/>
+    </panel>
+  </form>
+
+  <action-record name="action-analytic-move-line-query-parameter-record-search-on-new"
+    model="com.axelor.apps.account.db.AnalyticMoveLineQueryParameter">
+    <field name="analyticMoveLineSearch" expr="eval: __parent__"/>
+    <field name="typeSelect" expr="eval:1"/>
+  </action-record>
+
+  <action-record
+    name="action-analytic-move-line-query-parameter-record-reverse-on-new"
+    model="com.axelor.apps.account.db.AnalyticMoveLineQueryParameter">
+    <field name="typeSelect" expr="eval:2"/>
+  </action-record>
+
+</object-views>

@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <!-- Recruitment menus -->
   <menuitem name="recruitment-root" parent="hr-root"
     if="__config__.app.isApp('recruitment')" title="Recruitment" icon="fa-handshake-o"
-    icon-background="#84429f"/>
+    icon-background="#84429f" order="200"/>
 
   <menuitem name="recruitment-job-position-open" parent="recruitment-root"
-    title="Job positions" action="recruitment.job.position.open"/>
+    title="Job positions" action="recruitment.job.position.open" order="100"/>
 
   <action-view name="recruitment.job.position.open"
     model="com.axelor.apps.talent.db.JobPosition" title="Job positions">
@@ -20,7 +20,7 @@
   </action-view>
 
   <menuitem name="recruitment-job-application-all" parent="recruitment-root"
-    title="Applications" action="recruitment.job.application.all"/>
+    title="Applications" action="recruitment.job.application.all" order="200"/>
 
   <action-view name="recruitment.job.application.all"
     model="com.axelor.apps.talent.db.JobApplication" title="Applications">
@@ -31,10 +31,10 @@
   </action-view>
 
   <menuitem name="recruitment-config" parent="recruitment-root" title="Configuration"
-    icon="fa-cog"/>
+    icon="fa-cog" order="300"/>
 
   <menuitem name="recruitment-config-education-level" parent="recruitment-config"
-    title="Level of education" action="recruitment.config.education.level"/>
+    title="Level of education" action="recruitment.config.education.level" order="100"/>
 
   <action-view name="recruitment.config.education.level"
     model="com.axelor.apps.talent.db.EducationLevel" title="Level of education">
@@ -43,7 +43,7 @@
   </action-view>
 
   <menuitem name="recruitment-config-hiring-stage" parent="recruitment-config"
-    title="Hiring Stage" action="recruitment.config.hiringStage"/>
+    title="Hiring Stage" action="recruitment.config.hiringStage" order="200"/>
 
   <action-view name="recruitment.config.hiringStage"
     model="com.axelor.apps.talent.db.HiringStage" title="Hiring Stage">
@@ -52,7 +52,7 @@
   </action-view>
 
   <menuitem name="recruitment-config-source" parent="recruitment-config" title="Source"
-    action="recruitment.config.source"/>
+    action="recruitment.config.source" order="300"/>
 
   <action-view name="recruitment.config.source"
     model="com.axelor.apps.talent.db.TalentSource" title="Source">
@@ -61,7 +61,7 @@
   </action-view>
 
   <menuitem name="recruitment-config-skill" parent="recruitment-config" title="Skills"
-    action="recruitment.config.skill"/>
+    action="recruitment.config.skill" order="400"/>
 
   <action-view name="recruitment.config.skill" title="Skills"
     model="com.axelor.apps.talent.db.Skill">
@@ -71,10 +71,10 @@
 
   <!-- Training menus -->
   <menuitem name="training-root" parent="hr-root" if="__config__.app.isApp('training')"
-    title="Training" icon="fa-graduation-cap" icon-background="#84429f"/>
+    title="Training" icon="fa-graduation-cap" icon-background="#84429f" order="300"/>
 
   <menuitem name="training-register-all" parent="training-root" title="All trainings"
-    action="training.register.all"/>
+    action="training.register.all" order="100"/>
 
   <action-view name="training.register.all"
     model="com.axelor.apps.talent.db.TrainingRegister" title="All trainings">
@@ -87,16 +87,17 @@
   </action-view>
 
   <menuitem name="training-dashboard" parent="training-root" title="Training dashboard"
-    action="training.dashboard"/>
+    action="training.dashboard" order="200"/>
 
   <action-view name="training.dashboard" title="Training dashboard">
     <view type="dashboard" name="training.dashboard"/>
   </action-view>
 
-  <menuitem name="training-conf" parent="training-root" title="Configuration" icon="fa-cog"/>
+  <menuitem name="training-conf" parent="training-root" title="Configuration" icon="fa-cog"
+    order="300"/>
 
   <menuitem name="training-category-all" parent="training-conf" title="Categories"
-    action="training.category.all"/>
+    action="training.category.all" order="100"/>
 
   <action-view name="training.category.all"
     model="com.axelor.apps.talent.db.TrainingCategory" title="Categories">
@@ -105,7 +106,7 @@
   </action-view>
 
   <menuitem name="training-training-all" parent="training-conf" title="Trainings"
-    action="training.training.all"/>
+    action="training.training.all" order="200"/>
 
   <action-view name="training.training.all" model="com.axelor.apps.talent.db.Training"
     title="Trainings">
@@ -115,7 +116,7 @@
   </action-view>
 
   <menuitem name="training-session-all" parent="training-conf" title="Training sessions"
-    action="training.session.all"/>
+    action="training.session.all" order="300"/>
 
   <action-view name="training.session.all"
     model="com.axelor.apps.talent.db.TrainingSession" title="Training sessions">
@@ -125,10 +126,11 @@
 
   <!-- Appraisal menus -->
   <menuitem name="appraisal-root" parent="hr-root" title="Appraisals"
-    if="__config__.app.isApp('appraisal')" icon="fa-comments-o" icon-background="#84429f"/>
+    if="__config__.app.isApp('appraisal')" icon="fa-comments-o" icon-background="#84429f"
+    order="400"/>
 
   <menuitem name="appraisal-all-appraisals" title="Appraisals"
-    action="appraisal.all.appraisals" parent="appraisal-root"/>
+    action="appraisal.all.appraisals" parent="appraisal-root" order="100"/>
 
   <action-view name="appraisal.all.appraisals"
     model="com.axelor.apps.talent.db.Appraisal" title="Appraisals">
@@ -141,10 +143,10 @@
   </action-view>
 
   <menuitem name="appraisal-config" title="Configuration" parent="appraisal-root"
-    icon="fa-cog"/>
+    icon="fa-cog" order="200"/>
 
   <menuitem name="appraisal-template-appraisals" title="Appraisal templates"
-    action="appraisal.template.appraisals" parent="appraisal-config"/>
+    action="appraisal.template.appraisals" parent="appraisal-config" order="100"/>
 
   <action-view name="appraisal.template.appraisals" title="Appraisal template"
     model="com.axelor.apps.talent.db.Appraisal">
@@ -154,12 +156,18 @@
   </action-view>
 
   <menuitem name="appraisal-config-appraisal-type" title="Appraisal types"
-    action="appraisal.config.appraisal.type" parent="appraisal-config"/>
+    action="appraisal.config.appraisal.type" parent="appraisal-config" order="200"/>
 
   <action-view name="appraisal.config.appraisal.type" title="Appraisal types"
     model="com.axelor.apps.talent.db.AppraisalType">
     <view type="grid" name="appraisal-type-grid"/>
     <view type="form" name="appraisal-type-form"/>
   </action-view>
+
+  <!-- MyHR -->
+
+  <menuitem name="my-hr-appraisal-all-appraisals" title="Appraisals"
+    action="appraisal.all.appraisals" parent="my-hr-root" order="600"
+    if="__config__.app.isApp('appraisal')" icon="fa-comments-o" icon-background="#84429f"/>
 
 </object-views>

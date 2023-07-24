@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <selection name="contract.status.select">
     <option value="1">Draft</option>
@@ -51,6 +51,7 @@
     <option value="2">Terminate</option>
     <option value="3">Current version activation</option>
     <option value="4">Next version activation</option>
+    <option value="5">Revaluate contracts</option>
   </selection>
 
   <selection name="account.analytic.move.line.type.select"
@@ -63,5 +64,8 @@
     <option value="com.axelor.apps.contract.batch.service.BatchContractService">com.axelor.apps.contract.batch.service.BatchContractService</option>
   </selection>
 
+  <selection name="batch.batch.type.select" id="contract.batch.batch.type.select">
+    <option value="500">Contract batch</option>
+  </selection>
 
 </object-views>

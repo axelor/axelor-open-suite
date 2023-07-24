@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid model="com.axelor.apps.project.db.ProjectTask" title="Tasks"
     name="business-support-version-project-task-grid" orderBy="-taskDate">
@@ -119,18 +119,18 @@
           if-module="axelor-business-project"/>
         <panel name="pricingPanel" showIf="invoicingType == 2" colSpan="12">
           <field name="quantity" colSpan="4" onChange="action-project-task-group-qty-onchange"/>
-          <field name="unit" colSpan="4" domain="self.unitTypeSelect=3" form-view="unit-form"
-            grid-view="unit-grid" canEdit="false"/>
+          <field name="invoicingUnit" colSpan="4" domain="self.unitTypeSelect=3"
+            form-view="unit-form" grid-view="unit-grid" canEdit="false"/>
           <field name="unitPrice" colSpan="4"
             onChange="action-project-task-group-unit-price-onchange"/>
           <field name="exTaxTotal" readonly="true" colSpan="4"/>
         </panel>
         <panel-dashlet name="validatedTimesheetLinesPanel"
-          if="__config__.app.getApp('timesheet').needValidation" showIf="invoicingType == 1"
+          if="__config__.app.getApp('timesheet')?.needValidation" showIf="invoicingType == 1"
           action="action-project-task-dashlet-validated-timesheet-lines"
           title="Validated Timesheet lines" colSpan="12" canSearch="true" readonly="true"/>
         <panel-dashlet name="allTimesheetLinesPanel"
-          if="!__config__.app.getApp('timesheet').needValidation" showIf="invoicingType == 1"
+          if="!__config__.app.getApp('timesheet')?.needValidation" showIf="invoicingType == 1"
           action="action-project-task-dashlet-all-timesheet-lines" title="TimesheetLine.timeSpent"
           colSpan="12" canSearch="true" readonly="true"/>
       </panel>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="file-source-connector-grid" title="File source connectors"
+    model="com.axelor.apps.base.db.FileSourceConnector">
+    <field name="name"/>
+    <field name="connectionType"/>
+    <field name="host"/>
+    <field name="port"/>
+    <field name="username"/>
+  </grid>
+
+  <form name="file-source-connector-form" title="File source connector"
+    model="com.axelor.apps.base.db.FileSourceConnector">
+    <panel name="mainPanel">
+      <field name="name" colSpan="6"/>
+      <field name="connectionType" colSpan="6"/>
+      <field name="host" colSpan="6"/>
+      <field name="port" colSpan="3" hidden="true" showIf="connectionType == 1"/>
+    </panel>
+    <panel name="credentialPanel" title="Credentials">
+      <field name="username" colSpan="6"/>
+      <field name="password" colSpan="6"/>
+      <field name="$helpViewer" showTitle="false" readonly="true" colSpan="12">
+        <viewer><![CDATA[
+			<p>The application does not support key starting with <code>-----BEGIN OPENSSH PRIVATE KEY-----</code>. Using those keys will result in a <code>Invalid private key error</code> </p>
+]]>
+        </viewer>
+      </field>
+      <field name="keyFile" colSpan="3" canNew="true" hidden="true"
+        showIf="connectionType == 1" widget="binary-link"/>
+      <field name="keyFilePassphrase" colSpan="3" hidden="true" showIf="connectionType == 1"/>
+    </panel>
+    <panel name="actionPanel" sidebar="true">
+      <button onClick="save,action-base-file-source-connector-test-connection"
+        name="testConnection" title="Test connection"/>
+    </panel>
+
+  </form>
+
+  <action-method name="action-base-file-source-connector-test-connection">
+    <call class="com.axelor.apps.base.web.FileSourceConnectorController"
+      method="testConnection"/>
+  </action-method>
+
+</object-views>

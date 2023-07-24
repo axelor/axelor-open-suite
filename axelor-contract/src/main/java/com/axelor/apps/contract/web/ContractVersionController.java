@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,13 +14,14 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.contract.web;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.db.ContractVersion;
@@ -31,7 +33,6 @@ import com.axelor.apps.contract.service.ContractService;
 import com.axelor.apps.contract.service.ContractVersionService;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -39,6 +40,7 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
 import java.time.LocalDate;
+import java.util.Comparator;
 
 @Singleton
 public class ContractVersionController {
@@ -96,7 +98,7 @@ public class ContractVersionController {
               contractVersion.getNextContract(),
               getTodayDate(contractVersion.getNextContract().getCompany()));
       response.setView(
-          ActionView.define("Contract")
+          ActionView.define(I18n.get("Contract"))
               .model(Contract.class.getName())
               .add("form", "contract-form")
               .add("grid", "contract-grid")
@@ -145,10 +147,45 @@ public class ContractVersionController {
       response.setValues(contractLine);
     } catch (Exception e) {
       response.setValues(contractLineService.reset(contractLine));
+      TraceBackService.trace(response, e);
     }
   }
 
-  private LocalDate getTodayDate(Company company) {
+  public void updateContractLines(ActionRequest request, ActionResponse response) {
+    ContractLineService contractLineService = Beans.get(ContractLineService.class);
+    ContractVersion contractVersion = request.getContext().asType(ContractVersion.class);
+    try {
+      contractVersion = Beans.get(ContractVersionRepository.class).find(contractVersion.getId());
+      if (contractVersion.getSupposedActivationDate() != null) {
+        contractLineService.updateContractLinesFromContractVersion(contractVersion);
+      }
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+    }
+  }
+
+  public void checkSupposedActivationDate(ActionRequest request, ActionResponse response) {
+    ContractVersion contractVersion = request.getContext().asType(ContractVersion.class);
+    try {
+      LocalDate date = contractVersion.getSupposedActivationDate();
+      if (date != null
+          && contractVersion.getContractLineList() != null
+          && contractVersion.getContractLineList().stream()
+              .anyMatch(it -> it.getFromDate() != null && it.getFromDate().isBefore(date))) {
+        response.setValue(
+            "supposedActivationDate",
+            contractVersion.getContractLineList().stream()
+                .map(it -> it.getFromDate())
+                .min(Comparator.comparing(LocalDate::toEpochDay))
+                .orElseGet(null));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+    }
+  }
+
+  protected LocalDate getTodayDate(Company company) {
     return Beans.get(AppBaseService.class).getTodayDate(company);
   }
 }

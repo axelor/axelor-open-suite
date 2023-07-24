@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,20 +14,25 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.businessproject.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.PartnerPriceListService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
+import com.axelor.apps.purchase.service.SupplierCatalogService;
+import com.axelor.apps.purchase.service.config.PurchaseConfigService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.supplychain.service.PurchaseOrderLineServiceSupplyChain;
 import com.axelor.apps.supplychain.service.PurchaseOrderSupplychainService;
 import com.axelor.apps.supplychain.service.SaleOrderPurchaseServiceImpl;
-import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -38,9 +44,21 @@ public class ProjectPurchaseServiceImpl extends SaleOrderPurchaseServiceImpl {
   public ProjectPurchaseServiceImpl(
       PurchaseOrderSupplychainService purchaseOrderSupplychainService,
       PurchaseOrderLineServiceSupplyChain purchaseOrderLineServiceSupplychain,
-      PurchaseOrderService purchaseOrderService) {
+      PurchaseOrderService purchaseOrderService,
+      PurchaseOrderRepository purchaseOrderRepository,
+      PurchaseConfigService purchaseConfigService,
+      AppBaseService appBaseService,
+      PartnerPriceListService partnerPriceListService,
+      SupplierCatalogService supplierCatalogService) {
     super(
-        purchaseOrderSupplychainService, purchaseOrderLineServiceSupplychain, purchaseOrderService);
+        purchaseOrderSupplychainService,
+        purchaseOrderLineServiceSupplychain,
+        purchaseOrderService,
+        purchaseOrderRepository,
+        purchaseConfigService,
+        appBaseService,
+        partnerPriceListService,
+        supplierCatalogService);
   }
 
   @Override

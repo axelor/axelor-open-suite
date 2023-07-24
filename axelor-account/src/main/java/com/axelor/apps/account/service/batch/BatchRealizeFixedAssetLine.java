@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service.batch;
 
@@ -27,13 +28,14 @@ import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.fixedasset.FixedAssetDerogatoryLineMoveService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineMoveService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineService;
+import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.time.LocalDate;
@@ -75,7 +77,7 @@ public class BatchRealizeFixedAssetLine extends AbstractBatch {
 
   @Override
   protected void process() {
-    String query = "self.statusSelect = :statusSelect";
+    String query = "self.statusSelect = :statusSelect AND self.fixedAsset.company.id = :companyId";
     LocalDate startDate = batch.getAccountingBatch().getStartDate();
     LocalDate endDate = batch.getAccountingBatch().getEndDate();
     if (!batch.getAccountingBatch().getUpdateAllRealizedFixedAssetLines()
@@ -88,6 +90,11 @@ public class BatchRealizeFixedAssetLine extends AbstractBatch {
     }
     HashMap<String, Object> queryParameters = new HashMap<>();
     queryParameters.put("statusSelect", FixedAssetLineRepository.STATUS_PLANNED);
+    queryParameters.put(
+        "companyId",
+        batch.getAccountingBatch().getCompany() != null
+            ? batch.getAccountingBatch().getCompany().getId()
+            : Long.valueOf(0));
     queryParameters.put("startDate", startDate);
     queryParameters.put("endDate", endDate);
     queryParameters.put(
@@ -116,7 +123,7 @@ public class BatchRealizeFixedAssetLine extends AbstractBatch {
         if (fixedAsset != null
             && fixedAsset.getStatusSelect() > FixedAssetRepository.STATUS_DRAFT) {
           fixedAssetSet.add(fixedAsset);
-          fixedAssetLineMoveService.realize(fixedAssetLine, true, true);
+          fixedAssetLineMoveService.realize(fixedAssetLine, true, true, false);
           incrementDone();
           countFixedAssetLineType(fixedAssetLine);
         }
@@ -183,8 +190,7 @@ public class BatchRealizeFixedAssetLine extends AbstractBatch {
     appendTypeComments(sbComment);
 
     sbComment.append(
-        String.format(
-            "\t" + I18n.get(BaseExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly()));
+        String.format("\t" + I18n.get(BaseExceptionMessage.BASE_BATCH_3), batch.getAnomaly()));
 
     addComment(sbComment.toString());
     super.stop();
@@ -233,5 +239,9 @@ public class BatchRealizeFixedAssetLine extends AbstractBatch {
               break;
           }
         });
+  }
+
+  protected void setBatchTypeSelect() {
+    this.batch.setBatchTypeSelect(BatchRepository.BATCH_TYPE_ACCOUNTING_BATCH);
   }
 }

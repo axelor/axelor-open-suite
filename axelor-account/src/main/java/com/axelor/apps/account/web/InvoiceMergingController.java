@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.web;
 
@@ -27,14 +28,15 @@ import com.axelor.apps.account.service.invoice.InvoiceMergingService.InvoiceMerg
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.TradingName;
-import com.axelor.apps.base.db.Wizard;
-import com.axelor.apps.tool.MapTools;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.db.AuditableModel;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.utils.MapTools;
+import com.axelor.utils.db.Wizard;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
@@ -43,7 +45,7 @@ import org.apache.commons.collections.CollectionUtils;
 
 public class InvoiceMergingController {
 
-  private String getMergeConfirmFormViewName(InvoiceMergingResult result) {
+  protected String getMergeConfirmFormViewName(InvoiceMergingResult result) {
     if (result.getInvoiceType() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE) {
       return "supplier-invoices-merge-confirm-form";
     }
@@ -66,7 +68,7 @@ public class InvoiceMergingController {
         if (result.isConfirmationNeeded()) {
           // Need to display intermediate screen to select some values
           ActionView.ActionViewBuilder confirmView =
-              ActionView.define("Confirm merge invoice")
+              ActionView.define(I18n.get("Confirm merge invoice"))
                   .model(Wizard.class.getName())
                   .add("form", getMergeConfirmFormViewName(result))
                   .param("popup", Boolean.TRUE.toString())
@@ -116,7 +118,7 @@ public class InvoiceMergingController {
         if (result.getInvoice() != null) {
           // Open the generated invoice in a new tab
           response.setView(
-              ActionView.define("Invoice")
+              ActionView.define(I18n.get("Invoices"))
                   .model(Invoice.class.getName())
                   .add("grid", "invoice-grid")
                   .add("form", "invoice-form")
@@ -168,7 +170,7 @@ public class InvoiceMergingController {
         if (result.getInvoice() != null) {
           // Open the generated invoice in a new tab
           response.setView(
-              ActionView.define("Invoice")
+              ActionView.define(I18n.get("Invoices"))
                   .model(Invoice.class.getName())
                   .add("grid", "invoice-grid")
                   .add("form", "invoice-form")
@@ -230,7 +232,7 @@ public class InvoiceMergingController {
         if (result.getInvoice() != null) {
           // Open the generated invoice in a new tab
           response.setView(
-              ActionView.define("Invoice")
+              ActionView.define(I18n.get("Invoices"))
                   .model(Invoice.class.getName())
                   .add("grid", "invoice-grid")
                   .add("form", "invoice-form")

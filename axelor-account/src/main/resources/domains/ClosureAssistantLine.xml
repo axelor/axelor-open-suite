@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="account" package="com.axelor.apps.account.db"/>
+
+  <entity name="ClosureAssistantLine">
+
+    <integer name="sequence" title="Sequence" required="true" initParam="true"/>
+    <many-to-one ref="com.axelor.apps.account.db.ClosureAssistant"
+      name="closureAssistant" title="Closure assistant" initParam="true"/>
+    <integer name="actionSelect" title="Action" required="true"
+      selection="account.closure.assistant.line.action.select" initParam="true"/>
+    <boolean name="isValidated" title="Validated" readonly="true" initParam="true"/>
+    <many-to-one ref="com.axelor.auth.db.User" name="validatedByUser"
+      title="Validated by" readonly="true"/>
+    <datetime name="validatedOnDateTime" title="Validated on" readonly="true"/>
+
+    <boolean name="isPreviousLineValidated"/>
+    <boolean name="isNextLineValidated"/>
+
+    <extra-code><![CDATA[
+
+		// ACTION SELECT
+		public static final int ACTION_CUT_OF_GENERATION = 1;
+		public static final int ACTION_FIXED_ASSET_REALIZATION = 2;
+		public static final int ACTION_MOVE_CONSISTENCY_CHECK = 3;
+		public static final int ACTION_ACCOUNTING_REPORTS = 4;
+		public static final int ACTION_CALCULATE_THE_OUTRUN_OF_THE_YEAR = 5;
+		public static final int ACTION_CLOSURE_AND_OPENING_OF_FISCAL_YEAR_BATCH = 6;
+		public static final int ACTION_FISCAL_YEAR_CLOSURE = 7;
+
+
+
+	]]></extra-code>
+
+  </entity>
+
+</domain-models>

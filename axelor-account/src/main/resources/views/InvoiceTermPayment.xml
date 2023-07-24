@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="invoice-term-payment-grid" title="Invoice term payments"
+    model="com.axelor.apps.account.db.InvoiceTermPayment" canNew="false">
+    <field name="invoiceTerm"/>
+    <field name="paidAmount"/>
+    <field name="financialDiscountAmount"
+      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
+  </grid>
+
+  <form name="invoice-term-payment-form" title="Invoice term payment"
+    model="com.axelor.apps.account.db.InvoiceTermPayment"
+    onLoad="action-invoice-term-payment-attrs-is-multi-currency">
+    <panel name="mainPanel" readonly="true">
+      <field name="invoiceTerm" form-view="invoice-term-form"
+        grid-view="invoice-term-move-line-grid" colSpan="12"/>
+      <field name="paidAmount"/>
+      <field name="companyPaidAmount" showIf="$isMultiCurrency"/>
+      <field name="financialDiscount" showIf="financialDiscount"
+        if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
+      <field name="financialDiscountAmount" showIf="financialDiscount"
+        if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
+      <field name="$isMultiCurrency" type="boolean" hidden="true"/>
+    </panel>
+  </form>
+
+  <action-attrs name="action-invoice-term-payment-attrs-is-multi-currency">
+    <attribute name="value" for="$isMultiCurrency" if="invoiceTerm.invoice != null"
+      expr="eval: invoiceTerm.invoice.currency?.code != invoiceTerm.invoice.company?.currency?.code"/>
+    <attribute name="value" for="$isMultiCurrency" if="invoiceTerm.invoice == null"
+      expr="eval: invoiceTerm.moveLine.move?.currency?.code != invoiceTerm.moveLine.move?.company?.currency?.code"/>
+  </action-attrs>
+</object-views>

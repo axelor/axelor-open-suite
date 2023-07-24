@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <selection name="gdpr.request.type.select">
+    <option value="0">Access</option>
+    <option value="1">Erasure</option>
+  </selection>
+
+  <selection name="gdpr.response.type.select">
+    <option value="0">Access</option>
+    <option value="1">Erasure</option>
+  </selection>
+
+  <selection name="gdpr.request.status.select">
+    <option value="0">Received</option>
+    <option value="1">Confirmed</option>
+    <option value="2">Sent</option>
+    <option value="3">Canceled</option>
+  </selection>
+
+  <selection name="gdpr.request.model.select">
+    <option value="com.axelor.apps.base.db.Partner" data-grid="partner-grid"
+      data-form="partner-form">Partner</option>
+    <option value="com.axelor.apps.crm.db.Lead" data-grid="lead-grid" form-grid="lead-form">Lead</option>
+  </selection>
+
+  <selection name="gdpr.processing.register.status.select">
+    <option value="0">Draft</option>
+    <option value="1">Active</option>
+    <option value="2">Canceled</option>
+  </selection>
+
+  <selection name="gdpr.search.config.line.key.select">
+    <option value="firstName">First name</option>
+    <option value="lastName">Last name</option>
+    <option value="email">Email</option>
+    <option value="phone">Phone</option>
+  </selection>
+
+  <selection name="meta.schedule.job.select" id="gdpr.meta.schedule.job.select">
+    <option value="com.axelor.apps.gdpr.job.ProcessingRegisterJob">com.axelor.apps.gdpr.job.ProcessingRegisterJob</option>
+  </selection>
+
+</object-views>

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity sequential="true" name="Reconcile" lang="java">
+  <entity sequential="true" name="Reconcile">
 
     <string name="reconcileSeq" title="Reference" namecolumn="true"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"
@@ -17,8 +17,10 @@
       required="true" initParam="true"/>
     <integer name="statusSelect" title="Status" default="1" readonly="true"
       selection="account.reconcile.status.select" initParam="true"/>
-    <date name="reconciliationDate" title="Reconciliation date" readonly="true"/>
-    <date name="reconciliationCancelDate" title="Reconciliation cancel date" readonly="true"/>
+    <datetime name="reconciliationDateTime" title="Reconciliation date" readonly="true"/>
+    <datetime name="reconciliationCancelDateTime" title="Reconciliation cancel date"
+      readonly="true"/>
+    <date name="effectiveDate" title="Effective date" readonly="true"/>
     <!-- Will be fully reconciled if the payment amount is with a range of +/-20 cts compare to the amount
       remaining to pay -->
     <boolean name="canBeZeroBalanceOk" title="Clear remaining amount" default="false"
@@ -28,10 +30,11 @@
     <boolean name="mustBeZeroBalanceOk" title="Must be solded out" default="false"/>
 
     <many-to-one name="reconcileGroup" ref="com.axelor.apps.account.db.ReconcileGroup"/>
+    <many-to-one name="invoicePayment" ref="InvoicePayment" title="Invoice payment"
+      readonly="true"/>
 
     <one-to-many ref="PaymentMoveLineDistribution"
       name="paymentMoveLineDistributionList" title="Payment move lines distribution"/>
-
     <unique-constraint columns="reconcileSeq,company"/>
 
     <finder-method name="findByMoveLines" using="debitMoveLine,creditMoveLine"/>

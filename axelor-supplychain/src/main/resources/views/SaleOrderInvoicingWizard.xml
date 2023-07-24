@@ -1,33 +1,33 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <form name="sale-order-invoicing-wizard-form" title="Invoicing"
     model="com.axelor.apps.sale.db.SaleOrder"
     onLoad="action-group-sale-order-invoicing-wizard-onload">
     <panel name="operationSelectPanel">
 
-      <field name="operationSelect" title="Operation choice" type="selection"
+      <field name="$operationSelect" title="Operation choice" type="selection"
         selection="supplychain.sale.order.invoicing.wizard.select" required="true"/>
     </panel>
-    <panel name="amountPanel" showIf="$contains([2,3],$number(operationSelect))">
-      <field name="isPercent" title="Is amount in %" type="boolean"/>
-      <field name="amountToInvoice" title="Amount to invoice" type="decimal" min="0"
-        showIf="$contains([3],$number(operationSelect))"/>
+    <panel name="amountPanel" showIf="$contains([2,3],$number($operationSelect))">
+      <field name="$isPercent" title="Is amount in %" type="boolean"/>
+      <field name="$amountToInvoice" title="Amount to invoice" type="decimal" min="0"
+        showIf="$contains([3],$number($operationSelect))"/>
     </panel>
     <panel-related name="saleOrderLineListPanel" field="saleOrderLineList"
-      hideIf="operationSelect != 2" canNew="false" grid-view="invoicing-wizard-sale-order-line-grid"
-      editable="true"/>
+      hideIf="$operationSelect != 2" canNew="false"
+      grid-view="invoicing-wizard-sale-order-line-grid" editable="true"/>
     <panel name="timetablePanel" colSpan="12" showTitle="false" hidden="true"
-      showIf="operationSelect == 4">
+      showIf="$operationSelect == 4">
       <field name="$uninvoicedTimetablesList" title="Select the lines to invoice"
         type="one-to-many" target="com.axelor.apps.supplychain.db.Timetable" colSpan="12"
         canNew="false" canRemove="false" grid-view="invoicing-wizard-timetable-grid"
         form-view="invoicing-wizard-timetable-form"/>
     </panel>
 
-    <panel name="actionPanel" showIf="operationSelect &lt; 5">
+    <panel name="actionPanel" showIf="$operationSelect &lt; 5">
       <button name="createInvoiceBtn" title="Generate the invoice"
         onClick="action-group-sale-order-invoicing-wizard-generate"/>
     </panel>
@@ -76,7 +76,6 @@
   <action-group name="action-group-sale-order-invoicing-wizard-onload">
     <action name="action-method-sale-order-invoicing-wizard-default"/>
     <action name="action-attrs-sale-order-invoicing-wizard-amount-invoiced"/>
-    <action name="action-attrs-sale-order-invoicing-wizard-hide-advance-payment"/>
     <action name="action-method-sale-order-invoicing-wizard-operation-select-domain"/>
     <action name="action-record-sale-order-invoicing-wizard-set-uninvoiced-timetables-list"/>
   </action-group>
@@ -89,7 +88,7 @@
   </action-attrs>
 
   <action-attrs name="action-attrs-sale-order-invoicing-wizard-amount-invoiced">
-    <attribute for="amountToInvoice" name="value" if="amountInvoiced > 0"
+    <attribute for="$amountToInvoice" name="value" if="amountInvoiced > 0"
       expr="eval: exTaxTotal - amountInvoiced"/>
   </action-attrs>
 

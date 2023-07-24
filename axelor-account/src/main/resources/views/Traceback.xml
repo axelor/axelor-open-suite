@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="trace-back-account-consistency-grid" title="TraceBack"
+    model="com.axelor.apps.base.db.TraceBack" orderBy="-id" canDelete="false" canNew="false"
+    canSave="false" canEdit="false">
+    <hilite color="danger" if="typeSelect == 0"/>
+    <field name="id"/>
+    <field name="date"/>
+    <field name="internalUser"/>
+    <field name="origin"/>
+    <field name="typeSelect"/>
+    <field name="categorySelect"/>
+    <field name="exception"/>
+    <button onClick="action-traceback-show-reference" name="refBtn" title="Reference"
+      icon="fa-share"/>
+  </grid>
+
+  <grid name="trace-back-accounting-report-grid" title="TraceBack"
+    model="com.axelor.apps.base.db.TraceBack">
+    <field name="message"/>
+  </grid>
+</object-views>

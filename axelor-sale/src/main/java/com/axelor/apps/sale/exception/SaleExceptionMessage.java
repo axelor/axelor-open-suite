@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.sale.exception;
 
 public final class SaleExceptionMessage {
@@ -30,6 +48,8 @@ public final class SaleExceptionMessage {
       "The fiscal position must be the same for all sale orders" /*)*/;
   public static final String SALE_ORDER_MERGE_ERROR_TAX_NUMBER = /*$$(*/
       "The tax number must be the same for all sale orders" /*)*/;
+  public static final String SALE_ORDER_MERGE_LIST_EMPTY = /*$$(*/
+      "List of sale orders to merge is empty" /*)*/;
 
   public static final String SALE_ORDER_PRINT = /*$$(*/
       "Please select the sale order(s) to print." /*)*/;
@@ -81,4 +101,7 @@ public final class SaleExceptionMessage {
       "Can only complete a confirmed sale order." /*)*/;
   public static final String SALE_ORDER_CANCEL_WRONG_STATUS = /*$$(*/
       "Can only cancel a drafted or finalized sale order." /*)*/;
+
+  public static final String OPPORTUNITY_PARTNER_MISSING = /*$$(*/
+      "You must fill a partner for the opportunity %s." /*)*/;
 }

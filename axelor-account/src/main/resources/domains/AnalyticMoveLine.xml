@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="AnalyticMoveLine" lang="java">
+  <entity name="AnalyticMoveLine">
 
     <many-to-one name="analyticDistributionTemplate"
       ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"
       index="idx_acc_ana_move_line_ana_dist_template"/>
     <many-to-one name="invoiceLine" ref="com.axelor.apps.account.db.InvoiceLine"/>
     <many-to-one name="moveLine" ref="com.axelor.apps.account.db.MoveLine"/>
+    <many-to-one name="moveLineMassEntry"
+      ref="com.axelor.apps.account.db.MoveLineMassEntry"/>
 
     <many-to-one name="analyticAxis" ref="com.axelor.apps.account.db.AnalyticAxis"
       title="Axis"/>
@@ -33,12 +35,24 @@
 
     <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
 
+    <integer name="subTypeSelect" title="SubType"
+      selection="account.analytic.move.line.sub.type.select" required="true" default="1"/>
+    <many-to-one name="originAnalyticMoveLine"
+      ref="com.axelor.apps.account.db.AnalyticMoveLine"/>
+
+    <finder-method name="findByAnalyticAxis" using="analyticAxis" all="true"/>
+
     <extra-code><![CDATA[
 
 	   	// STATUS SELECT
 		public static final int STATUS_FORECAST_ORDER = 1;
 		public static final int STATUS_FORECAST_INVOICE = 2;
 		public static final int STATUS_REAL_ACCOUNTING = 3;
+
+		// SUB TYPE SELECT
+		public static final int SUB_TYPE_ORIGINAL = 1;
+		public static final int SUB_TYPE_REVERSE = 2;
+		public static final int SUB_TYPE_REVISION = 3;
 
 	]]></extra-code>
 

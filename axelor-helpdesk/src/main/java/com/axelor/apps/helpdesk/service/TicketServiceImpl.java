@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,13 +14,12 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.helpdesk.service;
 
-import com.axelor.apps.base.db.AppHelpdesk;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.repo.AppHelpdeskRepository;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.publicHoliday.PublicHolidayService;
@@ -29,10 +29,14 @@ import com.axelor.apps.helpdesk.db.Ticket;
 import com.axelor.apps.helpdesk.db.repo.SlaRepository;
 import com.axelor.apps.helpdesk.db.repo.TicketRepository;
 import com.axelor.auth.AuthUtils;
-import com.axelor.exception.AxelorException;
+import com.axelor.studio.db.AppHelpdesk;
+import com.axelor.studio.db.repo.AppHelpdeskRepository;
+import com.axelor.utils.date.DateTool;
+import com.axelor.utils.date.DurationTool;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -54,10 +58,12 @@ public class TicketServiceImpl implements TicketService {
 
   /** Generate sequence of the ticket. */
   @Override
-  public void computeSeq(Ticket ticket) {
+  public void computeSeq(Ticket ticket) throws AxelorException {
 
     if (Strings.isNullOrEmpty(ticket.getTicketSeq())) {
-      String ticketSeq = sequenceService.getSequenceNumber(SequenceRepository.TICKET, null);
+      String ticketSeq =
+          sequenceService.getSequenceNumber(
+              SequenceRepository.TICKET, null, Ticket.class, "ticketSeq");
       ticket.setTicketSeq(ticketSeq);
     }
   }
@@ -144,7 +150,7 @@ public class TicketServiceImpl implements TicketService {
    * @param sla
    * @throws AxelorException
    */
-  private void computeDuration(Ticket ticket, Sla sla) throws AxelorException {
+  protected void computeDuration(Ticket ticket, Sla sla) throws AxelorException {
 
     if (sla.getIsWorkingDays()
         && ticket.getAssignedToUser() != null
@@ -172,7 +178,7 @@ public class TicketServiceImpl implements TicketService {
    * @param ticket
    * @param sla
    */
-  private void calculateAllDays(Ticket ticket, Sla sla) {
+  protected void calculateAllDays(Ticket ticket, Sla sla) {
     LocalDateTime localDateTime = ticket.getStartDateT().plusDays(sla.getDays());
     localDateTime = localDateTime.plusHours(sla.getHours());
     ticket.setDeadlineDateT(localDateTime);
@@ -187,7 +193,7 @@ public class TicketServiceImpl implements TicketService {
    * @param days
    * @throws AxelorException
    */
-  private void calculateWorkingDays(LocalDateTime fromDate, Company company, int days)
+  protected void calculateWorkingDays(LocalDateTime fromDate, Company company, int days)
       throws AxelorException {
 
     if (weeklyPlanningService.getWorkingDayValueInDays(
@@ -240,5 +246,38 @@ public class TicketServiceImpl implements TicketService {
         ticketRepo.save(ticket);
       }
     }
+  }
+
+  @Override
+  public Long computeDuration(Ticket ticket) {
+    if (ticket.getStartDateT() != null
+        && ticket.getEndDateT() != null
+        && ticket.getEndDateT().isAfter(ticket.getStartDateT())) {
+      Duration duration =
+          DurationTool.computeDuration(ticket.getStartDateT(), ticket.getEndDateT());
+      return DurationTool.getSecondsDuration(duration);
+    }
+
+    return ticket.getDuration();
+  }
+
+  @Override
+  public LocalDateTime computeEndDate(Ticket ticket) {
+    if (ticket.getStartDateT() != null
+        && ticket.getDuration() != null
+        && ticket.getDuration() != 0) {
+      return DateTool.plusSeconds(ticket.getStartDateT(), ticket.getDuration());
+    }
+
+    return ticket.getEndDateT();
+  }
+
+  @Override
+  public LocalDateTime computeStartDate(Ticket ticket) {
+    if (ticket.getEndDateT() != null && ticket.getDuration() != null && ticket.getDuration() != 0) {
+      return DateTool.minusSeconds(ticket.getEndDateT(), ticket.getDuration());
+    }
+
+    return ticket.getStartDateT();
   }
 }

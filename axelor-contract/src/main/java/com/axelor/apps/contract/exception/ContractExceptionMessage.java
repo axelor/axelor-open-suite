@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.contract.exception;
 
 public final class ContractExceptionMessage {
@@ -29,4 +47,12 @@ public final class ContractExceptionMessage {
       "Can only activate waiting contract." /*)*/;
   public static final String CONTRACT_TERMINATE_WRONG_STATUS = /*$$(*/
       "Can only terminate ongoing contract." /*)*/;
+  public static final String CONTRACT_INDEX_VALUE_NO_DATA = /*$$(*/
+      "Missing index value for this date : %s" /*)*/;
+
+  public static final String CONTRACT_FORMULA_ERROR_IN_FORMULA = /*$$(*/
+      "There is an error in the formula." /*)*/;
+
+  public static final String CONTRACT_MISSING_REVALUATION_PERIOD = /*$$(*/
+      "Missing revaluation period for this contract." /*)*/;
 }

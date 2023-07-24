@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.bankpayment.exception;
 
 public final class BankPaymentExceptionMessage {
@@ -84,7 +102,7 @@ public final class BankPaymentExceptionMessage {
   public static final String BANK_ORDER_BANK_DETAILS_EMPTY_IBAN = /*$$(*/
       "The Iban is mandatory for the partner %s, bank order %s" /*)*/;
   public static final String BANK_ORDER_BANK_DETAILS_NOT_ACTIVE = /*$$(*/
-      "The bank details is inactive." /*)*/;
+      "The sender bank details is inactive." /*)*/;
   public static final String BANK_ORDER_BANK_DETAILS_TYPE_NOT_COMPATIBLE = /*$$(*/
       "The bank details type is not compatible with the accepted types in file format." /*)*/;
   public static final String BANK_ORDER_BANK_DETAILS_CURRENCY_NOT_COMPATIBLE = /*$$(*/
@@ -126,13 +144,15 @@ public final class BankPaymentExceptionMessage {
   public static final String BANK_ORDER_LINE_BANK_DETAILS_FORBIDDEN = /*$$(*/
       "You cannot use this bank account because he is not authorized by the ebics partner." /*)*/;
   public static final String BANK_ORDER_LINE_BANK_DETAILS_NOT_ACTIVE = /*$$(*/
-      "The receiver bank details is inactive." /*)*/;
+      "The receiver bank details for the line %s is inactive." /*)*/;
   public static final String BANK_ORDER_LINE_BANK_DETAILS_TYPE_NOT_COMPATIBLE = /*$$(*/
       "The receiver bank details type is not compatible with the accepted types in file format." /*)*/;
   public static final String BANK_ORDER_LINE_BANK_DETAILS_CURRENCY_NOT_COMPATIBLE = /*$$(*/
       "The receiver bank details currency is not compatible with the currency in bank order." /*)*/;
   public static final String BANK_ORDER_LINE_NO_RECEIVER_ADDRESS = /*$$(*/
       "No address has been defined in the receiver %s" /*)*/;
+  public static final String BANK_ORDER_LINE_ORIGIN_NO_DMS_FILE = /*$$(*/
+      "There is no file linked to this origin." /*)*/;
 
   /** BankOrder merge */
   public static final String BANK_ORDER_MERGE_AT_LEAST_TWO_BANK_ORDERS = /*$$(*/
@@ -258,6 +278,13 @@ public final class BankPaymentExceptionMessage {
       "Can't load while another reconciliation is open" /*)*/;
   public static final String BANK_RECONCILIATION_BANK_STATEMENT_NO_BANK_DETAIL = /*$$(*/
       "The selected bank statement doesn't contain, at the lines level, any information allowing to identify which bank details it concerns. Please verify the format of the data source or the configuration of the bank details in the software and please make sure both are matching." /*)*/;
+  public static final String BANK_RECONCILIATION_CANNOT_DELETE_VALIDATED = /*$$(*/
+      "Selected bank reconciliation is validated and can not be deleted" /*)*/;
+  public static final String BANK_RECONCILIATION_CANNOT_DELETE_UNDER_CORRECTION = /*$$(*/
+      "Selected bank reconciliation is under correction and can not be deleted" /*)*/;
+
+  public static final String BANK_RECONCILIATION_NO_DISTRIBUTION_GENERATED_MOVE_LINE = /*$$(*/
+      "The analytic distribution is required in the move lines for account %s but no template has been set in the account configuration" /*)*/;
 
   /** Bank Statement Query */
   public static final String BANK_STATEMENT_QUERY_SEQUENCE_USED = /*$$(*/
@@ -265,4 +292,49 @@ public final class BankPaymentExceptionMessage {
 
   public static final String BATCH_BOE_SEND_BILLING_PARTNER_ADRESS_MISSING = /*$$(*/
       "Email adress is missing for partner %s" /*)*/;
+
+  public static final String PAYMENT_SESSION_GENERATED_BANK_ORDER = /*$$(*/
+      "The bank order %s has been generated successfully." /*)*/;
+
+  public static final String
+      BANK_STATEMENT_MOVE_LINE_QUERY_FORMULA_NOT_EVALUATED_TO_MOVE_LINE = /*$$(*/
+          "Move line's query formula has not been evaluated to a Move line" /*)*/;
+  public static final String BANK_STATEMENT_PARTNER_QUERY_FORMULA_NOT_EVALUATED_TO_PARTNER = /*$$(*/
+      "Partner's query formula has not been evaluated to a Partner" /*)*/;
+
+  public static final String BANK_STATEMENT_RULE_CASH_ACCOUNT_MISSING = /*$$(*/
+      "Please select a cash account in the bank statement rule %s" /*)*/;
+
+  public static final String BANK_STATEMENT_RULE_COUNTERPART_ACCOUNT_MISSING = /*$$(*/
+      "Please select a counterpart account in the bank statement rule %s" /*)*/;
+
+  public static final String STATEMENT_REMOVE_NOT_OK_NB = /*$$(*/
+      "%d bank statement couldn't be deleted, please check the logs." /*)*/;
+
+  public static final String STATEMENT_REMOVE_OK = /*$$(*/
+      "Bank statement(s) has been removed successfully" /*)*/;
+
+  public static final String NO_STATEMENT_TO_REMOVE = /*$$(*/ "Please select statements" /*)*/;
+
+  /** Move Reverse */
+  public static final String MOVE_LINKED_TO_VALIDATED_BANK_RECONCILIATION = /*$$(*/
+      "The move %s can't be reversed because it is linked to a bank reconciliation with status validated" /*)*/;
+
+  public static final String MOVES_LINKED_TO_VALIDATED_BANK_RECONCILIATION = /*$$(*/
+      "The moves %s couldn't be reversed because these are linked to a bank reconciliation with status validated" /*)*/;
+
+  public static final String VALIDATION_BANK_ORDER_MOVE_INV_PAYMENT_FAIL = /*$$(*/
+      "Failed to create a move for the invoice payment." /*)*/;
+
+  public static final String MOVE_LINE_CHECK_BANK_RECONCILED_AMOUNT = /*$$(*/
+      "Bank reconcile amount must be inferior or equal to credit or debit." /*)*/;
+
+  public static final String BATCH_BILL_OF_EXCHANGE_BANK_DETAILS_IS_MISSING_ON_INVOICE = /*$$(*/
+      "Bank details is missing on invoice %s." /*)*/;
+
+  public static final String BATCH_BILL_OF_EXCHANGE_BANK_DETAILS_IS_INACTIVE_ON_INVOICE = /*$$(*/
+      "The bank details %s attached to the invoice/ invoice term %s and to the partner %s is inactive. Only invoices with active bank details can be processed." /*)*/;
+
+  public static final String BANK_ACCOUNT_DIFFERENT_THAN_CASH_ACCOUNT = /*$$(*/
+      "Your bank detail's bank account for bank details %s (%s) is different from the cash account of the account config for %s's bank statement rule (%s). Please fix it before auto accounting the bank statement." /*)*/;
 }

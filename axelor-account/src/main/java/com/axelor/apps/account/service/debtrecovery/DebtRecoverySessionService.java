@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service.debtrecovery;
 
@@ -27,11 +28,11 @@ import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.repo.DebtRecoveryRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -139,26 +140,7 @@ public class DebtRecoverySessionService {
       DebtRecoveryMethodLine debtRecoveryMethodLine =
           this.getDebtRecoveryMethodLine(debtRecovery, theoricalDebtRecoveryLevel);
 
-      if ((!(referenceDate.plusDays(debtRecoveryMethodLine.getStandardDeadline()))
-              .isAfter(appAccountService.getTodayDate(debtRecovery.getCompany())))
-          && balanceDueDebtRecovery.compareTo(debtRecoveryMethodLine.getMinThreshold()) > 0) {
-        log.debug(
-            "The threshold of the balance due debt recovery is respected and the deadline is respected, Threshold : {} < Balance due deb recovery : {}",
-            debtRecoveryMethodLine.getMinThreshold(),
-            balanceDueDebtRecovery);
-
-        if (!debtRecoveryMethodLine.getManualValidationOk()) {
-          log.debug("The debt recovery level doesn't need manual validation");
-          debtRecovery.setDebtRecoveryMethodLine(
-              debtRecoveryMethodLine); // Afin d'afficher la ligne de niveau sur le tiers
-          debtRecovery.setWaitDebtRecoveryMethodLine(null);
-          // et lancer les autres actions du niveau
-        } else {
-          log.debug("The debt recovery level needs manual validation");
-          debtRecovery.setWaitDebtRecoveryMethodLine(
-              debtRecoveryMethodLine); // Si le passage est manuel
-        }
-      }
+      setDebtRecoveryMethodLine(debtRecovery, debtRecoveryMethodLine);
 
     } else {
       log.debug("We reset");
@@ -166,6 +148,34 @@ public class DebtRecoverySessionService {
     }
     log.debug("End debtRecoverySession service");
     return debtRecovery;
+  }
+
+  protected void setDebtRecoveryMethodLine(
+      DebtRecovery debtRecovery, DebtRecoveryMethodLine debtRecoveryMethodLine) {
+
+    BigDecimal balanceDueDebtRecovery = debtRecovery.getBalanceDueDebtRecovery();
+    LocalDate referenceDate = debtRecovery.getReferenceDate();
+
+    if ((!(referenceDate.plusDays(debtRecoveryMethodLine.getStandardDeadline()))
+            .isAfter(appAccountService.getTodayDate(debtRecovery.getCompany())))
+        && balanceDueDebtRecovery.compareTo(debtRecoveryMethodLine.getMinThreshold()) > 0) {
+      log.debug(
+          "The threshold of the balance due debt recovery is respected and the deadline is respected, Threshold : {} < Balance due deb recovery : {}",
+          debtRecoveryMethodLine.getMinThreshold(),
+          balanceDueDebtRecovery);
+
+      if (!debtRecoveryMethodLine.getManualValidationOk()) {
+        log.debug("The debt recovery level doesn't need manual validation");
+        debtRecovery.setDebtRecoveryMethodLine(
+            debtRecoveryMethodLine); // Afin d'afficher la ligne de niveau sur le tiers
+        debtRecovery.setWaitDebtRecoveryMethodLine(null);
+        // et lancer les autres actions du niveau
+      } else {
+        log.debug("The debt recovery level needs manual validation");
+        debtRecovery.setWaitDebtRecoveryMethodLine(
+            debtRecoveryMethodLine); // Si le passage est manuel
+      }
+    }
   }
 
   public int getMaxLevel(DebtRecovery debtRecovery) {
@@ -193,8 +203,8 @@ public class DebtRecoverySessionService {
    * @throws AxelorException
    * @param relance
    */
-  @Transactional(rollbackOn = {Exception.class})
-  public void debtRecoveryInitialization(DebtRecovery debtRecovery) throws AxelorException {
+  @Transactional
+  public void debtRecoveryInitialization(DebtRecovery debtRecovery) {
 
     if (debtRecovery != null) {
       log.debug("Begin debtRecoveryInitialization service...");
@@ -261,5 +271,18 @@ public class DebtRecoverySessionService {
         debtRecovery,
         TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
         I18n.get(AccountExceptionMessage.DEBT_RECOVERY_DEBT_RECOVERY_LEVEL_NOT_FOUND));
+  }
+
+  /**
+   * Reset to the min level the debtRecovery.
+   *
+   * @throws AxelorException
+   */
+  public void reset(DebtRecovery debtRecovery) throws AxelorException {
+
+    log.debug("Reset of debtRecovery {}", debtRecovery);
+
+    debtRecovery.setDebtRecoveryMethodLine(null);
+    debtRecovery.setWaitDebtRecoveryMethodLine(null);
   }
 }

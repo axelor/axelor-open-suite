@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <form model="com.axelor.apps.account.db.ClosureAssistantLine" title="Closure assistant line"
+    name="closure-assistant-line-form">
+    <panel name="mainPanel">
+      <field name="sequence" title="Sequence" readonly="true" colSpan="6"/>
+      <field name="actionSelect" title="Action" readonly="true" colSpan="6"/>
+    </panel>
+    <panel name="actionsPanel" sidebar="true">
+      <button onClick="action-closure-assistant-line-group-validate" name="validateActionBtn"
+        hideIf="isValidated" help="Validate step" icon="fa-check-circle" colSpan="12"
+        readonlyIf="!isPreviousLineValidated"/>
+      <button onClick="action-closure-assistant-line-group-cancel" name="cancelActionBtn"
+        hideIf="!isValidated || isNextLineValidated" help="Cancel step" icon="fa-times-circle"
+        colSpan="12"/>
+      <button onClick="account-closure-assistant-line-open-view-link-to-action-group"
+        name="openViewLinkToActionBtn" icon="fa-gears" help="Open action to execute" colSpan="12"
+        hideIf="isValidated" readonlyIf="!isPreviousLineValidated"/>
+      <field name="validatedOnDateTime" colSpan="6"/>
+      <field name="validatedByUser" title="Validated by" readonly="true" colSpan="6"/>
+      <field name="isValidated" hidden="true" readonly="true"/>
+      <field name="isPreviousLineValidated" hidden="true" readonly="true"/>
+      <field name="isNextLineValidated" hidden="true" readonly="true"/>
+    </panel>
+  </form>
+
+
+  <grid model="com.axelor.apps.account.db.ClosureAssistantLine" title="Closure assistant line"
+    name="closure-assistant-line-grid">
+    <hilite background="green" if="isValidated"/>
+    <field name="sequence" title="Sequence"/>
+    <field name="actionSelect" title="Action"/>
+    <field name="validatedOnDateTime"/>
+    <field name="validatedByUser" title="Validated by"/>
+    <field name="isValidated" title="Validated"/>
+    <field name="isPreviousLineValidated" hidden="true"/>
+    <field name="isNextLineValidated" hidden="true"/>
+    <button onClick="save,action-closure-assistant-line-group-validate"
+      name="validateActionBtn" readonlyIf="isValidated  || !isPreviousLineValidated"
+      help="Validate step" icon="fa-check-circle"/>
+    <button onClick="save,action-closure-assistant-line-group-cancel" name="cancelActionBtn"
+      readonlyIf="!isValidated || isNextLineValidated" help="Cancel step" icon="fa-times-circle"/>
+    <button onClick="account-closure-assistant-line-open-view-link-to-action-group"
+      name="openViewLinkToActionBtn" icon="fa-gears" help="Open action to execute"
+      readonlyIf="isValidated  || !isPreviousLineValidated"/>
+  </grid>
+
+  <form name="closure-assistant-line-outrun-wizard" title="Outrun result"
+    model="com.axelor.utils.db.Wizard" onNew="action-closure-assistant-line-method-outrun">
+    <panel name="mainPanel" itemSpan="12" readonly="true">
+      <field name="year" title="Fiscal year" type="many-to-one"
+        target="com.axelor.apps.base.db.Year"/>
+      <field name="income" title="Income total" type="decimal"/>
+      <field name="charge" title="Charge total" type="decimal"/>
+      <field name="profit" title="Profit" type="decimal"/>
+    </panel>
+  </form>
+
+  <action-group name="action-closure-assistant-line-group-validate">
+    <action name="account-closure-assistant-line-validate-action-method"/>
+    <action name="action-closure-assistant-line-method-set-parent-status"/>
+  </action-group>
+
+  <action-group name="action-closure-assistant-line-group-cancel">
+    <action name="account-closure-assistant-line-cancel-action-method"/>
+    <action name="action-closure-assistant-line-method-set-parent-status"/>
+  </action-group>
+
+  <action-method name="account-closure-assistant-line-validate-action-method">
+    <call class="com.axelor.apps.account.web.ClosureAssistantLineController"
+      method="validateClosureAssistantLine"/>
+  </action-method>
+
+  <action-method name="account-closure-assistant-line-cancel-action-method">
+    <call class="com.axelor.apps.account.web.ClosureAssistantLineController"
+      method="cancelClosureAssistantLine"/>
+  </action-method>
+
+  <action-method name="action-closure-assistant-line-method-set-parent-status">
+    <call class="com.axelor.apps.account.web.ClosureAssistantLineController"
+      method="setParentStatus"/>
+  </action-method>
+
+  <action-group name="account-closure-assistant-line-open-view-link-to-action-group">
+    <action name="save"/>
+    <action name="action-closure-assistant-line-validate-fiscal-year-closure"/>
+    <action name="account-closure-assistant-line-open-view-link-to-action-method"/>
+  </action-group>
+
+  <action-method name="account-closure-assistant-line-open-view-link-to-action-method">
+    <call class="com.axelor.apps.account.web.ClosureAssistantLineController"
+      method="openViewLinkToAction"/>
+  </action-method>
+
+  <action-method
+    name="account-closure-assistant-line-method-check-no-existing-closure-assistant-for-same-year">
+    <call class="com.axelor.apps.account.web.ClosureAssistantLineController"
+      method="checkNoExistingClosureAssistantForSameYear"/>
+  </action-method>
+
+  <action-method name="action-closure-assistant-line-method-outrun">
+    <call class="com.axelor.apps.account.web.ClosureAssistantLineController"
+      method="fillOutrunResult"/>
+  </action-method>
+
+  <action-validate name="action-closure-assistant-line-validate-fiscal-year-closure">
+    <alert
+      message="Closing the fiscal year is a definitive action. Make sure that you have completed first all the tasks of the annual closure."
+      if="actionSelect == 7"/>
+  </action-validate>
+
+</object-views>

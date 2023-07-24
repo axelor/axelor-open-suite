@@ -1,0 +1,37 @@
+"name";"metaModel.name";"language.importId";"target";"birtTemplateSet_importId";"filePath";"isDefault";"templateContext";"subject";"content";"toRecipients";"ccRecipients";"bccRecipients";"mediaTypeSelect"
+"Envoi BL Client";"StockMove";2;;;;"true";;"Commande $StockMove.SaleOrder.SaleOrderSeq$ expédiée";"<p>Bonjour,</p>
+
+<p>Nous tenons à vous informer que votre commande $StockMove.saleOrder.saleOrderSeq$ a été expédiée.<br/>
+Vous trouverez en pièce jointe le Bon de Livraison associé. Si des articles sont manquants, le reste de votre commande sera expédiée dans les prochains jours.</p>";"$StockMove.partner.emailAddress.address$";;;2
+"Réception BL Fournisseur";"StockMove";2;;;;"false";;"Commande $StockMove.PurchaseOrder.PurchaseOrderSeq$ expédiée";"<p>Bonjour,</p>
+
+<p>Nous avons bien reçu notre commande $StockMove.purchaseOrder.purchaseOrderSeq$ (votre Référence $StockMove.purchaseOrder.externalReference$).<br/>
+Toutefois, la commande reçu est incomplète comme vous pourrez le constater.<br/>
+Merci de nous faire parvenir le complément de commande le plus rapidement possible.</p>
+";"$StockMove.partner.emailAddress.address$";;;2
+"Delivery Order";"StockMove";1;;;;"true";;"Order $StockMove.SaleOrder.SaleOrderSeq$ shipped";"<p>Good morning,</p>
+
+<p>We are pleased to inform you that your order $StockMove.saleOrder.saleOrderSeq$ has been shipped.<br/>
+Please find attached to this mail the delivery order associated. If goods are missing, the remaining goods will be shipped in the next coming days.</p>
+
+<p>Best regards<br/>
+Axelor Team</p>";"$StockMove.partner.emailAddress.address$";;;2
+"Goods Reception Slip";"StockMove";1;;;;"false";;"Order $StockMove.PurchaseOrder.PurchaseOrderSeq$ received";"<p>Good morning,</p>
+
+<p>We confirm the reception of our order $StockMove.purchaseOrder.purchaseOrderSeq$ (your reference $StockMove.purchaseOrder.externalReference$).<br/>
+However, as per the attached receipt slip, the order is incomplete.<br/>
+Please let us know when you estimate to deliver the remaining goods.</p>
+
+<p>Best regards<br/>
+Axelor Team</p>";"$StockMove.partner.emailAddress.address$";;;2
+"Règle de stocks";"StockRules";2;;;;"true";;"Règle de stock $StockRules.product.fullName$ non respectée";"<p>Bonjour,</p>
+
+<p>Nous constatons une rupture de stock pour le produit $StockRules.product.fullName$ dans l'emplacement $StockRules.stockLocation.name$.</p>
+
+<p>Cordialement</p>";"$StockRules.team.members:{e | $e.email$};separator="",""$,$StockRules.user.email$";;;2
+"Fiche logistique";"LogisticalForm";"2";;;;"true";;"Nouvelle fiche logistique saisie ($LogisticalForm.deliveryNumber$)";"<p>Bonjour,</p>
+
+<p>Une nouvelle fiche logistique a été saisie.</p>
+<p>Son numéro d'expédition est $LogisticalForm.deliveryNumber$ et le client livré est $LogisticalForm.deliverToCustomerPartner.fullName$.</p>
+
+<p>Cordialement</p>";;;;"2"

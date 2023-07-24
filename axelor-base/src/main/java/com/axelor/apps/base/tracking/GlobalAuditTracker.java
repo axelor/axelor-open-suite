@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.base.tracking;
 
@@ -26,8 +27,10 @@ import com.axelor.auth.AuditInterceptor;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.AuditableModel;
 import com.axelor.auth.db.User;
+import com.axelor.db.EntityHelper;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
+import com.axelor.db.mapper.Mapper;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.axelor.meta.db.repo.MetaModelRepository;
@@ -145,7 +148,7 @@ public class GlobalAuditTracker {
     }
   }
 
-  private boolean canTrack(GlobalTrackingConfigurationLine confLine, int typeSelect) {
+  protected boolean canTrack(GlobalTrackingConfigurationLine confLine, int typeSelect) {
 
     switch (typeSelect) {
       case GlobalTrackingLogRepository.TYPE_CREATE:
@@ -204,10 +207,23 @@ public class GlobalAuditTracker {
     log.setMetaModelName(entity.getClass().getSimpleName());
     log.setTypeSelect(type);
     log.setUser(AuthUtils.getUser());
-    log.setRelatedId((Long) entity.getId());
+    log.setRelatedId(entity.getId());
+    log.setRelatedReference(this.getRelatedReference(entity));
     log.setGlobalTrackingLogLineList(new ArrayList<>());
+
     this.addLog(log);
     return log;
+  }
+
+  protected String getRelatedReference(AuditableModel entity) {
+    Mapper classMapper = Mapper.of(EntityHelper.getEntityClass(entity));
+
+    if (classMapper.getNameField() != null && classMapper.getNameField().getName() != null) {
+      String fieldName = classMapper.getNameField().getName();
+      return (String) Mapper.toMap(entity).get(fieldName);
+    }
+
+    return "";
   }
 
   @SuppressWarnings("unchecked")

@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="bank-payment" package="com.axelor.apps.bankpayment.db"/>
 
-  <entity name="BankOrderLineOrigin" lang="java">
+  <entity name="BankOrderLineOrigin">
 
     <many-to-one name="bankOrderLine" ref="com.axelor.apps.bankpayment.db.BankOrderLine"
       title="Bank order line"/>
-    <string name="relatedToSelect" title="Related to"
+    <string name="relatedToSelect" title="Type"
       selection="bank.payment.bank.order.line.origin.related.to.select"/>
     <long name="relatedToSelectId"/>
-    <string name="relatedToSelectName" title="Related to" readonly="true"/>
+    <string name="relatedToSelectName" title="Name" readonly="true"/>
     <date name="relatedToSelectDate" title="Date" readonly="true"/>
     <date name="relatedToSelectDueDate" title="Due date" readonly="true"/>
 
@@ -24,8 +24,8 @@
 		public static final String RELATED_TO_INVOICE = "com.axelor.apps.account.db.Invoice";
 		public static final String RELATED_TO_PAYMENT_SCHEDULE_LINE = "com.axelor.apps.account.db.PaymentScheduleLine";
 		public static final String RELATED_TO_REIMBURSEMENT = "com.axelor.apps.account.db.Reimbursement";
+		public static final String RELATED_TO_INVOICE_TERM = "com.axelor.apps.account.db.InvoiceTerm";
 		public static final String RELATED_TO_EXPENSE = "com.axelor.apps.hr.db.Expense";
-
   		]]>
     </extra-code>
 

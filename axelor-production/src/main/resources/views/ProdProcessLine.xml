@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="prod-process-line-grid" title="Phases"
     model="com.axelor.apps.production.db.ProdProcessLine" orderBy="priority">
@@ -9,7 +9,7 @@
     <field name="name"/>
     <field name="workCenter" grid-view="work-center-grid" form-view="work-center-form"/>
     <field name="outsourcing" width="115"
-      if="__config__.app.getApp('production').getManageOutsourcing()"/>
+      if="__config__.app.getApp('production')?.getManageOutsourcing()"/>
     <field name="optional"/>
     <field name="description"/>
   </grid>
@@ -21,10 +21,7 @@
     <panel name="mainPanel">
       <field name="name"/>
       <field name="priority" colSpan="3"/>
-      <field name="workCenter" hidden="true" grid-view="work-center-grid"
-        form-view="work-center-form" canNew="true"
-        onChange="action-prod-process-line-group-work-center-onchange"/>
-      <panel name="workCenterGroupPanel" hidden="true" colSpan="12">
+      <panel name="workCenterGroupPanel" colSpan="12">
         <field name="workCenterTypeSelect"/>
         <button name="buttonWorkCenterGroupWizard" title="Use a work center group model"
           onClick="save,action-production-view-work-center-group-wizard"
@@ -34,18 +31,24 @@
           onChange="action-prod-process-line-group-work-center-group-onchange"
           domain="self.template IS NOT TRUE and self.workCenterTypeSelect = :workCenterTypeSelect"/>
       </panel>
+      <field name="workCenter" grid-view="work-center-grid" form-view="work-center-form"
+        canNew="workCenterGroup == null"
+        onChange="action-prod-process-line-group-work-center-onchange"
+        onSelect="action-prod-process-line-attrs-set-work-center-domain"/>
       <field name="outsourcing"/>
       <field name="optional"/>
       <field name="useLineInGeneratedPurchaseOrder"/>
       <field name="machineTool" onSelect="action-prod-process-line-attrs-machine-tool-domain"
-        if="__config__.app.getApp('production').getEnableToolManagement()"/>
+        if="__config__.app.getApp('production')?.getEnableToolManagement()"/>
       <field name="stockLocation"/>
-      <panel name="capacitySettingsPanel" title="Capacity settings" colSpan="12" hidden="true">
-        <field name="minCapacityPerCycle" colSpan="3"/>
-        <field name="maxCapacityPerCycle" colSpan="3"/>
-        <field name="durationPerCycle" colSpan="3" widget="duration" x-big="true"
+      <panel name="capacitySettingsPanel" title="Capacity settings" colSpan="12">
+        <field name="minCapacityPerCycle" colSpan="4"/>
+        <field name="maxCapacityPerCycle" colSpan="4"/>
+        <field name="timingOfImplementation" colSpan="4" widget="duration" x-big="true"
           x-seconds="true"/>
-        <field name="timingOfImplementation" colSpan="3" widget="duration" x-big="true"
+        <field name="durationPerCycle" colSpan="6" widget="duration" x-big="true"
+          x-seconds="true"/>
+        <field name="humanDuration" colSpan="6" widget="duration" x-big="true"
           x-seconds="true"/>
       </panel>
       <panel name="descriptionPanel" title="Description" colSpan="12">
@@ -114,14 +117,16 @@
       expr="self.template IS TRUE and self.workCenterTypeSelect = :workCenterTypeSelect"/>
   </action-attrs>
 
-  <action-attrs name="action-prod-process-line-attrs-set-timing-of-implementation">
-    <attribute name="value" for="timingOfImplementation"
-      expr="eval: workCenter?.timingOfImplementation"/>
+  <action-attrs name="action-prod-process-line-attrs-update-from-workcenter">
+    <attribute name="value" for="durationPerCycle"
+      expr="eval: workCenter?.durationPerCycle"/>
+    <attribute name="value" for="humanDuration"
+      expr="eval: workCenter?.hrDurationPerCycle"/>
   </action-attrs>
 
   <action-group name="action-prod-process-line-group-work-center-onchange">
     <action name="action-prod-process-line-method-duration"/>
-    <action name="action-prod-process-line-attrs-set-timing-of-implementation"/>
+    <action name="action-prod-process-line-attrs-update-from-workcenter"/>
     <action name="action-prod-process-line-method-capacity-settings"/>
   </action-group>
 
@@ -136,13 +141,6 @@
     <call class="com.axelor.apps.production.web.ProdProcessLineController"
       method="fillWorkCenter"/>
   </action-method>
-
-  <action-method name="action-prod-process-line-method-duration">
-    <call class="com.axelor.apps.production.web.ProdProcessLineController"
-      method="updateDuration"/>
-  </action-method>
-
-
 
   <action-method name="action-prod-process-line-method-capacity-settings">
     <call class="com.axelor.apps.production.web.ProdProcessLineController"
@@ -159,14 +157,12 @@
     <attribute name="hidden" for="useLineInGeneratedPurchaseOrder"
       expr="eval: !((__parent__.outsourcing || outsourcing) &amp;&amp; __parent__.generatePurchaseOrderOnMoPlanning)"
       if="__parent__ != null"/>
-    <attribute name="hidden" for="workCenter"
-      expr="eval: __config__.app.getApp('production').getManageWorkCenterGroup()"/>
     <attribute name="required" for="workCenter"
-      expr="eval: !__config__.app.getApp('production').getManageWorkCenterGroup()"/>
+      expr="eval: !__config__.app.getApp('production')?.getManageWorkCenterGroup()"/>
     <attribute name="hidden" for="workCenterGroupPanel"
-      expr="eval: !__config__.app.getApp('production').getManageWorkCenterGroup()"/>
-    <attribute name="hidden" for="capacitySettingsPanel"
-      expr="eval: __config__.app.getApp('production').getManageWorkCenterGroup()"/>
+      expr="eval: !__config__.app.getApp('production')?.getManageWorkCenterGroup()"/>
+
+
   </action-attrs>
 
   <action-attrs name="action-prod-process-line-attrs-machine-tool-domain">
@@ -174,6 +170,15 @@
       expr="eval: &quot; self.machine.id in (SELECT machine.id FROM WorkCenter where id = ${workCenter?.id}) &quot;"
       for="machineTool"/>
   </action-attrs>
+
+
+  <action-attrs name="action-prod-process-line-attrs-set-work-center-domain">
+    <attribute name="domain" for="workCenter"
+      expr="eval: 'self.id IN (' + workCenterGroup?.workCenterSet?.collect{ it.id }.join(',') + ')'"
+      if="__config__.app.getApp('production')?.getManageWorkCenterGroup() &amp;&amp; workCenterGroup?.workCenterSet &amp;&amp; !workCenterGroup?.workCenterSet.isEmpty()"/>
+  </action-attrs>
+
+
 
 </object-views>
 

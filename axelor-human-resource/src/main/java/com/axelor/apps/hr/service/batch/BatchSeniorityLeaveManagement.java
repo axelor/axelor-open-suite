@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 /**
  * Axelor Business Solutions
@@ -33,6 +34,10 @@
 package com.axelor.apps.hr.service.batch;
 
 import com.axelor.app.internal.AppFilter;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.ExceptionOriginRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.EmploymentContract;
 import com.axelor.apps.hr.db.HRConfig;
@@ -47,15 +52,10 @@ import com.axelor.apps.hr.db.repo.LeaveManagementRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.employee.EmployeeService;
 import com.axelor.apps.hr.service.leave.management.LeaveManagementService;
-import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.ExceptionOriginRepository;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.tool.template.TemplateMaker;
+import com.axelor.utils.template.TemplateMaker;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import groovy.lang.Binding;
@@ -79,16 +79,19 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
 
   protected LeaveLineRepository leaveLineRepository;
   protected LeaveManagementRepository leaveManagementRepository;
+  protected EmployeeService employeeService;
 
   @Inject
   public BatchSeniorityLeaveManagement(
       LeaveManagementService leaveManagementService,
       LeaveLineRepository leaveLineRepository,
-      LeaveManagementRepository leaveManagementRepository) {
+      LeaveManagementRepository leaveManagementRepository,
+      EmployeeService employeeService) {
 
     super(leaveManagementService);
     this.leaveLineRepository = leaveLineRepository;
     this.leaveManagementRepository = leaveManagementRepository;
+    this.employeeService = employeeService;
   }
 
   @Override
@@ -231,14 +234,13 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
               formula.replace(
                   hrConfig.getSeniorityVariableName(),
                   String.valueOf(
-                      Beans.get(EmployeeService.class)
-                          .getLengthOfService(employee, batch.getHrBatch().getReferentialDate())));
+                      employeeService.getLengthOfService(
+                          employee, batch.getHrBatch().getReferentialDate())));
           formula =
               formula.replace(
                   hrConfig.getAgeVariableName(),
                   String.valueOf(
-                      Beans.get(EmployeeService.class)
-                          .getAge(employee, batch.getHrBatch().getReferentialDate())));
+                      employeeService.getAge(employee, batch.getHrBatch().getReferentialDate())));
           maker.setTemplate(formula);
           eval = maker.make();
           CompilerConfiguration conf = new CompilerConfiguration();
@@ -262,7 +264,7 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
       LeaveManagement leaveManagement =
           leaveManagementService.createLeaveManagement(
               leaveLine,
-              AuthUtils.getUser(),
+              employeeService.getUser(employee),
               batch.getHrBatch().getComments(),
               null,
               batch.getHrBatch().getStartDate(),

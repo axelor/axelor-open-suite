@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.supplychain.web;
 
@@ -24,6 +25,7 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.invoice.InvoiceViewService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
@@ -36,7 +38,6 @@ import com.axelor.apps.supplychain.translation.ITranslation;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -137,7 +138,7 @@ public class StockMoveInvoiceController {
       Partner partner = stockMove.getPartner();
       if (paymentConditionToCheck || paymentModeToCheck || contactPartnerToCheck) {
         ActionViewBuilder confirmView =
-            ActionView.define("StockMove")
+            ActionView.define(I18n.get("StockMove"))
                 .model(StockMove.class.getName())
                 .add("form", "stock-move-supplychain-concat-cust-invoice-confirm-form")
                 .param("popup", "true")
@@ -173,7 +174,7 @@ public class StockMoveInvoiceController {
             inv -> {
               try {
                 response.setView(
-                    ActionView.define("Invoice")
+                    ActionView.define(I18n.get("Invoice"))
                         .model(Invoice.class.getName())
                         .add("grid", InvoiceViewService.computeInvoiceGridName(inv))
                         .add("form", "invoice-form")
@@ -253,7 +254,7 @@ public class StockMoveInvoiceController {
           inv -> {
             try {
               response.setView(
-                  ActionView.define("Invoice")
+                  ActionView.define(I18n.get("Invoice"))
                       .model(Invoice.class.getName())
                       .add("grid", InvoiceViewService.computeInvoiceGridName(inv))
                       .add("form", "invoice-form")
@@ -309,7 +310,7 @@ public class StockMoveInvoiceController {
       Partner partner = stockMoveList.get(0).getPartner();
       if (paymentConditionToCheck || paymentModeToCheck || contactPartnerToCheck) {
         ActionViewBuilder confirmView =
-            ActionView.define("StockMove")
+            ActionView.define(I18n.get("StockMove"))
                 .model(StockMove.class.getName())
                 .add("form", "stock-move-supplychain-concat-suppl-invoice-confirm-form")
                 .param("popup", "true")
@@ -346,7 +347,7 @@ public class StockMoveInvoiceController {
             inv -> {
               try {
                 response.setView(
-                    ActionView.define("Invoice")
+                    ActionView.define(I18n.get("Invoice"))
                         .model(Invoice.class.getName())
                         .add("grid", InvoiceViewService.computeInvoiceGridName(inv))
                         .add("form", "invoice-form")
@@ -421,7 +422,7 @@ public class StockMoveInvoiceController {
           inv -> {
             try {
               response.setView(
-                  ActionView.define("Invoice")
+                  ActionView.define(I18n.get("Invoice"))
                       .model(Invoice.class.getName())
                       .add("grid", InvoiceViewService.computeInvoiceGridName(inv))
                       .add("form", "invoice-form")
@@ -466,7 +467,7 @@ public class StockMoveInvoiceController {
       if (!invoiceIdList.isEmpty()) {
         ActionViewBuilder viewBuilder;
 
-        viewBuilder = ActionView.define("Cust. Invoices");
+        viewBuilder = ActionView.define(I18n.get("Cust. Invoices"));
 
         viewBuilder
             .model(Invoice.class.getName())
@@ -486,7 +487,7 @@ public class StockMoveInvoiceController {
         response.setView(viewBuilder.map());
       }
       if (warningMessage != null && !warningMessage.isEmpty()) {
-        response.setFlash(warningMessage);
+        response.setInfo(warningMessage);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -516,7 +517,7 @@ public class StockMoveInvoiceController {
       if (!invoiceIdList.isEmpty()) {
         ActionViewBuilder viewBuilder;
 
-        viewBuilder = ActionView.define("Suppl. Invoices");
+        viewBuilder = ActionView.define(I18n.get("Suppl. Invoices"));
 
         viewBuilder
             .model(Invoice.class.getName())
@@ -536,7 +537,7 @@ public class StockMoveInvoiceController {
         response.setView(viewBuilder.map());
       }
       if (warningMessage != null && !warningMessage.isEmpty()) {
-        response.setFlash(warningMessage);
+        response.setInfo(warningMessage);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

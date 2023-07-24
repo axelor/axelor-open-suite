@@ -1,9 +1,0 @@
-"importId";"name";"code";"workCenterTypeSelect";"machine.importId";"capacityPerCycle";"maxCapacityPerCycle";"durationPerCycle";"startingDuration";"setupDuration";"endingDuration";"product.importId";"costTypeSelect";"costAmount";"costSheetGroup.importId"
-10;"Proc. Assembly workbench";"MOUNT-PROC";3;10;1;1;900;60;0;60;402;1;30;3
-20;"Drilling workbench";"MOUNT-DRILL";3;20;1;1;600;60;0;60;402;1;20;3
-30;"Electric workbench";"MOUNT-ELEC";3;30;1;1;1200;90;0;90;402;1;20;3
-40;"Quality control";"CONTR-QUAL";1;;;;;;;;;;;3
-50;"Cleaning";"CLEAN";1;;;;;;;;;;;3
-60;"Wrapping";"WRAP";1;;;;;;;;;;;3
-70;"Tests workbench";"CONTR-TEST";3;40;2;2;3600;180;60;180;402;1;70;3
-80;"Product stock picking";"SHIP";1;;;;;;;;;;;3

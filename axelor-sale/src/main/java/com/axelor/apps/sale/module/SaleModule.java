@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.sale.module;
 
@@ -22,6 +23,7 @@ import com.axelor.apps.base.db.repo.PartnerAddressRepository;
 import com.axelor.apps.base.service.PartnerServiceImpl;
 import com.axelor.apps.base.service.ProductCategoryServiceImpl;
 import com.axelor.apps.crm.db.repo.OpportunityManagementRepository;
+import com.axelor.apps.crm.service.OpportunityServiceImpl;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.AdvancePaymentRepository;
 import com.axelor.apps.sale.db.repo.AdvancePaymentSaleRepository;
@@ -61,6 +63,7 @@ import com.axelor.apps.sale.service.configurator.ConfiguratorService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorServiceImpl;
 import com.axelor.apps.sale.service.saleorder.OpportunitySaleOrderService;
 import com.axelor.apps.sale.service.saleorder.OpportunitySaleOrderServiceImpl;
+import com.axelor.apps.sale.service.saleorder.OpportunityServiceSaleImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
@@ -93,6 +96,7 @@ public class SaleModule extends AxelorModule {
     bind(SaleOrderMarginService.class).to(SaleOrderMarginServiceImpl.class);
     bind(SaleOrderCreateService.class).to(SaleOrderCreateServiceImpl.class);
     bind(SaleOrderComputeService.class).to(SaleOrderComputeServiceImpl.class);
+    bind(OpportunityServiceImpl.class).to(OpportunityServiceSaleImpl.class);
     bind(OpportunitySaleOrderService.class).to(OpportunitySaleOrderServiceImpl.class);
     bind(AdvancePaymentService.class).to(AdvancePaymentServiceImpl.class);
     bind(AppSaleService.class).to(AppSaleServiceImpl.class);

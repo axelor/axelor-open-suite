@@ -1,0 +1,4 @@
+"importId";"project.importId";"product.importId";"employee_importId";"date";"timesheet.importId";"hoursDuration";"projectTask_importId"
+1;1;1;19;"TODAY[-10d]";1;7;
+2;1;1;19;"TODAY[-9d]";1;7;
+3;1;2;19;"TODAY[-2d]";2;7;

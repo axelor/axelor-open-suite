@@ -1,3 +1,0 @@
----
-title: "Fixed Asset Disposal: in cession, an error message needs to be thrown if the disposal date is in a realized period, not his year"
-type: fix
