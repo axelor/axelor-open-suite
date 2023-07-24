@@ -1,0 +1,3 @@
+---
+title: "Mass entry : Fix fill of payment condition when journal isn't type 'other'"
+type: fix
