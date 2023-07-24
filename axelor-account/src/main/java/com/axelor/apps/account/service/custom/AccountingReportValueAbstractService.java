@@ -23,11 +23,16 @@ import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountingReportConfigLineRepository;
 import com.axelor.apps.account.db.repo.AccountingReportValueRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.DateService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.StringUtils;
+import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
+import com.axelor.i18n.I18n;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -39,6 +44,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -283,5 +289,65 @@ public abstract class AccountingReportValueAbstractService {
   protected Set<AnalyticAccount> fetchAnalyticAccountsFromCode(String code) {
     return new HashSet<>(
         analyticAccountRepo.all().filter("self.code LIKE :code").bind("code", code).fetch());
+  }
+
+  protected AccountingReport fetchAccountingReport(AccountingReport accountingReport) {
+    boolean traceAnomalies = accountingReport.getTraceAnomalies();
+
+    accountingReport = JPA.find(AccountingReport.class, accountingReport.getId());
+    accountingReport.setTraceAnomalies(traceAnomalies);
+
+    return accountingReport;
+  }
+
+  protected void traceException(
+      String errorMessage,
+      AccountingReport accountingReport,
+      AccountingReportConfigLine group,
+      AccountingReportConfigLine column,
+      AccountingReportConfigLine line) {
+    this.traceException(
+        new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(errorMessage)),
+        accountingReport,
+        group,
+        column,
+        line);
+  }
+
+  protected void traceException(
+      Exception e,
+      AccountingReport accountingReport,
+      AccountingReportConfigLine group,
+      AccountingReportConfigLine column,
+      AccountingReportConfigLine line) {
+    AxelorException axelorException;
+    String message =
+        Optional.of(e)
+            .map(Throwable::getCause)
+            .map(Throwable::getLocalizedMessage)
+            .orElse(e.getLocalizedMessage());
+
+    if (group == null) {
+      axelorException =
+          new AxelorException(
+              accountingReport,
+              TraceBackRepository.CATEGORY_INCONSISTENCY,
+              I18n.get(AccountExceptionMessage.CUSTOM_REPORT_ANOMALY_NO_GROUP),
+              column.getCode(),
+              line.getCode(),
+              message);
+    } else {
+      axelorException =
+          new AxelorException(
+              accountingReport,
+              TraceBackRepository.CATEGORY_INCONSISTENCY,
+              I18n.get(AccountExceptionMessage.CUSTOM_REPORT_ANOMALY_GROUP),
+              group.getCode(),
+              column.getCode(),
+              line.getCode(),
+              message);
+    }
+
+    TraceBackService.trace(axelorException);
   }
 }

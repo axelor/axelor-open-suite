@@ -1,3 +1,0 @@
----
-title: "Custom accounting report : Fix percentage value when total line is not computed during the first iteration"
-type: fix

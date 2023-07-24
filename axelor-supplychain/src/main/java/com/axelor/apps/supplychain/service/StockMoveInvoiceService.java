@@ -38,6 +38,9 @@ public interface StockMoveInvoiceService {
       List<Map<String, Object>> stockMoveLineListContext)
       throws AxelorException;
 
+  Invoice createInvoiceFromStockMove(StockMove stockMove, Map<Long, BigDecimal> qtyToInvoiceMap)
+      throws AxelorException;
+
   @Transactional(rollbackOn = {Exception.class})
   public Invoice createInvoiceFromSaleOrder(
       StockMove stockMove, SaleOrder saleOrder, Map<Long, BigDecimal> qtyToInvoiceMap)

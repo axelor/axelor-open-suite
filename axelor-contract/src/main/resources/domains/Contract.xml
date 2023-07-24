@@ -46,9 +46,10 @@
     <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
 
     <one-to-one name="currentContractVersion"
-      ref="com.axelor.apps.contract.db.ContractVersion" required="true" title="Current version"/>
+      ref="com.axelor.apps.contract.db.ContractVersion" required="true" title="Current version"
+      unique="true"/>
     <one-to-one name="nextVersion" ref="com.axelor.apps.contract.db.ContractVersion"
-      title="Next version"/>
+      title="Next version" unique="true"/>
 
     <one-to-many name="additionalBenefitContractLineList"
       ref="com.axelor.apps.contract.db.ContractLine" title="Next Invoice Additional Benefit"/>

@@ -36,7 +36,7 @@
       title="Country"/>
 
     <one-to-one name="emailAddress" ref="com.axelor.message.db.EmailAddress"
-      title="Email"/>
+      title="Email" unique="true"/>
     <binary name="picture" title="Picture"/>
 
     <string name="description" title="Description" large="true"/>
@@ -106,6 +106,7 @@
 
     	public static final int CONVERT_LEAD_CREATE_PARTNER = 1;
     	public static final int CONVERT_LEAD_SELECT_PARTNER = 2;
+    	public static final int CONVERT_LEAD_NO_CONTACT_CREATION = 0;
     	public static final int CONVERT_LEAD_CREATE_CONTACT = 1;
     	public static final int CONVERT_LEAD_SELECT_CONTACT = 2;
 

@@ -7,7 +7,7 @@
 
   <entity name="AppHelpdesk" cacheable="true">
 
-    <one-to-one ref="com.axelor.studio.db.App" name="app"/>
+    <one-to-one ref="com.axelor.studio.db.App" name="app" unique="true"/>
 
     <boolean name="isSla" title="SLA" default="false"/>
     <boolean name="manageTimer" title="Manage Timer" default="false"/>

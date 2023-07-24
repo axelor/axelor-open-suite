@@ -44,7 +44,7 @@ public class CrmReportingServiceImpl implements CrmReportingService {
 
   protected AppBaseService appBaseService;
   protected static final String PARTNER = "Partner";
-  protected static final String LEAD = "Lead";
+  protected static final String LEAD = "eventLead";
   protected static final String OPPORTUNITY = "Opportunity";
   protected static final String EVENT = "Event";
 
@@ -69,7 +69,7 @@ public class CrmReportingServiceImpl implements CrmReportingService {
         if (isPartner) {
           model = PARTNER.toLowerCase();
         } else {
-          model = LEAD.toLowerCase();
+          model = LEAD;
         }
 
         if (className.equals(OPPORTUNITY)) {
