@@ -95,4 +95,10 @@ public class ProjectTaskBusinessSupportServiceImpl extends ProjectTaskBusinessPr
 
     return task;
   }
+
+  @Override
+  public void fillSubtask(ProjectTask projectTask) {
+    super.fillSubtask(projectTask);
+    projectTask.setTargetVersion(projectTask.getParentTask().getTargetVersion());
+  }
 }

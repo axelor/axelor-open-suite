@@ -263,4 +263,14 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
     String result = buffer.toString();
     return StringUtils.isEmpty(result) ? value : result;
   }
+
+  @Override
+  public void fillSubtask(ProjectTask projectTask) {
+    projectTask.setParentTask(projectTaskRepo.find(projectTask.getParentTask().getId()));
+    projectTask.setProjectTaskCategory(projectTask.getParentTask().getProjectTaskCategory());
+    projectTask.setProjectTaskSection(projectTask.getParentTask().getProjectTaskSection());
+    projectTask.setPriority(projectTask.getParentTask().getPriority());
+    projectTask.setProjectTaskTagSet(projectTask.getParentTask().getProjectTaskTagSet());
+    projectTask.setAssignedTo(projectTask.getParentTask().getAssignedTo());
+  }
 }
