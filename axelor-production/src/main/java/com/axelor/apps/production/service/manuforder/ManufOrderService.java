@@ -21,6 +21,7 @@ package com.axelor.apps.production.service.manuforder;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProdProduct;
@@ -77,6 +78,7 @@ public interface ManufOrderService {
   public ManufOrder createManufOrder(
       Product product,
       BigDecimal qty,
+      Unit unit,
       int priority,
       boolean isToInvoice,
       Company company,
@@ -271,4 +273,13 @@ public interface ManufOrderService {
   List<ManufOrder> getChildrenManufOrder(ManufOrder manufOrder);
 
   public BigDecimal computeProducibleQty(ManufOrder manufOrder) throws AxelorException;
+
+  /**
+   * Method that will update planned dates of manuf order. Unlike the other methods, this will not
+   * reset planned dates of the operation orders of the manuf order. This method must be called when
+   * changement has occured in operation orders.
+   *
+   * @param manufOrder
+   */
+  public void updatePlannedDates(ManufOrder manufOrder);
 }

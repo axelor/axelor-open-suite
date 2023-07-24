@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="budget-line-grid" title="Budget Lines"
+    model="com.axelor.apps.budget.db.BudgetLine">
+    <field name="fromDate"/>
+    <field name="toDate"/>
+    <field name="amountExpected" title="Total amount expected"/>
+    <field name="amountCommitted" if-module="axelor-supplychain"
+      if="__config__.app.isApp('supplychain')" title="Total amount committed"/>
+    <field name="availableAmount"/>
+    <field name="realizedWithNoPo"/>
+    <field name="realizedWithPo"/>
+    <field name="firmGap"/>
+    <field name="amountPaid"/>
+    <field name="amountRealized" hidden="true"/>
+  </grid>
+
+  <form name="budget-line-form" title="Budget Line"
+    model="com.axelor.apps.budget.db.BudgetLine" width="large">
+    <panel name="mainPanel">
+      <field name="fromDate" onChange="action-budget-line-on-change-from-date-validate"
+        required="true"/>
+      <field name="toDate" onChange="action-budget-line-on-change-to-date-validate"
+        required="true"/>
+      <field name="amountExpected"
+        onChange="action-budget-line-record-compute-available-amount"/>
+      <field name="amountCommitted" readonly="true" if-module="axelor-supplychain"
+        if="__config__.app.isApp('supplychain')"/>
+      <field name="availableAmount" readonly="true"/>
+      <field name="realizedWithNoPo" readonly="true"/>
+      <field name="realizedWithPo" readonly="true"/>
+      <field name="amountPaid" readonly="true"/>
+      <field name="firmGap" readonly="true"/>
+      <field name="amountRealized" readonly="true" hidden="true"/>
+    </panel>
+  </form>
+
+  <action-validate name="action-budget-line-on-change-from-date-validate">
+    <error
+      message="Please select valid dates for budget lines, dates need to be in the budget period"
+      if="fromDate != null &amp;&amp; fromDate &lt; __parent__.fromDate ||
+			   	   fromDate != null &amp;&amp; fromDate &gt; __parent__.toDate ||
+			   	   fromDate != null &amp;&amp; toDate != null &amp;&amp; fromDate &gt; toDate"
+      action="action-budget-line-on-change-from-date"/>
+  </action-validate>
+
+  <action-attrs name="action-budget-line-on-change-from-date">
+    <attribute for="fromDate" name="value" expr="eval: null"/>
+  </action-attrs>
+
+  <action-validate name="action-budget-line-on-change-to-date-validate">
+    <error
+      message="Please select valid dates for budget lines, dates need to be in the budget period"
+      if="toDate != null &amp;&amp; toDate &gt; __parent__.toDate ||
+			       toDate != null &amp;&amp; toDate &lt; __parent__.fromDate ||
+			       toDate != null &amp;&amp; fromDate != null &amp;&amp; toDate &lt; fromDate"
+      action="action-budget-line-on-change-to-date"/>
+  </action-validate>
+
+  <action-attrs name="action-budget-line-on-change-to-date">
+    <attribute for="toDate" name="value" expr="eval: null"/>
+  </action-attrs>
+
+  <action-record name="action-budget-line-record-compute-available-amount"
+    model="com.axelor.apps.budget.db.BudgetLine">
+    <field name="availableAmount" expr="eval: amountExpected-amountCommitted"/>
+  </action-record>
+
+</object-views>

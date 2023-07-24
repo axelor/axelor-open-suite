@@ -31,8 +31,6 @@ public class OperationOrderPutRequest extends RequestStructure {
   @Max(OperationOrderRepository.STATUS_FINISHED)
   private Integer status;
 
-  public OperationOrderPutRequest() {}
-
   public int getStatus() {
     return status;
   }

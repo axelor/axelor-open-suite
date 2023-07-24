@@ -21,6 +21,7 @@
         public static final int TERMINATE = 2;
         public static final int CURRENT_VERSION_ACTIVATION = 3;
         public static final int NEXT_VERSION_ACTIVATION = 4;
+        public static final int REVALUATE_CONTRACTS = 5;
       ]]></extra-code>
   </entity>
 
