@@ -31,5 +31,4 @@ public interface ExpenseInvoiceLineService {
 
   public List<InvoiceLine> createInvoiceLine(Invoice invoice, ExpenseLine expenseLine, int priority)
       throws AxelorException;
-
 }

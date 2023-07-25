@@ -12,9 +12,8 @@
       onChange="action-expense-line-attrs-project-on-change"/>
     <field name="expenseProduct" canView="false"
       onSelect="action-expense-line-attrs-set-product-domain"
-      onChange="action-expense-line-method-total-tax"
-      widget="SuggestBox" form-view="product-expense-form" grid-view="product-expense-grid"
-      width="200"/>
+      onChange="action-expense-line-method-total-tax" widget="SuggestBox"
+      form-view="product-expense-form" grid-view="product-expense-grid" width="200"/>
     <field name="expenseDate" onChange="action-expense-line-validate-expenseDate" width="120"/>
     <field name="employee" hidden="true" form-view="employee-form" grid-view="employee-grid"
       onSelect="action-expense-line-attrs-company"/>
@@ -79,8 +78,8 @@
         form-view="project-form" grid-view="project-grid"/>
       <field name="expenseProduct" edit-icon="false" canEdit="false"
         onSelect="action-expense-line-attrs-set-product-domain"
-        onChange="action-expense-line-method-total-tax"
-        widget="SuggestBox" form-view="product-expense-form" grid-view="product-expense-grid"/>
+        onChange="action-expense-line-method-total-tax" widget="SuggestBox"
+        form-view="product-expense-form" grid-view="product-expense-grid"/>
       <field name="expenseDate" onChange="action-expense-line-validate-expenseDate"/>
       <field name="totalAmount" validIf="$number(totalAmount) &gt;= $number(totalTax)"
         onChange="action-expense-line-method-total-tax, action-expense-on-change-untaxt-amount, action-expense-line-method-compute-analytic-distribution"/>

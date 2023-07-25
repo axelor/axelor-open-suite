@@ -28,7 +28,6 @@ import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -100,27 +99,27 @@ public class ExpenseLineServiceImpl implements ExpenseLineService {
     Product product = expenseLine.getExpenseProduct();
     if (product != null) {
       accountManagement =
-              product.getAccountManagementList().stream()
-                      .filter(it -> (it.getPurchaseTax() != null))
-                      .findFirst()
-                      .orElse(null);
+          product.getAccountManagementList().stream()
+              .filter(it -> (it.getPurchaseTax() != null))
+              .findFirst()
+              .orElse(null);
       if (accountManagement == null) {
         ProductFamily productFamily = expenseLine.getExpenseProduct().getProductFamily();
         if (productFamily != null) {
           accountManagement =
-                  productFamily.getAccountManagementList().stream()
-                          .filter(it -> (it.getPurchaseTax() != null))
-                          .findFirst()
-                          .orElse(null);
+              productFamily.getAccountManagementList().stream()
+                  .filter(it -> (it.getPurchaseTax() != null))
+                  .findFirst()
+                  .orElse(null);
         }
         if (accountManagement == null && expenseLine.getExpense().getCompany() != null) {
           tax =
-                  expenseLine
-                          .getExpense()
-                          .getCompany()
-                          .getAccountConfig()
-                          .getExpenseTaxAccount()
-                          .getDefaultTax();
+              expenseLine
+                  .getExpense()
+                  .getCompany()
+                  .getAccountConfig()
+                  .getExpenseTaxAccount()
+                  .getDefaultTax();
         }
       }
     }
@@ -134,21 +133,17 @@ public class ExpenseLineServiceImpl implements ExpenseLineService {
   protected void extractTotalTax(ExpenseLine expenseLine, Tax tax) {
     if (tax != null) {
       BigDecimal value =
-              expenseLine
+          expenseLine
+              .getTotalAmount()
+              .subtract(
+                  expenseLine
                       .getTotalAmount()
-                      .subtract(
-                              expenseLine
-                                      .getTotalAmount()
-                                      .divide(
-                                              BigDecimal.ONE.add(
-                                                      tax.getActiveTaxLine()
-                                                              .getValue()
-                                                              .divide(
-                                                                      BigDecimal.valueOf(100),
-                                                                      AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
-                                                                      RoundingMode.DOWN)),
-                                              AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
-                                              RoundingMode.HALF_DOWN));
+                      .divide(
+                          BigDecimal.ONE.add(
+                              tax.getActiveTaxLine()
+                                  .getValue()),
+                          AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+                          RoundingMode.HALF_DOWN));
       expenseLine.setTotalTax(value);
     } else {
       expenseLine.setTotalTax(BigDecimal.ZERO);
