@@ -277,6 +277,7 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
               analyticCounter);
 
       if (nullCount == previousNullCount || this.isThereTraceback(accountingReport)) {
+        this.clearTracebacks(accountingReport);
         accountingReport.setTraceAnomalies(true);
 
         this.createReportValues(
@@ -303,15 +304,14 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
 
   @Transactional
   protected void clearTracebacks(AccountingReport accountingReport) {
-    this.getTracebackQuery(accountingReport)
-        .remove();
+    this.getTracebackQuery(accountingReport).remove();
   }
 
   protected Query<TraceBack> getTracebackQuery(AccountingReport accountingReport) {
     return traceBackRepository
-            .all()
-            .filter("self.ref = 'com.axelor.apps.account.db.AccountingReport' AND self.refId = :id")
-            .bind("id", accountingReport.getId());
+        .all()
+        .filter("self.ref = 'com.axelor.apps.account.db.AccountingReport' AND self.refId = :id")
+        .bind("id", accountingReport.getId());
   }
 
   protected void checkAccountingReportType(AccountingReportType accountingReportType)
