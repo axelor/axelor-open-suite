@@ -45,7 +45,7 @@
         <field name="expense" hidden="true"/>
       </panel>
       <panel name="vatPanel" title="VAT" colSpan="12">
-        <field name="taxComputeModeSelect"/>
+        <field name="taxComputeModeSelect" required="true"/>
       </panel>
       <panel name="categorizationPanel" title="Categorization" colSpan="12">
         <field name="productFamily" colSpan="12" form-view="product-family-form"

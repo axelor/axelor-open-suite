@@ -110,9 +110,13 @@ public class ExpenseController {
       ActionRequest request, ActionResponse response) {
     ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
     if (expenseLine != null) {
-      expenseLine =
-          Beans.get(ExpenseLineService.class).getTotalTaxFromProductAndTotalAmount(expenseLine);
-      response.setValue("totalTax", expenseLine.getTotalTax());
+      if (expenseLine.getExpenseProduct().getTaxComputeModeSelect() == 20) {
+        response.setValue("totalTax", null);
+      } else if (expenseLine.getExpenseProduct().getTaxComputeModeSelect() == 10) {
+        expenseLine =
+            Beans.get(ExpenseLineService.class).getTotalTaxFromProductAndTotalAmount(expenseLine);
+        response.setValue("totalTax", expenseLine.getTotalTax());
+      }
     }
   }
 

@@ -21,15 +21,15 @@
       onChange="action-expense-line-method-total-tax, action-expense-on-change-tax-untaxt-amount"
       width="170"/>
     <field name="totalTax" validIf="$number(totalAmount) &gt;= $number(totalTax)"
-      aggregate="sum"
-      readonlyIf="expenseProduct.blockExpenseTax || expenseProduct.vatInAmount == false" width="80"
+      aggregate="sum" readonlyIf="expenseProduct.taxComputeModeSelect != 30"
+      hideIf="expenseProduct.taxComputeModeSelect == 20" width="80"
       onChange="action-expense-on-change-tax-untaxt-amount,action-expense-line-method-compute-analytic-distribution"/>
     <field name="toInvoice"/>
     <field name="justificationMetaFile" widget="binary-link"/>
     <field name="comments" width="400"/>
     <field name="untaxedAmount" hidden="true"/>
-    <field name="expenseProduct.blockExpenseTax" hidden="true"/>
-    <field name="expenseProduct.vatInAmount" hidden="true"/>
+    <field name="expenseProduct.taxComputeModeSelect" hidden="true"/>
+
   </grid>
 
   <grid name="expense-line-kilometric-grid" title="Kilometric Allowances"
@@ -84,7 +84,8 @@
         onChange="action-expense-line-method-total-tax, action-expense-on-change-untaxt-amount, action-expense-line-method-compute-analytic-distribution"/>
       <field name="totalTax" validIf="$number(totalAmount) &gt;= $number(totalTax)"
         onChange="action-expense-on-change-tax-untaxt-amount, action-expense-line-method-compute-analytic-distribution"
-        readonlyIf="expenseProduct.blockExpenseTax == true || expenseProduct.vatInAmount == false"/>
+        readonlyIf="expenseProduct.taxComputeModeSelect != 30"
+        hideIf="expenseProduct.taxComputeModeSelect == 20"/>
       <field name="untaxedAmount"/>
       <field name="toInvoice" colSpan="3"/>
       <field name="invoiced" colSpan="3"
@@ -103,6 +104,7 @@
       <field name="expense" hidden="true"/>
       <field name="expense.companyCbSelect" hidden="true"/>
       <field name="expense.multipleUsers" hidden="true"/>
+      <field name="expenseProduct.taxComputeModeSelect" hidden="true"/>
     </panel>
 
     <panel name="analyticDistributionPanel" title="Analytic distribution"
