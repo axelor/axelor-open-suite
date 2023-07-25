@@ -112,7 +112,7 @@ public class ExpenseController {
     if (expenseLine != null) {
       if (expenseLine.getExpenseProduct().getTaxComputeModeSelect() == 20) {
         response.setValue("totalTax", null);
-      } else if (expenseLine.getExpenseProduct().getTaxComputeModeSelect() == 10) {
+      } else if (expenseLine.getExpenseProduct().getTaxComputeModeSelect() == 30) {
         expenseLine =
             Beans.get(ExpenseLineService.class).getTotalTaxFromProductAndTotalAmount(expenseLine);
         response.setValue("totalTax", expenseLine.getTotalTax());
