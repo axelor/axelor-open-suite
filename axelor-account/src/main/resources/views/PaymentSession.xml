@@ -14,7 +14,7 @@
     <field name="paymentMode"/>
     <field name="partnerTypeSelect"/>
     <field name="paymentDate"/>
-    <field name="sessionTotalAmount"/>
+    <field name="sessionTotalAmountFormula"/>
     <field name="currency"/>
     <field name="statusSelect"/>
   </grid>
@@ -31,7 +31,7 @@
     <field name="name"/>
     <field name="createdOn"/>
     <field name="company"/>
-    <field name="sessionTotalAmount"/>
+    <field name="sessionTotalAmountFormula"/>
     <field name="statusSelect"/>
     <field name="paymentDate" hidden="true"/>
     <field name="accountingTriggerSelect" hidden="true"/>
@@ -45,7 +45,7 @@
     <field name="createdOn"/>
     <field name="assignedToUser"/>
     <field name="company"/>
-    <field name="sessionTotalAmount"/>
+    <field name="sessionTotalAmountFormula"/>
     <field name="statusSelect"/>
   </grid>
 
@@ -67,26 +67,26 @@
         <field name="$viewerTags" showTitle="false" readonly="true">
           <viewer><![CDATA[
 	                       <h4>
-	                           <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="record.sessionTotalAmount < 0">Session total amount is negative</span>
+	                           <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="record.sessionTotalAmountFormula < 0">Session total amount is negative</span>
 	                       </h4>
 	        ]]></viewer>
         </field>
-        <button name="$sessionTotalAmountBtn" title="Session total amount" icon="fa-money"
+        <button name="sessionTotalAmountFormula" title="Session total amount" icon="fa-money"
           widget="info-button" onClick="action-payment-session-view-invoice-terms"
-          showIf="sessionTotalAmount &gt; 0 || $hasUnselectedInvoiceTerm"
-          x-currency="company.currency.symbol"/>
+          showIf="sessionTotalAmountFormula &gt; 0 || $hasUnselectedInvoiceTerm"
+          x-currency="company.currency.symbol" readonly="false"/>
       </panel>
       <panel name="btnPanel" colSpan="4" itemSpan="12">
         <button name="validateBtn" title="Validate" css="btn-success"
-          showIf="statusSelect == 1 &amp;&amp; id &amp;&amp; sessionTotalAmount > 0"
+          showIf="statusSelect == 1 &amp;&amp; id &amp;&amp; sessionTotalAmountFormula > 0"
           onClick="action-payment-session-group-validate"/>
         <button name="cancelBtn" title="Cancel" css="btn-danger"
           showIf="statusSelect == 1 &amp;&amp; id" onClick="action-payment-session-group-cancel"/>
         <field name="$hasUnselectedInvoiceTerm" hidden="true"/>
         <field name="$hasInvoiceTerm" hidden="true"/>
       </panel>
-      <panel name="emailPanel" showIf="id &amp;&amp; sessionTotalAmount > 0" colSpan="4"
-        itemSpan="12" colOffset="4">
+      <panel name="emailPanel" showIf="id &amp;&amp; sessionTotalAmountFormula > 0"
+        colSpan="4" itemSpan="12" colOffset="4">
         <button name="sendEmailsBtn" title="Generate emails payment notice"
           showIf="statusSelect == 2 || statusSelect == 3" readonlyIf="hasEmailsSent == true"
           onClick="save,action-payment-session-method-send-emails"/>
@@ -108,7 +108,7 @@
 
     </panel>
     <panel name="mainPanel" itemSpan="4"
-      readonlyIf="statusSelect > 1 || sessionTotalAmount > 0">
+      readonlyIf="statusSelect > 1 || sessionTotalAmountFormula > 0">
       <field name="createdOn"/>
       <field name="sequence"/>
       <field name="company" form-view="company-form" grid-view="company-grid"
@@ -172,7 +172,7 @@
       <panel-dashlet
         action="action-invoice-term-view-payment-session-group-by-partner-dashlet" showIf="id"
         colSpan="12" canSearch="true" height="380" readonlyIf="statusSelect > 1"/>
-      <field name="sessionTotalAmount" hidden="true"/>
+      <field name="sessionTotalAmountFormula" hidden="true"/>
     </panel>
   </form>
 
@@ -214,7 +214,6 @@
     <action name="action-payment-session-validate-cancel"/>
     <action name="save"/>
     <action name="action-payment-session-method-cancel"/>
-    <action name="action-method-payment-session-compute-total"/>
   </action-group>
 
   <action-group name="action-group-payment-session-on-load">
@@ -222,6 +221,7 @@
     <action name="action-payment-session-method-set-has-invoice-term-selected"/>
     <action name="action-payment-session-method-set-has-invoice-term"/>
     <action name="action-payment-session-record-set-session-total-amount-btn"/>
+    <action name="action-payment-session-method-set-button-attrs"/>
   </action-group>
 
   <action-attrs name="action-attrs-payment-session-set-company-domain">
@@ -300,21 +300,12 @@
     <field name="moveAccountingDateSelect" expr="eval: paymentMode?.moveAccountingDateSelect"/>
   </action-record>
 
-  <action-record name="action-payment-session-record-set-session-total-amount-btn"
-    model="com.axelor.apps.account.db.PaymentSession">
-    <field name="$sessionTotalAmountBtn" expr="eval: sessionTotalAmount"/>
-  </action-record>
-
   <action-method name="action-method-payment-session-set-bank-details">
     <call class="com.axelor.apps.account.web.PaymentSessionController" method="setBankDetails"/>
   </action-method>
 
   <action-method name="action-method-payment-session-set-journal">
     <call class="com.axelor.apps.account.web.PaymentSessionController" method="setJournal"/>
-  </action-method>
-
-  <action-method name="action-method-payment-session-compute-total">
-    <call class="com.axelor.apps.account.web.PaymentSessionController" method="computeTotal"/>
   </action-method>
 
   <action-method name="action-method-payment-session-search-eligible-terms">
