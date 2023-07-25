@@ -82,7 +82,6 @@
       title="Analytic Distribution Template"/>
 
     <boolean name="subtotalByAnalyticDistribution" title="Subtotal by analytic distribution"/>
-    <boolean name="displaySimulatedMove" title="Show simulated moves"/>
 
     <!-- Report 19 & 20 DAS2 -->
     <decimal name="minAmountExcl" title="Min. amount (€)"

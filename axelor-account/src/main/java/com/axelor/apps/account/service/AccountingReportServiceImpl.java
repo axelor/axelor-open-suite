@@ -372,17 +372,22 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
     this.addParams("self.move.ignoreInAccountingOk = 'false'");
 
-    List<Integer> statusSelects = new ArrayList<>();
+    List<Integer> statusSelects = new ArrayList<>(List.of(MoveRepository.STATUS_ACCOUNTED));
+
     if (accountingReport.getReportType() != null
         && accountingReport.getReportType().getTypeSelect()
-            != AccountingReportRepository.REPORT_FEES_DECLARATION_SUPPORT) {
+            != AccountingReportRepository.REPORT_FEES_DECLARATION_SUPPORT
+        && accountingReport
+            .getMoveStatusSelect()
+            .contains(String.valueOf(MoveRepository.STATUS_DAYBOOK))) {
       statusSelects.add(MoveRepository.STATUS_DAYBOOK);
     }
-    statusSelects.add(MoveRepository.STATUS_ACCOUNTED);
     if (accountConfigService
             .getAccountConfig(accountingReport.getCompany())
             .getIsActivateSimulatedMove()
-        && accountingReport.getDisplaySimulatedMove()) {
+        && accountingReport
+            .getMoveStatusSelect()
+            .contains(String.valueOf(MoveRepository.STATUS_SIMULATED))) {
       statusSelects.add(MoveRepository.STATUS_SIMULATED);
     }
 
@@ -806,13 +811,18 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
     this.addParams("self.vatSystemSelect = ?%d", TaxPaymentMoveLineRepository.VAT_SYSTEM_PAYMENT);
 
-    List<Integer> statusSelects = new ArrayList<>();
-    statusSelects.add(MoveRepository.STATUS_DAYBOOK);
-    statusSelects.add(MoveRepository.STATUS_ACCOUNTED);
+    List<Integer> statusSelects = new ArrayList<>(List.of(MoveRepository.STATUS_ACCOUNTED));
+    if (accountingReport
+        .getMoveStatusSelect()
+        .contains(String.valueOf(MoveRepository.STATUS_DAYBOOK))) {
+      statusSelects.add(MoveRepository.STATUS_DAYBOOK);
+    }
     if (accountConfigService
             .getAccountConfig(accountingReport.getCompany())
             .getIsActivateSimulatedMove()
-        && accountingReport.getDisplaySimulatedMove()) {
+        && accountingReport
+            .getMoveStatusSelect()
+            .contains(String.valueOf(MoveRepository.STATUS_SIMULATED))) {
       statusSelects.add(MoveRepository.STATUS_SIMULATED);
     }
 
@@ -860,13 +870,18 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
     this.addParams("self.move.ignoreInAccountingOk = 'false'");
 
-    List<Integer> statusSelects = new ArrayList<>();
-    statusSelects.add(MoveRepository.STATUS_DAYBOOK);
-    statusSelects.add(MoveRepository.STATUS_ACCOUNTED);
+    List<Integer> statusSelects = new ArrayList<>(List.of(MoveRepository.STATUS_ACCOUNTED));
+    if (accountingReport
+        .getMoveStatusSelect()
+        .contains(String.valueOf(MoveRepository.STATUS_DAYBOOK))) {
+      statusSelects.add(MoveRepository.STATUS_DAYBOOK);
+    }
     if (accountConfigService
             .getAccountConfig(accountingReport.getCompany())
             .getIsActivateSimulatedMove()
-        && accountingReport.getDisplaySimulatedMove()) {
+        && accountingReport
+            .getMoveStatusSelect()
+            .contains(String.valueOf(MoveRepository.STATUS_SIMULATED))) {
       statusSelects.add(MoveRepository.STATUS_SIMULATED);
     }
 
