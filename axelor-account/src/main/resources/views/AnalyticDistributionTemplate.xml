@@ -22,12 +22,12 @@
     </panel>
     <panel-related name="analyticDistributionLineListPanel" showIf="!isSpecific"
       field="analyticDistributionLineList" grid-view="analytic-distribution-line-grid"
-      form-view="analytic-distribution-line-form"
+      form-view="analytic-distribution-line-form" canNew="name &amp;&amp; company"
       onChange="action-analytic-dist-template-method-validate-tot-percentage"/>
     <panel-related name="analyticDistributionLineListPanel" showIf="isSpecific"
       field="analyticDistributionLineList" grid-view="analytic-distribution-line-personalized-grid"
-      form-view="analytic-distribution-line-personalized-form"
-      onChange="action-analytic-dist-template-method-validate-tot-percentage" canNew="true"/>
+      form-view="analytic-distribution-line-personalized-form" canNew="name &amp;&amp; company"
+      onChange="action-analytic-dist-template-method-validate-tot-percentage"/>
   </form>
 
   <form name="analytic-distribution-template-fixed-asset-form"
@@ -41,12 +41,12 @@
     </panel>
     <panel-related name="analyticDistributionLineListPanel" showIf="!isSpecific"
       field="analyticDistributionLineList" grid-view="analytic-distribution-line-grid"
-      form-view="analytic-distribution-line-form"
+      form-view="analytic-distribution-line-form" canNew="name &amp;&amp; company"
       onChange="action-analytic-dist-template-method-validate-tot-percentage"/>
     <panel-related name="analyticDistributionLineListPanel" showIf="isSpecific"
       field="analyticDistributionLineList" grid-view="analytic-distribution-line-personalized-grid"
-      form-view="analytic-distribution-line-personalized-form"
-      onChange="action-analytic-dist-template-method-validate-tot-percentage" canNew="true"/>
+      form-view="analytic-distribution-line-personalized-form" canNew="name &amp;&amp; company"
+      onChange="action-analytic-dist-template-method-validate-tot-percentage"/>
   </form>
 
   <form name="analytic-distribution-template-account-form"
@@ -60,12 +60,12 @@
     </panel>
     <panel-related name="analyticDistributionLineListPanel" showIf="!isSpecific"
       field="analyticDistributionLineList" grid-view="analytic-distribution-line-grid"
-      form-view="analytic-distribution-line-form"
+      form-view="analytic-distribution-line-form" canNew="name &amp;&amp; company"
       onChange="action-analytic-dist-template-method-validate-tot-percentage"/>
     <panel-related name="analyticDistributionLineListPanel" showIf="isSpecific"
       field="analyticDistributionLineList" grid-view="analytic-distribution-line-personalized-grid"
-      form-view="analytic-distribution-line-personalized-form"
-      onChange="action-analytic-dist-template-method-validate-tot-percentage" canNew="true"/>
+      form-view="analytic-distribution-line-personalized-form" canNew="name &amp;&amp; company"
+      onChange="action-analytic-dist-template-method-validate-tot-percentage"/>
   </form>
 
   <action-method name="action-analytic-dist-template-method-validate-tot-percentage">

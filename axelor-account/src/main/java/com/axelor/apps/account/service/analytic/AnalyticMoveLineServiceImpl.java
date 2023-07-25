@@ -347,7 +347,10 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
   }
 
   @Override
-  public String getAnalyticAxisDomain(AnalyticMoveLine analyticMoveLine, Company company) {
+  public String getAnalyticAxisDomain(Company company) {
+    if (company == null) {
+      return "self.id = 0";
+    }
     StringBuilder domain = new StringBuilder();
     domain.append("(self.company is null OR self.company.id = " + company.getId() + ")");
     List<AnalyticAxis> analyticAxisList =

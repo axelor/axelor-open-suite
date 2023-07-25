@@ -24,12 +24,14 @@ import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.AnalyticMoveLineQuery;
 import com.axelor.apps.account.db.AnalyticMoveLineQueryParameter;
-import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AnalyticLine;
 import com.axelor.apps.account.service.analytic.AnalyticAccountService;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.tool.ContextTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -102,26 +104,32 @@ public class AnalyticDistributionLineController {
   }
 
   public void setAnalyticAxisDomain(ActionRequest request, ActionResponse response) {
-    AnalyticMoveLine analyticMoveLine = request.getContext().asType(AnalyticMoveLine.class);
+    if (!AnalyticDistributionLine.class.isAssignableFrom(request.getContext().getContextClass())) {
+      return;
+    }
+    AnalyticDistributionLine analyticDistributionLine =
+        request.getContext().asType(AnalyticDistributionLine.class);
     Company company = null;
-    if (analyticMoveLine.getAnalyticJournal() != null
-        && analyticMoveLine.getAnalyticJournal().getCompany() != null) {
-      company = analyticMoveLine.getAnalyticJournal().getCompany();
-    } else {
-      Context parent = request.getContext().getParent();
-      if (parent.getParent() != null && parent.getParent().get("company") != null) {
-        company = (Company) parent.get("company");
-      } else if (parent.get("move") != null && ((Move) parent.get("move")).getCompany() != null) {
-        company = ((Move) parent.get("move")).getCompany();
-      }
+    InvoiceLine invoiceLine =
+        ContextTool.getContextParent(request.getContext(), InvoiceLine.class, 1);
+    MoveLine moveLine = ContextTool.getContextParent(request.getContext(), MoveLine.class, 1);
+
+    if (analyticDistributionLine.getAnalyticJournal() != null
+        && analyticDistributionLine.getAnalyticJournal().getCompany() != null) {
+      company = analyticDistributionLine.getAnalyticJournal().getCompany();
+    } else if (invoiceLine != null
+        && invoiceLine.getInvoice() != null
+        && invoiceLine.getInvoice().getCompany() != null) {
+      company = invoiceLine.getInvoice().getCompany();
+    } else if (moveLine != null
+        && moveLine.getMove() != null
+        && moveLine.getMove().getCompany() != null) {
+      company = moveLine.getMove().getCompany();
     }
-    if (company != null) {
-      response.setAttr(
-          "analyticAxis",
-          "domain",
-          Beans.get(AnalyticMoveLineService.class)
-              .getAnalyticAxisDomain(analyticMoveLine, company));
-    }
+    response.setAttr(
+        "analyticAxis",
+        "domain",
+        Beans.get(AnalyticMoveLineService.class).getAnalyticAxisDomain(company));
   }
 
   public void setAnalyticAccountDomain(ActionRequest request, ActionResponse response) {

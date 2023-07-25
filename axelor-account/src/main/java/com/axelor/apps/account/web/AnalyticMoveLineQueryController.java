@@ -25,6 +25,8 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineQueryService;
+import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.tool.ContextTool;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.ResponseMessageType;
@@ -199,6 +201,35 @@ public class AnalyticMoveLineQueryController {
       domain.append(")");
       response.setAttr("analyticAccount", "domain", domain.toString());
 
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setAnalyticAxisDomain(ActionRequest request, ActionResponse response) {
+    try {
+      Context context = request.getContext();
+      AnalyticMoveLine analyticMoveLine = context.asType(AnalyticMoveLine.class);
+      InvoiceLine invoiceLine =
+          ContextTool.getContextParent(request.getContext(), InvoiceLine.class, 1);
+      MoveLine moveLine = ContextTool.getContextParent(request.getContext(), MoveLine.class, 1);
+      Company company = null;
+      if (analyticMoveLine.getAnalyticJournal() != null
+          && analyticMoveLine.getAnalyticJournal().getCompany() != null) {
+        company = analyticMoveLine.getAnalyticJournal().getCompany();
+      } else if (invoiceLine != null
+          && invoiceLine.getInvoice() != null
+          && invoiceLine.getInvoice().getCompany() != null) {
+        company = invoiceLine.getInvoice().getCompany();
+      } else if (moveLine != null
+          && moveLine.getMove() != null
+          && moveLine.getMove().getCompany() != null) {
+        company = moveLine.getMove().getCompany();
+      }
+      response.setAttr(
+          "analyticAxis",
+          "domain",
+          Beans.get(AnalyticMoveLineService.class).getAnalyticAxisDomain(company));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
