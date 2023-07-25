@@ -603,8 +603,10 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     newOrUpdatedMoveLine.setOrigin(move.getOrigin());
     newOrUpdatedMoveLine.setDescription(move.getDescription());
 
-    BigDecimal newMoveLineDebit = newOrUpdatedMoveLine.getDebit().add(debit.multiply(taxLine.getValue()));
-    BigDecimal newMoveLineCredit = newOrUpdatedMoveLine.getCredit().add(credit.multiply(taxLine.getValue()));
+    BigDecimal newMoveLineDebit =
+        newOrUpdatedMoveLine.getDebit().add(debit.multiply(taxLine.getValue()));
+    BigDecimal newMoveLineCredit =
+        newOrUpdatedMoveLine.getCredit().add(credit.multiply(taxLine.getValue()));
 
     this.setTaxLineAmount(newMoveLineDebit, newMoveLineCredit, newOrUpdatedMoveLine);
 
@@ -622,7 +624,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
             .getDebit()
             .add(newOrUpdatedMoveLine.getCredit())
             .compareTo(BigDecimal.ZERO)
-            == 0) {
+        == 0) {
       newMap.remove(newSourceTaxLineKey, newOrUpdatedMoveLine);
     }
 
@@ -632,7 +634,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
   protected void setTaxLineAmount(BigDecimal debit, BigDecimal credit, MoveLine moveLine) {
     if ((debit.compareTo(BigDecimal.ZERO) > 0
             && moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0)
-            || (credit.compareTo(BigDecimal.ZERO) > 0
+        || (credit.compareTo(BigDecimal.ZERO) > 0
             && moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0)) {
       BigDecimal creditTaxLineDiff = moveLine.getCredit().subtract(credit).abs();
       BigDecimal debitTaxLineDiff = moveLine.getDebit().subtract(debit).abs();
