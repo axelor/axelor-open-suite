@@ -156,6 +156,11 @@ public class InvoiceVisibilityServiceImpl implements InvoiceVisibilityService {
   @Override
   public boolean getPaymentVouchersStatus(Invoice invoice) throws AxelorException {
     AppAccountService appAccount = Beans.get(AppAccountService.class);
+
+    if (invoice.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
+      return false;
+    }
+
     return (InvoiceToolService.isPurchase(invoice))
         ? appAccount.getAppAccount().getPaymentVouchersOnSupplierInvoice()
         : appAccount.getAppAccount().getPaymentVouchersOnCustomerInvoice();
