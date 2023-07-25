@@ -41,6 +41,7 @@ import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
+import com.axelor.i18n.I18n;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
@@ -413,21 +414,21 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
         && !Objects.equals(column.getResultSelect(), line.getResultSelect())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          AccountExceptionMessage.REPORT_TYPE_DIFFERENT_RESULT_SELECT,
+          I18n.get(AccountExceptionMessage.REPORT_TYPE_DIFFERENT_RESULT_SELECT),
           accountingReport.getReportType().getName(),
           column.getCode(),
           line.getCode());
     } else if (!isBasicResultSelect && !isGroupResultSelect) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          AccountExceptionMessage.REPORT_TYPE_NO_RESULT_SELECT,
+          I18n.get(AccountExceptionMessage.REPORT_TYPE_NO_RESULT_SELECT),
           accountingReport.getReportType().getName(),
           column.getCode(),
           line.getCode());
     } else if (isGroupResultSelect && groupColumn == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          AccountExceptionMessage.REPORT_TYPE_SAME_AS_GROUP_NO_GROUP,
+          I18n.get(AccountExceptionMessage.REPORT_TYPE_SAME_AS_GROUP_NO_GROUP),
           accountingReport.getReportType().getName());
     }
   }
