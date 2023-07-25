@@ -11,6 +11,7 @@
     <boolean name="isActivity" title="Activity"/>
     <boolean name="deductLunchVoucher" title="Deduct lunch voucher"/>
     <boolean name="blockExpenseTax" title="Block expense tax modification" default="false"/>
+    <boolean name="vatInAmount" title="VAT in amount"/>
     <boolean name="personalExpense" title="Personal expense"/>
     <boolean name="unavailableToUsers" title="Unavailable to users" default="false"/>
   </entity>

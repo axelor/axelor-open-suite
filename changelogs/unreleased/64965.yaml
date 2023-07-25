@@ -1,0 +1,6 @@
+---
+title: "Expense: VAT per Expense line"
+type: feature
+description:
+  VAT can be defined as a percentage or an amount, depending on the product configuration.
+  The product can also be configured so that no VAT line is generated for expenses that cannot have VAT deducted.

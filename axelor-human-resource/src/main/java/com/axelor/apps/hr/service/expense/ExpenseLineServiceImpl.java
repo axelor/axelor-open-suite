@@ -18,11 +18,19 @@
  */
 package com.axelor.apps.hr.service.expense;
 
+import com.axelor.apps.account.db.AccountManagement;
+import com.axelor.apps.account.db.Tax;
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.ProductFamily;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -83,5 +91,47 @@ public class ExpenseLineServiceImpl implements ExpenseLineService {
         }
       }
     }
+  }
+
+  @Override
+  public ExpenseLine getTotalTaxFromProductAndTotalAmount(ExpenseLine expenseLine) {
+    AccountManagement accountManagement = null;
+    Product product = expenseLine.getExpenseProduct();
+    if(product != null){
+      accountManagement = product.getAccountManagementList().stream()
+              .filter(it -> (it.getPurchaseTax() != null))
+              .findFirst()
+              .orElse(null);
+      if (accountManagement == null) {
+        ProductFamily productFamily = expenseLine.getExpenseProduct().getProductFamily();
+        if(productFamily != null){
+          accountManagement = productFamily.getAccountManagementList().stream()
+                  .filter(it -> (it.getPurchaseTax() != null))
+                  .findFirst()
+                  .orElse(null);
+        }
+
+      }
+    }
+    if (accountManagement != null) {
+      Tax tax = accountManagement.getPurchaseTax();
+      BigDecimal value =
+              expenseLine
+                      .getTotalAmount()
+                      .divide(
+                              (tax.getActiveTaxLine()
+                                      .getValue()
+                                      .add(BigDecimal.valueOf(100))
+                                      .divide(
+                                              BigDecimal.valueOf(100),
+                                              AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+                                              RoundingMode.HALF_UP)),
+                              AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+                              RoundingMode.HALF_UP);
+      expenseLine.setTotalTax(value);
+    }else{
+      expenseLine.setTotalTax(BigDecimal.ZERO);
+    }
+    return expenseLine;
   }
 }

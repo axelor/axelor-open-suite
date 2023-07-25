@@ -106,6 +106,16 @@ public class ExpenseController {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+  public void autoCalculateTotalTaxFromProductAndTotalAmount(
+      ActionRequest request, ActionResponse response) {
+    ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
+    if (expenseLine != null) {
+      expenseLine =
+          Beans.get(ExpenseLineService.class).getTotalTaxFromProductAndTotalAmount(expenseLine);
+      response.setValue("totalTax", expenseLine.getTotalTax());
+    }
+  }
+
   public void createAnalyticDistributionWithTemplate(ActionRequest request, ActionResponse response)
       throws AxelorException {
     ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
