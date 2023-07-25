@@ -1,0 +1,3 @@
+---
+title: "FixedAsset : set a min of 1 for fiscalNumberOfDepreciation, ifrsNumberOfDepreciation and numberOfDepreciation"
+type: fix
