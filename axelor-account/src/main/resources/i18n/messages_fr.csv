@@ -1842,7 +1842,6 @@
 "Interbank codes lists","Liste de codes interbancaires",,
 "Internal Ref.","Réf. Interne",,
 "Inv. on","Fac. le",,
-"Invalid Analytic moveLines, some axes percentage values are different than 100%.",,,
 "Invalid analytic move lines, some axes percentage values are different than 100%.","Répartition analytique invalide, un ou des axes ont des pourcentages différents de 100%",,
 "Invalid automatic partner account creation mode, this is a bug that should be reported.","Méthode de codification de compte tiers inconnue, il s'agit d'une anomalie qui doit être remontée",,
 "Invoice","Facture",,
