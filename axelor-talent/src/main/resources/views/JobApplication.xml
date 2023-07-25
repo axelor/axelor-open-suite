@@ -156,7 +156,8 @@
           onChange="save,action-job-application-method-set-dms-file, action-job-application-method-set-inline-url"
           showTitle="false"/>
         <field name="$inlineUrl" hidden="true"/>
-        <field name="$pdf" showTitle="false" readonly="true" colSpan="12">
+        <field name="$pdf" showTitle="false" readonly="true" colSpan="12"
+          showIf="$inlineUrl &amp;&amp; resume" hidden="true">
           <viewer depends="$inlineUrl">
             <![CDATA[
               <iframe ng-src="{{record.$inlineUrl}}" frameborder="0" height="900" scrolling="auto"/>

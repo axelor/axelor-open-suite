@@ -67,12 +67,13 @@ public class JobApplicationController {
 
       application = Beans.get(JobApplicationRepository.class).find(application.getId());
 
-      if (application.getResumeId() != null) {
+      DMSFile dmsFile = application.getDmsFile();
+      if (dmsFile != null) {
         response.setView(
             ActionView.define(I18n.get("JobApplication.resume"))
                 .model(DMSFile.class.getName())
                 .add("form", "dms-file-form")
-                .context("_showRecord", application.getResumeId().toString())
+                .context("_showRecord", dmsFile.getId().toString())
                 .map());
       } else {
         response.setAlert(I18n.get("No resume found"));

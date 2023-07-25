@@ -1,10 +1,11 @@
 package com.axelor.apps.base.service;
 
 import com.axelor.db.Model;
+import com.axelor.dms.db.DMSFile;
 import com.axelor.meta.db.MetaFile;
 
 public interface DMSService {
-  Long setDmsFile(MetaFile metaFile, Long dmsId, Model entity);
+  DMSFile setDmsFile(MetaFile metaFile, DMSFile dmsFile, Model entity);
 
-  String getInlineUrl(Long id);
+  String getInlineUrl(DMSFile dmsFile);
 }

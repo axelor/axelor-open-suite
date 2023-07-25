@@ -47,7 +47,7 @@
       ref="com.axelor.apps.base.db.Address"/>
     <many-to-one name="resume" title="JobApplication.resume"
       ref="com.axelor.meta.db.MetaFile"/>
-    <long name="resumeId" nullable="true"/>
+    <many-to-one name="dmsFile" ref="com.axelor.dms.db.DMSFile"/>
     <extra-code>
 	   		<![CDATA[
 	   			public static final Integer STATUS_OPEN = 0;
