@@ -196,6 +196,15 @@ public class AccountingReportValuePercentageServiceImpl extends AccountingReport
           parentTitle,
           lineCode);
 
+      if (accountingReport.getTraceAnomalies()) {
+        this.traceException(
+            AccountExceptionMessage.REPORT_TYPE_TOTAL_LINE_NOT_EXISTS,
+            accountingReport,
+            groupColumn,
+            column,
+            line);
+      }
+
       return;
     } else if (totalValue != null && totalValue.getResult().signum() != 0) {
       result =

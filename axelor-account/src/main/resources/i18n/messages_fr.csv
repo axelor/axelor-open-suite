@@ -3184,6 +3184,7 @@
 "The following analytic journals : %s are inactive and linked to a move line. Thus, the move can't be set to daybook/accounted.","Les journaux analytiques : %s sont inactifs et liés à des lignes d’écriture comptable. Ainsi, l'écriture ne peut être passée en brouillard/comptabilisé.",,
 "The following error occurred during the validation of fixed asset %d : %s.","L'erreur suivante s'est produite lors de la validation de l'immobilisation %d : %s.",,
 "The functional origin %s of the account move %s is not allowed on the journal %s (%s)","L'origine fonctionnelle %s de l'écriture %s n'est pas autorisée sur le journal %s (%s)",,
+"The given percentage total line does not exist.","La ligne de total indiquée pour le pourcentage n'existe pas.",,
 "The gross value of a fixed asset must be greater than zero. The fixed asset %s can't be validated.","La valeur brute d'une immobilisation doit être supérieure à zéro. L'immobilisation %s ne peut être validée.",,
 "The import failed: the move %s already exist.","Echec de l'import : l'écriture %s existe déjà.",,
 "The input code length %s is higher than the defined parameter %s in the company to which belong this account. Code will be corrected to fit this requirement","Le nombre de caractères %s du code du compte est supérieur au paramètre %s défini dans la configuration comptable de la société à laquelle il est rattaché. Le code va être corrigé pour qu'il réponde à cette exigence.",,

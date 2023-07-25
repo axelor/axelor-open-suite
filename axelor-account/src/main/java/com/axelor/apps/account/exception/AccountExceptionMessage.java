@@ -1615,6 +1615,9 @@ public final class AccountExceptionMessage {
   public static final String REPORT_TYPE_SAME_AS_GROUP_NO_GROUP = /*$$(*/
       "Computation method is the same as the group but there is none." /*)*/;
 
+  public static final String REPORT_TYPE_TOTAL_LINE_NOT_EXISTS = /*$$(*/
+      "The given percentage total line does not exist." /*)*/;
+
   public static final String COMPENSATION_ON_SESSION_BY_INVOICE_TERM = /*$$(*/
       "Compensation is not allowed on payment session accounted by invoice term, please unselect them" /*)*/;
 
