@@ -22,7 +22,6 @@ import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionCancelService;
-import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionValidateService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.ebics.service.EbicsService;
@@ -65,7 +64,6 @@ public class BankOrderServiceHRImpl extends BankOrderServiceImpl {
       PaymentSessionRepository paymentSessionRepo,
       MoveCancelBankPaymentService moveCancelBankPaymentService,
       MoveRepository moveRepo,
-      PaymentSessionValidateService paymentSessionValidateService,
       ExpensePaymentService expensePaymentService) {
     super(
         bankOrderRepo,
@@ -81,8 +79,7 @@ public class BankOrderServiceHRImpl extends BankOrderServiceImpl {
         paymentSessionCancelService,
         paymentSessionRepo,
         moveCancelBankPaymentService,
-        moveRepo,
-        paymentSessionValidateService);
+        moveRepo);
     this.expensePaymentService = expensePaymentService;
   }
 
