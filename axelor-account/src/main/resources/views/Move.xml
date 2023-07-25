@@ -52,7 +52,7 @@
   <form name="move-form" title="Account move" canArchive="false"
     model="com.axelor.apps.account.db.Move" canDelete="false" width="large"
     onNew="action-account-move-onnew-group" onLoad="action-account-move-group-onload"
-    onSave="action-account-move-group-onsave" readonlyIf="$simulatedPeriodClosed">
+    onSave="action-account-move-group-onsave">
     <toolbar>
       <button name="printBtn" title="Print Move" icon="fa-print"
         onClick="save,action-account-move-method-print-move"/>
@@ -64,7 +64,7 @@
         onClick="action-move-method-delete-move"
         showIf="id != null &amp;&amp; !archived &amp;&amp; statusSelect != 3"/>
     </toolbar>
-    <panel name="mainPanel" colSpan="12">
+    <panel name="mainPanel" colSpan="12" readonlyIf="$simulatedPeriodClosed">
       <panel name="moveDetailsPanel" colSpan="9">
         <panel name="moveContentPanel" colSpan="12">
           <field name="company" canEdit="false" widget="SuggestBox"
@@ -203,7 +203,8 @@
         </panel>
       </panel>
     </panel>
-    <panel-tabs name="mainPanelTab">
+    <panel-tabs name="mainPanelTab" hideIf="!journal || $mainPanelTabHidden"
+      readonlyIf="$simulatedPeriodClosed">
       <panel title="Move Lines" readonlyIf="$validatePeriod">
         <button colSpan="3" name="counterpartGenerateBtn" css="btn-custom text-left"
           icon="fa-plus" title="Generate counterpart"
