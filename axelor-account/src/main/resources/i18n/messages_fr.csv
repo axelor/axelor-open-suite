@@ -3252,6 +3252,7 @@
 "The tax move lines will be recalculated and validity checks will be done taking into consideration other lines taxes","Les lignes d'écriture de taxe seront recalculées et les contrôles de validité seront effectués en tenant compte des taxes sur les autres lignes.",,
 "Their is at least one invoice selected that it is not validated to pay","Parmi les factures sélectionnées, au moins une n'est pas bonne à payer",,
 "There are duplicates in tax movelines. Please verify or preferably use the compute tax button to generate tax move lines properly.","Des doublons dans les lignes de taxes ont été détectés. Veuillez vérifier ou de préférence utiliser le bouton Générer les lignes de taxe sur l'écriture pour générer les écritures de taxes.",,
+"There are no moves to be displayed","Il n'y a aucune écriture comptable à afficher",,
 "There is already N4DS export for this period. The accounting export created will generate complementary N4DS export.","Il existe déjà un export N4DS exporté pour cette période. L'export comptable créé va générer un export N4DS complémentaire.",,
 "There is already N4DS export generated for this report.","Il existe déjà un export N4DS généré pour ce rapport.",,
 "There is already a closure assistant for the fiscal year %s and company %s.","Il existe déjà un assistant de clôture pour l'année fiscale %s de la société %s",,
