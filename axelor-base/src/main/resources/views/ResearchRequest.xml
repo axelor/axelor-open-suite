@@ -15,7 +15,7 @@
     <panel name="requestPanel" title="Request" colSpan="12">
       <field name="name" colSpan="3" required="true"/>
       <field name="models" required="true" widget="MultiSelect" colSpan="3"/>
-      <panel title="Search" icon="fa-search" name="searchPanel" colSpan="12">
+      <panel title="Search" icon="fa-search" name="searchPanel" colSpan="12" hideIf="!models">
 
         <field name="research1" canEdit="false"
           onChange="action-research-request-record-research-1-reset-value" canNew="false"
