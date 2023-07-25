@@ -18,7 +18,6 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import com.axelor.apps.account.db.BudgetDistribution;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
@@ -39,7 +38,6 @@ import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
-import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.service.SupplierCatalogService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.inject.Beans;
@@ -47,10 +45,8 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
@@ -187,28 +183,6 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
       sequence = invoice.getInvoiceLineList().size();
       invoiceLine.setSequence(sequence);
     }
-  }
-
-  public void computeBudgetDistributionSumAmount(InvoiceLine invoiceLine, Invoice invoice) {
-    List<BudgetDistribution> budgetDistributionList = invoiceLine.getBudgetDistributionList();
-    PurchaseOrderLine purchaseOrderLine = invoiceLine.getPurchaseOrderLine();
-    BigDecimal budgetDistributionSumAmount = BigDecimal.ZERO;
-    LocalDate computeDate = invoice.getInvoiceDate();
-
-    if (purchaseOrderLine != null && purchaseOrderLine.getPurchaseOrder().getOrderDate() != null) {
-      computeDate = purchaseOrderLine.getPurchaseOrder().getOrderDate();
-    }
-
-    if (budgetDistributionList != null && !budgetDistributionList.isEmpty()) {
-
-      for (BudgetDistribution budgetDistribution : budgetDistributionList) {
-        budgetDistributionSumAmount =
-            budgetDistributionSumAmount.add(budgetDistribution.getAmount());
-        Beans.get(BudgetSupplychainService.class)
-            .computeBudgetDistributionSumAmount(budgetDistribution, computeDate);
-      }
-    }
-    invoiceLine.setBudgetDistributionSumAmount(budgetDistributionSumAmount);
   }
 
   protected void setSupplierCatalogProductInfo(

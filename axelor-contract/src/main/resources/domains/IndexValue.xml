@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="contract" package="com.axelor.apps.contract.db"/>
+
+  <entity name="IndexValue">
+    <many-to-one name="indexRevaluation"
+      ref="com.axelor.apps.contract.db.IndexRevaluation" title="Index revaluation"/>
+    <date name="startDate" title="Start date" required="true"/>
+    <date name="endDate" title="End date"/>
+    <decimal name="value" title="Value"/>
+
+    <unique-constraint columns="indexRevaluation,startDate"/>
+  </entity>
+
+</domain-models>

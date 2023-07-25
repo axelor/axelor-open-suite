@@ -41,7 +41,7 @@
         showIf="recurrenceType == 3" widget="RadioSelect" css="small" colSpan="12"
         onChange="action-recurrence-assistant-method-compute-recurrence-name"/>
       <field name="startDate" title="Start date" readonly="true" colSpan="12"/>
-      <field name="endType" colSpan="3" title="End" selection="crm.event.recurrence.end.type"
+      <field name="endType" colSpan="12" title="End" selection="crm.event.recurrence.end.type"
         widget="RadioSelect" css="small"
         onChange="action-recurrence-assistant-method-compute-recurrence-name"/>
       <panel name="otherDetailsPanel" colSpan="6">

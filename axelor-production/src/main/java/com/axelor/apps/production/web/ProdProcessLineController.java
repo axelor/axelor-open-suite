@@ -36,20 +36,6 @@ import java.util.Map;
 @Singleton
 public class ProdProcessLineController {
 
-  public void updateDuration(ActionRequest request, ActionResponse response) {
-    try {
-      ProdProcessLine prodProcess = request.getContext().asType(ProdProcessLine.class);
-      WorkCenter workCenter = prodProcess.getWorkCenter();
-      if (workCenter != null) {
-        response.setValue(
-            "durationPerCycle",
-            Beans.get(WorkCenterService.class).getDurationFromWorkCenter(workCenter));
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
   public void updateCapacitySettings(ActionRequest request, ActionResponse response) {
     try {
       ProdProcessLine prodProcess = request.getContext().asType(ProdProcessLine.class);

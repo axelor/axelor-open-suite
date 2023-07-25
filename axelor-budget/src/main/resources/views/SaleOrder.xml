@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <form name="sale-order-form" id="budget-sale-order-form" title="Sale order"
+    model="com.axelor.apps.sale.db.SaleOrder" extension="true">
+
+    <extend target="/">
+      <attribute name="onSave" value="action-budget-sale-order-group-on-save"/>
+      <attribute name="onNew" value="action-group-budget-saleorder-onnew"/>
+      <attribute name="onLoad" value="action-group-budget-saleorder-onload"/>
+    </extend>
+
+    <extend target="//button[@name='confirmOrderBtn']">
+      <attribute name="onClick" value="action-group-budget-sale-order-confirm-onclick"/>
+    </extend>
+
+    <extend target="//button[@name='cancelBtn']">
+      <attribute name="onClick"
+        value="save,action-sale-order-view-cancel,action-budget-sale-order-method-update-budget-lines"/>
+
+      <insert position="before">
+        <button name="computeBudgetDistributionBtn" title="Compute budget distribution"
+          onClick="action-budget-group-sale-order-compute-budget-distribution"
+          if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget()"
+          showIf="company.accountConfig.enableBudgetKey &amp;&amp; statusSelect &lt; 3 &amp;&amp; saleOrderLineList &amp;&amp; saleOrderLineList.length != 0"/>
+      </insert>
+    </extend>
+
+    <extend target="//button[@name='completeManuallySaleOrderBtn']">
+      <attribute name="onClick"
+        value="save,action-method-budget-sale-order-validate-budget-balance,action-sale-order-method-complete-sale-order"/>
+    </extend>
+
+    <extend target="panel[@name='internalNotePanel']">
+      <insert position="after">
+        <panel name="otherInfosPanel" hidden="true">
+          <field name="$enableBudgetKey" type="boolean"/>
+          <field name="company.accountConfig"/>
+          <field name="company.accountConfig.enableBudgetKey"/>
+        </panel>
+      </insert>
+    </extend>
+  </form>
+
+  <action-group name="action-group-budget-sale-order-confirm-onclick">
+    <action name="save"/>
+    <action name="action-method-budget-sale-order-no-compute-budget-distribution"
+      if="__config__.app.isApp('budget')"/>
+    <action name="action-budget-sale-order-method-update-budget-lines"
+      if="__config__.app.isApp('budget')"/>
+    <action name="action-sale-group-confirmed"/>
+  </action-group>
+
+  <action-group name="action-budget-sale-order-group-on-save">
+    <action name="action-supplychain-saleorder-onsave"/>
+    <action name="save"/>
+    <action name="action-budget-sale-order-method-fill-budget-str"
+      if="__config__.app.isApp('budget')"/>
+    <action name="
+      action-budget-sale-order-method-update-budget-lines "
+      if="__config__.app.isApp('budget')"/>
+  </action-group>
+
+  <action-group name="action-group-budget-saleorder-onnew">
+    <action name="action-group-supplychain-saleorder-onnew"/>
+    <action name="action-budget-sale-order-record-load-budget-key-config"
+      if="__config__.app.isApp('budget')"/>
+  </action-group>
+
+  <action-group name="action-budget-group-sale-order-compute-budget-distribution">
+    <action name="save"/>
+    <action name="action-validate-budget-recompute-budget-distribution"/>
+    <action name="action-method-budget-sale-order-compute-budget-distribution"/>
+    <action name="action-method-budget-sale-order-compute-budget-distribution-sum-amount"/>
+    <action name="save"/>
+  </action-group>
+
+  <action-group name="action-group-sale-order-finalize-quotation"
+    id="action-budget-group-sale-order-finalize-quotation">
+    <action name="save"/>
+    <action name="action-sale-order-validate-quotation"/>
+    <action name="action-method-budget-sale-order-validate-budget-balance"
+      if="__config__.app.isApp('budget')"/>
+    <action name="action-sale-order-method-finalize-quotation"/>
+  </action-group>
+
+  <action-group name="action-group-budget-saleorder-onload">
+    <action name="action-group-supplychain-saleorder-onload"/>
+    <action name="action-budget-sale-order-record-load-budget-key-config"
+      if="__config__.app.isApp('budget')"/>
+  </action-group>
+
+  <action-record name="action-budget-sale-order-record-load-budget-key-config"
+    model="com.axelor.apps.sale.db.SaleOrder">
+    <field name="$enableBudgetKey"
+      expr="eval:__user__.activeCompany.accountConfig.enableBudgetKey"
+      if="__user__.activeCompany != null"/>
+    <field name="$enableBudgetKey"
+      expr="eval:__repo__(Company).all().fetchOne().accountConfig.enableBudgetKey"
+      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+  </action-record>
+
+  <action-method name="action-method-budget-sale-order-compute-budget-distribution">
+    <call class="com.axelor.apps.budget.web.SaleOrderController"
+      method="computeBudgetDistribution"/>
+  </action-method>
+
+  <action-method
+    name="action-method-budget-sale-order-compute-budget-distribution-sum-amount">
+    <call class="com.axelor.apps.budget.web.SaleOrderController"
+      method="computeSaleOrderBudgetDistributionSumAmount"/>
+  </action-method>
+
+  <action-method name="action-budget-sale-order-method-fill-budget-str">
+    <call class="com.axelor.apps.budget.web.SaleOrderController" method="fillBudgetStrOnLine"/>
+  </action-method>
+
+  <action-method name="action-method-budget-sale-order-no-compute-budget-distribution">
+    <call class="com.axelor.apps.budget.web.SaleOrderController" method="checkNoComputeBudget"/>
+  </action-method>
+
+  <action-method name="action-budget-sale-order-method-update-budget-lines">
+    <call class="com.axelor.apps.budget.web.SaleOrderController" method="updateBudgetLines"/>
+  </action-method>
+
+  <action-method name="action-method-budget-sale-order-validate-budget-balance">
+    <call class="com.axelor.apps.budget.web.SaleOrderController" method="validateBudgetBalance"/>
+  </action-method>
+
+</object-views>

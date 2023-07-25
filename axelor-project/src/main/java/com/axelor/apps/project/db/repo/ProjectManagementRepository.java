@@ -18,11 +18,23 @@
  */
 package com.axelor.apps.project.db.repo;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.repo.SequenceRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.exception.ProjectExceptionMessage;
 import com.axelor.apps.project.service.ProjectTaskService;
+import com.axelor.apps.project.service.app.AppProjectService;
+import com.axelor.common.StringUtils;
+import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
+import com.axelor.studio.db.AppProject;
 import com.axelor.team.db.Team;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
+import javax.persistence.PersistenceException;
 
 public class ProjectManagementRepository extends ProjectRepository {
 
@@ -55,6 +67,29 @@ public class ProjectManagementRepository extends ProjectRepository {
 
   @Override
   public Project save(Project project) {
+
+    AppProject appProject = Beans.get(AppProjectService.class).getAppProject();
+
+    try {
+      if (StringUtils.isBlank(project.getCode()) && appProject.getGenerateProjectSequence()) {
+        Company company = project.getCompany();
+        String seq =
+            Beans.get(SequenceService.class)
+                .getSequenceNumber(
+                    SequenceRepository.PROJECT_SEQUENCE, company, Project.class, "code");
+
+        if (seq == null) {
+          throw new AxelorException(
+              company,
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(ProjectExceptionMessage.PROJECT_SEQUENCE_ERROR),
+              company.getName());
+        }
+        project.setCode(seq);
+      }
+    } catch (AxelorException e) {
+      throw new PersistenceException(e.getMessage(), e);
+    }
 
     ProjectManagementRepository.setAllProjectMembersUserSet(project);
 
