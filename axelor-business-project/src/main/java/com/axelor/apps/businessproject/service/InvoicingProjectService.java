@@ -326,6 +326,7 @@ public class InvoicingProjectService {
       projectTaskBusinessProjectService.taskInvoicing(project, appBusinessProject);
       timesheetLineBusinessService.timsheetLineInvoicing(project);
     }
+    invoicingProject = invoicingProjectRepo.find(invoicingProject.getId());
 
     if (counter > ProjectServiceImpl.MAX_LEVEL_OF_PROJECT) {
       return;
@@ -557,6 +558,7 @@ public class InvoicingProjectService {
       invoicingProject.setConsolidatePhaseWhenInvoicing(
           invoicingProject.getProject().getConsolidatePhaseWhenInvoicing());
     }
+    invoicingProject = invoicingProjectRepo.save(invoicingProject);
 
     clearLines(invoicingProject);
     setLines(invoicingProject, project, 0);
