@@ -3099,6 +3099,7 @@
 "The total amount is greater than the budget distribution total.",,,
 "Their is at least one invoice selected that it is not validated to pay",,,
 "There are duplicates in tax movelines. Please verify or preferably use the compute tax button to generate tax move lines properly.",,,
+"There are no moves to be displayed",,,
 "There is already N4DS export for this period. The accounting export created will generate complementary N4DS export.",,,
 "There is already N4DS export generated for this report.",,,
 "There is already a closure assistant for the fiscal year %s and company %s.",,,
