@@ -414,22 +414,15 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
         && !Objects.equals(column.getResultSelect(), line.getResultSelect())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(AccountExceptionMessage.REPORT_TYPE_DIFFERENT_RESULT_SELECT),
-          accountingReport.getReportType().getName(),
-          column.getCode(),
-          line.getCode());
+          I18n.get(AccountExceptionMessage.REPORT_TYPE_DIFFERENT_RESULT_SELECT));
     } else if (!isBasicResultSelect && !isGroupResultSelect) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(AccountExceptionMessage.REPORT_TYPE_NO_RESULT_SELECT),
-          accountingReport.getReportType().getName(),
-          column.getCode(),
-          line.getCode());
+          I18n.get(AccountExceptionMessage.REPORT_TYPE_NO_RESULT_SELECT));
     } else if (isGroupResultSelect && groupColumn == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(AccountExceptionMessage.REPORT_TYPE_SAME_AS_GROUP_NO_GROUP),
-          accountingReport.getReportType().getName());
+          I18n.get(AccountExceptionMessage.REPORT_TYPE_SAME_AS_GROUP_NO_GROUP));
     }
   }
 
