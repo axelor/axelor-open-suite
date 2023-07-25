@@ -342,13 +342,13 @@
       <panel-related name="analyticMoveLineListPanelCanNew"
         field="analyticMoveLineList" grid-view="analytic-move-line-distribution-grid"
         form-view="analytic-move-line-distribution-form"
-        onChange="action-move-line-method-set-required-analytic-accounts" hidden="true"
+        onChange="action-move-line-group-analytic-move-line-onchange" hidden="true"
         showIf="$analyticDistributionTypeSelect == 1"
         readonlyIf="account.company.accountConfig.analyticDistributionTypeSelect != 1"/>
       <panel-related name="analyticMoveLineListPanel" field="analyticMoveLineList"
         canNew="false" grid-view="analytic-move-line-distribution-grid"
         form-view="analytic-move-line-distribution-form"
-        onChange="action-move-line-method-set-required-analytic-accounts" hidden="true"
+        onChange="action-move-line-group-analytic-move-line-onchange" hidden="true"
         showIf="$analyticDistributionTypeSelect != 1"
         readonlyIf="account.company.accountConfig.analyticDistributionTypeSelect != 1"/>
       <panel name="hiddenFieldsPanel" hidden="true">
@@ -812,6 +812,11 @@
     <action name="action-method-account-moveline-usher-process"/>
   </action-group>
 
+  <action-group name="action-move-line-group-analytic-move-line-onchange">
+    <action name="action-move-line-method-analytic-move-line-onchange"/>
+    <action name="action-analytic-move-line-group-analytic-move-line-list-onchange"/>
+  </action-group>
+
   <action-method name="action-move-line-method-onnew">
     <call class="com.axelor.apps.account.web.MoveLineController" method="onNew"/>
   </action-method>
@@ -922,11 +927,6 @@
     <call class="com.axelor.apps.account.web.MoveLineController" method="setAxisDomains"/>
   </action-method>
 
-  <action-method name="action-move-line-method-set-required-analytic-accounts">
-    <call class="com.axelor.apps.account.web.MoveLineController"
-      method="setRequiredAnalyticAccount"/>
-  </action-method>
-
   <action-method name="action-move-line-method-compute-financial-discount">
     <call class="com.axelor.apps.account.web.MoveLineController"
       method="computeFinancialDiscount"/>
@@ -952,6 +952,11 @@
     name="action-move-line-method-analytic-distribution-template-onchange-light">
     <call class="com.axelor.apps.account.web.MoveLineController"
       method="analyticDistributionTemplateOnChangeLight"/>
+  </action-method>
+
+  <action-method name="action-move-line-method-analytic-move-line-onchange">
+    <call class="com.axelor.apps.account.web.MoveLineController"
+      method="analyticMoveLineOnChange"/>
   </action-method>
 
   <action-record name="action-account-move-line-record-calculate-balance"
