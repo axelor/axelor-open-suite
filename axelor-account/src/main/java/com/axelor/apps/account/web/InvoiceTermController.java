@@ -67,11 +67,13 @@ public class InvoiceTermController {
 
         InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
         BigDecimal amount = invoiceTermService.getCustomizedAmount(invoiceTerm, total);
+        invoiceTerm.setAmount(amount);
+        invoiceTerm.setAmountRemaining(amount);
         invoiceTermService.computeCompanyAmounts(invoiceTerm, true);
 
         if (amount.signum() > 0) {
-          response.setValue("amount", amount);
-          response.setValue("amountRemaining", amount);
+          response.setValue("amount", invoiceTerm.getAmount());
+          response.setValue("amountRemaining", invoiceTerm.getAmountRemaining());
           response.setValue("companyAmount", invoiceTerm.getCompanyAmount());
           response.setValue("companyAmountRemaining", invoiceTerm.getCompanyAmountRemaining());
         }
@@ -98,10 +100,11 @@ public class InvoiceTermController {
             invoiceTermService.computeCustomizedPercentage(invoiceTerm.getAmount(), total);
 
         invoiceTerm.setPercentage(percentage);
+        invoiceTerm.setAmountRemaining(invoiceTerm.getAmount());
         invoiceTermService.computeCompanyAmounts(invoiceTerm, true);
 
         response.setValue("percentage", percentage);
-        response.setValue("amountRemaining", invoiceTerm.getAmount());
+        response.setValue("amountRemaining", invoiceTerm.getAmountRemaining());
         response.setValue("companyAmount", invoiceTerm.getCompanyAmount());
         response.setValue("companyAmountRemaining", invoiceTerm.getCompanyAmountRemaining());
         response.setValue(
