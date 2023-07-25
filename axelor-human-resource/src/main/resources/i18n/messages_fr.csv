@@ -1,9 +1,7 @@
 "key","message","comment","context"
 "%d expense treated successfully,","%d note de frais traitée avec succès.",,
 "%d expenses treated successfully,","%d notes de frais traitées avec succès.",,
-"- Tax in amount : Tax amount must be entered manually on the expense line <br> - No tax : Tax amount entry is disabled on the expense line and can't be entered <br> - Tax in percentage : Tax amount is computed automatically based on configured tax rate","- TVA en montant : Le montant TVA doit être saisi manuellement dans la ligne de note de frais <br>
-                                                                                                                                                                                                                                                                - Aucune TVA : Le montant TVA est désactivé dans la ligne de note de frais et ne peut être saisi <br>
-                                                                                                                                                                                                                                                                - TVA en % : Le montant TVA est calculé en fonction du taux de TVA paramétré",,
+"- Tax in amount : Tax amount must be entered manually on the expense line <br> - No tax : Tax amount entry is disabled on the expense line and can't be entered <br> - Tax in percentage : Tax amount is computed automatically based on configured tax rate","- TVA en montant : Le montant TVA doit être saisi manuellement dans la ligne de note de frais <br> - Aucune TVA : Le montant TVA est désactivé dans la ligne de note de frais et ne peut être saisi <br> - TVA en % : Le montant TVA est calculé en fonction du taux de TVA paramétré",,
 "6 days week","6 jours par semaine",,
 "A leave request is already accepted over this or a portion of this period of time. Please cancel the previous one to accept this one.","Une demande de congés est déjà acceptée sur cette période ou une partie de celle-ci. Merci d'annuler la précédente pour accepter cette demande.",,
 "ADD A LINE","Ajouter la ligne",,

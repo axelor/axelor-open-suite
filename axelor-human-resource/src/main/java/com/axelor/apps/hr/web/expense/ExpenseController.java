@@ -42,6 +42,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -110,9 +111,10 @@ public class ExpenseController {
       ActionRequest request, ActionResponse response) {
     ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
     if (expenseLine != null) {
-      if (expenseLine.getExpenseProduct().getTaxComputeModeSelect() == 20) {
+      if (expenseLine.getExpenseProduct().getTaxComputeModeSelect() == ProductRepository.NO_TAX) {
         response.setValue("totalTax", null);
-      } else if (expenseLine.getExpenseProduct().getTaxComputeModeSelect() == 30) {
+      } else if (expenseLine.getExpenseProduct().getTaxComputeModeSelect()
+          == ProductRepository.TAX_IN_PERCENTAGE) {
         expenseLine =
             Beans.get(ExpenseLineService.class).getTotalTaxFromProductAndTotalAmount(expenseLine);
         response.setValue("totalTax", expenseLine.getTotalTax());

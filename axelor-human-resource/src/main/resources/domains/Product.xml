@@ -17,6 +17,16 @@
       help="- Tax in amount : Tax amount must be entered manually on the expense line &lt;br&gt;
 - No tax : Tax amount entry is disabled on the expense line and can't be entered &lt;br&gt;
 - Tax in percentage : Tax amount is computed automatically based on configured tax rate"/>
+
+    <extra-code>
+      <![CDATA[
+      		//TAX COMPUTE MODE SELECT
+	  		public static final int TAX_IN_AMOUNT = 10;
+	  		public static final int NO_TAX = 20;
+	  		public static final int TAX_IN_PERCENTAGE = 30;
+	  ]]>
+    </extra-code>
   </entity>
+
 
 </domain-models>
