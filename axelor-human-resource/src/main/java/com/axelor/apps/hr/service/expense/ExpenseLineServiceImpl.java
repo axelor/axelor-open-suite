@@ -139,9 +139,7 @@ public class ExpenseLineServiceImpl implements ExpenseLineService {
                   expenseLine
                       .getTotalAmount()
                       .divide(
-                          BigDecimal.ONE.add(
-                              tax.getActiveTaxLine()
-                                  .getValue()),
+                          BigDecimal.ONE.add(tax.getActiveTaxLine().getValue()),
                           AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
                           RoundingMode.HALF_DOWN));
       expenseLine.setTotalTax(value);
