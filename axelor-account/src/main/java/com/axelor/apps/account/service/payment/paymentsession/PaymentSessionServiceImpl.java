@@ -432,35 +432,6 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
     return getTermsBySession(paymentSession).count() > 0;
   }
 
-  @Override
-  public void removeNegativeLines(PaymentSession paymentSession) throws AxelorException {
-    Query<InvoiceTerm> invoiceTermQuery = this.getNegativeBalanceInvoiceTermQuery(paymentSession);
-    List<InvoiceTerm> invoiceTermList;
-    int offset = 0;
-
-    while (!(invoiceTermList = invoiceTermQuery.fetch(AbstractBatch.FETCH_LIMIT, offset))
-        .isEmpty()) {
-      invoiceTermService.toggle(invoiceTermList, false);
-
-      offset += invoiceTermList.size();
-      JPA.clear();
-    }
-  }
-
-  protected Query<InvoiceTerm> getNegativeBalanceInvoiceTermQuery(PaymentSession paymentSession) {
-    return invoiceTermRepository
-        .all()
-        .filter(
-            "self.paymentSession = :paymentSession "
-                + "AND self.isSelectedOnPaymentSession IS TRUE "
-                + "AND self.partner IN ("
-                + "SELECT it.partner FROM InvoiceTerm it "
-                + "WHERE it.paymentSession = :paymentSession AND it.isSelectedOnPaymentSession IS TRUE "
-                + "GROUP BY it.partner HAVING SUM(it.paymentAmount) < 0)")
-        .bind("paymentSession", paymentSession)
-        .order("id");
-  }
-
   @Transactional
   protected void saveFilledInvoiceTermWithPaymentSession(
       PaymentSession paymentSession, InvoiceTerm invoiceTerm) {
