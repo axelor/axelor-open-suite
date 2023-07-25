@@ -284,9 +284,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
 
       moveLineTaxService.checkTaxMoveLines(move);
 
-      
-
-      if(!Objects.equals(move.getJournal().getCode(), "NDF")){
+      if (!Objects.equals(move.getJournal().getCode(), "NDF")) {
         this.checkTaxAmount(move);
       }
       this.validateWellBalancedMove(move);
