@@ -409,9 +409,11 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
     boolean isGroupResultSelect =
         column.getResultSelect() == AccountingReportConfigLineRepository.RESULT_SAME_AS_GROUP
             || line.getResultSelect() == AccountingReportConfigLineRepository.RESULT_SAME_AS_GROUP;
+    boolean isSameResultResult =
+        Objects.equals(column.getResultSelect(), line.getResultSelect())
+            && Objects.equals(column.getNegateValue(), line.getNegateValue());
 
-    if (isOnlyBasicResultSelect
-        && !Objects.equals(column.getResultSelect(), line.getResultSelect())) {
+    if (isOnlyBasicResultSelect && !isSameResultResult) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(AccountExceptionMessage.REPORT_TYPE_DIFFERENT_RESULT_SELECT));
