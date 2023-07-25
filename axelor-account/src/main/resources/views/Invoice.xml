@@ -491,7 +491,7 @@
         readonlyIf="statusSelect > 1"
         onChange="action-invoice-method-fiscal-position-on-change,action-invoice-group-invoice-line-list-on-change"/>
       <field name="interco" hidden="true" if-module="axelor-supplychain"
-        if="__config__.app.isApp('supplychain')"/>
+        if="__config__.app.isApp('supplychain')" widget="boolean-switch"/>
       <field name="createdByInterco" showIf="createdByInterco" readonly="true"
         if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
       <field name="inAti" onChange="action-invoice-attrs-in-ati"
