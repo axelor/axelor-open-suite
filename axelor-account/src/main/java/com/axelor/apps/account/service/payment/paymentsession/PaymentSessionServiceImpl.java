@@ -54,7 +54,6 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -139,20 +138,6 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
   }
 
   @Override
-  @Transactional
-  public void computeTotalPaymentSession(PaymentSession paymentSession) {
-    BigDecimal sessionTotalAmount =
-        (BigDecimal)
-            JPA.em()
-                .createQuery(
-                    "select SUM(self.amountPaid) FROM InvoiceTerm as self WHERE self.paymentSession = ?1 AND self.isSelectedOnPaymentSession = TRUE")
-                .setParameter(1, paymentSession)
-                .getSingleResult();
-    paymentSession.setSessionTotalAmount(sessionTotalAmount);
-    paymentSessionRepository.save(paymentSession);
-  }
-
-  @Override
   public boolean hasUnselectedInvoiceTerm(PaymentSession paymentSession) {
     return getTermsBySession(paymentSession, false).count() > 0;
   }
@@ -218,7 +203,6 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
   public void selectAll(PaymentSession paymentSession) throws AxelorException {
     List<InvoiceTerm> invoiceTermList = getTermsBySession(paymentSession, false).fetch();
     invoiceTermService.toggle(invoiceTermList, true);
-    computeTotalPaymentSession(paymentSession);
   }
 
   @Override
@@ -226,7 +210,6 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
   public void unSelectAll(PaymentSession paymentSession) throws AxelorException {
     List<InvoiceTerm> invoiceTermList = getTermsBySession(paymentSession, true).fetch();
     invoiceTermService.toggle(invoiceTermList, false);
-    computeTotalPaymentSession(paymentSession);
   }
 
   protected Query<InvoiceTerm> getTermsBySession(
@@ -274,8 +257,6 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
             .order("id");
 
     this.filterInvoiceTerms(eligibleInvoiceTermQuery, paymentSession);
-    paymentSession = paymentSessionRepository.find(paymentSession.getId());
-    computeTotalPaymentSession(paymentSession);
   }
 
   protected String retrieveEligibleTermsQuery(Company company) throws AxelorException {
@@ -449,6 +430,35 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
   @Override
   public boolean hasInvoiceTerm(PaymentSession paymentSession) {
     return getTermsBySession(paymentSession).count() > 0;
+  }
+
+  @Override
+  public void removeNegativeLines(PaymentSession paymentSession) throws AxelorException {
+    Query<InvoiceTerm> invoiceTermQuery = this.getNegativeBalanceInvoiceTermQuery(paymentSession);
+    List<InvoiceTerm> invoiceTermList;
+    int offset = 0;
+
+    while (!(invoiceTermList = invoiceTermQuery.fetch(AbstractBatch.FETCH_LIMIT, offset))
+        .isEmpty()) {
+      invoiceTermService.toggle(invoiceTermList, false);
+
+      offset += invoiceTermList.size();
+      JPA.clear();
+    }
+  }
+
+  protected Query<InvoiceTerm> getNegativeBalanceInvoiceTermQuery(PaymentSession paymentSession) {
+    return invoiceTermRepository
+        .all()
+        .filter(
+            "self.paymentSession = :paymentSession "
+                + "AND self.isSelectedOnPaymentSession IS TRUE "
+                + "AND self.partner IN ("
+                + "SELECT it.partner FROM InvoiceTerm it "
+                + "WHERE it.paymentSession = :paymentSession AND it.isSelectedOnPaymentSession IS TRUE "
+                + "GROUP BY it.partner HAVING SUM(it.paymentAmount) < 0)")
+        .bind("paymentSession", paymentSession)
+        .order("id");
   }
 
   @Transactional

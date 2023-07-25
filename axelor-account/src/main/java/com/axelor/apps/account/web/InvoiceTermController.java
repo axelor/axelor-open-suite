@@ -30,7 +30,6 @@ import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
-import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionService;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.AuthUtils;
@@ -372,17 +371,6 @@ public class InvoiceTermController {
           }
         }
       }
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void computeTotalPaymentSession(ActionRequest request, ActionResponse response) {
-    try {
-      InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
-      Beans.get(PaymentSessionService.class)
-          .computeTotalPaymentSession(invoiceTerm.getPaymentSession());
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
