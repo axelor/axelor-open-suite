@@ -1272,7 +1272,7 @@ ORDER BY ReportValue.column_number, ReportValue.line_number]]></xml-property>
 		WHEN ReportValue.analytic_account IS NULL THEN 0
 		ELSE AnalyticAccount.id
 	END ) AS "id",
-	AnalyticAccount.name AS "accountName",
+	SUBSTRING(REGEXP_REPLACE(AnalyticAccount.name, '[?:*[\]\\\/]|^''|''$', '', 'g'), 0, 31) AS "accountName",
 	ReportValue.analytic_order AS "analyticOrder"
 
 FROM account_accounting_report_value AS ReportValue
@@ -2420,6 +2420,8 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                                 <property name="dataType">integer</property>
                             </structure>
                         </list-property>
+                        <method name="onCreate"><![CDATA[this.name = row["accountName"]]]></method>
+                        <method name="onPageBreak"><![CDATA[this.name = row["accountName"]]]></method>
                         <property name="pageBreakInterval">1</property>
                         <list-property name="sort">
                             <structure>
