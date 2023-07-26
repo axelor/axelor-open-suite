@@ -488,6 +488,7 @@
     <action name="action-invoice-line-group-analytic-distribution-template-onchange"/>
     <action name="action-attrs-account-invoice-line-cut-off-dates-required"/>
     <action name="action-invoice-line-attrs-set-hidden-analytic-distribution-panel"/>
+    <action name="action-invoice-line-record-set-tax"/>
   </action-group>
 
   <action-group
@@ -530,6 +531,12 @@
       expr="eval: account?.manageCutOffPeriod ? __parent__?.cutOffStartDate : null"/>
     <field name="cutOffEndDate"
       expr="eval: account?.manageCutOffPeriod ? __parent__?.cutOffEndDate : null"/>
+  </action-record>
+
+  <action-record name="action-invoice-line-record-set-tax"
+    model="com.axelor.apps.account.db.InvoiceLine">
+    <field name="taxLine" expr="eval: account.defaultTax.activeTaxLine"
+      if="!taxLine &amp;&amp; account &amp;&amp; account.defaultTax"/>
   </action-record>
 
   <!-- ACTION METHOD -->
