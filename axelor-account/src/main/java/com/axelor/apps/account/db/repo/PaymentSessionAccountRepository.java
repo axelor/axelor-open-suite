@@ -75,7 +75,6 @@ public class PaymentSessionAccountRepository extends PaymentSessionRepository {
     PaymentSession copy = super.copy(entity, deep);
     copy.setPaymentDate(appBaseService.getTodayDate(copy.getCompany()));
     copy.setAssignedToUser(AuthUtils.getUser());
-    copy.setSessionTotalAmount(BigDecimal.ZERO);
     copy.setHasEmailsSent(false);
     copy.setStatusSelect(PaymentSessionRepository.STATUS_ONGOING);
     copy.setValidatedByUser(null);
