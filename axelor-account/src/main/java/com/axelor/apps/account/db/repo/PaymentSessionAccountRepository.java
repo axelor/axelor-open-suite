@@ -32,7 +32,6 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
-import java.math.BigDecimal;
 import javax.persistence.PersistenceException;
 
 public class PaymentSessionAccountRepository extends PaymentSessionRepository {
