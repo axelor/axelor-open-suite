@@ -314,4 +314,10 @@ public final class ProductionExceptionMessage {
 
   public static final String MANUF_ORDER_MERGE_MISSING_UNIT =
       /*$$(*/ "You can not merge manufacturing orders without unit." /*)*/;
+
+  public static final String PURCHASE_ORDER_NO_HOURS_UNIT = /*$$(*/
+      "Outsourcing purchase order can't be generated. Please fill hours unit in your base configuration." /*)*/;
+
+  public static final String PURCHASE_ORDER_NO_END_UNIT = /*$$(*/
+      "Impossible to generate outsourcing purchase order. Pls fill unit on your product." /*)*/;
 }
