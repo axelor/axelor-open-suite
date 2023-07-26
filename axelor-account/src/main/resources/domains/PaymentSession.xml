@@ -22,6 +22,7 @@
       ref="com.axelor.auth.db.User"/>
     <date name="paymentDate" title="Payment date" required="true"/>
     <date name="nextSessionDate" title="Next session date"/>
+    <decimal name="sessionTotalAmount" title="Session total amount"/>
     <integer name="statusSelect" title="Status" readonly="true" default="1"
       selection="iaccount.payment.session.select"/>
     <boolean name="isActive" title="Active ?"/>
@@ -51,7 +52,6 @@
 
     <many-to-many ref="com.axelor.apps.base.db.Partner" name="partnerSet"
       title="Partners"/>
-
 
     <extra-code><![CDATA[
 
