@@ -24,8 +24,11 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.google.inject.persist.Transactional;
+import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.PersistenceException;
+import org.apache.commons.collections.CollectionUtils;
 
 public class AccountAccountRepository extends AccountRepository {
 
@@ -85,6 +88,22 @@ public class AccountAccountRepository extends AccountRepository {
       TraceBackService.traceExceptionFromSaveMethod(e);
       throw new PersistenceException(e);
     }
+
+    if (CollectionUtils.isNotEmpty(account.getCompatibleAccountSet())) {
+      this.clearCompatibleAccountSet(account);
+    }
+
     super.remove(account);
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected void clearCompatibleAccountSet(Account account) {
+    for (Account compatibleAccount : account.getCompatibleAccountSet()) {
+      compatibleAccount.getCompatibleAccountSet().remove(account);
+      this.save(compatibleAccount);
+    }
+
+    account.setCompatibleAccountSet(new HashSet<>());
+    this.save(account);
   }
 }
