@@ -136,20 +136,6 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
   }
 
   @Override
-  @Transactional
-  public void computeTotalPaymentSession(PaymentSession paymentSession) {
-    BigDecimal sessionTotalAmount =
-        (BigDecimal)
-            JPA.em()
-                .createQuery(
-                    "select SUM(self.amountPaid) FROM InvoiceTerm as self WHERE self.paymentSession = ?1 AND self.isSelectedOnPaymentSession = TRUE")
-                .setParameter(1, paymentSession)
-                .getSingleResult();
-    paymentSession.setSessionTotalAmount(sessionTotalAmount);
-    paymentSessionRepository.save(paymentSession);
-  }
-
-  @Override
   public boolean hasUnselectedInvoiceTerm(PaymentSession paymentSession) {
     return getTermsBySession(paymentSession, false).count() > 0;
   }
@@ -215,7 +201,6 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
   public void selectAll(PaymentSession paymentSession) throws AxelorException {
     List<InvoiceTerm> invoiceTermList = getTermsBySession(paymentSession, false).fetch();
     invoiceTermService.toggle(invoiceTermList, true);
-    computeTotalPaymentSession(paymentSession);
   }
 
   @Override
@@ -223,7 +208,6 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
   public void unSelectAll(PaymentSession paymentSession) throws AxelorException {
     List<InvoiceTerm> invoiceTermList = getTermsBySession(paymentSession, true).fetch();
     invoiceTermService.toggle(invoiceTermList, false);
-    computeTotalPaymentSession(paymentSession);
   }
 
   protected Query<InvoiceTerm> getTermsBySession(
@@ -271,8 +255,6 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
             .order("id");
 
     this.filterInvoiceTerms(eligibleInvoiceTermQuery, paymentSession);
-    paymentSession = paymentSessionRepository.find(paymentSession.getId());
-    computeTotalPaymentSession(paymentSession);
   }
 
   protected String retrieveEligibleTermsQuery(Company company) throws AxelorException {
