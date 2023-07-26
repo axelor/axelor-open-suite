@@ -157,12 +157,10 @@
       onClick="action-invoice-term-method-unselect-terms-btn,save" icon="fa-minus-circle"
       readonlyIf="!isSelectedOnPaymentSession || $statusSelectPaymentSession &gt; 1"/>
     <button name="selectPartnerBtn" title="Select all terms of this Partner"
-      icon="fa-user-plus"
-      onClick="action-invoice-term-method-select-partner-terms-btn"
+      icon="fa-user-plus" onClick="action-invoice-term-method-select-partner-terms-btn"
       readonlyIf="isSelectedOnPaymentSession || $statusSelectPaymentSession &gt; 1"/>
     <button name="unselectPartnerBtn" title="Unselect all terms of this Partner"
-      icon="fa-user-times"
-      onClick="action-invoice-term-method-unselect-partner-terms-btn"
+      icon="fa-user-times" onClick="action-invoice-term-method-unselect-partner-terms-btn"
       readonlyIf="!isSelectedOnPaymentSession || $statusSelectPaymentSession &gt; 1"/>
     <field name="paymentSession.name" hidden="true"/>
     <field name="$statusSelectPaymentSession" hidden="true"/>
