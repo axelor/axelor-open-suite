@@ -251,6 +251,8 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
             description,
             invoice.getCompanyBankDetails());
 
+    move.setPaymentCondition(invoicePayment.getInvoice().getPaymentCondition());
+
     MoveLine customerMoveLine = null;
     move.setTradingName(invoice.getTradingName());
 
