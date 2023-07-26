@@ -53,6 +53,8 @@ import com.axelor.apps.account.db.repo.MoveLineManagementRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveManagementRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.db.repo.MoveTemplateManagementRepository;
+import com.axelor.apps.account.db.repo.MoveTemplateRepository;
 import com.axelor.apps.account.db.repo.PartnerAccountRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionAccountRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
@@ -634,5 +636,7 @@ public class AccountModule extends AxelorModule {
     bind(AccountCustomerService.class).to(AccountCustomerServiceImpl.class);
 
     bind(MoveLineCurrencyService.class).to(MoveLineCurrencyServiceImpl.class);
+
+    bind(MoveTemplateRepository.class).to(MoveTemplateManagementRepository.class);
   }
 }
