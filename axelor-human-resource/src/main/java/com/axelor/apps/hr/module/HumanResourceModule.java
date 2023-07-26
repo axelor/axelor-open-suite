@@ -47,6 +47,8 @@ import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.db.repo.TimesheetTimerHRRepository;
 import com.axelor.apps.hr.db.repo.UserHRRepository;
+import com.axelor.apps.hr.service.EmployeeComputeStatusService;
+import com.axelor.apps.hr.service.EmployeeComputeStatusServiceImpl;
 import com.axelor.apps.hr.service.analytic.AnalyticMoveLineGenerateRealServiceHrImpl;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.app.AppHumanResourceServiceImpl;
@@ -142,5 +144,6 @@ public class HumanResourceModule extends AxelorModule {
         .to(AnalyticMoveLineGenerateRealServiceHrImpl.class);
     bind(ExpenseFetchPeriodService.class).to(ExpenseFetchPeriodServiceImpl.class);
     bind(MoveReverseServiceBankPaymentImpl.class).to(ExpenseMoveReverseServiceImpl.class);
+    bind(EmployeeComputeStatusService.class).to(EmployeeComputeStatusServiceImpl.class);
   }
 }
