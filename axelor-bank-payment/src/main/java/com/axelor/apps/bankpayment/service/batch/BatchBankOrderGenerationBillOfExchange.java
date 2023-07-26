@@ -158,8 +158,7 @@ public class BatchBankOrderGenerationBillOfExchange extends AbstractBatch {
       }
       for (Invoice invoice : invoicesList) {
         try {
-          createInvoicePayment(
-              invoicePaymentIdList, companyBankDetails, invoice, accountingBatch.getDueDate());
+          createInvoicePayment(invoicePaymentIdList, companyBankDetails, invoice, null);
         } catch (Exception e) {
           incrementAnomaly();
           anomalyList.add(invoice.getId());
