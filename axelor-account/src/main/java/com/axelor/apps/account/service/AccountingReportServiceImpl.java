@@ -62,6 +62,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.persistence.Query;
 import org.apache.commons.collections.CollectionUtils;
@@ -177,12 +178,14 @@ public class AccountingReportServiceImpl implements AccountingReportService {
         paramStr = ((Model) param).getId().toString();
       } else if (param instanceof Set) {
         Set<Object> paramSet = (Set<Object>) param;
+        StringBuilder paramBuilder = new StringBuilder();
         for (Object object : paramSet) {
-          if (!paramStr.isEmpty()) {
-            paramStr += ",";
+          if (paramBuilder.length() != 0) {
+            paramBuilder.append(",");
           }
-          paramStr += ((Model) object).getId().toString();
+          paramBuilder.append(((Model) object).getId().toString());
         }
+        paramStr += paramBuilder.toString();
       } else if (param instanceof LocalDate) {
         paramStr = "'" + param.toString() + "'";
       } else {
@@ -338,7 +341,6 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
     if (this.compareReportType(
         accountingReport, AccountingReportRepository.REPORT_PAYMENT_DIFFERENCES)) {
-      AccountConfigService accountConfigService = Beans.get(AccountConfigService.class);
       AccountConfig accountConfig =
           accountConfigService.getAccountConfig(accountingReport.getCompany());
 
@@ -346,7 +348,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
           accountConfigService.getCashPositionVariationDebitAccount(accountConfig);
       Account cashPositionVariationCreditAccount =
           accountConfigService.getCashPositionVariationCreditAccount(accountConfig);
-      Set<Account> accountSet = new HashSet();
+      Set<Account> accountSet = new HashSet<>();
       if (cashPositionVariationDebitAccount != null) {
         accountSet.add(cashPositionVariationDebitAccount);
       }
@@ -553,14 +555,10 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     BigDecimal result = (BigDecimal) q.getSingleResult();
     log.debug("Total debit : {}", result);
 
-    if (result != null) {
-      return result;
-    } else {
-      return BigDecimal.ZERO;
-    }
+    return Objects.requireNonNullElse(result, BigDecimal.ZERO);
   }
 
-  /** @return */
+  /** @return result */
   public BigDecimal getCreditBalance() {
 
     Query q =
@@ -577,11 +575,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     BigDecimal result = (BigDecimal) q.getSingleResult();
     log.debug("Total debit : {}", result);
 
-    if (result != null) {
-      return result;
-    } else {
-      return BigDecimal.ZERO;
-    }
+    return Objects.requireNonNullElse(result, BigDecimal.ZERO);
   }
 
   public BigDecimal getDebitBalanceType4() {
@@ -601,11 +595,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     BigDecimal result = (BigDecimal) q.getSingleResult();
     log.debug("Total debit : {}", result);
 
-    if (result != null) {
-      return result;
-    } else {
-      return BigDecimal.ZERO;
-    }
+    return Objects.requireNonNullElse(result, BigDecimal.ZERO);
   }
 
   public BigDecimal getCreditBalance(AccountingReport accountingReport, String queryFilter) {
@@ -633,7 +623,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
   public boolean isThereTooManyLines(AccountingReport accountingReport) throws AxelorException {
 
     AccountConfig accountConfig =
-        Beans.get(AccountConfigService.class).getAccountConfig(accountingReport.getCompany());
+        accountConfigService.getAccountConfig(accountingReport.getCompany());
     Integer lineMinBeforeLongReportGenerationMessageNumber =
         accountConfig.getLineMinBeforeLongReportGenerationMessageNumber();
     if (lineMinBeforeLongReportGenerationMessageNumber != null
@@ -642,7 +632,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
         return false;
       }
       Integer typeSelect = accountingReport.getReportType().getTypeSelect();
-      long count = 0;
+      long count;
       if (typeSelect > 0 && typeSelect <= AccountingReportRepository.REPORT_GENERAL_LEDGER2) {
         count =
             Beans.get(MoveLineRepository.class)
@@ -955,8 +945,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
         modelAccountingReportCopy.setBalance(null);
         modelAccountingReportCopy.setDate(accountingReport.getDate());
         modelAccountingReportCopy.setStatusSelect(accountingReport.getStatusSelect());
-        Map<String, Object> modelAccountingReportCopyMap = Mapper.toMap(modelAccountingReportCopy);
-        return modelAccountingReportCopyMap;
+        return Mapper.toMap(modelAccountingReportCopy);
       }
     }
     return null;
