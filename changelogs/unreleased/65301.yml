@@ -1,3 +1,0 @@
----
-title: "Accounting report : Fix impossibility to select a payment move line in DAS2 grid even if code N4DS isn't empty"
-type: fix

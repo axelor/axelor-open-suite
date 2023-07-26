@@ -148,7 +148,8 @@
         </panel>
         <panel name="cutOffPanel" title="Cut off configuration" colSpan="12"
           if="__config__.app.getApp('account').manageCutOffPeriod">
-          <field name="manageCutOffPeriod" widget="boolean-switch"/>
+          <field name="manageCutOffPeriod" widget="boolean-switch"
+            onChange="action-account-record-manage-cut-off-onChange"/>
           <field name="hasAutomaticApplicationAccountingDate" widget="boolean-switch"
             showIf="manageCutOffPeriod"/>
         </panel>
@@ -438,6 +439,11 @@
     <field name="vatSystemSelect" expr="eval: 0" if="!isTaxAuthorizedOnMoveLine"/>
     <field name="vatSystemSelect" expr="eval: 1"
       if="isTaxAuthorizedOnMoveLine &amp;&amp; vatSystemSelect == 0"/>
+  </action-record>
+
+  <action-record name="action-account-record-manage-cut-off-onChange"
+    model="com.axelor.apps.account.db.Account">
+    <field name="hasAutomaticApplicationAccountingDate" expr="eval: false"/>
   </action-record>
 
   <action-method name="action-account-method-compute-balance">

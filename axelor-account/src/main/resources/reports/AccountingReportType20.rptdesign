@@ -691,18 +691,32 @@ left join account_service_type ServiceType ON (Account.service_type = ServiceTyp
 
 WHERE (AccountingReport.company IS NULL OR AccountingReport.company = Move.company)
 AND (AccountingReport.currency IS NULL OR AccountingReport.currency = Move.currency)
-AND (AccountingReport.date_from IS NULL OR AccountingReport.date_from <= MoveLine.date_val)
-AND (AccountingReport.date_to IS NULL OR AccountingReport.date_to >= MoveLine.date_val)
-AND (AccountingReport.date_val IS NULL OR AccountingReport.date_val >= MoveLine.date_val)
 AND (ServiceType IS null OR Partner.das2activity IS null)
 AND MoveLine.amount_remaining < MoveLine.debit + MoveLine.credit
 AND JournalType.id = Config.das_report_journal_type
 
-AND ((MoveLine.reconcile_group IS NOT null AND DATE(ReconcileGroup.lettering_date_time) >= AccountingReport.date_from AND DATE(ReconcileGroup.lettering_date_time) <= AccountingReport.date_to)
-OR (exists (
+AND ((MoveLine.reconcile_group IS NOT null
+    AND ReconcileGroup.lettering_date_time IS NOT null
+    AND EXISTS (
+        SELECT 1 FROM account_reconcile reconcile
+        WHERE reconcile.status_select = 2
+            AND reconcile.effective_date >= AccountingReport.date_from
+            AND reconcile.effective_date <= AccountingReport.date_to
+            AND MoveLine.reconcile_group = reconcile.reconcile_group
+            AND (reconcile.debit_move_line = MoveLine.id OR reconcile.credit_move_line = MoveLine.id)))
+OR (EXISTS (
     SELECT 1 FROM account_move_line ML
     LEFT JOIN account_reconcile_group RG ON (ML.reconcile_group = RG.id)
-    WHERE ML.reconcile_group IS NOT null AND DATE(RG.lettering_date_time) >= AccountingReport.date_from AND DATE(RG.lettering_date_time) <= AccountingReport.date_to AND ML.move = Move.id)))
+    WHERE ML.reconcile_group IS NOT null
+        AND RG.lettering_date_time IS NOT null
+        AND ML.move = Move.id
+        AND EXISTS (
+            SELECT 1 FROM account_reconcile reconcile
+            WHERE reconcile.status_select = 2
+                AND reconcile.effective_date >= AccountingReport.date_from
+                AND reconcile.effective_date <= AccountingReport.date_to
+                AND ML.reconcile_group = reconcile.reconcile_group
+                AND (reconcile.debit_move_line = ML.id OR reconcile.credit_move_line = ML.id)))))
 
 AND Move.ignore_in_accounting_ok IS false
 AND Move.status_select = 3

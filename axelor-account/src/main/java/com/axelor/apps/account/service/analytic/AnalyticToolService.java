@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.rpc.Context;
 import java.util.List;
 
 public interface AnalyticToolService {
@@ -36,4 +37,6 @@ public interface AnalyticToolService {
 
   boolean isAnalyticAxisFilled(
       AnalyticAccount analyticAccount, List<AnalyticMoveLine> analyticMoveLineList);
+
+  <T> T getFieldFromContextParent(Context context, String fieldName, Class<T> klass);
 }

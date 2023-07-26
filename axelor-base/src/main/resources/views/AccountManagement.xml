@@ -44,7 +44,7 @@
     <field name="saleTax" form-view="tax-form" grid-view="tax-grid"/>
     <field name="analyticDistributionTemplate" if-module="axelor-account"
       if="__config__.app.isApp('account')" grid-view="analytic-distribution-template-grid"
-      form-view="analytic-distribution-template-form" canNew="true"/>
+      form-view="analytic-distribution-template-form" domain="self.company = :company"/>
   </grid>
 
 
@@ -165,9 +165,9 @@
       </panel>
 
       <panel name="analyticsPanel" title="Analytics" colSpan="12" showIf="typeSelect != 2">
-        <field name="analyticDistributionTemplate" canNew="true" if-module="axelor-account"
+        <field name="analyticDistributionTemplate" if-module="axelor-account"
           if="__config__.app.isApp('account')" grid-view="analytic-distribution-template-grid"
-          form-view="analytic-distribution-template-form"/>
+          form-view="analytic-distribution-template-form" domain="self.company = :company"/>
       </panel>
       <panel name="taxPanel" title="Tax" colSpan="12" hidden="true">
         <field name="tax" form-view="tax-form" grid-view="tax-grid"

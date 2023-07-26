@@ -1,3 +1,0 @@
----
-title: "Fixed asset : Fix being able to dispose a fixed asset while generating a sale move but with no tax line set"
-type: fix

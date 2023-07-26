@@ -107,10 +107,11 @@
         </field>
         <panel name="resultPanel" stacked="true" showIf="ruleTypeSelect == 2" colSpan="6">
           <field name="resultSelect" showIf="reportTypeColumn != null"
-            requiredIf="ruleTypeSelect == 2" selection-in="[1,2,4,5]"/>
+            requiredIf="ruleTypeSelect == 2" selection-in="[1,2,4,5,6]"/>
           <field name="resultSelect" showIf="reportType != null"
-            requiredIf="ruleTypeSelect == 2" selection-in="[1,2,3,5]"/>
+            requiredIf="ruleTypeSelect == 2" selection-in="[1,2,3,5,6]"/>
         </panel>
+        <field name="negateValue" colSpan="6" showIf="[1,2,6].includes(resultSelect)"/>
         <field name="accountCode"/>
         <field name="analyticAccountCode" showIf="ruleTypeSelect == 2"/>
         <panel-related name="accountingReportConfigLineAccountTypeSetPanel"
@@ -147,21 +148,24 @@
         <field name="styleSelect"
           onChange="action-accounting-report-config-line-record-reset-style-priority"/>
         <field name="stylePriority" showIf="styleSelect > 0"/>
-        <panel name="configPanel" colSpan="12"
+        <panel name="configPanel" colSpan="12" itemSpan="4"
           showIf="typeSelect != 4 &amp;&amp; [2,3,4].includes(ruleTypeSelect)">
           <field name="hidden"/>
           <field name="notComputedIfIntersect" hideIf="$legacy"/>
+          <field name="balanceBeforePeriod" showIf="ruleTypeSelect == 2 &amp;&amp; !$legacy"/>
           <panel name="columnConfigPanel" colSpan="12"
             showIf="reportTypeColumn != null &amp;&amp; ruleTypeSelect == 2 &amp;&amp; !$legacy">
             <field name="computePreviousYear" hideIf="computeOtherPeriod"/>
             <field name="computeOtherPeriod" hideIf="computePreviousYear"/>
           </panel>
-          <field name="groupsWithoutColumn"
+          <field name="groupsWithoutColumn" colSpan="6"
             showIf="reportTypeColumn != null &amp;&amp; typeSelect != 5 &amp;&amp; !$legacy"/>
         </panel>
         <panel name="groupConfigPanel" showIf="typeSelect == 4" colSpan="12">
           <field name="hidden"/>
           <field name="computeOtherPeriod"
+            showIf="reportTypeColumn != null &amp;&amp; ruleTypeSelect == 2"/>
+          <field name="balanceBeforePeriod"
             showIf="reportTypeColumn != null &amp;&amp; ruleTypeSelect == 2"/>
         </panel>
       </panel>

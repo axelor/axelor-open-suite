@@ -131,6 +131,31 @@
                 <property name="category">Unformatted</property>
             </structure>
         </scalar-parameter>
+        <scalar-parameter name="BankDetailsId" id="4512">
+            <property name="valueType">static</property>
+            <property name="dataType">decimal</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="ChequeDate" id="4513">
+            <property name="hidden">false</property>
+            <property name="valueType">static</property>
+            <property name="isRequired">true</property>
+            <property name="dataType">date</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="concealValue">false</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
     </parameters>
     <data-sources>
         <oda-data-source extensionID="org.eclipse.birt.report.data.oda.jdbc" name="Data Source" id="209">
@@ -271,11 +296,99 @@
             <list-property name="parameters">
                 <structure>
                     <property name="name">param_1</property>
+                    <property name="paramName">ChequeDate</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">0</property>
+                    <property name="position">1</property>
+                    <property name="isOptional">false</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                <structure>
+                    <property name="name">param_2</property>
                     <property name="paramName">DepositSlipId</property>
                     <property name="nativeName"></property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
-                    <property name="position">1</property>
+                    <property name="position">2</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                <structure>
+                    <property name="name">param_3</property>
+                    <property name="paramName">BankDetailsId</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">0</property>
+                    <property name="position">3</property>
+                    <property name="isOptional">false</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                <structure>
+                    <property name="name">param_4</property>
+                    <property name="paramName">ChequeDate</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">0</property>
+                    <property name="position">4</property>
+                    <property name="isOptional">false</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                <structure>
+                    <property name="name">param_5</property>
+                    <property name="paramName">DepositSlipId</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">0</property>
+                    <property name="position">5</property>
+                    <property name="isOptional">false</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                <structure>
+                    <property name="name">param_6</property>
+                    <property name="paramName">BankDetailsId</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">0</property>
+                    <property name="position">6</property>
+                    <property name="isOptional">false</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                <structure>
+                    <property name="name">param_7</property>
+                    <property name="paramName">ChequeDate</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">0</property>
+                    <property name="position">7</property>
+                    <property name="isOptional">false</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                <structure>
+                    <property name="name">param_8</property>
+                    <property name="paramName">BankDetailsId</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">0</property>
+                    <property name="position">8</property>
+                    <property name="isOptional">false</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                <structure>
+                    <property name="name">param_9</property>
+                    <property name="paramName">DepositSlipId</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">0</property>
+                    <property name="position">9</property>
+                    <property name="isOptional">false</property>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
                 </structure>
@@ -505,10 +618,10 @@
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT
 	Deposit.deposit_number       AS "DepositNumber",
-	Deposit.deposit_date         AS "DepositDate",
+	(SELECT DISTINCT(PV.cheque_date) FROM account_payment_voucher AS PV WHERE PV.cheque_date = ?)     AS "DepositDate",
 	Deposit.deposit_type         AS "DepositType",
-	Deposit.cheque_count         AS "ChqNbr",
-	Deposit.total_amount         AS "TotalAmount",
+	(SELECT COUNT(PV.id) FROM account_payment_voucher AS PV WHERE PV.deposit_slip = ? AND PV.deposit_bank_details = ? AND PV.cheque_date = ?)         AS "ChqNbr",
+	(SELECT SUM(PV.paid_amount) FROM account_payment_voucher AS PV WHERE PV.deposit_slip = ? AND PV.deposit_bank_details = ? AND PV.cheque_date = ?)         AS "TotalAmount",
 	BankDetails.iban      		 AS "AccountNbr",
 	Bank.bank_name               AS "BankName",
 	Email.address                AS "Email",
@@ -522,13 +635,13 @@
 	Company.height            	 AS "logo_height",
 	Company.width                AS "logo_width",
 	MetaFile.file_path           AS "CompanyLogo"
-FROM account_deposit_slip AS Deposit
+	FROM account_deposit_slip AS Deposit
 	LEFT OUTER JOIN base_company AS Company ON (Deposit.company = Company.id)
 	LEFT OUTER JOIN base_partner AS CompanyPartner ON (Company.partner = CompanyPartner.id)
 	LEFT OUTER JOIN base_address AS Address ON (Company.address = Address.id)
 	LEFT OUTER JOIN message_email_address AS Email ON (CompanyPartner.email_address = Email.id)
 	LEFT OUTER JOIN base_city AS City ON (Address.city = City.id)
-	LEFT OUTER JOIN base_bank_details AS BankDetails ON (Deposit.company_bank_details = BankDetails.id)
+	LEFT OUTER JOIN base_bank_details AS BankDetails ON (BankDetails.id = ?)
 	LEFT OUTER JOIN base_bank AS Bank ON (BankDetails.bank = Bank.id)
 	LEFT OUTER JOIN meta_file AS MetaFile ON (MetaFile.id = Company.logo)
 WHERE Deposit.id = ?]]></xml-property>
@@ -586,6 +699,28 @@ WHERE Deposit.id = ?]]></xml-property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
                     <property name="position">1</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                <structure>
+                    <property name="name">param_2</property>
+                    <property name="paramName">BankDetailsId</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">0</property>
+                    <property name="position">2</property>
+                    <property name="isOptional">false</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                <structure>
+                    <property name="name">param_3</property>
+                    <property name="paramName">ChequeDate</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">0</property>
+                    <property name="position">3</property>
+                    <property name="isOptional">false</property>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
                 </structure>
@@ -698,14 +833,16 @@ WHERE Deposit.id = ?]]></xml-property>
 	PV.cheque_number    AS "ChqNbr",
 	PV.cheque_bank      AS "ChqBank",
 	PV.cheque_owner     AS "ChqPartnerName",
-	PV.payment_date     AS "PaymentDate",
+	PV.cheque_due_date    AS "ChequeDueDate",
+	PV.payment_date		AS "PaymentDate",
+	PV.cheque_date		AS "ChequeDate",
 	Partner.id   AS "PartnerId",
 	Currency.code as "CurrencyCode",
 	Currency.symbol as "CurrencySymbol"
-FROM account_payment_voucher AS PV
+	FROM account_payment_voucher AS PV
 	LEFT JOIN base_partner AS Partner ON (PV.partner = Partner.id)
 	LEFT JOIN base_currency AS Currency on PV.currency = Currency.id
-WHERE PV.deposit_slip = ?]]></xml-property>
+	WHERE PV.deposit_slip = ? AND PV.deposit_bank_details = ? AND PV.cheque_date = ?]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -1272,7 +1409,7 @@ this.height=row["logo_height"];]]></method>
                                                     <structure>
                                                         <property name="paramName">param_1</property>
                                                         <simple-property-list name="expression">
-                                                            <value type="javascript">"ChequeDepositSlip.chequeDate"</value>
+                                                            <value type="javascript">"Date of the deposit slip"</value>
                                                         </simple-property-list>
                                                     </structure>
                                                 </list-property>
@@ -1545,6 +1682,26 @@ this.height=row["logo_height"];]]></method>
                                 <text-property name="displayName">CurrencySymbol</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["CurrencySymbol"]</expression>
                                 <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">ChequeDate</property>
+                                <text-property name="displayName">ChequeDate</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["ChequeDate"]</expression>
+                                <property name="dataType">date</property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">Aggregation</property>
+                                <text-property name="displayName">SumAmount</text-property>
+                                <property name="dataType">float</property>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">row["Amount"]</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
                             </structure>
                         </list-property>
                         <list-property name="sort">

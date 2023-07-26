@@ -31,16 +31,25 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.FrequencyRepository;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.FrequencyService;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
+import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
+import com.axelor.apps.hr.db.TimesheetLine;
+import com.axelor.apps.hr.db.repo.EmployeeRepository;
+import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
+import com.axelor.apps.hr.db.repo.TimesheetRepository;
+import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.project.db.Project;
-import com.axelor.apps.project.db.ProjectStatus;
+import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.ProjectTaskCategory;
+import com.axelor.apps.project.db.TaskStatus;
 import com.axelor.apps.project.db.TaskTemplate;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
@@ -51,6 +60,7 @@ import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
+import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppBusinessProject;
 import com.axelor.utils.QueryBuilder;
 import com.google.common.base.Strings;
@@ -67,10 +77,13 @@ import java.util.Set;
 public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImpl
     implements ProjectTaskBusinessProjectService {
 
+  public static final int BIG_DECIMAL_SCALE = 2;
   private PriceListLineRepository priceListLineRepo;
   private PriceListService priceListService;
   private PartnerPriceListService partnerPriceListService;
   private ProductCompanyService productCompanyService;
+  private TimesheetLineRepository timesheetLineRepository;
+  private AppBusinessProjectService appBusinessProjectService;
 
   @Inject
   public ProjectTaskBusinessProjectServiceImpl(
@@ -82,12 +95,16 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
       PriceListLineRepository priceListLineRepo,
       PriceListService priceListService,
       PartnerPriceListService partnerPriceListService,
-      ProductCompanyService productCompanyService) {
+      ProductCompanyService productCompanyService,
+      TimesheetLineRepository timesheetLineRepository,
+      AppBusinessProjectService appBusinessProjectService) {
     super(projectTaskRepo, frequencyRepo, frequencyService, appBaseService, projectRepository);
     this.priceListLineRepo = priceListLineRepo;
     this.priceListService = priceListService;
     this.partnerPriceListService = partnerPriceListService;
     this.productCompanyService = productCompanyService;
+    this.timesheetLineRepository = timesheetLineRepository;
+    this.appBusinessProjectService = appBusinessProjectService;
   }
 
   @Override
@@ -95,7 +112,8 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
       throws AxelorException {
     ProjectTask task = create(saleOrderLine.getFullName() + "_task", project, assignedTo);
     task.setProduct(saleOrderLine.getProduct());
-    task.setUnit(saleOrderLine.getUnit());
+    task.setInvoicingUnit(saleOrderLine.getUnit());
+    task.setTimeUnit(saleOrderLine.getUnit());
     task.setCurrency(project.getClientPartner().getCurrency());
     if (project.getPriceList() != null) {
       PriceListLine line =
@@ -118,6 +136,9 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
         saleOrderLine.getSaleOrder() != null
             ? saleOrderLine.getSaleOrder().getToInvoiceViaTask()
             : false);
+
+    task.setSoldTime(saleOrderLine.getQty());
+    task.setUpdatedTime(saleOrderLine.getQty());
     return task;
   }
 
@@ -132,7 +153,6 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     BigDecimal plannedHrs = template.getTotalPlannedHrs();
     if (template.getIsUniqueTaskForMultipleQuantity() && qty.compareTo(BigDecimal.ONE) > 0) {
       plannedHrs = plannedHrs.multiply(qty);
-      task.setName(task.getName() + " x" + qty.intValue());
     }
     task.setTotalPlannedHrs(plannedHrs);
 
@@ -142,6 +162,8 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
   @Override
   public ProjectTask create(String subject, Project project, User assignedTo) {
     ProjectTask task = super.create(subject, project, assignedTo);
+    task.setProjectTaskList(new ArrayList<>());
+    task.setProjectPlanningTimeList(new ArrayList<>());
     task.setTaskDate(appBaseService.getTodayDate(project.getCompany()));
     return task;
   }
@@ -246,7 +268,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
             projectTask.getPriceDiscounted(),
             projectTask.getDescription(),
             projectTask.getQuantity(),
-            projectTask.getUnit(),
+            projectTask.getInvoicingUnit(),
             null,
             priority,
             projectTask.getDiscountAmount(),
@@ -318,7 +340,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     Company company =
         projectTask.getProject() != null ? projectTask.getProject().getCompany() : null;
     Unit salesUnit = (Unit) productCompanyService.get(product, "salesUnit", company);
-    projectTask.setUnit(
+    projectTask.setInvoicingUnit(
         salesUnit != null ? salesUnit : (Unit) productCompanyService.get(product, "unit", company));
     projectTask.setCurrency((Currency) productCompanyService.get(product, "saleCurrency", company));
     projectTask.setQuantity(projectTask.getBudgetedTime());
@@ -343,14 +365,14 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
 
       switch (projectTask.getProject().getInvoicingSequenceSelect()) {
         case ProjectRepository.INVOICING_SEQ_INVOICE_PRE_TASK:
-          Set<ProjectStatus> preTaskStatusSet = appBusinessProject.getPreTaskStatusSet();
+          Set<TaskStatus> preTaskStatusSet = appBusinessProject.getPreTaskStatusSet();
           projectTask.setToInvoice(
               ObjectUtils.notEmpty(preTaskStatusSet)
                   && preTaskStatusSet.contains(projectTask.getStatus()));
           break;
 
         case ProjectRepository.INVOICING_SEQ_INVOICE_POST_TASK:
-          Set<ProjectStatus> postTaskStatusSet = appBusinessProject.getPostTaskStatusSet();
+          Set<TaskStatus> postTaskStatusSet = appBusinessProject.getPostTaskStatusSet();
           projectTask.setToInvoice(
               ObjectUtils.notEmpty(postTaskStatusSet)
                   && postTaskStatusSet.contains(projectTask.getStatus()));
@@ -398,7 +420,7 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     projectTask.setInvoicingType(null);
     projectTask.setToInvoice(null);
     projectTask.setQuantity(null);
-    projectTask.setUnit(null);
+    projectTask.setInvoicingUnit(null);
     projectTask.setUnitPrice(null);
     projectTask.setCurrency(null);
     projectTask.setExTaxTotal(null);
@@ -451,5 +473,134 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     }
     projectTask = updateTaskFinancialInfo(projectTask);
     return projectTaskRepo.save(projectTask);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void computeProjectTaskTotals(ProjectTask projectTask) throws AxelorException {
+
+    BigDecimal plannedTime;
+    BigDecimal spentTime = BigDecimal.ZERO;
+
+    Unit timeUnit = projectTask.getTimeUnit();
+
+    plannedTime =
+        projectTask.getProjectPlanningTimeList().stream()
+            .map(ProjectPlanningTime::getPlannedTime)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+    List<TimesheetLine> timeSheetLines =
+        timesheetLineRepository
+            .all()
+            .filter("self.timesheet.statusSelect = :status AND self.projectTask = :projectTask")
+            .bind("status", TimesheetRepository.STATUS_VALIDATED)
+            .bind("projectTask", projectTask)
+            .fetch();
+
+    for (TimesheetLine timeSheetLine : timeSheetLines) {
+      spentTime =
+          spentTime.add(convertTimesheetLineDurationToProjectTaskUnit(timeSheetLine, timeUnit));
+    }
+
+    List<ProjectTask> projectTaskList = projectTask.getProjectTaskList();
+    for (ProjectTask task : projectTaskList) {
+      computeProjectTaskTotals(task);
+      plannedTime = plannedTime.add(task.getPlannedTime());
+      spentTime = spentTime.add(task.getSpentTime());
+    }
+
+    projectTask.setPlannedTime(plannedTime);
+    projectTask.setSpentTime(spentTime);
+
+    if (projectTask.getParentTask() == null) {
+      computeProjectTaskReporting(projectTask);
+    }
+    projectTaskRepo.save(projectTask);
+  }
+
+  protected BigDecimal convertTimesheetLineDurationToProjectTaskUnit(
+      TimesheetLine timesheetLine, Unit timeUnit) throws AxelorException {
+    String timeLoggingUnit = timesheetLine.getTimesheet().getTimeLoggingPreferenceSelect();
+    BigDecimal duration = timesheetLine.getDuration();
+    BigDecimal convertedDuration = BigDecimal.ZERO;
+
+    AppBusinessProject appBusinessProject = appBusinessProjectService.getAppBusinessProject();
+
+    Unit daysUnit = appBusinessProject.getDaysUnit();
+    Unit hoursUnit = appBusinessProject.getHoursUnit();
+    BigDecimal defaultHoursADay = appBusinessProject.getDefaultHoursADay();
+    if (defaultHoursADay.compareTo(BigDecimal.ZERO) == 0) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(HumanResourceExceptionMessage.TIMESHEET_DAILY_WORK_HOURS));
+    }
+
+    switch (timeLoggingUnit) {
+      case EmployeeRepository.TIME_PREFERENCE_DAYS:
+        if (timeUnit.equals(daysUnit)) {
+          convertedDuration = duration;
+        }
+        if (timeUnit.equals(hoursUnit)) {
+          convertedDuration = duration.multiply(defaultHoursADay);
+        }
+        break;
+      case EmployeeRepository.TIME_PREFERENCE_HOURS:
+        if (timeUnit.equals(hoursUnit)) {
+          convertedDuration = duration;
+        }
+        if (timeUnit.equals(daysUnit)) {
+          convertedDuration =
+              duration.divide(defaultHoursADay, BIG_DECIMAL_SCALE, RoundingMode.HALF_UP);
+        }
+        break;
+      case EmployeeRepository.TIME_PREFERENCE_MINUTES:
+        // convert to hours
+        convertedDuration =
+            duration.divide(new BigDecimal(60), BIG_DECIMAL_SCALE, RoundingMode.HALF_UP);
+        if (timeUnit.equals(daysUnit)) {
+          convertedDuration =
+              duration.divide(defaultHoursADay, BIG_DECIMAL_SCALE, RoundingMode.HALF_UP);
+        }
+        break;
+      default:
+        break;
+    }
+
+    return convertedDuration;
+  }
+
+  /**
+   * update project task values for reporting
+   *
+   * @param projectTask
+   * @throws AxelorException
+   */
+  protected void computeProjectTaskReporting(ProjectTask projectTask) throws AxelorException {
+    if (projectTask.getUpdatedTime().signum() <= 0 || projectTask.getSoldTime().signum() <= 0) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          String.format(
+              I18n.get(BusinessProjectExceptionMessage.PROJECT_TASK_UPDATE_REPORTING_VALUES_ERROR),
+              projectTask.getFullName()));
+    }
+
+    BigDecimal percentageOfProgression = projectTask.getSpentTime().multiply(new BigDecimal("100"));
+    percentageOfProgression =
+        percentageOfProgression.divide(
+            projectTask.getUpdatedTime(), BIG_DECIMAL_SCALE, RoundingMode.HALF_UP);
+
+    BigDecimal percentageOfConsumption = projectTask.getSpentTime().multiply(new BigDecimal("100"));
+    percentageOfConsumption =
+        percentageOfConsumption.divide(
+            projectTask.getSoldTime(), BIG_DECIMAL_SCALE, RoundingMode.HALF_UP);
+    BigDecimal remainingAmountToDo =
+        projectTask
+            .getUpdatedTime()
+            .subtract(projectTask.getSpentTime())
+            .setScale(BIG_DECIMAL_SCALE, RoundingMode.HALF_UP);
+
+    projectTask.setPercentageOfProgress(percentageOfProgression);
+    projectTask.setPercentageOfConsumption(percentageOfConsumption);
+    projectTask.setRemainingAmountToDo(remainingAmountToDo);
   }
 }

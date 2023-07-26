@@ -1,3 +1,0 @@
----
-title: "Accounting batch : Fix error when we try to run credit transfer batch without bank details"
-type: fix

@@ -37,6 +37,9 @@
 
     <integer name="deliveryState" title="Delivery state"
       selection="sale.order.delivery.state" readonly="true" default="0"/>
+    <integer name="invoicingState" title="Invoicing State"
+      selection="supplychain.sale.order.invoicing.state.select" readonly="true" default="1"/>
+
 
     <integer name="standardDelay" title="Standard delay (days)" default="0"/>
     <extra-code>
@@ -51,6 +54,11 @@
             public static final int DELIVERY_STATE_NOT_DELIVERED = 1;
             public static final int DELIVERY_STATE_PARTIALLY_DELIVERED = 2;
             public static final int DELIVERY_STATE_DELIVERED = 3;
+
+            // INVOICING STATE SELECT
+            public static final int INVOICING_STATE_NOT_INVOICED = 1;
+            public static final int INVOICING_STATE_PARTIALLY_INVOICED = 2;
+            public static final int INVOICING_STATE_INVOICED = 3;
 
             // AVAILABLE STATUS SELECT
 			public static final int STATUS_AVAILABLE = 1;

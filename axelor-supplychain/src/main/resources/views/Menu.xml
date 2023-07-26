@@ -100,15 +100,14 @@
   </action-view>
 
   <menuitem name="top-menu-purchase-suparrivals" parent="top-menu-purchase"
-    if="__config__.app.isApp('stock')" title="Supplier Arrivals"
-    action="top.menu.purchase.suparrivals" top="true"/>
+    title="Supplier Arrivals" action="top.menu.purchase.suparrivals" top="true"/>
 
   <action-view name="top.menu.purchase.suparrivals" title="Supplier Arrivals"
     model="com.axelor.apps.stock.db.StockMove">
     <view type="grid" name="stock-move-in-grid"/>
     <view type="form" name="stock-move-form"/>
     <view-param name="search-filters" value="supplier-arrivals-filters"/>
-    <domain>self.fromStockLocation.typeSelect = 2</domain>
+    <domain>self.stockMoveLineList.fromStockLocation.typeSelect = 2</domain>
     <context name="_typeSelect" expr="3"/>
     <context name="_newDate" expr="eval: __config__.date.plusWeeks(1)"/>
   </action-view>
@@ -140,8 +139,8 @@
     <view-param name="search-filters" value="purchase-order-filters"/>
     <domain>self.statusSelect = 3 AND self IN (select p.purchaseOrder from PurchaseOrderLine as p
       where p.receiptState != 3 AND p.product.productTypeSelect = 'storable' AND
-      p.product.stockManaged = true) AND self.id NOT IN (SELECT s.originId FROM StockMove s WHERE
-      s.originTypeSelect LIKE 'com.axelor.apps.purchase.db.PurchaseOrder' AND s.statusSelect = 2)</domain>
+      p.product.stockManaged = true) AND self.id NOT IN (SELECT s.purchaseOrder.id FROM StockMove s
+      WHERE s.statusSelect = 2)</domain>
   </action-view>
 
   <menuitem name="sale-root-sale-orders-without-stock-move"
@@ -158,8 +157,7 @@
     <view-param name="search-filters" value="sale-order-filters"/>
     <domain>self.statusSelect = 3 AND self IN (select s.saleOrder from SaleOrderLine as s where
       s.deliveryState != 3 AND s.product.productTypeSelect = 'storable' AND s.product.stockManaged =
-      true) AND self.id NOT IN (SELECT s.originId FROM StockMove s WHERE s.originTypeSelect LIKE
-      'com.axelor.apps.sale.db.SaleOrder' AND s.statusSelect = 2)</domain>
+      true) AND self.id NOT IN (SELECT s.saleOrder.id FROM StockMove s WHERE s.statusSelect = 2)</domain>
   </action-view>
 
   <menuitem name="sale-configuration-timetable-template" title="Timetable templates"

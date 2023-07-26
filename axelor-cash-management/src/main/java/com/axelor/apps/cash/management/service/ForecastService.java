@@ -24,6 +24,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.cash.management.db.Forecast;
 import com.axelor.apps.cash.management.db.ForecastGenerator;
 import com.axelor.apps.cash.management.db.ForecastRecapLineType;
+import com.axelor.apps.cash.management.db.repo.ForecastGeneratorRepository;
 import com.axelor.apps.cash.management.db.repo.ForecastRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -57,7 +58,15 @@ public class ForecastService {
               forecastGenerator.getForecastRecapLineType(),
               forecastGenerator.getComments());
       forecastRepo.save(forecast);
-      itDate = fromDate.plusMonths(++count * forecastGenerator.getPeriodicitySelect());
+      if (forecastGenerator.getPeriodicitySelect()
+          == ForecastGeneratorRepository.FORECAST_GENERATOR_WEEKLY) {
+        itDate = fromDate.plusWeeks(++count);
+      } else if (forecastGenerator.getPeriodicitySelect()
+          == ForecastGeneratorRepository.FORECAST_GENERATOR_FORTNIGHTLY) {
+        itDate = fromDate.plusWeeks(++count * 2);
+      } else {
+        itDate = fromDate.plusMonths(++count * forecastGenerator.getPeriodicitySelect());
+      }
     }
   }
 

@@ -16,7 +16,8 @@
 
   <form name="forecast-generator-form" title="Forecast Assistant"
     model="com.axelor.apps.cash.management.db.ForecastGenerator"
-    onNew="action-forecast-generator-record-default-on-new">
+    onNew="action-forecast-generator-record-default-on-new"
+    onLoad="action-forecast-generator-attrs-title-generate">
     <panel name="mainPanel">
       <button name="generateBtn" title="Generate"
         onClick="action-forecast-generator-group-generate" colSpan="3" colOffset="9"/>
@@ -26,7 +27,8 @@
       <field name="amount" validIf="amount &gt;= 0"/>
       <field name="fromDate" onChange="action-forecast-generator-validate-dates"/>
       <field name="toDate" onChange="action-forecast-generator-validate-dates"/>
-      <field name="periodicitySelect" validIf="periodicitySelect > 0"/>
+      <field name="periodicitySelect" validIf="periodicitySelect > 0"
+        onChange="action-forecast-generator-method-reset-forecast"/>
       <field name="forecastRecapLineType" domain="self.elementSelect = 5"/>
       <field name="comments" colSpan="12"/>
       <panel-dashlet name="forecastListPanel" title="Forecasts generated"
@@ -56,11 +58,16 @@
 
   <action-attrs name="action-forecast-generator-attrs-title-generate">
     <attribute name="title" for="generateBtn"
-      expr="eval:com.axelor.i18n.I18n.get('Actualize')"/>
+      expr="eval:com.axelor.i18n.I18n.get('Actualize')"
+      if="__repo__(Forecast).all().filter('self.forecastGenerator.id = ?',__id__).fetch()?.size &gt; 0"/>
   </action-attrs>
 
   <action-method name="action-forecast-generator-method-generate">
     <call class="com.axelor.apps.cash.management.web.ForecastController" method="generate"/>
+  </action-method>
+
+  <action-method name="action-forecast-generator-method-reset-forecast">
+    <call class="com.axelor.apps.cash.management.web.ForecastController" method="resetForecast"/>
   </action-method>
 
   <action-validate name="action-forecast-generator-validate-dates">

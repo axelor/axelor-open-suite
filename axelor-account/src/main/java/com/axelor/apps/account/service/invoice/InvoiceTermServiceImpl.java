@@ -30,6 +30,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentConditionLine;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.SubstitutePfpValidator;
 import com.axelor.apps.account.db.Tax;
@@ -39,6 +40,7 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.InvoiceVisibilityService;
 import com.axelor.apps.account.service.ReconcileService;
@@ -52,6 +54,7 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.db.User;
+import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.Query;
@@ -76,6 +79,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.tuple.Pair;
 
 @RequestScoped
 public class InvoiceTermServiceImpl implements InvoiceTermService {
@@ -88,6 +92,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   protected AccountConfigService accountConfigService;
   protected ReconcileService reconcileService;
   protected InvoicePaymentCreateService invoicePaymentCreateService;
+  protected UserRepository userRepo;
 
   @Inject
   public InvoiceTermServiceImpl(
@@ -98,7 +103,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       InvoiceVisibilityService invoiceVisibilityService,
       AccountConfigService accountConfigService,
       ReconcileService reconcileService,
-      InvoicePaymentCreateService invoicePaymentCreateService) {
+      InvoicePaymentCreateService invoicePaymentCreateService,
+      UserRepository userRepo) {
     this.invoiceTermRepo = invoiceTermRepo;
     this.invoiceRepo = invoiceRepo;
     this.appAccountService = appAccountService;
@@ -107,6 +113,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     this.accountConfigService = accountConfigService;
     this.reconcileService = reconcileService;
     this.invoicePaymentCreateService = invoicePaymentCreateService;
+    this.userRepo = userRepo;
   }
 
   @Override
@@ -224,7 +231,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
                 RoundingMode.HALF_UP);
 
     User pfpUser = null;
-    if (getPfpValidatorUserCondition(invoice)) {
+    if (getPfpValidatorUserCondition(invoice, null)) {
       pfpUser = getPfpValidatorUser(invoice.getPartner(), invoice.getCompany());
     }
 
@@ -336,14 +343,30 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     }
   }
 
-  protected boolean getPfpValidatorUserCondition(Invoice invoice) {
-    return appAccountService.getAppAccount().getActivatePassedForPayment()
-        && (invoice.getCompany().getAccountConfig().getIsManagePassedForPayment()
+  @Override
+  public boolean getPfpValidatorUserCondition(Invoice invoice, MoveLine moveLine) {
+    boolean invoiceCondition =
+        invoice != null
+            && invoice.getCompany().getAccountConfig().getIsManagePassedForPayment()
             && (invoice.getOperationTypeSelect()
                     == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
                 || (invoice.getCompany().getAccountConfig().getIsManagePFPInRefund()
                     && invoice.getOperationTypeSelect()
-                        == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND)));
+                        == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND));
+
+    boolean moveLineCondition =
+        invoice == null
+            && moveLine != null
+            && moveLine.getMove() != null
+            && moveLine.getMove().getCompany().getAccountConfig().getIsManagePassedForPayment()
+            && (moveLine.getMove().getJournal().getJournalType().getTechnicalTypeSelect()
+                    == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE
+                || (moveLine.getMove().getCompany().getAccountConfig().getIsManagePFPInRefund()
+                    && moveLine.getMove().getJournal().getJournalType().getTechnicalTypeSelect()
+                        == JournalTypeRepository.TECHNICAL_TYPE_SELECT_CREDIT_NOTE));
+
+    return appAccountService.getAppAccount().getActivatePassedForPayment()
+        && (invoiceCondition || moveLineCondition);
   }
 
   @Override
@@ -1072,72 +1095,55 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void reconcileAndUpdateInvoiceTermsAmounts(
-      InvoiceTerm invoiceTermFromInvoice, InvoiceTerm invoiceTermFromRefund)
-      throws AxelorException {
-    BigDecimal reconciledAmount =
-        invoiceTermFromInvoice.getAmountRemaining().min(invoiceTermFromRefund.getAmountRemaining());
-
-    MoveLine creditMoveLine = null;
-    MoveLine debitMoveLine = null;
-    if (invoiceTermFromInvoice.getMoveLine().getMove().getFunctionalOriginSelect()
-        == MoveRepository.FUNCTIONAL_ORIGIN_SALE) {
-      creditMoveLine = invoiceTermFromRefund.getMoveLine();
-      debitMoveLine = invoiceTermFromInvoice.getMoveLine();
-    } else if (invoiceTermFromInvoice.getMoveLine().getMove().getFunctionalOriginSelect()
-        == MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE) {
-      creditMoveLine = invoiceTermFromInvoice.getMoveLine();
-      debitMoveLine = invoiceTermFromRefund.getMoveLine();
-    }
-    Reconcile invoiceTermsReconcile =
-        reconcileService.createReconcile(debitMoveLine, creditMoveLine, reconciledAmount, true);
-
-    reconcileService.confirmReconcile(invoiceTermsReconcile, false, false);
-
-    updateInvoiceTermsAmounts(
-        invoiceTermFromInvoice,
-        reconciledAmount,
-        invoiceTermsReconcile,
-        invoiceTermFromRefund.getMoveLine().getMove());
-    updateInvoiceTermsAmounts(
-        invoiceTermFromRefund,
-        reconciledAmount,
-        invoiceTermsReconcile,
-        invoiceTermFromInvoice.getMoveLine().getMove());
-  }
-
-  @Override
-  @Transactional(rollbackOn = {Exception.class})
   public List<InvoiceTerm> reconcileMoveLineInvoiceTermsWithFullRollBack(
-      List<InvoiceTerm> invoiceTermList) throws AxelorException {
+      List<InvoiceTerm> invoiceTermList,
+      List<Pair<InvoiceTerm, Pair<InvoiceTerm, BigDecimal>>> invoiceTermLinkWithRefundList)
+      throws AxelorException {
     List<Partner> partnerList = getPartnersFromInvoiceTermList(invoiceTermList);
 
     for (Partner partner : partnerList) {
 
       List<InvoiceTerm> invoiceTermFromInvoiceList =
-          getInvoiceTermsInvoiceOrRefundSortedByDueDateAndByPartner(invoiceTermList, partner, true);
+          getInvoiceTermsInvoiceSortedByDueDateAndByPartner(invoiceTermList, partner);
       List<InvoiceTerm> invoiceTermFromRefundList =
-          getInvoiceTermsInvoiceOrRefundSortedByDueDateAndByPartner(
-              invoiceTermList, partner, false);
+          getInvoiceTermsRefundSortedByDueDateAndByPartner(invoiceTermList, partner);
       int invoiceCounter = 0;
       int refundCounter = 0;
+      BigDecimal reconciledAmount = BigDecimal.ZERO;
+      BigDecimal availableInvoiceAmount = BigDecimal.ZERO;
+      BigDecimal availableRefundAmount = BigDecimal.ZERO;
+
       InvoiceTerm invoiceTermFromInvoice = null;
       InvoiceTerm invoiceTermFromRefund = null;
+
       while (!ObjectUtils.isEmpty(invoiceTermFromRefundList)
           && !ObjectUtils.isEmpty(invoiceTermFromInvoiceList)
           && invoiceCounter < invoiceTermFromInvoiceList.size()
           && refundCounter < invoiceTermFromRefundList.size()) {
         invoiceTermFromInvoice = invoiceTermFromInvoiceList.get(invoiceCounter);
         invoiceTermFromRefund = invoiceTermFromRefundList.get(refundCounter);
-        this.reconcileAndUpdateInvoiceTermsAmounts(invoiceTermFromInvoice, invoiceTermFromRefund);
-        if (invoiceTermFromInvoice.getAmountRemaining().signum() == 0) {
-          invoiceTermFromInvoice.setIsPaid(true);
-          invoiceCounter++;
+
+        if ((BigDecimal.ZERO).compareTo(availableInvoiceAmount) == 0) {
+          availableInvoiceAmount = invoiceTermFromInvoice.getAmountRemaining();
         }
-        if (invoiceTermFromRefund.getAmountRemaining().signum() == 0) {
+        if ((BigDecimal.ZERO).compareTo(availableRefundAmount) == 0) {
+          availableRefundAmount = invoiceTermFromRefund.getAmountRemaining();
+        }
+
+        reconciledAmount = availableInvoiceAmount.min(availableRefundAmount);
+
+        if (availableInvoiceAmount.subtract(reconciledAmount).signum() == 0) {
+          invoiceTermLinkWithRefundList.add(
+              Pair.of(invoiceTermFromInvoice, Pair.of(invoiceTermFromRefund, reconciledAmount)));
+          invoiceCounter++;
+        } else if (availableRefundAmount.subtract(reconciledAmount).signum() == 0) {
+          invoiceTermLinkWithRefundList.add(
+              Pair.of(invoiceTermFromInvoice, Pair.of(invoiceTermFromRefund, reconciledAmount)));
           invoiceTermFromRefund.setIsPaid(true);
           refundCounter++;
         }
+        availableInvoiceAmount = availableInvoiceAmount.subtract(reconciledAmount);
+        availableRefundAmount = availableRefundAmount.subtract(reconciledAmount);
       }
     }
     return invoiceTermList;
@@ -1150,20 +1156,32 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
         .collect(Collectors.toList());
   }
 
-  protected List<InvoiceTerm> getInvoiceTermsInvoiceOrRefundSortedByDueDateAndByPartner(
-      List<InvoiceTerm> invoiceTermList, Partner partner, boolean isInvoice) {
+  protected List<InvoiceTerm> getInvoiceTermsInvoiceSortedByDueDateAndByPartner(
+      List<InvoiceTerm> invoiceTermList, Partner partner) {
     return invoiceTermList.stream()
         .filter(
-            it ->
-                ((it.getAmountPaid().signum() > 0 && isInvoice)
-                        || (it.getAmountPaid().signum() < 0 && !isInvoice))
-                    && it.getMoveLine().getPartner().equals(partner))
+            it -> it.getAmountPaid().signum() > 0 && it.getMoveLine().getPartner().equals(partner))
         .sorted(Comparator.comparing(InvoiceTerm::getDueDate))
         .collect(Collectors.toList());
   }
 
-  protected InvoiceTerm updateInvoiceTermsAmounts(
-      InvoiceTerm invoiceTerm, BigDecimal amount, Reconcile reconcile, Move move)
+  protected List<InvoiceTerm> getInvoiceTermsRefundSortedByDueDateAndByPartner(
+      List<InvoiceTerm> invoiceTermList, Partner partner) {
+    return invoiceTermList.stream()
+        .filter(
+            it -> it.getAmountPaid().signum() < 0 && it.getMoveLine().getPartner().equals(partner))
+        .sorted(Comparator.comparing(InvoiceTerm::getDueDate))
+        .collect(Collectors.toList());
+  }
+
+  @Override
+  public InvoiceTerm updateInvoiceTermsAmounts(
+      InvoiceTerm invoiceTerm,
+      BigDecimal amount,
+      Reconcile reconcile,
+      Move move,
+      PaymentSession paymentSession,
+      boolean isRefund)
       throws AxelorException {
 
     if (invoiceTerm.getInvoice() != null) {
@@ -1180,7 +1198,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       invoiceTerm.setAmountRemaining(invoiceTerm.getAmountRemaining().subtract(amount));
     }
 
-    invoiceTerm = updateInvoiceTermsAmountsSessiontPart(invoiceTerm);
+    invoiceTerm = updateInvoiceTermsAmountsSessiontPart(invoiceTerm, isRefund);
+
     return invoiceTerm;
   }
 
@@ -1207,19 +1226,53 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
                 < 0;
       }
     }
+
+    if (invoiceTerm.getPaymentSession() != null
+        && invoiceTerm.getMoveLine() != null
+        && invoiceTerm.getMoveLine().getMove() != null
+        && ((invoiceTerm.getPaymentSession().getPartnerTypeSelect()
+                    == PaymentSessionRepository.PARTNER_TYPE_CUSTOMER
+                && invoiceTerm.getMoveLine().getMove().getFunctionalOriginSelect()
+                    == MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE)
+            || (invoiceTerm.getPaymentSession().getPartnerTypeSelect()
+                    == PaymentSessionRepository.PARTNER_TYPE_SUPPLIER
+                && invoiceTerm.getMoveLine().getMove().getFunctionalOriginSelect()
+                    == MoveRepository.FUNCTIONAL_ORIGIN_SALE))) {
+      isSignedNegative = !isSignedNegative;
+    }
     return isSignedNegative;
   }
 
-  protected InvoiceTerm updateInvoiceTermsAmountsSessiontPart(InvoiceTerm invoiceTerm) {
+  protected InvoiceTerm updateInvoiceTermsAmountsSessiontPart(
+      InvoiceTerm invoiceTerm, boolean isRefund) {
     boolean isSignedNegative = this.getIsSignedNegative(invoiceTerm);
 
-    if (isSignedNegative) {
-      invoiceTerm.setPaymentAmount(invoiceTerm.getAmountRemaining().negate());
+    BigDecimal paymentAmount = invoiceTerm.getPaymentAmount();
+
+    if (!isRefund) {
+      if (isSignedNegative) {
+        invoiceTerm.setPaymentAmount(invoiceTerm.getAmountRemaining().negate());
+        paymentAmount = paymentAmount.negate();
+
+      } else {
+        invoiceTerm.setPaymentAmount(invoiceTerm.getAmountRemaining());
+      }
+
+      this.computeAmountPaid(invoiceTerm);
+      invoiceTerm.setPaymentAmount(paymentAmount);
 
     } else {
-      invoiceTerm.setPaymentAmount(invoiceTerm.getAmountRemaining());
+      if (isSignedNegative) {
+        invoiceTerm.setPaymentAmount(
+            invoiceTerm.getAmount().subtract(invoiceTerm.getAmountRemaining()).negate());
+
+      } else {
+        invoiceTerm.setPaymentAmount(
+            invoiceTerm.getAmount().subtract(invoiceTerm.getAmountRemaining()));
+      }
+
+      invoiceTerm.setAmountPaid(BigDecimal.ZERO);
     }
-    this.computeAmountPaid(invoiceTerm);
 
     return invoiceTerm;
   }
@@ -1323,45 +1376,43 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
   @Override
   public String getPfpValidatorUserDomain(Partner partner, Company company) {
+    List<User> pfpValidatorUserList = userRepo.all().filter("self.isPfpValidator IS TRUE").fetch();
 
-    User pfpValidatorUser = getPfpValidatorUser(partner, company);
-    if (pfpValidatorUser == null) {
+    if (CollectionUtils.isEmpty(pfpValidatorUserList)) {
       return "self.id in (0)";
     }
-    List<SubstitutePfpValidator> substitutePfpValidatorList =
-        pfpValidatorUser.getSubstitutePfpValidatorList();
-    List<User> validPfpValidatorUserList = new ArrayList<>();
-    StringBuilder pfpValidatorUserDomain = new StringBuilder("self.id in ");
+
+    Set<User> validPfpValidatorUserSet = new HashSet<>();
     LocalDate todayDate = appAccountService.getTodayDate(company);
 
-    validPfpValidatorUserList.add(pfpValidatorUser);
+    for (User pfpValidatorUser : pfpValidatorUserList) {
+      validPfpValidatorUserSet.add(pfpValidatorUser);
 
-    for (SubstitutePfpValidator substitutePfpValidator : substitutePfpValidatorList) {
-      LocalDate substituteStartDate = substitutePfpValidator.getSubstituteStartDate();
-      LocalDate substituteEndDate = substitutePfpValidator.getSubstituteEndDate();
+      for (SubstitutePfpValidator substitutePfpValidator :
+          pfpValidatorUser.getSubstitutePfpValidatorList()) {
+        LocalDate substituteStartDate = substitutePfpValidator.getSubstituteStartDate();
+        LocalDate substituteEndDate = substitutePfpValidator.getSubstituteEndDate();
 
-      if (substituteStartDate == null) {
-        if (substituteEndDate == null || substituteEndDate.isAfter(todayDate)) {
-          validPfpValidatorUserList.add(substitutePfpValidator.getSubstitutePfpValidatorUser());
-        }
-      } else {
-        if (substituteEndDate == null && substituteStartDate.isBefore(todayDate)) {
-          validPfpValidatorUserList.add(substitutePfpValidator.getSubstitutePfpValidatorUser());
-        } else if (substituteStartDate.isBefore(todayDate)
-            && substituteEndDate.isAfter(todayDate)) {
-          validPfpValidatorUserList.add(substitutePfpValidator.getSubstitutePfpValidatorUser());
+        if (substituteStartDate == null) {
+          if (substituteEndDate == null || substituteEndDate.isAfter(todayDate)) {
+            validPfpValidatorUserSet.add(substitutePfpValidator.getSubstitutePfpValidatorUser());
+          }
+        } else {
+          if (substituteEndDate == null && substituteStartDate.isBefore(todayDate)) {
+            validPfpValidatorUserSet.add(substitutePfpValidator.getSubstitutePfpValidatorUser());
+          } else if (substituteStartDate.isBefore(todayDate)
+              && substituteEndDate.isAfter(todayDate)) {
+            validPfpValidatorUserSet.add(substitutePfpValidator.getSubstitutePfpValidatorUser());
+          }
         }
       }
     }
 
-    pfpValidatorUserDomain
-        .append("(")
-        .append(
-            validPfpValidatorUserList.stream()
-                .map(pfpValidator -> pfpValidator.getId().toString())
-                .collect(Collectors.joining(",")))
-        .append(")");
-    return pfpValidatorUserDomain.toString();
+    return String.format(
+        "self.id IN (%s)",
+        validPfpValidatorUserSet.stream()
+            .map(pfpValidator -> pfpValidator.getId().toString())
+            .collect(Collectors.joining(",")));
   }
 
   protected void findInvoiceTermsInInvoice(
@@ -1513,5 +1564,24 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     invoiceTermList.add(lastInvoiceTerm);
 
     return invoiceTermList;
+  }
+
+  @Override
+  public boolean isThresholdNotOnLastInvoiceTerm(
+      MoveLine moveLine, BigDecimal thresholdDistanceFromRegulation) {
+    if (!CollectionUtils.isEmpty(moveLine.getInvoiceTermList())) {
+      InvoiceTerm lastInvoiceTerm =
+          moveLine.getInvoiceTermList().stream()
+              .filter(it -> it.getSequence() == moveLine.getInvoiceTermList().size())
+              .findFirst()
+              .orElse(null);
+
+      if (lastInvoiceTerm != null
+          && moveLine.getAmountRemaining().compareTo(lastInvoiceTerm.getAmountRemaining()) >= 0
+          && lastInvoiceTerm.getAmountRemaining().compareTo(thresholdDistanceFromRegulation) <= 0) {
+        return true;
+      }
+    }
+    return false;
   }
 }

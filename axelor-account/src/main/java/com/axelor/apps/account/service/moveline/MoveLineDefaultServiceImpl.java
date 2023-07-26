@@ -136,7 +136,7 @@ public class MoveLineDefaultServiceImpl implements MoveLineDefaultService {
   @Override
   public void setDefaultDistributionTemplate(MoveLine moveLine, Move move) throws AxelorException {
     if (move != null && moveLineComputeAnalyticService.checkManageAnalytic(move.getCompany())) {
-      moveLineComputeAnalyticService.selectDefaultDistributionTemplate(moveLine);
+      moveLineComputeAnalyticService.selectDefaultDistributionTemplate(moveLine, move);
     }
   }
 }
